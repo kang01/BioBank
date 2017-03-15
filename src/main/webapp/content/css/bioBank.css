@@ -1,0 +1,15 @@
+.transport-record  .form-group{
+    margin-bottom: 4px;
+}
+.transport-record  .pipe-body{
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.p-r-6{
+    padding-right: 6px !important;
+}
+.p-l-6{
+    padding-left: 6px !important;
+}

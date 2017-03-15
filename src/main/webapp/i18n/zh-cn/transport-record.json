@@ -11,8 +11,8 @@
         "delete": {
             "question": "你确定要删除用户 {{ login }} ?"
         },
-        "detail": {
-            "title": "用户"
+        "new": {
+            "title": "新增转运记录"
         },
         "login": "登录",
         "firstName": "名字",

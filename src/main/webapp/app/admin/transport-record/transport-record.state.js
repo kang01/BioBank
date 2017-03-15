@@ -52,6 +52,27 @@
 
                 }
             })
+            .state('transport-record-new', {
+                parent: 'transport-record',
+                url: 'transport-record/add',
+                data: {
+                    authorities: ['ROLE_ADMIN'],
+                    pageTitle: 'transportRecord.new.title'
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/admin/transport-record/transport-record-new.html',
+                        controller: 'TransportRecordNewController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        $translatePartialLoader.addPart('transport-record');
+                        return $translate.refresh();
+                    }]
+                }
+            })
 
     }
 })();

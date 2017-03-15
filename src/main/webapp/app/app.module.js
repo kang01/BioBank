@@ -18,7 +18,8 @@
             // jhipster-needle-angularjs-add-module JHipster will add new module here
             'angular-loading-bar',
             'datatables',
-            'datatables.columnfilter'
+            'datatables.light-columnfilter',
+            'ngHandsontable'
         ])
         .run(run);
 

@@ -30,6 +30,7 @@
                 "audits": "审核",
                 "apidocs": "API",
                 "database": "数据库",
+                "entity-audit": "Entity Audit",
                 "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
             },
             "language": "语言"

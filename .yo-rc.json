@@ -58,10 +58,6 @@
         "version": "2.2.2"
       },
       {
-        "name": "generator-jhipster-entity-audit-and-delete",
-        "version": "2.2.2"
-      },
-      {
         "name": "generator-jhipster-elasticsearch-reindexer",
         "version": "0.3.0"
       }
@@ -72,5 +68,8 @@
       "zh-cn",
       "en"
     ]
+  },
+  "generator-jhipster-entity-audit": {
+    "auditFramework": "custom"
   }
 }

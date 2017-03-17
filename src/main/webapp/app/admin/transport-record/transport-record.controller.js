@@ -35,11 +35,11 @@
         vm.persons = {};
         vm.message = '';
         vm.edit = edit;
-        vm.selected = {};
-        vm.selectAll = false;
-        vm.toggleAll = toggleAll;
-        vm.toggleOne = toggleOne;
-        var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll(vm.selectAll, vm.selected)">';
+        // vm.selected = {};
+        // vm.selectAll = false;
+        // vm.toggleAll = toggleAll;
+        // vm.toggleOne = toggleOne;
+        // var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll(vm.selectAll, vm.selected)">';
         vm.loadAll();
         JhiLanguageService.getAll().then(function (languages) {
             vm.languages = languages;
@@ -109,34 +109,72 @@
         vm.dtOptions = DTOptionsBuilder.fromSource('app/admin/transport-record/data.json')
             .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow)
-            .withOption('headerCallback',headerCallback);
-            // .withColumnFilter({
-            //     aoColumns:[
-            //         {
-            //             type:'number'
-            //         },
-            //         {
-            //             type:'number'
-            //         },
-            //         {
-            //             type:'number'
+            // .withOption('searching', false)
+            // .withOption('headerCallback',headerCallback)
+            .withColumnFilter({
+                aoColumns: [{
+                    type: 'number',
+                    width:50
+                }, {
+                    type: 'text',
+                    bRegex: true,
+                    bSmart: true
+                }, {
+                    type: 'text',
+                    bRegex: true,
+                    bSmart: true
+                }, {
+                    type: 'text',
+                    bRegex: true,
+                    bSmart: true
+                }, {
+                    type: 'text',
+                    bRegex: true,
+                    bSmart: true
+                }, {
+                    type: 'text',
+                    bRegex: true,
+                    bSmart: true
+                }, {
+                    type: 'select',
+                    bRegex: false,
+                    width:50,
+                    values: ['Yoda', 'Titi', 'Kyle', 'Bar', 'Whateveryournameis']
+                }, {
+                    type: 'select',
+                    bRegex: false,
+                    width:50,
+                    values: ['Yoda', 'Titi', 'Kyle', 'Bar', 'Whateveryournameis']
+                }]
+            });
+            // .withLightColumnFilter({
+            //     '0' : {
+            //         type : 'text'
+            //     },
+            //     '1' : {
+            //         type : 'text'
+            //     },
+            //     '2' : {
+            //         type : 'select',
+            //         values: [{
+            //             value: 'Yoda', label: 'Yoda foobar'
             //         }, {
-            //             type: 'text',
-            //             bRegex: true,
-            //             bSmart: true
+            //             value: 'Titi', label: 'Titi foobar'
             //         }, {
-            //             type: 'select',
-            //             bRegex: false,
-            //             values: ['Yoda', 'Titi', 'Kyle', 'Bar', 'Whateveryournameis']
-            //         }
-            //     ]
+            //             value: 'Kyle', label: 'Kyle foobar'
+            //         }, {
+            //             value: 'Bar', label: 'Bar foobar'
+            //         }, {
+            //             value: 'Whateveryournameis', label: 'Whateveryournameis foobar'
+            //         }]
+            //     }
             // });
         vm.dtColumns = [
-            DTColumnBuilder.newColumn(null).withTitle(titleHtml).notSortable()
-                .renderWith(function(data, type, full, meta) {
-                    vm.selected[full.id] = false;
-                    return '<input type="checkbox" ng-model="vm.selected[' + data.id + ']" ng-click="vm.toggleOne(vm.selected)">';
-                }),
+            // DTColumnBuilder.newColumn(null).withTitle(titleHtml).notSortable()
+            //     .renderWith(function(data, type, full, meta) {
+            //         vm.selected[full.id] = false;
+            //         return '<input type="checkbox" ng-model="vm.selected[' + data.id + ']" ng-click="vm.toggleOne(vm.selected)">';
+            //     }),
             DTColumnBuilder.newColumn('id').withTitle('项目点').notSortable(),
             DTColumnBuilder.newColumn('firstName').withTitle('项目编号').notSortable(),
             DTColumnBuilder.newColumn('lastName').withTitle('转运日期').notSortable(),
@@ -152,13 +190,13 @@
             // Recompiling so we can bind Angular directive to the DT
             $compile(angular.element(row).contents())($scope);
         }
-        function headerCallback(header) {
-            if (!vm.headerCompiled) {
-                // Use this headerCompiled field to only compile header once
-                vm.headerCompiled = true;
-                $compile(angular.element(header).contents())($scope);
-            }
-        }
+        // function headerCallback(header) {
+        //     if (!vm.headerCompiled) {
+        //         // Use this headerCompiled field to only compile header once
+        //         vm.headerCompiled = true;
+        //         $compile(angular.element(header).contents())($scope);
+        //     }
+        // }
         function edit(person) {
             vm.message = 'You are trying to edit the row: ' + JSON.stringify(person);
             // Edit some data and call server to make changes...
@@ -174,25 +212,25 @@
                 '   <i class="fa fa-trash-o"></i>' +
                 '</button>';
         }
-        function toggleAll (selectAll, selectedItems) {
-
-            for (var id in selectedItems) {
-                if (selectedItems.hasOwnProperty(id)) {
-                    selectedItems[id] = selectAll;
-                }
-            }
-        }
-        function toggleOne (selectedItems) {
-            for (var id in selectedItems) {
-                if (selectedItems.hasOwnProperty(id)) {
-                    if(!selectedItems[id]) {
-                        vm.selectAll = false;
-                        return;
-                    }
-                }
-            }
-            vm.selectAll = true;
-        }
+        // function toggleAll (selectAll, selectedItems) {
+        //
+        //     for (var id in selectedItems) {
+        //         if (selectedItems.hasOwnProperty(id)) {
+        //             selectedItems[id] = selectAll;
+        //         }
+        //     }
+        // }
+        // function toggleOne (selectedItems) {
+        //     for (var id in selectedItems) {
+        //         if (selectedItems.hasOwnProperty(id)) {
+        //             if(!selectedItems[id]) {
+        //                 vm.selectAll = false;
+        //                 return;
+        //             }
+        //         }
+        //     }
+        //     vm.selectAll = true;
+        // }
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }

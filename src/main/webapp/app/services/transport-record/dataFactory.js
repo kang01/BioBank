@@ -36,16 +36,25 @@
 
         for (var i = 0; i < rows; i++) {
           item = {
-            id: i + 1,
-            name: {
-              first: firstNames[Math.floor(Math.random() * firstNames.length)],
-              last: lastNames[Math.floor(Math.random() * lastNames.length)]
-            },
-            date: Math.max(Math.round(Math.random() * 12), 1) + '/' + Math.max(Math.round(Math.random() * 28), 1) + '/' + (Math.round(Math.random() * 80) + 1940),
-            address: Math.floor(Math.random() * 100000) + ' ' + address[Math.floor(Math.random() * address.length)],
-            price: Math.floor(Math.random() * 100000) / 100,
-            isActive: Math.floor(Math.random() * products.length) / 2 === 0 ? 'Yes' : 'No',
-            product: angular.extend({}, products[Math.floor(Math.random() * products.length)])
+            id: "1234567890",
+              name1:"11",
+              name2:"22",
+              name3:"33",
+              name4:"44",
+              name5:"1234567890",
+              name6:"1234567890",
+              name7:"1234567890",
+              name8:"1234567890",
+              name9:"1234567890",
+            // name: {
+            //   first: firstNames[Math.floor(Math.random() * firstNames.length)],
+            //   last: lastNames[Math.floor(Math.random() * lastNames.length)]
+            // },
+            // date: Math.max(Math.round(Math.random() * 12), 1) + '/' + Math.max(Math.round(Math.random() * 28), 1) + '/' + (Math.round(Math.random() * 80) + 1940),
+            // address: Math.floor(Math.random() * 100000) + ' ' + address[Math.floor(Math.random() * address.length)],
+            // price: Math.floor(Math.random() * 100000) / 100,
+            // isActive: Math.floor(Math.random() * products.length) / 2 === 0 ? 'Yes' : 'No',
+            // product: angular.extend({}, products[Math.floor(Math.random() * products.length)])
           };
           angular.forEach(keysToInclude, function(key) {
             if (item[key]) {

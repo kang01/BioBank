@@ -13,3 +13,11 @@
 .p-l-6{
     padding-left: 6px !important;
 }
+.transport-record-new div.dataTables_filter input{
+    width: 8em;
+}
+.transport-record-new .handsontable th,
+.transport-record-new .handsontable td{
+    height: 40px;
+    line-height: 41px;
+}

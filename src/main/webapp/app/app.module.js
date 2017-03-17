@@ -19,6 +19,7 @@
             'angular-loading-bar',
             'datatables',
             'datatables.light-columnfilter',
+            'datatables.columnfilter',
             'ngHandsontable'
         ])
         .run(run);

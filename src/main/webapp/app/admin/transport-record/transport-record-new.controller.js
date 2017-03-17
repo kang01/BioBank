@@ -14,25 +14,33 @@
         var vm = this;
         vm.dtOptions = DTOptionsBuilder.fromSource('app/admin/transport-record/data.json')
             .withPaginationType('full_numbers')
-            // .withOption('searching', false)
             .withOption('info', false)
             .withOption('paging', false);
         vm.dtColumns = [
-            // DTColumnBuilder.newColumn('id').withTitle('ID').noSort,
             DTColumnBuilder.newColumn('firstName').withTitle('First name').notSortable()
-            // DTColumnBuilder.newColumn('lastName').withTitle('Last name').notVisible()
         ];
-
-        vm.minSpareRows = 1;
-        vm.rowHeaders = false;
+        // var data1 = [];
+        var tArray = new Array();
+        for(var k=0;k<10;k++){
+            tArray[k]=new Array();
+            for(var j=0;j<10;j++){
+                tArray[k][j]=null;
+            }
+        }
+        tArray[5][6] = {id:"123456",name:"kk"};
+        vm.minSpareRows = 0 ;
+        vm.minSpareCols = 0;
+        vm.rowHeaders = true;
         vm.colHeaders = true;
+        vm.colHeaders = ['1','2','3','4','5','6','7','8','9','10'];
+        vm.rowHeaders = ['A','B','C','D','E','F','G','H','I','J'];
         vm.db = {
-            items: dataFactory.generateArrayOfObjects()
+            items: tArray
         };
         vm.onAfterSelectionEnd = function(row, col, row2, col2) {
 
             //获取选中的坐标
-            // console.log(this.getSelected())
+            console.log(this.getSelected())
             // console.log(this.getSelectedRange())
             // console.log(this.getData(row,col))
             // console.log(this.getCellMeta(row,col).instance.getValue())
@@ -54,16 +62,21 @@
             //获取所有的行数
             // console.log(this.getInstance().countRows())
             //获得单元格的值
-            // console.log(JSON.stringify(this.getValue()))
+            console.log(JSON.stringify(this.getValue()))
             // console.log(this.selectCell(row,col))
         };
+        vm.myCustomRenderer = function(hotInstance, td, row, col, prop, value, cellProperties) {
+            if(row === 5 && col === 6){
+                this.style.backgroundColor = 'yellow';
+            }
 
+        }
 
         vm.settings = {
-            colHeaders:true,
-            contextMenu: [
-                'row_above', 'row_below', 'remove_row'
-            ]
+            contextMenu:true,
+            // contextMenu: [
+            //     'row_above', 'row_below', 'remove_row'
+            // ]
         };
 
 

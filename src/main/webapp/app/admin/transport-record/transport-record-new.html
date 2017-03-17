@@ -1,4 +1,16 @@
 <div class="transport-record-new">
+    <div class="row">
+        <h3 class="pull-left">新增转运记录</h3>
+        <div class="form-group pull-right">
+            <div class="text-right">
+                <button type="button" class="btn btn-primary">入库</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.open('lg')">导入冻存盒</button>
+                <button type="button" class="btn btn-primary">保存</button>
+                <button type="button" class="btn">关闭</button>
+            </div>
+        </div>
+    </div>
+
     <form class="form-horizontal">
         <div class="row">
             <div class="form-group col-sm-3">
@@ -20,21 +32,14 @@
                 </div>
             </div>
             <div class="form-group col-sm-3">
-                <div class="text-right">
-                    <button type="button" class="btn btn-primary">入库</button>
-                    <button type="button" class="btn btn-primary" ng-click="vm.open('lg')">导入冻存盒</button>
-                    <button type="button" class="btn btn-primary">保存</button>
-                    <button type="button" class="btn">关闭</button>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">运单号</label>
                 <div class="col-sm-8">
                     <input type="email" class="form-control"  >
                 </div>
             </div>
+        </div>
+        <div class="row">
+
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">转运批次</label>
                 <div class="col-sm-8">
@@ -120,32 +125,32 @@
         </div>
         <div class="col-sm-10 pipe-body">
             <form class="form-horizontal">
-                <div class="row">
-                    <div class="form-group col-sm-3">
+                <div class="row pipe-body-top ">
+                    <div class="form-group col-sm-2">
                         <label  class="col-sm-4 control-label p-r-6">冻存盒号</label>
                         <div class="col-sm-8">
                             <input type="email" class="form-control"  >
                         </div>
                     </div>
-                    <div class="form-group col-sm-3">
+                    <div class="form-group col-sm-2">
                         <label  class="col-sm-4 control-label p-r-6">盒类型</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control"  >
                         </div>
                     </div>
-                    <div class="form-group col-sm-3">
+                    <div class="form-group col-sm-2">
                         <label  class="col-sm-4 control-label p-r-6">样本类型</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control"  >
                         </div>
                     </div>
-                    <div class="form-group col-sm-3">
+                    <div class="form-group col-sm-2">
                         <label  class="col-sm-4 control-label p-r-6">存储位置</label>
                         <div class="col-sm-8">
                             <input type="email" class="form-control"  >
                         </div>
                     </div>
-                    <div class="form-group col-sm-3">
+                    <div class="form-group col-sm-2">
                         <label  class="col-sm-4 control-label p-r-6">状态</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control"  >
@@ -154,18 +159,21 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-5">
-                        <span>样本数</span>
-                        <span>100个</span>
-                        <span>空管</span>
-                        <span>100个</span>
-                        <span>空孔</span>
-                        <span>100个</span>
-                        <span>错位</span>
-                        <span>100个</span>
+                        <p style="margin-top: 10px">
+                            <span>样本数</span>
+                            <span>100个</span>
+                            <span>空管</span>
+                            <span>100个</span>
+                            <span>空孔</span>
+                            <span>100个</span>
+                            <span>错位</span>
+                            <span>100个</span>
+                        </p>
+
                     </div>
-                    <div class="form-group col-sm-2" style="margin-left: 27px">
-                        <label  class="col-sm-4 control-label p-r-6">备注</label>
-                        <div class="col-sm-8">
+                    <div class="form-group col-sm-7">
+                        <label  class="col-sm-2 control-label p-r-6">备注</label>
+                        <div class="col-sm-10">
                             <textarea class="form-control"rows="1" style="resize: none"></textarea>
                         </div>
                     </div>

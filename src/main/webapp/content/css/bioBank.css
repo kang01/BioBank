@@ -13,6 +13,9 @@
 .p-l-6{
     padding-left: 6px !important;
 }
+.m-l-5{
+    margin-left: 5px !important;
+}
 .transport-record-new div.dataTables_filter input{
     width: 8em;
 }
@@ -20,4 +23,25 @@
 .transport-record-new .handsontable td{
     height: 40px;
     line-height: 41px;
+}
+.transport-record-new h3{
+    margin: 2px;
+}
+.transport-record-new .pipe-body .pipe-body-top{
+    margin-left: -5px;
+}
+.transport-record-new .pipe-body .pipe-body-top .col-sm-2{
+    width: 22%;
+}
+.transport-record-new .pipe-body .pipe-body-top .control-label{
+    padding-left: 8px;
+}
+
+@media (min-width:1440px) {
+    .transport-record-new .pipe-body .pipe-body-top .col-sm-2{
+        width: 21%;
+    }
+    .transport-record-new .pipe-body .pipe-body-top {
+        margin-left: -40px;
+    }
 }

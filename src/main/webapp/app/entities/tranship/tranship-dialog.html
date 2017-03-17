@@ -1,0 +1,330 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myTranshipLabel" data-translate="bioBankApp.tranship.home.createOrEditLabel">Create or edit a Tranship</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.tranship.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.tranship.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.transhipDate" for="field_transhipDate">Tranship Date</label>
+                <div class="input-group">
+                    <input id="field_transhipDate" type="text" class="form-control" name="transhipDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.tranship.transhipDate" is-open="vm.datePickerOpenStatus.transhipDate"
+                    required/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('transhipDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.transhipDate.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.transhipDate.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.projectCode" for="field_projectCode">Project Code</label>
+            <input type="text" class="form-control" name="projectCode" id="field_projectCode"
+                    ng-model="vm.tranship.projectCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.projectCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.projectCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.projectCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.projectName" for="field_projectName">Project Name</label>
+            <input type="text" class="form-control" name="projectName" id="field_projectName"
+                    ng-model="vm.tranship.projectName"
+                    required ng-maxlength="255"/>
+            <div ng-show="editForm.projectName.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.projectName.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.projectName.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.projectSiteCode" for="field_projectSiteCode">Project Site Code</label>
+            <input type="text" class="form-control" name="projectSiteCode" id="field_projectSiteCode"
+                    ng-model="vm.tranship.projectSiteCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.projectSiteCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.projectSiteCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.projectSiteCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.projectSiteName" for="field_projectSiteName">Project Site Name</label>
+            <input type="text" class="form-control" name="projectSiteName" id="field_projectSiteName"
+                    ng-model="vm.tranship.projectSiteName"
+                    required ng-maxlength="255"/>
+            <div ng-show="editForm.projectSiteName.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.projectSiteName.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.projectSiteName.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.trackNumber" for="field_trackNumber">Track Number</label>
+            <input type="text" class="form-control" name="trackNumber" id="field_trackNumber"
+                    ng-model="vm.tranship.trackNumber"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.trackNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.trackNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.trackNumber.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.transhipBatch" for="field_transhipBatch">Tranship Batch</label>
+            <input type="text" class="form-control" name="transhipBatch" id="field_transhipBatch"
+                    ng-model="vm.tranship.transhipBatch"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.transhipBatch.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.transhipBatch.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.transhipBatch.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.transhipState" for="field_transhipState">Tranship State</label>
+            <input type="text" class="form-control" name="transhipState" id="field_transhipState"
+                    ng-model="vm.tranship.transhipState"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.transhipState.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.transhipState.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.transhipState.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.receiver" for="field_receiver">Receiver</label>
+            <input type="text" class="form-control" name="receiver" id="field_receiver"
+                    ng-model="vm.tranship.receiver"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.receiver.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.receiver.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.receiver.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.receiveDate" for="field_receiveDate">Receive Date</label>
+                <div class="input-group">
+                    <input id="field_receiveDate" type="text" class="form-control" name="receiveDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.tranship.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"
+                    required/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.receiveDate.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.receiveDate.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.sampleNumber" for="field_sampleNumber">Sample Number</label>
+            <input type="number" class="form-control" name="sampleNumber" id="field_sampleNumber"
+                    ng-model="vm.tranship.sampleNumber"
+                    required max="100"/>
+            <div ng-show="editForm.sampleNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.sampleNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.sampleNumber.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.sampleNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.frozenBoxNumber" for="field_frozenBoxNumber">Frozen Box Number</label>
+            <input type="number" class="form-control" name="frozenBoxNumber" id="field_frozenBoxNumber"
+                    ng-model="vm.tranship.frozenBoxNumber"
+                    required max="20"/>
+            <div ng-show="editForm.frozenBoxNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxNumber.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.emptyTubeNumber" for="field_emptyTubeNumber">Empty Tube Number</label>
+            <input type="number" class="form-control" name="emptyTubeNumber" id="field_emptyTubeNumber"
+                    ng-model="vm.tranship.emptyTubeNumber"
+                    required max="20"/>
+            <div ng-show="editForm.emptyTubeNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.emptyTubeNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.emptyTubeNumber.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.emptyTubeNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.emptyHoleNumber" for="field_emptyHoleNumber">Empty Hole Number</label>
+            <input type="number" class="form-control" name="emptyHoleNumber" id="field_emptyHoleNumber"
+                    ng-model="vm.tranship.emptyHoleNumber"
+                    required max="20"/>
+            <div ng-show="editForm.emptyHoleNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.emptyHoleNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.emptyHoleNumber.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.emptyHoleNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.sampleSatisfaction" for="field_sampleSatisfaction">Sample Satisfaction</label>
+            <input type="number" class="form-control" name="sampleSatisfaction" id="field_sampleSatisfaction"
+                    ng-model="vm.tranship.sampleSatisfaction"
+                    max="20"/>
+            <div ng-show="editForm.sampleSatisfaction.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.sampleSatisfaction.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.sampleSatisfaction.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.effectiveSampleNumber" for="field_effectiveSampleNumber">Effective Sample Number</label>
+            <input type="number" class="form-control" name="effectiveSampleNumber" id="field_effectiveSampleNumber"
+                    ng-model="vm.tranship.effectiveSampleNumber"
+                    required max="20"/>
+            <div ng-show="editForm.effectiveSampleNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.effectiveSampleNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.effectiveSampleNumber.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.effectiveSampleNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.memo" for="field_memo">Memo</label>
+            <input type="text" class="form-control" name="memo" id="field_memo"
+                    ng-model="vm.tranship.memo"
+                    ng-maxlength="1024"/>
+            <div ng-show="editForm.memo.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.memo.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
+                    This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.status" for="field_status">Status</label>
+            <input type="text" class="form-control" name="status" id="field_status"
+                    ng-model="vm.tranship.status"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.status.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.status.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.status.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

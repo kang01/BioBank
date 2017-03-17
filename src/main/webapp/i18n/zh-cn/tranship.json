@@ -1,0 +1,38 @@
+{
+    "bioBankApp": {
+        "tranship" : {
+            "home": {
+                "title": "Tranships",
+                "createLabel": "Create a new Tranship",
+                "createOrEditLabel": "Create or edit a Tranship"
+            },
+            "created": "A new Tranship is created with identifier {{ param }}",
+            "updated": "A Tranship is updated with identifier {{ param }}",
+            "deleted": "A Tranship is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Tranship {{ id }}?"
+            },
+            "detail": {
+                "title": "Tranship"
+            },
+            "transhipDate": "Tranship Date",
+            "projectCode": "Project Code",
+            "projectName": "Project Name",
+            "projectSiteCode": "Project Site Code",
+            "projectSiteName": "Project Site Name",
+            "trackNumber": "Track Number",
+            "transhipBatch": "Tranship Batch",
+            "transhipState": "Tranship State",
+            "receiver": "Receiver",
+            "receiveDate": "Receive Date",
+            "sampleNumber": "Sample Number",
+            "frozenBoxNumber": "Frozen Box Number",
+            "emptyTubeNumber": "Empty Tube Number",
+            "emptyHoleNumber": "Empty Hole Number",
+            "sampleSatisfaction": "Sample Satisfaction",
+            "effectiveSampleNumber": "Effective Sample Number",
+            "memo": "Memo",
+            "status": "Status"
+        }
+    }
+}

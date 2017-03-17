@@ -1,0 +1,91 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.tranship.detail.title">Tranship</span> {{vm.tranship.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.tranship.transhipDate">Tranship Date</span></dt>
+        <dd>
+            <span>{{vm.tranship.transhipDate | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.projectCode">Project Code</span></dt>
+        <dd>
+            <span>{{vm.tranship.projectCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.projectName">Project Name</span></dt>
+        <dd>
+            <span>{{vm.tranship.projectName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.projectSiteCode">Project Site Code</span></dt>
+        <dd>
+            <span>{{vm.tranship.projectSiteCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.projectSiteName">Project Site Name</span></dt>
+        <dd>
+            <span>{{vm.tranship.projectSiteName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.trackNumber">Track Number</span></dt>
+        <dd>
+            <span>{{vm.tranship.trackNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.transhipBatch">Tranship Batch</span></dt>
+        <dd>
+            <span>{{vm.tranship.transhipBatch}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.transhipState">Tranship State</span></dt>
+        <dd>
+            <span>{{vm.tranship.transhipState}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.receiver">Receiver</span></dt>
+        <dd>
+            <span>{{vm.tranship.receiver}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.receiveDate">Receive Date</span></dt>
+        <dd>
+            <span>{{vm.tranship.receiveDate | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.sampleNumber">Sample Number</span></dt>
+        <dd>
+            <span>{{vm.tranship.sampleNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.frozenBoxNumber">Frozen Box Number</span></dt>
+        <dd>
+            <span>{{vm.tranship.frozenBoxNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.emptyTubeNumber">Empty Tube Number</span></dt>
+        <dd>
+            <span>{{vm.tranship.emptyTubeNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.emptyHoleNumber">Empty Hole Number</span></dt>
+        <dd>
+            <span>{{vm.tranship.emptyHoleNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.sampleSatisfaction">Sample Satisfaction</span></dt>
+        <dd>
+            <span>{{vm.tranship.sampleSatisfaction}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.effectiveSampleNumber">Effective Sample Number</span></dt>
+        <dd>
+            <span>{{vm.tranship.effectiveSampleNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.tranship.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.status">Status</span></dt>
+        <dd>
+            <span>{{vm.tranship.status}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="tranship-detail.edit({id:vm.tranship.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

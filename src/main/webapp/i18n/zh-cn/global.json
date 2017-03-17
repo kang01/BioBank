@@ -19,6 +19,8 @@
                 "sampleType": "Sample Type",
                 "frozenBoxType": "Frozen Box Type",
                 "frozenTubeType": "Frozen Tube Type",
+                "frozenBox": "Frozen Box",
+                "tranship": "Tranship",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
                 "transportrecord":"转运记录"
             },

@@ -22,7 +22,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="supprot_rack_code" type="varchar(100)">
-                <constraints nullable="false" />
+                <constraints nullable="false"  unique = "true" />
             </column>
 
             <column name="support_rack_type_code" type="varchar(100)">
@@ -59,6 +59,6 @@
             <column name="last_modified_date" type="timestamp"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+
     </changeSet>
 </databaseChangeLog>

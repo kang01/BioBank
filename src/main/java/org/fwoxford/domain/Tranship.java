@@ -1,0 +1,399 @@
+package org.fwoxford.domain;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Objects;
+
+/**
+ * A Tranship.
+ */
+@Entity
+@Table(name = "tranship")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+public class Tranship extends AbstractAuditingEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
+    private Long id;
+
+    @NotNull
+    @Column(name = "tranship_date", nullable = false)
+    private LocalDate transhipDate;
+
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "project_code", length = 100, nullable = false)
+    private String projectCode;
+
+    @NotNull
+    @Size(max = 255)
+    @Column(name = "project_name", length = 255, nullable = false)
+    private String projectName;
+
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "project_site_code", length = 100, nullable = false)
+    private String projectSiteCode;
+
+    @NotNull
+    @Size(max = 255)
+    @Column(name = "project_site_name", length = 255, nullable = false)
+    private String projectSiteName;
+
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "track_number", length = 100, nullable = false)
+    private String trackNumber;
+
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "tranship_batch", length = 100, nullable = false)
+    private String transhipBatch;
+
+    @NotNull
+    @Size(max = 20)
+    @Column(name = "tranship_state", length = 20, nullable = false)
+    private String transhipState;
+
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "receiver", length = 100, nullable = false)
+    private String receiver;
+
+    @NotNull
+    @Column(name = "receive_date", nullable = false)
+    private LocalDate receiveDate;
+
+    @NotNull
+    @Max(value = 100)
+    @Column(name = "sample_number", nullable = false)
+    private Integer sampleNumber;
+
+    @NotNull
+    @Max(value = 20)
+    @Column(name = "frozen_box_number", nullable = false)
+    private Integer frozenBoxNumber;
+
+    @NotNull
+    @Max(value = 20)
+    @Column(name = "empty_tube_number", nullable = false)
+    private Integer emptyTubeNumber;
+
+    @NotNull
+    @Max(value = 20)
+    @Column(name = "empty_hole_number", nullable = false)
+    private Integer emptyHoleNumber;
+
+    @Max(value = 20)
+    @Column(name = "sample_satisfaction")
+    private Integer sampleSatisfaction;
+
+    @NotNull
+    @Max(value = 20)
+    @Column(name = "effective_sample_number", nullable = false)
+    private Integer effectiveSampleNumber;
+
+    @Size(max = 1024)
+    @Column(name = "memo", length = 1024)
+    private String memo;
+
+    @NotNull
+    @Size(max = 20)
+    @Column(name = "status", length = 20, nullable = false)
+    private String status;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDate getTranshipDate() {
+        return transhipDate;
+    }
+
+    public Tranship transhipDate(LocalDate transhipDate) {
+        this.transhipDate = transhipDate;
+        return this;
+    }
+
+    public void setTranshipDate(LocalDate transhipDate) {
+        this.transhipDate = transhipDate;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public Tranship projectCode(String projectCode) {
+        this.projectCode = projectCode;
+        return this;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public Tranship projectName(String projectName) {
+        this.projectName = projectName;
+        return this;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getProjectSiteCode() {
+        return projectSiteCode;
+    }
+
+    public Tranship projectSiteCode(String projectSiteCode) {
+        this.projectSiteCode = projectSiteCode;
+        return this;
+    }
+
+    public void setProjectSiteCode(String projectSiteCode) {
+        this.projectSiteCode = projectSiteCode;
+    }
+
+    public String getProjectSiteName() {
+        return projectSiteName;
+    }
+
+    public Tranship projectSiteName(String projectSiteName) {
+        this.projectSiteName = projectSiteName;
+        return this;
+    }
+
+    public void setProjectSiteName(String projectSiteName) {
+        this.projectSiteName = projectSiteName;
+    }
+
+    public String getTrackNumber() {
+        return trackNumber;
+    }
+
+    public Tranship trackNumber(String trackNumber) {
+        this.trackNumber = trackNumber;
+        return this;
+    }
+
+    public void setTrackNumber(String trackNumber) {
+        this.trackNumber = trackNumber;
+    }
+
+    public String getTranshipBatch() {
+        return transhipBatch;
+    }
+
+    public Tranship transhipBatch(String transhipBatch) {
+        this.transhipBatch = transhipBatch;
+        return this;
+    }
+
+    public void setTranshipBatch(String transhipBatch) {
+        this.transhipBatch = transhipBatch;
+    }
+
+    public String getTranshipState() {
+        return transhipState;
+    }
+
+    public Tranship transhipState(String transhipState) {
+        this.transhipState = transhipState;
+        return this;
+    }
+
+    public void setTranshipState(String transhipState) {
+        this.transhipState = transhipState;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public Tranship receiver(String receiver) {
+        this.receiver = receiver;
+        return this;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public LocalDate getReceiveDate() {
+        return receiveDate;
+    }
+
+    public Tranship receiveDate(LocalDate receiveDate) {
+        this.receiveDate = receiveDate;
+        return this;
+    }
+
+    public void setReceiveDate(LocalDate receiveDate) {
+        this.receiveDate = receiveDate;
+    }
+
+    public Integer getSampleNumber() {
+        return sampleNumber;
+    }
+
+    public Tranship sampleNumber(Integer sampleNumber) {
+        this.sampleNumber = sampleNumber;
+        return this;
+    }
+
+    public void setSampleNumber(Integer sampleNumber) {
+        this.sampleNumber = sampleNumber;
+    }
+
+    public Integer getFrozenBoxNumber() {
+        return frozenBoxNumber;
+    }
+
+    public Tranship frozenBoxNumber(Integer frozenBoxNumber) {
+        this.frozenBoxNumber = frozenBoxNumber;
+        return this;
+    }
+
+    public void setFrozenBoxNumber(Integer frozenBoxNumber) {
+        this.frozenBoxNumber = frozenBoxNumber;
+    }
+
+    public Integer getEmptyTubeNumber() {
+        return emptyTubeNumber;
+    }
+
+    public Tranship emptyTubeNumber(Integer emptyTubeNumber) {
+        this.emptyTubeNumber = emptyTubeNumber;
+        return this;
+    }
+
+    public void setEmptyTubeNumber(Integer emptyTubeNumber) {
+        this.emptyTubeNumber = emptyTubeNumber;
+    }
+
+    public Integer getEmptyHoleNumber() {
+        return emptyHoleNumber;
+    }
+
+    public Tranship emptyHoleNumber(Integer emptyHoleNumber) {
+        this.emptyHoleNumber = emptyHoleNumber;
+        return this;
+    }
+
+    public void setEmptyHoleNumber(Integer emptyHoleNumber) {
+        this.emptyHoleNumber = emptyHoleNumber;
+    }
+
+    public Integer getSampleSatisfaction() {
+        return sampleSatisfaction;
+    }
+
+    public Tranship sampleSatisfaction(Integer sampleSatisfaction) {
+        this.sampleSatisfaction = sampleSatisfaction;
+        return this;
+    }
+
+    public void setSampleSatisfaction(Integer sampleSatisfaction) {
+        this.sampleSatisfaction = sampleSatisfaction;
+    }
+
+    public Integer getEffectiveSampleNumber() {
+        return effectiveSampleNumber;
+    }
+
+    public Tranship effectiveSampleNumber(Integer effectiveSampleNumber) {
+        this.effectiveSampleNumber = effectiveSampleNumber;
+        return this;
+    }
+
+    public void setEffectiveSampleNumber(Integer effectiveSampleNumber) {
+        this.effectiveSampleNumber = effectiveSampleNumber;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public Tranship memo(String memo) {
+        this.memo = memo;
+        return this;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public Tranship status(String status) {
+        this.status = status;
+        return this;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Tranship tranship = (Tranship) o;
+        if (tranship.id == null || id == null) {
+            return false;
+        }
+        return Objects.equals(id, tranship.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Tranship{" +
+            "id=" + id +
+            ", transhipDate='" + transhipDate + "'" +
+            ", projectCode='" + projectCode + "'" +
+            ", projectName='" + projectName + "'" +
+            ", projectSiteCode='" + projectSiteCode + "'" +
+            ", projectSiteName='" + projectSiteName + "'" +
+            ", trackNumber='" + trackNumber + "'" +
+            ", transhipBatch='" + transhipBatch + "'" +
+            ", transhipState='" + transhipState + "'" +
+            ", receiver='" + receiver + "'" +
+            ", receiveDate='" + receiveDate + "'" +
+            ", sampleNumber='" + sampleNumber + "'" +
+            ", frozenBoxNumber='" + frozenBoxNumber + "'" +
+            ", emptyTubeNumber='" + emptyTubeNumber + "'" +
+            ", emptyHoleNumber='" + emptyHoleNumber + "'" +
+            ", sampleSatisfaction='" + sampleSatisfaction + "'" +
+            ", effectiveSampleNumber='" + effectiveSampleNumber + "'" +
+            ", memo='" + memo + "'" +
+            ", status='" + status + "'" +
+            '}';
+    }
+}

@@ -25,7 +25,7 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
 
     @NotNull
     @Size(max = 100)
-    @Column(name = "supprot_rack_code", length = 100, nullable = false)
+    @Column(name = "supprot_rack_code", length = 100, nullable = false ,unique = true)
     private String supprotRackCode;
 
     @NotNull

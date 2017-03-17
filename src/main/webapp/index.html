@@ -33,14 +33,15 @@
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
     <!--<page-ribbon></page-ribbon>-->
-    <div ui-view="navbar" ng-cloak></div>
+    <div ui-view="topbar" ng-cloak></div>
     <div class="">
         <div class="well" ui-view="content">
             <!-- Angular views -->
         </div>
 
         <div class="footer" ng-cloak>
-            <p data-translate="footer">This is your footer</p>
+            <div ui-view="navbar" ng-cloak></div>
+            <!--<p data-translate="footer">This is your footer</p>-->
         </div>
     </div>
 

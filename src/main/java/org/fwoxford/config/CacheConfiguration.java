@@ -59,6 +59,9 @@ public class CacheConfiguration {
             cm.createCache(org.fwoxford.domain.FrozenBox.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.Tranship.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.Relations.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.FrozenTube.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.TranshipBox.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.StorageIn.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

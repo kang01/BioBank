@@ -21,6 +21,9 @@
     <include file="classpath:config/liquibase/changelog/20170317062302_added_entity_FrozenBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317065947_added_entity_Tranship.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317075947_added_entity_Relations.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317080522_added_entity_FrozenTube.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317083114_added_entity_TranshipBox.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317160203_added_entity_StorageIn.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20170316050525_added_entity_constraints_ProjectRelate.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317021528_added_entity_constraints_Equipment.xml" relativeToChangelogFile="false"/>
@@ -28,5 +31,8 @@
     <include file="classpath:config/liquibase/changelog/20170317050339_added_entity_constraints_SupportRack.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317062302_added_entity_constraints_FrozenBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317075947_added_entity_constraints_Relations.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317080522_added_entity_constraints_FrozenTube.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317083114_added_entity_constraints_TranshipBox.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317160203_added_entity_constraints_StorageIn.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

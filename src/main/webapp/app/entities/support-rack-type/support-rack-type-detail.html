@@ -1,0 +1,39 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.supportRackType.detail.title">Support Rack Type</span> {{vm.supportRackType.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.supportRackType.supportRackTypeCode">Support Rack Type Code</span></dt>
+        <dd>
+            <span>{{vm.supportRackType.supportRackTypeCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.supportRackType.supportRackRows">Support Rack Rows</span></dt>
+        <dd>
+            <span>{{vm.supportRackType.supportRackRows}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.supportRackType.supportRackColumns">Support Rack Columns</span></dt>
+        <dd>
+            <span>{{vm.supportRackType.supportRackColumns}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.supportRackType.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.supportRackType.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.supportRackType.status">Status</span></dt>
+        <dd>
+            <span>{{vm.supportRackType.status}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="support-rack-type-detail.edit({id:vm.supportRackType.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

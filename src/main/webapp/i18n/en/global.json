@@ -14,6 +14,8 @@
                 "equipmentModle": "Equipment Modle",
                 "equipment": "Equipment",
                 "area": "Area",
+                "supportRackType": "Support Rack Type",
+                "supportRack": "Support Rack",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

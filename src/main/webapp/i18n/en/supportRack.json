@@ -1,0 +1,27 @@
+{
+    "bioBankApp": {
+        "supportRack" : {
+            "home": {
+                "title": "Support Racks",
+                "createLabel": "Create a new Support Rack",
+                "createOrEditLabel": "Create or edit a Support Rack"
+            },
+            "created": "A new Support Rack is created with identifier {{ param }}",
+            "updated": "A Support Rack is updated with identifier {{ param }}",
+            "deleted": "A Support Rack is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Support Rack {{ id }}?"
+            },
+            "detail": {
+                "title": "Support Rack"
+            },
+            "supprotRackCode": "Supprot Rack Code",
+            "supportRackTypeCode": "Support Rack Type Code",
+            "areaCode": "Area Code",
+            "memo": "Memo",
+            "status": "Status",
+            "supportRackType": "Support Rack Type",
+            "area": "Area"
+        }
+    }
+}

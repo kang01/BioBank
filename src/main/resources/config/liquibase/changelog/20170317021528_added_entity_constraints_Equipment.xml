@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity Equipment.
+    -->
+    <changeSet id="20170317021528-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="equipment_group_id"
+                                 baseTableName="equipment"
+                                 constraintName="equipment_equipment_gro_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="equipment_group"/>
+
+        <addForeignKeyConstraint baseColumnNames="equipment_modle_id"
+                                 baseTableName="equipment"
+                                 constraintName="equipment_equipment_mod_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="equipment_modle"/>
+
+    </changeSet>
+</databaseChangeLog>

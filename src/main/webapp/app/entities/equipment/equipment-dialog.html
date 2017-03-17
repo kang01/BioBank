@@ -1,0 +1,218 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myEquipmentLabel" data-translate="bioBankApp.equipment.home.createOrEditLabel">Create or edit a Equipment</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.equipment.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.equipment.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipment.equipmentCode" for="field_equipmentCode">Equipment Code</label>
+            <input type="text" class="form-control" name="equipmentCode" id="field_equipmentCode"
+                    ng-model="vm.equipment.equipmentCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.equipmentCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.equipmentCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.equipmentCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipment.temperature" for="field_temperature">Temperature</label>
+            <input type="number" class="form-control" name="temperature" id="field_temperature"
+                    ng-model="vm.equipment.temperature"
+                    required max="20"/>
+            <div ng-show="editForm.temperature.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.temperature.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.temperature.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.temperature.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipment.equipmentAddress" for="field_equipmentAddress">Equipment Address</label>
+            <input type="text" class="form-control" name="equipmentAddress" id="field_equipmentAddress"
+                    ng-model="vm.equipment.equipmentAddress"
+                    required ng-maxlength="255"/>
+            <div ng-show="editForm.equipmentAddress.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.equipmentAddress.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.equipmentAddress.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipment.ampoulesMax" for="field_ampoulesMax">Ampoules Max</label>
+            <input type="number" class="form-control" name="ampoulesMax" id="field_ampoulesMax"
+                    ng-model="vm.equipment.ampoulesMax"
+                    required max="20"/>
+            <div ng-show="editForm.ampoulesMax.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.ampoulesMax.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.ampoulesMax.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.ampoulesMax.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipment.ampoulesMin" for="field_ampoulesMin">Ampoules Min</label>
+            <input type="number" class="form-control" name="ampoulesMin" id="field_ampoulesMin"
+                    ng-model="vm.equipment.ampoulesMin"
+                    required max="20"/>
+            <div ng-show="editForm.ampoulesMin.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.ampoulesMin.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.ampoulesMin.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.ampoulesMin.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipment.label1" for="field_label1">Label 1</label>
+            <input type="text" class="form-control" name="label1" id="field_label1"
+                    ng-model="vm.equipment.label1"
+                    ng-maxlength="100"/>
+            <div ng-show="editForm.label1.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.label1.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipment.label2" for="field_label2">Label 2</label>
+            <input type="text" class="form-control" name="label2" id="field_label2"
+                    ng-model="vm.equipment.label2"
+                    ng-maxlength="100"/>
+            <div ng-show="editForm.label2.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.label2.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipment.label4" for="field_label4">Label 4</label>
+            <input type="text" class="form-control" name="label4" id="field_label4"
+                    ng-model="vm.equipment.label4"
+                    ng-maxlength="100"/>
+            <div ng-show="editForm.label4.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.label4.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipment.memo" for="field_memo">Memo</label>
+            <input type="text" class="form-control" name="memo" id="field_memo"
+                    ng-model="vm.equipment.memo"
+                    ng-maxlength="1024"/>
+            <div ng-show="editForm.memo.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.memo.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
+                    This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipment.status" for="field_status">Status</label>
+            <input type="text" class="form-control" name="status" id="field_status"
+                    ng-model="vm.equipment.status"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.status.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.status.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.status.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipment.label3" for="field_label3">Label 3</label>
+            <input type="text" class="form-control" name="label3" id="field_label3"
+                    ng-model="vm.equipment.label3"
+                    ng-maxlength="100"/>
+            <div ng-show="editForm.label3.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.label3.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label data-translate="bioBankApp.equipment.equipmentGroup" for="field_equipmentGroup">Equipment Group</label>
+            <select class="form-control" id="field_equipmentGroup" name="equipmentGroup" ng-model="vm.equipment.equipmentGroupId" ng-options="equipmentGroup.id as equipmentGroup.id for equipmentGroup in vm.equipmentgroups"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.equipmentGroup.$invalid">
+            <p class="help-block"
+                ng-show="editForm.equipmentGroup.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.equipment.equipmentModle" for="field_equipmentModle">Equipment Modle</label>
+            <select class="form-control" id="field_equipmentModle" name="equipmentModle" ng-model="vm.equipment.equipmentModleId" ng-options="equipmentModle.id as equipmentModle.id for equipmentModle in vm.equipmentmodles"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.equipmentModle.$invalid">
+            <p class="help-block"
+                ng-show="editForm.equipmentModle.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

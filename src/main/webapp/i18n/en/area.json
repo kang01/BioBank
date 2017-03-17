@@ -1,0 +1,26 @@
+{
+    "bioBankApp": {
+        "area" : {
+            "home": {
+                "title": "Areas",
+                "createLabel": "Create a new Area",
+                "createOrEditLabel": "Create or edit a Area"
+            },
+            "created": "A new Area is created with identifier {{ param }}",
+            "updated": "A Area is updated with identifier {{ param }}",
+            "deleted": "A Area is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Area {{ id }}?"
+            },
+            "detail": {
+                "title": "Area"
+            },
+            "areaCode": "Area Code",
+            "freezeFrameNumber": "Freeze Frame Number",
+            "memo": "Memo",
+            "status": "Status",
+            "equipmentCode": "Equipment Code",
+            "equipment": "Equipment"
+        }
+    }
+}

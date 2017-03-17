@@ -11,7 +11,11 @@
     <include file="classpath:config/liquibase/changelog/20170316050525_added_entity_ProjectRelate.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170316061001_added_entity_EquipmentGroup.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170316065053_added_entity_EquipmentModle.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317021528_added_entity_Equipment.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317023912_added_entity_Area.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20170316050525_added_entity_constraints_ProjectRelate.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317021528_added_entity_constraints_Equipment.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317023912_added_entity_constraints_Area.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

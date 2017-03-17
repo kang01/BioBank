@@ -1,0 +1,33 @@
+{
+    "bioBankApp": {
+        "equipment" : {
+            "home": {
+                "title": "Equipment",
+                "createLabel": "Create a new Equipment",
+                "createOrEditLabel": "Create or edit a Equipment"
+            },
+            "created": "A new Equipment is created with identifier {{ param }}",
+            "updated": "A Equipment is updated with identifier {{ param }}",
+            "deleted": "A Equipment is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Equipment {{ id }}?"
+            },
+            "detail": {
+                "title": "Equipment"
+            },
+            "equipmentCode": "Equipment Code",
+            "temperature": "Temperature",
+            "equipmentAddress": "Equipment Address",
+            "ampoulesMax": "Ampoules Max",
+            "ampoulesMin": "Ampoules Min",
+            "label1": "Label 1",
+            "label2": "Label 2",
+            "label4": "Label 4",
+            "memo": "Memo",
+            "status": "Status",
+            "label3": "Label 3",
+            "equipmentGroup": "Equipment Group",
+            "equipmentModle": "Equipment Modle"
+        }
+    }
+}

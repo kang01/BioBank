@@ -1,0 +1,29 @@
+{
+    "bioBankApp": {
+        "equipmentModle" : {
+            "home": {
+                "title": "Equipment Modles",
+                "createLabel": "Create a new Equipment Modle",
+                "createOrEditLabel": "Create or edit a Equipment Modle"
+            },
+            "created": "A new Equipment Modle is created with identifier {{ param }}",
+            "updated": "A Equipment Modle is updated with identifier {{ param }}",
+            "deleted": "A Equipment Modle is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Equipment Modle {{ id }}?"
+            },
+            "detail": {
+                "title": "Equipment Modle"
+            },
+            "equipmentModelCode": "Equipment Model Code",
+            "equipmentModelName": "Equipment Model Name",
+            "equipmentType": "Equipment Type",
+            "areaNumber": "Area Number",
+            "shelveNumberInArea": "Shelve Number In Area",
+            "memo": "Memo",
+            "status": "Status",
+            "temperatureMax": "Temperature Max",
+            "temperatureMin": "Temperature Min"
+        }
+    }
+}

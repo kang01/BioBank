@@ -1,0 +1,43 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.equipmentGroup.detail.title">Equipment Group</span> {{vm.equipmentGroup.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.equipmentGroup.equipmentGroupName">Equipment Group Name</span></dt>
+        <dd>
+            <span>{{vm.equipmentGroup.equipmentGroupName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentGroup.equipmentGroupManagerId">Equipment Group Manager Id</span></dt>
+        <dd>
+            <span>{{vm.equipmentGroup.equipmentGroupManagerId}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentGroup.equipmentManagerName">Equipment Manager Name</span></dt>
+        <dd>
+            <span>{{vm.equipmentGroup.equipmentManagerName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentGroup.equipmentGroupAddress">Equipment Group Address</span></dt>
+        <dd>
+            <span>{{vm.equipmentGroup.equipmentGroupAddress}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentGroup.status">Status</span></dt>
+        <dd>
+            <span>{{vm.equipmentGroup.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentGroup.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.equipmentGroup.memo}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="equipment-group-detail.edit({id:vm.equipmentGroup.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

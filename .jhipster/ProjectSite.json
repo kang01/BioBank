@@ -1,0 +1,54 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "projectRelate",
+            "otherEntityName": "projectRelate",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "projectSite"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "projectSiteCode",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "100"
+        },
+        {
+            "fieldName": "projectSiteName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "255"
+        },
+        {
+            "fieldName": "memo",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "1024"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "20"
+        }
+    ],
+    "changelogDate": "20170316030411",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "project_site",
+    "pagination": "pager",
+    "enableEntityAudit": true
+}

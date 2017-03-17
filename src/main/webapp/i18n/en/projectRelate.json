@@ -1,0 +1,24 @@
+{
+    "bioBankApp": {
+        "projectRelate" : {
+            "home": {
+                "title": "Project Relates",
+                "createLabel": "Create a new Project Relate",
+                "createOrEditLabel": "Create or edit a Project Relate"
+            },
+            "created": "A new Project Relate is created with identifier {{ param }}",
+            "updated": "A Project Relate is updated with identifier {{ param }}",
+            "deleted": "A Project Relate is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Project Relate {{ id }}?"
+            },
+            "detail": {
+                "title": "Project Relate"
+            },
+            "memo": "Memo",
+            "status": "Status",
+            "project": "Project",
+            "projectSite": "Project Site"
+        }
+    }
+}

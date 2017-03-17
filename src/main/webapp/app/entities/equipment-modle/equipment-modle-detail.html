@@ -1,0 +1,55 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.equipmentModle.detail.title">Equipment Modle</span> {{vm.equipmentModle.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.equipmentModle.equipmentModelCode">Equipment Model Code</span></dt>
+        <dd>
+            <span>{{vm.equipmentModle.equipmentModelCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentModle.equipmentModelName">Equipment Model Name</span></dt>
+        <dd>
+            <span>{{vm.equipmentModle.equipmentModelName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentModle.equipmentType">Equipment Type</span></dt>
+        <dd>
+            <span>{{vm.equipmentModle.equipmentType}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentModle.areaNumber">Area Number</span></dt>
+        <dd>
+            <span>{{vm.equipmentModle.areaNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentModle.shelveNumberInArea">Shelve Number In Area</span></dt>
+        <dd>
+            <span>{{vm.equipmentModle.shelveNumberInArea}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentModle.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.equipmentModle.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentModle.status">Status</span></dt>
+        <dd>
+            <span>{{vm.equipmentModle.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentModle.temperatureMax">Temperature Max</span></dt>
+        <dd>
+            <span>{{vm.equipmentModle.temperatureMax}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipmentModle.temperatureMin">Temperature Min</span></dt>
+        <dd>
+            <span>{{vm.equipmentModle.temperatureMin}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="equipment-modle-detail.edit({id:vm.equipmentModle.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,26 @@
+{
+    "bioBankApp": {
+        "equipmentGroup" : {
+            "home": {
+                "title": "Equipment Groups",
+                "createLabel": "Create a new Equipment Group",
+                "createOrEditLabel": "Create or edit a Equipment Group"
+            },
+            "created": "A new Equipment Group is created with identifier {{ param }}",
+            "updated": "A Equipment Group is updated with identifier {{ param }}",
+            "deleted": "A Equipment Group is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Equipment Group {{ id }}?"
+            },
+            "detail": {
+                "title": "Equipment Group"
+            },
+            "equipmentGroupName": "Equipment Group Name",
+            "equipmentGroupManagerId": "Equipment Group Manager Id",
+            "equipmentManagerName": "Equipment Manager Name",
+            "equipmentGroupAddress": "Equipment Group Address",
+            "status": "Status",
+            "memo": "Memo"
+        }
+    }
+}

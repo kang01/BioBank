@@ -42,6 +42,13 @@ public class CacheConfiguration {
             cm.createCache(org.fwoxford.domain.User.class.getName() + ".authorities", jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.PersistentToken.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.User.class.getName() + ".persistentTokens", jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.Project.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.Project.class.getName() + ".projectRelates", jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.ProjectSite.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.ProjectSite.class.getName() + ".projectRelates", jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.ProjectRelate.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.EquipmentGroup.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.EquipmentModle.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

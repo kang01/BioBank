@@ -1,0 +1,25 @@
+{
+    "bioBankApp": {
+        "projectSite" : {
+            "home": {
+                "title": "Project Sites",
+                "createLabel": "Create a new Project Site",
+                "createOrEditLabel": "Create or edit a Project Site"
+            },
+            "created": "A new Project Site is created with identifier {{ param }}",
+            "updated": "A Project Site is updated with identifier {{ param }}",
+            "deleted": "A Project Site is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Project Site {{ id }}?"
+            },
+            "detail": {
+                "title": "Project Site"
+            },
+            "projectSiteCode": "Project Site Code",
+            "projectSiteName": "Project Site Name",
+            "memo": "Memo",
+            "status": "Status",
+            "projectRelate": "Project Relate"
+        }
+    }
+}

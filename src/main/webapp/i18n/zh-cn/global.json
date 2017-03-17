@@ -21,6 +21,7 @@
                 "frozenTubeType": "Frozen Tube Type",
                 "frozenBox": "Frozen Box",
                 "tranship": "Tranship",
+                "relations": "Relations",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
                 "transportrecord":"转运记录"
             },

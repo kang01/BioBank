@@ -1,0 +1,35 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.projectSite.detail.title">Project Site</span> {{vm.projectSite.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.projectSite.projectSiteCode">Project Site Code</span></dt>
+        <dd>
+            <span>{{vm.projectSite.projectSiteCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.projectSite.projectSiteName">Project Site Name</span></dt>
+        <dd>
+            <span>{{vm.projectSite.projectSiteName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.projectSite.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.projectSite.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.projectSite.status">Status</span></dt>
+        <dd>
+            <span>{{vm.projectSite.status}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="project-site-detail.edit({id:vm.projectSite.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,35 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.projectRelate.detail.title">Project Relate</span> {{vm.projectRelate.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.projectRelate.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.projectRelate.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.projectRelate.status">Status</span></dt>
+        <dd>
+            <span>{{vm.projectRelate.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.projectRelate.project">Project</span></dt>
+        <dd>
+            <a ui-sref="project-detail({id:vm.projectRelate.projectId})">{{vm.projectRelate.projectProjectCode}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.projectRelate.projectSite">Project Site</span></dt>
+        <dd>
+            <a ui-sref="project-site-detail({id:vm.projectRelate.projectSiteId})">{{vm.projectRelate.projectSiteProjectSiteCode}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="project-relate-detail.edit({id:vm.projectRelate.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

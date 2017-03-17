@@ -1,0 +1,76 @@
+<div>
+    <h2 data-translate="bioBankApp.equipmentModle.home.title">Equipment Modles</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="equipment-modle.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.equipmentModle.home.createLabel">
+                        Create new Equipment Modle
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentModelCode"><span data-translate="bioBankApp.equipmentModle.equipmentModelCode">Equipment Model Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentModelName"><span data-translate="bioBankApp.equipmentModle.equipmentModelName">Equipment Model Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentType"><span data-translate="bioBankApp.equipmentModle.equipmentType">Equipment Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="areaNumber"><span data-translate="bioBankApp.equipmentModle.areaNumber">Area Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="shelveNumberInArea"><span data-translate="bioBankApp.equipmentModle.shelveNumberInArea">Shelve Number In Area</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.equipmentModle.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.equipmentModle.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="temperatureMax"><span data-translate="bioBankApp.equipmentModle.temperatureMax">Temperature Max</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="temperatureMin"><span data-translate="bioBankApp.equipmentModle.temperatureMin">Temperature Min</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="equipmentModle in vm.equipmentModles track by equipmentModle.id">
+                    <td><a ui-sref="equipment-modle-detail({id:equipmentModle.id})">{{equipmentModle.id}}</a></td>
+                    <td>{{equipmentModle.equipmentModelCode}}</td>
+                    <td>{{equipmentModle.equipmentModelName}}</td>
+                    <td>{{equipmentModle.equipmentType}}</td>
+                    <td>{{equipmentModle.areaNumber}}</td>
+                    <td>{{equipmentModle.shelveNumberInArea}}</td>
+                    <td>{{equipmentModle.memo}}</td>
+                    <td>{{equipmentModle.status}}</td>
+                    <td>{{equipmentModle.temperatureMax}}</td>
+                    <td>{{equipmentModle.temperatureMin}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="equipment-modle-detail({id:equipmentModle.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="equipment-modle.edit({id:equipmentModle.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="equipment-modle.delete({id:equipmentModle.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

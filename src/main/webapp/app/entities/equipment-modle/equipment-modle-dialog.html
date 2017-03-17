@@ -1,0 +1,168 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myEquipmentModleLabel" data-translate="bioBankApp.equipmentModle.home.createOrEditLabel">Create or edit a Equipment Modle</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.equipmentModle.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.equipmentModle.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipmentModle.equipmentModelCode" for="field_equipmentModelCode">Equipment Model Code</label>
+            <input type="text" class="form-control" name="equipmentModelCode" id="field_equipmentModelCode"
+                    ng-model="vm.equipmentModle.equipmentModelCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.equipmentModelCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.equipmentModelCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.equipmentModelCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipmentModle.equipmentModelName" for="field_equipmentModelName">Equipment Model Name</label>
+            <input type="text" class="form-control" name="equipmentModelName" id="field_equipmentModelName"
+                    ng-model="vm.equipmentModle.equipmentModelName"
+                    required ng-maxlength="255"/>
+            <div ng-show="editForm.equipmentModelName.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.equipmentModelName.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.equipmentModelName.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipmentModle.equipmentType" for="field_equipmentType">Equipment Type</label>
+            <input type="text" class="form-control" name="equipmentType" id="field_equipmentType"
+                    ng-model="vm.equipmentModle.equipmentType"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.equipmentType.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.equipmentType.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.equipmentType.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipmentModle.areaNumber" for="field_areaNumber">Area Number</label>
+            <input type="number" class="form-control" name="areaNumber" id="field_areaNumber"
+                    ng-model="vm.equipmentModle.areaNumber"
+                    required max="100"/>
+            <div ng-show="editForm.areaNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.areaNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.areaNumber.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.areaNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipmentModle.shelveNumberInArea" for="field_shelveNumberInArea">Shelve Number In Area</label>
+            <input type="number" class="form-control" name="shelveNumberInArea" id="field_shelveNumberInArea"
+                    ng-model="vm.equipmentModle.shelveNumberInArea"
+                    required max="100"/>
+            <div ng-show="editForm.shelveNumberInArea.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.shelveNumberInArea.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.shelveNumberInArea.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.shelveNumberInArea.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipmentModle.memo" for="field_memo">Memo</label>
+            <input type="text" class="form-control" name="memo" id="field_memo"
+                    ng-model="vm.equipmentModle.memo"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipmentModle.status" for="field_status">Status</label>
+            <input type="text" class="form-control" name="status" id="field_status"
+                    ng-model="vm.equipmentModle.status"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.status.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.status.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.status.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipmentModle.temperatureMax" for="field_temperatureMax">Temperature Max</label>
+            <input type="number" class="form-control" name="temperatureMax" id="field_temperatureMax"
+                    ng-model="vm.equipmentModle.temperatureMax"
+                    max="20"/>
+            <div ng-show="editForm.temperatureMax.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.temperatureMax.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.temperatureMax.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.equipmentModle.temperatureMin" for="field_temperatureMin">Temperature Min</label>
+            <input type="number" class="form-control" name="temperatureMin" id="field_temperatureMin"
+                    ng-model="vm.equipmentModle.temperatureMin"
+                    max="20"/>
+            <div ng-show="editForm.temperatureMin.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.temperatureMin.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.temperatureMin.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

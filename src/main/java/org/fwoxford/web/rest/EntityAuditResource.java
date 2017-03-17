@@ -6,6 +6,7 @@ import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.security.AuthoritiesConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.annotation.Secured;
 import com.codahale.metrics.annotation.Timed;
 
-import javax.inject.Inject;
+//import javax.inject.Inject;
 import java.net.URISyntaxException;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -35,7 +36,8 @@ public class EntityAuditResource {
 
     private final Logger log = LoggerFactory.getLogger(EntityAuditResource.class);
 
-    @Inject
+//    @Inject
+    @Autowired
     private EntityAuditEventRepository entityAuditEventRepository;
 
     /**

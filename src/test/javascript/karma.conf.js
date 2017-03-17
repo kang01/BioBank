@@ -65,7 +65,10 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/angular-datatables/dist/plugins/buttons/angular-datatables.buttons.js',
             'src/main/webapp/bower_components/angular-datatables/dist/plugins/select/angular-datatables.select.js',
             'src/main/webapp/bower_components/handsontable/dist/handsontable.js',
+<<<<<<< Updated upstream
             'src/main/webapp/bower_components/jquery-datatables-columnfilter/jquery.dataTables.columnFilter.js',
+=======
+>>>>>>> Stashed changes
             'src/main/webapp/bower_components/angular-object-diff/dist/angular-object-diff.js',
             'src/main/webapp/bower_components/angular-mocks/angular-mocks.js',
             'src/main/webapp/bower_components/ngHandsontable/dist/ngHandsontable.js',

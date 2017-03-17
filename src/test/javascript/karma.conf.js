@@ -31,6 +31,9 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/numbro/numbro.js',
             'src/main/webapp/bower_components/pikaday/pikaday.js',
             'src/main/webapp/bower_components/zeroclipboard/dist/ZeroClipboard.js',
+            'src/main/webapp/bower_components/datatables/media/js/jquery.dataTables.js',
+            'src/main/webapp/bower_components/select2/dist/js/select2.js',
+            'src/main/webapp/bower_components/datatables-light-columnfilter/dist/dataTables.lightColumnFilter.js',
             'src/main/webapp/bower_components/angular/angular.js',
             'src/main/webapp/bower_components/angular-aria/angular-aria.js',
             'src/main/webapp/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
@@ -62,6 +65,8 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/angular-datatables/dist/plugins/buttons/angular-datatables.buttons.js',
             'src/main/webapp/bower_components/angular-datatables/dist/plugins/select/angular-datatables.select.js',
             'src/main/webapp/bower_components/handsontable/dist/handsontable.js',
+            'src/main/webapp/bower_components/jquery-datatables-columnfilter/jquery.dataTables.columnFilter.js',
+            'src/main/webapp/bower_components/angular-object-diff/dist/angular-object-diff.js',
             'src/main/webapp/bower_components/angular-mocks/angular-mocks.js',
             'src/main/webapp/bower_components/ngHandsontable/dist/ngHandsontable.js',
             // endbower

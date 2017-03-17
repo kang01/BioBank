@@ -25,7 +25,7 @@ public class Area extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Size(max = 100)
-    @Column(name = "area_code", length = 100, nullable = false)
+    @Column(name = "area_code", length = 100, nullable = false , unique = true)
     private String areaCode;
 
     @NotNull

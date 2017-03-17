@@ -22,7 +22,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="area_code" type="varchar(100)">
-                <constraints nullable="false" />
+                <constraints nullable="false" unique = "true"/>
             </column>
 
             <column name="freeze_frame_number" type="integer">

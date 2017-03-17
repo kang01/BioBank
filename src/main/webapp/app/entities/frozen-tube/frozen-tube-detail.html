@@ -1,0 +1,95 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.frozenTube.detail.title">Frozen Tube</span> {{vm.frozenTube.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.frozenTube.projectCode">Project Code</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.projectCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.frozenTubeCode">Frozen Tube Code</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.frozenTubeCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.sampleTempCode">Sample Temp Code</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.sampleTempCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.sampleCode">Sample Code</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.sampleCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.frozenTubeTypeCode">Frozen Tube Type Code</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.frozenTubeTypeCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.frozenTubeTypeName">Frozen Tube Type Name</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.frozenTubeTypeName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.sampleTypeCode">Sample Type Code</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.sampleTypeCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.sampleTypeName">Sample Type Name</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.sampleTypeName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.sampleUsedTimesMost">Sample Used Times Most</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.sampleUsedTimesMost}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.sampleUsedTimes">Sample Used Times</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.sampleUsedTimes}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.frozenTubeVolumns">Frozen Tube Volumns</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.frozenTubeVolumns}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.frozenTubeVolumnsUnit">Frozen Tube Volumns Unit</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.frozenTubeVolumnsUnit}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.tubeRows">Tube Rows</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.tubeRows}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.tubeColumns">Tube Columns</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.tubeColumns}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.errorType">Error Type</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.errorType}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.status">Status</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.frozenTubeType">Frozen Tube Type</span></dt>
+        <dd>
+            <a ui-sref="frozen-tube-type-detail({id:vm.frozenTube.frozenTubeTypeId})">{{vm.frozenTube.frozenTubeTypeId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.sampleType">Sample Type</span></dt>
+        <dd>
+            <a ui-sref="sample-type-detail({id:vm.frozenTube.sampleTypeId})">{{vm.frozenTube.sampleTypeId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="frozen-tube-detail.edit({id:vm.frozenTube.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

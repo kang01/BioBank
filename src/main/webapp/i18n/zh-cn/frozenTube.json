@@ -1,0 +1,39 @@
+{
+    "bioBankApp": {
+        "frozenTube" : {
+            "home": {
+                "title": "Frozen Tubes",
+                "createLabel": "Create a new Frozen Tube",
+                "createOrEditLabel": "Create or edit a Frozen Tube"
+            },
+            "created": "A new Frozen Tube is created with identifier {{ param }}",
+            "updated": "A Frozen Tube is updated with identifier {{ param }}",
+            "deleted": "A Frozen Tube is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Frozen Tube {{ id }}?"
+            },
+            "detail": {
+                "title": "Frozen Tube"
+            },
+            "projectCode": "Project Code",
+            "frozenTubeCode": "Frozen Tube Code",
+            "sampleTempCode": "Sample Temp Code",
+            "sampleCode": "Sample Code",
+            "frozenTubeTypeCode": "Frozen Tube Type Code",
+            "frozenTubeTypeName": "Frozen Tube Type Name",
+            "sampleTypeCode": "Sample Type Code",
+            "sampleTypeName": "Sample Type Name",
+            "sampleUsedTimesMost": "Sample Used Times Most",
+            "sampleUsedTimes": "Sample Used Times",
+            "frozenTubeVolumns": "Frozen Tube Volumns",
+            "frozenTubeVolumnsUnit": "Frozen Tube Volumns Unit",
+            "tubeRows": "Tube Rows",
+            "tubeColumns": "Tube Columns",
+            "memo": "Memo",
+            "errorType": "Error Type",
+            "status": "Status",
+            "frozenTubeType": "Frozen Tube Type",
+            "sampleType": "Sample Type"
+        }
+    }
+}

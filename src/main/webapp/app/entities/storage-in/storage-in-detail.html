@@ -1,0 +1,91 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.storageIn.detail.title">Storage In</span> {{vm.storageIn.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.storageIn.projectCode">Project Code</span></dt>
+        <dd>
+            <span>{{vm.storageIn.projectCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.project_site_code">Project Site Code</span></dt>
+        <dd>
+            <span>{{vm.storageIn.project_site_code}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.receiveDate">Receive Date</span></dt>
+        <dd>
+            <span>{{vm.storageIn.receiveDate | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.receiveId">Receive Id</span></dt>
+        <dd>
+            <span>{{vm.storageIn.receiveId}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.receiveName">Receive Name</span></dt>
+        <dd>
+            <span>{{vm.storageIn.receiveName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.storageInType">Storage In Type</span></dt>
+        <dd>
+            <span>{{vm.storageIn.storageInType}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.storageInPersonId1">Storage In Person Id 1</span></dt>
+        <dd>
+            <span>{{vm.storageIn.storageInPersonId1}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.storageInPersonName1">Storage In Person Name 1</span></dt>
+        <dd>
+            <span>{{vm.storageIn.storageInPersonName1}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.storageInPersonId2">Storage In Person Id 2</span></dt>
+        <dd>
+            <span>{{vm.storageIn.storageInPersonId2}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.storangeInPersonName2">Storange In Person Name 2</span></dt>
+        <dd>
+            <span>{{vm.storageIn.storangeInPersonName2}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.storageInDate">Storage In Date</span></dt>
+        <dd>
+            <span>{{vm.storageIn.storageInDate | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.sampleNumber">Sample Number</span></dt>
+        <dd>
+            <span>{{vm.storageIn.sampleNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.signId">Sign Id</span></dt>
+        <dd>
+            <span>{{vm.storageIn.signId}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.signName">Sign Name</span></dt>
+        <dd>
+            <span>{{vm.storageIn.signName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.signDate">Sign Date</span></dt>
+        <dd>
+            <span>{{vm.storageIn.signDate | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.storageIn.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.status">Status</span></dt>
+        <dd>
+            <span>{{vm.storageIn.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.tranship">Tranship</span></dt>
+        <dd>
+            <a ui-sref="tranship-detail({id:vm.storageIn.transhipId})">{{vm.storageIn.transhipId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="storage-in-detail.edit({id:vm.storageIn.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

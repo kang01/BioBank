@@ -1,0 +1,76 @@
+<div>
+    <h2 data-translate="bioBankApp.frozenTubeType.home.title">Frozen Tube Types</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="frozen-tube-type.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.frozenTubeType.home.createLabel">
+                        Create new Frozen Tube Type
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenTubeTypeCode"><span data-translate="bioBankApp.frozenTubeType.frozenTubeTypeCode">Frozen Tube Type Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenTubeTypeName"><span data-translate="bioBankApp.frozenTubeType.frozenTubeTypeName">Frozen Tube Type Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="sampleUsedTimesMost"><span data-translate="bioBankApp.frozenTubeType.sampleUsedTimesMost">Sample Used Times Most</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenTubeVolumn"><span data-translate="bioBankApp.frozenTubeType.frozenTubeVolumn">Frozen Tube Volumn</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenTubeVolumnUnit"><span data-translate="bioBankApp.frozenTubeType.frozenTubeVolumnUnit">Frozen Tube Volumn Unit</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frontColor"><span data-translate="bioBankApp.frozenTubeType.frontColor">Front Color</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="backColor"><span data-translate="bioBankApp.frozenTubeType.backColor">Back Color</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.frozenTubeType.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.frozenTubeType.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="frozenTubeType in vm.frozenTubeTypes track by frozenTubeType.id">
+                    <td><a ui-sref="frozen-tube-type-detail({id:frozenTubeType.id})">{{frozenTubeType.id}}</a></td>
+                    <td>{{frozenTubeType.frozenTubeTypeCode}}</td>
+                    <td>{{frozenTubeType.frozenTubeTypeName}}</td>
+                    <td>{{frozenTubeType.sampleUsedTimesMost}}</td>
+                    <td>{{frozenTubeType.frozenTubeVolumn}}</td>
+                    <td>{{frozenTubeType.frozenTubeVolumnUnit}}</td>
+                    <td>{{frozenTubeType.frontColor}}</td>
+                    <td>{{frozenTubeType.backColor}}</td>
+                    <td>{{frozenTubeType.memo}}</td>
+                    <td>{{frozenTubeType.status}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="frozen-tube-type-detail({id:frozenTubeType.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="frozen-tube-type.edit({id:frozenTubeType.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="frozen-tube-type.delete({id:frozenTubeType.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

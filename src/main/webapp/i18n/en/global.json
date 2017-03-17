@@ -16,6 +16,9 @@
                 "area": "Area",
                 "supportRackType": "Support Rack Type",
                 "supportRack": "Support Rack",
+                "sampleType": "Sample Type",
+                "frozenBoxType": "Frozen Box Type",
+                "frozenTubeType": "Frozen Tube Type",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

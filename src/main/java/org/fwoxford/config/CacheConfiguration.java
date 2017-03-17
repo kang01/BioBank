@@ -53,6 +53,9 @@ public class CacheConfiguration {
             cm.createCache(org.fwoxford.domain.Area.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.SupportRackType.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.SupportRack.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.SampleType.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.FrozenBoxType.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.FrozenTubeType.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

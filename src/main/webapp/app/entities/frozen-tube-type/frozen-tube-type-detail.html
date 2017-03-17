@@ -1,0 +1,55 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.frozenTubeType.detail.title">Frozen Tube Type</span> {{vm.frozenTubeType.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.frozenTubeType.frozenTubeTypeCode">Frozen Tube Type Code</span></dt>
+        <dd>
+            <span>{{vm.frozenTubeType.frozenTubeTypeCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTubeType.frozenTubeTypeName">Frozen Tube Type Name</span></dt>
+        <dd>
+            <span>{{vm.frozenTubeType.frozenTubeTypeName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTubeType.sampleUsedTimesMost">Sample Used Times Most</span></dt>
+        <dd>
+            <span>{{vm.frozenTubeType.sampleUsedTimesMost}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTubeType.frozenTubeVolumn">Frozen Tube Volumn</span></dt>
+        <dd>
+            <span>{{vm.frozenTubeType.frozenTubeVolumn}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTubeType.frozenTubeVolumnUnit">Frozen Tube Volumn Unit</span></dt>
+        <dd>
+            <span>{{vm.frozenTubeType.frozenTubeVolumnUnit}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTubeType.frontColor">Front Color</span></dt>
+        <dd>
+            <span>{{vm.frozenTubeType.frontColor}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTubeType.backColor">Back Color</span></dt>
+        <dd>
+            <span>{{vm.frozenTubeType.backColor}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTubeType.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.frozenTubeType.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTubeType.status">Status</span></dt>
+        <dd>
+            <span>{{vm.frozenTubeType.status}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="frozen-tube-type-detail.edit({id:vm.frozenTubeType.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

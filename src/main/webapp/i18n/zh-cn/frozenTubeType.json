@@ -1,0 +1,29 @@
+{
+    "bioBankApp": {
+        "frozenTubeType" : {
+            "home": {
+                "title": "Frozen Tube Types",
+                "createLabel": "Create a new Frozen Tube Type",
+                "createOrEditLabel": "Create or edit a Frozen Tube Type"
+            },
+            "created": "A new Frozen Tube Type is created with identifier {{ param }}",
+            "updated": "A Frozen Tube Type is updated with identifier {{ param }}",
+            "deleted": "A Frozen Tube Type is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Frozen Tube Type {{ id }}?"
+            },
+            "detail": {
+                "title": "Frozen Tube Type"
+            },
+            "frozenTubeTypeCode": "Frozen Tube Type Code",
+            "frozenTubeTypeName": "Frozen Tube Type Name",
+            "sampleUsedTimesMost": "Sample Used Times Most",
+            "frozenTubeVolumn": "Frozen Tube Volumn",
+            "frozenTubeVolumnUnit": "Frozen Tube Volumn Unit",
+            "frontColor": "Front Color",
+            "backColor": "Back Color",
+            "memo": "Memo",
+            "status": "Status"
+        }
+    }
+}

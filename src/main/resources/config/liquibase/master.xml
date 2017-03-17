@@ -15,6 +15,9 @@
     <include file="classpath:config/liquibase/changelog/20170317023912_added_entity_Area.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317045725_added_entity_SupportRackType.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317050339_added_entity_SupportRack.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317051303_added_entity_SampleType.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317051958_added_entity_FrozenBoxType.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317054842_added_entity_FrozenTubeType.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20170316050525_added_entity_constraints_ProjectRelate.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317021528_added_entity_constraints_Equipment.xml" relativeToChangelogFile="false"/>

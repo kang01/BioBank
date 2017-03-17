@@ -1,0 +1,43 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.frozenBoxType.detail.title">Frozen Box Type</span> {{vm.frozenBoxType.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.frozenBoxType.frozenBoxTypeCode">Frozen Box Type Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxType.frozenBoxTypeCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxType.frozenBoxTypeName">Frozen Box Type Name</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxType.frozenBoxTypeName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxType.frozenBoxTypeRows">Frozen Box Type Rows</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxType.frozenBoxTypeRows}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxType.frozenBoxTypeColumns">Frozen Box Type Columns</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxType.frozenBoxTypeColumns}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxType.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxType.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxType.status">Status</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxType.status}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="frozen-box-type-detail.edit({id:vm.frozenBoxType.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

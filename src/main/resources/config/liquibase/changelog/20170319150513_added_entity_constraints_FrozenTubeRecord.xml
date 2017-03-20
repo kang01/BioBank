@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity FrozenTubeRecord.
+    -->
+    <changeSet id="20170319150513-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="sample_type_id"
+                                 baseTableName="tube_record"
+                                 constraintName="frozen_tube_re_sample_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="tube_type_id"
+                                 baseTableName="tube_record"
+                                 constraintName="frozen_tube_re_tube_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_tube_type"/>
+
+    </changeSet>
+</databaseChangeLog>

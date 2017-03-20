@@ -1,0 +1,55 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.storageInBox.detail.title">Storage In Box</span> {{vm.storageInBox.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.storageInBox.equipmentCode">Equipment Code</span></dt>
+        <dd>
+            <span>{{vm.storageInBox.equipmentCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageInBox.areaCode">Area Code</span></dt>
+        <dd>
+            <span>{{vm.storageInBox.areaCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageInBox.supportRackCode">Support Rack Code</span></dt>
+        <dd>
+            <span>{{vm.storageInBox.supportRackCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageInBox.rowsInShelf">Rows In Shelf</span></dt>
+        <dd>
+            <span>{{vm.storageInBox.rowsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageInBox.columnsInShelf">Columns In Shelf</span></dt>
+        <dd>
+            <span>{{vm.storageInBox.columnsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageInBox.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.storageInBox.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageInBox.status">Status</span></dt>
+        <dd>
+            <span>{{vm.storageInBox.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageInBox.frozenBoxCode">Frozen Box Code</span></dt>
+        <dd>
+            <span>{{vm.storageInBox.frozenBoxCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageInBox.storageIn">Storage In</span></dt>
+        <dd>
+            <a ui-sref="storage-in-detail({id:vm.storageInBox.storageInId})">{{vm.storageInBox.storageInId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="storage-in-box-detail.edit({id:vm.storageInBox.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

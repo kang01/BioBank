@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.repository.EquipmentRepository;
 import org.fwoxford.service.AreaService;
 import org.fwoxford.domain.Area;
 import org.fwoxford.repository.AreaRepository;
@@ -24,14 +25,17 @@ import java.util.stream.Collectors;
 public class AreaServiceImpl implements AreaService{
 
     private final Logger log = LoggerFactory.getLogger(AreaServiceImpl.class);
-    
+
     private final AreaRepository areaRepository;
+
+    private final EquipmentRepository equipmentRepository;
 
     private final AreaMapper areaMapper;
 
-    public AreaServiceImpl(AreaRepository areaRepository, AreaMapper areaMapper) {
+    public AreaServiceImpl(AreaRepository areaRepository, AreaMapper areaMapper, EquipmentRepository equipmentRepository) {
         this.areaRepository = areaRepository;
         this.areaMapper = areaMapper;
+        this.equipmentRepository = equipmentRepository;
     }
 
     /**
@@ -43,15 +47,21 @@ public class AreaServiceImpl implements AreaService{
     @Override
     public AreaDTO save(AreaDTO areaDTO) {
         log.debug("Request to save Area : {}", areaDTO);
-        Area area = areaMapper.areaDTOToArea(areaDTO);
+        Area area = toEntity(areaDTO);
         area = areaRepository.save(area);
         AreaDTO result = areaMapper.areaToAreaDTO(area);
         return result;
     }
 
+    private Area toEntity(AreaDTO dto){
+        Area area = areaMapper.areaDTOToArea(dto);
+        area.equipment(equipmentRepository.findOneByEquipmentCode(dto.getEquipmentCode()));
+
+        return area;
+    }
     /**
      *  Get all the areas.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */

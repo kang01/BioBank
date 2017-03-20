@@ -34,12 +34,12 @@ public class FrozenTubeType extends AbstractAuditingEntity implements Serializab
     private String frozenTubeTypeName;
 
     @NotNull
-    @Max(value = 20)
+    @Max(value = 100)
     @Column(name = "sample_used_times_most", nullable = false)
     private Integer sampleUsedTimesMost;
 
     @NotNull
-    @Max(value = 20)
+    @Max(value = 400)
     @Column(name = "frozen_tube_volumn", nullable = false)
     private Integer frozenTubeVolumn;
 

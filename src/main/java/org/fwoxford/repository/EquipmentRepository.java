@@ -11,5 +11,5 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface EquipmentRepository extends JpaRepository<Equipment,Long> {
-
+    Equipment findOneByEquipmentCode(String code);
 }

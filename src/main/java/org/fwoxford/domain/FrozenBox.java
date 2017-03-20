@@ -89,7 +89,7 @@ public class FrozenBox implements Serializable {
     private String sampleTypeName;
 
     @NotNull
-    @Max(value = 20)
+    @Max(value = 5000)
     @Column(name = "sample_number", nullable = false)
     private Integer sampleNumber;
 

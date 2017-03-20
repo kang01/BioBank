@@ -78,7 +78,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
     private LocalDate storageInDate;
 
     @NotNull
-    @Max(value = 100)
+    @Max(value = 5000)
     @Column(name = "sample_number", nullable = false)
     private Integer sampleNumber;
 

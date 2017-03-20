@@ -29,7 +29,7 @@ public class Equipment extends AbstractAuditingEntity implements Serializable {
     private String equipmentCode;
 
     @NotNull
-    @Max(value = 20)
+    @Max(value = 5000)
     @Column(name = "temperature", nullable = false)
     private Integer temperature;
 
@@ -39,12 +39,12 @@ public class Equipment extends AbstractAuditingEntity implements Serializable {
     private String equipmentAddress;
 
     @NotNull
-    @Max(value = 20)
+    @Max(value = 5000)
     @Column(name = "ampoules_max", nullable = false)
     private Integer ampoulesMax;
 
     @NotNull
-    @Max(value = 20)
+    @Max(value = 5000)
     @Column(name = "ampoules_min", nullable = false)
     private Integer ampoulesMin;
 

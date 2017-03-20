@@ -56,11 +56,11 @@ public class EquipmentModle extends AbstractAuditingEntity implements Serializab
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
-    @Max(value = 20)
+    @Max(value = 5000)
     @Column(name = "temperature_max")
     private Integer temperatureMax;
 
-    @Max(value = 20)
+    @Max(value = 5000)
     @Column(name = "temperature_min")
     private Integer temperatureMin;
 

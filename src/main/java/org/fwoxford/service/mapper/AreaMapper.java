@@ -16,7 +16,7 @@ public interface AreaMapper {
 
     List<AreaDTO> areasToAreaDTOs(List<Area> areas);
 
-    @Mapping(source = "equipmentCode", target = "equipment")
+    @Mapping(source = "equipmentCode", target = "equipment.equipmentCode")
     Area areaDTOToArea(AreaDTO areaDTO);
 
     List<Area> areaDTOsToAreas(List<AreaDTO> areaDTOs);

@@ -1,7 +1,9 @@
 package org.fwoxford.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -28,8 +30,21 @@ public class Area extends AbstractAuditingEntity implements Serializable {
     @Column(name = "area_code", length = 100, nullable = false , unique = true)
     private String areaCode;
 
+    public String getEquipmentCode() {
+        return equipmentCode;
+    }
+
+    public void setEquipmentCode(String equipmentCode) {
+        this.equipmentCode = equipmentCode;
+    }
+
     @NotNull
-    @Max(value = 100)
+    @Size(max = 100)
+    @Column(name = "equipment_code", length = 100, nullable = false, insertable=false, updatable=false)
+    private String equipmentCode;
+
+    @NotNull
+    @Max(value = 1000)
     @Column(name = "freeze_frame_number", nullable = false)
     private Integer freezeFrameNumber;
 
@@ -42,9 +57,9 @@ public class Area extends AbstractAuditingEntity implements Serializable {
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
-    @ManyToOne(optional = false)
-    @NotNull
-    @JoinColumn(name = "equipment_code")
+    @JsonIgnore
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "equipment_code" , nullable=false)
     private Equipment equipment;
 
     public Long getId() {
@@ -112,12 +127,13 @@ public class Area extends AbstractAuditingEntity implements Serializable {
     }
 
     public Area equipment(Equipment equipment) {
-        this.equipment = equipment;
+        this.setEquipment(equipment);
         return this;
     }
 
     public void setEquipment(Equipment equipment) {
         this.equipment = equipment;
+        this.equipmentCode = equipment.getEquipmentCode();
     }
 
     @Override
@@ -144,10 +160,12 @@ public class Area extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Area{" +
             "id=" + id +
-            ", areaCode='" + areaCode + "'" +
-            ", freezeFrameNumber='" + freezeFrameNumber + "'" +
-            ", memo='" + memo + "'" +
-            ", status='" + status + "'" +
+            ", areaCode='" + areaCode + '\'' +
+            ", equipmentCode='" + equipmentCode + '\'' +
+            ", freezeFrameNumber=" + freezeFrameNumber +
+            ", memo='" + memo + '\'' +
+            ", status='" + status + '\'' +
+            ", equipment=" + equipment +
             '}';
     }
 }

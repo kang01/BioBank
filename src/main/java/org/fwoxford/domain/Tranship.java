@@ -73,31 +73,31 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     private LocalDate receiveDate;
 
     @NotNull
-    @Max(value = 100)
+    @Max(value = 5000)
     @Column(name = "sample_number", nullable = false)
     private Integer sampleNumber;
 
     @NotNull
-    @Max(value = 20)
+    @Max(value = 100)
     @Column(name = "frozen_box_number", nullable = false)
     private Integer frozenBoxNumber;
 
     @NotNull
-    @Max(value = 20)
+    @Max(value = 100)
     @Column(name = "empty_tube_number", nullable = false)
     private Integer emptyTubeNumber;
 
     @NotNull
-    @Max(value = 20)
+    @Max(value = 100)
     @Column(name = "empty_hole_number", nullable = false)
     private Integer emptyHoleNumber;
 
-    @Max(value = 20)
+    @Max(value = 100)
     @Column(name = "sample_satisfaction")
     private Integer sampleSatisfaction;
 
     @NotNull
-    @Max(value = 20)
+    @Max(value = 100)
     @Column(name = "effective_sample_number", nullable = false)
     private Integer effectiveSampleNumber;
 

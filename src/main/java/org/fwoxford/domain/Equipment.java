@@ -75,10 +75,12 @@ public class Equipment extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
+    @JoinColumn(name = "equipment_group_id")
     private EquipmentGroup equipmentGroup;
 
     @ManyToOne(optional = false)
     @NotNull
+    @JoinColumn(name = "equipment_modle_id")
     private EquipmentModle equipmentModle;
 
     public Long getId() {

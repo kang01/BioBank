@@ -42,13 +42,9 @@ public class Area extends AbstractAuditingEntity implements Serializable {
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
-    @NotNull
-    @Size(max = 100)
-    @Column(name = "equipment_code", length = 100, nullable = false)
-    private String equipmentCode;
-
     @ManyToOne(optional = false)
     @NotNull
+    @JoinColumn(name = "equipment_code")
     private Equipment equipment;
 
     public Long getId() {
@@ -111,19 +107,6 @@ public class Area extends AbstractAuditingEntity implements Serializable {
         this.status = status;
     }
 
-    public String getEquipmentCode() {
-        return equipmentCode;
-    }
-
-    public Area equipmentCode(String equipmentCode) {
-        this.equipmentCode = equipmentCode;
-        return this;
-    }
-
-    public void setEquipmentCode(String equipmentCode) {
-        this.equipmentCode = equipmentCode;
-    }
-
     public Equipment getEquipment() {
         return equipment;
     }
@@ -165,7 +148,6 @@ public class Area extends AbstractAuditingEntity implements Serializable {
             ", freezeFrameNumber='" + freezeFrameNumber + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
-            ", equipmentCode='" + equipmentCode + "'" +
             '}';
     }
 }

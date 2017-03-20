@@ -109,10 +109,12 @@ public class FrozenBox implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
+    @JoinColumn(name = "frozen_box_type_id")
     private FrozenBoxType frozenBoxType;
 
     @ManyToOne(optional = false)
     @NotNull
+    @JoinColumn(name = "sample_type_id")
     private SampleType sampleType;
 
     public Long getId() {

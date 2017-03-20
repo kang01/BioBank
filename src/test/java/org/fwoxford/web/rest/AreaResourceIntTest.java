@@ -102,8 +102,7 @@ public class AreaResourceIntTest {
                 .areaCode(DEFAULT_AREA_CODE)
                 .freezeFrameNumber(DEFAULT_FREEZE_FRAME_NUMBER)
                 .memo(DEFAULT_MEMO)
-                .status(DEFAULT_STATUS)
-                .equipmentCode(DEFAULT_EQUIPMENT_CODE);
+                .status(DEFAULT_STATUS);
         // Add required entity
         Equipment equipment = EquipmentResourceIntTest.createEntity(em);
         em.persist(equipment);
@@ -138,7 +137,6 @@ public class AreaResourceIntTest {
         assertThat(testArea.getFreezeFrameNumber()).isEqualTo(DEFAULT_FREEZE_FRAME_NUMBER);
         assertThat(testArea.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testArea.getStatus()).isEqualTo(DEFAULT_STATUS);
-        assertThat(testArea.getEquipmentCode()).isEqualTo(DEFAULT_EQUIPMENT_CODE);
     }
 
     @Test
@@ -224,7 +222,6 @@ public class AreaResourceIntTest {
     public void checkEquipmentCodeIsRequired() throws Exception {
         int databaseSizeBeforeTest = areaRepository.findAll().size();
         // set the field null
-        area.setEquipmentCode(null);
 
         // Create the Area, which fails.
         AreaDTO areaDTO = areaMapper.areaToAreaDTO(area);
@@ -295,8 +292,7 @@ public class AreaResourceIntTest {
                 .areaCode(UPDATED_AREA_CODE)
                 .freezeFrameNumber(UPDATED_FREEZE_FRAME_NUMBER)
                 .memo(UPDATED_MEMO)
-                .status(UPDATED_STATUS)
-                .equipmentCode(UPDATED_EQUIPMENT_CODE);
+                .status(UPDATED_STATUS);
         AreaDTO areaDTO = areaMapper.areaToAreaDTO(updatedArea);
 
         restAreaMockMvc.perform(put("/api/areas")
@@ -312,7 +308,6 @@ public class AreaResourceIntTest {
         assertThat(testArea.getFreezeFrameNumber()).isEqualTo(UPDATED_FREEZE_FRAME_NUMBER);
         assertThat(testArea.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testArea.getStatus()).isEqualTo(UPDATED_STATUS);
-        assertThat(testArea.getEquipmentCode()).isEqualTo(UPDATED_EQUIPMENT_CODE);
     }
 
     @Test

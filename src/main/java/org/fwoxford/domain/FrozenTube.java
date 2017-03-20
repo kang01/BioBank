@@ -108,10 +108,12 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
+    @JoinColumn(name = "frozen_tube_type_id")
     private FrozenTubeType frozenTubeType;
 
     @ManyToOne(optional = false)
     @NotNull
+    @JoinColumn(name = "sample_type_id")
     private SampleType sampleType;
 
     public Long getId() {

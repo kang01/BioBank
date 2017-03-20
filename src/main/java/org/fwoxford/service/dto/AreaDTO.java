@@ -33,10 +33,6 @@ public class AreaDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 100)
     private String equipmentCode;
 
-    private Long equipmentId;
-
-    private String equipmentEquipmentCode;
-
     public Long getId() {
         return id;
     }
@@ -78,22 +74,6 @@ public class AreaDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setEquipmentCode(String equipmentCode) {
         this.equipmentCode = equipmentCode;
-    }
-
-    public Long getEquipmentId() {
-        return equipmentId;
-    }
-
-    public void setEquipmentId(Long equipmentId) {
-        this.equipmentId = equipmentId;
-    }
-
-    public String getEquipmentEquipmentCode() {
-        return equipmentEquipmentCode;
-    }
-
-    public void setEquipmentEquipmentCode(String equipmentEquipmentCode) {
-        this.equipmentEquipmentCode = equipmentEquipmentCode;
     }
 
     @Override

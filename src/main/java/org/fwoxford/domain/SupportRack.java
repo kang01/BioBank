@@ -33,11 +33,6 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
     @Column(name = "support_rack_type_code", length = 100, nullable = false)
     private String supportRackTypeCode;
 
-    @NotNull
-    @Size(max = 100)
-    @Column(name = "area_code", length = 100, nullable = false)
-    private String areaCode;
-
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
@@ -49,10 +44,12 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
 
     @ManyToOne(optional = false)
     @NotNull
+    @JoinColumn(name = "support_rack_type_id")
     private SupportRackType supportRackType;
 
     @ManyToOne(optional = false)
     @NotNull
+    @JoinColumn(name = "area_code")
     private Area area;
 
     public Long getId() {
@@ -87,19 +84,6 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
 
     public void setSupportRackTypeCode(String supportRackTypeCode) {
         this.supportRackTypeCode = supportRackTypeCode;
-    }
-
-    public String getAreaCode() {
-        return areaCode;
-    }
-
-    public SupportRack areaCode(String areaCode) {
-        this.areaCode = areaCode;
-        return this;
-    }
-
-    public void setAreaCode(String areaCode) {
-        this.areaCode = areaCode;
     }
 
     public String getMemo() {
@@ -180,7 +164,6 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
             "id=" + id +
             ", supprotRackCode='" + supprotRackCode + "'" +
             ", supportRackTypeCode='" + supportRackTypeCode + "'" +
-            ", areaCode='" + areaCode + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
             '}';

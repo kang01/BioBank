@@ -21,7 +21,7 @@ public interface AreaMapper {
 
     List<Area> areaDTOsToAreas(List<AreaDTO> areaDTOs);
 
-    default Equipment equipmentFromId(String equipmentCode) {
+    default Equipment equipmentFromCode(String equipmentCode) {
         if (equipmentCode == null) {
             return null;
         }

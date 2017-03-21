@@ -33,7 +33,9 @@
             "memo": "Memo",
             "status": "Status",
             "frozenBoxType": "Frozen Box Type",
-            "sampleType": "Sample Type"
+            "sampleType": "Sample Type",
+            "project": "Project",
+            "projectSite": "Project Site"
         }
     }
 }

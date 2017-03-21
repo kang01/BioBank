@@ -127,11 +127,11 @@
             <label class="control-label" data-translate="bioBankApp.equipmentModle.temperatureMax" for="field_temperatureMax">Temperature Max</label>
             <input type="number" class="form-control" name="temperatureMax" id="field_temperatureMax"
                     ng-model="vm.equipmentModle.temperatureMax"
-                    max="20"/>
+                    max="100"/>
             <div ng-show="editForm.temperatureMax.$invalid">
                 <p class="help-block"
-                    ng-show="editForm.temperatureMax.$error.max" data-translate="entity.validation.max" translate-value-max="20">
-                    This field cannot be more than 20.
+                    ng-show="editForm.temperatureMax.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
                 </p>
                 <p class="help-block"
                     ng-show="editForm.temperatureMax.$error.number" data-translate="entity.validation.number">
@@ -143,11 +143,11 @@
             <label class="control-label" data-translate="bioBankApp.equipmentModle.temperatureMin" for="field_temperatureMin">Temperature Min</label>
             <input type="number" class="form-control" name="temperatureMin" id="field_temperatureMin"
                     ng-model="vm.equipmentModle.temperatureMin"
-                    max="20"/>
+                    max="100"/>
             <div ng-show="editForm.temperatureMin.$invalid">
                 <p class="help-block"
-                    ng-show="editForm.temperatureMin.$error.max" data-translate="entity.validation.max" translate-value-max="20">
-                    This field cannot be more than 20.
+                    ng-show="editForm.temperatureMin.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
                 </p>
                 <p class="help-block"
                     ng-show="editForm.temperatureMin.$error.number" data-translate="entity.validation.number">

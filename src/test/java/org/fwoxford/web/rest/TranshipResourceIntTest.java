@@ -3,6 +3,8 @@ package org.fwoxford.web.rest;
 import org.fwoxford.BioBankApp;
 
 import org.fwoxford.domain.Tranship;
+import org.fwoxford.domain.Project;
+import org.fwoxford.domain.ProjectSite;
 import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.TranshipDTO;
@@ -157,6 +159,16 @@ public class TranshipResourceIntTest {
                 .effectiveSampleNumber(DEFAULT_EFFECTIVE_SAMPLE_NUMBER)
                 .memo(DEFAULT_MEMO)
                 .status(DEFAULT_STATUS);
+        // Add required entity
+        Project project = ProjectResourceIntTest.createEntity(em);
+        em.persist(project);
+        em.flush();
+        tranship.setProject(project);
+        // Add required entity
+        ProjectSite projectSite = ProjectSiteResourceIntTest.createEntity(em);
+        em.persist(projectSite);
+        em.flush();
+        tranship.setProjectSite(projectSite);
         return tranship;
     }
 

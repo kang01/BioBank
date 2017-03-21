@@ -33,7 +33,8 @@
             "errorType": "Error Type",
             "status": "Status",
             "frozenTubeType": "Frozen Tube Type",
-            "sampleType": "Sample Type"
+            "sampleType": "Sample Type",
+            "project": "Project"
         }
     }
 }

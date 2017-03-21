@@ -5,6 +5,7 @@ import org.fwoxford.BioBankApp;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.FrozenTubeType;
 import org.fwoxford.domain.SampleType;
+import org.fwoxford.domain.Project;
 import org.fwoxford.repository.FrozenTubeRepository;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenTubeDTO;
@@ -163,6 +164,11 @@ public class FrozenTubeResourceIntTest {
         em.persist(sampleType);
         em.flush();
         frozenTube.setSampleType(sampleType);
+        // Add required entity
+        Project project = ProjectResourceIntTest.createEntity(em);
+        em.persist(project);
+        em.flush();
+        frozenTube.setProject(project);
         return frozenTube;
     }
 

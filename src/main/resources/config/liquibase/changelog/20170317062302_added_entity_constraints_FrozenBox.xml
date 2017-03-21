@@ -20,5 +20,17 @@
                                  referencedColumnNames="id"
                                  referencedTableName="sample_type"/>
 
+        <addForeignKeyConstraint baseColumnNames="project_id"
+                                 baseTableName="frozen_box"
+                                 constraintName="fk_frozen_box_project_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_site_id"
+                                 baseTableName="frozen_box"
+                                 constraintName="fk_frozen_box_project_site_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project_site"/>
+
     </changeSet>
 </databaseChangeLog>

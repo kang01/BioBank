@@ -14,5 +14,17 @@
                                  referencedColumnNames="id"
                                  referencedTableName="tranship"/>
 
+        <addForeignKeyConstraint baseColumnNames="project_id"
+                                 baseTableName="storage_in"
+                                 constraintName="fk_storage_in_project_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_site_id"
+                                 baseTableName="storage_in"
+                                 constraintName="fk_storage_in_project_site_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project_site"/>
+
     </changeSet>
 </databaseChangeLog>

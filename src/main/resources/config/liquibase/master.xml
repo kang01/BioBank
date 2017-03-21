@@ -38,5 +38,6 @@
     <include file="classpath:config/liquibase/changelog/20170317160203_added_entity_constraints_StorageIn.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170319150513_added_entity_constraints_FrozenTubeRecord.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170319153727_added_entity_constraints_StorageInBox.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170317065947_added_entity_constraints_Tranship.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

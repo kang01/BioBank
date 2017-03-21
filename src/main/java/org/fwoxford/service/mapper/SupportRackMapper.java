@@ -13,13 +13,13 @@ import java.util.List;
 public interface SupportRackMapper {
 
     @Mapping(source = "supportRackType.id", target = "supportRackTypeId")
-    @Mapping(source = "area.areaCode", target = "areaCode")
+    @Mapping(source = "area.id", target = "areaId")
     SupportRackDTO supportRackToSupportRackDTO(SupportRack supportRack);
 
     List<SupportRackDTO> supportRacksToSupportRackDTOs(List<SupportRack> supportRacks);
 
     @Mapping(source = "supportRackTypeId", target = "supportRackType")
-    @Mapping(source = "areaCode", target = "area")
+    @Mapping(source = "areaId", target = "area")
     SupportRack supportRackDTOToSupportRack(SupportRackDTO supportRackDTO);
 
     List<SupportRack> supportRackDTOsToSupportRacks(List<SupportRackDTO> supportRackDTOs);
@@ -33,12 +33,12 @@ public interface SupportRackMapper {
         return supportRackType;
     }
 
-    default Area areaFromCode(String areaCode) {
-        if (areaCode == null) {
+    default Area areaFromId(Long id) {
+        if (id == null) {
             return null;
         }
         Area area = new Area();
-        area.setAreaCode(areaCode);
+        area.setId(id);
         return area;
     }
 }

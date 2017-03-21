@@ -20,7 +20,8 @@
             "status": "Status",
             "frozenBoxType": "Frozen Box Type",
             "frozenTubeType": "Frozen Tube Type",
-            "sampleType": "Sample Type"
+            "sampleType": "Sample Type",
+            "project": "Project"
         }
     }
 }

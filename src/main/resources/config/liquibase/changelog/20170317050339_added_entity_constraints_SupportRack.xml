@@ -7,17 +7,17 @@
         Added the constraints for entity SupportRack.
     -->
     <changeSet id="20170317050339-2" author="jhipster">
-
+        
         <addForeignKeyConstraint baseColumnNames="support_rack_type_id"
                                  baseTableName="support_rack"
                                  constraintName="support_rack_support_rack_id"
                                  referencedColumnNames="id"
                                  referencedTableName="support_rack_type"/>
 
-        <addForeignKeyConstraint baseColumnNames="area_code"
+        <addForeignKeyConstraint baseColumnNames="area_id"
                                  baseTableName="support_rack"
-                                 constraintName="fk_support_rack_area_code"
-                                 referencedColumnNames="area_code"
+                                 constraintName="fk_support_rack_area_id"
+                                 referencedColumnNames="id"
                                  referencedTableName="area"/>
 
     </changeSet>

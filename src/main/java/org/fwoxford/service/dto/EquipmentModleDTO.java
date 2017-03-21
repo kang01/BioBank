@@ -38,10 +38,10 @@ public class EquipmentModleDTO extends AbstractAuditingDTO implements Serializab
     @Size(max = 20)
     private String status;
 
-    @Max(value = 20)
+    @Max(value = 100)
     private Integer temperatureMax;
 
-    @Max(value = 20)
+    @Max(value = 100)
     private Integer temperatureMin;
 
     public Long getId() {

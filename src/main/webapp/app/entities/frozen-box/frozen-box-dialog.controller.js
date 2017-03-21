@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('FrozenBoxDialogController', FrozenBoxDialogController);
 
-    FrozenBoxDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'FrozenBox', 'FrozenBoxType', 'SampleType'];
+    FrozenBoxDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'FrozenBox', 'FrozenBoxType', 'SampleType', 'Project', 'ProjectSite'];
 
-    function FrozenBoxDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, FrozenBox, FrozenBoxType, SampleType) {
+    function FrozenBoxDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, FrozenBox, FrozenBoxType, SampleType, Project, ProjectSite) {
         var vm = this;
 
         vm.frozenBox = entity;
@@ -15,6 +15,8 @@
         vm.save = save;
         vm.frozenboxtypes = FrozenBoxType.query();
         vm.sampletypes = SampleType.query();
+        vm.projects = Project.query();
+        vm.projectsites = ProjectSite.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

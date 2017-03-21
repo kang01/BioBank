@@ -5,6 +5,8 @@ import org.fwoxford.BioBankApp;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenBoxType;
 import org.fwoxford.domain.SampleType;
+import org.fwoxford.domain.Project;
+import org.fwoxford.domain.ProjectSite;
 import org.fwoxford.repository.FrozenBoxRepository;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
@@ -163,6 +165,16 @@ public class FrozenBoxResourceIntTest {
         em.persist(sampleType);
         em.flush();
         frozenBox.setSampleType(sampleType);
+        // Add required entity
+        Project project = ProjectResourceIntTest.createEntity(em);
+        em.persist(project);
+        em.flush();
+        frozenBox.setProject(project);
+        // Add required entity
+        ProjectSite projectSite = ProjectSiteResourceIntTest.createEntity(em);
+        em.persist(projectSite);
+        em.flush();
+        frozenBox.setProjectSite(projectSite);
         return frozenBox;
     }
 

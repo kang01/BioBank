@@ -76,6 +76,14 @@
         <dd>
             <span>{{vm.tranship.status}}</span>
         </dd>
+        <dt><span data-translate="bioBankApp.tranship.project">Project</span></dt>
+        <dd>
+            <a ui-sref="project-detail({id:vm.tranship.projectId})">{{vm.tranship.projectId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.tranship.projectSite">Project Site</span></dt>
+        <dd>
+            <a ui-sref="project-site-detail({id:vm.tranship.projectSiteId})">{{vm.tranship.projectSiteId}}</a>
+        </dd>
     </dl>
 
     <button type="submit"

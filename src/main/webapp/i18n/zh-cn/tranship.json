@@ -32,7 +32,9 @@
             "sampleSatisfaction": "Sample Satisfaction",
             "effectiveSampleNumber": "Effective Sample Number",
             "memo": "Memo",
-            "status": "Status"
+            "status": "Status",
+            "project": "Project",
+            "projectSite": "Project Site"
         }
     }
 }

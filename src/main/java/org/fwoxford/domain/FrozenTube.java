@@ -64,17 +64,17 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     private String sampleTypeName;
 
     @NotNull
-    @Max(value = 100)
+    @Max(value = 20)
     @Column(name = "sample_used_times_most", nullable = false)
     private Integer sampleUsedTimesMost;
 
     @NotNull
-    @Max(value = 100)
+    @Max(value = 20)
     @Column(name = "sample_used_times", nullable = false)
     private Integer sampleUsedTimes;
 
     @NotNull
-    @Max(value = 400)
+    @Max(value = 20)
     @Column(name = "frozen_tube_volumns", nullable = false)
     private Integer frozenTubeVolumns;
 
@@ -108,13 +108,15 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(name = "frozen_tube_type_id")
     private FrozenTubeType frozenTubeType;
 
     @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(name = "sample_type_id")
     private SampleType sampleType;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private Project project;
 
     public Long getId() {
         return id;
@@ -369,6 +371,19 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
 
     public void setSampleType(SampleType sampleType) {
         this.sampleType = sampleType;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public FrozenTube project(Project project) {
+        this.project = project;
+        return this;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     @Override

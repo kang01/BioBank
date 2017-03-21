@@ -32,7 +32,9 @@
             "signDate": "Sign Date",
             "memo": "Memo",
             "status": "Status",
-            "tranship": "Tranship"
+            "tranship": "Tranship",
+            "project": "Project",
+            "projectSite": "Project Site"
         }
     }
 }

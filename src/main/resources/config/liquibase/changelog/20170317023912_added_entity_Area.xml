@@ -22,7 +22,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="area_code" type="varchar(100)">
-                <constraints nullable="false" unique = "true"/>
+                <constraints nullable="false" />
             </column>
 
             <column name="freeze_frame_number" type="integer">
@@ -41,6 +41,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="equipment_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
@@ -51,6 +55,6 @@
             <column name="last_modified_date" type="timestamp"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-
+        
     </changeSet>
 </databaseChangeLog>

@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('StorageInDetailController', StorageInDetailController);
 
-    StorageInDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'StorageIn', 'Tranship'];
+    StorageInDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'StorageIn', 'Tranship', 'Project', 'ProjectSite'];
 
-    function StorageInDetailController($scope, $rootScope, $stateParams, previousState, entity, StorageIn, Tranship) {
+    function StorageInDetailController($scope, $rootScope, $stateParams, previousState, entity, StorageIn, Tranship, Project, ProjectSite) {
         var vm = this;
 
         vm.storageIn = entity;

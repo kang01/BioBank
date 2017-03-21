@@ -80,6 +80,14 @@
         <dd>
             <a ui-sref="sample-type-detail({id:vm.frozenBox.sampleTypeId})">{{vm.frozenBox.sampleTypeId}}</a>
         </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.project">Project</span></dt>
+        <dd>
+            <a ui-sref="project-detail({id:vm.frozenBox.projectId})">{{vm.frozenBox.projectId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.projectSite">Project Site</span></dt>
+        <dd>
+            <a ui-sref="project-site-detail({id:vm.frozenBox.projectSiteId})">{{vm.frozenBox.projectSiteId}}</a>
+        </dd>
     </dl>
 
     <button type="submit"

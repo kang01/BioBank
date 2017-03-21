@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('FrozenBoxDetailController', FrozenBoxDetailController);
 
-    FrozenBoxDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'FrozenBox', 'FrozenBoxType', 'SampleType'];
+    FrozenBoxDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'FrozenBox', 'FrozenBoxType', 'SampleType', 'Project', 'ProjectSite'];
 
-    function FrozenBoxDetailController($scope, $rootScope, $stateParams, previousState, entity, FrozenBox, FrozenBoxType, SampleType) {
+    function FrozenBoxDetailController($scope, $rootScope, $stateParams, previousState, entity, FrozenBox, FrozenBoxType, SampleType, Project, ProjectSite) {
         var vm = this;
 
         vm.frozenBox = entity;

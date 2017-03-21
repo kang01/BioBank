@@ -1,9 +1,7 @@
 package org.fwoxford.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -27,24 +25,11 @@ public class Area extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Size(max = 100)
-    @Column(name = "area_code", length = 100, nullable = false , unique = true)
+    @Column(name = "area_code", length = 100, nullable = false)
     private String areaCode;
 
-    public String getEquipmentCode() {
-        return equipmentCode;
-    }
-
-    public void setEquipmentCode(String equipmentCode) {
-        this.equipmentCode = equipmentCode;
-    }
-
     @NotNull
-    @Size(max = 100)
-    @Column(name = "equipment_code", length = 100, nullable = false, insertable=false, updatable=false)
-    private String equipmentCode;
-
-    @NotNull
-    @Max(value = 1000)
+    @Max(value = 100)
     @Column(name = "freeze_frame_number", nullable = false)
     private Integer freezeFrameNumber;
 
@@ -57,9 +42,13 @@ public class Area extends AbstractAuditingEntity implements Serializable {
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
-    @JsonIgnore
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "equipment_code" , nullable=false)
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "equipment_code", length = 100, nullable = false)
+    private String equipmentCode;
+
+    @ManyToOne(optional = false)
+    @NotNull
     private Equipment equipment;
 
     public Long getId() {
@@ -122,18 +111,30 @@ public class Area extends AbstractAuditingEntity implements Serializable {
         this.status = status;
     }
 
+    public String getEquipmentCode() {
+        return equipmentCode;
+    }
+
+    public Area equipmentCode(String equipmentCode) {
+        this.equipmentCode = equipmentCode;
+        return this;
+    }
+
+    public void setEquipmentCode(String equipmentCode) {
+        this.equipmentCode = equipmentCode;
+    }
+
     public Equipment getEquipment() {
         return equipment;
     }
 
     public Area equipment(Equipment equipment) {
-        this.setEquipment(equipment);
+        this.equipment = equipment;
         return this;
     }
 
     public void setEquipment(Equipment equipment) {
         this.equipment = equipment;
-        this.equipmentCode = equipment.getEquipmentCode();
     }
 
     @Override
@@ -160,12 +161,11 @@ public class Area extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Area{" +
             "id=" + id +
-            ", areaCode='" + areaCode + '\'' +
-            ", equipmentCode='" + equipmentCode + '\'' +
-            ", freezeFrameNumber=" + freezeFrameNumber +
-            ", memo='" + memo + '\'' +
-            ", status='" + status + '\'' +
-            ", equipment=" + equipment +
+            ", areaCode='" + areaCode + "'" +
+            ", freezeFrameNumber='" + freezeFrameNumber + "'" +
+            ", memo='" + memo + "'" +
+            ", status='" + status + "'" +
+            ", equipmentCode='" + equipmentCode + "'" +
             '}';
     }
 }

@@ -84,6 +84,8 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long sampleTypeId;
 
+    private Long projectId;
+
     public Long getId() {
         return id;
     }
@@ -225,6 +227,14 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSampleTypeId(Long sampleTypeId) {
         this.sampleTypeId = sampleTypeId;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 
     @Override

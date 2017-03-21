@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('RelationsDialogController', RelationsDialogController);
 
-    RelationsDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Relations', 'FrozenBoxType', 'FrozenTubeType', 'SampleType'];
+    RelationsDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Relations', 'FrozenBoxType', 'FrozenTubeType', 'SampleType', 'Project'];
 
-    function RelationsDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Relations, FrozenBoxType, FrozenTubeType, SampleType) {
+    function RelationsDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Relations, FrozenBoxType, FrozenTubeType, SampleType, Project) {
         var vm = this;
 
         vm.relations = entity;
@@ -16,6 +16,7 @@
         vm.frozenboxtypes = FrozenBoxType.query();
         vm.frozentubetypes = FrozenTubeType.query();
         vm.sampletypes = SampleType.query();
+        vm.projects = Project.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

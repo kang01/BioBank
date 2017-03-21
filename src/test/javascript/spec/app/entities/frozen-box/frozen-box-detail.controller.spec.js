@@ -4,7 +4,7 @@ describe('Controller Tests', function() {
 
     describe('FrozenBox Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockFrozenBox, MockFrozenBoxType, MockSampleType;
+        var MockEntity, MockPreviousState, MockFrozenBox, MockFrozenBoxType, MockSampleType, MockProject, MockProjectSite;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -15,6 +15,8 @@ describe('Controller Tests', function() {
             MockFrozenBox = jasmine.createSpy('MockFrozenBox');
             MockFrozenBoxType = jasmine.createSpy('MockFrozenBoxType');
             MockSampleType = jasmine.createSpy('MockSampleType');
+            MockProject = jasmine.createSpy('MockProject');
+            MockProjectSite = jasmine.createSpy('MockProjectSite');
             
 
             var locals = {
@@ -24,7 +26,9 @@ describe('Controller Tests', function() {
                 'previousState': MockPreviousState,
                 'FrozenBox': MockFrozenBox,
                 'FrozenBoxType': MockFrozenBoxType,
-                'SampleType': MockSampleType
+                'SampleType': MockSampleType,
+                'Project': MockProject,
+                'ProjectSite': MockProjectSite
             };
             createController = function() {
                 $injector.get('$controller')("FrozenBoxDetailController", locals);

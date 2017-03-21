@@ -4,7 +4,7 @@ describe('Controller Tests', function() {
 
     describe('Relations Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockRelations, MockFrozenBoxType, MockFrozenTubeType, MockSampleType;
+        var MockEntity, MockPreviousState, MockRelations, MockFrozenBoxType, MockFrozenTubeType, MockSampleType, MockProject;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -16,6 +16,7 @@ describe('Controller Tests', function() {
             MockFrozenBoxType = jasmine.createSpy('MockFrozenBoxType');
             MockFrozenTubeType = jasmine.createSpy('MockFrozenTubeType');
             MockSampleType = jasmine.createSpy('MockSampleType');
+            MockProject = jasmine.createSpy('MockProject');
             
 
             var locals = {
@@ -26,7 +27,8 @@ describe('Controller Tests', function() {
                 'Relations': MockRelations,
                 'FrozenBoxType': MockFrozenBoxType,
                 'FrozenTubeType': MockFrozenTubeType,
-                'SampleType': MockSampleType
+                'SampleType': MockSampleType,
+                'Project': MockProject
             };
             createController = function() {
                 $injector.get('$controller')("RelationsDetailController", locals);

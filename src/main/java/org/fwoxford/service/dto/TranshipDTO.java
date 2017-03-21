@@ -3,6 +3,8 @@ package org.fwoxford.service.dto;
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -79,6 +81,10 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     @Size(max = 20)
     private String status;
+
+    private Long projectId;
+
+    private Long projectSiteId;
 
     public Long getId() {
         return id;
@@ -212,6 +218,22 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public Long getProjectSiteId() {
+        return projectSiteId;
+    }
+
+    public void setProjectSiteId(Long projectSiteId) {
+        this.projectSiteId = projectSiteId;
     }
 
     @Override

@@ -39,18 +39,19 @@ public class Relations extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(name = "frozen_box_type_id")
     private FrozenBoxType frozenBoxType;
 
     @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(name = "frozen_tube_type_id")
     private FrozenTubeType frozenTubeType;
 
     @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(name = "sample_type_id")
     private SampleType sampleType;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private Project project;
 
     public Long getId() {
         return id;
@@ -136,6 +137,19 @@ public class Relations extends AbstractAuditingEntity implements Serializable {
 
     public void setSampleType(SampleType sampleType) {
         this.sampleType = sampleType;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public Relations project(Project project) {
+        this.project = project;
+        return this;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     @Override

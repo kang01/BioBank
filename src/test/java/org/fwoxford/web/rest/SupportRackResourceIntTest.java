@@ -102,6 +102,7 @@ public class SupportRackResourceIntTest {
         SupportRack supportRack = new SupportRack()
                 .supprotRackCode(DEFAULT_SUPPROT_RACK_CODE)
                 .supportRackTypeCode(DEFAULT_SUPPORT_RACK_TYPE_CODE)
+                .areaCode(DEFAULT_AREA_CODE)
                 .memo(DEFAULT_MEMO)
                 .status(DEFAULT_STATUS);
         // Add required entity
@@ -141,6 +142,7 @@ public class SupportRackResourceIntTest {
         SupportRack testSupportRack = supportRackList.get(supportRackList.size() - 1);
         assertThat(testSupportRack.getSupprotRackCode()).isEqualTo(DEFAULT_SUPPROT_RACK_CODE);
         assertThat(testSupportRack.getSupportRackTypeCode()).isEqualTo(DEFAULT_SUPPORT_RACK_TYPE_CODE);
+        assertThat(testSupportRack.getAreaCode()).isEqualTo(DEFAULT_AREA_CODE);
         assertThat(testSupportRack.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testSupportRack.getStatus()).isEqualTo(DEFAULT_STATUS);
     }
@@ -209,6 +211,7 @@ public class SupportRackResourceIntTest {
     public void checkAreaCodeIsRequired() throws Exception {
         int databaseSizeBeforeTest = supportRackRepository.findAll().size();
         // set the field null
+        supportRack.setAreaCode(null);
 
         // Create the SupportRack, which fails.
         SupportRackDTO supportRackDTO = supportRackMapper.supportRackToSupportRackDTO(supportRack);
@@ -297,6 +300,7 @@ public class SupportRackResourceIntTest {
         updatedSupportRack
                 .supprotRackCode(UPDATED_SUPPROT_RACK_CODE)
                 .supportRackTypeCode(UPDATED_SUPPORT_RACK_TYPE_CODE)
+                .areaCode(UPDATED_AREA_CODE)
                 .memo(UPDATED_MEMO)
                 .status(UPDATED_STATUS);
         SupportRackDTO supportRackDTO = supportRackMapper.supportRackToSupportRackDTO(updatedSupportRack);
@@ -312,6 +316,7 @@ public class SupportRackResourceIntTest {
         SupportRack testSupportRack = supportRackList.get(supportRackList.size() - 1);
         assertThat(testSupportRack.getSupprotRackCode()).isEqualTo(UPDATED_SUPPROT_RACK_CODE);
         assertThat(testSupportRack.getSupportRackTypeCode()).isEqualTo(UPDATED_SUPPORT_RACK_TYPE_CODE);
+        assertThat(testSupportRack.getAreaCode()).isEqualTo(UPDATED_AREA_CODE);
         assertThat(testSupportRack.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testSupportRack.getStatus()).isEqualTo(UPDATED_STATUS);
     }

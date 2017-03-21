@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('TranshipDialogController', TranshipDialogController);
 
-    TranshipDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Tranship'];
+    TranshipDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Tranship', 'Project', 'ProjectSite'];
 
-    function TranshipDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Tranship) {
+    function TranshipDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Tranship, Project, ProjectSite) {
         var vm = this;
 
         vm.tranship = entity;
@@ -15,6 +15,8 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
+        vm.projects = Project.query();
+        vm.projectsites = ProjectSite.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

@@ -19,7 +19,7 @@ public class EquipmentDTO extends AbstractAuditingDTO implements Serializable {
     private String equipmentCode;
 
     @NotNull
-    @Max(value = 20)
+    @Max(value = 100)
     private Integer temperature;
 
     @NotNull
@@ -27,11 +27,9 @@ public class EquipmentDTO extends AbstractAuditingDTO implements Serializable {
     private String equipmentAddress;
 
     @NotNull
-    @Max(value = 20)
     private Integer ampoulesMax;
 
     @NotNull
-    @Max(value = 20)
     private Integer ampoulesMin;
 
     @Size(max = 100)

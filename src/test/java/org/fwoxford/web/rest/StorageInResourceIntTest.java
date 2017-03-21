@@ -4,6 +4,8 @@ import org.fwoxford.BioBankApp;
 
 import org.fwoxford.domain.StorageIn;
 import org.fwoxford.domain.Tranship;
+import org.fwoxford.domain.Project;
+import org.fwoxford.domain.ProjectSite;
 import org.fwoxford.repository.StorageInRepository;
 import org.fwoxford.service.StorageInService;
 import org.fwoxford.service.dto.StorageInDTO;
@@ -159,6 +161,16 @@ public class StorageInResourceIntTest {
         em.persist(tranship);
         em.flush();
         storageIn.setTranship(tranship);
+        // Add required entity
+        Project project = ProjectResourceIntTest.createEntity(em);
+        em.persist(project);
+        em.flush();
+        storageIn.setProject(project);
+        // Add required entity
+        ProjectSite projectSite = ProjectSiteResourceIntTest.createEntity(em);
+        em.persist(projectSite);
+        em.flush();
+        storageIn.setProjectSite(projectSite);
         return storageIn;
     }
 

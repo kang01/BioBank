@@ -6,6 +6,7 @@ import org.fwoxford.domain.Relations;
 import org.fwoxford.domain.FrozenBoxType;
 import org.fwoxford.domain.FrozenTubeType;
 import org.fwoxford.domain.SampleType;
+import org.fwoxford.domain.Project;
 import org.fwoxford.repository.RelationsRepository;
 import org.fwoxford.service.RelationsService;
 import org.fwoxford.service.dto.RelationsDTO;
@@ -37,11 +38,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Test class for the RelationsResource REST controller.
  *
- * @see RelationsResource
+ * @see ProjectBoxTubeSampleRelationsResource
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BioBankApp.class)
-public class RelationsResourceIntTest {
+public class ProjectBoxTubeSampleRelationsResourceIntTest {
 
     private static final String DEFAULT_PROJECT_CODE = "AAAAAAAAAA";
     private static final String UPDATED_PROJECT_CODE = "BBBBBBBBBB";
@@ -80,8 +81,8 @@ public class RelationsResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        RelationsResource relationsResource = new RelationsResource(relationsService);
-        this.restRelationsMockMvc = MockMvcBuilders.standaloneSetup(relationsResource)
+        ProjectBoxTubeSampleRelationsResource projectBoxTubeSampleRelationsResource = new ProjectBoxTubeSampleRelationsResource(relationsService);
+        this.restRelationsMockMvc = MockMvcBuilders.standaloneSetup(projectBoxTubeSampleRelationsResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -113,6 +114,11 @@ public class RelationsResourceIntTest {
         em.persist(sampleType);
         em.flush();
         relations.setSampleType(sampleType);
+        // Add required entity
+        Project project = ProjectResourceIntTest.createEntity(em);
+        em.persist(project);
+        em.flush();
+        relations.setProject(project);
         return relations;
     }
 

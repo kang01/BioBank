@@ -15,6 +15,7 @@ public interface RelationsMapper {
     @Mapping(source = "frozenBoxType.id", target = "frozenBoxTypeId")
     @Mapping(source = "frozenTubeType.id", target = "frozenTubeTypeId")
     @Mapping(source = "sampleType.id", target = "sampleTypeId")
+    @Mapping(source = "project.id", target = "projectId")
     RelationsDTO relationsToRelationsDTO(Relations relations);
 
     List<RelationsDTO> relationsToRelationsDTOs(List<Relations> relations);
@@ -22,6 +23,7 @@ public interface RelationsMapper {
     @Mapping(source = "frozenBoxTypeId", target = "frozenBoxType")
     @Mapping(source = "frozenTubeTypeId", target = "frozenTubeType")
     @Mapping(source = "sampleTypeId", target = "sampleType")
+    @Mapping(source = "projectId", target = "project")
     Relations relationsDTOToRelations(RelationsDTO relationsDTO);
 
     List<Relations> relationsDTOsToRelations(List<RelationsDTO> relationsDTOs);
@@ -51,5 +53,14 @@ public interface RelationsMapper {
         SampleType sampleType = new SampleType();
         sampleType.setId(id);
         return sampleType;
+    }
+
+    default Project projectFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        Project project = new Project();
+        project.setId(id);
+        return project;
     }
 }

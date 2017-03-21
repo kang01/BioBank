@@ -27,6 +27,15 @@
                 "required"
             ],
             "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "project",
+            "otherEntityName": "project",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
         }
     ],
     "fields": [

@@ -14,12 +14,14 @@ public interface FrozenTubeMapper {
 
     @Mapping(source = "frozenTubeType.id", target = "frozenTubeTypeId")
     @Mapping(source = "sampleType.id", target = "sampleTypeId")
+    @Mapping(source = "project.id", target = "projectId")
     FrozenTubeDTO frozenTubeToFrozenTubeDTO(FrozenTube frozenTube);
 
     List<FrozenTubeDTO> frozenTubesToFrozenTubeDTOs(List<FrozenTube> frozenTubes);
 
     @Mapping(source = "frozenTubeTypeId", target = "frozenTubeType")
     @Mapping(source = "sampleTypeId", target = "sampleType")
+    @Mapping(source = "projectId", target = "project")
     FrozenTube frozenTubeDTOToFrozenTube(FrozenTubeDTO frozenTubeDTO);
 
     List<FrozenTube> frozenTubeDTOsToFrozenTubes(List<FrozenTubeDTO> frozenTubeDTOs);
@@ -40,5 +42,14 @@ public interface FrozenTubeMapper {
         SampleType sampleType = new SampleType();
         sampleType.setId(id);
         return sampleType;
+    }
+
+    default Project projectFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        Project project = new Project();
+        project.setId(id);
+        return project;
     }
 }

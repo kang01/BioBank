@@ -73,31 +73,31 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     private LocalDate receiveDate;
 
     @NotNull
-    @Max(value = 5000)
+    @Max(value = 100)
     @Column(name = "sample_number", nullable = false)
     private Integer sampleNumber;
 
     @NotNull
-    @Max(value = 100)
+    @Max(value = 20)
     @Column(name = "frozen_box_number", nullable = false)
     private Integer frozenBoxNumber;
 
     @NotNull
-    @Max(value = 100)
+    @Max(value = 20)
     @Column(name = "empty_tube_number", nullable = false)
     private Integer emptyTubeNumber;
 
     @NotNull
-    @Max(value = 100)
+    @Max(value = 20)
     @Column(name = "empty_hole_number", nullable = false)
     private Integer emptyHoleNumber;
 
-    @Max(value = 100)
+    @Max(value = 20)
     @Column(name = "sample_satisfaction")
     private Integer sampleSatisfaction;
 
     @NotNull
-    @Max(value = 100)
+    @Max(value = 20)
     @Column(name = "effective_sample_number", nullable = false)
     private Integer effectiveSampleNumber;
 
@@ -109,6 +109,14 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private Project project;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private ProjectSite projectSite;
 
     public Long getId() {
         return id;
@@ -350,6 +358,32 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public Tranship project(Project project) {
+        this.project = project;
+        return this;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public ProjectSite getProjectSite() {
+        return projectSite;
+    }
+
+    public Tranship projectSite(ProjectSite projectSite) {
+        this.projectSite = projectSite;
+        return this;
+    }
+
+    public void setProjectSite(ProjectSite projectSite) {
+        this.projectSite = projectSite;
     }
 
     @Override

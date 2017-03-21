@@ -38,6 +38,7 @@
                     <th jh-sort-by="status"><span data-translate="bioBankApp.frozenTube.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="frozenTubeTypeId"><span data-translate="bioBankApp.frozenTube.frozenTubeType">Frozen Tube Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="sampleTypeId"><span data-translate="bioBankApp.frozenTube.sampleType">Sample Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectId"><span data-translate="bioBankApp.frozenTube.project">Project</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -66,6 +67,9 @@
                     </td>
                     <td>
                         <a ui-sref="sample-type-detail({id:frozenTube.sampleTypeId})">{{frozenTube.sampleTypeId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="project-detail({id:frozenTube.projectId})">{{frozenTube.projectId}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

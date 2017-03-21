@@ -37,6 +37,8 @@
                     <th jh-sort-by="effectiveSampleNumber"><span data-translate="bioBankApp.tranship.effectiveSampleNumber">Effective Sample Number</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="memo"><span data-translate="bioBankApp.tranship.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="bioBankApp.tranship.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectId"><span data-translate="bioBankApp.tranship.project">Project</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectSiteId"><span data-translate="bioBankApp.tranship.projectSite">Project Site</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -61,6 +63,12 @@
                     <td>{{tranship.effectiveSampleNumber}}</td>
                     <td>{{tranship.memo}}</td>
                     <td>{{tranship.status}}</td>
+                    <td>
+                        <a ui-sref="project-detail({id:tranship.projectId})">{{tranship.projectId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="project-site-detail({id:tranship.projectSiteId})">{{tranship.projectSiteId}}</a>
+                    </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

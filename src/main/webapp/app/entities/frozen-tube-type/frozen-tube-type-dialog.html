@@ -69,15 +69,15 @@
             <label class="control-label" data-translate="bioBankApp.frozenTubeType.frozenTubeVolumn" for="field_frozenTubeVolumn">Frozen Tube Volumn</label>
             <input type="number" class="form-control" name="frozenTubeVolumn" id="field_frozenTubeVolumn"
                     ng-model="vm.frozenTubeType.frozenTubeVolumn"
-                    required max="20"/>
+                    required max="400"/>
             <div ng-show="editForm.frozenTubeVolumn.$invalid">
                 <p class="help-block"
                     ng-show="editForm.frozenTubeVolumn.$error.required" data-translate="entity.validation.required">
                     This field is required.
                 </p>
                 <p class="help-block"
-                    ng-show="editForm.frozenTubeVolumn.$error.max" data-translate="entity.validation.max" translate-value-max="20">
-                    This field cannot be more than 20.
+                    ng-show="editForm.frozenTubeVolumn.$error.max" data-translate="entity.validation.max" translate-value-max="400">
+                    This field cannot be more than 400.
                 </p>
                 <p class="help-block"
                     ng-show="editForm.frozenTubeVolumn.$error.number" data-translate="entity.validation.number">

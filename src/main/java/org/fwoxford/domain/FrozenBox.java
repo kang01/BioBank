@@ -14,7 +14,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "frozen_box")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class FrozenBox implements Serializable {
+public class FrozenBox extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -25,7 +25,7 @@ public class FrozenBox implements Serializable {
 
     @NotNull
     @Size(max = 100)
-    @Column(name = "frozen_box_code", length = 100, nullable = false , unique = true)
+    @Column(name = "frozen_box_code", length = 100, nullable = false)
     private String frozenBoxCode;
 
     @NotNull
@@ -89,7 +89,7 @@ public class FrozenBox implements Serializable {
     private String sampleTypeName;
 
     @NotNull
-    @Max(value = 5000)
+    @Max(value = 20)
     @Column(name = "sample_number", nullable = false)
     private Integer sampleNumber;
 
@@ -109,13 +109,19 @@ public class FrozenBox implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(name = "frozen_box_type_id")
     private FrozenBoxType frozenBoxType;
 
     @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(name = "sample_type_id")
     private SampleType sampleType;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private Project project;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private ProjectSite projectSite;
 
     public Long getId() {
         return id;
@@ -370,6 +376,32 @@ public class FrozenBox implements Serializable {
 
     public void setSampleType(SampleType sampleType) {
         this.sampleType = sampleType;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public FrozenBox project(Project project) {
+        this.project = project;
+        return this;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public ProjectSite getProjectSite() {
+        return projectSite;
+    }
+
+    public FrozenBox projectSite(ProjectSite projectSite) {
+        this.projectSite = projectSite;
+        return this;
+    }
+
+    public void setProjectSite(ProjectSite projectSite) {
+        this.projectSite = projectSite;
     }
 
     @Override

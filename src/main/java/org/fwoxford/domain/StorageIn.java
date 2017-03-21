@@ -78,7 +78,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
     private LocalDate storageInDate;
 
     @NotNull
-    @Max(value = 5000)
+    @Max(value = 100)
     @Column(name = "sample_number", nullable = false)
     private Integer sampleNumber;
 
@@ -108,6 +108,14 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     private Tranship tranship;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private Project project;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private ProjectSite projectSite;
 
     public Long getId() {
         return id;
@@ -349,6 +357,32 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
 
     public void setTranship(Tranship tranship) {
         this.tranship = tranship;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public StorageIn project(Project project) {
+        this.project = project;
+        return this;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public ProjectSite getProjectSite() {
+        return projectSite;
+    }
+
+    public StorageIn projectSite(ProjectSite projectSite) {
+        this.projectSite = projectSite;
+        return this;
+    }
+
+    public void setProjectSite(ProjectSite projectSite) {
+        this.projectSite = projectSite;
     }
 
     @Override

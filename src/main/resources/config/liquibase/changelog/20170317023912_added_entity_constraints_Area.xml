@@ -7,11 +7,11 @@
         Added the constraints for entity Area.
     -->
     <changeSet id="20170317023912-2" author="jhipster">
-
-        <addForeignKeyConstraint baseColumnNames="equipment_code"
+        
+        <addForeignKeyConstraint baseColumnNames="equipment_id"
                                  baseTableName="area"
-                                 constraintName="fk_area_equipment_code"
-                                 referencedColumnNames="equipment_code"
+                                 constraintName="fk_area_equipment_id"
+                                 referencedColumnNames="id"
                                  referencedTableName="equipment"/>
 
     </changeSet>

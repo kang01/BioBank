@@ -18,6 +18,24 @@
                 "required"
             ],
             "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "project",
+            "otherEntityName": "project",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "projectSite",
+            "otherEntityName": "projectSite",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
         }
     ],
     "fields": [
@@ -178,5 +196,6 @@
     "dto": "mapstruct",
     "service": "serviceImpl",
     "entityTableName": "frozen_box",
-    "pagination": "pager"
+    "pagination": "pager",
+    "enableEntityAudit": true
 }

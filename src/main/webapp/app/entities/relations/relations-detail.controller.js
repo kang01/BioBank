@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('RelationsDetailController', RelationsDetailController);
 
-    RelationsDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Relations', 'FrozenBoxType', 'FrozenTubeType', 'SampleType'];
+    RelationsDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Relations', 'FrozenBoxType', 'FrozenTubeType', 'SampleType', 'Project'];
 
-    function RelationsDetailController($scope, $rootScope, $stateParams, previousState, entity, Relations, FrozenBoxType, FrozenTubeType, SampleType) {
+    function RelationsDetailController($scope, $rootScope, $stateParams, previousState, entity, Relations, FrozenBoxType, FrozenTubeType, SampleType, Project) {
         var vm = this;
 
         vm.relations = entity;

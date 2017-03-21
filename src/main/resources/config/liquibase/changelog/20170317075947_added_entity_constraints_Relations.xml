@@ -26,5 +26,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="sample_type"/>
 
+        <addForeignKeyConstraint baseColumnNames="project_id"
+                                 baseTableName="relations"
+                                 constraintName="fk_relations_project_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project"/>
+
     </changeSet>
 </databaseChangeLog>

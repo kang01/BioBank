@@ -47,27 +47,22 @@ public class TempResource {
     /**
      * POST  /tranships : Create a new tranship.
      *
-     * @param transhipDTO the transhipDTO to create
      * @return the ResponseEntity with status 201 (Created) and with body the new transhipDTO, or with status 400 (Bad Request) if the tranship has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/tranships")
     @Timed
-    public ResponseEntity<TranshipDTO> createTranship(@Valid @RequestBody TranshipDTO transhipDTO) throws URISyntaxException {
-        log.debug("REST request to save Tranship : {}", transhipDTO);
-        if (transhipDTO.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new tranship cannot already have an ID")).body(null);
-        }
-        TranshipDTO result = transhipService.save(transhipDTO);
-        return ResponseEntity.created(new URI("/api/tranships/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+    public ResponseEntity<JSONObject> createTranship(@Valid @RequestBody JSONObject jsonObject) throws URISyntaxException {
+        log.debug("REST request to save Tranship : {}", jsonObject);
+        return ResponseEntity.created(new URI("/api/tranships/" + 1))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, "1"))
+            .body(jsonObject);
     }
 
     /**
      * PUT  /tranships : Updates an existing tranship.
      *
-     * @param transhipDTO the transhipDTO to update
+     * @param jsonObject the transhipDTO to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated transhipDTO,
      * or with status 400 (Bad Request) if the transhipDTO is not valid,
      * or with status 500 (Internal Server Error) if the transhipDTO couldnt be updated
@@ -75,15 +70,11 @@ public class TempResource {
      */
     @PutMapping("/tranships")
     @Timed
-    public ResponseEntity<TranshipDTO> updateTranship(@Valid @RequestBody TranshipDTO transhipDTO) throws URISyntaxException {
-        log.debug("REST request to update Tranship : {}", transhipDTO);
-        if (transhipDTO.getId() == null) {
-            return createTranship(transhipDTO);
-        }
-        TranshipDTO result = transhipService.save(transhipDTO);
+    public ResponseEntity<JSONObject> updateTranship(@Valid @RequestBody JSONObject jsonObject) throws URISyntaxException {
+        log.debug("REST request to update Tranship : {}", jsonObject);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipDTO.getId().toString()))
-            .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, "1"))
+            .body(jsonObject);
     }
 
     /**
@@ -120,6 +111,7 @@ public class TempResource {
             map.put("sampleSatisfaction",5);
             map.put("transhipDate",new Date().getTime());
             map.put("transhipState","01");
+            map.put("receiver","高康康"+i);
             alist.add(map);
         }
 

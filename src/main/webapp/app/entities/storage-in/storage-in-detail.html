@@ -76,6 +76,14 @@
         <dd>
             <a ui-sref="tranship-detail({id:vm.storageIn.transhipId})">{{vm.storageIn.transhipId}}</a>
         </dd>
+        <dt><span data-translate="bioBankApp.storageIn.project">Project</span></dt>
+        <dd>
+            <a ui-sref="project-detail({id:vm.storageIn.projectId})">{{vm.storageIn.projectId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageIn.projectSite">Project Site</span></dt>
+        <dd>
+            <a ui-sref="project-site-detail({id:vm.storageIn.projectSiteId})">{{vm.storageIn.projectSiteId}}</a>
+        </dd>
     </dl>
 
     <button type="submit"

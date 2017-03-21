@@ -11,22 +11,24 @@ import java.util.List;
  */
 @Mapper(componentModel = "spring", uses = {})
 public interface AreaMapper {
-    @Mapping(source = "equipment.equipmentCode", target = "equipmentCode")
+
+    @Mapping(source = "equipment.id", target = "equipmentId")
+    @Mapping(source = "equipment.equipmentCode", target = "equipmentEquipmentCode")
     AreaDTO areaToAreaDTO(Area area);
 
     List<AreaDTO> areasToAreaDTOs(List<Area> areas);
 
-    @Mapping(source = "equipmentCode", target = "equipment.equipmentCode")
+    @Mapping(source = "equipmentId", target = "equipment")
     Area areaDTOToArea(AreaDTO areaDTO);
 
     List<Area> areaDTOsToAreas(List<AreaDTO> areaDTOs);
 
-    default Equipment equipmentFromCode(String equipmentCode) {
-        if (equipmentCode == null) {
+    default Equipment equipmentFromId(Long id) {
+        if (id == null) {
             return null;
         }
         Equipment equipment = new Equipment();
-        equipment.setEquipmentCode(equipmentCode);
+        equipment.setId(id);
         return equipment;
     }
 }

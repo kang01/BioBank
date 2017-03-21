@@ -14,12 +14,16 @@ public interface FrozenBoxMapper {
 
     @Mapping(source = "frozenBoxType.id", target = "frozenBoxTypeId")
     @Mapping(source = "sampleType.id", target = "sampleTypeId")
+    @Mapping(source = "project.id", target = "projectId")
+    @Mapping(source = "projectSite.id", target = "projectSiteId")
     FrozenBoxDTO frozenBoxToFrozenBoxDTO(FrozenBox frozenBox);
 
     List<FrozenBoxDTO> frozenBoxesToFrozenBoxDTOs(List<FrozenBox> frozenBoxes);
 
     @Mapping(source = "frozenBoxTypeId", target = "frozenBoxType")
     @Mapping(source = "sampleTypeId", target = "sampleType")
+    @Mapping(source = "projectId", target = "project")
+    @Mapping(source = "projectSiteId", target = "projectSite")
     FrozenBox frozenBoxDTOToFrozenBox(FrozenBoxDTO frozenBoxDTO);
 
     List<FrozenBox> frozenBoxDTOsToFrozenBoxes(List<FrozenBoxDTO> frozenBoxDTOs);
@@ -40,5 +44,23 @@ public interface FrozenBoxMapper {
         SampleType sampleType = new SampleType();
         sampleType.setId(id);
         return sampleType;
+    }
+
+    default Project projectFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        Project project = new Project();
+        project.setId(id);
+        return project;
+    }
+
+    default ProjectSite projectSiteFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        ProjectSite projectSite = new ProjectSite();
+        projectSite.setId(id);
+        return projectSite;
     }
 }

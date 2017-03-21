@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('StorageInDialogController', StorageInDialogController);
 
-    StorageInDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'StorageIn', 'Tranship'];
+    StorageInDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'StorageIn', 'Tranship', 'Project', 'ProjectSite'];
 
-    function StorageInDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, StorageIn, Tranship) {
+    function StorageInDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, StorageIn, Tranship, Project, ProjectSite) {
         var vm = this;
 
         vm.storageIn = entity;
@@ -16,6 +16,8 @@
         vm.openCalendar = openCalendar;
         vm.save = save;
         vm.tranships = Tranship.query();
+        vm.projects = Project.query();
+        vm.projectsites = ProjectSite.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

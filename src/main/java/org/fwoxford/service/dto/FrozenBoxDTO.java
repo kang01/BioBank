@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * A DTO for the FrozenBox entity.
  */
-public class FrozenBoxDTO implements Serializable {
+public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
@@ -84,6 +84,10 @@ public class FrozenBoxDTO implements Serializable {
     private Long frozenBoxTypeId;
 
     private Long sampleTypeId;
+
+    private Long projectId;
+
+    private Long projectSiteId;
 
     public Long getId() {
         return id;
@@ -226,6 +230,22 @@ public class FrozenBoxDTO implements Serializable {
 
     public void setSampleTypeId(Long sampleTypeId) {
         this.sampleTypeId = sampleTypeId;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public Long getProjectSiteId() {
+        return projectSiteId;
+    }
+
+    public void setProjectSiteId(Long projectSiteId) {
+        this.projectSiteId = projectSiteId;
     }
 
     @Override

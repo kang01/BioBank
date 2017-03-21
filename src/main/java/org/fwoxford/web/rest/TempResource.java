@@ -110,6 +110,7 @@ public class TempResource {
             map.put("receiveDate",new Date().getTime());
             map.put("sampleSatisfaction",5);
             map.put("transhipDate",new Date().getTime());
+            map.put("transhipReceive","李四");
             map.put("transhipState","01");
             map.put("receiver","高康康"+i);
             alist.add(map);

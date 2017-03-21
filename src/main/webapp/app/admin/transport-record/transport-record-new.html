@@ -123,107 +123,130 @@
             <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" class=" table table-striped table-bordered">
             </table>
         </div>
-        <div class="col-sm-10 pipe-body">
-            <form class="form-horizontal">
-                <div class="row pipe-body-top ">
-                    <div class="form-group col-sm-2">
-                        <label  class="col-sm-4 control-label p-r-6">冻存盒号</label>
-                        <div class="col-sm-8">
-                            <input type="email" class="form-control"  >
+        <div class="col-sm-8 pipe-body">
+            <div class="col-sm-12">
+                <form class="form-horizontal">
+                    <div class="row pipe-body-top ">
+                        <div class="form-group col-sm-2">
+                            <label  class="col-sm-4 control-label p-r-6">冻存盒号</label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control"  >
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <label  class="col-sm-4 control-label p-r-6">盒类型</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"  >
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <label  class="col-sm-4 control-label p-r-6">样本类型</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"  >
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <label  class="col-sm-4 control-label p-r-6">存储位置</label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control"  >
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <label  class="col-sm-4 control-label p-r-6">状态</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"  >
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group col-sm-2">
-                        <label  class="col-sm-4 control-label p-r-6">盒类型</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control"  >
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <p style="margin-top: 10px">
+                                <span>样本数</span>
+                                <span>100个</span>
+                                <span>空管</span>
+                                <span>100个</span>
+                                <span>空孔</span>
+                                <span>100个</span>
+                                <span>错位</span>
+                                <span>100个</span>
+                            </p>
+
                         </div>
-                    </div>
-                    <div class="form-group col-sm-2">
-                        <label  class="col-sm-4 control-label p-r-6">样本类型</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control"  >
+                        <div class="form-group col-sm-7">
+                            <label  class="col-sm-2 control-label p-r-6">备注</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control"rows="1" style="resize: none"></textarea>
+                            </div>
                         </div>
+
                     </div>
-                    <div class="form-group col-sm-2">
-                        <label  class="col-sm-4 control-label p-r-6">存储位置</label>
-                        <div class="col-sm-8">
-                            <input type="email" class="form-control"  >
-                        </div>
-                    </div>
-                    <div class="form-group col-sm-2">
-                        <label  class="col-sm-4 control-label p-r-6">状态</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control"  >
-                        </div>
-                    </div>
+                </form>
+            </div>
+            <div class="col-sm-10">
+                <hot-table
+                    hot-id="my-handsontable"
+                    settings="vm.settings"
+                    row-headers="vm.rowHeaders"
+                    col-headers="vm.colHeaders"
+                    datarows="vm.db.items"
+                    min-spare-rows="vm.minSpareRows"
+                    min-spare-cols="vm.minSpareCols"
+                    on-after-selection-end="vm.onAfterSelectionEnd"
+                    col-widths="100"
+                    renderer="vm.myCustomRenderer"
+                    fill-handle="false"
+                    fixed-rows-top="2"
+                >
+                </hot-table>
+            </div>
+            <div class="col-sm-2 pull-right text-right">
+                <div class="text-right">
+                    <button type="button" class="btn btn-primary" style="width:100px" ng-click="vm.editStatus()">修改状态</button>
                 </div>
-                <div class="row">
-                    <div class="col-sm-5">
-                        <p style="margin-top: 10px">
-                            <span>样本数</span>
-                            <span>100个</span>
-                            <span>空管</span>
-                            <span>100个</span>
-                            <span>空孔</span>
-                            <span>100个</span>
-                            <span>错位</span>
-                            <span>100个</span>
-                        </p>
-
-                    </div>
-                    <div class="form-group col-sm-7">
-                        <label  class="col-sm-2 control-label p-r-6">备注</label>
-                        <div class="col-sm-10">
-                            <textarea class="form-control"rows="1" style="resize: none"></textarea>
-                        </div>
-                    </div>
-
+                <div class="text-right" style="margin-top: 2px">
+                    <button type="button" class="btn btn-primary" style="width:100px" ng-click="vm.exchange()">换&nbsp;&nbsp;位</button>
                 </div>
-            </form>
-            <hot-table
-                settings="vm.settings"
-                row-headers="vm.rowHeaders"
-                col-headers="vm.colHeaders"
-                min-spare-rows="vm.minSpareRows"
-                datarows="vm.db.items"
-                on-after-selection-end="vm.onAfterSelectionEnd"
-                width="1000">
-                <hot-column data="id" title="'1'"  read-only width="100"></hot-column>
-                <hot-column data="id" title="'2'"  read-only width="100" renderer="vm.myCustomRenderer"></hot-column>
-                <hot-column data="id" title="'3'"  read-only width="100"></hot-column>
-                <hot-column data="id" title="'4'"  read-only width="100"></hot-column>
-                <hot-column data="id" title="'5'"  read-only width="100"></hot-column>
-                <hot-column data="id" title="'6'"  read-only width="100"></hot-column>
-                <hot-column data="id" title="'7'"  read-only width="100"></hot-column>
-                <hot-column data="id" title="'8'"  read-only width="100"></hot-column>
-                <hot-column data="id" title="'9'"  read-only width="100"></hot-column>
-                <hot-column data="id" title="'10'"  read-only width="100"></hot-column>
-
-                <!--<hot-column data="name.first" title="'2'" type="'text'" read-only id="aaa" width="100"></hot-column>-->
-                <!--<hot-column data="name.last" title="'3'" read-only width="100"></hot-column>-->
-                <!--<hot-column data="address" title="'4'" width="100"></hot-column>-->
-                <!--<hot-column data="product.description" title="'5'" type="'autocomplete'" width="100">-->
-                    <!--<hot-autocomplete datarows="description in product.options"></hot-autocomplete>-->
-                <!--</hot-column>-->
-                <!--<hot-column data="price" title="'6'" type="'numeric'" width="100" format="'$ 0,0.00'"></hot-column>-->
-                <!--<hot-column data="price" title="'7'" type="'numeric'" width="100" format="'$ 0,0.00'"></hot-column>-->
-                <!--<hot-column data="price" title="'8'" type="'numeric'" width="100" format="'$ 0,0.00'"></hot-column>-->
-                <!--<hot-column data="price" title="'9'" type="'numeric'" width="100" format="'$ 0,0.00'"></hot-column>-->
-                <!--<hot-column data="isActive" title="'10'" width="100"type="'checkbox'" checked-template="'Yes'"-->
-                            <!--unchecked-template="'No'"></hot-column>-->
-            </hot-table>
-
+                <div class="text-right" style="margin-top: 2px">
+                    <button type="button" class="btn btn-primary" style="width:100px" ng-click="vm.microtubesRemark()">批&nbsp;&nbsp;注</button>
+                </div>
+            </div>
             <!--<hot-table-->
                 <!--settings="vm.settings"-->
                 <!--row-headers="vm.rowHeaders"-->
                 <!--col-headers="vm.colHeaders"-->
-                <!--datarows="vm.db.items"-->
                 <!--min-spare-rows="vm.minSpareRows"-->
-                <!--min-spare-cols="vm.minSpareCols"-->
+                <!--datarows="vm.db.items"-->
                 <!--on-after-selection-end="vm.onAfterSelectionEnd"-->
-                <!--col-widths="100"-->
-            <!--&gt;-->
+                <!--width="1000">-->
+                <!--<hot-column data="id" title="'1'"  read-only width="100" renderer="vm.myCustomRenderer"></hot-column>-->
+                <!--<hot-column data="id" title="'2'"  read-only width="100" renderer="vm.myCustomRenderer"></hot-column>-->
+                <!--<hot-column data="id" title="'3'"  read-only width="100" renderer="vm.myCustomRenderer"></hot-column>-->
+                <!--<hot-column data="id" title="'4'"  read-only width="100" renderer="vm.myCustomRenderer"></hot-column>-->
+                <!--<hot-column data="id" title="'5'"  read-only width="100" renderer="vm.myCustomRenderer"></hot-column>-->
+                <!--<hot-column data="id" title="'6'"  read-only width="100" renderer="vm.myCustomRenderer"></hot-column>-->
+                <!--<hot-column data="id" title="'7'"  read-only width="100" renderer="vm.myCustomRenderer"></hot-column>-->
+                <!--<hot-column data="id" title="'8'"  read-only width="100" renderer="vm.myCustomRenderer"></hot-column>-->
+                <!--<hot-column data="id" title="'9'"  read-only width="100" renderer="vm.myCustomRenderer"></hot-column>-->
+                <!--<hot-column data="id" title="'10'"  read-only width="100" renderer="vm.myCustomRenderer"></hot-column>-->
+
+                <!--&lt;!&ndash;<hot-column data="name.first" title="'2'" type="'text'" read-only id="aaa" width="100"></hot-column>&ndash;&gt;-->
+                <!--&lt;!&ndash;<hot-column data="name.last" title="'3'" read-only width="100"></hot-column>&ndash;&gt;-->
+                <!--&lt;!&ndash;<hot-column data="address" title="'4'" width="100"></hot-column>&ndash;&gt;-->
+                <!--&lt;!&ndash;<hot-column data="product.description" title="'5'" type="'autocomplete'" width="100">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<hot-autocomplete datarows="description in product.options"></hot-autocomplete>&ndash;&gt;-->
+                <!--&lt;!&ndash;</hot-column>&ndash;&gt;-->
+                <!--&lt;!&ndash;<hot-column data="price" title="'6'" type="'numeric'" width="100" format="'$ 0,0.00'"></hot-column>&ndash;&gt;-->
+                <!--&lt;!&ndash;<hot-column data="price" title="'7'" type="'numeric'" width="100" format="'$ 0,0.00'"></hot-column>&ndash;&gt;-->
+                <!--&lt;!&ndash;<hot-column data="price" title="'8'" type="'numeric'" width="100" format="'$ 0,0.00'"></hot-column>&ndash;&gt;-->
+                <!--&lt;!&ndash;<hot-column data="price" title="'9'" type="'numeric'" width="100" format="'$ 0,0.00'"></hot-column>&ndash;&gt;-->
+                <!--&lt;!&ndash;<hot-column data="isActive" title="'10'" width="100"type="'checkbox'" checked-template="'Yes'"&ndash;&gt;-->
+                            <!--&lt;!&ndash;unchecked-template="'No'"></hot-column>&ndash;&gt;-->
             <!--</hot-table>-->
+
+
+            <!--<div>-->
+                <!---->
+            <!--</div>-->
         </div>
 
     </div>

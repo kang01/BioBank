@@ -1,0 +1,326 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myStorageInLabel" data-translate="bioBankApp.storageIn.home.createOrEditLabel">Create or edit a Storage In</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.storageIn.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.storageIn.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.projectCode" for="field_projectCode">Project Code</label>
+            <input type="text" class="form-control" name="projectCode" id="field_projectCode"
+                    ng-model="vm.storageIn.projectCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.projectCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.projectCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.projectCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.project_site_code" for="field_project_site_code">Project Site Code</label>
+            <input type="text" class="form-control" name="project_site_code" id="field_project_site_code"
+                    ng-model="vm.storageIn.project_site_code"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.project_site_code.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.project_site_code.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.project_site_code.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.receiveDate" for="field_receiveDate">Receive Date</label>
+                <div class="input-group">
+                    <input id="field_receiveDate" type="text" class="form-control" name="receiveDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.storageIn.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"
+                    required/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.receiveDate.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.receiveDate.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.receiveId" for="field_receiveId">Receive Id</label>
+            <input type="number" class="form-control" name="receiveId" id="field_receiveId"
+                    ng-model="vm.storageIn.receiveId"
+                    required max="100"/>
+            <div ng-show="editForm.receiveId.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.receiveId.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.receiveId.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.receiveId.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.receiveName" for="field_receiveName">Receive Name</label>
+            <input type="text" class="form-control" name="receiveName" id="field_receiveName"
+                    ng-model="vm.storageIn.receiveName"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.receiveName.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.receiveName.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.receiveName.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.storageInType" for="field_storageInType">Storage In Type</label>
+            <input type="text" class="form-control" name="storageInType" id="field_storageInType"
+                    ng-model="vm.storageIn.storageInType"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.storageInType.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.storageInType.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.storageInType.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.storageInPersonId1" for="field_storageInPersonId1">Storage In Person Id 1</label>
+            <input type="number" class="form-control" name="storageInPersonId1" id="field_storageInPersonId1"
+                    ng-model="vm.storageIn.storageInPersonId1"
+                    required max="100"/>
+            <div ng-show="editForm.storageInPersonId1.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.storageInPersonId1.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.storageInPersonId1.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.storageInPersonId1.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.storageInPersonName1" for="field_storageInPersonName1">Storage In Person Name 1</label>
+            <input type="text" class="form-control" name="storageInPersonName1" id="field_storageInPersonName1"
+                    ng-model="vm.storageIn.storageInPersonName1"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.storageInPersonName1.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.storageInPersonName1.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.storageInPersonName1.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.storageInPersonId2" for="field_storageInPersonId2">Storage In Person Id 2</label>
+            <input type="number" class="form-control" name="storageInPersonId2" id="field_storageInPersonId2"
+                    ng-model="vm.storageIn.storageInPersonId2"
+                    required max="100"/>
+            <div ng-show="editForm.storageInPersonId2.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.storageInPersonId2.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.storageInPersonId2.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.storageInPersonId2.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.storangeInPersonName2" for="field_storangeInPersonName2">Storange In Person Name 2</label>
+            <input type="text" class="form-control" name="storangeInPersonName2" id="field_storangeInPersonName2"
+                    ng-model="vm.storageIn.storangeInPersonName2"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.storangeInPersonName2.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.storangeInPersonName2.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.storangeInPersonName2.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.storageInDate" for="field_storageInDate">Storage In Date</label>
+                <div class="input-group">
+                    <input id="field_storageInDate" type="text" class="form-control" name="storageInDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.storageIn.storageInDate" is-open="vm.datePickerOpenStatus.storageInDate"
+                    required/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('storageInDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.storageInDate.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.storageInDate.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.sampleNumber" for="field_sampleNumber">Sample Number</label>
+            <input type="number" class="form-control" name="sampleNumber" id="field_sampleNumber"
+                    ng-model="vm.storageIn.sampleNumber"
+                    required max="100"/>
+            <div ng-show="editForm.sampleNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.sampleNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.sampleNumber.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.sampleNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.signId" for="field_signId">Sign Id</label>
+            <input type="number" class="form-control" name="signId" id="field_signId"
+                    ng-model="vm.storageIn.signId"
+                    required max="100"/>
+            <div ng-show="editForm.signId.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.signId.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.signId.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.signId.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.signName" for="field_signName">Sign Name</label>
+            <input type="text" class="form-control" name="signName" id="field_signName"
+                    ng-model="vm.storageIn.signName"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.signName.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.signName.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.signName.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.signDate" for="field_signDate">Sign Date</label>
+                <div class="input-group">
+                    <input id="field_signDate" type="text" class="form-control" name="signDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.storageIn.signDate" is-open="vm.datePickerOpenStatus.signDate"
+                    required/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('signDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.signDate.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.signDate.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.memo" for="field_memo">Memo</label>
+            <input type="text" class="form-control" name="memo" id="field_memo"
+                    ng-model="vm.storageIn.memo"
+                    ng-maxlength="1024"/>
+            <div ng-show="editForm.memo.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.memo.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
+                    This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.storageIn.status" for="field_status">Status</label>
+            <input type="text" class="form-control" name="status" id="field_status"
+                    ng-model="vm.storageIn.status"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.status.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.status.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.status.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label data-translate="bioBankApp.storageIn.tranship" for="field_tranship">Tranship</label>
+            <select class="form-control" id="field_tranship" name="tranship" ng-model="vm.storageIn.transhipId" ng-options="tranship.id as tranship.id for tranship in vm.tranships"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.tranship.$invalid">
+            <p class="help-block"
+                ng-show="editForm.tranship.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

@@ -1,0 +1,35 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.sampleType.detail.title">Sample Type</span> {{vm.sampleType.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.sampleType.sampleTypeCode">Sample Type Code</span></dt>
+        <dd>
+            <span>{{vm.sampleType.sampleTypeCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.sampleType.sampleTypeName">Sample Type Name</span></dt>
+        <dd>
+            <span>{{vm.sampleType.sampleTypeName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.sampleType.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.sampleType.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.sampleType.status">Status</span></dt>
+        <dd>
+            <span>{{vm.sampleType.status}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="sample-type-detail.edit({id:vm.sampleType.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

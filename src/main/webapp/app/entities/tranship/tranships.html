@@ -1,0 +1,94 @@
+<div>
+    <h2 data-translate="bioBankApp.tranship.home.title">Tranships</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="tranship.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.tranship.home.createLabel">
+                        Create new Tranship
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="transhipDate"><span data-translate="bioBankApp.tranship.transhipDate">Tranship Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectCode"><span data-translate="bioBankApp.tranship.projectCode">Project Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectName"><span data-translate="bioBankApp.tranship.projectName">Project Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectSiteCode"><span data-translate="bioBankApp.tranship.projectSiteCode">Project Site Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectSiteName"><span data-translate="bioBankApp.tranship.projectSiteName">Project Site Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="trackNumber"><span data-translate="bioBankApp.tranship.trackNumber">Track Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="transhipBatch"><span data-translate="bioBankApp.tranship.transhipBatch">Tranship Batch</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="transhipState"><span data-translate="bioBankApp.tranship.transhipState">Tranship State</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="receiver"><span data-translate="bioBankApp.tranship.receiver">Receiver</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="receiveDate"><span data-translate="bioBankApp.tranship.receiveDate">Receive Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="sampleNumber"><span data-translate="bioBankApp.tranship.sampleNumber">Sample Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxNumber"><span data-translate="bioBankApp.tranship.frozenBoxNumber">Frozen Box Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="emptyTubeNumber"><span data-translate="bioBankApp.tranship.emptyTubeNumber">Empty Tube Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="emptyHoleNumber"><span data-translate="bioBankApp.tranship.emptyHoleNumber">Empty Hole Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="sampleSatisfaction"><span data-translate="bioBankApp.tranship.sampleSatisfaction">Sample Satisfaction</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="effectiveSampleNumber"><span data-translate="bioBankApp.tranship.effectiveSampleNumber">Effective Sample Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.tranship.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.tranship.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="tranship in vm.tranships track by tranship.id">
+                    <td><a ui-sref="tranship-detail({id:tranship.id})">{{tranship.id}}</a></td>
+                        <td>{{tranship.transhipDate | date:'mediumDate'}}</td>
+                    <td>{{tranship.projectCode}}</td>
+                    <td>{{tranship.projectName}}</td>
+                    <td>{{tranship.projectSiteCode}}</td>
+                    <td>{{tranship.projectSiteName}}</td>
+                    <td>{{tranship.trackNumber}}</td>
+                    <td>{{tranship.transhipBatch}}</td>
+                    <td>{{tranship.transhipState}}</td>
+                    <td>{{tranship.receiver}}</td>
+                        <td>{{tranship.receiveDate | date:'mediumDate'}}</td>
+                    <td>{{tranship.sampleNumber}}</td>
+                    <td>{{tranship.frozenBoxNumber}}</td>
+                    <td>{{tranship.emptyTubeNumber}}</td>
+                    <td>{{tranship.emptyHoleNumber}}</td>
+                    <td>{{tranship.sampleSatisfaction}}</td>
+                    <td>{{tranship.effectiveSampleNumber}}</td>
+                    <td>{{tranship.memo}}</td>
+                    <td>{{tranship.status}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="tranship-detail({id:tranship.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="tranship.edit({id:tranship.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="tranship.delete({id:tranship.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

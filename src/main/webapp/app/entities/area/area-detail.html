@@ -1,0 +1,43 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.area.detail.title">Area</span> {{vm.area.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.area.areaCode">Area Code</span></dt>
+        <dd>
+            <span>{{vm.area.areaCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.area.freezeFrameNumber">Freeze Frame Number</span></dt>
+        <dd>
+            <span>{{vm.area.freezeFrameNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.area.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.area.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.area.status">Status</span></dt>
+        <dd>
+            <span>{{vm.area.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.area.equipmentCode">Equipment Code</span></dt>
+        <dd>
+            <span>{{vm.area.equipmentCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.area.equipment">Equipment</span></dt>
+        <dd>
+            <a ui-sref="equipment-detail({id:vm.area.equipmentId})">{{vm.area.equipmentEquipmentCode}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="area-detail.edit({id:vm.area.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

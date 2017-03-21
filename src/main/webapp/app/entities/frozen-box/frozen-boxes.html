@@ -1,0 +1,100 @@
+<div>
+    <h2 data-translate="bioBankApp.frozenBox.home.title">Frozen Boxes</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="frozen-box.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.frozenBox.home.createLabel">
+                        Create new Frozen Box
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxCode"><span data-translate="bioBankApp.frozenBox.frozenBoxCode">Frozen Box Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxTypeCode"><span data-translate="bioBankApp.frozenBox.frozenBoxTypeCode">Frozen Box Type Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxRows"><span data-translate="bioBankApp.frozenBox.frozenBoxRows">Frozen Box Rows</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxColumns"><span data-translate="bioBankApp.frozenBox.frozenBoxColumns">Frozen Box Columns</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectCode"><span data-translate="bioBankApp.frozenBox.projectCode">Project Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectName"><span data-translate="bioBankApp.frozenBox.projectName">Project Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectSiteCode"><span data-translate="bioBankApp.frozenBox.projectSiteCode">Project Site Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectSiteName"><span data-translate="bioBankApp.frozenBox.projectSiteName">Project Site Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentCode"><span data-translate="bioBankApp.frozenBox.equipmentCode">Equipment Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="areaCode"><span data-translate="bioBankApp.frozenBox.areaCode">Area Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="supportRackCode"><span data-translate="bioBankApp.frozenBox.supportRackCode">Support Rack Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="sampleTypeCode"><span data-translate="bioBankApp.frozenBox.sampleTypeCode">Sample Type Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="sampleTypeName"><span data-translate="bioBankApp.frozenBox.sampleTypeName">Sample Type Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="sampleNumber"><span data-translate="bioBankApp.frozenBox.sampleNumber">Sample Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="isSplit"><span data-translate="bioBankApp.frozenBox.isSplit">Is Split</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.frozenBox.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.frozenBox.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxTypeId"><span data-translate="bioBankApp.frozenBox.frozenBoxType">Frozen Box Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="sampleTypeId"><span data-translate="bioBankApp.frozenBox.sampleType">Sample Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="frozenBox in vm.frozenBoxes track by frozenBox.id">
+                    <td><a ui-sref="frozen-box-detail({id:frozenBox.id})">{{frozenBox.id}}</a></td>
+                    <td>{{frozenBox.frozenBoxCode}}</td>
+                    <td>{{frozenBox.frozenBoxTypeCode}}</td>
+                    <td>{{frozenBox.frozenBoxRows}}</td>
+                    <td>{{frozenBox.frozenBoxColumns}}</td>
+                    <td>{{frozenBox.projectCode}}</td>
+                    <td>{{frozenBox.projectName}}</td>
+                    <td>{{frozenBox.projectSiteCode}}</td>
+                    <td>{{frozenBox.projectSiteName}}</td>
+                    <td>{{frozenBox.equipmentCode}}</td>
+                    <td>{{frozenBox.areaCode}}</td>
+                    <td>{{frozenBox.supportRackCode}}</td>
+                    <td>{{frozenBox.sampleTypeCode}}</td>
+                    <td>{{frozenBox.sampleTypeName}}</td>
+                    <td>{{frozenBox.sampleNumber}}</td>
+                    <td>{{frozenBox.isSplit}}</td>
+                    <td>{{frozenBox.memo}}</td>
+                    <td>{{frozenBox.status}}</td>
+                    <td>
+                        <a ui-sref="frozen-box-type-detail({id:frozenBox.frozenBoxTypeId})">{{frozenBox.frozenBoxTypeId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="sample-type-detail({id:frozenBox.sampleTypeId})">{{frozenBox.sampleTypeId}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="frozen-box-detail({id:frozenBox.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="frozen-box.edit({id:frozenBox.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="frozen-box.delete({id:frozenBox.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

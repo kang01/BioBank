@@ -1,0 +1,29 @@
+{
+    "bioBankApp": {
+        "storageInBox" : {
+            "home": {
+                "title": "Storage In Boxes",
+                "createLabel": "Create a new Storage In Box",
+                "createOrEditLabel": "Create or edit a Storage In Box"
+            },
+            "created": "A new Storage In Box is created with identifier {{ param }}",
+            "updated": "A Storage In Box is updated with identifier {{ param }}",
+            "deleted": "A Storage In Box is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Storage In Box {{ id }}?"
+            },
+            "detail": {
+                "title": "Storage In Box"
+            },
+            "equipmentCode": "Equipment Code",
+            "areaCode": "Area Code",
+            "supportRackCode": "Support Rack Code",
+            "rowsInShelf": "Rows In Shelf",
+            "columnsInShelf": "Columns In Shelf",
+            "memo": "Memo",
+            "status": "Status",
+            "frozenBoxCode": "Frozen Box Code",
+            "storageIn": "Storage In"
+        }
+    }
+}

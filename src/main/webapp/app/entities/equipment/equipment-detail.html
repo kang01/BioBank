@@ -1,0 +1,71 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.equipment.detail.title">Equipment</span> {{vm.equipment.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.equipment.equipmentCode">Equipment Code</span></dt>
+        <dd>
+            <span>{{vm.equipment.equipmentCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipment.temperature">Temperature</span></dt>
+        <dd>
+            <span>{{vm.equipment.temperature}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipment.equipmentAddress">Equipment Address</span></dt>
+        <dd>
+            <span>{{vm.equipment.equipmentAddress}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipment.ampoulesMax">Ampoules Max</span></dt>
+        <dd>
+            <span>{{vm.equipment.ampoulesMax}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipment.ampoulesMin">Ampoules Min</span></dt>
+        <dd>
+            <span>{{vm.equipment.ampoulesMin}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipment.label1">Label 1</span></dt>
+        <dd>
+            <span>{{vm.equipment.label1}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipment.label2">Label 2</span></dt>
+        <dd>
+            <span>{{vm.equipment.label2}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipment.label4">Label 4</span></dt>
+        <dd>
+            <span>{{vm.equipment.label4}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipment.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.equipment.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipment.status">Status</span></dt>
+        <dd>
+            <span>{{vm.equipment.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipment.label3">Label 3</span></dt>
+        <dd>
+            <span>{{vm.equipment.label3}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipment.equipmentGroup">Equipment Group</span></dt>
+        <dd>
+            <a ui-sref="equipment-group-detail({id:vm.equipment.equipmentGroupId})">{{vm.equipment.equipmentGroupId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.equipment.equipmentModle">Equipment Modle</span></dt>
+        <dd>
+            <a ui-sref="equipment-modle-detail({id:vm.equipment.equipmentModleId})">{{vm.equipment.equipmentModleId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="equipment-detail.edit({id:vm.equipment.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

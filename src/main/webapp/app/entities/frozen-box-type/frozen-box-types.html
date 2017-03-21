@@ -1,0 +1,70 @@
+<div>
+    <h2 data-translate="bioBankApp.frozenBoxType.home.title">Frozen Box Types</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="frozen-box-type.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.frozenBoxType.home.createLabel">
+                        Create new Frozen Box Type
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxTypeCode"><span data-translate="bioBankApp.frozenBoxType.frozenBoxTypeCode">Frozen Box Type Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxTypeName"><span data-translate="bioBankApp.frozenBoxType.frozenBoxTypeName">Frozen Box Type Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxTypeRows"><span data-translate="bioBankApp.frozenBoxType.frozenBoxTypeRows">Frozen Box Type Rows</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxTypeColumns"><span data-translate="bioBankApp.frozenBoxType.frozenBoxTypeColumns">Frozen Box Type Columns</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.frozenBoxType.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.frozenBoxType.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="frozenBoxType in vm.frozenBoxTypes track by frozenBoxType.id">
+                    <td><a ui-sref="frozen-box-type-detail({id:frozenBoxType.id})">{{frozenBoxType.id}}</a></td>
+                    <td>{{frozenBoxType.frozenBoxTypeCode}}</td>
+                    <td>{{frozenBoxType.frozenBoxTypeName}}</td>
+                    <td>{{frozenBoxType.frozenBoxTypeRows}}</td>
+                    <td>{{frozenBoxType.frozenBoxTypeColumns}}</td>
+                    <td>{{frozenBoxType.memo}}</td>
+                    <td>{{frozenBoxType.status}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="frozen-box-type-detail({id:frozenBoxType.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="frozen-box-type.edit({id:frozenBoxType.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="frozen-box-type.delete({id:frozenBoxType.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

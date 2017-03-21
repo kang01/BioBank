@@ -1,0 +1,39 @@
+{
+    "bioBankApp": {
+        "frozenBox" : {
+            "home": {
+                "title": "Frozen Boxes",
+                "createLabel": "Create a new Frozen Box",
+                "createOrEditLabel": "Create or edit a Frozen Box"
+            },
+            "created": "A new Frozen Box is created with identifier {{ param }}",
+            "updated": "A Frozen Box is updated with identifier {{ param }}",
+            "deleted": "A Frozen Box is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Frozen Box {{ id }}?"
+            },
+            "detail": {
+                "title": "Frozen Box"
+            },
+            "frozenBoxCode": "Frozen Box Code",
+            "frozenBoxTypeCode": "Frozen Box Type Code",
+            "frozenBoxRows": "Frozen Box Rows",
+            "frozenBoxColumns": "Frozen Box Columns",
+            "projectCode": "Project Code",
+            "projectName": "Project Name",
+            "projectSiteCode": "Project Site Code",
+            "projectSiteName": "Project Site Name",
+            "equipmentCode": "Equipment Code",
+            "areaCode": "Area Code",
+            "supportRackCode": "Support Rack Code",
+            "sampleTypeCode": "Sample Type Code",
+            "sampleTypeName": "Sample Type Name",
+            "sampleNumber": "Sample Number",
+            "isSplit": "Is Split",
+            "memo": "Memo",
+            "status": "Status",
+            "frozenBoxType": "Frozen Box Type",
+            "sampleType": "Sample Type"
+        }
+    }
+}

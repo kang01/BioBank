@@ -1,0 +1,38 @@
+{
+    "bioBankApp": {
+        "storageIn" : {
+            "home": {
+                "title": "Storage Ins",
+                "createLabel": "Create a new Storage In",
+                "createOrEditLabel": "Create or edit a Storage In"
+            },
+            "created": "A new Storage In is created with identifier {{ param }}",
+            "updated": "A Storage In is updated with identifier {{ param }}",
+            "deleted": "A Storage In is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Storage In {{ id }}?"
+            },
+            "detail": {
+                "title": "Storage In"
+            },
+            "projectCode": "Project Code",
+            "project_site_code": "Project Site Code",
+            "receiveDate": "Receive Date",
+            "receiveId": "Receive Id",
+            "receiveName": "Receive Name",
+            "storageInType": "Storage In Type",
+            "storageInPersonId1": "Storage In Person Id 1",
+            "storageInPersonName1": "Storage In Person Name 1",
+            "storageInPersonId2": "Storage In Person Id 2",
+            "storangeInPersonName2": "Storange In Person Name 2",
+            "storageInDate": "Storage In Date",
+            "sampleNumber": "Sample Number",
+            "signId": "Sign Id",
+            "signName": "Sign Name",
+            "signDate": "Sign Date",
+            "memo": "Memo",
+            "status": "Status",
+            "tranship": "Tranship"
+        }
+    }
+}

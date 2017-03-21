@@ -1,0 +1,78 @@
+<div>
+    <h2 data-translate="bioBankApp.storageInBox.home.title">Storage In Boxes</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="storage-in-box.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.storageInBox.home.createLabel">
+                        Create new Storage In Box
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentCode"><span data-translate="bioBankApp.storageInBox.equipmentCode">Equipment Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="areaCode"><span data-translate="bioBankApp.storageInBox.areaCode">Area Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="supportRackCode"><span data-translate="bioBankApp.storageInBox.supportRackCode">Support Rack Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="rowsInShelf"><span data-translate="bioBankApp.storageInBox.rowsInShelf">Rows In Shelf</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="columnsInShelf"><span data-translate="bioBankApp.storageInBox.columnsInShelf">Columns In Shelf</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.storageInBox.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.storageInBox.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxCode"><span data-translate="bioBankApp.storageInBox.frozenBoxCode">Frozen Box Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="storageInId"><span data-translate="bioBankApp.storageInBox.storageIn">Storage In</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="storageInBox in vm.storageInBoxes track by storageInBox.id">
+                    <td><a ui-sref="storage-in-box-detail({id:storageInBox.id})">{{storageInBox.id}}</a></td>
+                    <td>{{storageInBox.equipmentCode}}</td>
+                    <td>{{storageInBox.areaCode}}</td>
+                    <td>{{storageInBox.supportRackCode}}</td>
+                    <td>{{storageInBox.rowsInShelf}}</td>
+                    <td>{{storageInBox.columnsInShelf}}</td>
+                    <td>{{storageInBox.memo}}</td>
+                    <td>{{storageInBox.status}}</td>
+                    <td>{{storageInBox.frozenBoxCode}}</td>
+                    <td>
+                        <a ui-sref="storage-in-detail({id:storageInBox.storageInId})">{{storageInBox.storageInId}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="storage-in-box-detail({id:storageInBox.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="storage-in-box.edit({id:storageInBox.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="storage-in-box.delete({id:storageInBox.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

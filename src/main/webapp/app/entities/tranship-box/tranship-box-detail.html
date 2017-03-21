@@ -1,0 +1,55 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.transhipBox.detail.title">Tranship Box</span> {{vm.transhipBox.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.transhipBox.frozenBoxCode">Frozen Box Code</span></dt>
+        <dd>
+            <span>{{vm.transhipBox.frozenBoxCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBox.equipmentCode">Equipment Code</span></dt>
+        <dd>
+            <span>{{vm.transhipBox.equipmentCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBox.areaCode">Area Code</span></dt>
+        <dd>
+            <span>{{vm.transhipBox.areaCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBox.supportRackCode">Support Rack Code</span></dt>
+        <dd>
+            <span>{{vm.transhipBox.supportRackCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBox.rowsInShelf">Rows In Shelf</span></dt>
+        <dd>
+            <span>{{vm.transhipBox.rowsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBox.columnsInShelf">Columns In Shelf</span></dt>
+        <dd>
+            <span>{{vm.transhipBox.columnsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBox.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.transhipBox.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBox.status">Status</span></dt>
+        <dd>
+            <span>{{vm.transhipBox.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBox.tranship">Tranship</span></dt>
+        <dd>
+            <a ui-sref="tranship-detail({id:vm.transhipBox.transhipId})">{{vm.transhipBox.transhipId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="tranship-box-detail.edit({id:vm.transhipBox.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

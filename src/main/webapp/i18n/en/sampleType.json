@@ -1,0 +1,24 @@
+{
+    "bioBankApp": {
+        "sampleType" : {
+            "home": {
+                "title": "Sample Types",
+                "createLabel": "Create a new Sample Type",
+                "createOrEditLabel": "Create or edit a Sample Type"
+            },
+            "created": "A new Sample Type is created with identifier {{ param }}",
+            "updated": "A Sample Type is updated with identifier {{ param }}",
+            "deleted": "A Sample Type is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Sample Type {{ id }}?"
+            },
+            "detail": {
+                "title": "Sample Type"
+            },
+            "sampleTypeCode": "Sample Type Code",
+            "sampleTypeName": "Sample Type Name",
+            "memo": "Memo",
+            "status": "Status"
+        }
+    }
+}

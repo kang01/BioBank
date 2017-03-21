@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity FrozenBox.
+    -->
+    <changeSet id="20170317062302-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="frozen_box_type_id"
+                                 baseTableName="frozen_box"
+                                 constraintName="frozen_box_frozen_box_ty_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_box_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="sample_type_id"
+                                 baseTableName="frozen_box"
+                                 constraintName="fk_frozen_box_sample_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_type"/>
+
+    </changeSet>
+</databaseChangeLog>

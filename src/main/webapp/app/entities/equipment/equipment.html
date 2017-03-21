@@ -1,0 +1,88 @@
+<div>
+    <h2 data-translate="bioBankApp.equipment.home.title">Equipment</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="equipment.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.equipment.home.createLabel">
+                        Create new Equipment
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentCode"><span data-translate="bioBankApp.equipment.equipmentCode">Equipment Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="temperature"><span data-translate="bioBankApp.equipment.temperature">Temperature</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentAddress"><span data-translate="bioBankApp.equipment.equipmentAddress">Equipment Address</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="ampoulesMax"><span data-translate="bioBankApp.equipment.ampoulesMax">Ampoules Max</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="ampoulesMin"><span data-translate="bioBankApp.equipment.ampoulesMin">Ampoules Min</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="label1"><span data-translate="bioBankApp.equipment.label1">Label 1</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="label2"><span data-translate="bioBankApp.equipment.label2">Label 2</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="label4"><span data-translate="bioBankApp.equipment.label4">Label 4</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.equipment.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.equipment.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="label3"><span data-translate="bioBankApp.equipment.label3">Label 3</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentGroupId"><span data-translate="bioBankApp.equipment.equipmentGroup">Equipment Group</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentModleId"><span data-translate="bioBankApp.equipment.equipmentModle">Equipment Modle</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="equipment in vm.equipment track by equipment.id">
+                    <td><a ui-sref="equipment-detail({id:equipment.id})">{{equipment.id}}</a></td>
+                    <td>{{equipment.equipmentCode}}</td>
+                    <td>{{equipment.temperature}}</td>
+                    <td>{{equipment.equipmentAddress}}</td>
+                    <td>{{equipment.ampoulesMax}}</td>
+                    <td>{{equipment.ampoulesMin}}</td>
+                    <td>{{equipment.label1}}</td>
+                    <td>{{equipment.label2}}</td>
+                    <td>{{equipment.label4}}</td>
+                    <td>{{equipment.memo}}</td>
+                    <td>{{equipment.status}}</td>
+                    <td>{{equipment.label3}}</td>
+                    <td>
+                        <a ui-sref="equipment-group-detail({id:equipment.equipmentGroupId})">{{equipment.equipmentGroupId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="equipment-modle-detail({id:equipment.equipmentModleId})">{{equipment.equipmentModleId}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="equipment-detail({id:equipment.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="equipment.edit({id:equipment.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="equipment.delete({id:equipment.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

@@ -1,0 +1,95 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.frozenBox.detail.title">Frozen Box</span> {{vm.frozenBox.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.frozenBox.frozenBoxCode">Frozen Box Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.frozenBoxCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.frozenBoxTypeCode">Frozen Box Type Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.frozenBoxTypeCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.frozenBoxRows">Frozen Box Rows</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.frozenBoxRows}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.frozenBoxColumns">Frozen Box Columns</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.frozenBoxColumns}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.projectCode">Project Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.projectCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.projectName">Project Name</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.projectName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.projectSiteCode">Project Site Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.projectSiteCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.projectSiteName">Project Site Name</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.projectSiteName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.equipmentCode">Equipment Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.equipmentCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.areaCode">Area Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.areaCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.supportRackCode">Support Rack Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.supportRackCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.sampleTypeCode">Sample Type Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.sampleTypeCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.sampleTypeName">Sample Type Name</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.sampleTypeName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.sampleNumber">Sample Number</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.sampleNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.isSplit">Is Split</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.isSplit}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.status">Status</span></dt>
+        <dd>
+            <span>{{vm.frozenBox.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.frozenBoxType">Frozen Box Type</span></dt>
+        <dd>
+            <a ui-sref="frozen-box-type-detail({id:vm.frozenBox.frozenBoxTypeId})">{{vm.frozenBox.frozenBoxTypeId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBox.sampleType">Sample Type</span></dt>
+        <dd>
+            <a ui-sref="sample-type-detail({id:vm.frozenBox.sampleTypeId})">{{vm.frozenBox.sampleTypeId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="frozen-box-detail.edit({id:vm.frozenBox.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

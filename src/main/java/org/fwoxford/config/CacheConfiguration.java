@@ -49,6 +49,21 @@ public class CacheConfiguration {
             cm.createCache(org.fwoxford.domain.ProjectRelate.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.EquipmentGroup.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.EquipmentModle.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.Equipment.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.Area.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.SupportRackType.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.SupportRack.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.SampleType.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.FrozenBoxType.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.FrozenTubeType.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.FrozenBox.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.Tranship.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.Relations.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.FrozenTube.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.TranshipBox.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.StorageIn.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.FrozenTubeRecord.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.StorageInBox.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

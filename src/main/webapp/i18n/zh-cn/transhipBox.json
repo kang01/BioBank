@@ -1,0 +1,29 @@
+{
+    "bioBankApp": {
+        "transhipBox" : {
+            "home": {
+                "title": "Tranship Boxes",
+                "createLabel": "Create a new Tranship Box",
+                "createOrEditLabel": "Create or edit a Tranship Box"
+            },
+            "created": "A new Tranship Box is created with identifier {{ param }}",
+            "updated": "A Tranship Box is updated with identifier {{ param }}",
+            "deleted": "A Tranship Box is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Tranship Box {{ id }}?"
+            },
+            "detail": {
+                "title": "Tranship Box"
+            },
+            "frozenBoxCode": "Frozen Box Code",
+            "equipmentCode": "Equipment Code",
+            "areaCode": "Area Code",
+            "supportRackCode": "Support Rack Code",
+            "rowsInShelf": "Rows In Shelf",
+            "columnsInShelf": "Columns In Shelf",
+            "memo": "Memo",
+            "status": "Status",
+            "tranship": "Tranship"
+        }
+    }
+}

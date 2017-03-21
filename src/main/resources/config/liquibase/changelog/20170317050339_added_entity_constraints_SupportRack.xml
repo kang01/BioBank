@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity SupportRack.
+    -->
+    <changeSet id="20170317050339-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="support_rack_type_id"
+                                 baseTableName="support_rack"
+                                 constraintName="support_rack_support_rack_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="support_rack_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="area_code"
+                                 baseTableName="support_rack"
+                                 constraintName="fk_support_rack_area_code"
+                                 referencedColumnNames="area_code"
+                                 referencedTableName="area"/>
+
+    </changeSet>
+</databaseChangeLog>

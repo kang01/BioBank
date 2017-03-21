@@ -1,0 +1,322 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myFrozenBoxLabel" data-translate="bioBankApp.frozenBox.home.createOrEditLabel">Create or edit a Frozen Box</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.frozenBox.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.frozenBox.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.frozenBoxCode" for="field_frozenBoxCode">Frozen Box Code</label>
+            <input type="text" class="form-control" name="frozenBoxCode" id="field_frozenBoxCode"
+                    ng-model="vm.frozenBox.frozenBoxCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.frozenBoxCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.frozenBoxTypeCode" for="field_frozenBoxTypeCode">Frozen Box Type Code</label>
+            <input type="text" class="form-control" name="frozenBoxTypeCode" id="field_frozenBoxTypeCode"
+                    ng-model="vm.frozenBox.frozenBoxTypeCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.frozenBoxTypeCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxTypeCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxTypeCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.frozenBoxRows" for="field_frozenBoxRows">Frozen Box Rows</label>
+            <input type="text" class="form-control" name="frozenBoxRows" id="field_frozenBoxRows"
+                    ng-model="vm.frozenBox.frozenBoxRows"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.frozenBoxRows.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxRows.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxRows.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.frozenBoxColumns" for="field_frozenBoxColumns">Frozen Box Columns</label>
+            <input type="text" class="form-control" name="frozenBoxColumns" id="field_frozenBoxColumns"
+                    ng-model="vm.frozenBox.frozenBoxColumns"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.frozenBoxColumns.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxColumns.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxColumns.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.projectCode" for="field_projectCode">Project Code</label>
+            <input type="text" class="form-control" name="projectCode" id="field_projectCode"
+                    ng-model="vm.frozenBox.projectCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.projectCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.projectCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.projectCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.projectName" for="field_projectName">Project Name</label>
+            <input type="text" class="form-control" name="projectName" id="field_projectName"
+                    ng-model="vm.frozenBox.projectName"
+                    required ng-maxlength="255"/>
+            <div ng-show="editForm.projectName.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.projectName.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.projectName.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.projectSiteCode" for="field_projectSiteCode">Project Site Code</label>
+            <input type="text" class="form-control" name="projectSiteCode" id="field_projectSiteCode"
+                    ng-model="vm.frozenBox.projectSiteCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.projectSiteCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.projectSiteCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.projectSiteCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.projectSiteName" for="field_projectSiteName">Project Site Name</label>
+            <input type="text" class="form-control" name="projectSiteName" id="field_projectSiteName"
+                    ng-model="vm.frozenBox.projectSiteName"
+                    required ng-maxlength="255"/>
+            <div ng-show="editForm.projectSiteName.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.projectSiteName.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.projectSiteName.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.equipmentCode" for="field_equipmentCode">Equipment Code</label>
+            <input type="text" class="form-control" name="equipmentCode" id="field_equipmentCode"
+                    ng-model="vm.frozenBox.equipmentCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.equipmentCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.equipmentCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.equipmentCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.areaCode" for="field_areaCode">Area Code</label>
+            <input type="text" class="form-control" name="areaCode" id="field_areaCode"
+                    ng-model="vm.frozenBox.areaCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.areaCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.areaCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.areaCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.supportRackCode" for="field_supportRackCode">Support Rack Code</label>
+            <input type="text" class="form-control" name="supportRackCode" id="field_supportRackCode"
+                    ng-model="vm.frozenBox.supportRackCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.supportRackCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.supportRackCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.supportRackCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.sampleTypeCode" for="field_sampleTypeCode">Sample Type Code</label>
+            <input type="text" class="form-control" name="sampleTypeCode" id="field_sampleTypeCode"
+                    ng-model="vm.frozenBox.sampleTypeCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.sampleTypeCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.sampleTypeCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.sampleTypeCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.sampleTypeName" for="field_sampleTypeName">Sample Type Name</label>
+            <input type="text" class="form-control" name="sampleTypeName" id="field_sampleTypeName"
+                    ng-model="vm.frozenBox.sampleTypeName"
+                    required ng-maxlength="255"/>
+            <div ng-show="editForm.sampleTypeName.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.sampleTypeName.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.sampleTypeName.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.sampleNumber" for="field_sampleNumber">Sample Number</label>
+            <input type="number" class="form-control" name="sampleNumber" id="field_sampleNumber"
+                    ng-model="vm.frozenBox.sampleNumber"
+                    required max="20"/>
+            <div ng-show="editForm.sampleNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.sampleNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.sampleNumber.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.sampleNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.isSplit" for="field_isSplit">Is Split</label>
+            <input type="text" class="form-control" name="isSplit" id="field_isSplit"
+                    ng-model="vm.frozenBox.isSplit"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.isSplit.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.isSplit.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.isSplit.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.memo" for="field_memo">Memo</label>
+            <input type="text" class="form-control" name="memo" id="field_memo"
+                    ng-model="vm.frozenBox.memo"
+                    ng-maxlength="255"/>
+            <div ng-show="editForm.memo.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.memo.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.status" for="field_status">Status</label>
+            <input type="text" class="form-control" name="status" id="field_status"
+                    ng-model="vm.frozenBox.status"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.status.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.status.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.status.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label data-translate="bioBankApp.frozenBox.frozenBoxType" for="field_frozenBoxType">Frozen Box Type</label>
+            <select class="form-control" id="field_frozenBoxType" name="frozenBoxType" ng-model="vm.frozenBox.frozenBoxTypeId" ng-options="frozenBoxType.id as frozenBoxType.id for frozenBoxType in vm.frozenboxtypes"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.frozenBoxType.$invalid">
+            <p class="help-block"
+                ng-show="editForm.frozenBoxType.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.frozenBox.sampleType" for="field_sampleType">Sample Type</label>
+            <select class="form-control" id="field_sampleType" name="sampleType" ng-model="vm.frozenBox.sampleTypeId" ng-options="sampleType.id as sampleType.id for sampleType in vm.sampletypes"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.sampleType.$invalid">
+            <p class="help-block"
+                ng-show="editForm.sampleType.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

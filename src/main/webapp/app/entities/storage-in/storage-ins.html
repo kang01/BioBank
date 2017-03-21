@@ -1,0 +1,96 @@
+<div>
+    <h2 data-translate="bioBankApp.storageIn.home.title">Storage Ins</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="storage-in.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.storageIn.home.createLabel">
+                        Create new Storage In
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectCode"><span data-translate="bioBankApp.storageIn.projectCode">Project Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="project_site_code"><span data-translate="bioBankApp.storageIn.project_site_code">Project Site Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="receiveDate"><span data-translate="bioBankApp.storageIn.receiveDate">Receive Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="receiveId"><span data-translate="bioBankApp.storageIn.receiveId">Receive Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="receiveName"><span data-translate="bioBankApp.storageIn.receiveName">Receive Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="storageInType"><span data-translate="bioBankApp.storageIn.storageInType">Storage In Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="storageInPersonId1"><span data-translate="bioBankApp.storageIn.storageInPersonId1">Storage In Person Id 1</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="storageInPersonName1"><span data-translate="bioBankApp.storageIn.storageInPersonName1">Storage In Person Name 1</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="storageInPersonId2"><span data-translate="bioBankApp.storageIn.storageInPersonId2">Storage In Person Id 2</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="storangeInPersonName2"><span data-translate="bioBankApp.storageIn.storangeInPersonName2">Storange In Person Name 2</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="storageInDate"><span data-translate="bioBankApp.storageIn.storageInDate">Storage In Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="sampleNumber"><span data-translate="bioBankApp.storageIn.sampleNumber">Sample Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="signId"><span data-translate="bioBankApp.storageIn.signId">Sign Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="signName"><span data-translate="bioBankApp.storageIn.signName">Sign Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="signDate"><span data-translate="bioBankApp.storageIn.signDate">Sign Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.storageIn.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.storageIn.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="transhipId"><span data-translate="bioBankApp.storageIn.tranship">Tranship</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="storageIn in vm.storageIns track by storageIn.id">
+                    <td><a ui-sref="storage-in-detail({id:storageIn.id})">{{storageIn.id}}</a></td>
+                    <td>{{storageIn.projectCode}}</td>
+                    <td>{{storageIn.project_site_code}}</td>
+                        <td>{{storageIn.receiveDate | date:'mediumDate'}}</td>
+                    <td>{{storageIn.receiveId}}</td>
+                    <td>{{storageIn.receiveName}}</td>
+                    <td>{{storageIn.storageInType}}</td>
+                    <td>{{storageIn.storageInPersonId1}}</td>
+                    <td>{{storageIn.storageInPersonName1}}</td>
+                    <td>{{storageIn.storageInPersonId2}}</td>
+                    <td>{{storageIn.storangeInPersonName2}}</td>
+                        <td>{{storageIn.storageInDate | date:'mediumDate'}}</td>
+                    <td>{{storageIn.sampleNumber}}</td>
+                    <td>{{storageIn.signId}}</td>
+                    <td>{{storageIn.signName}}</td>
+                        <td>{{storageIn.signDate | date:'mediumDate'}}</td>
+                    <td>{{storageIn.memo}}</td>
+                    <td>{{storageIn.status}}</td>
+                    <td>
+                        <a ui-sref="tranship-detail({id:storageIn.transhipId})">{{storageIn.transhipId}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="storage-in-detail({id:storageIn.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="storage-in.edit({id:storageIn.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="storage-in.delete({id:storageIn.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

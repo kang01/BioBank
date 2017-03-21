@@ -4,12 +4,12 @@ import com.codahale.metrics.annotation.Timed;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
 
-import net.sf.json.JSONArray;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
-
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
@@ -110,7 +110,22 @@ public class TempResource {
             "    \"transhipState\": \"01\"\n" +
             "  }\n" +
             "]";
-        JSONArray jsonArray = JSONArray.fromObject(jsonString);
+        List<Map<String,Object>> alist = new ArrayList<>();
+        for(int i = 0 ; i < 9 ; i++){
+            Map<String,Object> map = new HashMap<>();
+            map.put("id",i);
+            map.put("projectCode","P_00007"+i);
+            map.put("projectSiteCode","PS_0000700"+i);
+            map.put("receiveDate",new Date().getTime());
+            map.put("sampleSatisfaction",5);
+            map.put("transhipDate",new Date().getTime());
+            map.put("transhipState","01");
+            alist.add(map);
+        }
+
+        String jsonStr = JSONArray.fromObject(alist).toString();
+        JSONArray jsonArray = JSONArray.fromObject(jsonStr);
+
         HttpHeaders headers = getHeaders("/api/temp/tranships");
         return new ResponseEntity<>(jsonArray, headers, HttpStatus.OK);
     }

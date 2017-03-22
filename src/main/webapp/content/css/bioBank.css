@@ -7,6 +7,13 @@
     padding-top: 10px;
     padding-bottom: 10px;
 }
+.transport-record-body .btn{
+    padding: 2px 12px;
+}
+.transport-record-body table.dataTable tbody th,
+.transport-record-body table.dataTable tbody td{
+    padding: 4px 18px;
+}
 .p-r-6{
     padding-right: 6px !important;
 }

@@ -1,7 +1,9 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.fwoxford.domain.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.FrozenBoxService;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.FrozenBoxDTO;
@@ -34,7 +36,7 @@ public class FrozenBoxResource {
     private final Logger log = LoggerFactory.getLogger(FrozenBoxResource.class);
 
     private static final String ENTITY_NAME = "frozenBox";
-        
+
     private final FrozenBoxService frozenBoxService;
 
     public FrozenBoxResource(FrozenBoxService frozenBoxService) {
@@ -128,4 +130,29 @@ public class FrozenBoxResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * 根据冻存盒ID查询冻存管信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/findFrozenBoxAndTubeByBoxId/{id}")
+    @Timed
+    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxId(@PathVariable Long id) {
+        log.debug("REST request to get FrozenTube : {}", id);
+        FrozenBoxAndFrozenTubeResponse res = frozenBoxService.findFrozenBoxAndTubeByBoxId(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
+     * 根据冻存盒CODE查询冻存管信息
+     * @param frozenBoxCode
+     * @return
+     */
+    @GetMapping("/findFrozenBoxAndTubeByBoxCode/{id}")
+    @Timed
+    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxId(@PathVariable String frozenBoxCode) {
+        log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
+        FrozenBoxAndFrozenTubeResponse res = frozenBoxService.findFrozenBoxAndTubeByBoxCode(frozenBoxCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
 }

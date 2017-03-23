@@ -55,9 +55,17 @@ public class TranshipByIdResponse {
     @Max(value = 20)
     private Integer sampleSatisfaction;
     /**
+     * 项目ID
+     */
+    private Long projectId;
+    /**
+     * 项目点
+     */
+    private Long projectSiteId;
+    /**
      * 冻存盒列表
      */
-    private List<FrozenBoxResponse> frozenBoxResponseList;
+    private List<FrozenBoxDTO> frozenBoxDTOList;
 
     public Long getId() {
         return id;
@@ -123,39 +131,27 @@ public class TranshipByIdResponse {
         this.sampleSatisfaction = sampleSatisfaction;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        TranshipByIdResponse response = (TranshipByIdResponse) o;
-
-        if ( ! Objects.equals(id, response.id)) { return false; }
-
-        return true;
+    public List<FrozenBoxDTO> getFrozenBoxDTOList() {
+        return frozenBoxDTOList;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
+    public void setFrozenBoxDTOList(List<FrozenBoxDTO> frozenBoxDTOList) {
+        this.frozenBoxDTOList = frozenBoxDTOList;
     }
 
-    @Override
-    public String toString() {
-        return "TranshipResponse{" +
-            "id=" + id +
-            ", transhipDate='" + transhipDate + "'" +
-            ", projectCode='" + projectCode + "'" +
-            ", projectSiteCode='" + projectSiteCode + "'" +
-            ", transhipState='" + transhipState + "'" +
-            ", receiver='" + receiver + "'" +
-            ", receiveDate='" + receiveDate + "'" +
-            ", sampleSatisfaction='" + sampleSatisfaction + "'" +
-            '}';
+    public Long getProjectId() {
+        return projectId;
     }
 
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public Long getProjectSiteId() {
+        return projectSiteId;
+    }
+
+    public void setProjectSiteId(Long projectSiteId) {
+        this.projectSiteId = projectSiteId;
+    }
 }

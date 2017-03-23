@@ -105,6 +105,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="tranship_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

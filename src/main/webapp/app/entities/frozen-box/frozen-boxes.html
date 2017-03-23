@@ -40,6 +40,7 @@
                     <th jh-sort-by="sampleTypeId"><span data-translate="bioBankApp.frozenBox.sampleType">Sample Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="projectId"><span data-translate="bioBankApp.frozenBox.project">Project</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="projectSiteId"><span data-translate="bioBankApp.frozenBox.projectSite">Project Site</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="transhipId"><span data-translate="bioBankApp.frozenBox.tranship">Tranship</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -74,6 +75,9 @@
                     </td>
                     <td>
                         <a ui-sref="project-site-detail({id:frozenBox.projectSiteId})">{{frozenBox.projectSiteId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="tranship-detail({id:frozenBox.transhipId})">{{frozenBox.transhipId}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

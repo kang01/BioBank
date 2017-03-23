@@ -123,6 +123,10 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @NotNull
     private ProjectSite projectSite;
 
+    @ManyToOne(optional = false)
+    @NotNull
+    private Tranship tranship;
+
     public Long getId() {
         return id;
     }
@@ -402,6 +406,19 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
 
     public void setProjectSite(ProjectSite projectSite) {
         this.projectSite = projectSite;
+    }
+
+    public Tranship getTranship() {
+        return tranship;
+    }
+
+    public FrozenBox tranship(Tranship tranship) {
+        this.tranship = tranship;
+        return this;
+    }
+
+    public void setTranship(Tranship tranship) {
+        this.tranship = tranship;
     }
 
     @Override

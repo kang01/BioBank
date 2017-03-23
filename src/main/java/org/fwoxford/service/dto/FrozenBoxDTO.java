@@ -89,6 +89,8 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long projectSiteId;
 
+    private Long transhipId;
+
     public Long getId() {
         return id;
     }
@@ -246,6 +248,14 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setProjectSiteId(Long projectSiteId) {
         this.projectSiteId = projectSiteId;
+    }
+
+    public Long getTranshipId() {
+        return transhipId;
+    }
+
+    public void setTranshipId(Long transhipId) {
+        this.transhipId = transhipId;
     }
 
     @Override

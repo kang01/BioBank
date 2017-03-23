@@ -35,7 +35,8 @@
             "frozenBoxType": "Frozen Box Type",
             "sampleType": "Sample Type",
             "project": "Project",
-            "projectSite": "Project Site"
+            "projectSite": "Project Site",
+            "tranship": "Tranship"
         }
     }
 }

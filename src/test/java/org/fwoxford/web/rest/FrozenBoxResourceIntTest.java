@@ -7,6 +7,7 @@ import org.fwoxford.domain.FrozenBoxType;
 import org.fwoxford.domain.SampleType;
 import org.fwoxford.domain.Project;
 import org.fwoxford.domain.ProjectSite;
+import org.fwoxford.domain.Tranship;
 import org.fwoxford.repository.FrozenBoxRepository;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
@@ -175,6 +176,11 @@ public class FrozenBoxResourceIntTest {
         em.persist(projectSite);
         em.flush();
         frozenBox.setProjectSite(projectSite);
+        // Add required entity
+        Tranship tranship = TranshipResourceIntTest.createEntity(em);
+        em.persist(tranship);
+        em.flush();
+        frozenBox.setTranship(tranship);
         return frozenBox;
     }
 

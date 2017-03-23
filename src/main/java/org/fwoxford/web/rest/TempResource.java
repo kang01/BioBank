@@ -1,4 +1,4 @@
-package org.fwoxford.web.rest.resource;
+package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;

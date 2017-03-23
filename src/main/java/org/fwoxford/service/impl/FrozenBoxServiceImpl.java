@@ -1,20 +1,21 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.domain.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing FrozenBox.
@@ -24,10 +25,13 @@ import java.util.stream.Collectors;
 public class FrozenBoxServiceImpl implements FrozenBoxService{
 
     private final Logger log = LoggerFactory.getLogger(FrozenBoxServiceImpl.class);
-    
+
     private final FrozenBoxRepository frozenBoxRepository;
 
     private final FrozenBoxMapper frozenBoxMapper;
+
+    @Autowired
+    private FrozenTubeService frozenTubeService;
 
     public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper) {
         this.frozenBoxRepository = frozenBoxRepository;
@@ -51,7 +55,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
     /**
      *  Get all the frozenBoxes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +91,42 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     public void delete(Long id) {
         log.debug("Request to delete FrozenBox : {}", id);
         frozenBoxRepository.delete(id);
+    }
+
+    /**
+     * 根据转运记录ID 查询冻存盒列表
+     * @param transhipId 转运记录ID
+     * @return
+     */
+    @Override
+    public List<FrozenBoxDTO> findAllFrozenBoxByTranshipId(Long transhipId) {
+        List<FrozenBoxDTO> frozenBoxDTOList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipId);
+        return frozenBoxDTOList;
+    }
+    /**
+     * 根据冻存盒id查询冻存管信息
+     * @param id 冻存盒id
+     * @return
+     */
+    @Override
+    public FrozenBoxAndFrozenTubeResponse findFrozenBoxAndTubeByBoxId(Long id) {
+        FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
+        //查询冻存盒信息
+
+        // frozenTubeService.findFrozenTubeListByBoxId(id);
+
+        //查询冻存管列表信息
+        return res;
+    }
+    /**
+     * 根据冻存盒CODE查询冻存管信息
+     * @param frozenBoxCode 冻存盒CODE
+     * @return
+     */
+    @Override
+    public FrozenBoxAndFrozenTubeResponse findFrozenBoxAndTubeByBoxCode(String frozenBoxCode) {
+        FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
+
+        return res;
     }
 }

@@ -1,6 +1,7 @@
 package org.fwoxford.service.mapper;
 
 import org.fwoxford.domain.*;
+import org.fwoxford.domain.response.TranshipByIdResponse;
 import org.fwoxford.domain.response.TranshipResponse;
 import org.fwoxford.service.dto.TranshipDTO;
 
@@ -69,6 +70,24 @@ public interface TranshipMapper {
         res.setReceiver( tranship.getReceiver() );
         res.setReceiveDate( tranship.getReceiveDate() );
         res.setSampleSatisfaction( tranship.getSampleSatisfaction() );
+        return res;
+    }
+
+    default TranshipByIdResponse transhipsToTranshipTranshipByIdResponse(Tranship tranship){
+        TranshipByIdResponse res = new TranshipByIdResponse();
+        if ( tranship == null ) {
+            return null;
+        }
+        res.setId( tranship.getId() );
+        res.setTranshipDate( tranship.getTranshipDate() );
+        res.setProjectCode( tranship.getProjectCode() );
+        res.setProjectSiteCode( tranship.getProjectSiteCode() );
+        res.setTranshipState( tranship.getTranshipState() );
+        res.setReceiver( tranship.getReceiver() );
+        res.setReceiveDate( tranship.getReceiveDate() );
+        res.setSampleSatisfaction( tranship.getSampleSatisfaction() );
+        res.setProjectId(tranship.getProject().getId());
+        res.setProjectSiteId(tranship.getProjectSite().getId());
         return res;
     }
 }

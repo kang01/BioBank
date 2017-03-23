@@ -1,5 +1,6 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public interface FrozenBoxService {
 
     /**
      *  Get all the frozenBoxes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +41,25 @@ public interface FrozenBoxService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * 根据转运记录ID 查询冻存盒列表
+     * @param transhipId 转运记录ID
+     * @return
+     */
+    List<FrozenBoxDTO> findAllFrozenBoxByTranshipId(Long transhipId);
+
+    /**
+     * 根据冻存盒ID查询冻存管信息
+     * @param id 冻存盒ID
+     * @return
+     */
+    FrozenBoxAndFrozenTubeResponse findFrozenBoxAndTubeByBoxId(Long id);
+
+    /**
+     * 根据冻存盒CODE查询冻存管信息
+     * @param frozenBoxCode 冻存盒CODE
+     * @return
+     */
+    FrozenBoxAndFrozenTubeResponse findFrozenBoxAndTubeByBoxCode(String frozenBoxCode);
 }

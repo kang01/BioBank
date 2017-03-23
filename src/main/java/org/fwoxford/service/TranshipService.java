@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.domain.Tranship;
+import org.fwoxford.domain.response.TranshipByIdResponse;
 import org.fwoxford.domain.response.TranshipResponse;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.springframework.data.domain.Page;
@@ -46,5 +47,17 @@ public interface TranshipService {
      */
     void delete(Long id);
 
+    /**
+     * 查询转运记录列表
+     * @param input
+     * @return
+     */
     DataTablesOutput<TranshipResponse> findAllTranship(DataTablesInput input);
+
+    /**
+     * 根据转运记录ID查询转运记录以及冻存盒信息
+     * @param id
+     * @return
+     */
+    TranshipByIdResponse findTranshipAndFrozenBox(Long id);
 }

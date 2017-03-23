@@ -1,20 +1,22 @@
 package org.fwoxford.service.impl;
 
-import org.fwoxford.service.TranshipService;
 import org.fwoxford.domain.Tranship;
+import org.fwoxford.domain.response.TranshipResponse;
+import org.fwoxford.repositories.TranshipRepositries;
 import org.fwoxford.repository.TranshipRepository;
+import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.mapper.TranshipMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing Tranship.
@@ -24,10 +26,12 @@ import java.util.stream.Collectors;
 public class TranshipServiceImpl implements TranshipService{
 
     private final Logger log = LoggerFactory.getLogger(TranshipServiceImpl.class);
-    
+
     private final TranshipRepository transhipRepository;
 
     private final TranshipMapper transhipMapper;
+
+    private  TranshipRepositries transhipRepositries;
 
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper) {
         this.transhipRepository = transhipRepository;
@@ -51,7 +55,7 @@ public class TranshipServiceImpl implements TranshipService{
 
     /**
      *  Get all the tranships.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +91,31 @@ public class TranshipServiceImpl implements TranshipService{
     public void delete(Long id) {
         log.debug("Request to delete Tranship : {}", id);
         transhipRepository.delete(id);
+    }
+
+    /**
+     * 获取转运记录
+     * @param input
+     * @return
+     */
+    @Override
+    public DataTablesOutput<TranshipResponse> findAllTranship(DataTablesInput input) {
+
+        //获取转运列表
+        DataTablesOutput<Tranship> transhipDataTablesOutput =  transhipRepositries.findAll(input);
+        List<Tranship> tranships =  transhipDataTablesOutput.getData();
+
+        //构造返回列表
+        List<TranshipResponse> transhipDTOS = transhipMapper.transhipsToTranshipTranshipResponse(tranships);
+
+        //构造返回分页数据
+        DataTablesOutput<TranshipResponse> responseDataTablesOutput = new DataTablesOutput<>();
+        responseDataTablesOutput.setDraw(transhipDataTablesOutput.getDraw());
+        responseDataTablesOutput.setError(transhipDataTablesOutput.getError());
+        responseDataTablesOutput.setData(transhipDTOS);
+        responseDataTablesOutput.setRecordsFiltered(transhipDataTablesOutput.getRecordsFiltered());
+        responseDataTablesOutput.setRecordsTotal(transhipDataTablesOutput.getRecordsTotal());
+
+        return responseDataTablesOutput;
     }
 }

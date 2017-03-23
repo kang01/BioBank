@@ -1,8 +1,13 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.Tranship;
+import org.fwoxford.domain.response.TranshipResponse;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import java.util.List;
 
 /**
@@ -20,7 +25,7 @@ public interface TranshipService {
 
     /**
      *  Get all the tranships.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +45,6 @@ public interface TranshipService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    DataTablesOutput<TranshipResponse> findAllTranship(DataTablesInput input);
 }

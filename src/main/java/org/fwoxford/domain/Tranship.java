@@ -1,7 +1,9 @@
 package org.fwoxford.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -14,7 +16,6 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "tranship")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Tranship extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,20 +23,24 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @JsonView(DataTablesOutput.View.class)
     private Long id;
 
     @NotNull
     @Column(name = "tranship_date", nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private LocalDate transhipDate;
 
     @NotNull
     @Size(max = 100)
     @Column(name = "project_code", length = 100, nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private String projectCode;
 
     @NotNull
     @Size(max = 255)
     @Column(name = "project_name", length = 255, nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private String projectName;
 
     @NotNull
@@ -112,12 +117,17 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private Project project;
 
     @ManyToOne(optional = false)
     @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private ProjectSite projectSite;
 
+    public Tranship(){
+        super();
+    }
     public Long getId() {
         return id;
     }

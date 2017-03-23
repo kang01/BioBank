@@ -1,23 +1,20 @@
-package org.fwoxford.web.rest;
+package org.fwoxford.web.rest.resource;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
-import io.swagger.annotations.ApiParam;
 
+import org.fwoxford.domain.Tranship;
+import org.fwoxford.repositories.TempTranshipRepositry;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
-import org.fwoxford.web.rest.util.PaginationUtil;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -39,7 +36,7 @@ public class TempResource {
     private static final String ENTITY_NAME = "tranship";
 
     private final TranshipService transhipService;
-
+    private TempTranshipRepositry tempTranshipRepositry;
     public TempResource(TranshipService transhipService) {
         this.transhipService = transhipService;
     }
@@ -84,44 +81,44 @@ public class TempResource {
      * @return the ResponseEntity with status 200 (OK) and the list of tranships in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @GetMapping("/tranships")
-    @Timed
-    public ResponseEntity<JSONArray> getAllTranships(@ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to get a page of Tranships");
-        //读取转运记录
-        String jsonString = "[\n" +
-            "  {\n" +
-            "    \"id\": 1,\n" +
-            "    \"projectCode\": \"P_00007\",\n" +
-            "    \"projectSiteCode\": \"PS_00007001\",\n" +
-            "    \"receiveDate\": \"2017-03-20\",\n" +
-            "    \"sampleSatisfaction\": 1,\n" +
-            "    \"transhipDate\": \"2017-03-20\",\n" +
-            "    \"transhipState\": \"01\"\n" +
-            "  }\n" +
-            "]";
-        List<Map<String,Object>> alist = new ArrayList<>();
-        for(int i = 0 ; i < 9 ; i++){
-            Map<String,Object> map = new HashMap<>();
-            map.put("id",i);
-            map.put("projectCode","P_00007"+i);
-            map.put("projectSiteCode","PS_0000700"+i);
-            map.put("receiveDate",new Date().getTime());
-            map.put("sampleSatisfaction",5);
-            map.put("transhipDate",new Date().getTime());
-            map.put("transhipReceive","李四");
-            map.put("transhipState","01");
-            map.put("receiver","高康康"+i);
-            alist.add(map);
-        }
-
-        String jsonStr = JSONArray.fromObject(alist).toString();
-        JSONArray jsonArray = JSONArray.fromObject(jsonStr);
-
-        HttpHeaders headers = getHeaders("/api/temp/tranships");
-        return new ResponseEntity<>(jsonArray, headers, HttpStatus.OK);
-    }
+//    @GetMapping("/tranships")
+//    @Timed
+//    public ResponseEntity<JSONArray> getAllTranships(@ApiParam Pageable pageable)
+//        throws URISyntaxException {
+//        log.debug("REST request to get a page of Tranships");
+//        //读取转运记录
+//        String jsonString = "[\n" +
+//            "  {\n" +
+//            "    \"id\": 1,\n" +
+//            "    \"projectCode\": \"P_00007\",\n" +
+//            "    \"projectSiteCode\": \"PS_00007001\",\n" +
+//            "    \"receiveDate\": \"2017-03-20\",\n" +
+//            "    \"sampleSatisfaction\": 1,\n" +
+//            "    \"transhipDate\": \"2017-03-20\",\n" +
+//            "    \"transhipState\": \"01\"\n" +
+//            "  }\n" +
+//            "]";
+//        List<Map<String,Object>> alist = new ArrayList<>();
+//        for(int i = 0 ; i < 9 ; i++){
+//            Map<String,Object> map = new HashMap<>();
+//            map.put("id",i);
+//            map.put("projectCode","P_00007"+i);
+//            map.put("projectSiteCode","PS_0000700"+i);
+//            map.put("receiveDate",new Date().getTime());
+//            map.put("sampleSatisfaction",5);
+//            map.put("transhipDate",new Date().getTime());
+//            map.put("transhipReceive","李四");
+//            map.put("transhipState","01");
+//            map.put("receiver","高康康"+i);
+//            alist.add(map);
+//        }
+//
+//        String jsonStr = JSONArray.fromObject(alist).toString();
+//        JSONArray jsonArray = JSONArray.fromObject(jsonStr);
+//
+//        HttpHeaders headers = getHeaders("/api/temp/tranships");
+//        return new ResponseEntity<>(jsonArray, headers, HttpStatus.OK);
+//    }
     /**
      * GET  /tranships/:id : get the "id" tranship.
      *
@@ -174,5 +171,10 @@ public class TempResource {
 
     private static String generateUri(String baseUrl, int page, int size) throws URISyntaxException {
         return UriComponentsBuilder.fromUriString(baseUrl).queryParam("page", page).queryParam("size", size).toUriString();
+    }
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/data/users", method = RequestMethod.GET)
+    public DataTablesOutput<Tranship> getUsers(@Valid DataTablesInput input) {
+        return tempTranshipRepositry.findAll(input);
     }
 }

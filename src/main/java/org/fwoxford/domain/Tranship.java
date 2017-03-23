@@ -46,88 +46,102 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Size(max = 100)
     @Column(name = "project_site_code", length = 100, nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private String projectSiteCode;
 
     @NotNull
     @Size(max = 255)
     @Column(name = "project_site_name", length = 255, nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private String projectSiteName;
 
     @NotNull
     @Size(max = 100)
     @Column(name = "track_number", length = 100, nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private String trackNumber;
 
     @NotNull
     @Size(max = 100)
     @Column(name = "tranship_batch", length = 100, nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private String transhipBatch;
 
     @NotNull
     @Size(max = 20)
     @Column(name = "tranship_state", length = 20, nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private String transhipState;
 
     @NotNull
     @Size(max = 100)
     @Column(name = "receiver", length = 100, nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private String receiver;
 
     @NotNull
     @Column(name = "receive_date", nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private LocalDate receiveDate;
 
     @NotNull
     @Max(value = 100)
     @Column(name = "sample_number", nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private Integer sampleNumber;
 
     @NotNull
     @Max(value = 20)
     @Column(name = "frozen_box_number", nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private Integer frozenBoxNumber;
 
     @NotNull
     @Max(value = 20)
     @Column(name = "empty_tube_number", nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private Integer emptyTubeNumber;
 
     @NotNull
     @Max(value = 20)
     @Column(name = "empty_hole_number", nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private Integer emptyHoleNumber;
 
     @Max(value = 20)
     @Column(name = "sample_satisfaction")
+    @JsonView(DataTablesOutput.View.class)
     private Integer sampleSatisfaction;
 
     @NotNull
     @Max(value = 20)
     @Column(name = "effective_sample_number", nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private Integer effectiveSampleNumber;
 
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
+    @JsonView(DataTablesOutput.View.class)
     private String memo;
 
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
+    @JsonView(DataTablesOutput.View.class)
     private String status;
 
     @ManyToOne(optional = false)
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @JoinColumn(name = "project_id")
     private Project project;
 
     @ManyToOne(optional = false)
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @JoinColumn(name = "project_site_id")
     private ProjectSite projectSite;
 
-    public Tranship(){
-        super();
-    }
     public Long getId() {
         return id;
     }

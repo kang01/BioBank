@@ -2,7 +2,7 @@ package org.fwoxford.service.impl;
 
 import org.fwoxford.domain.Tranship;
 import org.fwoxford.domain.response.TranshipResponse;
-import org.fwoxford.repositories.TranshipRepositries;
+import org.fwoxford.repository.TranshipRepositries;
 import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.TranshipDTO;
@@ -33,9 +33,10 @@ public class TranshipServiceImpl implements TranshipService{
 
     private  TranshipRepositries transhipRepositries;
 
-    public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper) {
+    public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
         this.transhipMapper = transhipMapper;
+        this.transhipRepositries = transhipRepositries;
     }
 
     /**

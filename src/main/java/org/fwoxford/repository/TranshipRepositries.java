@@ -1,4 +1,4 @@
-package org.fwoxford.repositories;
+package org.fwoxford.repository;
 
 import org.fwoxford.domain.Tranship;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;

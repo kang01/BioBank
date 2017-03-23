@@ -1,5 +1,8 @@
 package org.fwoxford.domain.response;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -14,27 +17,34 @@ public class TranshipResponse {
     private Long id;
 
     @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private LocalDate transhipDate;
 
     @NotNull
     @Size(max = 100)
+    @JsonView(DataTablesOutput.View.class)
     private String projectCode;
 
     @NotNull
     @Size(max = 100)
+    @JsonView(DataTablesOutput.View.class)
     private String projectSiteCode;
     @NotNull
     @Size(max = 20)
+    @JsonView(DataTablesOutput.View.class)
     private String transhipState;
 
     @NotNull
     @Size(max = 100)
+    @JsonView(DataTablesOutput.View.class)
     private String receiver;
 
     @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private LocalDate receiveDate;
 
     @Max(value = 20)
+    @JsonView(DataTablesOutput.View.class)
     private Integer sampleSatisfaction;
 
     public Long getId() {

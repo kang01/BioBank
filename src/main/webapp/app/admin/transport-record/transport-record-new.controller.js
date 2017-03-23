@@ -12,6 +12,10 @@
 
     function TransportRecordNewController(hotRegisterer,dataFactory,DTOptionsBuilder,DTColumnBuilder,$uibModal) {
         var vm = this;
+        vm.datePickerOpenStatus = {};
+        vm.openCalendar = openCalendar;
+        vm.importFrozenStorageBox = importFrozenStorageBox;
+
         vm.dtOptions = DTOptionsBuilder.fromSource('app/admin/transport-record/data.json')
             .withPaginationType('full_numbers')
             .withOption('info', false)
@@ -256,21 +260,14 @@
 
 
 
-
-
-
-        vm.settings = {
-            contextMenu:false
-            // contextMenu: [
-            //     'row_above', 'row_below', 'remove_row'
-            // ]
-        };
         var modalInstance;
-        function importBox() {
+        function importFrozenStorageBox() {
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/admin/transport-record/frozen-storage-box-modal.html',
-                controller: 'FrozenStorageBoxModalController'
+                controller: 'FrozenStorageBoxModalController',
+                controllerAs:'vm',
+                size:'lg'
                 // backdrop:'static'
                 // resolve: {
                 //     items: function () {
@@ -286,10 +283,9 @@
 
             });
         }
-        // vm.importBox = function(item,type){
-        //
-        // };
-
+        function openCalendar (date) {
+            vm.datePickerOpenStatus[date] = true;
+        }
 
     }
 })();

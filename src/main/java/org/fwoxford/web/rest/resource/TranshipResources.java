@@ -88,7 +88,7 @@ public class TranshipResources {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "tranships", method = RequestMethod.GET)
-    public DataTablesOutput<TranshipResponse> getUsers(@Valid DataTablesInput input) {
+    public DataTablesOutput<TranshipResponse> getUsers( DataTablesInput input) {
         return transhipService.findAllTranship(input);
     }
     /**

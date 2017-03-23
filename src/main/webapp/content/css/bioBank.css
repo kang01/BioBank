@@ -1,3 +1,9 @@
+.navbar{
+    margin-bottom: 6px;
+}
+.transport-record-index h2{
+    margin-top:2px;
+}
 .transport-record  .form-group{
     margin-bottom: 4px;
 }
@@ -9,10 +15,18 @@
 }
 .transport-record-body .btn{
     padding: 2px 12px;
-}
-.transport-record-body table.dataTable tbody th,
+} .transport-record-body table.dataTable tbody th,
 .transport-record-body table.dataTable tbody td{
     padding: 4px 18px;
+}
+.p-l-0{
+    padding-left: 0 !important;
+}
+.p-r-0{
+    padding-right: 0!important;
+}
+.p-5{
+    padding: 5px;
 }
 .p-r-6{
     padding-right: 6px !important;
@@ -22,6 +36,12 @@
 }
 .m-l-5{
     margin-left: 5px !important;
+}
+.m-r-10{
+    margin-right: 10px !important;
+}
+.transport-record-new .form-group{
+    margin-bottom: 6px;
 }
 .transport-record-new div.dataTables_filter input{
     width: 8em;
@@ -41,7 +61,7 @@
     width: 22%;
 }
 .transport-record-new .pipe-body .pipe-body-top .control-label{
-    padding-left: 8px;
+    padding-left: 4px;
 }
 
 @media (min-width:1440px) {
@@ -50,5 +70,14 @@
     }
     .transport-record-new .pipe-body .pipe-body-top {
         margin-left: -40px;
+    }
+    .transport-record-new .pipe-body .pipe-body-bottom .col-sm-8{
+        margin-left: -22px;
+    }
+    .transport-record-new .pipe-body .pipe-table{
+        width: 67%;
+    }
+    .transport-record-new .pipe-body .pipe-operate{
+       margin-right: 3%;
     }
 }

@@ -8,46 +8,52 @@
         .module('bioBankApp')
         .controller('TransportRecordNewController', TransportRecordNewController);
 
-    TransportRecordNewController.$inject = ['hotRegisterer','dataFactory','DTOptionsBuilder','DTColumnBuilder','$uibModal'];
+    TransportRecordNewController.$inject = ['hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state'];
 
-    function TransportRecordNewController(hotRegisterer,dataFactory,DTOptionsBuilder,DTColumnBuilder,$uibModal) {
+    function TransportRecordNewController(hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state) {
         var vm = this;
         vm.datePickerOpenStatus = {};
+        vm.transportRecord = {};
         vm.openCalendar = openCalendar;
+        //导入冻存盒
         vm.importFrozenStorageBox = importFrozenStorageBox;
-
-        vm.dtOptions = DTOptionsBuilder.fromSource('app/admin/transport-record/data.json')
-            .withPaginationType('full_numbers')
+        //
+        vm.transportRecord.boxList = [
+            {id:"1",code:"000001",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"2",code:"000002",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'}
+        ];
+        vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('info', false)
             .withOption('paging', false);
-        vm.dtColumns = [
-            DTColumnBuilder.newColumn('firstName').withTitle('First name').notSortable()
-        ];
-        var data1 = [
+        // vm.dtColumns = [
+        //     DTColumnBuilder.newColumn('code').withTitle('盒子编码').notSortable()
+        // ];
+        vm.transportRecord.boxList[0].microtubesList = [
             [
-                {id:'1',number:'12345678909',color:'rgba(204, 102, 204,0.3)',status:'1',remark:''},
-                {id:'25',number:'12345678909',color:'rgba(153, 153, 153,0.3)',status:'1',remark:''},
-                {id:'27',number:'12345678909',color:'rgba(204, 102, 204,0.3)',status:'1',remark:''},
-                {id:'28',number:'12345678909',color:'rgba(204, 102, 204,0.3)',status:'1',remark:''}
-            ],
-            [
-                {id:'11',number:'12345678901',color:'rgba(0, 204, 102,0.3)',status:'1',remark:''},
-                {id:'21',number:'12345678902',color:'rgba(204, 102, 204,0.3)',status:'1',remark:''},
-                {id:'22',number:'12345678903',color:'rgba(0, 204, 102,0.3)',status:'1',remark:''},
-                {id:'23',number:'12345678904',color:'rgba(204, 102, 204,0.3)',status:'1',remark:''}
+                {id:'1',number:'12345678909',color:'rgba(204, 102, 204,0.3)',status:'1',remark:'',row:1,col:2},
+                // {id:'25',number:'12345678909',color:'rgba(153, 153, 153,0.3)',status:'1',remark:'',row:1,col:3},
+                // {id:'27',number:'12345678909',color:'rgba(204, 102, 204,0.3)',status:'1',remark:'',row:2,col:4},
+                // {id:'28',number:'12345678909',color:'rgba(204, 102, 204,0.3)',status:'1',remark:'',row:3,col:6}
             ]
+            // [
+            //     {id:'11',number:'12345678901',color:'rgba(0, 204, 102,0.3)',status:'1',remark:'',row:1,col:6},
+            //     {id:'21',number:'12345678902',color:'rgba(204, 102, 204,0.3)',status:'1',remark:'',row:2,col:1},
+            //     {id:'22',number:'12345678903',color:'rgba(0, 204, 102,0.3)',status:'1',remark:'',row:2,col:6},
+            //     {id:'23',number:'12345678904',color:'rgba(204, 102, 204,0.3)',status:'1',remark:'',row:3,col:5}
+            // ]
         ];
         var tArray = new Array();
         for(var k=0;k<10;k++){
             tArray[k]=new Array();
             for(var j=0;j<10;j++){
-                tArray[k][j] = {};
+                tArray[k][j] = '';
 
             }
         }
-        for(var i = 0; i < data1.length; i++){
-            for(var j = 0; j < data1[i].length;j++){
-                tArray[i][j] = data1[i][j]
+        for(var i = 0; i < vm.transportRecord.boxList[0].microtubesList.length; i++){
+            for(var j = 0; j < vm.transportRecord.boxList[0].microtubesList[i].length;j++){
+                tArray[vm.transportRecord.boxList[0].microtubesList[i][j].row][vm.transportRecord.boxList[0].microtubesList[i][j].col] = vm.transportRecord.boxList[0].microtubesList[i][j]
             }
         }
         // tArray = data1
@@ -68,7 +74,9 @@
             var htm = "<div>"+value.number+"</div>"+
                 "<div id='microtubesId' style='display: none'>"+value.id+"</div>" +
                 "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
-                "<div id='microtubesRemark' style='display: none'>"+value.remark+"</div>";
+                "<div id='microtubesRemark' style='display: none'>"+value.remark+"</div>"+
+                "<div id='microtubesRow' style='display: none'>"+value.row+"</div>"+
+                "<div id='microtubesCol' style='display: none'>"+value.col+"</div>";
             td.innerHTML = htm;
 
         };
@@ -135,7 +143,7 @@
 
             //修改样本状态microtubesStatus 1正常 2.空管 3.空孔 4.异常
             if(operateStatus == 1) {
-                if(flagStatus){
+                if(vm.flagStatus){
                     if(microtubes.id != $(this.getCell(row, col)).find("#microtubesId").text()){
                         microtubes.status = $(this.getCell(row, col)).find("#microtubesStatus").text();
                         microtubes.id = $(this.getCell(row, col)).find("#microtubesId").text();
@@ -172,9 +180,8 @@
             }
             //换位
             if(operateStatus == 2){
-                if(exchangeFlag){
+                if(vm.exchangeFlag){
                     exchangeCount ++;
-                    // console.log(count);
                     if(exchangeCount <= 3){
                         this.getCell(row,col).style.outline = '2px solid #5292F7';
                         domArray.push({row:row,col:col,dom:this.getCell(row,col),value:this.getValue(row,col),color:this.getCell(row,col).style.backgroundColor});
@@ -184,7 +191,7 @@
             }
             // 批注
             if(operateStatus == 3){
-                if(remarkFlag){
+                if(vm.remarkFlag){
                     microtubes.id = $(this.getCell(row, col)).find("#microtubesId").text();
                     microtubes.remark = $(this.getCell(row, col)).find("#microtubesRemark").text();
                     console.log( microtubes.id);
@@ -218,48 +225,47 @@
         };
 
         //修改样本状态 正常、空管、空孔、异常
-        var flagStatus = false;
+        vm.flagStatus = false;
         this.editStatus = function () {
+            console.log(vm.flagStatus);
             operateStatus = 1;
-            if(flagStatus){
-                flagStatus = false;
-            }else{
-                flagStatus = true;
-            }
+            // if(flagStatus){
+            //     flagStatus = false;
+            // }else{
+            //     flagStatus = true;
+            // }
         };
         //换位
-        var exchangeFlag = false;
+        vm.exchangeFlag = false;
         var exchangeCount = 0;
         this.exchange = function () {
             operateStatus = 2;
             //开启换位
-            if(exchangeFlag){
+            if(!vm.exchangeFlag && exchangeCount != 0){
                 exchangeCount = 0;
-                exchangeFlag = false;
                 hotRegisterer.getInstance('my-handsontable').setDataAtCell(domArray[0].row,domArray[0].col,domArray[1].value);
                 hotRegisterer.getInstance('my-handsontable').setDataAtCell(domArray[1].row,domArray[1].col,domArray[0].value);
                 hotRegisterer.getInstance('my-handsontable').getCell(domArray[0].row,domArray[0].col).style.backgroundColor = domArray[1].color;
                 hotRegisterer.getInstance('my-handsontable').getCell(domArray[1].row,domArray[1].col).style.backgroundColor = domArray[0].color;
                 domArray = [];
             }else{
-                exchangeFlag = true;
                 exchangeCount = 1
             }
 
         };
         //批注
-        var remarkFlag = false;
+        vm.remarkFlag = false;
         this.microtubesRemark = function () {
             operateStatus = 3;
-            if(remarkFlag){
-                remarkFlag = false;
-            }else{
-                remarkFlag = true;
-            }
+            // if(remarkFlag){
+            //     remarkFlag = false;
+            // }else{
+            //     remarkFlag = true;
+            // }
         };
 
 
-
+        //导入冻存盒
         var modalInstance;
         function importFrozenStorageBox() {
             modalInstance = $uibModal.open({
@@ -283,8 +289,20 @@
 
             });
         }
+        //保存
+        this.saveRecord = function () {
+            console.log(JSON.stringify(vm.transportRecord));
+            TransportRecordService.save(vm.transportRecord, onSaveSuccess, onSaveError);
+        };
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
+        }
+        function onSaveSuccess () {
+            // $state.go('transport-record');
+        }
+
+        function onSaveError () {
+
         }
 
     }

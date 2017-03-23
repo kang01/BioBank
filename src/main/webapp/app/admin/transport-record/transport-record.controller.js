@@ -52,19 +52,15 @@
             AlertService.error(error.data.message);
         }
 
-        vm.dtOptions = DTOptionsBuilder.fromFnPromise(function () {
-            return TransportRecordService.query().$promise;
-        })
+        vm.dtOptions = DTOptionsBuilder.fromSource('api/res/tranships')
+            .withOption('processing',true)
+            .withOption('serverSide',true)
             .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow)
             .withColumnFilter({
                 aoColumns: [{
                     type: 'text',
                     width:50
-                }, {
-                    type: 'text',
-                    bRegex: true,
-                    bSmart: true
                 }, {
                     type: 'text',
                     bRegex: true,
@@ -93,20 +89,27 @@
                     values: ['Yoda', 'Titi', 'Kyle', 'Bar', 'Whateveryournameis']
                 }]
             });
+        // vm.dtOptions = DTOptionsBuilder.newOptions()
+        //     .withOption('ajax',{
+        //         url:'api/temp/tranships',
+        //         type:'get'
+        //     })
+        //     .withDataProp('data')
+        //     .withOption('processing',true)
+        //     .withOption('serverSide',true)
+        //     .withPaginationType('full_number');
         vm.dtColumns = [
             DTColumnBuilder.newColumn('projectCode').withTitle('项目点').notSortable(),
             DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目编号').notSortable(),
             DTColumnBuilder.newColumn('transhipDate').withTitle('转运日期').notSortable(),
-            DTColumnBuilder.newColumn('transhipState').withTitle('样本类型').notSortable(),
-            DTColumnBuilder.newColumn('transhipReceive').withTitle('接收人').notSortable(),
+            DTColumnBuilder.newColumn('receiver').withTitle('接收人').notSortable(),
             DTColumnBuilder.newColumn('receiveDate').withTitle('接收日期').notSortable(),
             DTColumnBuilder.newColumn('sampleSatisfaction').withTitle('满意度').notSortable(),
-            DTColumnBuilder.newColumn('status').withTitle('状态').notSortable(),
+            DTColumnBuilder.newColumn('transhipState').withTitle('状态').notSortable(),
             DTColumnBuilder.newColumn(null).withTitle('操作').notSortable()
                 .renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {
-            // Recompiling so we can bind Angular directive to the DT
             $compile(angular.element(row).contents())($scope);
         }
         // function headerCallback(header) {
@@ -118,8 +121,6 @@
         // }
         function edit(person) {
             vm.message = 'You are trying to edit the row: ' + JSON.stringify(person);
-            // Edit some data and call server to make changes...
-            // Then reload the data so that DT is refreshed
             vm.dtInstance.reloadData();
         }
         function actionsHtml(data, type, full, meta) {

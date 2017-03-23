@@ -21,7 +21,8 @@
             'datatables',
             'datatables.light-columnfilter',
             'datatables.columnfilter',
-            'ngHandsontable'
+            'ngHandsontable',
+            'frapontillo.bootstrap-switch'
         ])
         .run(run);
 

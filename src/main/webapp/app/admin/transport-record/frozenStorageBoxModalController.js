@@ -11,14 +11,15 @@
     FrozenStorageBoxModalController.$inject = ['DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal'];
 
     function FrozenStorageBoxModalController(DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal) {
-        this.dtOptions = DTOptionsBuilder.fromSource('app/admin/transport-record/data.json')
-            .withPaginationType('full_numbers')
+        this.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('searching', false);
-        this.dtColumns = [
-            DTColumnBuilder.newColumn('id').withTitle('ID'),
-            DTColumnBuilder.newColumn('firstName').withTitle('First name'),
-            DTColumnBuilder.newColumn('lastName').withTitle('Last name').notVisible()
-        ];
+        // this.dtColumns = [
+        //     DTColumnBuilder.newColumn('id').withTitle('冻存盒号'),
+        //     DTColumnBuilder.newColumn('firstName').withTitle('状态'),
+        //     DTColumnBuilder.newColumn('lastName').withTitle('样本类型').notVisible(),
+        //     DTColumnBuilder.newColumn('lastName').withTitle('样本数').notVisible(),
+        //     DTColumnBuilder.newColumn('lastName').withTitle('是否分装').notVisible()
+        // ];
 
         this.cancel = function () {
             $uibModalInstance.dismiss('cancel');

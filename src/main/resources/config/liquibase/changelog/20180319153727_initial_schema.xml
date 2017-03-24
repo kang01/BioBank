@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="sysdate" dbms="oracle"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity StorageInBox.
+    -->
+    <!--初始化数据- start-->
+    <changeSet id="20180319153727-1" author="jhipster">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/project.csv"
+                  separator=";"
+                  tableName="project"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/project_site.csv"
+                  separator=";"
+                  tableName="project_site"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/project_relate.csv"
+                  separator=";"
+                  tableName="project_relate"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/frozen_box_type.csv"
+                  separator=";"
+                  tableName="frozen_box_type"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/frozen_tube_type.csv"
+                  separator=";"
+                  tableName="frozen_tube_type"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/sample_type.csv"
+                  separator=";"
+                  tableName="sample_type"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/equipment_group.csv"
+                  separator=";"
+                  tableName="equipment_group"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/equipment_modle.csv"
+                  separator=";"
+                  tableName="equipment_modle"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/equipment.csv"
+                  separator=";"
+                  tableName="equipment"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/area.csv"
+                  separator=";"
+                  tableName="area"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/support_rack_type.csv"
+                  separator=";"
+                  tableName="support_rack_type"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/support_rack.csv"
+                  separator=";"
+                  tableName="support_rack"/>
+    </changeSet>
+    <!--初始化数据 end -->
+</databaseChangeLog>

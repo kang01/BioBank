@@ -52,19 +52,69 @@
             AlertService.error(error.data.message);
         }
 
+        vm.dtInstanceCallback = function(instance){
+            vm.dtInstance = instance;
+        };
+
+        vm.searchSomething = function(){
+            var table = vm.dtInstance.DataTable;
+            table
+                .column( 0 )
+                .search( "hello" )
+                .draw();
+        };
+
         vm.dtOptions = DTOptionsBuilder.fromSource('api/res/tranships')
+            .withOption('sServerMethod','POST')
             .withOption('processing',true)
             .withOption('serverSide',true)
+            // .withOption('sAjaxSource', 'api/res/tranships')
+            .withOption('fnServerData', function ( sSource, aoData, fnCallback, oSettings ) {
+                var data = {};
+                for(var i=0; aoData && i<aoData.length; ++i){
+                    var oData = aoData[i];
+                    data[oData.name] = oData.value;
+                }
+                var jqDt = this;
+                TransportRecordService.getJqDataTableValues(data, oSettings).then(function (res){
+                    var json = res.data;
+                    var error = json.error || json.sError;
+                    if ( error ) {
+                        jqDt._fnLog( oSettings, 0, error );
+                    }
+                    oSettings.json = json;
+                    fnCallback( json );
+                }).catch(function(res){
+                    console.log(res);
+
+                    var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+
+                    if ( $.inArray( true, ret ) === -1 ) {
+                        if ( error == "parsererror" ) {
+                            jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+                        }
+                        else if ( res.readyState === 4 ) {
+                            jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
+                        }
+                    }
+
+                    jqDt._fnProcessingDisplay( oSettings, false );
+                });
+            })
+
+
             .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow)
             .withColumnFilter({
                 aoColumns: [{
                     type: 'text',
-                    width:50
+                    width:50,
+                    iFilterLength:3
                 }, {
                     type: 'text',
                     bRegex: true,
-                    bSmart: true
+                    bSmart: true,
+                    iFilterLength:3
                 }, {
                     type: 'text',
                     bRegex: true,

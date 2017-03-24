@@ -52,7 +52,55 @@
             AlertService.error(error.data.message);
         }
 
-        vm.dtOptions = DTOptionsBuilder.fromSource('api/res/tranships')
+        // vm.dtOptions = DTOptionsBuilder.fromSource('api/res/tranships')
+        vm.dtOptions = DTOptionsBuilder.fromSource(function( data, callback, oSettings ){
+            var jqDT = this;
+            console.log(jqDT, jqDT._fnLog);
+            TransportRecordService.getJqDataTableValues(data, oSettings).then(function (res){
+                var json = res.data;
+                var error = json.error || json.sError;
+                // if ( error ) {
+                //     _fnLog( oSettings, 0, error );
+                // }
+                oSettings.json = json;
+                callback( json );
+            });
+
+
+            // var baseAjax = {
+            //     "data": data,
+            //     "success": function (json) {
+            //         var error = json.error || json.sError;
+            //         if ( error ) {
+            //             _fnLog( oSettings, 0, error );
+            //         }
+            //
+            //         oSettings.json = json;
+            //         callback( json );
+            //     },
+            //     "dataType": "json",
+            //     "cache": false,
+            //     "type": oSettings.sServerMethod,
+            //     "error": function (xhr, error, thrown) {
+            //         var ret = _fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+            //
+            //         if ( $.inArray( true, ret ) === -1 ) {
+            //             if ( error == "parsererror" ) {
+            //                 _fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+            //             }
+            //             else if ( xhr.readyState === 4 ) {
+            //                 _fnLog( oSettings, 0, 'Ajax error', 7 );
+            //             }
+            //         }
+            //
+            //         _fnProcessingDisplay( oSettings, false );
+            //     }
+            // };
+        })
+        // vm.dtOptions = DTOptionsBuilder.fromFnPromise(function() {
+        //     return $resource('data.json').query().$promise;
+        // })
+            .withOption('sServerMethod','POST')
             .withOption('processing',true)
             .withOption('serverSide',true)
             .withPaginationType('full_numbers')

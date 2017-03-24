@@ -18,6 +18,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -140,8 +141,8 @@ public class TranshipResource {
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @JsonView(DataTablesOutput.View.class)
-    @RequestMapping(value = "/res/tranships", method = RequestMethod.GET)
-    public DataTablesOutput<TranshipResponse> getPageTranship(DataTablesInput input) {
+    @RequestMapping(value = "/res/tranships", method = RequestMethod.POST, produces={MediaType.ALL_VALUE})
+    public DataTablesOutput<TranshipResponse> getPageTranship(@RequestBody DataTablesInput input) {
         return transhipService.findAllTranship(input);
     }
 }

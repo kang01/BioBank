@@ -22,15 +22,6 @@
     ],
     "fields": [
         {
-            "fieldName": "supprotRackCode",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "100"
-        },
-        {
             "fieldName": "supportRackTypeCode",
             "fieldType": "String",
             "fieldValidateRules": [
@@ -64,6 +55,15 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": "20"
+        },
+        {
+            "fieldName": "supportRackCode",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "100"
         }
     ],
     "changelogDate": "20170317050339",

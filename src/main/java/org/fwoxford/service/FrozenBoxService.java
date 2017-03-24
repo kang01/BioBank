@@ -1,7 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.domain.FrozenBox;
-import org.fwoxford.domain.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

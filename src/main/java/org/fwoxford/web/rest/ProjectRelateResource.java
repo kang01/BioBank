@@ -34,7 +34,7 @@ public class ProjectRelateResource {
     private final Logger log = LoggerFactory.getLogger(ProjectRelateResource.class);
 
     private static final String ENTITY_NAME = "projectRelate";
-        
+
     private final ProjectRelateService projectRelateService;
 
     public ProjectRelateResource(ProjectRelateService projectRelateService) {

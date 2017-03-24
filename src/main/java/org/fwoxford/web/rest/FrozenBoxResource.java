@@ -1,9 +1,8 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import org.fwoxford.domain.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.FrozenBoxService;
-import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.FrozenBoxDTO;
@@ -21,10 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing FrozenBox.

@@ -25,11 +25,6 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
 
     @NotNull
     @Size(max = 100)
-    @Column(name = "supprot_rack_code", length = 100, nullable = false)
-    private String supprotRackCode;
-
-    @NotNull
-    @Size(max = 100)
     @Column(name = "support_rack_type_code", length = 100, nullable = false)
     private String supportRackTypeCode;
 
@@ -47,6 +42,11 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "support_rack_code", length = 100, nullable = false)
+    private String supportRackCode;
+
     @ManyToOne(optional = false)
     @NotNull
     private SupportRackType supportRackType;
@@ -61,19 +61,6 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getSupprotRackCode() {
-        return supprotRackCode;
-    }
-
-    public SupportRack supprotRackCode(String supprotRackCode) {
-        this.supprotRackCode = supprotRackCode;
-        return this;
-    }
-
-    public void setSupprotRackCode(String supprotRackCode) {
-        this.supprotRackCode = supprotRackCode;
     }
 
     public String getSupportRackTypeCode() {
@@ -128,6 +115,19 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
         this.status = status;
     }
 
+    public String getSupportRackCode() {
+        return supportRackCode;
+    }
+
+    public SupportRack supportRackCode(String supportRackCode) {
+        this.supportRackCode = supportRackCode;
+        return this;
+    }
+
+    public void setSupportRackCode(String supportRackCode) {
+        this.supportRackCode = supportRackCode;
+    }
+
     public SupportRackType getSupportRackType() {
         return supportRackType;
     }
@@ -178,11 +178,11 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
     public String toString() {
         return "SupportRack{" +
             "id=" + id +
-            ", supprotRackCode='" + supprotRackCode + "'" +
             ", supportRackTypeCode='" + supportRackTypeCode + "'" +
             ", areaCode='" + areaCode + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
+            ", supportRackCode='" + supportRackCode + "'" +
             '}';
     }
 }

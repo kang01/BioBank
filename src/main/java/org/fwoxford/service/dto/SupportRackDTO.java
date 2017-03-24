@@ -16,10 +16,6 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
 
     @NotNull
     @Size(max = 100)
-    private String supprotRackCode;
-
-    @NotNull
-    @Size(max = 100)
     private String supportRackTypeCode;
 
     @NotNull
@@ -33,6 +29,10 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
     @Size(max = 20)
     private String status;
 
+    @NotNull
+    @Size(max = 100)
+    private String supportRackCode;
+
     private Long supportRackTypeId;
 
     private Long areaId;
@@ -43,13 +43,6 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
 
     public void setId(Long id) {
         this.id = id;
-    }
-    public String getSupprotRackCode() {
-        return supprotRackCode;
-    }
-
-    public void setSupprotRackCode(String supprotRackCode) {
-        this.supprotRackCode = supprotRackCode;
     }
     public String getSupportRackTypeCode() {
         return supportRackTypeCode;
@@ -78,6 +71,13 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
 
     public void setStatus(String status) {
         this.status = status;
+    }
+    public String getSupportRackCode() {
+        return supportRackCode;
+    }
+
+    public void setSupportRackCode(String supportRackCode) {
+        this.supportRackCode = supportRackCode;
     }
 
     public Long getSupportRackTypeId() {
@@ -121,11 +121,11 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
     public String toString() {
         return "SupportRackDTO{" +
             "id=" + id +
-            ", supprotRackCode='" + supprotRackCode + "'" +
             ", supportRackTypeCode='" + supportRackTypeCode + "'" +
             ", areaCode='" + areaCode + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
+            ", supportRackCode='" + supportRackCode + "'" +
             '}';
     }
 }

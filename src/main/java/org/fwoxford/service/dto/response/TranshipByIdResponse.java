@@ -1,4 +1,4 @@
-package org.fwoxford.domain.response;
+package org.fwoxford.service.dto.response;
 
 import org.fwoxford.service.dto.FrozenBoxDTO;
 
@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by gengluying on 2017/3/22.

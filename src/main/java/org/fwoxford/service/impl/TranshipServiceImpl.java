@@ -1,8 +1,9 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.domain.Tranship;
-import org.fwoxford.domain.response.TranshipByIdResponse;
-import org.fwoxford.domain.response.TranshipResponse;
+import org.fwoxford.service.dto.request.TranshipRequest;
+import org.fwoxford.service.dto.response.TranshipByIdResponse;
+import org.fwoxford.service.dto.response.TranshipResponse;
 import org.fwoxford.repository.TranshipRepositries;
 import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.service.FrozenBoxService;
@@ -146,5 +147,15 @@ public class TranshipServiceImpl implements TranshipService{
         res.setFrozenBoxDTOList(frozenBoxResponseList);
 
         return res;
+    }
+
+    /**
+     * 保存转运记录，包括冻存盒，冻存管
+     * @param transhipRequest
+     * @return
+     */
+    @Override
+    public TranshipDTO insertTranship(TranshipRequest transhipRequest) {
+        return null;
     }
 }

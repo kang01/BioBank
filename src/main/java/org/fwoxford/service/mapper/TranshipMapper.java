@@ -1,8 +1,8 @@
 package org.fwoxford.service.mapper;
 
 import org.fwoxford.domain.*;
-import org.fwoxford.domain.response.TranshipByIdResponse;
-import org.fwoxford.domain.response.TranshipResponse;
+import org.fwoxford.service.dto.response.TranshipByIdResponse;
+import org.fwoxford.service.dto.response.TranshipResponse;
 import org.fwoxford.service.dto.TranshipDTO;
 
 import org.mapstruct.*;

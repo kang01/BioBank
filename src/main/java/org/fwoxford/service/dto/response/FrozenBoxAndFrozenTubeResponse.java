@@ -1,17 +1,9 @@
-package org.fwoxford.domain.response;
+package org.fwoxford.service.dto.response;
 
 
-import org.fwoxford.domain.FrozenBoxType;
-import org.fwoxford.domain.SampleType;
-import org.fwoxford.service.FrozenBoxService;
-import org.fwoxford.service.dto.AbstractAuditingDTO;
-
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * A DTO for the FrozenBox entity.

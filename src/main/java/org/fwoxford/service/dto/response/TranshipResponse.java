@@ -1,4 +1,4 @@
-package org.fwoxford.domain.response;
+package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;

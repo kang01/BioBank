@@ -124,11 +124,11 @@
                     resolve: {
                         entity: function () {
                             return {
-                                supprotRackCode: null,
                                 supportRackTypeCode: null,
                                 areaCode: null,
                                 memo: null,
                                 status: null,
+                                supportRackCode: null,
                                 id: null
                             };
                         }

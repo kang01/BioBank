@@ -42,9 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = BioBankApp.class)
 public class SupportRackResourceIntTest {
 
-    private static final String DEFAULT_SUPPROT_RACK_CODE = "AAAAAAAAAA";
-    private static final String UPDATED_SUPPROT_RACK_CODE = "BBBBBBBBBB";
-
     private static final String DEFAULT_SUPPORT_RACK_TYPE_CODE = "AAAAAAAAAA";
     private static final String UPDATED_SUPPORT_RACK_TYPE_CODE = "BBBBBBBBBB";
 
@@ -56,6 +53,9 @@ public class SupportRackResourceIntTest {
 
     private static final String DEFAULT_STATUS = "AAAAAAAAAA";
     private static final String UPDATED_STATUS = "BBBBBBBBBB";
+
+    private static final String DEFAULT_SUPPORT_RACK_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_SUPPORT_RACK_CODE = "BBBBBBBBBB";
 
     @Autowired
     private SupportRackRepository supportRackRepository;
@@ -100,11 +100,11 @@ public class SupportRackResourceIntTest {
      */
     public static SupportRack createEntity(EntityManager em) {
         SupportRack supportRack = new SupportRack()
-                .supprotRackCode(DEFAULT_SUPPROT_RACK_CODE)
                 .supportRackTypeCode(DEFAULT_SUPPORT_RACK_TYPE_CODE)
                 .areaCode(DEFAULT_AREA_CODE)
                 .memo(DEFAULT_MEMO)
-                .status(DEFAULT_STATUS);
+                .status(DEFAULT_STATUS)
+                .supportRackCode(DEFAULT_SUPPORT_RACK_CODE);
         // Add required entity
         SupportRackType supportRackType = SupportRackTypeResourceIntTest.createEntity(em);
         em.persist(supportRackType);
@@ -140,11 +140,11 @@ public class SupportRackResourceIntTest {
         List<SupportRack> supportRackList = supportRackRepository.findAll();
         assertThat(supportRackList).hasSize(databaseSizeBeforeCreate + 1);
         SupportRack testSupportRack = supportRackList.get(supportRackList.size() - 1);
-        assertThat(testSupportRack.getSupprotRackCode()).isEqualTo(DEFAULT_SUPPROT_RACK_CODE);
         assertThat(testSupportRack.getSupportRackTypeCode()).isEqualTo(DEFAULT_SUPPORT_RACK_TYPE_CODE);
         assertThat(testSupportRack.getAreaCode()).isEqualTo(DEFAULT_AREA_CODE);
         assertThat(testSupportRack.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testSupportRack.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testSupportRack.getSupportRackCode()).isEqualTo(DEFAULT_SUPPORT_RACK_CODE);
     }
 
     @Test
@@ -166,25 +166,6 @@ public class SupportRackResourceIntTest {
         // Validate the Alice in the database
         List<SupportRack> supportRackList = supportRackRepository.findAll();
         assertThat(supportRackList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    public void checkSupprotRackCodeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = supportRackRepository.findAll().size();
-        // set the field null
-        supportRack.setSupprotRackCode(null);
-
-        // Create the SupportRack, which fails.
-        SupportRackDTO supportRackDTO = supportRackMapper.supportRackToSupportRackDTO(supportRack);
-
-        restSupportRackMockMvc.perform(post("/api/support-racks")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(supportRackDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<SupportRack> supportRackList = supportRackRepository.findAll();
-        assertThat(supportRackList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -246,6 +227,25 @@ public class SupportRackResourceIntTest {
 
     @Test
     @Transactional
+    public void checkSupportRackCodeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = supportRackRepository.findAll().size();
+        // set the field null
+        supportRack.setSupportRackCode(null);
+
+        // Create the SupportRack, which fails.
+        SupportRackDTO supportRackDTO = supportRackMapper.supportRackToSupportRackDTO(supportRack);
+
+        restSupportRackMockMvc.perform(post("/api/support-racks")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(supportRackDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<SupportRack> supportRackList = supportRackRepository.findAll();
+        assertThat(supportRackList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllSupportRacks() throws Exception {
         // Initialize the database
         supportRackRepository.saveAndFlush(supportRack);
@@ -255,11 +255,11 @@ public class SupportRackResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(supportRack.getId().intValue())))
-            .andExpect(jsonPath("$.[*].supprotRackCode").value(hasItem(DEFAULT_SUPPROT_RACK_CODE.toString())))
             .andExpect(jsonPath("$.[*].supportRackTypeCode").value(hasItem(DEFAULT_SUPPORT_RACK_TYPE_CODE.toString())))
             .andExpect(jsonPath("$.[*].areaCode").value(hasItem(DEFAULT_AREA_CODE.toString())))
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].supportRackCode").value(hasItem(DEFAULT_SUPPORT_RACK_CODE.toString())));
     }
 
     @Test
@@ -273,11 +273,11 @@ public class SupportRackResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(supportRack.getId().intValue()))
-            .andExpect(jsonPath("$.supprotRackCode").value(DEFAULT_SUPPROT_RACK_CODE.toString()))
             .andExpect(jsonPath("$.supportRackTypeCode").value(DEFAULT_SUPPORT_RACK_TYPE_CODE.toString()))
             .andExpect(jsonPath("$.areaCode").value(DEFAULT_AREA_CODE.toString()))
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
+            .andExpect(jsonPath("$.supportRackCode").value(DEFAULT_SUPPORT_RACK_CODE.toString()));
     }
 
     @Test
@@ -298,11 +298,11 @@ public class SupportRackResourceIntTest {
         // Update the supportRack
         SupportRack updatedSupportRack = supportRackRepository.findOne(supportRack.getId());
         updatedSupportRack
-                .supprotRackCode(UPDATED_SUPPROT_RACK_CODE)
                 .supportRackTypeCode(UPDATED_SUPPORT_RACK_TYPE_CODE)
                 .areaCode(UPDATED_AREA_CODE)
                 .memo(UPDATED_MEMO)
-                .status(UPDATED_STATUS);
+                .status(UPDATED_STATUS)
+                .supportRackCode(UPDATED_SUPPORT_RACK_CODE);
         SupportRackDTO supportRackDTO = supportRackMapper.supportRackToSupportRackDTO(updatedSupportRack);
 
         restSupportRackMockMvc.perform(put("/api/support-racks")
@@ -314,11 +314,11 @@ public class SupportRackResourceIntTest {
         List<SupportRack> supportRackList = supportRackRepository.findAll();
         assertThat(supportRackList).hasSize(databaseSizeBeforeUpdate);
         SupportRack testSupportRack = supportRackList.get(supportRackList.size() - 1);
-        assertThat(testSupportRack.getSupprotRackCode()).isEqualTo(UPDATED_SUPPROT_RACK_CODE);
         assertThat(testSupportRack.getSupportRackTypeCode()).isEqualTo(UPDATED_SUPPORT_RACK_TYPE_CODE);
         assertThat(testSupportRack.getAreaCode()).isEqualTo(UPDATED_AREA_CODE);
         assertThat(testSupportRack.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testSupportRack.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testSupportRack.getSupportRackCode()).isEqualTo(UPDATED_SUPPORT_RACK_CODE);
     }
 
     @Test

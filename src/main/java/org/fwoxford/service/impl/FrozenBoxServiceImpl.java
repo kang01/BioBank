@@ -1,14 +1,13 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.domain.FrozenTube;
-import org.fwoxford.domain.response.FrozenBoxAndFrozenTubeResponse;
-import org.fwoxford.domain.response.FrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.repository.FrozenBoxRepository;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
-import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.slf4j.Logger;

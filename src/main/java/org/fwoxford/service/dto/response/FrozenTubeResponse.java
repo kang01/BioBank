@@ -1,11 +1,7 @@
-package org.fwoxford.domain.response;
+package org.fwoxford.service.dto.response;
 
-import org.fwoxford.service.dto.FrozenTubeDTO;
-
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 /**
  * Created by gengluying on 2017/3/22.

@@ -1,8 +1,8 @@
 package org.fwoxford.service.mapper;
 
 import org.fwoxford.domain.*;
-import org.fwoxford.domain.response.FrozenBoxAndFrozenTubeResponse;
-import org.fwoxford.domain.response.FrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 
 import org.mapstruct.*;

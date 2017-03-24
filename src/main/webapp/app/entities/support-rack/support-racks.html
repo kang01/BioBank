@@ -19,11 +19,11 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="supprotRackCode"><span data-translate="bioBankApp.supportRack.supprotRackCode">Supprot Rack Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="supportRackTypeCode"><span data-translate="bioBankApp.supportRack.supportRackTypeCode">Support Rack Type Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="areaCode"><span data-translate="bioBankApp.supportRack.areaCode">Area Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="memo"><span data-translate="bioBankApp.supportRack.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="bioBankApp.supportRack.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="supportRackCode"><span data-translate="bioBankApp.supportRack.supportRackCode">Support Rack Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="supportRackTypeId"><span data-translate="bioBankApp.supportRack.supportRackType">Support Rack Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="areaId"><span data-translate="bioBankApp.supportRack.area">Area</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
@@ -32,11 +32,11 @@
             <tbody>
                 <tr ng-repeat="supportRack in vm.supportRacks track by supportRack.id">
                     <td><a ui-sref="support-rack-detail({id:supportRack.id})">{{supportRack.id}}</a></td>
-                    <td>{{supportRack.supprotRackCode}}</td>
                     <td>{{supportRack.supportRackTypeCode}}</td>
                     <td>{{supportRack.areaCode}}</td>
                     <td>{{supportRack.memo}}</td>
                     <td>{{supportRack.status}}</td>
+                    <td>{{supportRack.supportRackCode}}</td>
                     <td>
                         <a ui-sref="support-rack-type-detail({id:supportRack.supportRackTypeId})">{{supportRack.supportRackTypeId}}</a>
                     </td>

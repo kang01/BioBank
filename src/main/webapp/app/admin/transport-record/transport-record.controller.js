@@ -65,6 +65,9 @@
         };
 
         vm.dtOptions = DTOptionsBuilder.fromSource('api/res/tranships')
+            .withOption('sServerMethod','POST')
+            .withOption('processing',true)
+            .withOption('serverSide',true)
             // .withOption('sAjaxSource', 'api/res/tranships')
             .withOption('fnServerData', function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};
@@ -99,9 +102,7 @@
                 });
             })
 
-            .withOption('sServerMethod','POST')
-            .withOption('processing',true)
-            .withOption('serverSide',true)
+
             .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow)
             .withColumnFilter({

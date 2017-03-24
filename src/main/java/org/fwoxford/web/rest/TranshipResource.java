@@ -141,7 +141,7 @@ public class TranshipResource {
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @JsonView(DataTablesOutput.View.class)
-    @RequestMapping(value = "/res/tranships", method = RequestMethod.POST, produces={MediaType.ALL_VALUE})
+    @RequestMapping(value = "/res/tranships", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<TranshipResponse> getPageTranship(@RequestBody DataTablesInput input) {
         return transhipService.findAllTranship(input);
     }

@@ -34,7 +34,7 @@ public class ProjectSiteResource {
     private final Logger log = LoggerFactory.getLogger(ProjectSiteResource.class);
 
     private static final String ENTITY_NAME = "projectSite";
-        
+
     private final ProjectSiteService projectSiteService;
 
     public ProjectSiteResource(ProjectSiteService projectSiteService) {
@@ -128,4 +128,18 @@ public class ProjectSiteResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * 根据项目ID查询项目点列表
+     * @param projectId
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/projectSitesByProjectId/{projectId}")
+    @Timed
+    public ResponseEntity<List<ProjectSiteDTO>> getAllProjectSitesByProjectId(@PathVariable Long projectId)
+        throws URISyntaxException {
+        log.debug("REST request to get projectSite By ProjectId : ",projectId);
+        List<ProjectSiteDTO> list = projectSiteService.findAllProjectSitesByProjectId(projectId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
 }

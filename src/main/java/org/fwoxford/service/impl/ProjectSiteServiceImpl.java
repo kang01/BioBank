@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class ProjectSiteServiceImpl implements ProjectSiteService{
 
     private final Logger log = LoggerFactory.getLogger(ProjectSiteServiceImpl.class);
-    
+
     private final ProjectSiteRepository projectSiteRepository;
 
     private final ProjectSiteMapper projectSiteMapper;
@@ -51,7 +51,7 @@ public class ProjectSiteServiceImpl implements ProjectSiteService{
 
     /**
      *  Get all the projectSites.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +87,18 @@ public class ProjectSiteServiceImpl implements ProjectSiteService{
     public void delete(Long id) {
         log.debug("Request to delete ProjectSite : {}", id);
         projectSiteRepository.delete(id);
+    }
+
+    /**
+     * 根据项目ID查询项目组ID信息
+     * @param projectId 项目ID
+     * @return
+     */
+    @Override
+    public List<ProjectSiteDTO> findAllProjectSitesByProjectId(Long projectId) {
+        log.debug("Request to get ProjectSite : {}", projectId);
+        List<ProjectSite> projectSites = projectSiteRepository.findAllProjectSitesByProjectId(projectId);
+        List<ProjectSiteDTO> projectSiteDTOs = projectSiteMapper.projectSitesToProjectSiteDTOs(projectSites);
+        return projectSiteDTOs;
     }
 }

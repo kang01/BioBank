@@ -20,7 +20,7 @@ public interface ProjectSiteService {
 
     /**
      *  Get all the projectSites.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,11 @@ public interface ProjectSiteService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * 根据项目ID查询项目组ID信息
+     * @param projectId 项目ID
+     * @return
+     */
+    List<ProjectSiteDTO> findAllProjectSitesByProjectId(Long projectId);
 }

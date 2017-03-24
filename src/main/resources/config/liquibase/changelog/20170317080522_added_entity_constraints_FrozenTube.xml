@@ -26,5 +26,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="project"/>
 
+        <addForeignKeyConstraint baseColumnNames="frozen_box_id"
+                                 baseTableName="frozen_tube"
+                                 constraintName="fk_frozen_tube_frozen_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_box"/>
+
     </changeSet>
 </databaseChangeLog>

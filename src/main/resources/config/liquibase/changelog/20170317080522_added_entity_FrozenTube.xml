@@ -89,6 +89,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="frozen_box_code" type="varchar(100)">
+                <constraints nullable="false" />
+            </column>
+
             <column name="frozen_tube_type_id" type="bigint">
                 <constraints nullable="false" />
             </column>
@@ -98,6 +102,10 @@
             </column>
 
             <column name="project_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="frozen_box_id" type="bigint">
                 <constraints nullable="false" />
             </column>
 

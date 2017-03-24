@@ -34,7 +34,7 @@ public class SampleTypeResource {
     private final Logger log = LoggerFactory.getLogger(SampleTypeResource.class);
 
     private static final String ENTITY_NAME = "sampleType";
-        
+
     private final SampleTypeService sampleTypeService;
 
     public SampleTypeResource(SampleTypeService sampleTypeService) {
@@ -127,5 +127,16 @@ public class SampleTypeResource {
         sampleTypeService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
+    /**
+     * 查詢所有的有效樣本類型，不帶分頁
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/samplyTypes")
+    @Timed
+    public ResponseEntity<List<SampleTypeDTO>> getAllSampleTypeList() {
+        log.debug("REST request to get all SampleTypeTypes");
+        List<SampleTypeDTO> list = sampleTypeService.findAllSampleTypes();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
 }

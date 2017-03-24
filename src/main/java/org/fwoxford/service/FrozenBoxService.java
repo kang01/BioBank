@@ -1,5 +1,6 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.springframework.data.domain.Page;
@@ -62,4 +63,11 @@ public interface FrozenBoxService {
      * @return
      */
     FrozenBoxAndFrozenTubeResponse findFrozenBoxAndTubeByBoxCode(String frozenBoxCode);
+
+    /**
+     * 根据冻存盒code查询冻存盒基本信息
+     * @param frozenBoxCode
+     * @return
+     */
+    FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode);
 }

@@ -11,5 +11,9 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface EquipmentRepository extends JpaRepository<Equipment,Long> {
+
     Equipment findOneByEquipmentCode(String code);
+
+    @Query("select t from Equipment t where t.status != '00'")
+    List<Equipment> findAllEquipments();
 }

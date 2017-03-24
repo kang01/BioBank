@@ -20,7 +20,7 @@ public interface SupportRackService {
 
     /**
      *  Get all the supportRacks.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,11 @@ public interface SupportRackService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * 根據區域ID查詢架子列表
+     * @param areaId 區域ID
+     * @return
+     */
+    List<SupportRackDTO> findSupportRackByAreaId(Long areaId);
 }

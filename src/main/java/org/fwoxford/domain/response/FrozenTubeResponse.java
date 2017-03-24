@@ -47,22 +47,6 @@ public class FrozenTubeResponse {
     private String sampleTypeName;
 
     @NotNull
-    @Max(value = 20)
-    private Integer sampleUsedTimesMost;
-
-    @NotNull
-    @Max(value = 20)
-    private Integer sampleUsedTimes;
-
-    @NotNull
-    @Max(value = 20)
-    private Integer frozenTubeVolumns;
-
-    @NotNull
-    @Size(max = 20)
-    private String frozenTubeVolumnsUnit;
-
-    @NotNull
     @Size(max = 20)
     private String tubeRows;
 
@@ -158,38 +142,6 @@ public class FrozenTubeResponse {
         this.sampleTypeName = sampleTypeName;
     }
 
-    public Integer getSampleUsedTimesMost() {
-        return sampleUsedTimesMost;
-    }
-
-    public void setSampleUsedTimesMost(Integer sampleUsedTimesMost) {
-        this.sampleUsedTimesMost = sampleUsedTimesMost;
-    }
-
-    public Integer getSampleUsedTimes() {
-        return sampleUsedTimes;
-    }
-
-    public void setSampleUsedTimes(Integer sampleUsedTimes) {
-        this.sampleUsedTimes = sampleUsedTimes;
-    }
-
-    public Integer getFrozenTubeVolumns() {
-        return frozenTubeVolumns;
-    }
-
-    public void setFrozenTubeVolumns(Integer frozenTubeVolumns) {
-        this.frozenTubeVolumns = frozenTubeVolumns;
-    }
-
-    public String getFrozenTubeVolumnsUnit() {
-        return frozenTubeVolumnsUnit;
-    }
-
-    public void setFrozenTubeVolumnsUnit(String frozenTubeVolumnsUnit) {
-        this.frozenTubeVolumnsUnit = frozenTubeVolumnsUnit;
-    }
-
     public String getTubeRows() {
         return tubeRows;
     }
@@ -253,4 +205,5 @@ public class FrozenTubeResponse {
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
+
 }

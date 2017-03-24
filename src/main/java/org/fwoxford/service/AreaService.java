@@ -20,7 +20,7 @@ public interface AreaService {
 
     /**
      *  Get all the areas.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,11 @@ public interface AreaService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * 根據設備ID查詢區域信息
+     * @param equipmentId 設備ID
+     * @return
+     */
+    List<AreaDTO> getAreaByEquipmentId(Long equipmentId);
 }

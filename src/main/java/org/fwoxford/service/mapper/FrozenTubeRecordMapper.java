@@ -14,12 +14,16 @@ public interface FrozenTubeRecordMapper {
 
     @Mapping(source = "sampleType.id", target = "sampleTypeId")
     @Mapping(source = "tubeType.id", target = "tubeTypeId")
+    @Mapping(source = "frozenBox.id", target = "frozenBoxId")
+    @Mapping(source = "frozenTube.id", target = "frozenTubeId")
     FrozenTubeRecordDTO frozenTubeRecordToFrozenTubeRecordDTO(FrozenTubeRecord frozenTubeRecord);
 
     List<FrozenTubeRecordDTO> frozenTubeRecordsToFrozenTubeRecordDTOs(List<FrozenTubeRecord> frozenTubeRecords);
 
     @Mapping(source = "sampleTypeId", target = "sampleType")
     @Mapping(source = "tubeTypeId", target = "tubeType")
+    @Mapping(source = "frozenBoxId", target = "frozenBox")
+    @Mapping(source = "frozenTubeId", target = "frozenTube")
     FrozenTubeRecord frozenTubeRecordDTOToFrozenTubeRecord(FrozenTubeRecordDTO frozenTubeRecordDTO);
 
     List<FrozenTubeRecord> frozenTubeRecordDTOsToFrozenTubeRecords(List<FrozenTubeRecordDTO> frozenTubeRecordDTOs);
@@ -40,5 +44,23 @@ public interface FrozenTubeRecordMapper {
         FrozenTubeType frozenTubeType = new FrozenTubeType();
         frozenTubeType.setId(id);
         return frozenTubeType;
+    }
+
+    default FrozenBox frozenBoxFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        FrozenBox frozenBox = new FrozenBox();
+        frozenBox.setId(id);
+        return frozenBox;
+    }
+
+    default FrozenTube frozenTubeFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        FrozenTube frozenTube = new FrozenTube();
+        frozenTube.setId(id);
+        return frozenTube;
     }
 }

@@ -34,7 +34,7 @@ public class AreaResource {
     private final Logger log = LoggerFactory.getLogger(AreaResource.class);
 
     private static final String ENTITY_NAME = "area";
-        
+
     private final AreaService areaService;
 
     public AreaResource(AreaService areaService) {
@@ -126,6 +126,19 @@ public class AreaResource {
         log.debug("REST request to delete Area : {}", id);
         areaService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * 根據設備ID查詢區域列表
+     * @param equipmentId
+     * @return
+     */
+    @GetMapping("/areasByEquipmentId/{equipmentId}")
+    @Timed
+    public ResponseEntity<List<AreaDTO>> getAreaByEquipmentId(@PathVariable Long equipmentId) {
+        log.debug("REST request to get Area by EquipmentId : {}", equipmentId);
+        List<AreaDTO> areaDTO = areaService.getAreaByEquipmentId(equipmentId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(areaDTO));
     }
 
 }

@@ -4,6 +4,8 @@ import org.fwoxford.BioBankApp;
 
 import org.fwoxford.domain.FrozenTubeRecord;
 import org.fwoxford.domain.FrozenTubeType;
+import org.fwoxford.domain.FrozenBox;
+import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.repository.FrozenTubeRecordRepository;
 import org.fwoxford.service.FrozenTubeRecordService;
 import org.fwoxford.service.dto.FrozenTubeRecordDTO;
@@ -161,6 +163,16 @@ public class FrozenTubeRecordResourceIntTest {
         em.persist(tubeType);
         em.flush();
         frozenTubeRecord.setTubeType(tubeType);
+        // Add required entity
+        FrozenBox frozenBox = FrozenBoxResourceIntTest.createEntity(em);
+        em.persist(frozenBox);
+        em.flush();
+        frozenTubeRecord.setFrozenBox(frozenBox);
+        // Add required entity
+        FrozenTube frozenTube = FrozenTubeResourceIntTest.createEntity(em);
+        em.persist(frozenTube);
+        em.flush();
+        frozenTubeRecord.setFrozenTube(frozenTube);
         return frozenTubeRecord;
     }
 

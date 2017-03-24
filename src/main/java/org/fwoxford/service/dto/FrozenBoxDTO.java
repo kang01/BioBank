@@ -91,6 +91,12 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long transhipId;
 
+    private Long equipmentId;
+
+    private Long areaId;
+
+    private Long supportRackId;
+
     public Long getId() {
         return id;
     }
@@ -256,6 +262,30 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setTranshipId(Long transhipId) {
         this.transhipId = transhipId;
+    }
+
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
+    }
+
+    public Long getSupportRackId() {
+        return supportRackId;
+    }
+
+    public void setSupportRackId(Long supportRackId) {
+        this.supportRackId = supportRackId;
     }
 
     @Override

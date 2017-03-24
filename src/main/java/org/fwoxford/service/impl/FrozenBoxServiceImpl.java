@@ -1,12 +1,16 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.domain.response.FrozenTubeResponse;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.repository.FrozenBoxRepository;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
+import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +36,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
     @Autowired
     private FrozenTubeService frozenTubeService;
+
+    @Autowired
+    private FrozenTubeMapper frozenTubeMapping;
 
     public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper) {
         this.frozenBoxRepository = frozenBoxRepository;
@@ -105,17 +112,21 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     }
     /**
      * 根据冻存盒id查询冻存管信息
-     * @param id 冻存盒id
+     * @param frozenBoxId 冻存盒id
      * @return
      */
     @Override
-    public FrozenBoxAndFrozenTubeResponse findFrozenBoxAndTubeByBoxId(Long id) {
+    public FrozenBoxAndFrozenTubeResponse findFrozenBoxAndTubeByBoxId(Long frozenBoxId) {
         FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
         //查询冻存盒信息
-
-        // frozenTubeService.findFrozenTubeListByBoxId(id);
+        FrozenBox frozenBox = frozenBoxRepository.findOne(frozenBoxId);
 
         //查询冻存管列表信息
+        List<FrozenTube> frozenTube = frozenTubeService.findFrozenTubeListByBoxId(frozenBoxId);
+        List<FrozenTubeResponse> frozenTubeResponses = frozenTubeMapping.frozenTubeToFrozenTubeResponse(frozenTube);
+
+        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox,frozenTubeResponses);
+
         return res;
     }
     /**
@@ -127,6 +138,26 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     public FrozenBoxAndFrozenTubeResponse findFrozenBoxAndTubeByBoxCode(String frozenBoxCode) {
         FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
 
+        //查询冻存盒信息
+        FrozenBox frozenBox = this.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+
+        //查询冻存管列表信息
+        List<FrozenTube> frozenTube = frozenTubeService.findFrozenTubeListByBoxCode(frozenBoxCode);
+
+        List<FrozenTubeResponse> frozenTubeResponses = frozenTubeMapping.frozenTubeToFrozenTubeResponse(frozenTube);
+
+        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox,frozenTubeResponses);
+
         return res;
+    }
+
+    /**
+     * 根据冻存盒code查询冻存盒基本信息
+     * @param frozenBoxCode 冻存盒code
+     * @return
+     */
+    public FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode) {
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+        return frozenBox;
     }
 }

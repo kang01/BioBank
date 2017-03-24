@@ -20,7 +20,7 @@ public interface SampleTypeService {
 
     /**
      *  Get all the sampleTypes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,10 @@ public interface SampleTypeService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * 查詢所有的有效樣本類型
+     * @return
+     */
+    List<SampleTypeDTO> findAllSampleTypes();
 }

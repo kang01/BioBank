@@ -34,7 +34,7 @@ public class FrozenBoxTypeResource {
     private final Logger log = LoggerFactory.getLogger(FrozenBoxTypeResource.class);
 
     private static final String ENTITY_NAME = "frozenBoxType";
-        
+
     private final FrozenBoxTypeService frozenBoxTypeService;
 
     public FrozenBoxTypeResource(FrozenBoxTypeService frozenBoxTypeService) {
@@ -128,4 +128,16 @@ public class FrozenBoxTypeResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * 查詢所有的有效凍存盒類型，不帶分頁
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/frozenBoxTypes")
+    @Timed
+    public ResponseEntity<List<FrozenBoxTypeDTO>> getAllFrozenBoxTypes() {
+        log.debug("REST request to get all FrozenBoxTypes");
+        List<FrozenBoxTypeDTO> list = frozenBoxTypeService.findAllFrozenBoxTypes();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
 }

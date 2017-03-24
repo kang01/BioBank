@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 public class SampleTypeServiceImpl implements SampleTypeService{
 
     private final Logger log = LoggerFactory.getLogger(SampleTypeServiceImpl.class);
-    
+
     private final SampleTypeRepository sampleTypeRepository;
 
     private final SampleTypeMapper sampleTypeMapper;
@@ -51,7 +52,7 @@ public class SampleTypeServiceImpl implements SampleTypeService{
 
     /**
      *  Get all the sampleTypes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +88,17 @@ public class SampleTypeServiceImpl implements SampleTypeService{
     public void delete(Long id) {
         log.debug("Request to delete SampleType : {}", id);
         sampleTypeRepository.delete(id);
+    }
+
+    /**
+     * 查詢所有的有效樣本類型
+     * @return
+     */
+    @Override
+    public List<SampleTypeDTO> findAllSampleTypes() {
+        log.debug("Request to search all SampleType : {}");
+        List<SampleType> sampleTypes = sampleTypeRepository.findAllSampleTypes();
+        List<SampleTypeDTO> sampleTypeDTOS = sampleTypeMapper.sampleTypesToSampleTypeDTOs(sampleTypes);
+        return sampleTypeDTOS;
     }
 }

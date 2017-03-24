@@ -34,7 +34,7 @@ public class FrozenTubeResource {
     private final Logger log = LoggerFactory.getLogger(FrozenTubeResource.class);
 
     private static final String ENTITY_NAME = "frozenTube";
-
+        
     private final FrozenTubeService frozenTubeService;
 
     public FrozenTubeResource(FrozenTubeService frozenTubeService) {
@@ -127,4 +127,5 @@ public class FrozenTubeResource {
         frozenTubeService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
 }

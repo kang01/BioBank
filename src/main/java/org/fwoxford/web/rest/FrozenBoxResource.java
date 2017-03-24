@@ -131,7 +131,7 @@ public class FrozenBoxResource {
     }
 
     /**
-     * 根据冻存盒ID查询冻存管信息
+     * 根据冻存盒ID查询冻存盒和冻存管信息
      * @param id
      * @return
      */
@@ -144,11 +144,11 @@ public class FrozenBoxResource {
     }
 
     /**
-     * 根据冻存盒CODE查询冻存管信息
+     * 根据冻存盒CODE查询冻存盒和冻存管信息
      * @param frozenBoxCode
      * @return
      */
-    @GetMapping("/findFrozenBoxAndTubeByBoxCode/{id}")
+    @GetMapping("/findFrozenBoxAndTubeByBoxCode/{frozenBoxCode}")
     @Timed
     public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxId(@PathVariable String frozenBoxCode) {
         log.debug("REST request to get FrozenTube : {}", frozenBoxCode);

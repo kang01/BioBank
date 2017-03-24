@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface SupportRackRepository extends JpaRepository<SupportRack,Long> {
 
+    List<SupportRack> findSupportRackByAreaId(Long areaId);
 }

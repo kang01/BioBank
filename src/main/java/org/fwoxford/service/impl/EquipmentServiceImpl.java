@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class EquipmentServiceImpl implements EquipmentService{
 
     private final Logger log = LoggerFactory.getLogger(EquipmentServiceImpl.class);
-    
+
     private final EquipmentRepository equipmentRepository;
 
     private final EquipmentMapper equipmentMapper;
@@ -51,7 +51,7 @@ public class EquipmentServiceImpl implements EquipmentService{
 
     /**
      *  Get all the equipment.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +87,17 @@ public class EquipmentServiceImpl implements EquipmentService{
     public void delete(Long id) {
         log.debug("Request to delete Equipment : {}", id);
         equipmentRepository.delete(id);
+    }
+
+    /**
+     * 查詢所有的設備列表
+     * @return
+     */
+    @Override
+    public List<EquipmentDTO> findAllEquipments() {
+        log.debug("Request to search All Equipment : {}");
+        List<Equipment> equipments = equipmentRepository.findAllEquipments();
+        List<EquipmentDTO> equipmentDTOS = equipmentMapper.equipmentToEquipmentDTOs(equipments);
+        return equipmentDTOS;
     }
 }

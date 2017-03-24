@@ -141,6 +141,7 @@
                                 memo: null,
                                 errorType: null,
                                 status: null,
+                                frozenBoxCode: null,
                                 id: null
                             };
                         }

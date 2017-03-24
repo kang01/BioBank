@@ -34,7 +34,9 @@
             "status": "Status",
             "isModifyPosition": "Is Modify Position",
             "sampleType": "Sample Type",
-            "tubeType": "Tube Type"
+            "tubeType": "Tube Type",
+            "frozenBox": "Frozen Box",
+            "frozenTube": "Frozen Tube"
         }
     }
 }

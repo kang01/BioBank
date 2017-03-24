@@ -89,6 +89,10 @@ public class FrozenTubeRecordDTO extends AbstractAuditingDTO implements Serializ
 
     private Long tubeTypeId;
 
+    private Long frozenBoxId;
+
+    private Long frozenTubeId;
+
     public Long getId() {
         return id;
     }
@@ -237,6 +241,22 @@ public class FrozenTubeRecordDTO extends AbstractAuditingDTO implements Serializ
 
     public void setTubeTypeId(Long frozenTubeTypeId) {
         this.tubeTypeId = frozenTubeTypeId;
+    }
+
+    public Long getFrozenBoxId() {
+        return frozenBoxId;
+    }
+
+    public void setFrozenBoxId(Long frozenBoxId) {
+        this.frozenBoxId = frozenBoxId;
+    }
+
+    public Long getFrozenTubeId() {
+        return frozenTubeId;
+    }
+
+    public void setFrozenTubeId(Long frozenTubeId) {
+        this.frozenTubeId = frozenTubeId;
     }
 
     @Override

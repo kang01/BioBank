@@ -289,6 +289,22 @@
                 </p>
             </div>
         </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenTube.frozenBoxCode" for="field_frozenBoxCode">Frozen Box Code</label>
+            <input type="text" class="form-control" name="frozenBoxCode" id="field_frozenBoxCode"
+                    ng-model="vm.frozenTube.frozenBoxCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.frozenBoxCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
 
         <div class="form-group">
             <label data-translate="bioBankApp.frozenTube.frozenTubeType" for="field_frozenTubeType">Frozen Tube Type</label>
@@ -323,6 +339,18 @@
         <div ng-show="editForm.project.$invalid">
             <p class="help-block"
                 ng-show="editForm.project.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.frozenTube.frozenBox" for="field_frozenBox">Frozen Box</label>
+            <select class="form-control" id="field_frozenBox" name="frozenBox" ng-model="vm.frozenTube.frozenBoxId" ng-options="frozenBox.id as frozenBox.id for frozenBox in vm.frozenboxes"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.frozenBox.$invalid">
+            <p class="help-block"
+                ng-show="editForm.frozenBox.$error.required" data-translate="entity.validation.required">
                 This field is required.
             </p>
         </div>

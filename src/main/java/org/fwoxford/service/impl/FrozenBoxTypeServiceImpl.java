@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class FrozenBoxTypeServiceImpl implements FrozenBoxTypeService{
 
     private final Logger log = LoggerFactory.getLogger(FrozenBoxTypeServiceImpl.class);
-    
+
     private final FrozenBoxTypeRepository frozenBoxTypeRepository;
 
     private final FrozenBoxTypeMapper frozenBoxTypeMapper;
@@ -51,7 +51,7 @@ public class FrozenBoxTypeServiceImpl implements FrozenBoxTypeService{
 
     /**
      *  Get all the frozenBoxTypes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +87,16 @@ public class FrozenBoxTypeServiceImpl implements FrozenBoxTypeService{
     public void delete(Long id) {
         log.debug("Request to delete FrozenBoxType : {}", id);
         frozenBoxTypeRepository.delete(id);
+    }
+
+    /**
+     * 查詢所有的有效凍存盒類型
+     * @return
+     */
+    @Override
+    public List<FrozenBoxTypeDTO> findAllFrozenBoxTypes() {
+        List<FrozenBoxType> frozenBoxTypeList = frozenBoxTypeRepository.findAllFrozenBoxTypes();
+        List<FrozenBoxTypeDTO> frozenBoxTypeDTOList =  frozenBoxTypeMapper.frozenBoxTypesToFrozenBoxTypeDTOs(frozenBoxTypeList);
+        return frozenBoxTypeDTOList;
     }
 }

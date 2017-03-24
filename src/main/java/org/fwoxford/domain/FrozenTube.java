@@ -106,6 +106,11 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "frozen_box_code", length = 100, nullable = false)
+    private String frozenBoxCode;
+
     @ManyToOne(optional = false)
     @NotNull
     private FrozenTubeType frozenTubeType;
@@ -117,6 +122,11 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     private Project project;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JoinColumn(name = "frozen_box_id")
+    private FrozenBox frozenBox;
 
     public Long getId() {
         return id;
@@ -347,6 +357,19 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
         this.status = status;
     }
 
+    public String getFrozenBoxCode() {
+        return frozenBoxCode;
+    }
+
+    public FrozenTube frozenBoxCode(String frozenBoxCode) {
+        this.frozenBoxCode = frozenBoxCode;
+        return this;
+    }
+
+    public void setFrozenBoxCode(String frozenBoxCode) {
+        this.frozenBoxCode = frozenBoxCode;
+    }
+
     public FrozenTubeType getFrozenTubeType() {
         return frozenTubeType;
     }
@@ -384,6 +407,19 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public FrozenBox getFrozenBox() {
+        return frozenBox;
+    }
+
+    public FrozenTube frozenBox(FrozenBox frozenBox) {
+        this.frozenBox = frozenBox;
+        return this;
+    }
+
+    public void setFrozenBox(FrozenBox frozenBox) {
+        this.frozenBox = frozenBox;
     }
 
     @Override
@@ -427,6 +463,7 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
             ", memo='" + memo + "'" +
             ", errorType='" + errorType + "'" +
             ", status='" + status + "'" +
+            ", frozenBoxCode='" + frozenBoxCode + "'" +
             '}';
     }
 }

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 
 import org.fwoxford.domain.Tranship;
-import org.fwoxford.repositories.TempTranshipRepositry;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
@@ -36,7 +35,6 @@ public class TempResource {
     private static final String ENTITY_NAME = "tranship";
 
     private final TranshipService transhipService;
-    private TempTranshipRepositry tempTranshipRepositry;
     public TempResource(TranshipService transhipService) {
         this.transhipService = transhipService;
     }
@@ -171,10 +169,5 @@ public class TempResource {
 
     private static String generateUri(String baseUrl, int page, int size) throws URISyntaxException {
         return UriComponentsBuilder.fromUriString(baseUrl).queryParam("page", page).queryParam("size", size).toUriString();
-    }
-    @JsonView(DataTablesOutput.View.class)
-    @RequestMapping(value = "/data/users", method = RequestMethod.GET)
-    public DataTablesOutput<Tranship> getUsers(@Valid DataTablesInput input) {
-        return tempTranshipRepositry.findAll(input);
     }
 }

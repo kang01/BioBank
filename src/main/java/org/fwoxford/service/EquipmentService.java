@@ -20,7 +20,7 @@ public interface EquipmentService {
 
     /**
      *  Get all the equipment.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,10 @@ public interface EquipmentService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * 查詢所有的設備列表
+     * @return
+     */
+    List<EquipmentDTO> findAllEquipments();
 }

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class FrozenTubeServiceImpl implements FrozenTubeService{
 
     private final Logger log = LoggerFactory.getLogger(FrozenTubeServiceImpl.class);
-    
+
     private final FrozenTubeRepository frozenTubeRepository;
 
     private final FrozenTubeMapper frozenTubeMapper;
@@ -51,7 +51,7 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
 
     /**
      *  Get all the frozenTubes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +87,23 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
     public void delete(Long id) {
         log.debug("Request to delete FrozenTube : {}", id);
         frozenTubeRepository.delete(id);
+    }
+    /**
+     * 根据冻存盒id查询冻存管信息
+     * @param frozenBoxId 冻存盒id
+     */
+    @Override
+    public List<FrozenTube> findFrozenTubeListByBoxId(Long frozenBoxId) {
+        log.debug("Request to findFrozenTubeListByBoxId : {}", frozenBoxId);
+        return frozenTubeRepository.findFrozenTubeListByBoxId(frozenBoxId);
+    }
+    /**
+     * 根据冻存盒Code查询冻存管信息
+     * @param frozenBoxCode 冻存盒Code
+     */
+    @Override
+    public List<FrozenTube> findFrozenTubeListByBoxCode(String frozenBoxCode) {
+        log.debug("Request to findFrozenTubeListByBoxCode : {}", frozenBoxCode);
+        return frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
     }
 }

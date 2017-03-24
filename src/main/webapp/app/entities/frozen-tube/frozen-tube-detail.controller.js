@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('FrozenTubeDetailController', FrozenTubeDetailController);
 
-    FrozenTubeDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'FrozenTube', 'FrozenTubeType', 'SampleType', 'Project'];
+    FrozenTubeDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'FrozenTube', 'FrozenTubeType', 'SampleType', 'Project', 'FrozenBox'];
 
-    function FrozenTubeDetailController($scope, $rootScope, $stateParams, previousState, entity, FrozenTube, FrozenTubeType, SampleType, Project) {
+    function FrozenTubeDetailController($scope, $rootScope, $stateParams, previousState, entity, FrozenTube, FrozenTubeType, SampleType, Project, FrozenBox) {
         var vm = this;
 
         vm.frozenTube = entity;

@@ -6,6 +6,7 @@ import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.FrozenTubeType;
 import org.fwoxford.domain.SampleType;
 import org.fwoxford.domain.Project;
+import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.repository.FrozenTubeRepository;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenTubeDTO;
@@ -94,6 +95,9 @@ public class FrozenTubeResourceIntTest {
     private static final String DEFAULT_STATUS = "AAAAAAAAAA";
     private static final String UPDATED_STATUS = "BBBBBBBBBB";
 
+    private static final String DEFAULT_FROZEN_BOX_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_FROZEN_BOX_CODE = "BBBBBBBBBB";
+
     @Autowired
     private FrozenTubeRepository frozenTubeRepository;
 
@@ -153,7 +157,8 @@ public class FrozenTubeResourceIntTest {
                 .tubeColumns(DEFAULT_TUBE_COLUMNS)
                 .memo(DEFAULT_MEMO)
                 .errorType(DEFAULT_ERROR_TYPE)
-                .status(DEFAULT_STATUS);
+                .status(DEFAULT_STATUS)
+                .frozenBoxCode(DEFAULT_FROZEN_BOX_CODE);
         // Add required entity
         FrozenTubeType frozenTubeType = FrozenTubeTypeResourceIntTest.createEntity(em);
         em.persist(frozenTubeType);
@@ -169,6 +174,11 @@ public class FrozenTubeResourceIntTest {
         em.persist(project);
         em.flush();
         frozenTube.setProject(project);
+        // Add required entity
+        FrozenBox frozenBox = FrozenBoxResourceIntTest.createEntity(em);
+        em.persist(frozenBox);
+        em.flush();
+        frozenTube.setFrozenBox(frozenBox);
         return frozenTube;
     }
 
@@ -211,6 +221,7 @@ public class FrozenTubeResourceIntTest {
         assertThat(testFrozenTube.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testFrozenTube.getErrorType()).isEqualTo(DEFAULT_ERROR_TYPE);
         assertThat(testFrozenTube.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testFrozenTube.getFrozenBoxCode()).isEqualTo(DEFAULT_FROZEN_BOX_CODE);
     }
 
     @Test
@@ -521,6 +532,25 @@ public class FrozenTubeResourceIntTest {
 
     @Test
     @Transactional
+    public void checkFrozenBoxCodeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = frozenTubeRepository.findAll().size();
+        // set the field null
+        frozenTube.setFrozenBoxCode(null);
+
+        // Create the FrozenTube, which fails.
+        FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(frozenTube);
+
+        restFrozenTubeMockMvc.perform(post("/api/frozen-tubes")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(frozenTubeDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findAll();
+        assertThat(frozenTubeList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllFrozenTubes() throws Exception {
         // Initialize the database
         frozenTubeRepository.saveAndFlush(frozenTube);
@@ -546,7 +576,8 @@ public class FrozenTubeResourceIntTest {
             .andExpect(jsonPath("$.[*].tubeColumns").value(hasItem(DEFAULT_TUBE_COLUMNS.toString())))
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
             .andExpect(jsonPath("$.[*].errorType").value(hasItem(DEFAULT_ERROR_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].frozenBoxCode").value(hasItem(DEFAULT_FROZEN_BOX_CODE.toString())));
     }
 
     @Test
@@ -576,7 +607,8 @@ public class FrozenTubeResourceIntTest {
             .andExpect(jsonPath("$.tubeColumns").value(DEFAULT_TUBE_COLUMNS.toString()))
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
             .andExpect(jsonPath("$.errorType").value(DEFAULT_ERROR_TYPE.toString()))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
+            .andExpect(jsonPath("$.frozenBoxCode").value(DEFAULT_FROZEN_BOX_CODE.toString()));
     }
 
     @Test
@@ -613,7 +645,8 @@ public class FrozenTubeResourceIntTest {
                 .tubeColumns(UPDATED_TUBE_COLUMNS)
                 .memo(UPDATED_MEMO)
                 .errorType(UPDATED_ERROR_TYPE)
-                .status(UPDATED_STATUS);
+                .status(UPDATED_STATUS)
+                .frozenBoxCode(UPDATED_FROZEN_BOX_CODE);
         FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(updatedFrozenTube);
 
         restFrozenTubeMockMvc.perform(put("/api/frozen-tubes")
@@ -642,6 +675,7 @@ public class FrozenTubeResourceIntTest {
         assertThat(testFrozenTube.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testFrozenTube.getErrorType()).isEqualTo(UPDATED_ERROR_TYPE);
         assertThat(testFrozenTube.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testFrozenTube.getFrozenBoxCode()).isEqualTo(UPDATED_FROZEN_BOX_CODE);
     }
 
     @Test

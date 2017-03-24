@@ -8,6 +8,9 @@ import org.fwoxford.domain.SampleType;
 import org.fwoxford.domain.Project;
 import org.fwoxford.domain.ProjectSite;
 import org.fwoxford.domain.Tranship;
+import org.fwoxford.domain.Equipment;
+import org.fwoxford.domain.Area;
+import org.fwoxford.domain.SupportRack;
 import org.fwoxford.repository.FrozenBoxRepository;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
@@ -181,6 +184,21 @@ public class FrozenBoxResourceIntTest {
         em.persist(tranship);
         em.flush();
         frozenBox.setTranship(tranship);
+        // Add required entity
+        Equipment equipment = EquipmentResourceIntTest.createEntity(em);
+        em.persist(equipment);
+        em.flush();
+        frozenBox.setEquipment(equipment);
+        // Add required entity
+        Area area = AreaResourceIntTest.createEntity(em);
+        em.persist(area);
+        em.flush();
+        frozenBox.setArea(area);
+        // Add required entity
+        SupportRack supportRack = SupportRackResourceIntTest.createEntity(em);
+        em.persist(supportRack);
+        em.flush();
+        frozenBox.setSupportRack(supportRack);
         return frozenBox;
     }
 

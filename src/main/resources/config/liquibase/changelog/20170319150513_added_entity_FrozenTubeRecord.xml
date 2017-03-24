@@ -94,10 +94,18 @@
             </column>
 
             <column name="sample_type_id" type="bigint">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="tube_type_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="frozen_box_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="frozen_tube_id" type="bigint">
                 <constraints nullable="false" />
             </column>
 
@@ -111,6 +119,6 @@
             <column name="last_modified_date" type="timestamp"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-
+        
     </changeSet>
 </databaseChangeLog>

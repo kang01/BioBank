@@ -38,5 +38,23 @@
                                  referencedColumnNames="id"
                                  referencedTableName="tranship"/>
 
+        <addForeignKeyConstraint baseColumnNames="equipment_id"
+                                 baseTableName="frozen_box"
+                                 constraintName="fk_frozen_box_equipment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="equipment"/>
+
+        <addForeignKeyConstraint baseColumnNames="area_id"
+                                 baseTableName="frozen_box"
+                                 constraintName="fk_frozen_box_area_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="area"/>
+
+        <addForeignKeyConstraint baseColumnNames="support_rack_id"
+                                 baseTableName="frozen_box"
+                                 constraintName="fk_frozen_box_support_rack_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="support_rack"/>
+
     </changeSet>
 </databaseChangeLog>

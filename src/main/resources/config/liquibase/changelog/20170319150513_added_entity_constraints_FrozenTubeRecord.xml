@@ -20,5 +20,17 @@
                                  referencedColumnNames="id"
                                  referencedTableName="frozen_tube_type"/>
 
+        <addForeignKeyConstraint baseColumnNames="frozen_box_id"
+                                 baseTableName="tube_record"
+                                 constraintName="frozen_tube_re_frozen_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_box"/>
+
+        <addForeignKeyConstraint baseColumnNames="frozen_tube_id"
+                                 baseTableName="tube_record"
+                                 constraintName="frozen_tube_re_frozen_tube_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_tube"/>
+
     </changeSet>
 </databaseChangeLog>

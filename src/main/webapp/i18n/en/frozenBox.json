@@ -36,7 +36,10 @@
             "sampleType": "Sample Type",
             "project": "Project",
             "projectSite": "Project Site",
-            "tranship": "Tranship"
+            "tranship": "Tranship",
+            "equipment": "Equipment",
+            "area": "Area",
+            "supportRack": "Support Rack"
         }
     }
 }

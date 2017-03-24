@@ -1,6 +1,7 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.fwoxford.domain.Equipment;
 import org.fwoxford.service.EquipmentService;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -34,7 +35,7 @@ public class EquipmentResource {
     private final Logger log = LoggerFactory.getLogger(EquipmentResource.class);
 
     private static final String ENTITY_NAME = "equipment";
-        
+
     private final EquipmentService equipmentService;
 
     public EquipmentResource(EquipmentService equipmentService) {
@@ -127,5 +128,16 @@ public class EquipmentResource {
         equipmentService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
+    /**
+     * 查詢所有的有效設備列表，不帶分頁
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/equipments")
+    @Timed
+    public ResponseEntity<List<EquipmentDTO>> getAllEquipmentList() {
+        log.debug("REST request to get all Equipments");
+        List<EquipmentDTO> list = equipmentService.findAllEquipments();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
 }

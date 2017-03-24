@@ -57,9 +57,17 @@ public class FrozenBoxAndFrozenTubeResponse {
     @Size(max = 20)
     private String status;
 
-    private Integer frozenBoxTypeId;
+    private Long frozenBoxTypeId;
 
-    private Integer sampleTypeId;
+    private Long sampleTypeId;
+
+    private Long equipmentId;
+
+    private Long areaId;
+
+    private Long supportRackId;
+
+    private List<FrozenTubeResponse> frozenTubeResponseList;
 
     public Long getId() {
         return id;
@@ -141,19 +149,51 @@ public class FrozenBoxAndFrozenTubeResponse {
         this.status = status;
     }
 
-    public Integer getFrozenBoxTypeId() {
+    public Long getFrozenBoxTypeId() {
         return frozenBoxTypeId;
     }
 
-    public void setFrozenBoxTypeId(Integer frozenBoxTypeId) {
+    public void setFrozenBoxTypeId(Long frozenBoxTypeId) {
         this.frozenBoxTypeId = frozenBoxTypeId;
     }
 
-    public Integer getSampleTypeId() {
+    public Long getSampleTypeId() {
         return sampleTypeId;
     }
 
-    public void setSampleTypeId(Integer sampleTypeId) {
+    public void setSampleTypeId(Long sampleTypeId) {
         this.sampleTypeId = sampleTypeId;
+    }
+
+    public List<FrozenTubeResponse> getFrozenTubeResponseList() {
+        return frozenTubeResponseList;
+    }
+
+    public void setFrozenTubeResponseList(List<FrozenTubeResponse> frozenTubeResponseList) {
+        this.frozenTubeResponseList = frozenTubeResponseList;
+    }
+
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
+    }
+
+    public Long getSupportRackId() {
+        return supportRackId;
+    }
+
+    public void setSupportRackId(Long supportRackId) {
+        this.supportRackId = supportRackId;
     }
 }

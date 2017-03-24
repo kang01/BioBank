@@ -80,11 +80,17 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 20)
     private String status;
 
+    @NotNull
+    @Size(max = 100)
+    private String frozenBoxCode;
+
     private Long frozenTubeTypeId;
 
     private Long sampleTypeId;
 
     private Long projectId;
+
+    private Long frozenBoxId;
 
     public Long getId() {
         return id;
@@ -212,6 +218,13 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+    public String getFrozenBoxCode() {
+        return frozenBoxCode;
+    }
+
+    public void setFrozenBoxCode(String frozenBoxCode) {
+        this.frozenBoxCode = frozenBoxCode;
+    }
 
     public Long getFrozenTubeTypeId() {
         return frozenTubeTypeId;
@@ -235,6 +248,14 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
+    }
+
+    public Long getFrozenBoxId() {
+        return frozenBoxId;
+    }
+
+    public void setFrozenBoxId(Long frozenBoxId) {
+        this.frozenBoxId = frozenBoxId;
     }
 
     @Override
@@ -279,6 +300,7 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
             ", memo='" + memo + "'" +
             ", errorType='" + errorType + "'" +
             ", status='" + status + "'" +
+            ", frozenBoxCode='" + frozenBoxCode + "'" +
             '}';
     }
 }

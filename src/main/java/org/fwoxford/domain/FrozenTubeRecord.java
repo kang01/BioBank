@@ -49,17 +49,17 @@ public class FrozenTubeRecord extends AbstractAuditingEntity implements Serializ
     private String frozenTypeName;
 
     @NotNull
-    @Max(value = 100)
+    @Max(value = 20)
     @Column(name = "sample_used_times_most", nullable = false)
     private Integer sampleUsedTimesMost;
 
     @NotNull
-    @Max(value = 100)
+    @Max(value = 20)
     @Column(name = "sample_used_times", nullable = false)
     private Integer sampleUsedTimes;
 
     @NotNull
-    @Max(value = 400)
+    @Max(value = 100)
     @Column(name = "frozen_tube_volumn", nullable = false)
     private Integer frozenTubeVolumn;
 
@@ -112,15 +112,20 @@ public class FrozenTubeRecord extends AbstractAuditingEntity implements Serializ
     @Column(name = "is_modify_position", length = 20, nullable = false)
     private String isModifyPosition;
 
-    @ManyToOne(optional = false)
-    @NotNull
-    @JoinColumn(name = "sample_type_id")
+    @ManyToOne
     private SampleType sampleType;
 
     @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(name = "tube_type_id")
     private FrozenTubeType tubeType;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private FrozenBox frozenBox;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private FrozenTube frozenTube;
 
     public Long getId() {
         return id;
@@ -388,6 +393,32 @@ public class FrozenTubeRecord extends AbstractAuditingEntity implements Serializ
 
     public void setTubeType(FrozenTubeType frozenTubeType) {
         this.tubeType = frozenTubeType;
+    }
+
+    public FrozenBox getFrozenBox() {
+        return frozenBox;
+    }
+
+    public FrozenTubeRecord frozenBox(FrozenBox frozenBox) {
+        this.frozenBox = frozenBox;
+        return this;
+    }
+
+    public void setFrozenBox(FrozenBox frozenBox) {
+        this.frozenBox = frozenBox;
+    }
+
+    public FrozenTube getFrozenTube() {
+        return frozenTube;
+    }
+
+    public FrozenTubeRecord frozenTube(FrozenTube frozenTube) {
+        this.frozenTube = frozenTube;
+        return this;
+    }
+
+    public void setFrozenTube(FrozenTube frozenTube) {
+        this.frozenTube = frozenTube;
     }
 
     @Override

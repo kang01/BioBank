@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class SupportRackServiceImpl implements SupportRackService{
 
     private final Logger log = LoggerFactory.getLogger(SupportRackServiceImpl.class);
-    
+
     private final SupportRackRepository supportRackRepository;
 
     private final SupportRackMapper supportRackMapper;
@@ -51,7 +51,7 @@ public class SupportRackServiceImpl implements SupportRackService{
 
     /**
      *  Get all the supportRacks.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +87,18 @@ public class SupportRackServiceImpl implements SupportRackService{
     public void delete(Long id) {
         log.debug("Request to delete SupportRack : {}", id);
         supportRackRepository.delete(id);
+    }
+
+    /**
+     * 根據區域ID查詢架子列表
+     * @param areaId 區域ID
+     * @return
+     */
+    @Override
+    public List<SupportRackDTO> findSupportRackByAreaId(Long areaId) {
+        log.debug("Request to get SupportRack ByAreaId: {}", areaId);
+        List<SupportRack> supportRacks = supportRackRepository.findSupportRackByAreaId(areaId);
+        List<SupportRackDTO> supportRackDTOS = supportRackMapper.supportRacksToSupportRackDTOs(supportRacks);
+        return supportRackDTOS;
     }
 }

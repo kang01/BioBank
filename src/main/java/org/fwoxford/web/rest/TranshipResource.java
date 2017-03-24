@@ -106,7 +106,7 @@ public class TranshipResource {
     }
 
     /**
-     * GET  /tranships/:id : get the "id" tranship.
+     * GET  /tranships/:id : get the "id" tranship. 根据转运ID查询转运和冻存盒的信息
      *
      * @param id the id of the transhipDTO to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the transhipDTO, or with status 404 (Not Found)

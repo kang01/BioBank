@@ -32,9 +32,11 @@
             "memo": "Memo",
             "errorType": "Error Type",
             "status": "Status",
+            "frozenBoxCode": "Frozen Box Code",
             "frozenTubeType": "Frozen Tube Type",
             "sampleType": "Sample Type",
-            "project": "Project"
+            "project": "Project",
+            "frozenBox": "Frozen Box"
         }
     }
 }

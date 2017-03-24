@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class AreaServiceImpl implements AreaService{
 
     private final Logger log = LoggerFactory.getLogger(AreaServiceImpl.class);
-    
+
     private final AreaRepository areaRepository;
 
     private final AreaMapper areaMapper;
@@ -51,7 +51,7 @@ public class AreaServiceImpl implements AreaService{
 
     /**
      *  Get all the areas.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +87,18 @@ public class AreaServiceImpl implements AreaService{
     public void delete(Long id) {
         log.debug("Request to delete Area : {}", id);
         areaRepository.delete(id);
+    }
+
+    /**
+     * 根據設備ID查詢區域信息
+     * @param equipmentId 設備ID
+     * @return
+     */
+    @Override
+    public List<AreaDTO> getAreaByEquipmentId(Long equipmentId) {
+        log.debug("Request to get Area By EquipmentId : {}", equipmentId);
+        List<Area> areas = areaRepository.getAreaByEquipmentId(equipmentId);
+        List<AreaDTO> areaDTOS = areaMapper.areasToAreaDTOs(areas);
+        return areaDTOS;
     }
 }

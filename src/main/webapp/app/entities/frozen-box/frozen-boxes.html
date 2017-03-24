@@ -41,6 +41,9 @@
                     <th jh-sort-by="projectId"><span data-translate="bioBankApp.frozenBox.project">Project</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="projectSiteId"><span data-translate="bioBankApp.frozenBox.projectSite">Project Site</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="transhipId"><span data-translate="bioBankApp.frozenBox.tranship">Tranship</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentId"><span data-translate="bioBankApp.frozenBox.equipment">Equipment</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="areaId"><span data-translate="bioBankApp.frozenBox.area">Area</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="supportRackId"><span data-translate="bioBankApp.frozenBox.supportRack">Support Rack</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -78,6 +81,15 @@
                     </td>
                     <td>
                         <a ui-sref="tranship-detail({id:frozenBox.transhipId})">{{frozenBox.transhipId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="equipment-detail({id:frozenBox.equipmentId})">{{frozenBox.equipmentId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="area-detail({id:frozenBox.areaId})">{{frozenBox.areaId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="support-rack-detail({id:frozenBox.supportRackId})">{{frozenBox.supportRackId}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

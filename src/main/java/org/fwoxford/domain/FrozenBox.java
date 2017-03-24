@@ -127,6 +127,19 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @NotNull
     private Tranship tranship;
 
+    @ManyToOne(optional = false)
+    @NotNull
+    private Equipment equipment;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JoinColumn(name = "area_id")
+    private Area area;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private SupportRack supportRack;
+
     public Long getId() {
         return id;
     }
@@ -419,6 +432,45 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
 
     public void setTranship(Tranship tranship) {
         this.tranship = tranship;
+    }
+
+    public Equipment getEquipment() {
+        return equipment;
+    }
+
+    public FrozenBox equipment(Equipment equipment) {
+        this.equipment = equipment;
+        return this;
+    }
+
+    public void setEquipment(Equipment equipment) {
+        this.equipment = equipment;
+    }
+
+    public Area getArea() {
+        return area;
+    }
+
+    public FrozenBox area(Area area) {
+        this.area = area;
+        return this;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
+    }
+
+    public SupportRack getSupportRack() {
+        return supportRack;
+    }
+
+    public FrozenBox supportRack(SupportRack supportRack) {
+        this.supportRack = supportRack;
+        return this;
+    }
+
+    public void setSupportRack(SupportRack supportRack) {
+        this.supportRack = supportRack;
     }
 
     @Override

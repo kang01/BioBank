@@ -328,6 +328,30 @@
                 This field is required.
             </p>
         </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.frozenTubeRecord.frozenBox" for="field_frozenBox">Frozen Box</label>
+            <select class="form-control" id="field_frozenBox" name="frozenBox" ng-model="vm.frozenTubeRecord.frozenBoxId" ng-options="frozenBox.id as frozenBox.id for frozenBox in vm.frozenboxes"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.frozenBox.$invalid">
+            <p class="help-block"
+                ng-show="editForm.frozenBox.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.frozenTubeRecord.frozenTube" for="field_frozenTube">Frozen Tube</label>
+            <select class="form-control" id="field_frozenTube" name="frozenTube" ng-model="vm.frozenTubeRecord.frozenTubeId" ng-options="frozenTube.id as frozenTube.id for frozenTube in vm.frozentubes"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.frozenTube.$invalid">
+            <p class="help-block"
+                ng-show="editForm.frozenTube.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">

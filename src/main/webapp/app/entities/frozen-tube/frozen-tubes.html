@@ -36,9 +36,11 @@
                     <th jh-sort-by="memo"><span data-translate="bioBankApp.frozenTube.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="errorType"><span data-translate="bioBankApp.frozenTube.errorType">Error Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="bioBankApp.frozenTube.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxCode"><span data-translate="bioBankApp.frozenTube.frozenBoxCode">Frozen Box Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="frozenTubeTypeId"><span data-translate="bioBankApp.frozenTube.frozenTubeType">Frozen Tube Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="sampleTypeId"><span data-translate="bioBankApp.frozenTube.sampleType">Sample Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="projectId"><span data-translate="bioBankApp.frozenTube.project">Project</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxId"><span data-translate="bioBankApp.frozenTube.frozenBox">Frozen Box</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -62,6 +64,7 @@
                     <td>{{frozenTube.memo}}</td>
                     <td>{{frozenTube.errorType}}</td>
                     <td>{{frozenTube.status}}</td>
+                    <td>{{frozenTube.frozenBoxCode}}</td>
                     <td>
                         <a ui-sref="frozen-tube-type-detail({id:frozenTube.frozenTubeTypeId})">{{frozenTube.frozenTubeTypeId}}</a>
                     </td>
@@ -70,6 +73,9 @@
                     </td>
                     <td>
                         <a ui-sref="project-detail({id:frozenTube.projectId})">{{frozenTube.projectId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="frozen-box-detail({id:frozenTube.frozenBoxId})">{{frozenTube.frozenBoxId}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

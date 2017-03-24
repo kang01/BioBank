@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('FrozenTubeRecordDialogController', FrozenTubeRecordDialogController);
 
-    FrozenTubeRecordDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'FrozenTubeRecord', 'SampleType', 'FrozenTubeType'];
+    FrozenTubeRecordDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'FrozenTubeRecord', 'SampleType', 'FrozenTubeType', 'FrozenBox', 'FrozenTube'];
 
-    function FrozenTubeRecordDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, FrozenTubeRecord, SampleType, FrozenTubeType) {
+    function FrozenTubeRecordDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, FrozenTubeRecord, SampleType, FrozenTubeType, FrozenBox, FrozenTube) {
         var vm = this;
 
         vm.frozenTubeRecord = entity;
@@ -15,6 +15,8 @@
         vm.save = save;
         vm.sampletypes = SampleType.query();
         vm.frozentubetypes = FrozenTubeType.query();
+        vm.frozenboxes = FrozenBox.query();
+        vm.frozentubes = FrozenTube.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

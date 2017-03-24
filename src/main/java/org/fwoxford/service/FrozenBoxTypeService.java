@@ -20,7 +20,7 @@ public interface FrozenBoxTypeService {
 
     /**
      *  Get all the frozenBoxTypes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,10 @@ public interface FrozenBoxTypeService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * 查詢所有的有效凍存盒類型
+     * @return
+     */
+    List<FrozenBoxTypeDTO> findAllFrozenBoxTypes();
 }

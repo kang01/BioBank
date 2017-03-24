@@ -52,54 +52,38 @@
             AlertService.error(error.data.message);
         }
 
-        // vm.dtOptions = DTOptionsBuilder.fromSource('api/res/tranships')
-        vm.dtOptions = DTOptionsBuilder.fromSource(function( data, callback, oSettings ){
-            var jqDT = this;
-            console.log(jqDT, jqDT._fnLog);
-            TransportRecordService.getJqDataTableValues(data, oSettings).then(function (res){
-                var json = res.data;
-                var error = json.error || json.sError;
-                // if ( error ) {
-                //     _fnLog( oSettings, 0, error );
-                // }
-                oSettings.json = json;
-                callback( json );
-            });
+        vm.dtInstanceCallback = function(instance){
+            vm.dtInstance = instance;
+        };
 
+        vm.searchSomething = function(){
+            var table = vm.dtInstance.DataTable;
+            table
+                .column( 0 )
+                .search( "hello" )
+                .draw();
+        };
 
-            // var baseAjax = {
-            //     "data": data,
-            //     "success": function (json) {
-            //         var error = json.error || json.sError;
-            //         if ( error ) {
-            //             _fnLog( oSettings, 0, error );
-            //         }
-            //
-            //         oSettings.json = json;
-            //         callback( json );
-            //     },
-            //     "dataType": "json",
-            //     "cache": false,
-            //     "type": oSettings.sServerMethod,
-            //     "error": function (xhr, error, thrown) {
-            //         var ret = _fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
-            //
-            //         if ( $.inArray( true, ret ) === -1 ) {
-            //             if ( error == "parsererror" ) {
-            //                 _fnLog( oSettings, 0, 'Invalid JSON response', 1 );
-            //             }
-            //             else if ( xhr.readyState === 4 ) {
-            //                 _fnLog( oSettings, 0, 'Ajax error', 7 );
-            //             }
-            //         }
-            //
-            //         _fnProcessingDisplay( oSettings, false );
-            //     }
-            // };
-        })
-        // vm.dtOptions = DTOptionsBuilder.fromFnPromise(function() {
-        //     return $resource('data.json').query().$promise;
-        // })
+        vm.dtOptions = DTOptionsBuilder.fromSource('api/res/tranships')
+            // .withOption('sAjaxSource', 'api/res/tranships')
+            .withOption('fnServerData', function ( sSource, aoData, fnCallback, oSettings ) {
+                console.log(aoData, oSettings);
+                var data = {};
+                for(var i=0; aoData && i<aoData.length; ++i){
+                    var oData = aoData[i];
+                    data[oData.name] = oData.value;
+                }
+                TransportRecordService.getJqDataTableValues(data, oSettings).then(function (res){
+                    var json = res.data;
+                    var error = json.error || json.sError;
+                    // if ( error ) {
+                    //     _fnLog( oSettings, 0, error );
+                    // }
+                    oSettings.json = json;
+                    fnCallback( json );
+                });
+            })
+
             .withOption('sServerMethod','POST')
             .withOption('processing',true)
             .withOption('serverSide',true)
@@ -108,11 +92,13 @@
             .withColumnFilter({
                 aoColumns: [{
                     type: 'text',
-                    width:50
+                    width:50,
+                    iFilterLength:3
                 }, {
                     type: 'text',
                     bRegex: true,
-                    bSmart: true
+                    bSmart: true,
+                    iFilterLength:3
                 }, {
                     type: 'text',
                     bRegex: true,

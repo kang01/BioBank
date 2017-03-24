@@ -28,12 +28,13 @@
                 <!--</div>-->
             <!--</div>-->
             <button type="submit" ui-sref="transport-record-new" class="btn btn-primary">添加</button>
+            <button type="button" ng-click="vm.searchSomething()">搜索</button>
         </form>
     </div>
     <div class="transport-record-body">
         <!--<p class="text-danger"><strong>{{ vm.message }}</strong></p>-->
         <!--<br>-->
-        <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance" class=" table table-striped table-bordered">
+        <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstanceCallback" class=" table table-striped table-bordered">
             <tfoot>
             <tr>
                 <th>项目点</th>

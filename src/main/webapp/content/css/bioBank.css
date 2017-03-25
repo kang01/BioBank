@@ -1,6 +1,12 @@
 .navbar{
     margin-bottom: 6px;
 }
+.triangle-topright {
+    width: 0;
+    height: 0;
+    border-top: 10px solid red;
+    border-left: 10px solid transparent;
+}
 .transport-record-index h2{
     margin-top:2px;
 }

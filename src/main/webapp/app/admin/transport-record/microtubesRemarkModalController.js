@@ -11,12 +11,20 @@
     microtubesRemarkModalController.$inject = ['$uibModalInstance','$uibModal','items'];
 
     function microtubesRemarkModalController($uibModalInstance,$uibModal,items) {
-        this.items = items;
+        var vm = this;
+        vm.items = items;
+        // console.log(JSON.stringify(vm.items));
+
         this.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
         this.ok = function () {
-            $uibModalInstance.close(this.items);
+            for(var i = 0; i < vm.items.domArray.length; i++){
+                if(vm.items.domArray[i].value){
+                    vm.items.domArray[i].value.remark = vm.remark;
+                }
+            }
+            $uibModalInstance.close(vm.items);
         };
     }
 })();

@@ -44,9 +44,6 @@
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('info', false)
             .withOption('paging', false);
-        // vm.dtColumns = [
-        //     DTColumnBuilder.newColumn('code').withTitle('盒子编码').notSortable()
-        // ];
         var tArray = new Array();
         for(var k=0;k<10;k++){
             tArray[k]=new Array();
@@ -71,7 +68,6 @@
             }else{
                 cellProperties.readOnly = false;
             }
-
             if(value.number){
                 var htm = "<div>"+value.number+"</div>"+
                     "<div id='microtubesId' style='display: none'>"+value.id+"</div>" +
@@ -154,6 +150,11 @@
                             this.getCell(row,col).style.backgroundColor = '';
                             // this.getCell(row,col).style.outline = '2px solid red';
                             microtubesStatusDom.text('4');
+                            for(var i = 0; i < microtubesList.length; i++){
+                                if(microtubesList[i].row == row && microtubesList[i].col == col){
+                                    microtubesList[i].status = 4;
+                                }
+                            }
                         }
                         //异常
                         if(microtubes.status == 4){
@@ -161,6 +162,12 @@
                             // this.getCell(row,col).style.outline = '';
                             $(".abnormal").remove();
                             microtubesStatusDom.text('1');
+                            for(var i = 0; i < microtubesList.length; i++){
+                                if(microtubesList[i].row == row && microtubesList[i].col == col){
+                                    this.getCell(row,col).style.backgroundColor =  microtubesList[i].color;
+                                    microtubesList[i].status = 1;
+                                }
+                            }
                         }
                         microtubes.id = $(this.getCell(row, col)).find("#microtubesId").text();
                         microtubes.status = $(this.getCell(row, col)).find("#microtubesStatus").text();
@@ -190,7 +197,7 @@
         var microtubes = {};
 
         //修改样本状态 正常、空管、空孔、异常
-        // vm.flagStatus = false;
+        vm.flagStatus = false;
         vm.editStatus = function () {
             vm.operateStatus = 1;
             // hotRegisterer.getInstance('my-handsontable').render();

@@ -35,7 +35,8 @@
     "angular-object-diff": "1.0.3",
     "jquery-column-filter": "^0.0.1",
     "datatables-light-columnfilter": "^1.0.3",
-    "angular-bootstrap-switch": "^0.5.1"
+    "angular-bootstrap-switch": "^0.5.1",
+    "angular-selectize2": "^3.0.1"
   },
   "devDependencies": {
     "angular-mocks": "1.5.8"

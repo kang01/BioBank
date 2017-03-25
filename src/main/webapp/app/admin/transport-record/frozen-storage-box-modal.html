@@ -4,10 +4,15 @@
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-sm-2">
-            <textarea rows="28"></textarea>
+            <textarea rows="20" ng-keydown="vm.addData()" ng-model="vm.boxCode"></textarea>
         </div>
         <div class="col-sm-8">
-            <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" class="row-border hover">
+            <div>
+                <div class="pull-right">
+                    <button class="btn btn-default">导入样本数据</button>
+                </div>
+            </div>
+            <table datatable="ng" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" class="row-border hover">
                 <thead>
                     <th>冻存盒号</th>
                     <th>状态</th>
@@ -16,13 +21,13 @@
                     <th>是否分装</th>
                 </thead>
                 <tbody >
-                    <tr >
-                        <td>123456789</td>
-                        <td>样本已导入</td>
-                        <td>血浆1</td>
-                        <td>100</td>
+                    <tr ng-repeat="item in vm.boxCodeList track by $index">
+                        <td>{{item.code}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td>
-                            <input type="checkbox">
+                            <!--<input type="checkbox">-->
                         </td>
                     </tr>
                 </tbody>
@@ -32,6 +37,6 @@
 
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
-    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">Cancel</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>

@@ -22,7 +22,7 @@
             },
             'save': { method:'POST' },
             'update': { method:'PUT' },
-            'delete':{ method:'DELETE'},
+            'delete':{ method:'DELETE'}
         });
 
         service.getJqDataTableValues = function(data, oSettings){
@@ -37,7 +37,6 @@
 
             return $http(req);
         };
-
 
         function getConfigPropsComplete (response) {
             var properties = [];

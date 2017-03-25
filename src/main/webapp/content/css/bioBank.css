@@ -1,3 +1,6 @@
+.selectize-dropdown{
+    z-index: 999;
+}
 .navbar{
     margin-bottom: 6px;
 }
@@ -31,6 +34,12 @@
 .p-r-0{
     padding-right: 0!important;
 }
+.m-l-0{
+    margin-left: 0!important;
+}
+.m-r-0{
+    margin-right: 0!important;
+}
 .p-5{
     padding: 5px;
 }
@@ -45,6 +54,9 @@
 }
 .m-r-10{
     margin-right: 10px !important;
+}
+.highLight{
+    background-color: lightskyblue;
 }
 .transport-record-new .form-group{
     margin-bottom: 6px;

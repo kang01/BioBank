@@ -8,16 +8,16 @@
         .module('bioBankApp')
         .controller('TransportRecordNewController', TransportRecordNewController);
 
-    TransportRecordNewController.$inject = ['hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state'];
+    TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','SampleTypeService','AlertService','FrozenBoxTypesService'];
 
-    function TransportRecordNewController(hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state) {
+    function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,SampleTypeService,AlertService,FrozenBoxTypesService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.transportRecord = {};
         vm.openCalendar = openCalendar;
-        //导入冻存盒
-        vm.importFrozenStorageBox = importFrozenStorageBox;
-        //
+        vm.importFrozenStorageBox = importFrozenStorageBox; //导入冻存盒
+        vm.someClickHandler = someClickHandler;
+        var microtubesList;
         vm.transportRecord.boxList = [
             {
                 id:"1",
@@ -39,11 +39,42 @@
                 ]
             },
             {id:"2",code:"000002",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'}
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
+            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
         ];
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withOption('info', false)
-            .withOption('paging', false);
+
+        var loadAll = function () {
+            SampleTypeService.query({},onSampleTypeSuccess, onError);
+            FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError)
+        };
+        loadAll();
+        function onFrozenBoxTypeSuccess(data) {
+            // vm.frozenBoxTypeOptions = data;
+        }
+        function onSampleTypeSuccess(data) {
+            vm.sampleTypeOptions = data;
+        }
+        function onError(error) {
+            AlertService.error(error.data.message);
+        }
         var tArray = new Array();
         for(var k=0;k<10;k++){
             tArray[k]=new Array();
@@ -52,10 +83,35 @@
 
             }
         }
-        var microtubesList = vm.transportRecord.boxList[0].microtubesList;
-        for(var i = 0; i < microtubesList.length; i++){
-            tArray[microtubesList[i].row][microtubesList[i].col] = microtubesList[i]
-        }
+        //盒子类型
+        vm.frozenBoxTypeOptions =[
+            {id:'1',name:"8*8"},
+            {id:'2',name:"10*10"}
+        ];
+        vm.typeConfig = {
+            valueField:'id',
+            labelField:'name',
+            maxItems: 1
+        };
+        vm.sampleTypeConfig = {
+            valueField:'id',
+            labelField:'sampleTypeName',
+            maxItems: 1
+        };
+        vm.statusOptions = [
+            {id:"1",name:"进行中"},
+            {id:"2",name:"待入库"},
+            {id:"3",name:"已入库"},
+            {id:"4",name:"已作废"}
+        ];
+        vm.statusConfig = {
+            valueField:'id',
+            labelField:'name',
+            maxItems: 1
+        };
+        // vm.sampleTypeOptions = [
+        //     {id:1,name:""}
+        // ]
         //自定义初始化单元格
         vm.myCustomRenderer = function(hotInstance, td, row, col, prop, value, cellProperties) {
             if(typeof value != "object"){
@@ -254,7 +310,7 @@
                     });
             }
         };
-
+        vm.dtInstance = {};
         //导入冻存盒
         var modalInstance;
         function importFrozenStorageBox() {
@@ -275,8 +331,21 @@
                 // }
 
             });
-            modalInstance.result.then(function () {
+            modalInstance.result.then(function (data) {
+                console.log(JSON.stringify(data));
+                vm.transportRecord.boxList = data;
+                // vm.dtOptions = DTOptionsBuilder.newOptions()
 
+                vm.dtOptions = DTOptionsBuilder.newOptions()
+                    .withOption('data', vm.transportRecord.boxList)
+                    .withOption('info', false)
+                    .withOption('paging', false)
+                    .withOption('sorting', false)
+                    .withScroller()
+                    .withOption('scrollY', 450)
+                    .withOption('rowCallback', rowCallback);
+
+                vm.dtInstance.rerender();
             });
         }
         //保存
@@ -293,6 +362,35 @@
 
         function onSaveError () {
 
+        }
+
+        //盒子信息
+        vm.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('paging', false)
+            .withOption('sorting', false);
+        vm.dtColumns = [
+            DTColumnBuilder.newColumn('code').withTitle('盒子编码')
+        ];
+        function someClickHandler(td,boxInfo) {
+            $(td).closest('table').find('.highLight').removeClass("highLight");
+            $(td).addClass('highLight');
+            console.log(boxInfo);
+            vm.box = boxInfo;
+            // microtubesList = boxInfo.microtubesList;
+            // for(var i = 0; i < microtubesList.length; i++){
+            //     tArray[microtubesList[i].row][microtubesList[i].col] = microtubesList[i];
+            //     hotRegisterer.getInstance('my-handsontable').render()
+            // }
+        }
+        function rowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            $('td', nRow).unbind('click');
+            $('td', nRow).bind('click', function() {
+                var td = this;
+                $scope.$apply(function() {
+                    vm.someClickHandler(td,aData);
+                });
+            });
+            return nRow;
         }
 
     }

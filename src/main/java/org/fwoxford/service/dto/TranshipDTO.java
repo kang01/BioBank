@@ -1,9 +1,12 @@
 package org.fwoxford.service.dto;
 
+import org.fwoxford.domain.FrozenBox;
+
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -85,6 +88,8 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     private Long projectId;
 
     private Long projectSiteId;
+
+    private List<FrozenBoxDTO> frozenBoxDTOList;
 
     public Long getId() {
         return id;
@@ -234,6 +239,14 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setProjectSiteId(Long projectSiteId) {
         this.projectSiteId = projectSiteId;
+    }
+
+    public List<FrozenBoxDTO> getFrozenBoxDTOList() {
+        return frozenBoxDTOList;
+    }
+
+    public void setFrozenBoxDTOList(List<FrozenBoxDTO> frozenBoxDTOList) {
+        this.frozenBoxDTOList = frozenBoxDTOList;
     }
 
     @Override

@@ -1,11 +1,13 @@
 package org.fwoxford.service.mapper;
 
-import org.fwoxford.domain.*;
+import org.fwoxford.domain.Project;
+import org.fwoxford.domain.ProjectSite;
+import org.fwoxford.domain.Tranship;
+import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
-import org.fwoxford.service.dto.TranshipDTO;
-
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.ArrayList;
 import java.util.List;

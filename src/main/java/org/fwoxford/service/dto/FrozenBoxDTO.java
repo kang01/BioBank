@@ -4,6 +4,7 @@ package org.fwoxford.service.dto;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -81,6 +82,22 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 20)
     private String status;
 
+    @NotNull
+    @Max(value = 100)
+    private Integer emptyTubeNumber;
+
+    @NotNull
+    @Max(value = 100)
+    private Integer emptyHoleNumber;
+
+    @NotNull
+    @Max(value = 100)
+    private Integer dislocationNumber;
+
+    @NotNull
+    @Size(max = 20)
+    private String isRealData;
+
     private Long frozenBoxTypeId;
 
     private Long sampleTypeId;
@@ -96,6 +113,8 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     private Long areaId;
 
     private Long supportRackId;
+
+    private List<FrozenTubeDTO> frozenTubeDTOS;
 
     public Long getId() {
         return id;
@@ -223,6 +242,34 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+    public Integer getEmptyTubeNumber() {
+        return emptyTubeNumber;
+    }
+
+    public void setEmptyTubeNumber(Integer emptyTubeNumber) {
+        this.emptyTubeNumber = emptyTubeNumber;
+    }
+    public Integer getEmptyHoleNumber() {
+        return emptyHoleNumber;
+    }
+
+    public void setEmptyHoleNumber(Integer emptyHoleNumber) {
+        this.emptyHoleNumber = emptyHoleNumber;
+    }
+    public Integer getDislocationNumber() {
+        return dislocationNumber;
+    }
+
+    public void setDislocationNumber(Integer dislocationNumber) {
+        this.dislocationNumber = dislocationNumber;
+    }
+    public String getIsRealData() {
+        return isRealData;
+    }
+
+    public void setIsRealData(String isRealData) {
+        this.isRealData = isRealData;
+    }
 
     public Long getFrozenBoxTypeId() {
         return frozenBoxTypeId;
@@ -288,6 +335,14 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
         this.supportRackId = supportRackId;
     }
 
+    public List<FrozenTubeDTO> getFrozenTubeDTOS() {
+        return frozenTubeDTOS;
+    }
+
+    public void setFrozenTubeDTOS(List<FrozenTubeDTO> frozenTubeDTOS) {
+        this.frozenTubeDTOS = frozenTubeDTOS;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -330,6 +385,10 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
             ", isSplit='" + isSplit + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
+            ", emptyTubeNumber='" + emptyTubeNumber + "'" +
+            ", emptyHoleNumber='" + emptyHoleNumber + "'" +
+            ", dislocationNumber='" + dislocationNumber + "'" +
+            ", isRealData='" + isRealData + "'" +
             '}';
     }
 }

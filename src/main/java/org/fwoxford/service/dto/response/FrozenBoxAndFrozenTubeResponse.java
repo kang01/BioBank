@@ -17,48 +17,76 @@ public class FrozenBoxAndFrozenTubeResponse {
     @NotNull
     @Size(max = 100)
     private String frozenBoxCode;
-
+    /**
+     * 冻存盒行数
+     */
     @NotNull
     @Size(max = 20)
     private String frozenBoxRows;
-
+    /**
+     * 冻存盒列数
+     */
     @NotNull
     @Size(max = 20)
     private String frozenBoxColumns;
-
+    /**
+     * 设备编码
+     */
     @NotNull
     @Size(max = 100)
     private String equipmentCode;
-
+    /**
+     * 区域编码
+     */
     @NotNull
     @Size(max = 100)
     private String areaCode;
-
+    /**
+     * 冻存架编码
+     */
     @NotNull
     @Size(max = 100)
     private String supportRackCode;
-
+    /**
+     * 是否分装（0002：是；0003：否）
+     */
     @NotNull
     @Size(max = 20)
     private String isSplit;
-
+    /**
+     * 备注
+     */
     @Size(max = 255)
     private String memo;
-
+    /**
+     * 状态：（01：新建，02：待分装，03：已分装，04：待入库，05：已入库，06：已作废）
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 冻存盒类型ID
+     */
     private Long frozenBoxTypeId;
-
+    /**
+     * 样本类型ID
+     */
     private Long sampleTypeId;
-
+    /**
+     * 设备ID
+     */
     private Long equipmentId;
-
+    /**
+     * 区域ID
+     */
     private Long areaId;
-
+    /**
+     * 冻存架ID
+     */
     private Long supportRackId;
-
+    /**
+     * 冻存管列表
+     */
     private List<FrozenTubeResponse> frozenTubeResponseList;
 
     public Long getId() {

@@ -99,6 +99,18 @@ public class FrozenBoxResourceIntTest {
     private static final String DEFAULT_STATUS = "AAAAAAAAAA";
     private static final String UPDATED_STATUS = "BBBBBBBBBB";
 
+    private static final Integer DEFAULT_EMPTY_TUBE_NUMBER = 100;
+    private static final Integer UPDATED_EMPTY_TUBE_NUMBER = 99;
+
+    private static final Integer DEFAULT_EMPTY_HOLE_NUMBER = 100;
+    private static final Integer UPDATED_EMPTY_HOLE_NUMBER = 99;
+
+    private static final Integer DEFAULT_DISLOCATION_NUMBER = 100;
+    private static final Integer UPDATED_DISLOCATION_NUMBER = 99;
+
+    private static final String DEFAULT_IS_REAL_DATA = "AAAAAAAAAA";
+    private static final String UPDATED_IS_REAL_DATA = "BBBBBBBBBB";
+
     @Autowired
     private FrozenBoxRepository frozenBoxRepository;
 
@@ -158,7 +170,11 @@ public class FrozenBoxResourceIntTest {
                 .sampleNumber(DEFAULT_SAMPLE_NUMBER)
                 .isSplit(DEFAULT_IS_SPLIT)
                 .memo(DEFAULT_MEMO)
-                .status(DEFAULT_STATUS);
+                .status(DEFAULT_STATUS)
+                .emptyTubeNumber(DEFAULT_EMPTY_TUBE_NUMBER)
+                .emptyHoleNumber(DEFAULT_EMPTY_HOLE_NUMBER)
+                .dislocationNumber(DEFAULT_DISLOCATION_NUMBER)
+                .isRealData(DEFAULT_IS_REAL_DATA);
         // Add required entity
         FrozenBoxType frozenBoxType = FrozenBoxTypeResourceIntTest.createEntity(em);
         em.persist(frozenBoxType);
@@ -241,6 +257,10 @@ public class FrozenBoxResourceIntTest {
         assertThat(testFrozenBox.getIsSplit()).isEqualTo(DEFAULT_IS_SPLIT);
         assertThat(testFrozenBox.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testFrozenBox.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testFrozenBox.getEmptyTubeNumber()).isEqualTo(DEFAULT_EMPTY_TUBE_NUMBER);
+        assertThat(testFrozenBox.getEmptyHoleNumber()).isEqualTo(DEFAULT_EMPTY_HOLE_NUMBER);
+        assertThat(testFrozenBox.getDislocationNumber()).isEqualTo(DEFAULT_DISLOCATION_NUMBER);
+        assertThat(testFrozenBox.getIsRealData()).isEqualTo(DEFAULT_IS_REAL_DATA);
     }
 
     @Test
@@ -570,6 +590,82 @@ public class FrozenBoxResourceIntTest {
 
     @Test
     @Transactional
+    public void checkEmptyTubeNumberIsRequired() throws Exception {
+        int databaseSizeBeforeTest = frozenBoxRepository.findAll().size();
+        // set the field null
+        frozenBox.setEmptyTubeNumber(null);
+
+        // Create the FrozenBox, which fails.
+        FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
+
+        restFrozenBoxMockMvc.perform(post("/api/frozen-boxes")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(frozenBoxDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAll();
+        assertThat(frozenBoxList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkEmptyHoleNumberIsRequired() throws Exception {
+        int databaseSizeBeforeTest = frozenBoxRepository.findAll().size();
+        // set the field null
+        frozenBox.setEmptyHoleNumber(null);
+
+        // Create the FrozenBox, which fails.
+        FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
+
+        restFrozenBoxMockMvc.perform(post("/api/frozen-boxes")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(frozenBoxDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAll();
+        assertThat(frozenBoxList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkDislocationNumberIsRequired() throws Exception {
+        int databaseSizeBeforeTest = frozenBoxRepository.findAll().size();
+        // set the field null
+        frozenBox.setDislocationNumber(null);
+
+        // Create the FrozenBox, which fails.
+        FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
+
+        restFrozenBoxMockMvc.perform(post("/api/frozen-boxes")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(frozenBoxDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAll();
+        assertThat(frozenBoxList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkIsRealDataIsRequired() throws Exception {
+        int databaseSizeBeforeTest = frozenBoxRepository.findAll().size();
+        // set the field null
+        frozenBox.setIsRealData(null);
+
+        // Create the FrozenBox, which fails.
+        FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
+
+        restFrozenBoxMockMvc.perform(post("/api/frozen-boxes")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(frozenBoxDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAll();
+        assertThat(frozenBoxList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllFrozenBoxes() throws Exception {
         // Initialize the database
         frozenBoxRepository.saveAndFlush(frozenBox);
@@ -595,7 +691,11 @@ public class FrozenBoxResourceIntTest {
             .andExpect(jsonPath("$.[*].sampleNumber").value(hasItem(DEFAULT_SAMPLE_NUMBER)))
             .andExpect(jsonPath("$.[*].isSplit").value(hasItem(DEFAULT_IS_SPLIT.toString())))
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].emptyTubeNumber").value(hasItem(DEFAULT_EMPTY_TUBE_NUMBER)))
+            .andExpect(jsonPath("$.[*].emptyHoleNumber").value(hasItem(DEFAULT_EMPTY_HOLE_NUMBER)))
+            .andExpect(jsonPath("$.[*].dislocationNumber").value(hasItem(DEFAULT_DISLOCATION_NUMBER)))
+            .andExpect(jsonPath("$.[*].isRealData").value(hasItem(DEFAULT_IS_REAL_DATA.toString())));
     }
 
     @Test
@@ -625,7 +725,11 @@ public class FrozenBoxResourceIntTest {
             .andExpect(jsonPath("$.sampleNumber").value(DEFAULT_SAMPLE_NUMBER))
             .andExpect(jsonPath("$.isSplit").value(DEFAULT_IS_SPLIT.toString()))
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
+            .andExpect(jsonPath("$.emptyTubeNumber").value(DEFAULT_EMPTY_TUBE_NUMBER))
+            .andExpect(jsonPath("$.emptyHoleNumber").value(DEFAULT_EMPTY_HOLE_NUMBER))
+            .andExpect(jsonPath("$.dislocationNumber").value(DEFAULT_DISLOCATION_NUMBER))
+            .andExpect(jsonPath("$.isRealData").value(DEFAULT_IS_REAL_DATA.toString()));
     }
 
     @Test
@@ -662,7 +766,11 @@ public class FrozenBoxResourceIntTest {
                 .sampleNumber(UPDATED_SAMPLE_NUMBER)
                 .isSplit(UPDATED_IS_SPLIT)
                 .memo(UPDATED_MEMO)
-                .status(UPDATED_STATUS);
+                .status(UPDATED_STATUS)
+                .emptyTubeNumber(UPDATED_EMPTY_TUBE_NUMBER)
+                .emptyHoleNumber(UPDATED_EMPTY_HOLE_NUMBER)
+                .dislocationNumber(UPDATED_DISLOCATION_NUMBER)
+                .isRealData(UPDATED_IS_REAL_DATA);
         FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(updatedFrozenBox);
 
         restFrozenBoxMockMvc.perform(put("/api/frozen-boxes")
@@ -691,6 +799,10 @@ public class FrozenBoxResourceIntTest {
         assertThat(testFrozenBox.getIsSplit()).isEqualTo(UPDATED_IS_SPLIT);
         assertThat(testFrozenBox.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testFrozenBox.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testFrozenBox.getEmptyTubeNumber()).isEqualTo(UPDATED_EMPTY_TUBE_NUMBER);
+        assertThat(testFrozenBox.getEmptyHoleNumber()).isEqualTo(UPDATED_EMPTY_HOLE_NUMBER);
+        assertThat(testFrozenBox.getDislocationNumber()).isEqualTo(UPDATED_DISLOCATION_NUMBER);
+        assertThat(testFrozenBox.getIsRealData()).isEqualTo(UPDATED_IS_REAL_DATA);
     }
 
     @Test

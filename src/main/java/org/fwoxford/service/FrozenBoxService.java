@@ -70,4 +70,10 @@ public interface FrozenBoxService {
      * @return
      */
     FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode);
+
+    /**
+     * 批量保存冻存盒
+     * @param frozenBoxDTOList
+     */
+    List<FrozenBox> saveBatch(List<FrozenBoxDTO> frozenBoxDTOList);
 }

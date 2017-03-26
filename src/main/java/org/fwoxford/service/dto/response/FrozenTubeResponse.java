@@ -7,63 +7,97 @@ import javax.validation.constraints.Size;
  * Created by gengluying on 2017/3/22.
  */
 public class FrozenTubeResponse {
-
+    /**
+     * 冻存管ID
+     */
     private Long id;
-
+    /**
+     * 项目编码
+     */
     @NotNull
     @Size(max = 100)
     private String projectCode;
-
+    /**
+     * 冻存管编码
+     */
     @NotNull
     @Size(max = 100)
     private String frozenTubeCode;
-
+    /**
+     * 样本临时编码
+     */
     @NotNull
     @Size(max = 100)
     private String sampleTempCode;
-
+    /**
+     * 样本编码
+     */
     @NotNull
     @Size(max = 100)
     private String sampleCode;
-
+    /**
+     * 冻存盒类型编码
+     */
     @NotNull
     @Size(max = 100)
     private String frozenTubeTypeCode;
-
+    /**
+     * 冻存盒类型名称
+     */
     @NotNull
     @Size(max = 255)
     private String frozenTubeTypeName;
-
+    /**
+     * 样本类型编码
+     */
     @NotNull
     @Size(max = 100)
     private String sampleTypeCode;
-
+    /**
+     * 样本类型名称
+     */
     @NotNull
     @Size(max = 255)
     private String sampleTypeName;
-
+    /**
+     * 行号
+     */
     @NotNull
     @Size(max = 20)
     private String tubeRows;
-
+    /**
+     * 列号
+     */
     @NotNull
     @Size(max = 20)
     private String tubeColumns;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
-
+    /**
+     * 错误类型（6001：位置错误，6002：样本类型错误，6003：其他）
+     */
     @Size(max = 20)
     private String errorType;
-
+    /**
+     * 状态（3001：正常，3002：空管，3003：空孔；3004：异常）
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 冻存盒类型ID
+     */
     private Long frozenTubeTypeId;
-
+    /**
+     * 样本类型ID
+     */
     private Long sampleTypeId;
-
+    /**
+     * 项目ID
+     */
     private Long projectId;
 
     public Long getId() {

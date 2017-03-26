@@ -107,6 +107,26 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
+    @NotNull
+    @Max(value = 100)
+    @Column(name = "empty_tube_number", nullable = false)
+    private Integer emptyTubeNumber;
+
+    @NotNull
+    @Max(value = 100)
+    @Column(name = "empty_hole_number", nullable = false)
+    private Integer emptyHoleNumber;
+
+    @NotNull
+    @Max(value = 100)
+    @Column(name = "dislocation_number", nullable = false)
+    private Integer dislocationNumber;
+
+    @NotNull
+    @Size(max = 20)
+    @Column(name = "is_real_data", length = 20, nullable = false)
+    private String isRealData;
+
     @ManyToOne(optional = false)
     @NotNull
     private FrozenBoxType frozenBoxType;
@@ -133,7 +153,6 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(name = "area_id")
     private Area area;
 
     @ManyToOne(optional = false)
@@ -369,6 +388,58 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
         this.status = status;
     }
 
+    public Integer getEmptyTubeNumber() {
+        return emptyTubeNumber;
+    }
+
+    public FrozenBox emptyTubeNumber(Integer emptyTubeNumber) {
+        this.emptyTubeNumber = emptyTubeNumber;
+        return this;
+    }
+
+    public void setEmptyTubeNumber(Integer emptyTubeNumber) {
+        this.emptyTubeNumber = emptyTubeNumber;
+    }
+
+    public Integer getEmptyHoleNumber() {
+        return emptyHoleNumber;
+    }
+
+    public FrozenBox emptyHoleNumber(Integer emptyHoleNumber) {
+        this.emptyHoleNumber = emptyHoleNumber;
+        return this;
+    }
+
+    public void setEmptyHoleNumber(Integer emptyHoleNumber) {
+        this.emptyHoleNumber = emptyHoleNumber;
+    }
+
+    public Integer getDislocationNumber() {
+        return dislocationNumber;
+    }
+
+    public FrozenBox dislocationNumber(Integer dislocationNumber) {
+        this.dislocationNumber = dislocationNumber;
+        return this;
+    }
+
+    public void setDislocationNumber(Integer dislocationNumber) {
+        this.dislocationNumber = dislocationNumber;
+    }
+
+    public String getIsRealData() {
+        return isRealData;
+    }
+
+    public FrozenBox isRealData(String isRealData) {
+        this.isRealData = isRealData;
+        return this;
+    }
+
+    public void setIsRealData(String isRealData) {
+        this.isRealData = isRealData;
+    }
+
     public FrozenBoxType getFrozenBoxType() {
         return frozenBoxType;
     }
@@ -514,6 +585,10 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
             ", isSplit='" + isSplit + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
+            ", emptyTubeNumber='" + emptyTubeNumber + "'" +
+            ", emptyHoleNumber='" + emptyHoleNumber + "'" +
+            ", dislocationNumber='" + dislocationNumber + "'" +
+            ", isRealData='" + isRealData + "'" +
             '}';
     }
 }

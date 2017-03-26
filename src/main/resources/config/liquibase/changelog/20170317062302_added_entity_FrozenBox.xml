@@ -89,6 +89,22 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="empty_tube_number" type="integer">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="empty_hole_number" type="integer">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="dislocation_number" type="integer">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="is_real_data" type="varchar(20)">
+                <constraints nullable="false" />
+            </column>
+
             <column name="frozen_box_type_id" type="bigint">
                 <constraints nullable="false" />
             </column>

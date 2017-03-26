@@ -54,4 +54,10 @@ public interface FrozenTubeService {
      * @return
      */
     List<FrozenTube> findFrozenTubeListByBoxCode(String frozenBoxCode);
+
+    /**
+     * 批量保存冻存管
+     * @param frozenTubeDTOList
+     */
+    List<FrozenTube> saveBatch(List<FrozenTubeDTO> frozenTubeDTOList);
 }

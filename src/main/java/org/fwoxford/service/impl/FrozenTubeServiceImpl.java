@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import org.springframework.util.Assert;
 /**
  * Service Implementation for managing FrozenTube.
  */
@@ -105,5 +105,17 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
     public List<FrozenTube> findFrozenTubeListByBoxCode(String frozenBoxCode) {
         log.debug("Request to findFrozenTubeListByBoxCode : {}", frozenBoxCode);
         return frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
+    }
+
+    /**
+     * 批量保存冻存管
+     * @param frozenTubeDTOList
+     */
+    @Override
+    public List<FrozenTube> saveBatch(List<FrozenTubeDTO> frozenTubeDTOList) {
+        Assert.notNull(frozenTubeDTOList,"frozen Tube must not be null");
+        List<FrozenTube> frozenTubes = frozenTubeMapper.frozenTubeDTOsToFrozenTubes(frozenTubeDTOList);
+        List<FrozenTube> frozenTubesList =  frozenTubeRepository.save(frozenTubes);
+        return frozenTubesList;
     }
 }

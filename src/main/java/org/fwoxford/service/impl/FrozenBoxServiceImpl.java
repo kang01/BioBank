@@ -17,7 +17,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -158,5 +162,17 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     public FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode) {
         FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
         return frozenBox;
+    }
+
+    /**
+     * 批量保存冻存盒
+     * @param frozenBoxDTOList
+     */
+    @Override
+    public List<FrozenBox> saveBatch(List<FrozenBoxDTO> frozenBoxDTOList) {
+        Assert.notNull(frozenBoxDTOList,"frozen Box must not be null");
+        List<FrozenBox> frozenBoxes = frozenBoxMapper.frozenBoxDTOsToFrozenBoxes(frozenBoxDTOList);
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.save(frozenBoxes);
+        return frozenBoxList;
     }
 }

@@ -1,9 +1,8 @@
 package org.fwoxford.service;
 
-import org.fwoxford.service.dto.request.TranshipRequest;
+import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
-import org.fwoxford.service.dto.TranshipDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -59,5 +58,10 @@ public interface TranshipService {
      */
     TranshipByIdResponse findTranshipAndFrozenBox(Long id);
 
-    TranshipDTO insertTranship(TranshipRequest transhipRequest);
+    /**
+     * 保存转运记录
+     * @param transhipDTO
+     * @return
+     */
+    TranshipDTO insertTranship(TranshipDTO transhipDTO);
 }

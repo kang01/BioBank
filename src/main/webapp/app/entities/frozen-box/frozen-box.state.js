@@ -141,6 +141,10 @@
                                 isSplit: null,
                                 memo: null,
                                 status: null,
+                                emptyTubeNumber: null,
+                                emptyHoleNumber: null,
+                                dislocationNumber: null,
+                                isRealData: null,
                                 id: null
                             };
                         }

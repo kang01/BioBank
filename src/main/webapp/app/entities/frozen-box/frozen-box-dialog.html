@@ -285,6 +285,82 @@
                 </p>
             </div>
         </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.emptyTubeNumber" for="field_emptyTubeNumber">Empty Tube Number</label>
+            <input type="number" class="form-control" name="emptyTubeNumber" id="field_emptyTubeNumber"
+                    ng-model="vm.frozenBox.emptyTubeNumber"
+                    required max="100"/>
+            <div ng-show="editForm.emptyTubeNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.emptyTubeNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.emptyTubeNumber.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.emptyTubeNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.emptyHoleNumber" for="field_emptyHoleNumber">Empty Hole Number</label>
+            <input type="number" class="form-control" name="emptyHoleNumber" id="field_emptyHoleNumber"
+                    ng-model="vm.frozenBox.emptyHoleNumber"
+                    required max="100"/>
+            <div ng-show="editForm.emptyHoleNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.emptyHoleNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.emptyHoleNumber.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.emptyHoleNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.dislocationNumber" for="field_dislocationNumber">Dislocation Number</label>
+            <input type="number" class="form-control" name="dislocationNumber" id="field_dislocationNumber"
+                    ng-model="vm.frozenBox.dislocationNumber"
+                    required max="100"/>
+            <div ng-show="editForm.dislocationNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.dislocationNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.dislocationNumber.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                    This field cannot be more than 100.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.dislocationNumber.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenBox.isRealData" for="field_isRealData">Is Real Data</label>
+            <input type="text" class="form-control" name="isRealData" id="field_isRealData"
+                    ng-model="vm.frozenBox.isRealData"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.isRealData.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.isRealData.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.isRealData.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
 
         <div class="form-group">
             <label data-translate="bioBankApp.frozenBox.frozenBoxType" for="field_frozenBoxType">Frozen Box Type</label>

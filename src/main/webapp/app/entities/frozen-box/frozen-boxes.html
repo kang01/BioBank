@@ -36,6 +36,10 @@
                     <th jh-sort-by="isSplit"><span data-translate="bioBankApp.frozenBox.isSplit">Is Split</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="memo"><span data-translate="bioBankApp.frozenBox.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="bioBankApp.frozenBox.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="emptyTubeNumber"><span data-translate="bioBankApp.frozenBox.emptyTubeNumber">Empty Tube Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="emptyHoleNumber"><span data-translate="bioBankApp.frozenBox.emptyHoleNumber">Empty Hole Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="dislocationNumber"><span data-translate="bioBankApp.frozenBox.dislocationNumber">Dislocation Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="isRealData"><span data-translate="bioBankApp.frozenBox.isRealData">Is Real Data</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="frozenBoxTypeId"><span data-translate="bioBankApp.frozenBox.frozenBoxType">Frozen Box Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="sampleTypeId"><span data-translate="bioBankApp.frozenBox.sampleType">Sample Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="projectId"><span data-translate="bioBankApp.frozenBox.project">Project</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -67,6 +71,10 @@
                     <td>{{frozenBox.isSplit}}</td>
                     <td>{{frozenBox.memo}}</td>
                     <td>{{frozenBox.status}}</td>
+                    <td>{{frozenBox.emptyTubeNumber}}</td>
+                    <td>{{frozenBox.emptyHoleNumber}}</td>
+                    <td>{{frozenBox.dislocationNumber}}</td>
+                    <td>{{frozenBox.isRealData}}</td>
                     <td>
                         <a ui-sref="frozen-box-type-detail({id:frozenBox.frozenBoxTypeId})">{{frozenBox.frozenBoxTypeId}}</a>
                     </td>

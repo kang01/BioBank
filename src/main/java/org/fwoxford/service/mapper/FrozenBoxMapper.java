@@ -1,11 +1,14 @@
 package org.fwoxford.service.mapper;
 
 import org.fwoxford.domain.*;
+import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 
 import org.mapstruct.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -132,5 +135,36 @@ public interface FrozenBoxMapper {
         res.setAreaId(frozenBox.getId());
         res.setSupportRackId(frozenBox.getSupportRack().getId());
         return res;
+    }
+
+    default  TranshipBoxDTO frozenBoxToTranshipBoxDTO(FrozenBoxDTO boxDTO){
+        if(boxDTO == null){
+            return null;
+        }
+        TranshipBoxDTO transhipBoxDTO = new TranshipBoxDTO();
+        transhipBoxDTO.setTranshipId(boxDTO.getTranshipId());
+        transhipBoxDTO.setEquipmentCode(boxDTO.getEquipmentCode());
+        transhipBoxDTO.setAreaCode(boxDTO.getAreaCode());
+        transhipBoxDTO.setFrozenBoxCode(boxDTO.getFrozenBoxCode());
+        transhipBoxDTO.setSupportRackCode(boxDTO.getSupportRackCode());
+        transhipBoxDTO.setCreatedBy(boxDTO.getCreatedBy());
+        transhipBoxDTO.setMemo(boxDTO.getMemo());
+        transhipBoxDTO.setCreatedDate(boxDTO.getCreatedDate());
+        transhipBoxDTO.setStatus(boxDTO.getStatus());
+        transhipBoxDTO.setLastModifiedBy(boxDTO.getLastModifiedBy());
+        transhipBoxDTO.setLastModifiedDate(boxDTO.getLastModifiedDate());
+        transhipBoxDTO.setFrozenBoxId(boxDTO.getId());
+        transhipBoxDTO.setColumnsInShelf(boxDTO.getColumnsInShelf());
+        transhipBoxDTO.setRowsInShelf(boxDTO.getRowsInShelf());
+        return transhipBoxDTO;
+    }
+
+    default List<FrozenBoxDTO> frozenTranshipAndBoxToFrozenBoxDTOList(List<FrozenBoxDTO> frozenBoxDTOList, Tranship tranship){
+        List<FrozenBoxDTO> frozenBoxDTOLists = new ArrayList<FrozenBoxDTO>();
+        for(FrozenBoxDTO box:frozenBoxDTOList){
+            box.setTranshipId(tranship.getId());
+            frozenBoxDTOLists.add(box);
+        }
+        return frozenBoxDTOLists;
     }
 }

@@ -132,7 +132,7 @@ public class SampleTypeResource {
      * @return
      * @throws URISyntaxException
      */
-    @GetMapping("/samplyTypes")
+    @GetMapping("/sampleTypes")
     @Timed
     public ResponseEntity<List<SampleTypeDTO>> getAllSampleTypeList() {
         log.debug("REST request to get all SampleTypeTypes");

@@ -4,6 +4,7 @@ import org.fwoxford.BioBankApp;
 
 import org.fwoxford.domain.TranshipBox;
 import org.fwoxford.domain.Tranship;
+import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.repository.TranshipBoxRepository;
 import org.fwoxford.service.TranshipBoxService;
 import org.fwoxford.service.dto.TranshipBoxDTO;
@@ -121,6 +122,11 @@ public class TranshipBoxResourceIntTest {
         em.persist(tranship);
         em.flush();
         transhipBox.setTranship(tranship);
+        // Add required entity
+        FrozenBox frozenBox = FrozenBoxResourceIntTest.createEntity(em);
+        em.persist(frozenBox);
+        em.flush();
+        transhipBox.setFrozenBox(frozenBox);
         return transhipBox;
     }
 

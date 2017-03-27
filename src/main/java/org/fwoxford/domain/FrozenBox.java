@@ -98,6 +98,15 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @Column(name = "is_split", length = 20, nullable = false)
     private String isSplit;
 
+    @NotNull
+    @Size(max = 20)
+    @Column(name = "rows_in_shelf", length = 20, nullable = false)
+    private String rowsInShelf;
+
+    @NotNull
+    @Size(max = 20)
+    @Column(name = "columns_in_shelf", length = 20, nullable = false)
+    private String columnsInShelf;
     @Size(max = 255)
     @Column(name = "memo", length = 255)
     private String memo;
@@ -440,6 +449,22 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
         this.isRealData = isRealData;
     }
 
+    public String getRowsInShelf() {
+        return rowsInShelf;
+    }
+
+    public void setRowsInShelf(String rowsInShelf) {
+        this.rowsInShelf = rowsInShelf;
+    }
+
+    public String getColumnsInShelf() {
+        return columnsInShelf;
+    }
+
+    public void setColumnsInShelf(String columnsInShelf) {
+        this.columnsInShelf = columnsInShelf;
+    }
+
     public FrozenBoxType getFrozenBoxType() {
         return frozenBoxType;
     }
@@ -583,6 +608,8 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
             ", sampleTypeName='" + sampleTypeName + "'" +
             ", sampleNumber='" + sampleNumber + "'" +
             ", isSplit='" + isSplit + "'" +
+            ", rowsInShelf='" + rowsInShelf + "'" +
+            ", columnsInShelf='" + columnsInShelf + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
             ", emptyTubeNumber='" + emptyTubeNumber + "'" +

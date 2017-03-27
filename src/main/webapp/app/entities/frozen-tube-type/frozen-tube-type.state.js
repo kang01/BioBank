@@ -129,8 +129,6 @@
                                 sampleUsedTimesMost: null,
                                 frozenTubeVolumn: null,
                                 frozenTubeVolumnUnit: null,
-                                frontColor: null,
-                                backColor: null,
                                 memo: null,
                                 status: null,
                                 id: null

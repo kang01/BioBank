@@ -27,6 +27,14 @@ public class SampleTypeDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 20)
     private String status;
 
+    @NotNull
+    @Size(max = 100)
+    private String frontColor;
+
+    @NotNull
+    @Size(max = 100)
+    private String backColor;
+
     public Long getId() {
         return id;
     }
@@ -62,6 +70,20 @@ public class SampleTypeDTO extends AbstractAuditingDTO implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+    public String getFrontColor() {
+        return frontColor;
+    }
+
+    public void setFrontColor(String frontColor) {
+        this.frontColor = frontColor;
+    }
+    public String getBackColor() {
+        return backColor;
+    }
+
+    public void setBackColor(String backColor) {
+        this.backColor = backColor;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -92,6 +114,8 @@ public class SampleTypeDTO extends AbstractAuditingDTO implements Serializable {
             ", sampleTypeName='" + sampleTypeName + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
+            ", frontColor='" + frontColor + "'" +
+            ", backColor='" + backColor + "'" +
             '}';
     }
 }

@@ -34,12 +34,12 @@ public class FrozenTubeType extends AbstractAuditingEntity implements Serializab
     private String frozenTubeTypeName;
 
     @NotNull
-    @Max(value = 100)
+    @Max(value = 20)
     @Column(name = "sample_used_times_most", nullable = false)
     private Integer sampleUsedTimesMost;
 
     @NotNull
-    @Max(value = 400)
+    @Max(value = 20)
     @Column(name = "frozen_tube_volumn", nullable = false)
     private Integer frozenTubeVolumn;
 
@@ -47,16 +47,6 @@ public class FrozenTubeType extends AbstractAuditingEntity implements Serializab
     @Size(max = 20)
     @Column(name = "frozen_tube_volumn_unit", length = 20, nullable = false)
     private String frozenTubeVolumnUnit;
-
-    @NotNull
-    @Size(max = 20)
-    @Column(name = "front_color", length = 20, nullable = false)
-    private String frontColor;
-
-    @NotNull
-    @Size(max = 20)
-    @Column(name = "back_color", length = 20, nullable = false)
-    private String backColor;
 
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
@@ -140,32 +130,6 @@ public class FrozenTubeType extends AbstractAuditingEntity implements Serializab
         this.frozenTubeVolumnUnit = frozenTubeVolumnUnit;
     }
 
-    public String getFrontColor() {
-        return frontColor;
-    }
-
-    public FrozenTubeType frontColor(String frontColor) {
-        this.frontColor = frontColor;
-        return this;
-    }
-
-    public void setFrontColor(String frontColor) {
-        this.frontColor = frontColor;
-    }
-
-    public String getBackColor() {
-        return backColor;
-    }
-
-    public FrozenTubeType backColor(String backColor) {
-        this.backColor = backColor;
-        return this;
-    }
-
-    public void setBackColor(String backColor) {
-        this.backColor = backColor;
-    }
-
     public String getMemo() {
         return memo;
     }
@@ -221,8 +185,6 @@ public class FrozenTubeType extends AbstractAuditingEntity implements Serializab
             ", sampleUsedTimesMost='" + sampleUsedTimesMost + "'" +
             ", frozenTubeVolumn='" + frozenTubeVolumn + "'" +
             ", frozenTubeVolumnUnit='" + frozenTubeVolumnUnit + "'" +
-            ", frontColor='" + frontColor + "'" +
-            ", backColor='" + backColor + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
             '}';

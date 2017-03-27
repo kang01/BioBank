@@ -42,6 +42,16 @@ public class SampleType extends AbstractAuditingEntity implements Serializable {
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "front_color", length = 100, nullable = false)
+    private String frontColor;
+
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "back_color", length = 100, nullable = false)
+    private String backColor;
+
     public Long getId() {
         return id;
     }
@@ -102,6 +112,32 @@ public class SampleType extends AbstractAuditingEntity implements Serializable {
         this.status = status;
     }
 
+    public String getFrontColor() {
+        return frontColor;
+    }
+
+    public SampleType frontColor(String frontColor) {
+        this.frontColor = frontColor;
+        return this;
+    }
+
+    public void setFrontColor(String frontColor) {
+        this.frontColor = frontColor;
+    }
+
+    public String getBackColor() {
+        return backColor;
+    }
+
+    public SampleType backColor(String backColor) {
+        this.backColor = backColor;
+        return this;
+    }
+
+    public void setBackColor(String backColor) {
+        this.backColor = backColor;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -130,6 +166,8 @@ public class SampleType extends AbstractAuditingEntity implements Serializable {
             ", sampleTypeName='" + sampleTypeName + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
+            ", frontColor='" + frontColor + "'" +
+            ", backColor='" + backColor + "'" +
             '}';
     }
 }

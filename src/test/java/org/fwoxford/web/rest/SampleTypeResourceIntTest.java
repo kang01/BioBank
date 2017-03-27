@@ -52,6 +52,12 @@ public class SampleTypeResourceIntTest {
     private static final String DEFAULT_STATUS = "AAAAAAAAAA";
     private static final String UPDATED_STATUS = "BBBBBBBBBB";
 
+    private static final String DEFAULT_FRONT_COLOR = "AAAAAAAAAA";
+    private static final String UPDATED_FRONT_COLOR = "BBBBBBBBBB";
+
+    private static final String DEFAULT_BACK_COLOR = "AAAAAAAAAA";
+    private static final String UPDATED_BACK_COLOR = "BBBBBBBBBB";
+
     @Autowired
     private SampleTypeRepository sampleTypeRepository;
 
@@ -98,7 +104,9 @@ public class SampleTypeResourceIntTest {
                 .sampleTypeCode(DEFAULT_SAMPLE_TYPE_CODE)
                 .sampleTypeName(DEFAULT_SAMPLE_TYPE_NAME)
                 .memo(DEFAULT_MEMO)
-                .status(DEFAULT_STATUS);
+                .status(DEFAULT_STATUS)
+                .frontColor(DEFAULT_FRONT_COLOR)
+                .backColor(DEFAULT_BACK_COLOR);
         return sampleType;
     }
 
@@ -128,6 +136,8 @@ public class SampleTypeResourceIntTest {
         assertThat(testSampleType.getSampleTypeName()).isEqualTo(DEFAULT_SAMPLE_TYPE_NAME);
         assertThat(testSampleType.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testSampleType.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testSampleType.getFrontColor()).isEqualTo(DEFAULT_FRONT_COLOR);
+        assertThat(testSampleType.getBackColor()).isEqualTo(DEFAULT_BACK_COLOR);
     }
 
     @Test
@@ -210,6 +220,44 @@ public class SampleTypeResourceIntTest {
 
     @Test
     @Transactional
+    public void checkFrontColorIsRequired() throws Exception {
+        int databaseSizeBeforeTest = sampleTypeRepository.findAll().size();
+        // set the field null
+        sampleType.setFrontColor(null);
+
+        // Create the SampleType, which fails.
+        SampleTypeDTO sampleTypeDTO = sampleTypeMapper.sampleTypeToSampleTypeDTO(sampleType);
+
+        restSampleTypeMockMvc.perform(post("/api/sample-types")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(sampleTypeDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<SampleType> sampleTypeList = sampleTypeRepository.findAll();
+        assertThat(sampleTypeList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkBackColorIsRequired() throws Exception {
+        int databaseSizeBeforeTest = sampleTypeRepository.findAll().size();
+        // set the field null
+        sampleType.setBackColor(null);
+
+        // Create the SampleType, which fails.
+        SampleTypeDTO sampleTypeDTO = sampleTypeMapper.sampleTypeToSampleTypeDTO(sampleType);
+
+        restSampleTypeMockMvc.perform(post("/api/sample-types")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(sampleTypeDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<SampleType> sampleTypeList = sampleTypeRepository.findAll();
+        assertThat(sampleTypeList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllSampleTypes() throws Exception {
         // Initialize the database
         sampleTypeRepository.saveAndFlush(sampleType);
@@ -222,7 +270,9 @@ public class SampleTypeResourceIntTest {
             .andExpect(jsonPath("$.[*].sampleTypeCode").value(hasItem(DEFAULT_SAMPLE_TYPE_CODE.toString())))
             .andExpect(jsonPath("$.[*].sampleTypeName").value(hasItem(DEFAULT_SAMPLE_TYPE_NAME.toString())))
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].frontColor").value(hasItem(DEFAULT_FRONT_COLOR.toString())))
+            .andExpect(jsonPath("$.[*].backColor").value(hasItem(DEFAULT_BACK_COLOR.toString())));
     }
 
     @Test
@@ -239,7 +289,9 @@ public class SampleTypeResourceIntTest {
             .andExpect(jsonPath("$.sampleTypeCode").value(DEFAULT_SAMPLE_TYPE_CODE.toString()))
             .andExpect(jsonPath("$.sampleTypeName").value(DEFAULT_SAMPLE_TYPE_NAME.toString()))
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
+            .andExpect(jsonPath("$.frontColor").value(DEFAULT_FRONT_COLOR.toString()))
+            .andExpect(jsonPath("$.backColor").value(DEFAULT_BACK_COLOR.toString()));
     }
 
     @Test
@@ -263,7 +315,9 @@ public class SampleTypeResourceIntTest {
                 .sampleTypeCode(UPDATED_SAMPLE_TYPE_CODE)
                 .sampleTypeName(UPDATED_SAMPLE_TYPE_NAME)
                 .memo(UPDATED_MEMO)
-                .status(UPDATED_STATUS);
+                .status(UPDATED_STATUS)
+                .frontColor(UPDATED_FRONT_COLOR)
+                .backColor(UPDATED_BACK_COLOR);
         SampleTypeDTO sampleTypeDTO = sampleTypeMapper.sampleTypeToSampleTypeDTO(updatedSampleType);
 
         restSampleTypeMockMvc.perform(put("/api/sample-types")
@@ -279,6 +333,8 @@ public class SampleTypeResourceIntTest {
         assertThat(testSampleType.getSampleTypeName()).isEqualTo(UPDATED_SAMPLE_TYPE_NAME);
         assertThat(testSampleType.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testSampleType.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testSampleType.getFrontColor()).isEqualTo(UPDATED_FRONT_COLOR);
+        assertThat(testSampleType.getBackColor()).isEqualTo(UPDATED_BACK_COLOR);
     }
 
     @Test

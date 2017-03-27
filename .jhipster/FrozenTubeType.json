@@ -48,24 +48,6 @@
             "fieldValidateRulesMaxlength": 20
         },
         {
-            "fieldName": "frontColor",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "20"
-        },
-        {
-            "fieldName": "backColor",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "20"
-        },
-        {
             "fieldName": "memo",
             "fieldType": "String",
             "fieldValidateRules": [

@@ -18,7 +18,9 @@
             "sampleTypeCode": "Sample Type Code",
             "sampleTypeName": "Sample Type Name",
             "memo": "Memo",
-            "status": "Status"
+            "status": "Status",
+            "frontColor": "Front Color",
+            "backColor": "Back Color"
         }
     }
 }

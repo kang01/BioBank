@@ -47,6 +47,8 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
 
     private Long transhipId;
 
+    private Long frozenBoxId;
+
     public Long getId() {
         return id;
     }
@@ -117,6 +119,14 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
 
     public void setTranshipId(Long transhipId) {
         this.transhipId = transhipId;
+    }
+
+    public Long getFrozenBoxId() {
+        return frozenBoxId;
+    }
+
+    public void setFrozenBoxId(Long frozenBoxId) {
+        this.frozenBoxId = frozenBoxId;
     }
 
     @Override

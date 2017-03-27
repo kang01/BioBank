@@ -41,14 +41,6 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="front_color" type="varchar(20)">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="back_color" type="varchar(20)">
-                <constraints nullable="false" />
-            </column>
-
             <column name="memo" type="varchar(1024)">
                 <constraints nullable="true" />
             </column>

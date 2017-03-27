@@ -68,12 +68,19 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     private String sampleTypeName;
 
     @NotNull
-    @Max(value = 20)
     private Integer sampleNumber;
 
     @NotNull
     @Size(max = 20)
     private String isSplit;
+
+    @NotNull
+    @Size(max = 20)
+    private String rowsInShelf;
+
+    @NotNull
+    @Size(max = 20)
+    private String columnsInShelf;
 
     @Size(max = 255)
     private String memo;
@@ -271,6 +278,22 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
         this.isRealData = isRealData;
     }
 
+    public String getRowsInShelf() {
+        return rowsInShelf;
+    }
+
+    public void setRowsInShelf(String rowsInShelf) {
+        this.rowsInShelf = rowsInShelf;
+    }
+
+    public String getColumnsInShelf() {
+        return columnsInShelf;
+    }
+
+    public void setColumnsInShelf(String columnsInShelf) {
+        this.columnsInShelf = columnsInShelf;
+    }
+
     public Long getFrozenBoxTypeId() {
         return frozenBoxTypeId;
     }
@@ -389,6 +412,8 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
             ", emptyHoleNumber='" + emptyHoleNumber + "'" +
             ", dislocationNumber='" + dislocationNumber + "'" +
             ", isRealData='" + isRealData + "'" +
+            ", rowsInShelf='" + rowsInShelf + "'" +
+            ", columnsInShelf='" + columnsInShelf + "'" +
             '}';
     }
 }

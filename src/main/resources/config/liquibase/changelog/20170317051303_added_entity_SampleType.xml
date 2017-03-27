@@ -37,6 +37,14 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="front_color" type="varchar(100)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="back_color" type="varchar(100)">
+                <constraints nullable="false" />
+            </column>
+
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

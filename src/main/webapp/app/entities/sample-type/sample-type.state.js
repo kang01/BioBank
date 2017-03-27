@@ -128,6 +128,8 @@
                                 sampleTypeName: null,
                                 memo: null,
                                 status: null,
+                                frontColor: null,
+                                backColor: null,
                                 id: null
                             };
                         }

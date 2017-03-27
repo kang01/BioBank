@@ -60,22 +60,18 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     private Integer sampleNumber;
 
     @NotNull
-    @Max(value = 20)
     private Integer frozenBoxNumber;
 
     @NotNull
-    @Max(value = 20)
     private Integer emptyTubeNumber;
 
     @NotNull
-    @Max(value = 20)
     private Integer emptyHoleNumber;
 
     @Max(value = 20)
     private Integer sampleSatisfaction;
 
     @NotNull
-    @Max(value = 20)
     private Integer effectiveSampleNumber;
 
     @Size(max = 1024)

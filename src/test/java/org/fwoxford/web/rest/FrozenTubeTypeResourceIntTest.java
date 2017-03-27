@@ -55,12 +55,6 @@ public class FrozenTubeTypeResourceIntTest {
     private static final String DEFAULT_FROZEN_TUBE_VOLUMN_UNIT = "AAAAAAAAAA";
     private static final String UPDATED_FROZEN_TUBE_VOLUMN_UNIT = "BBBBBBBBBB";
 
-    private static final String DEFAULT_FRONT_COLOR = "AAAAAAAAAA";
-    private static final String UPDATED_FRONT_COLOR = "BBBBBBBBBB";
-
-    private static final String DEFAULT_BACK_COLOR = "AAAAAAAAAA";
-    private static final String UPDATED_BACK_COLOR = "BBBBBBBBBB";
-
     private static final String DEFAULT_MEMO = "AAAAAAAAAA";
     private static final String UPDATED_MEMO = "BBBBBBBBBB";
 
@@ -115,8 +109,6 @@ public class FrozenTubeTypeResourceIntTest {
                 .sampleUsedTimesMost(DEFAULT_SAMPLE_USED_TIMES_MOST)
                 .frozenTubeVolumn(DEFAULT_FROZEN_TUBE_VOLUMN)
                 .frozenTubeVolumnUnit(DEFAULT_FROZEN_TUBE_VOLUMN_UNIT)
-                .frontColor(DEFAULT_FRONT_COLOR)
-                .backColor(DEFAULT_BACK_COLOR)
                 .memo(DEFAULT_MEMO)
                 .status(DEFAULT_STATUS);
         return frozenTubeType;
@@ -149,8 +141,6 @@ public class FrozenTubeTypeResourceIntTest {
         assertThat(testFrozenTubeType.getSampleUsedTimesMost()).isEqualTo(DEFAULT_SAMPLE_USED_TIMES_MOST);
         assertThat(testFrozenTubeType.getFrozenTubeVolumn()).isEqualTo(DEFAULT_FROZEN_TUBE_VOLUMN);
         assertThat(testFrozenTubeType.getFrozenTubeVolumnUnit()).isEqualTo(DEFAULT_FROZEN_TUBE_VOLUMN_UNIT);
-        assertThat(testFrozenTubeType.getFrontColor()).isEqualTo(DEFAULT_FRONT_COLOR);
-        assertThat(testFrozenTubeType.getBackColor()).isEqualTo(DEFAULT_BACK_COLOR);
         assertThat(testFrozenTubeType.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testFrozenTubeType.getStatus()).isEqualTo(DEFAULT_STATUS);
     }
@@ -273,44 +263,6 @@ public class FrozenTubeTypeResourceIntTest {
 
     @Test
     @Transactional
-    public void checkFrontColorIsRequired() throws Exception {
-        int databaseSizeBeforeTest = frozenTubeTypeRepository.findAll().size();
-        // set the field null
-        frozenTubeType.setFrontColor(null);
-
-        // Create the FrozenTubeType, which fails.
-        FrozenTubeTypeDTO frozenTubeTypeDTO = frozenTubeTypeMapper.frozenTubeTypeToFrozenTubeTypeDTO(frozenTubeType);
-
-        restFrozenTubeTypeMockMvc.perform(post("/api/frozen-tube-types")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(frozenTubeTypeDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<FrozenTubeType> frozenTubeTypeList = frozenTubeTypeRepository.findAll();
-        assertThat(frozenTubeTypeList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkBackColorIsRequired() throws Exception {
-        int databaseSizeBeforeTest = frozenTubeTypeRepository.findAll().size();
-        // set the field null
-        frozenTubeType.setBackColor(null);
-
-        // Create the FrozenTubeType, which fails.
-        FrozenTubeTypeDTO frozenTubeTypeDTO = frozenTubeTypeMapper.frozenTubeTypeToFrozenTubeTypeDTO(frozenTubeType);
-
-        restFrozenTubeTypeMockMvc.perform(post("/api/frozen-tube-types")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(frozenTubeTypeDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<FrozenTubeType> frozenTubeTypeList = frozenTubeTypeRepository.findAll();
-        assertThat(frozenTubeTypeList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void checkStatusIsRequired() throws Exception {
         int databaseSizeBeforeTest = frozenTubeTypeRepository.findAll().size();
         // set the field null
@@ -344,8 +296,6 @@ public class FrozenTubeTypeResourceIntTest {
             .andExpect(jsonPath("$.[*].sampleUsedTimesMost").value(hasItem(DEFAULT_SAMPLE_USED_TIMES_MOST)))
             .andExpect(jsonPath("$.[*].frozenTubeVolumn").value(hasItem(DEFAULT_FROZEN_TUBE_VOLUMN)))
             .andExpect(jsonPath("$.[*].frozenTubeVolumnUnit").value(hasItem(DEFAULT_FROZEN_TUBE_VOLUMN_UNIT.toString())))
-            .andExpect(jsonPath("$.[*].frontColor").value(hasItem(DEFAULT_FRONT_COLOR.toString())))
-            .andExpect(jsonPath("$.[*].backColor").value(hasItem(DEFAULT_BACK_COLOR.toString())))
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
@@ -366,8 +316,6 @@ public class FrozenTubeTypeResourceIntTest {
             .andExpect(jsonPath("$.sampleUsedTimesMost").value(DEFAULT_SAMPLE_USED_TIMES_MOST))
             .andExpect(jsonPath("$.frozenTubeVolumn").value(DEFAULT_FROZEN_TUBE_VOLUMN))
             .andExpect(jsonPath("$.frozenTubeVolumnUnit").value(DEFAULT_FROZEN_TUBE_VOLUMN_UNIT.toString()))
-            .andExpect(jsonPath("$.frontColor").value(DEFAULT_FRONT_COLOR.toString()))
-            .andExpect(jsonPath("$.backColor").value(DEFAULT_BACK_COLOR.toString()))
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
     }
@@ -395,8 +343,6 @@ public class FrozenTubeTypeResourceIntTest {
                 .sampleUsedTimesMost(UPDATED_SAMPLE_USED_TIMES_MOST)
                 .frozenTubeVolumn(UPDATED_FROZEN_TUBE_VOLUMN)
                 .frozenTubeVolumnUnit(UPDATED_FROZEN_TUBE_VOLUMN_UNIT)
-                .frontColor(UPDATED_FRONT_COLOR)
-                .backColor(UPDATED_BACK_COLOR)
                 .memo(UPDATED_MEMO)
                 .status(UPDATED_STATUS);
         FrozenTubeTypeDTO frozenTubeTypeDTO = frozenTubeTypeMapper.frozenTubeTypeToFrozenTubeTypeDTO(updatedFrozenTubeType);
@@ -415,8 +361,6 @@ public class FrozenTubeTypeResourceIntTest {
         assertThat(testFrozenTubeType.getSampleUsedTimesMost()).isEqualTo(UPDATED_SAMPLE_USED_TIMES_MOST);
         assertThat(testFrozenTubeType.getFrozenTubeVolumn()).isEqualTo(UPDATED_FROZEN_TUBE_VOLUMN);
         assertThat(testFrozenTubeType.getFrozenTubeVolumnUnit()).isEqualTo(UPDATED_FROZEN_TUBE_VOLUMN_UNIT);
-        assertThat(testFrozenTubeType.getFrontColor()).isEqualTo(UPDATED_FRONT_COLOR);
-        assertThat(testFrozenTubeType.getBackColor()).isEqualTo(UPDATED_BACK_COLOR);
         assertThat(testFrozenTubeType.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testFrozenTubeType.getStatus()).isEqualTo(UPDATED_STATUS);
     }

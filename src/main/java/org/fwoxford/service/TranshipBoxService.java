@@ -1,5 +1,6 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.TranshipBox;
 import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public interface TranshipBoxService {
 
     /**
      *  Get all the transhipBoxes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +41,11 @@ public interface TranshipBoxService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * 批量保存转运与冻存盒的关系
+     * @param transhipBoxDTOList
+     * @return
+     */
+    List<TranshipBoxDTO> saveBatch(List<TranshipBoxDTO> transhipBoxDTOList);
 }

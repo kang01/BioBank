@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('TranshipBoxDetailController', TranshipBoxDetailController);
 
-    TranshipBoxDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'TranshipBox', 'Tranship'];
+    TranshipBoxDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'TranshipBox', 'Tranship', 'FrozenBox'];
 
-    function TranshipBoxDetailController($scope, $rootScope, $stateParams, previousState, entity, TranshipBox, Tranship) {
+    function TranshipBoxDetailController($scope, $rootScope, $stateParams, previousState, entity, TranshipBox, Tranship, FrozenBox) {
         var vm = this;
 
         vm.transhipBox = entity;

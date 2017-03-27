@@ -23,7 +23,8 @@
             "columnsInShelf": "Columns In Shelf",
             "memo": "Memo",
             "status": "Status",
-            "tranship": "Tranship"
+            "tranship": "Tranship",
+            "frozenBox": "Frozen Box"
         }
     }
 }

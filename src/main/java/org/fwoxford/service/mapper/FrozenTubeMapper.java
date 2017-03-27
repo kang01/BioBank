@@ -1,6 +1,7 @@
 package org.fwoxford.service.mapper;
 
 import org.fwoxford.domain.*;
+import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.FrozenTubeDTO;
 
@@ -102,4 +103,19 @@ public interface FrozenTubeMapper {
         res.setTubeRows(tube.getTubeRows());
         return res;
     }
+
+   default List<FrozenTubeDTO> frozenBoxAndTubeToFrozenTubeDTOList(List<FrozenBoxDTO> frozenBoxDTOList, List<FrozenBox> frozenBoxes){
+       List<FrozenTubeDTO> frozenTubeDTOList = new ArrayList<FrozenTubeDTO>();
+       for(FrozenBoxDTO boxDto:frozenBoxDTOList){
+           for(FrozenTubeDTO tube :boxDto.getFrozenTubeDTOS()){
+               for(FrozenBox box:frozenBoxes){
+                   if(tube.getFrozenBoxCode().equals(box.getFrozenBoxCode())){
+                       tube.setFrozenBoxId(box.getId());
+                       frozenTubeDTOList.add(tube);
+                   }
+               }
+           }
+       }
+       return frozenTubeDTOList;
+   }
 }

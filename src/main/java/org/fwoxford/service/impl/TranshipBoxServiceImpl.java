@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class TranshipBoxServiceImpl implements TranshipBoxService{
 
     private final Logger log = LoggerFactory.getLogger(TranshipBoxServiceImpl.class);
-    
+
     private final TranshipBoxRepository transhipBoxRepository;
 
     private final TranshipBoxMapper transhipBoxMapper;
@@ -51,7 +51,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
     /**
      *  Get all the transhipBoxes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +87,17 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
     public void delete(Long id) {
         log.debug("Request to delete TranshipBox : {}", id);
         transhipBoxRepository.delete(id);
+    }
+
+    /**
+     * 批量保存转运与冻存盒的关系
+     * @param transhipBoxDTOList
+     * @return
+     */
+    @Override
+    public List<TranshipBoxDTO> saveBatch(List<TranshipBoxDTO> transhipBoxDTOList) {
+        List<TranshipBox> transhipBoxes = transhipBoxMapper.transhipBoxDTOsToTranshipBoxes(transhipBoxDTOList);
+        List<TranshipBox> transhipBoxList =  transhipBoxRepository.save(transhipBoxes);
+        return transhipBoxMapper.transhipBoxesToTranshipBoxDTOs(transhipBoxList);
     }
 }

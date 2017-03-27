@@ -4,7 +4,7 @@ describe('Controller Tests', function() {
 
     describe('TranshipBox Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockTranshipBox, MockTranship;
+        var MockEntity, MockPreviousState, MockTranshipBox, MockTranship, MockFrozenBox;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -14,6 +14,7 @@ describe('Controller Tests', function() {
             MockPreviousState = jasmine.createSpy('MockPreviousState');
             MockTranshipBox = jasmine.createSpy('MockTranshipBox');
             MockTranship = jasmine.createSpy('MockTranship');
+            MockFrozenBox = jasmine.createSpy('MockFrozenBox');
             
 
             var locals = {
@@ -22,7 +23,8 @@ describe('Controller Tests', function() {
                 'entity': MockEntity,
                 'previousState': MockPreviousState,
                 'TranshipBox': MockTranshipBox,
-                'Tranship': MockTranship
+                'Tranship': MockTranship,
+                'FrozenBox': MockFrozenBox
             };
             createController = function() {
                 $injector.get('$controller')("TranshipBoxDetailController", locals);

@@ -5,15 +5,16 @@
         .module('bioBankApp')
         .controller('TranshipBoxDialogController', TranshipBoxDialogController);
 
-    TranshipBoxDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'TranshipBox', 'Tranship'];
+    TranshipBoxDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'TranshipBox', 'Tranship', 'FrozenBox'];
 
-    function TranshipBoxDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, TranshipBox, Tranship) {
+    function TranshipBoxDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, TranshipBox, Tranship, FrozenBox) {
         var vm = this;
 
         vm.transhipBox = entity;
         vm.clear = clear;
         vm.save = save;
         vm.tranships = Tranship.query();
+        vm.frozenboxes = FrozenBox.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

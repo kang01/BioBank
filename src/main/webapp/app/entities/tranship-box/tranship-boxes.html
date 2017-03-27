@@ -28,6 +28,7 @@
                     <th jh-sort-by="memo"><span data-translate="bioBankApp.transhipBox.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="bioBankApp.transhipBox.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="transhipId"><span data-translate="bioBankApp.transhipBox.tranship">Tranship</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxId"><span data-translate="bioBankApp.transhipBox.frozenBox">Frozen Box</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -44,6 +45,9 @@
                     <td>{{transhipBox.status}}</td>
                     <td>
                         <a ui-sref="tranship-detail({id:transhipBox.transhipId})">{{transhipBox.transhipId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="frozen-box-detail({id:transhipBox.frozenBoxId})">{{transhipBox.frozenBoxId}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

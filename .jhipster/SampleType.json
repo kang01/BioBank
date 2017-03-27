@@ -36,6 +36,24 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": "20"
+        },
+        {
+            "fieldName": "frontColor",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "100"
+        },
+        {
+            "fieldName": "backColor",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "100"
         }
     ],
     "changelogDate": "20170317051303",

@@ -20,8 +20,6 @@
             "sampleUsedTimesMost": "Sample Used Times Most",
             "frozenTubeVolumn": "Frozen Tube Volumn",
             "frozenTubeVolumnUnit": "Frozen Tube Volumn Unit",
-            "frontColor": "Front Color",
-            "backColor": "Back Color",
             "memo": "Memo",
             "status": "Status"
         }

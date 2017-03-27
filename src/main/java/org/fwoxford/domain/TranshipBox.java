@@ -66,6 +66,10 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
     @NotNull
     private Tranship tranship;
 
+    @ManyToOne(optional = false)
+    @NotNull
+    private FrozenBox frozenBox;
+
     public Long getId() {
         return id;
     }
@@ -189,6 +193,19 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
 
     public void setTranship(Tranship tranship) {
         this.tranship = tranship;
+    }
+
+    public FrozenBox getFrozenBox() {
+        return frozenBox;
+    }
+
+    public TranshipBox frozenBox(FrozenBox frozenBox) {
+        this.frozenBox = frozenBox;
+        return this;
+    }
+
+    public void setFrozenBox(FrozenBox frozenBox) {
+        this.frozenBox = frozenBox;
     }
 
     @Override

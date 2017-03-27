@@ -25,20 +25,12 @@ public class FrozenTubeTypeDTO extends AbstractAuditingDTO implements Serializab
     private Integer sampleUsedTimesMost;
 
     @NotNull
-    @Max(value = 400)
+    @Max(value = 20)
     private Integer frozenTubeVolumn;
 
     @NotNull
     @Size(max = 20)
     private String frozenTubeVolumnUnit;
-
-    @NotNull
-    @Size(max = 20)
-    private String frontColor;
-
-    @NotNull
-    @Size(max = 20)
-    private String backColor;
 
     @Size(max = 1024)
     private String memo;
@@ -89,20 +81,6 @@ public class FrozenTubeTypeDTO extends AbstractAuditingDTO implements Serializab
     public void setFrozenTubeVolumnUnit(String frozenTubeVolumnUnit) {
         this.frozenTubeVolumnUnit = frozenTubeVolumnUnit;
     }
-    public String getFrontColor() {
-        return frontColor;
-    }
-
-    public void setFrontColor(String frontColor) {
-        this.frontColor = frontColor;
-    }
-    public String getBackColor() {
-        return backColor;
-    }
-
-    public void setBackColor(String backColor) {
-        this.backColor = backColor;
-    }
     public String getMemo() {
         return memo;
     }
@@ -148,8 +126,6 @@ public class FrozenTubeTypeDTO extends AbstractAuditingDTO implements Serializab
             ", sampleUsedTimesMost='" + sampleUsedTimesMost + "'" +
             ", frozenTubeVolumn='" + frozenTubeVolumn + "'" +
             ", frozenTubeVolumnUnit='" + frozenTubeVolumnUnit + "'" +
-            ", frontColor='" + frontColor + "'" +
-            ", backColor='" + backColor + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
             '}';

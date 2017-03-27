@@ -101,6 +101,14 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="rows_in_shelf" type="varchar(20)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="columns_in_shelf" type="varchar(20)">
+                <constraints nullable="false" />
+            </column>
+
             <column name="is_real_data" type="varchar(20)">
                 <constraints nullable="false" />
             </column>
@@ -147,6 +155,6 @@
             <column name="last_modified_date" type="timestamp"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+
     </changeSet>
 </databaseChangeLog>

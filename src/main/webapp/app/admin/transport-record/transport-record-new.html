@@ -15,13 +15,13 @@
     <form class="form-horizontal">
         <div class="row">
             <div class="form-group col-sm-3">
-                <label  class="col-sm-4 control-label p-r-6">项目日期</label>
+                <label  class="col-sm-4 control-label p-r-6">转运日期</label>
                 <div class="col-sm-8">
                     <div class="input-group">
-                        <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.itemDate" is-open="vm.datePickerOpenStatus.itemDate"
+                        <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.transhipDate" is-open="vm.datePickerOpenStatus.transhipDate"
                         required  />
                         <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('itemDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('transhipDate')"><i class="glyphicon glyphicon-calendar"></i></button>
                         </span>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">运单号</label>
                 <div class="col-sm-8">
-                    <input type="email" class="form-control"  ng-model="vm.transportRecord.waybillNumber">
+                    <input type="email" class="form-control"  ng-model="vm.transportRecord.trackNumber">
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">转运批次</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control"  ng-model="vm.transportRecord.times">
+                    <input type="text" class="form-control"  ng-model="vm.transportRecord.transhipBatch">
                 </div>
             </div>
             <div class="form-group col-sm-3">
@@ -64,14 +64,14 @@
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">接收人</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control"   ng-model="vm.transportRecord.transhipReceive">
+                    <input type="text" class="form-control"   ng-model="vm.transportRecord.receiver">
                 </div>
             </div>
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">接收日期</label>
                 <div class="col-sm-8">
                     <div class="input-group">
-                        <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"
+                        <input  type="text" class="form-control" name="receiveDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"
                                 required  />
                         <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -85,25 +85,25 @@
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">样本人份</label>
                 <div class="col-sm-8">
-                    <input type="email" class="form-control" ng-model="vm.transportRecord.samplePersonCount" >
+                    <input type="email" class="form-control" ng-model="vm.transportRecord.sampleNumber" >
                 </div>
             </div>
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">有效样本数</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control"  ng-model="vm.transportRecord.sampleValidCount" >
+                    <input type="text" class="form-control"  ng-model="vm.transportRecord.effectiveSampleNumber" >
                 </div>
             </div>
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">冻存盒数</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control"  ng-model="vm.transportRecord.FrozenStorageBoxCount">
+                    <input type="text" class="form-control"  ng-model="vm.transportRecord.frozenBoxNumber">
                 </div>
             </div>
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">备注</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control"  ng-model="vm.transportRecord.remark">
+                    <input type="text" class="form-control"  ng-model="vm.transportRecord.memo">
                 </div>
             </div>
 
@@ -112,13 +112,13 @@
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">空管数</label>
                 <div class="col-sm-8">
-                    <input type="email" class="form-control"  ng-model="vm.transportRecord.blankPipeCount">
+                    <input type="email" class="form-control"  ng-model="vm.transportRecord.emptyTubeNumber">
                 </div>
             </div>
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">空孔数</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control"  ng-model="vm.transportRecord.bullHoleCount">
+                    <input type="text" class="form-control"  ng-model="vm.transportRecord.emptyHoleNumber">
                 </div>
             </div>
             <div class="form-group col-sm-3">
@@ -157,23 +157,23 @@
                         <div class="form-group col-sm-2">
                             <label  class="col-sm-4 control-label p-r-6">冻存盒号</label>
                             <div class="col-sm-8">
-                                <input type="email" class="form-control" ng-model="vm.box.code" >
+                                <input type="email" class="form-control" ng-model="vm.box.projectSiteCode" >
                             </div>
                         </div>
                         <div class="form-group col-sm-2">
                             <label  class="col-sm-4 control-label p-r-6">盒类型</label>
                             <div class="col-sm-8">
                                 <selectize options='vm.frozenBoxTypeOptions' config="vm.typeConfig"
-                                           ng-model="vm.box.type"></selectize>
-                                <input type="hidden" name="level" ng-model="vm.box.type" required>
+                                           ng-model="vm.box.frozenBoxTypeId"></selectize>
+                                <input type="hidden" name="level" ng-model="vm.box.frozenBoxTypeId" required>
                             </div>
                         </div>
                         <div class="form-group col-sm-2">
                             <label  class="col-sm-4 control-label p-r-6">样本类型</label>
                             <div class="col-sm-8" >
                                 <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                           ng-model="vm.box.sampleType"></selectize>
-                                <input type="hidden" name="level" ng-model="vm.box.sampleType" required>
+                                           ng-model="vm.box.sampleTypeCode"></selectize>
+                                <input type="hidden" name="level" ng-model="vm.box.sampleTypeCode" required>
                             </div>
                         </div>
                         <div class="form-group col-sm-2">
@@ -203,7 +203,7 @@
                                 <span>错位</span>
                                 <span>100个</span>
                                 <label class="checkbox-inline" style="margin-left: 10px;margin-top: -4px;padding-top: 0">
-                                    <input type="checkbox">是否分装
+                                    <input type="checkbox" ng-model="vm.box.isSplit" ng-checked="vm.box.isSplit == 0002">是否分装
                                 </label>
                             </p>
 

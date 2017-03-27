@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('TransportRecordNewController', TransportRecordNewController);
 
-    TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','SampleTypeService','AlertService','FrozenBoxTypesService'];
+    TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService'];
 
-    function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,SampleTypeService,AlertService,FrozenBoxTypesService) {
+    function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.transportRecord = {};
@@ -18,135 +18,207 @@
         vm.importFrozenStorageBox = importFrozenStorageBox; //导入冻存盒
         vm.someClickHandler = someClickHandler;
         var microtubesList;
-        vm.transportRecord.boxList = [
+        vm.transportRecord =
             {
-                id:"1",
-                code:"000001",
-                boxType:'1',
-                sampleType:'1',
-                boxStorageLocation:'F1-01.S01.R01.A1',
-                boxStatus:'1',
-                remark:'盒子正常',
-                microtubesList:[
-                    {id:'1',number:'12345678909',color:'rgba(204, 102, 204,0.3)',status:'1',remark:'',row:1,col:2},
-                    {id:'25',number:'12345678909',color:'rgba(153, 153, 153,0.3)',status:'1',remark:'',row:1,col:3},
-                    {id:'27',number:'12345678909',color:'rgba(204, 102, 204,0.3)',status:'1',remark:'',row:2,col:4},
-                    {id:'28',number:'12345678909',color:'rgba(204, 102, 204,0.3)',status:'1',remark:'',row:3,col:6},
-                    {id:'11',number:'12345678901',color:'rgba(0, 204, 102,0.3)',status:'1',remark:'',row:1,col:6},
-                    {id:'21',number:'12345678902',color:'rgba(204, 102, 204,0.3)',status:'1',remark:'',row:2,col:1},
-                    {id:'22',number:'12345678903',color:'rgba(0, 204, 102,0.3)',status:'1',remark:'',row:2,col:6},
-                    {id:'23',number:'12345678904',color:'rgba(204, 102, 204,0.3)',status:'1',remark:'123456',row:3,col:5}
-                ]
-            },
-            {id:"2",code:"000002",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-            {id:"3",code:"000003",boxType:'1',sampleType:'1',boxStorageLocation:'F1-01.S01.R01.A1',boxStatus:'1',remark:'盒子正常'},
-        ];
+                "effectiveSampleNumber": 2,
+                "emptyHoleNumber": 12,
+                "emptyTubeNumber": 11,
+                "frozenBoxDTOList": [
+                    {
+                        "id":"11",
+                        "areaCode": "S112",
+                        "areaId": 24,
+                        "dislocationNumber": 2,
+                        "emptyHoleNumber": 2,
+                        "emptyTubeNumber": 2,
+                        "equipmentCode": "R4-01",
+                        "equipmentId": 23,
+                        "frozenBoxCode": "33333",
+                        "frozenBoxColumns": "8",
+                        "frozenBoxRows": "8",
+                        "frozenBoxTypeId": 17,
+                        "projectCode": "P_00001",
+                        "projectId": 1,
+                        "projectName": "心血管高危筛查项目",
+                        "projectSiteCode": "P_SITE_00001",
+                        "projectSiteId": 2,
+                        "projectSiteName": "心血管高危筛查项目天坛医院项目点",
+                        "frozenBoxTypeCode":"BOX_TYPE_0002",
+                        "sampleTypeName":"血浆-紫1",
+                        "sampleTypeCode":"S_TYPE_00001",
+                        "frozenTubeDTOS": [
+                            {
+                                "errorType": "6001",
+                                "frozenBoxTypeCode":"BOX_TYPE_0002",
+                                "frozenTubeCode": "5435345",
+                                "frozenTubeTypeCode": "TUBE_TYPE_0001",
+                                "frozenTubeTypeId": 12,
+                                "frozenTubeTypeName": "血浆",
+                                "isModifyPostition": "1",
+                                "isModifyState": "0002",
+                                "memo": "",
+                                "projectCode": "P_00001",
+                                "projectId": 1,
+                                "sampleCode": "3434",
+                                "sampleTempCode": "54135151",
+                                "sampleTypeCode": "S_TYPE_00001",
+                                "sampleTypeId": 5,
+                                "sampleTypeName": "血浆-紫",
+                                "status": "1",
+                                "tubeColumns": "1",
+                                "tubeRows": "2",
+                                "frozenTubeVolumnsUnit":"ml",
+                                "frozenBoxCode": "33333",
+                                "sampleUsedTimes":1,
+                                "sampleUsedTimesMost":10,
+                                "frozenTubeVolumns":10,
+                                "backColor":"rgba(204,153,255,0.3)",
+                                "background":''
+                            }
+                        ],
+                        "isRealData": "4001",
+                        "isSplit": "0002",
+                        "memo": "",
+                        "sampleNumber": 20,
+                        "sampleTypeId": 5,
+                        "status": "1",
+                        "supportRackCode": "R1",
+                        "supportRackId": 37
 
-        var loadAll = function () {
-            SampleTypeService.query({},onSampleTypeSuccess, onError);
-            FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError)
-        };
-        loadAll();
-        function onFrozenBoxTypeSuccess(data) {
-            // vm.frozenBoxTypeOptions = data;
-        }
-        function onSampleTypeSuccess(data) {
-            vm.sampleTypeOptions = data;
-        }
-        function onError(error) {
-            AlertService.error(error.data.message);
-        }
+                    },
+                    {
+                        "areaCode": "S113",
+                        "areaId": 24,
+                        "dislocationNumber": 2,
+                        "emptyHoleNumber": 2,
+                        "emptyTubeNumber": 2,
+                        "equipmentCode": "R4-01",
+                        "equipmentId": 23,
+                        "frozenBoxCode": "33334",
+                        "frozenBoxColumns": "8",
+                        "frozenBoxRows": "8",
+                        "frozenBoxTypeId": 17,
+                        "projectCode": "P_00001",
+                        "projectId": 1,
+                        "projectName": "心血管高危筛查项目",
+                        "projectSiteCode": "P_SITE_00002",
+                        "projectSiteId": 2,
+                        "projectSiteName": "心血管高危筛查项目天坛医院项目点",
+                        "frozenBoxTypeCode":"BOX_TYPE_0002",
+                        "sampleTypeName":"血浆-紫2",
+                        "sampleTypeCode":"S_TYPE_00002",
+                        "frozenTubeDTOS": [
+                            {
+                                "errorType": "6002",
+                                "frozenBoxTypeCode":"BOX_TYPE_0003",
+                                "frozenTubeCode": "5435346",
+                                "frozenTubeTypeCode": "TUBE_TYPE_0002",
+                                "frozenTubeTypeId": 12,
+                                "frozenTubeTypeName": "血浆",
+                                "isModifyPostition": "1",
+                                "isModifyState": "0002",
+                                "memo": "",
+                                "projectCode": "P_00001",
+                                "projectId": 1,
+                                "sampleCode": "3434",
+                                "sampleTempCode": "54135151",
+                                "sampleTypeCode": "S_TYPE_00001",
+                                "sampleTypeId": 5,
+                                "sampleTypeName": "血浆-绿",
+                                "status": "1",
+                                "tubeColumns": "2",
+                                "tubeRows": "3",
+                                "frozenTubeVolumnsUnit":"ml",
+                                "frozenBoxCode": "33334",
+                                "sampleUsedTimes":1,
+                                "sampleUsedTimesMost":10,
+                                "frozenTubeVolumns":10,
+                                "backColor":"rgba(0,255,0,0.3)",
+                                "background":''
+                            }
+                        ],
+                        "isRealData": "4001",
+                        "isSplit": "0003",
+                        "memo": "",
+                        "sampleNumber": 20,
+                        "sampleTypeId": 5,
+                        "status": "1",
+                        "supportRackCode": "R1",
+                        "supportRackId": 37
+
+                    }
+                ],
+                "frozenBoxNumber": 10,
+                "memo": "",
+                "projectCode": "P_00001",
+                "projectId": 1,
+                "projectName": "心血管高危筛查项目",
+                "projectSiteCode": "P_SITE_00001",
+                "projectSiteId": 2,
+                "projectSiteName": "心血管高危筛查项目天坛医院项目点",
+                "receiveDate": new Date("2017-03-25"),
+                "receiver":"张主任",
+                "sampleNumber":20,
+                "sampleSatisfaction": 1,
+                "trackNumber": "1222'",
+                "transhipBatch": "232323",
+                "transhipDate": new Date("2017-03-25"),
+                "status": "1",
+                "transhipState": "1002"
+            };
         var tArray = new Array();
-        for(var k=0;k<10;k++){
-            tArray[k]=new Array();
-            for(var j=0;j<10;j++){
-                tArray[k][j] = "";
-
+        var size = 10;
+        var init = function (size) {
+            for(var k=0; k < size; k++){
+                tArray[k] = new Array();
+                for(var j=0;j < size; j++){
+                    tArray[k][j] = "";
+                }
             }
-        }
-        //盒子类型
-        vm.frozenBoxTypeOptions =[
-            {id:'1',name:"8*8"},
-            {id:'2',name:"10*10"}
-        ];
-        vm.typeConfig = {
-            valueField:'id',
-            labelField:'name',
-            maxItems: 1
+            // microtubesList = vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS;
+            // for(var i = 0; i < microtubesList.length; i++){
+            //     tArray[microtubesList[i].tubeRows-1][microtubesList[i].tubeColumns-1] = microtubesList[i]
+            // }
+            // vm.db = {
+            //     items: tArray
+            // };
+
         };
-        vm.sampleTypeConfig = {
-            valueField:'id',
-            labelField:'sampleTypeName',
-            maxItems: 1
-        };
-        vm.statusOptions = [
-            {id:"1",name:"进行中"},
-            {id:"2",name:"待入库"},
-            {id:"3",name:"已入库"},
-            {id:"4",name:"已作废"}
-        ];
-        vm.statusConfig = {
-            valueField:'id',
-            labelField:'name',
-            maxItems: 1
-        };
-        // vm.sampleTypeOptions = [
-        //     {id:1,name:""}
-        // ]
-        //自定义初始化单元格
+        init(size);
         vm.myCustomRenderer = function(hotInstance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
             if(typeof value != "object"){
                 console.log(value)
             }
-            td.style.backgroundColor = value.color;
+            console.log(value);
+            td.style.backgroundColor = value.backColor;
             td.style.position = 'relative';
             if(vm.flagStatus || vm.exchangeFlag || vm.remarkFlag) {
                 cellProperties.readOnly = true;
             }else{
                 cellProperties.readOnly = false;
             }
-            if(value.number){
-                var htm = "<div>"+value.number+"</div>"+
-                    "<div id='microtubesId' style='display: none'>"+value.id+"</div>" +
+            if(value.frozenTubeCode){
+                var htm = "<div>"+value.frozenTubeCode+"</div>"+
+                    "<div id='microtubesId' style='display: none'>"+value.frozenTubeCode+"</div>" +
                     "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
-                    "<div id='microtubesRemark' style='display: none'>"+value.remark+"</div>"+
-                    "<div id='microtubesRow' style='display: none'>"+value.row+"</div>"+
-                    "<div id='microtubesCol' style='display: none'>"+value.col+"</div>"+
-                    "<div ng-if="+value.remark+" class='triangle-topright ' style='position: absolute;top:0;right: 0;'></div>"
+                    "<div id='microtubesRemark' style='display: none'>"+value.memo+"</div>"+
+                    "<div id='microtubesRow' style='display: none'>"+value.tubeRows+"</div>"+
+                    "<div id='microtubesCol' style='display: none'>"+value.tubeColumns+"</div>"+
+                    "<div ng-if="+value.memo+" class='triangle-topright ' style='position: absolute;top:0;right: 0;'></div>"
             }else{
                 var htm = value
-             }
+            }
 
             td.innerHTML = htm;
 
         };
-        vm.db = {
-            items: tArray
-        };
-
         vm.settings = {
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
             rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
-            data:vm.db.items,
+            // startRows:10,
+            // startCols:10,
+            data:tArray,
             colWidths:100,
             renderer:vm.myCustomRenderer,
             fillHandle:false,
@@ -156,6 +228,7 @@
                 {col: 1, row: 1, comment: 'Hello Comment'}
             ],
             onAfterInit: function () {
+                // hotRegisterer.getInstance('my-handsontable').loadData(tArray);
             },
             onAfterSelectionEnd:function (row, col, row2, col2) {
                 if(window.event.ctrlKey){
@@ -170,25 +243,28 @@
                     domArray = [];
                     $(".temp").remove();
                 }
+                //管子
+                var microtubes = {};
                 if(vm.operateStatus == 1) {
                     if(vm.flagStatus){
                         var microtubesIdDom = $(this.getCell(row, col)).find("#microtubesId");
                         var microtubesStatusDom = $(this.getCell(row, col)).find("#microtubesStatus");
-
+                        //
                         if(microtubes.id != microtubesIdDom.text()){
                             microtubes.status = microtubesStatusDom.text();
                             microtubes.id = microtubesIdDom.text();
                         }else{
 
                         }
-
+                        //正常
                         if(microtubes.status == 1){
                             microtubesStatusDom.text('2');
                             for(var i = 0; i < microtubesList.length; i++){
-                                if(microtubesList[i].row == row && microtubesList[i].col == col){
+                                if(microtubesList[i].tubeRows-1 == row && microtubesList[i].tubeColumns-1 == col){
                                     microtubesList[i].status = 2;
-                                    operateColor =  microtubesList[i].color;
-                                    this.getCell(row,col).style.background = 'linear-gradient(to right,'+operateColor+',rgba(0,0,0,1)';
+                                    microtubesList[i].background = 'linear-gradient(to right,'+operateColor+',50%,rgba(0,0,0,1)';
+                                    operateColor =  microtubesList[i].backColor;
+                                    this.getCell(row,col).style.background = 'linear-gradient(to right,'+operateColor+',50%,rgba(0,0,0,1)';
                                 }
                             }
 
@@ -200,6 +276,7 @@
                             this.getCell(row,col).style.backgroundColor = '#ffffff';
                             microtubesStatusDom.text('3');
                         }
+                        //空孔
                         if(microtubes.status == 3){
                             var txt = '<div class="abnormal" style="position:absolute;top:0;bottom:0;left:0;right:0;border:3px solid red;"></div>';
                             $(this.getCell(row,col)).append(txt);
@@ -207,7 +284,7 @@
                             // this.getCell(row,col).style.outline = '2px solid red';
                             microtubesStatusDom.text('4');
                             for(var i = 0; i < microtubesList.length; i++){
-                                if(microtubesList[i].row == row && microtubesList[i].col == col){
+                                if(microtubesList[i].tubeRows-1 == row && microtubesList[i].tubeColumns-1 == col){
                                     microtubesList[i].status = 4;
                                 }
                             }
@@ -219,14 +296,15 @@
                             $(".abnormal").remove();
                             microtubesStatusDom.text('1');
                             for(var i = 0; i < microtubesList.length; i++){
-                                if(microtubesList[i].row == row && microtubesList[i].col == col){
-                                    this.getCell(row,col).style.backgroundColor =  microtubesList[i].color;
+                                if(microtubesList[i].tubeRows-1 == row && microtubesList[i].tubeColumns-1 == col){
+                                    this.getCell(row,col).style.backgroundColor =  microtubesList[i].backColor;
                                     microtubesList[i].status = 1;
                                 }
                             }
                         }
                         microtubes.id = $(this.getCell(row, col)).find("#microtubesId").text();
                         microtubes.status = $(this.getCell(row, col)).find("#microtubesStatus").text();
+                        hotRegisterer.getInstance('my-handsontable').render();
                     }
                 }
 
@@ -241,7 +319,111 @@
                 else {
                     return {row: -selectedRow, col: 1}
                 }
+            },
+            afterChange:function (change,source) {
+                console.log(source);
+                if(source == 'loadData'){
+                    return;
+                }
             }
+        };
+
+        var loadAll = function () {
+            SampleTypeService.query({},onSampleTypeSuccess, onError);
+            FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError)
+        };
+        loadAll();
+        function onFrozenBoxTypeSuccess(data) {
+            vm.frozenBoxTypeOptions = data;
+        }
+        function onSampleTypeSuccess(data) {
+            vm.sampleTypeOptions = data;
+        }
+        function onError(error) {
+            AlertService.error(error.data.message);
+        }
+
+        vm.typeConfig = {
+            valueField:'id',
+            labelField:'frozenBoxTypeName',
+            maxItems: 1,
+            onChange:function(value){
+                var countRows = hotRegisterer.getInstance('my-handsontable').countRows();
+                var countCols = hotRegisterer.getInstance('my-handsontable').countCols();
+
+                for(var i = 0; i < countRows; i++){
+                    for(var j = 8; j <countCols; j++){
+                        if(value == 18){
+                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(51,51,51,0.3)';
+                        }else{
+                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = '#fff'
+                        }
+                    }
+                }
+               // if(value == 18){
+               //     size = 8;
+               //     // console.log(hotRegisterer.getInstance('my-handsontable'))
+               //     // hotRegisterer.getInstance('my-handsontable').render()
+               // }else{
+               //     size = 10;
+               // }
+               //  init(size);
+               //  hotRegisterer.getInstance('my-handsontable').render()
+            }
+        };
+        vm.sampleTypeConfig = {
+            valueField:'sampleTypeCode',
+            labelField:'sampleTypeName',
+            maxItems: 1,
+            onChange:function (value) {
+                var countRows = hotRegisterer.getInstance('my-handsontable').countRows();
+                var countCols = hotRegisterer.getInstance('my-handsontable').countCols();
+                for(var i = 0; i < countRows; i++){
+                    for(var j = 0; j <countCols; j++){
+                        //血浆-红
+                        if(value == 'S_TYPE_00001' || value == 'S_TYPE_00002'){
+                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(204,153,255,0.3)';
+                        }
+                        //白细胞-白
+                        if(value == 'S_TYPE_00003'){
+                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(255,255,255,0.3)';
+                        }
+                        //白细胞-灰
+                        if(value == 'S_TYPE_00004'){
+                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(192,192,192,0.3)';
+                        }
+                        //血浆-绿
+                        if(value == 'S_TYPE_00005'|| value == 'S_TYPE_00006'){
+                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(0,255,0,0.3)';
+                        }
+                        //血清
+                        if(value == 'S_TYPE_00007'|| value == 'S_TYPE_00008'){
+                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(255,0,0,0.3)';
+                        }
+                        //尿
+                        if(value == 'S_TYPE_00009'|| value == 'S_TYPE_00010'){
+                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(255,255,0,0.3)';
+                        }
+                        //99
+                        // if(value == 'S_TYPE_00011'){
+                        //     hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(255,255,0,0.3)';
+                        // }
+                    }
+                }
+
+            }
+        };
+        vm.statusOptions = [
+            {id:"1",name:"进行中"},
+            {id:"2",name:"待入库"},
+            {id:"3",name:"已入库"},
+            {id:"4",name:"已作废"}
+        ];
+        vm.statusConfig = {
+            valueField:'id',
+            labelField:'name',
+            maxItems: 1
+
         };
 
         //operateStatus 1.状态 2:换位 3.批注
@@ -249,8 +431,7 @@
         //单元格操作的数据
         var domArray = [];
         var operateColor;
-        //管子
-        var microtubes = {};
+
 
         //修改样本状态 正常、空管、空孔、异常
         vm.flagStatus = false;
@@ -366,21 +547,38 @@
 
         //盒子信息
         vm.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('data', vm.transportRecord.frozenBoxDTOList)
             .withOption('paging', false)
-            .withOption('sorting', false);
+            .withOption('sorting', false)
+            .withOption('rowCallback', rowCallback);
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('code').withTitle('盒子编码')
+            DTColumnBuilder.newColumn('projectSiteCode').withTitle('冻存盒号')
         ];
         function someClickHandler(td,boxInfo) {
             $(td).closest('table').find('.highLight').removeClass("highLight");
             $(td).addClass('highLight');
             console.log(boxInfo);
+            init(10);
             vm.box = boxInfo;
-            // microtubesList = boxInfo.microtubesList;
-            // for(var i = 0; i < microtubesList.length; i++){
-            //     tArray[microtubesList[i].row][microtubesList[i].col] = microtubesList[i];
-            //     hotRegisterer.getInstance('my-handsontable').render()
-            // }
+            microtubesList = vm.box.frozenTubeDTOS;
+            for(var i = 0; i < microtubesList.length; i++){
+                tArray[microtubesList[i].tubeRows-1][microtubesList[i].tubeColumns-1] = microtubesList[i];
+
+            }
+            hotRegisterer.getInstance('my-handsontable').render();
+            // FrozenBoxByIdService.get({id:boxInfo.id},frozenBoxSuccess,onError());
+
+
+        }
+        function frozenBoxSuccess(data) {
+            vm.box = data;
+            microtubesList = data.frozenTubeDTOS;
+            for(var i = 0; i < microtubesList.length; i++){
+                tArray[microtubesList[i].tubeRows-1][microtubesList[i].tubeColumns-1] = microtubesList[i];
+
+            }
+            hotRegisterer.getInstance('my-handsontable').loadData(tArray);
+            hotRegisterer.getInstance('my-handsontable').render();
         }
         function rowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             $('td', nRow).unbind('click');

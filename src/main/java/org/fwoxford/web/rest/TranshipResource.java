@@ -85,11 +85,11 @@ public class TranshipResource {
     @PutMapping("/tranships")
     @Timed
     public ResponseEntity<TranshipDTO> updateTranship(@Valid @RequestBody TranshipDTO transhipDTO) throws URISyntaxException {
-//        log.debug("REST request to update Tranship : {}", transhipDTO);
-//        if (transhipDTO.getId() == null) {
-//            return createTranship(transhipDTO);
-//        }
-        TranshipDTO result = transhipService.save(transhipDTO);
+        log.debug("REST request to update Tranship : {}", transhipDTO);
+        if (transhipDTO.getId() == null) {
+            return createTranship(transhipDTO);
+        }
+        TranshipDTO result = transhipService.insertTranship(transhipDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipDTO.getId().toString()))
             .body(result);

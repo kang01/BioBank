@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface TranshipBoxRepository extends JpaRepository<TranshipBox,Long> {
 
+    TranshipBox findByTranshipIdAndFrozenBoxId(Long transhipId, Long frozenBoxId);
 }

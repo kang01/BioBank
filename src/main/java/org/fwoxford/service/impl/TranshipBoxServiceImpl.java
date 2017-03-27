@@ -100,4 +100,17 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         List<TranshipBox> transhipBoxList =  transhipBoxRepository.save(transhipBoxes);
         return transhipBoxMapper.transhipBoxesToTranshipBoxDTOs(transhipBoxList);
     }
+
+    /**
+     * 根据转运ID和冻存盒ID查询转运与冻存盒的关系
+     * @param transhipId 转运ID
+     * @param frozenBoxId 冻存盒ID
+     * @return
+     */
+    @Override
+    public TranshipBoxDTO findByTranshipIdAndFrozenBoxId(Long transhipId, Long frozenBoxId) {
+        TranshipBox transhipBox = transhipBoxRepository.findByTranshipIdAndFrozenBoxId(transhipId,frozenBoxId);
+        TranshipBoxDTO transhipBoxDTO = transhipBoxMapper.transhipBoxToTranshipBoxDTO(transhipBox);
+        return transhipBoxDTO;
+    }
 }

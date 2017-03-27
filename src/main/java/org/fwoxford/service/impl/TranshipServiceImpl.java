@@ -3,7 +3,6 @@ package org.fwoxford.service.impl;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.Tranship;
-import org.fwoxford.domain.TranshipBox;
 import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.repository.TranshipRepositries;
 import org.fwoxford.service.FrozenBoxService;
@@ -18,7 +17,6 @@ import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
-import org.fwoxford.service.mapper.TranshipBoxMapper;
 import org.fwoxford.service.mapper.TranshipMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -212,7 +210,7 @@ public class TranshipServiceImpl implements TranshipService{
     public List<TranshipBoxDTO> saveTranshipAndBoxRelation(List<FrozenBoxDTO> frozenBoxDTOListLast) {
         List<TranshipBoxDTO> transhipBoxDTOList = new ArrayList<TranshipBoxDTO>();
         for(FrozenBoxDTO boxDTO : frozenBoxDTOListLast){
-            TranshipBoxDTO transhipBoxDTO = new TranshipBoxDTO();
+            TranshipBoxDTO transhipBoxDTO = transhipBoxService.findByTranshipIdAndFrozenBoxId(boxDTO.getTranshipId(),boxDTO.getId());
             transhipBoxDTO = frozenBoxMapper.frozenBoxToTranshipBoxDTO(boxDTO);
             transhipBoxDTOList.add(transhipBoxDTO);
         }

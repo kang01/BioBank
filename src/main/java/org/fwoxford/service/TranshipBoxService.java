@@ -48,4 +48,12 @@ public interface TranshipBoxService {
      * @return
      */
     List<TranshipBoxDTO> saveBatch(List<TranshipBoxDTO> transhipBoxDTOList);
+
+    /**
+     * 根据转运ID和冻存盒ID查询转运与冻存盒的关系
+     * @param transhipId
+     * @param id
+     * @return
+     */
+    TranshipBoxDTO findByTranshipIdAndFrozenBoxId(Long transhipId, Long id);
 }

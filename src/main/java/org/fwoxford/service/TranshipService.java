@@ -59,9 +59,10 @@ public interface TranshipService {
     TranshipByIdResponse findTranshipAndFrozenBox(Long id);
 
     /**
-     * 保存转运记录
+     * 新增保存转运记录
      * @param transhipDTO
      * @return
      */
     TranshipDTO insertTranship(TranshipDTO transhipDTO);
+
 }

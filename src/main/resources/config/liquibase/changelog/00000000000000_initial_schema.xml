@@ -13,6 +13,7 @@
 
     <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
 
+
     <changeSet id="00000000000000" author="jhipster" dbms="postgresql,oracle">
         <createSequence sequenceName="hibernate_sequence" startValue="1000" incrementBy="1"/>
     </changeSet>
@@ -22,7 +23,7 @@
     -->
     <changeSet id="00000000000001" author="jhipster">
         <createTable tableName="jhi_user">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}" defaultValueSequenceNext="hibernate_sequence">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="login" type="varchar(50)">

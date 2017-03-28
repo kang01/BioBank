@@ -11,7 +11,7 @@
     TransportRecordService.$inject = ['$resource', '$http'];
 
     function TransportRecordService ($resource, $http) {
-        var service = $resource('api/temp/tranships', {}, {
+        var service = $resource('api/tranships', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

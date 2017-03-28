@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('TransportRecordNewController', TransportRecordNewController);
 
-    TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService'];
+    TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService'];
 
-    function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService) {
+    function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.transportRecord = {};
@@ -115,14 +115,7 @@
             // colWidths:100,
             renderer:vm.myCustomRenderer,
             fillHandle:false,
-            comments: true,
             stretchH: 'all',
-            cell: [
-                {col: 1, row: 1, comment: 'Hello Comment'}
-            ],
-            onAfterInit: function () {
-                // hotRegisterer.getInstance('my-handsontable').loadData(tArray);
-            },
             onAfterSelectionEnd:function (row, col, row2, col2) {
                 remarkArray = this.getData(row,col,row2,col2);
                 vm.remarkFlag = true;
@@ -229,7 +222,8 @@
 
         var loadAll = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);
-            FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError)
+            FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
+            EquipmentService.query({},onEquipmentSuccess, onError)
         };
         loadAll();
         function onFrozenBoxTypeSuccess(data) {
@@ -238,10 +232,13 @@
         function onSampleTypeSuccess(data) {
             vm.sampleTypeOptions = data;
         }
+        function onEquipmentSuccess(data) {
+            vm.frozenBoxPlaceOptions = data;
+        }
         function onError(error) {
             AlertService.error(error.data.message);
         }
-        //盒子类型
+        //盒子类型 17:10*10 18:8*8
         vm.typeConfig = {
             valueField:'id',
             labelField:'frozenBoxTypeName',
@@ -253,7 +250,16 @@
                 for(var i = 0; i < countRows; i++){
                     for(var j = 8; j <countCols; j++){
                         if(value == 18){
-                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(51,51,51,0.3)';
+                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgb(0,0,0)';
+                        }else{
+                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = '#fff'
+                        }
+                    }
+                }
+                for(var i = 8; i < countRows; i++){
+                    for(var j = 0; j <countCols; j++){
+                        if(value == 18){
+                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgb(0,0,0)';
                         }else{
                             hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = '#fff'
                         }
@@ -313,6 +319,7 @@
 
             }
         };
+        //转运状态
         vm.statusOptions = [
             {id:"1",name:"进行中"},
             {id:"2",name:"待入库"},
@@ -325,7 +332,60 @@
             maxItems: 1
 
         };
+        //设备
+        vm.frozenBoxPlaceConfig = {
+            valueField:'id',
+            labelField:'equipmentCode',
+            maxItems: 1,
+            onChange:function (value) {
+                AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError)
+                for(var i = 0; i < vm.frozenBoxPlaceOptions.length; i++){
+                    if(value == vm.frozenBoxPlaceOptions[i].id){
+                        vm.box.equipmentCode = vm.frozenBoxPlaceOptions[i].equipmentCode
+                    }
+                }
+            }
+        };
 
+
+        //区域
+        function onAreaSuccess(data) {
+            vm.frozenBoxAreaOptions = data;
+
+        }
+        //架子
+        function onShelfSuccess(data) {
+            vm.frozenBoxShelfOptions = data;
+
+        }
+        //区域
+        vm.frozenBoxAreaConfig = {
+            valueField:'id',
+            labelField:'areaCode',
+            maxItems: 1,
+            onChange:function (value) {
+                for(var i = 0; i < vm.frozenBoxAreaOptions.length; i++){
+                    if(value == vm.frozenBoxAreaOptions[i].id){
+                        vm.box.areaCode = vm.frozenBoxAreaOptions[i].areaCode
+                    }
+                }
+                SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError)
+
+            }
+        };
+        //架子
+        vm.frozenBoxShelfConfig = {
+            valueField:'id',
+            labelField:'supportRackCode',
+            maxItems: 1,
+            onChange:function (value) {
+                for(var i = 0; i < vm.frozenBoxShelfOptions.length; i++){
+                    if(value == vm.frozenBoxShelfOptions[i].id){
+                        vm.box.supportRackCode = vm.frozenBoxShelfOptions[i].areaCode
+                    }
+                }
+            }
+        };
         //operateStatus 1.状态 2:换位 3.批注
         vm.operateStatus;
         //单元格操作的数据
@@ -438,7 +498,7 @@
         }
         //保存
         this.saveRecord = function () {
-            // console.log(JSON.stringify(vm.transportRecord));
+            console.log(JSON.stringify(vm.transportRecord));
             TransportRecordService.save(vm.transportRecord, onSaveSuccess, onSaveError);
         };
         function openCalendar (date) {
@@ -471,16 +531,18 @@
             if(microtubesList.length){
                 for(var i = 0; i < microtubesList.length; i++){
                     tArray[microtubesList[i].tubeRows-1][microtubesList[i].tubeColumns-1] = microtubesList[i];
-
                 }
+                vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS = microtubesList;
             }else{
                 for(var i = 0; i < tArray.length; i++){
                     for (var j = 0; j <tArray[i].length; j++){
                         tArray[i][j].sampleTempCode = vm.box.projectSiteCode + "-r" + i + "c" + j;
                     }
                 }
+                vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS = tArray;
+
             }
-            vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS = tArray;
+            // vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS.push(microtubesList[i]);
             // console.log(JSON.stringify(tArray))
             hotRegisterer.getInstance('my-handsontable').render();
             // FrozenBoxByIdService.get({id:boxInfo.id},frozenBoxSuccess,onError());

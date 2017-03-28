@@ -1,5 +1,6 @@
 /**
  * Created by gaokangkang on 2017/3/27.
+ * 根据盒子ID取冻存管
  */
 (function () {
     'use strict';

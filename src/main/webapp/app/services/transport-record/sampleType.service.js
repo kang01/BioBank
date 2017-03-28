@@ -1,5 +1,6 @@
 /**
  * Created by gaokangkang on 2017/3/25.
+ * 样本类型
  */
 (function () {
     'use strict';

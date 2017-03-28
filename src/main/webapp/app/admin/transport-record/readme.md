@@ -28,3 +28,8 @@ populateFormArray(start,input,end,source,method,direction,deltas):使用二维�
             direction：left/right/top/bottom
 
             deltas:其值为一个数组
+comments: true,
+            stretchH: 'all',
+            cell: [
+                {col: 1, row: 1, comment: 'Hello Comment'}
+            ],

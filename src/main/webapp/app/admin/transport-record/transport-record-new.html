@@ -176,23 +176,36 @@
                                 <input type="hidden" name="level" ng-model="vm.box.sampleTypeCode" required>
                             </div>
                         </div>
-                        <div class="form-group col-sm-2">
-                            <label  class="col-sm-4 control-label p-r-6">存储位置</label>
-                            <div class="col-sm-8">
-                                <input type="email" class="form-control"  >
+                        <div class="form-group col-sm-5 p-r-0">
+                            <label  class="col-sm-3 control-label p-r-6">存储位置</label>
+                            <div class="col-sm-9 p-l-0 p-r-0">
+                                <div style="float:left;width: 80px;">
+                                    <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig" style="width: 80px;"
+                                               ng-model="vm.box.equipmentId"></selectize>
+                                </div>
+                                <div style="float:left;width: 80px; margin-left: 2px">
+                                    <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig" style="width: 80px;"
+                                               ng-model="vm.box.areaId"></selectize>
+                                </div>
+                                <div style="float:left;width: 80px;margin-left: 2px">
+                                    <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig" style="width: 80px;"
+                                               ng-model="vm.box.supportRackId"></selectize>
+                                </div>
+                                <div style="float:left;width: 80px;margin-left: 2px"><input type="email" class="form-control"  >
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group col-sm-2" style="padding-right: 0;">
-                            <label  class="col-sm-4 control-label p-r-6">状态</label>
-                            <div class="col-sm-8" style="padding-right: 6px;">
-                                <selectize options='vm.statusOptions' config="vm.statusConfig"
-                                           ng-model="vm.box.status"></selectize>
-                                <input type="hidden" name="level" ng-model="vm.box.status" required>
-                            </div>
-                        </div>
+                        <!--<div class="form-group col-sm-2" style="padding-right: 0;">-->
+                            <!--<label  class="col-sm-4 control-label p-r-6">状态</label>-->
+                            <!--<div class="col-sm-8" style="padding-right: 6px;">-->
+                                <!--<selectize options='vm.statusOptions' config="vm.statusConfig"-->
+                                           <!--ng-model="vm.box.status"></selectize>-->
+                                <!--<input type="hidden" name="level" ng-model="vm.box.status" required>-->
+                            <!--</div>-->
+                        <!--</div>-->
                     </div>
                     <div class="row pipe-body-bottom">
-                        <div class="col-sm-4">
+                        <div class="col-sm-4 txt-width">
                             <p style="margin-top: 10px">
                                 <span>样本数</span>
                                 <span>100个</span>
@@ -208,7 +221,7 @@
                             </p>
 
                         </div>
-                        <div class=" col-sm-8">
+                        <div class=" col-sm-8 box-remark">
                             <label  class="col-sm-2 control-label p-r-6">备注</label>
                             <div class="col-sm-10 ">
                                 <textarea class="form-control"rows="1" style="resize: none"></textarea>

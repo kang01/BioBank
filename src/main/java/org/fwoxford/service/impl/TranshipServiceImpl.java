@@ -14,6 +14,7 @@ import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
+import org.fwoxford.web.rest.errors.ErrorVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -178,10 +179,6 @@ public class TranshipServiceImpl implements TranshipService{
     public TranshipDTO insertTranship(TranshipDTO transhipDTO) {
         //验证是否可以保存转运记录
         Boolean isCanTranship =  isCanTranship(transhipDTO);
-
-        if(isCanTranship.equals(false)){
-            throw new BankServiceException("a","a");
-        }
         //保存转运记录
         Tranship tranship =transhipMapper.transhipDTOToTranship(transhipDTO);
         transhipRepositries.save(tranship);
@@ -245,21 +242,25 @@ public class TranshipServiceImpl implements TranshipService{
      * @return
      */
     private Boolean isCanTranship(TranshipDTO transhipDTO) {
+        List<FrozenBoxDTO> frozenBoxDTOS = transhipDTO.getFrozenBoxDTOList();
         Boolean isCanTranship = true;
         //判断盒子位置有效性
-        //判断盒子内样本是否有效，即是否有数据
-        List<FrozenBoxDTO> frozenBoxDTOS = transhipDTO.getFrozenBoxDTOList();
         for(FrozenBoxDTO box:frozenBoxDTOS){
-
             Long equipmentId = box.getEquipmentId();
             Long areaId = box.getAreaId();
             Long supportRackId = box.getSupportRackId();
-            box.getColumnsInShelf();
-            box.getRowsInShelf();
-
-            Assert.notNull(box.getFrozenTubeDTOS(),"盒子号为:"+box.getFrozenBoxCode()+"的样本数据无效！");
-            isCanTranship = false;
-            return isCanTranship;
+            String column = box.getColumnsInShelf();
+            String row = box.getRowsInShelf();
+            Long count =  frozenBoxService.countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId,areaId,supportRackId,column,row);
+            if(count.intValue() >0 ){
+                throw new BankServiceException("该位置已有冻存盒存在，请更换冻存盒位置！",box.getEquipmentCode()+"."+box.getAreaCode()+"."+box.getSupportRackCode()+"."+box.getRowsInShelf()+box.getColumnsInShelf());
+            }
+        }
+        //判断盒子内样本是否有效，即是否有数据
+        for(FrozenBoxDTO box:frozenBoxDTOS){
+            if(box.getFrozenTubeDTOS().isEmpty() || (box.getFrozenTubeDTOS().size() > 0 && box.getFrozenTubeDTOS().get(0).getFrozenTubeCode()==null)){
+                throw new BankServiceException("盒子号为:"+box.getFrozenBoxCode()+"的样本数据无效！",box.getFrozenBoxCode());
+            }
         }
         return isCanTranship;
     }

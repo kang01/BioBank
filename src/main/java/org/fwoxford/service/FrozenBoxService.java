@@ -83,4 +83,15 @@ public interface FrozenBoxService {
      * @return
      */
     List<FrozenBoxAndFrozenTubeResponse> findFrozenBoxAndTubeListByBoxCodeStr(String frozenBoxCodeStr);
+
+    /**
+     * 判断某设备某区域某架子某行某列是否有盒子存在
+     * @param equipmentId
+     * @param areaId
+     * @param supportRackId
+     * @param column
+     * @param row
+     * @return
+     */
+    Long  countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
 }

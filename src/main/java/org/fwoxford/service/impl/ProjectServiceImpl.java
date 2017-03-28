@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService{
 
     private final Logger log = LoggerFactory.getLogger(ProjectServiceImpl.class);
-    
+
     private final ProjectRepository projectRepository;
 
     private final ProjectMapper projectMapper;
@@ -51,7 +51,7 @@ public class ProjectServiceImpl implements ProjectService{
 
     /**
      *  Get all the projects.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +87,12 @@ public class ProjectServiceImpl implements ProjectService{
     public void delete(Long id) {
         log.debug("Request to delete Project : {}", id);
         projectRepository.delete(id);
+    }
+
+    @Override
+    public List<ProjectDTO> findAllProjectDTOs() {
+        log.debug("Request to get all Projects");
+        List<Project> projects =  projectRepository.findAllProject();
+        return projectMapper.projectsToProjectDTOs(projects);
     }
 }

@@ -17,4 +17,11 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
     @Query("select box from FrozenBox box where box.frozenBoxCode = ?1")
     FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode);
+
+    @Query(value = "select count(*) from frozen_box box where box.equipment_id = ?1" +
+        " and box.area_id = ?2 " +
+        " and box.support_rack_id = ?3 " +
+        " and box.columns_in_shelf = ?4 " +
+        " and box.rows_in_shelf = ?5" , nativeQuery = true)
+    Long countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
 }

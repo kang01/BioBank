@@ -20,7 +20,7 @@ public interface ProjectService {
 
     /**
      *  Get all the projects.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,6 @@ public interface ProjectService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    List<ProjectDTO> findAllProjectDTOs();
 }

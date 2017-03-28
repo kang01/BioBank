@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.domain.Equipment;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.repository.FrozenBoxRepository;
@@ -14,8 +15,11 @@ import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.core.support.ExampleMatcherAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -186,7 +190,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
         List<FrozenBoxAndFrozenTubeResponse> frozenBoxAndFrozenTubeResponses = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
 
          if(StringUtils.isEmpty(frozenBoxCodeStr)){
-            throw new BankServiceException("E000011","请传入有效的冻存盒编码！");
+            throw new BankServiceException("请传入有效的冻存盒编码！",frozenBoxCodeStr);
          }
 
         String frozenBoxCode[] = frozenBoxCodeStr.split(",");
@@ -196,5 +200,20 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
         }
 
         return frozenBoxAndFrozenTubeResponses;
+    }
+
+    /**
+     * 判断某设备某区域某架子某行某列是否有盒子存在
+     * @param equipmentId
+     * @param areaId
+     * @param supportRackId
+     * @param column
+     * @param row
+     * @return
+     */
+    @Override
+    public Long countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row) {
+        Long counts = frozenBoxRepository.countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId,areaId,supportRackId,column,row);
+        return counts;
     }
 }

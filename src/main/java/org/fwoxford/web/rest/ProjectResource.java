@@ -34,7 +34,7 @@ public class ProjectResource {
     private final Logger log = LoggerFactory.getLogger(ProjectResource.class);
 
     private static final String ENTITY_NAME = "project";
-        
+
     private final ProjectService projectService;
 
     public ProjectResource(ProjectService projectService) {
@@ -127,5 +127,16 @@ public class ProjectResource {
         projectService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
+    /**
+     * 查詢所有的有效项目
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/all/projects")
+    @Timed
+    public ResponseEntity<List<ProjectDTO>> getAllSampleTypeList() {
+        log.debug("REST request to get all ProjectDTO");
+        List<ProjectDTO> list = projectService.findAllProjectDTOs();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
 }

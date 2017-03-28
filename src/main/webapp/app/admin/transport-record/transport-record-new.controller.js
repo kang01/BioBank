@@ -135,6 +135,34 @@
                                 "frozenTubeVolumns":10,
                                 "backColor":"rgba(0,255,0,0.3)",
                                 "background":''
+                            },
+                            {
+                                "errorType": "6003",
+                                "frozenBoxTypeCode":"BOX_TYPE_0004",
+                                "frozenTubeCode": "5435347",
+                                "frozenTubeTypeCode": "TUBE_TYPE_0003",
+                                "frozenTubeTypeId": 12,
+                                "frozenTubeTypeName": "血浆",
+                                "isModifyPostition": "1",
+                                "isModifyState": "0002",
+                                "memo": "",
+                                "projectCode": "P_00001",
+                                "projectId": 1,
+                                "sampleCode": "3434",
+                                "sampleTempCode": "54135151",
+                                "sampleTypeCode": "S_TYPE_00001",
+                                "sampleTypeId": 5,
+                                "sampleTypeName": "白细胞-灰",
+                                "status": "1",
+                                "tubeColumns": "5",
+                                "tubeRows": "5",
+                                "frozenTubeVolumnsUnit":"ml",
+                                "frozenBoxCode": "33335",
+                                "sampleUsedTimes":1,
+                                "sampleUsedTimesMost":10,
+                                "frozenTubeVolumns":10,
+                                "backColor":"rgba(192,192,192,0.3)",
+                                "background":''
                             }
                         ],
                         "isRealData": "4001",
@@ -190,8 +218,15 @@
             if(typeof value != "object"){
                 console.log(value)
             }
-            console.log(value);
-            td.style.backgroundColor = value.backColor;
+            if(value.status == 1){
+                td.style.backgroundColor = value.backColor;
+            }
+            if(value.status == 2){
+                td.style.background = 'linear-gradient(to right,'+value.backColor+',50%,rgba(0,0,0,1)';
+            }
+            if(value.status == 3){
+
+            }
             td.style.position = 'relative';
             if(vm.flagStatus || vm.exchangeFlag || vm.remarkFlag) {
                 cellProperties.readOnly = true;
@@ -205,7 +240,7 @@
                     "<div id='microtubesRemark' style='display: none'>"+value.memo+"</div>"+
                     "<div id='microtubesRow' style='display: none'>"+value.tubeRows+"</div>"+
                     "<div id='microtubesCol' style='display: none'>"+value.tubeColumns+"</div>"+
-                    "<div ng-if="+value.memo+" class='triangle-topright ' style='position: absolute;top:0;right: 0;'></div>"
+                    "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
             }else{
                 var htm = value
             }
@@ -231,12 +266,18 @@
                 // hotRegisterer.getInstance('my-handsontable').loadData(tArray);
             },
             onAfterSelectionEnd:function (row, col, row2, col2) {
+
                 if(window.event.ctrlKey){
+                    console.log(tArray[row][col] == "")
                     vm.exchangeFlag = true;
                     vm.remarkFlag = true;
-                    var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:2px solid #5292F7;"></div>';
+                    var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:2px dotted #5292F7;"></div>';
                     $(this.getCell(row,col)).append(txt);
-                    domArray.push({row:row,col:col,dom:this.getCell(row,col),value:this.getValue(row,col),color:this.getCell(row,col).style.backgroundColor});
+                    if(tArray[row][col] == ""){
+                        domArray.push({tubeRows:row+1,tubeColumns:col+1});
+                    }else{
+                        domArray.push(tArray[row][col]);
+                    }
 
                     console.log(JSON.stringify(domArray))
                 }else{
@@ -259,14 +300,15 @@
                         //正常
                         if(microtubes.status == 1){
                             microtubesStatusDom.text('2');
-                            for(var i = 0; i < microtubesList.length; i++){
-                                if(microtubesList[i].tubeRows-1 == row && microtubesList[i].tubeColumns-1 == col){
-                                    microtubesList[i].status = 2;
-                                    microtubesList[i].background = 'linear-gradient(to right,'+operateColor+',50%,rgba(0,0,0,1)';
-                                    operateColor =  microtubesList[i].backColor;
-                                    this.getCell(row,col).style.background = 'linear-gradient(to right,'+operateColor+',50%,rgba(0,0,0,1)';
-                                }
-                            }
+                            tArray[row][col].status = 2;
+                            // for(var i = 0; i < microtubesList.length; i++){
+                            //     if(microtubesList[i].tubeRows-1 == row && microtubesList[i].tubeColumns-1 == col){
+                            //         microtubesList[i].status = 2;
+                            //         microtubesList[i].background = 'linear-gradient(to right,'+operateColor+',50%,rgba(0,0,0,1)';
+                            //         operateColor =  microtubesList[i].backColor;
+                            //         this.getCell(row,col).style.background = 'linear-gradient(to right,'+operateColor+',50%,rgba(0,0,0,1)';
+                            //     }
+                            // }
 
 
                         }
@@ -275,19 +317,17 @@
                             this.getCell(row,col).style.background = '';
                             this.getCell(row,col).style.backgroundColor = '#ffffff';
                             microtubesStatusDom.text('3');
+                            // microtubesList[i].status = 3
+                            tArray[row][col].status = 3;
                         }
                         //空孔
                         if(microtubes.status == 3){
                             var txt = '<div class="abnormal" style="position:absolute;top:0;bottom:0;left:0;right:0;border:3px solid red;"></div>';
                             $(this.getCell(row,col)).append(txt);
                             this.getCell(row,col).style.backgroundColor = '';
-                            // this.getCell(row,col).style.outline = '2px solid red';
+                            // this.getCell(row,col).style.border = '2px solid red';
                             microtubesStatusDom.text('4');
-                            for(var i = 0; i < microtubesList.length; i++){
-                                if(microtubesList[i].tubeRows-1 == row && microtubesList[i].tubeColumns-1 == col){
-                                    microtubesList[i].status = 4;
-                                }
-                            }
+                            tArray[row][col].status = 4;
                         }
                         //异常
                         if(microtubes.status == 4){
@@ -295,17 +335,19 @@
                             // this.getCell(row,col).style.outline = '';
                             $(".abnormal").remove();
                             microtubesStatusDom.text('1');
-                            for(var i = 0; i < microtubesList.length; i++){
-                                if(microtubesList[i].tubeRows-1 == row && microtubesList[i].tubeColumns-1 == col){
-                                    this.getCell(row,col).style.backgroundColor =  microtubesList[i].backColor;
-                                    microtubesList[i].status = 1;
-                                }
-                            }
+                            tArray[row][col].status = 1;
+                            // for(var i = 0; i < microtubesList.length; i++){
+                            //     if(microtubesList[i].tubeRows-1 == row && microtubesList[i].tubeColumns-1 == col){
+                            //         this.getCell(row,col).style.backgroundColor =  microtubesList[i].backColor;
+                            //         microtubesList[i].status = 1;
+                            //     }
+                            // }
                         }
                         microtubes.id = $(this.getCell(row, col)).find("#microtubesId").text();
                         microtubes.status = $(this.getCell(row, col)).find("#microtubesStatus").text();
                         hotRegisterer.getInstance('my-handsontable').render();
                     }
+                    console.log(JSON.stringify(tArray))
                 }
 
 
@@ -342,7 +384,7 @@
         function onError(error) {
             AlertService.error(error.data.message);
         }
-
+        //盒子类型
         vm.typeConfig = {
             valueField:'id',
             labelField:'frozenBoxTypeName',
@@ -371,6 +413,7 @@
                //  hotRegisterer.getInstance('my-handsontable').render()
             }
         };
+        //样本类型
         vm.sampleTypeConfig = {
             valueField:'sampleTypeCode',
             labelField:'sampleTypeName',
@@ -443,15 +486,14 @@
         vm.exchangeFlag = false;
         var exchangeCount = 0;
         vm.exchange = function () {
-            hotRegisterer.getInstance('my-handsontable').render();
-            //开启换位
+            console.log(JSON.stringify(domArray));
             if(vm.exchangeFlag && domArray.length == 2){
-                hotRegisterer.getInstance('my-handsontable').setDataAtCell(domArray[0].row,domArray[0].col,domArray[1].value);
-                hotRegisterer.getInstance('my-handsontable').setDataAtCell(domArray[1].row,domArray[1].col,domArray[0].value);
-                hotRegisterer.getInstance('my-handsontable').getCell(domArray[0].row,domArray[0].col).style.backgroundColor = domArray[1].color;
-                hotRegisterer.getInstance('my-handsontable').getCell(domArray[1].row,domArray[1].col).style.backgroundColor = domArray[0].color;
+
+                tArray[domArray[0].tubeRows-1][domArray[0].tubeColumns-1] = domArray[1];
+                tArray[domArray[1].tubeRows-1][domArray[1].tubeColumns-1] = domArray[0];
                 domArray = [];
                 vm.exchangeFlag = false;
+                hotRegisterer.getInstance('my-handsontable').render();
             }else{
                console.log("只能选择两个进行交换！");
                 domArray = [];
@@ -479,14 +521,25 @@
                     });
                     modalInstance.result.then(function (selectedItem) {
 
-                        console.log(JSON.stringify(selectedItem));
-                        for(var i = 0; i< microtubesList.length; i++){
-                            for(var j =0; j < selectedItem.domArray.length;j++){
-                               if(microtubesList[i].id == selectedItem.domArray[j].value.id){
-                                   microtubesList[i].remark = selectedItem.domArray[j].remark;
-                               }
+                        for(var i = 0; i < tArray.length; i++){
+                            for(var j = 0; j < tArray[i].length; j++){
+                                for(var k = 0; k < selectedItem.domArray.length; k++){
+                                    if(tArray[i][j].frozenTubeCode == selectedItem.domArray[k].frozenTubeCode){
+                                        tArray[i][j].memo = selectedItem.domArray[k].memo;
+                                    }
+                                }
+
                             }
                         }
+                        console.log(JSON.stringify(tArray))
+                        // console.log(JSON.stringify(selectedItem));
+                        // for(var i = 0; i< microtubesList.length; i++){
+                        //     for(var j =0; j < selectedItem.domrray.length;j++){
+                        //        if(microtubesList[i].frozenTubeCode == selectedItem.domArray[j].frozenTubeCode){
+                        //            microtubesList[i].memo = selectedItem.domArray[j].memo;
+                        //        }
+                        //     }
+                        // }
                         hotRegisterer.getInstance('my-handsontable').render();
                     });
             }

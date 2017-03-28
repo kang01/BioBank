@@ -8,9 +8,11 @@
         .module('bioBankApp')
         .controller('TransportRecordNewController', TransportRecordNewController);
 
-    TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService'];
+    TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state',
+        'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService'];
 
-    function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService) {
+    function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,
+                                          SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.transportRecord = {};
@@ -223,7 +225,8 @@
         var loadAll = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
-            EquipmentService.query({},onEquipmentSuccess, onError)
+            EquipmentService.query({},onEquipmentSuccess, onError);
+            ProjectService.query({},onProjectSuccess, onError)
         };
         loadAll();
         function onFrozenBoxTypeSuccess(data) {
@@ -235,9 +238,26 @@
         function onEquipmentSuccess(data) {
             vm.frozenBoxPlaceOptions = data;
         }
+        //项目编码
+        function onProjectSuccess(data) {
+            vm.projectOptions = data;
+        }
         function onError(error) {
             AlertService.error(error.data.message);
         }
+        vm.projectConfig = {
+            valueField:'id',
+            labelField:'projectName',
+            maxItems: 1,
+            onChange:function(value){
+                ProjectSitesByProjectIdService.query({id:value},onProjectSitesSuccess,onError)
+            }
+        };
+        vm.projectSitesConfig = {
+            valueField:'id',
+            labelField:'projectSiteName',
+            maxItems: 1
+        };
         //盒子类型 17:10*10 18:8*8
         vm.typeConfig = {
             valueField:'id',
@@ -347,7 +367,9 @@
             }
         };
 
-
+        function onProjectSitesSuccess(data) {
+            vm.projectSitesOptions = data;
+        }
         //区域
         function onAreaSuccess(data) {
             vm.frozenBoxAreaOptions = data;

@@ -65,8 +65,8 @@
                                 "sampleTypeId": 5,
                                 "sampleTypeName": "血浆-紫",
                                 "status": "1",
-                                "tubeColumns": "1",
-                                "tubeRows": "2",
+                                "tubeColumns": 1,
+                                "tubeRows": 2,
                                 "frozenTubeVolumnsUnit":"ml",
                                 "frozenBoxCode": "33333",
                                 "sampleUsedTimes":1,
@@ -126,8 +126,8 @@
                                 "sampleTypeId": 5,
                                 "sampleTypeName": "血浆-绿",
                                 "status": "1",
-                                "tubeColumns": "2",
-                                "tubeRows": "3",
+                                "tubeColumns": 2,
+                                "tubeRows": 3,
                                 "frozenTubeVolumnsUnit":"ml",
                                 "frozenBoxCode": "33334",
                                 "sampleUsedTimes":1,
@@ -154,8 +154,8 @@
                                 "sampleTypeId": 5,
                                 "sampleTypeName": "白细胞-灰",
                                 "status": "1",
-                                "tubeColumns": "5",
-                                "tubeRows": "5",
+                                "tubeColumns": 5,
+                                "tubeRows": 5,
                                 "frozenTubeVolumnsUnit":"ml",
                                 "frozenBoxCode": "33335",
                                 "sampleUsedTimes":1,
@@ -248,11 +248,10 @@
             td.innerHTML = htm;
 
         };
+        var remarkArray;
         vm.settings = {
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
             rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
-            // startRows:10,
-            // startCols:10,
             data:tArray,
             colWidths:100,
             renderer:vm.myCustomRenderer,
@@ -266,11 +265,10 @@
                 // hotRegisterer.getInstance('my-handsontable').loadData(tArray);
             },
             onAfterSelectionEnd:function (row, col, row2, col2) {
-
+                remarkArray = this.getData(row,col,row2,col2);
+                vm.remarkFlag = true;
                 if(window.event.ctrlKey){
-                    console.log(tArray[row][col] == "")
                     vm.exchangeFlag = true;
-                    vm.remarkFlag = true;
                     var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:2px dotted #5292F7;"></div>';
                     $(this.getCell(row,col)).append(txt);
                     if(tArray[row][col] == ""){
@@ -486,24 +484,34 @@
         vm.exchangeFlag = false;
         var exchangeCount = 0;
         vm.exchange = function () {
-            console.log(JSON.stringify(domArray));
             if(vm.exchangeFlag && domArray.length == 2){
+                var row = domArray[0].tubeRows;
+                var col = domArray[0].tubeColumns;
+                var row1 = domArray[1].tubeRows;
+                var col1 = domArray[1].tubeColumns;
 
-                tArray[domArray[0].tubeRows-1][domArray[0].tubeColumns-1] = domArray[1];
-                tArray[domArray[1].tubeRows-1][domArray[1].tubeColumns-1] = domArray[0];
+                tArray[row1-1][col1-1] = domArray[0];
+                tArray[row1-1][col1-1].tubeRows = row1;
+                tArray[row1-1][col1-1].tubeColumns = col1;
+                tArray[row-1][col-1] = domArray[1];
+                tArray[row-1][col-1].tubeRows = row;
+                tArray[row-1][col-1].tubeColumns = col;
+
                 domArray = [];
                 vm.exchangeFlag = false;
-                hotRegisterer.getInstance('my-handsontable').render();
+
             }else{
                console.log("只能选择两个进行交换！");
                 domArray = [];
             }
+            hotRegisterer.getInstance('my-handsontable').render();
+
 
         };
         //批注
         vm.remarkFlag = false;
         vm.microtubesRemark = function () {
-            if(vm.remarkFlag){
+            if(vm.remarkFlag &&  remarkArray.length > 0){
                     modalInstance = $uibModal.open({
                         animation: true,
                         templateUrl: 'app/admin/transport-record/microtubes-remark-modal.html',
@@ -513,33 +521,20 @@
                         resolve: {
                             items: function () {
                                 return {
-                                    domArray :domArray
+                                    remarkArray :remarkArray
                                 }
                             }
                         }
 
                     });
                     modalInstance.result.then(function (selectedItem) {
-
                         for(var i = 0; i < tArray.length; i++){
                             for(var j = 0; j < tArray[i].length; j++){
-                                for(var k = 0; k < selectedItem.domArray.length; k++){
-                                    if(tArray[i][j].frozenTubeCode == selectedItem.domArray[k].frozenTubeCode){
-                                        tArray[i][j].memo = selectedItem.domArray[k].memo;
+                                    if(selectedItem.remarkArray.frozenTubeCode == ''){
+                                        tArray[i][j].memo = selectedItem.remarkArray[i][j].memo;
                                     }
-                                }
-
                             }
                         }
-                        console.log(JSON.stringify(tArray))
-                        // console.log(JSON.stringify(selectedItem));
-                        // for(var i = 0; i< microtubesList.length; i++){
-                        //     for(var j =0; j < selectedItem.domrray.length;j++){
-                        //        if(microtubesList[i].frozenTubeCode == selectedItem.domArray[j].frozenTubeCode){
-                        //            microtubesList[i].memo = selectedItem.domArray[j].memo;
-                        //        }
-                        //     }
-                        // }
                         hotRegisterer.getInstance('my-handsontable').render();
                     });
             }
@@ -585,7 +580,7 @@
         //保存
         this.saveRecord = function () {
             console.log(JSON.stringify(vm.transportRecord));
-            TransportRecordService.save(vm.transportRecord, onSaveSuccess, onSaveError);
+            // TransportRecordService.save(vm.transportRecord, onSaveSuccess, onSaveError);
         };
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;

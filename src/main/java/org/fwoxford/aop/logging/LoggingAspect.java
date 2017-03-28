@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.fwoxford.security.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -58,6 +59,7 @@ public class LoggingAspect {
      */
     @Around("loggingPointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
+
         if (log.isDebugEnabled()) {
             log.debug("Enter: {}.{}() with argument[s] = {}", joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(), Arrays.toString(joinPoint.getArgs()));
@@ -67,6 +69,12 @@ public class LoggingAspect {
             if (log.isDebugEnabled()) {
                 log.debug("Exit: {}.{}() with result = {}", joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(), result);
+            }
+
+            if (SecurityUtils.isAuthenticated()){
+                String currentUser = SecurityUtils.getCurrentUserLoginAtAddress();
+                log.info("User: {}; Called: {}.{}()", currentUser, joinPoint.getSignature().getDeclaringTypeName(),
+                    joinPoint.getSignature().getName());
             }
             return result;
         } catch (IllegalArgumentException e) {

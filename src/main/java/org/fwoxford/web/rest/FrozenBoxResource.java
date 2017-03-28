@@ -147,9 +147,21 @@ public class FrozenBoxResource {
      */
     @GetMapping("/findFrozenBoxAndTubeByBoxCode/{frozenBoxCode}")
     @Timed
-    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxId(@PathVariable String frozenBoxCode) {
+    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxCode(@PathVariable String frozenBoxCode) {
         log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
         FrozenBoxAndFrozenTubeResponse res = frozenBoxService.findFrozenBoxAndTubeByBoxCode(frozenBoxCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+    /**
+     * 根据冻存盒CODE字符串查询冻存盒和冻存管信息
+     * @param frozenBoxCodeStr
+     * @return
+     */
+    @GetMapping("/findFrozenBoxAndTubeByBoxCodes/{frozenBoxCodeStr}")
+    @Timed
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> getFrozenBoxAndTubeListByBoxCodeStr(@PathVariable  String frozenBoxCodeStr) {
+        log.debug("REST request to get FrozenBoxAndTube By codes : {}", frozenBoxCodeStr);
+        List<FrozenBoxAndFrozenTubeResponse> res = frozenBoxService.findFrozenBoxAndTubeListByBoxCodeStr(frozenBoxCodeStr);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

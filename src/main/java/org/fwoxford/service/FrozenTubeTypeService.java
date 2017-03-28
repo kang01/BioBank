@@ -20,7 +20,7 @@ public interface FrozenTubeTypeService {
 
     /**
      *  Get all the frozenTubeTypes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,6 @@ public interface FrozenTubeTypeService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    FrozenTubeTypeDTO findTopOne();
 }

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class FrozenTubeTypeServiceImpl implements FrozenTubeTypeService{
 
     private final Logger log = LoggerFactory.getLogger(FrozenTubeTypeServiceImpl.class);
-    
+
     private final FrozenTubeTypeRepository frozenTubeTypeRepository;
 
     private final FrozenTubeTypeMapper frozenTubeTypeMapper;
@@ -51,7 +51,7 @@ public class FrozenTubeTypeServiceImpl implements FrozenTubeTypeService{
 
     /**
      *  Get all the frozenTubeTypes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +87,11 @@ public class FrozenTubeTypeServiceImpl implements FrozenTubeTypeService{
     public void delete(Long id) {
         log.debug("Request to delete FrozenTubeType : {}", id);
         frozenTubeTypeRepository.delete(id);
+    }
+
+    @Override
+    public FrozenTubeTypeDTO findTopOne() {
+        FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findTopOne();
+        return frozenTubeTypeMapper.frozenTubeTypeToFrozenTubeTypeDTO(frozenTubeType);
     }
 }

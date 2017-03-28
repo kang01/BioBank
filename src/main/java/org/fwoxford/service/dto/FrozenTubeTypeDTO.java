@@ -25,7 +25,6 @@ public class FrozenTubeTypeDTO extends AbstractAuditingDTO implements Serializab
     private Integer sampleUsedTimesMost;
 
     @NotNull
-    @Max(value = 20)
     private Integer frozenTubeVolumn;
 
     @NotNull

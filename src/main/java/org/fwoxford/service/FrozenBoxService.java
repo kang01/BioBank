@@ -76,4 +76,11 @@ public interface FrozenBoxService {
      * @param frozenBoxDTOList
      */
     List<FrozenBox> saveBatch(List<FrozenBoxDTO> frozenBoxDTOList);
+
+    /**
+     * 根据冻存盒code串查询冻存盒以及冻存管的信息
+     * @param frozenBoxCodeStr
+     * @return
+     */
+    List<FrozenBoxAndFrozenTubeResponse> findFrozenBoxAndTubeListByBoxCodeStr(String frozenBoxCodeStr);
 }

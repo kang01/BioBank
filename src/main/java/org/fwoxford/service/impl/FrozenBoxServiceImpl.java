@@ -1,13 +1,13 @@
 package org.fwoxford.service.impl;
 
-import org.fwoxford.domain.FrozenTube;
-import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
-import org.fwoxford.service.dto.response.FrozenTubeResponse;
-import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.domain.FrozenBox;
+import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.slf4j.Logger;
@@ -15,13 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -174,5 +172,29 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
         List<FrozenBox> frozenBoxes = frozenBoxMapper.frozenBoxDTOsToFrozenBoxes(frozenBoxDTOList);
         List<FrozenBox> frozenBoxList = frozenBoxRepository.save(frozenBoxes);
         return frozenBoxList;
+    }
+
+    /**
+     * 根据冻存盒code串查询冻存盒以及冻存管的信息
+     * @param frozenBoxCodeStr 冻存盒code串
+     * @return
+     */
+    @Override
+    public List<FrozenBoxAndFrozenTubeResponse> findFrozenBoxAndTubeListByBoxCodeStr(String frozenBoxCodeStr) {
+        List<FrozenBoxAndFrozenTubeResponse> frozenBoxAndFrozenTubeResponses = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
+//        try {
+//             if(StringUtils.isEmpty(frozenBoxCodeStr)){
+//                throw new BankServiceException("E000011","请传入有效的冻存盒编码！");
+//             }
+//         } catch (BankServiceException e) {
+//            e.printStackTrace();
+//        }
+        String frozenBoxCode[] = frozenBoxCodeStr.split(",");
+        for(String i :frozenBoxCode){
+            FrozenBoxAndFrozenTubeResponse response = findFrozenBoxAndTubeByBoxCode(i);
+            frozenBoxAndFrozenTubeResponses.add(response);
+        }
+
+        return frozenBoxAndFrozenTubeResponses;
     }
 }

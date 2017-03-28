@@ -2,17 +2,12 @@ package org.fwoxford.service.impl;
 
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.domain.FrozenTubeType;
 import org.fwoxford.domain.Tranship;
 import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.repository.TranshipRepositries;
-import org.fwoxford.service.FrozenBoxService;
-import org.fwoxford.service.FrozenTubeService;
-import org.fwoxford.service.TranshipBoxService;
-import org.fwoxford.service.TranshipService;
-import org.fwoxford.service.dto.FrozenBoxDTO;
-import org.fwoxford.service.dto.FrozenTubeDTO;
-import org.fwoxford.service.dto.TranshipBoxDTO;
-import org.fwoxford.service.dto.TranshipDTO;
+import org.fwoxford.service.*;
+import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
@@ -27,6 +22,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +56,9 @@ public class TranshipServiceImpl implements TranshipService{
 
     @Autowired
     private TranshipBoxService transhipBoxService;
+
+    @Autowired
+    private FrozenTubeTypeService frozenTubeTypeService;
 
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
@@ -179,6 +178,9 @@ public class TranshipServiceImpl implements TranshipService{
         //验证是否可以保存转运记录
         Boolean isCanTranship =  isCanTranship(transhipDTO);
 
+        if(isCanTranship.equals(false)){
+
+        }
         //保存转运记录
         Tranship tranship =transhipMapper.transhipDTOToTranship(transhipDTO);
         transhipRepositries.save(tranship);
@@ -191,7 +193,25 @@ public class TranshipServiceImpl implements TranshipService{
         List<TranshipBoxDTO> transhipBoxes = saveTranshipAndBoxRelation(frozenBoxDTOListLast);
 
         //保存冻存管
-        List<FrozenTubeDTO> frozenTubeDTOList = frozenTubeMapper.frozenBoxAndTubeToFrozenTubeDTOList(frozenBoxDTOList,frozenBoxes);
+        List<FrozenTubeDTO> frozenTubeDTOList = new ArrayList<FrozenTubeDTO>();
+//        List<FrozenTubeDTO> frozenTubeDTOList = frozenTubeMapper.frozenBoxAndTubeToFrozenTubeDTOList(frozenBoxDTOList,frozenBoxes);
+        FrozenTubeTypeDTO frozentubeTypeDTO = frozenTubeTypeService.findTopOne();
+        for(FrozenBoxDTO boxDto:frozenBoxDTOList){
+            for(FrozenTubeDTO tube :boxDto.getFrozenTubeDTOS()){
+                for(FrozenBox box:frozenBoxes){
+                    if(tube.getFrozenBoxCode().equals(box.getFrozenBoxCode())){
+                        tube.setFrozenTubeTypeId(frozentubeTypeDTO.getId());
+                        tube.setFrozenTubeTypeCode(frozentubeTypeDTO.getFrozenTubeTypeCode());
+                        tube.setFrozenTubeTypeName(frozentubeTypeDTO.getFrozenTubeTypeName());
+                        tube.setFrozenTubeVolumns(frozentubeTypeDTO.getFrozenTubeVolumn());
+                        tube.setFrozenTubeVolumnsUnit(frozentubeTypeDTO.getFrozenTubeVolumnUnit());
+                        tube.setSampleUsedTimesMost(frozentubeTypeDTO.getSampleUsedTimesMost());
+                        tube.setFrozenBoxId(box.getId());
+                        frozenTubeDTOList.add(tube);
+                    }
+                }
+            }
+        }
         List<FrozenTube> frozenTubes =  frozenTubeService.saveBatch(frozenTubeDTOList);
         List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubes);
 
@@ -227,6 +247,19 @@ public class TranshipServiceImpl implements TranshipService{
         Boolean isCanTranship = true;
         //判断盒子位置有效性
         //判断盒子内样本是否有效，即是否有数据
+        List<FrozenBoxDTO> frozenBoxDTOS = transhipDTO.getFrozenBoxDTOList();
+        for(FrozenBoxDTO box:frozenBoxDTOS){
+
+            Long equipmentId = box.getEquipmentId();
+            Long areaId = box.getAreaId();
+            Long supportRackId = box.getSupportRackId();
+            box.getColumnsInShelf();
+            box.getRowsInShelf();
+
+            Assert.notNull(box.getFrozenTubeDTOS(),"盒子号为:"+box.getFrozenBoxCode()+"的样本数据无效！");
+            isCanTranship = false;
+            return isCanTranship;
+        }
         return isCanTranship;
     }
     private List<FrozenBoxDTO> getFrozenBoxDtoList(List<FrozenBoxDTO> frozenBoxDTOListLast, List<FrozenTubeDTO> frozenTubeDTOS) {

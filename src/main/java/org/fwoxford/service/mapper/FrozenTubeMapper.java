@@ -110,7 +110,6 @@ public interface FrozenTubeMapper {
            for(FrozenTubeDTO tube :boxDto.getFrozenTubeDTOS()){
                for(FrozenBox box:frozenBoxes){
                    if(tube.getFrozenBoxCode().equals(box.getFrozenBoxCode())){
-                       tube.setFrozenBoxId(box.getId());
                        frozenTubeDTOList.add(tube);
                    }
                }

@@ -1,13 +1,13 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiParam;
 import org.fwoxford.service.FrozenBoxService;
+import org.fwoxford.service.dto.FrozenBoxDTO;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
-import org.fwoxford.service.dto.FrozenBoxDTO;
-import io.swagger.annotations.ApiParam;
-import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -147,9 +147,21 @@ public class FrozenBoxResource {
      */
     @GetMapping("/findFrozenBoxAndTubeByBoxCode/{frozenBoxCode}")
     @Timed
-    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxId(@PathVariable String frozenBoxCode) {
+    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxCode(@PathVariable String frozenBoxCode) {
         log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
         FrozenBoxAndFrozenTubeResponse res = frozenBoxService.findFrozenBoxAndTubeByBoxCode(frozenBoxCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+    /**
+     * 根据冻存盒CODE字符串查询冻存盒和冻存管信息
+     * @param frozenBoxCodeStr
+     * @return
+     */
+    @GetMapping("/findFrozenBoxAndTubeByBoxCodes/{frozenBoxCodeStr}")
+    @Timed
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> getFrozenBoxAndTubeListByBoxCodeStr(@PathVariable  String frozenBoxCodeStr) {
+        log.debug("REST request to get FrozenBoxAndTube By codes : {}", frozenBoxCodeStr);
+        List<FrozenBoxAndFrozenTubeResponse> res = frozenBoxService.findFrozenBoxAndTubeListByBoxCodeStr(frozenBoxCodeStr);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

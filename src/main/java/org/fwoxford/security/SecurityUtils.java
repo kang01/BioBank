@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 /**
  * Utility class for Spring Security.
@@ -23,6 +24,33 @@ public final class SecurityUtils {
         Authentication authentication = securityContext.getAuthentication();
         String userName = null;
         if (authentication != null) {
+            userName = getUserName(authentication);
+        }
+        return userName;
+    }
+
+    /**
+     * Get the login of the current user.
+     *
+     * @return the login and address of the current user
+     */
+    public static String getCurrentUserLoginAtAddress() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        String userNameAtAddress = null;
+        if (authentication != null) {
+            userNameAtAddress = getUserName(authentication);
+            if (authentication.getDetails() instanceof WebAuthenticationDetails){
+                WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
+                userNameAtAddress += "@" + details.getRemoteAddress();
+            }
+        }
+        return userNameAtAddress;
+    }
+
+    private static String getUserName(Authentication authentication){
+        String userName = null;
+        if (authentication != null) {
             if (authentication.getPrincipal() instanceof UserDetails) {
                 UserDetails springSecurityUser = (UserDetails) authentication.getPrincipal();
                 userName = springSecurityUser.getUsername();
@@ -30,6 +58,7 @@ public final class SecurityUtils {
                 userName = (String) authentication.getPrincipal();
             }
         }
+
         return userName;
     }
 

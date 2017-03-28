@@ -1,13 +1,13 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiParam;
 import org.fwoxford.service.FrozenBoxService;
+import org.fwoxford.service.dto.FrozenBoxDTO;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
-import org.fwoxford.service.dto.FrozenBoxDTO;
-import io.swagger.annotations.ApiParam;
-import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

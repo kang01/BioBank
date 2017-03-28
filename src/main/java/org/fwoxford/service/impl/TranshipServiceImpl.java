@@ -13,6 +13,7 @@ import org.fwoxford.service.dto.response.TranshipResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,7 +180,7 @@ public class TranshipServiceImpl implements TranshipService{
         Boolean isCanTranship =  isCanTranship(transhipDTO);
 
         if(isCanTranship.equals(false)){
-
+            throw new BankServiceException("a","a");
         }
         //保存转运记录
         Tranship tranship =transhipMapper.transhipDTOToTranship(transhipDTO);

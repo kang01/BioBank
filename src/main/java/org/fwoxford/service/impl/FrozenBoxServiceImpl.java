@@ -10,6 +10,7 @@ import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -182,13 +184,11 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     @Override
     public List<FrozenBoxAndFrozenTubeResponse> findFrozenBoxAndTubeListByBoxCodeStr(String frozenBoxCodeStr) {
         List<FrozenBoxAndFrozenTubeResponse> frozenBoxAndFrozenTubeResponses = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
-//        try {
-//             if(StringUtils.isEmpty(frozenBoxCodeStr)){
-//                throw new BankServiceException("E000011","请传入有效的冻存盒编码！");
-//             }
-//         } catch (BankServiceException e) {
-//            e.printStackTrace();
-//        }
+
+         if(StringUtils.isEmpty(frozenBoxCodeStr)){
+            throw new BankServiceException("E000011","请传入有效的冻存盒编码！");
+         }
+
         String frozenBoxCode[] = frozenBoxCodeStr.split(",");
         for(String i :frozenBoxCode){
             FrozenBoxAndFrozenTubeResponse response = findFrozenBoxAndTubeByBoxCode(i);

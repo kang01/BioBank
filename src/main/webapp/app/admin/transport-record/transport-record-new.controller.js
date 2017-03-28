@@ -24,157 +24,6 @@
                 "emptyHoleNumber": 12,
                 "emptyTubeNumber": 11,
                 "frozenBoxDTOList": [
-                    {
-                        "id":"11",
-                        "areaCode": "S112",
-                        "areaId": 24,
-                        "dislocationNumber": 2,
-                        "emptyHoleNumber": 2,
-                        "emptyTubeNumber": 2,
-                        "equipmentCode": "R4-01",
-                        "equipmentId": 23,
-                        "frozenBoxCode": "33333",
-                        "frozenBoxColumns": "8",
-                        "frozenBoxRows": "8",
-                        "frozenBoxTypeId": 17,
-                        "projectCode": "P_00001",
-                        "projectId": 1,
-                        "projectName": "心血管高危筛查项目",
-                        "projectSiteCode": "P_SITE_00001",
-                        "projectSiteId": 2,
-                        "projectSiteName": "心血管高危筛查项目天坛医院项目点",
-                        "frozenBoxTypeCode":"BOX_TYPE_0002",
-                        "sampleTypeName":"血浆-紫1",
-                        "sampleTypeCode":"S_TYPE_00001",
-                        "frozenTubeDTOS": [
-                            {
-                                "errorType": "6001",
-                                "frozenBoxTypeCode":"BOX_TYPE_0002",
-                                "frozenTubeCode": "5435345",
-                                "frozenTubeTypeCode": "TUBE_TYPE_0001",
-                                "frozenTubeTypeId": 12,
-                                "frozenTubeTypeName": "血浆",
-                                "isModifyPostition": "1",
-                                "isModifyState": "0002",
-                                "memo": "",
-                                "projectCode": "P_00001",
-                                "projectId": 1,
-                                "sampleCode": "3434",
-                                "sampleTempCode": "54135151",
-                                "sampleTypeCode": "S_TYPE_00001",
-                                "sampleTypeId": 5,
-                                "sampleTypeName": "血浆-紫",
-                                "status": "1",
-                                "tubeColumns": 1,
-                                "tubeRows": 2,
-                                "frozenTubeVolumnsUnit":"ml",
-                                "frozenBoxCode": "33333",
-                                "sampleUsedTimes":1,
-                                "sampleUsedTimesMost":10,
-                                "frozenTubeVolumns":10,
-                                "backColor":"rgba(204,153,255,0.3)",
-                                "background":''
-                            }
-                        ],
-                        "isRealData": "4001",
-                        "isSplit": "0002",
-                        "memo": "",
-                        "sampleNumber": 20,
-                        "sampleTypeId": 5,
-                        "status": "1",
-                        "supportRackCode": "R1",
-                        "supportRackId": 37
-
-                    },
-                    {
-                        "areaCode": "S113",
-                        "areaId": 24,
-                        "dislocationNumber": 2,
-                        "emptyHoleNumber": 2,
-                        "emptyTubeNumber": 2,
-                        "equipmentCode": "R4-01",
-                        "equipmentId": 23,
-                        "frozenBoxCode": "33334",
-                        "frozenBoxColumns": "8",
-                        "frozenBoxRows": "8",
-                        "frozenBoxTypeId": 17,
-                        "projectCode": "P_00001",
-                        "projectId": 1,
-                        "projectName": "心血管高危筛查项目",
-                        "projectSiteCode": "P_SITE_00002",
-                        "projectSiteId": 2,
-                        "projectSiteName": "心血管高危筛查项目天坛医院项目点",
-                        "frozenBoxTypeCode":"BOX_TYPE_0002",
-                        "sampleTypeName":"血浆-紫2",
-                        "sampleTypeCode":"S_TYPE_00002",
-                        "frozenTubeDTOS": [
-                            {
-                                "errorType": "6002",
-                                "frozenBoxTypeCode":"BOX_TYPE_0003",
-                                "frozenTubeCode": "5435346",
-                                "frozenTubeTypeCode": "TUBE_TYPE_0002",
-                                "frozenTubeTypeId": 12,
-                                "frozenTubeTypeName": "血浆",
-                                "isModifyPostition": "1",
-                                "isModifyState": "0002",
-                                "memo": "",
-                                "projectCode": "P_00001",
-                                "projectId": 1,
-                                "sampleCode": "3434",
-                                "sampleTempCode": "54135151",
-                                "sampleTypeCode": "S_TYPE_00001",
-                                "sampleTypeId": 5,
-                                "sampleTypeName": "血浆-绿",
-                                "status": "1",
-                                "tubeColumns": 2,
-                                "tubeRows": 3,
-                                "frozenTubeVolumnsUnit":"ml",
-                                "frozenBoxCode": "33334",
-                                "sampleUsedTimes":1,
-                                "sampleUsedTimesMost":10,
-                                "frozenTubeVolumns":10,
-                                "backColor":"rgba(0,255,0,0.3)",
-                                "background":''
-                            },
-                            {
-                                "errorType": "6003",
-                                "frozenBoxTypeCode":"BOX_TYPE_0004",
-                                "frozenTubeCode": "5435347",
-                                "frozenTubeTypeCode": "TUBE_TYPE_0003",
-                                "frozenTubeTypeId": 12,
-                                "frozenTubeTypeName": "血浆",
-                                "isModifyPostition": "1",
-                                "isModifyState": "0002",
-                                "memo": "",
-                                "projectCode": "P_00001",
-                                "projectId": 1,
-                                "sampleCode": "3434",
-                                "sampleTempCode": "54135151",
-                                "sampleTypeCode": "S_TYPE_00001",
-                                "sampleTypeId": 5,
-                                "sampleTypeName": "白细胞-灰",
-                                "status": "1",
-                                "tubeColumns": 5,
-                                "tubeRows": 5,
-                                "frozenTubeVolumnsUnit":"ml",
-                                "frozenBoxCode": "33335",
-                                "sampleUsedTimes":1,
-                                "sampleUsedTimesMost":10,
-                                "frozenTubeVolumns":10,
-                                "backColor":"rgba(192,192,192,0.3)",
-                                "background":''
-                            }
-                        ],
-                        "isRealData": "4001",
-                        "isSplit": "0003",
-                        "memo": "",
-                        "sampleNumber": 20,
-                        "sampleTypeId": 5,
-                        "status": "1",
-                        "supportRackCode": "R1",
-                        "supportRackId": 37
-
-                    }
                 ],
                 "frozenBoxNumber": 10,
                 "memo": "",
@@ -200,7 +49,7 @@
             for(var k=0; k < size; k++){
                 tArray[k] = new Array();
                 for(var j=0;j < size; j++){
-                    tArray[k][j] = "";
+                    tArray[k][j] = {};
                 }
             }
             // microtubesList = vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS;
@@ -213,37 +62,47 @@
 
         };
         init(size);
+        var htm;
         vm.myCustomRenderer = function(hotInstance, td, row, col, prop, value, cellProperties) {
-            Handsontable.renderers.TextRenderer.apply(this, arguments);
-            if(typeof value != "object"){
-                console.log(value)
-            }
-            if(value.status == 1){
-                td.style.backgroundColor = value.backColor;
-            }
-            if(value.status == 2){
-                td.style.background = 'linear-gradient(to right,'+value.backColor+',50%,rgba(0,0,0,1)';
-            }
-            if(value.status == 3){
+            // Handsontable.renderers.TextRenderer.apply(this, arguments);
+
+            if(value.sampleTempCode){
+                htm = value.sampleTempCode
+            }else{
+                if(Object.keys(value).length == 0){
+                    console.log(value)
+                    htm = ""
+                }else{
+                    if(value.status == 1){
+                        td.style.backgroundColor = value.backColor;
+                    }
+                    if(value.status == 2){
+                        td.style.background = 'linear-gradient(to right,'+value.backColor+',50%,rgba(0,0,0,1)';
+                    }
+                    if(value.status == 3){
+
+                    }
+                    td.style.position = 'relative';
+                    if(vm.flagStatus || vm.exchangeFlag || vm.remarkFlag) {
+                        cellProperties.readOnly = true;
+                    }else{
+                        cellProperties.readOnly = false;
+                    }
+                    if(value.frozenTubeCode){
+                        htm = "<div>"+value.frozenTubeCode+"</div>"+
+                            "<div id='microtubesId' style='display: none'>"+value.frozenTubeCode+"</div>" +
+                            "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
+                            "<div id='microtubesRemark' style='display: none'>"+value.memo+"</div>"+
+                            "<div id='microtubesRow' style='display: none'>"+value.tubeRows+"</div>"+
+                            "<div id='microtubesCol' style='display: none'>"+value.tubeColumns+"</div>"+
+                            "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
+                    }else{
+                        htm = value
+                    }
+                }
 
             }
-            td.style.position = 'relative';
-            if(vm.flagStatus || vm.exchangeFlag || vm.remarkFlag) {
-                cellProperties.readOnly = true;
-            }else{
-                cellProperties.readOnly = false;
-            }
-            if(value.frozenTubeCode){
-                var htm = "<div>"+value.frozenTubeCode+"</div>"+
-                    "<div id='microtubesId' style='display: none'>"+value.frozenTubeCode+"</div>" +
-                    "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
-                    "<div id='microtubesRemark' style='display: none'>"+value.memo+"</div>"+
-                    "<div id='microtubesRow' style='display: none'>"+value.tubeRows+"</div>"+
-                    "<div id='microtubesCol' style='display: none'>"+value.tubeColumns+"</div>"+
-                    "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
-            }else{
-                var htm = value
-            }
+
 
             td.innerHTML = htm;
 
@@ -253,7 +112,7 @@
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
             rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
             data:tArray,
-            colWidths:100,
+            // colWidths:100,
             renderer:vm.myCustomRenderer,
             fillHandle:false,
             comments: true,
@@ -562,11 +421,11 @@
             });
             modalInstance.result.then(function (data) {
                 console.log(JSON.stringify(data));
-                vm.transportRecord.boxList = data;
+                vm.transportRecord.frozenBoxDTOList = data;
                 // vm.dtOptions = DTOptionsBuilder.newOptions()
 
                 vm.dtOptions = DTOptionsBuilder.newOptions()
-                    .withOption('data', vm.transportRecord.boxList)
+                    .withOption('data', vm.transportRecord.frozenBoxDTOList)
                     .withOption('info', false)
                     .withOption('paging', false)
                     .withOption('sorting', false)
@@ -579,8 +438,8 @@
         }
         //保存
         this.saveRecord = function () {
-            console.log(JSON.stringify(vm.transportRecord));
-            // TransportRecordService.save(vm.transportRecord, onSaveSuccess, onSaveError);
+            // console.log(JSON.stringify(vm.transportRecord));
+            TransportRecordService.save(vm.transportRecord, onSaveSuccess, onSaveError);
         };
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
@@ -609,10 +468,20 @@
             init(10);
             vm.box = boxInfo;
             microtubesList = vm.box.frozenTubeDTOS;
-            for(var i = 0; i < microtubesList.length; i++){
-                tArray[microtubesList[i].tubeRows-1][microtubesList[i].tubeColumns-1] = microtubesList[i];
+            if(microtubesList.length){
+                for(var i = 0; i < microtubesList.length; i++){
+                    tArray[microtubesList[i].tubeRows-1][microtubesList[i].tubeColumns-1] = microtubesList[i];
 
+                }
+            }else{
+                for(var i = 0; i < tArray.length; i++){
+                    for (var j = 0; j <tArray[i].length; j++){
+                        tArray[i][j].sampleTempCode = vm.box.projectSiteCode + "-r" + i + "c" + j;
+                    }
+                }
             }
+            vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS = tArray;
+            // console.log(JSON.stringify(tArray))
             hotRegisterer.getInstance('my-handsontable').render();
             // FrozenBoxByIdService.get({id:boxInfo.id},frozenBoxSuccess,onError());
 
@@ -623,7 +492,6 @@
             microtubesList = data.frozenTubeDTOS;
             for(var i = 0; i < microtubesList.length; i++){
                 tArray[microtubesList[i].tubeRows-1][microtubesList[i].tubeColumns-1] = microtubesList[i];
-
             }
             hotRegisterer.getInstance('my-handsontable').loadData(tArray);
             hotRegisterer.getInstance('my-handsontable').render();

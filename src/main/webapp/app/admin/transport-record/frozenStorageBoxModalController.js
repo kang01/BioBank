@@ -16,7 +16,6 @@
         var codeList = [];
 
         vm.addData = function (event) {
-
             if(window.event.keyCode == 13){
                 if(vm.boxCode != ''){
                     vm.boxCode += ",";
@@ -25,7 +24,11 @@
                     codeList.shift();
                     vm.boxCodeList.length = codeList.length;
                     for(var i = 0; i < codeList.length; i++){
-                        vm.boxCodeList[i] = {code:codeList[i]}
+                        vm.boxCodeList[i] = {
+                            projectSiteCode:codeList[i],
+                            frozenTubeDTOS:[],
+                            frozenBoxTypeId:17
+                        }
 
                     }
                 }

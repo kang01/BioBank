@@ -12,6 +12,6 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface FrozenBoxTypeRepository extends JpaRepository<FrozenBoxType,Long> {
-    @Query("select t from FrozenBoxType t where t.status != '00'")
+    @Query("select t from FrozenBoxType t where t.status != '0000'")
     List<FrozenBoxType> findAllFrozenBoxTypes();
 }

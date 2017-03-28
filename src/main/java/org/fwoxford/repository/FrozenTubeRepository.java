@@ -15,6 +15,6 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query("select t from FrozenTube t where t.frozenBox.id = ?1")
     List<FrozenTube> findFrozenTubeListByBoxId(Long frozenBoxId);
 
-    @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and status!='00'")
+    @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and status!='0000'")
     List<FrozenTube> findFrozenTubeListByBoxCode(String frozenBoxCode);
 }

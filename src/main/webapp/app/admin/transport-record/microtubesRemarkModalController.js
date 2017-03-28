@@ -19,10 +19,13 @@
             $uibModalInstance.dismiss('cancel');
         };
         this.ok = function () {
-            for(var i = 0; i < vm.items.domArray.length; i++){
-                if(vm.items.domArray[i].value){
-                    vm.items.domArray[i].memo = vm.memo;
+            for(var i = 0; i < vm.items.remarkArray.length; i++){
+                for(var j =0; j < vm.items.remarkArray[i].length;j++){
+                    if(vm.items.remarkArray[i][j].frozenTubeCode){
+                        vm.items.remarkArray[i][j].memo = vm.memo;
+                    }
                 }
+
             }
             $uibModalInstance.close(vm.items);
         };

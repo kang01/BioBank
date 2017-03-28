@@ -1,13 +1,14 @@
 <div class="modal-header">
     <h3 class="modal-title">
-        <span ng-repeat="item in vm.items.domArray track by $index">
-            {{item.frozenTubeCode}},
+        <span ng-repeat="item in vm.items.remarkArray track by $index">
+            {{item.frozenTubeCode}}
         </span>
         批注
     </h3>
 </div>
 <div class="modal-body">
     <textarea rows="6" style="width: 100%" ng-model="vm.memo"></textarea>
+    {{remarkArray}}
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>

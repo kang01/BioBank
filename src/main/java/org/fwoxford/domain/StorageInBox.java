@@ -66,6 +66,18 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
     @NotNull
     private StorageIn storageIn;
 
+    @ManyToOne(optional = false)
+    @NotNull
+    private Equipment equipment;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private SupportRack supportRack;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private Area area;
+
     public Long getId() {
         return id;
     }
@@ -189,6 +201,45 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
 
     public void setStorageIn(StorageIn storageIn) {
         this.storageIn = storageIn;
+    }
+
+    public Equipment getEquipment() {
+        return equipment;
+    }
+
+    public StorageInBox equipment(Equipment equipment) {
+        this.equipment = equipment;
+        return this;
+    }
+
+    public void setEquipment(Equipment equipment) {
+        this.equipment = equipment;
+    }
+
+    public SupportRack getSupportRack() {
+        return supportRack;
+    }
+
+    public StorageInBox supportRack(SupportRack supportRack) {
+        this.supportRack = supportRack;
+        return this;
+    }
+
+    public void setSupportRack(SupportRack supportRack) {
+        this.supportRack = supportRack;
+    }
+
+    public Area getArea() {
+        return area;
+    }
+
+    public StorageInBox area(Area area) {
+        this.area = area;
+        return this;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
     }
 
     @Override

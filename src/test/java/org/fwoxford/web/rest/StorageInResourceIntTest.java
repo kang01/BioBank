@@ -197,7 +197,7 @@ public class StorageInResourceIntTest {
         assertThat(storageInList).hasSize(databaseSizeBeforeCreate + 1);
         StorageIn testStorageIn = storageInList.get(storageInList.size() - 1);
         assertThat(testStorageIn.getProjectCode()).isEqualTo(DEFAULT_PROJECT_CODE);
-        assertThat(testStorageIn.getProject_site_code()).isEqualTo(DEFAULT_PROJECT_SITE_CODE);
+        assertThat(testStorageIn.getProjectSiteCode()).isEqualTo(DEFAULT_PROJECT_SITE_CODE);
         assertThat(testStorageIn.getReceiveDate()).isEqualTo(DEFAULT_RECEIVE_DATE);
         assertThat(testStorageIn.getReceiveId()).isEqualTo(DEFAULT_RECEIVE_ID);
         assertThat(testStorageIn.getReceiveName()).isEqualTo(DEFAULT_RECEIVE_NAME);
@@ -260,7 +260,7 @@ public class StorageInResourceIntTest {
     public void checkProject_site_codeIsRequired() throws Exception {
         int databaseSizeBeforeTest = storageInRepository.findAll().size();
         // set the field null
-        storageIn.setProject_site_code(null);
+        storageIn.setProjectSiteCode(null);
 
         // Create the StorageIn, which fails.
         StorageInDTO storageInDTO = storageInMapper.storageInToStorageInDTO(storageIn);
@@ -647,7 +647,7 @@ public class StorageInResourceIntTest {
         assertThat(storageInList).hasSize(databaseSizeBeforeUpdate);
         StorageIn testStorageIn = storageInList.get(storageInList.size() - 1);
         assertThat(testStorageIn.getProjectCode()).isEqualTo(UPDATED_PROJECT_CODE);
-        assertThat(testStorageIn.getProject_site_code()).isEqualTo(UPDATED_PROJECT_SITE_CODE);
+        assertThat(testStorageIn.getProjectSiteCode()).isEqualTo(UPDATED_PROJECT_SITE_CODE);
         assertThat(testStorageIn.getReceiveDate()).isEqualTo(UPDATED_RECEIVE_DATE);
         assertThat(testStorageIn.getReceiveId()).isEqualTo(UPDATED_RECEIVE_ID);
         assertThat(testStorageIn.getReceiveName()).isEqualTo(UPDATED_RECEIVE_NAME);

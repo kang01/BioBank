@@ -13,75 +13,100 @@ import java.util.Objects;
 public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
-    @NotNull
+    /**
+     * 项目编码
+     */
     @Size(max = 100)
     private String projectCode;
-
-    @NotNull
+    /**
+     * 项目点编码
+     */
     @Size(max = 100)
-    private String project_site_code;
-
-    @NotNull
+    private String projectSiteCode;
+    /**
+     * 接受日期
+     */
     private LocalDate receiveDate;
-
-    @NotNull
+    /**
+     * 接受人ID
+     */
     @Max(value = 100)
     private Long receiveId;
-
-    @NotNull
+    /**
+     * 接受人姓名
+     */
     @Size(max = 100)
     private String receiveName;
-
+    /**
+     * 入库类型：（首次入库，移位入库，调整入库）
+     */
     @NotNull
     @Size(max = 20)
     private String storageInType;
-
-    @NotNull
+    /**
+     * 入库人1ID
+     */
     @Max(value = 100)
     private Long storageInPersonId1;
-
-    @NotNull
+    /**
+     * 入库人1姓名
+     */
     @Size(max = 100)
     private String storageInPersonName1;
-
-    @NotNull
+    /**
+     * 入库人2ID
+     */
     @Max(value = 100)
     private Long storageInPersonId2;
-
-    @NotNull
+    /**
+     * 入库人2姓名
+     */
     @Size(max = 100)
     private String storangeInPersonName2;
-
-    @NotNull
+    /**
+     * 入库日期
+     */
     private LocalDate storageInDate;
-
-    @NotNull
+    /**
+     * 样本数量
+     */
     @Max(value = 100)
     private Integer sampleNumber;
-
-    @NotNull
+    /**
+     * 签名人ID
+     */
     @Max(value = 100)
     private Long signId;
-
-    @NotNull
+    /**
+     * 卡名人姓名
+     */
     @Size(max = 100)
     private String signName;
-
-    @NotNull
+    /**
+     * 签名日期
+     */
     private LocalDate signDate;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
-
-    @NotNull
+    /**
+     * 状态
+     */
     @Size(max = 20)
     private String status;
-
+    /**
+     * 转运ID
+     */
     private Long transhipId;
-
+    /**
+     * 项目ID
+     */
     private Long projectId;
-
+    /**
+     * 项目点ID
+     */
     private Long projectSiteId;
 
     public Long getId() {
@@ -98,13 +123,15 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
     }
-    public String getProject_site_code() {
-        return project_site_code;
+
+    public String getProjectSiteCode() {
+        return projectSiteCode;
     }
 
-    public void setProject_site_code(String project_site_code) {
-        this.project_site_code = project_site_code;
+    public void setProjectSiteCode(String projectSiteCode) {
+        this.projectSiteCode = projectSiteCode;
     }
+
     public LocalDate getReceiveDate() {
         return receiveDate;
     }
@@ -261,7 +288,7 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
         return "StorageInDTO{" +
             "id=" + id +
             ", projectCode='" + projectCode + "'" +
-            ", project_site_code='" + project_site_code + "'" +
+            ", projectSiteCode='" + projectSiteCode + "'" +
             ", receiveDate='" + receiveDate + "'" +
             ", receiveId='" + receiveId + "'" +
             ", receiveName='" + receiveName + "'" +

@@ -28,6 +28,9 @@
                     <th jh-sort-by="status"><span data-translate="bioBankApp.storageInBox.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="frozenBoxCode"><span data-translate="bioBankApp.storageInBox.frozenBoxCode">Frozen Box Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="storageInId"><span data-translate="bioBankApp.storageInBox.storageIn">Storage In</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentId"><span data-translate="bioBankApp.storageInBox.equipment">Equipment</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="supportRackId"><span data-translate="bioBankApp.storageInBox.supportRack">Support Rack</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="areaId"><span data-translate="bioBankApp.storageInBox.area">Area</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -44,6 +47,15 @@
                     <td>{{storageInBox.frozenBoxCode}}</td>
                     <td>
                         <a ui-sref="storage-in-detail({id:storageInBox.storageInId})">{{storageInBox.storageInId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="equipment-detail({id:storageInBox.equipmentId})">{{storageInBox.equipmentId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="support-rack-detail({id:storageInBox.supportRackId})">{{storageInBox.supportRackId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="area-detail({id:storageInBox.areaId})">{{storageInBox.areaId}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

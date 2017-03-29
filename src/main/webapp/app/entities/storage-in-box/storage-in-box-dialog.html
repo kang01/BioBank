@@ -150,6 +150,42 @@
                 This field is required.
             </p>
         </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.storageInBox.equipment" for="field_equipment">Equipment</label>
+            <select class="form-control" id="field_equipment" name="equipment" ng-model="vm.storageInBox.equipmentId" ng-options="equipment.id as equipment.id for equipment in vm.equipment"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.equipment.$invalid">
+            <p class="help-block"
+                ng-show="editForm.equipment.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.storageInBox.supportRack" for="field_supportRack">Support Rack</label>
+            <select class="form-control" id="field_supportRack" name="supportRack" ng-model="vm.storageInBox.supportRackId" ng-options="supportRack.id as supportRack.id for supportRack in vm.supportracks"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.supportRack.$invalid">
+            <p class="help-block"
+                ng-show="editForm.supportRack.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.storageInBox.area" for="field_area">Area</label>
+            <select class="form-control" id="field_area" name="area" ng-model="vm.storageInBox.areaId" ng-options="area.id as area.id for area in vm.areas"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.area.$invalid">
+            <p class="help-block"
+                ng-show="editForm.area.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">

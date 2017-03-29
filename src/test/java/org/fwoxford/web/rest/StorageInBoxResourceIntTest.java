@@ -4,6 +4,9 @@ import org.fwoxford.BioBankApp;
 
 import org.fwoxford.domain.StorageInBox;
 import org.fwoxford.domain.StorageIn;
+import org.fwoxford.domain.Equipment;
+import org.fwoxford.domain.SupportRack;
+import org.fwoxford.domain.Area;
 import org.fwoxford.repository.StorageInBoxRepository;
 import org.fwoxford.service.StorageInBoxService;
 import org.fwoxford.service.dto.StorageInBoxDTO;
@@ -121,6 +124,21 @@ public class StorageInBoxResourceIntTest {
         em.persist(storageIn);
         em.flush();
         storageInBox.setStorageIn(storageIn);
+        // Add required entity
+        Equipment equipment = EquipmentResourceIntTest.createEntity(em);
+        em.persist(equipment);
+        em.flush();
+        storageInBox.setEquipment(equipment);
+        // Add required entity
+        SupportRack supportRack = SupportRackResourceIntTest.createEntity(em);
+        em.persist(supportRack);
+        em.flush();
+        storageInBox.setSupportRack(supportRack);
+        // Add required entity
+        Area area = AreaResourceIntTest.createEntity(em);
+        em.persist(area);
+        em.flush();
+        storageInBox.setArea(area);
         return storageInBox;
     }
 

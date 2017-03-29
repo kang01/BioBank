@@ -1,17 +1,18 @@
 /**
- * Created by gaokangkang on 2017/3/27.
+ * Created by gaokangkang on 2017/3/25.
+ * 样本类型
  */
 (function () {
     'use strict';
 
     angular
         .module('bioBankApp')
-        .factory('FrozenBoxByIdService', FrozenBoxByIdService);
+        .factory('SampleTypeService', SampleTypeService);
 
-    FrozenBoxByIdService.$inject = ['$resource'];
+    SampleTypeService.$inject = ['$resource'];
 
-    function FrozenBoxByIdService ($resource) {
-        var service = $resource('api/findFrozenBoxAndTubeByBoxId/:id', {}, {
+    function SampleTypeService ($resource) {
+        var service = $resource('api/sampleTypes', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

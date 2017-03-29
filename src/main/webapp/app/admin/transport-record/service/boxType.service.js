@@ -1,6 +1,7 @@
 /**
  * Created by gaokangkang on 2017/3/25.
  */
+//盒子类型
 (function () {
     'use strict';
 

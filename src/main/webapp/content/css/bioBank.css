@@ -81,7 +81,21 @@
 .transport-record-new .pipe-body .pipe-body-top .control-label{
     padding-left: 4px;
 }
-
+.transport-record-new .pipe-body .pipe-body-bottom .txt-width{
+    width: 39%;
+}
+.transport-record-new .pipe-body .pipe-body-bottom .box-remark{
+    width: 61%;
+    padding-right: 0;
+}
+.transport-record-new .pipe-body .pipe-body-bottom .box-remark .col-sm-2{
+    width: 9%;
+    padding-right: 0;
+}
+.transport-record-new .pipe-body .pipe-body-bottom .box-remark .col-sm-10{
+    width: 89%;
+    padding-left: 12px;
+}
 @media (min-width:1440px) {
     .transport-record-new .pipe-body .pipe-body-top .col-sm-2{
         width: 21%;

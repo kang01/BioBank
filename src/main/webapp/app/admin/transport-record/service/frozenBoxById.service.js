@@ -1,17 +1,18 @@
 /**
- * Created by gaokangkang on 2017/3/25.
+ * Created by gaokangkang on 2017/3/27.
+ * 根据盒子ID取冻存管
  */
 (function () {
     'use strict';
 
     angular
         .module('bioBankApp')
-        .factory('SampleTypeService', SampleTypeService);
+        .factory('FrozenBoxByIdService', FrozenBoxByIdService);
 
-    SampleTypeService.$inject = ['$resource'];
+    FrozenBoxByIdService.$inject = ['$resource'];
 
-    function SampleTypeService ($resource) {
-        var service = $resource('api/sampleTypes', {}, {
+    function FrozenBoxByIdService ($resource) {
+        var service = $resource('api/findFrozenBoxAndTubeByBoxId/:id', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

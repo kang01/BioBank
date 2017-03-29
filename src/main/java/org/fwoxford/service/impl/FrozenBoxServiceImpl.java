@@ -114,8 +114,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
      */
     @Override
     public List<FrozenBoxDTO> findAllFrozenBoxByTranshipId(Long transhipId) {
-        List<FrozenBoxDTO> frozenBoxDTOList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipId);
-        return frozenBoxDTOList;
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipId);
+        return frozenBoxMapper.frozenBoxesToFrozenBoxDTOs(frozenBoxList);
     }
     /**
      * 根据冻存盒id查询冻存管信息

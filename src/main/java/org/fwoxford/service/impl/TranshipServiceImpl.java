@@ -2,7 +2,6 @@ package org.fwoxford.service.impl;
 
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
-import org.fwoxford.domain.FrozenTubeType;
 import org.fwoxford.domain.Tranship;
 import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.repository.TranshipRepositries;
@@ -14,7 +13,6 @@ import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
-import org.fwoxford.web.rest.errors.ErrorVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,6 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,7 +194,7 @@ public class TranshipServiceImpl implements TranshipService{
         for(FrozenBoxDTO boxDto:frozenBoxDTOList){
             for(FrozenTubeDTO tube :boxDto.getFrozenTubeDTOS()){
                 for(FrozenBox box:frozenBoxes){
-                    if(tube.getFrozenBoxCode().equals(box.getFrozenBoxCode())){
+                    if(tube != null && tube.getFrozenBoxCode().equals(box.getFrozenBoxCode())){
                         tube.setFrozenTubeTypeId(frozentubeTypeDTO.getId());
                         tube.setFrozenTubeTypeCode(frozentubeTypeDTO.getFrozenTubeTypeCode());
                         tube.setFrozenTubeTypeName(frozentubeTypeDTO.getFrozenTubeTypeName());

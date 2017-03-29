@@ -13,7 +13,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
-    List<FrozenBoxDTO> findAllFrozenBoxByTranshipId(Long transhipId);
+    List<FrozenBox> findAllFrozenBoxByTranshipId(Long transhipId);
 
     @Query("select box from FrozenBox box where box.frozenBoxCode = ?1")
     FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode);

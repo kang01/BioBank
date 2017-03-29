@@ -248,9 +248,11 @@ public class TranshipServiceImpl implements TranshipService{
             Long supportRackId = box.getSupportRackId();
             String column = box.getColumnsInShelf();
             String row = box.getRowsInShelf();
-            Long count =  frozenBoxService.countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId,areaId,supportRackId,column,row);
-            if(count.intValue() >0 ){
-                throw new BankServiceException("该位置已有冻存盒存在，请更换冻存盒位置！",box.getEquipmentCode()+"."+box.getAreaCode()+"."+box.getSupportRackCode()+"."+box.getRowsInShelf()+box.getColumnsInShelf());
+            List<FrozenBoxDTO> frozenBoxDTOList =  frozenBoxService.countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId,areaId,supportRackId,column,row);
+            for(FrozenBoxDTO b:frozenBoxDTOList){
+                if(!b.getId().equals(box.getId())){
+                    throw new BankServiceException("该位置已有冻存盒存在，请更换冻存盒位置！",box.getEquipmentCode()+"."+box.getAreaCode()+"."+box.getSupportRackCode()+"."+box.getRowsInShelf()+box.getColumnsInShelf());
+                }
             }
         }
         //判断盒子内样本是否有效，即是否有数据

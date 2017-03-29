@@ -64,12 +64,15 @@
                 .draw();
         };
 
-        vm.dtOptions = DTOptionsBuilder.fromSource('api/res/tranships')
+        vm.dtOptions = DTOptionsBuilder.fromSource({
+                "url": 'api/res/tranships',
+                "dataSrc": "data"
+            })
             .withOption('sServerMethod','POST')
             .withOption('processing',true)
             .withOption('serverSide',true)
             // .withOption('sAjaxSource', 'api/res/tranships')
-            .withOption('fnServerData', function ( sSource, aoData, fnCallback, oSettings ) {
+            .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};
                 for(var i=0; aoData && i<aoData.length; ++i){
                     var oData = aoData[i];
@@ -139,25 +142,17 @@
                     values: ['Yoda', 'Titi', 'Kyle', 'Bar', 'Whateveryournameis']
                 }]
             });
-        // vm.dtOptions = DTOptionsBuilder.newOptions()
-        //     .withOption('ajax',{
-        //         url:'api/temp/tranships',
-        //         type:'get'
-        //     })
-        //     .withDataProp('data')
-        //     .withOption('processing',true)
-        //     .withOption('serverSide',true)
-        //     .withPaginationType('full_number');
+
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目点').notSortable(),
-            DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目编号').notSortable(),
-            DTColumnBuilder.newColumn('transhipDate').withTitle('转运日期').notSortable(),
-            DTColumnBuilder.newColumn('receiver').withTitle('接收人').notSortable(),
-            DTColumnBuilder.newColumn('receiveDate').withTitle('接收日期').notSortable(),
-            DTColumnBuilder.newColumn('sampleSatisfaction').withTitle('满意度').notSortable(),
-            DTColumnBuilder.newColumn('transhipState').withTitle('状态').notSortable(),
-            DTColumnBuilder.newColumn(null).withTitle('操作').notSortable()
-                .renderWith(actionsHtml)
+            // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
+            DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点'),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目编号'),
+            DTColumnBuilder.newColumn('transhipDate').withTitle('转运日期'),
+            DTColumnBuilder.newColumn('receiver').withTitle('接收人'),
+            DTColumnBuilder.newColumn('receiveDate').withTitle('接收日期'),
+            DTColumnBuilder.newColumn('sampleSatisfaction').withTitle('满意度'),
+            DTColumnBuilder.newColumn('transhipState').withTitle('状态'),
+            DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {
             $compile(angular.element(row).contents())($scope);
@@ -174,8 +169,8 @@
             vm.dtInstance.reloadData();
         }
         function actionsHtml(data, type, full, meta) {
-            vm.persons[data.id] = data;
-            return '<button type="button" class="btn btn-warning" ui-sref="transport-record-edit({id:vm.persons.id})">' +
+            // vm.persons[data.id] = data;
+            return '<button type="button" class="btn btn-warning" ui-sref="transport-record-edit({id:full.id})">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;'
         }

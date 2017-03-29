@@ -71,7 +71,8 @@ public class LoggingAspect {
                     joinPoint.getSignature().getName(), result);
             }
 
-            if (SecurityUtils.isAuthenticated()){
+            if (log.isInfoEnabled() && SecurityUtils.isAuthenticated() && joinPoint.getSignature().getDeclaringTypeName().startsWith("org.fwoxford.web.rest.")){
+                // 当用户使用了某个Rest接口后记录，调用日志
                 String currentUser = SecurityUtils.getCurrentUserLoginAtAddress();
                 log.info("User: {}; Called: {}.{}()", currentUser, joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName());

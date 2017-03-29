@@ -14,6 +14,8 @@ import java.util.Objects;
  */
 public class TranshipResponse {
 
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private Long id;
 
     @NotNull

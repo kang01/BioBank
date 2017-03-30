@@ -8,113 +8,116 @@
         .module('bioBankApp')
         .controller('TransportRecordNewController', TransportRecordNewController);
 
-    TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state',
+    TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','FindFrozenBoxAndTubeByBoxService',
         'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService'];
 
-    function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,
+    function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,FindFrozenBoxAndTubeByBoxService,
                                           SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
-        vm.transportRecord = {};
-        vm.openCalendar = openCalendar;
+        vm.transportRecord = entity; //转运记录
+        vm.frozenTubeArray = [];//初始管子数据二位数组
+        vm.openCalendar = openCalendar; //时间
         vm.importFrozenStorageBox = importFrozenStorageBox; //导入冻存盒
-        vm.someClickHandler = someClickHandler;
-        var microtubesList;
-        vm.transportRecord =
-            {
-                "effectiveSampleNumber": 2,
-                "emptyHoleNumber": 12,
-                "emptyTubeNumber": 11,
-                "frozenBoxDTOList": [
-                ],
-                "frozenBoxNumber": 10,
-                "memo": "",
-                "projectCode": "P_00001",
-                "projectId": 1,
-                "projectName": "心血管高危筛查项目",
-                "projectSiteCode": "P_SITE_00001",
-                "projectSiteId": 2,
-                "projectSiteName": "心血管高危筛查项目天坛医院项目点",
-                "receiveDate": new Date("2017-03-25"),
-                "receiver":"张主任",
-                "sampleNumber":20,
-                "sampleSatisfaction": 1,
-                "trackNumber": "1222'",
-                "transhipBatch": "232323",
-                "transhipDate": new Date("2017-03-25"),
-                "status": "1",
-                "transhipState": "1002"
-            };
-        var tArray = new Array();
+        vm.someClickHandler = someClickHandler; //点击冻存盒的表格行
+        vm.transportRecord.transhipDate = new Date(entity.transhipDate);
+        vm.transportRecord.receiveDate = new Date(entity.receiveDate);
+        var boxStr;
+        for(var i = 0; i < vm.transportRecord.frozenBoxDTOList; i++){
+            boxStr = vm.transportRecord.frozenBoxDTOList[i].frozenBoxCode
+            // FindFrozenBoxAndTubeByBoxService.query({})
+        }
         var size = 10;
-        var init = function (size) {
-            for(var k=0; k < size; k++){
-                tArray[k] = new Array();
-                for(var j=0;j < size; j++){
-                    tArray[k][j] = {};
+        var initFrozenTube = function (size) {
+            for(var i = 0; i < size; i++){
+                vm.frozenTubeArray[i] = [];
+                for(var j = 0;j < size; j++){
+                    vm.frozenTubeArray[i][j] = "";
                 }
             }
-            // microtubesList = vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS;
-            // for(var i = 0; i < microtubesList.length; i++){
-            //     tArray[microtubesList[i].tubeRows-1][microtubesList[i].tubeColumns-1] = microtubesList[i]
-            // }
-            // vm.db = {
-            //     items: tArray
-            // };
-
         };
-        init(size);
-        var htm;
+        initFrozenTube(size);
+
+        var htm; //渲染管子表格
         vm.myCustomRenderer = function(hotInstance, td, row, col, prop, value, cellProperties) {
             // Handsontable.renderers.TextRenderer.apply(this, arguments);
+            // console.log(value);
+            var tube = {
+                frozenTubeCode:'',
+                status:1,
+                memo:'',
+                tubeRows:row,
+                tubeColumns:col,
+                sampleTypeCode:'',//样本类型,
+            };
+            td.style.position = 'relative';
 
-            if(value.sampleTempCode){
-                htm = value.sampleTempCode
-            }else{
-                if(Object.keys(value).length == 0){
-                    console.log(value)
-                    htm = ""
-                }else{
-                    if(value.status == 1){
-                        td.style.backgroundColor = value.backColor;
-                    }
-                    if(value.status == 2){
-                        td.style.background = 'linear-gradient(to right,'+value.backColor+',50%,rgba(0,0,0,1)';
-                    }
-                    if(value.status == 3){
-
-                    }
-                    td.style.position = 'relative';
-                    if(vm.flagStatus || vm.exchangeFlag || vm.remarkFlag) {
-                        cellProperties.readOnly = true;
-                    }else{
-                        cellProperties.readOnly = false;
-                    }
-                    if(value.frozenTubeCode){
-                        htm = "<div>"+value.frozenTubeCode+"</div>"+
-                            "<div id='microtubesId' style='display: none'>"+value.frozenTubeCode+"</div>" +
-                            "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
-                            "<div id='microtubesRemark' style='display: none'>"+value.memo+"</div>"+
-                            "<div id='microtubesRow' style='display: none'>"+value.tubeRows+"</div>"+
-                            "<div id='microtubesCol' style='display: none'>"+value.tubeColumns+"</div>"+
-                            "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
-                    }else{
-                        htm = value
-                    }
-                }
-
+            // if(typeof value == "object"){
+            //     if(Object.keys(value).length != 0){
+            //         tube = value
+            //
+            //     }
+            //
+            // }
+            if(value != ""){
+                tube.frozenTubeCode = value
             }
+            // if(value.sampleTempCode){
+            //     tube.frozenTubeCode = '',
+            //     tube.status = '1',
+            //     tube.memo = '',
+            //     tube.sampleTempCode = value.sampleTempCode;
+            //     tube.tubeRows = row;
+            //     tube.tubeColumns = col;
+            // }
+            // if(tube.sampleTypeCode){
+            //     changeSampleType(tube.sampleTypeCode,td);
+            // }
 
+            htm = "<div ng-if='tube.frozenTubeCode'>"+tube.frozenTubeCode+"</div>"+
+                "<div id='microtubesId' style='display: none'>"+tube.frozenTubeCode+"</div>" +
+                "<div id='microtubesStatus' style='display: none'>"+tube.status+"</div>"+
+                "<div id='microtubesRemark' style='display: none'>"+tube.memo+"</div>"+
+                "<div id='microtubesRow' style='display: none'>"+tube.tubeRows+"</div>"+
+                "<div id='microtubesCol' style='display: none'>"+tube.tubeColumns+"</div>"+
+                "<div ng-if="+tube.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
 
             td.innerHTML = htm;
+            // console.log(JSON.stringify(vm.frozenTubeArray))
 
         };
-        var remarkArray;
+        //修改样本类型
+        function changeSampleType(code,td) {
+            //血浆
+            if(code == 'S_TYPE_00001' || code == 'S_TYPE_00002'){
+                td.style.backgroundColor = 'rgba(204,153,255,0.3)';
+            }
+            //白细胞
+            if(code == 'S_TYPE_00003'){
+                td.style.backgroundColor = 'rgba(255,255,255,0.3)';
+            }
+            //白细胞灰
+            if(code == 'S_TYPE_00004'){
+                td.style.backgroundColor = 'rgba(192,192,192,0.3)';
+            }
+            //血浆绿
+            if(code == 'S_TYPE_00005' || code == 'S_TYPE_00006'){
+                td.style.backgroundColor = 'rgba(0,255,0,0.3)';
+            }
+            //血清
+            if(code == 'S_TYPE_00007' || code == 'S_TYPE_00008'){
+                td.style.backgroundColor = 'rgba(255,0,0,0.3)';
+            }
+            //血清
+            if(code == 'S_TYPE_00009' || code == 'S_TYPE_00010'){
+                td.style.backgroundColor = 'rgba(255,255,0,0.3)';
+            }
+        }
+        var remarkArray;//批注
         vm.settings = {
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
             rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
-            data:tArray,
-            // colWidths:100,
+            data:vm.frozenTubeArray,
             renderer:vm.myCustomRenderer,
             fillHandle:false,
             stretchH: 'all',
@@ -125,10 +128,10 @@
                     vm.exchangeFlag = true;
                     var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:2px dotted #5292F7;"></div>';
                     $(this.getCell(row,col)).append(txt);
-                    if(tArray[row][col] == ""){
+                    if(vm.frozenTubeArray[row][col] == ""){
                         domArray.push({tubeRows:row+1,tubeColumns:col+1});
                     }else{
-                        domArray.push(tArray[row][col]);
+                        domArray.push(vm.frozenTubeArray[row][col]);
                     }
 
                     console.log(JSON.stringify(domArray))
@@ -152,7 +155,7 @@
                         //正常
                         if(microtubes.status == 1){
                             microtubesStatusDom.text('2');
-                            tArray[row][col].status = 2;
+                            vm.frozenTubeArray[row][col].status = 2;
                             // for(var i = 0; i < microtubesList.length; i++){
                             //     if(microtubesList[i].tubeRows-1 == row && microtubesList[i].tubeColumns-1 == col){
                             //         microtubesList[i].status = 2;
@@ -170,7 +173,7 @@
                             this.getCell(row,col).style.backgroundColor = '#ffffff';
                             microtubesStatusDom.text('3');
                             // microtubesList[i].status = 3
-                            tArray[row][col].status = 3;
+                            vm.frozenTubeArray[row][col].status = 3;
                         }
                         //空孔
                         if(microtubes.status == 3){
@@ -179,7 +182,7 @@
                             this.getCell(row,col).style.backgroundColor = '';
                             // this.getCell(row,col).style.border = '2px solid red';
                             microtubesStatusDom.text('4');
-                            tArray[row][col].status = 4;
+                            vm.frozenTubeArray[row][col].status = 4;
                         }
                         //异常
                         if(microtubes.status == 4){
@@ -187,7 +190,7 @@
                             // this.getCell(row,col).style.outline = '';
                             $(".abnormal").remove();
                             microtubesStatusDom.text('1');
-                            tArray[row][col].status = 1;
+                            vm.frozenTubeArray[row][col].status = 1;
                             // for(var i = 0; i < microtubesList.length; i++){
                             //     if(microtubesList[i].tubeRows-1 == row && microtubesList[i].tubeColumns-1 == col){
                             //         this.getCell(row,col).style.backgroundColor =  microtubesList[i].backColor;
@@ -199,7 +202,7 @@
                         microtubes.status = $(this.getCell(row, col)).find("#microtubesStatus").text();
                         hotRegisterer.getInstance('my-handsontable').render();
                     }
-                    console.log(JSON.stringify(tArray))
+                    console.log(JSON.stringify(vm.frozenTubeArray))
                 }
 
 
@@ -215,11 +218,16 @@
                 }
             },
             afterChange:function (change,source) {
-                console.log(source);
-                if(source == 'loadData'){
+                // console.log(source);
+                if(source == 'edit'){
+
+                    hotRegisterer.getInstance('my-handsontable').render()
                     return;
                 }
-            }
+            },
+            // cells:function (row,col,prop) {
+            //     console.log(row)
+            // }
         };
 
         var loadAll = function () {
@@ -259,32 +267,46 @@
             maxItems: 1
         };
         //盒子类型 17:10*10 18:8*8
+        var arr1 = [];
+        var arr2 = [];
         vm.typeConfig = {
             valueField:'id',
             labelField:'frozenBoxTypeName',
             maxItems: 1,
             onChange:function(value){
+                console.log(value);
                 var countRows = hotRegisterer.getInstance('my-handsontable').countRows();
                 var countCols = hotRegisterer.getInstance('my-handsontable').countCols();
 
-                for(var i = 0; i < countRows; i++){
-                    for(var j = 8; j <countCols; j++){
-                        if(value == 18){
-                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgb(0,0,0)';
-                        }else{
-                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = '#fff'
-                        }
+                if(value == 18){
+                    // arr = vm.frozenTubeArray.splice(countRows-2,2);
+                    // console.log(arr);
+                    for(var i = 0; i < countRows; i++){
+                    //     for(var j = 0; j <countCols; j++){
+                        arr1 = vm.frozenTubeArray[i].splice(countRows-2,2);
+                    //     }
+                    }
+                    arr2 = vm.frozenTubeArray.splice(countRows-2,2);
+                    console.log(JSON.stringify(arr2+"$$$$$$$$$$$$$$$"));
+
+
+                }else{
+
+                    for(var i = 0; i < countRows; i++) {
+                        vm.frozenTubeArray[i].push({});
                     }
                 }
-                for(var i = 8; i < countRows; i++){
-                    for(var j = 0; j <countCols; j++){
-                        if(value == 18){
-                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgb(0,0,0)';
-                        }else{
-                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = '#fff'
-                        }
-                    }
-                }
+
+
+                // for(var i = 8; i < countRows; i++){
+                //     for(var j = 0; j <countCols; j++){
+                //         if(value == 18){
+                //             hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgb(0,0,0)';
+                //         }else{
+                //             hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = '#fff'
+                //         }
+                //     }
+                // }
                // if(value == 18){
                //     size = 8;
                //     // console.log(hotRegisterer.getInstance('my-handsontable'))
@@ -293,7 +315,7 @@
                //     size = 10;
                // }
                //  init(size);
-               //  hotRegisterer.getInstance('my-handsontable').render()
+                hotRegisterer.getInstance('my-handsontable').render()
             }
         };
         //样本类型
@@ -306,45 +328,79 @@
                 var countCols = hotRegisterer.getInstance('my-handsontable').countCols();
                 for(var i = 0; i < countRows; i++){
                     for(var j = 0; j <countCols; j++){
+                        if(vm.frozenTubeArray[i][j] == ''){
+                            vm.frozenTubeArray[i][j] = {
+                                frozenTubeCode:'',
+                                status:1,
+                                memo:'',
+                                tubeRows:'',
+                                tubeColumns:'',
+                                sampleTypeCode:''
+                            }
+                        }
+
                         //血浆-红
-                        if(value == 'S_TYPE_00001' || value == 'S_TYPE_00002'){
-                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(204,153,255,0.3)';
+                        if(value == 'S_TYPE_00001'){
+                            vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00001';
+                        }
+                        if(value == 'S_TYPE_00002'){
+                            vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00002';
                         }
                         //白细胞-白
                         if(value == 'S_TYPE_00003'){
-                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(255,255,255,0.3)';
+                            vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00003';
+                            // hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(255,255,255,0.3)';
                         }
                         //白细胞-灰
                         if(value == 'S_TYPE_00004'){
-                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(192,192,192,0.3)';
+                            vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00004';
+                            // hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(192,192,192,0.3)';
                         }
-                        //血浆-绿
-                        if(value == 'S_TYPE_00005'|| value == 'S_TYPE_00006'){
-                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(0,255,0,0.3)';
+                        //血浆-绿1
+                        if(value == 'S_TYPE_00005'){
+                            vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00005';
+                            // hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(0,255,0,0.3)';
                         }
-                        //血清
-                        if(value == 'S_TYPE_00007'|| value == 'S_TYPE_00008'){
-                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(255,0,0,0.3)';
+                        //血浆-绿2
+                        if( value == 'S_TYPE_00006'){
+                            vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00006';
+                            // hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(0,255,0,0.3)';
                         }
-                        //尿
-                        if(value == 'S_TYPE_00009'|| value == 'S_TYPE_00010'){
-                            hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(255,255,0,0.3)';
+                        //血清1
+                        if(value == 'S_TYPE_00007'){
+                            vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00007';
+                            // hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(255,0,0,0.3)';
+                        }
+                        //血清2
+                        if(value == 'S_TYPE_00008'){
+                            vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00008';
+                            // hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(255,255,0,0.3)';
+                        }
+                        //尿1
+                        if(value == 'S_TYPE_00009'){
+                            vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00009';
+                            // hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(255,255,0,0.3)';
+                        }
+                        //尿2
+                        if(value == 'S_TYPE_00010'){
+                            vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00010';
                         }
                         //99
-                        // if(value == 'S_TYPE_00011'){
-                        //     hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgba(255,255,0,0.3)';
-                        // }
+                        if(value == 'S_TYPE_00011'){
+                            vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00011';
+                        }
+
                     }
                 }
-
+                hotRegisterer.getInstance('my-handsontable').render()
             }
         };
         //转运状态
         vm.statusOptions = [
-            {id:"1",name:"进行中"},
-            {id:"2",name:"待入库"},
-            {id:"3",name:"已入库"},
-            {id:"4",name:"已作废"}
+            {id:"1001",name:"进行中"},
+            {id:"1002",name:"待入库"},
+            {id:"1003",name:"已入库"},
+            {id:"1004",name:"已作废"}
         ];
         vm.statusConfig = {
             valueField:'id',
@@ -431,12 +487,12 @@
                 var row1 = domArray[1].tubeRows;
                 var col1 = domArray[1].tubeColumns;
 
-                tArray[row1-1][col1-1] = domArray[0];
-                tArray[row1-1][col1-1].tubeRows = row1;
-                tArray[row1-1][col1-1].tubeColumns = col1;
-                tArray[row-1][col-1] = domArray[1];
-                tArray[row-1][col-1].tubeRows = row;
-                tArray[row-1][col-1].tubeColumns = col;
+                vm.frozenTubeArray[row1-1][col1-1] = domArray[0];
+                vm.frozenTubeArray[row1-1][col1-1].tubeRows = row1;
+                vm.frozenTubeArray[row1-1][col1-1].tubeColumns = col1;
+                vm.frozenTubeArray[row-1][col-1] = domArray[1];
+                vm.frozenTubeArray[row-1][col-1].tubeRows = row;
+                vm.frozenTubeArray[row-1][col-1].tubeColumns = col;
 
                 domArray = [];
                 vm.exchangeFlag = false;
@@ -469,10 +525,10 @@
 
                     });
                     modalInstance.result.then(function (selectedItem) {
-                        for(var i = 0; i < tArray.length; i++){
-                            for(var j = 0; j < tArray[i].length; j++){
+                        for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                            for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
                                     if(selectedItem.remarkArray.frozenTubeCode == ''){
-                                        tArray[i][j].memo = selectedItem.remarkArray[i][j].memo;
+                                        vm.frozenTubeArray[i][j].memo = selectedItem.remarkArray[i][j].memo;
                                     }
                             }
                         }
@@ -490,22 +546,11 @@
                 controller: 'FrozenStorageBoxModalController',
                 controllerAs:'vm',
                 size:'lg'
-                // backdrop:'static'
-                // resolve: {
-                //     items: function () {
-                //         return {
-                //             adviceData:item,
-                //             type:type
-                //         }
-                //     }
-                // }
 
             });
             modalInstance.result.then(function (data) {
                 console.log(JSON.stringify(data));
                 vm.transportRecord.frozenBoxDTOList = data;
-                // vm.dtOptions = DTOptionsBuilder.newOptions()
-
                 vm.dtOptions = DTOptionsBuilder.newOptions()
                     .withOption('data', vm.transportRecord.frozenBoxDTOList)
                     .withOption('info', false)
@@ -520,9 +565,17 @@
         }
         //保存
         this.saveRecord = function () {
+            // for(var i = 0; i < vm.transportRecord.frozenBoxDTOList.length; i++){
+            //     if(vm.transportRecord.frozenBoxDTOList[i].frozenBoxCode = ){
+            //
+            //     }
+                // for(var j = 0; j < vm.transportRecord.frozenBoxDTOList[i].frozenTubeDTOS; j++){
+                //
+                // }
+            }/
             console.log(JSON.stringify(vm.transportRecord));
-            TransportRecordService.save(vm.transportRecord, onSaveSuccess, onSaveError);
-        };
+            // TransportRecordService.save(vm.transportRecord, onSaveSuccess, onSaveError);
+        // };
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }
@@ -541,31 +594,38 @@
             .withOption('sorting', false)
             .withOption('rowCallback', rowCallback);
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('projectSiteCode').withTitle('冻存盒号')
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号')
         ];
         function someClickHandler(td,boxInfo) {
             $(td).closest('table').find('.highLight').removeClass("highLight");
             $(td).addClass('highLight');
-            console.log(boxInfo);
-            init(10);
+            initFrozenTube(10);
             vm.box = boxInfo;
-            microtubesList = vm.box.frozenTubeDTOS;
-            if(microtubesList.length){
-                for(var i = 0; i < microtubesList.length; i++){
-                    tArray[microtubesList[i].tubeRows-1][microtubesList[i].tubeColumns-1] = microtubesList[i];
+            var frozenTube = vm.box.frozenTubeDTOS;
+            if(frozenTube.frozenTubeCode){
+                for(var i = 0; i < frozenTube.length; i++){
+                    vm.frozenTubeArray[frozenTube[i].tubeRows-1][frozenTube[i].tubeColumns-1] = frozenTube[i];
                 }
-                vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS = microtubesList;
+                // vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS = frozenTube;
             }else{
-                for(var i = 0; i < tArray.length; i++){
-                    for (var j = 0; j <tArray[i].length; j++){
-                        tArray[i][j].sampleTempCode = vm.box.projectSiteCode + "-r" + i + "c" + j;
+                for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                    for (var j = 0; j <vm.frozenTubeArray[i].length; j++){
+                        vm.frozenTubeArray[i][j] = {
+                            frozenTubeCode:'',
+                            status:1,
+                            memo:'',
+                            tubeRows:i,
+                            tubeColumns:j,
+                            sampleTypeCode:'',//样本类型,
+                        };
+                        vm.frozenTubeArray[i][j].sampleTempCode = vm.box.frozenBoxCode + "-r" + i+1 + "c" + j+1;
                     }
                 }
-                vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS = tArray;
+                vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS = vm.frozenTubeArray;
 
             }
-            // vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS.push(microtubesList[i]);
-            // console.log(JSON.stringify(tArray))
+            // vm.transportRecord.frozenBoxDTOList[0].frozenTubeDTOS.push(frozenTube[i]);
+            // console.log(JSON.stringify(vm.frozenTubeArray));
             hotRegisterer.getInstance('my-handsontable').render();
             // FrozenBoxByIdService.get({id:boxInfo.id},frozenBoxSuccess,onError());
 
@@ -573,11 +633,11 @@
         }
         function frozenBoxSuccess(data) {
             vm.box = data;
-            microtubesList = data.frozenTubeDTOS;
-            for(var i = 0; i < microtubesList.length; i++){
-                tArray[microtubesList[i].tubeRows-1][microtubesList[i].tubeColumns-1] = microtubesList[i];
+            var frozenTube = data.frozenTubeDTOS;
+            for(var i = 0; i < frozenTube.length; i++){
+                vm.frozenTubeArray[frozenTube[i].tubeRows-1][frozenTube[i].tubeColumns-1] = frozenTube[i];
             }
-            hotRegisterer.getInstance('my-handsontable').loadData(tArray);
+            // hotRegisterer.getInstance('my-handsontable').loadData(vm.frozenTubeArray);
             hotRegisterer.getInstance('my-handsontable').render();
         }
         function rowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {

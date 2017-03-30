@@ -10,6 +10,14 @@ public final class Constants {
 
     public static final String SYSTEM_ACCOUNT = "system";
     public static final String ANONYMOUS_USER = "anonymoususer";
+    /**
+     * 入库状态 ：7001：进行中
+     */
+    public static final String STORANGE_IN_PENDING = "7001";
+    /**
+     * 入库类型：8001：首次入库
+     */
+    public static final String STORANGE_IN_TYPE_1ST = "8001";
 
     private Constants() {
     }

@@ -47,6 +47,12 @@ public class StorageInBoxDTO extends AbstractAuditingDTO implements Serializable
 
     private Long storageInId;
 
+    private Long equipmentId;
+
+    private Long supportRackId;
+
+    private Long areaId;
+
     public Long getId() {
         return id;
     }
@@ -117,6 +123,30 @@ public class StorageInBoxDTO extends AbstractAuditingDTO implements Serializable
 
     public void setStorageInId(Long storageInId) {
         this.storageInId = storageInId;
+    }
+
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    public Long getSupportRackId() {
+        return supportRackId;
+    }
+
+    public void setSupportRackId(Long supportRackId) {
+        this.supportRackId = supportRackId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.StorageInService;
+import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.StorageInDTO;
@@ -34,7 +35,7 @@ public class StorageInResource {
     private final Logger log = LoggerFactory.getLogger(StorageInResource.class);
 
     private static final String ENTITY_NAME = "storageIn";
-        
+
     private final StorageInService storageInService;
 
     public StorageInResource(StorageInService storageInService) {
@@ -127,5 +128,13 @@ public class StorageInResource {
         storageInService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
+    @PostMapping("/storage/in")
+    @Timed
+    public ResponseEntity<StorageInDTO> createStorageIns(@Valid @RequestBody StorageInDTO storageInDTO) throws URISyntaxException {
+        log.debug("REST request to save StorageIn : {}", storageInDTO);
+        StorageInDTO result = storageInService.saveStorageIns(storageInDTO);
+        return ResponseEntity.created(new URI("/api/storage-ins/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 }

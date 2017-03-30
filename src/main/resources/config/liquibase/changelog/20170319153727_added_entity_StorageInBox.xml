@@ -57,6 +57,18 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="equipment_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="support_rack_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="area_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

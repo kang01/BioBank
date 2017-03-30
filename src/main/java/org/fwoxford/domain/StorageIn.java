@@ -32,7 +32,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Size(max = 100)
     @Column(name = "project_site_code", length = 100, nullable = false)
-    private String project_site_code;
+    private String projectSiteCode;
 
     @NotNull
     @Column(name = "receive_date", nullable = false)
@@ -138,17 +138,17 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         this.projectCode = projectCode;
     }
 
-    public String getProject_site_code() {
-        return project_site_code;
+    public String getProjectSiteCode() {
+        return projectSiteCode;
     }
 
-    public StorageIn project_site_code(String project_site_code) {
-        this.project_site_code = project_site_code;
+    public StorageIn project_site_code(String projectSiteCode) {
+        this.projectSiteCode = projectSiteCode;
         return this;
     }
 
-    public void setProject_site_code(String project_site_code) {
-        this.project_site_code = project_site_code;
+    public void setProjectSiteCode(String project_site_code) {
+        this.projectSiteCode = projectSiteCode;
     }
 
     public LocalDate getReceiveDate() {
@@ -410,7 +410,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         return "StorageIn{" +
             "id=" + id +
             ", projectCode='" + projectCode + "'" +
-            ", project_site_code='" + project_site_code + "'" +
+            ", projectSiteCode='" + projectSiteCode + "'" +
             ", receiveDate='" + receiveDate + "'" +
             ", receiveId='" + receiveId + "'" +
             ", receiveName='" + receiveName + "'" +

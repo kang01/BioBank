@@ -93,5 +93,5 @@ public interface FrozenBoxService {
      * @param row
      * @return
      */
-    Long  countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
+    List<FrozenBoxDTO>  countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
 }

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class StorageInBoxServiceImpl implements StorageInBoxService{
 
     private final Logger log = LoggerFactory.getLogger(StorageInBoxServiceImpl.class);
-    
+
     private final StorageInBoxRepository storageInBoxRepository;
 
     private final StorageInBoxMapper storageInBoxMapper;
@@ -51,7 +51,7 @@ public class StorageInBoxServiceImpl implements StorageInBoxService{
 
     /**
      *  Get all the storageInBoxes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +87,12 @@ public class StorageInBoxServiceImpl implements StorageInBoxService{
     public void delete(Long id) {
         log.debug("Request to delete StorageInBox : {}", id);
         storageInBoxRepository.delete(id);
+    }
+
+    @Override
+    public List<StorageInBoxDTO> saveBatch(List<StorageInBoxDTO> storageInBoxDTOS) {
+        List<StorageInBox> storageInBoxes = storageInBoxMapper.storageInBoxDTOsToStorageInBoxes(storageInBoxDTOS);
+        List<StorageInBox> storageInBoxesList = storageInBoxRepository.save(storageInBoxes);
+        return storageInBoxMapper.storageInBoxesToStorageInBoxDTOs(storageInBoxesList);
     }
 }

@@ -20,7 +20,7 @@ public interface StorageInService {
 
     /**
      *  Get all the storageIns.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,11 @@ public interface StorageInService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * 入库保存
+     * @param storageInDTO
+     * @return
+     */
+    StorageInDTO saveStorageIns(StorageInDTO storageInDTO);
 }

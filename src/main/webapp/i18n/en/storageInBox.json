@@ -23,7 +23,10 @@
             "memo": "Memo",
             "status": "Status",
             "frozenBoxCode": "Frozen Box Code",
-            "storageIn": "Storage In"
+            "storageIn": "Storage In",
+            "equipment": "Equipment",
+            "supportRack": "Support Rack",
+            "area": "Area"
         }
     }
 }

@@ -5,15 +5,18 @@
         .module('bioBankApp')
         .controller('StorageInBoxDialogController', StorageInBoxDialogController);
 
-    StorageInBoxDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'StorageInBox', 'StorageIn'];
+    StorageInBoxDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'StorageInBox', 'StorageIn', 'Equipment', 'SupportRack', 'Area'];
 
-    function StorageInBoxDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, StorageInBox, StorageIn) {
+    function StorageInBoxDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, StorageInBox, StorageIn, Equipment, SupportRack, Area) {
         var vm = this;
 
         vm.storageInBox = entity;
         vm.clear = clear;
         vm.save = save;
         vm.storageins = StorageIn.query();
+        vm.equipment = Equipment.query();
+        vm.supportracks = SupportRack.query();
+        vm.areas = Area.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

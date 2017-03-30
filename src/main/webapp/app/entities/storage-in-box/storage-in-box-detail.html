@@ -40,6 +40,18 @@
         <dd>
             <a ui-sref="storage-in-detail({id:vm.storageInBox.storageInId})">{{vm.storageInBox.storageInId}}</a>
         </dd>
+        <dt><span data-translate="bioBankApp.storageInBox.equipment">Equipment</span></dt>
+        <dd>
+            <a ui-sref="equipment-detail({id:vm.storageInBox.equipmentId})">{{vm.storageInBox.equipmentId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageInBox.supportRack">Support Rack</span></dt>
+        <dd>
+            <a ui-sref="support-rack-detail({id:vm.storageInBox.supportRackId})">{{vm.storageInBox.supportRackId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.storageInBox.area">Area</span></dt>
+        <dd>
+            <a ui-sref="area-detail({id:vm.storageInBox.areaId})">{{vm.storageInBox.areaId}}</a>
+        </dd>
     </dl>
 
     <button type="submit"

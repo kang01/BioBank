@@ -20,7 +20,7 @@ public interface StorageInBoxService {
 
     /**
      *  Get all the storageInBoxes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,6 @@ public interface StorageInBoxService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    List<StorageInBoxDTO> saveBatch(List<StorageInBoxDTO> storageInBoxDTOS);
 }

@@ -14,5 +14,23 @@
                                  referencedColumnNames="id"
                                  referencedTableName="storage_in"/>
 
+        <addForeignKeyConstraint baseColumnNames="equipment_id"
+                                 baseTableName="storage_in_box"
+                                 constraintName="fk_storage_in_box_equipment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="equipment"/>
+
+        <addForeignKeyConstraint baseColumnNames="support_rack_id"
+                                 baseTableName="storage_in_box"
+                                 constraintName="storage_in_box_support_rack_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="support_rack"/>
+
+        <addForeignKeyConstraint baseColumnNames="area_id"
+                                 baseTableName="storage_in_box"
+                                 constraintName="fk_storage_in_box_area_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="area"/>
+
     </changeSet>
 </databaseChangeLog>

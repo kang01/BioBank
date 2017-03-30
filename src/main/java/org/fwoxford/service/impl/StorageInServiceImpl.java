@@ -3,6 +3,7 @@ package org.fwoxford.service.impl;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.StorageInBox;
 import org.fwoxford.domain.User;
+import org.fwoxford.repository.StorageInRepositries;
 import org.fwoxford.security.SecurityUtils;
 import org.fwoxford.service.StorageInBoxService;
 import org.fwoxford.service.StorageInService;
@@ -20,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -43,14 +46,17 @@ public class StorageInServiceImpl implements StorageInService{
 
     private final StorageInMapper storageInMapper;
 
+    private final StorageInRepositries storageInRepositries;
+
     @Autowired
     private TranshipService transhipService;
 
     @Autowired
     private StorageInBoxService storageInBoxService;
-    public StorageInServiceImpl(StorageInRepository storageInRepository, StorageInMapper storageInMapper) {
+    public StorageInServiceImpl(StorageInRepository storageInRepository, StorageInMapper storageInMapper,StorageInRepositries storageInRepositries) {
         this.storageInRepository = storageInRepository;
         this.storageInMapper = storageInMapper;
+        this.storageInRepositries = storageInRepositries;
     }
 
     /**
@@ -129,6 +135,26 @@ public class StorageInServiceImpl implements StorageInService{
         List<StorageInBoxDTO> storageInBoxDTOS = createStorageInBoxDTO(frozenBoxDTOList,storageIn);
         List<StorageInBoxDTO>  storageInBoxDTOSList = storageInBoxService.saveBatch(storageInBoxDTOS);
         return storageInDTO;
+    }
+
+    @Override
+    public DataTablesOutput<StorageInDTO> findStorageIn(DataTablesInput input) {
+
+        //获取转运列表
+        DataTablesOutput<StorageIn> storageInDataTablesOutput =  storageInRepositries.findAll(input);
+        List<StorageIn> storageIns =  storageInDataTablesOutput.getData();
+
+        //构造返回列表
+        List<StorageInDTO> storageInDTOS = storageInMapper.storageInsToStorageInDTOs(storageIns);
+
+        //构造返回分页数据
+        DataTablesOutput<StorageInDTO> responseDataTablesOutput = new DataTablesOutput<>();
+        responseDataTablesOutput.setDraw(storageInDataTablesOutput.getDraw());
+        responseDataTablesOutput.setError(storageInDataTablesOutput.getError());
+        responseDataTablesOutput.setData(storageInDTOS);
+        responseDataTablesOutput.setRecordsFiltered(storageInDataTablesOutput.getRecordsFiltered());
+        responseDataTablesOutput.setRecordsTotal(storageInDataTablesOutput.getRecordsTotal());
+        return responseDataTablesOutput;
     }
 
     private List<StorageInBoxDTO> createStorageInBoxDTO(List<FrozenBoxDTO> frozenBoxDTOList, StorageInDTO storageIn) {

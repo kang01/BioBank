@@ -31,19 +31,15 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 20)
     private String frozenBoxColumns;
 
-    @NotNull
     @Size(max = 100)
     private String projectCode;
 
-    @NotNull
     @Size(max = 255)
     private String projectName;
 
-    @NotNull
     @Size(max = 100)
     private String projectSiteCode;
 
-    @NotNull
     @Size(max = 255)
     private String projectSiteName;
 

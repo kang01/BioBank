@@ -3,6 +3,9 @@ package org.fwoxford.service;
 import org.fwoxford.service.dto.StorageInDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import java.util.List;
 
 /**
@@ -47,4 +50,11 @@ public interface StorageInService {
      * @return
      */
     StorageInDTO saveStorageIns(StorageInDTO storageInDTO);
+
+    /**
+     * 查询入库单信息
+     * @param input
+     * @return
+     */
+    DataTablesOutput<StorageInDTO> findStorageIn(DataTablesInput input);
 }

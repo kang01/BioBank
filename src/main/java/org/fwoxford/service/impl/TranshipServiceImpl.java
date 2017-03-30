@@ -188,8 +188,21 @@ public class TranshipServiceImpl implements TranshipService{
         List<TranshipBoxDTO> transhipBoxes = saveTranshipAndBoxRelation(frozenBoxDTOListLast);
 
         //保存冻存管
-        List<FrozenTubeDTO> frozenTubeDTOList = new ArrayList<FrozenTubeDTO>();
 //        List<FrozenTubeDTO> frozenTubeDTOList = frozenTubeMapper.frozenBoxAndTubeToFrozenTubeDTOList(frozenBoxDTOList,frozenBoxes);
+        List<FrozenTubeDTO> frozenTubeDTOList = getFrozenTubeDTOList(frozenBoxDTOList,frozenBoxes);
+        List<FrozenTube> frozenTubes =  frozenTubeService.saveBatch(frozenTubeDTOList);
+        List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubes);
+
+        //构造返回函数
+        TranshipDTO dto = transhipMapper.transhipToTranshipDTO(tranship);
+        List<FrozenBoxDTO> alist = getFrozenBoxDtoList(frozenBoxDTOListLast,frozenTubeDTOS);
+        dto.setFrozenBoxDTOList(alist);
+        log.debug("Response to saveBatch tranship: {}", dto);
+        return dto;
+    }
+
+    public List<FrozenTubeDTO> getFrozenTubeDTOList(List<FrozenBoxDTO> frozenBoxDTOList, List<FrozenBox> frozenBoxes) {
+        List<FrozenTubeDTO> frozenTubeDTOList = new ArrayList<FrozenTubeDTO>();
         FrozenTubeTypeDTO frozentubeTypeDTO = frozenTubeTypeService.findTopOne();
         for(FrozenBoxDTO boxDto:frozenBoxDTOList){
             for(FrozenTubeDTO tube :boxDto.getFrozenTubeDTOS()){
@@ -201,22 +214,17 @@ public class TranshipServiceImpl implements TranshipService{
                         tube.setFrozenTubeVolumns(frozentubeTypeDTO.getFrozenTubeVolumn());
                         tube.setFrozenTubeVolumnsUnit(frozentubeTypeDTO.getFrozenTubeVolumnUnit());
                         tube.setSampleUsedTimesMost(frozentubeTypeDTO.getSampleUsedTimesMost());
+                        tube.setProjectId(box.getProject().getId());
+                        tube.setProjectCode(box.getProjectCode());
                         tube.setFrozenBoxId(box.getId());
                         frozenTubeDTOList.add(tube);
                     }
                 }
             }
         }
-        List<FrozenTube> frozenTubes =  frozenTubeService.saveBatch(frozenTubeDTOList);
-        List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubes);
-
-        //构造返回函数
-        TranshipDTO dto = transhipMapper.transhipToTranshipDTO(tranship);
-        List<FrozenBoxDTO> alist = getFrozenBoxDtoList(frozenBoxDTOListLast,frozenTubeDTOS);
-        dto.setFrozenBoxDTOList(alist);
-        log.debug("Response to saveBatch tranship: {}", dto);
-        return dto;
+        return frozenTubeDTOList;
     }
+
     /**
      * 保存转运记录和冻存盒的关系
      * @param frozenBoxDTOListLast
@@ -263,7 +271,7 @@ public class TranshipServiceImpl implements TranshipService{
         }
         return isCanTranship;
     }
-    private List<FrozenBoxDTO> getFrozenBoxDtoList(List<FrozenBoxDTO> frozenBoxDTOListLast, List<FrozenTubeDTO> frozenTubeDTOS) {
+    public List<FrozenBoxDTO> getFrozenBoxDtoList(List<FrozenBoxDTO> frozenBoxDTOListLast, List<FrozenTubeDTO> frozenTubeDTOS) {
         List<FrozenBoxDTO> alist = new ArrayList<FrozenBoxDTO>();
         for(FrozenBoxDTO box :frozenBoxDTOListLast){
             List<FrozenTubeDTO> frozenTubeList = new ArrayList<FrozenTubeDTO>();

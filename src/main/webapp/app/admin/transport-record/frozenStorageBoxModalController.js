@@ -6,16 +6,28 @@
 
     angular
         .module('bioBankApp')
-        .controller('FrozenStorageBoxModalController', FrozenStorageBoxModalController);
+        .controller('FrozenStorageBoxModalController', FrozenStorageBoxModalController)
+        .controller('ModalInstanceCtrl', ModalInstanceCtrl);
 
     FrozenStorageBoxModalController.$inject = ['DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal'];
+    ModalInstanceCtrl.$inject = ['$uibModalInstance','$uibModal'];
 
     function FrozenStorageBoxModalController(DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal) {
+
         var vm = this;
-        vm.boxCodeList = [];
-        var codeList = [];
-        // vm.frozenTubeArray = [];//初始管子
-        vm.addData = function (event) {
+        vm.importSample = importSample;//导入样本数据
+        vm.addData = addData; //按键事件
+        vm.boxCodeList = [];//冻存盒信息
+        var codeList = [];//扫码录入的盒号
+        vm.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('searching', false)
+            .withOption('paging', false)
+            .withOption('sorting', false)
+            .withScroller()
+            .withOption('deferRender', true)
+            .withOption('scrollY', 300);
+
+        function addData(event) {
             if(window.event.keyCode == 13){
                 if(vm.boxCode != ''){
                     codeList = _.uniq((vm.boxCode.split("\n")).reverse());
@@ -51,25 +63,22 @@
                     }
                 }
             }
+        }
+        function importSample() {
+            var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'stackedModal.html',
+                size: 'sm',
+                controller: 'ModalInstanceCtrl',
+                controllerAs: 'ctrl'
 
-        };
 
+            });
+            modalInstance.result.then(function (flag) {
 
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withOption('searching', false)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withScroller()
-            .withOption('deferRender', true)
-            .withOption('scrollY', 300)
-        // vm.dtColumns = [
-        //     DTColumnBuilder.newColumn('code').withTitle('冻存盒号'),
-        //     DTColumnBuilder.newColumn('firstName').withTitle('状态'),
-        //     DTColumnBuilder.newColumn('lastName').withTitle('样本类型').notVisible(),
-        //     DTColumnBuilder.newColumn('lastName').withTitle('样本数').notVisible(),
-        //     DTColumnBuilder.newColumn('lastName').withTitle('是否分装').notVisible()
-        // ];
-
+            }, function () {
+            });
+        }
         this.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
@@ -77,4 +86,12 @@
             $uibModalInstance.close(vm.boxCodeList);
         };
     }
+    function ModalInstanceCtrl($uibModalInstance,$uibModal) {
+        var ctrl = this;
+        ctrl.ok = function () {
+            $uibModalInstance.close(true);
+        }
+    }
 })();
+
+

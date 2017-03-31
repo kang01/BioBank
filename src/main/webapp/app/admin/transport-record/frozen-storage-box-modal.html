@@ -1,11 +1,12 @@
 <div class="modal-header">
+    <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
     <h3 class="modal-title" id="modal-title">导入冻存盒</h3>
 </div>
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-sm-12">
             <div class="pull-right">
-                <button class="btn btn-default">导入样本数据</button>
+                <button class="btn btn-default" ng-click="vm.importSample()">导入样本数据</button>
             </div>
         </div>
         <div class="col-sm-2">
@@ -45,3 +46,15 @@
     <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>
+<script type="text/ng-template" id="stackedModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title" >导入样本数据</h3>
+    </div>
+    <div class="modal-body" >
+        是否导入新数据？
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ctrl.ok()">确定</button>
+        <button class="btn btn-warning" type="button" ng-click="vm1.cancel()">取消</button>
+    </div>
+</script>

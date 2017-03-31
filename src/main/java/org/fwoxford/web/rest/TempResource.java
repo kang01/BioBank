@@ -182,10 +182,34 @@ public class TempResource {
     @Timed
     public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxCode(@PathVariable String frozenBoxCode) {
         log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(createSampleFrozenBoxAndFrozenTubeResponse(1L, frozenBoxCode)));
+    }
+
+    /**
+     * 根据冻存盒CODE查询冻存盒和冻存管信息
+     * @param transhipCode
+     * @return
+     */
+    @GetMapping("/frozen-boxes/tranship/{transhipCode}")
+    @Timed
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> getFrozenTubeByTranshipCode(@PathVariable String transhipCode) {
+        log.debug("REST request to get FrozenTube : {}", transhipCode);
+
+        String[] frozenBoxCodes = {"1111111111", "2222222222", "3333333333", "4444444444", "5555555555", "6666666666", "7777777777", "8888888888", "9999999999", "0000000000"};
+        List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<>();
+        Long id = 1L;
+        for(String code : frozenBoxCodes){
+            res.add(createSampleFrozenBoxAndFrozenTubeResponse(id++, code));
+        }
+
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    private FrozenBoxAndFrozenTubeResponse createSampleFrozenBoxAndFrozenTubeResponse(Long id, String frozenBoxCode){
         FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
 
         res.setStatus("2001");
-        res.setId(1L);
+        res.setId(id);
         res.setFrozenBoxTypeId(1L);
         res.setSampleTypeId(5L);
 
@@ -204,7 +228,7 @@ public class TempResource {
         res.setFrozenTubeResponseList(new ArrayList<>());
         for(int i = 0; i<100; ++i){
             FrozenTubeResponse tube = new FrozenTubeResponse();
-            tube.setId((long)i);
+            tube.setId((id - 1) * 100 + i);
             tube.setStatus("3001");
             tube.setProjectId(1L);
             tube.setProjectCode("1234567890");
@@ -229,15 +253,14 @@ public class TempResource {
             res.getFrozenTubeResponseList().add(tube);
         }
 
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+        return res;
     }
-
     /**
      * 根据冻存盒CODE字符串查询冻存盒和冻存管信息
      * @param frozenBoxCodeStr
      * @return
      */
-    @GetMapping("/findFrozenBoxAndTubeByBoxCodes/{frozenBoxCodeStr}")
+    @GetMapping("/frozen-boxes/codes/{frozenBoxCodeStr}")
     @Timed
     public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> getFrozenBoxAndTubeListByBoxCodeStr(@PathVariable  String frozenBoxCodeStr) {
         log.debug("REST request to get FrozenBoxAndTube By codes : {}", frozenBoxCodeStr);

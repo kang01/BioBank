@@ -13,28 +13,42 @@ import java.util.Objects;
 public class SupportRackDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 冻存架类型编码
+     */
     @NotNull
     @Size(max = 100)
     private String supportRackTypeCode;
-
+    /**
+     * 区域编码
+     */
     @NotNull
     @Size(max = 100)
     private String areaCode;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 冻存架编码
+     */
     @NotNull
     @Size(max = 100)
     private String supportRackCode;
-
+    /**
+     * 冻存架类型Id
+     */
     private Long supportRackTypeId;
-
+    /**
+     * 区域Id
+     */
     private Long areaId;
 
     public Long getId() {

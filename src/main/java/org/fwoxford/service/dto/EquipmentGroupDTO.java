@@ -11,27 +11,39 @@ import java.util.Objects;
 public class EquipmentGroupDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 设备组名称
+     */
     @NotNull
     @Size(max = 100)
     private String equipmentGroupName;
-
+    /**
+     * 设备组负责人ID
+     */
     @NotNull
     @Max(value = 100)
     private Long equipmentGroupManagerId;
-
+    /**
+     * 设备组负责人名称
+     */
     @NotNull
     @Size(max = 256)
     private String equipmentManagerName;
-
+    /**
+     * 设备组地址
+     */
     @NotNull
     @Size(max = 256)
     private String equipmentGroupAddress;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
 

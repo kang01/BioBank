@@ -22,60 +22,86 @@ public class Equipment extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
+    /**
+     * 设备编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "equipment_code", length = 100, nullable = false ,unique = true)
     private String equipmentCode;
-
+    /**
+     * 工作温度
+     */
     @NotNull
     @Max(value = 100)
     @Column(name = "temperature", nullable = false)
     private Integer temperature;
-
+    /**
+     * 设备地址
+     */
     @NotNull
     @Size(max = 255)
     @Column(name = "equipment_address", length = 255, nullable = false)
     private String equipmentAddress;
-
+    /**
+     * 存放最大冻存管数量
+     */
     @NotNull
     @Column(name = "ampoules_max", nullable = false)
     private Integer ampoulesMax;
-
+    /**
+     * 存放最小冻存管数量
+     */
     @NotNull
     @Column(name = "ampoules_min", nullable = false)
     private Integer ampoulesMin;
-
+    /**
+     * 标签1
+     */
     @Size(max = 100)
     @Column(name = "label_1", length = 100)
     private String label1;
-
+    /**
+     * 标签2
+     */
     @Size(max = 100)
     @Column(name = "label_2", length = 100)
     private String label2;
-
+    /**
+     * 标签3
+     */
+    @Size(max = 100)
+    @Column(name = "label_3", length = 100)
+    private String label3;
+    /**
+     * 标签4
+     */
     @Size(max = 100)
     @Column(name = "label_4", length = 100)
     private String label4;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-
-    @Size(max = 100)
-    @Column(name = "label_3", length = 100)
-    private String label3;
-
+    /**
+     * 设备组
+     */
     @ManyToOne(optional = false)
     @NotNull
     @JoinColumn(name = "equipment_group_id")
     private EquipmentGroup equipmentGroup;
-
+    /**
+     * 设备型号
+     */
     @ManyToOne(optional = false)
     @NotNull
     @JoinColumn(name = "equipment_modle_id")

@@ -17,7 +17,7 @@
         Added the entity ProjectRelate.
     -->
     <changeSet id="20170316050525-1" author="jhipster">
-        <createTable tableName="project_relate">
+        <createTable tableName="project_relate" remarks="项目与项目点关系表">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

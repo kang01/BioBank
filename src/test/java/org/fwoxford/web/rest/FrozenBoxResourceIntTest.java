@@ -90,8 +90,8 @@ public class FrozenBoxResourceIntTest {
     private static final Integer DEFAULT_SAMPLE_NUMBER = 20;
     private static final Integer UPDATED_SAMPLE_NUMBER = 19;
 
-    private static final String DEFAULT_IS_SPLIT = "AAAAAAAAAA";
-    private static final String UPDATED_IS_SPLIT = "BBBBBBBBBB";
+    private static final Integer DEFAULT_IS_SPLIT = 0;
+    private static final Integer UPDATED_IS_SPLIT = 1;
 
     private static final String DEFAULT_MEMO = "AAAAAAAAAA";
     private static final String UPDATED_MEMO = "BBBBBBBBBB";
@@ -108,8 +108,8 @@ public class FrozenBoxResourceIntTest {
     private static final Integer DEFAULT_DISLOCATION_NUMBER = 100;
     private static final Integer UPDATED_DISLOCATION_NUMBER = 99;
 
-    private static final String DEFAULT_IS_REAL_DATA = "AAAAAAAAAA";
-    private static final String UPDATED_IS_REAL_DATA = "BBBBBBBBBB";
+    private static final Integer DEFAULT_IS_REAL_DATA = 0;
+    private static final Integer UPDATED_IS_REAL_DATA = 1;
 
     @Autowired
     private FrozenBoxRepository frozenBoxRepository;

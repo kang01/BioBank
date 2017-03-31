@@ -17,70 +17,69 @@
         Added the entity Equipment.
     -->
     <changeSet id="20170317021528-1" author="jhipster">
-        <createTable tableName="equipment">
+        <createTable tableName="equipment" remarks="设备表">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="equipment_code" type="varchar(100)">
+            <column name="equipment_code" type="varchar(100)" remarks="设备编码">
                 <constraints nullable="false" unique = "true"/>
             </column>
 
-            <column name="temperature" type="integer">
+            <column name="temperature" type="integer" remarks="工作温度">
                 <constraints nullable="false" />
             </column>
 
-            <column name="equipment_address" type="varchar(255)">
+            <column name="equipment_address" type="varchar(255)" remarks="设备地点">
                 <constraints nullable="false" />
             </column>
 
-            <column name="ampoules_max" type="integer">
+            <column name="ampoules_max" type="integer" remarks="存放最大冻存管数">
                 <constraints nullable="false" />
             </column>
 
-            <column name="ampoules_min" type="integer">
+            <column name="ampoules_min" type="integer" remarks="存放最小冻存管数">
                 <constraints nullable="false" />
             </column>
 
-            <column name="label_1" type="varchar(100)">
+            <column name="label_1" type="varchar(100)" remarks="标签1">
                 <constraints nullable="true" />
             </column>
 
-            <column name="label_2" type="varchar(100)">
+            <column name="label_2" type="varchar(100)" remarks="标签2">
                 <constraints nullable="true" />
             </column>
 
-            <column name="label_4" type="varchar(100)">
+            <column name="label_3" type="varchar(100)" remarks="标签3">
                 <constraints nullable="true" />
             </column>
 
-            <column name="memo" type="varchar(1024)">
+            <column name="label_4" type="varchar(100)" remarks="标签4">
                 <constraints nullable="true" />
             </column>
 
-            <column name="status" type="varchar(20)">
+            <column name="equipment_group_id" type="bigint" remarks="设备组ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="label_3" type="varchar(100)">
+            <column name="equipment_modle_id" type="bigint" remarks="设备型号ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="memo" type="varchar(1024)" remarks="备注">
                 <constraints nullable="true" />
             </column>
 
-            <column name="equipment_group_id" type="bigint">
+            <column name="status" type="varchar(20)" remarks="状态">
                 <constraints nullable="false" />
             </column>
-
-            <column name="equipment_modle_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="created_by" type="varchar(50)">
+            <column name="created_by" type="varchar(50)" remarks="创建人">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+            <column name="created_date" type="timestamp" defaultValueDate="${now}" remarks="创建时间">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_modified_by" type="varchar(50)"/>
-            <column name="last_modified_date" type="timestamp"/>
+            <column name="last_modified_by" type="varchar(50)" remarks="修改人"/>
+            <column name="last_modified_date" type="timestamp" remarks="修改时间"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
 

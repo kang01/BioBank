@@ -62,38 +62,6 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.frozenTubeRecord.frozenTypeCode" for="field_frozenTypeCode">Frozen Type Code</label>
-            <input type="text" class="form-control" name="frozenTypeCode" id="field_frozenTypeCode"
-                    ng-model="vm.frozenTubeRecord.frozenTypeCode"
-                    required ng-maxlength="100"/>
-            <div ng-show="editForm.frozenTypeCode.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.frozenTypeCode.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.frozenTypeCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
-                    This field cannot be longer than 100 characters.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.frozenTubeRecord.frozenTypeName" for="field_frozenTypeName">Frozen Type Name</label>
-            <input type="text" class="form-control" name="frozenTypeName" id="field_frozenTypeName"
-                    ng-model="vm.frozenTubeRecord.frozenTypeName"
-                    required ng-maxlength="255"/>
-            <div ng-show="editForm.frozenTypeName.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.frozenTypeName.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.frozenTypeName.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
-                    This field cannot be longer than 255 characters.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.frozenTubeRecord.sampleUsedTimesMost" for="field_sampleUsedTimesMost">Sample Used Times Most</label>
             <input type="number" class="form-control" name="sampleUsedTimesMost" id="field_sampleUsedTimesMost"
                     ng-model="vm.frozenTubeRecord.sampleUsedTimesMost"
@@ -250,22 +218,6 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.frozenTubeRecord.isModifyState" for="field_isModifyState">Is Modify State</label>
-            <input type="text" class="form-control" name="isModifyState" id="field_isModifyState"
-                    ng-model="vm.frozenTubeRecord.isModifyState"
-                    required ng-maxlength="20"/>
-            <div ng-show="editForm.isModifyState.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.isModifyState.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.isModifyState.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
-                    This field cannot be longer than 20 characters.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.frozenTubeRecord.memo" for="field_memo">Memo</label>
             <input type="text" class="form-control" name="memo" id="field_memo"
                     ng-model="vm.frozenTubeRecord.memo"
@@ -294,18 +246,74 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenTubeRecord.frozenTubeTypeCode" for="field_frozenTubeTypeCode">Frozen Tube Type Code</label>
+            <input type="text" class="form-control" name="frozenTubeTypeCode" id="field_frozenTubeTypeCode"
+                    ng-model="vm.frozenTubeRecord.frozenTubeTypeCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.frozenTubeTypeCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.frozenTubeTypeCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.frozenTubeTypeCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenTubeRecord.frozenTubeTypeName" for="field_frozenTubeTypeName">Frozen Tube Type Name</label>
+            <input type="text" class="form-control" name="frozenTubeTypeName" id="field_frozenTubeTypeName"
+                    ng-model="vm.frozenTubeRecord.frozenTubeTypeName"
+                    required ng-maxlength="255"/>
+            <div ng-show="editForm.frozenTubeTypeName.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.frozenTubeTypeName.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.frozenTubeTypeName.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.frozenTubeRecord.isModifyState" for="field_isModifyState">Is Modify State</label>
+            <input type="number" class="form-control" name="isModifyState" id="field_isModifyState"
+                    ng-model="vm.frozenTubeRecord.isModifyState"
+                    required max="20"/>
+            <div ng-show="editForm.isModifyState.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.isModifyState.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.isModifyState.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.isModifyState.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.frozenTubeRecord.isModifyPosition" for="field_isModifyPosition">Is Modify Position</label>
-            <input type="text" class="form-control" name="isModifyPosition" id="field_isModifyPosition"
+            <input type="number" class="form-control" name="isModifyPosition" id="field_isModifyPosition"
                     ng-model="vm.frozenTubeRecord.isModifyPosition"
-                    required ng-maxlength="20"/>
+                    required max="20"/>
             <div ng-show="editForm.isModifyPosition.$invalid">
                 <p class="help-block"
                     ng-show="editForm.isModifyPosition.$error.required" data-translate="entity.validation.required">
                     This field is required.
                 </p>
                 <p class="help-block"
-                    ng-show="editForm.isModifyPosition.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
-                    This field cannot be longer than 20 characters.
+                    ng-show="editForm.isModifyPosition.$error.max" data-translate="entity.validation.max" translate-value-max="20">
+                    This field cannot be more than 20.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.isModifyPosition.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
                 </p>
             </div>
         </div>

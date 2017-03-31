@@ -14,80 +14,117 @@ import java.util.Objects;
 public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 转运日期
+     */
     @NotNull
     private LocalDate transhipDate;
-
+    /**
+     * 项目编码
+     */
     @NotNull
     @Size(max = 100)
     private String projectCode;
-
+    /**
+     * 项目名称
+     */
     @NotNull
     @Size(max = 255)
     private String projectName;
-
+    /**
+     * 项目点编码
+     */
     @NotNull
     @Size(max = 100)
     private String projectSiteCode;
-
+    /**
+     * 项目点名称
+     */
     @NotNull
     @Size(max = 255)
     private String projectSiteName;
-
+    /**
+     * 运单号
+     */
     @NotNull
     @Size(max = 100)
     private String trackNumber;
-
+    /**
+     * 转运批次
+     */
     @NotNull
     @Size(max = 100)
     private String transhipBatch;
-
+    /**
+     * 运单状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废
+     */
     @NotNull
     @Size(max = 20)
     private String transhipState;
-
+    /**
+     * 接收人
+     */
     @NotNull
     @Size(max = 100)
     private String receiver;
-
+    /**
+     * 接收日期
+     */
     @NotNull
     private LocalDate receiveDate;
-
+    /**
+     * 样本数量
+     */
     @NotNull
-    @Max(value = 100)
     private Integer sampleNumber;
-
+    /**
+     * 冻存盒数量
+     */
     @NotNull
-    @Max(value = 20)
     private Integer frozenBoxNumber;
-
+    /**
+     * 空管数
+     */
     @NotNull
-    @Max(value = 20)
     private Integer emptyTubeNumber;
-
+    /**
+     * 空孔数
+     */
     @NotNull
-    @Max(value = 20)
     private Integer emptyHoleNumber;
-
+    /**
+     * 样本满意度
+     */
     @Max(value = 20)
     private Integer sampleSatisfaction;
-
+    /**
+     * 有效样本数
+     */
     @NotNull
-    @Max(value = 20)
     private Integer effectiveSampleNumber;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
-
+    /**
+     * 状态：0000：无效，0001：有效
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 转运编码
+     */
     @Size(max = 255)
     private String transhipCode;
-
+    /**
+     * 项目Id
+     */
     private Long projectId;
-
+    /**
+     * 项目点Id
+     */
     private Long projectSiteId;
 
     private List<FrozenBoxDTO> frozenBoxDTOList;

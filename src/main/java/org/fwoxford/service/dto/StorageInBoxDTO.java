@@ -13,44 +13,68 @@ import java.util.Objects;
 public class StorageInBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 设备编码
+     */
     @NotNull
     @Size(max = 100)
     private String equipmentCode;
-
+    /**
+     * 区域编码
+     */
     @NotNull
     @Size(max = 100)
     private String areaCode;
-
+    /**
+     * 冻存架编码
+     */
     @NotNull
     @Size(max = 100)
     private String supportRackCode;
-
+    /**
+     * 所在冻存架行数
+     */
     @NotNull
     @Size(max = 20)
     private String rowsInShelf;
-
+    /**
+     * 所在冻存架列数
+     */
     @NotNull
     @Size(max = 20)
     private String columnsInShelf;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 冻存盒编码
+     */
     @NotNull
     @Size(max = 100)
     private String frozenBoxCode;
-
+    /**
+     * 入库Id
+     */
     private Long storageInId;
-
+    /**
+     * 设备Id
+     */
     private Long equipmentId;
-
+    /**
+     * 冻存架Id
+     */
     private Long supportRackId;
-
+    /**
+     * 区域Id
+     */
     private Long areaId;
 
     public Long getId() {

@@ -23,96 +23,135 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
+    /**
+     * 项目编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "project_code", length = 100, nullable = false)
     private String projectCode;
-
+    /**
+     * 项目点编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "project_site_code", length = 100, nullable = false)
     private String projectSiteCode;
-
+    /**
+     * 接收日期
+     */
     @NotNull
     @Column(name = "receive_date", nullable = false)
     private LocalDate receiveDate;
-
+    /**
+     * 接收人ID
+     */
     @NotNull
     @Max(value = 100)
     @Column(name = "receive_id", nullable = false)
     private Long receiveId;
-
+    /**
+     * 接收人姓名
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "receive_name", length = 100, nullable = false)
     private String receiveName;
-
+    /**
+     * 入库类型 ：8001：首次入库，8002：移位入库，8003：调整入库
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "storage_in_type", length = 20, nullable = false)
     private String storageInType;
-
+    /**
+     * 入库人1ID
+     */
     @NotNull
     @Max(value = 100)
     @Column(name = "storage_in_person_id_1", nullable = false)
     private Long storageInPersonId1;
-
+    /**
+     * 入库人1名称
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "storage_in_person_name_1", length = 100, nullable = false)
     private String storageInPersonName1;
-
+    /**
+     * 入库人2ID
+     */
     @NotNull
     @Max(value = 100)
     @Column(name = "storage_in_person_id_2", nullable = false)
     private Long storageInPersonId2;
-
+    /**
+     * 入库人2名称
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "storange_in_person_name_2", length = 100, nullable = false)
     private String storangeInPersonName2;
-
+    /**
+     * 入库日期
+     */
     @NotNull
     @Column(name = "storage_in_date", nullable = false)
     private LocalDate storageInDate;
-
+    /**
+     * 样本数量
+     */
     @NotNull
-    @Max(value = 100)
     @Column(name = "sample_number", nullable = false)
     private Integer sampleNumber;
-
+    /**
+     * 签名人ID
+     */
     @NotNull
     @Max(value = 100)
     @Column(name = "sign_id", nullable = false)
     private Long signId;
-
+    /**
+     * 签名人姓名
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "sign_name", length = 100, nullable = false)
     private String signName;
-
+    /**
+     * 签名日期
+     */
     @NotNull
     @Column(name = "sign_date", nullable = false)
     private LocalDate signDate;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
-
+    /**
+     * 状态 :7001：进行中，7002已入库
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-
+    /**
+     * 转运
+     */
     @ManyToOne(optional = false)
     @NotNull
     private Tranship tranship;
-
+    /**
+     * 项目
+     */
     @ManyToOne(optional = false)
     @NotNull
     private Project project;
-
+    /**
+     * 项目点
+     */
     @ManyToOne(optional = false)
     @NotNull
     private ProjectSite projectSite;

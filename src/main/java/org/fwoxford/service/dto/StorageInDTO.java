@@ -74,7 +74,6 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 样本数量
      */
-    @Max(value = 100)
     @JsonView(DataTablesOutput.View.class)
     private Integer sampleNumber;
     /**
@@ -83,7 +82,7 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
     @Max(value = 100)
     private Long signId;
     /**
-     * 卡名人姓名
+     * 签名人姓名
      */
     @Size(max = 100)
     @JsonView(DataTablesOutput.View.class)
@@ -98,7 +97,7 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 1024)
     private String memo;
     /**
-     * 状态
+     * 状态 :7001：进行中，7002已入库
      */
     @Size(max = 20)
     @JsonView(DataTablesOutput.View.class)

@@ -224,7 +224,7 @@ public class TempResource {
         res.setFrozenBoxColumns("A");
         res.setFrozenBoxRows("1");
 
-        res.setIsSplit("0");
+        res.setIsSplit(0);
         res.setFrozenTubeResponseList(new ArrayList<>());
         for(int i = 0; i<100; ++i){
             FrozenTubeResponse tube = new FrozenTubeResponse();

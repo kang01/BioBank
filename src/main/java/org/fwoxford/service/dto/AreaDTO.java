@@ -13,29 +13,39 @@ import java.util.Objects;
 public class AreaDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 区域编码
+     */
     @NotNull
     @Size(max = 100)
     private String areaCode;
-
+    /**
+     * 区域内冻存架数量
+     */
     @NotNull
     @Max(value = 100)
     private Integer freezeFrameNumber;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 设备编码
+     */
     @NotNull
     @Size(max = 100)
     private String equipmentCode;
-
+    /**
+     * 设备ID
+     */
     private Long equipmentId;
-
-    private String equipmentEquipmentCode;
 
     public Long getId() {
         return id;
@@ -86,14 +96,6 @@ public class AreaDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setEquipmentId(Long equipmentId) {
         this.equipmentId = equipmentId;
-    }
-
-    public String getEquipmentEquipmentCode() {
-        return equipmentEquipmentCode;
-    }
-
-    public void setEquipmentEquipmentCode(String equipmentEquipmentCode) {
-        this.equipmentEquipmentCode = equipmentEquipmentCode;
     }
 
     @Override

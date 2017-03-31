@@ -17,63 +17,63 @@
         Added the entity FrozenBox.
     -->
     <changeSet id="20170317062302-1" author="jhipster">
-        <createTable tableName="frozen_box">
+        <createTable tableName="frozen_box" remarks="冻存盒表">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="frozen_box_code" type="varchar(100)">
+            <column name="frozen_box_code" type="varchar(100)" remarks="冻存盒编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="frozen_box_type_code" type="varchar(100)">
+            <column name="frozen_box_type_code" type="varchar(100)" remarks="冻存盒类型编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="frozen_box_rows" type="varchar(20)">
+            <column name="frozen_box_rows" type="varchar(20)" remarks="冻存盒行数">
                 <constraints nullable="false" />
             </column>
 
-            <column name="frozen_box_columns" type="varchar(20)">
+            <column name="frozen_box_columns" type="varchar(20)" remarks="冻存盒列数">
                 <constraints nullable="false" />
             </column>
 
-            <column name="project_code" type="varchar(100)">
+            <column name="project_code" type="varchar(100)" remarks="项目编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="project_name" type="varchar(255)">
+            <column name="project_name" type="varchar(255)" remarks="项目名称">
                 <constraints nullable="false" />
             </column>
 
-            <column name="project_site_code" type="varchar(100)">
+            <column name="project_site_code" type="varchar(100)" remarks="项目点编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="project_site_name" type="varchar(255)">
+            <column name="project_site_name" type="varchar(255)" remarks="项目点名称">
                 <constraints nullable="false" />
             </column>
 
-            <column name="equipment_code" type="varchar(100)">
+            <column name="equipment_code" type="varchar(100)" remarks="设备编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="area_code" type="varchar(100)">
+            <column name="area_code" type="varchar(100)" remarks="区域编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="support_rack_code" type="varchar(100)">
+            <column name="support_rack_code" type="varchar(100)" remarks="冻存架编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_type_code" type="varchar(100)">
+            <column name="sample_type_code" type="varchar(100)" remarks="样本类型编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_type_name" type="varchar(255)">
+            <column name="sample_type_name" type="varchar(255)" remarks="样本类型名称 ">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_number" type="integer">
+            <column name="sample_number" type="integer" remarks="样本数量">
                 <constraints nullable="false" />
             </column>
 
@@ -81,78 +81,78 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="memo" type="varchar(255)">
+            <column name="memo" type="integer" remarks="是否分装：1：是，0：否">
                 <constraints nullable="true" />
             </column>
 
-            <column name="status" type="varchar(20)">
+            <column name="status" type="varchar(20)" remarks="状态">
                 <constraints nullable="false" />
             </column>
 
-            <column name="empty_tube_number" type="integer">
+            <column name="empty_tube_number" type="integer" remarks="空管数">
                 <constraints nullable="false" />
             </column>
 
-            <column name="empty_hole_number" type="integer">
+            <column name="empty_hole_number" type="integer" remarks="空孔数">
                 <constraints nullable="false" />
             </column>
 
-            <column name="dislocation_number" type="integer">
+            <column name="dislocation_number" type="integer" remarks="错位数">
                 <constraints nullable="false" />
             </column>
 
-            <column name="rows_in_shelf" type="varchar(20)">
+            <column name="rows_in_shelf" type="varchar(20)" remarks="所在架子的行数">
                 <constraints nullable="false" />
             </column>
 
-            <column name="columns_in_shelf" type="varchar(20)">
+            <column name="columns_in_shelf" type="varchar(20)" remarks="所在架子的烈属">
                 <constraints nullable="false" />
             </column>
 
-            <column name="is_real_data" type="varchar(20)">
+            <column name="is_real_data" type="integer" remarks="是否已导入样本数据：1：是，0：否">
                 <constraints nullable="false" />
             </column>
 
-            <column name="frozen_box_type_id" type="bigint">
+            <column name="frozen_box_type_id" type="bigint" remarks="冻存盒类型ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_type_id" type="bigint">
+            <column name="sample_type_id" type="bigint" remarks="样本类型ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="project_id" type="bigint">
+            <column name="project_id" type="bigint" remarks="项目ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="project_site_id" type="bigint">
+            <column name="project_site_id" type="bigint" remarks="项目点ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="tranship_id" type="bigint">
+            <column name="tranship_id" type="bigint" remarks="转运ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="equipment_id" type="bigint">
+            <column name="equipment_id" type="bigint" remarks="设备ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="area_id" type="bigint">
+            <column name="area_id" type="bigint" remarks="区域ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="support_rack_id" type="bigint">
+            <column name="support_rack_id" type="bigint" remarks="冻存架ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="created_by" type="varchar(50)">
+            <column name="created_by" type="varchar(50)" remarks="创建人">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+            <column name="created_date" type="timestamp" defaultValueDate="${now}" remarks="创建时间">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_modified_by" type="varchar(50)"/>
-            <column name="last_modified_date" type="timestamp"/>
+            <column name="last_modified_by" type="varchar(50)" remarks="修改人"/>
+            <column name="last_modified_date" type="timestamp" remarks="修改时间"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
 

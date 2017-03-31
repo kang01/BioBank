@@ -1,5 +1,6 @@
 package org.fwoxford.domain;
 
+import io.swagger.models.auth.In;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -22,119 +23,162 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
+    /**
+     * 冻存盒编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "frozen_box_code", length = 100, nullable = false)
     private String frozenBoxCode;
-
+    /**
+     * 冻存盒类型编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "frozen_box_type_code", length = 100, nullable = false)
     private String frozenBoxTypeCode;
-
+    /**
+     * 冻存盒行数
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "frozen_box_rows", length = 20, nullable = false)
     private String frozenBoxRows;
-
+    /**
+     * 冻存盒列数
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "frozen_box_columns", length = 20, nullable = false)
     private String frozenBoxColumns;
-
+    /**
+     * 项目编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "project_code", length = 100, nullable = false)
     private String projectCode;
-
+    /**
+     * 项目名称
+     */
     @NotNull
     @Size(max = 255)
     @Column(name = "project_name", length = 255, nullable = false)
     private String projectName;
-
+    /**
+     * 项目点编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "project_site_code", length = 100, nullable = false)
     private String projectSiteCode;
-
+    /**
+     * 项目点名称
+     */
     @NotNull
     @Size(max = 255)
     @Column(name = "project_site_name", length = 255, nullable = false)
     private String projectSiteName;
-
+    /**
+     * 设备编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "equipment_code", length = 100, nullable = false)
     private String equipmentCode;
-
+    /**
+     * 区域编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "area_code", length = 100, nullable = false)
     private String areaCode;
-
+    /**
+     * 冻存架编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "support_rack_code", length = 100, nullable = false)
     private String supportRackCode;
-
+    /**
+     * 样本类型编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "sample_type_code", length = 100, nullable = false)
     private String sampleTypeCode;
-
+    /**
+     * 样本类型名称
+     */
     @NotNull
     @Size(max = 255)
     @Column(name = "sample_type_name", length = 255, nullable = false)
     private String sampleTypeName;
-
+    /**
+     * 样本数量
+     */
     @NotNull
-    @Max(value = 20)
     @Column(name = "sample_number", nullable = false)
     private Integer sampleNumber;
-
+    /**
+     * 是否分装：1：是，0：否
+     */
     @NotNull
     @Size(max = 20)
-    @Column(name = "is_split", length = 20, nullable = false)
-    private String isSplit;
-
+    @Column(name = "is_split", nullable = false)
+    private Integer isSplit;
+    /**
+     * 所在架子行数
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "rows_in_shelf", length = 20, nullable = false)
     private String rowsInShelf;
-
+    /**
+     * 所在架子列数
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "columns_in_shelf", length = 20, nullable = false)
     private String columnsInShelf;
+    /**
+     * 备注
+     */
     @Size(max = 255)
     @Column(name = "memo", length = 255)
     private String memo;
-
+    /**
+     * 状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-
+    /**
+     * 空管数
+     */
     @NotNull
-    @Max(value = 100)
     @Column(name = "empty_tube_number", nullable = false)
     private Integer emptyTubeNumber;
-
+    /**
+     * 空孔数
+     */
     @NotNull
-    @Max(value = 100)
     @Column(name = "empty_hole_number", nullable = false)
     private Integer emptyHoleNumber;
-
+    /**
+     * 错位数
+     */
     @NotNull
-    @Max(value = 100)
     @Column(name = "dislocation_number", nullable = false)
     private Integer dislocationNumber;
-
+    /**
+     * 是否已导入样本数据：1：是，0：否
+     */
     @NotNull
     @Size(max = 20)
-    @Column(name = "is_real_data", length = 20, nullable = false)
-    private String isRealData;
+    @Column(name = "is_real_data",  nullable = false)
+    private Integer isRealData;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -358,16 +402,16 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
         this.sampleNumber = sampleNumber;
     }
 
-    public String getIsSplit() {
+    public Integer getIsSplit() {
         return isSplit;
     }
 
-    public FrozenBox isSplit(String isSplit) {
+    public FrozenBox isSplit(Integer isSplit) {
         this.isSplit = isSplit;
         return this;
     }
 
-    public void setIsSplit(String isSplit) {
+    public void setIsSplit(Integer isSplit) {
         this.isSplit = isSplit;
     }
 
@@ -436,16 +480,16 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
         this.dislocationNumber = dislocationNumber;
     }
 
-    public String getIsRealData() {
+    public Integer getIsRealData() {
         return isRealData;
     }
 
-    public FrozenBox isRealData(String isRealData) {
+    public FrozenBox isRealData(Integer isRealData) {
         this.isRealData = isRealData;
         return this;
     }
 
-    public void setIsRealData(String isRealData) {
+    public void setIsRealData(Integer isRealData) {
         this.isRealData = isRealData;
     }
 

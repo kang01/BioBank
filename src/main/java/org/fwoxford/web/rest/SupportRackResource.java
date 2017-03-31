@@ -133,7 +133,7 @@ public class SupportRackResource {
      * @param areaId
      * @return
      */
-    @GetMapping("/supportacksByAreaId/{areaId}")
+    @GetMapping("/support-racks/area/{areaId}")
     @Timed
     public ResponseEntity<List<SupportRackDTO>> getSupportRackByAreaId(@PathVariable Long areaId) {
         log.debug("REST request to get SupportRack By AreaId : {}", areaId);

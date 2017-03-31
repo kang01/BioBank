@@ -23,98 +23,135 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
+    /**
+     * 转运日期
+     */
     @Column(name = "tranship_date", nullable = false)
     private LocalDate transhipDate;
-
+    /**
+     * 项目编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "project_code", length = 100, nullable = false)
     private String projectCode;
-
+    /**
+     * 项目名称
+     */
     @NotNull
     @Size(max = 255)
     @Column(name = "project_name", length = 255, nullable = false)
     private String projectName;
-
+    /**
+     * 项目点编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "project_site_code", length = 100, nullable = false)
     private String projectSiteCode;
-
+    /**
+     * 项目点名称
+     */
     @NotNull
     @Size(max = 255)
     @Column(name = "project_site_name", length = 255, nullable = false)
     private String projectSiteName;
-
+    /**
+     * 运单号
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "track_number", length = 100, nullable = false)
     private String trackNumber;
-
+    /**
+     * 转运批次
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "tranship_batch", length = 100, nullable = false)
     private String transhipBatch;
-
+    /**
+     * 运单状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废
+     */
     @Size(max = 20)
     @Column(name = "tranship_state", length = 20, nullable = false)
     private String transhipState;
-
+    /**
+     * 接收人
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "receiver", length = 100, nullable = false)
     private String receiver;
-
+    /**
+     * 接收日期
+     */
     @Column(name = "receive_date", nullable = false)
     private LocalDate receiveDate;
-
+    /**
+     * 样本数量
+     */
     @NotNull
-    @Max(value = 100)
     @Column(name = "sample_number", nullable = false)
     private Integer sampleNumber;
-
+    /**
+     * 冻存盒数量
+     */
     @NotNull
-    @Max(value = 20)
     @Column(name = "frozen_box_number", nullable = false)
     private Integer frozenBoxNumber;
-
+    /**
+     * 空管数
+     */
     @NotNull
-    @Max(value = 20)
     @Column(name = "empty_tube_number", nullable = false)
     private Integer emptyTubeNumber;
-
+    /**
+     * 空孔数
+     */
     @NotNull
-    @Max(value = 20)
     @Column(name = "empty_hole_number", nullable = false)
     private Integer emptyHoleNumber;
-
+    /**
+     * 样本满意度
+     */
     @Max(value = 20)
     @Column(name = "sample_satisfaction")
     private Integer sampleSatisfaction;
-
+    /**
+     * 有效样本数
+     */
     @NotNull
-    @Max(value = 20)
     @Column(name = "effective_sample_number", nullable = false)
     private Integer effectiveSampleNumber;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
-
+    /**
+     * 状态：0000：无效，0001：有效
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-
+    /**
+     * 转运编码
+     */
     @NotNull
     @Size(max = 255)
     @Column(name = "tranship_code", length = 255, nullable = false)
     private String transhipCode;
-
+    /**
+     * 项目
+     */
     @ManyToOne(optional = false)
     private Project project;
-
+    /**
+     * 项目点
+     */
     @ManyToOne(optional = false)
     private ProjectSite projectSite;
 

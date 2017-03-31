@@ -13,38 +13,57 @@ import java.util.Objects;
  * Created by gengluying on 2017/3/22.
  */
 public class TranshipResponse {
-
+    /**
+     * 转运ID
+     */
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private Long id;
-
+    /**
+     * 转运日期
+     */
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private LocalDate transhipDate;
-
+    /**
+     * 项目编码
+     */
     @NotNull
     @Size(max = 100)
     @JsonView(DataTablesOutput.View.class)
     private String projectCode;
 
+    /**
+     * 项目点编码
+     */
     @NotNull
     @Size(max = 100)
     @JsonView(DataTablesOutput.View.class)
     private String projectSiteCode;
+
+    /**
+     * 转运状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废
+     */
     @NotNull
     @Size(max = 20)
     @JsonView(DataTablesOutput.View.class)
     private String transhipState;
-
+    /**
+     * 接收人
+     */
     @NotNull
     @Size(max = 100)
     @JsonView(DataTablesOutput.View.class)
     private String receiver;
-
+    /**
+     * 接收日期
+     */
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private LocalDate receiveDate;
-
+    /**
+     * 样本满意度
+     */
     @Max(value = 20)
     @JsonView(DataTablesOutput.View.class)
     private Integer sampleSatisfaction;

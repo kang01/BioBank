@@ -133,7 +133,7 @@ public class AreaResource {
      * @param equipmentId
      * @return
      */
-    @GetMapping("/areasByEquipmentId/{equipmentId}")
+    @GetMapping("/areas/equipment/{equipmentId}")
     @Timed
     public ResponseEntity<List<AreaDTO>> getAreaByEquipmentId(@PathVariable Long equipmentId) {
         log.debug("REST request to get Area by EquipmentId : {}", equipmentId);

@@ -22,31 +22,43 @@ public class Area extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
+    /**
+     * 区域编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "area_code", length = 100, nullable = false)
     private String areaCode;
-
+    /**
+     * 区域内冻存架数量
+     */
     @NotNull
     @Max(value = 100)
     @Column(name = "freeze_frame_number", nullable = false)
     private Integer freezeFrameNumber;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-
+    /**
+     * 设备编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "equipment_code", length = 100, nullable = false)
     private String equipmentCode;
-
+    /**
+     * 设备
+     */
     @ManyToOne(optional = false)
     @NotNull
     private Equipment equipment;

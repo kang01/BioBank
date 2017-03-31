@@ -11,36 +11,54 @@ import java.util.Objects;
 public class EquipmentModleDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 设备型号编码
+     */
     @NotNull
     @Size(max = 100)
     private String equipmentModelCode;
-
+    /**
+     * 设备型号名称
+     */
     @NotNull
     @Size(max = 255)
     private String equipmentModelName;
-
+    /**
+     * 设备类型：液氮，冰箱。
+     */
     @NotNull
     @Size(max = 20)
     private String equipmentType;
-
+    /**
+     * 区域数量
+     */
     @NotNull
     @Max(value = 100)
     private Integer areaNumber;
-
+    /**
+     * 区域内架子数量
+     */
     @NotNull
     @Max(value = 100)
     private Integer shelveNumberInArea;
-
+    /**
+     * 备注
+     */
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 最高温度
+     */
     @Max(value = 100)
     private Integer temperatureMax;
-
+    /**
+     * 最低温度
+     */
     @Max(value = 100)
     private Integer temperatureMin;
 

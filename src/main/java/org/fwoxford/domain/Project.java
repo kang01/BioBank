@@ -25,26 +25,36 @@ public class Project extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-
+    /**
+     * 项目编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "project_code", length = 100, nullable = false)
     private String projectCode;
-
+    /**
+     * 项目名称
+     */
     @NotNull
     @Size(max = 255)
     @Column(name = "project_name", length = 255, nullable = false)
     private String projectName;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
-
+    /**
+     * 项目与项目点的关系
+     */
     @OneToMany(mappedBy = "project")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)

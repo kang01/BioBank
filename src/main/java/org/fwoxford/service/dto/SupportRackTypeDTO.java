@@ -11,22 +11,32 @@ import java.util.Objects;
 public class SupportRackTypeDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 冻存架类型编码
+     */
     @NotNull
     @Size(max = 20)
     private String supportRackTypeCode;
-
+    /**
+     * 冻存架行数
+     */
     @NotNull
     @Size(max = 20)
     private String supportRackRows;
-
+    /**
+     * 冻存架列数
+     */
     @NotNull
     @Size(max = 20)
     private String supportRackColumns;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     private String status;

@@ -133,7 +133,7 @@ public class FrozenBoxTypeResource {
      * @return
      * @throws URISyntaxException
      */
-    @GetMapping("/frozenBoxTypes")
+    @GetMapping("/frozen-box-types/all")
     @Timed
     public ResponseEntity<List<FrozenBoxTypeDTO>> getAllFrozenBoxTypes() {
         log.debug("REST request to get all FrozenBoxTypes");

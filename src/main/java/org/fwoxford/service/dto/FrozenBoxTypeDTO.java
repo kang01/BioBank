@@ -11,26 +11,38 @@ import java.util.Objects;
 public class FrozenBoxTypeDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 冻存盒类型编码
+     */
     @NotNull
     @Size(max = 100)
     private String frozenBoxTypeCode;
-
+    /**
+     * 冻存盒类型名称
+     */
     @NotNull
     @Size(max = 255)
     private String frozenBoxTypeName;
-
+    /**
+     * 冻存盒行数
+     */
     @NotNull
     @Size(max = 20)
     private String frozenBoxTypeRows;
-
+    /**
+     * 冻存盒列数
+     */
     @NotNull
     @Size(max = 20)
     private String frozenBoxTypeColumns;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @Size(max = 20)
     private String status;
 

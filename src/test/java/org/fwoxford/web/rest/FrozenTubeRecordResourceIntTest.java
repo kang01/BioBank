@@ -52,12 +52,6 @@ public class FrozenTubeRecordResourceIntTest {
     private static final String DEFAULT_SAMPLE_CODE = "AAAAAAAAAA";
     private static final String UPDATED_SAMPLE_CODE = "BBBBBBBBBB";
 
-    private static final String DEFAULT_FROZEN_TYPE_CODE = "AAAAAAAAAA";
-    private static final String UPDATED_FROZEN_TYPE_CODE = "BBBBBBBBBB";
-
-    private static final String DEFAULT_FROZEN_TYPE_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_FROZEN_TYPE_NAME = "BBBBBBBBBB";
-
     private static final Integer DEFAULT_SAMPLE_USED_TIMES_MOST = 20;
     private static final Integer UPDATED_SAMPLE_USED_TIMES_MOST = 19;
 
@@ -85,17 +79,23 @@ public class FrozenTubeRecordResourceIntTest {
     private static final String DEFAULT_TUBE_COLUMNS = "AAAAAAAAAA";
     private static final String UPDATED_TUBE_COLUMNS = "BBBBBBBBBB";
 
-    private static final String DEFAULT_IS_MODIFY_STATE = "AAAAAAAAAA";
-    private static final String UPDATED_IS_MODIFY_STATE = "BBBBBBBBBB";
-
     private static final String DEFAULT_MEMO = "AAAAAAAAAA";
     private static final String UPDATED_MEMO = "BBBBBBBBBB";
 
     private static final String DEFAULT_STATUS = "AAAAAAAAAA";
     private static final String UPDATED_STATUS = "BBBBBBBBBB";
 
-    private static final String DEFAULT_IS_MODIFY_POSITION = "AAAAAAAAAA";
-    private static final String UPDATED_IS_MODIFY_POSITION = "BBBBBBBBBB";
+    private static final String DEFAULT_FROZEN_TUBE_TYPE_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_FROZEN_TUBE_TYPE_CODE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_FROZEN_TUBE_TYPE_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_FROZEN_TUBE_TYPE_NAME = "BBBBBBBBBB";
+
+    private static final Integer DEFAULT_IS_MODIFY_STATE = 20;
+    private static final Integer UPDATED_IS_MODIFY_STATE = 19;
+
+    private static final Integer DEFAULT_IS_MODIFY_POSITION = 20;
+    private static final Integer UPDATED_IS_MODIFY_POSITION = 19;
 
     @Autowired
     private FrozenTubeRecordRepository frozenTubeRecordRepository;
@@ -143,8 +143,6 @@ public class FrozenTubeRecordResourceIntTest {
                 .projectCode(DEFAULT_PROJECT_CODE)
                 .sampleTempCode(DEFAULT_SAMPLE_TEMP_CODE)
                 .sampleCode(DEFAULT_SAMPLE_CODE)
-                .frozenTypeCode(DEFAULT_FROZEN_TYPE_CODE)
-                .frozenTypeName(DEFAULT_FROZEN_TYPE_NAME)
                 .sampleUsedTimesMost(DEFAULT_SAMPLE_USED_TIMES_MOST)
                 .sampleUsedTimes(DEFAULT_SAMPLE_USED_TIMES)
                 .frozenTubeVolumn(DEFAULT_FROZEN_TUBE_VOLUMN)
@@ -154,9 +152,11 @@ public class FrozenTubeRecordResourceIntTest {
                 .frozenBoxCode(DEFAULT_FROZEN_BOX_CODE)
                 .tubeRows(DEFAULT_TUBE_ROWS)
                 .tubeColumns(DEFAULT_TUBE_COLUMNS)
-                .isModifyState(DEFAULT_IS_MODIFY_STATE)
                 .memo(DEFAULT_MEMO)
                 .status(DEFAULT_STATUS)
+                .frozenTubeTypeCode(DEFAULT_FROZEN_TUBE_TYPE_CODE)
+                .frozenTubeTypeName(DEFAULT_FROZEN_TUBE_TYPE_NAME)
+                .isModifyState(DEFAULT_IS_MODIFY_STATE)
                 .isModifyPosition(DEFAULT_IS_MODIFY_POSITION);
         // Add required entity
         FrozenTubeType tubeType = FrozenTubeTypeResourceIntTest.createEntity(em);
@@ -201,8 +201,6 @@ public class FrozenTubeRecordResourceIntTest {
         assertThat(testFrozenTubeRecord.getProjectCode()).isEqualTo(DEFAULT_PROJECT_CODE);
         assertThat(testFrozenTubeRecord.getSampleTempCode()).isEqualTo(DEFAULT_SAMPLE_TEMP_CODE);
         assertThat(testFrozenTubeRecord.getSampleCode()).isEqualTo(DEFAULT_SAMPLE_CODE);
-        assertThat(testFrozenTubeRecord.getFrozenTypeCode()).isEqualTo(DEFAULT_FROZEN_TYPE_CODE);
-        assertThat(testFrozenTubeRecord.getFrozenTypeName()).isEqualTo(DEFAULT_FROZEN_TYPE_NAME);
         assertThat(testFrozenTubeRecord.getSampleUsedTimesMost()).isEqualTo(DEFAULT_SAMPLE_USED_TIMES_MOST);
         assertThat(testFrozenTubeRecord.getSampleUsedTimes()).isEqualTo(DEFAULT_SAMPLE_USED_TIMES);
         assertThat(testFrozenTubeRecord.getFrozenTubeVolumn()).isEqualTo(DEFAULT_FROZEN_TUBE_VOLUMN);
@@ -212,9 +210,11 @@ public class FrozenTubeRecordResourceIntTest {
         assertThat(testFrozenTubeRecord.getFrozenBoxCode()).isEqualTo(DEFAULT_FROZEN_BOX_CODE);
         assertThat(testFrozenTubeRecord.getTubeRows()).isEqualTo(DEFAULT_TUBE_ROWS);
         assertThat(testFrozenTubeRecord.getTubeColumns()).isEqualTo(DEFAULT_TUBE_COLUMNS);
-        assertThat(testFrozenTubeRecord.getIsModifyState()).isEqualTo(DEFAULT_IS_MODIFY_STATE);
         assertThat(testFrozenTubeRecord.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testFrozenTubeRecord.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testFrozenTubeRecord.getFrozenTubeTypeCode()).isEqualTo(DEFAULT_FROZEN_TUBE_TYPE_CODE);
+        assertThat(testFrozenTubeRecord.getFrozenTubeTypeName()).isEqualTo(DEFAULT_FROZEN_TUBE_TYPE_NAME);
+        assertThat(testFrozenTubeRecord.getIsModifyState()).isEqualTo(DEFAULT_IS_MODIFY_STATE);
         assertThat(testFrozenTubeRecord.getIsModifyPosition()).isEqualTo(DEFAULT_IS_MODIFY_POSITION);
     }
 
@@ -283,44 +283,6 @@ public class FrozenTubeRecordResourceIntTest {
         int databaseSizeBeforeTest = frozenTubeRecordRepository.findAll().size();
         // set the field null
         frozenTubeRecord.setSampleCode(null);
-
-        // Create the FrozenTubeRecord, which fails.
-        FrozenTubeRecordDTO frozenTubeRecordDTO = frozenTubeRecordMapper.frozenTubeRecordToFrozenTubeRecordDTO(frozenTubeRecord);
-
-        restFrozenTubeRecordMockMvc.perform(post("/api/frozen-tube-records")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(frozenTubeRecordDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<FrozenTubeRecord> frozenTubeRecordList = frozenTubeRecordRepository.findAll();
-        assertThat(frozenTubeRecordList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkFrozenTypeCodeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = frozenTubeRecordRepository.findAll().size();
-        // set the field null
-        frozenTubeRecord.setFrozenTypeCode(null);
-
-        // Create the FrozenTubeRecord, which fails.
-        FrozenTubeRecordDTO frozenTubeRecordDTO = frozenTubeRecordMapper.frozenTubeRecordToFrozenTubeRecordDTO(frozenTubeRecord);
-
-        restFrozenTubeRecordMockMvc.perform(post("/api/frozen-tube-records")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(frozenTubeRecordDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<FrozenTubeRecord> frozenTubeRecordList = frozenTubeRecordRepository.findAll();
-        assertThat(frozenTubeRecordList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkFrozenTypeNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = frozenTubeRecordRepository.findAll().size();
-        // set the field null
-        frozenTubeRecord.setFrozenTypeName(null);
 
         // Create the FrozenTubeRecord, which fails.
         FrozenTubeRecordDTO frozenTubeRecordDTO = frozenTubeRecordMapper.frozenTubeRecordToFrozenTubeRecordDTO(frozenTubeRecord);
@@ -507,10 +469,10 @@ public class FrozenTubeRecordResourceIntTest {
 
     @Test
     @Transactional
-    public void checkIsModifyStateIsRequired() throws Exception {
+    public void checkStatusIsRequired() throws Exception {
         int databaseSizeBeforeTest = frozenTubeRecordRepository.findAll().size();
         // set the field null
-        frozenTubeRecord.setIsModifyState(null);
+        frozenTubeRecord.setStatus(null);
 
         // Create the FrozenTubeRecord, which fails.
         FrozenTubeRecordDTO frozenTubeRecordDTO = frozenTubeRecordMapper.frozenTubeRecordToFrozenTubeRecordDTO(frozenTubeRecord);
@@ -526,10 +488,48 @@ public class FrozenTubeRecordResourceIntTest {
 
     @Test
     @Transactional
-    public void checkStatusIsRequired() throws Exception {
+    public void checkFrozenTubeTypeCodeIsRequired() throws Exception {
         int databaseSizeBeforeTest = frozenTubeRecordRepository.findAll().size();
         // set the field null
-        frozenTubeRecord.setStatus(null);
+        frozenTubeRecord.setFrozenTubeTypeCode(null);
+
+        // Create the FrozenTubeRecord, which fails.
+        FrozenTubeRecordDTO frozenTubeRecordDTO = frozenTubeRecordMapper.frozenTubeRecordToFrozenTubeRecordDTO(frozenTubeRecord);
+
+        restFrozenTubeRecordMockMvc.perform(post("/api/frozen-tube-records")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(frozenTubeRecordDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<FrozenTubeRecord> frozenTubeRecordList = frozenTubeRecordRepository.findAll();
+        assertThat(frozenTubeRecordList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkFrozenTubeTypeNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = frozenTubeRecordRepository.findAll().size();
+        // set the field null
+        frozenTubeRecord.setFrozenTubeTypeName(null);
+
+        // Create the FrozenTubeRecord, which fails.
+        FrozenTubeRecordDTO frozenTubeRecordDTO = frozenTubeRecordMapper.frozenTubeRecordToFrozenTubeRecordDTO(frozenTubeRecord);
+
+        restFrozenTubeRecordMockMvc.perform(post("/api/frozen-tube-records")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(frozenTubeRecordDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<FrozenTubeRecord> frozenTubeRecordList = frozenTubeRecordRepository.findAll();
+        assertThat(frozenTubeRecordList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkIsModifyStateIsRequired() throws Exception {
+        int databaseSizeBeforeTest = frozenTubeRecordRepository.findAll().size();
+        // set the field null
+        frozenTubeRecord.setIsModifyState(null);
 
         // Create the FrozenTubeRecord, which fails.
         FrozenTubeRecordDTO frozenTubeRecordDTO = frozenTubeRecordMapper.frozenTubeRecordToFrozenTubeRecordDTO(frozenTubeRecord);
@@ -576,8 +576,6 @@ public class FrozenTubeRecordResourceIntTest {
             .andExpect(jsonPath("$.[*].projectCode").value(hasItem(DEFAULT_PROJECT_CODE.toString())))
             .andExpect(jsonPath("$.[*].sampleTempCode").value(hasItem(DEFAULT_SAMPLE_TEMP_CODE.toString())))
             .andExpect(jsonPath("$.[*].sampleCode").value(hasItem(DEFAULT_SAMPLE_CODE.toString())))
-            .andExpect(jsonPath("$.[*].frozenTypeCode").value(hasItem(DEFAULT_FROZEN_TYPE_CODE.toString())))
-            .andExpect(jsonPath("$.[*].frozenTypeName").value(hasItem(DEFAULT_FROZEN_TYPE_NAME.toString())))
             .andExpect(jsonPath("$.[*].sampleUsedTimesMost").value(hasItem(DEFAULT_SAMPLE_USED_TIMES_MOST)))
             .andExpect(jsonPath("$.[*].sampleUsedTimes").value(hasItem(DEFAULT_SAMPLE_USED_TIMES)))
             .andExpect(jsonPath("$.[*].frozenTubeVolumn").value(hasItem(DEFAULT_FROZEN_TUBE_VOLUMN)))
@@ -587,10 +585,12 @@ public class FrozenTubeRecordResourceIntTest {
             .andExpect(jsonPath("$.[*].frozenBoxCode").value(hasItem(DEFAULT_FROZEN_BOX_CODE.toString())))
             .andExpect(jsonPath("$.[*].tubeRows").value(hasItem(DEFAULT_TUBE_ROWS.toString())))
             .andExpect(jsonPath("$.[*].tubeColumns").value(hasItem(DEFAULT_TUBE_COLUMNS.toString())))
-            .andExpect(jsonPath("$.[*].isModifyState").value(hasItem(DEFAULT_IS_MODIFY_STATE.toString())))
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].isModifyPosition").value(hasItem(DEFAULT_IS_MODIFY_POSITION.toString())));
+            .andExpect(jsonPath("$.[*].frozenTubeTypeCode").value(hasItem(DEFAULT_FROZEN_TUBE_TYPE_CODE.toString())))
+            .andExpect(jsonPath("$.[*].frozenTubeTypeName").value(hasItem(DEFAULT_FROZEN_TUBE_TYPE_NAME.toString())))
+            .andExpect(jsonPath("$.[*].isModifyState").value(hasItem(DEFAULT_IS_MODIFY_STATE)))
+            .andExpect(jsonPath("$.[*].isModifyPosition").value(hasItem(DEFAULT_IS_MODIFY_POSITION)));
     }
 
     @Test
@@ -607,8 +607,6 @@ public class FrozenTubeRecordResourceIntTest {
             .andExpect(jsonPath("$.projectCode").value(DEFAULT_PROJECT_CODE.toString()))
             .andExpect(jsonPath("$.sampleTempCode").value(DEFAULT_SAMPLE_TEMP_CODE.toString()))
             .andExpect(jsonPath("$.sampleCode").value(DEFAULT_SAMPLE_CODE.toString()))
-            .andExpect(jsonPath("$.frozenTypeCode").value(DEFAULT_FROZEN_TYPE_CODE.toString()))
-            .andExpect(jsonPath("$.frozenTypeName").value(DEFAULT_FROZEN_TYPE_NAME.toString()))
             .andExpect(jsonPath("$.sampleUsedTimesMost").value(DEFAULT_SAMPLE_USED_TIMES_MOST))
             .andExpect(jsonPath("$.sampleUsedTimes").value(DEFAULT_SAMPLE_USED_TIMES))
             .andExpect(jsonPath("$.frozenTubeVolumn").value(DEFAULT_FROZEN_TUBE_VOLUMN))
@@ -618,10 +616,12 @@ public class FrozenTubeRecordResourceIntTest {
             .andExpect(jsonPath("$.frozenBoxCode").value(DEFAULT_FROZEN_BOX_CODE.toString()))
             .andExpect(jsonPath("$.tubeRows").value(DEFAULT_TUBE_ROWS.toString()))
             .andExpect(jsonPath("$.tubeColumns").value(DEFAULT_TUBE_COLUMNS.toString()))
-            .andExpect(jsonPath("$.isModifyState").value(DEFAULT_IS_MODIFY_STATE.toString()))
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
-            .andExpect(jsonPath("$.isModifyPosition").value(DEFAULT_IS_MODIFY_POSITION.toString()));
+            .andExpect(jsonPath("$.frozenTubeTypeCode").value(DEFAULT_FROZEN_TUBE_TYPE_CODE.toString()))
+            .andExpect(jsonPath("$.frozenTubeTypeName").value(DEFAULT_FROZEN_TUBE_TYPE_NAME.toString()))
+            .andExpect(jsonPath("$.isModifyState").value(DEFAULT_IS_MODIFY_STATE))
+            .andExpect(jsonPath("$.isModifyPosition").value(DEFAULT_IS_MODIFY_POSITION));
     }
 
     @Test
@@ -645,8 +645,6 @@ public class FrozenTubeRecordResourceIntTest {
                 .projectCode(UPDATED_PROJECT_CODE)
                 .sampleTempCode(UPDATED_SAMPLE_TEMP_CODE)
                 .sampleCode(UPDATED_SAMPLE_CODE)
-                .frozenTypeCode(UPDATED_FROZEN_TYPE_CODE)
-                .frozenTypeName(UPDATED_FROZEN_TYPE_NAME)
                 .sampleUsedTimesMost(UPDATED_SAMPLE_USED_TIMES_MOST)
                 .sampleUsedTimes(UPDATED_SAMPLE_USED_TIMES)
                 .frozenTubeVolumn(UPDATED_FROZEN_TUBE_VOLUMN)
@@ -656,9 +654,11 @@ public class FrozenTubeRecordResourceIntTest {
                 .frozenBoxCode(UPDATED_FROZEN_BOX_CODE)
                 .tubeRows(UPDATED_TUBE_ROWS)
                 .tubeColumns(UPDATED_TUBE_COLUMNS)
-                .isModifyState(UPDATED_IS_MODIFY_STATE)
                 .memo(UPDATED_MEMO)
                 .status(UPDATED_STATUS)
+                .frozenTubeTypeCode(UPDATED_FROZEN_TUBE_TYPE_CODE)
+                .frozenTubeTypeName(UPDATED_FROZEN_TUBE_TYPE_NAME)
+                .isModifyState(UPDATED_IS_MODIFY_STATE)
                 .isModifyPosition(UPDATED_IS_MODIFY_POSITION);
         FrozenTubeRecordDTO frozenTubeRecordDTO = frozenTubeRecordMapper.frozenTubeRecordToFrozenTubeRecordDTO(updatedFrozenTubeRecord);
 
@@ -674,8 +674,6 @@ public class FrozenTubeRecordResourceIntTest {
         assertThat(testFrozenTubeRecord.getProjectCode()).isEqualTo(UPDATED_PROJECT_CODE);
         assertThat(testFrozenTubeRecord.getSampleTempCode()).isEqualTo(UPDATED_SAMPLE_TEMP_CODE);
         assertThat(testFrozenTubeRecord.getSampleCode()).isEqualTo(UPDATED_SAMPLE_CODE);
-        assertThat(testFrozenTubeRecord.getFrozenTypeCode()).isEqualTo(UPDATED_FROZEN_TYPE_CODE);
-        assertThat(testFrozenTubeRecord.getFrozenTypeName()).isEqualTo(UPDATED_FROZEN_TYPE_NAME);
         assertThat(testFrozenTubeRecord.getSampleUsedTimesMost()).isEqualTo(UPDATED_SAMPLE_USED_TIMES_MOST);
         assertThat(testFrozenTubeRecord.getSampleUsedTimes()).isEqualTo(UPDATED_SAMPLE_USED_TIMES);
         assertThat(testFrozenTubeRecord.getFrozenTubeVolumn()).isEqualTo(UPDATED_FROZEN_TUBE_VOLUMN);
@@ -685,9 +683,11 @@ public class FrozenTubeRecordResourceIntTest {
         assertThat(testFrozenTubeRecord.getFrozenBoxCode()).isEqualTo(UPDATED_FROZEN_BOX_CODE);
         assertThat(testFrozenTubeRecord.getTubeRows()).isEqualTo(UPDATED_TUBE_ROWS);
         assertThat(testFrozenTubeRecord.getTubeColumns()).isEqualTo(UPDATED_TUBE_COLUMNS);
-        assertThat(testFrozenTubeRecord.getIsModifyState()).isEqualTo(UPDATED_IS_MODIFY_STATE);
         assertThat(testFrozenTubeRecord.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testFrozenTubeRecord.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testFrozenTubeRecord.getFrozenTubeTypeCode()).isEqualTo(UPDATED_FROZEN_TUBE_TYPE_CODE);
+        assertThat(testFrozenTubeRecord.getFrozenTubeTypeName()).isEqualTo(UPDATED_FROZEN_TUBE_TYPE_NAME);
+        assertThat(testFrozenTubeRecord.getIsModifyState()).isEqualTo(UPDATED_IS_MODIFY_STATE);
         assertThat(testFrozenTubeRecord.getIsModifyPosition()).isEqualTo(UPDATED_IS_MODIFY_POSITION);
     }
 

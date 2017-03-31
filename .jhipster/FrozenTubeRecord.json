@@ -64,24 +64,6 @@
             "fieldValidateRulesMaxlength": "100"
         },
         {
-            "fieldName": "frozenTypeCode",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "100"
-        },
-        {
-            "fieldName": "frozenTypeName",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "255"
-        },
-        {
             "fieldName": "sampleUsedTimesMost",
             "fieldType": "Integer",
             "fieldValidateRules": [
@@ -163,15 +145,6 @@
             "fieldValidateRulesMaxlength": 20
         },
         {
-            "fieldName": "isModifyState",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": 20
-        },
-        {
             "fieldName": "memo",
             "fieldType": "String",
             "fieldValidateRules": [
@@ -189,13 +162,40 @@
             "fieldValidateRulesMaxlength": 20
         },
         {
-            "fieldName": "isModifyPosition",
+            "fieldName": "frozenTubeTypeCode",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required",
                 "maxlength"
             ],
-            "fieldValidateRulesMaxlength": 20
+            "fieldValidateRulesMaxlength": "100"
+        },
+        {
+            "fieldName": "frozenTubeTypeName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "255"
+        },
+        {
+            "fieldName": "isModifyState",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required",
+                "max"
+            ],
+            "fieldValidateRulesMax": "20"
+        },
+        {
+            "fieldName": "isModifyPosition",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required",
+                "max"
+            ],
+            "fieldValidateRulesMax": "20"
         }
     ],
     "changelogDate": "20170319150513",

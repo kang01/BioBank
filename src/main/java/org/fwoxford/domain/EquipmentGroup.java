@@ -22,32 +22,44 @@ public class EquipmentGroup extends AbstractAuditingEntity implements Serializab
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
+    /**
+     * 设备组名称
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "equipment_group_name", length = 100, nullable = false)
     private String equipmentGroupName;
-
+    /**
+     * 设备组负责人ID
+     */
     @NotNull
     @Max(value = 100)
     @Column(name = "equipment_group_manager_id", nullable = false)
     private Long equipmentGroupManagerId;
-
+    /**
+     * 设备组负责人名称
+     */
     @NotNull
     @Size(max = 256)
     @Column(name = "equipment_manager_name", length = 256, nullable = false)
     private String equipmentManagerName;
-
+    /**
+     * 设备组地址
+     */
     @NotNull
     @Size(max = 256)
     @Column(name = "equipment_group_address", length = 256, nullable = false)
     private String equipmentGroupAddress;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;

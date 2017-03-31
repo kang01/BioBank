@@ -132,7 +132,7 @@ public class ProjectResource {
      * @return
      * @throws URISyntaxException
      */
-    @GetMapping("/all/projects")
+    @GetMapping("/projects/all")
     @Timed
     public ResponseEntity<List<ProjectDTO>> getAllSampleTypeList() {
         log.debug("REST request to get all ProjectDTO");

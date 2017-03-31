@@ -22,31 +22,43 @@ public class SampleType extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
+    /**
+     * 样本类型编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "sample_type_code", length = 100, nullable = false)
     private String sampleTypeCode;
-
+    /**
+     * 样本类型名称
+     */
     @NotNull
     @Size(max = 255)
     @Column(name = "sample_type_name", length = 255, nullable = false)
     private String sampleTypeName;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-
+    /**
+     * 前景色
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "front_color", length = 100, nullable = false)
     private String frontColor;
-
+    /**
+     * 背景色
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "back_color", length = 100, nullable = false)

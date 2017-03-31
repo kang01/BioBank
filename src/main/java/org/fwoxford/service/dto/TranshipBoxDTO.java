@@ -13,40 +13,60 @@ import java.util.Objects;
 public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 冻存盒编码
+     */
     @NotNull
     @Size(max = 100)
     private String frozenBoxCode;
-
+    /**
+     * 设备编码
+     */
     @NotNull
     @Size(max = 100)
     private String equipmentCode;
-
+    /**
+     * 区域编码
+     */
     @NotNull
     @Size(max = 100)
     private String areaCode;
-
+    /**
+     * 冻存架编码
+     */
     @NotNull
     @Size(max = 100)
     private String supportRackCode;
-
+    /**
+     * 所在架子行数
+     */
     @NotNull
     @Size(max = 20)
     private String rowsInShelf;
-
+    /**
+     * 所在架子列数
+     */
     @NotNull
     @Size(max = 20)
     private String columnsInShelf;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 转运id
+     */
     private Long transhipId;
-
+    /**
+     * 冻存盒id
+     */
     private Long frozenBoxId;
 
     public Long getId() {

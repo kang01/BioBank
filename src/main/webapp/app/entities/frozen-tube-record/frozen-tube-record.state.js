@@ -127,8 +127,6 @@
                                 projectCode: null,
                                 sampleTempCode: null,
                                 sampleCode: null,
-                                frozenTypeCode: null,
-                                frozenTypeName: null,
                                 sampleUsedTimesMost: null,
                                 sampleUsedTimes: null,
                                 frozenTubeVolumn: null,
@@ -138,9 +136,11 @@
                                 frozenBoxCode: null,
                                 tubeRows: null,
                                 tubeColumns: null,
-                                isModifyState: null,
                                 memo: null,
                                 status: null,
+                                frozenTubeTypeCode: null,
+                                frozenTubeTypeName: null,
+                                isModifyState: null,
                                 isModifyPosition: null,
                                 id: null
                             };

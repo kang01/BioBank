@@ -132,7 +132,7 @@ public class FrozenBoxResource {
      * @param id
      * @return
      */
-    @GetMapping("/findFrozenBoxAndTubeByBoxId/{id}")
+    @GetMapping("/frozen-boxes/id/{id}")
     @Timed
     public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxId(@PathVariable Long id) {
         log.debug("REST request to get FrozenTube : {}", id);
@@ -145,7 +145,7 @@ public class FrozenBoxResource {
      * @param frozenBoxCode
      * @return
      */
-    @GetMapping("/findFrozenBoxAndTubeByBoxCode/{frozenBoxCode}")
+    @GetMapping("/frozen-boxes/code/{frozenBoxCode}")
     @Timed
     public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxCode(@PathVariable String frozenBoxCode) {
         log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
@@ -157,7 +157,7 @@ public class FrozenBoxResource {
      * @param frozenBoxCodeStr
      * @return
      */
-    @GetMapping("/findFrozenBoxAndTubeByBoxCodes/{frozenBoxCodeStr}")
+    @GetMapping("/frozen-boxes/codes/{frozenBoxCodeStr}")
     @Timed
     public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> getFrozenBoxAndTubeListByBoxCodeStr(@PathVariable  String frozenBoxCodeStr) {
         log.debug("REST request to get FrozenBoxAndTube By codes : {}", frozenBoxCodeStr);

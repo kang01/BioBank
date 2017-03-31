@@ -22,20 +22,28 @@ public class ProjectRelate extends AbstractAuditingEntity implements Serializabl
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-
+    /**
+     * 项目
+     */
     @ManyToOne(optional = false)
     @NotNull
     private Project project;
-
+    /**
+     * 项目点
+     */
     @ManyToOne(optional = false)
     @NotNull
     private ProjectSite projectSite;

@@ -22,35 +22,49 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
+    /**
+     * 冻存架类型编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "support_rack_type_code", length = 100, nullable = false)
     private String supportRackTypeCode;
-
+    /**
+     * 区域编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "area_code", length = 100, nullable = false)
     private String areaCode;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-
+    /**
+     * 冻存架编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "support_rack_code", length = 100, nullable = false)
     private String supportRackCode;
-
+    /**
+     * 冻存架类型
+     */
     @ManyToOne(optional = false)
     @NotNull
     private SupportRackType supportRackType;
-
+    /**
+     * 区域
+     */
     @ManyToOne(optional = false)
     @NotNull
     private Area area;

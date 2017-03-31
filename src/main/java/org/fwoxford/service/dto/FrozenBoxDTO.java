@@ -14,109 +14,171 @@ import java.util.Objects;
 public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 冻存盒编码
+     */
     @NotNull
     @Size(max = 100)
     private String frozenBoxCode;
-
+    /**
+     * 冻存盒类型编码
+     */
     @NotNull
     @Size(max = 100)
     private String frozenBoxTypeCode;
-
+    /**
+     * 冻存盒行数
+     */
     @NotNull
     @Size(max = 20)
     private String frozenBoxRows;
-
+    /**
+     * 冻存盒列数
+     */
     @NotNull
     @Size(max = 20)
     private String frozenBoxColumns;
-
+    /**
+     * 项目编码
+     */
     @Size(max = 100)
     private String projectCode;
-
+    /**
+     * 项目名称
+     */
     @Size(max = 255)
     private String projectName;
-
+    /**
+     * 项目点编码
+     */
     @Size(max = 100)
     private String projectSiteCode;
-
+    /**
+     * 项目点名称
+     */
     @Size(max = 255)
     private String projectSiteName;
-
+    /**
+     * 设备编码
+     */
     @NotNull
     @Size(max = 100)
     private String equipmentCode;
-
+    /**
+     * 区域编码
+     */
     @NotNull
     @Size(max = 100)
     private String areaCode;
-
+    /**
+     * 冻存架编码
+     */
     @NotNull
     @Size(max = 100)
     private String supportRackCode;
-
+    /**
+     * 样本类型编码
+     */
     @NotNull
     @Size(max = 100)
     private String sampleTypeCode;
-
+    /**
+     * 样本类型名称
+     */
     @NotNull
     @Size(max = 255)
     private String sampleTypeName;
-
+    /**
+     * 样本数量
+     */
     @NotNull
     private Integer sampleNumber;
-
+    /**
+     * 是否分装：1：是，0：否
+     */
     @NotNull
     @Size(max = 20)
-    private String isSplit;
-
+    private Integer isSplit;
+    /**
+     * 所在架子行数
+     */
     @NotNull
     @Size(max = 20)
     private String rowsInShelf;
-
+    /**
+     * 所在架子列数
+     */
     @NotNull
     @Size(max = 20)
     private String columnsInShelf;
-
+    /**
+     * 备注
+     */
     @Size(max = 255)
     private String memo;
-
+    /**
+     * 状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 空管数
+     */
     @NotNull
-    @Max(value = 100)
     private Integer emptyTubeNumber;
-
+    /**
+     * 空孔数
+     */
     @NotNull
-    @Max(value = 100)
     private Integer emptyHoleNumber;
-
+    /**
+     * 错位数
+     */
     @NotNull
     @Max(value = 100)
     private Integer dislocationNumber;
-
+    /**
+     * 是否已导入样本数据：1：是，0：否
+     */
     @NotNull
     @Size(max = 20)
-    private String isRealData;
-
+    private Integer isRealData;
+    /**
+     * 冻存盒类型ID
+     */
     private Long frozenBoxTypeId;
-
+    /**
+     * 样本类型ID
+     */
     private Long sampleTypeId;
-
+    /**
+     * 项目ID
+     */
     private Long projectId;
-
+    /**
+     * 项目点ID
+     */
     private Long projectSiteId;
-
+    /**
+     * 转运ID
+     */
     private Long transhipId;
-
+    /**
+     * 设备ID
+     */
     private Long equipmentId;
-
+    /**
+     * 区域ID
+     */
     private Long areaId;
-
+    /**
+     * 冻存架ID
+     */
     private Long supportRackId;
-
+    /**
+     * 冻存管列表
+     */
     private List<FrozenTubeDTO> frozenTubeDTOS;
 
     public Long getId() {
@@ -224,11 +286,11 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     public void setSampleNumber(Integer sampleNumber) {
         this.sampleNumber = sampleNumber;
     }
-    public String getIsSplit() {
+    public Integer getIsSplit() {
         return isSplit;
     }
 
-    public void setIsSplit(String isSplit) {
+    public void setIsSplit(Integer isSplit) {
         this.isSplit = isSplit;
     }
     public String getMemo() {
@@ -266,11 +328,11 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     public void setDislocationNumber(Integer dislocationNumber) {
         this.dislocationNumber = dislocationNumber;
     }
-    public String getIsRealData() {
+    public Integer getIsRealData() {
         return isRealData;
     }
 
-    public void setIsRealData(String isRealData) {
+    public void setIsRealData(Integer isRealData) {
         this.isRealData = isRealData;
     }
 

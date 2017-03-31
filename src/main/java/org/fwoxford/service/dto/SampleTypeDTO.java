@@ -11,26 +11,38 @@ import java.util.Objects;
 public class SampleTypeDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 样本类型编码
+     */
     @NotNull
     @Size(max = 100)
     private String sampleTypeCode;
-
+    /**
+     * 样本类型名称
+     */
     @NotNull
     @Size(max = 255)
     private String sampleTypeName;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 前景色
+     */
     @NotNull
     @Size(max = 100)
     private String frontColor;
-
+    /**
+     * 背景色
+     */
     @NotNull
     @Size(max = 100)
     private String backColor;

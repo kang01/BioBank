@@ -133,7 +133,7 @@ public class EquipmentResource {
      * @return
      * @throws URISyntaxException
      */
-    @GetMapping("/equipments")
+    @GetMapping("/equipment/all")
     @Timed
     public ResponseEntity<List<EquipmentDTO>> getAllEquipmentList() {
         log.debug("REST request to get all Equipments");

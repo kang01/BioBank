@@ -13,43 +13,65 @@ import java.util.Objects;
 public class EquipmentDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 设备编码
+     */
     @NotNull
     @Size(max = 100)
     private String equipmentCode;
-
+    /**
+     * 工作温度
+     */
     @NotNull
     @Max(value = 100)
     private Integer temperature;
-
+    /**
+     * 设备地址
+     */
     @NotNull
     @Size(max = 255)
     private String equipmentAddress;
-
+    /**
+     * 存放最大冻存管数量
+     */
     @NotNull
     private Integer ampoulesMax;
-
+    /**
+     * 存放最小冻存管数量
+     */
     @NotNull
     private Integer ampoulesMin;
-
+    /**
+     * 标签1
+     */
     @Size(max = 100)
     private String label1;
-
+    /**
+     * 标签2
+     */
     @Size(max = 100)
     private String label2;
-
+    /**
+     * 标签3
+     */
+    @Size(max = 100)
+    private String label3;
+    /**
+     * 标签4
+     */
     @Size(max = 100)
     private String label4;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
-    @Size(max = 100)
-    private String label3;
 
     private Long equipmentGroupId;
 

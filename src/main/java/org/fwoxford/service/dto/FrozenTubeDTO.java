@@ -14,93 +14,149 @@ import java.util.Objects;
 public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 项目编码
+     */
     @NotNull
     @Size(max = 100)
     private String projectCode;
-
+    /**
+     * 冻存管编码
+     */
     @NotNull
     @Size(max = 100)
     private String frozenTubeCode;
-
+    /**
+     * 样本临时编码
+     */
     @NotNull
     @Size(max = 100)
     private String sampleTempCode;
-
+    /**
+     * 样本编码
+     */
     @NotNull
     @Size(max = 100)
     private String sampleCode;
-
+    /**
+     * 冻存管类型编码
+     */
     @Size(max = 100)
     private String frozenTubeTypeCode;
-
+    /**
+     * 冻存管类型名称
+     */
     @NotNull
     @Size(max = 255)
     private String frozenTubeTypeName;
-
+    /**
+     * 样本类型编码
+     */
     @NotNull
     @Size(max = 100)
     private String sampleTypeCode;
-
+    /**
+     * 样本类型名称
+     */
     @NotNull
     @Size(max = 255)
     private String sampleTypeName;
-
+    /**
+     * 样本最多使用次数
+     */
     @Max(value = 20)
     private Integer sampleUsedTimesMost;
-
+    /**
+     * 样本已使用次数
+     */
     @Max(value = 20)
     private Integer sampleUsedTimes;
-
+    /**
+     * 冻存管容量值
+     */
     @Max(value = 20)
     private Integer frozenTubeVolumns;
-
+    /**
+     * 冻存管容量值单位
+     */
     @Size(max = 20)
     private String frozenTubeVolumnsUnit;
-
+    /**
+     * 行数
+     */
     @NotNull
     @Size(max = 20)
     private String tubeRows;
-
+    /**
+     * 列数
+     */
     @NotNull
     @Size(max = 20)
     private String tubeColumns;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
-
+    /**
+     * 错误类型：6001：位置错误，6002：样本类型错误，6003：其他
+     */
     @Size(max = 20)
     private String errorType;
-
+    /**
+     * 状态：3001：正常，3002：空管，3003：空孔；3004：异常
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 冻存盒编码
+     */
     @NotNull
     @Size(max = 100)
     private String frozenBoxCode;
-
+    /**
+     * 项目组中患者ID
+     */
     private Long patientId;
-
+    /**
+     * 患者出生日期
+     */
     private ZonedDateTime dob;
-
+    /**
+     * 患者性别
+     */
     @Size(max = 255)
     private String gender;
-
+    /**
+     * 疾病类型
+     */
     @Size(max = 255)
     private String diseaseType;
-
+    /**
+     * 就诊类型
+     */
     @Size(max = 255)
     private String visitType;
-
+    /**
+     * 就诊日期
+     */
     private ZonedDateTime visitDate;
-
+    /**
+     * 冻存管类型ID
+     */
     private Long frozenTubeTypeId;
-
+    /**
+     * 样本类型ID
+     */
     private Long sampleTypeId;
-
+    /**
+     * 项目ID
+     */
     private Long projectId;
-
+    /**
+     * 冻存盒ID
+     */
     private Long frozenBoxId;
 
     public Long getId() {

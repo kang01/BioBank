@@ -151,7 +151,13 @@ public class TranshipResource {
     public DataTablesOutput<TranshipResponse> getPageTranship(@RequestBody DataTablesInput input) {
         return transhipService.findAllTranship(input);
     }
-    @PostMapping("/init/tranships")
+
+    /**
+     * 添加转运记录
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/tranships/new-empty")
     @Timed
     public ResponseEntity<TranshipDTO> initTranship() throws URISyntaxException {
         log.debug("REST request to create Tranship first");

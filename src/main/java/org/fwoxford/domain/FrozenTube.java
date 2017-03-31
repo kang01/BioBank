@@ -23,128 +23,184 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
+    /**
+     * 项目编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "project_code", length = 100, nullable = false)
     private String projectCode;
-
+    /**
+     * 冻存管编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "frozen_tube_code", length = 100, nullable = false)
     private String frozenTubeCode;
-
+    /**
+     * 样本临时编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "sample_temp_code", length = 100, nullable = false)
     private String sampleTempCode;
-
+    /**
+     * 样本编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "sample_code", length = 100, nullable = false)
     private String sampleCode;
-
+    /**
+     * 冻存管类型编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "frozen_tube_type_code", length = 100, nullable = false)
     private String frozenTubeTypeCode;
-
+    /**
+     * 冻存管类型名称
+     */
     @NotNull
     @Size(max = 255)
     @Column(name = "frozen_tube_type_name", length = 255, nullable = false)
     private String frozenTubeTypeName;
-
+    /**
+     * 样本类型编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "sample_type_code", length = 100, nullable = false)
     private String sampleTypeCode;
-
+    /**
+     * 样本类型名称
+     */
     @NotNull
     @Size(max = 255)
     @Column(name = "sample_type_name", length = 255, nullable = false)
     private String sampleTypeName;
-
+    /**
+     * 样本最多使用次数
+     */
     @NotNull
     @Max(value = 20)
     @Column(name = "sample_used_times_most", nullable = false)
     private Integer sampleUsedTimesMost;
-
+    /**
+     * 样本已使用次数
+     */
     @NotNull
     @Max(value = 20)
     @Column(name = "sample_used_times", nullable = false)
     private Integer sampleUsedTimes;
-
+    /**
+     * 冻存管容量值
+     */
     @NotNull
     @Max(value = 20)
     @Column(name = "frozen_tube_volumns", nullable = false)
     private Integer frozenTubeVolumns;
-
+    /**
+     * 冻存管容量值单位
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "frozen_tube_volumns_unit", length = 20, nullable = false)
     private String frozenTubeVolumnsUnit;
-
+    /**
+     * 行数
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "tube_rows", length = 20, nullable = false)
     private String tubeRows;
-
+    /**
+     * 列数
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "tube_columns", length = 20, nullable = false)
     private String tubeColumns;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
-
+    /**
+     * 错误类型：6001：位置错误，6002：样本类型错误，6003：其他
+     */
     @Size(max = 20)
     @Column(name = "error_type", length = 20)
     private String errorType;
-
+    /**
+     * 状态：3001：正常，3002：空管，3003：空孔；3004：异常
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-
+    /**
+     * 冻存盒编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "frozen_box_code", length = 100, nullable = false)
     private String frozenBoxCode;
-
+    /**
+     * 项目组中患者ID
+     */
     @Column(name = "patient_id")
     private Long patientId;
-
+    /**
+     * 患者出生日期
+     */
     @Column(name = "dob")
     private ZonedDateTime dob;
-
+    /**
+     * 患者性别
+     */
     @Size(max = 255)
     @Column(name = "gender", length = 255)
     private String gender;
-
+    /**
+     * 疾病类型
+     */
     @Size(max = 255)
     @Column(name = "disease_type", length = 255)
     private String diseaseType;
-
+    /**
+     * 就诊类型
+     */
     @Size(max = 255)
     @Column(name = "visit_type", length = 255)
     private String visitType;
-
+    /**
+     * 就诊日期
+     */
     @Column(name = "visit_date")
     private ZonedDateTime visitDate;
-
+    /**
+     * 冻存管类型
+     */
     @ManyToOne(optional = false)
     @NotNull
     private FrozenTubeType frozenTubeType;
-
+    /**
+     * 样本类型
+     */
     @ManyToOne(optional = false)
     @NotNull
     private SampleType sampleType;
-
+    /**
+     * 项目
+     */
     @ManyToOne(optional = false)
     @NotNull
     private Project project;
-
+    /**
+     * 冻存盒
+     */
     @ManyToOne(optional = false)
     @NotNull
     private FrozenBox frozenBox;

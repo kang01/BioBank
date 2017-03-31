@@ -48,18 +48,17 @@ public class FrozenBoxAndFrozenTubeResponse {
     @Size(max = 100)
     private String supportRackCode;
     /**
-     * 是否分装（0002：是；0003：否）
+     * 是否分装（1：是；0：否）
      */
     @NotNull
-    @Size(max = 20)
-    private String isSplit;
+    private Integer isSplit;
     /**
      * 备注
      */
     @Size(max = 255)
     private String memo;
     /**
-     * 状态：（01：新建，02：待分装，03：已分装，04：待入库，05：已入库，06：已作废）
+     * 状态：（2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废）
      */
     @NotNull
     @Size(max = 20)
@@ -145,11 +144,11 @@ public class FrozenBoxAndFrozenTubeResponse {
         this.supportRackCode = supportRackCode;
     }
 
-    public String getIsSplit() {
+    public Integer getIsSplit() {
         return isSplit;
     }
 
-    public void setIsSplit(String isSplit) {
+    public void setIsSplit(Integer isSplit) {
         this.isSplit = isSplit;
     }
 

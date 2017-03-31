@@ -17,108 +17,107 @@
         Added the entity FrozenTubeRecord.
     -->
     <changeSet id="20170319150513-1" author="jhipster">
-        <createTable tableName="tube_record">
+        <createTable tableName="tube_record" remarks="冻存管记录表">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="project_code" type="varchar(100)">
+            <column name="project_code" type="varchar(100)" remarks="项目编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_temp_code" type="varchar(100)">
+            <column name="sample_temp_code" type="varchar(100)" remarks="样本临时编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_code" type="varchar(100)">
+            <column name="sample_code" type="varchar(100)" remarks="样本编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="frozen_type_code" type="varchar(100)">
+            <column name="sample_used_times_most" type="integer" remarks="样本最多使用次数">
                 <constraints nullable="false" />
             </column>
 
-            <column name="frozen_type_name" type="varchar(255)">
+            <column name="sample_used_times" type="integer" remarks="样本已使用次数">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_used_times_most" type="integer">
+            <column name="frozen_tube_volumn" type="integer" remarks="冻存管容量值">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_used_times" type="integer">
+            <column name="frozen_tube_volumn_unit" type="varchar(20)" remarks="冻存管容量单位">
                 <constraints nullable="false" />
             </column>
 
-            <column name="frozen_tube_volumn" type="integer">
+            <column name="sample_type_code" type="varchar(100)" remarks="样本类型编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="frozen_tube_volumn_unit" type="varchar(20)">
+            <column name="sample_type_name" type="varchar(255)" remarks="样本类型名称">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_type_code" type="varchar(100)">
+            <column name="frozen_box_code" type="varchar(100)" remarks="冻存盒编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_type_name" type="varchar(255)">
+            <column name="tube_rows" type="varchar(20)" remarks="行数">
                 <constraints nullable="false" />
             </column>
 
-            <column name="frozen_box_code" type="varchar(100)">
+            <column name="tube_columns" type="varchar(20)" remarks="列数">
                 <constraints nullable="false" />
             </column>
 
-            <column name="tube_rows" type="varchar(20)">
+            <column name="frozen_tube_type_code" type="varchar(100)" remarks="冻存管类型编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="tube_columns" type="varchar(20)">
+            <column name="frozen_tube_type_name" type="varchar(255)" remarks="冻存管类型名称">
                 <constraints nullable="false" />
             </column>
 
-            <column name="is_modify_state" type="varchar(20)">
+            <column name="is_modify_state" type="integer" remarks="是否修改状态：1：是，0：否">
                 <constraints nullable="false" />
             </column>
 
-            <column name="memo" type="varchar(1024)">
+            <column name="is_modify_position" type="integer" remarks="是否修改位置：1：是，0：否">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="sample_type_id" type="bigint" remarks="样本类型ID">
                 <constraints nullable="true" />
             </column>
 
-            <column name="status" type="varchar(20)">
+            <column name="tube_type_id" type="bigint" remarks="冻存管类型ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="is_modify_position" type="varchar(20)">
+            <column name="frozen_box_id" type="bigint" remarks="冻存盒ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_type_id" type="bigint">
+            <column name="frozen_tube_id" type="bigint" remarks="冻存管ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="memo" type="varchar(1024)" remarks="备注">
                 <constraints nullable="true" />
             </column>
 
-            <column name="tube_type_id" type="bigint">
+            <column name="status" type="varchar(20)" remarks="状态">
                 <constraints nullable="false" />
             </column>
-
-            <column name="frozen_box_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="frozen_tube_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="created_by" type="varchar(50)">
+            <column name="created_by" type="varchar(50)" remarks="创建人">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+            <column name="created_date" type="timestamp" defaultValueDate="${now}" remarks="创建时间 ">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_modified_by" type="varchar(50)"/>
-            <column name="last_modified_date" type="timestamp"/>
+            <column name="last_modified_by" type="varchar(50)" remarks="修改人"/>
+            <column name="last_modified_date" type="timestamp" remarks="修改时间"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+
     </changeSet>
 </databaseChangeLog>

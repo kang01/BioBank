@@ -13,19 +13,27 @@ import java.util.Objects;
 public class ProjectDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     private String status;
-
+    /**
+     * 项目编码
+     */
     @NotNull
     @Size(max = 100)
     private String projectCode;
-
+    /**
+     * 项目名称
+     */
     @NotNull
     @Size(max = 255)
     private String projectName;
-
+    /**
+     * 备注
+     */
     @Size(max = 1024)
     private String memo;
 

@@ -22,44 +22,62 @@ public class EquipmentModle extends AbstractAuditingEntity implements Serializab
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
+    /**
+     * 设备型号编码
+     */
     @NotNull
     @Size(max = 100)
     @Column(name = "equipment_model_code", length = 100, nullable = false)
     private String equipmentModelCode;
-
+    /**
+     * 设备型号名称
+     */
     @NotNull
     @Size(max = 255)
     @Column(name = "equipment_model_name", length = 255, nullable = false)
     private String equipmentModelName;
-
+    /**
+     * 设备类型：液氮，冰箱。
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "equipment_type", length = 20, nullable = false)
     private String equipmentType;
-
+    /**
+     * 区域数量
+     */
     @NotNull
     @Max(value = 100)
     @Column(name = "area_number", nullable = false)
     private Integer areaNumber;
-
+    /**
+     * 区域内架子数量
+     */
     @NotNull
     @Max(value = 100)
     @Column(name = "shelve_number_in_area", nullable = false)
     private Integer shelveNumberInArea;
-
+    /**
+     * 备注
+     */
     @Column(name = "memo")
     private String memo;
-
+    /**
+     * 状态
+     */
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-
+    /**
+     * 最高温度
+     */
     @Max(value = 100)
     @Column(name = "temperature_max")
     private Integer temperatureMax;
-
+    /**
+     * 最低温度
+     */
     @Max(value = 100)
     @Column(name = "temperature_min")
     private Integer temperatureMin;

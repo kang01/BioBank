@@ -17,100 +17,100 @@
         Added the entity StorageIn.
     -->
     <changeSet id="20170317160203-1" author="jhipster">
-        <createTable tableName="storage_in">
+        <createTable tableName="storage_in" remarks="入库表">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="project_code" type="varchar(100)">
+            <column name="project_code" type="varchar(100)" remarks="项目编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="project_site_code" type="varchar(100)">
+            <column name="project_site_code" type="varchar(100)" remarks="项目点编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="receive_date" type="date">
+            <column name="receive_date" type="date" remarks="接受日期">
                 <constraints nullable="false" />
             </column>
 
-            <column name="receive_id" type="bigint">
+            <column name="receive_id" type="bigint" remarks="接收人ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="receive_name" type="varchar(100)">
+            <column name="receive_name" type="varchar(100)" remarks="接收人姓名">
                 <constraints nullable="false" />
             </column>
 
-            <column name="storage_in_type" type="varchar(20)">
+            <column name="storage_in_type" type="varchar(20)" remarks="入库类型：8001：首次入库，8002：移位入库，8003：调整入库">
                 <constraints nullable="false" />
             </column>
 
-            <column name="storage_in_person_id_1" type="bigint">
+            <column name="storage_in_person_id_1" type="bigint" remarks="入库人1ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="storage_in_person_name_1" type="varchar(100)">
+            <column name="storage_in_person_name_1" type="varchar(100)" remarks="入库人1名称">
                 <constraints nullable="false" />
             </column>
 
-            <column name="storage_in_person_id_2" type="bigint">
+            <column name="storage_in_person_id_2" type="bigint" remarks="入库人2ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="storange_in_person_name_2" type="varchar(100)">
+            <column name="storange_in_person_name_2" type="varchar(100)" remarks="入库人2名称">
                 <constraints nullable="false" />
             </column>
 
-            <column name="storage_in_date" type="date">
+            <column name="storage_in_date" type="date" remarks="入库时间">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_number" type="integer">
+            <column name="sample_number" type="integer" remarks="样本编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sign_id" type="bigint">
+            <column name="sign_id" type="bigint" remarks="签名人ID">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sign_name" type="varchar(100)">
+            <column name="sign_name" type="varchar(100)" remarks="签名人名称">
                 <constraints nullable="false" />
             </column>
 
-            <column name="sign_date" type="date">
+            <column name="sign_date" type="date" remarks="签名日期">
                 <constraints nullable="false" />
             </column>
 
-            <column name="memo" type="varchar(1024)">
+            <column name="tranship_id" type="bigint" remarks="转运ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="project_id" type="bigint" remarks="项目ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="project_site_id" type="bigint" remarks="项目点ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="memo" type="varchar(1024)" remarks="备注">
                 <constraints nullable="true" />
             </column>
 
-            <column name="status" type="varchar(20)">
+            <column name="status" type="varchar(20)" remarks="状态">
                 <constraints nullable="false" />
             </column>
 
-            <column name="tranship_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="project_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="project_site_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="created_by" type="varchar(50)">
+            <column name="created_by" type="varchar(50)" remarks="创建人">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+            <column name="created_date" type="timestamp" defaultValueDate="${now}" remarks="创建时间">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_modified_by" type="varchar(50)"/>
-            <column name="last_modified_date" type="timestamp"/>
+            <column name="last_modified_by" type="varchar(50)" remarks="修改人"/>
+            <column name="last_modified_date" type="timestamp" remarks="修改时间"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+
     </changeSet>
 </databaseChangeLog>

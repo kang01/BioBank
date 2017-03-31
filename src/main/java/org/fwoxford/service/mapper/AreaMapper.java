@@ -13,7 +13,6 @@ import java.util.List;
 public interface AreaMapper {
 
     @Mapping(source = "equipment.id", target = "equipmentId")
-    @Mapping(source = "equipment.equipmentCode", target = "equipmentEquipmentCode")
     AreaDTO areaToAreaDTO(Area area);
 
     List<AreaDTO> areasToAreaDTOs(List<Area> areas);

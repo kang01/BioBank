@@ -134,7 +134,7 @@ public class ProjectSiteResource {
      * @return
      * @throws URISyntaxException
      */
-    @GetMapping("/projectSitesByProjectId/{projectId}")
+    @GetMapping("/project-sites/project/{projectId}")
     @Timed
     public ResponseEntity<List<ProjectSiteDTO>> getAllProjectSitesByProjectId(@PathVariable Long projectId)
         throws URISyntaxException {

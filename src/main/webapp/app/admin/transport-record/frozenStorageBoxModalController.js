@@ -14,51 +14,47 @@
         var vm = this;
         vm.boxCodeList = [];
         var codeList = [];
-
+        // vm.frozenTubeArray = [];//初始管子
         vm.addData = function (event) {
             if(window.event.keyCode == 13){
-                console.log(JSON.stringify(vm.boxCode));
                 if(vm.boxCode != ''){
-                    codeList = vm.boxCode.split("\n");
-                    codeList = codeList.reverse();
-                    vm.boxCodeList.length = codeList.length;
+                    codeList = _.uniq((vm.boxCode.split("\n")).reverse());
                     for(var i = 0; i < codeList.length; i++){
                         vm.boxCodeList[i] = {
                             frozenBoxCode:codeList[i],
-                            projectSiteCode:'',
-                            frozenBoxTypeId:17,//冻存盒类型ID
-                            dislocationNumber:'',
-                            emptyHoleNumber:'',
-                            emptyTubeNumber:'',
-                            frozenBoxColumns:'',
-                            frozenBoxRows:'',
-                            projectCode:'',
-                            projectId:1,
-                            projectName:'',
-                            projectSiteId:'',
-                            projectSiteName:'',
-                            frozenBoxTypeCode:'',
-                            sampleTypeName:'',
-                            sampleTypeCode:'',
-                            isRealData:'',
-                            isSplit: "",//是否分装:'4001',
+                            frozenBoxTypeId:17,//冻存盒类型ID 17：10*10 18：8*8
+                            frozenBoxTypeCode:'BOX_TYPE_0002',
+                            isSplit: "0003",//是否分装:'否:0003 是：0002',
                             memo:'',
-                            sampleNumber: '',//样本数量
-                            sampleTypeId: '',//样本类型ID
-                            status: "1",//状态
+                            status: "3003",//状态
+                            dislocationNumber:0,
+                            emptyHoleNumber:0,
+                            emptyTubeNumber:0,
+                            frozenBoxColumns:10,
+                            frozenBoxRows:10,
+                            equipmentId:'',
+                            equipmentCode:'',
+                            areaId:'',
+                            areaCode:'',
+                            supportRackId:'',
+                            supportRackCode:'',
                             columnsInShelf:"",//所在架子行数
                             rowsInShelf:"",//所在架子列数,
-                            frozenTubeDTOS:[]
-
+                            isRealData:'4002',
+                            sampleNumber: 100,//样本数量
+                            sampleTypeId: '',//样本类型ID
+                            sampleTypeCode:'',//样本类型
+                            frozenTubeDTOS:"",//管子
+                            sampleTypeName:'',
                         }
 
                     }
                 }
-
-
             }
 
         };
+
+
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('searching', false)
             .withOption('paging', false)

@@ -195,7 +195,7 @@
                                     <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig" style="width: 80px;"
                                                ng-model="vm.box.supportRackId"></selectize>
                                 </div>
-                                <div style="float:left;width: 80px;margin-left: 2px"><input type="email" class="form-control"  >
+                                <div style="float:left;width: 80px;margin-left: 2px"><input type="text" class="form-control" maxlength="2" ng-model="vm.boxLocation" >
                                 </div>
                             </div>
                         </div>
@@ -228,7 +228,7 @@
                         <div class=" col-sm-8 box-remark">
                             <label  class="col-sm-2 control-label p-r-6">备注</label>
                             <div class="col-sm-10 ">
-                                <textarea class="form-control"rows="1" style="resize: none"></textarea>
+                                <textarea class="form-control"rows="1" style="resize: none" ng-model="vm.box.memo"></textarea>
                             </div>
                         </div>
 

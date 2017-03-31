@@ -76,13 +76,7 @@
                             effectiveSampleNumber: null,
                             emptyHoleNumber: null,
                             emptyTubeNumber: null,
-                            frozenBoxDTOList: [
-                                {
-                                    frozenBoxCode:'',
-                                    frozenBoxTypeId:17
-                                }
-
-                            ],
+                            frozenBoxDTOList: [],
                             frozenBoxNumber: null,
                             memo:null ,
                             projectCode: null,

@@ -317,6 +317,22 @@
                 </p>
             </div>
         </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.tranship.transhipCode" for="field_transhipCode">Tranship Code</label>
+            <input type="text" class="form-control" name="transhipCode" id="field_transhipCode"
+                    ng-model="vm.tranship.transhipCode"
+                    required ng-maxlength="255"/>
+            <div ng-show="editForm.transhipCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.transhipCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.transhipCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
 
         <div class="form-group">
             <label data-translate="bioBankApp.tranship.project" for="field_project">Project</label>

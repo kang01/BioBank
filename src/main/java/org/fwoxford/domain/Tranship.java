@@ -1,9 +1,7 @@
 package org.fwoxford.domain;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -16,6 +14,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "tranship")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Tranship extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,7 +24,6 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @NotNull
     @Column(name = "tranship_date", nullable = false)
     private LocalDate transhipDate;
 
@@ -59,7 +57,6 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @Column(name = "tranship_batch", length = 100, nullable = false)
     private String transhipBatch;
 
-    @NotNull
     @Size(max = 20)
     @Column(name = "tranship_state", length = 20, nullable = false)
     private String transhipState;
@@ -69,7 +66,6 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @Column(name = "receiver", length = 100, nullable = false)
     private String receiver;
 
-    @NotNull
     @Column(name = "receive_date", nullable = false)
     private LocalDate receiveDate;
 
@@ -111,14 +107,15 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
-    @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(name = "project_id")
+    @Size(max = 255)
+    @Column(name = "tranship_code", length = 255, nullable = false)
+    private String transhipCode;
+
+    @ManyToOne(optional = false)
     private Project project;
 
     @ManyToOne(optional = false)
-    @NotNull
-    @JoinColumn(name = "project_site_id")
     private ProjectSite projectSite;
 
     public Long getId() {
@@ -363,6 +360,19 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
         this.status = status;
     }
 
+    public String getTranshipCode() {
+        return transhipCode;
+    }
+
+    public Tranship transhipCode(String transhipCode) {
+        this.transhipCode = transhipCode;
+        return this;
+    }
+
+    public void setTranshipCode(String transhipCode) {
+        this.transhipCode = transhipCode;
+    }
+
     public Project getProject() {
         return project;
     }
@@ -431,6 +441,7 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
             ", effectiveSampleNumber='" + effectiveSampleNumber + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
+            ", transhipCode='" + transhipCode + "'" +
             '}';
     }
 }

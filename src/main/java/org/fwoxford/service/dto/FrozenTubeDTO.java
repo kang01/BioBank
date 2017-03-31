@@ -1,6 +1,7 @@
 package org.fwoxford.service.dto;
 
 
+import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -30,10 +31,10 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 100)
     private String sampleCode;
 
-    @NotNull
     @Size(max = 100)
     private String frozenTubeTypeCode;
 
+    @NotNull
     @Size(max = 255)
     private String frozenTubeTypeName;
 
@@ -41,17 +42,17 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 100)
     private String sampleTypeCode;
 
+    @NotNull
     @Size(max = 255)
     private String sampleTypeName;
 
     @Max(value = 20)
     private Integer sampleUsedTimesMost;
 
-    @NotNull
     @Max(value = 20)
     private Integer sampleUsedTimes;
 
-    @NotNull
+    @Max(value = 20)
     private Integer frozenTubeVolumns;
 
     @Size(max = 20)
@@ -78,6 +79,21 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     @Size(max = 100)
     private String frozenBoxCode;
+
+    private Long patientId;
+
+    private ZonedDateTime dob;
+
+    @Size(max = 255)
+    private String gender;
+
+    @Size(max = 255)
+    private String diseaseType;
+
+    @Size(max = 255)
+    private String visitType;
+
+    private ZonedDateTime visitDate;
 
     private Long frozenTubeTypeId;
 
@@ -220,6 +236,48 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     public void setFrozenBoxCode(String frozenBoxCode) {
         this.frozenBoxCode = frozenBoxCode;
     }
+    public Long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
+    }
+    public ZonedDateTime getDob() {
+        return dob;
+    }
+
+    public void setDob(ZonedDateTime dob) {
+        this.dob = dob;
+    }
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+    public String getDiseaseType() {
+        return diseaseType;
+    }
+
+    public void setDiseaseType(String diseaseType) {
+        this.diseaseType = diseaseType;
+    }
+    public String getVisitType() {
+        return visitType;
+    }
+
+    public void setVisitType(String visitType) {
+        this.visitType = visitType;
+    }
+    public ZonedDateTime getVisitDate() {
+        return visitDate;
+    }
+
+    public void setVisitDate(ZonedDateTime visitDate) {
+        this.visitDate = visitDate;
+    }
 
     public Long getFrozenTubeTypeId() {
         return frozenTubeTypeId;
@@ -296,6 +354,12 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
             ", errorType='" + errorType + "'" +
             ", status='" + status + "'" +
             ", frozenBoxCode='" + frozenBoxCode + "'" +
+            ", patientId='" + patientId + "'" +
+            ", dob='" + dob + "'" +
+            ", gender='" + gender + "'" +
+            ", diseaseType='" + diseaseType + "'" +
+            ", visitType='" + visitType + "'" +
+            ", visitDate='" + visitDate + "'" +
             '}';
     }
 }

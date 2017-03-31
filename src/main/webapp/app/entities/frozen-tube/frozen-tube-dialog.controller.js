@@ -12,6 +12,8 @@
 
         vm.frozenTube = entity;
         vm.clear = clear;
+        vm.datePickerOpenStatus = {};
+        vm.openCalendar = openCalendar;
         vm.save = save;
         vm.frozentubetypes = FrozenTubeType.query();
         vm.sampletypes = SampleType.query();
@@ -45,6 +47,11 @@
             vm.isSaving = false;
         }
 
+        vm.datePickerOpenStatus.dob = false;
+        vm.datePickerOpenStatus.visitDate = false;
 
+        function openCalendar (date) {
+            vm.datePickerOpenStatus[date] = true;
+        }
     }
 })();

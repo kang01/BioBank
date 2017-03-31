@@ -142,6 +142,7 @@
                                 effectiveSampleNumber: null,
                                 memo: null,
                                 status: null,
+                                transhipCode: null,
                                 id: null
                             };
                         }

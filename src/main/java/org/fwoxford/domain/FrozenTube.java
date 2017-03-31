@@ -6,6 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -74,6 +75,7 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     private Integer sampleUsedTimes;
 
     @NotNull
+    @Max(value = 20)
     @Column(name = "frozen_tube_volumns", nullable = false)
     private Integer frozenTubeVolumns;
 
@@ -110,6 +112,27 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     @Column(name = "frozen_box_code", length = 100, nullable = false)
     private String frozenBoxCode;
 
+    @Column(name = "patient_id")
+    private Long patientId;
+
+    @Column(name = "dob")
+    private ZonedDateTime dob;
+
+    @Size(max = 255)
+    @Column(name = "gender", length = 255)
+    private String gender;
+
+    @Size(max = 255)
+    @Column(name = "disease_type", length = 255)
+    private String diseaseType;
+
+    @Size(max = 255)
+    @Column(name = "visit_type", length = 255)
+    private String visitType;
+
+    @Column(name = "visit_date")
+    private ZonedDateTime visitDate;
+
     @ManyToOne(optional = false)
     @NotNull
     private FrozenTubeType frozenTubeType;
@@ -124,7 +147,6 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(name = "frozen_box_id")
     private FrozenBox frozenBox;
 
     public Long getId() {
@@ -369,6 +391,84 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
         this.frozenBoxCode = frozenBoxCode;
     }
 
+    public Long getPatientId() {
+        return patientId;
+    }
+
+    public FrozenTube patientId(Long patientId) {
+        this.patientId = patientId;
+        return this;
+    }
+
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
+    }
+
+    public ZonedDateTime getDob() {
+        return dob;
+    }
+
+    public FrozenTube dob(ZonedDateTime dob) {
+        this.dob = dob;
+        return this;
+    }
+
+    public void setDob(ZonedDateTime dob) {
+        this.dob = dob;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public FrozenTube gender(String gender) {
+        this.gender = gender;
+        return this;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getDiseaseType() {
+        return diseaseType;
+    }
+
+    public FrozenTube diseaseType(String diseaseType) {
+        this.diseaseType = diseaseType;
+        return this;
+    }
+
+    public void setDiseaseType(String diseaseType) {
+        this.diseaseType = diseaseType;
+    }
+
+    public String getVisitType() {
+        return visitType;
+    }
+
+    public FrozenTube visitType(String visitType) {
+        this.visitType = visitType;
+        return this;
+    }
+
+    public void setVisitType(String visitType) {
+        this.visitType = visitType;
+    }
+
+    public ZonedDateTime getVisitDate() {
+        return visitDate;
+    }
+
+    public FrozenTube visitDate(ZonedDateTime visitDate) {
+        this.visitDate = visitDate;
+        return this;
+    }
+
+    public void setVisitDate(ZonedDateTime visitDate) {
+        this.visitDate = visitDate;
+    }
+
     public FrozenTubeType getFrozenTubeType() {
         return frozenTubeType;
     }
@@ -463,6 +563,12 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
             ", errorType='" + errorType + "'" +
             ", status='" + status + "'" +
             ", frozenBoxCode='" + frozenBoxCode + "'" +
+            ", patientId='" + patientId + "'" +
+            ", dob='" + dob + "'" +
+            ", gender='" + gender + "'" +
+            ", diseaseType='" + diseaseType + "'" +
+            ", visitType='" + visitType + "'" +
+            ", visitDate='" + visitDate + "'" +
             '}';
     }
 }

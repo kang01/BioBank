@@ -98,6 +98,9 @@ public class TranshipResourceIntTest {
     private static final String DEFAULT_STATUS = "AAAAAAAAAA";
     private static final String UPDATED_STATUS = "BBBBBBBBBB";
 
+    private static final String DEFAULT_TRANSHIP_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_TRANSHIP_CODE = "BBBBBBBBBB";
+
     @Autowired
     private TranshipRepository transhipRepository;
 
@@ -158,7 +161,8 @@ public class TranshipResourceIntTest {
                 .sampleSatisfaction(DEFAULT_SAMPLE_SATISFACTION)
                 .effectiveSampleNumber(DEFAULT_EFFECTIVE_SAMPLE_NUMBER)
                 .memo(DEFAULT_MEMO)
-                .status(DEFAULT_STATUS);
+                .status(DEFAULT_STATUS)
+                .transhipCode(DEFAULT_TRANSHIP_CODE);
         // Add required entity
         Project project = ProjectResourceIntTest.createEntity(em);
         em.persist(project);
@@ -212,6 +216,7 @@ public class TranshipResourceIntTest {
         assertThat(testTranship.getEffectiveSampleNumber()).isEqualTo(DEFAULT_EFFECTIVE_SAMPLE_NUMBER);
         assertThat(testTranship.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testTranship.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testTranship.getTranshipCode()).isEqualTo(DEFAULT_TRANSHIP_CODE);
     }
 
     @Test
@@ -541,6 +546,25 @@ public class TranshipResourceIntTest {
 
     @Test
     @Transactional
+    public void checkTranshipCodeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = transhipRepository.findAll().size();
+        // set the field null
+        tranship.setTranshipCode(null);
+
+        // Create the Tranship, which fails.
+        TranshipDTO transhipDTO = transhipMapper.transhipToTranshipDTO(tranship);
+
+        restTranshipMockMvc.perform(post("/api/tranships")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(transhipDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<Tranship> transhipList = transhipRepository.findAll();
+        assertThat(transhipList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllTranships() throws Exception {
         // Initialize the database
         transhipRepository.saveAndFlush(tranship);
@@ -567,7 +591,8 @@ public class TranshipResourceIntTest {
             .andExpect(jsonPath("$.[*].sampleSatisfaction").value(hasItem(DEFAULT_SAMPLE_SATISFACTION)))
             .andExpect(jsonPath("$.[*].effectiveSampleNumber").value(hasItem(DEFAULT_EFFECTIVE_SAMPLE_NUMBER)))
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].transhipCode").value(hasItem(DEFAULT_TRANSHIP_CODE.toString())));
     }
 
     @Test
@@ -598,7 +623,8 @@ public class TranshipResourceIntTest {
             .andExpect(jsonPath("$.sampleSatisfaction").value(DEFAULT_SAMPLE_SATISFACTION))
             .andExpect(jsonPath("$.effectiveSampleNumber").value(DEFAULT_EFFECTIVE_SAMPLE_NUMBER))
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
+            .andExpect(jsonPath("$.transhipCode").value(DEFAULT_TRANSHIP_CODE.toString()));
     }
 
     @Test
@@ -636,7 +662,8 @@ public class TranshipResourceIntTest {
                 .sampleSatisfaction(UPDATED_SAMPLE_SATISFACTION)
                 .effectiveSampleNumber(UPDATED_EFFECTIVE_SAMPLE_NUMBER)
                 .memo(UPDATED_MEMO)
-                .status(UPDATED_STATUS);
+                .status(UPDATED_STATUS)
+                .transhipCode(UPDATED_TRANSHIP_CODE);
         TranshipDTO transhipDTO = transhipMapper.transhipToTranshipDTO(updatedTranship);
 
         restTranshipMockMvc.perform(put("/api/tranships")
@@ -666,6 +693,7 @@ public class TranshipResourceIntTest {
         assertThat(testTranship.getEffectiveSampleNumber()).isEqualTo(UPDATED_EFFECTIVE_SAMPLE_NUMBER);
         assertThat(testTranship.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testTranship.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testTranship.getTranshipCode()).isEqualTo(UPDATED_TRANSHIP_CODE);
     }
 
     @Test

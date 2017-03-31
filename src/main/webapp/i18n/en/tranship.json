@@ -33,6 +33,7 @@
             "effectiveSampleNumber": "Effective Sample Number",
             "memo": "Memo",
             "status": "Status",
+            "transhipCode": "Tranship Code",
             "project": "Project",
             "projectSite": "Project Site"
         }

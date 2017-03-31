@@ -93,6 +93,30 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="patient_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="dob" type="timestamp">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="gender" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="disease_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="visit_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="visit_date" type="timestamp">
+                <constraints nullable="true" />
+            </column>
+
             <column name="frozen_tube_type_id" type="bigint">
                 <constraints nullable="false" />
             </column>
@@ -119,6 +143,8 @@
             <column name="last_modified_date" type="timestamp"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
+        <dropDefaultValue tableName="frozen_tube" columnName="dob" columnDataType="datetime"/>
+        <dropDefaultValue tableName="frozen_tube" columnName="visit_date" columnDataType="datetime"/>
         
     </changeSet>
 </databaseChangeLog>

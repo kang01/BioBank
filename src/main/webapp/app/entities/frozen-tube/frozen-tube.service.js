@@ -4,9 +4,9 @@
         .module('bioBankApp')
         .factory('FrozenTube', FrozenTube);
 
-    FrozenTube.$inject = ['$resource'];
+    FrozenTube.$inject = ['$resource', 'DateUtils'];
 
-    function FrozenTube ($resource) {
+    function FrozenTube ($resource, DateUtils) {
         var resourceUrl =  'api/frozen-tubes/:id';
 
         return $resource(resourceUrl, {}, {
@@ -16,6 +16,8 @@
                 transformResponse: function (data) {
                     if (data) {
                         data = angular.fromJson(data);
+                        data.dob = DateUtils.convertDateTimeFromServer(data.dob);
+                        data.visitDate = DateUtils.convertDateTimeFromServer(data.visitDate);
                     }
                     return data;
                 }

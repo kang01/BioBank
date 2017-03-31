@@ -76,6 +76,30 @@
         <dd>
             <span>{{vm.frozenTube.frozenBoxCode}}</span>
         </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.patientId">Patient Id</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.patientId}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.dob">Dob</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.dob | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.gender">Gender</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.gender}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.diseaseType">Disease Type</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.diseaseType}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.visitType">Visit Type</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.visitType}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenTube.visitDate">Visit Date</span></dt>
+        <dd>
+            <span>{{vm.frozenTube.visitDate | date:'medium'}}</span>
+        </dd>
         <dt><span data-translate="bioBankApp.frozenTube.frozenTubeType">Frozen Tube Type</span></dt>
         <dd>
             <a ui-sref="frozen-tube-type-detail({id:vm.frozenTube.frozenTubeTypeId})">{{vm.frozenTube.frozenTubeTypeId}}</a>

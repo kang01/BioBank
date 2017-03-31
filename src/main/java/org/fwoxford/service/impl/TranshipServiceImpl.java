@@ -1,5 +1,9 @@
 package org.fwoxford.service.impl;
 
+import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.TimeInfo;
+import org.apache.commons.net.ntp.TimeStamp;
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.Tranship;
@@ -23,6 +27,11 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -178,6 +187,7 @@ public class TranshipServiceImpl implements TranshipService{
         Boolean isCanTranship =  isCanTranship(transhipDTO);
         //保存转运记录
         Tranship tranship =transhipMapper.transhipDTOToTranship(transhipDTO);
+        tranship.setStatus(Constants.VALID);
         transhipRepositries.save(tranship);
 
         //保存冻存盒
@@ -199,6 +209,53 @@ public class TranshipServiceImpl implements TranshipService{
         dto.setFrozenBoxDTOList(alist);
         log.debug("Response to saveBatch tranship: {}", dto);
         return dto;
+    }
+
+    /**
+     * 初始化转运记录
+     * @return
+     */
+    @Override
+    public TranshipDTO initTranship() {
+        Tranship tranship = new Tranship();
+        try {
+            NTPUDPClient client = new NTPUDPClient();
+            client.setDefaultTimeout(1000);//设置超时
+            String timeServerUrl = "ntp5.aliyun.com";
+            InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
+            TimeInfo timeInfo = client.getTime(timeServerAddress);
+            TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
+            Long a = timeStamp.getTime();
+            String b = timeStamp.toUTCString();
+            DateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmssSSS");
+            System.out.println(dateFormat.format(timeStamp.getDate()));
+            tranship.setTranshipCode(dateFormat.format(timeStamp.getDate()).toString());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        tranship.setEffectiveSampleNumber(0);
+        tranship.setProjectCode(new String(" "));
+        tranship.setProject(null);
+        tranship.setEmptyHoleNumber(0);
+        tranship.setEmptyTubeNumber(0);
+        tranship.setFrozenBoxNumber(0);
+        tranship.setProjectName(new String(" "));
+        tranship.setProjectSite(null);
+        tranship.setProjectSiteCode(new String(" "));
+        tranship.setProjectSiteName(new String(" "));
+        tranship.setReceiver(new String(" "));
+        tranship.setReceiveDate(null);
+        tranship.setSampleNumber(0);
+        tranship.setTrackNumber(new String(" "));
+        tranship.setTranshipBatch(new String(" "));
+        tranship.setSampleSatisfaction(0);
+        tranship.setTranshipDate(null);
+        tranship.setTranshipState(Constants.TRANSHIPE_IN_PENDING);
+        tranship.setStatus(Constants.VALID);
+        transhipRepositries.save(tranship);
+        return transhipMapper.transhipToTranshipDTO(tranship);
     }
 
     public List<FrozenTubeDTO> getFrozenTubeDTOList(List<FrozenBoxDTO> frozenBoxDTOList, List<FrozenBox> frozenBoxes) {

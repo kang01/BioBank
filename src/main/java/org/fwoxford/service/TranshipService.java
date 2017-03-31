@@ -65,4 +65,9 @@ public interface TranshipService {
      */
     TranshipDTO insertTranship(TranshipDTO transhipDTO);
 
+    /**
+     * 初始化转运记录
+     * @return
+     */
+    TranshipDTO initTranship();
 }

@@ -90,7 +90,10 @@
         var ctrl = this;
         ctrl.ok = function () {
             $uibModalInstance.close(true);
-        }
+        };
+        ctrl.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     }
 })();
 

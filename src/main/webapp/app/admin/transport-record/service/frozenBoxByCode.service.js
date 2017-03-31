@@ -7,12 +7,12 @@
 
     angular
         .module('bioBankApp')
-        .factory('FindFrozenBoxAndTubeByBoxService', FindFrozenBoxAndTubeByBoxService);
+        .factory('frozenBoxByCodeService', frozenBoxByCodeService);
 
-    FindFrozenBoxAndTubeByBoxService.$inject = ['$resource'];
+    frozenBoxByCodeService.$inject = ['$resource'];
 
-    function FindFrozenBoxAndTubeByBoxService ($resource) {
-        var service = $resource('api/findFrozenBoxAndTubeByBoxCodes/:code', {}, {
+    function frozenBoxByCodeService ($resource) {
+        var service = $resource('api/temp/frozen-boxes/code/:code', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

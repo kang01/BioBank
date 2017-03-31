@@ -6,11 +6,12 @@
 
     angular
         .module('bioBankApp')
-        .controller('TransportRecordNewController', TransportRecordNewController);
+        .controller('TransportRecordNewController', TransportRecordNewController)
+        .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
     TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
         'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService'];
-
+    BoxInstanceCtrl.$inject = ['$uibModalInstance'];
     function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
                                           SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService) {
         var vm = this;
@@ -24,6 +25,7 @@
         vm.openCalendar = openCalendar; //时间
         vm.importFrozenStorageBox = importFrozenStorageBox; //导入冻存盒
         vm.someClickHandler = someClickHandler; //点击冻存盒的表格行
+        vm.reImportFrozenBoxData = reImportFrozenBoxData;//重新导入
 
         if(vm.transportRecord.transhipDate){
             vm.transportRecord.transhipDate = new Date(entity.transhipDate);
@@ -279,6 +281,10 @@
                 });
             }
         };
+        //重新导入
+        function reImportFrozenBoxData() {
+            frozenBoxByCodeService.get({code:vm.box.frozenBoxCode},onFrozenSuccess,onError);
+        }
         var loadAll = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
@@ -548,10 +554,35 @@
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号')
         ];
         //点击冻存盒行
+        var count = 0;
         function someClickHandler(td,boxInfo) {
-            $(td).closest('table').find('.rowLight').removeClass("rowLight");
-            $(td).addClass('rowLight');
-            frozenBoxByCodeService.get({code:boxInfo.frozenBoxCode},onFrozenSuccess,onError);
+            if(count == 0){
+                $(td).closest('table').find('.rowLight').removeClass("rowLight");
+                $(td).addClass('rowLight');
+                frozenBoxByCodeService.get({code:boxInfo.frozenBoxCode},onFrozenSuccess,onError);
+
+            }else{
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'boxModal.html',
+                    size: 'sm',
+                    controller: 'BoxInstanceCtrl',
+                    controllerAs: 'ctrl'
+
+
+                });
+                modalInstance.result.then(function (flag) {
+                    $(td).closest('table').find('.rowLight').removeClass("rowLight");
+                    $(td).addClass('rowLight');
+                    //true:保存 false:不保存
+                    if(flag){
+
+                    }
+                    frozenBoxByCodeService.get({code:boxInfo.frozenBoxCode},onFrozenSuccess,onError);
+                }, function () {
+                });
+            }
+            count++;
         }
         function onFrozenSuccess(data) {
             vm.box = data;
@@ -575,5 +606,17 @@
             return nRow;
         }
 
+    }
+    function BoxInstanceCtrl($uibModalInstance) {
+        var ctrl = this;
+        ctrl.ok = function () {
+            $uibModalInstance.close(true);
+        };
+        ctrl.unSave = function () {
+            $uibModalInstance.close(false);
+        };
+        ctrl.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     }
 })();

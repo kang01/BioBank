@@ -54,6 +54,9 @@
                 "entity-audit": "Entity Audit",
                 "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
             },
+            "bizs": {
+                "stockinrecord": "入库记录"
+            },
             "language": "语言"
         },
         "form": {

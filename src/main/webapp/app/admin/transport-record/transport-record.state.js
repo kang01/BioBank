@@ -53,8 +53,8 @@
                 }
             })
             .state('transport-record-new', {
-                parent: 'transport-record',
-                url: 'transport-record/add',
+                parent: 'admin',
+                url: '/transport-record/add',
                 data: {
                     authorities: ['ROLE_ADMIN'],
                     pageTitle: 'transportRecord.new.title'
@@ -70,12 +70,39 @@
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                         $translatePartialLoader.addPart('transport-record');
                         return $translate.refresh();
-                    }]
+                    }],
+                    entity: function () {
+                        return {
+                            effectiveSampleNumber: null,
+                            emptyHoleNumber: null,
+                            emptyTubeNumber: null,
+                            frozenBoxDTOList: [],
+                            frozenBoxNumber: null,
+                            memo:null ,
+                            projectCode: null,
+                            projectId: null,
+                            projectName:null ,
+                            projectSiteCode:null,
+                            projectSiteId: null,
+                            projectSiteName: null,
+                            receiveDate: null,
+                            receiver:null,
+                            sampleNumber:null,
+                            sampleSatisfaction: null,
+                            trackNumber: null,
+                            transhipBatch: null,
+                            transhipDate: null,
+                            status: null,
+                            transhipState: null
+
+                        };
+                    }
+
                 }
             })
             .state('transport-record-edit', {
-                parent: 'transport-record',
-                url: '/{id}/edit',
+                parent: 'admin',
+                url: '/transport-record/{id}/edit',
                 data: {
                     authorities: ['ROLE_ADMIN'],
                     pageTitle: 'transportRecord.new.title'
@@ -91,6 +118,9 @@
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                         $translatePartialLoader.addPart('transport-record');
                         return $translate.refresh();
+                    }],
+                    entity: ['$stateParams', 'TransportRecordService', function($stateParams, TransportRecordService) {
+                        return TransportRecordService.get({id : $stateParams.id}).$promise;
                     }]
                 }
             })

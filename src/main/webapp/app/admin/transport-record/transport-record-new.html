@@ -61,8 +61,8 @@
                 <label  class="col-sm-4 control-label p-r-6">状态</label>
                 <div class="col-sm-8">
                     <selectize options='vm.statusOptions' config="vm.statusConfig"
-                               ng-model="vm.transportRecord.status"></selectize>
-                    <input type="hidden" name="level" ng-model="vm.transportRecord.status" required>
+                               ng-model="vm.transportRecord.transhipState"></selectize>
+                    <input type="hidden" name="level" ng-model="vm.transportRecord.transhipState" required>
                 </div>
             </div>
             <div class="form-group col-sm-3">
@@ -161,7 +161,7 @@
                         <div class="form-group col-sm-2">
                             <label  class="col-sm-4 control-label p-r-6">冻存盒号</label>
                             <div class="col-sm-8">
-                                <input type="email" class="form-control" ng-model="vm.box.projectSiteCode" >
+                                <input type="email" class="form-control" ng-model="vm.box.frozenBoxCode" >
                             </div>
                         </div>
                         <div class="form-group col-sm-2">
@@ -195,7 +195,7 @@
                                     <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig" style="width: 80px;"
                                                ng-model="vm.box.supportRackId"></selectize>
                                 </div>
-                                <div style="float:left;width: 80px;margin-left: 2px"><input type="email" class="form-control"  >
+                                <div style="float:left;width: 80px;margin-left: 2px"><input type="text" class="form-control" maxlength="2" ng-model="vm.boxLocation" >
                                 </div>
                             </div>
                         </div>
@@ -228,7 +228,7 @@
                         <div class=" col-sm-8 box-remark">
                             <label  class="col-sm-2 control-label p-r-6">备注</label>
                             <div class="col-sm-10 ">
-                                <textarea class="form-control"rows="1" style="resize: none"></textarea>
+                                <textarea class="form-control"rows="1" style="resize: none" ng-model="vm.box.memo"></textarea>
                             </div>
                         </div>
 

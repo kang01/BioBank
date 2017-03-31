@@ -14,81 +14,47 @@
         var vm = this;
         vm.boxCodeList = [];
         var codeList = [];
-
+        // vm.frozenTubeArray = [];//初始管子
         vm.addData = function (event) {
             if(window.event.keyCode == 13){
                 if(vm.boxCode != ''){
-                    vm.boxCode += ",";
-                    codeList = vm.boxCode.split(",");
-                    codeList = codeList.reverse();
-                    codeList.shift();
-                    vm.boxCodeList.length = codeList.length;
+                    codeList = _.uniq((vm.boxCode.split("\n")).reverse());
                     for(var i = 0; i < codeList.length; i++){
                         vm.boxCodeList[i] = {
                             frozenBoxCode:codeList[i],
-                            projectSiteCode:codeList[i],
-                            frozenTubeDTOS:[
-                                {
-                                    errorType: "6001",//错误类型
-                                    frozenBoxTypeCode:"BOX_TYPE_0002",//冻存盒类型编码
-                                    frozenTubeCode: "5435345",//冻存管编码
-                                    frozenTubeTypeCode: "TUBE_TYPE_0001",//冻存管类型编码
-                                    frozenTubeTypeId: 12,//冻存管类型ID
-                                    frozenTubeTypeName: "血浆",//冻存管类型名称
-                                    isModifyPostition: "1",//是否修改位置
-                                    isModifyState: "0002",//是否修改状态
-                                    memo: "",//备注
-                                    projectCode: "P_00001",//项目编码
-                                    projectId: 1,//项目ID
-                                    sampleCode: "3434",//样本编码
-                                    sampleTempCode: "54135151",//样本临时编码
-                                    sampleTypeCode: "S_TYPE_00001",//样本类型编码
-                                    sampleTypeId: 5,//样本类型ID
-                                    sampleTypeName: "血浆-紫",//样本类型名称
-                                    status: "1",//状态
-                                    tubeColumns: "10",//列数
-                                    tubeRows: "10",//行数
-                                    frozenTubeVolumnsUnit:"ml",//冻存管容量单位
-                                    frozenBoxCode: codeList[i],//冻存盒编码
-                                    sampleUsedTimes:1,//冻存盒已使用次数
-                                    sampleUsedTimesMost:10,//冻存盒最多使用次数
-                                    frozenTubeVolumns:10,//冻存管容量
-                                    frontColor:10,//前景色，默认黑色
-                                    backColor:10//背景色，管子帽颜色
-                                }
-                            ],
-                            frozenBoxTypeId:17,//冻存盒类型ID
-                            dislocationNumber:2,
-                            emptyHoleNumber:2,
-                            emptyTubeNumber:2,
-                            frozenBoxColumns:8,
-                            frozenBoxRows:8,
-                            projectCode:'P_00001',
-                            projectId:1,
-                            projectName:'心血管高危筛查项目',
-                            projectSiteId:2,
-                            projectSiteName:'心血管高危筛查项目天坛医院项目点',
+                            frozenBoxTypeId:17,//冻存盒类型ID 17：10*10 18：8*8
                             frozenBoxTypeCode:'BOX_TYPE_0002',
-                            sampleTypeName:'血浆-紫1',
-                            sampleTypeCode:'S_TYPE_00001',
-                            isRealData:'4001',
-                            isSplit: "0002",//是否分装:'4001',
-                            memo:'memo',
-                            sampleNumber: 20,//样本数量
-                            sampleTypeId: 5,//样本类型ID
-                            status: "1",//状态
-                            columnsInShelf:"2",//所在架子行数
-                            rowsInShelf:"B"//所在架子列数
-
+                            isSplit: "0003",//是否分装:'否:0003 是：0002',
+                            memo:'',
+                            status: "3003",//状态
+                            dislocationNumber:0,
+                            emptyHoleNumber:0,
+                            emptyTubeNumber:0,
+                            frozenBoxColumns:10,
+                            frozenBoxRows:10,
+                            equipmentId:'',
+                            equipmentCode:'',
+                            areaId:'',
+                            areaCode:'',
+                            supportRackId:'',
+                            supportRackCode:'',
+                            columnsInShelf:"",//所在架子行数
+                            rowsInShelf:"",//所在架子列数,
+                            isRealData:'4002',
+                            sampleNumber: 100,//样本数量
+                            sampleTypeId: '',//样本类型ID
+                            sampleTypeCode:'',//样本类型
+                            frozenTubeDTOS:"",//管子
+                            sampleTypeName:'',
                         }
 
                     }
                 }
-
-
             }
 
         };
+
+
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('searching', false)
             .withOption('paging', false)

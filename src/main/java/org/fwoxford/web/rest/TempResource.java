@@ -210,14 +210,14 @@ public class TempResource {
 
         res.setStatus("2001");
         res.setId(id);
-        res.setFrozenBoxTypeId(1L);
+        res.setFrozenBoxTypeId(17L);
         res.setSampleTypeId(5L);
 
-        res.setEquipmentId(1L);
+        res.setEquipmentId(23L);
         res.setEquipmentCode("F3-01");
-        res.setAreaId(1L);
+        res.setAreaId(24L);
         res.setAreaCode("S01");
-        res.setSupportRackId(1L);
+        res.setSupportRackId(29L);
         res.setSupportRackCode("R01");
 
         res.setFrozenBoxCode(frozenBoxCode);

@@ -7,6 +7,8 @@ import io.github.jhipster.web.util.ResponseUtil;
 import org.fwoxford.domain.Tranship;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.TranshipDTO;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -169,5 +171,77 @@ public class TempResource {
 
     private static String generateUri(String baseUrl, int page, int size) throws URISyntaxException {
         return UriComponentsBuilder.fromUriString(baseUrl).queryParam("page", page).queryParam("size", size).toUriString();
+    }
+
+    /**
+     * 根据冻存盒CODE查询冻存盒和冻存管信息
+     * @param frozenBoxCode
+     * @return
+     */
+    @GetMapping("/frozen-boxes/code/{frozenBoxCode}")
+    @Timed
+    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxCode(@PathVariable String frozenBoxCode) {
+        log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
+        FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
+
+        res.setStatus("2001");
+        res.setId(1L);
+        res.setFrozenBoxTypeId(1L);
+        res.setSampleTypeId(1L);
+
+        res.setEquipmentId(1L);
+        res.setEquipmentCode("F3-01");
+        res.setAreaId(1L);
+        res.setAreaCode("S01");
+        res.setSupportRackId(1L);
+        res.setSupportRackCode("R01");
+
+        res.setFrozenBoxCode(frozenBoxCode);
+        res.setFrozenBoxColumns("A");
+        res.setFrozenBoxRows("1");
+
+        res.setIsSplit("0");
+        res.setFrozenTubeResponseList(new ArrayList<>());
+        for(int i = 0; i<100; ++i){
+            FrozenTubeResponse tube = new FrozenTubeResponse();
+            tube.setId((long)i);
+            tube.setStatus("3001");
+            tube.setProjectId(1L);
+            tube.setProjectCode("1234567890");
+
+            tube.setSampleTypeId(res.getSampleTypeId());
+            tube.setSampleTypeCode("");
+            tube.setSampleTypeName("");
+
+            tube.setFrozenTubeTypeId(1L);
+            tube.setFrozenTubeTypeName("");
+
+            tube.setSampleCode("");
+            tube.setFrozenTubeCode("");
+
+            tube.setTubeColumns((i % 10 + 1) + "");
+            tube.setTubeRows(String.valueOf((char) (65 + i / 10)));
+            tube.setSampleTempCode(String.format("%s-%s%2s",  res.getFrozenBoxCode(), tube.getTubeRows(), tube.getTubeColumns()).replace(" ", "0"));
+
+            tube.setMemo("");
+            tube.setErrorType("");
+            res.getFrozenTubeResponseList().add(tube);
+        }
+
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
+     * 根据冻存盒CODE字符串查询冻存盒和冻存管信息
+     * @param frozenBoxCodeStr
+     * @return
+     */
+    @GetMapping("/findFrozenBoxAndTubeByBoxCodes/{frozenBoxCodeStr}")
+    @Timed
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> getFrozenBoxAndTubeListByBoxCodeStr(@PathVariable  String frozenBoxCodeStr) {
+        log.debug("REST request to get FrozenBoxAndTube By codes : {}", frozenBoxCodeStr);
+        List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<>();
+
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

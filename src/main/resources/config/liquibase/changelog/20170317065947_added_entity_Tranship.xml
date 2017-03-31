@@ -22,7 +22,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="tranship_date" type="date">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="project_code" type="varchar(100)">
@@ -58,7 +58,7 @@
             </column>
 
             <column name="receive_date" type="date">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="sample_number" type="integer">
@@ -93,12 +93,16 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="project_id" type="bigint">
+            <column name="tranship_code" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
 
+            <column name="project_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
             <column name="project_site_id" type="bigint">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="created_by" type="varchar(50)">
@@ -111,6 +115,6 @@
             <column name="last_modified_date" type="timestamp"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+
     </changeSet>
 </databaseChangeLog>

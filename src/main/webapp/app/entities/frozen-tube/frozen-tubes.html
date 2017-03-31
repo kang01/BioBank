@@ -37,6 +37,12 @@
                     <th jh-sort-by="errorType"><span data-translate="bioBankApp.frozenTube.errorType">Error Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="bioBankApp.frozenTube.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="frozenBoxCode"><span data-translate="bioBankApp.frozenTube.frozenBoxCode">Frozen Box Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="patientId"><span data-translate="bioBankApp.frozenTube.patientId">Patient Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="dob"><span data-translate="bioBankApp.frozenTube.dob">Dob</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="gender"><span data-translate="bioBankApp.frozenTube.gender">Gender</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="diseaseType"><span data-translate="bioBankApp.frozenTube.diseaseType">Disease Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="visitType"><span data-translate="bioBankApp.frozenTube.visitType">Visit Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="visitDate"><span data-translate="bioBankApp.frozenTube.visitDate">Visit Date</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="frozenTubeTypeId"><span data-translate="bioBankApp.frozenTube.frozenTubeType">Frozen Tube Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="sampleTypeId"><span data-translate="bioBankApp.frozenTube.sampleType">Sample Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="projectId"><span data-translate="bioBankApp.frozenTube.project">Project</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -65,6 +71,12 @@
                     <td>{{frozenTube.errorType}}</td>
                     <td>{{frozenTube.status}}</td>
                     <td>{{frozenTube.frozenBoxCode}}</td>
+                    <td>{{frozenTube.patientId}}</td>
+                    <td>{{frozenTube.dob | date:'medium'}}</td>
+                    <td>{{frozenTube.gender}}</td>
+                    <td>{{frozenTube.diseaseType}}</td>
+                    <td>{{frozenTube.visitType}}</td>
+                    <td>{{frozenTube.visitDate | date:'medium'}}</td>
                     <td>
                         <a ui-sref="frozen-tube-type-detail({id:frozenTube.frozenTubeTypeId})">{{frozenTube.frozenTubeTypeId}}</a>
                     </td>

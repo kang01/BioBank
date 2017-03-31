@@ -198,6 +198,43 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": "100"
+        },
+        {
+            "fieldName": "patientId",
+            "fieldType": "Long",
+            "fieldValidateRules": []
+        },
+        {
+            "fieldName": "dob",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "gender",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "255"
+        },
+        {
+            "fieldName": "diseaseType",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "255"
+        },
+        {
+            "fieldName": "visitType",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "255"
+        },
+        {
+            "fieldName": "visitDate",
+            "fieldType": "ZonedDateTime"
         }
     ],
     "changelogDate": "20170317080522",

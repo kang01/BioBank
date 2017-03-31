@@ -151,4 +151,13 @@ public class TranshipResource {
     public DataTablesOutput<TranshipResponse> getPageTranship(@RequestBody DataTablesInput input) {
         return transhipService.findAllTranship(input);
     }
+    @PostMapping("/init/tranships")
+    @Timed
+    public ResponseEntity<TranshipDTO> initTranship() throws URISyntaxException {
+        log.debug("REST request to create Tranship first");
+        TranshipDTO result = transhipService.initTranship();
+        return ResponseEntity.created(new URI("/res/api/tranships/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 }

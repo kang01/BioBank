@@ -176,6 +176,15 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": 20
+        },
+        {
+            "fieldName": "transhipCode",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "255"
         }
     ],
     "changelogDate": "20170317065947",

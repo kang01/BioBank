@@ -142,6 +142,12 @@
                                 errorType: null,
                                 status: null,
                                 frozenBoxCode: null,
+                                patientId: null,
+                                dob: null,
+                                gender: null,
+                                diseaseType: null,
+                                visitType: null,
+                                visitDate: null,
                                 id: null
                             };
                         }

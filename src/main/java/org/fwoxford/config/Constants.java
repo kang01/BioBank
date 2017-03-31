@@ -18,6 +18,15 @@ public final class Constants {
      * 入库类型：8001：首次入库
      */
     public static final String STORANGE_IN_TYPE_1ST = "8001";
+    /**
+     * 数据状态：0000：无效，0001：有效
+     */
+    public static final String VALID = "0001";
+    public static final String INVALID = "0000";
+    /**
+     * 转运状态：进行中：1001
+     */
+    public static final String TRANSHIPE_IN_PENDING = "1001";
 
     private Constants() {
     }

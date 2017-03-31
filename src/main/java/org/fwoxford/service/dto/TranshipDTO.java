@@ -1,7 +1,5 @@
 package org.fwoxford.service.dto;
 
-import org.fwoxford.domain.FrozenBox;
-
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -60,18 +58,22 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     private Integer sampleNumber;
 
     @NotNull
+    @Max(value = 20)
     private Integer frozenBoxNumber;
 
     @NotNull
+    @Max(value = 20)
     private Integer emptyTubeNumber;
 
     @NotNull
+    @Max(value = 20)
     private Integer emptyHoleNumber;
 
     @Max(value = 20)
     private Integer sampleSatisfaction;
 
     @NotNull
+    @Max(value = 20)
     private Integer effectiveSampleNumber;
 
     @Size(max = 1024)
@@ -81,12 +83,14 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 20)
     private String status;
 
+    @Size(max = 255)
+    private String transhipCode;
+
     private Long projectId;
 
     private Long projectSiteId;
 
     private List<FrozenBoxDTO> frozenBoxDTOList;
-
     public Long getId() {
         return id;
     }
@@ -220,6 +224,13 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+    public String getTranshipCode() {
+        return transhipCode;
+    }
+
+    public void setTranshipCode(String transhipCode) {
+        this.transhipCode = transhipCode;
+    }
 
     public Long getProjectId() {
         return projectId;
@@ -288,6 +299,7 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
             ", effectiveSampleNumber='" + effectiveSampleNumber + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
+            ", transhipCode='" + transhipCode + "'" +
             '}';
     }
 }

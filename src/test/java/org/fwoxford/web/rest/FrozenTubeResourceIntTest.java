@@ -28,8 +28,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.List;
 
+import static org.fwoxford.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -98,6 +103,24 @@ public class FrozenTubeResourceIntTest {
     private static final String DEFAULT_FROZEN_BOX_CODE = "AAAAAAAAAA";
     private static final String UPDATED_FROZEN_BOX_CODE = "BBBBBBBBBB";
 
+    private static final Long DEFAULT_PATIENT_ID = 1L;
+    private static final Long UPDATED_PATIENT_ID = 2L;
+
+    private static final ZonedDateTime DEFAULT_DOB = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_DOB = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
+    private static final String DEFAULT_GENDER = "AAAAAAAAAA";
+    private static final String UPDATED_GENDER = "BBBBBBBBBB";
+
+    private static final String DEFAULT_DISEASE_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_DISEASE_TYPE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_VISIT_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_VISIT_TYPE = "BBBBBBBBBB";
+
+    private static final ZonedDateTime DEFAULT_VISIT_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_VISIT_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
     @Autowired
     private FrozenTubeRepository frozenTubeRepository;
 
@@ -158,7 +181,13 @@ public class FrozenTubeResourceIntTest {
                 .memo(DEFAULT_MEMO)
                 .errorType(DEFAULT_ERROR_TYPE)
                 .status(DEFAULT_STATUS)
-                .frozenBoxCode(DEFAULT_FROZEN_BOX_CODE);
+                .frozenBoxCode(DEFAULT_FROZEN_BOX_CODE)
+                .patientId(DEFAULT_PATIENT_ID)
+                .dob(DEFAULT_DOB)
+                .gender(DEFAULT_GENDER)
+                .diseaseType(DEFAULT_DISEASE_TYPE)
+                .visitType(DEFAULT_VISIT_TYPE)
+                .visitDate(DEFAULT_VISIT_DATE);
         // Add required entity
         FrozenTubeType frozenTubeType = FrozenTubeTypeResourceIntTest.createEntity(em);
         em.persist(frozenTubeType);
@@ -222,6 +251,12 @@ public class FrozenTubeResourceIntTest {
         assertThat(testFrozenTube.getErrorType()).isEqualTo(DEFAULT_ERROR_TYPE);
         assertThat(testFrozenTube.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testFrozenTube.getFrozenBoxCode()).isEqualTo(DEFAULT_FROZEN_BOX_CODE);
+        assertThat(testFrozenTube.getPatientId()).isEqualTo(DEFAULT_PATIENT_ID);
+        assertThat(testFrozenTube.getDob()).isEqualTo(DEFAULT_DOB);
+        assertThat(testFrozenTube.getGender()).isEqualTo(DEFAULT_GENDER);
+        assertThat(testFrozenTube.getDiseaseType()).isEqualTo(DEFAULT_DISEASE_TYPE);
+        assertThat(testFrozenTube.getVisitType()).isEqualTo(DEFAULT_VISIT_TYPE);
+        assertThat(testFrozenTube.getVisitDate()).isEqualTo(DEFAULT_VISIT_DATE);
     }
 
     @Test
@@ -577,7 +612,13 @@ public class FrozenTubeResourceIntTest {
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
             .andExpect(jsonPath("$.[*].errorType").value(hasItem(DEFAULT_ERROR_TYPE.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].frozenBoxCode").value(hasItem(DEFAULT_FROZEN_BOX_CODE.toString())));
+            .andExpect(jsonPath("$.[*].frozenBoxCode").value(hasItem(DEFAULT_FROZEN_BOX_CODE.toString())))
+            .andExpect(jsonPath("$.[*].patientId").value(hasItem(DEFAULT_PATIENT_ID.intValue())))
+            .andExpect(jsonPath("$.[*].dob").value(hasItem(sameInstant(DEFAULT_DOB))))
+            .andExpect(jsonPath("$.[*].gender").value(hasItem(DEFAULT_GENDER.toString())))
+            .andExpect(jsonPath("$.[*].diseaseType").value(hasItem(DEFAULT_DISEASE_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].visitType").value(hasItem(DEFAULT_VISIT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].visitDate").value(hasItem(sameInstant(DEFAULT_VISIT_DATE))));
     }
 
     @Test
@@ -608,7 +649,13 @@ public class FrozenTubeResourceIntTest {
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
             .andExpect(jsonPath("$.errorType").value(DEFAULT_ERROR_TYPE.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
-            .andExpect(jsonPath("$.frozenBoxCode").value(DEFAULT_FROZEN_BOX_CODE.toString()));
+            .andExpect(jsonPath("$.frozenBoxCode").value(DEFAULT_FROZEN_BOX_CODE.toString()))
+            .andExpect(jsonPath("$.patientId").value(DEFAULT_PATIENT_ID.intValue()))
+            .andExpect(jsonPath("$.dob").value(sameInstant(DEFAULT_DOB)))
+            .andExpect(jsonPath("$.gender").value(DEFAULT_GENDER.toString()))
+            .andExpect(jsonPath("$.diseaseType").value(DEFAULT_DISEASE_TYPE.toString()))
+            .andExpect(jsonPath("$.visitType").value(DEFAULT_VISIT_TYPE.toString()))
+            .andExpect(jsonPath("$.visitDate").value(sameInstant(DEFAULT_VISIT_DATE)));
     }
 
     @Test
@@ -646,7 +693,13 @@ public class FrozenTubeResourceIntTest {
                 .memo(UPDATED_MEMO)
                 .errorType(UPDATED_ERROR_TYPE)
                 .status(UPDATED_STATUS)
-                .frozenBoxCode(UPDATED_FROZEN_BOX_CODE);
+                .frozenBoxCode(UPDATED_FROZEN_BOX_CODE)
+                .patientId(UPDATED_PATIENT_ID)
+                .dob(UPDATED_DOB)
+                .gender(UPDATED_GENDER)
+                .diseaseType(UPDATED_DISEASE_TYPE)
+                .visitType(UPDATED_VISIT_TYPE)
+                .visitDate(UPDATED_VISIT_DATE);
         FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(updatedFrozenTube);
 
         restFrozenTubeMockMvc.perform(put("/api/frozen-tubes")
@@ -676,6 +729,12 @@ public class FrozenTubeResourceIntTest {
         assertThat(testFrozenTube.getErrorType()).isEqualTo(UPDATED_ERROR_TYPE);
         assertThat(testFrozenTube.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testFrozenTube.getFrozenBoxCode()).isEqualTo(UPDATED_FROZEN_BOX_CODE);
+        assertThat(testFrozenTube.getPatientId()).isEqualTo(UPDATED_PATIENT_ID);
+        assertThat(testFrozenTube.getDob()).isEqualTo(UPDATED_DOB);
+        assertThat(testFrozenTube.getGender()).isEqualTo(UPDATED_GENDER);
+        assertThat(testFrozenTube.getDiseaseType()).isEqualTo(UPDATED_DISEASE_TYPE);
+        assertThat(testFrozenTube.getVisitType()).isEqualTo(UPDATED_VISIT_TYPE);
+        assertThat(testFrozenTube.getVisitDate()).isEqualTo(UPDATED_VISIT_DATE);
     }
 
     @Test

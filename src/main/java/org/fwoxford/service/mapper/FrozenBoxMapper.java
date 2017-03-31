@@ -162,6 +162,12 @@ public interface FrozenBoxMapper {
     default List<FrozenBoxDTO> frozenTranshipAndBoxToFrozenBoxDTOList(List<FrozenBoxDTO> frozenBoxDTOList, Tranship tranship){
         List<FrozenBoxDTO> frozenBoxDTOLists = new ArrayList<FrozenBoxDTO>();
         for(FrozenBoxDTO box:frozenBoxDTOList){
+            box.setProjectId(tranship.getProject().getId());
+            box.setProjectCode(tranship.getProjectCode());
+            box.setProjectName(tranship.getProjectName());
+            box.setProjectSiteId(tranship.getProjectSite().getId());
+            box.setProjectSiteCode(tranship.getProjectSiteCode());
+            box.setProjectSiteName(tranship.getProjectSiteName());
             box.setTranshipId(tranship.getId());
             frozenBoxDTOLists.add(box);
         }

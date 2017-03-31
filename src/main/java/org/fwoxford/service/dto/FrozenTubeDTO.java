@@ -34,7 +34,6 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 100)
     private String frozenTubeTypeCode;
 
-    @NotNull
     @Size(max = 255)
     private String frozenTubeTypeName;
 
@@ -42,11 +41,9 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 100)
     private String sampleTypeCode;
 
-    @NotNull
     @Size(max = 255)
     private String sampleTypeName;
 
-    @NotNull
     @Max(value = 20)
     private Integer sampleUsedTimesMost;
 
@@ -57,7 +54,6 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Integer frozenTubeVolumns;
 
-    @NotNull
     @Size(max = 20)
     private String frozenTubeVolumnsUnit;
 

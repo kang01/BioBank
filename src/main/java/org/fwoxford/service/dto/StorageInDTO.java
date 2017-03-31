@@ -1,5 +1,8 @@
 package org.fwoxford.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -11,7 +14,7 @@ import java.util.Objects;
  * A DTO for the StorageIn entity.
  */
 public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
-
+    @JsonView(DataTablesOutput.View.class)
     private Long id;
     /**
      * 项目编码
@@ -66,11 +69,13 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 入库日期
      */
+    @JsonView(DataTablesOutput.View.class)
     private LocalDate storageInDate;
     /**
      * 样本数量
      */
     @Max(value = 100)
+    @JsonView(DataTablesOutput.View.class)
     private Integer sampleNumber;
     /**
      * 签名人ID
@@ -81,6 +86,7 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
      * 卡名人姓名
      */
     @Size(max = 100)
+    @JsonView(DataTablesOutput.View.class)
     private String signName;
     /**
      * 签名日期
@@ -95,6 +101,7 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
      * 状态
      */
     @Size(max = 20)
+    @JsonView(DataTablesOutput.View.class)
     private String status;
     /**
      * 转运ID

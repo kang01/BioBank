@@ -1,8 +1,5 @@
 package org.fwoxford.service.impl;
 
-import org.apache.commons.net.ntp.NTPUDPClient;
-import org.apache.commons.net.ntp.TimeInfo;
-import org.apache.commons.net.ntp.TimeStamp;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
@@ -17,6 +14,7 @@ import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +25,6 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -188,6 +181,7 @@ public class TranshipServiceImpl implements TranshipService{
         //保存转运记录
         Tranship tranship =transhipMapper.transhipDTOToTranship(transhipDTO);
         tranship.setStatus(Constants.VALID);
+        tranship.setTranshipCode(BankUtil.getCurrentTime());
         transhipRepositries.save(tranship);
 
         //保存冻存盒
@@ -218,23 +212,7 @@ public class TranshipServiceImpl implements TranshipService{
     @Override
     public TranshipDTO initTranship() {
         Tranship tranship = new Tranship();
-        try {
-            NTPUDPClient client = new NTPUDPClient();
-            client.setDefaultTimeout(1000);//设置超时
-            String timeServerUrl = "ntp5.aliyun.com";
-            InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
-            TimeInfo timeInfo = client.getTime(timeServerAddress);
-            TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
-            Long a = timeStamp.getTime();
-            String b = timeStamp.toUTCString();
-            DateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmssSSS");
-            System.out.println(dateFormat.format(timeStamp.getDate()));
-            tranship.setTranshipCode(dateFormat.format(timeStamp.getDate()).toString());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        tranship.setTranshipCode(BankUtil.getCurrentTime());
         tranship.setEffectiveSampleNumber(0);
         tranship.setProjectCode(new String(" "));
         tranship.setProject(null);

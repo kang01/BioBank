@@ -1,18 +1,18 @@
 /**
- * Created by gaokangkang on 2017/3/25.
- * 样本类型
+ * Created by gaokangkang on 2017/4/1.
+ * 保存转运冻存盒
  */
 (function () {
     'use strict';
 
     angular
         .module('bioBankApp')
-        .factory('SampleTypeService', SampleTypeService);
+        .factory('TranshipBoxService', TranshipBoxService);
 
-    SampleTypeService.$inject = ['$resource'];
+    TranshipBoxService.$inject = ['$resource'];
 
-    function SampleTypeService ($resource) {
-        var service = $resource('api/sampleTypes', {}, {
+    function TranshipBoxService ($resource) {
+        var service = $resource('api/tranship-boxes/batch', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

@@ -11,7 +11,7 @@
     SupportacksByAreaIdService.$inject = ['$resource'];
 
     function SupportacksByAreaIdService ($resource) {
-        var resourceUrl =  'api/supportacksByAreaId/:id';
+        var resourceUrl =  'api/support-racks/area/:id';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},

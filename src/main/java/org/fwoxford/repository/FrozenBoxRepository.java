@@ -6,6 +6,7 @@ import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Data JPA repository for the FrozenBox entity.
@@ -16,7 +17,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     List<FrozenBox> findAllFrozenBoxByTranshipId(Long transhipId);
 
     @Query("select box from FrozenBox box where box.frozenBoxCode = ?1")
-    FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode);
+    Optional<FrozenBox> findFrozenBoxDetailsByBoxCode(String frozenBoxCode);
 
     @Query(value = "select * from frozen_box box where box.equipment_id = ?1" +
         " and box.area_id = ?2 " +
@@ -24,4 +25,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " and box.columns_in_shelf = ?4 " +
         " and box.rows_in_shelf = ?5" , nativeQuery = true)
     List<FrozenBox> countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
+
+    @Query(value = "select b.* from frozen_box b left join tranship s on s.id = b.tranship_id where s.tranship_code  = ?1" ,nativeQuery = true)
+    List<FrozenBox> findFrozenBoxByTranshipCode(String transhipCode);
 }

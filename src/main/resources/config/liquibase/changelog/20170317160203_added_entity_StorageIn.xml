@@ -65,7 +65,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_number" type="integer" remarks="样本编码">
+            <column name="sample_number" type="integer" remarks="样本数量">
                 <constraints nullable="false" />
             </column>
 

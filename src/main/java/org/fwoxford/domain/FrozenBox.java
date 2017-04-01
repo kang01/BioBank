@@ -1,13 +1,16 @@
 package org.fwoxford.domain;
 
-import io.swagger.models.auth.In;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A FrozenBox.
@@ -61,83 +64,71 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     /**
      * 项目名称
      */
-    @NotNull
     @Size(max = 255)
     @Column(name = "project_name", length = 255, nullable = false)
     private String projectName;
     /**
      * 项目点编码
      */
-    @NotNull
     @Size(max = 100)
     @Column(name = "project_site_code", length = 100, nullable = false)
     private String projectSiteCode;
     /**
      * 项目点名称
      */
-    @NotNull
     @Size(max = 255)
     @Column(name = "project_site_name", length = 255, nullable = false)
     private String projectSiteName;
     /**
      * 设备编码
      */
-    @NotNull
     @Size(max = 100)
     @Column(name = "equipment_code", length = 100, nullable = false)
     private String equipmentCode;
     /**
      * 区域编码
      */
-    @NotNull
     @Size(max = 100)
     @Column(name = "area_code", length = 100, nullable = false)
     private String areaCode;
     /**
      * 冻存架编码
      */
-    @NotNull
     @Size(max = 100)
     @Column(name = "support_rack_code", length = 100, nullable = false)
     private String supportRackCode;
     /**
      * 样本类型编码
      */
-    @NotNull
     @Size(max = 100)
     @Column(name = "sample_type_code", length = 100, nullable = false)
     private String sampleTypeCode;
     /**
      * 样本类型名称
      */
-    @NotNull
     @Size(max = 255)
     @Column(name = "sample_type_name", length = 255, nullable = false)
     private String sampleTypeName;
     /**
      * 样本数量
      */
-    @NotNull
     @Column(name = "sample_number", nullable = false)
     private Integer sampleNumber;
     /**
      * 是否分装：1：是，0：否
      */
-    @NotNull
-    @Size(max = 20)
     @Column(name = "is_split", nullable = false)
+    @NotNull
     private Integer isSplit;
     /**
      * 所在架子行数
      */
-    @NotNull
     @Size(max = 20)
     @Column(name = "rows_in_shelf", length = 20, nullable = false)
     private String rowsInShelf;
     /**
      * 所在架子列数
      */
-    @NotNull
     @Size(max = 20)
     @Column(name = "columns_in_shelf", length = 20, nullable = false)
     private String columnsInShelf;
@@ -176,7 +167,6 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
      * 是否已导入样本数据：1：是，0：否
      */
     @NotNull
-    @Size(max = 20)
     @Column(name = "is_real_data",  nullable = false)
     private Integer isRealData;
 
@@ -189,27 +179,23 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     private SampleType sampleType;
 
     @ManyToOne(optional = false)
-    @NotNull
     private Project project;
 
     @ManyToOne(optional = false)
-    @NotNull
     private ProjectSite projectSite;
 
     @ManyToOne(optional = false)
     @NotNull
+    @JoinColumn(name = "tranship_id")
     private Tranship tranship;
 
     @ManyToOne(optional = false)
-    @NotNull
     private Equipment equipment;
 
     @ManyToOne(optional = false)
-    @NotNull
     private Area area;
 
     @ManyToOne(optional = false)
-    @NotNull
     private SupportRack supportRack;
 
     public Long getId() {

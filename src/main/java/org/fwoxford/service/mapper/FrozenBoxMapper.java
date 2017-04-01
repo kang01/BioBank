@@ -1,5 +1,6 @@
 package org.fwoxford.service.mapper;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
@@ -118,7 +119,7 @@ public interface FrozenBoxMapper {
             return null;
         }
         FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
-        res.setFrozenTubeResponseList(frozenTube);
+        res.setFrozenTubeDTOS(frozenTube);
         res.setId(frozenBox.getId());
         res.setStatus(frozenBox.getStatus());
         res.setAreaCode(frozenBox.getAreaCode());
@@ -131,9 +132,9 @@ public interface FrozenBoxMapper {
         res.setMemo(frozenBox.getMemo());
         res.setSampleTypeId(frozenBox.getSampleType().getId());
         res.setSupportRackCode(frozenBox.getSupportRackCode());
-        res.setEquipmentId(frozenBox.getEquipment().getId());
-        res.setAreaId(frozenBox.getId());
-        res.setSupportRackId(frozenBox.getSupportRack().getId());
+        res.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
+        res.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
+        res.setSupportRackId(frozenBox.getSupportRack()!=null?frozenBox.getSupportRack().getId():null);
         return res;
     }
 
@@ -162,12 +163,33 @@ public interface FrozenBoxMapper {
     default List<FrozenBoxDTO> frozenTranshipAndBoxToFrozenBoxDTOList(List<FrozenBoxDTO> frozenBoxDTOList, Tranship tranship){
         List<FrozenBoxDTO> frozenBoxDTOLists = new ArrayList<FrozenBoxDTO>();
         for(FrozenBoxDTO box:frozenBoxDTOList){
-            box.setProjectId(tranship.getProject().getId());
-            box.setProjectCode(tranship.getProjectCode());
-            box.setProjectName(tranship.getProjectName());
-            box.setProjectSiteId(tranship.getProjectSite().getId());
-            box.setProjectSiteCode(tranship.getProjectSiteCode());
-            box.setProjectSiteName(tranship.getProjectSiteName());
+            box.setProjectId(tranship.getProject()!=null?tranship.getProject().getId(): null);
+            box.setProjectCode(tranship.getProjectCode()!=null?tranship.getProjectCode(): " ");
+            box.setProjectName(tranship.getProjectName()!=null?tranship.getProjectName(): " ");
+            box.setProjectSiteId(tranship.getProjectSite() != null ? tranship.getProjectSite().getId() : null);
+            box.setProjectSiteCode(tranship.getProjectSiteCode()!=null?tranship.getProjectSiteCode(): " ");
+            box.setProjectSiteName(tranship.getProjectSiteName()!=null?tranship.getProjectSiteName(): " ");
+
+            box.setEquipmentCode(box.getEquipmentCode() != null ? box.getEquipmentCode() : " ");
+            box.setEquipmentId(box.getEquipmentId() != null ? box.getEquipmentId() : null);
+
+            box.setAreaCode(box.getAreaCode() != null ? box.getAreaCode() : " ");
+            box.setAreaId(box.getAreaId() != null ? box.getAreaId() : null);
+
+            box.setSupportRackId(box.getSupportRackId() != null ? box.getSupportRackId() :null);
+            box.setSupportRackCode(box.getSupportRackCode() !=null ? box.getSupportRackCode() : " ");
+            box.setRowsInShelf(box.getRowsInShelf() != null ? box.getRowsInShelf() : " ");
+            box.setColumnsInShelf(box.getColumnsInShelf() != null ? box.getColumnsInShelf() : " ");
+
+
+            box.setSampleNumber(box.getSampleNumber() != null ? box.getSampleNumber() : 0);
+            box.setDislocationNumber(box.getDislocationNumber() != null ? box.getDislocationNumber() : 0);
+            box.setEmptyHoleNumber(box.getEmptyHoleNumber() != null ? box.getEmptyHoleNumber() : 0);
+            box.setEmptyTubeNumber(box.getEmptyTubeNumber() != null ? box.getEmptyTubeNumber() : 0);
+            box.setIsRealData(box.getIsRealData() != null ? box.getIsRealData() : 0);
+            box.setIsSplit(box.getIsSplit() != null ? box.getIsSplit() : 0);
+
+            box.setStatus(box.getStatus() != null ? box.getStatus() : Constants.FROZEN_BOX_NEW);
             box.setTranshipId(tranship.getId());
             frozenBoxDTOLists.add(box);
         }

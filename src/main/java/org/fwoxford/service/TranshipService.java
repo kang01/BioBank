@@ -1,5 +1,8 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.FrozenBox;
+import org.fwoxford.service.dto.FrozenBoxDTO;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
@@ -7,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
+import java.util.List;
 
 /**
  * Service Interface for managing Tranship.
@@ -70,4 +75,8 @@ public interface TranshipService {
      * @return
      */
     TranshipDTO initTranship();
+
+    List<FrozenTubeDTO> getFrozenTubeDTOList(List<FrozenBoxDTO> frozenBoxDTOList, List<FrozenBox> frozenBoxes);
+
+    List<FrozenBoxDTO> getFrozenBoxDtoList(List<FrozenBoxDTO> frozenBoxDTOListLast, List<FrozenTubeDTO> frozenTubeDTOS);
 }

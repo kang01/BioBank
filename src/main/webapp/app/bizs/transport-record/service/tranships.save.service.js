@@ -1,18 +1,18 @@
 /**
- * Created by gaokangkang on 2017/3/25.
+ * Created by gaokangkang on 2017/4/1.
+ * 转运记录保存
  */
-//盒子类型
 (function () {
     'use strict';
 
     angular
         .module('bioBankApp')
-        .factory('FrozenBoxTypesService', FrozenBoxTypesService);
+        .factory('TranshipSaveService', TranshipSaveService);
 
-    FrozenBoxTypesService.$inject = ['$resource'];
+    TranshipSaveService.$inject = ['$resource'];
 
-    function FrozenBoxTypesService ($resource) {
-        var service = $resource('api/frozenBoxTypes', {}, {
+    function TranshipSaveService ($resource) {
+        var service = $resource('api/tranships/update-object', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

@@ -4,6 +4,7 @@ package org.fwoxford.service.dto;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -22,31 +23,26 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
     /**
      * 设备编码
      */
-    @NotNull
     @Size(max = 100)
     private String equipmentCode;
     /**
      * 区域编码
      */
-    @NotNull
     @Size(max = 100)
     private String areaCode;
     /**
      * 冻存架编码
      */
-    @NotNull
     @Size(max = 100)
     private String supportRackCode;
     /**
      * 所在架子行数
      */
-    @NotNull
     @Size(max = 20)
     private String rowsInShelf;
     /**
      * 所在架子列数
      */
-    @NotNull
     @Size(max = 20)
     private String columnsInShelf;
     /**
@@ -57,7 +53,6 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
     /**
      * 状态
      */
-    @NotNull
     @Size(max = 20)
     private String status;
     /**
@@ -68,6 +63,8 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
      * 冻存盒id
      */
     private Long frozenBoxId;
+
+    private List<FrozenTubeDTO> frozenTubeDTOList;
 
     public Long getId() {
         return id;
@@ -147,6 +144,14 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
 
     public void setFrozenBoxId(Long frozenBoxId) {
         this.frozenBoxId = frozenBoxId;
+    }
+
+    public List<FrozenTubeDTO> getFrozenTubeDTOList() {
+        return frozenTubeDTOList;
+    }
+
+    public void setFrozenTubeDTOList(List<FrozenTubeDTO> frozenTubeDTOList) {
+        this.frozenTubeDTOList = frozenTubeDTOList;
     }
 
     @Override

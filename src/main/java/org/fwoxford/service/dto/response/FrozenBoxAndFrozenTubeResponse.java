@@ -86,7 +86,7 @@ public class FrozenBoxAndFrozenTubeResponse {
     /**
      * 冻存管列表
      */
-    private List<FrozenTubeResponse> frozenTubeResponseList;
+    private List<FrozenTubeResponse> frozenTubeDTOS;
 
     public Long getId() {
         return id;
@@ -184,12 +184,12 @@ public class FrozenBoxAndFrozenTubeResponse {
         this.sampleTypeId = sampleTypeId;
     }
 
-    public List<FrozenTubeResponse> getFrozenTubeResponseList() {
-        return frozenTubeResponseList;
+    public List<FrozenTubeResponse> getFrozenTubeDTOS() {
+        return frozenTubeDTOS;
     }
 
-    public void setFrozenTubeResponseList(List<FrozenTubeResponse> frozenTubeResponseList) {
-        this.frozenTubeResponseList = frozenTubeResponseList;
+    public void setFrozenTubeDTOS(List<FrozenTubeResponse> frozenTubeDTOS) {
+        this.frozenTubeDTOS = frozenTubeDTOS;
     }
 
     public Long getEquipmentId() {

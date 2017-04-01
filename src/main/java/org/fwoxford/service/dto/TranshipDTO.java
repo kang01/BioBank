@@ -17,80 +17,66 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 转运日期
      */
-    @NotNull
     private LocalDate transhipDate;
     /**
      * 项目编码
      */
-    @NotNull
     @Size(max = 100)
     private String projectCode;
     /**
      * 项目名称
      */
-    @NotNull
     @Size(max = 255)
     private String projectName;
     /**
      * 项目点编码
      */
-    @NotNull
     @Size(max = 100)
     private String projectSiteCode;
     /**
      * 项目点名称
      */
-    @NotNull
     @Size(max = 255)
     private String projectSiteName;
     /**
      * 运单号
      */
-    @NotNull
     @Size(max = 100)
     private String trackNumber;
     /**
      * 转运批次
      */
-    @NotNull
     @Size(max = 100)
     private String transhipBatch;
     /**
      * 运单状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废
      */
-    @NotNull
     @Size(max = 20)
     private String transhipState;
     /**
      * 接收人
      */
-    @NotNull
     @Size(max = 100)
     private String receiver;
     /**
      * 接收日期
      */
-    @NotNull
     private LocalDate receiveDate;
     /**
      * 样本数量
      */
-    @NotNull
     private Integer sampleNumber;
     /**
      * 冻存盒数量
      */
-    @NotNull
     private Integer frozenBoxNumber;
     /**
      * 空管数
      */
-    @NotNull
     private Integer emptyTubeNumber;
     /**
      * 空孔数
      */
-    @NotNull
     private Integer emptyHoleNumber;
     /**
      * 样本满意度
@@ -100,7 +86,6 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 有效样本数
      */
-    @NotNull
     private Integer effectiveSampleNumber;
     /**
      * 备注
@@ -110,7 +95,6 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 状态：0000：无效，0001：有效
      */
-    @NotNull
     @Size(max = 20)
     private String status;
     /**

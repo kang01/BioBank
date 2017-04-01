@@ -9,30 +9,31 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by gengluying on 2017/3/31.
  */
 public class BankUtil {
-    public static String getCurrentTime() {
+    public static String getUniqueID() {
         String time = "";
+        String timeServerUrl = "ntp5.aliyun.com";
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmssSSS");
+        Date date = new Date();
         try {
             NTPUDPClient client = new NTPUDPClient();
-            client.setDefaultTimeout(1000);//设置超时
-            String timeServerUrl = "ntp5.aliyun.com";
+            client.setDefaultTimeout(500);//设置超时
             InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
             TimeInfo timeInfo = client.getTime(timeServerAddress);
             TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
-            Long a = timeStamp.getTime();
-            String b = timeStamp.toUTCString();
-            DateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmssSSS");
-            System.out.println(dateFormat.format(timeStamp.getDate()));
-            time = dateFormat.format(timeStamp.getDate()).toString();
+            date = timeStamp.getDate();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        time = dateFormat.format(date).toString();
+
         return time;
     }
 }

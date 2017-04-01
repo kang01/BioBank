@@ -97,7 +97,6 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
      * 是否分装：1：是，0：否
      */
     @NotNull
-    @Size(max = 20)
     private Integer isSplit;
     /**
      * 所在架子行数
@@ -142,7 +141,6 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
      * 是否已导入样本数据：1：是，0：否
      */
     @NotNull
-    @Size(max = 20)
     private Integer isRealData;
     /**
      * 冻存盒类型ID

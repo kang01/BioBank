@@ -1,17 +1,17 @@
 /**
  * Created by gaokangkang on 2017/3/28.
- * 项目
+ * 设备下的区域列表
  */
 (function() {
     'use strict';
     angular
         .module('bioBankApp')
-        .factory('ProjectService', ProjectService);
+        .factory('AreasByEquipmentIdService', AreasByEquipmentIdService);
 
-    ProjectService.$inject = ['$resource'];
+    AreasByEquipmentIdService.$inject = ['$resource'];
 
-    function ProjectService ($resource) {
-        var resourceUrl =  'api/all/projects:id';
+    function AreasByEquipmentIdService ($resource) {
+        var resourceUrl =  'api/areas/equipment/:id';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},

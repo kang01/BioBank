@@ -3,7 +3,9 @@ package org.fwoxford.service.impl;
 import org.fwoxford.domain.Equipment;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.domain.Tranship;
 import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
@@ -27,6 +29,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service Implementation for managing FrozenBox.
@@ -46,6 +49,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
     @Autowired
     private FrozenTubeMapper frozenTubeMapping;
+    @Autowired
+    private TranshipRepository transhipRepository;
 
     public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper) {
         this.frozenBoxRepository = frozenBoxRepository;
@@ -164,8 +169,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
      * @return
      */
     public FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode) {
-        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
-        return frozenBox;
+        Optional<FrozenBox> frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+        return frozenBox.map(box->box).orElse(null);
     }
 
     /**
@@ -174,7 +179,6 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
      */
     @Override
     public List<FrozenBox> saveBatch(List<FrozenBoxDTO> frozenBoxDTOList) {
-        Assert.notNull(frozenBoxDTOList,"frozen Box must not be null");
         List<FrozenBox> frozenBoxes = frozenBoxMapper.frozenBoxDTOsToFrozenBoxes(frozenBoxDTOList);
         List<FrozenBox> frozenBoxList = frozenBoxRepository.save(frozenBoxes);
         return frozenBoxList;
@@ -215,5 +219,33 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     public List<FrozenBoxDTO> countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row) {
         List<FrozenBox> frozenBoxes = frozenBoxRepository.countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId,areaId,supportRackId,column,row);
         return frozenBoxMapper.frozenBoxesToFrozenBoxDTOs(frozenBoxes);
+    }
+
+    /**
+     * 根据转运编码查询冻存盒列表
+     * @param transhipCode 转运编码
+     * @return
+     */
+    @Override
+    public List<FrozenBoxAndFrozenTubeResponse> getFrozenBoxAndTubeByTranshipCode(String transhipCode) {
+
+        List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
+
+        Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
+        //根据转运code查询冻存盒列表
+        List<FrozenBox> frozenBoxes =  frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship!=null?tranship.getId():null);
+//        List<FrozenBox> frozenBoxes = frozenBoxRepository.findFrozenBoxByTranshipCode(transhipCode);
+        for(FrozenBox box : frozenBoxes){
+
+            //查询冻存管列表信息
+            List<FrozenTube> frozenTube = frozenTubeService.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
+
+            List<FrozenTubeResponse> frozenTubeResponses = frozenTubeMapping.frozenTubeToFrozenTubeResponse(frozenTube);
+
+            FrozenBoxAndFrozenTubeResponse tempRes = frozenBoxMapper.forzenBoxAndTubeToResponse(box,frozenTubeResponses);
+
+            res.add(tempRes);
+        }
+        return res;
     }
 }

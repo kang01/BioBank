@@ -216,4 +216,31 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
         List<FrozenBox> frozenBoxes = frozenBoxRepository.countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId,areaId,supportRackId,column,row);
         return frozenBoxMapper.frozenBoxesToFrozenBoxDTOs(frozenBoxes);
     }
+
+    /**
+     * 根据转运编码查询冻存盒列表
+     * @param transhipCode 转运编码
+     * @return
+     */
+    @Override
+    public List<FrozenBoxAndFrozenTubeResponse> getFrozenBoxAndTubeByTranshipCode(String transhipCode) {
+
+        List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
+
+        //根据转运code查询冻存盒列表
+        List<FrozenBox> frozenBoxes = frozenBoxRepository.findFrozenBoxByTranshipCode(transhipCode);
+
+        for(FrozenBox box : frozenBoxes){
+
+            //查询冻存管列表信息
+            List<FrozenTube> frozenTube = frozenTubeService.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
+
+            List<FrozenTubeResponse> frozenTubeResponses = frozenTubeMapping.frozenTubeToFrozenTubeResponse(frozenTube);
+
+            FrozenBoxAndFrozenTubeResponse tempRes = frozenBoxMapper.forzenBoxAndTubeToResponse(box,frozenTubeResponses);
+
+            res.add(tempRes);
+        }
+        return res;
+    }
 }

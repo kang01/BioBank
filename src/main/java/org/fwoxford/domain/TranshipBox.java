@@ -88,6 +88,7 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
      */
     @ManyToOne(optional = false)
     @NotNull
+    @JoinColumn(name = "frozen_box_id")
     private FrozenBox frozenBox;
 
     public Long getId() {

@@ -3,6 +3,7 @@ package org.fwoxford.service.impl;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.domain.SampleType;
 import org.fwoxford.domain.Tranship;
 import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.repository.TranshipRepositries;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -60,6 +62,9 @@ public class TranshipServiceImpl implements TranshipService{
 
     @Autowired
     private FrozenTubeTypeService frozenTubeTypeService;
+
+    @Autowired
+    private SampleTypeService sampleTypeService;
 
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
@@ -181,14 +186,16 @@ public class TranshipServiceImpl implements TranshipService{
         //保存转运记录
         Tranship tranship =transhipMapper.transhipDTOToTranship(transhipDTO);
         tranship.setStatus(Constants.VALID);
-        tranship.setTranshipCode(BankUtil.getCurrentTime());
+        tranship.setTranshipCode(BankUtil.getUniqueID());
         transhipRepositries.save(tranship);
 
         //保存冻存盒
         List<FrozenBoxDTO> frozenBoxDTOList =  transhipDTO.getFrozenBoxDTOList();
         List<FrozenBoxDTO> frozenBoxDTOLists =  frozenBoxMapper.frozenTranshipAndBoxToFrozenBoxDTOList(frozenBoxDTOList,tranship);
         List<FrozenBox> frozenBoxes =  frozenBoxService.saveBatch(frozenBoxDTOLists);
-        List<FrozenBoxDTO> frozenBoxDTOListLast = frozenBoxMapper.frozenBoxesToFrozenBoxDTOs(frozenBoxes);//保存转运与冻存盒的关系
+        List<FrozenBoxDTO> frozenBoxDTOListLast = frozenBoxMapper.frozenBoxesToFrozenBoxDTOs(frozenBoxes);
+
+        //保存转运与冻存盒的关系
         List<TranshipBoxDTO> transhipBoxes = saveTranshipAndBoxRelation(frozenBoxDTOListLast);
 
         //保存冻存管
@@ -212,7 +219,14 @@ public class TranshipServiceImpl implements TranshipService{
     @Override
     public TranshipDTO initTranship() {
         Tranship tranship = new Tranship();
-        tranship.setTranshipCode(BankUtil.getCurrentTime());
+        tranship = transhipInit();
+        transhipRepositries.save(tranship);
+        return transhipMapper.transhipToTranshipDTO(tranship);
+    }
+
+    private Tranship transhipInit() {
+        Tranship tranship = new Tranship();
+        tranship.setTranshipCode(BankUtil.getUniqueID());
         tranship.setEffectiveSampleNumber(0);
         tranship.setProjectCode(new String(" "));
         tranship.setProject(null);
@@ -232,29 +246,39 @@ public class TranshipServiceImpl implements TranshipService{
         tranship.setTranshipDate(null);
         tranship.setTranshipState(Constants.TRANSHIPE_IN_PENDING);
         tranship.setStatus(Constants.VALID);
-        transhipRepositries.save(tranship);
-        return transhipMapper.transhipToTranshipDTO(tranship);
+        return tranship;
     }
 
     public List<FrozenTubeDTO> getFrozenTubeDTOList(List<FrozenBoxDTO> frozenBoxDTOList, List<FrozenBox> frozenBoxes) {
         List<FrozenTubeDTO> frozenTubeDTOList = new ArrayList<FrozenTubeDTO>();
-        FrozenTubeTypeDTO frozentubeTypeDTO = frozenTubeTypeService.findTopOne();
+        Page<FrozenTubeTypeDTO> frozentubeTypeDTO =  frozenTubeTypeService.findAll(new PageRequest(1,1));
+        List<SampleTypeDTO> sampleTypeDTOS = sampleTypeService.findAllSampleTypes();
+        //        FrozenTubeTypeDTO frozentubeTypeDTO = frozenTubeTypeService.findTopOne();
         for(FrozenBoxDTO boxDto:frozenBoxDTOList){
             for(FrozenTubeDTO tube :boxDto.getFrozenTubeDTOS()){
                 for(FrozenBox box:frozenBoxes){
                     if(tube != null && tube.getFrozenBoxCode().equals(box.getFrozenBoxCode())){
-                        tube.setFrozenTubeTypeId(frozentubeTypeDTO.getId());
-                        tube.setFrozenTubeTypeCode(frozentubeTypeDTO.getFrozenTubeTypeCode());
-                        tube.setFrozenTubeTypeName(frozentubeTypeDTO.getFrozenTubeTypeName());
-                        tube.setFrozenTubeVolumns(frozentubeTypeDTO.getFrozenTubeVolumn());
-                        tube.setFrozenTubeVolumnsUnit(frozentubeTypeDTO.getFrozenTubeVolumnUnit());
-                        tube.setSampleUsedTimesMost(frozentubeTypeDTO.getSampleUsedTimesMost());
-                        tube.setProjectId(box.getProject().getId());
+                        if(frozentubeTypeDTO.getContent().size()>0){
+                            tube.setFrozenTubeTypeId(frozentubeTypeDTO.getContent().get(0).getId());
+                            tube.setFrozenTubeTypeCode(frozentubeTypeDTO.getContent().get(0).getFrozenTubeTypeCode());
+                            tube.setFrozenTubeTypeName(frozentubeTypeDTO.getContent().get(0).getFrozenTubeTypeName());
+                            tube.setFrozenTubeVolumns(frozentubeTypeDTO.getContent().get(0).getFrozenTubeVolumn());
+                            tube.setFrozenTubeVolumnsUnit(frozentubeTypeDTO.getContent().get(0).getFrozenTubeVolumnUnit());
+                            tube.setSampleUsedTimesMost(frozentubeTypeDTO.getContent().get(0).getSampleUsedTimesMost());
+                        }
+                        tube.setProjectId(box.getProject() !=null ?box.getProject().getId():null);
                         tube.setProjectCode(box.getProjectCode());
                         tube.setFrozenBoxId(box.getId());
                         frozenTubeDTOList.add(tube);
                     }
                 }
+                for(SampleTypeDTO sampleType : sampleTypeDTOS){
+                    if(tube.getSampleTypeId().equals(sampleType.getId())){
+                        tube.setSampleTypeName(sampleType.getSampleTypeName());
+                        tube.setSampleTypeCode(sampleType.getSampleTypeCode());
+                    }
+                }
+                tube.setSampleCode(tube.getSampleCode()!=null && tube.getSampleCode() !="" ? tube.getSampleCode():" ");
             }
         }
         return frozenTubeDTOList;

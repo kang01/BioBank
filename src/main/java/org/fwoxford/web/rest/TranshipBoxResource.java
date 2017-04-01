@@ -1,7 +1,10 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.service.TranshipBoxService;
+import org.fwoxford.service.dto.FrozenBoxDTO;
+import org.fwoxford.service.dto.TranshipBoxListDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.TranshipBoxDTO;
@@ -34,7 +37,7 @@ public class TranshipBoxResource {
     private final Logger log = LoggerFactory.getLogger(TranshipBoxResource.class);
 
     private static final String ENTITY_NAME = "transhipBox";
-        
+
     private final TranshipBoxService transhipBoxService;
 
     public TranshipBoxResource(TranshipBoxService transhipBoxService) {
@@ -127,5 +130,20 @@ public class TranshipBoxResource {
         transhipBoxService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
+    /**
+     * POST  /tranship-boxes : Create a new transhipBox.
+     *
+     * @param transhipBoxListDTO the transhipBoxDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new transhipBoxDTO, or with status 400 (Bad Request) if the transhipBox has already an ID
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PostMapping("/tranship-boxes/batch")
+    @Timed
+    public ResponseEntity<TranshipBoxListDTO> createTranshipBox(@Valid @RequestBody TranshipBoxListDTO transhipBoxListDTO) throws URISyntaxException {
+        log.debug("REST request to save TranshipBox : {}", transhipBoxListDTO);
+        TranshipBoxListDTO result = transhipBoxService.saveBatchTranshipBox(transhipBoxListDTO);
+        return ResponseEntity.created(new URI("/api/frozen-boxes/id/" + result.getTranshipId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getTranshipId().toString()))
+            .body(result);
+    }
 }

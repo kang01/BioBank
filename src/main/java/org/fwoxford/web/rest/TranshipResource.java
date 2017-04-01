@@ -166,4 +166,21 @@ public class TranshipResource {
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+    /**
+     * 修改保存转运记录单
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/tranships/update-object")
+    @Timed
+    public ResponseEntity<TranshipDTO> saveTranships(@Valid @RequestBody TranshipDTO transhipDTO) throws URISyntaxException {
+        log.debug("REST request to update Tranship : {}", transhipDTO);
+        if (transhipDTO.getId() == null) {
+            return initTranship();
+        }
+        TranshipDTO result = transhipService.save(transhipDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipDTO.getId().toString()))
+            .body(result);
+    }
 }

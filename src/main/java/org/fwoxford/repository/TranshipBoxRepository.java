@@ -13,4 +13,6 @@ import java.util.List;
 public interface TranshipBoxRepository extends JpaRepository<TranshipBox,Long> {
 
     TranshipBox findByTranshipIdAndFrozenBoxId(Long transhipId, Long frozenBoxId);
+
+    void deleteByFrozenBoxId(Long id);
 }

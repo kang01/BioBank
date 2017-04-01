@@ -94,4 +94,11 @@ public interface FrozenBoxService {
      * @return
      */
     List<FrozenBoxDTO>  countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
+
+    /**
+     * 根据转运编码查询冻存盒列表
+     * @param transhipCode
+     * @return
+     */
+    List<FrozenBoxAndFrozenTubeResponse> getFrozenBoxAndTubeByTranshipCode(String transhipCode);
 }

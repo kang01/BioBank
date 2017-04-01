@@ -1,17 +1,23 @@
 package org.fwoxford.service.impl;
 
-import org.fwoxford.service.TranshipBoxService;
-import org.fwoxford.domain.TranshipBox;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.fwoxford.domain.*;
+import org.fwoxford.service.*;
 import org.fwoxford.repository.TranshipBoxRepository;
-import org.fwoxford.service.dto.TranshipBoxDTO;
+import org.fwoxford.service.dto.*;
+import org.fwoxford.service.mapper.FrozenBoxMapper;
+import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipBoxMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +35,27 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
     private final TranshipBoxMapper transhipBoxMapper;
 
+    @Autowired
+    private  FrozenBoxService frozenBoxService;
+
+    @Autowired
+    private FrozenBoxMapper frozenBoxMapper;
+
+    @Autowired
+    private TranshipService transhipService;
+
+    @Autowired
+    private FrozenTubeService frozenTubeService;
+
+    @Autowired
+    private FrozenTubeMapper frozenTubeMapper;
+
+    @Autowired
+    private FrozenBoxTypeService frozenBoxTypeService;
+
+    @Autowired
+    private SampleTypeService sampleTypeService;
+
     public TranshipBoxServiceImpl(TranshipBoxRepository transhipBoxRepository, TranshipBoxMapper transhipBoxMapper) {
         this.transhipBoxRepository = transhipBoxRepository;
         this.transhipBoxMapper = transhipBoxMapper;
@@ -43,8 +70,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
     @Override
     public TranshipBoxDTO save(TranshipBoxDTO transhipBoxDTO) {
         log.debug("Request to save TranshipBox : {}", transhipBoxDTO);
+
         TranshipBox transhipBox = transhipBoxMapper.transhipBoxDTOToTranshipBox(transhipBoxDTO);
-        transhipBox = transhipBoxRepository.save(transhipBox);
+        TranshipBox newTranshipBox = transhipBoxMapper.initTranshipToTranship(transhipBox);
+        transhipBox = transhipBoxRepository.save(newTranshipBox);
         TranshipBoxDTO result = transhipBoxMapper.transhipBoxToTranshipBoxDTO(transhipBox);
         return result;
     }
@@ -112,5 +141,84 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         TranshipBox transhipBox = transhipBoxRepository.findByTranshipIdAndFrozenBoxId(transhipId,frozenBoxId);
         TranshipBoxDTO transhipBoxDTO = transhipBoxMapper.transhipBoxToTranshipBoxDTO(transhipBox);
         return transhipBoxDTO;
+    }
+
+    /**
+     * 批量保存转运的冻存盒
+     *
+     * 删除原数据，保存新的数据
+     * @param transhipBoxListDTO
+     * @return
+     */
+    @Override
+    public TranshipBoxListDTO saveBatchTranshipBox(TranshipBoxListDTO transhipBoxListDTO) {
+        //删除原数据
+//        this.deleteTranshipBoxAndTube(transhipBoxListDTO);
+        Long transhipId = transhipBoxListDTO.getTranshipId();
+        List<FrozenBoxDTO> frozenBoxDTOList = transhipBoxListDTO.getFrozenBoxDTOList();
+        frozenBoxDTOList = createFrozenBoxAndTubeDetail(frozenBoxDTOList);
+        //保存冻存盒
+        List<FrozenBoxDTO> frozenBoxDTOLists =  frozenBoxMapper.frozenTranshipAndBoxToFrozenBoxDTOList(frozenBoxDTOList,new Tranship().transhipId(transhipId));
+        List<FrozenBox> frozenBoxes =  frozenBoxService.saveBatch(frozenBoxDTOLists);
+        List<FrozenBoxDTO> frozenBoxDTOListLast = frozenBoxMapper.frozenBoxesToFrozenBoxDTOs(frozenBoxes);
+
+        //保存冻存盒和转运的关系
+        List<TranshipBoxDTO> transhipBoxDTOList = new ArrayList<TranshipBoxDTO>();
+        for(FrozenBoxDTO boxDTO : frozenBoxDTOListLast){
+            TranshipBoxDTO transhipBoxDTO = frozenBoxMapper.frozenBoxToTranshipBoxDTO(boxDTO);
+            transhipBoxDTOList.add(transhipBoxDTO);
+        }
+        List<TranshipBoxDTO> transhipBoxes =  this.saveBatch(transhipBoxDTOList);
+
+        //保存冻存管
+//        List<FrozenTubeDTO> frozenTubeDTOList = frozenTubeMapper.frozenBoxAndTubeToFrozenTubeDTOList(frozenBoxDTOList,frozenBoxes);
+        List<FrozenTubeDTO> frozenTubeDTOList = transhipService.getFrozenTubeDTOList(frozenBoxDTOList,frozenBoxes);
+        List<FrozenTube> frozenTubes =  frozenTubeService.saveBatch(frozenTubeDTOList);
+        List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubes);
+        List<FrozenBoxDTO> alist = transhipService.getFrozenBoxDtoList(frozenBoxDTOListLast,frozenTubeDTOS);
+        transhipBoxListDTO.setFrozenBoxDTOList(alist);
+        return transhipBoxListDTO;
+    }
+
+    public void deleteTranshipBoxAndTube(TranshipBoxListDTO transhipBoxListDTO) {
+        List<FrozenBoxDTO> frozenBoxDTOList = transhipBoxListDTO.getFrozenBoxDTOList();
+        for(FrozenBoxDTO box:frozenBoxDTOList){
+            FrozenBox frozenBox = frozenBoxService.findFrozenBoxDetailsByBoxCode(box.getFrozenBoxCode());
+            if(frozenBox != null){
+                List<FrozenTube> frozenTubeS = frozenTubeService.findFrozenTubeListByBoxId(frozenBox.getId());
+                for(FrozenTube tube: frozenTubeS){
+                    //删除管子
+                    frozenTubeService.delete(tube.getId());
+                }
+                //删除盒子
+                frozenBoxService.delete(frozenBox.getId());
+            }
+            //删除转运盒子
+            transhipBoxRepository.deleteByFrozenBoxId(box.getId());
+        }
+    }
+
+    public List<FrozenBoxDTO> createFrozenBoxAndTubeDetail(List<FrozenBoxDTO> frozenBoxDTOList) {
+        List<FrozenBoxDTO> dtos = new ArrayList<FrozenBoxDTO>();
+
+        List<FrozenBoxTypeDTO> frozenBoxTypeDTOList = frozenBoxTypeService.findAllFrozenBoxTypes();
+        List<SampleTypeDTO> sampleTypeDTOS = sampleTypeService.findAllSampleTypes();
+        for(FrozenBoxDTO box :frozenBoxDTOList){
+            for(FrozenBoxTypeDTO boxType: frozenBoxTypeDTOList){
+                if(box.getFrozenBoxTypeId().equals(boxType.getId())){
+                    box.setFrozenBoxColumns(boxType.getFrozenBoxTypeColumns());
+                    box.setFrozenBoxTypeCode(boxType.getFrozenBoxTypeCode());
+                    box.setFrozenBoxRows(boxType.getFrozenBoxTypeRows());
+                }
+            }
+            for(SampleTypeDTO sampleType : sampleTypeDTOS){
+                if(box.getSampleTypeId().equals(sampleType.getId())){
+                    box.setSampleTypeName(sampleType.getSampleTypeName());
+                    box.setSampleTypeCode(sampleType.getSampleTypeCode());
+                }
+            }
+            dtos.add(box);
+        }
+        return dtos;
     }
 }

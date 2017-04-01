@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -162,6 +163,20 @@ public class FrozenBoxResource {
     public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> getFrozenBoxAndTubeListByBoxCodeStr(@PathVariable  String frozenBoxCodeStr) {
         log.debug("REST request to get FrozenBoxAndTube By codes : {}", frozenBoxCodeStr);
         List<FrozenBoxAndFrozenTubeResponse> res = frozenBoxService.findFrozenBoxAndTubeListByBoxCodeStr(frozenBoxCodeStr);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
+     * 根据转运编码查询冻存盒列表
+     * @param transhipCode
+     * @return
+     */
+    @GetMapping("/frozen-boxes/tranship/{transhipCode}")
+    @Timed
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> getFrozenBoxAndTubeByTranshipCode(@PathVariable String transhipCode) {
+        log.debug("REST request to get FrozenTube : {}", transhipCode);
+        List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<>();
+        res = frozenBoxService.getFrozenBoxAndTubeByTranshipCode(transhipCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

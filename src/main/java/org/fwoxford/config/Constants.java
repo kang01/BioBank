@@ -27,6 +27,10 @@ public final class Constants {
      * 转运状态：进行中：1001
      */
     public static final String TRANSHIPE_IN_PENDING = "1001";
+    /**
+     * 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废
+     */
+    public static final  String FROZEN_BOX_NEW = "2001" ;
 
     private Constants() {
     }

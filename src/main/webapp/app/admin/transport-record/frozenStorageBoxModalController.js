@@ -71,8 +71,6 @@
                 size: 'sm',
                 controller: 'ModalInstanceCtrl',
                 controllerAs: 'ctrl'
-
-
             });
             modalInstance.result.then(function (flag) {
 

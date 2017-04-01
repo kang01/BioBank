@@ -26,6 +26,7 @@
         vm.importFrozenStorageBox = importFrozenStorageBox; //导入冻存盒
         vm.someClickHandler = someClickHandler; //点击冻存盒的表格行
         vm.reImportFrozenBoxData = reImportFrozenBoxData;//重新导入
+        vm.saveBox = saveBox;
 
         if(vm.transportRecord.transhipDate){
             vm.transportRecord.transhipDate = new Date(entity.transhipDate);
@@ -282,14 +283,31 @@
             }
         };
         //重新导入
-        function reImportFrozenBoxData() {
-            frozenBoxByCodeService.get({code:vm.box.frozenBoxCode},onFrozenSuccess,onError);
+        function reImportFrozenBoxData(){
+            var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'reImportDataModal.html',
+                size: 'sm',
+                controller: 'BoxInstanceCtrl',
+                controllerAs: 'ctrl'
+
+
+            });
+            modalInstance.result.then(function (flag) {
+
+                //true:保存 false:不保存
+                if(flag){
+
+                }
+                frozenBoxByCodeService.get({code:vm.box.frozenBoxCode},onFrozenSuccess,onError);
+            }, function () {
+            });
         }
         var loadAll = function () {
-            SampleTypeService.query({},onSampleTypeSuccess, onError);
-            FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
-            EquipmentService.query({},onEquipmentSuccess, onError);
-            ProjectService.query({},onProjectSuccess, onError)
+            SampleTypeService.query({},onSampleTypeSuccess, onError);//样本类型
+            FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);//盒子类型
+            EquipmentService.query({},onEquipmentSuccess, onError);//设备
+            ProjectService.query({},onProjectSuccess, onError)//项目
         };
         loadAll();
         //盒子类型
@@ -372,23 +390,6 @@
                 hotRegisterer.getInstance('my-handsontable').render()
             }
         };
-        //设备
-        function onEquipmentSuccess(data) {
-            vm.frozenBoxPlaceOptions = data;
-        }
-        vm.frozenBoxPlaceConfig = {
-            valueField:'id',
-            labelField:'equipmentCode',
-            maxItems: 1,
-            onChange:function (value) {
-                AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError)
-                for(var i = 0; i < vm.frozenBoxPlaceOptions.length; i++){
-                    if(value == vm.frozenBoxPlaceOptions[i].id){
-                        vm.box.equipmentCode = vm.frozenBoxPlaceOptions[i].equipmentCode
-                    }
-                }
-            }
-        };
 
         //项目编码
         function onProjectSuccess(data) {
@@ -428,6 +429,7 @@
             }
         };
 
+
         //转运状态
         vm.statusOptions = [
             {id:"1001",name:"进行中"},
@@ -441,7 +443,23 @@
             maxItems: 1
 
         };
-
+        //设备
+        function onEquipmentSuccess(data) {
+            vm.frozenBoxPlaceOptions = data;
+        }
+        vm.frozenBoxPlaceConfig = {
+            valueField:'id',
+            labelField:'equipmentCode',
+            maxItems: 1,
+            onChange:function (value) {
+                AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                for(var i = 0; i < vm.frozenBoxPlaceOptions.length; i++){
+                    if(value == vm.frozenBoxPlaceOptions[i].id){
+                        vm.box.equipmentCode = vm.frozenBoxPlaceOptions[i].equipmentCode
+                    }
+                }
+            }
+        };
         //区域
         function onAreaSuccess(data) {
             vm.frozenBoxAreaOptions = data;
@@ -515,25 +533,10 @@
         //保存
         vm.saveRecord = function () {
 
-            for(var i = 0; i < vm.transportRecord.frozenBoxDTOList.length; i++){
-                vm.transportRecord.frozenBoxDTOList[i].frozenTubeDTOS = [];
-                vm.transportRecord.frozenBoxDTOList[i].rowsInShelf = vm.boxLocation.charAt(0);
-                vm.transportRecord.frozenBoxDTOList[i].columnsInShelf = vm.boxLocation.charAt(1);
-                for(var k = 0; k < vm.frozenTubeArray.length; k++){
-                    for (var j = 0; j <vm.frozenTubeArray[k].length; j++){
-                        if(vm.transportRecord.frozenBoxDTOList[i].frozenBoxCode == vm.frozenTubeArray[k][j].frozenBoxCode){
-                            var tubeArray = angular.copy(vm.frozenTubeArray);
-                            tubeArray[k][j].tubeColumns = j+1;
-                            tubeArray[k][j].tubeRows = String.fromCharCode(k+65);
-                            vm.transportRecord.frozenBoxDTOList[i].frozenTubeDTOS.push(tubeArray[k][j]);
-                        }
-                    }
-                }
-            }
-
-            console.log(JSON.stringify(vm.transportRecord));
-            TransportRecordService.save(vm.transportRecord, onSaveSuccess, onSaveError);
         };
+        function saveBox(){
+            console.log(JSON.stringify(vm.box))
+        }
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }
@@ -586,6 +589,15 @@
         }
         function onFrozenSuccess(data) {
             vm.box = data;
+            if(vm.box.equipmentId){
+                AreasByEquipmentIdService.query({id:vm.box.equipmentId},onAreaSuccess, onError);
+            }
+            if(vm.box.areaId){
+                SupportacksByAreaIdService.query({id:vm.box.areaId},onShelfSuccess, onError)
+            }
+            if(vm.box.supportRackId){
+                vm.boxRowCol =  vm.box.frozenBoxColumns + vm.box.frozenBoxRows;
+            }
             for(var k = 0; k < vm.box.frozenTubeResponseList.length; k++){
                 var tube = vm.box.frozenTubeResponseList[k];
                 vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;

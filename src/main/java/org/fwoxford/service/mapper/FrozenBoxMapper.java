@@ -119,7 +119,7 @@ public interface FrozenBoxMapper {
             return null;
         }
         FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
-        res.setFrozenTubeResponseList(frozenTube);
+        res.setFrozenTubeDTOS(frozenTube);
         res.setId(frozenBox.getId());
         res.setStatus(frozenBox.getStatus());
         res.setAreaCode(frozenBox.getAreaCode());

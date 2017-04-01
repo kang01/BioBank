@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 
 import org.fwoxford.service.TranshipService;
+import org.fwoxford.service.dto.StockInForDataDetail;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
@@ -181,7 +182,7 @@ public class TempResource {
         res.setFrozenBoxRows("1");
 
         res.setIsSplit(0);
-        res.setFrozenTubeResponseList(new ArrayList<>());
+        res.setFrozenTubeDTOS(new ArrayList<>());
         for(int i = 0; i<100; ++i){
             FrozenTubeResponse tube = new FrozenTubeResponse();
             tube.setId((id - 1) * 100 + i);
@@ -206,7 +207,7 @@ public class TempResource {
 
             tube.setMemo("");
             tube.setErrorType("");
-            res.getFrozenTubeResponseList().add(tube);
+            res.getFrozenTubeDTOS().add(tube);
         }
 
         return res;
@@ -264,5 +265,21 @@ public class TempResource {
         result.setRecordsTotal(stockInList.size() * 10);
 
         return result;
+    }
+
+    /**
+     * 根据转运code 查询入库的信息
+     * @param transhipCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-in/tranship/{transhipCode}")
+    @Timed
+    public ResponseEntity<StockInForDataDetail> createStockIn(@Valid @RequestBody String transhipCode) throws URISyntaxException {
+        log.debug("REST request to save stock-in : {}", transhipCode);
+        StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
+        return ResponseEntity.created(new URI("/res/stock-in" + transhipCode))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, transhipCode))
+            .body(stockInForDataDetail);
     }
 }

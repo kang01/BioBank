@@ -34,10 +34,7 @@
                     .draw();
             };
 
-            vm.dtOptions = DTOptionsBuilder.fromSource({
-                "url": 'api/temp/res/stock-in',
-                "dataSrc": "data"
-            })
+            vm.dtOptions = DTOptionsBuilder.fromSource({"url": 'api/temp/res/stock-in',"dataSrc": "data"})
                 .withOption('sServerMethod','POST')
                 .withOption('processing',true)
                 .withOption('serverSide',true)
@@ -82,6 +79,7 @@
             });
         }
         function _fnCreatedRow(row, data, dataIndex) {
+            $("td:eq(5)", row).text([data.storeKeeper1, data.storeKeeper2].join("; "));
             $compile(angular.element(row).contents())($scope);
         }
         function _fnActionButtonsRender(data, type, full, meta) {

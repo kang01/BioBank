@@ -8,6 +8,7 @@ import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
+import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import net.sf.json.JSONObject;
@@ -257,27 +258,8 @@ public class TempResource {
 
         return res;
     }
-    /**
-     * 根据冻存盒CODE字符串查询冻存盒和冻存管信息
-     * @param frozenBoxCodeStr
-     * @return
-     */
-    @GetMapping("/frozen-boxes/codes/{frozenBoxCodeStr}")
-    @Timed
-    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> getFrozenBoxAndTubeListByBoxCodeStr(@PathVariable  String frozenBoxCodeStr) {
-        log.debug("REST request to get FrozenBoxAndTube By codes : {}", frozenBoxCodeStr);
-        List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<>();
 
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
-    }
 
-    /**
-     * GET  /tranships : get all the tranships. 获取转运记录
-     *
-     * @param input the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of tranships in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-in", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockInForDataTable> getPageStockIn(@RequestBody DataTablesInput input) {
@@ -303,6 +285,39 @@ public class TempResource {
         }
 
         DataTablesOutput<StockInForDataTable> result = new DataTablesOutput<>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(stockInList);
+        result.setRecordsFiltered(stockInList.size());
+        result.setRecordsTotal(stockInList.size() * 10);
+
+        return result;
+    }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-in-boxes/stock-in/{stockInCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockInBoxForDataTable> getPageStockInBoxes(@RequestBody DataTablesInput input, @PathVariable String stockInCode) {
+        List<StockInBoxForDataTable> stockInList =  new ArrayList<>();
+
+        for (int i = 0; i < input.getLength(); ++i){
+            StockInBoxForDataTable rowData = new StockInBoxForDataTable();
+            rowData.setId(0L + i + input.getStart());
+
+//
+//            rowData.setTranshipCode("1234567890");
+//            rowData.setProjectCode("1234567890");
+//            rowData.setProjectSiteCode("12345");
+//
+//            rowData.setCountOfBox(Math.round(100));
+//            rowData.setCountOfSample(rowData.getCountOfBox()*100);
+//
+//            rowData.setStoreKeeper1("竹羽");
+//            rowData.setStoreKeeper2("景福");
+
+            stockInList.add(rowData);
+        }
+
+        DataTablesOutput<StockInBoxForDataTable> result = new DataTablesOutput<>();
         result.setDraw(input.getDraw());
         result.setError("");
         result.setData(stockInList);

@@ -1,33 +1,3 @@
-.selectize-dropdown{
-    z-index: 999;
-}
-.navbar{
-    margin-bottom: 6px;
-}
-.triangle-topright {
-    width: 0;
-    height: 0;
-    border-top: 10px solid red;
-    border-left: 10px solid transparent;
-}
-.transport-record-index h2{
-    margin-top:2px;
-}
-.transport-record  .form-group{
-    margin-bottom: 4px;
-}
-.transport-record  .pipe-body{
-    border: 1px solid #ccc;
-    background-color: #fff;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-.transport-record-body .btn{
-    padding: 2px 12px;
-} .transport-record-body table.dataTable tbody th,
-.transport-record-body table.dataTable tbody td{
-    padding: 4px 18px;
-}
 .p-l-0{
     padding-left: 0 !important;
 }
@@ -57,6 +27,40 @@
 }
 .rowLight{
     background-color: lightskyblue;
+}
+.selectize-dropdown{
+    z-index: 999;
+}
+.navbar{
+    margin-bottom: 6px;
+}
+.required-field:after{
+    color: red;
+    content: '*';
+}
+.triangle-topright {
+    width: 0;
+    height: 0;
+    border-top: 10px solid red;
+    border-left: 10px solid transparent;
+}
+.transport-record-index h2{
+    margin-top:2px;
+}
+.transport-record  .form-group{
+    margin-bottom: 4px;
+}
+.transport-record  .pipe-body{
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.transport-record-body .btn{
+    padding: 2px 12px;
+} .transport-record-body table.dataTable tbody th,
+.transport-record-body table.dataTable tbody td{
+    padding: 4px 18px;
 }
 .transport-record-new .form-group{
     margin-bottom: 6px;

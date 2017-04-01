@@ -71,8 +71,6 @@
                 size: 'sm',
                 controller: 'ModalInstanceCtrl',
                 controllerAs: 'ctrl'
-
-
             });
             modalInstance.result.then(function (flag) {
 
@@ -90,7 +88,10 @@
         var ctrl = this;
         ctrl.ok = function () {
             $uibModalInstance.close(true);
-        }
+        };
+        ctrl.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     }
 })();
 

@@ -4,11 +4,11 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 
-import org.fwoxford.domain.Tranship;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
+import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,6 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -267,5 +269,46 @@ public class TempResource {
         List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<>();
 
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
+     * GET  /tranships : get all the tranships. 获取转运记录
+     *
+     * @param input the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of tranships in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-in", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockInForDataTable> getPageStockIn(@RequestBody DataTablesInput input) {
+        List<StockInForDataTable> stockInList =  new ArrayList<>();
+
+        for (int i = 0; i < input.getLength(); ++i){
+            StockInForDataTable rowData = new StockInForDataTable();
+            rowData.setId(0L + i + input.getStart());
+            rowData.setRecordDate(LocalDate.now());
+            rowData.setStockInDate(null);
+
+            rowData.setTranshipCode("1234567890");
+            rowData.setProjectCode("1234567890");
+            rowData.setProjectSiteCode("12345");
+
+            rowData.setCountOfBox(Math.round(100));
+            rowData.setCountOfSample(rowData.getCountOfBox()*100);
+
+            rowData.setStoreKeeper1("竹羽");
+            rowData.setStoreKeeper2("景福");
+
+            stockInList.add(rowData);
+        }
+
+        DataTablesOutput<StockInForDataTable> result = new DataTablesOutput<>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(stockInList);
+        result.setRecordsFiltered(stockInList.size());
+        result.setRecordsTotal(stockInList.size() * 10);
+
+        return result;
     }
 }

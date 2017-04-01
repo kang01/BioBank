@@ -21,7 +21,7 @@
         this.ok = function () {
             for(var i = 0; i < vm.items.remarkArray.length; i++){
                 for(var j =0; j < vm.items.remarkArray[i].length;j++){
-                    if(vm.items.remarkArray[i][j].frozenTubeCode){
+                    if(vm.items.remarkArray[i][j].sampleCode){
                         vm.items.remarkArray[i][j].memo = vm.memo;
                     }
                 }

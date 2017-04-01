@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface TranshipRepository extends JpaRepository<Tranship,Long> {
 
+    Tranship findByTranshipCode(String transhipCode);
 }

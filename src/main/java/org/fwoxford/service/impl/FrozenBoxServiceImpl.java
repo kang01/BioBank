@@ -3,7 +3,9 @@ package org.fwoxford.service.impl;
 import org.fwoxford.domain.Equipment;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.domain.Tranship;
 import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
@@ -47,6 +49,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
     @Autowired
     private FrozenTubeMapper frozenTubeMapping;
+    @Autowired
+    private TranshipRepository transhipRepository;
 
     public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper) {
         this.frozenBoxRepository = frozenBoxRepository;
@@ -227,9 +231,10 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
         List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
 
+        Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
         //根据转运code查询冻存盒列表
-        List<FrozenBox> frozenBoxes = frozenBoxRepository.findFrozenBoxByTranshipCode(transhipCode);
-
+        List<FrozenBox> frozenBoxes =  frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship!=null?tranship.getId():null);
+//        List<FrozenBox> frozenBoxes = frozenBoxRepository.findFrozenBoxByTranshipCode(transhipCode);
         for(FrozenBox box : frozenBoxes){
 
             //查询冻存管列表信息

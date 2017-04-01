@@ -84,19 +84,19 @@ public interface FrozenTubeMapper {
             return null;
         }
         FrozenTubeResponse res = new FrozenTubeResponse();
-        res.setProjectId(tube.getProject().getId());
+        res.setProjectId(tube.getProject()!=null?tube.getProject().getId():null);
         res.setProjectCode(tube.getProjectCode());
         res.setId(tube.getId());
         res.setErrorType(tube.getErrorType());
         res.setFrozenTubeCode(tube.getFrozenTubeCode());
         res.setFrozenTubeTypeCode(tube.getFrozenTubeTypeCode());
-        res.setFrozenTubeTypeId(tube.getFrozenTubeType().getId());
+        res.setFrozenTubeTypeId(tube.getFrozenTubeType()!=null?tube.getFrozenTubeType().getId():null);
         res.setMemo(tube.getMemo());
         res.setFrozenTubeTypeName(tube.getFrozenTubeTypeName());
         res.setSampleCode(tube.getSampleCode());
         res.setSampleTempCode(tube.getSampleTempCode());
         res.setSampleTypeCode(tube.getSampleTypeCode());
-        res.setSampleTypeId(tube.getSampleType().getId());
+        res.setSampleTypeId(tube.getSampleType()!=null?tube.getSampleType().getId():null);
         res.setSampleTypeName(tube.getSampleTypeName());
         res.setStatus(tube.getStatus());
         res.setTubeColumns(tube.getTubeColumns());

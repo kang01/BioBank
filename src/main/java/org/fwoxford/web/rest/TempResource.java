@@ -75,52 +75,6 @@ public class TempResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, "1"))
             .body(jsonObject);
     }
-
-    /**
-     * GET  /tranships : get all the tranships.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of tranships in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-//    @GetMapping("/tranships")
-//    @Timed
-//    public ResponseEntity<JSONArray> getAllTranships(@ApiParam Pageable pageable)
-//        throws URISyntaxException {
-//        log.debug("REST request to get a page of Tranships");
-//        //读取转运记录
-//        String jsonString = "[\n" +
-//            "  {\n" +
-//            "    \"id\": 1,\n" +
-//            "    \"projectCode\": \"P_00007\",\n" +
-//            "    \"projectSiteCode\": \"PS_00007001\",\n" +
-//            "    \"receiveDate\": \"2017-03-20\",\n" +
-//            "    \"sampleSatisfaction\": 1,\n" +
-//            "    \"transhipDate\": \"2017-03-20\",\n" +
-//            "    \"transhipState\": \"01\"\n" +
-//            "  }\n" +
-//            "]";
-//        List<Map<String,Object>> alist = new ArrayList<>();
-//        for(int i = 0 ; i < 9 ; i++){
-//            Map<String,Object> map = new HashMap<>();
-//            map.put("id",i);
-//            map.put("projectCode","P_00007"+i);
-//            map.put("projectSiteCode","PS_0000700"+i);
-//            map.put("receiveDate",new Date().getTime());
-//            map.put("sampleSatisfaction",5);
-//            map.put("transhipDate",new Date().getTime());
-//            map.put("transhipReceive","李四");
-//            map.put("transhipState","01");
-//            map.put("receiver","高康康"+i);
-//            alist.add(map);
-//        }
-//
-//        String jsonStr = JSONArray.fromObject(alist).toString();
-//        JSONArray jsonArray = JSONArray.fromObject(jsonStr);
-//
-//        HttpHeaders headers = getHeaders("/api/temp/tranships");
-//        return new ResponseEntity<>(jsonArray, headers, HttpStatus.OK);
-//    }
     /**
      * GET  /tranships/:id : get the "id" tranship.
      *

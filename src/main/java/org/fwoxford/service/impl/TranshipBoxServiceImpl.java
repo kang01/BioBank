@@ -169,7 +169,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         List<FrozenBoxDTO> frozenBoxDTOList = transhipBoxListDTO.getFrozenBoxDTOList();
         frozenBoxDTOList = createFrozenBoxAndTubeDetail(frozenBoxDTOList);
         //保存冻存盒
-        List<FrozenBoxDTO> frozenBoxDTOLists =  frozenBoxMapper.frozenTranshipAndBoxToFrozenBoxDTOList(frozenBoxDTOList,new Tranship().transhipId(transhipId));
+        Tranship tranship = new Tranship();tranship.setId(transhipId);
+        List<FrozenBoxDTO> frozenBoxDTOLists =  frozenBoxMapper.frozenTranshipAndBoxToFrozenBoxDTOList(frozenBoxDTOList,tranship);
         List<FrozenBox> frozenBoxes =  frozenBoxService.saveBatch(frozenBoxDTOLists);
         List<FrozenBoxDTO> frozenBoxDTOListLast = frozenBoxMapper.frozenBoxesToFrozenBoxDTOs(frozenBoxes);
 

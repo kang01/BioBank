@@ -171,10 +171,6 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
         this.transhipDate = transhipDate;
         return this;
     }
-    public Tranship transhipId(Long id) {
-        this.id = id;
-        return this;
-    }
     public void setTranshipDate(LocalDate transhipDate) {
         this.transhipDate = transhipDate;
     }

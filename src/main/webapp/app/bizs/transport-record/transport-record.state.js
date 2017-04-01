@@ -13,7 +13,7 @@
     function stateConfig($stateProvider) {
         $stateProvider
             .state('transport-record', {
-                parent: 'admin',
+                parent: 'bizs',
                 url: '/transport-record?page&sort',
                 data: {
                     authorities: ['ROLE_ADMIN'],
@@ -21,7 +21,7 @@
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'app/admin/transport-record/transport-record.html',
+                        templateUrl: 'app/bizs/transport-record/transport-record.html',
                         controller: 'TransportRecordController',
                         controllerAs: 'vm'
                     }
@@ -53,7 +53,7 @@
                 }
             })
             .state('transport-record-new', {
-                parent: 'admin',
+                parent: 'bizs',
                 url: '/transport-record/add',
                 data: {
                     authorities: ['ROLE_ADMIN'],
@@ -61,7 +61,7 @@
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'app/admin/transport-record/transport-record-new.html',
+                        templateUrl: 'app/bizs/transport-record/transport-record-new.html',
                         controller: 'TransportRecordNewController',
                         controllerAs: 'vm'
                     }
@@ -101,7 +101,7 @@
                 }
             })
             .state('transport-record-edit', {
-                parent: 'admin',
+                parent: 'bizs',
                 url: '/transport-record/{id}/edit',
                 data: {
                     authorities: ['ROLE_ADMIN'],
@@ -109,7 +109,7 @@
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'app/admin/transport-record/transport-record-new.html',
+                        templateUrl: 'app/bizs/transport-record/transport-record-new.html',
                         controller: 'TransportRecordNewController',
                         controllerAs: 'vm'
                     }

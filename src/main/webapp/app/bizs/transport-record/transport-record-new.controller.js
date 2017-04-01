@@ -509,7 +509,7 @@
         function importFrozenStorageBox() {
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/admin/transport-record/frozen-storage-box-modal.html',
+                templateUrl: 'app/bizs/transport-record/frozen-storage-box-modal.html',
                 controller: 'FrozenStorageBoxModalController',
                 controllerAs:'vm',
                 size:'lg'

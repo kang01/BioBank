@@ -1,18 +1,18 @@
 /**
  * Created by gaokangkang on 2017/3/25.
+ * 样本类型
  */
-//盒子类型
 (function () {
     'use strict';
 
     angular
         .module('bioBankApp')
-        .factory('FrozenBoxTypesService', FrozenBoxTypesService);
+        .factory('SampleTypeService', SampleTypeService);
 
-    FrozenBoxTypesService.$inject = ['$resource'];
+    SampleTypeService.$inject = ['$resource'];
 
-    function FrozenBoxTypesService ($resource) {
-        var service = $resource('api/frozenBoxTypes', {}, {
+    function SampleTypeService ($resource) {
+        var service = $resource('api/sample-types/all', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

@@ -82,6 +82,7 @@ public class TranshipServiceImpl implements TranshipService{
     public TranshipDTO save(TranshipDTO transhipDTO) {
         log.debug("Request to save Tranship : {}", transhipDTO);
         Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
+        tranship = transhipMapper.transhipToDefaultValue(tranship);
         tranship = transhipRepository.save(tranship);
         TranshipDTO result = transhipMapper.transhipToTranshipDTO(tranship);
         return result;
@@ -218,35 +219,9 @@ public class TranshipServiceImpl implements TranshipService{
      */
     @Override
     public TranshipDTO initTranship() {
-        Tranship tranship = new Tranship();
-        tranship = transhipInit();
+        Tranship tranship = transhipMapper.transhipToDefaultValue(new Tranship());
         transhipRepositries.save(tranship);
         return transhipMapper.transhipToTranshipDTO(tranship);
-    }
-
-    private Tranship transhipInit() {
-        Tranship tranship = new Tranship();
-        tranship.setTranshipCode(BankUtil.getUniqueID());
-        tranship.setEffectiveSampleNumber(0);
-        tranship.setProjectCode(new String(" "));
-        tranship.setProject(null);
-        tranship.setEmptyHoleNumber(0);
-        tranship.setEmptyTubeNumber(0);
-        tranship.setFrozenBoxNumber(0);
-        tranship.setProjectName(new String(" "));
-        tranship.setProjectSite(null);
-        tranship.setProjectSiteCode(new String(" "));
-        tranship.setProjectSiteName(new String(" "));
-        tranship.setReceiver(new String(" "));
-        tranship.setReceiveDate(null);
-        tranship.setSampleNumber(0);
-        tranship.setTrackNumber(new String(" "));
-        tranship.setTranshipBatch(new String(" "));
-        tranship.setSampleSatisfaction(0);
-        tranship.setTranshipDate(null);
-        tranship.setTranshipState(Constants.TRANSHIPE_IN_PENDING);
-        tranship.setStatus(Constants.VALID);
-        return tranship;
     }
 
     public List<FrozenTubeDTO> getFrozenTubeDTOList(List<FrozenBoxDTO> frozenBoxDTOList, List<FrozenBox> frozenBoxes) {

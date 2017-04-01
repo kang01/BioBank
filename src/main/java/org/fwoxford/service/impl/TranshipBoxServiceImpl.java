@@ -2,6 +2,9 @@ package org.fwoxford.service.impl;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.domain.*;
+import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.repository.FrozenTubeRepository;
+import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.service.*;
 import org.fwoxford.repository.TranshipBoxRepository;
 import org.fwoxford.service.dto.*;
@@ -32,6 +35,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
     private final Logger log = LoggerFactory.getLogger(TranshipBoxServiceImpl.class);
 
     private final TranshipBoxRepository transhipBoxRepository;
+    private final FrozenBoxRepository frozenBoxRepository;
+    private final FrozenTubeRepository frozenTubeRepository;
+    private final TranshipRepository transhipRepository;
+
 
     private final TranshipBoxMapper transhipBoxMapper;
 
@@ -56,9 +63,16 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
     @Autowired
     private SampleTypeService sampleTypeService;
 
-    public TranshipBoxServiceImpl(TranshipBoxRepository transhipBoxRepository, TranshipBoxMapper transhipBoxMapper) {
+    public TranshipBoxServiceImpl(TranshipBoxRepository transhipBoxRepository,
+                                  FrozenBoxRepository frozenBoxRepository,
+                                  FrozenTubeRepository frozenTubeRepository,
+                                  TranshipRepository transhipRepository,
+                                  TranshipBoxMapper transhipBoxMapper) {
         this.transhipBoxRepository = transhipBoxRepository;
         this.transhipBoxMapper = transhipBoxMapper;
+        this.frozenBoxRepository = frozenBoxRepository;
+        this.frozenTubeRepository = frozenTubeRepository;
+        this.transhipRepository = transhipRepository;
     }
 
     /**
@@ -146,14 +160,11 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
     /**
      * 批量保存转运的冻存盒
      *
-     * 删除原数据，保存新的数据
      * @param transhipBoxListDTO
      * @return
      */
     @Override
     public TranshipBoxListDTO saveBatchTranshipBox(TranshipBoxListDTO transhipBoxListDTO) {
-        //删除原数据
-//        this.deleteTranshipBoxAndTube(transhipBoxListDTO);
         Long transhipId = transhipBoxListDTO.getTranshipId();
         List<FrozenBoxDTO> frozenBoxDTOList = transhipBoxListDTO.getFrozenBoxDTOList();
         frozenBoxDTOList = createFrozenBoxAndTubeDetail(frozenBoxDTOList);
@@ -180,21 +191,27 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         return transhipBoxListDTO;
     }
 
+    /**
+     * 删除冻存管，冻存盒，转运盒子
+     * @param transhipBoxListDTO
+     */
     public void deleteTranshipBoxAndTube(TranshipBoxListDTO transhipBoxListDTO) {
         List<FrozenBoxDTO> frozenBoxDTOList = transhipBoxListDTO.getFrozenBoxDTOList();
         for(FrozenBoxDTO box:frozenBoxDTOList){
-            FrozenBox frozenBox = frozenBoxService.findFrozenBoxDetailsByBoxCode(box.getFrozenBoxCode());
-            if(frozenBox != null){
-                List<FrozenTube> frozenTubeS = frozenTubeService.findFrozenTubeListByBoxId(frozenBox.getId());
-                for(FrozenTube tube: frozenTubeS){
-                    //删除管子
-                    frozenTubeService.delete(tube.getId());
-                }
-                //删除盒子
-                frozenBoxService.delete(frozenBox.getId());
-            }
-            //删除转运盒子
             transhipBoxRepository.deleteByFrozenBoxId(box.getId());
+
+//            FrozenBox frozenBox = frozenBoxService.findFrozenBoxDetailsByBoxCode(box.getFrozenBoxCode());
+//            if(frozenBox != null){
+//                List<FrozenTube> frozenTubeS = frozenTubeService.findFrozenTubeListByBoxId(frozenBox.getId());
+//                for(FrozenTube tube: frozenTubeS){
+//                    //删除管子
+//                    frozenTubeService.delete(tube.getId());
+//                }
+//                //删除转运盒子
+//                transhipBoxRepository.deleteByFrozenBoxId(box.getId());
+//                //删除盒子
+//                frozenBoxService.delete(frozenBox.getId());
+//            }
         }
     }
 

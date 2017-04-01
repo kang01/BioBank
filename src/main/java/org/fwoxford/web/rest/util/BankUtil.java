@@ -22,7 +22,7 @@ public class BankUtil {
         Date date = new Date();
         try {
             NTPUDPClient client = new NTPUDPClient();
-            client.setDefaultTimeout(100);//设置超时
+            client.setDefaultTimeout(500);//设置超时
             InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
             TimeInfo timeInfo = client.getTime(timeServerAddress);
             TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();

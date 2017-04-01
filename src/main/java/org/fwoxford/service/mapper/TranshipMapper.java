@@ -1,11 +1,13 @@
 package org.fwoxford.service.mapper;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.Project;
 import org.fwoxford.domain.ProjectSite;
 import org.fwoxford.domain.Tranship;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -65,6 +67,7 @@ public interface TranshipMapper {
             return null;
         }
         res.setId( tranship.getId() );
+        res.setTranshipCode(tranship.getTranshipCode());
         res.setTranshipDate( tranship.getTranshipDate() );
         res.setProjectCode( tranship.getProjectCode() );
         res.setProjectSiteCode( tranship.getProjectSiteCode() );
@@ -81,6 +84,7 @@ public interface TranshipMapper {
             return null;
         }
         res.setId( tranship.getId() );
+        res.setTranshipCode(tranship.getTranshipCode());
         res.setTranshipDate( tranship.getTranshipDate() );
         res.setProjectCode( tranship.getProjectCode() );
         res.setProjectSiteCode( tranship.getProjectSiteCode() );
@@ -91,5 +95,31 @@ public interface TranshipMapper {
         res.setProjectId(tranship.getProject().getId());
         res.setProjectSiteId(tranship.getProjectSite().getId());
         return res;
+    }
+
+    default  Tranship transhipToDefaultValue(Tranship ship){
+        Tranship tranship = new Tranship();
+        tranship.setId(ship.getId());
+        tranship.setTranshipCode(ship.getTranshipCode()!=null ?ship.getTranshipCode():BankUtil.getUniqueID());
+        tranship.setEffectiveSampleNumber(ship.getEffectiveSampleNumber()!=null?ship.getEffectiveSampleNumber():0);
+        tranship.setProjectCode(ship.getProjectCode()!=null?ship.getProjectCode():new String(" "));
+        tranship.setProject(ship.getProject()!=null && ship.getProject().getId()!=null?ship.getProject():null);
+        tranship.setEmptyHoleNumber(ship.getEmptyHoleNumber()!=null?ship.getEmptyHoleNumber():0);
+        tranship.setEmptyTubeNumber(ship.getEmptyTubeNumber()!=null?ship.getEmptyTubeNumber():0);
+        tranship.setFrozenBoxNumber(ship.getFrozenBoxNumber()!=null?ship.getFrozenBoxNumber():0);
+        tranship.setProjectName(ship.getProjectName()!=null?ship.getProjectName():new String(" "));
+        tranship.setProjectSite(ship.getProjectSite()!=null && ship.getProjectSite().getId()!=null ? ship.getProjectSite():null);
+        tranship.setProjectSiteCode(ship.getProjectSiteCode()!=null?ship.getProjectSiteCode():new String(" "));
+        tranship.setProjectSiteName(ship.getProjectSiteName() !=null ? ship.getProjectSiteName():new String(" "));
+        tranship.setReceiver(ship.getReceiver() !=null ? ship.getReceiver():new String(" "));
+        tranship.setReceiveDate(ship.getReceiveDate() !=null ? ship.getReceiveDate():null);
+        tranship.setSampleNumber(ship.getSampleNumber()!=null?ship.getSampleNumber():0);
+        tranship.setTrackNumber(ship.getTrackNumber() !=null ? ship.getTrackNumber():new String(" "));
+        tranship.setTranshipBatch(ship.getTranshipBatch() !=null ? ship.getTranshipBatch():new String(" "));
+        tranship.setSampleSatisfaction(ship.getSampleSatisfaction()!=null?ship.getSampleSatisfaction():0);
+        tranship.setTranshipDate(ship.getTranshipDate() !=null ? ship.getTranshipDate():null);
+        tranship.setTranshipState(ship.getTranshipState()!=null?ship.getTranshipState():Constants.TRANSHIPE_IN_PENDING);
+        tranship.setStatus(ship.getStatus()!=null?ship.getStatus():Constants.VALID);
+        return tranship;
     }
 }

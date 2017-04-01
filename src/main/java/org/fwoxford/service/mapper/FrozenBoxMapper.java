@@ -38,7 +38,6 @@ public interface FrozenBoxMapper {
     @Mapping(source = "equipmentId", target = "equipment")
     @Mapping(source = "areaId", target = "area")
     @Mapping(source = "supportRackId", target = "supportRack")
-    @Mapping(target = "transhipBox", ignore = true)
     FrozenBox frozenBoxDTOToFrozenBox(FrozenBoxDTO frozenBoxDTO);
 
     List<FrozenBox> frozenBoxDTOsToFrozenBoxes(List<FrozenBoxDTO> frozenBoxDTOs);

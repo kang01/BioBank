@@ -67,6 +67,11 @@ public class TranshipResponse {
     @Max(value = 20)
     @JsonView(DataTablesOutput.View.class)
     private Integer sampleSatisfaction;
+    /**
+     * 转运编码
+     */
+    @JsonView(DataTablesOutput.View.class)
+    private String transhipCode;
 
     public Long getId() {
         return id;
@@ -130,6 +135,14 @@ public class TranshipResponse {
 
     public void setSampleSatisfaction(Integer sampleSatisfaction) {
         this.sampleSatisfaction = sampleSatisfaction;
+    }
+
+    public String getTranshipCode() {
+        return transhipCode;
+    }
+
+    public void setTranshipCode(String transhipCode) {
+        this.transhipCode = transhipCode;
     }
 
     @Override

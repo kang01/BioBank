@@ -186,6 +186,7 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
+    @JoinColumn(name = "tranship_id")
     private Tranship tranship;
 
     @ManyToOne(optional = false)
@@ -197,10 +198,6 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @ManyToOne(optional = false)
     private SupportRack supportRack;
 
-    @OneToMany(mappedBy = "frozenBox")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<TranshipBox> transhipBox = new HashSet<>();
     public Long getId() {
         return id;
     }
@@ -600,35 +597,6 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
 
     public void setSupportRack(SupportRack supportRack) {
         this.supportRack = supportRack;
-    }
-
-    public Set<TranshipBox> getTranshipBox() {
-        return transhipBox;
-    }
-
-    public void setTranshipBox(Set<TranshipBox> transhipBox) {
-        this.transhipBox = transhipBox;
-    }
-
-    public FrozenBox transhipBoxes(Set<TranshipBox> transhipBox) {
-        this.transhipBox = transhipBox;
-        return this;
-    }
-
-    public FrozenBox addTranshipBox(TranshipBox transhipBox) {
-        this.transhipBox.add(transhipBox);
-        transhipBox.setFrozenBox(this);
-        return this;
-    }
-
-    public FrozenBox removeTranshipBox(TranshipBox transhipBox) {
-        this.transhipBox.remove(transhipBox);
-        transhipBox.setFrozenBox(null);
-        return this;
-    }
-
-    public void setProjectRelates(Set<TranshipBox> transhipBox) {
-        this.transhipBox = transhipBox;
     }
 
     @Override

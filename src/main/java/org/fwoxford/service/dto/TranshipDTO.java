@@ -73,7 +73,6 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 空管数
      */
-    @NotNull
     private Integer emptyTubeNumber;
     /**
      * 空孔数

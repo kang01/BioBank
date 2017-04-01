@@ -62,6 +62,10 @@ public class TranshipByIdResponse {
      */
     private Long projectSiteId;
     /**
+     * 转运编码
+     */
+    private String transhipCode;
+    /**
      * 冻存盒列表
      */
     private List<FrozenBoxDTO> frozenBoxDTOList;
@@ -152,5 +156,13 @@ public class TranshipByIdResponse {
 
     public void setProjectSiteId(Long projectSiteId) {
         this.projectSiteId = projectSiteId;
+    }
+
+    public String getTranshipCode() {
+        return transhipCode;
+    }
+
+    public void setTranshipCode(String transhipCode) {
+        this.transhipCode = transhipCode;
     }
 }

@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service Implementation for managing FrozenBox.
@@ -164,8 +165,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
      * @return
      */
     public FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode) {
-        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
-        return frozenBox;
+        Optional<FrozenBox> frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+        return frozenBox.map(box->box).orElse(null);
     }
 
     /**
@@ -174,7 +175,6 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
      */
     @Override
     public List<FrozenBox> saveBatch(List<FrozenBoxDTO> frozenBoxDTOList) {
-        Assert.notNull(frozenBoxDTOList,"frozen Box must not be null");
         List<FrozenBox> frozenBoxes = frozenBoxMapper.frozenBoxDTOsToFrozenBoxes(frozenBoxDTOList);
         List<FrozenBox> frozenBoxList = frozenBoxRepository.save(frozenBoxes);
         return frozenBoxList;

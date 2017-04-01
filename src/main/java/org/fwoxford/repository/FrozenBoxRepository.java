@@ -6,6 +6,7 @@ import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Data JPA repository for the FrozenBox entity.
@@ -16,7 +17,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     List<FrozenBox> findAllFrozenBoxByTranshipId(Long transhipId);
 
     @Query("select box from FrozenBox box where box.frozenBoxCode = ?1")
-    FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode);
+    Optional<FrozenBox> findFrozenBoxDetailsByBoxCode(String frozenBoxCode);
 
     @Query(value = "select * from frozen_box box where box.equipment_id = ?1" +
         " and box.area_id = ?2 " +

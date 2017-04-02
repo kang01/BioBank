@@ -9,11 +9,11 @@
         .controller('TransportRecordNewController', TransportRecordNewController)
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
-    TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
-        'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService'];
+    TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
+        'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
-    function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
-                                          SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService) {
+    function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
+                                          SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.transportRecord = entity; //转运记录
@@ -26,15 +26,34 @@
         vm.importFrozenStorageBox = importFrozenStorageBox; //导入冻存盒
         vm.someClickHandler = someClickHandler; //点击冻存盒的表格行
         vm.reImportFrozenBoxData = reImportFrozenBoxData;//重新导入
-        vm.saveBox = saveBox;
+        vm.saveRecord = saveRecord; //保存记录
+        vm.saveBox = saveBox;//保存盒子
+        vm.loadBox = loadBox;
+        // console.log($stateParams.transhipId);
+        if($stateParams.transhipId){
+            vm.transportRecord.id = $stateParams.transhipId;
+        }
 
+        if($stateParams.transhipCode){
+            vm.transportRecord.transhipCode = $stateParams.transhipCode;
+        }
+
+
+        var obox = {
+            transhipId:vm.transportRecord.id,
+            frozenBoxDTOList:[]
+        };
         if(vm.transportRecord.transhipDate){
             vm.transportRecord.transhipDate = new Date(entity.transhipDate);
         }
         if(vm.transportRecord.receiveDate){
             vm.transportRecord.receiveDate = new Date(entity.receiveDate);
         }
-
+        function loadBox() {
+            if(vm.transportRecord.transhipCode){
+                TranshipBoxByCodeService.query({code:vm.transportRecord.transhipCode},onBoxSuccess,onError)
+            }
+        }
         var size = 10;
         function initFrozenTube(size) {
             for(var i = 0; i < size; i++){
@@ -62,11 +81,11 @@
         var htm; //渲染管子表格
         vm.myCustomRenderer = function(hotInstance, td, row, col, prop, value, cellProperties) {
             td.style.position = 'relative';
-
+            console.log(1)
             if(value == ""){
                 value= {};
                 value.sampleCode = "";
-                value.status = "3003";//冻存管状态3001：正常，3002：空管，3003：空孔；3004：异常
+                // value.status = "3003";//冻存管状态3001：正常，3002：空管，3003：空孔；3004：异常
                 value.tubeRows = getTubeRows(row);
                 value.tubeColumns = getTubeColumns(col);
                 value.memo = ""
@@ -98,7 +117,7 @@
                 "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
 
             td.innerHTML = htm;
-            console.log(JSON.stringify(vm.frozenTubeArray))
+            // console.log(JSON.stringify(vm.frozenTubeArray))
 
         };
         //修改样本类型
@@ -129,11 +148,14 @@
             }
         }
         //修改样本状态正常、空管、空孔、异常
+        vm.normalCount = 0;
+        vm.emptyCount = 0;
         function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
+
             operateColor = td.style.backgroundColor;
             //正常
             if(sampleStatus == 3001){
-
+               vm.normalCount ++;
             }
             //空管
             if(sampleStatus == 3002){
@@ -141,6 +163,7 @@
             }
             //空孔
             if(sampleStatus == 3003){
+                vm.emptyCount++;
                 td.style.background = '';
                 td.style.backgroundColor = '#ffffff';
             }
@@ -208,7 +231,7 @@
             afterChange:function (change,source) {
                 if(source == 'edit'){
 
-                    hotRegisterer.getInstance('my-handsontable').render()
+                    // hotRegisterer.getInstance('my-handsontable').render()
                     return;
                 }
             }
@@ -270,7 +293,7 @@
 
                 });
                 modalInstance.result.then(function (selectedItem) {
-                    console.log(JSON.stringify(selectedItem));
+                    // console.log(JSON.stringify(selectedItem));
                     // for(var i = 0; i < vm.frozenTubeArray.length; i++){
                     //     for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
                     //             if(selectedItem[i][j].sampleCode != ''){
@@ -308,8 +331,10 @@
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);//盒子类型
             EquipmentService.query({},onEquipmentSuccess, onError);//设备
             ProjectService.query({},onProjectSuccess, onError)//项目
+            loadBox()
         };
         loadAll();
+
         //盒子类型
         function onFrozenBoxTypeSuccess(data) {
             vm.frozenBoxTypeOptions = data;
@@ -322,7 +347,7 @@
             labelField:'frozenBoxTypeName',
             maxItems: 1,
             onChange:function(value){
-                console.log(value);
+                // console.log(value);
                 var countRows = hotRegisterer.getInstance('my-handsontable').countRows();
                 var countCols = hotRegisterer.getInstance('my-handsontable').countCols();
 
@@ -390,7 +415,9 @@
                 hotRegisterer.getInstance('my-handsontable').render()
             }
         };
-
+        if(vm.transportRecord.projectId){
+            ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError)
+        }
         //项目编码
         function onProjectSuccess(data) {
             vm.projectOptions = data;
@@ -428,7 +455,24 @@
                 }
             }
         };
-
+        // 满意度1-10
+        vm.satisfactionOptions = [
+            {id:"10",name:"非常满意"},
+            {id:"9",name:"较满意"},
+            {id:"8",name:"满意"},
+            {id:"7",name:"有少量空管"},
+            {id:"6",name:"有许多空管"},
+            {id:"5",name:"有大量空管"},
+            {id:"4",name:"有少量空孔"},
+            {id:"3",name:"有少量错位"},
+            {id:"2",name:"有大量错位"},
+            {id:"1",name:"非常不满意"}
+        ];
+        vm.satisfactionConfig = {
+            valueField:'id',
+            labelField:'name',
+            maxItems: 1
+        };
 
         //转运状态
         vm.statusOptions = [
@@ -497,10 +541,26 @@
             }
         };
 
+        function onBoxSuccess(data) {
+            vm.dtOptions = DTOptionsBuilder.newOptions()
+                .withOption('data', data)
+                .withOption('info', false)
+                .withOption('paging', false)
+                .withOption('sorting', false)
+                .withScroller()
+                .withOption('scrollY', 450)
+                .withOption('rowCallback', rowCallback);
+        }
         function onError(error) {
             AlertService.error(error.data.message);
         }
-
+        //盒子信息
+        vm.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('paging', false)
+            .withOption('sorting', false);
+        vm.dtColumns = [
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号')
+        ];
 
 
         vm.dtInstance = {};
@@ -512,33 +572,41 @@
                 templateUrl: 'app/bizs/transport-record/frozen-storage-box-modal.html',
                 controller: 'FrozenStorageBoxModalController',
                 controllerAs:'vm',
-                size:'lg'
+                size:'lg',
+                resolve: {
+                    items: function () {
+                        return {
+                            transhipId :vm.transportRecord.id
+                        }
+                    }
+                }
 
             });
             modalInstance.result.then(function (data) {
-                // vm.transportRecord.frozenBoxDTOList = data;
-
-                vm.dtOptions = DTOptionsBuilder.newOptions()
-                    .withOption('data', data)
-                    .withOption('info', false)
-                    .withOption('paging', false)
-                    .withOption('sorting', false)
-                    .withScroller()
-                    .withOption('scrollY', 450)
-                    .withOption('rowCallback', rowCallback);
-
-                vm.dtInstance.rerender();
+                loadBox();
             });
         }
-        //保存
-        vm.saveRecord = function () {
+        //保存保存记录
+        function saveRecord() {
+            TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError)
+        }
+        function onSaveTranshipRecordSuccess(data) {
+            AlertService.success("保存转运记录成功");
+        }
 
-        };
         function saveBox(){
-            console.log(JSON.stringify(vm.box))
+            if(obox.frozenBoxDTOList.length == 0){
+                obox.frozenBoxDTOList.push(vm.box);
+            }
+
+            // console.log(JSON.stringify(obox))
+            TranshipBoxService.save(obox,onSaveBoxSuccess,onError);
         }
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
+        }
+        function onSaveBoxSuccess() {
+            AlertService.success("保存冻存盒成功！");
         }
         function onSaveSuccess () {
             $state.go('transport-record');
@@ -547,15 +615,7 @@
 
         }
 
-        //盒子信息
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withOption('data', vm.transportRecord.frozenBoxDTOList)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withOption('rowCallback', rowCallback);
-        vm.dtColumns = [
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号')
-        ];
+
         //点击冻存盒行
         var count = 0;
         function someClickHandler(td,boxInfo) {
@@ -579,7 +639,7 @@
                     $(td).addClass('rowLight');
                     //true:保存 false:不保存
                     if(flag){
-
+                        saveBox()
                     }
                     frozenBoxByCodeService.get({code:boxInfo.frozenBoxCode},onFrozenSuccess,onError);
                 }, function () {
@@ -596,11 +656,12 @@
                 SupportacksByAreaIdService.query({id:vm.box.areaId},onShelfSuccess, onError)
             }
             if(vm.box.supportRackId){
-                vm.boxRowCol =  vm.box.frozenBoxColumns + vm.box.frozenBoxRows;
+                vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
             }
-            for(var k = 0; k < vm.box.frozenTubeResponseList.length; k++){
-                var tube = vm.box.frozenTubeResponseList[k];
+            for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
+                var tube = vm.box.frozenTubeDTOS[k];
                 vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
+                vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)].frozenBoxCode = vm.box.frozenBoxCode
             }
             hotRegisterer.getInstance('my-handsontable').render();
         }

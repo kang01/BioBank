@@ -54,7 +54,8 @@
             })
             .state('transport-record-new', {
                 parent: 'bizs',
-                url: '/transport-record/add',
+                url: '/transport-record/{transhipId}/{transhipCode}/add',
+                params:{transhipId : null,transhipCode : null},
                 data: {
                     authorities: ['ROLE_ADMIN'],
                     pageTitle: 'transportRecord.new.title'
@@ -73,11 +74,10 @@
                     }],
                     entity: function () {
                         return {
-                            effectiveSampleNumber: null,
-                            emptyHoleNumber: null,
-                            emptyTubeNumber: null,
-                            frozenBoxDTOList: [],
-                            frozenBoxNumber: null,
+                            effectiveSampleNumber: 0,
+                            emptyHoleNumber: 0,
+                            emptyTubeNumber: 0,
+                            frozenBoxNumber: 0,//冻存盒数
                             memo:null ,
                             projectCode: null,
                             projectId: null,
@@ -93,7 +93,8 @@
                             transhipBatch: null,
                             transhipDate: null,
                             status: null,
-                            transhipState: null
+                            transhipState: null,
+                            transhipCode:null
 
                         };
                     }

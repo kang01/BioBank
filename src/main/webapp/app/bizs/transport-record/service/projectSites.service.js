@@ -10,7 +10,7 @@
     ProjectSitesByProjectIdService.$inject = ['$resource'];
 
     function ProjectSitesByProjectIdService ($resource) {
-        var resourceUrl =  'api/projectSitesByProjectId/:id';
+        var resourceUrl =  'api/project-sites/project/:id';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},

@@ -1,6 +1,7 @@
+<jhi-alert></jhi-alert>
 <div class="transport-record-new">
     <div class="">
-        <h3 class="pull-left">新增转运记录</h3>
+        <h3 class="pull-left">新增转运记录<small>&nbsp;{{vm.transportRecord.transhipCode}}</small></h3>
         <div class="form-group pull-right m-r-10">
             <div class="text-right">
                 <button type="button" class="btn btn-primary">入库</button>
@@ -12,7 +13,7 @@
         <div style="clear: both"></div>
     </div>
 
-    <form class="form-horizontal" name="boxForm">
+    <form class="form-horizontal">
         <div class="row">
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">转运日期</label>
@@ -45,7 +46,7 @@
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">运单号</label>
                 <div class="col-sm-8">
-                    <input type="email" class="form-control"  ng-model="vm.transportRecord.trackNumber">
+                    <input type="text" class="form-control"  ng-model="vm.transportRecord.trackNumber">
                 </div>
             </div>
         </div>
@@ -54,7 +55,7 @@
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">转运批次</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control"  ng-model="vm.transportRecord.transhipBatch">
+                    <input type="number" class="form-control"  ng-model="vm.transportRecord.transhipBatch">
                 </div>
             </div>
             <div class="form-group col-sm-3">
@@ -89,19 +90,19 @@
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">样本人份</label>
                 <div class="col-sm-8">
-                    <input type="email" class="form-control" ng-model="vm.transportRecord.sampleNumber" >
+                    <input type="number" class="form-control" ng-model="vm.transportRecord.sampleNumber" >
                 </div>
             </div>
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">有效样本数</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control"  ng-model="vm.transportRecord.effectiveSampleNumber" >
+                    <input type="number" class="form-control"  ng-model="vm.transportRecord.effectiveSampleNumber" >
                 </div>
             </div>
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">冻存盒数</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control"  ng-model="vm.transportRecord.frozenBoxNumber">
+                    <input type="number" class="form-control"  ng-model="vm.transportRecord.frozenBoxNumber">
                 </div>
             </div>
             <div class="form-group col-sm-3">
@@ -116,19 +117,21 @@
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">空管数</label>
                 <div class="col-sm-8">
-                    <input type="email" class="form-control"  ng-model="vm.transportRecord.emptyTubeNumber">
+                    <input type="number" class="form-control"  ng-model="vm.transportRecord.emptyTubeNumber">
                 </div>
             </div>
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">空孔数</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control"  ng-model="vm.transportRecord.emptyHoleNumber">
+                    <input type="number" class="form-control"  ng-model="vm.transportRecord.emptyHoleNumber">
                 </div>
             </div>
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">样本满意度</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" ng-model="vm.transportRecord.sampleSatisfaction" >
+                    <selectize options='vm.satisfactionOptions' config="vm.satisfactionConfig"
+                               ng-model="vm.transportRecord.sampleSatisfaction"></selectize>
+                    <input type="hidden" class="form-control" ng-model="vm.transportRecord.sampleSatisfaction" >
                 </div>
             </div>
 
@@ -141,8 +144,8 @@
         <div class="col-sm-2">
             <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"  class="table table-bordered"></table>
         </div>
-        <div class="col-sm-10 pipe-body p-l-0">
-            <div class="col-sm-12">
+        <div class="col-sm-10 pipe-body p-l-0 p-r-0">
+            <div class="">
                 <form class="form-horizontal" name="boxFrom" role="form" novalidate>
                     <div class="row pipe-body-top ">
                         <div class="form-group col-sm-2">
@@ -161,8 +164,8 @@
                             </label>
                             <div class="col-sm-8">
                                 <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
-                                           ng-model="vm.box.frozenBoxTypeId"></selectize>
-                                <input type="hidden" name="level" ng-model="vm.box.frozenBoxTypeId" required>
+                                           ng-model="vm.box.frozenBoxTypeId" ng-disabled="!vm.box"></selectize>
+                                <input type="hidden" name="level" ng-model="vm.box.frozenBoxTypeId"  required>
                             </div>
                         </div>
                         <div class="form-group col-sm-2">
@@ -172,7 +175,7 @@
                             </label>
                             <div class="col-sm-8" >
                                 <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                           ng-model="vm.box.sampleTypeId"></selectize>
+                                           ng-model="vm.box.sampleTypeId" ng-disabled="!vm.box"></selectize>
                                 <input type="hidden"  ng-model="vm.box.sampleTypeId" required>
                             </div>
                         </div>
@@ -184,19 +187,19 @@
                             <div class="col-sm-9 p-l-0 p-r-0">
                                 <div style="float:left;width: 80px;">
                                     <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig" style="width: 80px;"
-                                               ng-model="vm.box.equipmentId"></selectize>
+                                               ng-model="vm.box.equipmentId" ng-disabled="!vm.box"></selectize>
                                     <input type="hidden" ng-model="vm.box.equipmentId" required>
                                 </div>
                                 <div style="float:left;width: 80px; margin-left: 2px">
                                     <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig" style="width: 80px;"
-                                               ng-model="vm.box.areaId"></selectize>
+                                               ng-model="vm.box.areaId" ng-disabled="!vm.box"></selectize>
                                     <input type="hidden" ng-model="vm.box.areaId" required>
                                 </div>
                                 <div style="float:left;width: 80px;margin-left: 2px">
                                     <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig" style="width: 80px;"
-                                               ng-model="vm.box.supportRackId"></selectize>
+                                               ng-model="vm.box.supportRackId" ng-disabled="!vm.box"></selectize>
                                 </div>
-                                <div style="float:left;width: 80px;margin-left: 2px"><input type="text" class="form-control" maxlength="2" ng-model="vm.boxRowCol" >
+                                <div style="float:left;width: 80px;margin-left: 2px"><input type="text" class="form-control" maxlength="2" ng-model="vm.boxRowCol" ng-disabled="!vm.box">
                                 </div>
                             </div>
                         </div>
@@ -205,15 +208,15 @@
                         <div class="col-sm-4 txt-width">
                             <p style="margin-top: 10px">
                                 <span>样本数</span>
-                                <span>100个</span>
+                                <span>{{vm.normalCount}}</span>
                                 <span>空管</span>
                                 <span>100个</span>
                                 <span>空孔</span>
-                                <span>100个</span>
+                                <span>{{vm.emptyCount}}</span>
                                 <span>错位</span>
                                 <span>100个</span>
                                 <label class="checkbox-inline" style="margin-left: 10px;margin-top: -4px;padding-top: 0">
-                                    <input type="checkbox" ng-model="vm.box.isSplit">是否分装
+                                    <input type="checkbox" ng-model="vm.box.isSplit" ng-disabled="!vm.box">是否分装
                                 </label>
                             </p>
 
@@ -221,7 +224,7 @@
                         <div class=" col-sm-8 box-remark">
                             <label  class="col-sm-2 control-label p-r-6">备注</label>
                             <div class="col-sm-10 ">
-                                <textarea class="form-control"rows="1" style="resize: none" ng-model="vm.box.memo"></textarea>
+                                <textarea class="form-control"rows="1" style="resize: none" ng-model="vm.box.memo" ng-disabled="!vm.box"></textarea>
                             </div>
                         </div>
 
@@ -231,22 +234,23 @@
             <div class="col-sm-10 p-l-0 pipe-table">
                 <hot-table hot-id="my-handsontable" settings="vm.settings"></hot-table>
             </div>
-            <div class="col-sm-2 pull-right text-right p-r-0 pipe-operate">
+            <div class="col-sm-2 pull-right text-right pipe-operate">
 
                 <div class="text-right">
-                    <label class="btn btn-primary" ng-model="vm.flagStatus" uib-btn-checkbox ng-click="vm.editStatus()">状态</label>
+                    <label class="btn btn-primary" ng-model="vm.flagStatus" uib-btn-checkbox ng-click="vm.editStatus()" ng-disabled="!vm.box">状态</label>
                 </div>
                 <div class="text-right" style="margin-top: 2px">
-                    <button type="button" class="btn btn-primary" ng-click="vm.exchange()">换位</button>
+                    <button type="button" class="btn btn-primary" ng-click="vm.exchange()" ng-disabled="!vm.box">换位</button>
                 </div>
                 <div class="text-right" style="margin-top: 2px">
-                    <button type="button" class="btn btn-primary" ng-click="vm.tubeRemark()">批注</button>
+                    <button type="button" class="btn btn-primary" ng-click="vm.tubeRemark()" ng-disabled="!vm.box">批注</button>
                 </div>
                 <div class="text-right" style="margin-top: 2px">
-                    <button type="button" class="btn btn-primary"ng-disabled="boxForm.$invalid"  ng-submit="vm.saveBox()">保存</button>
+                    <!--ng-disabled="boxForm.$invalid"-->
+                    <button type="button" class="btn btn-primary"  ng-click="vm.saveBox()" ng-disabled="!vm.box">保存</button>
                 </div>
                 <div class="text-right" style="margin-top: 2px">
-                    <button type="button" class="btn btn-primary" ng-click="vm.reImportFrozenBoxData()">导入</button>
+                    <button type="button" class="btn btn-primary" ng-click="vm.reImportFrozenBoxData()" ng-disabled="!vm.box">导入</button>
                 </div>
             </div>
         </div>

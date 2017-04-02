@@ -9,16 +9,21 @@
         .controller('FrozenStorageBoxModalController', FrozenStorageBoxModalController)
         .controller('ModalInstanceCtrl', ModalInstanceCtrl);
 
-    FrozenStorageBoxModalController.$inject = ['DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal'];
+    FrozenStorageBoxModalController.$inject = ['DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService'];
     ModalInstanceCtrl.$inject = ['$uibModalInstance','$uibModal'];
 
-    function FrozenStorageBoxModalController(DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal) {
+    function FrozenStorageBoxModalController(DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService) {
 
         var vm = this;
+        vm.items = items;
         vm.importSample = importSample;//导入样本数据
         vm.addData = addData; //按键事件
-        vm.boxCodeList = [];//冻存盒信息
         var codeList = [];//扫码录入的盒号
+        vm.obox = {
+            transhipId:vm.items.transhipId,
+            frozenBoxDTOList:[]
+        };
+
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('searching', false)
             .withOption('paging', false)
@@ -31,35 +36,34 @@
             if(window.event.keyCode == 13){
                 if(vm.boxCode != ''){
                     codeList = _.uniq((vm.boxCode.split("\n")).reverse());
+                    var tubeList=[];
+
                     for(var i = 0; i < codeList.length; i++){
-                        vm.boxCodeList[i] = {
+                        vm.obox.frozenBoxDTOList[i] = {
                             frozenBoxCode:codeList[i],
                             frozenBoxTypeId:17,//冻存盒类型ID 17：10*10 18：8*8
-                            frozenBoxTypeCode:'BOX_TYPE_0002',
-                            isSplit: "0003",//是否分装:'否:0003 是：0002',
-                            memo:'',
-                            status: "3003",//状态
-                            dislocationNumber:0,
-                            emptyHoleNumber:0,
-                            emptyTubeNumber:0,
-                            frozenBoxColumns:10,
-                            frozenBoxRows:10,
-                            equipmentId:'',
-                            equipmentCode:'',
-                            areaId:'',
-                            areaCode:'',
-                            supportRackId:'',
-                            supportRackCode:'',
-                            columnsInShelf:"",//所在架子行数
-                            rowsInShelf:"",//所在架子列数,
-                            isRealData:'4002',
-                            sampleNumber: 100,//样本数量
-                            sampleTypeId: '',//样本类型ID
-                            sampleTypeCode:'',//样本类型
-                            frozenTubeDTOS:"",//管子
-                            sampleTypeName:'',
+                            isSplit: 0,//是否分装:'否:0003 是：0002',
+                            status: "2001",//状态
+                            sampleTypeId: 5,//样本类型ID
+                            frozenTubeDTOS:[]
+                        };
+                        for(var j = 0; j < 10;j++){
+                            tubeList[j] = [];
+                            for(var k = 0; k < 10; k++){
+                                tubeList[j][k] = {
+                                    frozenBoxCode: codeList[i],
+                                    frozenTubeCode:codeList[i]+j,
+                                    sampleCode: "",
+                                    sampleTempCode: codeList[i]+"-"+String.fromCharCode(j+65)+(k+1),
+                                    sampleTypeId: 5,
+                                    status: "3003",
+                                    memo:"",
+                                    tubeColumns: k+1,
+                                    tubeRows: String.fromCharCode(j+65)
+                                };
+                                vm.obox.frozenBoxDTOList[i].frozenTubeDTOS.push(tubeList[j][k])
+                            }
                         }
-
                     }
                 }
             }
@@ -81,8 +85,17 @@
             $uibModalInstance.dismiss('cancel');
         };
         this.ok = function () {
-            $uibModalInstance.close(vm.boxCodeList);
+            console.log(JSON.stringify(vm.obox));
+            TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
+
         };
+        function onSaveBoxSuccess(data) {
+            $uibModalInstance.close();
+        }
+        function onError() {
+
+        }
+
     }
     function ModalInstanceCtrl($uibModalInstance,$uibModal) {
         var ctrl = this;

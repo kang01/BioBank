@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('TransportRecordController', TransportRecordController);
 
-    TransportRecordController.$inject = ['$scope', '$compile', 'Principal', 'TransportRecordService', 'ParseLinks', 'AlertService', '$state', 'pagingParams', 'paginationConstants', 'JhiLanguageService','DTOptionsBuilder','DTColumnBuilder'];
+    TransportRecordController.$inject = ['$scope', '$compile', 'Principal', 'TransportRecordService', 'ParseLinks', 'AlertService', '$state', 'pagingParams', 'paginationConstants', 'JhiLanguageService','DTOptionsBuilder','DTColumnBuilder','TranshipNewEmptyService'];
 
-    function TransportRecordController($scope, $compile, Principal, TransportRecordService, ParseLinks, AlertService, $state, pagingParams, paginationConstants, JhiLanguageService,DTOptionsBuilder,DTColumnBuilder) {
+    function TransportRecordController($scope, $compile, Principal, TransportRecordService, ParseLinks, AlertService, $state, pagingParams, paginationConstants, JhiLanguageService,DTOptionsBuilder,DTColumnBuilder,TranshipNewEmptyService) {
         var vm = this;
 
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
@@ -33,6 +33,8 @@
         vm.persons = {};
         vm.message = '';
         vm.edit = edit;
+        vm.add = add;
+
         // vm.loadAll();
 
 
@@ -47,7 +49,15 @@
             // vm.page = pagingParams.page;
             // vm.transportRecordList = data;
         // }
-
+        function add() {
+            TranshipNewEmptyService.save({},onTranshipNewEmptyService,onError)
+        }
+        function onTranshipNewEmptyService(data) {
+            console.log(data.id);
+            // vm.transhipId = data.id;
+            // vm.transhipCode = data.transhipCode;
+            $state.go('transport-record-new',{transhipId : data.id,transhipCode : data.transhipCode});
+        }
         function onError(error) {
             AlertService.error(error.data.message);
         }
@@ -134,12 +144,12 @@
                     type: 'select',
                     bRegex: false,
                     width:50,
-                    values: ['1', '2', '3', '4', '5']
+                    values: ['1', '2', '3', '4', '5','6','7','8','9','10']
                 }, {
                     type: 'select',
                     bRegex: false,
                     width:50,
-                    values: ['Yoda', 'Titi', 'Kyle', 'Bar', 'Whateveryournameis']
+                    values: ['1001', '1002', '1003', '1004']
                 }]
             });
 

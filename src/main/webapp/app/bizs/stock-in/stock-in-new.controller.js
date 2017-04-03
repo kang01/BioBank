@@ -32,9 +32,7 @@
 
         vm.dtInstance = {};
 
-        vm.showSplittingPanel = function(){
-            return vm.splittingBox && true;
-        };
+
 
         _initStockInBoxesTable();
 
@@ -141,6 +139,54 @@
             ];
 
             return columns;
+        }
+
+
+        vm.showSplittingPanel = function(){
+            return vm.splittingBox && true;
+        };
+        var isChecked;
+        vm.settings = {
+            // columns:[
+            //     {},{},{},{},{},{},{},{},{},{}
+            // ],
+            // rows:[
+            //     {},{},{},{},{},{},{},{},{},{}
+            // ],
+            colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
+            rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
+            minRows: 8,
+            minCols: 8,
+            data:vm.frozenTubeArray,
+            renderer:customRenderer,
+            fillHandle:false,
+            stretchH: 'all',
+            editor: false,
+            onAfterSelectionEnd:function (row, col, row2, col2) {
+            },
+            enterMoves:function () {
+                var hotMoves = hotRegisterer.getInstance('my-handsontable');
+                var selectedCol = hotMoves.getSelected()[1];
+                if(selectedCol + 1 < hotMoves.countCols()){
+                    return{row:0,col:1}
+                } else{
+                    return{row:1,col:-selectedCol}
+                }
+            },
+            cells: function (row, col, prop) {
+                var cellProperties = {};
+
+                // if (hot2.getDataAtRowProp(row, prop) === 'Nissan') {
+                //     cellProperties.editor = false;
+                // } else {
+                //     cellProperties.editor = 'text';
+                // }
+                //
+                // return cellProperties;
+            }
+        };
+        function customRenderer(instance,td) {
+            td.style.backgroundColor = 'yellow'
         }
     }
 })();

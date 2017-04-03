@@ -77,10 +77,13 @@
             </table>
         </div>
     </div>
-
-    <div ng-if="vm.showSplittingPanel()">
+    <!--ng-if="vm.showSplittingPanel()"-->
+    <div >
         <div class="row">
-            <div class="col-md-7"></div>
+            <div class="col-md-7">
+                11{{vm.checked}}22
+                <hot-table hot-id="my-handsontable" settings="vm.settings"></hot-table>
+            </div>
             <div class="col-md-5"></div>
         </div>
     </div>

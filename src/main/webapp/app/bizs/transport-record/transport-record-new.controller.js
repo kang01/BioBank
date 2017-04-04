@@ -9,10 +9,10 @@
         .controller('TransportRecordNewController', TransportRecordNewController)
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
-    TransportRecordNewController.$inject = ['$scope','hotRegisterer','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
+    TransportRecordNewController.$inject = ['$scope','hotRegisterer','SampleService','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
         'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
-    function TransportRecordNewController($scope,hotRegisterer,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
+    function TransportRecordNewController($scope,hotRegisterer,SampleService,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
                                           SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
@@ -81,27 +81,18 @@
         var htm; //渲染管子表格
         vm.myCustomRenderer = function(hotInstance, td, row, col, prop, value, cellProperties) {
             td.style.position = 'relative';
-            console.log(1)
             if(value == ""){
                 value= {};
                 value.sampleCode = "";
+                value.sampleTypeId = 5;
                 // value.status = "3003";//冻存管状态3001：正常，3002：空管，3003：空孔；3004：异常
                 value.tubeRows = getTubeRows(row);
                 value.tubeColumns = getTubeColumns(col);
                 value.memo = ""
             }
-            // else{
-            //     var tube = {};
-            //     tube.sampleCode = value;
-            //     tube.status = "3003",
-            //     tube.tubeRows = row,
-            //     tube.tubeColumns = col,
-            //     tube.memo = ""
-            //     value = tube;
-            // }
             //样本类型
             if(value.sampleTypeId){
-                changeSampleType(value.sampleTypeId,td);
+                SampleService.changeSampleType(value.sampleTypeId,td);
             }
             //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
             if(value.status){
@@ -120,33 +111,6 @@
             // console.log(JSON.stringify(vm.frozenTubeArray))
 
         };
-        //修改样本类型
-        function changeSampleType(sampleTypeId,td) {
-            //血浆
-            if(sampleTypeId == 5 || sampleTypeId == 39){
-                td.style.backgroundColor = 'rgba(204,153,255,0.3)';
-            }
-            //白细胞
-            if(sampleTypeId == 6){
-                td.style.backgroundColor = 'rgba(255,255,255,0.3)';
-            }
-            //白细胞灰
-            if(sampleTypeId == 7){
-                td.style.backgroundColor = 'rgba(192,192,192,0.3)';
-            }
-            //血浆绿
-            if(sampleTypeId == 8 || sampleTypeId == 40){
-                td.style.backgroundColor = 'rgba(0,255,0,0.3)';
-            }
-            //血清-红
-            if(sampleTypeId == 9 || sampleTypeId == 10){
-                td.style.backgroundColor = 'rgba(255,0,0,0.3)';
-            }
-            //尿-黄
-            if(sampleTypeId == 11 || sampleTypeId == 38){
-                td.style.backgroundColor = 'rgba(255,255,0,0.3)';
-            }
-        }
         //修改样本状态正常、空管、空孔、异常
         vm.normalCount = 0;
         vm.emptyCount = 0;
@@ -347,27 +311,23 @@
             labelField:'frozenBoxTypeName',
             maxItems: 1,
             onChange:function(value){
-                // console.log(value);
                 var countRows = hotRegisterer.getInstance('my-handsontable').countRows();
                 var countCols = hotRegisterer.getInstance('my-handsontable').countCols();
-
+                console.log(countRows)
                 if(value == 18){
-                    // arr = vm.frozenTubeArray.splice(countRows-2,2);
-                    // console.log(arr);
-                    for(var i = 0; i < countRows; i++){
-                        //     for(var j = 0; j <countCols; j++){
-                        arr1 = vm.frozenTubeArray[i].splice(countRows-2,2);
-                        //     }
+                    if(countRows != 8){
+                        for(var i = 0; i < countRows; i++){
+                            arr1 = vm.frozenTubeArray[i].splice(countRows-2,2);
+                        }
                     }
-                    arr2 = vm.frozenTubeArray.splice(countRows-2,2);
-                    console.log(JSON.stringify(arr2+"$$$$$$$$$$$$$$$"));
-
 
                 }else{
+                    // if(countRows < 10){
+                        for(var i = 0; i < 2; i++) {
+                            vm.frozenTubeArray[i].push("");
+                        }
+                    // }
 
-                    for(var i = 0; i < countRows; i++) {
-                        vm.frozenTubeArray[i].push({});
-                    }
                 }
 
 

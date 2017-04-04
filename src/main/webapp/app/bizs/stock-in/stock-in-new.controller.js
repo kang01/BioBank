@@ -16,6 +16,7 @@
         var vm = this;
         vm.frozenTubeArray = [];
         vm.putAway = putAway;
+        vm.splitBoxSelect = splitBoxSelect;
         vm.load = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);
             frozenBoxByCodeService.get({code:'1213243543'},onFrozenSuccess,onError);
@@ -226,7 +227,6 @@
         var htm;
         function customRenderer(hotInstance, td, row, col, prop, value, cellProperties) {
             if(value != ""){
-                console.log(value.sampleCode);
                 htm = "<div ng-if='value.sampleCode'>"+value.sampleCode+"</div>"+
                     "<div id='microtubesId' style='display: none'>"+value.sampleCode+"</div>" +
                     "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
@@ -263,6 +263,9 @@
             });
             modalInstance.result.then(function (data) {
             });
+        }
+        function splitBoxSelect(item,$event){
+            $($event.target).addClass("active");
         }
     }
 })();

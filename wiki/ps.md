@@ -81,7 +81,9 @@ public DataTablesOutput<TranshipResponse> getPageTranship(@RequestBody DataTable
                     iFilterLength:3
                 },
 ```
-4. 
+4. ORA-01400 错误。 在Oracle中 "" == NULL，所以不能用空字符串作为不为空字段的默认值。EntityUtil.avoidFieldValueNull()这个工具方法可以将一个对象中的所有null和""转换成非空数据。目前只检查String和Integer的字段，其他字段不转换。
+ 
+5. Oracle 12C之后支持 auto-increment 的字段，所以在生命实体时不用指定GenerationType.SEQUENCE，可以指定GenerationType.IDENTITY。可以规避id重复的错误。
 
 
 ### 诡异问题集锦 -- geng luying

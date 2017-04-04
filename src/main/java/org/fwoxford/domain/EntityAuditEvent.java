@@ -16,10 +16,11 @@ import java.util.Objects;
 public class EntityAuditEvent implements Serializable{
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+//    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
@@ -50,8 +51,8 @@ public class EntityAuditEvent implements Serializable{
     @NotNull
     @Column(name = "modified_date", nullable = false)
     private ZonedDateTime modifiedDate;
-    
-    
+
+
     public Long getId() {
         return id;
     }
@@ -147,6 +148,6 @@ public class EntityAuditEvent implements Serializable{
             '}';
     }
 
-    
+
 
 }

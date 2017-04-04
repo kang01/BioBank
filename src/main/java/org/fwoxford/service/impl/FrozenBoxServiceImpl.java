@@ -169,8 +169,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
      * @return
      */
     public FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode) {
-        Optional<FrozenBox> frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
-        return frozenBox.map(box->box).orElse(null);
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+        return frozenBox;
     }
 
     /**

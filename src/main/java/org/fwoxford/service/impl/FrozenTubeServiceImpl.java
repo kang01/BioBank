@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -115,7 +116,14 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
     public List<FrozenTube> saveBatch(List<FrozenTubeDTO> frozenTubeDTOList) {
         Assert.notNull(frozenTubeDTOList,"frozen Tube must not be null");
         List<FrozenTube> frozenTubes = frozenTubeMapper.frozenTubeDTOsToFrozenTubes(frozenTubeDTOList);
-        List<FrozenTube> frozenTubesList =  frozenTubeRepository.save(frozenTubes);
+//        List<FrozenTube> frozenTubesList =  frozenTubeRepository.save(frozenTubes);
+
+        List<FrozenTube> frozenTubesList = new ArrayList<>();
+        for(FrozenTube frozenTube : frozenTubes){
+            FrozenTube tube = frozenTubeRepository.save(frozenTube);
+            frozenTubesList.add(tube);
+        }
+
         return frozenTubesList;
     }
 }

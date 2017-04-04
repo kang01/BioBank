@@ -17,7 +17,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     List<FrozenBox> findAllFrozenBoxByTranshipId(Long transhipId);
 
     @Query("select box from FrozenBox box where box.frozenBoxCode = ?1")
-    Optional<FrozenBox> findFrozenBoxDetailsByBoxCode(String frozenBoxCode);
+    FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode);
 
     @Query(value = "select * from frozen_box box where box.equipment_id = ?1" +
         " and box.area_id = ?2 " +

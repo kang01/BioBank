@@ -8,10 +8,10 @@
         .module('bioBankApp')
         .controller('StockInNewController', StockInNewController);
 
-    StockInNewController.$inject = ['$scope','hotRegisterer','StockInService','StockInBoxService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
+    StockInNewController.$inject = ['$compile','$scope','hotRegisterer','StockInService','StockInBoxService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
         'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService'];
 
-    function StockInNewController($scope,hotRegisterer,StockInService,StockInBoxService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
+    function StockInNewController($compile,$scope,hotRegisterer,StockInService,StockInBoxService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
                                           SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService) {
         var vm = this;
         vm.frozenTubeArray = [];
@@ -73,7 +73,6 @@
 
         _initStockInBoxesTable();
 
-
         function _initStockInBoxesTable(){
             var ajaxUrl = 'api/temp/res/stock-in-boxes/stock-in/' + vm.entity.stockInCode;
             vm.dtInstanceCallback = function(instance){
@@ -89,6 +88,7 @@
             };
 
             vm.dtOptions = DTOptionsBuilder.fromSource({"url": ajaxUrl,"dataSrc": "data"})
+                .withDisplayLength(6)
                 .withOption('sServerMethod','POST')
                 .withOption('processing',true)
                 .withOption('serverSide',true)
@@ -136,10 +136,22 @@
             });
         }
         function _fnCreatedRow(row, data, dataIndex) {
+            var status = '';
+            var isSplit = data.isSplit || 0;
+            // 2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废
+            switch (data.status){
+                case '2001': status = '新建'; break;
+                case '2002': isSplit ? status = '待分装' : status = '待入库'; break;
+                case '2003': status = '已分装'; break;
+                case '2004': status = '已入库'; break;
+                case '2005': status = '已作废'; break;
+            }
+            $('td:eq(-3)', row).html(isSplit ? '需要分装' : '');
+            $('td:eq(-2)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function _fnActionButtonsRender(data, type, full, meta) {
-            return '<button type="button" class="btn btn-warning" ng-click="vm.splitIt('+ full.frozenBoxCode +')">' +
+            return '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt('+ full.frozenBoxCode +')">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;'
         }
@@ -179,9 +191,20 @@
         }
 
 
+
+
+
+
         vm.showSplittingPanel = function(){
             return vm.splittingBox && true;
         };
+
+
+
+
+
+
+
         function getTubeRowIndex(row) {
             return row.charCodeAt(0) -65;
         }

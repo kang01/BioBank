@@ -258,17 +258,12 @@ public class TempResource {
             StockInBoxForDataTable rowData = new StockInBoxForDataTable();
             rowData.setId(0L + i + input.getStart());
 
-//
-//            rowData.setTranshipCode("1234567890");
-//            rowData.setProjectCode("1234567890");
-//            rowData.setProjectSiteCode("12345");
-//
-//            rowData.setCountOfBox(Math.round(100));
-//            rowData.setCountOfSample(rowData.getCountOfBox()*100);
-//
-//            rowData.setStoreKeeper1("竹羽");
-//            rowData.setStoreKeeper2("景福");
-
+            rowData.setFrozenBoxCode("1234567890-"+i);
+            rowData.setCountOfSample(100);
+            rowData.setIsSplit(0);
+            rowData.setPosition("F3-71.S01");
+            rowData.setSampleType("99");
+            rowData.setStatus("2002");
             stockInList.add(rowData);
         }
 

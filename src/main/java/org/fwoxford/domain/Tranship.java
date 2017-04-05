@@ -113,8 +113,8 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     /**
      * 样本满意度
      */
-    @Size(max = 20)
-    @Column(name = "sample_satisfaction" ,length = 20)
+    @Max(value = 20)
+    @Column(name = "sample_satisfaction")
     private Integer sampleSatisfaction;
     /**
      * 有效样本数

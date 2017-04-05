@@ -27,35 +27,31 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     /**
      * 转运日期
      */
-    @Column(name = "tranship_date", nullable = false)
+    @Column(name = "tranship_date", nullable = true)
     private LocalDate transhipDate;
     /**
      * 项目编码
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "project_code", length = 100, nullable = false)
+    @Column(name = "project_code", length = 100, nullable = true)
     private String projectCode;
     /**
      * 项目名称
      */
-    @NotNull
     @Size(max = 255)
-    @Column(name = "project_name", length = 255, nullable = false)
+    @Column(name = "project_name", length = 255, nullable = true)
     private String projectName;
     /**
      * 项目点编码
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "project_site_code", length = 100, nullable = false)
+    @Column(name = "project_site_code", length = 100, nullable = true)
     private String projectSiteCode;
     /**
      * 项目点名称
      */
-    @NotNull
     @Size(max = 255)
-    @Column(name = "project_site_name", length = 255, nullable = false)
+    @Column(name = "project_site_name", length = 255, nullable = true)
     private String projectSiteName;
     /**
      * 运单号
@@ -74,6 +70,7 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     /**
      * 运单状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废
      */
+    @NotNull
     @Size(max = 20)
     @Column(name = "tranship_state", length = 20, nullable = false)
     private String transhipState;
@@ -87,7 +84,7 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     /**
      * 接收日期
      */
-    @Column(name = "receive_date", nullable = false)
+    @Column(name = "receive_date", nullable = true)
     private LocalDate receiveDate;
     /**
      * 样本数量
@@ -148,12 +145,12 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     /**
      * 项目
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private Project project;
     /**
      * 项目点
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private ProjectSite projectSite;
 
     public Long getId() {

@@ -85,6 +85,7 @@
                     <h4>待分装样本盒123456789</h4>
                 </div>
                 <div class="col-md-7 text-right m-b-10">
+                    <button type="button" class="btn btn-default" ng-click="vm.putAway()">上架</button>
                     <button type="button" class="btn btn-default">编辑盒信息</button>
                     <button type="button" class="btn btn-default">分装</button>
                     <button type="button" class="btn btn-default">复原</button>
@@ -99,8 +100,8 @@
                 </h4>
                 <div >
                     <ul>
-                        <li ng-repeat="item in vm.sampleTypes">
-                            <div class="box-feature bg-"+$index+1>80/100</div>
+                        <li ng-repeat="item in vm.sampleTypes"  >
+                            <div class="box-feature" ng-style="{backgroundColor:item.backColor}"  ng-click="vm.splitBoxSelect(item,$event)">80/100</div>
                             <div class="text-center">{{item.sampleTypeName}}</div>
                             <div>1234567890</div>
                         </li>

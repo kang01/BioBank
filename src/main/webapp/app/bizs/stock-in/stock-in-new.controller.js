@@ -8,13 +8,15 @@
         .module('bioBankApp')
         .controller('StockInNewController', StockInNewController);
 
-    StockInNewController.$inject = ['$compile','$scope','hotRegisterer','StockInService','StockInBoxService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
+    StockInNewController.$inject = ['$scope','hotRegisterer','StockInService','StockInBoxService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
         'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService'];
 
-    function StockInNewController($compile,$scope,hotRegisterer,StockInService,StockInBoxService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
+    function StockInNewController($scope,hotRegisterer,StockInService,StockInBoxService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
                                           SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService) {
         var vm = this;
         vm.frozenTubeArray = [];
+        vm.putAway = putAway;
+        vm.splitBoxSelect = splitBoxSelect;
         vm.load = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);
             frozenBoxByCodeService.get({code:'1213243543'},onFrozenSuccess,onError);
@@ -49,7 +51,6 @@
                 var tube = vm.box.frozenTubeDTOS[k];
                 vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
             }
-            console.log(JSON.stringify(vm.frozenTubeArray))
         }
         vm.entity = {
             stockInCode: '1234567890',
@@ -248,18 +249,46 @@
         hot = hotRegisterer.getInstance('my-handsontable');
         var htm;
         function customRenderer(hotInstance, td, row, col, prop, value, cellProperties) {
-            console.log(value)
-            td.style.backgroundColor = 'yellow'
+            if(value != ""){
+                htm = "<div ng-if='value.sampleCode'>"+value.sampleCode+"</div>"+
+                    "<div id='microtubesId' style='display: none'>"+value.sampleCode+"</div>" +
+                    "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
+                    "<div id='microtubesRemark' style='display: none'>"+value.memo+"</div>"+
+                    "<div id='microtubesRow' style='display: none'>"+value.tubeRows+"</div>"+
+                    "<div id='microtubesCol' style='display: none'>"+value.tubeColumns+"</div>"+
+                    "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
+            }else{
+                htm = ""
+            }
+            td.style.backgroundColor = 'yellow';
             td.style.position = 'relative';
-            htm = "<div ng-if='value.sampleCode'>"+value.sampleCode+"</div>"+
-                "<div id='microtubesId' style='display: none'>"+value.sampleCode+"</div>" +
-                "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
-                "<div id='microtubesRemark' style='display: none'>"+value.memo+"</div>"+
-                "<div id='microtubesRow' style='display: none'>"+value.tubeRows+"</div>"+
-                "<div id='microtubesCol' style='display: none'>"+value.tubeColumns+"</div>"+
-                "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
+
 
             td.innerHTML = htm;
+            // console.log(JSON.stringify(value))
+        }
+        var modalInstance;
+        function putAway() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-in/box-putaway-modal.html',
+                controller: 'BoxPutAwayModalController',
+                controllerAs:'vm',
+                size:'lg',
+                resolve: {
+                    items: function () {
+                        return {
+                            transhipId :"aaaa"
+                        }
+                    }
+                }
+
+            });
+            modalInstance.result.then(function (data) {
+            });
+        }
+        function splitBoxSelect(item,$event){
+            $($event.target).addClass("active");
         }
     }
 })();

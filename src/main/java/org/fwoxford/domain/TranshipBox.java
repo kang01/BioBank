@@ -33,37 +33,32 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
     /**
      * 设备编码
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "equipment_code", length = 100, nullable = false)
+    @Column(name = "equipment_code", length = 100)
     private String equipmentCode;
     /**
      * 区域编码
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "area_code", length = 100, nullable = false)
+    @Column(name = "area_code", length = 100)
     private String areaCode;
     /**
      * 冻存架编码
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "support_rack_code", length = 100, nullable = false)
+    @Column(name = "support_rack_code", length = 100)
     private String supportRackCode;
     /**
      * 所在架子行数
      */
-    @NotNull
     @Size(max = 20)
-    @Column(name = "rows_in_shelf", length = 20, nullable = false)
+    @Column(name = "rows_in_shelf", length = 20)
     private String rowsInShelf;
     /**
      * 所在架子列数
      */
-    @NotNull
     @Size(max = 20)
-    @Column(name = "columns_in_shelf", length = 20, nullable = false)
+    @Column(name = "columns_in_shelf", length = 20)
     private String columnsInShelf;
     /**
      * 备注
@@ -82,13 +77,11 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
      * 转运
      */
     @ManyToOne(optional = false)
-    @NotNull
     private Tranship tranship;
     /**
      * 冻存盒
      */
     @ManyToOne(optional = false)
-    @NotNull
     @JoinColumn(name = "frozen_box_id")
     private FrozenBox frozenBox;
 

@@ -149,7 +149,7 @@
 .bg-6{
     background-color: #FFFF00;
 }
-.active{
+.box-selected{
     border:1px solid red !important;
 }
 @media (min-width:1440px) {

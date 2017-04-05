@@ -82,13 +82,13 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     /**
      * 样本最多使用次数
      */
-    @Size(max = 20)
+    @Max(value = 20)
     @Column(name = "sample_used_times_most")
     private Integer sampleUsedTimesMost;
     /**
      * 样本已使用次数
      */
-    @Size(max = 20)
+    @Max(value = 20)
     @Column(name = "sample_used_times")
     private Integer sampleUsedTimes;
     /**

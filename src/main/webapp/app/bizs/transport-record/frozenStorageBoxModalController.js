@@ -56,7 +56,7 @@
                                     sampleCode: "",
                                     sampleTempCode: codeList[i]+"-"+String.fromCharCode(j+65)+(k+1),
                                     sampleTypeId: 5,
-                                    status: "3003",
+                                    status: "3001",
                                     memo:"",
                                     tubeColumns: k+1,
                                     tubeRows: String.fromCharCode(j+65)

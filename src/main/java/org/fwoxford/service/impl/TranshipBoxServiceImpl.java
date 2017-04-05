@@ -8,6 +8,7 @@ import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipBoxMapper;
 import org.fwoxford.service.util.EntityUtil;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,9 +184,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
         if (tranship == null){
             // todo:: 错误处理一下，转运ID无效的情况
-            // todo:: Tranship中Project和ProjectSite不指定将会报错，但不知道为什么这样的数据会保存在库里。
-
-            return null;
+            throw new BankServiceException("转运记录不存在！",transhipBoxListDTO.toString());
         }
 
         List<SampleType> sampleTypes = sampleTypeRepository.findAllSampleTypes();
@@ -199,7 +198,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             FrozenBox oldBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(boxDTO.getFrozenBoxCode());
             if (oldBox != null && (boxDTO.getId() == null || !boxDTO.getId().equals(oldBox.getId()))){
                 // todo::盒子编码重复的错误需要抛异常
-                continue;
+                throw new BankServiceException("此冻存盒编码已存在！",oldBox.getFrozenBoxCode());
             }
 
             FrozenBox box = frozenBoxMapper.frozenBoxDTOToFrozenBox(boxDTO);
@@ -296,7 +295,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 if (tube.getSampleType() == null){
                     tube.setSampleType(box.getSampleType());
                 } else {
-                    int sampleTypeIndex = sampleTypes.indexOf(box.getSampleType());
+                    int sampleTypeIndex = sampleTypes.indexOf(tube.getSampleType());
                     if (sampleTypeIndex >= 0) {
                         SampleType sampleType = sampleTypes.get(sampleTypeIndex);
                         tube.setSampleType(sampleType);

@@ -11,18 +11,18 @@
     </div>
 
     <div class="row">
-        <div class="col-md-1">入库单编号</div>
+        <div class="col-md-1 text-right"><strong>入库单编号</strong></div>
         <div class="col-md-1">{{vm.entity.stockInCode}}</div>
-        <div class="col-md-1">转运编号</div>
+        <div class="col-md-1 text-right"><strong>转运编号</strong></div>
         <div class="col-md-1">{{vm.entity.transhipCode}}</div>
-        <div class="col-md-1">项目编号</div>
+        <div class="col-md-1 text-right"><strong>项目编号</strong></div>
         <div class="col-md-1">{{vm.entity.projectCode}}</div>
-        <div class="col-md-1">项目点</div>
+        <div class="col-md-1 text-right"><strong>项目点</strong></div>
         <div class="col-md-1">{{vm.entity.projectSiteCode}}</div>
 
-        <div class="col-md-1">接收日期</div>
+        <div class="col-md-1 text-right"><strong>接收日期</strong></div>
         <div class="col-md-1">{{vm.entity.receivedDate}}</div>
-        <div class="col-md-1">接收人</div>
+        <div class="col-md-1 text-right"><strong>接收人</strong></div>
         <div class="col-md-1">{{vm.entity.receiver}}</div>
         <div class="col-md-12"></div>
     </div>
@@ -30,31 +30,30 @@
 
     <form class="form-horizontal">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">入库日期</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 control-label text-left">入库日期</label>
+                    <div class="col-sm-9">
                         <input type="email" class="form-control" ng-model="vm.entity.stockInDate" placeholder="Email">
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">入库员1</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 control-label text-left">入库员1</label>
+                    <div class="col-sm-9">
                         <input type="text" class="form-control" ng-model="vm.entity.storeKeeper1" placeholder="入库员">
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">入库员2</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 control-label text-left">入库员2</label>
+                    <div class="col-sm-9">
                         <input type="text" class="form-control" ng-model="vm.entity.storeKeeper2" placeholder="入库员">
                     </div>
                 </div>
             </div>
-            <div class="col-md-3"></div>
         </div>
 
     </form>

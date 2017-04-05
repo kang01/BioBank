@@ -24,7 +24,7 @@
             </column>
 
             <column name="project_code" type="varchar(100)" remarks="项目编码">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="frozen_box_code" type="varchar(100)" remarks="冻存盒编码">
@@ -60,7 +60,7 @@
             </column>
 
             <column name="sample_used_times_most" type="integer" remarks="样本最多使用次数">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="sample_used_times" type="integer" remarks="样本已使用次数">

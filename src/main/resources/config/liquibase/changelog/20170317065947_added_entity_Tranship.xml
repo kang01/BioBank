@@ -27,19 +27,19 @@
             </column>
 
             <column name="project_code" type="varchar(100)" remarks="项目编码">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="project_name" type="varchar(255)" remarks="项目名称">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="project_site_code" type="varchar(100)" remarks="项目点编码">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="project_site_name" type="varchar(255)" remarks="项目点名称">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="track_number" type="varchar(100)" remarks="运单号">

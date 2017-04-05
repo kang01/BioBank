@@ -27,9 +27,8 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     /**
      * 项目编码
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "project_code", length = 100, nullable = false)
+    @Column(name = "project_code", length = 100)
     private String projectCode;
     /**
      * 冻存管编码
@@ -83,15 +82,14 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     /**
      * 样本最多使用次数
      */
-    @NotNull
-    @Max(value = 20)
-    @Column(name = "sample_used_times_most", nullable = false)
+    @Size(max = 20)
+    @Column(name = "sample_used_times_most")
     private Integer sampleUsedTimesMost;
     /**
      * 样本已使用次数
      */
-    @Max(value = 20)
-    @Column(name = "sample_used_times", nullable = false)
+    @Size(max = 20)
+    @Column(name = "sample_used_times")
     private Integer sampleUsedTimes;
     /**
      * 冻存管容量值
@@ -183,24 +181,21 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
      * 冻存管类型
      */
     @ManyToOne(optional = false)
-    @NotNull
     private FrozenTubeType frozenTubeType;
     /**
      * 样本类型
      */
     @ManyToOne(optional = false)
-    @NotNull
     private SampleType sampleType;
     /**
      * 项目
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private Project project;
     /**
      * 冻存盒
      */
     @ManyToOne(optional = false)
-    @NotNull
     private FrozenBox frozenBox;
 
     public Long getId() {

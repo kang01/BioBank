@@ -84,6 +84,7 @@
             if(value == ""){
                 value= {};
                 value.sampleCode = "";
+                value.sampleTempCode = "";
                 value.sampleTypeId = 5;
                 // value.status = "3003";//冻存管状态3001：正常，3002：空管，3003：空孔；3004：异常
                 value.tubeRows = getTubeRows(row);
@@ -100,7 +101,8 @@
             }
 
             htm = "<div ng-if='value.sampleCode'>"+value.sampleCode+"</div>"+
-                "<div id='microtubesId' style='display: none'>"+value.sampleCode+"</div>" +
+                "<div  ng-if='value.sampleTempCode'>"+value.sampleTempCode+"</div>" +
+                "<div  style='display: none'>"+value.sampleTypeId+"</div>" +
                 "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
                 "<div id='microtubesRemark' style='display: none'>"+value.memo+"</div>"+
                 "<div id='microtubesRow' style='display: none'>"+value.tubeRows+"</div>"+
@@ -108,7 +110,7 @@
                 "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
 
             td.innerHTML = htm;
-            // console.log(JSON.stringify(vm.frozenTubeArray))
+            console.log(JSON.stringify(vm.frozenTubeArray))
 
         };
         //修改样本状态正常、空管、空孔、异常
@@ -361,17 +363,56 @@
             labelField:'sampleTypeName',
             maxItems: 1,
             onChange:function (value) {
-                for(var i =0; i <  vm.frozenTubeArray.length; i++){
-                    for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                        vm.frozenTubeArray[i][j].sampleTypeId = value;
-                        for(var k = 0; k < vm.sampleTypeOptions.length; k++){
-                            if(vm.frozenTubeArray[i][j].sampleTypeId == vm.sampleTypeOptions[k].id){
-                                vm.frozenTubeArray[i][j].sampleTypeName = vm.sampleTypeOptions[k].sampleTypeName;
-                                vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[k].sampleTypeCode;
+                if(value != 16){
+                    for(var i =0; i <  vm.frozenTubeArray.length; i++){
+                        for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                            vm.frozenTubeArray[i][j].sampleTypeId = value;
+                            for(var k = 0; k < vm.sampleTypeOptions.length; k++){
+                                if(vm.frozenTubeArray[i][j].sampleTypeId == vm.sampleTypeOptions[k].id){
+                                    vm.frozenTubeArray[i][j].sampleTypeName = vm.sampleTypeOptions[k].sampleTypeName;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[k].sampleTypeCode;
+                                }
                             }
                         }
                     }
+                }else{
+                    for(var i =0; i <  vm.frozenTubeArray.length; i++){
+                        for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                            switch(j){
+                                case 0:
+                                    vm.frozenTubeArray[i][j].sampleTypeId = 5;
+                                    break;
+                                case 1:
+                                    vm.frozenTubeArray[i][j].sampleTypeId = 39;
+                                    break;
+                                case 2:
+                                    vm.frozenTubeArray[i][j].sampleTypeId = 6;
+                                    break;
+                                case 3:
+                                    vm.frozenTubeArray[i][j].sampleTypeId = 7;
+                                    break;
+                                case 4:
+                                    vm.frozenTubeArray[i][j].sampleTypeId = 8;
+                                    break;
+                                case 5:
+                                    vm.frozenTubeArray[i][j].sampleTypeId = 40;
+                                    break;
+                                case 6:
+                                    vm.frozenTubeArray[i][j].sampleTypeId = 9;
+                                    break;
+                                case 7:
+                                    vm.frozenTubeArray[i][j].sampleTypeId = 10;
+                                    break;
+                                case 8:
+                                    vm.frozenTubeArray[i][j].sampleTypeId = 11;
+                                    break;
+                                case 9:
+                                    vm.frozenTubeArray[i][j].sampleTypeId = 38;
+                                    break;
+                            }
+                        }}
                 }
+
                 hotRegisterer.getInstance('my-handsontable').render()
             }
         };
@@ -559,7 +600,7 @@
                 obox.frozenBoxDTOList.push(vm.box);
             }
 
-            // console.log(JSON.stringify(obox))
+            console.log(JSON.stringify(obox))
             TranshipBoxService.save(obox,onSaveBoxSuccess,onError);
         }
         function openCalendar (date) {

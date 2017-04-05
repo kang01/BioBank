@@ -12,7 +12,7 @@
     frozenBoxByCodeService.$inject = ['$resource'];
 
     function frozenBoxByCodeService ($resource) {
-        var service = $resource('api/temp/frozen-boxes/code/:code', {}, {
+        var service = $resource('api/frozen-boxes/code/:code', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

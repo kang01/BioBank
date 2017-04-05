@@ -8,50 +8,12 @@
         .module('bioBankApp')
         .controller('StockInNewController', StockInNewController);
 
-    StockInNewController.$inject = ['$scope','hotRegisterer','StockInService','StockInBoxService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
+    StockInNewController.$inject = ['$scope','$compile','hotRegisterer','StockInService','StockInBoxService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
         'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService'];
 
-    function StockInNewController($scope,hotRegisterer,StockInService,StockInBoxService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
+    function StockInNewController($scope,$compile,hotRegisterer,StockInService,StockInBoxService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
                                           SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService) {
         var vm = this;
-        vm.frozenTubeArray = [];
-        vm.putAway = putAway;
-        vm.splitBoxSelect = splitBoxSelect;
-        vm.load = function () {
-            SampleTypeService.query({},onSampleTypeSuccess, onError);
-            frozenBoxByCodeService.get({code:'1213243543'},onFrozenSuccess,onError);
-        };
-        function onError(error) {
-            AlertService.error(error.data.message);
-        }
-        vm.load();
-        var size = 10;
-        function initFrozenTube(size) {
-            for(var i = 0; i < size; i++){
-                vm.frozenTubeArray[i] = [];
-                for(var j = 0;j < size; j++){
-                    vm.frozenTubeArray[i][j] = "";
-                }
-            }
-        }
-        initFrozenTube(size);
-        function getTubeRowIndex(row) {
-            return row.charCodeAt(0) -65;
-        }
-        function getTubeColumnIndex(col) {
-            return +col -1;
-        }
-        //样本类型
-        function onSampleTypeSuccess(data) {
-            vm.sampleTypes = data;
-        }
-        function onFrozenSuccess(data) {
-            vm.box =  data
-            for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
-                var tube = vm.box.frozenTubeDTOS[k];
-                vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
-            }
-        }
         vm.entity = {
             stockInCode: '1234567890',
             transhipCode: '1234567890',
@@ -205,7 +167,38 @@
 
 
 
-
+        vm.frozenTubeArray = [];
+        vm.putAway = putAway;
+        vm.splitBoxSelect = splitBoxSelect;
+        vm.loadBox = function () {
+            SampleTypeService.query({},onSampleTypeSuccess, onError);
+            // frozenBoxByCodeService.get({code:'1213243543'},onFrozenSuccess,onError);
+        };
+        function onError(error) {
+            AlertService.error(error.data.message);
+        }
+        vm.loadBox();
+        var size = 10;
+        function initFrozenTube(size) {
+            for(var i = 0; i < size; i++){
+                vm.frozenTubeArray[i] = [];
+                for(var j = 0;j < size; j++){
+                    vm.frozenTubeArray[i][j] = "";
+                }
+            }
+        }
+        initFrozenTube(size);
+        //样本类型
+        function onSampleTypeSuccess(data) {
+            vm.sampleTypes = data;
+        }
+        function onFrozenSuccess(data) {
+            vm.box =  data;
+            for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
+                var tube = vm.box.frozenTubeDTOS[k];
+                vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
+            }
+        }
         function getTubeRowIndex(row) {
             return row.charCodeAt(0) -65;
         }
@@ -260,7 +253,7 @@
             }else{
                 htm = ""
             }
-            td.style.backgroundColor = 'yellow';
+            // td.style.backgroundColor = 'yellow';
             td.style.position = 'relative';
 
 
@@ -287,8 +280,9 @@
             modalInstance.result.then(function (data) {
             });
         }
-        function splitBoxSelect(item,$event){
-            $($event.target).addClass("active");
+        function splitBoxSelect($event){
+            $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
+            $($event.target).addClass("box-selected");
         }
     }
 })();

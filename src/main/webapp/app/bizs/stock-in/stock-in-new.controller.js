@@ -50,18 +50,10 @@
             };
 
             vm.dtOptions = DTOptionsBuilder.fromSource({"url": ajaxUrl,"dataSrc": "data"})
-                .withDOM("<'row'<'col-xs-12' f>r>t<'row'<'col-xs-6'i><'col-xs-6'p>>")
+                .withDOM("<'row'<'col-xs-6' TB><'col-xs-6' f>r>t<'row'<'col-xs-6'i><'col-xs-6'p>>")
                 .withDisplayLength(6)
                 .withBootstrap()
                 .withBootstrapOptions({
-                    TableTools: {
-                        classes: {
-                            container: 'btn-group',
-                            buttons: {
-                                normal: 'btn'
-                            }
-                        }
-                    },
                     pagination: {
                         classes: {
                             ul: 'pagination pagination-sm'
@@ -69,13 +61,14 @@
                     }
                 })
                 // Add Table tools compatibility
-                .withTableTools()
-                .withTableToolsButtons([
-                    'copy',
-                    'print', {
-                        'sExtends': 'collection',
-                        'sButtonText': 'Save',
-                        'aButtons': ['csv', 'xls', 'pdf']
+                .withButtons([
+                    {
+                        text: '批量上架',
+                        className: 'btn btn-default',
+                        key: '1',
+                        action: function (e, dt, node, config) {
+                            alert('Button activated');
+                        }
                     }
                 ])
                 .withOption('sServerMethod','POST')
@@ -87,6 +80,8 @@
                 .withColumnFilter(_createColumnFilters());
 
             vm.dtColumns = _createColumns();
+
+            vm.splitIt = _splitABox;
         }
 
         function _fnServerData( sSource, aoData, fnCallback, oSettings ) {
@@ -177,6 +172,19 @@
             ];
 
             return columns;
+        }
+
+        function _splitABox(code){
+            frozenBoxByCodeService.get({code:'23432'},onFrozenSuccess,onError);
+            function onFrozenSuccess(data) {
+                vm.box =  data;
+                for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
+                    var tube = vm.box.frozenTubeDTOS[k];
+                    vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
+                }
+                hotRegisterer.getInstance('my-handsontable').render();
+                // console.log(JSON.stringify(vm.frozenTubeArray))
+            }
         }
 
 
@@ -304,17 +312,6 @@
             $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
             $($event.target).addClass("box-selected");
         }
-        vm.editBox = function () {
-            frozenBoxByCodeService.get({code:'23432'},onFrozenSuccess,onError);
-        };
-        function onFrozenSuccess(data) {
-            vm.box =  data;
-            for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
-                var tube = vm.box.frozenTubeDTOS[k];
-                vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
-            }
-            hotRegisterer.getInstance('my-handsontable').render();
-            // console.log(JSON.stringify(vm.frozenTubeArray))
-        }
+
     }
 })();

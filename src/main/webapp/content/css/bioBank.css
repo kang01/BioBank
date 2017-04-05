@@ -129,6 +129,7 @@
     text-align: center;
     line-height: 80px;
     border:1px solid #ccc;
+    border-radius: 2px;
 }
 .bg-1{
     background-color: #CC66CC;
@@ -150,7 +151,7 @@
     background-color: #FFFF00;
 }
 .box-selected{
-    border:1px solid red !important;
+    outline:2px solid red !important;
 }
 @media (min-width:1440px) {
     .transport-record-new .pipe-body .pipe-body-top .col-sm-2{

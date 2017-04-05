@@ -4,9 +4,11 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 
+import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.SampleType;
 import org.fwoxford.service.SampleTypeService;
 import org.fwoxford.service.TranshipService;
+import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.SampleTypeDTO;
 import org.fwoxford.service.dto.StockInForDataDetail;
 import org.fwoxford.service.dto.TranshipDTO;
@@ -144,7 +146,7 @@ public class TempResource {
     @Timed
     public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxCode(@PathVariable String frozenBoxCode) {
         log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(createSampleFrozenBoxAndFrozenTubeResponse(1L, frozenBoxCode)));
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(createSampleFrozenBoxAndFrozenTubeResponse(1L, frozenBoxCode,null, 100)));
     }
 
     /**
@@ -161,19 +163,25 @@ public class TempResource {
         List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<>();
         Long id = 1L;
         for(String code : frozenBoxCodes){
-            res.add(createSampleFrozenBoxAndFrozenTubeResponse(id++, code));
+            res.add(createSampleFrozenBoxAndFrozenTubeResponse(id++, code, null, 100));
         }
 
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 
-    private FrozenBoxAndFrozenTubeResponse createSampleFrozenBoxAndFrozenTubeResponse(Long id, String frozenBoxCode){
+    private FrozenBoxAndFrozenTubeResponse createSampleFrozenBoxAndFrozenTubeResponse(Long id, String frozenBoxCode, String sampleTypeCode, int countOfSample){
+        List<SampleTypeDTO> types = sampleTypeService.findAllSampleTypes();
+        SampleTypeDTO typeDTO = types.get(new Random().nextInt(10));
+        if (sampleTypeCode == null){
+            typeDTO = types.stream().filter(t->t.getSampleTypeCode() != null && t.getSampleTypeCode().equals(sampleTypeCode)).findFirst().orElse(null);
+        }
+
         FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
 
         res.setStatus("2001");
         res.setId(id);
         res.setFrozenBoxTypeId(17L);
-        res.setSampleTypeId(5L);
+        res.setSampleTypeId(typeDTO.getId());
 
         res.setEquipmentId(23L);
         res.setEquipmentCode("F3-01");
@@ -183,21 +191,21 @@ public class TempResource {
         res.setSupportRackCode("R01");
 
         res.setFrozenBoxCode(frozenBoxCode);
-        res.setFrozenBoxColumns("A");
-        res.setFrozenBoxRows("1");
+        res.setFrozenBoxColumns("10");
+        res.setFrozenBoxRows("10");
 
         res.setIsSplit(0);
         res.setFrozenTubeDTOS(new ArrayList<>());
-        for(int i = 0; i<100; ++i){
+        for(int i = 0; i<countOfSample; ++i){
             FrozenTubeResponse tube = new FrozenTubeResponse();
             tube.setId((id - 1) * 100 + i);
             tube.setStatus("3001");
             tube.setProjectId(1L);
             tube.setProjectCode("1234567890");
 
-            tube.setSampleTypeId(res.getSampleTypeId());
-            tube.setSampleTypeCode("S_TYPE_00001");
-            tube.setSampleTypeName("");
+            tube.setSampleTypeId(typeDTO.getId());
+            tube.setSampleTypeCode(typeDTO.getSampleTypeCode());
+            tube.setSampleTypeName(typeDTO.getSampleTypeName());
 
             tube.setFrozenTubeTypeId(1L);
             tube.setFrozenTubeTypeName("");
@@ -284,30 +292,15 @@ public class TempResource {
     @Autowired
     private SampleTypeService sampleTypeService;
     @RequestMapping(value = "/frozen-boxes/incomplete-boxes/project/{projectCode}/type/{sampleTypeCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
-    public List<StockInBoxForDataTable> getIncompleteFrozenBoxes(@PathVariable String projectCode, @PathVariable String sampleTypeCode) {
-        List<StockInBoxForDataTable> stockInList =  new ArrayList<>();
+    public List<FrozenBoxAndFrozenTubeResponse> getIncompleteFrozenBoxes(@PathVariable String projectCode, @PathVariable String sampleTypeCode) {
+        List<FrozenBoxAndFrozenTubeResponse> boxes =  new ArrayList<>();
         Random random = new Random();
 
-        StockInBoxForDataTable rowData = new StockInBoxForDataTable();
-        rowData.setId(random.nextLong());
+        FrozenBoxAndFrozenTubeResponse rowData = new FrozenBoxAndFrozenTubeResponse();
+        rowData = createSampleFrozenBoxAndFrozenTubeResponse(random.nextLong(), "1234567890", sampleTypeCode, 90);
+        boxes.add(rowData);
 
-        rowData.setFrozenBoxCode("1234567890");
-        rowData.setCountOfSample(90);
-        rowData.setIsSplit(0);
-        rowData.setPosition("F3-71.S01");
-        rowData.setStatus("2002");
-
-        List<SampleTypeDTO> types = sampleTypeService.findAllSampleTypes();
-        SampleTypeDTO typeDTO = types.stream().filter(t->t.getSampleTypeCode() != null && t.getSampleTypeCode().equals(sampleTypeCode)).findFirst().orElse(null);
-        rowData.setSampleType(typeDTO);
-        rowData.setSampleTypeName(typeDTO.getSampleTypeName());
-
-        rowData.setFrozenBoxRows(10);
-        rowData.setFrozenBoxColumns(10);
-
-        stockInList.add(rowData);
-
-        return stockInList;
+        return boxes;
     }
 
     /**

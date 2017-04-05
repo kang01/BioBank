@@ -4,7 +4,10 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 
+import org.fwoxford.domain.SampleType;
+import org.fwoxford.service.SampleTypeService;
 import org.fwoxford.service.TranshipService;
+import org.fwoxford.service.dto.SampleTypeDTO;
 import org.fwoxford.service.dto.StockInForDataDetail;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
@@ -15,6 +18,7 @@ import org.fwoxford.web.rest.util.HeaderUtil;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpHeaders;
@@ -262,7 +266,7 @@ public class TempResource {
             rowData.setCountOfSample(100);
             rowData.setIsSplit(0);
             rowData.setPosition("F3-71.S01");
-            rowData.setSampleType("99");
+            rowData.setSampleTypeName("99");
             rowData.setStatus("2002");
             stockInList.add(rowData);
         }
@@ -275,6 +279,35 @@ public class TempResource {
         result.setRecordsTotal(stockInList.size() * 10);
 
         return result;
+    }
+
+    @Autowired
+    private SampleTypeService sampleTypeService;
+    @RequestMapping(value = "/frozen-boxes/incomplete-boxes/project/{projectCode}/type/{sampleTypeCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public List<StockInBoxForDataTable> getIncompleteFrozenBoxes(@PathVariable String projectCode, @PathVariable String sampleTypeCode) {
+        List<StockInBoxForDataTable> stockInList =  new ArrayList<>();
+        Random random = new Random();
+
+        StockInBoxForDataTable rowData = new StockInBoxForDataTable();
+        rowData.setId(random.nextLong());
+
+        rowData.setFrozenBoxCode("1234567890");
+        rowData.setCountOfSample(90);
+        rowData.setIsSplit(0);
+        rowData.setPosition("F3-71.S01");
+        rowData.setStatus("2002");
+
+        List<SampleTypeDTO> types = sampleTypeService.findAllSampleTypes();
+        SampleTypeDTO typeDTO = types.stream().filter(t->t.getSampleTypeCode() != null && t.getSampleTypeCode().equals(sampleTypeCode)).findFirst().orElse(null);
+        rowData.setSampleType(typeDTO);
+        rowData.setSampleTypeName(typeDTO.getSampleTypeName());
+
+        rowData.setFrozenBoxRows(10);
+        rowData.setFrozenBoxColumns(10);
+
+        stockInList.add(rowData);
+
+        return stockInList;
     }
 
     /**

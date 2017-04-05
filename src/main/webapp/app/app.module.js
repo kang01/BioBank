@@ -21,6 +21,8 @@
             'datatables',
             'datatables.light-columnfilter',
             'datatables.columnfilter',
+            'datatables.bootstrap',
+            'datatables.tabletools',
             'ngHandsontable',
             'frapontillo.bootstrap-switch',
             'datatables.scroller',

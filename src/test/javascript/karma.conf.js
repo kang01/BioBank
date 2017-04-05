@@ -37,6 +37,8 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/bootstrap-switch/dist/js/bootstrap-switch.js',
             'src/main/webapp/bower_components/sifter/sifter.js',
             'src/main/webapp/bower_components/microplugin/src/microplugin.js',
+            'src/main/webapp/bower_components/underscore/underscore.js',
+            'src/main/webapp/bower_components/datatables-tabletools/js/dataTables.tableTools.js',
             'src/main/webapp/bower_components/angular/angular.js',
             'src/main/webapp/bower_components/angular-aria/angular-aria.js',
             'src/main/webapp/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',

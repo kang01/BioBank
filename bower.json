@@ -37,7 +37,8 @@
     "datatables-light-columnfilter": "^1.0.3",
     "angular-bootstrap-switch": "^0.5.1",
     "angular-selectize2": "^3.0.1",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "datatables-tabletools": "^2.2.4"
   },
   "devDependencies": {
     "angular-mocks": "1.5.8"

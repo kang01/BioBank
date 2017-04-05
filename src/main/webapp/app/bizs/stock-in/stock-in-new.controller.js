@@ -8,10 +8,10 @@
         .module('bioBankApp')
         .controller('StockInNewController', StockInNewController);
 
-    StockInNewController.$inject = ['$scope','hotRegisterer','StockInService','StockInBoxService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
+    StockInNewController.$inject = ['$compile', '$scope','hotRegisterer','StockInService','StockInBoxService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
         'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService'];
 
-    function StockInNewController($scope,hotRegisterer,StockInService,StockInBoxService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
+    function StockInNewController($compile, $scope,hotRegisterer,StockInService,StockInBoxService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
                                           SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService) {
         var vm = this;
         vm.frozenTubeArray = [];
@@ -89,7 +89,34 @@
             };
 
             vm.dtOptions = DTOptionsBuilder.fromSource({"url": ajaxUrl,"dataSrc": "data"})
+                .withDOM("<'row'<'col-xs-12' f>r>t<'row'<'col-xs-6'i><'col-xs-6'p>>")
                 .withDisplayLength(6)
+                .withBootstrap()
+                .withBootstrapOptions({
+                    TableTools: {
+                        classes: {
+                            container: 'btn-group',
+                            buttons: {
+                                normal: 'btn'
+                            }
+                        }
+                    },
+                    pagination: {
+                        classes: {
+                            ul: 'pagination pagination-sm'
+                        }
+                    }
+                })
+                // Add Table tools compatibility
+                .withTableTools()
+                .withTableToolsButtons([
+                    'copy',
+                    'print', {
+                        'sExtends': 'collection',
+                        'sButtonText': 'Save',
+                        'aButtons': ['csv', 'xls', 'pdf']
+                    }
+                ])
                 .withOption('sServerMethod','POST')
                 .withOption('processing',true)
                 .withOption('serverSide',true)

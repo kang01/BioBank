@@ -86,13 +86,13 @@
                 </div>
                 <div class="col-md-7 text-right m-b-10">
                     <button type="button" class="btn btn-default" ng-click="vm.putAway()">上架</button>
-                    <!--<button type="button" class="btn btn-default">编辑盒信息</button>-->
+                    <button type="button" class="btn btn-default" ng-click="vm.editBox()">加载盒信息</button>
                     <button type="button" class="btn btn-default">分装</button>
-                    <button type="button" class="btn btn-default">复原</button>
+                    <button type="button" class="btn btn-default" >复原</button>
                     <button type="button" class="btn btn-primary">保存分装结果</button>
                 </div>
                 <div class="clear-both"></div>
-                <hot-table hot-id="my-handsontable" settings="vm.settings"></hot-table>
+                <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"></hot-table>
             </div>
             <div class="col-md-4 box-right">
                 <h4>

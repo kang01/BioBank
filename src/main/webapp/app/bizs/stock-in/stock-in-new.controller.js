@@ -9,10 +9,9 @@
         .controller('StockInNewController', StockInNewController);
 
     StockInNewController.$inject = ['$scope','$compile','hotRegisterer','StockInService','StockInBoxService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
-        'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService'];
-
+        'SampleTypeService','AlertService','SampleService']
     function StockInNewController($scope,$compile,hotRegisterer,StockInService,StockInBoxService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
-                                          SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService) {
+                                          SampleTypeService,AlertService,SampleService) {
         var vm = this;
         vm.entity = {
             stockInCode: '1234567890',
@@ -172,7 +171,6 @@
         vm.splitBoxSelect = splitBoxSelect;
         vm.loadBox = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);
-            // frozenBoxByCodeService.get({code:'1213243543'},onFrozenSuccess,onError);
         };
         function onError(error) {
             AlertService.error(error.data.message);
@@ -192,27 +190,42 @@
         function onSampleTypeSuccess(data) {
             vm.sampleTypes = data;
         }
-        function onFrozenSuccess(data) {
-            vm.box =  data;
-            for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
-                var tube = vm.box.frozenTubeDTOS[k];
-                vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
-            }
-        }
         function getTubeRowIndex(row) {
             return row.charCodeAt(0) -65;
         }
         function getTubeColumnIndex(col) {
             return +col -1;
         }
-        var hot;
+        var htm;
+        vm.customRenderer = function (hotInstance, td, row, col, prop, value, cellProperties) {
+            if(value != ""){
+                //样本类型
+                if(value.sampleTypeId){
+                    SampleService.changeSampleType(value.sampleTypeId,td);
+                }
+                htm = "<div ng-if='value.sampleCode'>"+value.sampleCode+"</div>"+
+                    "<div ng-if='value.sampleTmpCode'>"+value.sampleTempCode+"</div>"+
+                    "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
+                    "<div id='microtubesRemark' style='display: none'>"+value.memo+"</div>"+
+                    "<div id='microtubesRow' style='display: none'>"+value.tubeRows+"</div>"+
+                    "<div id='microtubesCol' style='display: none'>"+value.tubeColumns+"</div>"+
+                    "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
+            }else {
+                htm = ""
+            }
+            td.style.position = 'relative';
+
+
+            td.innerHTML = htm;
+            console.log(JSON.stringify(value))
+        }
         vm.settings ={
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
             rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
             minRows: 10,
             minCols: 10,
             data:vm.frozenTubeArray,
-            renderer:customRenderer,
+            renderer:vm.customRenderer,
             fillHandle:false,
             stretchH: 'all',
             editor: false,
@@ -239,27 +252,7 @@
                 // return cellProperties;
             }
         };
-        hot = hotRegisterer.getInstance('my-handsontable');
-        var htm;
-        function customRenderer(hotInstance, td, row, col, prop, value, cellProperties) {
-            if(value != ""){
-                htm = "<div ng-if='value.sampleCode'>"+value.sampleCode+"</div>"+
-                    "<div id='microtubesId' style='display: none'>"+value.sampleCode+"</div>" +
-                    "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
-                    "<div id='microtubesRemark' style='display: none'>"+value.memo+"</div>"+
-                    "<div id='microtubesRow' style='display: none'>"+value.tubeRows+"</div>"+
-                    "<div id='microtubesCol' style='display: none'>"+value.tubeColumns+"</div>"+
-                    "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
-            }else{
-                htm = ""
-            }
-            // td.style.backgroundColor = 'yellow';
-            td.style.position = 'relative';
 
-
-            td.innerHTML = htm;
-            // console.log(JSON.stringify(value))
-        }
         var modalInstance;
         function putAway() {
             modalInstance = $uibModal.open({
@@ -283,6 +276,18 @@
         function splitBoxSelect($event){
             $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
             $($event.target).addClass("box-selected");
+        }
+        vm.editBox = function () {
+            frozenBoxByCodeService.get({code:'23432'},onFrozenSuccess,onError);
+        };
+        function onFrozenSuccess(data) {
+            vm.box =  data;
+            for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
+                var tube = vm.box.frozenTubeDTOS[k];
+                vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
+            }
+            hotRegisterer.getInstance('my-handsontable').render();
+            // console.log(JSON.stringify(vm.frozenTubeArray))
         }
     }
 })();

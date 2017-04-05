@@ -110,7 +110,7 @@
                 "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
 
             td.innerHTML = htm;
-            console.log(JSON.stringify(vm.frozenTubeArray))
+            // console.log(JSON.stringify(vm.frozenTubeArray))
 
         };
         //修改样本状态正常、空管、空孔、异常

@@ -163,7 +163,7 @@
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
                 DTColumnBuilder.newColumn("").withTitle('选择').notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
-                DTColumnBuilder.newColumn('sampleType').withTitle('样本类型'),
+                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
                 DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
                 DTColumnBuilder.newColumn('countOfSample').withTitle('样本量'),
                 DTColumnBuilder.newColumn('isSplit').withTitle('是否分装'),

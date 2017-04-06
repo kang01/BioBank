@@ -292,9 +292,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 if (tube.getSampleTypeCode() == null){
                     tube.setSampleTypeCode(box.getSampleTypeCode());
                 } else {
-                    SampleType sampleType = sampleTypes.stream()
-                        .filter(s->s.getSampleTypeCode().equals(tube.getSampleTypeCode()))
-                        .findFirst().orElse(null);
+//                    FrozenTube finalTube = tube;
+//                    SampleType sampleType = sampleTypes.stream()
+//                        .filter(s->s.getSampleTypeCode().equals(finalTube.getSampleTypeCode()))
+//                        .findFirst().orElse(null);
                     SampleType sampleType = new SampleType();
                     for(SampleType sam :sampleTypes){
                         if(tube.getSampleTypeCode().equals(sam.getSampleTypeCode())){

@@ -67,22 +67,22 @@ public class TranshipBoxResource {
     /**
      * PUT  /tranship-boxes : Updates an existing transhipBox.
      *
-     * @param transhipBoxDTO the transhipBoxDTO to update
+     * @param transhipBoxListDTO the transhipBoxDTO to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated transhipBoxDTO,
      * or with status 400 (Bad Request) if the transhipBoxDTO is not valid,
      * or with status 500 (Internal Server Error) if the transhipBoxDTO couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PutMapping("/tranship-boxes")
+    @PutMapping("/tranship-boxes/batch")
     @Timed
-    public ResponseEntity<TranshipBoxDTO> updateTranshipBox(@Valid @RequestBody TranshipBoxDTO transhipBoxDTO) throws URISyntaxException {
-        log.debug("REST request to update TranshipBox : {}", transhipBoxDTO);
-        if (transhipBoxDTO.getId() == null) {
-            return createTranshipBox(transhipBoxDTO);
+    public ResponseEntity<TranshipBoxListDTO> updateTranshipBox(@Valid @RequestBody TranshipBoxListDTO transhipBoxListDTO) throws URISyntaxException {
+        log.debug("REST request to update TranshipBox : {}", transhipBoxListDTO);
+        if (transhipBoxListDTO.getTranshipId() == null) {
+            return createTranshipBox(transhipBoxListDTO);
         }
-        TranshipBoxDTO result = transhipBoxService.save(transhipBoxDTO);
+        TranshipBoxListDTO result = transhipBoxService.saveBatchTranshipBox(transhipBoxListDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipBoxDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipBoxListDTO.getTranshipId().toString()))
             .body(result);
     }
 

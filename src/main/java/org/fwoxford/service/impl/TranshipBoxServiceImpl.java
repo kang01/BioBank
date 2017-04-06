@@ -198,7 +198,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             FrozenBox oldBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(boxDTO.getFrozenBoxCode());
             if (oldBox != null && (boxDTO.getId() == null || !boxDTO.getId().equals(oldBox.getId()))){
                 // todo::盒子编码重复的错误需要抛异常
-                throw new BankServiceException("此冻存盒编码已存在！",oldBox.getFrozenBoxCode());
+               // throw new BankServiceException("此冻存盒编码已存在！",oldBox.getFrozenBoxCode());
             }
 
             FrozenBox box = frozenBoxMapper.frozenBoxDTOToFrozenBox(boxDTO);
@@ -292,19 +292,31 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
                 tube = (FrozenTube) EntityUtil.avoidFieldValueNull(tube);
 
-                if (tube.getSampleType() == null){
-                    tube.setSampleType(box.getSampleType());
+                if (tube.getSampleTypeCode() == null){
+                    tube.setSampleTypeCode(box.getSampleTypeCode());
                 } else {
-                    int sampleTypeIndex = sampleTypes.indexOf(tube.getSampleType());
-                    if (sampleTypeIndex >= 0) {
-                        SampleType sampleType = sampleTypes.get(sampleTypeIndex);
+                    SampleType sampleType = new SampleType();
+                    for(SampleType sam :sampleTypes){
+                        if(tube.getSampleTypeCode().equals(sam.getSampleTypeCode())){
+                            sampleType = sam;
+                        }
+                    }
+                    if(sampleType!=null){
                         tube.setSampleType(sampleType);
-                    } else {
-                        tube.getSampleType().setSampleTypeCode(tube.getSampleTypeCode());
+                    }else{
+                        tube.setSampleType(tube.getSampleType());
                         tube.getSampleType().setSampleTypeName(tube.getSampleTypeName());
                     }
+//                    int sampleTypeIndex = sampleTypes.indexOf(tube.getSampleType());
+//                    if (sampleTypeIndex >= 0) {
+//                        SampleType sampleType = sampleTypes.get(sampleTypeIndex);
+//                        tube.setSampleType(sampleType);
+//                    } else {
+//                        tube.getSampleType().setSampleTypeCode(tube.getSampleTypeCode());
+//                        tube.getSampleType().setSampleTypeName(tube.getSampleTypeName());
+//                    }
                 }
-                tube.setSampleTypeCode(tube.getSampleType().getSampleTypeCode());
+                tube.setSampleType(tube.getSampleType());
                 tube.setSampleTypeName(tube.getSampleType().getSampleTypeName());
 
                 tube.setFrozenBox(box);

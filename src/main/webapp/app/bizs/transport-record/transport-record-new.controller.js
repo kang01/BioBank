@@ -85,15 +85,15 @@
                 value= {};
                 value.sampleCode = "";
                 value.sampleTempCode = "";
-                value.sampleTypeId = 5;
+                value.sampleTypeCode = 'S_TYPE_00001';
                 // value.status = "3003";//冻存管状态3001：正常，3002：空管，3003：空孔；3004：异常
                 value.tubeRows = getTubeRows(row);
                 value.tubeColumns = getTubeColumns(col);
                 value.memo = ""
             }
             //样本类型
-            if(value.sampleTypeId){
-                SampleService.changeSampleType(value.sampleTypeId,td);
+            if(value.sampleTypeCode){
+                SampleService.changeSampleType(value.sampleTypeCode,td);
             }
             //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
             if(value.status){
@@ -102,7 +102,7 @@
 
             htm = "<div ng-if='value.sampleCode'>"+value.sampleCode+"</div>"+
                 "<div  ng-if='value.sampleTempCode'>"+value.sampleTempCode+"</div>" +
-                "<div  style='display: none'>"+value.sampleTypeId+"</div>" +
+                "<div  style='display: none'>"+value.sampleTypeCode+"</div>" +
                 "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
                 "<div id='microtubesRemark' style='display: none'>"+value.memo+"</div>"+
                 "<div id='microtubesRow' style='display: none'>"+value.tubeRows+"</div>"+
@@ -380,34 +380,34 @@
                         for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
                             switch(j){
                                 case 0:
-                                    vm.frozenTubeArray[i][j].sampleTypeId = 5;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00001';
                                     break;
                                 case 1:
-                                    vm.frozenTubeArray[i][j].sampleTypeId = 39;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00002';
                                     break;
                                 case 2:
-                                    vm.frozenTubeArray[i][j].sampleTypeId = 6;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00003';
                                     break;
                                 case 3:
-                                    vm.frozenTubeArray[i][j].sampleTypeId = 7;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00004';
                                     break;
                                 case 4:
-                                    vm.frozenTubeArray[i][j].sampleTypeId = 8;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00005';
                                     break;
                                 case 5:
-                                    vm.frozenTubeArray[i][j].sampleTypeId = 40;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00006';
                                     break;
                                 case 6:
-                                    vm.frozenTubeArray[i][j].sampleTypeId = 9;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00007';
                                     break;
                                 case 7:
-                                    vm.frozenTubeArray[i][j].sampleTypeId = 10;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00008';
                                     break;
                                 case 8:
-                                    vm.frozenTubeArray[i][j].sampleTypeId = 11;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00009';
                                     break;
                                 case 9:
-                                    vm.frozenTubeArray[i][j].sampleTypeId = 38;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00010';
                                     break;
                             }
                         }}
@@ -599,8 +599,6 @@
             if(obox.frozenBoxDTOList.length == 0){
                 obox.frozenBoxDTOList.push(vm.box);
             }
-
-            console.log(JSON.stringify(obox))
             TranshipBoxService.save(obox,onSaveBoxSuccess,onError);
         }
         function openCalendar (date) {

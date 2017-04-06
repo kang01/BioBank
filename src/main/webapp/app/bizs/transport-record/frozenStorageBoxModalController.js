@@ -56,6 +56,7 @@
                                     sampleCode: "",
                                     sampleTempCode: codeList[i]+"-"+String.fromCharCode(j+65)+(k+1),
                                     sampleTypeId: 5,
+                                    sampleTypeCode: 'S_TYPE_00001',
                                     status: "3001",
                                     memo:"",
                                     tubeColumns: k+1,
@@ -85,7 +86,6 @@
             $uibModalInstance.dismiss('cancel');
         };
         this.ok = function () {
-            console.log(JSON.stringify(vm.obox));
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
 
         };

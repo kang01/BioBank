@@ -9,9 +9,9 @@
         .controller('StockInNewController', StockInNewController);
 
     StockInNewController.$inject = ['$scope','$compile','hotRegisterer','StockInService','StockInBoxService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
-        'SampleTypeService','AlertService','SampleService']
+        'SampleTypeService','AlertService','SampleService','IncompleteBoxService']
     function StockInNewController($scope,$compile,hotRegisterer,StockInService,StockInBoxService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
-                                          SampleTypeService,AlertService,SampleService) {
+                                          SampleTypeService,AlertService,SampleService,IncompleteBoxService) {
         var vm = this;
         vm.entity = {
             stockInCode: '1234567890',
@@ -183,7 +183,6 @@
                     vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
                 }
                 hotRegisterer.getInstance('my-handsontable').render();
-                // console.log(JSON.stringify(vm.frozenTubeArray))
             }
         }
 
@@ -202,11 +201,22 @@
 
 
         vm.frozenTubeArray = [];
-        vm.putAway = putAway;
-        vm.splitBoxSelect = splitBoxSelect;
+        vm.incompleteBoxesList = [];
         vm.loadBox = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);
         };
+        //样本类型
+        function onSampleTypeSuccess(data) {
+            vm.sampleTypes = data;
+            for(var i = 0; i < vm.sampleTypes.length;i++){
+                IncompleteBoxService.query({projectCode:"12345",sampleType:vm.sampleTypes[i].sampleTypeCode},onIncompleteBoxesSuccess,onError)
+            }
+        }
+        function onIncompleteBoxesSuccess(data) {
+            console.log(JSON.stringify(data))
+            vm.incompleteBoxesList.push(data[0]);
+            // console.log(JSON.stringify(vm.incompleteBoxesList))
+        }
         function onError(error) {
             AlertService.error(error.data.message);
         }
@@ -221,10 +231,7 @@
             }
         }
         initFrozenTube(size);
-        //样本类型
-        function onSampleTypeSuccess(data) {
-            vm.sampleTypes = data;
-        }
+
         function getTubeRowIndex(row) {
             return row.charCodeAt(0) -65;
         }
@@ -235,15 +242,16 @@
         vm.customRenderer = function (hotInstance, td, row, col, prop, value, cellProperties) {
             if(value != ""){
                 //样本类型
-                if(value.sampleTypeId){
-                    SampleService.changeSampleType(value.sampleTypeId,td);
+                if(value.sampleTypeCode){
+                    SampleService.changeSampleType(value.sampleTypeCode,td);
                 }
                 htm = "<div ng-if='value.sampleCode'>"+value.sampleCode+"</div>"+
                     "<div ng-if='value.sampleTmpCode'>"+value.sampleTempCode+"</div>"+
-                    "<div id='microtubesStatus' style='display: none'>"+value.status+"</div>"+
-                    "<div id='microtubesRemark' style='display: none'>"+value.memo+"</div>"+
-                    "<div id='microtubesRow' style='display: none'>"+value.tubeRows+"</div>"+
-                    "<div id='microtubesCol' style='display: none'>"+value.tubeColumns+"</div>"+
+                    "<div  style='display: none'>"+value.sampleTypeCode+"</div>"+
+                    "<div  style='display: none'>"+value.status+"</div>"+
+                    "<div  style='display: none'>"+value.memo+"</div>"+
+                    "<div  style='display: none'>"+value.tubeRows+"</div>"+
+                    "<div  style='display: none'>"+value.tubeColumns+"</div>"+
                     "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
             }else {
                 htm = ""
@@ -252,8 +260,7 @@
 
 
             td.innerHTML = htm;
-            console.log(JSON.stringify(value))
-        }
+        };
         vm.settings ={
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
             rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
@@ -265,6 +272,9 @@
             stretchH: 'all',
             editor: false,
             onAfterSelectionEnd:function (row, col, row2, col2) {
+                console.log(this)
+                console.log($(this.getData(row,col,row2,col2)))
+                vm.selectCell = $(this.getData(row,col,row2,col2));
             },
             enterMoves:function () {
                 var hotMoves = hotRegisterer.getInstance('my-handsontable');
@@ -289,7 +299,8 @@
         };
 
         var modalInstance;
-        function putAway() {
+        //上架操作
+        vm.putAway = function () {
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-in/box-putaway-modal.html',
@@ -303,15 +314,28 @@
                         }
                     }
                 }
-
             });
             modalInstance.result.then(function (data) {
             });
-        }
-        function splitBoxSelect($event){
+        };
+        //选择分装后的样本盒
+        vm.sampleBoxSelect = function ($event) {
             $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
             $($event.target).addClass("box-selected");
-        }
+        };
+        //分装操作
+        vm.splitBox = function () {
+            if(vm.selectCell.length){
+                for(var i = 0; i < vm.selectCell.length; i++ ){
+                    for (var j = 0; j < vm.selectCell[i].length; j++){
+                        // console.log(JSON.stringify(vm.selectCell[i][j]))
+                    }
+                }
+            }
 
+        }
+        vm.editBox = function () {
+            _splitABox();
+        }
     }
 })();

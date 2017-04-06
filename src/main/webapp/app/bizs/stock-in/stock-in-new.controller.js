@@ -9,9 +9,9 @@
         .controller('StockInNewController', StockInNewController);
 
     StockInNewController.$inject = ['$scope','$compile','hotRegisterer','StockInService','StockInBoxService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
-        'SampleTypeService','AlertService','SampleService']
+        'SampleTypeService','AlertService','SampleService','IncompleteBoxService']
     function StockInNewController($scope,$compile,hotRegisterer,StockInService,StockInBoxService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
-                                          SampleTypeService,AlertService,SampleService) {
+                                          SampleTypeService,AlertService,SampleService,IncompleteBoxService) {
         var vm = this;
         vm.entity = {
             stockInCode: '1234567890',
@@ -163,7 +163,7 @@
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
                 DTColumnBuilder.newColumn("").withTitle('选择').notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
-                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
+                DTColumnBuilder.newColumn('sampleType').withTitle('样本类型'),
                 DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
                 DTColumnBuilder.newColumn('countOfSample').withTitle('样本量'),
                 DTColumnBuilder.newColumn('isSplit').withTitle('是否分装'),
@@ -201,9 +201,22 @@
 
 
         vm.frozenTubeArray = [];
+        vm.incompleteBoxesList = [];
         vm.loadBox = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);
         };
+        //样本类型
+        function onSampleTypeSuccess(data) {
+            vm.sampleTypes = data;
+            for(var i = 0; i < vm.sampleTypes.length;i++){
+                IncompleteBoxService.query({projectCode:"12345",sampleType:vm.sampleTypes[i].sampleTypeCode},onIncompleteBoxesSuccess,onError)
+            }
+        }
+        function onIncompleteBoxesSuccess(data) {
+            console.log(JSON.stringify(data))
+            vm.incompleteBoxesList.push(data[0]);
+            // console.log(JSON.stringify(vm.incompleteBoxesList))
+        }
         function onError(error) {
             AlertService.error(error.data.message);
         }
@@ -218,10 +231,7 @@
             }
         }
         initFrozenTube(size);
-        //样本类型
-        function onSampleTypeSuccess(data) {
-            vm.sampleTypes = data;
-        }
+
         function getTubeRowIndex(row) {
             return row.charCodeAt(0) -65;
         }
@@ -318,7 +328,7 @@
             if(vm.selectCell.length){
                 for(var i = 0; i < vm.selectCell.length; i++ ){
                     for (var j = 0; j < vm.selectCell[i].length; j++){
-                        console.log(JSON.stringify(vm.selectCell[i][j]))
+                        // console.log(JSON.stringify(vm.selectCell[i][j]))
                     }
                 }
             }

@@ -92,8 +92,8 @@ public interface TranshipMapper {
         res.setReceiver( tranship.getReceiver() );
         res.setReceiveDate( tranship.getReceiveDate() );
         res.setSampleSatisfaction( tranship.getSampleSatisfaction() );
-        res.setProjectId(tranship.getProject().getId());
-        res.setProjectSiteId(tranship.getProjectSite().getId());
+        res.setProjectId(tranship.getProject() != null ?tranship.getProject().getId():null);
+        res.setProjectSiteId(tranship.getProjectSite()!=null?tranship.getProjectSite().getId():null);
         return res;
     }
 

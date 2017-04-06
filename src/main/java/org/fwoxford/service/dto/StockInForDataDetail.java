@@ -1,6 +1,7 @@
 package org.fwoxford.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.fwoxford.domain.SampleType;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.validation.constraints.NotNull;
@@ -36,14 +37,6 @@ public class StockInForDataDetail {
      */
     private LocalDate stockInDate;
     /**
-     * 样本数量
-     */
-    private Integer countOfSample;
-    /**
-     * 盒子数量
-     */
-    private Integer countOfBox;
-    /**
      * 状态
      */
     private String status;
@@ -59,6 +52,27 @@ public class StockInForDataDetail {
      * 转运编码
      */
     private String transhipCode;
+    /**
+     * 入库编码
+     */
+    private String stockInCode;
+
+    @Override
+    public String toString() {
+        return "StockInForDataDetail{" +
+            "id=" + id +
+            ", projectCode='" + projectCode + '\'' +
+            ", projectSiteCode='" + projectSiteCode + '\'' +
+            ", receiveDate=" + receiveDate +
+            ", receiver='" + receiver + '\'' +
+            ", stockInDate=" + stockInDate +
+            ", status='" + status + '\'' +
+            ", storeKeeper1='" + storeKeeper1 + '\'' +
+            ", storeKeeper2='" + storeKeeper2 + '\'' +
+            ", transhipCode='" + transhipCode + '\'' +
+            ", stockInCode='" + stockInCode + '\'' +
+            '}';
+    }
 
     public Long getId() {
         return id;
@@ -108,22 +122,6 @@ public class StockInForDataDetail {
         this.stockInDate = stockInDate;
     }
 
-    public Integer getCountOfSample() {
-        return countOfSample;
-    }
-
-    public void setCountOfSample(Integer countOfSample) {
-        this.countOfSample = countOfSample;
-    }
-
-    public Integer getCountOfBox() {
-        return countOfBox;
-    }
-
-    public void setCountOfBox(Integer countOfBox) {
-        this.countOfBox = countOfBox;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -154,5 +152,13 @@ public class StockInForDataDetail {
 
     public void setTranshipCode(String transhipCode) {
         this.transhipCode = transhipCode;
+    }
+
+    public String getStockInCode() {
+        return stockInCode;
+    }
+
+    public void setStockInCode(String stockInCode) {
+        this.stockInCode = stockInCode;
     }
 }

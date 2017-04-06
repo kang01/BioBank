@@ -3,18 +3,19 @@ package org.fwoxford.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
-
-import org.fwoxford.domain.FrozenBox;
-import org.fwoxford.domain.SampleType;
+import net.sf.json.JSONObject;
 import org.fwoxford.service.SampleTypeService;
 import org.fwoxford.service.TranshipService;
+import org.fwoxford.service.dto.*;
+import org.fwoxford.service.dto.response.*;
+import org.fwoxford.service.mapper.SampleTypeMapper;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.fwoxford.web.rest.util.HeaderUtil;
-import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,10 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 /**
  * REST controller for managing Tranship.
@@ -258,6 +262,12 @@ public class TempResource {
         return result;
     }
 
+    /**
+     * 根据入库单编码，查询入库单的盒子
+     * @param input
+     * @param stockInCode
+     * @return
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-in-boxes/stock-in/{stockInCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockInBoxForDataTable> getPageStockInBoxes(@RequestBody DataTablesInput input, @PathVariable String stockInCode) {
@@ -288,16 +298,58 @@ public class TempResource {
 
     @Autowired
     private SampleTypeService sampleTypeService;
+
+    /**
+     * 输入项目编码和样本类型编码，返回该入库单的某个盒子的信息
+     * @param projectCode
+     * @param sampleTypeCode
+     * @return
+     */
     @RequestMapping(value = "/frozen-boxes/incomplete-boxes/project/{projectCode}/type/{sampleTypeCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
-    public List<FrozenBoxAndFrozenTubeResponse> getIncompleteFrozenBoxes(@PathVariable String projectCode, @PathVariable String sampleTypeCode) {
-        List<FrozenBoxAndFrozenTubeResponse> boxes =  new ArrayList<>();
+    public List<StockInBoxForDataMoved> getIncompleteFrozenBoxes(@PathVariable String projectCode, @PathVariable String sampleTypeCode) {
+        List<StockInBoxForDataMoved> boxes =  new ArrayList<>();
         Random random = new Random();
 
-        FrozenBoxAndFrozenTubeResponse rowData = new FrozenBoxAndFrozenTubeResponse();
-        rowData = createSampleFrozenBoxAndFrozenTubeResponse(random.nextLong(), "1234567890", sampleTypeCode, 90);
+        StockInBoxForDataMoved rowData = new StockInBoxForDataMoved();
+        rowData = createStockInBoxForDataMoved(random.nextLong(), "1234567890", sampleTypeCode, 90);
         boxes.add(rowData);
 
         return boxes;
+    }
+    @Autowired
+    private SampleTypeMapper sampleTypeMapper;
+    private StockInBoxForDataMoved createStockInBoxForDataMoved(long id, String frozenBoxCode, String sampleTypeCode, int countOfSample) {
+        StockInBoxForDataMoved res = new StockInBoxForDataMoved();
+        List<SampleTypeDTO> types = sampleTypeService.findAllSampleTypes();
+        SampleTypeDTO typeDTO = new SampleTypeDTO();
+        for(SampleTypeDTO type :types){
+            if(sampleTypeCode.equals(type.getSampleTypeCode())){
+                typeDTO = type;
+            }
+        }
+//        SampleTypeDTO typeDTO = types.get(new Random().nextInt(10));
+        if (sampleTypeCode == null){
+            typeDTO = types.stream().filter(t->t.getSampleTypeCode() != null && t.getSampleTypeCode().equals(sampleTypeCode)).findFirst().orElse(null);
+        }
+        res.setSampleType(sampleTypeMapper.sampleTypeDTOToSampleType(typeDTO));
+        res.setCountOfSample(countOfSample);
+        res.setFrozenBoxId(id);
+        res.setFrozenBoxCode(frozenBoxCode);
+        res.setFrozenBoxColumns("10");
+        res.setFrozenBoxRows("10");
+        res.setStockInFrozenTubeList(new ArrayList<>());
+        for(int i = 0; i<countOfSample; ++i){
+            StockInTubeForDataMoved tube = new StockInTubeForDataMoved();
+            tube.setFrozenTubeId((id - 1) * 100 + i);
+            tube.setFrozenTubeCode("");
+            tube.setSampleType(sampleTypeMapper.sampleTypeDTOToSampleType(typeDTO));
+            tube.setFrozenBoxCode(frozenBoxCode);
+            tube.setTubeColumns((i % 10 + 1) + "");
+            tube.setTubeRows(String.valueOf((char) (65 + i / 10)));
+            res.getStockInFrozenTubeList().add(tube);
+        }
+
+        return res;
     }
 
     /**
@@ -311,9 +363,185 @@ public class TempResource {
     public ResponseEntity<StockInForDataDetail> createStockIn(@Valid @RequestBody String transhipCode) throws URISyntaxException {
         log.debug("REST request to save stock-in : {}", transhipCode);
         StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
-        return ResponseEntity.created(new URI("/res/stock-in" + transhipCode))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, transhipCode))
+        stockInForDataDetail.setId(1L);
+        stockInForDataDetail.setTranshipCode(transhipCode);
+        stockInForDataDetail.setProjectCode("P00001");
+        stockInForDataDetail.setProjectSiteCode("PS00001");
+        stockInForDataDetail.setReceiveDate(LocalDate.now());
+        stockInForDataDetail.setReceiver("小高");
+        stockInForDataDetail.setStatus("7001");
+        stockInForDataDetail.setStockInCode(BankUtil.getUniqueID());
+        stockInForDataDetail.setStockInDate(LocalDate.now());
+        return ResponseEntity.created(new URI("/res/stock-in" + stockInForDataDetail.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, stockInForDataDetail.getId().toString()))
             .body(stockInForDataDetail);
+    }
+
+    /**
+     * 输入入库单编码，返回入库信息
+     * @param stockInCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-in/{stockInCode}/completed")
+    @Timed
+    public ResponseEntity<StockInForDataDetail> completedStockIn(@Valid @RequestBody String stockInCode) throws URISyntaxException {
+        log.debug("REST request to update StockIn : {}", stockInCode);
+        StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
+        stockInForDataDetail.setId(1L);
+        stockInForDataDetail.setTranshipCode(BankUtil.getUniqueID());
+        stockInForDataDetail.setProjectCode("P00001");
+        stockInForDataDetail.setProjectSiteCode("PS00001");
+        stockInForDataDetail.setReceiveDate(LocalDate.now());
+        stockInForDataDetail.setReceiver("小高");
+        stockInForDataDetail.setStatus("7002");
+        stockInForDataDetail.setStockInCode(stockInCode);
+        stockInForDataDetail.setStockInDate(LocalDate.now());
+        stockInForDataDetail.setStoreKeeper1("小张");
+        stockInForDataDetail.setStoreKeeper2("小黄");
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInForDataDetail.getId().toString()))
+            .body(stockInForDataDetail);
+    }
+
+    /**
+     * 输入入库单ID，返回入库信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/stock-in/{id}")
+    @Timed
+    public ResponseEntity<StockInForDataDetail> getStockIn(@PathVariable Long id) {
+        log.debug("REST request to get Tranship : {}", id);
+        StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
+        stockInForDataDetail.setId(id);
+        stockInForDataDetail.setTranshipCode(BankUtil.getUniqueID());
+        stockInForDataDetail.setProjectCode("P00001");
+        stockInForDataDetail.setProjectSiteCode("PS00001");
+        stockInForDataDetail.setReceiveDate(LocalDate.now());
+        stockInForDataDetail.setReceiver("小高");
+        stockInForDataDetail.setStatus("7002");
+        stockInForDataDetail.setStockInCode(BankUtil.getUniqueID());
+        stockInForDataDetail.setStockInDate(LocalDate.now());
+        stockInForDataDetail.setStoreKeeper1("小张");
+        stockInForDataDetail.setStoreKeeper2("小黄");
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInForDataDetail));
+    }
+
+    /**
+     * 输入转运编码，返回相关入库信息
+     * @param stockInCode
+     * @return
+     */
+    @GetMapping("/stock-in/tranship/{transhipCode}")
+    @Timed
+    public ResponseEntity<StockInForDataDetail> getStockIn(@PathVariable String stockInCode) {
+        StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
+        stockInForDataDetail.setId(1L);
+        stockInForDataDetail.setTranshipCode(BankUtil.getUniqueID());
+        stockInForDataDetail.setProjectCode("P00001");
+        stockInForDataDetail.setProjectSiteCode("PS00001");
+        stockInForDataDetail.setReceiveDate(LocalDate.now());
+        stockInForDataDetail.setReceiver("小高");
+        stockInForDataDetail.setStatus("7002");
+        stockInForDataDetail.setStockInCode(stockInCode);
+        stockInForDataDetail.setStockInDate(LocalDate.now());
+        stockInForDataDetail.setStoreKeeper1("小张");
+        stockInForDataDetail.setStoreKeeper2("小黄");
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInForDataDetail));
+    }
+    /**
+     * 输入入库单编码和盒子编码，返回该入库单的某个盒子的信息
+     * @param stockInCode
+     * @param frozenBoxCode
+     * @return
+     */
+    @GetMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}")
+    @Timed
+    public ResponseEntity<StockInBoxForDataDetail> getStockIn(@PathVariable String stockInCode, @PathVariable String frozenBoxCode) {
+        StockInBoxForDataDetail stockInBoxForDataDetail = new StockInBoxForDataDetail();
+        stockInBoxForDataDetail.setId(1L);
+        stockInBoxForDataDetail.setFrozenBoxCode(frozenBoxCode);
+        stockInBoxForDataDetail.setCountOfSample(100);
+        stockInBoxForDataDetail.setIsSplit(0);
+        stockInBoxForDataDetail.setPosition("F3-71.S01");
+        stockInBoxForDataDetail.setSampleTypeName("99");
+        stockInBoxForDataDetail.setStatus("2002");
+        stockInBoxForDataDetail.setEquipmentId(1L);
+        stockInBoxForDataDetail.setAreaId(2L);
+        stockInBoxForDataDetail.setSupportRackId(3L);
+        stockInBoxForDataDetail.setMemo("");
+        stockInBoxForDataDetail.setStockInCode(stockInCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInBoxForDataDetail));
+    }
+    /**
+     * 输入入库单编码和盒子编码，以及分装后的盒子，返回保存好的分装后盒子的信息。
+     * @param stockInCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/splited")
+    @Timed
+    public ResponseEntity<StockInBoxForDataSplit> splitedStockIn(@Valid @RequestBody String stockInCode, String frozenBoxCode, StockInBoxForDataSplit stockInBoxForDataSplit) throws URISyntaxException {
+        StockInBoxForDataSplit detail = stockInBoxForDataSplit;
+        stockInBoxForDataSplit.setId(1L);
+        List<StockInTubeDTO> tubeDTOS = stockInBoxForDataSplit.getStockInTubeDTOList();
+        List<StockInTubeDTO> tubeDTOList = new ArrayList<>();
+        for(int i = 0 ; i < tubeDTOList.size();i++){
+            tubeDTOList.get(i).setFrozenTubeId(0L+i);
+            tubeDTOList.add(tubeDTOList.get(i));
+        }
+        detail.setStockInTubeDTOList(tubeDTOList);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, detail.getId().toString()))
+            .body(detail);
+    }
+    /**
+     * 输入入库单编码和盒子编码，以及冻存位置信息，返回保存后的盒子信息
+     * @param stockInCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/moved")
+    @Timed
+    public ResponseEntity<StockInBoxForDataDetail> movedStockIn(@Valid @RequestBody String stockInCode, String frozenBoxCode, FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
+        StockInBoxForDataDetail stockInBoxForDataDetail = new StockInBoxForDataDetail();
+        stockInBoxForDataDetail.setId(1L);
+        stockInBoxForDataDetail.setFrozenBoxCode(frozenBoxCode);
+        stockInBoxForDataDetail.setCountOfSample(100);
+        stockInBoxForDataDetail.setIsSplit(0);
+        stockInBoxForDataDetail.setPosition("F3-71.S01");
+        stockInBoxForDataDetail.setSampleTypeName("99");
+        stockInBoxForDataDetail.setStatus("2002");
+        stockInBoxForDataDetail.setEquipmentId(1L);
+        stockInBoxForDataDetail.setAreaId(2L);
+        stockInBoxForDataDetail.setSupportRackId(3L);
+        stockInBoxForDataDetail.setMemo("");
+        stockInBoxForDataDetail.setStockInCode(stockInCode);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxForDataDetail.getId().toString()))
+            .body(stockInBoxForDataDetail);
+    }
+    /**
+     * 输入设备编码，返回该设备下的所有架子
+     * @param equipmentCode
+     * @return
+     */
+    @GetMapping("/frozen-pos/shelfs/{equipmentCode}")
+    @Timed
+    public ResponseEntity<List<SupportRackDTO>> getSupportRackList(@PathVariable String equipmentCode) {
+        List<SupportRackDTO> supportRackDTOS = new ArrayList<>();
+        for(int i = 0 ; i < 10 ; i++){
+            SupportRackDTO supportRackDTO = new SupportRackDTO();
+            supportRackDTO.setId(0L+i);
+            supportRackDTO.setStatus("0001");
+            supportRackDTO.setSupportRackCode("R-"+i);
+            supportRackDTO.setAreaId(1L);
+            supportRackDTO.setAreaCode("S1");
+            supportRackDTO.setSupportRackTypeId(26L);
+            supportRackDTOS.add(supportRackDTO);
+        }
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(supportRackDTOS));
     }
 
     @RequestMapping(value = "/frozen-pos/incomplete-shelfs/{equipmentCode}/{areaCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})

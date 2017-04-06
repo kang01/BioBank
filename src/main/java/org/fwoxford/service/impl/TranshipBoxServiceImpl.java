@@ -289,19 +289,26 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
                 tube = (FrozenTube) EntityUtil.avoidFieldValueNull(tube);
 
-                if (tube.getSampleType() == null){
-                    tube.setSampleType(box.getSampleType());
+                if (tube.getSampleTypeCode() == null){
+                    tube.setSampleTypeCode(box.getSampleTypeCode());
                 } else {
-                    int sampleTypeIndex = sampleTypes.indexOf(tube.getSampleType());
-                    if (sampleTypeIndex >= 0) {
-                        SampleType sampleType = sampleTypes.get(sampleTypeIndex);
+                    SampleType sampleType = sampleTypes.stream()
+                        .filter(s->s.getSampleTypeCode().equals(tube.getSampleTypeCode()))
+                        .findFirst().orElse(null);
+                    SampleType sampleType = new SampleType();
+                    for(SampleType sam :sampleTypes){
+                        if(tube.getSampleTypeCode().equals(sam.getSampleTypeCode())){
+                            sampleType = sam;
+                        }
+                    }
+                    if(sampleType!=null){
                         tube.setSampleType(sampleType);
-                    } else {
-                        tube.getSampleType().setSampleTypeCode(tube.getSampleTypeCode());
+                    }else{
+                        tube.setSampleType(tube.getSampleType());
                         tube.getSampleType().setSampleTypeName(tube.getSampleTypeName());
                     }
                 }
-                tube.setSampleTypeCode(tube.getSampleType().getSampleTypeCode());
+                tube.setSampleType(tube.getSampleType());
                 tube.setSampleTypeName(tube.getSampleType().getSampleTypeName());
 
                 tube.setFrozenBox(box);

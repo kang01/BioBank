@@ -380,7 +380,7 @@ public class TempResource {
     }
 
     /**
-     * 输入入库单编码，返回入库信息
+     * 输入入库单编码，返回入库信息---入库完成
      * @param stockInCode
      * @return
      * @throws URISyntaxException

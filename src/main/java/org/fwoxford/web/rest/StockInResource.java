@@ -6,7 +6,9 @@ import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
 import org.fwoxford.service.StockInService;
 import org.fwoxford.service.dto.StockInDTO;
+import org.fwoxford.service.dto.StockInForDataDetail;
 import org.fwoxford.service.dto.response.StockInForDataTable;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,11 +133,18 @@ public class StockInResource {
         stockInService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-    @PostMapping("/stock/in")
+
+    /**
+     * 转运单 到 入库
+     * @param transhipCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-in/tranship/{transhipCode}")
     @Timed
-    public ResponseEntity<StockInDTO> createStockIns(@Valid @RequestBody StockInDTO stockInDTO) throws URISyntaxException {
-        log.debug("REST request to save StockIn : {}", stockInDTO);
-        StockInDTO result = stockInService.saveStockIns(stockInDTO);
+    public ResponseEntity<StockInForDataDetail> createStockIns(@Valid @RequestBody String transhipCode) throws URISyntaxException {
+        log.debug("REST request to save StockIn : {}", transhipCode);
+        StockInForDataDetail result = stockInService.saveStockIns(transhipCode);
         return ResponseEntity.created(new URI("/api/stock-ins/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -149,5 +159,21 @@ public class StockInResource {
     @RequestMapping(value = "/res/stock-in", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockInForDataTable> getPageStockIn(@RequestBody DataTablesInput input) {
         return stockInService.findStockIn(input);
+    }
+
+    /**
+     * 输入入库单编码，返回入库信息---入库完成
+     * @param stockInCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-in/{stockInCode}/completed")
+    @Timed
+    public ResponseEntity<StockInForDataDetail> completedStockIn(@Valid @RequestBody String stockInCode) throws URISyntaxException {
+        log.debug("REST request to update StockIn : {}", stockInCode);
+        StockInForDataDetail result = stockInService.completedStockIn(stockInCode);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 }

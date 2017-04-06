@@ -10,4 +10,5 @@ import org.springframework.data.jpa.repository.*;
 @SuppressWarnings("unused")
 public interface StockInRepository extends JpaRepository<StockIn,Long> {
 
+    StockIn findStockInByStockInCode(String stockInCode);
 }

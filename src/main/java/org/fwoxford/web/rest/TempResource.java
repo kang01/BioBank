@@ -316,7 +316,13 @@ public class TempResource {
     private StockInBoxForDataMoved createStockInBoxForDataMoved(long id, String frozenBoxCode, String sampleTypeCode, int countOfSample) {
         StockInBoxForDataMoved res = new StockInBoxForDataMoved();
         List<SampleTypeDTO> types = sampleTypeService.findAllSampleTypes();
-        SampleTypeDTO typeDTO = types.get(new Random().nextInt(10));
+        SampleTypeDTO typeDTO = new SampleTypeDTO();
+        for(SampleTypeDTO type :types){
+            if(sampleTypeCode.equals(type.getSampleTypeCode())){
+                typeDTO = type;
+            }
+        }
+//        SampleTypeDTO typeDTO = types.get(new Random().nextInt(10));
         if (sampleTypeCode == null){
             typeDTO = types.stream().filter(t->t.getSampleTypeCode() != null && t.getSampleTypeCode().equals(sampleTypeCode)).findFirst().orElse(null);
         }

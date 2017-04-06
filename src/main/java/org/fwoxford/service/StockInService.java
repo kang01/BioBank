@@ -64,4 +64,8 @@ public interface StockInService {
      * @return
      */
     StockInForDataDetail completedStockIn(String stockInCode);
+
+    StockInForDataDetail getStockInById(Long id);
+
+    StockInForDataDetail getStockInByTranshipCode(String transhipCode);
 }

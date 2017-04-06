@@ -432,21 +432,21 @@ public class TempResource {
 
     /**
      * 输入转运编码，返回相关入库信息
-     * @param stockInCode
+     * @param transhipCode
      * @return
      */
     @GetMapping("/stock-in/tranship/{transhipCode}")
     @Timed
-    public ResponseEntity<StockInForDataDetail> getStockIn(@PathVariable String stockInCode) {
+    public ResponseEntity<StockInForDataDetail> getStockIn(@PathVariable String transhipCode) {
         StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
         stockInForDataDetail.setId(1L);
-        stockInForDataDetail.setTranshipCode(BankUtil.getUniqueID());
+        stockInForDataDetail.setTranshipCode(transhipCode);
         stockInForDataDetail.setProjectCode("P00001");
         stockInForDataDetail.setProjectSiteCode("PS00001");
         stockInForDataDetail.setReceiveDate(LocalDate.now());
         stockInForDataDetail.setReceiver("小高");
         stockInForDataDetail.setStatus("7002");
-        stockInForDataDetail.setStockInCode(stockInCode);
+        stockInForDataDetail.setStockInCode(BankUtil.getUniqueID());
         stockInForDataDetail.setStockInDate(LocalDate.now());
         stockInForDataDetail.setStoreKeeper1("小张");
         stockInForDataDetail.setStoreKeeper2("小黄");

@@ -273,4 +273,20 @@ public class StockInServiceImpl implements StockInService {
 
         return stockInMapper.stockInToStockInDetail(stockIn);
     }
+
+    @Override
+    public StockInForDataDetail getStockInById(Long id) {
+        StockIn stockIn = stockInRepository.findOne(id);
+        return stockInMapper.stockInToStockInDetail(stockIn);
+    }
+
+    @Override
+    public StockInForDataDetail getStockInByTranshipCode(String transhipCode) {
+        Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
+        if(tranship.getId() == null){
+            throw new BankServiceException("转运记录不存在！",transhipCode);
+        }
+        StockIn stockIn = stockInRepository.findStockInByTranshipId(tranship.getId());
+        return stockInMapper.stockInToStockInDetail(stockIn);
+    }
 }

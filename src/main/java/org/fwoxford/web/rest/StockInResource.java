@@ -176,4 +176,28 @@ public class StockInResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+    /**
+     * 输入入库单ID，返回入库信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/stock-in/{id}")
+    @Timed
+    public ResponseEntity<StockInForDataDetail> getStockInById(@PathVariable Long id) {
+        log.debug("REST request to get Tranship : {}", id);
+        StockInForDataDetail stockInForDataDetail = stockInService.getStockInById(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInForDataDetail));
+    }
+
+    /**
+     * 输入转运编码，返回相关入库信息
+     * @param transhipCode
+     * @return
+     */
+    @GetMapping("/stock-in/tranship/{transhipCode}")
+    @Timed
+    public ResponseEntity<StockInForDataDetail> getStockIn(@PathVariable String transhipCode) {
+        StockInForDataDetail stockInForDataDetail = stockInService.getStockInByTranshipCode(transhipCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInForDataDetail));
+    }
 }

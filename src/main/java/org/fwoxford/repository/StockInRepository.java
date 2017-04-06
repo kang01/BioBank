@@ -11,4 +11,6 @@ import org.springframework.data.jpa.repository.*;
 public interface StockInRepository extends JpaRepository<StockIn,Long> {
 
     StockIn findStockInByStockInCode(String stockInCode);
+
+    StockIn findStockInByTranshipId(Long id);
 }

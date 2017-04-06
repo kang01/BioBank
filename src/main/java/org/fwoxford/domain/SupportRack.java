@@ -33,6 +33,7 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
     /**
      * 区域编码
      */
+    // todo:: 这个字段没有意义
     @NotNull
     @Size(max = 100)
     @Column(name = "area_code", length = 100, nullable = false)

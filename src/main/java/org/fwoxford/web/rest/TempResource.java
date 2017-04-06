@@ -8,10 +8,7 @@ import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.SampleType;
 import org.fwoxford.service.SampleTypeService;
 import org.fwoxford.service.TranshipService;
-import org.fwoxford.service.dto.FrozenBoxDTO;
-import org.fwoxford.service.dto.SampleTypeDTO;
-import org.fwoxford.service.dto.StockInForDataDetail;
-import org.fwoxford.service.dto.TranshipDTO;
+import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
@@ -317,5 +314,13 @@ public class TempResource {
         return ResponseEntity.created(new URI("/res/stock-in" + transhipCode))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, transhipCode))
             .body(stockInForDataDetail);
+    }
+
+    @RequestMapping(value = "/frozen-pos/incomplete-shelfs/{equipmentCode}/{areaCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public List<SupportRackDTO> getIncompleteShelves(@PathVariable String equipmentCode, @PathVariable String areaCode) {
+        List<SupportRackDTO> boxes =  new ArrayList<>();
+        Random random = new Random();
+
+        return boxes;
     }
 }

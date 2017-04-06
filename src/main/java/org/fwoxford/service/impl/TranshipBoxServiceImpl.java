@@ -183,7 +183,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         Tranship tranship = transhipRepository.findOne(transhipId);
 
         if (tranship == null){
-            // todo:: 错误处理一下，转运ID无效的情况
+            // 转运ID无效的情况
             throw new BankServiceException("转运记录不存在！",transhipBoxListDTO.toString());
         }
 
@@ -197,7 +197,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         for(FrozenBoxDTO boxDTO : transhipBoxListDTO.getFrozenBoxDTOList()){
             FrozenBox oldBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(boxDTO.getFrozenBoxCode());
             if (oldBox != null && (boxDTO.getId() == null || !boxDTO.getId().equals(oldBox.getId()))){
-                // todo::盒子编码重复的错误需要抛异常
+                // 盒子编码重复的错误需要抛异常
                 throw new BankServiceException("此冻存盒编码已存在！",oldBox.getFrozenBoxCode());
             }
 
@@ -225,10 +225,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 box.setEquipment(equipment);
                 box.setEquipmentCode(equipment.getEquipmentCode());
             } else {
-                // todo:: 把盒子位置信息单独拿出来放一个表
-                Equipment equipment = equipmentRepository.findOne(23L);
-                box.setEquipment(equipment);
-                box.setEquipmentCode(equipment.getEquipmentCode());
+                // 把盒子位置信息单独拿出来放一个表
+                box.setEquipment(null);
+                box.setEquipmentCode(null);
             }
 
             if (box.getArea() != null) {
@@ -236,10 +235,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 box.setArea(area);
                 box.setAreaCode(area.getAreaCode());
             } else {
-                // todo:: 把盒子位置信息单独拿出来放一个表
-                Area area = areaRepository.findOne(24L);
-                box.setArea(area);
-                box.setAreaCode(area.getAreaCode());
+                // 把盒子位置信息单独拿出来放一个表
+                box.setArea(null);
+                box.setAreaCode(null);
             }
 
             if (box.getSupportRack() != null) {
@@ -247,10 +245,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 box.setSupportRack(shelf);
                 box.setSupportRackCode(shelf.getSupportRackCode());
             } else {
-                // todo:: 把盒子位置信息单独拿出来放一个表
-                SupportRack shelf = supportRackRepository.findOne(28L);
-                box.setSupportRack(shelf);
-                box.setSupportRackCode(shelf.getSupportRackCode());
+                // 把盒子位置信息单独拿出来放一个表
+                box.setSupportRack(null);
+                box.setSupportRackCode(null);
             }
 
             if (box.getProjectSite() != null) {

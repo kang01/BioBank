@@ -1,11 +1,11 @@
 package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.fwoxford.service.dto.SampleTypeDTO;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -26,15 +26,21 @@ public class StockInBoxForDataTable {
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private String frozenBoxCode;
-    @NotNull
     @JsonView(DataTablesOutput.View.class)
-    private String sampleType;
+    private String sampleTypeName;
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private String position;
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private Integer isSplit;
+
+    @JsonView(DataTablesOutput.View.class)
+    private SampleTypeDTO sampleType;
+    @JsonView(DataTablesOutput.View.class)
+    private Integer frozenBoxRows;
+    @JsonView(DataTablesOutput.View.class)
+    private Integer frozenBoxColumns;
 
 
 
@@ -61,9 +67,12 @@ public class StockInBoxForDataTable {
             ", countOfSample=" + countOfSample +
             ", status='" + status + '\'' +
             ", frozenBoxCode='" + frozenBoxCode + '\'' +
-            ", sampleType='" + sampleType + '\'' +
+            ", sampleTypeName='" + sampleTypeName + '\'' +
             ", position='" + position + '\'' +
             ", isSplit=" + isSplit +
+            ", sampleType=" + sampleType +
+            ", frozenBoxRows=" + frozenBoxRows +
+            ", frozenBoxColumns=" + frozenBoxColumns +
             '}';
     }
 
@@ -105,12 +114,12 @@ public class StockInBoxForDataTable {
         this.frozenBoxCode = frozenBoxCode;
     }
 
-    public String getSampleType() {
-        return sampleType;
+    public String getSampleTypeName() {
+        return sampleTypeName;
     }
 
-    public void setSampleType(String sampleType) {
-        this.sampleType = sampleType;
+    public void setSampleTypeName(String sampleTypeName) {
+        this.sampleTypeName = sampleTypeName;
     }
 
     public String getPosition() {
@@ -127,5 +136,29 @@ public class StockInBoxForDataTable {
 
     public void setIsSplit(Integer isSplit) {
         this.isSplit = isSplit;
+    }
+
+    public SampleTypeDTO getSampleType() {
+        return sampleType;
+    }
+
+    public void setSampleType(SampleTypeDTO sampleType) {
+        this.sampleType = sampleType;
+    }
+
+    public Integer getFrozenBoxRows() {
+        return frozenBoxRows;
+    }
+
+    public void setFrozenBoxRows(Integer frozenBoxRows) {
+        this.frozenBoxRows = frozenBoxRows;
+    }
+
+    public Integer getFrozenBoxColumns() {
+        return frozenBoxColumns;
+    }
+
+    public void setFrozenBoxColumns(Integer frozenBoxColumns) {
+        this.frozenBoxColumns = frozenBoxColumns;
     }
 }

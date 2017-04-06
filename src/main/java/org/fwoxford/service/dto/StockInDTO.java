@@ -6,16 +6,18 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
- * A DTO for the StorageIn entity.
+ * A DTO for the StockIn entity.
  */
-public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
-    @JsonView(DataTablesOutput.View.class)
+public class StockInDTO extends AbstractAuditingDTO implements Serializable {
     private Long id;
+    /**
+     * 入库编码
+     */
+    @Size(max = 100)
+    private String stockInCode;
     /**
      * 项目编码
      */
@@ -45,37 +47,35 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
      */
     @NotNull
     @Size(max = 20)
-    private String storageInType;
+    private String stockInType;
     /**
      * 入库人1ID
      */
     @Max(value = 100)
-    private Long storageInPersonId1;
+    private Long storeKeeperId1;
     /**
      * 入库人1姓名
      */
     @Size(max = 100)
-    private String storageInPersonName1;
+    private String storeKeeper1;
     /**
      * 入库人2ID
      */
     @Max(value = 100)
-    private Long storageInPersonId2;
+    private Long storeKeeperId2;
     /**
      * 入库人2姓名
      */
     @Size(max = 100)
-    private String storangeInPersonName2;
+    private String storeKeeper2;
     /**
      * 入库日期
      */
-    @JsonView(DataTablesOutput.View.class)
-    private LocalDate storageInDate;
+    private LocalDate stockInDate;
     /**
      * 样本数量
      */
-    @JsonView(DataTablesOutput.View.class)
-    private Integer sampleNumber;
+    private Integer countOfSample;
     /**
      * 签名人ID
      */
@@ -85,7 +85,6 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
      * 签名人姓名
      */
     @Size(max = 100)
-    @JsonView(DataTablesOutput.View.class)
     private String signName;
     /**
      * 签名日期
@@ -100,7 +99,6 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
      * 状态 :7001：进行中，7002已入库
      */
     @Size(max = 20)
-    @JsonView(DataTablesOutput.View.class)
     private String status;
     /**
      * 转运ID
@@ -122,6 +120,15 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getStockInCode() {
+        return stockInCode;
+    }
+
+    public void setStockInCode(String stockInCode) {
+        this.stockInCode = stockInCode;
+    }
+
     public String getProjectCode() {
         return projectCode;
     }
@@ -159,54 +166,54 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
     public void setReceiveName(String receiveName) {
         this.receiveName = receiveName;
     }
-    public String getStorageInType() {
-        return storageInType;
+    public String getStockInType() {
+        return stockInType;
     }
 
-    public void setStorageInType(String storageInType) {
-        this.storageInType = storageInType;
+    public void setStockInType(String stockInType) {
+        this.stockInType = stockInType;
     }
-    public Long getStorageInPersonId1() {
-        return storageInPersonId1;
-    }
-
-    public void setStorageInPersonId1(Long storageInPersonId1) {
-        this.storageInPersonId1 = storageInPersonId1;
-    }
-    public String getStorageInPersonName1() {
-        return storageInPersonName1;
+    public Long getStoreKeeperId1() {
+        return storeKeeperId1;
     }
 
-    public void setStorageInPersonName1(String storageInPersonName1) {
-        this.storageInPersonName1 = storageInPersonName1;
+    public void setStoreKeeperId1(Long storeKeeperId1) {
+        this.storeKeeperId1 = storeKeeperId1;
     }
-    public Long getStorageInPersonId2() {
-        return storageInPersonId2;
-    }
-
-    public void setStorageInPersonId2(Long storageInPersonId2) {
-        this.storageInPersonId2 = storageInPersonId2;
-    }
-    public String getStorangeInPersonName2() {
-        return storangeInPersonName2;
+    public String getStoreKeeper1() {
+        return storeKeeper1;
     }
 
-    public void setStorangeInPersonName2(String storangeInPersonName2) {
-        this.storangeInPersonName2 = storangeInPersonName2;
+    public void setStoreKeeper1(String storeKeeper1) {
+        this.storeKeeper1 = storeKeeper1;
     }
-    public LocalDate getStorageInDate() {
-        return storageInDate;
-    }
-
-    public void setStorageInDate(LocalDate storageInDate) {
-        this.storageInDate = storageInDate;
-    }
-    public Integer getSampleNumber() {
-        return sampleNumber;
+    public Long getStoreKeeperId2() {
+        return storeKeeperId2;
     }
 
-    public void setSampleNumber(Integer sampleNumber) {
-        this.sampleNumber = sampleNumber;
+    public void setStoreKeeperId2(Long storeKeeperId2) {
+        this.storeKeeperId2 = storeKeeperId2;
+    }
+    public String getStoreKeeper2() {
+        return storeKeeper2;
+    }
+
+    public void setStoreKeeper2(String storeKeeper2) {
+        this.storeKeeper2 = storeKeeper2;
+    }
+    public LocalDate getStockInDate() {
+        return stockInDate;
+    }
+
+    public void setStockInDate(LocalDate stockInDate) {
+        this.stockInDate = stockInDate;
+    }
+    public Integer getCountOfSample() {
+        return countOfSample;
+    }
+
+    public void setCountOfSample(Integer countOfSample) {
+        this.countOfSample = countOfSample;
     }
     public Long getSignId() {
         return signId;
@@ -277,9 +284,9 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
             return false;
         }
 
-        StorageInDTO storageInDTO = (StorageInDTO) o;
+        StockInDTO stockInDTO = (StockInDTO) o;
 
-        if ( ! Objects.equals(id, storageInDTO.id)) { return false; }
+        if ( ! Objects.equals(id, stockInDTO.id)) { return false; }
 
         return true;
     }
@@ -291,20 +298,21 @@ public class StorageInDTO extends AbstractAuditingDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "StorageInDTO{" +
+        return "StockInDTO{" +
             "id=" + id +
+            ", stockInCode='" + stockInCode + "'" +
             ", projectCode='" + projectCode + "'" +
             ", projectSiteCode='" + projectSiteCode + "'" +
             ", receiveDate='" + receiveDate + "'" +
             ", receiveId='" + receiveId + "'" +
             ", receiveName='" + receiveName + "'" +
-            ", storageInType='" + storageInType + "'" +
-            ", storageInPersonId1='" + storageInPersonId1 + "'" +
-            ", storageInPersonName1='" + storageInPersonName1 + "'" +
-            ", storageInPersonId2='" + storageInPersonId2 + "'" +
-            ", storangeInPersonName2='" + storangeInPersonName2 + "'" +
-            ", storageInDate='" + storageInDate + "'" +
-            ", sampleNumber='" + sampleNumber + "'" +
+            ", stockInType='" + stockInType + "'" +
+            ", storeKeeperId1='" + storeKeeperId1 + "'" +
+            ", storeKeeper1='" + storeKeeper1 + "'" +
+            ", storeKeeperId2='" + storeKeeperId2 + "'" +
+            ", storeKeeper2='" + storeKeeper2 + "'" +
+            ", stockInDate='" + stockInDate + "'" +
+            ", countOfSample='" + countOfSample + "'" +
             ", signId='" + signId + "'" +
             ", signName='" + signName + "'" +
             ", signDate='" + signDate + "'" +

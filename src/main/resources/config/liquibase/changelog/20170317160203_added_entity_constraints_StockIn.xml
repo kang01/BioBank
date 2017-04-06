@@ -4,25 +4,25 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <!--
-        Added the constraints for entity StorageIn.
+        Added the constraints for entity StockIn.
     -->
     <changeSet id="20170317160203-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="tranship_id"
-                                 baseTableName="storage_in"
-                                 constraintName="fk_storage_in_tranship_id"
+                                 baseTableName="stock_in"
+                                 constraintName="fk_stock_in_tranship_id"
                                  referencedColumnNames="id"
                                  referencedTableName="tranship"/>
 
         <addForeignKeyConstraint baseColumnNames="project_id"
-                                 baseTableName="storage_in"
-                                 constraintName="fk_storage_in_project_id"
+                                 baseTableName="stock_in"
+                                 constraintName="fk_stock_in_project_id"
                                  referencedColumnNames="id"
                                  referencedTableName="project"/>
 
         <addForeignKeyConstraint baseColumnNames="project_site_id"
-                                 baseTableName="storage_in"
-                                 constraintName="fk_storage_in_project_site_id"
+                                 baseTableName="stock_in"
+                                 constraintName="fk_stock_in_project_site_id"
                                  referencedColumnNames="id"
                                  referencedTableName="project_site"/>
 

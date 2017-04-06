@@ -10,12 +10,12 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 /**
- * A StorageIn.
+ * A StockIn.
  */
 @Entity
-@Table(name = "storage_in")
+@Table(name = "stock_in")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class StorageIn extends AbstractAuditingEntity implements Serializable {
+public class StockIn extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,6 +24,13 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
 //    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
+    /**
+     * 入库编码
+     */
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "stock_in_code", length = 100, nullable = false)
+    private String stockInCode;
     /**
      * 项目编码
      */
@@ -63,67 +70,59 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
      */
     @NotNull
     @Size(max = 20)
-    @Column(name = "storage_in_type", length = 20, nullable = false)
-    private String storageInType;
+    @Column(name = "stock_in_type", length = 20, nullable = false)
+    private String stockInType;
     /**
      * 入库人1ID
      */
-    @NotNull
     @Max(value = 100)
-    @Column(name = "storage_in_person_id_1", nullable = false)
-    private Long storageInPersonId1;
+    @Column(name = "store_keeper_id_1")
+    private Long storeKeeperId1;
     /**
      * 入库人1名称
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "storage_in_person_name_1", length = 100, nullable = false)
-    private String storageInPersonName1;
+    @Column(name = "store_keeper_1", length = 100)
+    private String storeKeeper1;
     /**
      * 入库人2ID
      */
-    @NotNull
     @Max(value = 100)
-    @Column(name = "storage_in_person_id_2", nullable = false)
-    private Long storageInPersonId2;
+    @Column(name = "store_keeper_id_2")
+    private Long storeKeeperId2;
     /**
      * 入库人2名称
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "storange_in_person_name_2", length = 100, nullable = false)
-    private String storangeInPersonName2;
+    @Column(name = "store_keeper_2", length = 100)
+    private String storeKeeper2;
     /**
      * 入库日期
      */
-    @NotNull
-    @Column(name = "storage_in_date", nullable = false)
-    private LocalDate storageInDate;
+    @Column(name = "stock_in_date")
+    private LocalDate stockInDate;
     /**
      * 样本数量
      */
     @NotNull
-    @Column(name = "sample_number", nullable = false)
-    private Integer sampleNumber;
+    @Column(name = "count_of_sample", nullable = false)
+    private Integer countOfSample;
     /**
      * 签名人ID
      */
-    @NotNull
     @Max(value = 100)
-    @Column(name = "sign_id", nullable = false)
+    @Column(name = "sign_id")
     private Long signId;
     /**
      * 签名人姓名
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "sign_name", length = 100, nullable = false)
+    @Column(name = "sign_name", length = 100)
     private String signName;
     /**
      * 签名日期
      */
-    @NotNull
-    @Column(name = "sign_date", nullable = false)
+    @Column(name = "sign_date")
     private LocalDate signDate;
     /**
      * 备注
@@ -165,11 +164,25 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
+
+    public String getStockInCode() {
+        return stockInCode;
+    }
+
+    public StockIn stockInCode(String stockInCode) {
+        this.stockInCode = stockInCode;
+        return this;
+    }
+
+    public void setStockInCode(String stockInCode) {
+        this.stockInCode = stockInCode;
+    }
+
     public String getProjectCode() {
         return projectCode;
     }
 
-    public StorageIn projectCode(String projectCode) {
+    public StockIn projectCode(String projectCode) {
         this.projectCode = projectCode;
         return this;
     }
@@ -182,7 +195,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         return projectSiteCode;
     }
 
-    public StorageIn project_site_code(String projectSiteCode) {
+    public StockIn project_site_code(String projectSiteCode) {
         this.projectSiteCode = projectSiteCode;
         return this;
     }
@@ -195,7 +208,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         return receiveDate;
     }
 
-    public StorageIn receiveDate(LocalDate receiveDate) {
+    public StockIn receiveDate(LocalDate receiveDate) {
         this.receiveDate = receiveDate;
         return this;
     }
@@ -208,7 +221,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         return receiveId;
     }
 
-    public StorageIn receiveId(Long receiveId) {
+    public StockIn receiveId(Long receiveId) {
         this.receiveId = receiveId;
         return this;
     }
@@ -221,7 +234,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         return receiveName;
     }
 
-    public StorageIn receiveName(String receiveName) {
+    public StockIn receiveName(String receiveName) {
         this.receiveName = receiveName;
         return this;
     }
@@ -230,102 +243,102 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         this.receiveName = receiveName;
     }
 
-    public String getStorageInType() {
-        return storageInType;
+    public String getStockInType() {
+        return stockInType;
     }
 
-    public StorageIn storageInType(String storageInType) {
-        this.storageInType = storageInType;
+    public StockIn stockInType(String stockInType) {
+        this.stockInType = stockInType;
         return this;
     }
 
-    public void setStorageInType(String storageInType) {
-        this.storageInType = storageInType;
+    public void setStockInType(String stockInType) {
+        this.stockInType = stockInType;
     }
 
-    public Long getStorageInPersonId1() {
-        return storageInPersonId1;
+    public Long getStoreKeeperId1() {
+        return storeKeeperId1;
     }
 
-    public StorageIn storageInPersonId1(Long storageInPersonId1) {
-        this.storageInPersonId1 = storageInPersonId1;
+    public StockIn storeKeeperId1(Long storeKeeperId1) {
+        this.storeKeeperId1 = storeKeeperId1;
         return this;
     }
 
-    public void setStorageInPersonId1(Long storageInPersonId1) {
-        this.storageInPersonId1 = storageInPersonId1;
+    public void setStoreKeeperId1(Long storeKeeperId1) {
+        this.storeKeeperId1 = storeKeeperId1;
     }
 
-    public String getStorageInPersonName1() {
-        return storageInPersonName1;
+    public String getStoreKeeper1() {
+        return storeKeeper1;
     }
 
-    public StorageIn storageInPersonName1(String storageInPersonName1) {
-        this.storageInPersonName1 = storageInPersonName1;
+    public StockIn storeKeeper1(String storeKeeper1) {
+        this.storeKeeper1 = storeKeeper1;
         return this;
     }
 
-    public void setStorageInPersonName1(String storageInPersonName1) {
-        this.storageInPersonName1 = storageInPersonName1;
+    public void setStoreKeeper1(String storeKeeper1) {
+        this.storeKeeper1 = storeKeeper1;
     }
 
-    public Long getStorageInPersonId2() {
-        return storageInPersonId2;
+    public Long getStoreKeeperId2() {
+        return storeKeeperId2;
     }
 
-    public StorageIn storageInPersonId2(Long storageInPersonId2) {
-        this.storageInPersonId2 = storageInPersonId2;
+    public StockIn storeKeeperId2(Long storeKeeperId2) {
+        this.storeKeeperId2 = storeKeeperId2;
         return this;
     }
 
-    public void setStorageInPersonId2(Long storageInPersonId2) {
-        this.storageInPersonId2 = storageInPersonId2;
+    public void setStoreKeeperId2(Long storeKeeperId2) {
+        this.storeKeeperId2 = storeKeeperId2;
     }
 
-    public String getStorangeInPersonName2() {
-        return storangeInPersonName2;
+    public String getStoreKeeper2() {
+        return storeKeeper2;
     }
 
-    public StorageIn storangeInPersonName2(String storangeInPersonName2) {
-        this.storangeInPersonName2 = storangeInPersonName2;
+    public StockIn storeKeeper2(String storeKeeper2) {
+        this.storeKeeper2 = storeKeeper2;
         return this;
     }
 
-    public void setStorangeInPersonName2(String storangeInPersonName2) {
-        this.storangeInPersonName2 = storangeInPersonName2;
+    public void setStoreKeeper2(String storeKeeper2) {
+        this.storeKeeper2 = storeKeeper2;
     }
 
-    public LocalDate getStorageInDate() {
-        return storageInDate;
+    public LocalDate getStockInDate() {
+        return stockInDate;
     }
 
-    public StorageIn storageInDate(LocalDate storageInDate) {
-        this.storageInDate = storageInDate;
+    public StockIn stockInDate(LocalDate stockInDate) {
+        this.stockInDate = stockInDate;
         return this;
     }
 
-    public void setStorageInDate(LocalDate storageInDate) {
-        this.storageInDate = storageInDate;
+    public void setStockInDate(LocalDate stockInDate) {
+        this.stockInDate = stockInDate;
     }
 
-    public Integer getSampleNumber() {
-        return sampleNumber;
+    public Integer getCountOfSample() {
+        return countOfSample;
     }
 
-    public StorageIn sampleNumber(Integer sampleNumber) {
-        this.sampleNumber = sampleNumber;
+    public StockIn countOfSample(Integer countOfSample) {
+        this.countOfSample = countOfSample;
         return this;
     }
 
-    public void setSampleNumber(Integer sampleNumber) {
-        this.sampleNumber = sampleNumber;
+    public void setCountOfSample(Integer countOfSample) {
+        this.countOfSample = countOfSample;
     }
 
     public Long getSignId() {
         return signId;
     }
 
-    public StorageIn signId(Long signId) {
+    public StockIn signId(Long signId) {
         this.signId = signId;
         return this;
     }
@@ -338,7 +351,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         return signName;
     }
 
-    public StorageIn signName(String signName) {
+    public StockIn signName(String signName) {
         this.signName = signName;
         return this;
     }
@@ -351,7 +364,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         return signDate;
     }
 
-    public StorageIn signDate(LocalDate signDate) {
+    public StockIn signDate(LocalDate signDate) {
         this.signDate = signDate;
         return this;
     }
@@ -364,7 +377,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         return memo;
     }
 
-    public StorageIn memo(String memo) {
+    public StockIn memo(String memo) {
         this.memo = memo;
         return this;
     }
@@ -377,7 +390,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         return status;
     }
 
-    public StorageIn status(String status) {
+    public StockIn status(String status) {
         this.status = status;
         return this;
     }
@@ -390,7 +403,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         return tranship;
     }
 
-    public StorageIn tranship(Tranship tranship) {
+    public StockIn tranship(Tranship tranship) {
         this.tranship = tranship;
         return this;
     }
@@ -403,7 +416,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         return project;
     }
 
-    public StorageIn project(Project project) {
+    public StockIn project(Project project) {
         this.project = project;
         return this;
     }
@@ -416,7 +429,7 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         return projectSite;
     }
 
-    public StorageIn projectSite(ProjectSite projectSite) {
+    public StockIn projectSite(ProjectSite projectSite) {
         this.projectSite = projectSite;
         return this;
     }
@@ -433,11 +446,11 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        StorageIn storageIn = (StorageIn) o;
-        if (storageIn.id == null || id == null) {
+        StockIn stockIn = (StockIn) o;
+        if (stockIn.id == null || id == null) {
             return false;
         }
-        return Objects.equals(id, storageIn.id);
+        return Objects.equals(id, stockIn.id);
     }
 
     @Override
@@ -447,20 +460,21 @@ public class StorageIn extends AbstractAuditingEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "StorageIn{" +
+        return "StockIn{" +
             "id=" + id +
+            ", stockInCode='" + stockInCode + "'" +
             ", projectCode='" + projectCode + "'" +
             ", projectSiteCode='" + projectSiteCode + "'" +
             ", receiveDate='" + receiveDate + "'" +
             ", receiveId='" + receiveId + "'" +
             ", receiveName='" + receiveName + "'" +
-            ", storageInType='" + storageInType + "'" +
-            ", storageInPersonId1='" + storageInPersonId1 + "'" +
-            ", storageInPersonName1='" + storageInPersonName1 + "'" +
-            ", storageInPersonId2='" + storageInPersonId2 + "'" +
-            ", storangeInPersonName2='" + storangeInPersonName2 + "'" +
-            ", storageInDate='" + storageInDate + "'" +
-            ", sampleNumber='" + sampleNumber + "'" +
+            ", stockInType='" + stockInType + "'" +
+            ", storeKeeperId1='" + storeKeeperId1 + "'" +
+            ", storeKeeper1='" + storeKeeper1 + "'" +
+            ", storeKeeperId2='" + storeKeeperId2 + "'" +
+            ", storeKeeper2='" + storeKeeper2 + "'" +
+            ", stockInDate='" + stockInDate + "'" +
+            ", countOfSample='" + countOfSample + "'" +
             ", signId='" + signId + "'" +
             ", signName='" + signName + "'" +
             ", signDate='" + signDate + "'" +

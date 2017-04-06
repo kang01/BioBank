@@ -4,19 +4,19 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myStorageInLabel" data-translate="bioBankApp.storageIn.home.createOrEditLabel">Create or edit a Storage In</h4>
+        <h4 class="modal-title" id="myStorageInLabel" data-translate="bioBankApp.stockIn.home.createOrEditLabel">Create or edit a Storage In</h4>
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" ng-show="vm.storageIn.id">
+        <div class="form-group" ng-show="vm.stockIn.id">
             <label for="id" data-translate="global.field.id">ID</label>
             <input type="text" class="form-control" id="id" name="id"
-                    ng-model="vm.storageIn.id" readonly />
+                    ng-model="vm.stockIn.id" readonly />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.projectCode" for="field_projectCode">Project Code</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.projectCode" for="field_projectCode">Project Code</label>
             <input type="text" class="form-control" name="projectCode" id="field_projectCode"
-                    ng-model="vm.storageIn.projectCode"
+                    ng-model="vm.stockIn.projectCode"
                     required ng-maxlength="100"/>
             <div ng-show="editForm.projectCode.$invalid">
                 <p class="help-block"
@@ -30,9 +30,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.project_site_code" for="field_project_site_code">Project Site Code</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.project_site_code" for="field_project_site_code">Project Site Code</label>
             <input type="text" class="form-control" name="project_site_code" id="field_project_site_code"
-                    ng-model="vm.storageIn.project_site_code"
+                    ng-model="vm.stockIn.project_site_code"
                     required ng-maxlength="100"/>
             <div ng-show="editForm.project_site_code.$invalid">
                 <p class="help-block"
@@ -46,9 +46,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.receiveDate" for="field_receiveDate">Receive Date</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.receiveDate" for="field_receiveDate">Receive Date</label>
                 <div class="input-group">
-                    <input id="field_receiveDate" type="text" class="form-control" name="receiveDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.storageIn.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"
+                    <input id="field_receiveDate" type="text" class="form-control" name="receiveDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockIn.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"
                     required/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -62,9 +62,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.receiveId" for="field_receiveId">Receive Id</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.receiveId" for="field_receiveId">Receive Id</label>
             <input type="number" class="form-control" name="receiveId" id="field_receiveId"
-                    ng-model="vm.storageIn.receiveId"
+                    ng-model="vm.stockIn.receiveId"
                     required max="100"/>
             <div ng-show="editForm.receiveId.$invalid">
                 <p class="help-block"
@@ -82,9 +82,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.receiveName" for="field_receiveName">Receive Name</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.receiveName" for="field_receiveName">Receive Name</label>
             <input type="text" class="form-control" name="receiveName" id="field_receiveName"
-                    ng-model="vm.storageIn.receiveName"
+                    ng-model="vm.stockIn.receiveName"
                     required ng-maxlength="100"/>
             <div ng-show="editForm.receiveName.$invalid">
                 <p class="help-block"
@@ -98,9 +98,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.storageInType" for="field_storageInType">Storage In Type</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.storageInType" for="field_storageInType">Storage In Type</label>
             <input type="text" class="form-control" name="storageInType" id="field_storageInType"
-                    ng-model="vm.storageIn.storageInType"
+                    ng-model="vm.stockIn.storageInType"
                     required ng-maxlength="20"/>
             <div ng-show="editForm.storageInType.$invalid">
                 <p class="help-block"
@@ -114,9 +114,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.storageInPersonId1" for="field_storageInPersonId1">Storage In Person Id 1</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.storageInPersonId1" for="field_storageInPersonId1">Storage In Person Id 1</label>
             <input type="number" class="form-control" name="storageInPersonId1" id="field_storageInPersonId1"
-                    ng-model="vm.storageIn.storageInPersonId1"
+                    ng-model="vm.stockIn.storageInPersonId1"
                     required max="100"/>
             <div ng-show="editForm.storageInPersonId1.$invalid">
                 <p class="help-block"
@@ -134,9 +134,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.storageInPersonName1" for="field_storageInPersonName1">Storage In Person Name 1</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.storageInPersonName1" for="field_storageInPersonName1">Storage In Person Name 1</label>
             <input type="text" class="form-control" name="storageInPersonName1" id="field_storageInPersonName1"
-                    ng-model="vm.storageIn.storageInPersonName1"
+                    ng-model="vm.stockIn.storageInPersonName1"
                     required ng-maxlength="100"/>
             <div ng-show="editForm.storageInPersonName1.$invalid">
                 <p class="help-block"
@@ -150,9 +150,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.storageInPersonId2" for="field_storageInPersonId2">Storage In Person Id 2</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.storageInPersonId2" for="field_storageInPersonId2">Storage In Person Id 2</label>
             <input type="number" class="form-control" name="storageInPersonId2" id="field_storageInPersonId2"
-                    ng-model="vm.storageIn.storageInPersonId2"
+                    ng-model="vm.stockIn.storageInPersonId2"
                     required max="100"/>
             <div ng-show="editForm.storageInPersonId2.$invalid">
                 <p class="help-block"
@@ -170,9 +170,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.storangeInPersonName2" for="field_storangeInPersonName2">Storange In Person Name 2</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.storangeInPersonName2" for="field_storangeInPersonName2">Storange In Person Name 2</label>
             <input type="text" class="form-control" name="storangeInPersonName2" id="field_storangeInPersonName2"
-                    ng-model="vm.storageIn.storangeInPersonName2"
+                    ng-model="vm.stockIn.storangeInPersonName2"
                     required ng-maxlength="100"/>
             <div ng-show="editForm.storangeInPersonName2.$invalid">
                 <p class="help-block"
@@ -186,9 +186,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.storageInDate" for="field_storageInDate">Storage In Date</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.storageInDate" for="field_storageInDate">Storage In Date</label>
                 <div class="input-group">
-                    <input id="field_storageInDate" type="text" class="form-control" name="storageInDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.storageIn.storageInDate" is-open="vm.datePickerOpenStatus.storageInDate"
+                    <input id="field_storageInDate" type="text" class="form-control" name="storageInDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockIn.storageInDate" is-open="vm.datePickerOpenStatus.storageInDate"
                     required/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('storageInDate')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -202,9 +202,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.sampleNumber" for="field_sampleNumber">Sample Number</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.sampleNumber" for="field_sampleNumber">Sample Number</label>
             <input type="number" class="form-control" name="sampleNumber" id="field_sampleNumber"
-                    ng-model="vm.storageIn.sampleNumber"
+                    ng-model="vm.stockIn.sampleNumber"
                     required max="100"/>
             <div ng-show="editForm.sampleNumber.$invalid">
                 <p class="help-block"
@@ -222,9 +222,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.signId" for="field_signId">Sign Id</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.signId" for="field_signId">Sign Id</label>
             <input type="number" class="form-control" name="signId" id="field_signId"
-                    ng-model="vm.storageIn.signId"
+                    ng-model="vm.stockIn.signId"
                     required max="100"/>
             <div ng-show="editForm.signId.$invalid">
                 <p class="help-block"
@@ -242,9 +242,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.signName" for="field_signName">Sign Name</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.signName" for="field_signName">Sign Name</label>
             <input type="text" class="form-control" name="signName" id="field_signName"
-                    ng-model="vm.storageIn.signName"
+                    ng-model="vm.stockIn.signName"
                     required ng-maxlength="100"/>
             <div ng-show="editForm.signName.$invalid">
                 <p class="help-block"
@@ -258,9 +258,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.signDate" for="field_signDate">Sign Date</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.signDate" for="field_signDate">Sign Date</label>
                 <div class="input-group">
-                    <input id="field_signDate" type="text" class="form-control" name="signDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.storageIn.signDate" is-open="vm.datePickerOpenStatus.signDate"
+                    <input id="field_signDate" type="text" class="form-control" name="signDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockIn.signDate" is-open="vm.datePickerOpenStatus.signDate"
                     required/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('signDate')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -274,9 +274,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.memo" for="field_memo">Memo</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.memo" for="field_memo">Memo</label>
             <input type="text" class="form-control" name="memo" id="field_memo"
-                    ng-model="vm.storageIn.memo"
+                    ng-model="vm.stockIn.memo"
                     ng-maxlength="1024"/>
             <div ng-show="editForm.memo.$invalid">
                 <p class="help-block"
@@ -286,9 +286,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageIn.status" for="field_status">Status</label>
+            <label class="control-label" data-translate="bioBankApp.stockIn.status" for="field_status">Status</label>
             <input type="text" class="form-control" name="status" id="field_status"
-                    ng-model="vm.storageIn.status"
+                    ng-model="vm.stockIn.status"
                     required ng-maxlength="20"/>
             <div ng-show="editForm.status.$invalid">
                 <p class="help-block"
@@ -303,8 +303,8 @@
         </div>
 
         <div class="form-group">
-            <label data-translate="bioBankApp.storageIn.tranship" for="field_tranship">Tranship</label>
-            <select class="form-control" id="field_tranship" name="tranship" ng-model="vm.storageIn.transhipId" ng-options="tranship.id as tranship.id for tranship in vm.tranships"             required>
+            <label data-translate="bioBankApp.stockIn.tranship" for="field_tranship">Tranship</label>
+            <select class="form-control" id="field_tranship" name="tranship" ng-model="vm.stockIn.transhipId" ng-options="tranship.id as tranship.id for tranship in vm.tranships"             required>
                 <option value=""></option>
             </select>
         </div>
@@ -315,8 +315,8 @@
             </p>
         </div>
         <div class="form-group">
-            <label data-translate="bioBankApp.storageIn.project" for="field_project">Project</label>
-            <select class="form-control" id="field_project" name="project" ng-model="vm.storageIn.projectId" ng-options="project.id as project.id for project in vm.projects"             required>
+            <label data-translate="bioBankApp.stockIn.project" for="field_project">Project</label>
+            <select class="form-control" id="field_project" name="project" ng-model="vm.stockIn.projectId" ng-options="project.id as project.id for project in vm.projects"             required>
                 <option value=""></option>
             </select>
         </div>
@@ -327,8 +327,8 @@
             </p>
         </div>
         <div class="form-group">
-            <label data-translate="bioBankApp.storageIn.projectSite" for="field_projectSite">Project Site</label>
-            <select class="form-control" id="field_projectSite" name="projectSite" ng-model="vm.storageIn.projectSiteId" ng-options="projectSite.id as projectSite.id for projectSite in vm.projectsites"             required>
+            <label data-translate="bioBankApp.stockIn.projectSite" for="field_projectSite">Project Site</label>
+            <select class="form-control" id="field_projectSite" name="projectSite" ng-model="vm.stockIn.projectSiteId" ng-options="projectSite.id as projectSite.id for projectSite in vm.projectsites"             required>
                 <option value=""></option>
             </select>
         </div>

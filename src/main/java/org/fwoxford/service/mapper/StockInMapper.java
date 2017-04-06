@@ -1,30 +1,30 @@
 package org.fwoxford.service.mapper;
 
 import org.fwoxford.domain.*;
-import org.fwoxford.service.dto.StorageInDTO;
+import org.fwoxford.service.dto.StockInDTO;
 
 import org.mapstruct.*;
 import java.util.List;
 
 /**
- * Mapper for the entity StorageIn and its DTO StorageInDTO.
+ * Mapper for the entity StockIn and its DTO StockInDTO.
  */
 @Mapper(componentModel = "spring", uses = {})
-public interface StorageInMapper {
+public interface StockInMapper {
 
     @Mapping(source = "tranship.id", target = "transhipId")
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "projectSite.id", target = "projectSiteId")
-    StorageInDTO storageInToStorageInDTO(StorageIn storageIn);
+    StockInDTO stockInToStockInDTO(StockIn stockIn);
 
-    List<StorageInDTO> storageInsToStorageInDTOs(List<StorageIn> storageIns);
+    List<StockInDTO> stockInsToStockInDTOs(List<StockIn> stockIns);
 
     @Mapping(source = "transhipId", target = "tranship")
     @Mapping(source = "projectId", target = "project")
     @Mapping(source = "projectSiteId", target = "projectSite")
-    StorageIn storageInDTOToStorageIn(StorageInDTO storageInDTO);
+    StockIn stockInDTOToStockIn(StockInDTO stockInDTO);
 
-    List<StorageIn> storageInDTOsToStorageIns(List<StorageInDTO> storageInDTOs);
+    List<StockIn> stockInDTOsToStockIns(List<StockInDTO> stockInDTOS);
 
     default Tranship transhipFromId(Long id) {
         if (id == null) {

@@ -1,44 +1,43 @@
 package org.fwoxford.service;
 
-import org.fwoxford.service.dto.StorageInDTO;
+import org.fwoxford.service.dto.StockInDTO;
+import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
-import java.util.List;
-
 /**
- * Service Interface for managing StorageIn.
+ * Service Interface for managing StockIn.
  */
-public interface StorageInService {
+public interface StockInService {
 
     /**
-     * Save a storageIn.
+     * Save a stockIn.
      *
-     * @param storageInDTO the entity to save
+     * @param stockInDTO the entity to save
      * @return the persisted entity
      */
-    StorageInDTO save(StorageInDTO storageInDTO);
+    StockInDTO save(StockInDTO stockInDTO);
 
     /**
-     *  Get all the storageIns.
+     *  Get all the stockIns.
      *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
-    Page<StorageInDTO> findAll(Pageable pageable);
+    Page<StockInDTO> findAll(Pageable pageable);
 
     /**
-     *  Get the "id" storageIn.
+     *  Get the "id" stockIn.
      *
      *  @param id the id of the entity
      *  @return the entity
      */
-    StorageInDTO findOne(Long id);
+    StockInDTO findOne(Long id);
 
     /**
-     *  Delete the "id" storageIn.
+     *  Delete the "id" stockIn.
      *
      *  @param id the id of the entity
      */
@@ -46,15 +45,15 @@ public interface StorageInService {
 
     /**
      * 入库保存
-     * @param storageInDTO
+     * @param stockInDTO
      * @return
      */
-    StorageInDTO saveStorageIns(StorageInDTO storageInDTO);
+    StockInDTO saveStockIns(StockInDTO stockInDTO);
 
     /**
      * 查询入库单信息
      * @param input
      * @return
      */
-    DataTablesOutput<StorageInDTO> findStorageIn(DataTablesInput input);
+    DataTablesOutput<StockInForDataTable> findStockIn(DataTablesInput input);
 }

@@ -1,6 +1,8 @@
 package org.fwoxford.service.dto;
 
 
+import org.fwoxford.domain.Equipment;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -47,6 +49,9 @@ public class AreaDTO extends AbstractAuditingDTO implements Serializable {
      */
     private Long equipmentId;
 
+    @NotNull
+    private Equipment equipment;
+
     public Long getId() {
         return id;
     }
@@ -87,15 +92,21 @@ public class AreaDTO extends AbstractAuditingDTO implements Serializable {
     }
 
     public void setEquipmentCode(String equipmentCode) {
+        if (this.equipment == null){
+            this.equipment = new Equipment();
+        }
         this.equipmentCode = equipmentCode;
     }
 
     public Long getEquipmentId() {
-        return equipmentId;
+        return equipment.getId();
     }
 
     public void setEquipmentId(Long equipmentId) {
-        this.equipmentId = equipmentId;
+        if (this.equipment == null){
+            this.equipment = new Equipment();
+        }
+        this.equipment.setId(equipmentId);
     }
 
     @Override
@@ -123,11 +134,21 @@ public class AreaDTO extends AbstractAuditingDTO implements Serializable {
     public String toString() {
         return "AreaDTO{" +
             "id=" + id +
-            ", areaCode='" + areaCode + "'" +
-            ", freezeFrameNumber='" + freezeFrameNumber + "'" +
-            ", memo='" + memo + "'" +
-            ", status='" + status + "'" +
-            ", equipmentCode='" + equipmentCode + "'" +
+            ", areaCode='" + areaCode + '\'' +
+            ", freezeFrameNumber=" + freezeFrameNumber +
+            ", memo='" + memo + '\'' +
+            ", status='" + status + '\'' +
+            ", equipmentCode='" + equipmentCode + '\'' +
+            ", equipmentId=" + equipmentId +
+            ", equipment=" + equipment +
             '}';
+    }
+
+    public Equipment getEquipment() {
+        return equipment;
+    }
+
+    public void setEquipment(Equipment equipment) {
+        this.equipment = equipment;
     }
 }

@@ -13,11 +13,12 @@ import java.util.List;
 public interface AreaMapper {
 
     @Mapping(source = "equipment.id", target = "equipmentId")
+    @Mapping(source = "equipment.equipmentCode", target = "equipmentCode")
     AreaDTO areaToAreaDTO(Area area);
 
     List<AreaDTO> areasToAreaDTOs(List<Area> areas);
 
-    @Mapping(source = "equipmentId", target = "equipment")
+    @Mapping(source = "equipment", target = "equipment")
     Area areaDTOToArea(AreaDTO areaDTO);
 
     List<Area> areaDTOsToAreas(List<AreaDTO> areaDTOs);

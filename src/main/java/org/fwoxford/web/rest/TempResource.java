@@ -4,13 +4,15 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import net.sf.json.JSONObject;
+import org.fwoxford.domain.Area;
+import org.fwoxford.domain.Equipment;
+import org.fwoxford.domain.SampleType;
 import org.fwoxford.service.SampleTypeService;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.SampleTypeMapper;
 import org.fwoxford.web.rest.util.BankUtil;
-import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
@@ -306,11 +308,11 @@ public class TempResource {
      * @return
      */
     @RequestMapping(value = "/frozen-boxes/incomplete-boxes/project/{projectCode}/type/{sampleTypeCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
-    public List<StockInBoxForDataMoved> getIncompleteFrozenBoxes(@PathVariable String projectCode, @PathVariable String sampleTypeCode) {
-        List<StockInBoxForDataMoved> boxes =  new ArrayList<>();
+    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(@PathVariable String projectCode, @PathVariable String sampleTypeCode) {
+        List<StockInBoxForChangingPosition> boxes =  new ArrayList<>();
         Random random = new Random();
 
-        StockInBoxForDataMoved rowData = new StockInBoxForDataMoved();
+        StockInBoxForChangingPosition rowData = new StockInBoxForChangingPosition();
         rowData = createStockInBoxForDataMoved(random.nextLong(), "1234567890", sampleTypeCode, 90);
         boxes.add(rowData);
 
@@ -318,8 +320,8 @@ public class TempResource {
     }
     @Autowired
     private SampleTypeMapper sampleTypeMapper;
-    private StockInBoxForDataMoved createStockInBoxForDataMoved(long id, String frozenBoxCode, String sampleTypeCode, int countOfSample) {
-        StockInBoxForDataMoved res = new StockInBoxForDataMoved();
+    private StockInBoxForChangingPosition createStockInBoxForDataMoved(long id, String frozenBoxCode, String sampleTypeCode, int countOfSample) {
+        StockInBoxForChangingPosition res = new StockInBoxForChangingPosition();
         List<SampleTypeDTO> types = sampleTypeService.findAllSampleTypes();
         SampleTypeDTO typeDTO = new SampleTypeDTO();
         for(SampleTypeDTO type :types){
@@ -331,7 +333,7 @@ public class TempResource {
         if (sampleTypeCode == null){
             typeDTO = types.stream().filter(t->t.getSampleTypeCode() != null && t.getSampleTypeCode().equals(sampleTypeCode)).findFirst().orElse(null);
         }
-        res.setSampleType(sampleTypeMapper.sampleTypeDTOToSampleType(typeDTO));
+        res.setSampleType(typeDTO);
         res.setCountOfSample(countOfSample);
         res.setFrozenBoxId(id);
         res.setFrozenBoxCode(frozenBoxCode);
@@ -339,7 +341,7 @@ public class TempResource {
         res.setFrozenBoxRows("10");
         res.setStockInFrozenTubeList(new ArrayList<>());
         for(int i = 0; i<countOfSample; ++i){
-            StockInTubeForDataMoved tube = new StockInTubeForDataMoved();
+            StockInTubeForBox tube = new StockInTubeForBox();
             tube.setFrozenTubeId((id - 1) * 100 + i);
             tube.setFrozenTubeCode("");
             tube.setSampleType(sampleTypeMapper.sampleTypeDTOToSampleType(typeDTO));
@@ -458,21 +460,23 @@ public class TempResource {
      */
     @GetMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}")
     @Timed
-    public ResponseEntity<StockInBoxForDataDetail> getStockIn(@PathVariable String stockInCode, @PathVariable String frozenBoxCode) {
-        StockInBoxForDataDetail stockInBoxForDataDetail = new StockInBoxForDataDetail();
-        stockInBoxForDataDetail.setId(1L);
-        stockInBoxForDataDetail.setFrozenBoxCode(frozenBoxCode);
-        stockInBoxForDataDetail.setCountOfSample(100);
-        stockInBoxForDataDetail.setIsSplit(0);
-        stockInBoxForDataDetail.setPosition("F3-71.S01");
-        stockInBoxForDataDetail.setSampleTypeName("99");
-        stockInBoxForDataDetail.setStatus("2002");
-        stockInBoxForDataDetail.setEquipmentId(1L);
-        stockInBoxForDataDetail.setAreaId(2L);
-        stockInBoxForDataDetail.setSupportRackId(3L);
-        stockInBoxForDataDetail.setMemo("");
-        stockInBoxForDataDetail.setStockInCode(stockInCode);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInBoxForDataDetail));
+    public ResponseEntity<StockInBoxDetail> getStockIn(@PathVariable String stockInCode, @PathVariable String frozenBoxCode) {
+        List<SupportRackDTO> shelfs = createSupportRackList(1L, "F3-71", "S01");
+        SupportRackDTO shelf = shelfs.get(0);
+        SampleTypeDTO sampleType = sampleTypeService.findAllSampleTypes().get(0);
+        StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+        stockInBoxDetail.setId(1L);
+        stockInBoxDetail.setFrozenBoxCode(frozenBoxCode);
+        stockInBoxDetail.setCountOfSample(100);
+        stockInBoxDetail.setIsSplit(0);
+        stockInBoxDetail.setSupportRackId(shelf.getId());
+        stockInBoxDetail.setAreaId(shelf.getAreaId());
+        stockInBoxDetail.setEquipmentId(shelf.getArea().getEquipment().getId());
+        stockInBoxDetail.setSampleType(sampleType);
+        stockInBoxDetail.setStatus("2002");
+        stockInBoxDetail.setMemo("");
+        stockInBoxDetail.setStockInCode(stockInCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInBoxDetail));
     }
     /**
      * 输入入库单编码和盒子编码，以及分装后的盒子，返回保存好的分装后盒子的信息。
@@ -482,8 +486,8 @@ public class TempResource {
      */
     @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/splited")
     @Timed
-    public ResponseEntity<StockInBoxForDataSplit> splitedStockIn(@Valid @RequestBody String stockInCode, String frozenBoxCode, StockInBoxForDataSplit stockInBoxForDataSplit) throws URISyntaxException {
-        StockInBoxForDataSplit detail = stockInBoxForDataSplit;
+    public ResponseEntity<StockInBoxSplit> splitedStockIn(@Valid @RequestBody String stockInCode, String frozenBoxCode, StockInBoxSplit stockInBoxForDataSplit) throws URISyntaxException {
+        StockInBoxSplit detail = stockInBoxForDataSplit;
         stockInBoxForDataSplit.setId(1L);
         List<StockInTubeDTO> tubeDTOS = stockInBoxForDataSplit.getStockInTubeDTOList();
         List<StockInTubeDTO> tubeDTOList = new ArrayList<>();
@@ -504,23 +508,25 @@ public class TempResource {
      */
     @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/moved")
     @Timed
-    public ResponseEntity<StockInBoxForDataDetail> movedStockIn(@Valid @RequestBody String stockInCode, String frozenBoxCode, FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
-        StockInBoxForDataDetail stockInBoxForDataDetail = new StockInBoxForDataDetail();
-        stockInBoxForDataDetail.setId(1L);
-        stockInBoxForDataDetail.setFrozenBoxCode(frozenBoxCode);
-        stockInBoxForDataDetail.setCountOfSample(100);
-        stockInBoxForDataDetail.setIsSplit(0);
-        stockInBoxForDataDetail.setPosition("F3-71.S01");
-        stockInBoxForDataDetail.setSampleTypeName("99");
-        stockInBoxForDataDetail.setStatus("2002");
-        stockInBoxForDataDetail.setEquipmentId(1L);
-        stockInBoxForDataDetail.setAreaId(2L);
-        stockInBoxForDataDetail.setSupportRackId(3L);
-        stockInBoxForDataDetail.setMemo("");
-        stockInBoxForDataDetail.setStockInCode(stockInCode);
+    public ResponseEntity<StockInBoxDetail> movedStockIn(@Valid @RequestBody String stockInCode, String frozenBoxCode, FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
+        List<SupportRackDTO> shelfs = createSupportRackList(1L, "F3-71", "S01");
+        SupportRackDTO shelf = shelfs.get(0);
+        SampleTypeDTO sampleType = sampleTypeService.findAllSampleTypes().get(0);
+        StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+        stockInBoxDetail.setId(1L);
+        stockInBoxDetail.setFrozenBoxCode(frozenBoxCode);
+        stockInBoxDetail.setCountOfSample(100);
+        stockInBoxDetail.setIsSplit(0);
+        stockInBoxDetail.setSupportRackId(shelf.getId());
+        stockInBoxDetail.setAreaId(shelf.getAreaId());
+        stockInBoxDetail.setEquipmentId(shelf.getArea().getEquipment().getId());
+        stockInBoxDetail.setSampleType(sampleType);
+        stockInBoxDetail.setStatus("2002");
+        stockInBoxDetail.setMemo("");
+        stockInBoxDetail.setStockInCode(stockInCode);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxForDataDetail.getId().toString()))
-            .body(stockInBoxForDataDetail);
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getId().toString()))
+            .body(stockInBoxDetail);
     }
     /**
      * 输入设备编码，返回该设备下的所有架子
@@ -546,9 +552,93 @@ public class TempResource {
 
     @RequestMapping(value = "/frozen-pos/incomplete-shelfs/{equipmentCode}/{areaCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
     public List<SupportRackDTO> getIncompleteShelves(@PathVariable String equipmentCode, @PathVariable String areaCode) {
-        List<SupportRackDTO> boxes =  new ArrayList<>();
+        List<SupportRackDTO> result =  new ArrayList<>();
         Random random = new Random();
 
-        return boxes;
+        for (int i=0;i<1;++i) {
+            result.addAll(createSupportRackList((long)i, equipmentCode, areaCode));
+        }
+
+        return result;
+    }
+
+    @RequestMapping(value = "/frozen-pos/incomplete-shelfs/{equipmentCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public List<SupportRackDTO> getIncompleteShelves(@PathVariable String equipmentCode) {
+        List<SupportRackDTO> result =  new ArrayList<>();
+        Random random = new Random();
+
+        for (int i=0;i<1;++i) {
+            result.addAll(createSupportRackList((long)i, equipmentCode, null));
+        }
+
+        return result;
+    }
+
+    private List<SupportRackDTO> createSupportRackList(Long equipmentId, String equipmentCode, String areaCode){
+        List<SupportRackDTO> result =  new ArrayList<>();
+
+        Equipment equipment = new Equipment();
+        equipment.setId(equipmentId);
+        equipment.setEquipmentCode(equipmentCode);
+        for (int j=1;j<=10;++j) {
+            Area area = new Area();
+            area.setId(j+equipmentId*10);
+            area.setEquipment(equipment);
+            area.setEquipmentCode(equipment.getEquipmentCode());
+            area.setFreezeFrameNumber(10);
+            for (int k = 1; k <= 10; ++k) {
+                SupportRackDTO shelf = new SupportRackDTO();
+                shelf.setId(k+j*10+equipmentId*100);
+                shelf.setArea(area);
+                shelf.setAreaId(area.getId());
+                shelf.setAreaCode(area.getAreaCode());
+
+                shelf.setStatus("01");
+                shelf.setMemo("");
+                shelf.setSupportRackCode(String.format("R%2s", k).replace(" ", "0"));
+                shelf.setSupportRackTypeId(26L);
+                shelf.setSupportRackTypeCode("S_RACK_0001");
+
+                result.add(shelf);
+            }
+
+            if (areaCode != null){
+                area.setAreaCode(areaCode);
+                break;
+            } else {
+                area.setAreaCode(String.format("S%2s", j).replace(" ", "0"));
+            }
+
+        }
+
+        return result;
+    }
+
+
+    @GetMapping("/frozen-boxes/pos/{equipmentCode}/{areaCode}/{shelfCode}")
+    @Timed
+    public ResponseEntity<StockInBoxDetail> movedStockIn(@PathVariable String equipmentCode, @PathVariable String areaCode, @PathVariable String shelfCode) throws URISyntaxException {
+        List<SupportRackDTO> shelves = createSupportRackList(1L, equipmentCode, areaCode);
+        SupportRackDTO shelf = shelves.get(0);
+        shelf.setSupportRackCode(shelfCode);
+
+        SampleTypeDTO sampleType = sampleTypeService.findAllSampleTypes().get(0);
+
+        StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+        stockInBoxDetail.setId(1L);
+        stockInBoxDetail.setFrozenBoxCode("1234567890");
+        stockInBoxDetail.setCountOfSample(100);
+        stockInBoxDetail.setIsSplit(0);
+        stockInBoxDetail.setSupportRackId(shelf.getId());
+        stockInBoxDetail.setAreaId(shelf.getAreaId());
+        stockInBoxDetail.setEquipmentId(shelf.getArea().getEquipment().getId());
+        stockInBoxDetail.setSampleType(sampleType);
+        stockInBoxDetail.setStatus("2002");
+        stockInBoxDetail.setMemo("");
+        stockInBoxDetail.setStockInCode("1234567890");
+
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getId().toString()))
+            .body(stockInBoxDetail);
     }
 }

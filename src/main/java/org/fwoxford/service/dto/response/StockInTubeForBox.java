@@ -5,7 +5,7 @@ import org.fwoxford.domain.SampleType;
 /**
  * Created by gengluying on 2017/4/5.
  */
-public class StockInTubeForDataMoved {
+public class StockInTubeForBox {
     private String frozenBoxCode;
     private String frozenTubeCode;
     private Long frozenTubeId;

@@ -19,7 +19,7 @@ public interface SupportRackMapper {
     List<SupportRackDTO> supportRacksToSupportRackDTOs(List<SupportRack> supportRacks);
 
     @Mapping(source = "supportRackTypeId", target = "supportRackType")
-    @Mapping(source = "areaId", target = "area")
+    @Mapping(source = "area", target = "area")
     SupportRack supportRackDTOToSupportRack(SupportRackDTO supportRackDTO);
 
     List<SupportRack> supportRackDTOsToSupportRacks(List<SupportRackDTO> supportRackDTOs);

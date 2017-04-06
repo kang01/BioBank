@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by gengluying on 2017/4/5.
  */
-public class StockInBoxForDataSplit extends StockInBoxForDataDetail{
+public class StockInBoxSplit extends StockInBoxDetail {
     private List<StockInTubeDTO> stockInTubeDTOList;
 
     public List<StockInTubeDTO> getStockInTubeDTOList() {

@@ -1,9 +1,12 @@
 package org.fwoxford.service.dto;
 
 
+import org.fwoxford.domain.Area;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -46,10 +49,16 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
      * 冻存架类型Id
      */
     private Long supportRackTypeId;
+
+
+
     /**
-     * 区域Id
+     * 区域
      */
-    private Long areaId;
+    @NotNull
+    private Area area;
+
+    private List<FrozenBoxDTO> frozenBoxDTOList;
 
     public Long getId() {
         return id;
@@ -66,11 +75,24 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
         this.supportRackTypeCode = supportRackTypeCode;
     }
     public String getAreaCode() {
-        return areaCode;
+        return area.getAreaCode();
     }
 
     public void setAreaCode(String areaCode) {
-        this.areaCode = areaCode;
+        if (this.area == null){
+            this.area = new Area();
+        }
+        this.area.setAreaCode(areaCode);
+    }
+    public String getEquipmentCode() {
+        return area.getEquipmentCode();
+    }
+
+    public void setEquipmentCode(String equipmentCode) {
+        if (this.area == null){
+            this.area = new Area();
+        }
+        this.area.setEquipmentCode(equipmentCode);
     }
     public String getMemo() {
         return memo;
@@ -103,11 +125,22 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
     }
 
     public Long getAreaId() {
-        return areaId;
+        return area.getId();
     }
 
     public void setAreaId(Long areaId) {
-        this.areaId = areaId;
+        if (this.area == null){
+            this.area = new Area();
+        }
+        this.area.setId(areaId);
+    }
+
+    public Area getArea() {
+        return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
     }
 
     @Override
@@ -135,11 +168,24 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
     public String toString() {
         return "SupportRackDTO{" +
             "id=" + id +
-            ", supportRackTypeCode='" + supportRackTypeCode + "'" +
-            ", areaCode='" + areaCode + "'" +
-            ", memo='" + memo + "'" +
-            ", status='" + status + "'" +
-            ", supportRackCode='" + supportRackCode + "'" +
+            ", supportRackTypeCode='" + supportRackTypeCode + '\'' +
+            ", areaCode='" + areaCode + '\'' +
+            ", memo='" + memo + '\'' +
+            ", status='" + status + '\'' +
+            ", supportRackCode='" + supportRackCode + '\'' +
+            ", supportRackTypeId=" + supportRackTypeId +
+            ", area=" + area +
             '}';
+    }
+
+    /**
+     * 架子上的盒子
+     */
+    public List<FrozenBoxDTO> getFrozenBoxDTOList() {
+        return frozenBoxDTOList;
+    }
+
+    public void setFrozenBoxDTOList(List<FrozenBoxDTO> frozenBoxDTOList) {
+        this.frozenBoxDTOList = frozenBoxDTOList;
     }
 }

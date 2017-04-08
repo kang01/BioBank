@@ -2,11 +2,9 @@ package org.fwoxford.repository;
 
 import org.fwoxford.domain.FrozenBox;
 
-import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Spring Data JPA repository for the FrozenBox entity.
@@ -32,4 +30,8 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     @Modifying
     @Query("update FrozenBox b set b.status=?2 where b.frozenBoxCode=?1")
     void updateStatusByFrozenBoxCode(String frozenBoxCode, String status);
+
+    List<FrozenBox> findByEquipmentCode(String equipmentCode);
+
+    List<FrozenBox> findByEquipmentCodeAndAreaCode(String equipmentCode, String areaCode);
 }

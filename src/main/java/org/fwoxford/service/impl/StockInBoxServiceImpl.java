@@ -10,6 +10,7 @@ import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxSplit;
 import org.fwoxford.service.mapper.*;
+import org.fwoxford.web.rest.FrozenBoxPositionDTO;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -334,10 +335,16 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return stockInBoxForDataSplit;
     }
 
-    private FrozenBox createSplitedFrozenBox(StockInBoxSplit stockInBoxForDataSplit) {
-        FrozenBox frozenBox = new FrozenBox();
-        frozenBox.setFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
-        frozenBox = frozenBoxRepository.save(frozenBox);
-        return frozenBox;
+    /**
+     * 输入入库单编码和盒子编码，以及冻存位置信息，返回保存后的盒子信息
+     * @param stockInCode
+     * @param boxCode
+     * @param boxPositionDTO
+     * @return
+     */
+    @Override
+    public StockInBoxDetail movedStockIn(String stockInCode, String boxCode, FrozenBoxPositionDTO boxPositionDTO) {
+        StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+        return stockInBoxDetail;
     }
 }

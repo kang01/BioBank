@@ -178,4 +178,20 @@ public class StockInBoxResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, detail.getId().toString()))
             .body(detail);
     }
+    /**
+     * 输入入库单编码和盒子编码，以及冻存位置信息，返回保存后的盒子信息
+     * @param stockInCode
+     * @param boxCode
+     * @param boxPositionDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/moved")
+    @Timed
+    public ResponseEntity<StockInBoxDetail> movedStockIn(@Valid @RequestBody String stockInCode, String boxCode, FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
+        StockInBoxDetail stockInBoxDetail = stockInBoxService.movedStockIn(stockInCode,boxCode,boxPositionDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getId().toString()))
+            .body(stockInBoxDetail);
+    }
 }

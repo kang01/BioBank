@@ -41,10 +41,11 @@ public interface SupportRackService {
      */
     void delete(Long id);
 
-    /**
-     * 根據區域ID查詢架子列表
-     * @param areaId 區域ID
-     * @return
-     */
-    List<SupportRackDTO> findSupportRackByAreaId(Long areaId);
+    List<SupportRackDTO> getSupportRackList(String equipmentCode);
+
+    List<SupportRackDTO> getIncompleteShelves(String equipmentCode);
+
+    List<SupportRackDTO> getIncompleteShelvesByEquipmentAndArea(String equipmentCode, String areaCode);
+
+    List<SupportRackDTO> getSupportRackListByEquipmentAndArea(String equipmentCode, String areaCode);
 }

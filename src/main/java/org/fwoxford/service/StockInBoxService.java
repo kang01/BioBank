@@ -4,6 +4,7 @@ import org.fwoxford.service.dto.StockInBoxDTO;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxSplit;
+import org.fwoxford.web.rest.FrozenBoxPositionDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -54,4 +55,6 @@ public interface StockInBoxService {
     StockInBoxDetail getStockInBoxDetail(String stockInCode, String boxCode);
 
     StockInBoxSplit splitedStockIn(String stockInCode, String boxCode, StockInBoxSplit stockInBoxForDataSplit);
+
+    StockInBoxDetail movedStockIn(String stockInCode, String boxCode, FrozenBoxPositionDTO boxPositionDTO);
 }

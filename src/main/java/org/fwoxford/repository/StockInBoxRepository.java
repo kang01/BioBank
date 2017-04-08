@@ -11,7 +11,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface StockInBoxRepository extends JpaRepository<StockInBox,Long> {
-
+    @Modifying
     @Query("update StockInBox t set t.status=?2 where t.stockInCode=?1")
     void updateByStockCode(String stockInCode, String status);
 

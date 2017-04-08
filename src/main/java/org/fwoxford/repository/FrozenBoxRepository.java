@@ -29,6 +29,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     @Query(value = "select b.* from frozen_box b left join tranship s on s.id = b.tranship_id where s.tranship_code  = ?1" ,nativeQuery = true)
     List<FrozenBox> findFrozenBoxByTranshipCode(String transhipCode);
 
+    @Modifying
     @Query("update FrozenBox b set b.status=?2 where b.frozenBoxCode=?1")
     void updateStatusByFrozenBoxCode(String frozenBoxCode, String status);
 }

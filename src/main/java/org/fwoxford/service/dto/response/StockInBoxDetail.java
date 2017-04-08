@@ -6,6 +6,8 @@ package org.fwoxford.service.dto.response;
 public class StockInBoxDetail extends StockInBoxForShelf{
     private String stockInCode;
     private String memo;
+    private String columnsInShelf;
+    private String rowsInShelf;
 
     public String getStockInCode() {
         return stockInCode;
@@ -21,5 +23,21 @@ public class StockInBoxDetail extends StockInBoxForShelf{
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getColumnsInShelf() {
+        return columnsInShelf;
+    }
+
+    public void setColumnsInShelf(String columnsInShelf) {
+        this.columnsInShelf = columnsInShelf;
+    }
+
+    public String getRowsInShelf() {
+        return rowsInShelf;
+    }
+
+    public void setRowsInShelf(String rowsInShelf) {
+        this.rowsInShelf = rowsInShelf;
     }
 }

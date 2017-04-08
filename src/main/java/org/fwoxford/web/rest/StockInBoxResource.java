@@ -1,8 +1,13 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.service.StockInBoxService;
+import org.fwoxford.service.dto.SampleTypeDTO;
 import org.fwoxford.service.dto.StockInBoxDTO;
+import org.fwoxford.service.dto.SupportRackDTO;
+import org.fwoxford.service.dto.response.StockInBoxDetail;
+import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -11,8 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -126,4 +134,28 @@ public class StockInBoxResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * 根据入库单编码，查询入库单的盒子
+     * @param input
+     * @param stockInCode
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-in-boxes/stock-in/{stockInCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockInBoxForDataTable> getPageStockInBoxes(@RequestBody DataTablesInput input, @PathVariable String stockInCode) {
+        return stockInBoxService.getPageStockInBoxes(input,stockInCode);
+    }
+
+    /**
+     * 输入入库单编码和盒子编码，返回该入库单的某个盒子的信息
+     * @param stockInCode
+     * @param boxCode
+     * @return
+     */
+    @GetMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}")
+    @Timed
+    public ResponseEntity<StockInBoxDetail> getStockInBoxDetail(@PathVariable String stockInCode, @PathVariable String boxCode) {
+        StockInBoxDetail stockInBoxDetail = stockInBoxService.getStockInBoxDetail(stockInCode,boxCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInBoxDetail));
+    }
 }

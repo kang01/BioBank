@@ -1,19 +1,18 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
-import org.fwoxford.domain.StockIn;
-import org.fwoxford.domain.StockInBox;
-import org.fwoxford.domain.Tranship;
-import org.fwoxford.domain.TranshipBox;
+import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.security.SecurityUtils;
 import org.fwoxford.service.StockInBoxService;
 import org.fwoxford.service.StockInService;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.*;
+import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
+import org.fwoxford.service.mapper.SampleTypeMapper;
 import org.fwoxford.service.mapper.StockInMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -22,8 +21,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.Column;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.mapping.Search;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +49,8 @@ public class StockInServiceImpl implements StockInService {
 
     private final StockInRepositries stockInRepositries;
 
+
+
     @Autowired
     private TranshipService transhipService;
 
@@ -63,8 +66,9 @@ public class StockInServiceImpl implements StockInService {
     private TranshipBoxRepository transhipBoxRepository;
     @Autowired
     private StockInBoxRepository stockInBoxRepository;
-
-    public StockInServiceImpl(StockInRepository stockInRepository, StockInMapper stockInMapper, StockInRepositries stockInRepositries) {
+    public StockInServiceImpl(StockInRepository stockInRepository,
+                              StockInMapper stockInMapper,
+                              StockInRepositries stockInRepositries) {
         this.stockInRepository = stockInRepository;
         this.stockInMapper = stockInMapper;
         this.stockInRepositries = stockInRepositries;
@@ -297,4 +301,5 @@ public class StockInServiceImpl implements StockInService {
         StockIn stockIn = stockInRepository.findStockInByTranshipId(tranship.getId());
         return stockInMapper.stockInToStockInDetail(stockIn);
     }
+
 }

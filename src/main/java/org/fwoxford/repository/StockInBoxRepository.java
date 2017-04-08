@@ -16,4 +16,6 @@ public interface StockInBoxRepository extends JpaRepository<StockInBox,Long> {
     void updateByStockCode(String stockInCode, String status);
 
     List<StockInBox> findStockInBoxByStockInCode(String stockInCode);
+
+    StockInBox findStockInBoxByStockInCodeAndFrozenBoxCode(String stockInCode, String frozenBoxCode);
 }

@@ -1,8 +1,13 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockInBoxDTO;
+import org.fwoxford.service.dto.response.StockInBoxDetail;
+import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import java.util.List;
 
 /**
@@ -42,4 +47,8 @@ public interface StockInBoxService {
     void delete(Long id);
 
     List<StockInBoxDTO> saveBatch(List<StockInBoxDTO> stockInBoxDTOS);
+
+    DataTablesOutput<StockInBoxForDataTable> getPageStockInBoxes(DataTablesInput input, String stockInCode);
+
+    StockInBoxDetail getStockInBoxDetail(String stockInCode, String boxCode);
 }

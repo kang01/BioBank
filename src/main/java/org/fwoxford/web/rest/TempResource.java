@@ -455,23 +455,20 @@ public class TempResource {
     /**
      * 输入入库单编码和盒子编码，返回该入库单的某个盒子的信息
      * @param stockInCode
-     * @param frozenBoxCode
+     * @param boxCode
      * @return
      */
     @GetMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}")
     @Timed
-    public ResponseEntity<StockInBoxDetail> getStockIn(@PathVariable String stockInCode, @PathVariable String frozenBoxCode) {
+    public ResponseEntity<StockInBoxDetail> getStockIn(@PathVariable String stockInCode, @PathVariable String boxCode) {
         List<SupportRackDTO> shelfs = createSupportRackList(1L, "F3-71", "S01");
         SupportRackDTO shelf = shelfs.get(0);
         SampleTypeDTO sampleType = sampleTypeService.findAllSampleTypes().get(0);
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
         stockInBoxDetail.setId(1L);
-        stockInBoxDetail.setFrozenBoxCode(frozenBoxCode);
+        stockInBoxDetail.setFrozenBoxCode(boxCode);
         stockInBoxDetail.setCountOfSample(100);
         stockInBoxDetail.setIsSplit(0);
-        stockInBoxDetail.setSupportRackId(shelf.getId());
-        stockInBoxDetail.setAreaId(shelf.getAreaId());
-        stockInBoxDetail.setEquipmentId(shelf.getArea().getEquipment().getId());
         stockInBoxDetail.setSampleType(sampleType);
         stockInBoxDetail.setStatus("2002");
         stockInBoxDetail.setMemo("");
@@ -486,7 +483,7 @@ public class TempResource {
      */
     @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/splited")
     @Timed
-    public ResponseEntity<StockInBoxSplit> splitedStockIn(@Valid @RequestBody String stockInCode, String frozenBoxCode, StockInBoxSplit stockInBoxForDataSplit) throws URISyntaxException {
+    public ResponseEntity<StockInBoxSplit> splitedStockIn(@Valid @RequestBody String stockInCode, String boxCode, StockInBoxSplit stockInBoxForDataSplit) throws URISyntaxException {
         StockInBoxSplit detail = stockInBoxForDataSplit;
         stockInBoxForDataSplit.setId(1L);
         List<StockInTubeDTO> tubeDTOS = stockInBoxForDataSplit.getStockInTubeDTOList();
@@ -508,13 +505,13 @@ public class TempResource {
      */
     @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/moved")
     @Timed
-    public ResponseEntity<StockInBoxDetail> movedStockIn(@Valid @RequestBody String stockInCode, String frozenBoxCode, FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
+    public ResponseEntity<StockInBoxDetail> movedStockIn(@Valid @RequestBody String stockInCode, String boxCode, FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
         List<SupportRackDTO> shelfs = createSupportRackList(1L, "F3-71", "S01");
         SupportRackDTO shelf = shelfs.get(0);
         SampleTypeDTO sampleType = sampleTypeService.findAllSampleTypes().get(0);
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
         stockInBoxDetail.setId(1L);
-        stockInBoxDetail.setFrozenBoxCode(frozenBoxCode);
+        stockInBoxDetail.setFrozenBoxCode(boxCode);
         stockInBoxDetail.setCountOfSample(100);
         stockInBoxDetail.setIsSplit(0);
         stockInBoxDetail.setSupportRackId(shelf.getId());

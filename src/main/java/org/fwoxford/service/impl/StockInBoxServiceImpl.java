@@ -10,7 +10,7 @@ import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxSplit;
 import org.fwoxford.service.mapper.*;
-import org.fwoxford.web.rest.FrozenBoxPositionDTO;
+import org.fwoxford.service.dto.FrozenBoxPositionDTO;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

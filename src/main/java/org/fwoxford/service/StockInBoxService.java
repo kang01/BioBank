@@ -4,7 +4,7 @@ import org.fwoxford.service.dto.StockInBoxDTO;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxSplit;
-import org.fwoxford.web.rest.FrozenBoxPositionDTO;
+import org.fwoxford.service.dto.FrozenBoxPositionDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;

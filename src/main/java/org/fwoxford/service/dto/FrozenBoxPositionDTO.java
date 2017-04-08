@@ -1,4 +1,4 @@
-package org.fwoxford.web.rest;
+package org.fwoxford.service.dto;
 
 import org.fwoxford.domain.SampleType;
 

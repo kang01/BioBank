@@ -6,7 +6,6 @@ import io.github.jhipster.web.util.ResponseUtil;
 import net.sf.json.JSONObject;
 import org.fwoxford.domain.Area;
 import org.fwoxford.domain.Equipment;
-import org.fwoxford.domain.SampleType;
 import org.fwoxford.service.SampleTypeService;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.*;

@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.service.StockInBoxService;
 import org.fwoxford.service.dto.SampleTypeDTO;
 import org.fwoxford.service.dto.StockInBoxDTO;
+import org.fwoxford.service.dto.StockInTubeDTO;
 import org.fwoxford.service.dto.SupportRackDTO;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
+import org.fwoxford.service.dto.response.StockInBoxSplit;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -157,5 +160,22 @@ public class StockInBoxResource {
     public ResponseEntity<StockInBoxDetail> getStockInBoxDetail(@PathVariable String stockInCode, @PathVariable String boxCode) {
         StockInBoxDetail stockInBoxDetail = stockInBoxService.getStockInBoxDetail(stockInCode,boxCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInBoxDetail));
+    }
+
+    /**
+     * 输入入库单编码和盒子编码，以及分装后的盒子，返回保存好的分装后盒子的信息。
+     * @param stockInCode 入库单编码
+     * @param boxCode 盒子编码
+     * @param stockInBoxForDataSplit 分装后的盒子
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/splited")
+    @Timed
+    public ResponseEntity<StockInBoxSplit> splitedStockIn(@Valid @RequestBody String stockInCode, String boxCode, StockInBoxSplit stockInBoxForDataSplit) throws URISyntaxException {
+        StockInBoxSplit detail = stockInBoxService.splitedStockIn(stockInCode,boxCode,stockInBoxForDataSplit);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, detail.getId().toString()))
+            .body(detail);
     }
 }

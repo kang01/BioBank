@@ -44,6 +44,11 @@ public final class Constants {
     public static final  String FROZEN_TUBE_EMPTY = "3002" ;
     public static final  String FROZEN_TUBE_HOLE_EMPTY = "3003" ;
     public static final  String FROZEN_TUBE_ABNORMAL = "3004" ;
+    /**
+     * 是：1，否：0
+     */
+    public static final Integer NO = 0;
+    public static final Integer YES = 1;
 
     private Constants() {
     }

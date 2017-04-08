@@ -64,42 +64,6 @@
             "fieldValidateRulesMaxlength": "100"
         },
         {
-            "fieldName": "sampleUsedTimesMost",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required",
-                "max"
-            ],
-            "fieldValidateRulesMax": "20"
-        },
-        {
-            "fieldName": "sampleUsedTimes",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required",
-                "max"
-            ],
-            "fieldValidateRulesMax": "20"
-        },
-        {
-            "fieldName": "frozenTubeVolumn",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required",
-                "max"
-            ],
-            "fieldValidateRulesMax": 100
-        },
-        {
-            "fieldName": "frozenTubeVolumnUnit",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": 20
-        },
-        {
             "fieldName": "sampleTypeCode",
             "fieldType": "String",
             "fieldValidateRules": [
@@ -160,24 +124,6 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": 20
-        },
-        {
-            "fieldName": "frozenTubeTypeCode",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "100"
-        },
-        {
-            "fieldName": "frozenTubeTypeName",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "255"
         },
         {
             "fieldName": "isModifyState",

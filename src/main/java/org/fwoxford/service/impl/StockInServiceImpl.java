@@ -216,7 +216,7 @@ public class StockInServiceImpl implements StockInService {
             inBoxDTO.setStockInId(stockIn.getId());
             inBoxDTO.setStockInCode(stockIn.getStockInCode());
             inBoxDTO.setMemo("");
-            inBoxDTO.setStatus(Constants.STOCK_IN_PENDING);
+            inBoxDTO.setStatus(box.getStatus());
             inBoxDTO.setCreatedBy(SecurityUtils.getCurrentUserLogin());
             inBoxDTO.setCreatedDate(ZonedDateTime.now());
             inBoxDTO.setLastModifiedDate(ZonedDateTime.now());
@@ -273,7 +273,7 @@ public class StockInServiceImpl implements StockInService {
         stockInRepository.save(stockIn);
         //修改入库盒子
         List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(stockInCode);
-        stockInBoxRepository.updateByStockCode(stockInCode , Constants.STOCK_IN_COMPLETE);
+        stockInBoxRepository.updateByStockCode(stockInCode , Constants.FROZEN_BOX_STOCKED);
         //修改盒子
         for(StockInBox box: stockInBoxes){
             frozenBoxRepository.updateStatusByFrozenBoxCode(box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);

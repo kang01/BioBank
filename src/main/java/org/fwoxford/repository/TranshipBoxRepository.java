@@ -18,5 +18,5 @@ public interface TranshipBoxRepository extends JpaRepository<TranshipBox,Long> {
 
     @Modifying
     @Query("update TranshipBox t set t.status=?3 where t.tranship.id=?1 and t.frozenBoxCode=?2")
-    void updateStatusByTranshipIdAndFrozenBoxCode(Long id, String frozenBoxCode, String frozenBoxStocked);
+    void updateStatusByTranshipIdAndFrozenBoxCode(Long id, String frozenBoxCode, String status);
 }

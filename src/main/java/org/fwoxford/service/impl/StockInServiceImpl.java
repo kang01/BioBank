@@ -142,6 +142,11 @@ public class StockInServiceImpl implements StockInService {
         if(tranship.getId() == null){
             throw new BankServiceException("转运记录不存在！",transhipCode);
         }
+        transhipRes = transhipService.findTranshipAndFrozenBox(tranship.getId());
+        List<FrozenBoxDTO> frozenBoxDTOList =  transhipRes.getFrozenBoxDTOList();
+        if(frozenBoxDTOList.size()==0){
+            throw new BankServiceException("此次转运没有冻存盒数据！",transhipCode);
+        }
         //修改转运表中数据状态为待入库
         tranship.setTranshipState(Constants.TRANSHIPE_IN_STOCKING);
         transhipRepository.save(tranship);
@@ -151,17 +156,16 @@ public class StockInServiceImpl implements StockInService {
         stockInForDataDetail.setReceiver(tranship.getReceiver());
         stockInForDataDetail.setReceiveDate(tranship.getReceiveDate());
         stockInForDataDetail.setStatus(Constants.STOCK_IN_PENDING);
+
         //保存入库记录，状态为进行中
         StockInDTO stockInDTO = createStockInDTO(tranship);
         StockIn stockIn = stockInRepository.save(stockInMapper.stockInDTOToStockIn(stockInDTO));
-
+        stockInForDataDetail.setId(stockIn.getId());
+        stockInForDataDetail.setStockInCode(stockIn.getStockInCode());
         //保存入库盒子
-        transhipRes = transhipService.findTranshipAndFrozenBox(tranship.getId());
-        List<FrozenBoxDTO> frozenBoxDTOList =  transhipRes.getFrozenBoxDTOList();
-
         // 修改盒子状态，转运盒子状态
         for(FrozenBoxDTO boxDTO: frozenBoxDTOList){
-            boxDTO.setStatus(Constants.TRANSHIPE_IN_STOCKING);
+            boxDTO.setStatus(Constants.FROZEN_BOX_STOCKING);
             frozenBoxRepository.save(frozenBoxMapper.frozenBoxDTOToFrozenBox(boxDTO));
             TranshipBox transhipBox = transhipBoxRepository.findByTranshipIdAndFrozenBoxId(tranship.getId(),boxDTO.getId());
             transhipBox.setStatus(Constants.FROZEN_BOX_STOCKING);
@@ -221,6 +225,9 @@ public class StockInServiceImpl implements StockInService {
     private StockInDTO createStockInDTO(Tranship tranship) {
         StockInDTO stockInDTO = new StockInDTO();
         stockInDTO.setStockInCode(BankUtil.getUniqueID());
+        if(tranship.getProject()==null||tranship.getProjectSite()==null){
+            throw new BankServiceException("项目信息不完整！",tranship.toString());
+        }
         stockInDTO.setProjectId(tranship.getProject().getId());
         stockInDTO.setStatus(Constants.STOCK_IN_PENDING);
         stockInDTO.setProjectSiteCode(tranship.getProjectSiteCode());
@@ -240,6 +247,7 @@ public class StockInServiceImpl implements StockInService {
         stockInDTO.setStoreKeeper2("");
         stockInDTO.setStockInType(Constants.STORANGE_IN_TYPE_1ST);
         stockInDTO.setMemo("");
+        stockInDTO.setTranshipId(tranship.getId());
         return stockInDTO;
     }
 

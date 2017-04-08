@@ -48,22 +48,19 @@ public class StockIn extends AbstractAuditingEntity implements Serializable {
     /**
      * 接收日期
      */
-    @NotNull
-    @Column(name = "receive_date", nullable = false)
+    @Column(name = "receive_date")
     private LocalDate receiveDate;
     /**
      * 接收人ID
      */
-    @NotNull
     @Max(value = 100)
-    @Column(name = "receive_id", nullable = false)
+    @Column(name = "receive_id")
     private Long receiveId;
     /**
      * 接收人姓名
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "receive_name", length = 100, nullable = false)
+    @Column(name = "receive_name", length = 100)
     private String receiveName;
     /**
      * 入库类型 ：8001：首次入库，8002：移位入库，8003：调整入库
@@ -195,12 +192,12 @@ public class StockIn extends AbstractAuditingEntity implements Serializable {
         return projectSiteCode;
     }
 
-    public StockIn project_site_code(String projectSiteCode) {
+    public StockIn projectSiteCode(String projectSiteCode) {
         this.projectSiteCode = projectSiteCode;
         return this;
     }
 
-    public void setProjectSiteCode(String project_site_code) {
+    public void setProjectSiteCode(String projectSiteCode) {
         this.projectSiteCode = projectSiteCode;
     }
 

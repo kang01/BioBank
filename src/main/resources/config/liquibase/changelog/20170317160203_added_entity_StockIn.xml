@@ -36,15 +36,15 @@
             </column>
 
             <column name="receive_date" type="date" remarks="接受日期">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="receive_id" type="bigint" remarks="接收人ID">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="receive_name" type="varchar(100)" remarks="接收人姓名">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="stock_in_type" type="varchar(20)" remarks="入库类型：8001：首次入库，8002：移位入库，8003：调整入库">

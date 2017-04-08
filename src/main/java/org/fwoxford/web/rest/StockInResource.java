@@ -145,7 +145,7 @@ public class StockInResource {
     public ResponseEntity<StockInForDataDetail> createStockIns(@Valid @RequestBody String transhipCode) throws URISyntaxException {
         log.debug("REST request to save StockIn : {}", transhipCode);
         StockInForDataDetail result = stockInService.saveStockIns(transhipCode);
-        return ResponseEntity.created(new URI("/api/stock-ins/" + result.getId()))
+        return ResponseEntity.created(new URI("/api/res/stock-in" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }

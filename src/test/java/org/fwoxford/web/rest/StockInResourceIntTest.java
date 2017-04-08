@@ -140,7 +140,7 @@ public class StockInResourceIntTest {
     public static StockIn createEntity(EntityManager em) {
         StockIn stockIn = new StockIn()
                 .projectCode(DEFAULT_PROJECT_CODE)
-                .project_site_code(DEFAULT_PROJECT_SITE_CODE)
+                .projectSiteCode(DEFAULT_PROJECT_SITE_CODE)
                 .receiveDate(DEFAULT_RECEIVE_DATE)
                 .receiveId(DEFAULT_RECEIVE_ID)
                 .receiveName(DEFAULT_RECEIVE_NAME)
@@ -619,7 +619,7 @@ public class StockInResourceIntTest {
         StockIn updatedStockIn = stockInRepository.findOne(stockIn.getId());
         updatedStockIn
                 .projectCode(UPDATED_PROJECT_CODE)
-                .project_site_code(UPDATED_PROJECT_SITE_CODE)
+                .projectSiteCode(UPDATED_PROJECT_SITE_CODE)
                 .receiveDate(UPDATED_RECEIVE_DATE)
                 .receiveId(UPDATED_RECEIVE_ID)
                 .receiveName(UPDATED_RECEIVE_NAME)

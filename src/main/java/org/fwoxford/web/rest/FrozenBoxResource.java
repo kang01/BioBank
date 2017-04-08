@@ -1,19 +1,26 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.StockInBoxDetail;
+import org.fwoxford.service.dto.response.StockInBoxForChangingPosition;
+import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +30,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * REST controller for managing FrozenBox.
@@ -178,5 +186,67 @@ public class FrozenBoxResource {
         List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<>();
         res = frozenBoxService.getFrozenBoxAndTubeByTranshipCode(transhipCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+    /**
+     * 输入项目编码和样本类型编码，返回该入库单的某个盒子的信息
+     * @param projectCode
+     * @param sampleTypeCode
+     * @return
+     */
+    @RequestMapping(value = "/frozen-boxes/incomplete-boxes/project/{projectCode}/type/{sampleTypeCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(@PathVariable String projectCode, @PathVariable String sampleTypeCode) {
+        List<StockInBoxForChangingPosition> boxes =  frozenBoxService.getIncompleteFrozenBoxes(projectCode,sampleTypeCode);
+        return boxes;
+    }
+
+    /**
+     * 输入设备编码，返回该设备下的所有盒子信息
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/frozen-boxes/pos/{equipmentCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<FrozenBoxAndFrozenTubeResponse> getPageFrozenBoxByEquipment(@RequestBody DataTablesInput input,@PathVariable String equipmentCode) {
+        return frozenBoxService.getPageFrozenBoxByEquipment(input,equipmentCode);
+    }
+
+    /**
+     * 输入设备编码，区域编码，返回指定区域下的所有盒子信息
+     * @param input
+     * @param equipmentCode
+     * @param areaCode
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/frozen-boxes/pos/{equipmentCode}/{areaCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<FrozenBoxAndFrozenTubeResponse> getPageFrozenBoxByEquipmentAndArea(@RequestBody DataTablesInput input,@PathVariable String equipmentCode,@PathVariable String areaCode) {
+        return frozenBoxService.getPageFrozenBoxByEquipmentAndArea(input,equipmentCode,areaCode);
+    }
+
+    /**
+     * 输入设备编码，区域编码，架子编码，返回架子中的所有盒子信息
+     * @param equipmentCode
+     * @param areaCode
+     * @param shelfCode
+     * @return
+     */
+    @RequestMapping(value = "/frozen-boxes/pos/{equipmentCode}/{areaCode}/{shelfCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public List<FrozenBoxAndFrozenTubeResponse> getFrozenBoxByEquipmentAndAreaAndShelves(@PathVariable String equipmentCode, @PathVariable String areaCode, @PathVariable String shelfCode) {
+        List<FrozenBoxAndFrozenTubeResponse> boxes =  frozenBoxService.getFrozenBoxByEquipmentAndAreaAndShelves(equipmentCode,areaCode,shelfCode);
+        return boxes;
+    }
+
+    /**
+     * 输入完整的位置信息，返回某个盒子的信息
+     * @param equipmentCode
+     * @param areaCode
+     * @param shelfCode
+     * @param position
+     * @return
+     */
+    @RequestMapping(value = "/frozen-boxes/pos/{equipmentCode}/{areaCode}/{shelfCode}/{position}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public FrozenBoxAndFrozenTubeResponse getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(@PathVariable String equipmentCode, @PathVariable String areaCode, @PathVariable String shelfCode, @PathVariable String position) {
+        FrozenBoxAndFrozenTubeResponse boxes =  frozenBoxService.getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(equipmentCode,areaCode,shelfCode,position);
+        return boxes;
     }
 }

@@ -4,13 +4,17 @@ import org.fwoxford.domain.Equipment;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.Tranship;
+import org.fwoxford.repository.FrozenBoxRepositories;
 import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.repository.FrozenTubeRepository;
 import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
+import org.fwoxford.service.dto.response.StockInBoxDetail;
+import org.fwoxford.service.dto.response.StockInBoxForChangingPosition;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -21,6 +25,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.repository.core.support.ExampleMatcherAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +47,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     private final Logger log = LoggerFactory.getLogger(FrozenBoxServiceImpl.class);
 
     private final FrozenBoxRepository frozenBoxRepository;
+    private final FrozenBoxRepositories frozenBoxRepositories;
 
     private final FrozenBoxMapper frozenBoxMapper;
 
@@ -51,10 +58,13 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     private FrozenTubeMapper frozenTubeMapping;
     @Autowired
     private TranshipRepository transhipRepository;
+    @Autowired
+    private FrozenTubeRepository frozenTubeRepository;
 
-    public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper) {
+    public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper,FrozenBoxRepositories frozenBoxRepositories) {
         this.frozenBoxRepository = frozenBoxRepository;
         this.frozenBoxMapper = frozenBoxMapper;
+        this.frozenBoxRepositories = frozenBoxRepositories;
     }
 
     /**
@@ -247,5 +257,71 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
             res.add(tempRes);
         }
         return res;
+    }
+
+    @Override
+    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(String projectCode, String sampleTypeCode) {
+        return null;
+    }
+
+    @Override
+    public DataTablesOutput<FrozenBoxAndFrozenTubeResponse> getPageFrozenBoxByEquipment(DataTablesInput input, String equipmentCode) {
+        input.addColumn("equipmentCode",true,true,equipmentCode);
+        DataTablesOutput<FrozenBox> output = frozenBoxRepositories.findAll(input);
+        List<FrozenBox> frozenBoxes =  output.getData();
+        List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
+        for(FrozenBox box:frozenBoxes){
+            FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse = this.findFrozenBoxAndTubeByBoxCode(box.getFrozenBoxCode());
+            res.add(frozenBoxAndFrozenTubeResponse);
+        }
+        //构造返回分页数据
+        DataTablesOutput<FrozenBoxAndFrozenTubeResponse> responseDataTablesOutput = new DataTablesOutput<FrozenBoxAndFrozenTubeResponse>();
+        responseDataTablesOutput.setDraw(output.getDraw());
+        responseDataTablesOutput.setError(output.getError());
+        responseDataTablesOutput.setData(res);
+        responseDataTablesOutput.setRecordsFiltered(output.getRecordsFiltered());
+        responseDataTablesOutput.setRecordsTotal(output.getRecordsTotal());
+        return responseDataTablesOutput;
+    }
+
+    @Override
+    public DataTablesOutput<FrozenBoxAndFrozenTubeResponse> getPageFrozenBoxByEquipmentAndArea(DataTablesInput input, String equipmentCode, String areaCode) {
+        input.addColumn("equipmentCode",true,true,equipmentCode);
+        input.addColumn("areaCode",true,true,areaCode);
+        DataTablesOutput<FrozenBox> output = frozenBoxRepositories.findAll(input);
+        List<FrozenBox> frozenBoxes =  output.getData();
+        List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
+        for(FrozenBox box:frozenBoxes){
+            FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse = this.findFrozenBoxAndTubeByBoxCode(box.getFrozenBoxCode());
+            res.add(frozenBoxAndFrozenTubeResponse);
+        }
+        //构造返回分页数据
+        DataTablesOutput<FrozenBoxAndFrozenTubeResponse> responseDataTablesOutput = new DataTablesOutput<FrozenBoxAndFrozenTubeResponse>();
+        responseDataTablesOutput.setDraw(output.getDraw());
+        responseDataTablesOutput.setError(output.getError());
+        responseDataTablesOutput.setData(res);
+        responseDataTablesOutput.setRecordsFiltered(output.getRecordsFiltered());
+        responseDataTablesOutput.setRecordsTotal(output.getRecordsTotal());
+        return responseDataTablesOutput;
+    }
+
+    @Override
+    public List<FrozenBoxAndFrozenTubeResponse> getFrozenBoxByEquipmentAndAreaAndShelves(String equipmentCode, String areaCode, String shelfCode) {
+        List<FrozenBox> frozenBox = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(equipmentCode,areaCode,shelfCode);
+        List<FrozenBoxAndFrozenTubeResponse> res = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
+        for(FrozenBox box:frozenBox){
+            FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse = this.findFrozenBoxAndTubeByBoxCode(box.getFrozenBoxCode());
+            res.add(frozenBoxAndFrozenTubeResponse);
+        }
+         return res;
+    }
+
+    @Override
+    public FrozenBoxAndFrozenTubeResponse getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(String equipmentCode, String areaCode, String shelfCode, String position) {
+        String columnsInShelf = position.substring(0,1);
+        String rowsInShelf = position.substring(1);
+        FrozenBox frozenBox = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(equipmentCode,areaCode,shelfCode,columnsInShelf,rowsInShelf);
+        FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse = this.findFrozenBoxAndTubeByBoxCode(frozenBox.getFrozenBoxCode());
+        return frozenBoxAndFrozenTubeResponse;
     }
 }

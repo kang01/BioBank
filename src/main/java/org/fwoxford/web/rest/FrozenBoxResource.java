@@ -206,7 +206,7 @@ public class FrozenBoxResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/frozen-boxes/pos/{equipmentCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<FrozenBoxAndFrozenTubeResponse> getPageFrozenBoxByEquipment(@RequestBody DataTablesInput input,@PathVariable String equipmentCode) {
+    public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipment(@RequestBody DataTablesInput input,@PathVariable String equipmentCode) {
         return frozenBoxService.getPageFrozenBoxByEquipment(input,equipmentCode);
     }
 
@@ -219,7 +219,7 @@ public class FrozenBoxResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/frozen-boxes/pos/{equipmentCode}/{areaCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<FrozenBoxAndFrozenTubeResponse> getPageFrozenBoxByEquipmentAndArea(@RequestBody DataTablesInput input,@PathVariable String equipmentCode,@PathVariable String areaCode) {
+    public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipmentAndArea(@RequestBody DataTablesInput input,@PathVariable String equipmentCode,@PathVariable String areaCode) {
         return frozenBoxService.getPageFrozenBoxByEquipmentAndArea(input,equipmentCode,areaCode);
     }
 
@@ -231,8 +231,8 @@ public class FrozenBoxResource {
      * @return
      */
     @RequestMapping(value = "/frozen-boxes/pos/{equipmentCode}/{areaCode}/{shelfCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
-    public List<FrozenBoxAndFrozenTubeResponse> getFrozenBoxByEquipmentAndAreaAndShelves(@PathVariable String equipmentCode, @PathVariable String areaCode, @PathVariable String shelfCode) {
-        List<FrozenBoxAndFrozenTubeResponse> boxes =  frozenBoxService.getFrozenBoxByEquipmentAndAreaAndShelves(equipmentCode,areaCode,shelfCode);
+    public List<StockInBoxDetail> getFrozenBoxByEquipmentAndAreaAndShelves(@PathVariable String equipmentCode, @PathVariable String areaCode, @PathVariable String shelfCode) {
+        List<StockInBoxDetail> boxes =  frozenBoxService.getFrozenBoxByEquipmentAndAreaAndShelves(equipmentCode,areaCode,shelfCode);
         return boxes;
     }
 
@@ -245,8 +245,8 @@ public class FrozenBoxResource {
      * @return
      */
     @RequestMapping(value = "/frozen-boxes/pos/{equipmentCode}/{areaCode}/{shelfCode}/{position}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
-    public FrozenBoxAndFrozenTubeResponse getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(@PathVariable String equipmentCode, @PathVariable String areaCode, @PathVariable String shelfCode, @PathVariable String position) {
-        FrozenBoxAndFrozenTubeResponse boxes =  frozenBoxService.getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(equipmentCode,areaCode,shelfCode,position);
+    public StockInBoxDetail getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(@PathVariable String equipmentCode, @PathVariable String areaCode, @PathVariable String shelfCode, @PathVariable String position) {
+        StockInBoxDetail boxes =  frozenBoxService.getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(equipmentCode,areaCode,shelfCode,position);
         return boxes;
     }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 public interface SupportRackRepository extends JpaRepository<SupportRack,Long> {
     @Query("select r from SupportRack r where r.area.equipmentCode =?1")
     List<SupportRack> findSupportRackByEquipmentCode(String equipmentCode);
-    @Query("select r from SupportRack r where r.area.equipmentCode =?1 and r.areaCode =?2")
+
+    @Query("select r from SupportRack r where r.area.equipmentCode =?1 and r.area.areaCode =?2")
     List<SupportRack> findSupportRackByEquipmentCodeAndAreaCode(String equipmentCode, String areaCode);
 }

@@ -2,6 +2,7 @@ package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenBox;
+import org.fwoxford.domain.SupportRackType;
 import org.fwoxford.repository.FrozenBoxRepository;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.SupportRackService;
@@ -110,10 +111,18 @@ public class SupportRackServiceImpl implements SupportRackService{
         List<FrozenBox> frozenBoxes = frozenBoxRepository.findByEquipmentCode(equipmentCode);
         List<SupportRack> supportRackList = new ArrayList<SupportRack>();
         for(SupportRack rack :supportRacks){
+            SupportRackType supportRackType = rack.getSupportRackType();
+            String rows = supportRackType.getSupportRackRows();
+            String colomns = supportRackType.getSupportRackColumns();
+            int countShelves = Integer.parseInt(rows)*Integer.parseInt(colomns);
+            int count = 0;
             for(FrozenBox box :frozenBoxes){
                 if(!box.getStatus().equals(Constants.FROZEN_BOX_STOCKED)&&!rack.getId().equals(box.getSupportRack().getId())){
-                    supportRackList.add(rack);
+                    count++;
                 }
+            }
+            if(countShelves > count){
+                supportRackList.add(rack);
             }
         }
         return supportRackMapper.supportRacksToSupportRackDTOs(supportRackList);
@@ -125,10 +134,18 @@ public class SupportRackServiceImpl implements SupportRackService{
         List<FrozenBox> frozenBoxes = frozenBoxRepository.findByEquipmentCodeAndAreaCode(equipmentCode,areaCode);
         List<SupportRack> supportRackList = new ArrayList<SupportRack>();
         for(SupportRack rack :supportRacks){
+            SupportRackType supportRackType = rack.getSupportRackType();
+            String rows = supportRackType.getSupportRackRows();
+            String colomns = supportRackType.getSupportRackColumns();
+            int countShelves = Integer.parseInt(rows)*Integer.parseInt(colomns);
+            int count = 0;
             for(FrozenBox box :frozenBoxes){
                 if(!box.getStatus().equals(Constants.FROZEN_BOX_STOCKED)&&!rack.getId().equals(box.getSupportRack().getId())){
-                    supportRackList.add(rack);
+                    count++;
                 }
+            }
+            if(countShelves > count){
+                supportRackList.add(rack);
             }
         }
         return supportRackMapper.supportRacksToSupportRackDTOs(supportRackList);

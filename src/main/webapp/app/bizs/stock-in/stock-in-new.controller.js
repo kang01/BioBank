@@ -375,5 +375,23 @@
         vm.editBox = function () {
             _splitABox();
         }
+        vm.addBoxModal = function () {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-in/add-box-modal.html',
+                controller: 'AddBoxModalController',
+                controllerAs:'vm',
+                size:'lg',
+                resolve: {
+                    items: function () {
+                        return {
+                            sampleTypes :vm.sampleTypes
+                        }
+                    }
+                }
+            });
+            modalInstance.result.then(function (data) {
+            });
+        }
     }
 })();

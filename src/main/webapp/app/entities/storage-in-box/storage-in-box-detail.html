@@ -1,56 +1,56 @@
 
 <div>
-    <h2><span data-translate="bioBankApp.storageInBox.detail.title">Storage In Box</span> {{vm.storageInBox.id}}</h2>
+    <h2><span data-translate="bioBankApp.stockInBox.detail.title">Storage In Box</span> {{vm.stockInBox.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row jh-entity-details">
-        <dt><span data-translate="bioBankApp.storageInBox.equipmentCode">Equipment Code</span></dt>
+        <dt><span data-translate="bioBankApp.stockInBox.equipmentCode">Equipment Code</span></dt>
         <dd>
-            <span>{{vm.storageInBox.equipmentCode}}</span>
+            <span>{{vm.stockInBox.equipmentCode}}</span>
         </dd>
-        <dt><span data-translate="bioBankApp.storageInBox.areaCode">Area Code</span></dt>
+        <dt><span data-translate="bioBankApp.stockInBox.areaCode">Area Code</span></dt>
         <dd>
-            <span>{{vm.storageInBox.areaCode}}</span>
+            <span>{{vm.stockInBox.areaCode}}</span>
         </dd>
-        <dt><span data-translate="bioBankApp.storageInBox.supportRackCode">Support Rack Code</span></dt>
+        <dt><span data-translate="bioBankApp.stockInBox.supportRackCode">Support Rack Code</span></dt>
         <dd>
-            <span>{{vm.storageInBox.supportRackCode}}</span>
+            <span>{{vm.stockInBox.supportRackCode}}</span>
         </dd>
-        <dt><span data-translate="bioBankApp.storageInBox.rowsInShelf">Rows In Shelf</span></dt>
+        <dt><span data-translate="bioBankApp.stockInBox.rowsInShelf">Rows In Shelf</span></dt>
         <dd>
-            <span>{{vm.storageInBox.rowsInShelf}}</span>
+            <span>{{vm.stockInBox.rowsInShelf}}</span>
         </dd>
-        <dt><span data-translate="bioBankApp.storageInBox.columnsInShelf">Columns In Shelf</span></dt>
+        <dt><span data-translate="bioBankApp.stockInBox.columnsInShelf">Columns In Shelf</span></dt>
         <dd>
-            <span>{{vm.storageInBox.columnsInShelf}}</span>
+            <span>{{vm.stockInBox.columnsInShelf}}</span>
         </dd>
-        <dt><span data-translate="bioBankApp.storageInBox.memo">Memo</span></dt>
+        <dt><span data-translate="bioBankApp.stockInBox.memo">Memo</span></dt>
         <dd>
-            <span>{{vm.storageInBox.memo}}</span>
+            <span>{{vm.stockInBox.memo}}</span>
         </dd>
-        <dt><span data-translate="bioBankApp.storageInBox.status">Status</span></dt>
+        <dt><span data-translate="bioBankApp.stockInBox.status">Status</span></dt>
         <dd>
-            <span>{{vm.storageInBox.status}}</span>
+            <span>{{vm.stockInBox.status}}</span>
         </dd>
-        <dt><span data-translate="bioBankApp.storageInBox.frozenBoxCode">Frozen Box Code</span></dt>
+        <dt><span data-translate="bioBankApp.stockInBox.frozenBoxCode">Frozen Box Code</span></dt>
         <dd>
-            <span>{{vm.storageInBox.frozenBoxCode}}</span>
+            <span>{{vm.stockInBox.frozenBoxCode}}</span>
         </dd>
-        <dt><span data-translate="bioBankApp.storageInBox.storageIn">Storage In</span></dt>
+        <dt><span data-translate="bioBankApp.stockInBox.stockIn">Storage In</span></dt>
         <dd>
-            <a ui-sref="storage-in-detail({id:vm.storageInBox.storageInId})">{{vm.storageInBox.storageInId}}</a>
+            <a ui-sref="storage-in-detail({id:vm.stockInBox.storageInId})">{{vm.stockInBox.storageInId}}</a>
         </dd>
-        <dt><span data-translate="bioBankApp.storageInBox.equipment">Equipment</span></dt>
+        <dt><span data-translate="bioBankApp.stockInBox.equipment">Equipment</span></dt>
         <dd>
-            <a ui-sref="equipment-detail({id:vm.storageInBox.equipmentId})">{{vm.storageInBox.equipmentId}}</a>
+            <a ui-sref="equipment-detail({id:vm.stockInBox.equipmentId})">{{vm.stockInBox.equipmentId}}</a>
         </dd>
-        <dt><span data-translate="bioBankApp.storageInBox.supportRack">Support Rack</span></dt>
+        <dt><span data-translate="bioBankApp.stockInBox.supportRack">Support Rack</span></dt>
         <dd>
-            <a ui-sref="support-rack-detail({id:vm.storageInBox.supportRackId})">{{vm.storageInBox.supportRackId}}</a>
+            <a ui-sref="support-rack-detail({id:vm.stockInBox.supportRackId})">{{vm.stockInBox.supportRackId}}</a>
         </dd>
-        <dt><span data-translate="bioBankApp.storageInBox.area">Area</span></dt>
+        <dt><span data-translate="bioBankApp.stockInBox.area">Area</span></dt>
         <dd>
-            <a ui-sref="area-detail({id:vm.storageInBox.areaId})">{{vm.storageInBox.areaId}}</a>
+            <a ui-sref="area-detail({id:vm.stockInBox.areaId})">{{vm.stockInBox.areaId}}</a>
         </dd>
     </dl>
 
@@ -60,7 +60,7 @@
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 
-    <button type="button" ui-sref="storage-in-box-detail.edit({id:vm.storageInBox.id})" class="btn btn-primary">
+    <button type="button" ui-sref="storage-in-box-detail.edit({id:vm.stockInBox.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
         <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
     </button>

@@ -1,40 +1,40 @@
 package org.fwoxford.service.mapper;
 
 import org.fwoxford.domain.*;
-import org.fwoxford.service.dto.StorageInBoxDTO;
+import org.fwoxford.service.dto.StockInBoxDTO;
 
 import org.mapstruct.*;
 import java.util.List;
 
 /**
- * Mapper for the entity StorageInBox and its DTO StorageInBoxDTO.
+ * Mapper for the entity StockInBox and its DTO StockInBoxDTO.
  */
 @Mapper(componentModel = "spring", uses = {})
-public interface StorageInBoxMapper {
+public interface StockInBoxMapper {
 
-    @Mapping(source = "storageIn.id", target = "storageInId")
+    @Mapping(source = "stockIn.id", target = "stockInId")
     @Mapping(source = "equipment.id", target = "equipmentId")
     @Mapping(source = "supportRack.id", target = "supportRackId")
     @Mapping(source = "area.id", target = "areaId")
-    StorageInBoxDTO storageInBoxToStorageInBoxDTO(StorageInBox storageInBox);
+    StockInBoxDTO stockInBoxToStockInBoxDTO(StockInBox stockInBox);
 
-    List<StorageInBoxDTO> storageInBoxesToStorageInBoxDTOs(List<StorageInBox> storageInBoxes);
+    List<StockInBoxDTO> stockInBoxesToStockInBoxDTOs(List<StockInBox> stockInBoxes);
 
-    @Mapping(source = "storageInId", target = "storageIn")
+    @Mapping(source = "stockInId", target = "stockIn")
     @Mapping(source = "equipmentId", target = "equipment")
     @Mapping(source = "supportRackId", target = "supportRack")
     @Mapping(source = "areaId", target = "area")
-    StorageInBox storageInBoxDTOToStorageInBox(StorageInBoxDTO storageInBoxDTO);
+    StockInBox stockInBoxDTOToStockInBox(StockInBoxDTO stockInBoxDTO);
 
-    List<StorageInBox> storageInBoxDTOsToStorageInBoxes(List<StorageInBoxDTO> storageInBoxDTOs);
+    List<StockInBox> stockInBoxDTOsToStockInBoxes(List<StockInBoxDTO> stockInBoxDTOS);
 
-    default StorageIn storageInFromId(Long id) {
+    default StockIn stockInFromId(Long id) {
         if (id == null) {
             return null;
         }
-        StorageIn storageIn = new StorageIn();
-        storageIn.setId(id);
-        return storageIn;
+        StockIn stockIn = new StockIn();
+        stockIn.setId(id);
+        return stockIn;
     }
 
     default Equipment equipmentFromId(Long id) {

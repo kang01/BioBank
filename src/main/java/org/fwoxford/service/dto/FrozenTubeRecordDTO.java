@@ -13,128 +13,60 @@ import java.util.Objects;
 public class FrozenTubeRecordDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-    /**
-     * 项目编码
-     */
+
     @NotNull
     @Size(max = 100)
     private String projectCode;
-    /**
-     * 样本临时编码
-     */
+
     @NotNull
     @Size(max = 100)
     private String sampleTempCode;
-    /**
-     * 样本编码
-     */
+
     @NotNull
     @Size(max = 100)
     private String sampleCode;
-    /**
-     * 样本最多使用次数
-     */
-    @NotNull
-    @Max(value = 20)
-    private Integer sampleUsedTimesMost;
-    /**
-     * 样本已使用次数
-     */
-    @NotNull
-    @Max(value = 20)
-    private Integer sampleUsedTimes;
-    /**
-     * 冻存管容量值
-     */
-    @NotNull
-    @Max(value = 100)
-    private Integer frozenTubeVolumn;
-    /**
-     * 冻存管容量单位
-     */
-    @NotNull
-    @Size(max = 20)
-    private String frozenTubeVolumnUnit;
-    /**
-     * 样本类型编码
-     */
+
     @NotNull
     @Size(max = 100)
     private String sampleTypeCode;
-    /**
-     * 样本类型名称
-     */
+
     @NotNull
     @Size(max = 255)
     private String sampleTypeName;
-    /**
-     * 冻存盒编码
-     */
+
     @NotNull
     @Size(max = 100)
     private String frozenBoxCode;
-    /**
-     * 行数
-     */
+
     @NotNull
     @Size(max = 20)
     private String tubeRows;
-    /**
-     * 列数
-     */
+
     @NotNull
     @Size(max = 20)
     private String tubeColumns;
-    /**
-     * 备注
-     */
+
     @Size(max = 1024)
     private String memo;
-    /**
-     * 状态
-     */
+
     @NotNull
     @Size(max = 20)
     private String status;
-    /**
-     * 冻存管类型编码
-     */
-    @NotNull
-    @Size(max = 100)
-    private String frozenTubeTypeCode;
-    /**
-     * 冻存管类型名称
-     */
-    @NotNull
-    @Size(max = 255)
-    private String frozenTubeTypeName;
-    /**
-     * 是否修改状态（1：是，0：否）
-     */
+
     @NotNull
     @Max(value = 20)
     private Integer isModifyState;
-    /**
-     * 是否修改位置（1：是，0：否）
-     */
+
     @NotNull
     @Max(value = 20)
     private Integer isModifyPosition;
-    /**
-     * 样本类型Id
-     */
+
     private Long sampleTypeId;
-    /**
-     * 冻存管类型Id
-     */
+
     private Long tubeTypeId;
-    /**
-     * 冻存盒类型Id
-     */
+
     private Long frozenBoxId;
-    /**
-     * 冻存管Id
-     */
+
     private Long frozenTubeId;
 
     public Long getId() {
@@ -164,34 +96,6 @@ public class FrozenTubeRecordDTO extends AbstractAuditingDTO implements Serializ
 
     public void setSampleCode(String sampleCode) {
         this.sampleCode = sampleCode;
-    }
-    public Integer getSampleUsedTimesMost() {
-        return sampleUsedTimesMost;
-    }
-
-    public void setSampleUsedTimesMost(Integer sampleUsedTimesMost) {
-        this.sampleUsedTimesMost = sampleUsedTimesMost;
-    }
-    public Integer getSampleUsedTimes() {
-        return sampleUsedTimes;
-    }
-
-    public void setSampleUsedTimes(Integer sampleUsedTimes) {
-        this.sampleUsedTimes = sampleUsedTimes;
-    }
-    public Integer getFrozenTubeVolumn() {
-        return frozenTubeVolumn;
-    }
-
-    public void setFrozenTubeVolumn(Integer frozenTubeVolumn) {
-        this.frozenTubeVolumn = frozenTubeVolumn;
-    }
-    public String getFrozenTubeVolumnUnit() {
-        return frozenTubeVolumnUnit;
-    }
-
-    public void setFrozenTubeVolumnUnit(String frozenTubeVolumnUnit) {
-        this.frozenTubeVolumnUnit = frozenTubeVolumnUnit;
     }
     public String getSampleTypeCode() {
         return sampleTypeCode;
@@ -241,20 +145,6 @@ public class FrozenTubeRecordDTO extends AbstractAuditingDTO implements Serializ
 
     public void setStatus(String status) {
         this.status = status;
-    }
-    public String getFrozenTubeTypeCode() {
-        return frozenTubeTypeCode;
-    }
-
-    public void setFrozenTubeTypeCode(String frozenTubeTypeCode) {
-        this.frozenTubeTypeCode = frozenTubeTypeCode;
-    }
-    public String getFrozenTubeTypeName() {
-        return frozenTubeTypeName;
-    }
-
-    public void setFrozenTubeTypeName(String frozenTubeTypeName) {
-        this.frozenTubeTypeName = frozenTubeTypeName;
     }
     public Integer getIsModifyState() {
         return isModifyState;
@@ -331,10 +221,6 @@ public class FrozenTubeRecordDTO extends AbstractAuditingDTO implements Serializ
             ", projectCode='" + projectCode + "'" +
             ", sampleTempCode='" + sampleTempCode + "'" +
             ", sampleCode='" + sampleCode + "'" +
-            ", sampleUsedTimesMost='" + sampleUsedTimesMost + "'" +
-            ", sampleUsedTimes='" + sampleUsedTimes + "'" +
-            ", frozenTubeVolumn='" + frozenTubeVolumn + "'" +
-            ", frozenTubeVolumnUnit='" + frozenTubeVolumnUnit + "'" +
             ", sampleTypeCode='" + sampleTypeCode + "'" +
             ", sampleTypeName='" + sampleTypeName + "'" +
             ", frozenBoxCode='" + frozenBoxCode + "'" +
@@ -342,8 +228,6 @@ public class FrozenTubeRecordDTO extends AbstractAuditingDTO implements Serializ
             ", tubeColumns='" + tubeColumns + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
-            ", frozenTubeTypeCode='" + frozenTubeTypeCode + "'" +
-            ", frozenTubeTypeName='" + frozenTubeTypeName + "'" +
             ", isModifyState='" + isModifyState + "'" +
             ", isModifyPosition='" + isModifyPosition + "'" +
             '}';

@@ -19,155 +19,80 @@ public class FrozenTubeRecord extends AbstractAuditingEntity implements Serializ
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-    /**
-     * 项目编码
-     */
+
     @NotNull
     @Size(max = 100)
     @Column(name = "project_code", length = 100, nullable = false)
     private String projectCode;
-    /**
-     * 样本临时编码
-     */
+
     @NotNull
     @Size(max = 100)
     @Column(name = "sample_temp_code", length = 100, nullable = false)
     private String sampleTempCode;
-    /**
-     * 样本编码
-     */
+
     @NotNull
     @Size(max = 100)
     @Column(name = "sample_code", length = 100, nullable = false)
     private String sampleCode;
-    /**
-     * 样本最多使用次数
-     */
-    @NotNull
-    @Max(value = 20)
-    @Column(name = "sample_used_times_most", nullable = false)
-    private Integer sampleUsedTimesMost;
-    /**
-     * 样本已使用次数
-     */
-    @NotNull
-    @Max(value = 20)
-    @Column(name = "sample_used_times", nullable = false)
-    private Integer sampleUsedTimes;
-    /**
-     * 冻存管容量值
-     */
-    @NotNull
-    @Max(value = 100)
-    @Column(name = "frozen_tube_volumn", nullable = false)
-    private Integer frozenTubeVolumn;
-    /**
-     * 冻存管容量单位
-     */
-    @NotNull
-    @Size(max = 20)
-    @Column(name = "frozen_tube_volumn_unit", length = 20, nullable = false)
-    private String frozenTubeVolumnUnit;
-    /**
-     * 样本类型编码
-     */
+
     @NotNull
     @Size(max = 100)
     @Column(name = "sample_type_code", length = 100, nullable = false)
     private String sampleTypeCode;
-    /**
-     * 样本类型名称
-     */
+
     @NotNull
     @Size(max = 255)
     @Column(name = "sample_type_name", length = 255, nullable = false)
     private String sampleTypeName;
-    /**
-     * 冻存盒编码
-     */
+
     @NotNull
     @Size(max = 100)
     @Column(name = "frozen_box_code", length = 100, nullable = false)
     private String frozenBoxCode;
-    /**
-     * 行数
-     */
+
     @NotNull
     @Size(max = 20)
     @Column(name = "tube_rows", length = 20, nullable = false)
     private String tubeRows;
-    /**
-     * 列数
-     */
+
     @NotNull
     @Size(max = 20)
     @Column(name = "tube_columns", length = 20, nullable = false)
     private String tubeColumns;
-    /**
-     * 备注
-     */
+
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
-    /**
-     * 状态
-     */
+
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-    /**
-     * 冻存管类型编码
-     */
-    @NotNull
-    @Size(max = 100)
-    @Column(name = "frozen_tube_type_code", length = 100, nullable = false)
-    private String frozenTubeTypeCode;
-    /**
-     * 冻存管类型名称
-     */
-    @NotNull
-    @Size(max = 255)
-    @Column(name = "frozen_tube_type_name", length = 255, nullable = false)
-    private String frozenTubeTypeName;
-    /**
-     * 是否修改状态（1：是，0：否）
-     */
+
     @NotNull
     @Max(value = 20)
     @Column(name = "is_modify_state", nullable = false)
     private Integer isModifyState;
-    /**
-     * 是否修改位置（1：是，0：否）
-     */
+
     @NotNull
     @Max(value = 20)
     @Column(name = "is_modify_position", nullable = false)
     private Integer isModifyPosition;
-    /**
-     * 样本类型
-     */
+
     @ManyToOne
     private SampleType sampleType;
-    /**
-     * 冻存管类型
-     */
+
     @ManyToOne(optional = false)
     @NotNull
     private FrozenTubeType tubeType;
-    /**
-     * 冻存盒类型
-     */
+
     @ManyToOne(optional = false)
     @NotNull
     private FrozenBox frozenBox;
-    /**
-     * 冻存管
-     */
+
     @ManyToOne(optional = false)
     @NotNull
     private FrozenTube frozenTube;
@@ -217,58 +142,6 @@ public class FrozenTubeRecord extends AbstractAuditingEntity implements Serializ
 
     public void setSampleCode(String sampleCode) {
         this.sampleCode = sampleCode;
-    }
-
-    public Integer getSampleUsedTimesMost() {
-        return sampleUsedTimesMost;
-    }
-
-    public FrozenTubeRecord sampleUsedTimesMost(Integer sampleUsedTimesMost) {
-        this.sampleUsedTimesMost = sampleUsedTimesMost;
-        return this;
-    }
-
-    public void setSampleUsedTimesMost(Integer sampleUsedTimesMost) {
-        this.sampleUsedTimesMost = sampleUsedTimesMost;
-    }
-
-    public Integer getSampleUsedTimes() {
-        return sampleUsedTimes;
-    }
-
-    public FrozenTubeRecord sampleUsedTimes(Integer sampleUsedTimes) {
-        this.sampleUsedTimes = sampleUsedTimes;
-        return this;
-    }
-
-    public void setSampleUsedTimes(Integer sampleUsedTimes) {
-        this.sampleUsedTimes = sampleUsedTimes;
-    }
-
-    public Integer getFrozenTubeVolumn() {
-        return frozenTubeVolumn;
-    }
-
-    public FrozenTubeRecord frozenTubeVolumn(Integer frozenTubeVolumn) {
-        this.frozenTubeVolumn = frozenTubeVolumn;
-        return this;
-    }
-
-    public void setFrozenTubeVolumn(Integer frozenTubeVolumn) {
-        this.frozenTubeVolumn = frozenTubeVolumn;
-    }
-
-    public String getFrozenTubeVolumnUnit() {
-        return frozenTubeVolumnUnit;
-    }
-
-    public FrozenTubeRecord frozenTubeVolumnUnit(String frozenTubeVolumnUnit) {
-        this.frozenTubeVolumnUnit = frozenTubeVolumnUnit;
-        return this;
-    }
-
-    public void setFrozenTubeVolumnUnit(String frozenTubeVolumnUnit) {
-        this.frozenTubeVolumnUnit = frozenTubeVolumnUnit;
     }
 
     public String getSampleTypeCode() {
@@ -360,32 +233,6 @@ public class FrozenTubeRecord extends AbstractAuditingEntity implements Serializ
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getFrozenTubeTypeCode() {
-        return frozenTubeTypeCode;
-    }
-
-    public FrozenTubeRecord frozenTubeTypeCode(String frozenTubeTypeCode) {
-        this.frozenTubeTypeCode = frozenTubeTypeCode;
-        return this;
-    }
-
-    public void setFrozenTubeTypeCode(String frozenTubeTypeCode) {
-        this.frozenTubeTypeCode = frozenTubeTypeCode;
-    }
-
-    public String getFrozenTubeTypeName() {
-        return frozenTubeTypeName;
-    }
-
-    public FrozenTubeRecord frozenTubeTypeName(String frozenTubeTypeName) {
-        this.frozenTubeTypeName = frozenTubeTypeName;
-        return this;
-    }
-
-    public void setFrozenTubeTypeName(String frozenTubeTypeName) {
-        this.frozenTubeTypeName = frozenTubeTypeName;
     }
 
     public Integer getIsModifyState() {
@@ -493,10 +340,6 @@ public class FrozenTubeRecord extends AbstractAuditingEntity implements Serializ
             ", projectCode='" + projectCode + "'" +
             ", sampleTempCode='" + sampleTempCode + "'" +
             ", sampleCode='" + sampleCode + "'" +
-            ", sampleUsedTimesMost='" + sampleUsedTimesMost + "'" +
-            ", sampleUsedTimes='" + sampleUsedTimes + "'" +
-            ", frozenTubeVolumn='" + frozenTubeVolumn + "'" +
-            ", frozenTubeVolumnUnit='" + frozenTubeVolumnUnit + "'" +
             ", sampleTypeCode='" + sampleTypeCode + "'" +
             ", sampleTypeName='" + sampleTypeName + "'" +
             ", frozenBoxCode='" + frozenBoxCode + "'" +
@@ -504,8 +347,6 @@ public class FrozenTubeRecord extends AbstractAuditingEntity implements Serializ
             ", tubeColumns='" + tubeColumns + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
-            ", frozenTubeTypeCode='" + frozenTubeTypeCode + "'" +
-            ", frozenTubeTypeName='" + frozenTubeTypeName + "'" +
             ", isModifyState='" + isModifyState + "'" +
             ", isModifyPosition='" + isModifyPosition + "'" +
             '}';

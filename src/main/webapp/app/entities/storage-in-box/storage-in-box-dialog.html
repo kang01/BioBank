@@ -4,19 +4,19 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myStorageInBoxLabel" data-translate="bioBankApp.storageInBox.home.createOrEditLabel">Create or edit a Storage In Box</h4>
+        <h4 class="modal-title" id="myStorageInBoxLabel" data-translate="bioBankApp.stockInBox.home.createOrEditLabel">Create or edit a Storage In Box</h4>
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" ng-show="vm.storageInBox.id">
+        <div class="form-group" ng-show="vm.stockInBox.id">
             <label for="id" data-translate="global.field.id">ID</label>
             <input type="text" class="form-control" id="id" name="id"
-                    ng-model="vm.storageInBox.id" readonly />
+                    ng-model="vm.stockInBox.id" readonly />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageInBox.equipmentCode" for="field_equipmentCode">Equipment Code</label>
+            <label class="control-label" data-translate="bioBankApp.stockInBox.equipmentCode" for="field_equipmentCode">Equipment Code</label>
             <input type="text" class="form-control" name="equipmentCode" id="field_equipmentCode"
-                    ng-model="vm.storageInBox.equipmentCode"
+                    ng-model="vm.stockInBox.equipmentCode"
                     required ng-maxlength="100"/>
             <div ng-show="editForm.equipmentCode.$invalid">
                 <p class="help-block"
@@ -30,9 +30,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageInBox.areaCode" for="field_areaCode">Area Code</label>
+            <label class="control-label" data-translate="bioBankApp.stockInBox.areaCode" for="field_areaCode">Area Code</label>
             <input type="text" class="form-control" name="areaCode" id="field_areaCode"
-                    ng-model="vm.storageInBox.areaCode"
+                    ng-model="vm.stockInBox.areaCode"
                     required ng-maxlength="100"/>
             <div ng-show="editForm.areaCode.$invalid">
                 <p class="help-block"
@@ -46,9 +46,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageInBox.supportRackCode" for="field_supportRackCode">Support Rack Code</label>
+            <label class="control-label" data-translate="bioBankApp.stockInBox.supportRackCode" for="field_supportRackCode">Support Rack Code</label>
             <input type="text" class="form-control" name="supportRackCode" id="field_supportRackCode"
-                    ng-model="vm.storageInBox.supportRackCode"
+                    ng-model="vm.stockInBox.supportRackCode"
                     required ng-maxlength="100"/>
             <div ng-show="editForm.supportRackCode.$invalid">
                 <p class="help-block"
@@ -62,9 +62,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageInBox.rowsInShelf" for="field_rowsInShelf">Rows In Shelf</label>
+            <label class="control-label" data-translate="bioBankApp.stockInBox.rowsInShelf" for="field_rowsInShelf">Rows In Shelf</label>
             <input type="text" class="form-control" name="rowsInShelf" id="field_rowsInShelf"
-                    ng-model="vm.storageInBox.rowsInShelf"
+                    ng-model="vm.stockInBox.rowsInShelf"
                     required ng-maxlength="20"/>
             <div ng-show="editForm.rowsInShelf.$invalid">
                 <p class="help-block"
@@ -78,9 +78,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageInBox.columnsInShelf" for="field_columnsInShelf">Columns In Shelf</label>
+            <label class="control-label" data-translate="bioBankApp.stockInBox.columnsInShelf" for="field_columnsInShelf">Columns In Shelf</label>
             <input type="text" class="form-control" name="columnsInShelf" id="field_columnsInShelf"
-                    ng-model="vm.storageInBox.columnsInShelf"
+                    ng-model="vm.stockInBox.columnsInShelf"
                     required ng-maxlength="20"/>
             <div ng-show="editForm.columnsInShelf.$invalid">
                 <p class="help-block"
@@ -94,9 +94,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageInBox.memo" for="field_memo">Memo</label>
+            <label class="control-label" data-translate="bioBankApp.stockInBox.memo" for="field_memo">Memo</label>
             <input type="text" class="form-control" name="memo" id="field_memo"
-                    ng-model="vm.storageInBox.memo"
+                    ng-model="vm.stockInBox.memo"
                     ng-maxlength="1024"/>
             <div ng-show="editForm.memo.$invalid">
                 <p class="help-block"
@@ -106,9 +106,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageInBox.status" for="field_status">Status</label>
+            <label class="control-label" data-translate="bioBankApp.stockInBox.status" for="field_status">Status</label>
             <input type="text" class="form-control" name="status" id="field_status"
-                    ng-model="vm.storageInBox.status"
+                    ng-model="vm.stockInBox.status"
                     required ng-maxlength="20"/>
             <div ng-show="editForm.status.$invalid">
                 <p class="help-block"
@@ -122,9 +122,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.storageInBox.frozenBoxCode" for="field_frozenBoxCode">Frozen Box Code</label>
+            <label class="control-label" data-translate="bioBankApp.stockInBox.frozenBoxCode" for="field_frozenBoxCode">Frozen Box Code</label>
             <input type="text" class="form-control" name="frozenBoxCode" id="field_frozenBoxCode"
-                    ng-model="vm.storageInBox.frozenBoxCode"
+                    ng-model="vm.stockInBox.frozenBoxCode"
                     required ng-maxlength="100"/>
             <div ng-show="editForm.frozenBoxCode.$invalid">
                 <p class="help-block"
@@ -139,20 +139,20 @@
         </div>
 
         <div class="form-group">
-            <label data-translate="bioBankApp.storageInBox.storageIn" for="field_storageIn">Storage In</label>
-            <select class="form-control" id="field_storageIn" name="storageIn" ng-model="vm.storageInBox.storageInId" ng-options="storageIn.id as storageIn.id for storageIn in vm.storageins"             required>
+            <label data-translate="bioBankApp.stockInBox.stockIn" for="field_storageIn">Storage In</label>
+            <select class="form-control" id="field_storageIn" name="stockIn" ng-model="vm.stockInBox.storageInId" ng-options="stockIn.id as stockIn.id for stockIn in vm.storageins"             required>
                 <option value=""></option>
             </select>
         </div>
-        <div ng-show="editForm.storageIn.$invalid">
+        <div ng-show="editForm.stockIn.$invalid">
             <p class="help-block"
-                ng-show="editForm.storageIn.$error.required" data-translate="entity.validation.required">
+                ng-show="editForm.stockIn.$error.required" data-translate="entity.validation.required">
                 This field is required.
             </p>
         </div>
         <div class="form-group">
-            <label data-translate="bioBankApp.storageInBox.equipment" for="field_equipment">Equipment</label>
-            <select class="form-control" id="field_equipment" name="equipment" ng-model="vm.storageInBox.equipmentId" ng-options="equipment.id as equipment.id for equipment in vm.equipment"             required>
+            <label data-translate="bioBankApp.stockInBox.equipment" for="field_equipment">Equipment</label>
+            <select class="form-control" id="field_equipment" name="equipment" ng-model="vm.stockInBox.equipmentId" ng-options="equipment.id as equipment.id for equipment in vm.equipment"             required>
                 <option value=""></option>
             </select>
         </div>
@@ -163,8 +163,8 @@
             </p>
         </div>
         <div class="form-group">
-            <label data-translate="bioBankApp.storageInBox.supportRack" for="field_supportRack">Support Rack</label>
-            <select class="form-control" id="field_supportRack" name="supportRack" ng-model="vm.storageInBox.supportRackId" ng-options="supportRack.id as supportRack.id for supportRack in vm.supportracks"             required>
+            <label data-translate="bioBankApp.stockInBox.supportRack" for="field_supportRack">Support Rack</label>
+            <select class="form-control" id="field_supportRack" name="supportRack" ng-model="vm.stockInBox.supportRackId" ng-options="supportRack.id as supportRack.id for supportRack in vm.supportracks"             required>
                 <option value=""></option>
             </select>
         </div>
@@ -175,8 +175,8 @@
             </p>
         </div>
         <div class="form-group">
-            <label data-translate="bioBankApp.storageInBox.area" for="field_area">Area</label>
-            <select class="form-control" id="field_area" name="area" ng-model="vm.storageInBox.areaId" ng-options="area.id as area.id for area in vm.areas"             required>
+            <label data-translate="bioBankApp.stockInBox.area" for="field_area">Area</label>
+            <select class="form-control" id="field_area" name="area" ng-model="vm.stockInBox.areaId" ng-options="area.id as area.id for area in vm.areas"             required>
                 <option value=""></option>
             </select>
         </div>

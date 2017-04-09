@@ -9,12 +9,12 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * A StorageInBox.
+ * A StockInBox.
  */
 @Entity
-@Table(name = "storage_in_box")
+@Table(name = "stock_in_box")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class StorageInBox extends AbstractAuditingEntity implements Serializable {
+public class StockInBox extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -78,12 +78,21 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
     @Size(max = 100)
     @Column(name = "frozen_box_code", length = 100, nullable = false)
     private String frozenBoxCode;
+
+    /**
+     * 入库编码
+     */
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "stock_in_code", length = 100, nullable = false)
+    private String stockInCode;
+
     /**
      * 入库
      */
     @ManyToOne(optional = false)
     @NotNull
-    private StorageIn storageIn;
+    private StockIn stockIn;
     /**
      * 设备
      */
@@ -115,7 +124,7 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
         return equipmentCode;
     }
 
-    public StorageInBox equipmentCode(String equipmentCode) {
+    public StockInBox equipmentCode(String equipmentCode) {
         this.equipmentCode = equipmentCode;
         return this;
     }
@@ -128,7 +137,7 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
         return areaCode;
     }
 
-    public StorageInBox areaCode(String areaCode) {
+    public StockInBox areaCode(String areaCode) {
         this.areaCode = areaCode;
         return this;
     }
@@ -141,7 +150,7 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
         return supportRackCode;
     }
 
-    public StorageInBox supportRackCode(String supportRackCode) {
+    public StockInBox supportRackCode(String supportRackCode) {
         this.supportRackCode = supportRackCode;
         return this;
     }
@@ -154,7 +163,7 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
         return rowsInShelf;
     }
 
-    public StorageInBox rowsInShelf(String rowsInShelf) {
+    public StockInBox rowsInShelf(String rowsInShelf) {
         this.rowsInShelf = rowsInShelf;
         return this;
     }
@@ -167,7 +176,7 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
         return columnsInShelf;
     }
 
-    public StorageInBox columnsInShelf(String columnsInShelf) {
+    public StockInBox columnsInShelf(String columnsInShelf) {
         this.columnsInShelf = columnsInShelf;
         return this;
     }
@@ -176,11 +185,24 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
         this.columnsInShelf = columnsInShelf;
     }
 
+    public String getStockInCode() {
+        return stockInCode;
+    }
+
+    public StockInBox stockInCode(String stockInCode) {
+        this.stockInCode = stockInCode;
+        return this;
+    }
+
+    public void setStockInCode(String stockInCode) {
+        this.stockInCode = stockInCode;
+    }
+
     public String getMemo() {
         return memo;
     }
 
-    public StorageInBox memo(String memo) {
+    public StockInBox memo(String memo) {
         this.memo = memo;
         return this;
     }
@@ -193,7 +215,7 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
         return status;
     }
 
-    public StorageInBox status(String status) {
+    public StockInBox status(String status) {
         this.status = status;
         return this;
     }
@@ -206,7 +228,7 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
         return frozenBoxCode;
     }
 
-    public StorageInBox frozenBoxCode(String frozenBoxCode) {
+    public StockInBox frozenBoxCode(String frozenBoxCode) {
         this.frozenBoxCode = frozenBoxCode;
         return this;
     }
@@ -215,24 +237,24 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
         this.frozenBoxCode = frozenBoxCode;
     }
 
-    public StorageIn getStorageIn() {
-        return storageIn;
+    public StockIn getStockIn() {
+        return stockIn;
     }
 
-    public StorageInBox storageIn(StorageIn storageIn) {
-        this.storageIn = storageIn;
+    public StockInBox stockIn(StockIn stockIn) {
+        this.stockIn = stockIn;
         return this;
     }
 
-    public void setStorageIn(StorageIn storageIn) {
-        this.storageIn = storageIn;
+    public void setStockIn(StockIn stockIn) {
+        this.stockIn = stockIn;
     }
 
     public Equipment getEquipment() {
         return equipment;
     }
 
-    public StorageInBox equipment(Equipment equipment) {
+    public StockInBox equipment(Equipment equipment) {
         this.equipment = equipment;
         return this;
     }
@@ -245,7 +267,7 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
         return supportRack;
     }
 
-    public StorageInBox supportRack(SupportRack supportRack) {
+    public StockInBox supportRack(SupportRack supportRack) {
         this.supportRack = supportRack;
         return this;
     }
@@ -258,7 +280,7 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
         return area;
     }
 
-    public StorageInBox area(Area area) {
+    public StockInBox area(Area area) {
         this.area = area;
         return this;
     }
@@ -275,11 +297,11 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        StorageInBox storageInBox = (StorageInBox) o;
-        if (storageInBox.id == null || id == null) {
+        StockInBox stockInBox = (StockInBox) o;
+        if (stockInBox.id == null || id == null) {
             return false;
         }
-        return Objects.equals(id, storageInBox.id);
+        return Objects.equals(id, stockInBox.id);
     }
 
     @Override
@@ -289,7 +311,7 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
 
     @Override
     public String toString() {
-        return "StorageInBox{" +
+        return "StockInBox{" +
             "id=" + id +
             ", equipmentCode='" + equipmentCode + "'" +
             ", areaCode='" + areaCode + "'" +
@@ -299,6 +321,7 @@ public class StorageInBox extends AbstractAuditingEntity implements Serializable
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
             ", frozenBoxCode='" + frozenBoxCode + "'" +
+            ", stockInCode='" + stockInCode + "'" +
             '}';
     }
 }

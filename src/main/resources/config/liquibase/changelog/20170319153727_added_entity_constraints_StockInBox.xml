@@ -4,31 +4,31 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <!--
-        Added the constraints for entity StorageInBox.
+        Added the constraints for entity StockInBox.
     -->
     <changeSet id="20170319153727-2" author="jhipster">
-        
-        <addForeignKeyConstraint baseColumnNames="storage_in_id"
-                                 baseTableName="storage_in_box"
-                                 constraintName="storage_in_box_storage_in_id"
+
+        <addForeignKeyConstraint baseColumnNames="stock_in_id"
+                                 baseTableName="stock_in_box"
+                                 constraintName="stock_in_box_stock_in_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="storage_in"/>
+                                 referencedTableName="stock_in"/>
 
         <addForeignKeyConstraint baseColumnNames="equipment_id"
-                                 baseTableName="storage_in_box"
-                                 constraintName="fk_storage_in_box_equipment_id"
+                                 baseTableName="stock_in_box"
+                                 constraintName="fk_stock_in_box_equipment_id"
                                  referencedColumnNames="id"
                                  referencedTableName="equipment"/>
 
         <addForeignKeyConstraint baseColumnNames="support_rack_id"
-                                 baseTableName="storage_in_box"
-                                 constraintName="storage_in_box_support_rack_id"
+                                 baseTableName="stock_in_box"
+                                 constraintName="stock_in_box_support_rack_id"
                                  referencedColumnNames="id"
                                  referencedTableName="support_rack"/>
 
         <addForeignKeyConstraint baseColumnNames="area_id"
-                                 baseTableName="storage_in_box"
-                                 constraintName="fk_storage_in_box_area_id"
+                                 baseTableName="stock_in_box"
+                                 constraintName="fk_stock_in_box_area_id"
                                  referencedColumnNames="id"
                                  referencedTableName="area"/>
 

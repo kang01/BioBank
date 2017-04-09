@@ -3,14 +3,12 @@ package org.fwoxford.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
- * A DTO for the StorageInBox entity.
+ * A DTO for the StockInBox entity.
  */
-public class StorageInBoxDTO extends AbstractAuditingDTO implements Serializable {
+public class StockInBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
     /**
@@ -63,7 +61,11 @@ public class StorageInBoxDTO extends AbstractAuditingDTO implements Serializable
     /**
      * 入库Id
      */
-    private Long storageInId;
+    private Long stockInId;
+    /**
+     * 入库编码
+     */
+    private String stockInCode;
     /**
      * 设备Id
      */
@@ -141,12 +143,20 @@ public class StorageInBoxDTO extends AbstractAuditingDTO implements Serializable
         this.frozenBoxCode = frozenBoxCode;
     }
 
-    public Long getStorageInId() {
-        return storageInId;
+    public Long getStockInId() {
+        return stockInId;
     }
 
-    public void setStorageInId(Long storageInId) {
-        this.storageInId = storageInId;
+    public void setStockInId(Long stockInId) {
+        this.stockInId = stockInId;
+    }
+
+    public String getStockInCode() {
+        return stockInCode;
+    }
+
+    public void setStockInCode(String stockInCode) {
+        this.stockInCode = stockInCode;
     }
 
     public Long getEquipmentId() {
@@ -182,9 +192,9 @@ public class StorageInBoxDTO extends AbstractAuditingDTO implements Serializable
             return false;
         }
 
-        StorageInBoxDTO storageInBoxDTO = (StorageInBoxDTO) o;
+        StockInBoxDTO stockInBoxDTO = (StockInBoxDTO) o;
 
-        if ( ! Objects.equals(id, storageInBoxDTO.id)) { return false; }
+        if ( ! Objects.equals(id, stockInBoxDTO.id)) { return false; }
 
         return true;
     }
@@ -196,8 +206,9 @@ public class StorageInBoxDTO extends AbstractAuditingDTO implements Serializable
 
     @Override
     public String toString() {
-        return "StorageInBoxDTO{" +
+        return "StockInBoxDTO{" +
             "id=" + id +
+            ", stockInCode='" + stockInCode + "'" +
             ", equipmentCode='" + equipmentCode + "'" +
             ", areaCode='" + areaCode + "'" +
             ", supportRackCode='" + supportRackCode + "'" +

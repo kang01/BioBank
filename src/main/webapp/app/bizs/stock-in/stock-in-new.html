@@ -101,9 +101,17 @@
                 <div >
                     <ul>
                         <li ng-repeat="item in vm.incompleteBoxesList"  >
-                            <div class="box-feature" ng-style="{backgroundColor:item.backColor}"  ng-click="vm.sampleBoxSelect($event)">{{item.frozenTubeDTOS.length}}/100</div>
-                            <div class="text-center">{{item.sampleTypeId}}</div>
+                            <div class="box-feature" ng-style="{backgroundColor:item.sampleType.backColor}"  ng-click="vm.sampleBoxSelect(item,$event)">
+                                <div>{{item.stockInFrozenTubeList.length}}/100</div>
+                                <div>{{ vm.addTubeCount}}</div>
+                            </div>
+                            <div class="text-center">{{item.sampleType.sampleTypeName}}</div>
                             <div>{{item.frozenBoxCode}}</div>
+                        </li>
+                        <li>
+                            <div class="box-feature" style="line-height: 96px" >
+                                <i class="fa fa-plus" style="font-size:30px;"></i>
+                            </div>
                         </li>
                         <li class="clear-both"></li>
                     </ul>

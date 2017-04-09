@@ -9,6 +9,8 @@ import org.ehcache.jsr107.Eh107Configuration;
 
 import java.util.concurrent.TimeUnit;
 
+import org.fwoxford.domain.StockIn;
+import org.fwoxford.domain.StockInBox;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
@@ -61,9 +63,9 @@ public class CacheConfiguration {
             cm.createCache(org.fwoxford.domain.Relations.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.FrozenTube.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.TranshipBox.class.getName(), jcacheConfiguration);
-            cm.createCache(org.fwoxford.domain.StorageIn.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.StockIn.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.FrozenTubeRecord.class.getName(), jcacheConfiguration);
-            cm.createCache(org.fwoxford.domain.StorageInBox.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.StockInBox.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.FrozenTube.class.getName() + ".frozenBoxes", jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.FrozenBox.class.getName() + ".frozenTubes", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry

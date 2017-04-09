@@ -1,5 +1,10 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
+import org.fwoxford.domain.FrozenBox;
+import org.fwoxford.domain.SupportRackType;
+import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.SupportRackService;
 import org.fwoxford.domain.SupportRack;
 import org.fwoxford.repository.SupportRackRepository;
@@ -7,11 +12,13 @@ import org.fwoxford.service.dto.SupportRackDTO;
 import org.fwoxford.service.mapper.SupportRackMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +35,9 @@ public class SupportRackServiceImpl implements SupportRackService{
     private final SupportRackRepository supportRackRepository;
 
     private final SupportRackMapper supportRackMapper;
+
+    @Autowired
+    private FrozenBoxRepository frozenBoxRepository;
 
     public SupportRackServiceImpl(SupportRackRepository supportRackRepository, SupportRackMapper supportRackMapper) {
         this.supportRackRepository = supportRackRepository;
@@ -89,16 +99,61 @@ public class SupportRackServiceImpl implements SupportRackService{
         supportRackRepository.delete(id);
     }
 
-    /**
-     * 根據區域ID查詢架子列表
-     * @param areaId 區域ID
-     * @return
-     */
     @Override
-    public List<SupportRackDTO> findSupportRackByAreaId(Long areaId) {
-        log.debug("Request to get SupportRack ByAreaId: {}", areaId);
-        List<SupportRack> supportRacks = supportRackRepository.findSupportRackByAreaId(areaId);
-        List<SupportRackDTO> supportRackDTOS = supportRackMapper.supportRacksToSupportRackDTOs(supportRacks);
-        return supportRackDTOS;
+    public List<SupportRackDTO> getSupportRackList(String equipmentCode) {
+        List<SupportRack> supportRacks = supportRackRepository.findSupportRackByEquipmentCode(equipmentCode);
+        return supportRackMapper.supportRacksToSupportRackDTOs(supportRacks);
+    }
+
+    @Override
+    public List<SupportRackDTO> getIncompleteShelves(String equipmentCode) {
+        List<SupportRack> supportRacks = supportRackRepository.findSupportRackByEquipmentCode(equipmentCode);
+        List<FrozenBox> frozenBoxes = frozenBoxRepository.findByEquipmentCode(equipmentCode);
+        List<SupportRack> supportRackList = new ArrayList<SupportRack>();
+        for(SupportRack rack :supportRacks){
+            SupportRackType supportRackType = rack.getSupportRackType();
+            String rows = supportRackType.getSupportRackRows();
+            String colomns = supportRackType.getSupportRackColumns();
+            int countShelves = Integer.parseInt(rows)*Integer.parseInt(colomns);
+            int count = 0;
+            for(FrozenBox box :frozenBoxes){
+                if(!box.getStatus().equals(Constants.FROZEN_BOX_STOCKED)&&!rack.getId().equals(box.getSupportRack().getId())){
+                    count++;
+                }
+            }
+            if(countShelves > count){
+                supportRackList.add(rack);
+            }
+        }
+        return supportRackMapper.supportRacksToSupportRackDTOs(supportRackList);
+    }
+
+    @Override
+    public List<SupportRackDTO> getIncompleteShelvesByEquipmentAndArea(String equipmentCode, String areaCode) {
+        List<SupportRack> supportRacks = supportRackRepository.findSupportRackByEquipmentCodeAndAreaCode(equipmentCode,areaCode);
+        List<FrozenBox> frozenBoxes = frozenBoxRepository.findByEquipmentCodeAndAreaCode(equipmentCode,areaCode);
+        List<SupportRack> supportRackList = new ArrayList<SupportRack>();
+        for(SupportRack rack :supportRacks){
+            SupportRackType supportRackType = rack.getSupportRackType();
+            String rows = supportRackType.getSupportRackRows();
+            String colomns = supportRackType.getSupportRackColumns();
+            int countShelves = Integer.parseInt(rows)*Integer.parseInt(colomns);
+            int count = 0;
+            for(FrozenBox box :frozenBoxes){
+                if(!box.getStatus().equals(Constants.FROZEN_BOX_STOCKED)&&!rack.getId().equals(box.getSupportRack().getId())){
+                    count++;
+                }
+            }
+            if(countShelves > count){
+                supportRackList.add(rack);
+            }
+        }
+        return supportRackMapper.supportRacksToSupportRackDTOs(supportRackList);
+    }
+
+    @Override
+    public List<SupportRackDTO> getSupportRackListByEquipmentAndArea(String equipmentCode, String areaCode) {
+        List<SupportRack> supportRacks = supportRackRepository.findSupportRackByEquipmentCodeAndAreaCode(equipmentCode,areaCode);
+        return supportRackMapper.supportRacksToSupportRackDTOs(supportRacks);
     }
 }

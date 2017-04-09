@@ -1,18 +1,22 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.Equipment;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.Tranship;
+import org.fwoxford.repository.FrozenBoxRepositories;
 import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.repository.FrozenTubeRepository;
 import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
-import org.fwoxford.service.mapper.FrozenBoxMapper;
-import org.fwoxford.service.mapper.FrozenTubeMapper;
+import org.fwoxford.service.dto.response.StockInBoxDetail;
+import org.fwoxford.service.dto.response.StockInBoxForChangingPosition;
+import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +25,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.repository.core.support.ExampleMatcherAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +47,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     private final Logger log = LoggerFactory.getLogger(FrozenBoxServiceImpl.class);
 
     private final FrozenBoxRepository frozenBoxRepository;
+    private final FrozenBoxRepositories frozenBoxRepositories;
 
     private final FrozenBoxMapper frozenBoxMapper;
 
@@ -51,10 +58,21 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     private FrozenTubeMapper frozenTubeMapping;
     @Autowired
     private TranshipRepository transhipRepository;
+    @Autowired
+    private FrozenTubeRepository frozenTubeRepository;
+    @Autowired
+    private EquipmentMapper equipmentMapper;
+    @Autowired
+    private AreaMapper areaMapper;
+    @Autowired
+    private SupportRackMapper supportRackMapper;
+    @Autowired
+    private SampleTypeMapper sampleTypeMapper;
 
-    public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper) {
+    public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper,FrozenBoxRepositories frozenBoxRepositories) {
         this.frozenBoxRepository = frozenBoxRepository;
         this.frozenBoxMapper = frozenBoxMapper;
+        this.frozenBoxRepositories = frozenBoxRepositories;
     }
 
     /**
@@ -247,5 +265,151 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
             res.add(tempRes);
         }
         return res;
+    }
+
+    @Override
+    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(String projectCode, String sampleTypeCode) {
+        return null;
+    }
+
+    @Override
+    public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipment(DataTablesInput input, String equipmentCode) {
+        input.addColumn("equipmentCode",true,true,equipmentCode);
+        DataTablesOutput<FrozenBox> output = frozenBoxRepositories.findAll(input);
+        List<FrozenBox> frozenBoxes =  output.getData();
+        List<StockInBoxDetail> res = new ArrayList<StockInBoxDetail>();
+        for(FrozenBox frozenBox:frozenBoxes){
+            StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+            stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
+            stockInBoxDetail.setId(frozenBox.getId());
+            stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
+            stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            stockInBoxDetail.setMemo(frozenBox.getMemo());
+            // stockInBoxDetail.setStockInCode("");
+            List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
+            stockInBoxDetail.setCountOfSample(frozenTubes.size());
+            stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
+            stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
+            stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
+            stockInBoxDetail.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
+            stockInBoxDetail.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
+            stockInBoxDetail.setSupportRackId(frozenBox.getArea()!=null?frozenBox.getSupportRack().getId():null);
+            stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
+            stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
+            stockInBoxDetail.setFrozenBoxColumns(frozenBox.getFrozenBoxColumns());
+            stockInBoxDetail.setFrozenBoxRows(frozenBox.getFrozenBoxRows());
+            stockInBoxDetail.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
+            stockInBoxDetail.setStatus(frozenBox.getStatus());
+            res.add(stockInBoxDetail);
+        }
+        //构造返回分页数据
+        DataTablesOutput<StockInBoxDetail> responseDataTablesOutput = new DataTablesOutput<StockInBoxDetail>();
+        responseDataTablesOutput.setDraw(output.getDraw());
+        responseDataTablesOutput.setError(output.getError());
+        responseDataTablesOutput.setData(res);
+        responseDataTablesOutput.setRecordsFiltered(output.getRecordsFiltered());
+        responseDataTablesOutput.setRecordsTotal(output.getRecordsTotal());
+        return responseDataTablesOutput;
+    }
+
+    @Override
+    public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipmentAndArea(DataTablesInput input, String equipmentCode, String areaCode) {
+        input.addColumn("equipmentCode",true,true,equipmentCode);
+        input.addColumn("areaCode",true,true,areaCode);
+        DataTablesOutput<FrozenBox> output = frozenBoxRepositories.findAll(input);
+        List<FrozenBox> frozenBoxes =  output.getData();
+        List<StockInBoxDetail> res = new ArrayList<StockInBoxDetail>();
+        for(FrozenBox frozenBox:frozenBoxes){
+            StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+            stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
+            stockInBoxDetail.setId(frozenBox.getId());
+            stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
+            stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            stockInBoxDetail.setMemo(frozenBox.getMemo());
+            // stockInBoxDetail.setStockInCode("");
+            List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
+            stockInBoxDetail.setCountOfSample(frozenTubes.size());
+            stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
+            stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
+            stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
+            stockInBoxDetail.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
+            stockInBoxDetail.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
+            stockInBoxDetail.setSupportRackId(frozenBox.getArea()!=null?frozenBox.getSupportRack().getId():null);
+            stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
+            stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
+            stockInBoxDetail.setFrozenBoxColumns(frozenBox.getFrozenBoxColumns());
+            stockInBoxDetail.setFrozenBoxRows(frozenBox.getFrozenBoxRows());
+            stockInBoxDetail.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
+            stockInBoxDetail.setStatus(frozenBox.getStatus());
+            res.add(stockInBoxDetail);
+        }
+        //构造返回分页数据
+        DataTablesOutput<StockInBoxDetail> responseDataTablesOutput = new DataTablesOutput<StockInBoxDetail>();
+        responseDataTablesOutput.setDraw(output.getDraw());
+        responseDataTablesOutput.setError(output.getError());
+        responseDataTablesOutput.setData(res);
+        responseDataTablesOutput.setRecordsFiltered(output.getRecordsFiltered());
+        responseDataTablesOutput.setRecordsTotal(output.getRecordsTotal());
+        return responseDataTablesOutput;
+    }
+
+    @Override
+    public List<StockInBoxDetail> getFrozenBoxByEquipmentAndAreaAndShelves(String equipmentCode, String areaCode, String shelfCode) {
+        List<FrozenBox> frozenBoxs = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(equipmentCode,areaCode,shelfCode);
+        List<StockInBoxDetail> res = new ArrayList<StockInBoxDetail>();
+        for(FrozenBox frozenBox:frozenBoxs){
+            StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+            stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
+            stockInBoxDetail.setId(frozenBox.getId());
+            stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
+            stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            stockInBoxDetail.setMemo(frozenBox.getMemo());
+           // stockInBoxDetail.setStockInCode("");
+            List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
+            stockInBoxDetail.setCountOfSample(frozenTubes.size());
+            stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
+            stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
+            stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
+            stockInBoxDetail.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
+            stockInBoxDetail.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
+            stockInBoxDetail.setSupportRackId(frozenBox.getArea()!=null?frozenBox.getSupportRack().getId():null);
+            stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
+            stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
+            stockInBoxDetail.setFrozenBoxColumns(frozenBox.getFrozenBoxColumns());
+            stockInBoxDetail.setFrozenBoxRows(frozenBox.getFrozenBoxRows());
+            stockInBoxDetail.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
+            stockInBoxDetail.setStatus(frozenBox.getStatus());
+            res.add(stockInBoxDetail);
+        }
+         return res;
+    }
+
+    @Override
+    public StockInBoxDetail getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(String equipmentCode, String areaCode, String shelfCode, String position) {
+        String columnsInShelf = position.substring(0,1);
+        String rowsInShelf = position.substring(1);
+        FrozenBox frozenBox = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(equipmentCode,areaCode,shelfCode,columnsInShelf,rowsInShelf);
+        StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+        stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
+        stockInBoxDetail.setId(frozenBox.getId());
+        stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
+        stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        stockInBoxDetail.setMemo(frozenBox.getMemo());
+        // stockInBoxDetail.setStockInCode("");
+        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
+        stockInBoxDetail.setCountOfSample(frozenTubes.size());
+        stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
+        stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
+        stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
+        stockInBoxDetail.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
+        stockInBoxDetail.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
+        stockInBoxDetail.setSupportRackId(frozenBox.getArea()!=null?frozenBox.getSupportRack().getId():null);
+        stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
+        stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
+        stockInBoxDetail.setFrozenBoxColumns(frozenBox.getFrozenBoxColumns());
+        stockInBoxDetail.setFrozenBoxRows(frozenBox.getFrozenBoxRows());
+        stockInBoxDetail.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
+        stockInBoxDetail.setStatus(frozenBox.getStatus());
+        return stockInBoxDetail;
     }
 }

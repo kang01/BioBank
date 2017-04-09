@@ -1,7 +1,10 @@
 package org.fwoxford.service.dto.response;
 
+import org.fwoxford.domain.Area;
 import org.fwoxford.domain.SampleType;
 import org.fwoxford.domain.SupportRack;
+import org.fwoxford.service.dto.AreaDTO;
+import org.fwoxford.service.dto.EquipmentDTO;
 import org.fwoxford.service.dto.SampleTypeDTO;
 import org.fwoxford.service.dto.SupportRackDTO;
 
@@ -15,10 +18,6 @@ public class StockInBoxForShelf {
     private Long id;
 
     private Integer isSplit;
-    private Long equipmentId;
-    private Long areaId;
-    private Long supportRackId;
-
     private String status;
 
     private Long frozenBoxId;
@@ -27,8 +26,12 @@ public class StockInBoxForShelf {
     private String frozenBoxColumns;
     private String frozenBoxRows;
     private SampleTypeDTO sampleType;
+    private EquipmentDTO equipment;
+    private AreaDTO area;
     private SupportRackDTO shelf;
-//    private List<StockInTubeForBox> stockInFrozenTubeList;
+    private Long equipmentId;
+    private Long areaId;
+    private Long supportRackId;
     public Integer getIsSplit() {
         return isSplit;
     }
@@ -85,28 +88,20 @@ public class StockInBoxForShelf {
         this.sampleType = sampleType;
     }
 
-    public Long getEquipmentId() {
-        return equipmentId;
+    public EquipmentDTO getEquipment() {
+        return equipment;
     }
 
-    public void setEquipmentId(Long equipmentId) {
-        this.equipmentId = equipmentId;
+    public void setEquipment(EquipmentDTO equipment) {
+        this.equipment = equipment;
     }
 
-    public Long getAreaId() {
-        return areaId;
+    public AreaDTO getArea() {
+        return area;
     }
 
-    public void setAreaId(Long areaId) {
-        this.areaId = areaId;
-    }
-
-    public Long getSupportRackId() {
-        return supportRackId;
-    }
-
-    public void setSupportRackId(Long supportRackId) {
-        this.supportRackId = supportRackId;
+    public void setArea(AreaDTO area) {
+        this.area = area;
     }
 
     public SupportRackDTO getShelf() {
@@ -131,5 +126,29 @@ public class StockInBoxForShelf {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
+    }
+
+    public Long getSupportRackId() {
+        return supportRackId;
+    }
+
+    public void setSupportRackId(Long supportRackId) {
+        this.supportRackId = supportRackId;
     }
 }

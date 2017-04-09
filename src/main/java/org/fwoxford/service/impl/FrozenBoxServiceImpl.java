@@ -12,10 +12,8 @@ import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
-import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
-import org.fwoxford.service.dto.response.FrozenTubeResponse;
-import org.fwoxford.service.dto.response.StockInBoxDetail;
-import org.fwoxford.service.dto.response.StockInBoxForChangingPosition;
+import org.fwoxford.service.dto.SampleTypeDTO;
+import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
@@ -33,9 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Service Implementation for managing FrozenBox.
@@ -269,9 +265,61 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
     @Override
     public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(String projectCode, String sampleTypeCode) {
-        return null;
+        List<StockInBoxForChangingPosition> stockInBoxForChangingPositionList = new ArrayList<StockInBoxForChangingPosition>();
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode,sampleTypeCode,Constants.FROZEN_BOX_STOCKING);
+        if(frozenBoxList.size()==0){
+            frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode,sampleTypeCode,Constants.FROZEN_BOX_STOCKED);
+        }
+        List<String> frozenBoxCodes = new ArrayList<>();
+        for(FrozenBox box : frozenBoxList){
+            frozenBoxCodes.add(box.getFrozenBoxCode());
+        }
+        List<Object[]> map = new ArrayList<>();
+        if(frozenBoxList != null){
+            map = frozenTubeRepository.countSampleNumberByfrozenBoxList(frozenBoxCodes);
+        }
+        for(FrozenBox box : frozenBoxList){
+            for(int i = 0 ; i < map.size() ; i++){
+                Object[] obj = map.get(i);
+                String frozenBoxCodeKey = obj[0].toString();
+                String number = obj[1].toString();
+                if(box.getFrozenBoxCode().equals(frozenBoxCodeKey)){
+                    String columns = box.getFrozenBoxColumns()!=null?box.getFrozenBoxColumns():box.getFrozenBoxType().getFrozenBoxTypeColumns();
+                    String rows = box.getFrozenBoxRows()!=null ? box.getFrozenBoxRows():box.getFrozenBoxType().getFrozenBoxTypeRows();
+                    int allCounts = Integer.parseInt(columns)*Integer.parseInt(rows);
+                    int countOfSample = Integer.parseInt(number);
+                    if( allCounts > countOfSample){
+                        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
+                        StockInBoxForChangingPosition newBox = createStockInBoxForDataMoved(box,frozenTubeList,countOfSample);
+                        stockInBoxForChangingPositionList.add(newBox);
+                    }
+                }
+            }
+        }
+        return stockInBoxForChangingPositionList;
     }
+    private StockInBoxForChangingPosition createStockInBoxForDataMoved(FrozenBox box,List<FrozenTube> frozenTubeList,int countOfSample) {
+        StockInBoxForChangingPosition res = new StockInBoxForChangingPosition();
+        res.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(box.getSampleType()));
+        res.setCountOfSample(countOfSample);
+        res.setFrozenBoxId(box.getId());
+        res.setFrozenBoxCode(box.getFrozenBoxCode());
+        res.setFrozenBoxColumns(box.getFrozenBoxColumns());
+        res.setFrozenBoxRows(box.getFrozenBoxRows());
+        res.setStockInFrozenTubeList(new ArrayList<>());
+        for(FrozenTube tubes : frozenTubeList){
+            StockInTubeForBox tube = new StockInTubeForBox();
+            tube.setFrozenTubeId(tubes.getId());
+            tube.setFrozenTubeCode(tubes.getFrozenTubeCode());
+            tube.setSampleType(tubes.getSampleType());
+            tube.setFrozenBoxCode(box.getFrozenBoxCode());
+            tube.setTubeColumns(tubes.getTubeColumns());
+            tube.setTubeRows(tubes.getTubeRows());
+            res.getStockInFrozenTubeList().add(tube);
+        }
 
+        return res;
+    }
     @Override
     public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipment(DataTablesInput input, String equipmentCode) {
         input.addColumn("equipmentCode",true,true,equipmentCode);

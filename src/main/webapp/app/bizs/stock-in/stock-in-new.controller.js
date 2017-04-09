@@ -31,8 +31,6 @@
         vm.entityBoxes = {};
         vm.splittingBox = null;
         vm.splittedBoxes = {};
-        vm.selectedStockInBoxes = {};
-
         vm.dtInstance = {};
 
 
@@ -40,8 +38,10 @@
         _initStockInBoxesTable();
 
         function _initStockInBoxesTable(){
+            vm.selectedStockInBoxes = {};
             vm.selected = {};
             vm.selectAll = false;
+
             vm.toggleAll = function (selectAll, selectedItems) {
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
@@ -107,6 +107,7 @@
             vm.dtColumns = _createColumns();
 
             vm.splitIt = _splitABox;
+            vm.putInShelf = _putInShelf;
         }
 
         function _fnServerData( sSource, aoData, fnCallback, oSettings ) {
@@ -156,18 +157,19 @@
                 case '2004': status = '已入库'; break;
                 case '2005': status = '已作废'; break;
             }
-            $('td:eq(-3)', row).html(isSplit ? '需要分装' : '');
-            $('td:eq(-2)', row).html(status);
+            $('td:eq(5)', row).html(isSplit ? '需要分装' : '');
+            $('td:eq(6)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function _fnActionButtonsRender(data, type, full, meta) {
-            return
-                '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt('+ full.frozenBoxCode +')">' +
+            // console.log(vm.splitIt, vm.putInShelf);
+            return '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt('+ full.frozenBoxCode +')">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;' +
-                '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.putInShelf('+ full.id +')">' +
+                '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf('+ full.id +')">' +
                 '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;'
+                '</button>&nbsp;';
+
         }
         function _fnRowSelectorRender(data, type, full, meta) {
             vm.selected[full.id] = false;
@@ -184,6 +186,7 @@
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    null
                 ]
             };
 
@@ -201,7 +204,11 @@
                 DTColumnBuilder.newColumn('countOfSample').withTitle('样本量'),
                 DTColumnBuilder.newColumn('isSplit').withTitle('是否分装'),
                 DTColumnBuilder.newColumn('status').withTitle('状态'),
-                DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(_fnActionButtonsRender)
+                DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(_fnActionButtonsRender),
+                DTColumnBuilder.newColumn('id').notVisible(),
+                DTColumnBuilder.newColumn('sampleType').notVisible(),
+                DTColumnBuilder.newColumn('frozenBoxRows').notVisible(),
+                DTColumnBuilder.newColumn('frozenBoxColumns').notVisible(),
             ];
 
             return columns;
@@ -234,12 +241,18 @@
                     }
                 }
             }
+
+            if (typeof boxIds === "undefined" || !boxIds.length){
+                return;
+            }
+
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-in/box-putaway-modal.html',
                 controller: 'BoxPutAwayModalController',
                 controllerAs:'vm',
-                size:'lg',
+                // size:'lg',
+                size:'90',
                 resolve: {
                     items: function () {
                         return {

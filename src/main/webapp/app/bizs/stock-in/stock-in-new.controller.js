@@ -200,8 +200,13 @@
 
 
 
-        vm.frozenTubeArray = [];
-        vm.incompleteBoxesList = [];
+        vm.frozenTubeArray = [];//初始管子的单元格
+        vm.incompleteBoxesList = []; //分装后的样本类型盒子，未装满样本的盒子
+        var tempTubeArray = [];//选中未满样本盒子的临时数据，需要操作管子
+        var selectList = [];//选择单元格的管子数据
+        var modalInstance;
+        var size = 10;
+        var htm;
         vm.loadBox = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);
         };
@@ -213,15 +218,13 @@
             }
         }
         function onIncompleteBoxesSuccess(data) {
-            console.log(JSON.stringify(data))
             vm.incompleteBoxesList.push(data[0]);
-            // console.log(JSON.stringify(vm.incompleteBoxesList))
         }
         function onError(error) {
             AlertService.error(error.data.message);
         }
         vm.loadBox();
-        var size = 10;
+
         function initFrozenTube(size) {
             for(var i = 0; i < size; i++){
                 vm.frozenTubeArray[i] = [];
@@ -238,7 +241,7 @@
         function getTubeColumnIndex(col) {
             return +col -1;
         }
-        var htm;
+
         vm.customRenderer = function (hotInstance, td, row, col, prop, value, cellProperties) {
             if(value != ""){
                 //样本类型
@@ -272,9 +275,17 @@
             stretchH: 'all',
             editor: false,
             onAfterSelectionEnd:function (row, col, row2, col2) {
-                console.log(this)
-                console.log($(this.getData(row,col,row2,col2)))
+                // console.log(this)
+                // console.log($(this.getData(row,col,row2,col2)))
                 vm.selectCell = $(this.getData(row,col,row2,col2));
+                // if(vm.selectCell.length){
+                for(var i = 0; i < vm.selectCell.length; i++ ){
+                    for (var j = 0; j < vm.selectCell[i].length; j++){
+                        // console.log(JSON.stringify(vm.selectCell[i][j]))
+                        selectList.push(vm.selectCell[i][j])
+                    }
+                }
+                // }
             },
             enterMoves:function () {
                 var hotMoves = hotRegisterer.getInstance('my-handsontable');
@@ -298,7 +309,6 @@
             }
         };
 
-        var modalInstance;
         //上架操作
         vm.putAway = function () {
             modalInstance = $uibModal.open({
@@ -319,21 +329,49 @@
             });
         };
         //选择分装后的样本盒
-        vm.sampleBoxSelect = function ($event) {
+        var tubeList = [];
+        vm.sampleBoxSelect = function (item,$event) {
+
+            for(var i = 0; i < item.frozenBoxRows; i++){
+                tempTubeArray[i] = [];
+                for(var j = 0;j < item.frozenBoxColumns; j++){
+                    tempTubeArray[i][j] = {
+                        tubeColumns: j+1,
+                        tubeRows: String.fromCharCode(i+65),
+                        frozenTubeCode:''
+                    };
+                    tubeList.push(tempTubeArray[i][j])
+                }
+            }
+            for(var k = 0; k <item.stockInFrozenTubeList.length; k++){
+                var tube = item.stockInFrozenTubeList[k];
+                if(tubeList[k].tubeRows == tube.tubeRows && tubeList[k].tubeColumns == tube.tubeColumns){
+                    tubeList[k] = tube
+                }
+            }
+            // console.log(JSON.stringify(tubeList));
+
+
+
             $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
             $($event.target).addClass("box-selected");
         };
+        var emptyList = [];
         //分装操作
         vm.splitBox = function () {
-            if(vm.selectCell.length){
-                for(var i = 0; i < vm.selectCell.length; i++ ){
-                    for (var j = 0; j < vm.selectCell[i].length; j++){
-                        // console.log(JSON.stringify(vm.selectCell[i][j]))
+            vm.addTubeCount = selectList.length;
+            for(var i = 0; i < tubeList.length; i++){
+                if(!tubeList[i].frozenTubeCode){
+                    for(var j = 0; j < selectList.length; j++){
+                        tubeList[i] = selectList[j];
+                        selectList.splice(j,1)
                     }
                 }
             }
 
-        }
+            console.log(JSON.stringify(tubeList));
+
+        };
         vm.editBox = function () {
             _splitABox();
         }

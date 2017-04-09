@@ -29,7 +29,6 @@
         vm.saveRecord = saveRecord; //保存记录
         vm.saveBox = saveBox;//保存盒子
         vm.loadBox = loadBox;
-        // console.log($stateParams.transhipId);
         if($stateParams.transhipId){
             vm.transportRecord.id = $stateParams.transhipId;
         }
@@ -37,8 +36,6 @@
         if($stateParams.transhipCode){
             vm.transportRecord.transhipCode = $stateParams.transhipCode;
         }
-
-
         var obox = {
             transhipId:vm.transportRecord.id,
             frozenBoxDTOList:[]
@@ -596,10 +593,9 @@
         }
 
         function saveBox(){
-            if(obox.frozenBoxDTOList.length == 0){
-                obox.frozenBoxDTOList.push(vm.box);
-            }
-            TranshipBoxService.save(obox,onSaveBoxSuccess,onError);
+            obox.frozenBoxDTOList = [];
+            obox.frozenBoxDTOList.push(vm.box);
+            TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
         }
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;

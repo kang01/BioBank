@@ -8,10 +8,12 @@
         .module('bioBankApp')
         .controller('StockInNewController', StockInNewController);
 
-    StockInNewController.$inject = ['$scope','$compile','hotRegisterer','StockInService','StockInBoxService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','entity','frozenBoxByCodeService',
-        'SampleTypeService','AlertService','SampleService','IncompleteBoxService']
-    function StockInNewController($scope,$compile,hotRegisterer,StockInService,StockInBoxService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,entity,frozenBoxByCodeService,
-                                          SampleTypeService,AlertService,SampleService,IncompleteBoxService) {
+    StockInNewController.$inject = ['$timeout','$state','$stateParams', '$scope','$compile','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
+        'entity','AlertService','StockInService','StockInBoxService','frozenBoxByCodeService',
+        'SampleTypeService','SampleService','IncompleteBoxService']
+    function StockInNewController($timeout,$state,$stateParams,$scope,$compile,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
+                                  entity,AlertService,StockInService,StockInBoxService,frozenBoxByCodeService,
+                                  SampleTypeService,SampleService,IncompleteBoxService) {
         var vm = this;
         vm.entity = {
             stockInCode: '1234567890',
@@ -25,9 +27,11 @@
             storeKeeper2: '景福',
             status: '7001',
         };
+        vm.stockInCode = vm.entity.stockInCode;
         vm.entityBoxes = {};
         vm.splittingBox = null;
         vm.splittedBoxes = {};
+        vm.selectedStockInBoxes = {};
 
         vm.dtInstance = {};
 
@@ -36,6 +40,27 @@
         _initStockInBoxesTable();
 
         function _initStockInBoxesTable(){
+            vm.selected = {};
+            vm.selectAll = false;
+            vm.toggleAll = function (selectAll, selectedItems) {
+                for (var id in selectedItems) {
+                    if (selectedItems.hasOwnProperty(id)) {
+                        selectedItems[id] = selectAll;
+                    }
+                }
+            };
+            vm.toggleOne = function (selectedItems) {
+                for (var id in selectedItems) {
+                    if (selectedItems.hasOwnProperty(id)) {
+                        if(!selectedItems[id]) {
+                            vm.selectAll = false;
+                            return;
+                        }
+                    }
+                }
+                vm.selectAll = true;
+            };
+
             var ajaxUrl = 'api/temp/res/stock-in-boxes/stock-in/' + vm.entity.stockInCode;
             vm.dtInstanceCallback = function(instance){
                 vm.dtInstance = instance;
@@ -90,6 +115,7 @@
                 var oData = aoData[i];
                 data[oData.name] = oData.value;
             }
+            data["stockInCode"] = vm.stockInCode;
             var jqDt = this;
             StockInBoxService.getJqDataTableValues(data, oSettings).then(function (res){
                 var json = res.data;
@@ -135,12 +161,17 @@
             $compile(angular.element(row).contents())($scope);
         }
         function _fnActionButtonsRender(data, type, full, meta) {
-            return '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt('+ full.frozenBoxCode +')">' +
+            return
+                '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt('+ full.frozenBoxCode +')">' +
+                '   <i class="fa fa-edit"></i>' +
+                '</button>&nbsp;' +
+                '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.putInShelf('+ full.id +')">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;'
         }
         function _fnRowSelectorRender(data, type, full, meta) {
-            return '';
+            vm.selected[full.id] = false;
+            return '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
         }
 
         function _createColumnFilters(){
@@ -159,9 +190,11 @@
             return filters;
         }
         function _createColumns(){
+            var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll(vm.selectAll, vm.selected)">';
+
             var columns = [
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
-                DTColumnBuilder.newColumn("").withTitle('选择').notSortable().renderWith(_fnRowSelectorRender),
+                DTColumnBuilder.newColumn("").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
                 DTColumnBuilder.newColumn('sampleType').withTitle('样本类型'),
                 DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
@@ -177,13 +210,47 @@
         function _splitABox(code){
             frozenBoxByCodeService.get({code:'23432'},onFrozenSuccess,onError);
             function onFrozenSuccess(data) {
+                vm.splittingBox = true;
                 vm.box =  data;
                 for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
                     var tube = vm.box.frozenTubeDTOS[k];
                     vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
                 }
-                hotRegisterer.getInstance('my-handsontable').render();
+
+                $timeout(function(){
+                    hotRegisterer.getInstance('my-handsontable').render();
+                }, 200);
             }
+        }
+
+        function _putInShelf(boxIds){
+            if (typeof boxIds !== "object"){
+                boxIds = [boxIds];
+            } else {
+                boxIds = [];
+                for(var id in vm.selected){
+                    if(vm.selected[id]) {
+                        boxIds.push(id);
+                    }
+                }
+            }
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-in/box-putaway-modal.html',
+                controller: 'BoxPutAwayModalController',
+                controllerAs:'vm',
+                size:'lg',
+                resolve: {
+                    items: function () {
+                        return {
+                            stockInCode: vm.stockInCode,
+                            boxIds: boxIds
+                        }
+                    }
+                }
+            });
+            modalInstance.result.then(function (data) {
+            });
         }
 
 
@@ -191,7 +258,9 @@
 
 
 
-        vm.showSplittingPanel = function(){
+
+
+        vm.isShowSplittingPanel = function(){
             return vm.splittingBox && true;
         };
 

@@ -184,7 +184,7 @@ public class StockInBoxResource {
      */
     @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/moved")
     @Timed
-    public ResponseEntity<StockInBoxDetail> movedStockIn(@Valid @RequestBody String stockInCode, String boxCode, FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
+    public ResponseEntity<StockInBoxDetail> movedStockIn(@Valid @RequestBody String stockInCode,@Valid @RequestBody  String boxCode,@Valid @RequestBody  FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
         StockInBoxDetail stockInBoxDetail = stockInBoxService.movedStockIn(stockInCode,boxCode,boxPositionDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getId().toString()))

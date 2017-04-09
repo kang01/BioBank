@@ -109,11 +109,11 @@ public interface FrozenBoxService {
 
     List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(String projectCode, String sampleTypeCode);
 
-    DataTablesOutput<FrozenBoxAndFrozenTubeResponse> getPageFrozenBoxByEquipment(DataTablesInput input, String equipmentCode);
+    DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipment(DataTablesInput input, String equipmentCode);
 
-    DataTablesOutput<FrozenBoxAndFrozenTubeResponse> getPageFrozenBoxByEquipmentAndArea(DataTablesInput input, String equipmentCode, String areaCode);
+    DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipmentAndArea(DataTablesInput input, String equipmentCode, String areaCode);
 
-    List<FrozenBoxAndFrozenTubeResponse> getFrozenBoxByEquipmentAndAreaAndShelves(String equipmentCode, String areaCode, String shelfCode);
+    List<StockInBoxDetail> getFrozenBoxByEquipmentAndAreaAndShelves(String equipmentCode, String areaCode, String shelfCode);
 
-    FrozenBoxAndFrozenTubeResponse getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(String equipmentCode, String areaCode, String shelfCode, String position);
+    StockInBoxDetail getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(String equipmentCode, String areaCode, String shelfCode, String position);
 }

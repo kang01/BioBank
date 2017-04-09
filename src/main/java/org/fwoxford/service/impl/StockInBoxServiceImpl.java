@@ -59,6 +59,12 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     private FrozenBoxTypeMapper frozenBoxTypeMapper;
     @Autowired
     private FrozenTubeRecordRepository frozenTubeRecordRepository;
+    @Autowired
+    private EquipmentRepository equipmentRepository;
+    @Autowired
+    private AreaRepository areaRepository;
+    @Autowired
+    private SupportRackRepository supportRackRepository;
 
     public StockInBoxServiceImpl(StockInBoxRepository stockInBoxRepository, StockInBoxMapper stockInBoxMapper,
                                  StockInBoxRepositries stockInBoxRepositries,StockInRepository stockInRepository) {
@@ -345,6 +351,60 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     @Override
     public StockInBoxDetail movedStockIn(String stockInCode, String boxCode, FrozenBoxPositionDTO boxPositionDTO) {
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(boxCode);
+        if(frozenBox == null){
+            throw new BankServiceException("冻存盒不存在！",boxCode);
+        }
+        List<StockInBox> stockInBoxList = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,boxCode);
+        if(stockInBoxList.size()==0){
+            throw new BankServiceException("未查询到该盒子的待入库信息！",boxCode);
+        }
+        frozenBox.setEquipmentCode(boxPositionDTO.getEquipmentCode());
+        frozenBox.setEquipment(equipmentRepository.findOneByEquipmentCode(boxPositionDTO.getEquipmentCode()));
+        frozenBox.setArea(areaRepository.findOne(boxPositionDTO.getAreaId()));
+        frozenBox.setAreaCode(boxPositionDTO.getAreaCode());
+        frozenBox.setSupportRack(supportRackRepository.findOne(boxPositionDTO.getSupportRackId()));
+        frozenBox.setSupportRackCode(boxPositionDTO.getSupportRackCode());
+        frozenBox.setColumnsInShelf(boxPositionDTO.getColumnsInShelf());
+        frozenBox.setRowsInShelf(boxPositionDTO.getRowsInShelf());
+        frozenBoxRepository.save(frozenBox);
+
+        StockInBox stockInBox = stockInBoxList.get(0);
+        stockInBox.setEquipmentCode(boxPositionDTO.getEquipmentCode());
+        stockInBox.setEquipment(equipmentRepository.findOneByEquipmentCode(boxPositionDTO.getEquipmentCode()));
+        stockInBox.setArea(areaRepository.findOne(boxPositionDTO.getAreaId()));
+        stockInBox.setAreaCode(boxPositionDTO.getAreaCode());
+        stockInBox.setSupportRack(supportRackRepository.findOne(boxPositionDTO.getSupportRackId()));
+        stockInBox.setSupportRackCode(boxPositionDTO.getSupportRackCode());
+        stockInBox.setColumnsInShelf(boxPositionDTO.getColumnsInShelf());
+        stockInBox.setRowsInShelf(boxPositionDTO.getRowsInShelf());
+        stockInBoxRepository.save(stockInBox);
+        stockInBoxDetail = createStockInBoxDetail(frozenBox,stockInCode);
+        return stockInBoxDetail;
+    }
+
+    private StockInBoxDetail createStockInBoxDetail(FrozenBox frozenBox,String stockInCode) {
+        StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+        stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
+        stockInBoxDetail.setId(frozenBox.getId());
+        stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
+        stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        stockInBoxDetail.setMemo(frozenBox.getMemo());
+        stockInBoxDetail.setStockInCode(stockInCode);
+        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
+        stockInBoxDetail.setCountOfSample(frozenTubes.size());
+        stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
+        stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
+        stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
+        stockInBoxDetail.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
+        stockInBoxDetail.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
+        stockInBoxDetail.setSupportRackId(frozenBox.getArea()!=null?frozenBox.getSupportRack().getId():null);
+        stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
+        stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
+        stockInBoxDetail.setFrozenBoxColumns(frozenBox.getFrozenBoxColumns());
+        stockInBoxDetail.setFrozenBoxRows(frozenBox.getFrozenBoxRows());
+        stockInBoxDetail.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
+        stockInBoxDetail.setStatus(frozenBox.getStatus());
         return stockInBoxDetail;
     }
 }

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -184,7 +185,7 @@ public class StockInBoxResource {
      */
     @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/moved")
     @Timed
-    public ResponseEntity<StockInBoxDetail> movedStockIn(@Valid @RequestBody String stockInCode, String boxCode, FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
+    public ResponseEntity<StockInBoxDetail> movedStockIn(@Valid @RequestBody String stockInCode,@Valid @RequestBody  String boxCode,@Valid @RequestBody  FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
         StockInBoxDetail stockInBoxDetail = stockInBoxService.movedStockIn(stockInCode,boxCode,boxPositionDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getId().toString()))

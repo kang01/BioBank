@@ -497,7 +497,7 @@ public class TempResource {
             .body(detail);
     }
     /**
-     * 输入入库单编码和盒子编码，以及冻存位置信息，返回保存后的盒子信息
+     * 入库盒子上架 :输入入库单编码和盒子编码，以及冻存位置信息，返回保存后的盒子信息
      * @param stockInCode
      * @return
      * @throws URISyntaxException

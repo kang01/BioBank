@@ -285,7 +285,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             frozenBoxCodes.add(box.getFrozenBoxCode());
         }
         List<Object[]> map = new ArrayList<>();
-        if (frozenBoxList != null) {
+        if (frozenBoxList.size() > 0) {
             map = frozenTubeRepository.countSampleNumberByfrozenBoxList(frozenBoxCodes);
         }
         for (FrozenBox box : frozenBoxList) {

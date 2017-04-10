@@ -38,7 +38,7 @@ import java.util.*;
  */
 @Service
 @Transactional
-public class FrozenBoxServiceImpl implements FrozenBoxService{
+public class FrozenBoxServiceImpl implements FrozenBoxService {
 
     private final Logger log = LoggerFactory.getLogger(FrozenBoxServiceImpl.class);
 
@@ -65,7 +65,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     @Autowired
     private SampleTypeMapper sampleTypeMapper;
 
-    public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper,FrozenBoxRepositories frozenBoxRepositories) {
+    public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper, FrozenBoxRepositories frozenBoxRepositories) {
         this.frozenBoxRepository = frozenBoxRepository;
         this.frozenBoxMapper = frozenBoxMapper;
         this.frozenBoxRepositories = frozenBoxRepositories;
@@ -87,10 +87,10 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     }
 
     /**
-     *  Get all the frozenBoxes.
+     * Get all the frozenBoxes.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Override
     @Transactional(readOnly = true)
@@ -101,10 +101,10 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     }
 
     /**
-     *  Get one frozenBox by id.
+     * Get one frozenBox by id.
      *
-     *  @param id the id of the entity
-     *  @return the entity
+     * @param id the id of the entity
+     * @return the entity
      */
     @Override
     @Transactional(readOnly = true)
@@ -116,9 +116,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     }
 
     /**
-     *  Delete the  frozenBox by id.
+     * Delete the  frozenBox by id.
      *
-     *  @param id the id of the entity
+     * @param id the id of the entity
      */
     @Override
     public void delete(Long id) {
@@ -128,6 +128,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
     /**
      * 根据转运记录ID 查询冻存盒列表
+     *
      * @param transhipId 转运记录ID
      * @return
      */
@@ -136,8 +137,10 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
         List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipId);
         return frozenBoxMapper.frozenBoxesToFrozenBoxDTOs(frozenBoxList);
     }
+
     /**
      * 根据冻存盒id查询冻存管信息
+     *
      * @param frozenBoxId 冻存盒id
      * @return
      */
@@ -151,12 +154,14 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
         List<FrozenTube> frozenTube = frozenTubeService.findFrozenTubeListByBoxId(frozenBoxId);
         List<FrozenTubeResponse> frozenTubeResponses = frozenTubeMapping.frozenTubeToFrozenTubeResponse(frozenTube);
 
-        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox,frozenTubeResponses);
+        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox, frozenTubeResponses);
 
         return res;
     }
+
     /**
      * 根据冻存盒CODE查询冻存管信息
+     *
      * @param frozenBoxCode 冻存盒CODE
      * @return
      */
@@ -172,13 +177,14 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
         List<FrozenTubeResponse> frozenTubeResponses = frozenTubeMapping.frozenTubeToFrozenTubeResponse(frozenTube);
 
-        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox,frozenTubeResponses);
+        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox, frozenTubeResponses);
 
         return res;
     }
 
     /**
      * 根据冻存盒code查询冻存盒基本信息
+     *
      * @param frozenBoxCode 冻存盒code
      * @return
      */
@@ -189,6 +195,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
     /**
      * 批量保存冻存盒
+     *
      * @param frozenBoxDTOList
      */
     @Override
@@ -200,6 +207,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
     /**
      * 根据冻存盒code串查询冻存盒以及冻存管的信息
+     *
      * @param frozenBoxCodeStr 冻存盒code串
      * @return
      */
@@ -207,12 +215,12 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     public List<FrozenBoxAndFrozenTubeResponse> findFrozenBoxAndTubeListByBoxCodeStr(String frozenBoxCodeStr) {
         List<FrozenBoxAndFrozenTubeResponse> frozenBoxAndFrozenTubeResponses = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
 
-         if(StringUtils.isEmpty(frozenBoxCodeStr)){
-            throw new BankServiceException("请传入有效的冻存盒编码！",frozenBoxCodeStr);
-         }
+        if (StringUtils.isEmpty(frozenBoxCodeStr)) {
+            throw new BankServiceException("请传入有效的冻存盒编码！", frozenBoxCodeStr);
+        }
 
         String frozenBoxCode[] = frozenBoxCodeStr.split(",");
-        for(String i :frozenBoxCode){
+        for (String i : frozenBoxCode) {
             FrozenBoxAndFrozenTubeResponse response = findFrozenBoxAndTubeByBoxCode(i);
             frozenBoxAndFrozenTubeResponses.add(response);
         }
@@ -222,6 +230,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
     /**
      * 判断某设备某区域某架子某行某列是否有盒子存在
+     *
      * @param equipmentId
      * @param areaId
      * @param supportRackId
@@ -231,12 +240,13 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
      */
     @Override
     public List<FrozenBoxDTO> countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row) {
-        List<FrozenBox> frozenBoxes = frozenBoxRepository.countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId,areaId,supportRackId,column,row);
+        List<FrozenBox> frozenBoxes = frozenBoxRepository.countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId, areaId, supportRackId, column, row);
         return frozenBoxMapper.frozenBoxesToFrozenBoxDTOs(frozenBoxes);
     }
 
     /**
      * 根据转运编码查询冻存盒列表
+     *
      * @param transhipCode 转运编码
      * @return
      */
@@ -247,16 +257,16 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
         Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
         //根据转运code查询冻存盒列表
-        List<FrozenBox> frozenBoxes =  frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship!=null?tranship.getId():null);
+        List<FrozenBox> frozenBoxes = frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship != null ? tranship.getId() : null);
 //        List<FrozenBox> frozenBoxes = frozenBoxRepository.findFrozenBoxByTranshipCode(transhipCode);
-        for(FrozenBox box : frozenBoxes){
+        for (FrozenBox box : frozenBoxes) {
 
             //查询冻存管列表信息
             List<FrozenTube> frozenTube = frozenTubeService.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
 
             List<FrozenTubeResponse> frozenTubeResponses = frozenTubeMapping.frozenTubeToFrozenTubeResponse(frozenTube);
 
-            FrozenBoxAndFrozenTubeResponse tempRes = frozenBoxMapper.forzenBoxAndTubeToResponse(box,frozenTubeResponses);
+            FrozenBoxAndFrozenTubeResponse tempRes = frozenBoxMapper.forzenBoxAndTubeToResponse(box, frozenTubeResponses);
 
             res.add(tempRes);
         }
@@ -266,31 +276,31 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
     @Override
     public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(String projectCode, String sampleTypeCode) {
         List<StockInBoxForChangingPosition> stockInBoxForChangingPositionList = new ArrayList<StockInBoxForChangingPosition>();
-        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode,sampleTypeCode,Constants.FROZEN_BOX_STOCKING);
-        if(frozenBoxList.size()==0){
-            frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode,sampleTypeCode,Constants.FROZEN_BOX_STOCKED);
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode, sampleTypeCode, Constants.FROZEN_BOX_STOCKING);
+        if (frozenBoxList.size() == 0) {
+            frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode, sampleTypeCode, Constants.FROZEN_BOX_STOCKED);
         }
         List<String> frozenBoxCodes = new ArrayList<>();
-        for(FrozenBox box : frozenBoxList){
+        for (FrozenBox box : frozenBoxList) {
             frozenBoxCodes.add(box.getFrozenBoxCode());
         }
         List<Object[]> map = new ArrayList<>();
-        if(frozenBoxList != null){
+        if (frozenBoxList != null) {
             map = frozenTubeRepository.countSampleNumberByfrozenBoxList(frozenBoxCodes);
         }
-        for(FrozenBox box : frozenBoxList){
-            for(int i = 0 ; i < map.size() ; i++){
+        for (FrozenBox box : frozenBoxList) {
+            for (int i = 0; i < map.size(); i++) {
                 Object[] obj = map.get(i);
                 String frozenBoxCodeKey = obj[0].toString();
                 String number = obj[1].toString();
-                if(box.getFrozenBoxCode().equals(frozenBoxCodeKey)){
-                    String columns = box.getFrozenBoxColumns()!=null?box.getFrozenBoxColumns():box.getFrozenBoxType().getFrozenBoxTypeColumns();
-                    String rows = box.getFrozenBoxRows()!=null ? box.getFrozenBoxRows():box.getFrozenBoxType().getFrozenBoxTypeRows();
-                    int allCounts = Integer.parseInt(columns)*Integer.parseInt(rows);
+                if (box.getFrozenBoxCode().equals(frozenBoxCodeKey)) {
+                    String columns = box.getFrozenBoxColumns() != null ? box.getFrozenBoxColumns() : box.getFrozenBoxType().getFrozenBoxTypeColumns();
+                    String rows = box.getFrozenBoxRows() != null ? box.getFrozenBoxRows() : box.getFrozenBoxType().getFrozenBoxTypeRows();
+                    int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
                     int countOfSample = Integer.parseInt(number);
-                    if( allCounts > countOfSample){
+                    if (allCounts > countOfSample) {
                         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
-                        StockInBoxForChangingPosition newBox = createStockInBoxForDataMoved(box,frozenTubeList,countOfSample);
+                        StockInBoxForChangingPosition newBox = createStockInBoxForDataMoved(box, frozenTubeList, countOfSample);
                         stockInBoxForChangingPositionList.add(newBox);
                     }
                 }
@@ -298,7 +308,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
         }
         return stockInBoxForChangingPositionList;
     }
-    private StockInBoxForChangingPosition createStockInBoxForDataMoved(FrozenBox box,List<FrozenTube> frozenTubeList,int countOfSample) {
+
+    private StockInBoxForChangingPosition createStockInBoxForDataMoved(FrozenBox box, List<FrozenTube> frozenTubeList, int countOfSample) {
         StockInBoxForChangingPosition res = new StockInBoxForChangingPosition();
         res.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(box.getSampleType()));
         res.setCountOfSample(countOfSample);
@@ -307,7 +318,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
         res.setFrozenBoxColumns(box.getFrozenBoxColumns());
         res.setFrozenBoxRows(box.getFrozenBoxRows());
         res.setStockInFrozenTubeList(new ArrayList<>());
-        for(FrozenTube tubes : frozenTubeList){
+        for (FrozenTube tubes : frozenTubeList) {
             StockInTubeForBox tube = new StockInTubeForBox();
             tube.setFrozenTubeId(tubes.getId());
             tube.setFrozenTubeCode(tubes.getFrozenTubeCode());
@@ -320,16 +331,16 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
         return res;
     }
+
     @Override
     public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipment(DataTablesInput input, String equipmentCode) {
-        input.addColumn("equipmentCode",true,true,equipmentCode);
+        input.addColumn("equipmentCode", true, true, equipmentCode);
         DataTablesOutput<FrozenBox> output = frozenBoxRepositories.findAll(input);
-        List<FrozenBox> frozenBoxes =  output.getData();
+        List<FrozenBox> frozenBoxes = output.getData();
         List<StockInBoxDetail> res = new ArrayList<StockInBoxDetail>();
-        for(FrozenBox frozenBox:frozenBoxes){
+        for (FrozenBox frozenBox : frozenBoxes) {
             StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
             stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
-            stockInBoxDetail.setId(frozenBox.getId());
             stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
             stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             stockInBoxDetail.setMemo(frozenBox.getMemo());
@@ -339,9 +350,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
             stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
             stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
             stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
-            stockInBoxDetail.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
-            stockInBoxDetail.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
-            stockInBoxDetail.setSupportRackId(frozenBox.getArea()!=null?frozenBox.getSupportRack().getId():null);
+            stockInBoxDetail.setEquipmentId(frozenBox.getEquipment() != null ? frozenBox.getEquipment().getId() : null);
+            stockInBoxDetail.setAreaId(frozenBox.getArea() != null ? frozenBox.getArea().getId() : null);
+            stockInBoxDetail.setSupportRackId(frozenBox.getArea() != null ? frozenBox.getSupportRack().getId() : null);
             stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
             stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
             stockInBoxDetail.setFrozenBoxColumns(frozenBox.getFrozenBoxColumns());
@@ -362,15 +373,14 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
     @Override
     public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipmentAndArea(DataTablesInput input, String equipmentCode, String areaCode) {
-        input.addColumn("equipmentCode",true,true,equipmentCode);
-        input.addColumn("areaCode",true,true,areaCode);
+        input.addColumn("equipmentCode", true, true, equipmentCode);
+        input.addColumn("areaCode", true, true, areaCode);
         DataTablesOutput<FrozenBox> output = frozenBoxRepositories.findAll(input);
-        List<FrozenBox> frozenBoxes =  output.getData();
+        List<FrozenBox> frozenBoxes = output.getData();
         List<StockInBoxDetail> res = new ArrayList<StockInBoxDetail>();
-        for(FrozenBox frozenBox:frozenBoxes){
+        for (FrozenBox frozenBox : frozenBoxes) {
             StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
             stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
-            stockInBoxDetail.setId(frozenBox.getId());
             stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
             stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             stockInBoxDetail.setMemo(frozenBox.getMemo());
@@ -380,9 +390,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
             stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
             stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
             stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
-            stockInBoxDetail.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
-            stockInBoxDetail.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
-            stockInBoxDetail.setSupportRackId(frozenBox.getArea()!=null?frozenBox.getSupportRack().getId():null);
+            stockInBoxDetail.setEquipmentId(frozenBox.getEquipment() != null ? frozenBox.getEquipment().getId() : null);
+            stockInBoxDetail.setAreaId(frozenBox.getArea() != null ? frozenBox.getArea().getId() : null);
+            stockInBoxDetail.setSupportRackId(frozenBox.getArea() != null ? frozenBox.getSupportRack().getId() : null);
             stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
             stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
             stockInBoxDetail.setFrozenBoxColumns(frozenBox.getFrozenBoxColumns());
@@ -403,24 +413,23 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
 
     @Override
     public List<StockInBoxDetail> getFrozenBoxByEquipmentAndAreaAndShelves(String equipmentCode, String areaCode, String shelfCode) {
-        List<FrozenBox> frozenBoxs = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(equipmentCode,areaCode,shelfCode);
+        List<FrozenBox> frozenBoxs = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(equipmentCode, areaCode, shelfCode);
         List<StockInBoxDetail> res = new ArrayList<StockInBoxDetail>();
-        for(FrozenBox frozenBox:frozenBoxs){
+        for (FrozenBox frozenBox : frozenBoxs) {
             StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
             stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
-            stockInBoxDetail.setId(frozenBox.getId());
             stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
             stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             stockInBoxDetail.setMemo(frozenBox.getMemo());
-           // stockInBoxDetail.setStockInCode("");
+            // stockInBoxDetail.setStockInCode("");
             List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
             stockInBoxDetail.setCountOfSample(frozenTubes.size());
             stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
             stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
             stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
-            stockInBoxDetail.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
-            stockInBoxDetail.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
-            stockInBoxDetail.setSupportRackId(frozenBox.getArea()!=null?frozenBox.getSupportRack().getId():null);
+            stockInBoxDetail.setEquipmentId(frozenBox.getEquipment() != null ? frozenBox.getEquipment().getId() : null);
+            stockInBoxDetail.setAreaId(frozenBox.getArea() != null ? frozenBox.getArea().getId() : null);
+            stockInBoxDetail.setSupportRackId(frozenBox.getArea() != null ? frozenBox.getSupportRack().getId() : null);
             stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
             stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
             stockInBoxDetail.setFrozenBoxColumns(frozenBox.getFrozenBoxColumns());
@@ -429,17 +438,16 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
             stockInBoxDetail.setStatus(frozenBox.getStatus());
             res.add(stockInBoxDetail);
         }
-         return res;
+        return res;
     }
 
     @Override
     public StockInBoxDetail getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(String equipmentCode, String areaCode, String shelfCode, String position) {
-        String columnsInShelf = position.substring(0,1);
+        String columnsInShelf = position.substring(0, 1);
         String rowsInShelf = position.substring(1);
-        FrozenBox frozenBox = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(equipmentCode,areaCode,shelfCode,columnsInShelf,rowsInShelf);
+        FrozenBox frozenBox = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(equipmentCode, areaCode, shelfCode, columnsInShelf, rowsInShelf);
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
         stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
-        stockInBoxDetail.setId(frozenBox.getId());
         stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
         stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
         stockInBoxDetail.setMemo(frozenBox.getMemo());
@@ -449,9 +457,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService{
         stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
         stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
         stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
-        stockInBoxDetail.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
-        stockInBoxDetail.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
-        stockInBoxDetail.setSupportRackId(frozenBox.getArea()!=null?frozenBox.getSupportRack().getId():null);
+        stockInBoxDetail.setEquipmentId(frozenBox.getEquipment() != null ? frozenBox.getEquipment().getId() : null);
+        stockInBoxDetail.setAreaId(frozenBox.getArea() != null ? frozenBox.getArea().getId() : null);
+        stockInBoxDetail.setSupportRackId(frozenBox.getArea() != null ? frozenBox.getSupportRack().getId() : null);
         stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
         stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
         stockInBoxDetail.setFrozenBoxColumns(frozenBox.getFrozenBoxColumns());

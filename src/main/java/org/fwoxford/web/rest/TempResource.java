@@ -464,7 +464,7 @@ public class TempResource {
         SupportRackDTO shelf = shelfs.get(0);
         SampleTypeDTO sampleType = sampleTypeService.findAllSampleTypes().get(0);
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
-        stockInBoxDetail.setId(1L);
+        stockInBoxDetail.setFrozenBoxId(1L);
         stockInBoxDetail.setFrozenBoxCode(boxCode);
         stockInBoxDetail.setCountOfSample(100);
         stockInBoxDetail.setIsSplit(0);
@@ -484,7 +484,7 @@ public class TempResource {
     @Timed
     public ResponseEntity<StockInBoxSplit> splitedStockIn(@Valid @RequestBody String stockInCode, String boxCode, StockInBoxSplit stockInBoxForDataSplit) throws URISyntaxException {
         StockInBoxSplit detail = stockInBoxForDataSplit;
-        stockInBoxForDataSplit.setId(1L);
+        stockInBoxForDataSplit.setFrozenBoxId(1L);
         List<StockInTubeDTO> tubeDTOS = stockInBoxForDataSplit.getStockInTubeDTOList();
         List<StockInTubeDTO> tubeDTOList = new ArrayList<>();
         for(int i = 0 ; i < tubeDTOList.size();i++){
@@ -493,7 +493,7 @@ public class TempResource {
         }
         detail.setStockInTubeDTOList(tubeDTOList);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, detail.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, detail.getFrozenBoxId().toString()))
             .body(detail);
     }
     /**
@@ -509,7 +509,7 @@ public class TempResource {
         SupportRackDTO shelf = shelfs.get(0);
         SampleTypeDTO sampleType = sampleTypeService.findAllSampleTypes().get(0);
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
-        stockInBoxDetail.setId(1L);
+        stockInBoxDetail.setFrozenBoxId(1L);
         stockInBoxDetail.setFrozenBoxCode(boxCode);
         stockInBoxDetail.setCountOfSample(100);
         stockInBoxDetail.setIsSplit(0);
@@ -521,7 +521,7 @@ public class TempResource {
         stockInBoxDetail.setMemo("");
         stockInBoxDetail.setStockInCode(stockInCode);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getFrozenBoxId().toString()))
             .body(stockInBoxDetail);
     }
     /**
@@ -621,7 +621,7 @@ public class TempResource {
         SampleTypeDTO sampleType = sampleTypeService.findAllSampleTypes().get(0);
 
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
-        stockInBoxDetail.setId(1L);
+        stockInBoxDetail.setFrozenBoxId(1L);
         stockInBoxDetail.setFrozenBoxCode("1234567890");
         stockInBoxDetail.setCountOfSample(100);
         stockInBoxDetail.setIsSplit(0);
@@ -634,7 +634,7 @@ public class TempResource {
         stockInBoxDetail.setStockInCode("1234567890");
 
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getFrozenBoxId().toString()))
             .body(stockInBoxDetail);
     }
 }

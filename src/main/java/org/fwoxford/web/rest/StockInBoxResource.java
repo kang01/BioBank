@@ -167,13 +167,10 @@ public class StockInBoxResource {
      * @return
      * @throws URISyntaxException
      */
-    @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/splited")
-    @Timed
-    public ResponseEntity<StockInBoxSplit> splitedStockIn(@Valid @RequestBody String stockInCode, String boxCode, StockInBoxSplit stockInBoxForDataSplit) throws URISyntaxException {
-        StockInBoxSplit detail = stockInBoxService.splitedStockIn(stockInCode,boxCode,stockInBoxForDataSplit);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, detail.getId().toString()))
-            .body(detail);
+    @RequestMapping(value = "/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/splited", method = RequestMethod.PUT, produces={MediaType.APPLICATION_JSON_VALUE})
+    public List<StockInBoxSplit> splitedStockIn(@Valid @RequestBody String stockInCode,@Valid @RequestBody  String boxCode,@Valid @RequestBody  List<StockInBoxSplit> stockInBoxForDataSplit) throws URISyntaxException {
+        List<StockInBoxSplit> detail = stockInBoxService.splitedStockIn(stockInCode,boxCode,stockInBoxForDataSplit);
+        return detail;
     }
     /**
      * 输入入库单编码和盒子编码，以及冻存位置信息，返回保存后的盒子信息
@@ -188,7 +185,7 @@ public class StockInBoxResource {
     public ResponseEntity<StockInBoxDetail> movedStockIn(@Valid @RequestBody String stockInCode,@Valid @RequestBody  String boxCode,@Valid @RequestBody  FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
         StockInBoxDetail stockInBoxDetail = stockInBoxService.movedStockIn(stockInCode,boxCode,boxPositionDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getFrozenBoxId().toString()))
             .body(stockInBoxDetail);
     }
 }

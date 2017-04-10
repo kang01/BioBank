@@ -468,4 +468,15 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         stockInBoxDetail.setStatus(frozenBox.getStatus());
         return stockInBoxDetail;
     }
+
+    @Override
+    public List<StockInBoxForDataTable> findFrozenBoxListByBoxCodeStr(List<String> frozenBoxCodeStr) {
+        List<StockInBoxForDataTable> stockInBoxs = new ArrayList<>();
+        if (StringUtils.isEmpty(frozenBoxCodeStr)) {
+            throw new BankServiceException("请传入有效的冻存盒编码！", frozenBoxCodeStr.toString());
+        }
+        List<FrozenBox> frozenBoxes = frozenBoxRepositories.findByFrozenBoxCodeIn(frozenBoxCodeStr);
+        stockInBoxs = frozenBoxMapper.frozenBoxesToStockInBoxForDataTables(frozenBoxes);
+        return stockInBoxs;
+    }
 }

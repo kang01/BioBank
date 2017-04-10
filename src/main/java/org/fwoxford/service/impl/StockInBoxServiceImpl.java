@@ -156,7 +156,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         for(StockInBox box : alist){
             StockInBoxForDataTable stockInBoxForDataTable = new StockInBoxForDataTable();
 
-            String position = box.getEquipmentCode()+"."+box.getAreaCode()+"."+box.getSupportRackCode()+"."+box.getRowsInShelf()+box.getColumnsInShelf();
+            String position = box.getEquipmentCode()+"."+box.getAreaCode()+"."+box.getSupportRackCode()+"."+box.getColumnsInShelf()+box.getRowsInShelf();
             stockInBoxForDataTable.setPosition(position);
             FrozenBox frozenBox =frozenBoxRepository.findFrozenBoxDetailsByBoxCode(box.getFrozenBoxCode());
             stockInBoxForDataTable.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));

@@ -9,7 +9,7 @@ import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForChangingPosition;
-import org.fwoxford.service.dto.response.StockInForDataTable;
+import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -30,7 +30,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * REST controller for managing FrozenBox.
@@ -248,5 +247,12 @@ public class FrozenBoxResource {
     public StockInBoxDetail getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(@PathVariable String equipmentCode, @PathVariable String areaCode, @PathVariable String shelfCode, @PathVariable String position) {
         StockInBoxDetail boxes =  frozenBoxService.getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(equipmentCode,areaCode,shelfCode,position);
         return boxes;
+    }
+    @GetMapping("/frozen-boxes/boxCodes/{frozenBoxCodeStr}")
+    @Timed
+    public ResponseEntity<List<StockInBoxForDataTable>> getFrozenBoxByBoxCodeStr(@PathVariable  List<String> frozenBoxCodeStr) {
+        log.debug("REST request to get FrozenBox By codes : {}", frozenBoxCodeStr);
+        List<StockInBoxForDataTable> res = frozenBoxService.findFrozenBoxListByBoxCodeStr(frozenBoxCodeStr);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

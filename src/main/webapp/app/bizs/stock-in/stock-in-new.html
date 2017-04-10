@@ -34,7 +34,13 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label text-left">入库日期</label>
                     <div class="col-sm-9">
-                        <input type="email" class="form-control" ng-model="vm.entity.stockInDate" placeholder="Email">
+                        <div class="input-group">
+                            <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockInDate" is-open="vm.datePickerOpenStatus.stockInDate"
+                                    required  />
+                            <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('stockInDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -102,8 +108,10 @@
                     <ul>
                         <li ng-repeat="item in vm.incompleteBoxesList"  >
                             <div class="box-feature" ng-style="{backgroundColor:item.sampleType.backColor}"  ng-click="vm.sampleBoxSelect(item,$event)">
-                                <div>{{item.stockInFrozenTubeList.length}}/100</div>
-                                <div>{{ vm.addTubeCount}}</div>
+                                {{item.stockInFrozenTubeList.length}}/100
+                                <span ng-if="vm.addTubeCount">{{vm.addTubeCount}}</span>
+                                <!--<div></div>-->
+                                <!--<div>{{ vm.addTubeCount}}</div>-->
                             </div>
                             <div class="text-center">{{item.sampleType.sampleTypeName}}</div>
                             <div>{{item.frozenBoxCode}}</div>

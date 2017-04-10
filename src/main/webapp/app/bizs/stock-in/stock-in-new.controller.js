@@ -15,6 +15,8 @@
                                   entity,AlertService,StockInService,StockInBoxService,frozenBoxByCodeService,
                                   SampleTypeService,SampleService,IncompleteBoxService) {
         var vm = this;
+        vm.datePickerOpenStatus = {};
+        vm.openCalendar = openCalendar; //时间
         vm.entity = {
             stockInCode: '1234567890',
             transhipCode: '1234567890',
@@ -451,7 +453,7 @@
                 }
             }
 
-            console.log(JSON.stringify(tubeList));
+            // console.log(JSON.stringify(tubeList));
 
         };
         vm.editBox = function () {
@@ -474,6 +476,9 @@
             });
             modalInstance.result.then(function (data) {
             });
+        }
+        function openCalendar (date) {
+            vm.datePickerOpenStatus[date] = true;
         }
     }
 })();

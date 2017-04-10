@@ -107,14 +107,19 @@
                 <div >
                     <ul>
                         <li ng-repeat="item in vm.incompleteBoxesList"  >
-                            <div class="box-feature" ng-style="{backgroundColor:item.sampleType.backColor}"  ng-click="vm.sampleBoxSelect(item,$event)">
-                                {{item.stockInFrozenTubeList.length}}/100
-                                <span ng-if="vm.addTubeCount">{{vm.addTubeCount}}</span>
-                                <!--<div></div>-->
-                                <!--<div>{{ vm.addTubeCount}}</div>-->
+                            <div ng-repeat="item1 in item.boxList track by $index">
+                                <div class="box-feature" ng-style="{backgroundColor:item1.sampleType.backColor}"  ng-click="vm.sampleBoxSelect(item1,$event)">
+                                    {{item1.stockInFrozenTubeList.length}}/{{item1.frozenBoxColumns*item1.frozenBoxRows}}
+                                    <span ng-if="vm.addTubeCount">{{vm.addTubeCount}}</span>
+                                    <!--<div></div>-->
+                                    <!--<div>{{ vm.addTubeCount}}</div>-->
+                                </div>
+                                <div class="text-center" ng-if="$index == 0">{{item1.sampleType.sampleTypeName}}&nbsp;</div>
+                                <div ng-class="{'second-box': $index == 1}">{{item1.frozenBoxCode}}</div>
                             </div>
-                            <div class="text-center">{{item.sampleType.sampleTypeName}}</div>
-                            <div>{{item.frozenBoxCode}}</div>
+                            <div class="box-feature box-feature-copy" style="background-color: #fff;" ng-if="item.boxList.length == 2"></div>
+
+                            <!--<div class="box-feature box-feature-copy" ng-style="{backgroundColor:item.sampleType.backColor}">复体</div>-->
                         </li>
                         <li>
                             <div class="box-feature" style="line-height: 96px;padding-top:0;border:2px dotted #aaa;" ng-click="vm.addBoxModal()">

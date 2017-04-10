@@ -29,6 +29,9 @@
 .m-b-10{
     margin-bottom: 10px !important;
 }
+.m-t-40{
+    margin-top: 40px !important;
+}
 .border{
     border:1px solid #ccc;
 }
@@ -118,9 +121,10 @@
     padding: 0;
 }
 .split-box li{
+    position: relative;
     float: left;
     list-style: none;
-    margin-right: 10px;
+    margin-right: 12px;
     margin-top: 22px;
 }
 .split-box .box-feature{
@@ -131,6 +135,19 @@
     border:1px solid #ccc;
     border-radius: 2px;
     /*padding-top: 28px;*/
+    margin-bottom: 10px;
+}
+.split-box li>div:nth-child(2),.split-box .box-feature.box-feature-copy{
+    position: absolute;
+    top:6px;
+    left:6px;
+}
+.split-box li>div:nth-child(2){
+    z-index: 2;
+}
+.second-box{
+    margin-top:40px;
+    margin-left: -6px;
 }
 .bg-1{
     background-color: #CC66CC;

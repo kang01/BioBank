@@ -297,12 +297,27 @@
         //样本类型
         function onSampleTypeSuccess(data) {
             vm.sampleTypes = data;
-            for(var i = 0; i < vm.sampleTypes.length;i++){
+            for(var i = 0; i < vm.sampleTypes.length-1;i++){
                 IncompleteBoxService.query({projectCode:"12345",sampleType:vm.sampleTypes[i].sampleTypeCode},onIncompleteBoxesSuccess,onError)
             }
         }
         function onIncompleteBoxesSuccess(data) {
-            vm.incompleteBoxesList.push(data[0]);
+            vm.incompleteBoxesList.push(
+                {
+                    sampleTypeCode:data[0].sampleType.sampleTypeCode,
+                    boxList:[
+                        {
+                            sampleType:data[0].sampleType,
+                            frozenBoxCode:data[0].frozenBoxCode,
+                            frozenBoxRows:data[0].frozenBoxRows,
+                            frozenBoxColumns:data[0].frozenBoxColumns,
+                            stockInFrozenTubeList:data[0].stockInFrozenTubeList
+                        }
+                    ]
+                }
+
+            );
+
         }
         function onError(error) {
             AlertService.error(error.data.message);
@@ -415,7 +430,7 @@
         //选择分装后的样本盒
         var tubeList = [];
         vm.sampleBoxSelect = function (item,$event) {
-
+            tubeList = [];
             for(var i = 0; i < item.frozenBoxRows; i++){
                 tempTubeArray[i] = [];
                 for(var j = 0;j < item.frozenBoxColumns; j++){
@@ -433,14 +448,9 @@
                     tubeList[k] = tube
                 }
             }
-            // console.log(JSON.stringify(tubeList));
-
-
-
             $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
             $($event.target).addClass("box-selected");
         };
-        var emptyList = [];
         //分装操作
         vm.splitBox = function () {
             vm.addTubeCount = selectList.length;
@@ -452,7 +462,7 @@
                     }
                 }
             }
-
+            // console.log(JSON.stringify(selectList))
             // console.log(JSON.stringify(tubeList));
 
         };
@@ -475,6 +485,12 @@
                 }
             });
             modalInstance.result.then(function (data) {
+                for(var i = 0; i < vm.incompleteBoxesList.length; i++){
+                    if(vm.incompleteBoxesList[i].sampleTypeCode == data.sampleType.sampleTypeCode){
+                        vm.incompleteBoxesList[i].boxList.push(data);
+                    }
+                }
+                // console.log(JSON.stringify(vm.incompleteBoxesList))
             });
         }
         function openCalendar (date) {

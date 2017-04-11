@@ -143,7 +143,7 @@ public class StockInServiceImpl implements StockInService {
         }
         TranshipByIdResponse transhipRes = new TranshipByIdResponse();
         Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
-        if(tranship.getId() == null){
+        if(tranship == null){
             throw new BankServiceException("转运记录不存在！",transhipCode);
         }
         transhipRes = transhipService.findTranshipAndFrozenBox(tranship.getId());

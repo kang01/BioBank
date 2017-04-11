@@ -33,6 +33,9 @@
                 url: ajaxUrl,
                 headers: {
                     'Content-Type': 'application/json'
+                },
+                data:{
+                    transhipCode:transhipCode
                 }
             };
 

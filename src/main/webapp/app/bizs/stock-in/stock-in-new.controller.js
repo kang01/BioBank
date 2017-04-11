@@ -154,17 +154,20 @@
         }
         function _fnActionButtonsRender(data, type, full, meta) {
             // console.log(vm.splitIt, vm.putInShelf);
-            return '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt('+ full.frozenBoxCode +')">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;' +
-                '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf('+ full.id +')">' +
-                '   <i class="fa fa-edit"></i>' +
+            // return '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt('+ full.frozenBoxCode +')">' +
+            //     '   <i class="fa fa-edit"></i>' +
+            //     '</button>&nbsp;' +
+                return '<button type="button" class="btn btn-xs btn-primary" ng-click="vm.putInShelf('+ full.id +')">' +
+                ' 入库上架' +
                 '</button>&nbsp;';
 
         }
         function _fnRowSelectorRender(data, type, full, meta) {
             vm.selected[full.id] = false;
             return '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
+        }
+        function _fnFrozenBoxCodeRender(data, type, full, meta) {
+            return '<a ng-click="vm.splitIt('+ full.frozenBoxCode +')">'+full.frozenBoxCode+'</a>';
         }
 
         function _createColumnFilters(){
@@ -189,7 +192,7 @@
             var columns = [
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
                 DTColumnBuilder.newColumn("").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
+                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').renderWith(_fnFrozenBoxCodeRender),
                 DTColumnBuilder.newColumn('sampleType').withTitle('样本类型'),
                 DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
                 DTColumnBuilder.newColumn('countOfSample').withTitle('样本量'),
@@ -206,7 +209,7 @@
         }
 
         function _splitABox(code){
-            frozenBoxByCodeService.get({code:'1234'},onFrozenSuccess,onError);
+            frozenBoxByCodeService.get({code:code},onFrozenSuccess,onError);
             function onFrozenSuccess(data) {
                 vm.splittingBox = true;
                 vm.box =  data;

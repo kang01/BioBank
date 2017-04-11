@@ -140,7 +140,7 @@ public class StockInResource {
 
     /**
      * 转运单 到 入库
-     * @param request
+     * @param transhipCode
      * @return
      * @throws URISyntaxException
      */

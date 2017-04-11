@@ -142,7 +142,7 @@ public class StockInResource {
      * @return
      * @throws URISyntaxException
      */
-    @PostMapping("/stock-in/tranship/{transhipCode}")
+    @PostMapping("/stock-in/tranship")
     @Timed
     public ResponseEntity<StockInForDataDetail> createStockIns(@Valid @RequestBody String transhipCode) throws URISyntaxException {
         log.debug("REST request to save StockIn : {}", transhipCode);

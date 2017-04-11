@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -138,13 +139,14 @@ public class StockInResource {
 
     /**
      * 转运单 到 入库
-     * @param transhipCode
+     * @param request
      * @return
      * @throws URISyntaxException
      */
     @PostMapping("/stock-in/tranship/{transhipCode}")
     @Timed
-    public ResponseEntity<StockInForDataDetail> createStockIns(@Valid @RequestBody String transhipCode) throws URISyntaxException {
+    public ResponseEntity<StockInForDataDetail> createStockIns(HttpServletRequest request) throws URISyntaxException {
+        String transhipCode = request.getParameter("transhipCode");
         log.debug("REST request to save StockIn : {}", transhipCode);
         StockInForDataDetail result = stockInService.saveStockIns(transhipCode);
         return ResponseEntity.created(new URI("/api/res/stock-in" + result.getId()))

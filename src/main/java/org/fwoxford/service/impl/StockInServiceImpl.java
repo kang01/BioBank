@@ -33,6 +33,7 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service Implementation for managing StockIn.
@@ -146,6 +147,10 @@ public class StockInServiceImpl implements StockInService {
         if(tranship == null){
             throw new BankServiceException("转运记录不存在！",transhipCode);
         }
+        List<StockIn> stockIns = stockInBoxRepository.findByTranshipCode(transhipCode);
+        if(stockIns.size()>0){
+            throw new BankServiceException("此次转运已经在执行入库！",transhipCode);
+        }
         transhipRes = transhipService.findTranshipAndFrozenBox(tranship.getId());
         List<FrozenBoxDTO> frozenBoxDTOList =  transhipRes.getFrozenBoxDTOList();
         if(frozenBoxDTOList.size()==0){
@@ -182,6 +187,8 @@ public class StockInServiceImpl implements StockInService {
     }
     @Override
     public DataTablesOutput<StockInForDataTable> findStockIn(DataTablesInput input) {
+        //重新构造input
+        input = createStockInFroDataTableInput(input);
 
         //获取转运列表
         DataTablesOutput<StockIn> stockInDataTablesOutput =  stockInRepositries.findAll(input);
@@ -198,6 +205,19 @@ public class StockInServiceImpl implements StockInService {
         responseDataTablesOutput.setRecordsFiltered(stockInDataTablesOutput.getRecordsFiltered());
         responseDataTablesOutput.setRecordsTotal(stockInDataTablesOutput.getRecordsTotal());
         return responseDataTablesOutput;
+    }
+
+    private DataTablesInput createStockInFroDataTableInput(DataTablesInput input) {
+        Map<String,Column> columnMap =  input.getColumnsAsMap();
+        for(String data:columnMap.keySet()){
+            if(data.equals("transhipCode")){
+                columnMap.get(data).setData("tranship.transhipCode");
+            }
+            if(data.equals("countOfBox")){
+                columnMap.get(data).setData("tranship.frozenBoxNumber");
+            }
+        }
+        return input;
     }
 
     private List<StockInBoxDTO> createStockInBoxDTO(List<FrozenBoxDTO> frozenBoxDTOList, StockIn stockIn) {
@@ -269,7 +289,7 @@ public class StockInServiceImpl implements StockInService {
         }
         //修改入库
         stockIn.setStatus(Constants.STOCK_IN_COMPLETE);
-        stockIn.setStockInDate(LocalDate.now());
+//        stockIn.setStockInDate(LocalDate.now());
         stockInRepository.save(stockIn);
         //修改入库盒子
         List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(stockInCode);

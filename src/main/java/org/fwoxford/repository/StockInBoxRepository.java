@@ -1,9 +1,9 @@
 package org.fwoxford.repository;
 
-import org.fwoxford.domain.StockIn;
 import org.fwoxford.domain.StockInBox;
-
-import org.springframework.data.jpa.repository.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -23,7 +23,4 @@ public interface StockInBoxRepository extends JpaRepository<StockInBox,Long> {
     @Modifying
     @Query("update StockInBox t set t.status=?3 where t.stockInCode=?1 and t.frozenBoxCode=?2")
     void updateByStockCodeAndFrozenBoxCode(String stockInCode, String boxCode, String status);
-
-    @Query("select in from StockIn in where in.tranship.transhipCode=?1")
-    List<StockIn> findByTranshipCode(String transhipCode);
 }

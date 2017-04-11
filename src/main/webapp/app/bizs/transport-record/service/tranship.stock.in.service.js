@@ -1,18 +1,18 @@
 /**
- * Created by zhuyu on 2017/3/31.
- * 入库单列表
+ * Created by gaokangkang on 2017/4/11.
+ * 入库
  */
 (function () {
     'use strict';
 
     angular
         .module('bioBankApp')
-        .factory('StockInService', StockInService);
+        .factory('TranshipStockInService', TranshipStockInService);
 
-    StockInService.$inject = ['$resource', '$http'];
+    TranshipStockInService.$inject = ['$resource','$http'];
 
-    function StockInService ($resource, $http) {
-        var service = $resource('api/stock-in/:id', {}, {
+    function TranshipStockInService ($resource,$http) {
+        var service = $resource('api/stock-in/tranship/:transhipCode', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',
@@ -25,20 +25,19 @@
             'update': { method:'PUT' },
             'delete':{ method:'DELETE'}
         });
+        service.saveStockIn = function(transhipCode){
+            var ajaxUrl = 'api/stock-in/tranship/' + transhipCode;
 
-        service.getJqDataTableValues = function(data, oSettings){
             var req = {
                 method: 'POST',
-                url: 'api/res/stock-in',
+                url: ajaxUrl,
                 headers: {
                     'Content-Type': 'application/json'
-                },
-                data: JSON.stringify(data)
-            }
+                }
+            };
 
             return $http(req);
         };
-
         return service;
     }
 })();

@@ -10,10 +10,10 @@
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
     TransportRecordNewController.$inject = ['$scope','hotRegisterer','SampleService','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
-        'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService'];
+        'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
     function TransportRecordNewController($scope,hotRegisterer,SampleService,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
-                                          SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService) {
+                                          SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.transportRecord = entity; //转运记录
@@ -609,8 +609,15 @@
         function onSaveError () {
 
         }
-
-
+        //转运入库
+        vm.stockIn = function () {
+            TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode).then(function () {
+                AlertService.success("入库成功！");
+            })
+        };
+        // function onStockInSuccess(data) {
+        //     AlertService.success("入库成功！");
+        // }
         //点击冻存盒行
         var count = 0;
         function someClickHandler(td,boxInfo) {

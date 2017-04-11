@@ -17,18 +17,7 @@
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
-        vm.entity = {
-            stockInCode: '1234567890',
-            transhipCode: '1234567890',
-            projectCode: '1234567890',
-            projectSiteCode: '1234567890',
-            receivedDate: '2017-03-31',
-            receiver: '竹羽',
-            stockInDate: '2017-03-31',
-            storeKeeper1: '竹羽',
-            storeKeeper2: '景福',
-            status: '7001',
-        };
+        vm.entity = entity;
         vm.stockInCode = vm.entity.stockInCode;
         vm.entityBoxes = {};
         vm.splittingBox = null;
@@ -217,7 +206,7 @@
         }
 
         function _splitABox(code){
-            frozenBoxByCodeService.get({code:'23432'},onFrozenSuccess,onError);
+            frozenBoxByCodeService.get({code:'1234'},onFrozenSuccess,onError);
             function onFrozenSuccess(data) {
                 vm.splittingBox = true;
                 vm.box =  data;
@@ -298,7 +287,7 @@
         function onSampleTypeSuccess(data) {
             vm.sampleTypes = data;
             for(var i = 0; i < vm.sampleTypes.length-1;i++){
-                IncompleteBoxService.query({projectCode:"12345",sampleType:vm.sampleTypes[i].sampleTypeCode},onIncompleteBoxesSuccess,onError)
+                IncompleteBoxService.query({projectCode:"12345",sampleTypeCode:vm.sampleTypes[i].sampleTypeCode},onIncompleteBoxesSuccess,onError)
             }
         }
         function onIncompleteBoxesSuccess(data) {
@@ -307,6 +296,16 @@
                     sampleTypeCode:data[0].sampleType.sampleTypeCode,
                     boxList:[
                         {
+                            addTubeCount:0,
+                            isSplit:0,
+                            rowsInShelf:"",
+                            columnsInShelf:"",
+                            areaId:"",
+                            equipmentId:"",
+                            supportRackId:"",
+                            frozenBoxTypeId:"",
+                            memo:"",
+                            sampleTypeCode:data[0].sampleType.sampleTypeCode,
                             sampleType:data[0].sampleType,
                             frozenBoxCode:data[0].frozenBoxCode,
                             frozenBoxRows:data[0].frozenBoxRows,
@@ -373,18 +372,14 @@
             fillHandle:false,
             stretchH: 'all',
             editor: false,
+            outsideClickDeselects:false,
             onAfterSelectionEnd:function (row, col, row2, col2) {
-                // console.log(this)
-                // console.log($(this.getData(row,col,row2,col2)))
                 vm.selectCell = $(this.getData(row,col,row2,col2));
-                // if(vm.selectCell.length){
                 for(var i = 0; i < vm.selectCell.length; i++ ){
                     for (var j = 0; j < vm.selectCell[i].length; j++){
-                        // console.log(JSON.stringify(vm.selectCell[i][j]))
                         selectList.push(vm.selectCell[i][j])
                     }
                 }
-                // }
             },
             enterMoves:function () {
                 var hotMoves = hotRegisterer.getInstance('my-handsontable');
@@ -429,8 +424,17 @@
         };
         //选择分装后的样本盒
         var tubeList = [];
+        vm.obox = {
+            frozenBoxCode:"",
+            sampleTypeCode:"",
+            stockInTubeDTOList:[]
+        };
         vm.sampleBoxSelect = function (item,$event) {
-            tubeList = [];
+            // console.log(JSON.stringify(vm.incompleteBoxesList))
+            vm.obox.stockInTubeDTOList = [];
+            vm.obox.frozenBoxCode = item.frozenBoxCode;
+            vm.obox.sampleTypeCode = item.sampleTypeCode;
+            //初始100个管子或者80个管子
             for(var i = 0; i < item.frozenBoxRows; i++){
                 tempTubeArray[i] = [];
                 for(var j = 0;j < item.frozenBoxColumns; j++){
@@ -438,14 +442,16 @@
                         tubeColumns: j+1,
                         tubeRows: String.fromCharCode(i+65),
                         frozenTubeCode:''
+
                     };
-                    tubeList.push(tempTubeArray[i][j])
+                    vm.obox.stockInTubeDTOList.push(tempTubeArray[i][j])
                 }
             }
+            //把选中盒子里的管子放进空盒子中
             for(var k = 0; k <item.stockInFrozenTubeList.length; k++){
                 var tube = item.stockInFrozenTubeList[k];
-                if(tubeList[k].tubeRows == tube.tubeRows && tubeList[k].tubeColumns == tube.tubeColumns){
-                    tubeList[k] = tube
+                if(vm.obox.stockInTubeDTOList[k].tubeRows == tube.tubeRows && vm.obox.stockInTubeDTOList[k].tubeColumns == tube.tubeColumns){
+                    vm.obox.stockInTubeDTOList[k] = tube
                 }
             }
             $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
@@ -453,19 +459,37 @@
         };
         //分装操作
         vm.splitBox = function () {
-            vm.addTubeCount = selectList.length;
-            for(var i = 0; i < tubeList.length; i++){
-                if(!tubeList[i].frozenTubeCode){
-                    for(var j = 0; j < selectList.length; j++){
-                        tubeList[i] = selectList[j];
-                        selectList.splice(j,1)
+            // vm.addTubeCount = selectList.length;
+            for(var j = 0; j < vm.incompleteBoxesList.length; j++){
+                for(var k = 0; k < vm.incompleteBoxesList[j].boxList.length;k++){
+                    if(vm.obox.sampleTypeCode == vm.incompleteBoxesList[j].boxList[k].sampleTypeCode){
+                        vm.incompleteBoxesList[j].boxList[k].addTubeCount = selectList.length
+
                     }
                 }
             }
-            // console.log(JSON.stringify(selectList))
-            // console.log(JSON.stringify(tubeList));
+            for(var i = 0,j = 0; i < vm.obox.stockInTubeDTOList.length; i++){
+                if(!vm.obox.stockInTubeDTOList[i].frozenTubeCode){
+                    if(selectList.length){
+                        selectList[0].tubeRows = vm.obox.stockInTubeDTOList[i].tubeRows;
+                        selectList[0].tubeColumns = vm.obox.stockInTubeDTOList[i].tubeColumns;
+                        vm.obox.stockInTubeDTOList[i] = selectList[0];
+                        selectList.splice(0,1);
+                    }
+                    // if(j < selectList.length){
+                    //     tubeList[i] = selectList[j++];
+                    // }
+                }
+            }
+
+
+            // console.log(JSON.stringify(vm.incompleteBoxesList))
+            // console.log(JSON.stringify(vm.obox))
 
         };
+        vm.saveBox = function () {
+            // console.log(JSON.stringify(vm.incompleteBoxesList))
+        }
         vm.editBox = function () {
             _splitABox();
         }

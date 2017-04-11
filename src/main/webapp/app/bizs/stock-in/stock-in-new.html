@@ -21,48 +21,14 @@
         <div class="col-md-1">{{vm.entity.projectSiteCode}}</div>
 
         <div class="col-md-1 text-right"><strong>接收日期</strong></div>
-        <div class="col-md-1">{{vm.entity.receivedDate}}</div>
+        <div class="col-md-1">{{vm.entity.receiveDate}}</div>
         <div class="col-md-1 text-right"><strong>接收人</strong></div>
         <div class="col-md-1">{{vm.entity.receiver}}</div>
         <div class="col-md-12"></div>
     </div>
 
 
-    <form class="form-horizontal">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label text-left">入库日期</label>
-                    <div class="col-sm-9">
-                        <div class="input-group">
-                            <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockInDate" is-open="vm.datePickerOpenStatus.stockInDate"
-                                    required  />
-                            <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('stockInDate')"><i class="glyphicon glyphicon-calendar"></i></button>
-                        </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label text-left">入库员1</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" ng-model="vm.entity.storeKeeper1" placeholder="入库员">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label text-left">入库员2</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" ng-model="vm.entity.storeKeeper2" placeholder="入库员">
-                    </div>
-                </div>
-            </div>
-        </div>
 
-    </form>
 
     <div class="row">
         <div class="col-md-12">
@@ -95,7 +61,7 @@
                     <button type="button" class="btn btn-default" ng-click="vm.editBox()">加载盒信息</button>
                     <button type="button" class="btn btn-default" ng-click="vm.splitBox()">分装</button>
                     <button type="button" class="btn btn-default" >复原</button>
-                    <button type="button" class="btn btn-primary">保存分装结果</button>
+                    <button type="button" class="btn btn-primary" ng-click="vm.saveBox()">保存分装结果</button>
                 </div>
                 <div class="clear-both"></div>
                 <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"></hot-table>
@@ -110,16 +76,12 @@
                             <div ng-repeat="item1 in item.boxList track by $index">
                                 <div class="box-feature" ng-style="{backgroundColor:item1.sampleType.backColor}"  ng-click="vm.sampleBoxSelect(item1,$event)">
                                     {{item1.stockInFrozenTubeList.length}}/{{item1.frozenBoxColumns*item1.frozenBoxRows}}
-                                    <span ng-if="vm.addTubeCount">{{vm.addTubeCount}}</span>
-                                    <!--<div></div>-->
-                                    <!--<div>{{ vm.addTubeCount}}</div>-->
+                                    <span ng-if="item1.addTubeCount">{{item1.addTubeCount}}</span>
                                 </div>
                                 <div class="text-center" ng-if="$index == 0">{{item1.sampleType.sampleTypeName}}&nbsp;</div>
                                 <div ng-class="{'second-box': $index == 1}">{{item1.frozenBoxCode}}</div>
                             </div>
                             <div class="box-feature box-feature-copy" style="background-color: #fff;" ng-if="item.boxList.length == 2"></div>
-
-                            <!--<div class="box-feature box-feature-copy" ng-style="{backgroundColor:item.sampleType.backColor}">复体</div>-->
                         </li>
                         <li>
                             <div class="box-feature" style="line-height: 96px;padding-top:0;border:2px dotted #aaa;" ng-click="vm.addBoxModal()">

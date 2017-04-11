@@ -188,4 +188,17 @@ public class StockInBoxResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getFrozenBoxId().toString()))
             .body(stockInBoxDetail);
     }
+
+    /**
+     * 根据冻存盒code串查询待入库和已入库的盒子信息
+     * @param frozenBoxCodeStr
+     * @return
+     */
+    @GetMapping("/stock-in-boxes/boxCodes/{frozenBoxCodeStr}")
+    @Timed
+    public ResponseEntity<List<StockInBoxForDataTable>> getFrozenBoxByBoxCodeStr(@PathVariable  List<String> frozenBoxCodeStr) {
+        log.debug("REST request to get FrozenBox By codes : {}", frozenBoxCodeStr);
+        List<StockInBoxForDataTable> res = stockInBoxService.findFrozenBoxListByBoxCodeStr(frozenBoxCodeStr);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
 }

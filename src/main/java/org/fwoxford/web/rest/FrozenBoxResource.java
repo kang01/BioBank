@@ -248,11 +248,4 @@ public class FrozenBoxResource {
         StockInBoxDetail boxes =  frozenBoxService.getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(equipmentCode,areaCode,shelfCode,position);
         return boxes;
     }
-    @GetMapping("/frozen-boxes/boxCodes/{frozenBoxCodeStr}")
-    @Timed
-    public ResponseEntity<List<StockInBoxForDataTable>> getFrozenBoxByBoxCodeStr(@PathVariable  List<String> frozenBoxCodeStr) {
-        log.debug("REST request to get FrozenBox By codes : {}", frozenBoxCodeStr);
-        List<StockInBoxForDataTable> res = frozenBoxService.findFrozenBoxListByBoxCodeStr(frozenBoxCodeStr);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
-    }
 }

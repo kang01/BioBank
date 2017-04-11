@@ -57,4 +57,6 @@ public interface StockInBoxService {
     List<StockInBoxSplit> splitedStockIn(String stockInCode, String boxCode, List<StockInBoxSplit> stockInBoxForDataSplits);
 
     StockInBoxDetail movedStockIn(String stockInCode, String boxCode, FrozenBoxPositionDTO boxPositionDTO);
+
+    List<StockInBoxForDataTable> findFrozenBoxListByBoxCodeStr(List<String> frozenBoxCodeStr);
 }

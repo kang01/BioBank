@@ -4,14 +4,13 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockInBoxService;
+import org.fwoxford.service.dto.FrozenBoxPositionDTO;
 import org.fwoxford.service.dto.StockInBoxDTO;
-import org.fwoxford.service.dto.StockInBoxSplitDTO;
 import org.fwoxford.service.dto.StockInTubeDTO;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxSplit;
 import org.fwoxford.service.mapper.*;
-import org.fwoxford.service.dto.FrozenBoxPositionDTO;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +69,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     private SampleTypeRepository sampleTypeRepository;
     @Autowired
     private FrozenBoxTypeRepository frozenBoxTypeRepository;
+    @Autowired
+    private FrozenBoxMapper frozenBoxMapper;
 
     public StockInBoxServiceImpl(StockInBoxRepository stockInBoxRepository, StockInBoxMapper stockInBoxMapper,
                                  StockInBoxRepositries stockInBoxRepositries,StockInRepository stockInRepository) {
@@ -459,6 +460,20 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxRepository.save(stockInBox);
         stockInBoxDetail = createStockInBoxDetail(frozenBox,stockInCode);
         return stockInBoxDetail;
+    }
+
+    @Override
+    public List<StockInBoxForDataTable> findFrozenBoxListByBoxCodeStr(List<String> frozenBoxCodeStr) {
+        List<StockInBoxForDataTable> stockInBoxs = new ArrayList<>();
+        if (frozenBoxCodeStr.size()==0) {
+            throw new BankServiceException("请传入有效的冻存盒编码！", frozenBoxCodeStr.toString());
+        }
+        List<String> statusStr = new ArrayList<String>();
+        statusStr.add(Constants.FROZEN_BOX_STOCKED);
+        statusStr.add(Constants.FROZEN_BOX_STOCKING);
+        List<FrozenBox> frozenBoxes = frozenBoxRepository.findByFrozenBoxCodeInAndStatusIn(frozenBoxCodeStr,statusStr);
+        stockInBoxs = frozenBoxMapper.frozenBoxesToStockInBoxForDataTables(frozenBoxes);
+        return stockInBoxs;
     }
 
     private StockInBoxDetail createStockInBoxDetail(FrozenBox frozenBox,String stockInCode) {

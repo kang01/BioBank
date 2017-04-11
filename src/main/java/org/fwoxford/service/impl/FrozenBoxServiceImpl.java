@@ -475,7 +475,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         if (StringUtils.isEmpty(frozenBoxCodeStr)) {
             throw new BankServiceException("请传入有效的冻存盒编码！", frozenBoxCodeStr.toString());
         }
-        List<FrozenBox> frozenBoxes = frozenBoxRepositories.findByFrozenBoxCodeIn(frozenBoxCodeStr);
+        List<FrozenBox> frozenBoxes = frozenBoxRepository.findByFrozenBoxCodeIn(frozenBoxCodeStr);
         stockInBoxs = frozenBoxMapper.frozenBoxesToStockInBoxForDataTables(frozenBoxes);
         return stockInBoxs;
     }

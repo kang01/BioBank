@@ -42,4 +42,8 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     List<FrozenBox> findByProjectCodeAndSampleTypeCode(String projectCode, String sampleTypeCode);
 
     List<FrozenBox> findByProjectCodeAndSampleTypeCodeAndStatus(String projectCode, String sampleTypeCode, String frozenBoxStocking);
+
+    List<FrozenBox> findByFrozenBoxCodeInAndStatusIn(List<String> frozenBoxCodeStr, List<String> statusStr);
+
+    List<FrozenBox> findByFrozenBoxCodeIn(List<String> frozenBoxCodeStr);
 }

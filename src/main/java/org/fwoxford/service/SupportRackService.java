@@ -48,4 +48,6 @@ public interface SupportRackService {
     List<SupportRackDTO> getIncompleteShelvesByEquipmentAndArea(String equipmentCode, String areaCode);
 
     List<SupportRackDTO> getSupportRackListByEquipmentAndArea(String equipmentCode, String areaCode);
+
+    List<SupportRackDTO> findSupportRackByAreaId(Long areaId);
 }

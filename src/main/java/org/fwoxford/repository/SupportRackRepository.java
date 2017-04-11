@@ -11,6 +11,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface SupportRackRepository extends JpaRepository<SupportRack,Long> {
+    List<SupportRack> findSupportRackByAreaId(Long areaId);
     @Query("select r from SupportRack r where r.area.equipmentCode =?1")
     List<SupportRack> findSupportRackByEquipmentCode(String equipmentCode);
 

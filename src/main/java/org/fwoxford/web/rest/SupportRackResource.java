@@ -34,7 +34,7 @@ public class SupportRackResource {
     private final Logger log = LoggerFactory.getLogger(SupportRackResource.class);
 
     private static final String ENTITY_NAME = "supportRack";
-        
+
     private final SupportRackService supportRackService;
 
     public SupportRackResource(SupportRackService supportRackService) {
@@ -128,4 +128,16 @@ public class SupportRackResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * 根據區域ID查詢架子列表
+     * @param areaId
+     * @return
+     */
+    @GetMapping("/supportacksByAreaId/{areaId}")
+    @Timed
+    public ResponseEntity<List<SupportRackDTO>> getSupportRackByAreaId(@PathVariable Long areaId) {
+        log.debug("REST request to get SupportRack By AreaId : {}", areaId);
+        List<SupportRackDTO> supportRackDTOs = supportRackService.findSupportRackByAreaId(areaId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(supportRackDTOs));
+    }
 }

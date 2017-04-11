@@ -31,6 +31,7 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -145,8 +146,7 @@ public class StockInResource {
      */
     @PostMapping("/stock-in/tranship/{transhipCode}")
     @Timed
-    public ResponseEntity<StockInForDataDetail> createStockIns(HttpServletRequest request) throws URISyntaxException {
-        String transhipCode = request.getParameter("transhipCode");
+    public ResponseEntity<StockInForDataDetail> createStockIns(@PathVariable String transhipCode) throws URISyntaxException {
         log.debug("REST request to save StockIn : {}", transhipCode);
         StockInForDataDetail result = stockInService.saveStockIns(transhipCode);
         return ResponseEntity.created(new URI("/api/res/stock-in" + result.getId()))

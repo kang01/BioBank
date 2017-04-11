@@ -3,10 +3,7 @@ package org.fwoxford.service.dto.response;
 import org.fwoxford.domain.Area;
 import org.fwoxford.domain.SampleType;
 import org.fwoxford.domain.SupportRack;
-import org.fwoxford.service.dto.AreaDTO;
-import org.fwoxford.service.dto.EquipmentDTO;
-import org.fwoxford.service.dto.SampleTypeDTO;
-import org.fwoxford.service.dto.SupportRackDTO;
+import org.fwoxford.service.dto.*;
 
 import java.util.List;
 
@@ -33,6 +30,7 @@ public class StockInBoxForShelf {
     private EquipmentDTO equipment;
     private AreaDTO area;
     private SupportRackDTO shelf;
+    private FrozenBoxTypeDTO frozenBoxType;
 
     public Long getFrozenBoxId() {
         return frozenBoxId;
@@ -152,5 +150,13 @@ public class StockInBoxForShelf {
 
     public void setShelf(SupportRackDTO shelf) {
         this.shelf = shelf;
+    }
+
+    public FrozenBoxTypeDTO getFrozenBoxType() {
+        return frozenBoxType;
+    }
+
+    public void setFrozenBoxType(FrozenBoxTypeDTO frozenBoxType) {
+        this.frozenBoxType = frozenBoxType;
     }
 }

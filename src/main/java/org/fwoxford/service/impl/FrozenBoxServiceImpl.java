@@ -64,7 +64,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
     private SupportRackMapper supportRackMapper;
     @Autowired
     private SampleTypeMapper sampleTypeMapper;
-
+    @Autowired
+    private FrozenBoxTypeMapper frozenBoxTypeMapper;
     public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper, FrozenBoxRepositories frozenBoxRepositories) {
         this.frozenBoxRepository = frozenBoxRepository;
         this.frozenBoxMapper = frozenBoxMapper;
@@ -318,6 +319,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         res.setFrozenBoxColumns(box.getFrozenBoxColumns());
         res.setFrozenBoxRows(box.getFrozenBoxRows());
         res.setStockInFrozenTubeList(new ArrayList<>());
+        res.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(box.getFrozenBoxType()));
         for (FrozenTube tubes : frozenTubeList) {
             StockInTubeForBox tube = new StockInTubeForBox();
             tube.setFrozenTubeId(tubes.getId());

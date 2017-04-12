@@ -420,6 +420,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenTubeRecord.setSampleTypeCode(frozenTube.getSampleTypeCode());
             frozenTubeRecord.setTubeRows(frozenTube.getTubeRows());
             frozenTubeRecord.setTubeColumns(frozenTube.getTubeColumns());
+            frozenTubeRecord.setTubeType(frozenTube.getFrozenTubeType());
             frozenTubeRecordRepository.save(frozenTubeRecord);
             //更改管子的位置信息
             frozenTube.setFrozenBox(frozenBoxNew);

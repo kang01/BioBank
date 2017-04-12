@@ -454,27 +454,41 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(stockInBoxList.size()==0){
             throw new BankServiceException("未查询到该盒子的待入库信息！",boxCode);
         }
-        frozenBox.setEquipmentCode(boxPositionDTO.getEquipmentCode());
-        frozenBox.setEquipment(equipmentRepository.findOneByEquipmentCode(boxPositionDTO.getEquipmentCode()));
-        frozenBox.setArea(areaRepository.findOne(boxPositionDTO.getAreaId()));
-        frozenBox.setAreaCode(boxPositionDTO.getAreaCode());
-        frozenBox.setSupportRack(supportRackRepository.findOne(boxPositionDTO.getSupportRackId()));
-        frozenBox.setSupportRackCode(boxPositionDTO.getSupportRackCode());
+        Equipment equipment = equipmentRepository.findOneByEquipmentCode(boxPositionDTO.getEquipmentCode());
+        if (equipment == null){
+            throw new BankServiceException("未查询到指定设备！",boxPositionDTO.toString());
+        }
+        Area area = areaRepository.findOneByAreaCodeAndEquipmentId(boxPositionDTO.getAreaCode(), equipment.getId());
+        if (area == null){
+            throw new BankServiceException("未查询到指定设备的指定区域！",boxPositionDTO.toString());
+        }
+        SupportRack shelf = supportRackRepository.findOneBySupportRackCodeAndAreaId(boxPositionDTO.getSupportRackCode(), area.getId());
+        if (shelf == null){
+            throw new BankServiceException("未查询到指定设备的指定区域的指定架子！",boxPositionDTO.toString());
+        }
+        frozenBox.setEquipmentCode(equipment.getEquipmentCode());
+        frozenBox.setEquipment(equipment);
+        frozenBox.setArea(area);
+        frozenBox.setAreaCode(area.getAreaCode());
+        frozenBox.setSupportRack(shelf);
+        frozenBox.setSupportRackCode(shelf.getSupportRackCode());
         frozenBox.setColumnsInShelf(boxPositionDTO.getColumnsInShelf());
         frozenBox.setRowsInShelf(boxPositionDTO.getRowsInShelf());
         frozenBoxRepository.save(frozenBox);
 
         StockInBox stockInBox = stockInBoxList.get(0);
-        stockInBox.setEquipmentCode(boxPositionDTO.getEquipmentCode());
-        stockInBox.setEquipment(equipmentRepository.findOneByEquipmentCode(boxPositionDTO.getEquipmentCode()));
-        stockInBox.setArea(areaRepository.findOne(boxPositionDTO.getAreaId()));
-        stockInBox.setAreaCode(boxPositionDTO.getAreaCode());
-        stockInBox.setSupportRack(supportRackRepository.findOne(boxPositionDTO.getSupportRackId()));
-        stockInBox.setSupportRackCode(boxPositionDTO.getSupportRackCode());
-        stockInBox.setColumnsInShelf(boxPositionDTO.getColumnsInShelf());
-        stockInBox.setRowsInShelf(boxPositionDTO.getRowsInShelf());
+        stockInBox.setEquipmentCode(frozenBox.getEquipmentCode());
+        stockInBox.setEquipment(frozenBox.getEquipment());
+        stockInBox.setArea(frozenBox.getArea());
+        stockInBox.setAreaCode(frozenBox.getAreaCode());
+        stockInBox.setSupportRack(frozenBox.getSupportRack());
+        stockInBox.setSupportRackCode(frozenBox.getSupportRackCode());
+        stockInBox.setColumnsInShelf(frozenBox.getColumnsInShelf());
+        stockInBox.setRowsInShelf(frozenBox.getRowsInShelf());
         stockInBoxRepository.save(stockInBox);
         stockInBoxDetail = createStockInBoxDetail(frozenBox,stockInCode);
+
+        // todo:: 增加一个已上架的状态，这样前台可以排除已上架的盒子被再次上架
         return stockInBoxDetail;
     }
 

@@ -282,7 +282,7 @@
                         return {
                             stockInCode: vm.stockInCode,
                             boxIds: boxIds,
-                            boxes: boxes
+                            boxes: boxes,
                         }
                     }
                 }

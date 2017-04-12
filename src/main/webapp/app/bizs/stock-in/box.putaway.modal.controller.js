@@ -9,26 +9,27 @@
         .controller('BoxPutAwayModalController', BoxPutAwayModalController)
 
     BoxPutAwayModalController.$inject = ['hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','AlertService','$q','$timeout','items',
-        'frozenBoxByCodeService', 'FrozenPosService','AreasByEquipmentIdService','EquipmentService','SupportRackType'];
+        'frozenBoxByCodeService', 'FrozenPosService','AreasByEquipmentIdService','EquipmentService','SupportRackType','StockInBoxService'];
 
     function BoxPutAwayModalController(hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,AlertService,$q,$timeout,items,
-        frozenBoxByCodeService,FrozenPosService,AreasByEquipmentIdService,EquipmentService,SupportRackType) {
+        frozenBoxByCodeService,FrozenPosService,AreasByEquipmentIdService,EquipmentService,SupportRackType,StockInBoxService) {
 
         var vm = this;
         console.log(items);
 
         vm.frozenTubeArray = [];
         vm.items = items;
+        vm.stockInCode = items.stockInCode;
         vm.frozenBoxes = [];
         vm.selectedShelf = null;
         vm.selectedBox = {};
         vm.shelfTypes = [];
-        vm.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
+        vm.cancel = _cancelModal;
         vm.ok = function () {
-            $uibModalInstance.close();
+            _saveBoxPositions();
         };
+        vm.putInShelfBoxes = {};
+        vm.putInShelf = _putInShelf;
 
         var promiseForShelfType = SupportRackType.query({}, function(data, headers){
             vm.shelfTypes = data;
@@ -51,6 +52,12 @@
 
         function onError(error) {
             AlertService.error(error.data.message);
+        }
+        function _closeModal(){
+            $uibModalInstance.close();
+        }
+        function _cancelModal(){
+            $uibModalInstance.dismiss('cancel');
         }
 
         function _selectShelf($event, shelf){
@@ -101,22 +108,33 @@
                     for(var j = 0; j < countOfRows; ++j){
                         arrayBoxes[j] = arrayBoxes[j] || [];
                         var index = i * countOfRows + j;
-                        var boxesInShelf = _.filter(boxes, {columnsInShelf: String.fromCharCode(charCode + i), rowsInShelf: j+""});
+                        var pos = {columnsInShelf: String.fromCharCode(charCode + i), rowsInShelf: j+1+""};
+                        var boxesInShelf = _.filter(boxes, pos);
                         if (boxesInShelf.length){
                             arrayBoxes[j][i] = boxesInShelf[0];
                         } else {
-                            arrayBoxes[j][i] = {
-                                frozenBoxId: null,
-                                frozenBoxCode: "",
-                                columnsInShelf: String.fromCharCode(charCode + i),
-                                rowsInShelf: j + "",
-                                countOfSample: 0,
-                                isEmpty: true,
-                            };
-                            if (!emptyPos){
-                                emptyPos = {row:j,col:i};
+                            boxesInShelf = _.filter(vm.putInShelfBoxes||[], pos);
+                            if (boxesInShelf.length){
+                                arrayBoxes[j][i] = boxesInShelf[0];
+                            } else {
+                                arrayBoxes[j][i] = {
+                                    frozenBoxId: null,
+                                    frozenBoxCode: "",
+                                    columnsInShelf: String.fromCharCode(charCode + i),
+                                    rowsInShelf: j + 1 + "",
+                                    isEmpty: true,
+                                };
+                                if (!emptyPos){
+                                    emptyPos = {row:j,col:i};
+                                }
                             }
                         }
+
+                        arrayBoxes[j][i].supportRackCode = shelf.supportRackCode;
+                        arrayBoxes[j][i].areaCode = shelf.areaCode;
+                        arrayBoxes[j][i].equipmentCode = shelf.equipmentCode;
+                        arrayBoxes[j][i].rowNO = j;
+                        arrayBoxes[j][i].colNO = i;
                     }
                 }
 
@@ -138,6 +156,96 @@
         function _getFrozenBoxes(boxIds){
             vm.frozenBoxes = items.boxes;
             _.forEach(vm.frozenBoxes, function(box){vm.selectedBox[box.frozenBoxCode] = false;});
+        }
+        function _putInShelf(){
+            var shelf = vm.selectedShelf;
+            var shelfType = _.filter(vm.shelfTypes, {id: shelf.supportRackTypeId})[0] || {};
+            var countOfRows = shelfType.supportRackRows || 4;
+            var countOfCols = shelfType.supportRackColumns || 4;
+
+            var tableCtrl = _getShelfDetailsTableCtrl();
+            // [startRow, startCol, endRow, endCol].
+            var startEmptyPos = tableCtrl.getSelected();
+            var cellRow = startEmptyPos[0];
+            var cellCol = startEmptyPos[1];
+
+            for(var i in vm.selectedBox){
+                var boxes = vm.putInShelfBoxes[shelf.id] || {};
+                vm.putInShelfBoxes[shelf.id] = boxes;
+                if (vm.selectedBox[i]){
+                    var box = null; //_.filter(vm.frozenBoxes, {frozenBoxCode: i})[0];
+                    for(var j = 0; j<vm.frozenBoxes.length; ++j){
+                        if (i == vm.frozenBoxes[j].frozenBoxCode){
+                            box = vm.frozenBoxes[j];
+                            break;
+                        }
+                    }
+                    if (!box){
+                        continue;
+                    }
+
+                    for (; cellCol < countOfCols && !box.isPutInShelf; ++cellCol){
+                        for(; cellRow < countOfRows && !box.isPutInShelf; ++cellRow){
+                            var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                            if (cellData && cellData.isEmpty){
+                                box.isPutInShelf = true;
+                                cellData.frozenBoxCode = box.frozenBoxCode;
+                                cellData.isEmpty = false;
+
+                                boxes[box.frozenBoxCode] = {
+                                    frozenBoxId: box.frozenBoxId,
+                                    frozenBoxCode: box.frozenBoxCode,
+
+                                    rowsInShelf: cellData.rowsInShelf,
+                                    columnsInShelf: cellData.columnsInShelf,
+                                    supportRackCode: cellData.supportRackCode,
+                                    areaCode: cellData.areaCode,
+                                    equipmentCode: cellData.equipmentCode,
+
+                                    rowNO: cellRow,
+                                    colNO: cellCol
+                                };
+                                vm.selectedBox[i] = false;
+                                break;
+                            }
+                        }
+                        if (box.isPutInShelf){
+                            break;
+                        }
+                        cellRow = 0;
+                    }
+
+                }
+            }
+
+            tableCtrl.render();
+            vm.dtBoxesListInstance.rerender();
+        }
+        function _saveBoxPositions(){
+            if (vm.putInShelfBoxes){
+                var promises = [];
+                for (var id in vm.putInShelfBoxes){
+                    var boxes = vm.putInShelfBoxes[id];
+                    for(var code in boxes){
+                        var boxPos = boxes[code];
+                        var boxCode = boxPos.frozenBoxCode;
+                        var posData = {
+                            equipmentCode: boxPos.equipmentCode,
+                            areaCode: boxPos.areaCode,
+                            supportRackCode: boxPos.supportRackCode,
+                            rowsInShelf: boxPos.rowsInShelf,
+                            columnsInShelf: boxPos.columnsInShelf
+                        };
+
+                        promises.push(StockInBoxService.saveBoxPosition(vm.stockInCode, boxCode, posData));
+                    }
+                }
+
+                $q.all(promises).then(function(res){
+                    vm.putInShelfBoxes = [];
+                    _closeModal();
+                });
+            }
         }
 
         function _initShelvesList(){
@@ -217,7 +325,9 @@
                 .withDOM("t").withScroller().withOption('scrollY', 338);
             vm.dtBoxesListInstance = {};
             $timeout(function(){
-                vm.dtBoxesListInstance.rerender();
+                if (vm.dtBoxesListInstance){
+                    vm.dtBoxesListInstance.rerender();
+                }
             },200);
         }
 
@@ -336,69 +446,6 @@
             return vm.shelfDetailsTableCtrl;
         }
 
-
-        vm.putInShelfBoxes = {};
-        vm.putInShelf = _putInShelf;
-        function _putInShelf(){
-            var shelf = vm.selectedShelf;
-            var shelfType = _.filter(vm.shelfTypes, {id: shelf.supportRackTypeId})[0] || {};
-            var countOfRows = shelfType.supportRackRows || 4;
-            var countOfCols = shelfType.supportRackColumns || 4;
-
-            var tableCtrl = _getShelfDetailsTableCtrl();
-            // [startRow, startCol, endRow, endCol].
-            var startEmptyPos = tableCtrl.getSelected();
-            var cellRow = startEmptyPos[0];
-            var cellCol = startEmptyPos[1];
-
-            for(var i in vm.selectedBox){
-                var boxes = vm.putInShelfBoxes[shelf.id] || {};
-                vm.putInShelfBoxes[shelf.id] = boxes;
-                if (vm.selectedBox[i]){
-                    var box = null; //_.filter(vm.frozenBoxes, {frozenBoxCode: i})[0];
-                    for(var j = 0; j<vm.frozenBoxes.length; ++j){
-                        if (i == vm.frozenBoxes[j].frozenBoxCode){
-                            box = vm.frozenBoxes[j];
-                            break;
-                        }
-                    }
-                    if (!box){
-                        continue;
-                    }
-
-                    for (; cellCol < countOfCols && !box.isPutInShelf; ++cellCol){
-                        for(; cellRow < countOfRows && !box.isPutInShelf; ++cellRow){
-                            var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
-                            if (cellData && cellData.isEmpty){
-                                box.isPutInShelf = true;
-                                cellData.frozenBoxCode = box.frozenBoxCode;
-                                cellData.isEmpty = false;
-
-                                boxes[box.frozenBoxCode] = {
-                                    frozenBoxId: box.frozenBoxId,
-                                    frozenBoxCode: box.frozenBoxCode,
-                                    rowsInShelf: cellData.rowsInShelf,
-                                    columnsInShelf: cellData.columnsInShelf,
-                                    rowNO: cellRow,
-                                    colNO: cellCol
-                                };
-
-                                vm.selectedBox[i] = false;
-                                break;
-                            }
-                        }
-                        if (box.isPutInShelf){
-                            break;
-                        }
-                        cellRow = 0;
-                    }
-
-                }
-            }
-
-            tableCtrl.render();
-            vm.dtBoxesListInstance.rerender();
-        }
 
 
 

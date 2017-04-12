@@ -28,6 +28,9 @@
         vm.ok = function () {
             _saveBoxPositions();
         };
+        vm.canBeSave = function(){
+            return true && !(vm.putInShelfBoxes && Object.keys(vm.putInShelfBoxes).length);
+        };
         vm.putInShelfBoxes = {};
         vm.putInShelf = _putInShelf;
 
@@ -43,7 +46,7 @@
         //
         // $q.all([promiseForShelfType, promiseForEquipment, promiseForFrozenBox]).then(function(data){
         // });
-        _getFrozenBoxes();
+        _getFrozenBoxes(items.boxIds);
 
         _initShelvesList();
         _initStockInBoxes();
@@ -153,9 +156,12 @@
                 }
             }, onError);
         }
-        function _getFrozenBoxes(boxIds){
-            vm.frozenBoxes = items.boxes;
-            _.forEach(vm.frozenBoxes, function(box){vm.selectedBox[box.frozenBoxCode] = false;});
+        function _getFrozenBoxes(boxCodes){
+            // vm.frozenBoxes = items.boxes;
+            // _.forEach(vm.frozenBoxes, function(box){vm.selectedBox[box.frozenBoxCode] = false;});
+            StockInBoxService.getStockInBoxByCodes(boxCodes).then(function(res){
+                vm.frozenBoxes = res.data;
+            }, onError);
         }
         function _putInShelf(){
             var shelf = vm.selectedShelf;
@@ -325,7 +331,7 @@
                 .withDOM("t").withScroller().withOption('scrollY', 338);
             vm.dtBoxesListInstance = {};
             $timeout(function(){
-                if (vm.dtBoxesListInstance){
+                if (vm.dtBoxesListInstance.rerender){
                     vm.dtBoxesListInstance.rerender();
                 }
             },200);
@@ -358,7 +364,12 @@
             };
 
             $timeout(function(){
-                _getShelfDetailsTableCtrl().render();
+                var hot = _getShelfDetailsTableCtrl();
+                if (hot){
+                    // hot.clear();
+                    hot.loadData([["","","",""]]);
+                    // hot.render();
+                }
             },200);
 
             function _selectingCell(r, c, r2, c2, preventScrolling){

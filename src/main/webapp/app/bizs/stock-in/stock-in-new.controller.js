@@ -147,7 +147,6 @@
             var status = '';
             var isSplit = data.isSplit || 0;
             // var sampleType = data.sampleType && data.sampleType.sampleTypeName || '';
-            console.log(data);
             // 2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废
             switch (data.status){
                 case '2001': status = '新建'; break;
@@ -288,6 +287,7 @@
                 }
             });
             modalInstance.result.then(function (data) {
+                vm.dtInstance.rerender();
             });
         }
 

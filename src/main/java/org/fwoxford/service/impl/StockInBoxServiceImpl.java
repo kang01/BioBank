@@ -362,13 +362,13 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         frozenBoxNew.setColumnsInShelf(stockInBoxForDataSplit.getColumnsInShelf());
         frozenBoxNew.setRowsInShelf(stockInBoxForDataSplit.getRowsInShelf());
-        frozenBoxNew.setSampleNumber(stockInBoxForDataSplit.getStockInTubeDTOList().size());
+        frozenBoxNew.setSampleNumber(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
 
         frozenBoxNew.setMemo(stockInBoxForDataSplit.getMemo());
         frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
 
         stockInBoxForDataSplit.setFrozenBoxId(frozenBoxNew.getId());
-        stockInBoxForDataSplit.setCountOfSample(stockInBoxForDataSplit.getStockInTubeDTOList().size());
+        stockInBoxForDataSplit.setCountOfSample(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
 
 
         //新增入库盒子
@@ -390,7 +390,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxForDataSplit.setFrozenBoxId(stockInBox.getId());
 
         //查询原管子的位置存历史
-        List<StockInTubeDTO> stockInTubeDTOS = stockInBoxForDataSplit.getStockInTubeDTOList();
+        List<StockInTubeDTO> stockInTubeDTOS = stockInBoxForDataSplit.getStockInFrozenTubeList();
         List<StockInTubeDTO> stockInTubeDTOList = new ArrayList<>();
         for(StockInTubeDTO tube : stockInTubeDTOS){
             if(tube.getFrozenTubeId()==null){
@@ -426,7 +426,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             tube.setFrozenTubeId(frozenTube.getId());
             stockInTubeDTOList.add(tube);
         }
-        stockInBoxForDataSplit.setStockInTubeDTOList(stockInTubeDTOList);
+        stockInBoxForDataSplit.setStockInFrozenTubeList(stockInTubeDTOList);
         return stockInBoxForDataSplit;
     }
 

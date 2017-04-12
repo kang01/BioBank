@@ -13,14 +13,14 @@ public class StockInBoxSplit extends StockInBoxDetail {
     private Long  frozenBoxTypeId;
     private FrozenBoxTypeDTO frozenBoxType;
 
-    private List<StockInTubeDTO> stockInTubeDTOList;
+    private List<StockInTubeDTO> stockInFrozenTubeList;
 
-    public List<StockInTubeDTO> getStockInTubeDTOList() {
-        return stockInTubeDTOList;
+    public List<StockInTubeDTO> getStockInFrozenTubeList() {
+        return stockInFrozenTubeList;
     }
 
-    public void setStockInTubeDTOList(List<StockInTubeDTO> stockInTubeDTOList) {
-        this.stockInTubeDTOList = stockInTubeDTOList;
+    public void setStockInFrozenTubeList(List<StockInTubeDTO> stockInFrozenTubeList) {
+        this.stockInFrozenTubeList = stockInFrozenTubeList;
     }
 
     public Long getFrozenBoxTypeId() {

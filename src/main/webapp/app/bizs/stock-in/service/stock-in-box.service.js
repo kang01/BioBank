@@ -39,7 +39,12 @@
             }
 
             return $http(req);
-        }
+        };
+
+        service.getStockInBoxByCodes = function(codes){
+            var url = "api/stock-in-boxes/boxCodes/" + codes.join(',');
+            return $http.get(url);
+        };
 
         service.saveBoxPosition = function(stockInCode, boxCode, position){
             var url = "api/stock-in-boxes/stock-in/"+stockInCode+"/box/"+boxCode+"/moved";

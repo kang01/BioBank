@@ -248,8 +248,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(tubeList.size()==0){
             frozenBox.setStatus(Constants.FROZEN_BOX_SPLITED);
             frozenBoxRepository.save(frozenBox);
-            //更改转运盒子状态
-            transhipBoxRepository.updateStatusByTranshipIdAndFrozenBoxCode(frozenBox.getTranship().getId(),boxCode,Constants.FROZEN_BOX_SPLITED);
+            List<TranshipBox> transhipBox = transhipBoxRepository.findByFrozenBoxId(frozenBox.getId());
+            if(transhipBox.size()>0){
+                //更改转运盒子状态
+                transhipBoxRepository.updateStatusByTranshipIdAndFrozenBoxCode(transhipBox.get(0).getTranship().getId(),boxCode,Constants.FROZEN_BOX_SPLITED);
+            }
             //更改入库盒子状态
             stockInBoxRepository.updateByStockCodeAndFrozenBoxCode(stockInCode,boxCode,Constants.FROZEN_BOX_SPLITED);
 
@@ -365,8 +368,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBoxNew.setSampleNumber(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
 
         frozenBoxNew.setMemo(stockInBoxForDataSplit.getMemo());
-        Tranship tranship = new Tranship();tranship.setId(0L);
-        frozenBoxNew.setTranship(frozenBox.getTranship()!=null?frozenBox.getTranship():tranship);
         frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
 
         stockInBoxForDataSplit.setFrozenBoxId(frozenBoxNew.getId());

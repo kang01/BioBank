@@ -207,8 +207,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             if (oldBox != null) {
                 box.setId(oldBox.getId());
             }
-
-            box.setTranship(tranship);
             if (box.getProject() != null){
                 Project project = projectRepository.findOne(box.getProject().getId());
                 box.setProject(project);

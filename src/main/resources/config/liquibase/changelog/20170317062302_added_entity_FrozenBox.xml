@@ -130,10 +130,6 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="tranship_id" type="bigint" remarks="转运ID">
-                <constraints nullable="false" />
-            </column>
-
             <column name="equipment_id" type="bigint" remarks="设备ID">
                 <constraints nullable="true" />
             </column>

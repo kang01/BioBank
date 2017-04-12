@@ -185,10 +185,6 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @ManyToOne(optional = true)
     private ProjectSite projectSite;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "tranship_id")
-    private Tranship tranship;
-
     @ManyToOne(optional = true)
     private Equipment equipment;
 
@@ -545,19 +541,6 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
 
     public void setProjectSite(ProjectSite projectSite) {
         this.projectSite = projectSite;
-    }
-
-    public Tranship getTranship() {
-        return tranship;
-    }
-
-    public FrozenBox tranship(Tranship tranship) {
-        this.tranship = tranship;
-        return this;
-    }
-
-    public void setTranship(Tranship tranship) {
-        this.tranship = tranship;
     }
 
     public Equipment getEquipment() {

@@ -57,8 +57,6 @@
                     <h4>待分装样本盒{{vm.box.frozenBoxCode}}</h4>
                 </div>
                 <div class="col-md-7 text-right m-b-10">
-                    <button type="button" class="btn btn-default" ng-click="vm.putAway()">上架</button>
-                    <button type="button" class="btn btn-default" ng-click="vm.editBox()">加载盒信息</button>
                     <button type="button" class="btn btn-default" ng-click="vm.splitBox()">分装</button>
                     <button type="button" class="btn btn-default" >复原</button>
                     <button type="button" class="btn btn-primary" ng-click="vm.saveBox()">保存分装结果</button>
@@ -74,9 +72,9 @@
                     <ul>
                         <li ng-repeat="item in vm.incompleteBoxesList"  >
                             <div ng-repeat="item1 in item.boxList track by $index">
-                                <div class="box-feature" ng-style="{backgroundColor:item1.sampleType.backColor}"  ng-click="vm.sampleBoxSelect(item1,$event)">
+                                <div class="box-feature current" ng-style="{backgroundColor:item1.sampleType.backColor}"  ng-click="vm.sampleBoxSelect(item1,$event)">
                                     {{item1.stockInFrozenTubeList.length}}/{{item1.frozenBoxColumns*item1.frozenBoxRows}}
-                                    <span ng-if="item1.addTubeCount">{{item1.addTubeCount}}</span>
+                                    <span ng-if="item1.addTubeCount">+{{item1.addTubeCount}}</span>
                                 </div>
                                 <div class="text-center" ng-if="$index == 0">{{item1.sampleType.sampleTypeName}}&nbsp;</div>
                                 <div ng-class="{'second-box': $index == 1}">{{item1.frozenBoxCode}}</div>

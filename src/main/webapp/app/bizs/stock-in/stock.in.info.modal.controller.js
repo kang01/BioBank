@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('StockInInfoModalController', StockInInfoModalController);
 
-    StockInInfoModalController.$inject = ['$uibModalInstance','$uibModal','items','AlertService'];
+    StockInInfoModalController.$inject = ['$uibModalInstance','$uibModal','AlertService'];
 
-    function StockInInfoModalController($uibModalInstance,$uibModal,items,AlertService) {
+    function StockInInfoModalController($uibModalInstance,$uibModal,AlertService) {
         var vm = this;
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

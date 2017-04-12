@@ -222,6 +222,7 @@
                     hotRegisterer.getInstance('my-handsontable').render();
                 }, 200);
             }
+            vm.loadBox();
         }
 
         function _putInShelf(boxIds){
@@ -265,8 +266,19 @@
 
 
 
+        //入库完成
+        vm.saveStockIn = function () {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-in/stock-in-info-modal.html',
+                controller: 'StockInInfoModalController',
+                controllerAs:'vm',
+                size:'lg'
+            });
+            modalInstance.result.then(function (data) {
 
-
+            })
+        };
         vm.isShowSplittingPanel = function(){
             return vm.splittingBox && true;
         };
@@ -283,49 +295,33 @@
         var modalInstance;
         var size = 10;
         var htm;
+        //样本类型
         vm.loadBox = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);
         };
-        //样本类型
         function onSampleTypeSuccess(data) {
             vm.sampleTypes = data;
+            //未装满不同样本类型的盒子
             for(var i = 0; i < vm.sampleTypes.length-1;i++){
-                IncompleteBoxService.query({projectCode:"12345",sampleTypeCode:vm.sampleTypes[i].sampleTypeCode},onIncompleteBoxesSuccess,onError)
+                IncompleteBoxService.query({projectCode:vm.entity.projectCode,sampleTypeCode:vm.sampleTypes[i].sampleTypeCode},onIncompleteBoxesSuccess,onError)
             }
         }
         function onIncompleteBoxesSuccess(data) {
-            vm.incompleteBoxesList.push(
-                {
-                    sampleTypeCode:data[0].sampleType.sampleTypeCode,
-                    boxList:[
-                        {
-                            addTubeCount:0,
-                            isSplit:0,
-                            rowsInShelf:"",
-                            columnsInShelf:"",
-                            areaId:"",
-                            equipmentId:"",
-                            supportRackId:"",
-                            frozenBoxTypeId:"",
-                            memo:"",
-                            sampleTypeCode:data[0].sampleType.sampleTypeCode,
-                            sampleType:data[0].sampleType,
-                            frozenBoxCode:data[0].frozenBoxCode,
-                            frozenBoxRows:data[0].frozenBoxRows,
-                            frozenBoxColumns:data[0].frozenBoxColumns,
-                            stockInFrozenTubeList:data[0].stockInFrozenTubeList
-                        }
-                    ]
-                }
-
-            );
-
+            console.log(JSON.stringify(data))
+            if(data.length){
+                vm.incompleteBoxesList.push(
+                    {
+                        sampleTypeCode:data[0].sampleType.sampleTypeCode,
+                        boxList:data
+                    }
+                );
+            }
         }
         function onError(error) {
             AlertService.error(error.data.message);
         }
-        vm.loadBox();
 
+        //初始管子数
         function initFrozenTube(size) {
             for(var i = 0; i < size; i++){
                 vm.frozenTubeArray[i] = [];
@@ -427,16 +423,13 @@
         };
         //选择分装后的样本盒
         var tubeList = [];
-        vm.obox = {
-            frozenBoxCode:"",
-            sampleTypeCode:"",
-            stockInTubeDTOList:[]
-        };
+        vm.obox = {};
         vm.sampleBoxSelect = function (item,$event) {
-            // console.log(JSON.stringify(vm.incompleteBoxesList))
-            vm.obox.stockInTubeDTOList = [];
-            vm.obox.frozenBoxCode = item.frozenBoxCode;
-            vm.obox.sampleTypeCode = item.sampleTypeCode;
+            console.log(JSON.stringify(item));
+            vm.obox = item;
+            // vm.obox.stockInTubeDTOList = [];
+            // vm.obox.frozenBoxCode = item.frozenBoxCode;
+            // vm.obox.sampleTypeCode = item.sampleTypeCode;
             //初始100个管子或者80个管子
             for(var i = 0; i < item.frozenBoxRows; i++){
                 tempTubeArray[i] = [];
@@ -447,14 +440,14 @@
                         frozenTubeCode:''
 
                     };
-                    vm.obox.stockInTubeDTOList.push(tempTubeArray[i][j])
+                    vm.obox.stockInFrozenTubeList.push(tempTubeArray[i][j])
                 }
             }
             //把选中盒子里的管子放进空盒子中
             for(var k = 0; k <item.stockInFrozenTubeList.length; k++){
                 var tube = item.stockInFrozenTubeList[k];
-                if(vm.obox.stockInTubeDTOList[k].tubeRows == tube.tubeRows && vm.obox.stockInTubeDTOList[k].tubeColumns == tube.tubeColumns){
-                    vm.obox.stockInTubeDTOList[k] = tube
+                if(vm.obox.stockInFrozenTubeList[k].tubeRows == tube.tubeRows && vm.obox.stockInFrozenTubeList[k].tubeColumns == tube.tubeColumns){
+                    vm.obox.stockInFrozenTubeList[k] = tube
                 }
             }
             $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
@@ -462,7 +455,6 @@
         };
         //分装操作
         vm.splitBox = function () {
-            // vm.addTubeCount = selectList.length;
             for(var j = 0; j < vm.incompleteBoxesList.length; j++){
                 for(var k = 0; k < vm.incompleteBoxesList[j].boxList.length;k++){
                     if(vm.obox.sampleTypeCode == vm.incompleteBoxesList[j].boxList[k].sampleTypeCode){
@@ -471,28 +463,23 @@
                     }
                 }
             }
-            for(var i = 0,j = 0; i < vm.obox.stockInTubeDTOList.length; i++){
-                if(!vm.obox.stockInTubeDTOList[i].frozenTubeCode){
+            for(var i = 0,j = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
+                if(!vm.obox.stockInFrozenTubeList[i].frozenTubeCode){
                     if(selectList.length){
-                        selectList[0].tubeRows = vm.obox.stockInTubeDTOList[i].tubeRows;
-                        selectList[0].tubeColumns = vm.obox.stockInTubeDTOList[i].tubeColumns;
-                        vm.obox.stockInTubeDTOList[i] = selectList[0];
+                        selectList[0].tubeRows = vm.obox.stockInFrozenTubeList[i].tubeRows;
+                        selectList[0].tubeColumns = vm.obox.stockInFrozenTubeList[i].tubeColumns;
+                        vm.obox.stockInFrozenTubeList[i] = selectList[0];
                         selectList.splice(0,1);
                     }
-                    // if(j < selectList.length){
-                    //     tubeList[i] = selectList[j++];
-                    // }
                 }
             }
 
-
-            // console.log(JSON.stringify(vm.incompleteBoxesList))
-            // console.log(JSON.stringify(vm.obox))
+            console.log(JSON.stringify(vm.obox))
 
         };
         vm.saveBox = function () {
             // console.log(JSON.stringify(vm.incompleteBoxesList))
-        }
+        };
         vm.editBox = function () {
             _splitABox();
         }
@@ -512,14 +499,24 @@
                 }
             });
             modalInstance.result.then(function (data) {
-                for(var i = 0; i < vm.incompleteBoxesList.length; i++){
-                    if(vm.incompleteBoxesList[i].sampleTypeCode == data.sampleType.sampleTypeCode){
-                        vm.incompleteBoxesList[i].boxList.push(data);
+                //添加分装后的冻存盒，没有添加新的，有的话再添加相同的盒子，相同的最多添加2个
+                var index = _.findIndex(vm.incompleteBoxesList,{sampleTypeCode:data.sampleType.sampleTypeCode});
+                if(index == -1){
+                    var boxTempList  = [];
+                    boxTempList.push(data);
+                    onIncompleteBoxesSuccess(boxTempList)
+                }else{
+                    for(var i = 0; i < vm.incompleteBoxesList.length; i++){
+                        if(vm.incompleteBoxesList[i].sampleTypeCode == data.sampleType.sampleTypeCode){
+                            if(vm.incompleteBoxesList[i].boxList.length < 2){
+                                vm.incompleteBoxesList[i].boxList.push(data);
+                            }
+
+                        }
                     }
                 }
-                // console.log(JSON.stringify(vm.incompleteBoxesList))
             });
-        }
+        };
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }

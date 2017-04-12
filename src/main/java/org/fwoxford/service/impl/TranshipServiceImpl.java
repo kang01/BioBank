@@ -5,10 +5,14 @@ import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.SampleType;
 import org.fwoxford.domain.Tranship;
+import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.repository.FrozenTubeRepository;
 import org.fwoxford.repository.TranshipRepository;
 import org.fwoxford.repository.TranshipRepositries;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
@@ -66,6 +70,12 @@ public class TranshipServiceImpl implements TranshipService{
     @Autowired
     private SampleTypeService sampleTypeService;
 
+    @Autowired
+    private FrozenBoxRepository frozenBoxRepository;
+
+    @Autowired
+    private FrozenTubeRepository frozenTubeRepository;
+
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
         this.transhipMapper = transhipMapper;
@@ -81,13 +91,37 @@ public class TranshipServiceImpl implements TranshipService{
     @Override
     public TranshipDTO save(TranshipDTO transhipDTO) {
         log.debug("Request to save Tranship : {}", transhipDTO);
+        Long transhipId = null;
+        if(transhipDTO.getId() != null){
+            transhipId = transhipDTO.getId();
+            Tranship oldTranship = transhipRepository.findOne(transhipDTO.getId());
+            if(oldTranship!=null&&(oldTranship.getTranshipState().equals(Constants.TRANSHIPE_IN_STOCKED)
+                || oldTranship.getTranshipState().equals(Constants.TRANSHIPE_IN_STOCKING))){
+                throw new BankServiceException("转运已不在进行中状态，不能修改记录！",transhipDTO.toString());
+            }
+        }
+        List<FrozenBoxAndFrozenTubeResponse> response =  frozenBoxService.getFrozenBoxAndTubeByTranshipCode(transhipDTO.getTranshipCode());
+        int countOfEmptyHole = 0;int countOfEmptyTube = 0;
+        for(FrozenBoxAndFrozenTubeResponse res:response){
+            List<FrozenTubeResponse> tubeDTOS = res.getFrozenTubeDTOS();
+            for(FrozenTubeResponse tube:tubeDTOS){
+                if(tube.getStatus().equals(Constants.FROZEN_TUBE_HOLE_EMPTY)){
+                    countOfEmptyHole++;
+                }
+                if(tube.getStatus().equals(Constants.FROZEN_TUBE_EMPTY)){
+                    countOfEmptyTube++;
+                }
+            }
+        }
+        transhipDTO.setFrozenBoxNumber(transhipDTO.getFrozenBoxNumber()!=null?transhipDTO.getFrozenBoxNumber():response.size());
+        transhipDTO.setEmptyHoleNumber(transhipDTO.getEmptyHoleNumber()!=null?transhipDTO.getEmptyHoleNumber():countOfEmptyHole);
+        transhipDTO.setEmptyTubeNumber(transhipDTO.getEmptyTubeNumber()!=null?transhipDTO.getEmptyTubeNumber():countOfEmptyTube);
         Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
         tranship = transhipMapper.transhipToDefaultValue(tranship);
         tranship = transhipRepository.save(tranship);
         TranshipDTO result = transhipMapper.transhipToTranshipDTO(tranship);
         return result;
     }
-
     /**
      *  Get all the tranships.
      *

@@ -447,8 +447,12 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
     public StockInBoxDetail getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(String equipmentCode, String areaCode, String shelfCode, String position) {
         String columnsInShelf = position.substring(0, 1);
         String rowsInShelf = position.substring(1);
-        FrozenBox frozenBox = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(equipmentCode, areaCode, shelfCode, columnsInShelf, rowsInShelf);
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+        FrozenBox frozenBox = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(equipmentCode, areaCode, shelfCode, columnsInShelf, rowsInShelf);
+        if(frozenBox == null){
+            return stockInBoxDetail;
+        }
+
         stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
         stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
         stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());

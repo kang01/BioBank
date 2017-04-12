@@ -75,27 +75,32 @@
             };
 
             vm.dtOptions = DTOptionsBuilder.fromSource({"url": ajaxUrl,"dataSrc": "data"})
-                .withDOM("<'row'<'col-xs-6' TB><'col-xs-6' f>r>t<'row'<'col-xs-6'i><'col-xs-6'p>>")
+                .withDOM("<'row'<'col-xs-6' TB><'col-xs-6' f>r><'row'<'col-xs-12' t>><'row'<'col-xs-6'i><'col-xs-6'p>>")
                 .withDisplayLength(6)
-                .withBootstrap()
-                .withBootstrapOptions({
-                    pagination: {
-                        classes: {
-                            ul: 'pagination pagination-sm'
-                        }
-                    }
-                })
+                // .withBootstrap()
+                // .withBootstrapOptions({
+                //     pagination: {
+                //         classes: {
+                //             ul: 'pagination pagination-sm'
+                //         }
+                //     }
+                // })
                 // Add Table tools compatibility
                 .withButtons([
                     {
                         text: '批量上架',
                         className: 'btn btn-default',
                         key: '1',
-                        action: function (e, dt, node, config) {
-                            alert('Button activated');
-                        }
+                        action: _fnActionPutInShelfButton
                     }
                 ])
+                .withOption('headerCallback', function(header) {
+                    if (!vm.headerCompiled) {
+                        // Use this headerCompiled field to only compile header once
+                        vm.headerCompiled = true;
+                        $compile(angular.element(header).contents())($scope);
+                    }
+                })
                 .withOption('sServerMethod','POST')
                 .withOption('processing',true)
                 .withOption('serverSide',true)
@@ -103,6 +108,7 @@
                 .withPaginationType('full_numbers')
                 .withOption('createdRow', _fnCreatedRow)
                 .withColumnFilter(_createColumnFilters());
+
 
             vm.dtColumns = _createColumns();
 
@@ -163,17 +169,20 @@
         }
         function _fnActionButtonsRender(data, type, full, meta) {
             // console.log(vm.splitIt, vm.putInShelf);
-            return '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt('+ full.frozenBoxCode +')">' +
+            return '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;' +
-                '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf('+ full.id +')">' +
+                '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf(\''+ full.frozenBoxCode +'\')">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;';
 
         }
         function _fnRowSelectorRender(data, type, full, meta) {
-            vm.selected[full.id] = false;
-            return '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
+            vm.selected[full.frozenBoxCode] = false;
+            return '<input type="checkbox" ng-model="vm.selected[\'' + full.frozenBoxCode + '\']" ng-click="vm.toggleOne(vm.selected)">';
+        }
+        function _fnActionPutInShelfButton(e, dt, node, config){
+            _putInShelf();
         }
 
         function _createColumnFilters(){
@@ -231,20 +240,37 @@
         }
 
         function _putInShelf(boxIds){
-            if (typeof boxIds !== "object"){
+            var boxes = [];
+            var table = vm.dtInstance.DataTable;
+            if (boxIds && typeof boxIds !== "object"){
                 boxIds = [boxIds];
+                table.data().each( function (d) {
+                    if (boxIds == d.frozenBoxCode){
+                        boxes.push(d);
+                    }
+                });
             } else {
                 boxIds = [];
                 for(var id in vm.selected){
-                    if(vm.selected[id]) {
-                        boxIds.push(id);
+                    if(!vm.selected[id]) {
+                        continue;
                     }
+                    boxIds.push(id);
+                    table.data().each( function (d) {
+                        if (id == d.frozenBoxCode){
+                            boxes.push(d)
+                        }
+                    });
                 }
+
             }
 
             if (typeof boxIds === "undefined" || !boxIds.length){
                 return;
             }
+
+
+
 
             modalInstance = $uibModal.open({
                 animation: true,
@@ -257,7 +283,8 @@
                     items: function () {
                         return {
                             stockInCode: vm.stockInCode,
-                            boxIds: boxIds
+                            boxIds: boxIds,
+                            boxes: boxes
                         }
                     }
                 }

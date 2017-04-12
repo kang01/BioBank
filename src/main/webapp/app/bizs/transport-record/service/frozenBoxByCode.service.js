@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .factory('frozenBoxByCodeService', frozenBoxByCodeService);
 
-    frozenBoxByCodeService.$inject = ['$resource'];
+    frozenBoxByCodeService.$inject = ['$resource', '$http'];
 
-    function frozenBoxByCodeService ($resource) {
+    function frozenBoxByCodeService ($resource, $http) {
         var service = $resource('api/frozen-boxes/code/:code', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
@@ -25,6 +25,14 @@
             'update': { method:'PUT' },
             'delete':{ method:'DELETE'}
         });
+
+        service.queryByCodes = function (codes){
+            var codeStr = (codes||[]).join(',');
+
+            // For Testing;
+            codeStr = '32,23432,123456,245';
+            return $http.get('api/frozen-boxes/code/' + codeStr);
+        };
 
         return service;
     }

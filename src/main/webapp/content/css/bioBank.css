@@ -178,3 +178,7 @@
 .modal-90 {
     width: 90%;
 }
+
+.htReadOnly {
+    background-color: darkgray !important;
+}

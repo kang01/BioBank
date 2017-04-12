@@ -3,52 +3,71 @@
     <h3 class="modal-title" id="modal-title">冻存盒入库上架</h3>
 </div>
 <div class="modal-body" id="modal-body">
-    <div class="row">
-        <div class="com-md-6">
-            <form class="form-horizontal">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="col-sm-6 control-label">设备号</label>
-                        <div class="col-sm-6">
-                            <input type="text" class="form-control" ng-model="vm.entity.stockInDate" placeholder="Email">
-                        </div>
-                    </div>
+    <form class="form-horizontal">
+        <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="col-md-4 control-label">设备号</label>
+                <div class="col-md-8">
+                    <selectize options='vm.equipmentsOptions' config="vm.equipmentsOptionsConfig"
+                               ng-model="vm.equipmentId"></selectize>
                 </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="col-sm-6 control-label">区域号</label>
-                        <div class="col-sm-6">
-                            <input type="text" class="form-control" ng-model="vm.entity.storeKeeper1" placeholder="入库员">
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="com-md-6">
-            <div class="text-right">
-                <button type="button" class="btn btn-default">上架</button>
-                <button type="button" class="btn btn-default">复原</button>
             </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="col-md-4 control-label">区域号</label>
+                <div class="col-md-8">
+                    <selectize options='vm.areasOptions' config="vm.areasOptionsConfig"
+                               ng-model="vm.areaId"></selectize>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 text-right">
+                <button type="button" class="btn btn-default" ng-click="vm.putInShelf()">上架</button>
+                <button type="button" class="btn btn-default">复原</button>
         </div>
 
     </div>
+    </form>
     <div class="row">
-        <div class="col-md-2">
-            <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" class="row-border hover">
+        <div class="col-md-2" style="margin-top: -24px;">
+            <table datatable="ng" dt-options="vm.dtShelvesListOptions" class="row-border hover">
                 <thead>
                 <th>冻存架号</th>
                 </thead>
                 <tbody >
-                <tr>
-                    <td></td>
+                <tr ng-repeat="shelf in vm.shelves">
+                    <td data-id="shelf.id" ng-click="vm.selectShelf($event, shelf)">
+                        {{shelf.equipmentCode}}.{{shelf.areaCode}}.{{shelf.supportRackCode}}
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <div class="col-md-5">
-            <hot-table hot-id="my-handsontable" settings="vm.settings"></hot-table>
+        <div class="col-md-6 tube">
+            <hot-table hot-id="shelfDetailsTable" settings="vm.shelfDetailsTableSettings"></hot-table>
         </div>
-        <div class="col-md-5">c</div>
+        <div class="col-md-4" style="margin-top: -24px;">
+            <table datatable="ng" dt-options="vm.dtBoxesListOptions" dt-columns="vm.dtBoxesListColumns" dt-instance="vm.dtBoxesListInstance" class="row-border hover">
+                <thead>
+                <th><input type="checkbox" ng-model="vm.selectAllBox" ng-click="vm.toggleAll(vm.selectAllBox, vm.selectedBox)"></th>
+                <th>冻存盒编码</th>
+                <th>状态</th>
+                <th>位置</th>
+                </thead>
+                <tbody >
+                <tr ng-repeat="box in vm.frozenBoxes | filter:vm.filterNotPutInShelfBoxes">
+                    <td data-id="box.id">
+                        <input type="checkbox" ng-model="vm.selectedBox[box.frozenBoxCode]" ng-click="vm.toggleOne(vm.selectedBox)">
+                    </td>
+                    <td>{{box.frozenBoxCode}}</td>
+                    <td>{{box.status}}</td>
+                    <td>{{box.position}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 <div class="modal-footer">

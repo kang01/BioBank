@@ -4,7 +4,7 @@ package org.fwoxford.service.dto;
  * Created by gengluying on 2017/4/5.
  */
 public class StockInTubeDTO {
-    private Long frozenTubeId;
+    private Long id;
     private String frozenTubeCode;
     private String status;
     private String tubeColumns;
@@ -19,7 +19,7 @@ public class StockInTubeDTO {
     @Override
     public String toString() {
         return "StockInTubeDTO{" +
-            "frozenTubeId=" + frozenTubeId +
+            "id=" + id +
             ", frozenTubeCode='" + frozenTubeCode + '\'' +
             ", status='" + status + '\'' +
             ", tubeColumns='" + tubeColumns + '\'' +
@@ -33,12 +33,12 @@ public class StockInTubeDTO {
             '}';
     }
 
-    public Long getFrozenTubeId() {
-        return frozenTubeId;
+    public Long getId() {
+        return id;
     }
 
-    public void setFrozenTubeId(Long frozenTubeId) {
-        this.frozenTubeId = frozenTubeId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFrozenTubeCode() {

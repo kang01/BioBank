@@ -595,6 +595,8 @@
         function saveBox(){
             obox.frozenBoxDTOList = [];
             obox.frozenBoxDTOList.push(vm.box);
+            obox.columnsInShelf = vm.boxRowCol.charAt(0);
+            obox.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
             TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
         }
         function openCalendar (date) {

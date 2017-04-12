@@ -292,8 +292,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBoxNew.setEmptyHoleNumber(0);
         frozenBoxNew.setEmptyTubeNumber(0);
 
-        int boxTypeIndex = frozenBoxTypeList.indexOf(stockInBoxForDataSplit.getFrozenBoxTypeId());
         FrozenBoxType boxType = new FrozenBoxType();
+        boxType.setId(stockInBoxForDataSplit.getFrozenBoxTypeId());
+        int boxTypeIndex = frozenBoxTypeList.indexOf(boxType);
+
 
         if (boxTypeIndex >= 0){
             boxType = frozenBoxTypeList.get(boxTypeIndex);
@@ -312,7 +314,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBoxNew.setIsRealData(frozenBox.getIsRealData());
         frozenBoxNew.setIsSplit(stockInBoxForDataSplit.getIsSplit()!=null?stockInBoxForDataSplit.getIsSplit():Constants.NO);
         Equipment equipment = new Equipment();
-        int equipmentIndex = equipments.indexOf(stockInBoxForDataSplit.getEquipmentId());
+        equipment.setId(stockInBoxForDataSplit.getEquipmentId());
+        int equipmentIndex = equipments.indexOf(equipment);
         if (equipmentIndex >= 0){
             equipment = equipments.get(equipmentIndex);
             stockInBoxForDataSplit.setEquipment(equipmentMapper.equipmentToEquipmentDTO(equipment));
@@ -322,9 +325,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         frozenBoxNew.setEquipment(equipment);
         frozenBoxNew.setEquipmentCode(equipment.getEquipmentCode());
-
-        int areaIndex = areas.indexOf(stockInBoxForDataSplit.getAreaId());
         Area area = new Area();
+        area.setId(stockInBoxForDataSplit.getAreaId());
+        int areaIndex = areas.indexOf(area);
+
         if (areaIndex >= 0){
             area = areas.get(areaIndex);
             stockInBoxForDataSplit.setArea(areaMapper.areaToAreaDTO(area));
@@ -334,9 +338,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         frozenBoxNew.setArea(area);
         frozenBoxNew.setAreaCode(area.getAreaCode());
-
-        int supportIndex = areas.indexOf(stockInBoxForDataSplit.getSupportRackId());
         SupportRack supportRack= new SupportRack();
+        supportRack.setId(stockInBoxForDataSplit.getSupportRackId());
+        int supportIndex = areas.indexOf(supportRack);
         if (supportIndex >= 0){
             supportRack = supportRacks.get(supportIndex);
             stockInBoxForDataSplit.setShelf(supportRackMapper.supportRackToSupportRackDTO(supportRack));

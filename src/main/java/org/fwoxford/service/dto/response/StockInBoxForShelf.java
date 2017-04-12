@@ -23,6 +23,7 @@ public class StockInBoxForShelf {
     private Long equipmentId;
     private Long areaId;
     private Long supportRackId;
+    private Long frozenBoxTypeId;
     private String sampleTypeCode;
 
 
@@ -102,6 +103,14 @@ public class StockInBoxForShelf {
 
     public void setAreaId(Long areaId) {
         this.areaId = areaId;
+    }
+
+    public Long getFrozenBoxTypeId() {
+        return frozenBoxTypeId;
+    }
+
+    public void setFrozenBoxTypeId(Long frozenBoxTypeId) {
+        this.frozenBoxTypeId = frozenBoxTypeId;
     }
 
     public Long getSupportRackId() {

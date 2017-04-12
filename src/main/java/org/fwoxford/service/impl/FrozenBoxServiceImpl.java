@@ -319,6 +319,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         res.setFrozenBoxColumns(box.getFrozenBoxColumns());
         res.setFrozenBoxRows(box.getFrozenBoxRows());
         res.setStockInFrozenTubeList(new ArrayList<>());
+        res.setFrozenBoxTypeId(box.getFrozenBoxType().getId());
         res.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(box.getFrozenBoxType()));
         res.setIsSplit(box.getIsSplit());
         res.setEquipmentId(box.getEquipment()!=null?box.getEquipment().getId():null);

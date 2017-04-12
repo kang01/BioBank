@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .factory('SplitedBoxService', SplitedBoxService);
 
-    SplitedBoxService.$inject = ['$resource'];
+    SplitedBoxService.$inject = ['$resource','$http'];
 
-    function SplitedBoxService ($resource) {
+    function SplitedBoxService ($resource,$http) {
         var service = $resource('api/stock-in-boxes/stock-in/:stockInCode/box/:boxCode/splited', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
@@ -25,7 +25,20 @@
             'update': { method:'PUT' },
             'delete':{ method:'DELETE'}
         });
+        service.saveSplit = function(stockInCode,boxCode,boxList){
+            var ajaxUrl = 'api/stock-in-boxes/stock-in/'+stockInCode +'/box/'+boxCode+'/splited';
 
+            var req = {
+                method: 'PUT',
+                url: ajaxUrl,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data:boxList
+            };
+
+            return $http(req);
+        };
         return service;
     }
 })();

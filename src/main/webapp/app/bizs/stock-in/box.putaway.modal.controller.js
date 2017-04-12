@@ -271,7 +271,7 @@
                 var cellProperties = {};
                 var cellData = hot.getDataAtCell(row, col);
                 cellProperties.isEmpty = true;
-                if (cellData && cellData.id) {
+                if (cellData && cellData.frozenBoxId) {
                     cellProperties.editor = false;
                     cellProperties.readOnly = true;
                     cellProperties.className = 'a00';
@@ -309,7 +309,7 @@
                     cellData = hot.getDataAtCell(row, col);
                     // console.log(cellData);
                 }
-                if (cellData && cellData.id){
+                if (cellProperties.readOnly){
                     $(td).addClass('htDimmed');
                     $(td).addClass('htReadOnly');
                 } else {
@@ -320,7 +320,7 @@
                 var $div = $("<div/>").addClass(cellProperties && cellProperties.className ? cellProperties.className : "");
                 if (value){
                     $div.html(value.frozenBoxCode)
-                        .data("id", value.id)
+                        .data("frozenBoxId", value.frozenBoxId)
                         .data("frozenBoxCode", value.frozenBoxCode)
                         .data("columnsInShelf", value.columnsInShelf)
                         .data("rowsInShelf", value.rowsInShelf)
@@ -342,8 +342,8 @@
         function _putInShelf(){
             var shelf = vm.selectedShelf;
             var shelfType = _.filter(vm.shelfTypes, {id: shelf.supportRackTypeId})[0] || {};
-            var countOfRows = 5; // shelfType.supportRackRows || 4;
-            var countOfCols = 5; // shelfType.supportRackColumns || 4;
+            var countOfRows = shelfType.supportRackRows || 4;
+            var countOfCols = shelfType.supportRackColumns || 4;
 
             var tableCtrl = _getShelfDetailsTableCtrl();
             // [startRow, startCol, endRow, endCol].
@@ -375,6 +375,7 @@
                                 cellData.isEmpty = false;
 
                                 boxes[box.frozenBoxCode] = {
+                                    frozenBoxId: box.frozenBoxId,
                                     frozenBoxCode: box.frozenBoxCode,
                                     rowsInShelf: cellData.rowsInShelf,
                                     columnsInShelf: cellData.columnsInShelf,

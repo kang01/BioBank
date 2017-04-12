@@ -7,7 +7,7 @@
         Added the constraints for entity FrozenBox.
     -->
     <changeSet id="20170317062302-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="frozen_box_type_id"
                                  baseTableName="frozen_box"
                                  constraintName="frozen_box_frozen_box_ty_id"
@@ -31,12 +31,6 @@
                                  constraintName="fk_frozen_box_project_site_id"
                                  referencedColumnNames="id"
                                  referencedTableName="project_site"/>
-
-        <addForeignKeyConstraint baseColumnNames="tranship_id"
-                                 baseTableName="frozen_box"
-                                 constraintName="fk_frozen_box_tranship_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="tranship"/>
 
         <addForeignKeyConstraint baseColumnNames="equipment_id"
                                  baseTableName="frozen_box"

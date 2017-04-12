@@ -23,7 +23,6 @@ public interface FrozenBoxMapper {
     @Mapping(source = "sampleType.id", target = "sampleTypeId")
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "projectSite.id", target = "projectSiteId")
-    @Mapping(source = "tranship.id", target = "transhipId")
     @Mapping(source = "equipment.id", target = "equipmentId")
     @Mapping(source = "area.id", target = "areaId")
     @Mapping(source = "supportRack.id", target = "supportRackId")
@@ -35,7 +34,6 @@ public interface FrozenBoxMapper {
     @Mapping(source = "sampleTypeId", target = "sampleType")
     @Mapping(source = "projectId", target = "project")
     @Mapping(source = "projectSiteId", target = "projectSite")
-    @Mapping(source = "transhipId", target = "tranship")
     @Mapping(source = "equipmentId", target = "equipment")
     @Mapping(source = "areaId", target = "area")
     @Mapping(source = "supportRackId", target = "supportRack")
@@ -78,16 +76,6 @@ public interface FrozenBoxMapper {
         projectSite.setId(id);
         return projectSite;
     }
-
-    default Tranship transhipFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        Tranship tranship = new Tranship();
-        tranship.setId(id);
-        return tranship;
-    }
-
     default Equipment equipmentFromId(Long id) {
         if (id == null) {
             return null;

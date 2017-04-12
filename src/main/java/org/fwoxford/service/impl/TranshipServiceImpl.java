@@ -1,10 +1,7 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
-import org.fwoxford.domain.FrozenBox;
-import org.fwoxford.domain.FrozenTube;
-import org.fwoxford.domain.SampleType;
-import org.fwoxford.domain.Tranship;
+import org.fwoxford.domain.*;
 import org.fwoxford.repository.FrozenBoxRepository;
 import org.fwoxford.repository.FrozenTubeRepository;
 import org.fwoxford.repository.TranshipRepository;
@@ -32,7 +29,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service Implementation for managing Tranship.
@@ -101,7 +100,9 @@ public class TranshipServiceImpl implements TranshipService{
             }
         }
         List<FrozenBoxAndFrozenTubeResponse> response =  frozenBoxService.getFrozenBoxAndTubeByTranshipCode(transhipDTO.getTranshipCode());
-        int countOfEmptyHole = 0;int countOfEmptyTube = 0;
+        int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfTube = 0;
+        Map<String,FrozenTubeResponse> map = new HashMap<String,FrozenTubeResponse>();
+
         for(FrozenBoxAndFrozenTubeResponse res:response){
             List<FrozenTubeResponse> tubeDTOS = res.getFrozenTubeDTOS();
             for(FrozenTubeResponse tube:tubeDTOS){
@@ -111,11 +112,19 @@ public class TranshipServiceImpl implements TranshipService{
                 if(tube.getStatus().equals(Constants.FROZEN_TUBE_EMPTY)){
                     countOfEmptyTube++;
                 }
+                if(tube.getStatus().equals(Constants.FROZEN_TUBE_NORMAL)){
+                    countOfTube++;
+                }
+                if(map.get(tube.getFrozenTubeCode().toString())==null){
+                    map.put(tube.getFrozenTubeCode().toString(),tube);
+                }
             }
         }
+        transhipDTO.setSampleNumber(transhipDTO.getSampleNumber()!=null?transhipDTO.getSampleNumber():map.size());
         transhipDTO.setFrozenBoxNumber(transhipDTO.getFrozenBoxNumber()!=null?transhipDTO.getFrozenBoxNumber():response.size());
         transhipDTO.setEmptyHoleNumber(transhipDTO.getEmptyHoleNumber()!=null?transhipDTO.getEmptyHoleNumber():countOfEmptyHole);
         transhipDTO.setEmptyTubeNumber(transhipDTO.getEmptyTubeNumber()!=null?transhipDTO.getEmptyTubeNumber():countOfEmptyTube);
+        transhipDTO.setEffectiveSampleNumber(transhipDTO.getEffectiveSampleNumber()!=null?transhipDTO.getEffectiveSampleNumber():countOfTube);
         Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
         tranship = transhipMapper.transhipToDefaultValue(tranship);
         tranship = transhipRepository.save(tranship);

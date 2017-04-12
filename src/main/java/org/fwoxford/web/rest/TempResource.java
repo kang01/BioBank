@@ -338,6 +338,7 @@ public class TempResource {
         res.setFrozenBoxCode(frozenBoxCode);
         res.setFrozenBoxColumns("10");
         res.setFrozenBoxRows("10");
+        res.setIsSplit(1);
         res.setStockInFrozenTubeList(new ArrayList<>());
         for(int i = 0; i<countOfSample; ++i){
             StockInTubeForBox tube = new StockInTubeForBox();
@@ -485,13 +486,13 @@ public class TempResource {
     public ResponseEntity<StockInBoxSplit> splitedStockIn(@Valid @RequestBody String stockInCode, String boxCode, StockInBoxSplit stockInBoxForDataSplit) throws URISyntaxException {
         StockInBoxSplit detail = stockInBoxForDataSplit;
         stockInBoxForDataSplit.setFrozenBoxId(1L);
-        List<StockInTubeDTO> tubeDTOS = stockInBoxForDataSplit.getStockInTubeDTOList();
+        List<StockInTubeDTO> tubeDTOS = stockInBoxForDataSplit.getStockInFrozenTubeList();
         List<StockInTubeDTO> tubeDTOList = new ArrayList<>();
         for(int i = 0 ; i < tubeDTOList.size();i++){
             tubeDTOList.get(i).setFrozenTubeId(0L+i);
             tubeDTOList.add(tubeDTOList.get(i));
         }
-        detail.setStockInTubeDTOList(tubeDTOList);
+        detail.setStockInFrozenTubeList(tubeDTOList);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, detail.getFrozenBoxId().toString()))
             .body(detail);

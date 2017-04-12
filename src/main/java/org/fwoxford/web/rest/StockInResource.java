@@ -80,7 +80,7 @@ public class StockInResource {
      * or with status 500 (Internal Server Error) if the stockInDTO couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PutMapping("/stock-ins")
+    @PutMapping("/stock-in")
     @Timed
     public ResponseEntity<StockInDTO> updateStockIn(@Valid @RequestBody StockInDTO stockInDTO) throws URISyntaxException {
         log.debug("REST request to update StockIn : {}", stockInDTO);
@@ -173,7 +173,7 @@ public class StockInResource {
      */
     @PutMapping("/stock-in/{stockInCode}/completed")
     @Timed
-    public ResponseEntity<StockInForDataDetail> completedStockIn(@Valid @RequestBody String stockInCode) throws URISyntaxException {
+    public ResponseEntity<StockInForDataDetail> completedStockIn(@PathVariable String stockInCode) throws URISyntaxException {
         log.debug("REST request to update StockIn : {}", stockInCode);
         StockInForDataDetail result = stockInService.completedStockIn(stockInCode);
         return ResponseEntity.ok()

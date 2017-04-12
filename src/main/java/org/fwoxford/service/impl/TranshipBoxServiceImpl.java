@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.*;
@@ -282,6 +283,20 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     box.setSampleTypeName(sampleType.getSampleTypeName());
                 }
             }
+            int countOfEmptyHole = 0;int countOfEmptyTube = 0;
+            for(FrozenTubeDTO tube : boxDTO.getFrozenTubeDTOS()){
+                if(tube.getStatus().equals(Constants.FROZEN_TUBE_HOLE_EMPTY)){
+                    countOfEmptyHole++;
+                }
+                if(tube.getStatus().equals(Constants.FROZEN_TUBE_EMPTY)){
+                    countOfEmptyTube++;
+                }
+            }
+
+            box.setEmptyTubeNumber(countOfEmptyTube);
+            box.setEmptyHoleNumber(countOfEmptyHole);
+            box.setSampleNumber(boxDTO.getFrozenTubeDTOS().size());
+
             box = frozenBoxRepository.save(box);
 
             for(FrozenTubeDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){

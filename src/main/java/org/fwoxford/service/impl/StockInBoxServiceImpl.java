@@ -237,18 +237,24 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         List<SupportRack> supportRacks = supportRackRepository.findAll();
         List<StockInBoxSplit> stockInBoxForDataSplitList = new ArrayList<StockInBoxSplit>();
         List<FrozenBoxType> frozenBoxTypeList = frozenBoxTypeRepository.findAll();
+
         for( StockInBoxSplit stockInBoxForDataSplit :stockInBoxForDataSplits){
             StockInBoxSplit stockInBoxSplit = splitedStockInSave(stockInBoxForDataSplit,sampleTypes,equipments,areas,supportRacks,frozenBox,stockInCode,frozenBoxTypeList);
             stockInBoxForDataSplitList.add(stockInBoxSplit);
         }
         //更改盒子状态
-        frozenBox.setStatus(Constants.FROZEN_BOX_SPLITED);
-        frozenBoxRepository.save(frozenBox);
-        //更改转运盒子状态
-        transhipBoxRepository.updateStatusByTranshipIdAndFrozenBoxCode(frozenBox.getTranship().getId(),boxCode,Constants.FROZEN_BOX_SPLITED);
-        //更改入库盒子状态
-        stockInBoxRepository.updateByStockCodeAndFrozenBoxCode(stockInCode,boxCode,Constants.FROZEN_BOX_SPLITED);
-        return stockInBoxForDataSplitList;
+        //如果在盒子内还有剩余的管子，状态还是待入库
+        List<FrozenTube> tubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(boxCode);
+        if(tubeList.size()==0){
+            frozenBox.setStatus(Constants.FROZEN_BOX_SPLITED);
+            frozenBoxRepository.save(frozenBox);
+            //更改转运盒子状态
+            transhipBoxRepository.updateStatusByTranshipIdAndFrozenBoxCode(frozenBox.getTranship().getId(),boxCode,Constants.FROZEN_BOX_SPLITED);
+            //更改入库盒子状态
+            stockInBoxRepository.updateByStockCodeAndFrozenBoxCode(stockInCode,boxCode,Constants.FROZEN_BOX_SPLITED);
+
+        }
+      return stockInBoxForDataSplitList;
     }
 
     private StockInBoxSplit splitedStockInSave(StockInBoxSplit stockInBoxForDataSplit, List<SampleType> sampleTypes, List<Equipment> equipments, List<Area> areas, List<SupportRack> supportRacks, FrozenBox frozenBox, String stockInCode, List<FrozenBoxType> frozenBoxTypeList) {
@@ -286,8 +292,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBoxNew.setEmptyHoleNumber(0);
         frozenBoxNew.setEmptyTubeNumber(0);
 
-        int boxTypeIndex = frozenBoxTypeList.indexOf(stockInBoxForDataSplit.getFrozenBoxTypeId());
         FrozenBoxType boxType = new FrozenBoxType();
+        boxType.setId(stockInBoxForDataSplit.getFrozenBoxTypeId());
+        int boxTypeIndex = frozenBoxTypeList.indexOf(boxType);
+
 
         if (boxTypeIndex >= 0){
             boxType = frozenBoxTypeList.get(boxTypeIndex);
@@ -306,7 +314,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBoxNew.setIsRealData(frozenBox.getIsRealData());
         frozenBoxNew.setIsSplit(stockInBoxForDataSplit.getIsSplit()!=null?stockInBoxForDataSplit.getIsSplit():Constants.NO);
         Equipment equipment = new Equipment();
-        int equipmentIndex = equipments.indexOf(stockInBoxForDataSplit.getEquipmentId());
+        equipment.setId(stockInBoxForDataSplit.getEquipmentId());
+        int equipmentIndex = equipments.indexOf(equipment);
         if (equipmentIndex >= 0){
             equipment = equipments.get(equipmentIndex);
             stockInBoxForDataSplit.setEquipment(equipmentMapper.equipmentToEquipmentDTO(equipment));
@@ -316,9 +325,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         frozenBoxNew.setEquipment(equipment);
         frozenBoxNew.setEquipmentCode(equipment.getEquipmentCode());
-
-        int areaIndex = areas.indexOf(stockInBoxForDataSplit.getAreaId());
         Area area = new Area();
+        area.setId(stockInBoxForDataSplit.getAreaId());
+        int areaIndex = areas.indexOf(area);
+
         if (areaIndex >= 0){
             area = areas.get(areaIndex);
             stockInBoxForDataSplit.setArea(areaMapper.areaToAreaDTO(area));
@@ -328,9 +338,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         frozenBoxNew.setArea(area);
         frozenBoxNew.setAreaCode(area.getAreaCode());
-
-        int supportIndex = areas.indexOf(stockInBoxForDataSplit.getSupportRackId());
         SupportRack supportRack= new SupportRack();
+        supportRack.setId(stockInBoxForDataSplit.getSupportRackId());
+        int supportIndex = supportRacks.indexOf(supportRack);
         if (supportIndex >= 0){
             supportRack = supportRacks.get(supportIndex);
             stockInBoxForDataSplit.setShelf(supportRackMapper.supportRackToSupportRackDTO(supportRack));
@@ -352,13 +362,13 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         frozenBoxNew.setColumnsInShelf(stockInBoxForDataSplit.getColumnsInShelf());
         frozenBoxNew.setRowsInShelf(stockInBoxForDataSplit.getRowsInShelf());
-        frozenBoxNew.setSampleNumber(stockInBoxForDataSplit.getStockInTubeDTOList().size());
+        frozenBoxNew.setSampleNumber(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
 
         frozenBoxNew.setMemo(stockInBoxForDataSplit.getMemo());
         frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
 
         stockInBoxForDataSplit.setFrozenBoxId(frozenBoxNew.getId());
-        stockInBoxForDataSplit.setCountOfSample(stockInBoxForDataSplit.getStockInTubeDTOList().size());
+        stockInBoxForDataSplit.setCountOfSample(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
 
 
         //新增入库盒子
@@ -380,7 +390,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxForDataSplit.setFrozenBoxId(stockInBox.getId());
 
         //查询原管子的位置存历史
-        List<StockInTubeDTO> stockInTubeDTOS = stockInBoxForDataSplit.getStockInTubeDTOList();
+        List<StockInTubeDTO> stockInTubeDTOS = stockInBoxForDataSplit.getStockInFrozenTubeList();
         List<StockInTubeDTO> stockInTubeDTOList = new ArrayList<>();
         for(StockInTubeDTO tube : stockInTubeDTOS){
             if(tube.getFrozenTubeId()==null){
@@ -416,7 +426,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             tube.setFrozenTubeId(frozenTube.getId());
             stockInTubeDTOList.add(tube);
         }
-        stockInBoxForDataSplit.setStockInTubeDTOList(stockInTubeDTOList);
+        stockInBoxForDataSplit.setStockInFrozenTubeList(stockInTubeDTOList);
         return stockInBoxForDataSplit;
     }
 

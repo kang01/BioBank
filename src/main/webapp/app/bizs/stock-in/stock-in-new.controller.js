@@ -66,7 +66,7 @@
             };
 
             vm.dtOptions = DTOptionsBuilder.fromSource({"url": ajaxUrl,"dataSrc": "data"})
-                .withDOM("<'row'<'col-xs-6' TB><'col-xs-6' f>r><'row'<'col-xs-12' t>><'row'<'col-xs-6'i><'col-xs-6'p>>")
+                .withDOM("<'row'<'col-xs-6' TB><'col-xs-6' f>r>t<'row'<'col-xs-6'i><'col-xs-6'p>>")
                 .withDisplayLength(6)
                 // .withBootstrap()
                 // .withBootstrapOptions({
@@ -146,6 +146,8 @@
         function _fnCreatedRow(row, data, dataIndex) {
             var status = '';
             var isSplit = data.isSplit || 0;
+            // var sampleType = data.sampleType && data.sampleType.sampleTypeName || '';
+            console.log(data);
             // 2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废
             switch (data.status){
                 case '2001': status = '新建'; break;
@@ -154,6 +156,7 @@
                 case '2004': status = '已入库'; break;
                 case '2005': status = '已作废'; break;
             }
+            // $('td:eq(2)', row).html(sampleType);
             $('td:eq(5)', row).html(isSplit ? '需要分装' : '');
             $('td:eq(6)', row).html(status);
             $compile(angular.element(row).contents())($scope);
@@ -202,7 +205,7 @@
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
                 DTColumnBuilder.newColumn("").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').renderWith(_fnFrozenBoxCodeRender),
-                DTColumnBuilder.newColumn('sampleType').withTitle('样本类型'),
+                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
                 DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
                 DTColumnBuilder.newColumn('countOfSample').withTitle('样本量'),
                 DTColumnBuilder.newColumn('isSplit').withTitle('是否分装'),

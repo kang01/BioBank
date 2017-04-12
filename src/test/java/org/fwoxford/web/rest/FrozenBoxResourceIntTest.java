@@ -199,7 +199,6 @@ public class FrozenBoxResourceIntTest {
         Tranship tranship = TranshipResourceIntTest.createEntity(em);
         em.persist(tranship);
         em.flush();
-        frozenBox.setTranship(tranship);
         // Add required entity
         Equipment equipment = EquipmentResourceIntTest.createEntity(em);
         em.persist(equipment);

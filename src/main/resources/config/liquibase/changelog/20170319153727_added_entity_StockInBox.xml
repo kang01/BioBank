@@ -23,23 +23,23 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="equipment_code" type="varchar(100)" remarks="设备编码">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="area_code" type="varchar(100)" remarks="区域编码">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="support_rack_code" type="varchar(100)" remarks="冻存架编码">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="rows_in_shelf" type="varchar(20)" remarks="所在架子的行数">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="columns_in_shelf" type="varchar(20)" remarks="所在架子的列数">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="frozen_box_code" type="varchar(100)" remarks="冻存盒编码">
@@ -55,15 +55,15 @@
             </column>
 
             <column name="equipment_id" type="bigint" remarks="设备ID">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="area_id" type="bigint" remarks="区域ID">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="support_rack_id" type="bigint" remarks="冻存架ID">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="memo" type="varchar(1024)" remarks="备注">

@@ -320,6 +320,16 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         res.setFrozenBoxRows(box.getFrozenBoxRows());
         res.setStockInFrozenTubeList(new ArrayList<>());
         res.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(box.getFrozenBoxType()));
+        res.setIsSplit(box.getIsSplit());
+        res.setEquipmentId(box.getEquipment()!=null?box.getEquipment().getId():null);
+        res.setEquipment(equipmentMapper.equipmentToEquipmentDTO(box.getEquipment()));
+        res.setArea(areaMapper.areaToAreaDTO(box.getArea()));
+        res.setAreaId(box.getArea()!=null?box.getArea().getId():null);
+        res.setShelf(supportRackMapper.supportRackToSupportRackDTO(box.getSupportRack()));
+        res.setSupportRackId(box.getSupportRack()!=null?box.getSupportRack().getId():null);
+        res.setStatus(box.getStatus());
+        res.setSampleTypeCode(box.getSampleTypeCode());
+        res.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(box.getSampleType()));
         for (FrozenTube tubes : frozenTubeList) {
             StockInTubeForBox tube = new StockInTubeForBox();
             tube.setFrozenTubeId(tubes.getId());

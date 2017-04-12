@@ -237,18 +237,24 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         List<SupportRack> supportRacks = supportRackRepository.findAll();
         List<StockInBoxSplit> stockInBoxForDataSplitList = new ArrayList<StockInBoxSplit>();
         List<FrozenBoxType> frozenBoxTypeList = frozenBoxTypeRepository.findAll();
+
         for( StockInBoxSplit stockInBoxForDataSplit :stockInBoxForDataSplits){
             StockInBoxSplit stockInBoxSplit = splitedStockInSave(stockInBoxForDataSplit,sampleTypes,equipments,areas,supportRacks,frozenBox,stockInCode,frozenBoxTypeList);
             stockInBoxForDataSplitList.add(stockInBoxSplit);
         }
         //更改盒子状态
-        frozenBox.setStatus(Constants.FROZEN_BOX_SPLITED);
-        frozenBoxRepository.save(frozenBox);
-        //更改转运盒子状态
-        transhipBoxRepository.updateStatusByTranshipIdAndFrozenBoxCode(frozenBox.getTranship().getId(),boxCode,Constants.FROZEN_BOX_SPLITED);
-        //更改入库盒子状态
-        stockInBoxRepository.updateByStockCodeAndFrozenBoxCode(stockInCode,boxCode,Constants.FROZEN_BOX_SPLITED);
-        return stockInBoxForDataSplitList;
+        //如果在盒子内还有剩余的管子，状态还是待入库
+        List<FrozenTube> tubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(boxCode);
+        if(tubeList.size()==0){
+            frozenBox.setStatus(Constants.FROZEN_BOX_SPLITED);
+            frozenBoxRepository.save(frozenBox);
+            //更改转运盒子状态
+            transhipBoxRepository.updateStatusByTranshipIdAndFrozenBoxCode(frozenBox.getTranship().getId(),boxCode,Constants.FROZEN_BOX_SPLITED);
+            //更改入库盒子状态
+            stockInBoxRepository.updateByStockCodeAndFrozenBoxCode(stockInCode,boxCode,Constants.FROZEN_BOX_SPLITED);
+
+        }
+      return stockInBoxForDataSplitList;
     }
 
     private StockInBoxSplit splitedStockInSave(StockInBoxSplit stockInBoxForDataSplit, List<SampleType> sampleTypes, List<Equipment> equipments, List<Area> areas, List<SupportRack> supportRacks, FrozenBox frozenBox, String stockInCode, List<FrozenBoxType> frozenBoxTypeList) {

@@ -168,7 +168,7 @@ public class StockInBoxResource {
      * @throws URISyntaxException
      */
     @RequestMapping(value = "/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/splited", method = RequestMethod.PUT, produces={MediaType.APPLICATION_JSON_VALUE})
-    public List<StockInBoxSplit> splitedStockIn(@Valid @RequestBody String stockInCode,@Valid @RequestBody  String boxCode,@Valid @RequestBody  List<StockInBoxSplit> stockInBoxForDataSplit) throws URISyntaxException {
+    public List<StockInBoxSplit> splitedStockIn(@PathVariable String stockInCode,@PathVariable  String boxCode,@Valid @RequestBody  List<StockInBoxSplit> stockInBoxForDataSplit) throws URISyntaxException {
         List<StockInBoxSplit> detail = stockInBoxService.splitedStockIn(stockInCode,boxCode,stockInBoxForDataSplit);
         return detail;
     }
@@ -182,7 +182,7 @@ public class StockInBoxResource {
      */
     @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/moved")
     @Timed
-    public ResponseEntity<StockInBoxDetail> movedStockIn(@Valid @RequestBody String stockInCode,@Valid @RequestBody  String boxCode,@Valid @RequestBody  FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
+    public ResponseEntity<StockInBoxDetail> movedStockIn(@PathVariable String stockInCode,@PathVariable  String boxCode,@Valid @RequestBody  FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
         StockInBoxDetail stockInBoxDetail = stockInBoxService.movedStockIn(stockInCode,boxCode,boxPositionDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getFrozenBoxId().toString()))

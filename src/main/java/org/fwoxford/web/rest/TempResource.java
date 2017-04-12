@@ -338,6 +338,7 @@ public class TempResource {
         res.setFrozenBoxCode(frozenBoxCode);
         res.setFrozenBoxColumns("10");
         res.setFrozenBoxRows("10");
+        res.setIsSplit(1);
         res.setStockInFrozenTubeList(new ArrayList<>());
         for(int i = 0; i<countOfSample; ++i){
             StockInTubeForBox tube = new StockInTubeForBox();

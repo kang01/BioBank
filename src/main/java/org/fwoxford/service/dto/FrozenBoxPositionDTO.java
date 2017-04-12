@@ -8,15 +8,12 @@ import javax.validation.constraints.NotNull;
  * Created by gengluying on 2017/4/5.
  */
 public class FrozenBoxPositionDTO {
-    @NotNull
     private Long equipmentId;
     @NotNull
     private String equipmentCode;
-    @NotNull
     private Long areaId;
     @NotNull
     private String areaCode;
-    @NotNull
     private Long supportRackId;
     @NotNull
     private String supportRackCode;

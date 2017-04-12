@@ -39,6 +39,11 @@
             }
 
             return $http(req);
+        }
+
+        service.saveBoxPosition = function(stockInCode, boxCode, position){
+            var url = "api/stock-in-boxes/stock-in/"+stockInCode+"/box/"+boxCode+"/moved";
+            return $http.put(url, position);
         };
 
         return service;

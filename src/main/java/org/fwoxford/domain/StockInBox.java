@@ -26,35 +26,30 @@ public class StockInBox extends AbstractAuditingEntity implements Serializable {
     /**
      * 设备编码
      */
-    @NotNull
     @Size(max = 100)
     @Column(name = "equipment_code", length = 100, nullable = false)
     private String equipmentCode;
     /**
      * 区域编码
      */
-    @NotNull
     @Size(max = 100)
     @Column(name = "area_code", length = 100, nullable = false)
     private String areaCode;
     /**
      * 冻存架编码
      */
-    @NotNull
     @Size(max = 100)
     @Column(name = "support_rack_code", length = 100, nullable = false)
     private String supportRackCode;
     /**
      * 所在冻存架行数
      */
-    @NotNull
     @Size(max = 20)
     @Column(name = "rows_in_shelf", length = 20, nullable = false)
     private String rowsInShelf;
     /**
      * 所在冻存架列数
      */
-    @NotNull
     @Size(max = 20)
     @Column(name = "columns_in_shelf", length = 20, nullable = false)
     private String columnsInShelf;
@@ -96,20 +91,17 @@ public class StockInBox extends AbstractAuditingEntity implements Serializable {
     /**
      * 设备
      */
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     private Equipment equipment;
     /**
      * 冻存架
      */
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     private SupportRack supportRack;
     /**
      * 区域
      */
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     private Area area;
 
     public Long getId() {

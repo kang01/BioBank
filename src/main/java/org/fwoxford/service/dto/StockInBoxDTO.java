@@ -14,31 +14,26 @@ public class StockInBoxDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 设备编码
      */
-    @NotNull
     @Size(max = 100)
     private String equipmentCode;
     /**
      * 区域编码
      */
-    @NotNull
     @Size(max = 100)
     private String areaCode;
     /**
      * 冻存架编码
      */
-    @NotNull
     @Size(max = 100)
     private String supportRackCode;
     /**
      * 所在冻存架行数
      */
-    @NotNull
     @Size(max = 20)
     private String rowsInShelf;
     /**
      * 所在冻存架列数
      */
-    @NotNull
     @Size(max = 20)
     private String columnsInShelf;
     /**

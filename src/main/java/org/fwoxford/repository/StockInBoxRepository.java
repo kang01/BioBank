@@ -1,8 +1,9 @@
 package org.fwoxford.repository;
 
 import org.fwoxford.domain.StockInBox;
-
-import org.springframework.data.jpa.repository.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 

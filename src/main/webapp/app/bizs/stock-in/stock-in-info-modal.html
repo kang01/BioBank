@@ -1,0 +1,45 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
+    <h3 class="modal-title" id="modal-title">入库基本信息填写</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <form class="form-horizontal">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label text-left">入库日期</label>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockInDate" is-open="vm.datePickerOpenStatus.stockInDate"
+                                    required  />
+                            <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('stockInDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label text-left">入库员1</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" ng-model="vm.entity.storeKeeper1" placeholder="入库员">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label text-left">入库员2</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" ng-model="vm.entity.storeKeeper2" placeholder="入库员">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+</div>

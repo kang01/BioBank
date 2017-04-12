@@ -3,10 +3,7 @@ package org.fwoxford.service.dto.response;
 import org.fwoxford.domain.Area;
 import org.fwoxford.domain.SampleType;
 import org.fwoxford.domain.SupportRack;
-import org.fwoxford.service.dto.AreaDTO;
-import org.fwoxford.service.dto.EquipmentDTO;
-import org.fwoxford.service.dto.SampleTypeDTO;
-import org.fwoxford.service.dto.SupportRackDTO;
+import org.fwoxford.service.dto.*;
 
 import java.util.List;
 
@@ -14,31 +11,26 @@ import java.util.List;
  * Created by gengluying on 2017/4/5.
  */
 public class StockInBoxForShelf {
-
-    private Long id;
-
+    private Long frozenBoxId;
+    private String frozenBoxCode;
     private Integer isSplit;
     private String status;
 
-    private Long frozenBoxId;
-    private String frozenBoxCode;
     private Integer countOfSample;
     private String frozenBoxColumns;
     private String frozenBoxRows;
+
+    private Long equipmentId;
+    private Long areaId;
+    private Long supportRackId;
+    private String sampleTypeCode;
+
+
     private SampleTypeDTO sampleType;
     private EquipmentDTO equipment;
     private AreaDTO area;
     private SupportRackDTO shelf;
-    private Long equipmentId;
-    private Long areaId;
-    private Long supportRackId;
-    public Integer getIsSplit() {
-        return isSplit;
-    }
-
-    public void setIsSplit(Integer isSplit) {
-        this.isSplit = isSplit;
-    }
+    private FrozenBoxTypeDTO frozenBoxType;
 
     public Long getFrozenBoxId() {
         return frozenBoxId;
@@ -54,6 +46,22 @@ public class StockInBoxForShelf {
 
     public void setFrozenBoxCode(String frozenBoxCode) {
         this.frozenBoxCode = frozenBoxCode;
+    }
+
+    public Integer getIsSplit() {
+        return isSplit;
+    }
+
+    public void setIsSplit(Integer isSplit) {
+        this.isSplit = isSplit;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Integer getCountOfSample() {
@@ -78,6 +86,38 @@ public class StockInBoxForShelf {
 
     public void setFrozenBoxRows(String frozenBoxRows) {
         this.frozenBoxRows = frozenBoxRows;
+    }
+
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
+    }
+
+    public Long getSupportRackId() {
+        return supportRackId;
+    }
+
+    public void setSupportRackId(Long supportRackId) {
+        this.supportRackId = supportRackId;
+    }
+
+    public String getSampleTypeCode() {
+        return sampleTypeCode;
+    }
+
+    public void setSampleTypeCode(String sampleTypeCode) {
+        this.sampleTypeCode = sampleTypeCode;
     }
 
     public SampleTypeDTO getSampleType() {
@@ -112,43 +152,11 @@ public class StockInBoxForShelf {
         this.shelf = shelf;
     }
 
-    public Long getId() {
-        return id;
+    public FrozenBoxTypeDTO getFrozenBoxType() {
+        return frozenBoxType;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Long getEquipmentId() {
-        return equipmentId;
-    }
-
-    public void setEquipmentId(Long equipmentId) {
-        this.equipmentId = equipmentId;
-    }
-
-    public Long getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(Long areaId) {
-        this.areaId = areaId;
-    }
-
-    public Long getSupportRackId() {
-        return supportRackId;
-    }
-
-    public void setSupportRackId(Long supportRackId) {
-        this.supportRackId = supportRackId;
+    public void setFrozenBoxType(FrozenBoxTypeDTO frozenBoxType) {
+        this.frozenBoxType = frozenBoxType;
     }
 }

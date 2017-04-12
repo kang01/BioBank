@@ -24,12 +24,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -144,7 +146,7 @@ public class StockInResource {
      */
     @PostMapping("/stock-in/tranship/{transhipCode}")
     @Timed
-    public ResponseEntity<StockInForDataDetail> createStockIns(@Valid @RequestBody String transhipCode) throws URISyntaxException {
+    public ResponseEntity<StockInForDataDetail> createStockIns(@PathVariable String transhipCode) throws URISyntaxException {
         log.debug("REST request to save StockIn : {}", transhipCode);
         StockInForDataDetail result = stockInService.saveStockIns(transhipCode);
         return ResponseEntity.created(new URI("/api/res/stock-in" + result.getId()))

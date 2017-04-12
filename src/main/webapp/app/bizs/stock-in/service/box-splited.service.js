@@ -1,17 +1,18 @@
 /**
- * Created by gaokangkang on 2017/4/5.
+ * Created by gaokangkang on 2017/4/10.
+ * 分装入库盒子
  */
 (function () {
     'use strict';
 
     angular
         .module('bioBankApp')
-        .factory('IncompleteBoxService', IncompleteBoxService);
+        .factory('SplitedBoxService', SplitedBoxService);
 
-    IncompleteBoxService.$inject = ['$resource'];
+    SplitedBoxService.$inject = ['$resource'];
 
-    function IncompleteBoxService ($resource) {
-        var service = $resource('api/frozen-boxes/incomplete-boxes/project/:projectCode/type/:sampleTypeCode', {}, {
+    function SplitedBoxService ($resource) {
+        var service = $resource('api/stock-in-boxes/stock-in/:stockInCode/box/:boxCode/splited', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

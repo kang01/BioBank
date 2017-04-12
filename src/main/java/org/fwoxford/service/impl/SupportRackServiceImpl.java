@@ -156,4 +156,16 @@ public class SupportRackServiceImpl implements SupportRackService{
         List<SupportRack> supportRacks = supportRackRepository.findSupportRackByEquipmentCodeAndAreaCode(equipmentCode,areaCode);
         return supportRackMapper.supportRacksToSupportRackDTOs(supportRacks);
     }
+    /**
+     * 根據區域ID查詢架子列表
+     * @param areaId 區域ID
+     * @return
+     */
+    @Override
+    public List<SupportRackDTO> findSupportRackByAreaId(Long areaId) {
+        log.debug("Request to get SupportRack ByAreaId: {}", areaId);
+        List<SupportRack> supportRacks = supportRackRepository.findSupportRackByAreaId(areaId);
+        List<SupportRackDTO> supportRackDTOS = supportRackMapper.supportRacksToSupportRackDTOs(supportRacks);
+        return supportRackDTOS;
+    }
 }

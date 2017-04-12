@@ -4,7 +4,7 @@
         <h3 class="pull-left">新增转运记录<small>&nbsp;{{vm.transportRecord.transhipCode}}</small></h3>
         <div class="form-group pull-right m-r-10">
             <div class="text-right">
-                <button type="button" class="btn btn-primary">入库</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.stockIn()">入库</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.importFrozenStorageBox('lg')">导入冻存盒</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.saveRecord()">保存</button>
                 <button type="button" class="btn" ui-sref="transport-record">关闭</button>
@@ -216,7 +216,7 @@
                                 <span>错位</span>
                                 <span>100个</span>
                                 <label class="checkbox-inline" style="margin-left: 10px;margin-top: -4px;padding-top: 0">
-                                    <input type="checkbox" ng-model="vm.box.isSplit" ng-disabled="!vm.box">是否分装
+                                    <input type="checkbox" ng-model="vm.box.isSplit" ng-disabled="!vm.box" ng-true-value="1" ng-false-value="0">是否分装
                                 </label>
                             </p>
 

@@ -7,6 +7,7 @@ import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 
+import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.mapstruct.*;
 
 import java.util.ArrayList;
@@ -194,5 +195,31 @@ public interface FrozenBoxMapper {
             frozenBoxDTOLists.add(box);
         }
         return frozenBoxDTOLists;
+    }
+
+    default List<StockInBoxForDataTable> frozenBoxesToStockInBoxForDataTables(List<FrozenBox> frozenBoxes){
+        List<StockInBoxForDataTable> stockInBoxForDataTables = new ArrayList<>();
+        for(FrozenBox box:frozenBoxes){
+            StockInBoxForDataTable stockInBoxForDataTable = frozenBoxToStockInBoxForDataTable(box);
+            stockInBoxForDataTables.add(stockInBoxForDataTable);
+        }
+        return stockInBoxForDataTables;
+    }
+
+    default StockInBoxForDataTable frozenBoxToStockInBoxForDataTable(FrozenBox box){
+        StockInBoxForDataTable stockInBoxForDataTable = new StockInBoxForDataTable();
+        if(box == null){
+            return null;
+        }
+        stockInBoxForDataTable.setIsSplit(box.getIsSplit());
+        stockInBoxForDataTable.setCountOfSample(box.getSampleNumber());
+        stockInBoxForDataTable.setId(box.getId());
+        stockInBoxForDataTable.setFrozenBoxRows(box.getFrozenBoxRows()!=null?Integer.parseInt(box.getFrozenBoxRows()):0);
+        stockInBoxForDataTable.setFrozenBoxColumns(box.getFrozenBoxColumns()!=null?Integer.parseInt(box.getFrozenBoxColumns()):0);
+        stockInBoxForDataTable.setFrozenBoxCode(box.getFrozenBoxCode());
+        stockInBoxForDataTable.setPosition(box.getEquipmentCode()+"."+box.getAreaCode()+"."+box.getSupportRackCode()+"."+box.getColumnsInShelf()+box.getRowsInShelf());
+        stockInBoxForDataTable.setSampleTypeName(box.getSampleTypeName());
+        stockInBoxForDataTable.setStatus(box.getStatus());
+        return stockInBoxForDataTable;
     }
 }

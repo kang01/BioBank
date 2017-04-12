@@ -125,6 +125,13 @@ public class TranshipResource {
         TranshipByIdResponse transhipByIdResponse = transhipService.findTranshipAndFrozenBox(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(transhipByIdResponse));
     }
+    @GetMapping("/tranships/id/{id}")
+    @Timed
+    public ResponseEntity<TranshipDTO> getTranshipById(@PathVariable Long id) {
+        log.debug("REST request to get Tranship : {}", id);
+        TranshipDTO transhipDTO = transhipService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(transhipDTO));
+    }
 
     /**
      * DELETE  /tranships/:id : delete the "id" tranship.

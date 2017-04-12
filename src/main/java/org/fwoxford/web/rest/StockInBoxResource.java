@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -166,13 +167,10 @@ public class StockInBoxResource {
      * @return
      * @throws URISyntaxException
      */
-    @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/splited")
-    @Timed
-    public ResponseEntity<StockInBoxSplit> splitedStockIn(@Valid @RequestBody String stockInCode, String boxCode, StockInBoxSplit stockInBoxForDataSplit) throws URISyntaxException {
-        StockInBoxSplit detail = stockInBoxService.splitedStockIn(stockInCode,boxCode,stockInBoxForDataSplit);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, detail.getId().toString()))
-            .body(detail);
+    @RequestMapping(value = "/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/splited", method = RequestMethod.PUT, produces={MediaType.APPLICATION_JSON_VALUE})
+    public List<StockInBoxSplit> splitedStockIn(@Valid @RequestBody String stockInCode,@Valid @RequestBody  String boxCode,@Valid @RequestBody  List<StockInBoxSplit> stockInBoxForDataSplit) throws URISyntaxException {
+        List<StockInBoxSplit> detail = stockInBoxService.splitedStockIn(stockInCode,boxCode,stockInBoxForDataSplit);
+        return detail;
     }
     /**
      * 输入入库单编码和盒子编码，以及冻存位置信息，返回保存后的盒子信息
@@ -187,7 +185,20 @@ public class StockInBoxResource {
     public ResponseEntity<StockInBoxDetail> movedStockIn(@Valid @RequestBody String stockInCode,@Valid @RequestBody  String boxCode,@Valid @RequestBody  FrozenBoxPositionDTO boxPositionDTO) throws URISyntaxException {
         StockInBoxDetail stockInBoxDetail = stockInBoxService.movedStockIn(stockInCode,boxCode,boxPositionDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getFrozenBoxId().toString()))
             .body(stockInBoxDetail);
+    }
+
+    /**
+     * 根据冻存盒code串查询待入库和已入库的盒子信息
+     * @param frozenBoxCodeStr
+     * @return
+     */
+    @GetMapping("/stock-in-boxes/boxCodes/{frozenBoxCodeStr}")
+    @Timed
+    public ResponseEntity<List<StockInBoxForDataTable>> getFrozenBoxByBoxCodeStr(@PathVariable  List<String> frozenBoxCodeStr) {
+        log.debug("REST request to get FrozenBox By codes : {}", frozenBoxCodeStr);
+        List<StockInBoxForDataTable> res = stockInBoxService.findFrozenBoxListByBoxCodeStr(frozenBoxCodeStr);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

@@ -120,6 +120,7 @@ public interface TranshipMapper {
         tranship.setTranshipDate(ship.getTranshipDate() !=null ? ship.getTranshipDate():null);
         tranship.setTranshipState(ship.getTranshipState()!=null?ship.getTranshipState():Constants.TRANSHIPE_IN_PENDING);
         tranship.setStatus(ship.getStatus()!=null?ship.getStatus():Constants.VALID);
+        tranship.setMemo(ship.getMemo());
         return tranship;
     }
 }

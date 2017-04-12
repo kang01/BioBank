@@ -12,7 +12,7 @@
     StockInBoxService.$inject = ['$resource', '$http'];
 
     function StockInBoxService ($resource, $http) {
-        var service = $resource('api/temp/stock-in-box/:id', {}, {
+        var service = $resource('api/stock-in-box/:id', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',
@@ -27,7 +27,7 @@
         });
 
         service.getJqDataTableValues = function(data, oSettings){
-            var ajaxUrl = 'api/temp/res/stock-in-boxes/stock-in/' + data.stockInCode;
+            var ajaxUrl = 'api/res/stock-in-boxes/stock-in/' + data.stockInCode;
 
             var req = {
                 method: 'POST',

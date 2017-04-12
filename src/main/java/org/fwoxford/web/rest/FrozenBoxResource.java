@@ -9,7 +9,7 @@ import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForChangingPosition;
-import org.fwoxford.service.dto.response.StockInForDataTable;
+import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -30,7 +30,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * REST controller for managing FrozenBox.

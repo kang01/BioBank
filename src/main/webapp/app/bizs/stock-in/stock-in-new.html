@@ -3,7 +3,7 @@
         <h3 class="pull-left">新增入库记录</h3>
         <div class="form-group pull-right m-r-10">
             <div class="text-right">
-                <button type="button" class="btn btn-primary" ng-click="vm.saveRecord()">保存</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.saveStockIn()">入库完成</button>
                 <button type="button" class="btn" ui-sref="stock-in">关闭</button>
             </div>
         </div>
@@ -21,42 +21,14 @@
         <div class="col-md-1">{{vm.entity.projectSiteCode}}</div>
 
         <div class="col-md-1 text-right"><strong>接收日期</strong></div>
-        <div class="col-md-1">{{vm.entity.receivedDate}}</div>
+        <div class="col-md-1">{{vm.entity.receiveDate}}</div>
         <div class="col-md-1 text-right"><strong>接收人</strong></div>
         <div class="col-md-1">{{vm.entity.receiver}}</div>
         <div class="col-md-12"></div>
     </div>
 
 
-    <form class="form-horizontal">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label text-left">入库日期</label>
-                    <div class="col-sm-9">
-                        <input type="email" class="form-control" ng-model="vm.entity.stockInDate" placeholder="Email">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label text-left">入库员1</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" ng-model="vm.entity.storeKeeper1" placeholder="入库员">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label text-left">入库员2</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" ng-model="vm.entity.storeKeeper2" placeholder="入库员">
-                    </div>
-                </div>
-            </div>
-        </div>
 
-    </form>
 
     <div class="row">
         <div class="col-md-12">
@@ -82,14 +54,14 @@
         <div class="row split-box">
             <div class="col-md-9">
                 <div class="col-md-5">
-                    <h4>待分装样本盒123456789</h4>
+                    <h4>待分装样本盒{{vm.box.frozenBoxCode}}</h4>
                 </div>
                 <div class="col-md-7 text-right m-b-10">
                     <button type="button" class="btn btn-default" ng-click="vm.putAway()">上架</button>
                     <button type="button" class="btn btn-default" ng-click="vm.editBox()">加载盒信息</button>
                     <button type="button" class="btn btn-default" ng-click="vm.splitBox()">分装</button>
                     <button type="button" class="btn btn-default" >复原</button>
-                    <button type="button" class="btn btn-primary">保存分装结果</button>
+                    <button type="button" class="btn btn-primary" ng-click="vm.saveBox()">保存分装结果</button>
                 </div>
                 <div class="clear-both"></div>
                 <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"></hot-table>
@@ -101,15 +73,18 @@
                 <div >
                     <ul>
                         <li ng-repeat="item in vm.incompleteBoxesList"  >
-                            <div class="box-feature" ng-style="{backgroundColor:item.sampleType.backColor}"  ng-click="vm.sampleBoxSelect(item,$event)">
-                                <div>{{item.stockInFrozenTubeList.length}}/100</div>
-                                <div>{{ vm.addTubeCount}}</div>
+                            <div ng-repeat="item1 in item.boxList track by $index">
+                                <div class="box-feature" ng-style="{backgroundColor:item1.sampleType.backColor}"  ng-click="vm.sampleBoxSelect(item1,$event)">
+                                    {{item1.stockInFrozenTubeList.length}}/{{item1.frozenBoxColumns*item1.frozenBoxRows}}
+                                    <span ng-if="item1.addTubeCount">{{item1.addTubeCount}}</span>
+                                </div>
+                                <div class="text-center" ng-if="$index == 0">{{item1.sampleType.sampleTypeName}}&nbsp;</div>
+                                <div ng-class="{'second-box': $index == 1}">{{item1.frozenBoxCode}}</div>
                             </div>
-                            <div class="text-center">{{item.sampleType.sampleTypeName}}</div>
-                            <div>{{item.frozenBoxCode}}</div>
+                            <div class="box-feature box-feature-copy" style="background-color: #fff;" ng-if="item.boxList.length == 2"></div>
                         </li>
                         <li>
-                            <div class="box-feature" style="line-height: 96px" >
+                            <div class="box-feature" style="line-height: 96px;padding-top:0;border:2px dotted #aaa;" ng-click="vm.addBoxModal()">
                                 <i class="fa fa-plus" style="font-size:30px;"></i>
                             </div>
                         </li>

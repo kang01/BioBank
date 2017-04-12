@@ -17,6 +17,7 @@
             frozenBoxColumns:"",
             frozenBoxCode:'',
             isSplit:0,
+            sampleTypeCode:"",
             sampleType:{},
             stockInFrozenTubeList:[]
         };
@@ -106,6 +107,7 @@
             labelField:'sampleTypeName',
             maxItems: 1,
             onChange:function (value) {
+                vm.box.sampleTypeCode = value;
                 for(var i =0; i < vm.sampleTypesOptions.length; i++){
                     if(value == vm.sampleTypesOptions[i].sampleTypeCode){
                         vm.box.sampleType.sampleTypeName = vm.sampleTypesOptions[i].sampleTypeName;
@@ -123,9 +125,8 @@
             $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
-            console.log(JSON.stringify(vm.box));
-            vm.box.rowsInShelf = vm.box.boxRowCol.charAt(0)
-            vm.box.columnsInShelf = vm.box.boxRowCol.charAt(vm.box.boxRowCol.length - 1);
+            vm.box.rowsInShelf = vm.boxRowCol.charAt(0)
+            vm.box.columnsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
             $uibModalInstance.close(vm.box);
         };
     }

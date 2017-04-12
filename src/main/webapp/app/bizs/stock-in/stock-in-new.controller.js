@@ -9,10 +9,10 @@
         .controller('StockInNewController', StockInNewController);
 
     StockInNewController.$inject = ['$timeout','$state','$stateParams', '$scope','$compile','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
-        'entity','AlertService','StockInService','StockInBoxService','frozenBoxByCodeService',
+        'entity','AlertService','StockInService','StockInBoxService','frozenBoxByCodeService','SplitedBoxService',
         'SampleTypeService','SampleService','IncompleteBoxService']
     function StockInNewController($timeout,$state,$stateParams,$scope,$compile,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
-                                  entity,AlertService,StockInService,StockInBoxService,frozenBoxByCodeService,
+                                  entity,AlertService,StockInService,StockInBoxService,frozenBoxByCodeService,SplitedBoxService,
                                   SampleTypeService,SampleService,IncompleteBoxService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
@@ -334,7 +334,6 @@
             }
         }
         function onIncompleteBoxesSuccess(data) {
-            console.log(JSON.stringify(data))
             if(data.length){
                 vm.incompleteBoxesList.push(
                     {
@@ -454,9 +453,6 @@
         vm.sampleBoxSelect = function (item,$event) {
             console.log(JSON.stringify(item));
             vm.obox = item;
-            // vm.obox.stockInTubeDTOList = [];
-            // vm.obox.frozenBoxCode = item.frozenBoxCode;
-            // vm.obox.sampleTypeCode = item.sampleTypeCode;
             //初始100个管子或者80个管子
             for(var i = 0; i < item.frozenBoxRows; i++){
                 tempTubeArray[i] = [];
@@ -482,6 +478,7 @@
         };
         //分装操作
         vm.splitBox = function () {
+            //分装到哪个盒子中的数量
             for(var j = 0; j < vm.incompleteBoxesList.length; j++){
                 for(var k = 0; k < vm.incompleteBoxesList[j].boxList.length;k++){
                     if(vm.obox.sampleTypeCode == vm.incompleteBoxesList[j].boxList[k].sampleTypeCode){
@@ -490,6 +487,7 @@
                     }
                 }
             }
+            //封装数据
             for(var i = 0,j = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
                 if(!vm.obox.stockInFrozenTubeList[i].frozenTubeCode){
                     if(selectList.length){
@@ -500,12 +498,27 @@
                     }
                 }
             }
+            //删除空管子
+            var deleteIndexList = []
+            for(var i = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
+                if(!vm.obox.stockInFrozenTubeList[i].frozenTubeCode){
+                    deleteIndexList.push(i)
+                }
+            }
+            _.pullAt(vm.obox.stockInFrozenTubeList, deleteIndexList);
 
-            console.log(JSON.stringify(vm.obox))
 
         };
+
         vm.saveBox = function () {
-            // console.log(JSON.stringify(vm.incompleteBoxesList))
+            var boxList = [];
+            var obox = angular.copy(vm.obox);
+            delete obox.addTubeCount;
+            boxList.push(obox);
+            console.log(JSON.stringify(boxList));
+            SplitedBoxService.saveSplit(vm.entity.stockInCode,vm.box.frozenBoxCode,boxList).then(function (data) {
+                AlertService.success("分装成功!");
+            })
         };
         vm.editBox = function () {
             _splitABox();

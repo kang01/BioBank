@@ -24,7 +24,7 @@
                 return deferred.promise;
             }
 
-            var promise = $http.get('api/temp/frozen-pos/incomplete-shelves/' + equipmentCode + (areaCode ? '/'+areaCode : ''));
+            var promise = $http.get('api/frozen-pos/incomplete-shelves/' + equipmentCode + (areaCode ? '/'+areaCode : ''));
 
             return promise;
         }
@@ -37,7 +37,7 @@
                 return deferred.promise;
             }
 
-            var promise = $http.get('api/temp/frozen-boxes/pos/' + equipmentCode + (areaCode ? '/' + areaCode + (shelfCode ? '/' + shelfCode : '') : ''));
+            var promise = $http.get('api/frozen-boxes/pos/' + equipmentCode + (areaCode ? '/' + areaCode + (shelfCode ? '/' + shelfCode : '') : ''));
 
             return promise;
         }

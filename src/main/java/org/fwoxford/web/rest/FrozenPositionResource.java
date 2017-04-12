@@ -32,7 +32,7 @@ public class FrozenPositionResource {
      * @param equipmentCode
      * @return
      */
-    @GetMapping("/frozen-pos/shelfs/{equipmentCode}")
+    @GetMapping("/frozen-pos/shelves/{equipmentCode}")
     @Timed
     public ResponseEntity<List<SupportRackDTO>> getSupportRackList(@PathVariable String equipmentCode) {
         List<SupportRackDTO> supportRackDTOS = supportRackService.getSupportRackList(equipmentCode);
@@ -45,7 +45,7 @@ public class FrozenPositionResource {
      * @param areaCode
      * @return
      */
-    @RequestMapping(value = "/frozen-pos/shelfs/{equipmentCode}/{areaCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(value = "/frozen-pos/shelves/{equipmentCode}/{areaCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
     public List<SupportRackDTO> getSupportRackListByEquipmentAndArea(@PathVariable String equipmentCode ,@PathVariable String areaCode) {
         List<SupportRackDTO> result = supportRackService.getSupportRackListByEquipmentAndArea(equipmentCode,areaCode);
         return result;
@@ -56,7 +56,7 @@ public class FrozenPositionResource {
      * @param equipmentCode
      * @return
      */
-    @RequestMapping(value = "/frozen-pos/incomplete-shelfs/{equipmentCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(value = "/frozen-pos/incomplete-shelves/{equipmentCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
     public List<SupportRackDTO> getIncompleteShelves(@PathVariable String equipmentCode) {
         List<SupportRackDTO> result = supportRackService.getIncompleteShelves(equipmentCode);
         return result;
@@ -68,7 +68,7 @@ public class FrozenPositionResource {
      * @param areaCode
      * @return
      */
-    @RequestMapping(value = "/frozen-pos/incomplete-shelfs/{equipmentCode}/{areaCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(value = "/frozen-pos/incomplete-shelves/{equipmentCode}/{areaCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
     public List<SupportRackDTO> getIncompleteShelves(@PathVariable String equipmentCode, @PathVariable String areaCode) {
         List<SupportRackDTO> result =  supportRackService.getIncompleteShelvesByEquipmentAndArea(equipmentCode,areaCode);
         return result;

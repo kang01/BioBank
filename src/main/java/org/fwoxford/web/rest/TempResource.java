@@ -489,7 +489,7 @@ public class TempResource {
         List<StockInTubeDTO> tubeDTOS = stockInBoxForDataSplit.getStockInFrozenTubeList();
         List<StockInTubeDTO> tubeDTOList = new ArrayList<>();
         for(int i = 0 ; i < tubeDTOList.size();i++){
-            tubeDTOList.get(i).setFrozenTubeId(0L+i);
+            tubeDTOList.get(i).setId(0L+i);
             tubeDTOList.add(tubeDTOList.get(i));
         }
         detail.setStockInFrozenTubeList(tubeDTOList);

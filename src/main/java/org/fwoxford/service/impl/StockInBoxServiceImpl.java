@@ -365,6 +365,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBoxNew.setSampleNumber(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
 
         frozenBoxNew.setMemo(stockInBoxForDataSplit.getMemo());
+        Tranship tranship = new Tranship();tranship.setId(0L);
+        frozenBoxNew.setTranship(frozenBox.getTranship()!=null?frozenBox.getTranship():tranship);
         frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
 
         stockInBoxForDataSplit.setFrozenBoxId(frozenBoxNew.getId());
@@ -374,6 +376,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         //新增入库盒子
         List<StockInBox> stockInBoxList = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBoxNew.getFrozenBoxCode());
         StockInBox stockInBox = new StockInBox();
+        StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
+        stockInBox.setStockIn(stockIn);
         stockInBox.setFrozenBoxCode(frozenBoxNew.getFrozenBoxCode());
         stockInBox.setStockInCode(stockInCode);
         stockInBox.setEquipment(equipment);
@@ -393,10 +397,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         List<StockInTubeDTO> stockInTubeDTOS = stockInBoxForDataSplit.getStockInFrozenTubeList();
         List<StockInTubeDTO> stockInTubeDTOList = new ArrayList<>();
         for(StockInTubeDTO tube : stockInTubeDTOS){
-            if(tube.getFrozenTubeId()==null){
+            if(tube.getId()==null){
                 throw new BankServiceException("冻存管ID不能为空！",tube.toString());
             }
-            FrozenTube frozenTube = frozenTubeRepository.findOne(tube.getFrozenTubeId());
+            FrozenTube frozenTube = frozenTubeRepository.findOne(tube.getId());
             if(frozenTube == null){
                 throw new BankServiceException("冻存管不存在",tube.toString());
             }
@@ -423,7 +427,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenTube.setTubeColumns(tube.getTubeColumns());
             frozenTube.setTubeRows(tube.getTubeRows());
             frozenTubeRepository.save(frozenTube);
-            tube.setFrozenTubeId(frozenTube.getId());
+            tube.setId(frozenTube.getId());
             stockInTubeDTOList.add(tube);
         }
         stockInBoxForDataSplit.setStockInFrozenTubeList(stockInTubeDTOList);

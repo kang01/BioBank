@@ -340,7 +340,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBoxNew.setAreaCode(area.getAreaCode());
         SupportRack supportRack= new SupportRack();
         supportRack.setId(stockInBoxForDataSplit.getSupportRackId());
-        int supportIndex = areas.indexOf(supportRack);
+        int supportIndex = supportRacks.indexOf(supportRack);
         if (supportIndex >= 0){
             supportRack = supportRacks.get(supportIndex);
             stockInBoxForDataSplit.setShelf(supportRackMapper.supportRackToSupportRackDTO(supportRack));

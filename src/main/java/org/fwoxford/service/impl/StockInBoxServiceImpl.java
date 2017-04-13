@@ -253,19 +253,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         List<FrozenTube> tubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(boxCode);
         if(tubeList.size()==0){
             frozenBox.setStatus(Constants.FROZEN_BOX_SPLITED);
+            //更改入库盒子状态
+            stockInBoxRepository.updateByStockCodeAndFrozenBoxCode(stockInCode,boxCode,Constants.FROZEN_BOX_SPLITED);
         }
         frozenBox.setSampleNumber(tubeList.size());
         frozenBoxRepository.save(frozenBox);
-        if(tubeList.size()==0){
-            List<TranshipBox> transhipBox = transhipBoxRepository.findByFrozenBoxId(frozenBox.getId());
-            if(transhipBox.size()>0){
-                //更改转运盒子状态
-                transhipBoxRepository.updateStatusByTranshipIdAndFrozenBoxCode(transhipBox.get(0).getTranship().getId(),boxCode,Constants.FROZEN_BOX_SPLITED);
-            }
-            //更改入库盒子状态
-            stockInBoxRepository.updateByStockCodeAndFrozenBoxCode(stockInCode,boxCode,Constants.FROZEN_BOX_SPLITED);
-
-        }
       return stockInBoxForDataSplitList;
     }
 
@@ -463,6 +455,13 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if (shelf == null){
             throw new BankServiceException("未查询到指定设备的指定区域的指定架子！",boxPositionDTO.toString());
         }
+        FrozenBox oldFrozenBox = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(equipment.getEquipmentCode(),
+            area.getAreaCode(),shelf.getSupportRackCode(),boxPositionDTO.getColumnsInShelf(),boxPositionDTO.getRowsInShelf());
+
+        if(oldFrozenBox!=null && oldFrozenBox.getId()!=frozenBox.getId()){
+            throw new BankServiceException("此位置已存放冻存盒，请更换其他位置！",boxPositionDTO.toString());
+        }
+
         frozenBox.setEquipmentCode(equipment.getEquipmentCode());
         frozenBox.setEquipment(equipment);
         frozenBox.setArea(area);
@@ -471,6 +470,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBox.setSupportRackCode(shelf.getSupportRackCode());
         frozenBox.setColumnsInShelf(boxPositionDTO.getColumnsInShelf());
         frozenBox.setRowsInShelf(boxPositionDTO.getRowsInShelf());
+        frozenBox.setStatus(Constants.FROZEN_BOX_PUT_SHELVES);
         frozenBoxRepository.save(frozenBox);
 
         StockInBox stockInBox = stockInBoxList.get(0);
@@ -482,10 +482,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setSupportRackCode(frozenBox.getSupportRackCode());
         stockInBox.setColumnsInShelf(frozenBox.getColumnsInShelf());
         stockInBox.setRowsInShelf(frozenBox.getRowsInShelf());
+        stockInBox.setStatus(Constants.FROZEN_BOX_PUT_SHELVES);
         stockInBoxRepository.save(stockInBox);
         stockInBoxDetail = createStockInBoxDetail(frozenBox,stockInCode);
 
-        // todo:: 增加一个已上架的状态，这样前台可以排除已上架的盒子被再次上架
         return stockInBoxDetail;
     }
 

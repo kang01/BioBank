@@ -248,4 +248,16 @@ public class FrozenBoxResource {
         StockInBoxDetail boxes =  frozenBoxService.getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(equipmentCode,areaCode,shelfCode,position);
         return boxes;
     }
+
+    /**
+     * 判断盒子编码是否已经存在  ----true：已经存在，false:不存在
+     * @param frozenBoxCode
+     * @return
+     */
+    @RequestMapping(value = "/frozen-boxes/isRepeat/{frozenBoxCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public Boolean isRepeatFrozenBoxCode(@PathVariable String frozenBoxCode) {
+        Boolean boxes =  frozenBoxService.isRepeatFrozenBoxCode(frozenBoxCode);
+        return boxes;
+    }
+
 }

@@ -100,6 +100,10 @@ public class FrozenTubeResponse {
      */
     private Long projectId;
 
+    private String frozenBoxCode;
+
+    private Long frozenBoxId;
+
     public Long getId() {
         return id;
     }
@@ -236,4 +240,19 @@ public class FrozenTubeResponse {
         this.projectId = projectId;
     }
 
+    public String getFrozenBoxCode() {
+        return frozenBoxCode;
+    }
+
+    public void setFrozenBoxCode(String frozenBoxCode) {
+        this.frozenBoxCode = frozenBoxCode;
+    }
+
+    public Long getFrozenBoxId() {
+        return frozenBoxId;
+    }
+
+    public void setFrozenBoxId(Long frozenBoxId) {
+        this.frozenBoxId = frozenBoxId;
+    }
 }

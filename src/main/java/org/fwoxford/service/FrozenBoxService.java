@@ -119,4 +119,6 @@ public interface FrozenBoxService {
     StockInBoxDetail getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(String equipmentCode, String areaCode, String shelfCode, String position);
 
     List<StockInBoxForDataTable> findFrozenBoxListByBoxCodeStr(List<String> frozenBoxCodeStr);
+
+    Boolean isRepeatFrozenBoxCode(String frozenBoxCode);
 }

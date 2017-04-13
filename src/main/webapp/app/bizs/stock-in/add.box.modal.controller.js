@@ -30,6 +30,15 @@
         function onFrozenBoxTypeSuccess(data) {
             vm.frozenBoxTypeOptions = data;
         }
+        vm.box.frozenBoxTypeId = items.box.frozenBoxTypeId;
+        if(items.box.frozenBoxTypeId == 17){
+            vm.box.frozenBoxRows = 10;
+            vm.box.frozenBoxColumns = 10;
+        }
+        if(items.box.frozenBoxTypeId == 18){
+            vm.box.frozenBoxRows = 8;
+            vm.box.frozenBoxColumns = 8;
+        }
         vm.boxTypeConfig = {
             valueField:'id',
             labelField:'frozenBoxTypeName',
@@ -102,6 +111,13 @@
         }
 
         vm.sampleTypesOptions = items.sampleTypes;
+        vm.box.sampleType.sampleTypeCode = items.box.sampleTypeCode;
+        for(var i =0; i < vm.sampleTypesOptions.length; i++) {
+            if (items.box.sampleTypeCode == vm.sampleTypesOptions[i].sampleTypeCode) {
+                vm.box.sampleType.sampleTypeName = vm.sampleTypesOptions[i].sampleTypeName;
+                vm.box.sampleType.backColor = vm.sampleTypesOptions[i].backColor
+            }
+        }
         vm.sampleTypesConfig = {
             valueField:'sampleTypeCode',
             labelField:'sampleTypeName',
@@ -125,8 +141,11 @@
             $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
-            vm.box.columnsInShelf = vm.boxRowCol.charAt(0)
-            vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
+            if(vm.boxRowCol){
+                vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
+                vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
+            }
+            vm.box.countOfSample = 0;
             $uibModalInstance.close(vm.box);
         };
     }

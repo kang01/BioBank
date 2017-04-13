@@ -195,9 +195,9 @@
         function _fnActionPutInShelfButton(e, dt, node, config){
             _putInShelf();
         }
-        function _fnFrozenBoxCodeRender(data, type, full, meta) {
-            return '<a ng-click="vm.splitIt('+ full.frozenBoxCode +')">'+full.frozenBoxCode+'</a>';
-        }
+        // function _fnFrozenBoxCodeRender(data, type, full, meta) {
+        //     return '<a ng-click="vm.splitIt('+ full.frozenBoxCode +')">'+full.frozenBoxCode+'</a>';
+        // }
 
         function _createColumnFilters(){
             var filters = {
@@ -221,7 +221,7 @@
             var columns = [
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').renderWith(_fnFrozenBoxCodeRender),
+                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
                 DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
                 DTColumnBuilder.newColumn('position').withOption("width", "auto").withTitle('冻存位置'),
                 DTColumnBuilder.newColumn('countOfSample').withOption("width", "80").withTitle('样本量'),
@@ -420,6 +420,7 @@
             editor: false,
             outsideClickDeselects:false,
             onAfterSelectionEnd:function (row, col, row2, col2) {
+                selectList = [];
                 vm.selectCell = $(this.getData(row,col,row2,col2));
                 for(var i = 0; i < vm.selectCell.length; i++ ){
                     for (var j = 0; j < vm.selectCell[i].length; j++){
@@ -496,7 +497,6 @@
                     vm.obox.stockInFrozenTubeList[k] = tube
                 }
             }
-            console.log(JSON.stringify(vm.obox.stockInFrozenTubeList))
             $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
             $($event.target).addClass("box-selected");
         };
@@ -511,18 +511,28 @@
                     }
                 }
             }
+            //盒子剩余数
+            var surplusCount = vm.obox.stockInFrozenTubeList.length - vm.obox.countOfSample;
+            //要分装的管子数
+            var selectCount = selectList.length;
+            if( selectCount > surplusCount){
+                vm.addBoxModal(vm.obox);
+            }
             //分装数据
-            for(var i = 0,j = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
+            for(var i = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
                 if(!vm.obox.stockInFrozenTubeList[i].frozenTubeCode){
-                    if(selectList.length){
+                    if(surplusCount && selectList.length){
                         selectList[0].tubeRows = vm.obox.stockInFrozenTubeList[i].tubeRows;
                         selectList[0].tubeColumns = vm.obox.stockInFrozenTubeList[i].tubeColumns;
                         selectList[0].sampleTmpCode = vm.obox.stockInFrozenTubeList[i].frozenBoxCode+"-"+selectList[0].tubeRows+selectList[0].tubeColumns;
                         vm.obox.stockInFrozenTubeList[i] = selectList[0];
                         selectList.splice(0,1);
+                        surplusCount--;
                     }
                 }
             }
+
+
             //删除空管子
             var deleteIndexList = [];
             for(var i = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
@@ -532,6 +542,8 @@
             }
             _.pullAt(vm.obox.stockInFrozenTubeList, deleteIndexList);
 
+            console.log(JSON.stringify(vm.obox.stockInFrozenTubeList))
+
 
         };
         //保存分装结果
@@ -540,14 +552,14 @@
             var obox = angular.copy(vm.obox);
             delete obox.addTubeCount;
             boxList.push(obox);
-            console.log(JSON.stringify(boxList));
+            // console.log(JSON.stringify(boxList));
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,boxList).then(function (data) {
                 AlertService.success("分装成功!");
-                vm.loadBox();
+                _splitABox(vm.box.frozenBoxCode);
             })
         };
         //添加分装样本盒
-        vm.addBoxModal = function () {
+        vm.addBoxModal = function (box) {
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-in/add-box-modal.html',
@@ -557,7 +569,8 @@
                 resolve: {
                     items: function () {
                         return {
-                            sampleTypes :vm.sampleTypes
+                            sampleTypes :vm.sampleTypes,
+                            box :box || {}
                         }
                     }
                 }

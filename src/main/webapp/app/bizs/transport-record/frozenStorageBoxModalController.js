@@ -9,21 +9,19 @@
         .controller('FrozenStorageBoxModalController', FrozenStorageBoxModalController)
         .controller('ModalInstanceCtrl', ModalInstanceCtrl);
 
-    FrozenStorageBoxModalController.$inject = ['DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService'];
+    FrozenStorageBoxModalController.$inject = ['$scope','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService'];
     ModalInstanceCtrl.$inject = ['$uibModalInstance','$uibModal'];
 
-    function FrozenStorageBoxModalController(DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService) {
+    function FrozenStorageBoxModalController($scope,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService) {
 
         var vm = this;
         vm.items = items;
         vm.importSample = importSample;//导入样本数据
-        vm.addData = addData; //按键事件
         var codeList = [];//扫码录入的盒号
         vm.obox = {
             transhipId:vm.items.transhipId,
             frozenBoxDTOList:[]
         };
-
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('searching', false)
             .withOption('paging', false)
@@ -31,13 +29,14 @@
             .withScroller()
             .withOption('deferRender', true)
             .withOption('scrollY', 300);
-
-        function addData(event) {
-            if(window.event.keyCode == 13){
-                if(vm.boxCode != ''){
-                    codeList = _.uniq((vm.boxCode.split("\n")).reverse());
+        vm.myConfig = {
+            create: true,
+            persist:false,
+            onChange: function(value){
+                vm.obox.frozenBoxDTOList = [];
+                if(value.length){
+                    codeList = value.reverse();
                     var tubeList=[];
-
                     for(var i = 0; i < codeList.length; i++){
                         vm.obox.frozenBoxDTOList[i] = {
                             frozenBoxCode:codeList[i],
@@ -65,10 +64,20 @@
                                 vm.obox.frozenBoxDTOList[i].frozenTubeDTOS.push(tubeList[j][k])
                             }
                         }
+
                     }
                 }
+                $scope.$apply();
             }
-        }
+        };
+
+
+
+        // function addData(event) {
+        //     if(window.event.keyCode == 13){
+        //
+        //     }
+        // }
         function importSample() {
             var modalInstance = $uibModal.open({
                 animation: true,

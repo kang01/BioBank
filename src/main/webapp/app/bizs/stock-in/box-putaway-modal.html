@@ -25,7 +25,7 @@
         </div>
         <div class="col-md-6 text-right">
                 <button type="button" class="btn btn-default" ng-click="vm.putInShelf()">上架</button>
-                <button type="button" class="btn btn-default">复原</button>
+                <button type="button" class="btn btn-default" ng-click="vm.rollback()">复原</button>
         </div>
 
     </div>
@@ -52,7 +52,7 @@
             <table datatable="ng" dt-options="vm.dtBoxesListOptions" dt-columns="vm.dtBoxesListColumns" dt-instance="vm.dtBoxesListInstance" class="row-border hover">
                 <thead>
                 <th><input type="checkbox" ng-model="vm.selectAllBox" ng-click="vm.toggleAll(vm.selectAllBox, vm.selectedBox)"></th>
-                <th>冻存盒编码</th>
+                <th>冻存盒#</th>
                 <th>状态</th>
                 <th>位置</th>
                 </thead>
@@ -62,7 +62,15 @@
                         <input type="checkbox" ng-model="vm.selectedBox[box.frozenBoxCode]" ng-click="vm.toggleOne(vm.selectedBox)">
                     </td>
                     <td>{{box.frozenBoxCode}}</td>
-                    <td>{{box.status}}</td>
+                    <td ng-switch="box.status">
+                        <span ng-switch-when="2001">新建</span>
+                        <span ng-switch-when="2002" ng-if="box.isSplit">待分装</span>
+                        <span ng-switch-when="2002" ng-else="box.isSplit">待入库</span>
+                        <span ng-switch-when="2003">已分装</span>
+                        <span ng-switch-when="2004">已入库</span>
+                        <span ng-switch-when="2005">已作废</span>
+                        <span ng-switch-default>{{box.status}}</span>
+                    </td>
                     <td>{{box.position}}</td>
                 </tr>
                 </tbody>

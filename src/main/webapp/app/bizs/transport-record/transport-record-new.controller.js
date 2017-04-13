@@ -22,6 +22,9 @@
         vm.operateStatus;// 1.状态 2:换位 3.批注
         var domArray = [];//单元格操作的数据
         var operateColor;//单元格颜色
+        var modalInstance;
+        //保存完整
+        vm.saveFlag = false;
         vm.openCalendar = openCalendar; //时间
         vm.importFrozenStorageBox = importFrozenStorageBox; //导入冻存盒
         vm.someClickHandler = someClickHandler; //点击冻存盒的表格行
@@ -42,9 +45,19 @@
         };
         if(vm.transportRecord.transhipDate){
             vm.transportRecord.transhipDate = new Date(entity.transhipDate);
+        }else{
+            vm.transportRecord.transhipDate = new Date();
         }
         if(vm.transportRecord.receiveDate){
             vm.transportRecord.receiveDate = new Date(entity.receiveDate);
+        }else{
+            vm.transportRecord.receiveDate = new Date();
+        }
+        if(vm.transportRecord.transhipBatch == " "){
+            vm.transportRecord.transhipBatch = 1;
+        }
+        if(vm.transportRecord.sampleSatisfaction == 0){
+            vm.transportRecord.sampleSatisfaction = 10;
         }
         function loadBox() {
             if(vm.transportRecord.transhipCode){
@@ -165,7 +178,7 @@
             stretchH: 'all',
             autoWrapCol:true,
             wordWrap:true,
-            colWidths: 100,
+            colWidths: 98,
             onAfterSelectionEnd:function (row, col, row2, col2) {
                 remarkArray = this.getData(row,col,row2,col2);
                 vm.remarkFlag = true;
@@ -298,7 +311,7 @@
         };
         //重新导入
         function reImportFrozenBoxData(){
-            var modalInstance = $uibModal.open({
+            modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'reImportDataModal.html',
                 size: 'sm',
@@ -447,6 +460,10 @@
         //项目编码
         function onProjectSuccess(data) {
             vm.projectOptions = data;
+            vm.transportRecord.projectId = data[0].id;
+            if(vm.transportRecord.projectId){
+                ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError)
+            }
         }
         vm.projectConfig = {
             valueField:'id',
@@ -467,6 +484,7 @@
         //项目点
         function onProjectSitesSuccess(data) {
             vm.projectSitesOptions = data;
+            vm.transportRecord.projectSiteId = data[0].id;
         }
         vm.projectSitesConfig = {
             valueField:'id',
@@ -568,6 +586,7 @@
         };
 
         function onBoxSuccess(data) {
+            vm.boxList = data[0];
             vm.dtOptions = DTOptionsBuilder.newOptions()
                 .withOption('data', data)
                 .withOption('info', false)
@@ -591,7 +610,6 @@
 
         vm.dtInstance = {};
         //导入冻存盒
-        var modalInstance;
         function importFrozenStorageBox() {
             modalInstance = $uibModal.open({
                 animation: true,
@@ -614,9 +632,11 @@
         }
         //保存保存记录
         function saveRecord() {
-            TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError)
+            saveBox();
         }
         function onSaveTranshipRecordSuccess(data) {
+            //保存完整
+            vm.saveFlag = true;
             AlertService.success("保存转运记录成功");
         }
 
@@ -635,6 +655,7 @@
         }
         function onSaveBoxSuccess() {
             AlertService.success("保存冻存盒成功！");
+            TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError)
         }
         function onSaveSuccess () {
             $state.go('transport-record');
@@ -644,9 +665,25 @@
         }
         //转运入库
         vm.stockIn = function () {
-            TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode).then(function () {
-                AlertService.success("入库成功！");
-            })
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/transport-record/stock-in-affirm-modal.html',
+                controller: 'StockInAffirmModalController',
+                backdrop:'static',
+                controllerAs: 'vm'
+
+            });
+            modalInstance.result.then(function () {
+                vm.saveRecord();
+                if(vm.saveFlag){
+                    TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode).then(function () {
+                        AlertService.success("入库成功！");
+                        loadAll();
+                    })
+                }
+
+            });
+
         };
         // function onStockInSuccess(data) {
         //     AlertService.success("入库成功！");
@@ -660,7 +697,7 @@
                 frozenBoxByCodeService.get({code:boxInfo.frozenBoxCode},onFrozenSuccess,onError);
 
             }else{
-                var modalInstance = $uibModal.open({
+                modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'boxModal.html',
                     size: 'sm',

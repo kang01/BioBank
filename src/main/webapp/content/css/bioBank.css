@@ -75,6 +75,9 @@
 .transport-record-body table.dataTable tbody td{
     padding: 4px 18px;
 }
+.transport-record-new .three-col{
+    width: 33%;
+}
 .transport-record-new .form-group{
     margin-bottom: 6px;
 }
@@ -93,7 +96,13 @@
     margin-left: -5px;
 }
 .transport-record-new .pipe-body .pipe-body-top .col-sm-2{
-    width: 22%;
+    width: 23%;
+}
+.transport-record-new .pipe-body .pipe-body-top .storage-location{
+    width: 40%;
+}
+.transport-record-new .pipe-body .pipe-body-top .storage-location .control-label{
+    width: 17%;
 }
 .transport-record-new .pipe-body .pipe-body-top .control-label{
     padding-left: 4px;
@@ -102,8 +111,9 @@
     width: 39%;
 }
 .transport-record-new .pipe-body .pipe-body-bottom .box-remark{
-    width: 61%;
+    width: 56.3%;
     padding-right: 0;
+    margin-left: 37px;
 }
 .transport-record-new .pipe-body .pipe-body-bottom .box-remark .col-sm-2{
     width: 9%;
@@ -174,24 +184,51 @@
 .import-box-modal-body .selectize-input{
     height: 368px;
 }
+.transport-record-new .pipe-body .pipe-operate{
+    width: 8%;
+    margin-right: 16px;
+}
+@media (min-width:1400px) {
+    .transport-record-new .pipe-body .pipe-body-bottom .box-remark{
+        width: 55%;
+        margin-left: 41px;
+    }
+    .transport-record-new .pipe-body .pipe-operate{
+        margin-right: 29px;
+    }
+}
 @media (min-width:1440px) {
     .transport-record-new .pipe-body .pipe-body-top .col-sm-2{
         width: 21%;
     }
     .transport-record-new .pipe-body .pipe-body-top {
-        margin-left: -40px;
-    }
-    .transport-record-new .pipe-body .pipe-body-bottom .col-sm-8{
         margin-left: -22px;
     }
-    .transport-record-new .pipe-body .pipe-table{
-        width: 67%;
+    .transport-record-new .pipe-body .pipe-body-bottom .col-sm-8{
+        width: 50.8%;
+        margin-left: -11px;
+    }
+    /*.transport-record-new .pipe-body .pipe-table{*/
+        /*width: 67%;*/
+    /*}*/
+    .transport-record-new .three-col{
+        width: 32%;
     }
     .transport-record-new .pipe-body .pipe-operate{
-       margin-right: 3%;
+        margin-right: 1%;
+        width: 13%;
     }
     .split-box .box-right{
         width: 400px;
+    }
+}
+@media (min-width:1670px) {
+    .transport-record-new .pipe-body .pipe-body-bottom .col-sm-8 {
+        width: 44%;
+        margin-left: 24px;
+    }
+    .transport-record-new .three-col{
+        width: 25%;
     }
 }
 

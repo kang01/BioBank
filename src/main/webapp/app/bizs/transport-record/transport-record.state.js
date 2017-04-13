@@ -87,13 +87,13 @@
                             projectSiteName: null,
                             receiveDate: new Date(),
                             receiver:null,
-                            sampleNumber:null,
-                            sampleSatisfaction: null,
+                            sampleNumber:0,//样本人份
+                            sampleSatisfaction: 10,
                             trackNumber: null,
-                            transhipBatch: null,
+                            transhipBatch: 1,
                             transhipDate:new Date(),
                             status: null,
-                            transhipState: null,
+                            transhipState: '1001',//转运状态:1002待入库1003已入库1004已作废
                             transhipCode:null
 
                         };

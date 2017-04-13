@@ -6,12 +6,20 @@ import org.fwoxford.domain.SampleType;
  * Created by gengluying on 2017/4/5.
  */
 public class StockInTubeForBox {
+    private Long id;
     private String frozenBoxCode;
     private String frozenTubeCode;
-    private Long frozenTubeId;
     private String tubeColumns;
     private String tubeRows;
     private SampleType sampleType;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getFrozenBoxCode() {
         return frozenBoxCode;
@@ -27,14 +35,6 @@ public class StockInTubeForBox {
 
     public void setFrozenTubeCode(String frozenTubeCode) {
         this.frozenTubeCode = frozenTubeCode;
-    }
-
-    public Long getFrozenTubeId() {
-        return frozenTubeId;
-    }
-
-    public void setFrozenTubeId(Long frozenTubeId) {
-        this.frozenTubeId = frozenTubeId;
     }
 
     public String getTubeColumns() {

@@ -333,7 +333,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         res.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(box.getSampleType()));
         for (FrozenTube tubes : frozenTubeList) {
             StockInTubeForBox tube = new StockInTubeForBox();
-            tube.setFrozenTubeId(tubes.getId());
+            tube.setId(tubes.getId());
             tube.setFrozenTubeCode(tubes.getFrozenTubeCode());
             tube.setSampleType(tubes.getSampleType());
             tube.setFrozenBoxCode(box.getFrozenBoxCode());

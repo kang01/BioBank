@@ -153,6 +153,7 @@
                 case '2003': status = '已分装'; break;
                 case '2004': status = '已入库'; break;
                 case '2005': status = '已作废'; break;
+                case '2006': status = '已上架'; break;
             }
             // $('td:eq(2)', row).html(sampleType);
             $('td:eq(5)', row).html(isSplit ? '需要分装' : '');
@@ -185,7 +186,11 @@
         function _fnRowSelectorRender(data, type, full, meta) {
             // todo::已上架状态的盒子不应该再被选中
             vm.selected[full.frozenBoxCode] = false;
-            return '<input type="checkbox" ng-model="vm.selected[\'' + full.frozenBoxCode + '\']" ng-click="vm.toggleOne(vm.selected)">';
+            var html = '';
+            if (full.status == "2002" && !full.isSplit){
+                html = '<input type="checkbox" ng-model="vm.selected[\'' + full.frozenBoxCode + '\']" ng-click="vm.toggleOne(vm.selected)">';
+            }
+            return html;
         }
         function _fnActionPutInShelfButton(e, dt, node, config){
             _putInShelf();

@@ -231,6 +231,12 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(frozenBox == null){
             throw new BankServiceException("冻存盒不存在！",boxCode);
         }
+        if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED)){
+            throw new BankServiceException("该冻存盒已经被分装过！",boxCode);
+        }
+        if(frozenBox.getIsSplit().equals(Constants.NO)){
+            throw new BankServiceException("该冻存盒不具备分装条件！",boxCode);
+        }
         List<SampleType> sampleTypes = sampleTypeRepository.findAll();
         List<Equipment> equipments = equipmentRepository.findAll();
         List<Area> areas = areaRepository.findAll();
@@ -247,7 +253,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         List<FrozenTube> tubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(boxCode);
         if(tubeList.size()==0){
             frozenBox.setStatus(Constants.FROZEN_BOX_SPLITED);
-            frozenBoxRepository.save(frozenBox);
+        }
+        frozenBox.setSampleNumber(tubeList.size());
+        frozenBoxRepository.save(frozenBox);
+        if(tubeList.size()==0){
             List<TranshipBox> transhipBox = transhipBoxRepository.findByFrozenBoxId(frozenBox.getId());
             if(transhipBox.size()>0){
                 //更改转运盒子状态
@@ -358,7 +367,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         //新增入库盒子
         List<StockInBox> stockInBoxList = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBoxNew.getFrozenBoxCode());
-        StockInBox stockInBox = new StockInBox();
+        StockInBox stockInBox = stockInBoxList.size()>0?stockInBoxList.get(0):new StockInBox();
         StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
         stockInBox.setStockIn(stockIn);
         stockInBox.setFrozenBoxCode(frozenBoxNew.getFrozenBoxCode());
@@ -387,6 +396,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             if(frozenTube == null){
                 throw new BankServiceException("冻存管不存在",tube.toString());
             }
+            if(tube.getFrozenBoxCode()!=null&&tube.getFrozenBoxCode().equals(frozenTube.getFrozenBox().getFrozenBoxCode())
+                &&tube.getTubeRows().equals(frozenTube.getTubeRows())
+                &&tube.getTubeColumns().equals(frozenTube.getTubeColumns())){
+                continue;
+            }
             //保存管子历史记录
             FrozenTubeRecord frozenTubeRecord = new FrozenTubeRecord();
             frozenTubeRecord.setFrozenTube(frozenTube);
@@ -404,6 +418,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenTubeRecord.setTubeRows(frozenTube.getTubeRows());
             frozenTubeRecord.setTubeColumns(frozenTube.getTubeColumns());
             frozenTubeRecord.setTubeType(frozenTube.getFrozenTubeType());
+            frozenTubeRecord.setMemo(frozenTube.getMemo());
             frozenTubeRecordRepository.save(frozenTubeRecord);
             //更改管子的位置信息
             frozenTube.setFrozenBox(frozenBoxNew);

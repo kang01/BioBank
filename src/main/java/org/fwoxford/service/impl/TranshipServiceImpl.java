@@ -104,6 +104,7 @@ public class TranshipServiceImpl implements TranshipService{
         Map<String,FrozenTubeResponse> map = new HashMap<String,FrozenTubeResponse>();
 
         for(FrozenBoxAndFrozenTubeResponse res:response){
+
             List<FrozenTubeResponse> tubeDTOS = res.getFrozenTubeDTOS();
             for(FrozenTubeResponse tube:tubeDTOS){
                 if(tube.getStatus().equals(Constants.FROZEN_TUBE_HOLE_EMPTY)){
@@ -119,6 +120,7 @@ public class TranshipServiceImpl implements TranshipService{
                     map.put(tube.getFrozenTubeCode().toString(),tube);
                 }
             }
+            List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipId);
         }
         transhipDTO.setSampleNumber(transhipDTO.getSampleNumber()!=null?transhipDTO.getSampleNumber():map.size());
         transhipDTO.setFrozenBoxNumber(transhipDTO.getFrozenBoxNumber()!=null?transhipDTO.getFrozenBoxNumber():response.size());
@@ -128,6 +130,23 @@ public class TranshipServiceImpl implements TranshipService{
         Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
         tranship = transhipMapper.transhipToDefaultValue(tranship);
         tranship = transhipRepository.save(tranship);
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipId);
+        for(FrozenBox box : frozenBoxList){
+            box.setProject(tranship.getProject());
+            box.setProjectCode(tranship.getProjectCode());
+            box.setProjectName(tranship.getProjectName());
+            box.setProjectSite(tranship.getProjectSite());
+            box.setProjectSiteName(tranship.getProjectSiteName());
+            box.setProjectSiteCode(tranship.getProjectSiteCode());
+            frozenBoxRepository.save(box);
+            List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxId(box.getId());
+            for(FrozenTube tube :frozenTubes){
+                tube.setProject(tranship.getProject());
+                tube.setProjectCode(tranship.getProjectCode());
+                frozenTubeRepository.save(tube);
+            }
+        }
+
         TranshipDTO result = transhipMapper.transhipToTranshipDTO(tranship);
         return result;
     }

@@ -496,4 +496,14 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         stockInBoxs = frozenBoxMapper.frozenBoxesToStockInBoxForDataTables(frozenBoxes);
         return stockInBoxs;
     }
+
+    @Override
+    public Boolean isRepeatFrozenBoxCode(String frozenBoxCode) {
+        Boolean flag = false;
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+        if(frozenBox!=null){
+            flag = true;
+        }
+        return flag;
+    }
 }

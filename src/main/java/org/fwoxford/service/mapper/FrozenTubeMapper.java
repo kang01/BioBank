@@ -101,6 +101,8 @@ public interface FrozenTubeMapper {
         res.setStatus(tube.getStatus());
         res.setTubeColumns(tube.getTubeColumns());
         res.setTubeRows(tube.getTubeRows());
+        res.setFrozenBoxCode(tube.getFrozenBoxCode());
+        res.setFrozenBoxId(tube.getFrozenBox()!=null?tube.getFrozenBox().getId():null);
         return res;
     }
 

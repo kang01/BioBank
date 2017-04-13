@@ -71,6 +71,8 @@ public class FrozenBoxAndFrozenTubeResponse {
      * 样本类型ID
      */
     private Long sampleTypeId;
+
+    private String sampleTypeCode;
     /**
      * 设备ID
      */
@@ -214,5 +216,13 @@ public class FrozenBoxAndFrozenTubeResponse {
 
     public void setSupportRackId(Long supportRackId) {
         this.supportRackId = supportRackId;
+    }
+
+    public String getSampleTypeCode() {
+        return sampleTypeCode;
+    }
+
+    public void setSampleTypeCode(String sampleTypeCode) {
+        this.sampleTypeCode = sampleTypeCode;
     }
 }

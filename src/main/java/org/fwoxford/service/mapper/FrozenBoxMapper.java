@@ -120,6 +120,7 @@ public interface FrozenBoxMapper {
         res.setIsSplit(frozenBox.getIsSplit());
         res.setMemo(frozenBox.getMemo());
         res.setSampleTypeId(frozenBox.getSampleType().getId());
+        res.setSampleTypeCode(frozenBox.getSampleTypeCode());
         res.setSupportRackCode(frozenBox.getSupportRackCode());
         res.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
         res.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);

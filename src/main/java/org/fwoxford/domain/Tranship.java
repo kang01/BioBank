@@ -56,14 +56,12 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     /**
      * 运单号
      */
-    @NotNull
     @Size(max = 100)
     @Column(name = "track_number", length = 100, nullable = false)
     private String trackNumber;
     /**
      * 转运批次
      */
-    @NotNull
     @Size(max = 100)
     @Column(name = "tranship_batch", length = 100, nullable = false)
     private String transhipBatch;
@@ -77,7 +75,6 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     /**
      * 接收人
      */
-    @NotNull
     @Size(max = 100)
     @Column(name = "receiver", length = 100, nullable = false)
     private String receiver;

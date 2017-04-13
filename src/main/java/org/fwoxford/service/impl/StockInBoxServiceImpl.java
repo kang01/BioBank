@@ -323,7 +323,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             equipment = equipments.get(equipmentIndex);
             stockInBoxForDataSplit.setEquipment(equipmentMapper.equipmentToEquipmentDTO(equipment));
         }
-        frozenBoxNew.setEquipment(equipment);
+        frozenBoxNew.setEquipment(equipment!=null&&equipment.getId()!=null?equipment:null);
         frozenBoxNew.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():new String(""));
         Area area = new Area();
         area.setId(stockInBoxForDataSplit.getAreaId());
@@ -334,7 +334,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             stockInBoxForDataSplit.setArea(areaMapper.areaToAreaDTO(area));
         }
 
-        frozenBoxNew.setArea(area);
+        frozenBoxNew.setArea(area!=null&&area.getId()!=null?area:null);
         frozenBoxNew.setAreaCode(area!=null?area.getAreaCode():new String(""));
         SupportRack supportRack= new SupportRack();
         supportRack.setId(stockInBoxForDataSplit.getSupportRackId());
@@ -343,7 +343,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             supportRack = supportRacks.get(supportIndex);
             stockInBoxForDataSplit.setShelf(supportRackMapper.supportRackToSupportRackDTO(supportRack));
         }
-        frozenBoxNew.setSupportRack(supportRack);
+        frozenBoxNew.setSupportRack(supportRack!=null&&supportRack.getId()!=null?supportRack:null);
         frozenBoxNew.setSupportRackCode(supportRack!=null?supportRack.getSupportRackCode():new String(""));
 
         SampleType sampleType = sampleTypes.stream().filter(s-> s.getSampleTypeCode().equals(stockInBoxForDataSplit.getSampleTypeCode())).findFirst().orElse(null);
@@ -367,17 +367,17 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
 
         //新增入库盒子
+        StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
         List<StockInBox> stockInBoxList = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBoxNew.getFrozenBoxCode());
         StockInBox stockInBox = stockInBoxList.size()>0?stockInBoxList.get(0):new StockInBox();
-        StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
         stockInBox.setStockIn(stockIn);
         stockInBox.setFrozenBoxCode(frozenBoxNew.getFrozenBoxCode());
         stockInBox.setStockInCode(stockInCode);
-        stockInBox.setEquipment(equipment);
+        stockInBox.setEquipment(equipment!=null&&equipment.getId()!=null?equipment:null);
         stockInBox.setEquipmentCode(equipment.getEquipmentCode());
-        stockInBox.setArea(area);
+        stockInBox.setArea(area!=null&&area.getId()!=null?area:null);
         stockInBox.setAreaCode(area.getAreaCode());
-        stockInBox.setSupportRack(supportRack);
+        stockInBox.setSupportRack(supportRack!=null&&supportRack.getId()!=null?supportRack:null);
         stockInBox.setSupportRackCode(supportRack.getSupportRackCode());
         stockInBox.setColumnsInShelf(stockInBoxForDataSplit.getColumnsInShelf());
         stockInBox.setRowsInShelf(stockInBoxForDataSplit.getRowsInShelf());

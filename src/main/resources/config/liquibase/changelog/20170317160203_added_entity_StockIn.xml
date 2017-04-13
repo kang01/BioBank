@@ -88,7 +88,7 @@
             </column>
 
             <column name="tranship_id" type="bigint" remarks="转运ID">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="project_id" type="bigint" remarks="项目ID">

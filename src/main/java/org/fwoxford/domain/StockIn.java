@@ -137,8 +137,7 @@ public class StockIn extends AbstractAuditingEntity implements Serializable {
     /**
      * 转运
      */
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     private Tranship tranship;
     /**
      * 项目

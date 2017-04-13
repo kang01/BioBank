@@ -43,11 +43,11 @@
             </column>
 
             <column name="track_number" type="varchar(100)" remarks="运单号">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="tranship_batch" type="varchar(100)" remarks="批次">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="tranship_state" type="varchar(20)" remarks="转运状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废">
@@ -55,7 +55,7 @@
             </column>
 
             <column name="receiver" type="varchar(100)" remarks="接收人">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="receive_date" type="date" remarks="接受日期">

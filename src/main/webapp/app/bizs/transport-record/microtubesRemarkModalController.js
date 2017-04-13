@@ -13,7 +13,6 @@
     function microtubesRemarkModalController($uibModalInstance,$uibModal,items) {
         var vm = this;
         vm.items = items;
-        console.log(JSON.stringify(vm.items));
 
         this.cancel = function () {
             $uibModalInstance.dismiss('cancel');

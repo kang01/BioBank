@@ -472,7 +472,8 @@
             });
         };
         //选择分装后的样本盒
-        var tubeList = [];
+        // var tubeList = [];
+        vm.boxList = [];
         vm.obox = {};
         //选中要分装样本盒
         vm.sampleBoxSelect = function (item,$event) {
@@ -541,21 +542,19 @@
                 }
             }
             _.pullAt(vm.obox.stockInFrozenTubeList, deleteIndexList);
-
-            console.log(JSON.stringify(vm.obox.stockInFrozenTubeList))
-
-
+            var obox = angular.copy(vm.obox);
+            // delete obox.addTubeCount;
+            vm.boxList.push(obox);
+            console.log(JSON.stringify(vm.boxList))
         };
         //保存分装结果
         vm.saveBox = function () {
-            var boxList = [];
-            var obox = angular.copy(vm.obox);
-            delete obox.addTubeCount;
-            boxList.push(obox);
+
             // console.log(JSON.stringify(boxList));
-            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,boxList).then(function (data) {
+            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).then(function (data) {
                 AlertService.success("分装成功!");
                 _splitABox(vm.box.frozenBoxCode);
+                vm.boxList = [];
             })
         };
         //添加分装样本盒

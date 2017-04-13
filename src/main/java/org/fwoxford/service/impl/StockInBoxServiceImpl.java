@@ -300,6 +300,15 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             throw new BankServiceException("冻存盒类型不存在！",stockInBoxForDataSplit.toString());
         }
 
+
+        int countOfTube = stockInBoxForDataSplit.getStockInFrozenTubeList().size();
+        String columns = boxType.getFrozenBoxTypeColumns()!=null?boxType.getFrozenBoxTypeColumns():new String("0");
+        String rows = boxType.getFrozenBoxTypeRows()!=null?boxType.getFrozenBoxTypeRows():new String("0");
+        int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
+        if(countOfTube==0||countOfTube>allCounts){
+            throw new BankServiceException("冻存管数量错误！",stockInBoxForDataSplit.toString());
+        }
+
         frozenBoxNew.setFrozenBoxType(boxType);
         frozenBoxNew.setFrozenBoxRows(stockInBoxForDataSplit.getFrozenBoxRows());
         frozenBoxNew.setFrozenBoxColumns(stockInBoxForDataSplit.getFrozenBoxColumns());

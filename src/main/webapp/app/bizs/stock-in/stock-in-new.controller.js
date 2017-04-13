@@ -153,6 +153,7 @@
                 case '2003': status = '已分装'; break;
                 case '2004': status = '已入库'; break;
                 case '2005': status = '已作废'; break;
+                case '2006': status = '已上架'; break;
             }
             // $('td:eq(2)', row).html(sampleType);
             $('td:eq(5)', row).html(isSplit ? '需要分装' : '');
@@ -185,7 +186,11 @@
         function _fnRowSelectorRender(data, type, full, meta) {
             // todo::已上架状态的盒子不应该再被选中
             vm.selected[full.frozenBoxCode] = false;
-            return '<input type="checkbox" ng-model="vm.selected[\'' + full.frozenBoxCode + '\']" ng-click="vm.toggleOne(vm.selected)">';
+            var html = '';
+            if (full.status == "2002" && !full.isSplit){
+                html = '<input type="checkbox" ng-model="vm.selected[\'' + full.frozenBoxCode + '\']" ng-click="vm.toggleOne(vm.selected)">';
+            }
+            return html;
         }
         function _fnActionPutInShelfButton(e, dt, node, config){
             _putInShelf();
@@ -385,8 +390,8 @@
                 if(value.sampleTypeCode){
                     SampleService.changeSampleType(value.sampleTypeCode,td);
                 }
-                htm = "<div ng-if='value.sampleCode'>"+value.sampleCode+"</div>"+
-                    "<div ng-if='value.sampleTmpCode'>"+value.sampleTempCode+"</div>"+
+                htm = "<div ng-if='value.sampleCode' style='line-height: 20px'>"+value.sampleCode+"</div>"+
+                    "<div ng-if='value.sampleTmpCode' style='line-height: 20px'>"+value.sampleTempCode+"</div>"+
                     "<div  style='display: none'>"+value.sampleTypeCode+"</div>"+
                     "<div  style='display: none'>"+value.status+"</div>"+
                     "<div  style='display: none'>"+value.memo+"</div>"+
@@ -410,6 +415,8 @@
             renderer:vm.customRenderer,
             fillHandle:false,
             stretchH: 'all',
+            wordWrap:true,
+            colWidths: 90,
             editor: false,
             outsideClickDeselects:false,
             onAfterSelectionEnd:function (row, col, row2, col2) {
@@ -466,7 +473,6 @@
         //选择分装后的样本盒
         var tubeList = [];
         vm.obox = {};
-        var frozenBox = {}
         //选中要分装样本盒
         vm.sampleBoxSelect = function (item,$event) {
             vm.obox = angular.copy(item);
@@ -511,14 +517,14 @@
                     if(selectList.length){
                         selectList[0].tubeRows = vm.obox.stockInFrozenTubeList[i].tubeRows;
                         selectList[0].tubeColumns = vm.obox.stockInFrozenTubeList[i].tubeColumns;
-                        selectList[0].sampleTmpCode = vm.obox.stockInFrozenTubeList[i].frozenBoxCode+"-"+vm.obox.stockInFrozenTubeList[i].tubeRows+vm.obox.stockInFrozenTubeList[i].tubeColumns;
+                        selectList[0].sampleTmpCode = vm.obox.stockInFrozenTubeList[i].frozenBoxCode+"-"+selectList[0].tubeRows+selectList[0].tubeColumns;
                         vm.obox.stockInFrozenTubeList[i] = selectList[0];
                         selectList.splice(0,1);
                     }
                 }
             }
             //删除空管子
-            var deleteIndexList = []
+            var deleteIndexList = [];
             for(var i = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
                 if(!vm.obox.stockInFrozenTubeList[i].frozenTubeCode){
                     deleteIndexList.push(i)
@@ -537,6 +543,7 @@
             console.log(JSON.stringify(boxList));
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,boxList).then(function (data) {
                 AlertService.success("分装成功!");
+                vm.loadBox();
             })
         };
         //添加分装样本盒

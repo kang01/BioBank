@@ -2,7 +2,7 @@
     <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
     <h3 class="modal-title" id="modal-title">导入冻存盒</h3>
 </div>
-<div class="modal-body" id="modal-body">
+<div class="modal-body import-box-modal-body" id="modal-body">
     <div class="row">
         <div class="col-sm-12">
             <div class="pull-right">
@@ -10,7 +10,8 @@
             </div>
         </div>
         <div class="col-sm-2">
-            <textarea rows="18" ng-keydown="vm.addData()" ng-model="vm.boxCode" style="resize: none"></textarea>
+            <!--<textarea rows="18" ng-keydown="vm.addData()" ng-model="vm.boxCode" style="resize: none"></textarea>-->
+            <selectize placeholder='录入冻存盒' options='vm.myOptions' config="vm.myConfig" ng-model="vm.arrayBoxCode" ng-disabled='disable' required='true' style="height:368px;"></selectize>
         </div>
         <div class="col-sm-10">
             <!--<div>-->
@@ -18,7 +19,7 @@
                     <!--<button class="btn btn-default">导入样本数据</button>-->
                 <!--</div>-->
             <!--</div>-->
-            <table datatable="ng" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" class="row-border hover">
+            <table datatable="ng" dt-options="vm.dtOptions" dt-columns="vm.dtColumns"  class="row-border hover">
                 <thead>
                     <th>冻存盒号</th>
                     <th>状态</th>
@@ -27,7 +28,7 @@
                     <th>是否分装</th>
                 </thead>
                 <tbody >
-                    <tr ng-repeat="item in vm.obox.frozenBoxDTOList track by $index">
+                    <tr ng-repeat="item in vm.obox.frozenBoxDTOList">
                         <td>{{item.frozenBoxCode}}</td>
                         <td></td>
                         <td></td>

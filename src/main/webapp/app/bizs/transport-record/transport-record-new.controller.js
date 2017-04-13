@@ -146,6 +146,9 @@
             renderer:vm.myCustomRenderer,
             fillHandle:false,
             stretchH: 'all',
+            autoWrapCol:true,
+            wordWrap:true,
+            colWidths: 100,
             onAfterSelectionEnd:function (row, col, row2, col2) {
                 remarkArray = this.getData(row,col,row2,col2);
                 vm.remarkFlag = true;
@@ -178,18 +181,23 @@
                         hotRegisterer.getInstance('my-handsontable').render();
                     }
                 }
-
-
             },
             enterMoves:function () {
                 var hotMoves = hotRegisterer.getInstance('my-handsontable');
-                var selectedRow = hotMoves.getSelected()[0];
-                if (selectedRow + 1 < hotMoves.countRows()) {
-                    return {row: 1, col: 0}
+                var selectedCol = hotMoves.getSelected()[1];
+                if(selectedCol + 1 < hotMoves.countCols()){
+                    return{row:0,col:1}
+                } else{
+                    return{row:1,col:-selectedCol}
                 }
-                else {
-                    return {row: -selectedRow, col: 1}
-                }
+                // var hotMoves = hotRegisterer.getInstance('my-handsontable');
+                // var selectedRow = hotMoves.getSelected()[0];
+                // if (selectedRow + 1 < hotMoves.countRows()) {
+                //     return {row: 1, col: 0}
+                // }
+                // else {
+                //     return {row: -selectedRow, col: 1}
+                // }
             },
             afterChange:function (change,source) {
                 if(source == 'edit'){
@@ -202,7 +210,6 @@
             //     console.log(row)
             // }
         };
-
         //修改样本状态
         vm.flagStatus = false;
         vm.editStatus = function () {
@@ -682,6 +689,7 @@
             }
             return nRow;
         }
+
 
     }
     function BoxInstanceCtrl($uibModalInstance) {

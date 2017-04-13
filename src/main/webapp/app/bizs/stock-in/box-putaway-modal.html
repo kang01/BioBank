@@ -59,7 +59,7 @@
                 <tbody >
                 <tr ng-repeat="box in vm.frozenBoxes | filter:vm.filterNotPutInShelfBoxes">
                     <td data-id="box.id">
-                        <input type="checkbox" ng-model="vm.selectedBox[box.frozenBoxCode]" ng-click="vm.toggleOne(vm.selectedBox)">
+                        <input ng-if="box.status=='2002'" type="checkbox" ng-model="vm.selectedBox[box.frozenBoxCode]" ng-click="vm.toggleOne(vm.selectedBox)">
                     </td>
                     <td>{{box.frozenBoxCode}}</td>
                     <td ng-switch="box.status">
@@ -69,6 +69,7 @@
                         <span ng-switch-when="2003">已分装</span>
                         <span ng-switch-when="2004">已入库</span>
                         <span ng-switch-when="2005">已作废</span>
+                        <span ng-switch-when="2006">已上架</span>
                         <span ng-switch-default>{{box.status}}</span>
                     </td>
                     <td>{{box.position}}</td>

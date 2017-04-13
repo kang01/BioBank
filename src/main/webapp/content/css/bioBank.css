@@ -171,6 +171,9 @@
 .box-selected{
     outline:2px solid red !important;
 }
+.import-box-modal-body .selectize-input{
+    height: 368px;
+}
 @media (min-width:1440px) {
     .transport-record-new .pipe-body .pipe-body-top .col-sm-2{
         width: 21%;

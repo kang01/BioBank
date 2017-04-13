@@ -257,13 +257,13 @@
             };
 
             vm.dtBoxesListColumns = [
-                DTColumnBuilder.newColumn(0).notSortable(),
-                DTColumnBuilder.newColumn(1),
-                DTColumnBuilder.newColumn(2),
-                DTColumnBuilder.newColumn(3)
+                DTColumnBuilder.newColumn(0).withOption("width", "30").notSortable(),
+                DTColumnBuilder.newColumn(1).withOption("width", "50"),
+                DTColumnBuilder.newColumn(2).withOption("width", "30"),
+                DTColumnBuilder.newColumn(3).withOption("width", "auto")
             ];
             vm.dtBoxesListOptions = DTOptionsBuilder.newOptions()
-                .withDOM("t").withScroller().withOption('scrollY', 338);
+                .withDOM("t").withOption('paging', false).withOption('order', [[1, 'asc' ]]).withScroller().withOption('scrollY', 338);
             vm.dtBoxesListInstance = {};
             $timeout(function(){
                 if (vm.dtBoxesListInstance.rerender){

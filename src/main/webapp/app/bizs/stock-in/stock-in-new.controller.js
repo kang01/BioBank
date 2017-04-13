@@ -33,6 +33,7 @@
             vm.selected = {};
             vm.selectAll = false;
 
+            // 处理盒子选中状态
             vm.toggleAll = function (selectAll, selectedItems) {
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
@@ -57,34 +58,21 @@
                 vm.dtInstance = instance;
             };
 
-            vm.searchSomething = function(term){
-                var table = vm.dtInstance.DataTable;
-                table
-                    .column(0)
-                    .search(term)
-                    .draw();
-            };
-
             vm.dtOptions = DTOptionsBuilder.fromSource({"url": ajaxUrl,"dataSrc": "data"})
+                // 设置Table的DOM布局
                 .withDOM("<'row'<'col-xs-6' TB><'col-xs-6' f>r>t<'row'<'col-xs-6'i><'col-xs-6'p>>")
+                // 设置表格每页显示的行数
                 .withDisplayLength(6)
-                // .withBootstrap()
-                // .withBootstrapOptions({
-                //     pagination: {
-                //         classes: {
-                //             ul: 'pagination pagination-sm'
-                //         }
-                //     }
-                // })
-                // Add Table tools compatibility
+                // 设置Tool button
                 .withButtons([
                     {
-                        text: '批量上架',
+                        text: '<i class="fa fa-sign-in"></i> 批量上架',
                         className: 'btn btn-default',
                         key: '1',
                         action: _fnActionPutInShelfButton
                     }
                 ])
+                // 执行Header内容的Compile
                 .withOption('headerCallback', function(header) {
                     if (!vm.headerCompiled) {
                         // Use this headerCompiled field to only compile header once
@@ -92,18 +80,29 @@
                         $compile(angular.element(header).contents())($scope);
                     }
                 })
+                // 将数据加载的请求方法从GET改为POST
                 .withOption('sServerMethod','POST')
+                // 显示正在处理的字样
                 .withOption('processing',true)
+                // 数据从服务器加载
                 .withOption('serverSide',true)
-                .withFnServerData(_fnServerData)
+                // 分页类型
                 .withPaginationType('full_numbers')
+                // 设置默认排序
+                .withOption('order', [[1, 'asc' ]])
+                // 指定数据加载方法
+                .withFnServerData(_fnServerData)
+                // 每行的渲染
                 .withOption('createdRow', _fnCreatedRow)
+                // 定义每个列过滤选项
                 .withColumnFilter(_createColumnFilters());
 
-
+            // 表格中每个列的定义
             vm.dtColumns = _createColumns();
 
+            // 分装按钮
             vm.splitIt = _splitABox;
+            // 上架按钮
             vm.putInShelf = _putInShelf;
         }
 
@@ -163,14 +162,15 @@
         function _fnActionButtonsRender(data, type, full, meta) {
             // console.log(vm.splitIt, vm.putInShelf);
             return '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
-                '   <i class="fa fa-edit"></i>' +
+                '   <i class="fa fa-sitemap"></i> 分装' +
                 '</button>&nbsp;' +
                 '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf(\''+ full.frozenBoxCode +'\')">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;';
+                '   <i class="fa fa-sign-in"></i> 上架' +
+                '</button>';
 
         }
         function _fnRowSelectorRender(data, type, full, meta) {
+            // todo::已上架状态的盒子不应该再被选中
             vm.selected[full.frozenBoxCode] = false;
             return '<input type="checkbox" ng-model="vm.selected[\'' + full.frozenBoxCode + '\']" ng-click="vm.toggleOne(vm.selected)">';
         }
@@ -202,14 +202,14 @@
 
             var columns = [
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
-                DTColumnBuilder.newColumn("").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
+                DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').renderWith(_fnFrozenBoxCodeRender),
-                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
-                DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
-                DTColumnBuilder.newColumn('countOfSample').withTitle('样本量'),
-                DTColumnBuilder.newColumn('isSplit').withTitle('是否分装'),
-                DTColumnBuilder.newColumn('status').withTitle('状态'),
-                DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(_fnActionButtonsRender),
+                DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
+                DTColumnBuilder.newColumn('position').withOption("width", "auto").withTitle('冻存位置'),
+                DTColumnBuilder.newColumn('countOfSample').withOption("width", "80").withTitle('样本量'),
+                DTColumnBuilder.newColumn('isSplit').withOption("width", "50").withTitle('是否分装'),
+                DTColumnBuilder.newColumn('status').withOption("width", "80").withTitle('状态'),
+                DTColumnBuilder.newColumn("").withOption("width", "120").withTitle('操作').notSortable().renderWith(_fnActionButtonsRender),
                 DTColumnBuilder.newColumn('id').notVisible(),
                 DTColumnBuilder.newColumn('sampleType').notVisible(),
                 DTColumnBuilder.newColumn('frozenBoxRows').notVisible(),
@@ -265,9 +265,6 @@
             if (typeof boxIds === "undefined" || !boxIds.length){
                 return;
             }
-
-
-
 
             modalInstance = $uibModal.open({
                 animation: true,

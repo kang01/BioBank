@@ -223,16 +223,16 @@
             frozenBoxByCodeService.get({code:code},onFrozenSuccess,onError);
             function onFrozenSuccess(data) {
                 vm.splittingBox = true;
+                initFrozenTube(size);
                 vm.box =  data;
                 for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
                     var tube = vm.box.frozenTubeDTOS[k];
                     vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
                 }
-
-                $timeout(function(){
-                    hotRegisterer.getInstance('my-handsontable').render();
-                }, 200);
             }
+            $timeout(function(){
+                hotRegisterer.getInstance('my-handsontable').render();
+            }, 200);
             vm.loadBox();
         }
 
@@ -330,6 +330,7 @@
             SampleTypeService.query({},onSampleTypeSuccess, onError);
         };
         function onSampleTypeSuccess(data) {
+            vm.incompleteBoxesList = [];
             vm.sampleTypes = data;
             //未装满不同样本类型的盒子
             for(var i = 0; i < vm.sampleTypes.length-1;i++){
@@ -359,7 +360,7 @@
                 }
             }
         }
-        initFrozenTube(size);
+
 
         function getTubeRowIndex(row) {
             return row.charCodeAt(0) -65;
@@ -405,7 +406,9 @@
                 vm.selectCell = $(this.getData(row,col,row2,col2));
                 for(var i = 0; i < vm.selectCell.length; i++ ){
                     for (var j = 0; j < vm.selectCell[i].length; j++){
-                        selectList.push(vm.selectCell[i][j])
+                        if(vm.selectCell[i][j]){
+                            selectList.push(vm.selectCell[i][j])
+                        }
                     }
                 }
             },
@@ -453,9 +456,11 @@
         //选择分装后的样本盒
         var tubeList = [];
         vm.obox = {};
+        var frozenBox = {}
+        //选中要分装样本盒
         vm.sampleBoxSelect = function (item,$event) {
-            console.log(JSON.stringify(item));
-            vm.obox = item;
+            vm.obox = angular.copy(item);
+            vm.obox.stockInFrozenTubeList = [];
             //初始100个管子或者80个管子
             for(var i = 0; i < item.frozenBoxRows; i++){
                 tempTubeArray[i] = [];
@@ -464,7 +469,6 @@
                         tubeColumns: j+1,
                         tubeRows: String.fromCharCode(i+65),
                         frozenTubeCode:''
-
                     };
                     vm.obox.stockInFrozenTubeList.push(tempTubeArray[i][j])
                 }
@@ -476,6 +480,7 @@
                     vm.obox.stockInFrozenTubeList[k] = tube
                 }
             }
+            console.log(JSON.stringify(vm.obox.stockInFrozenTubeList))
             $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
             $($event.target).addClass("box-selected");
         };
@@ -490,12 +495,13 @@
                     }
                 }
             }
-            //封装数据
+            //分装数据
             for(var i = 0,j = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
                 if(!vm.obox.stockInFrozenTubeList[i].frozenTubeCode){
                     if(selectList.length){
                         selectList[0].tubeRows = vm.obox.stockInFrozenTubeList[i].tubeRows;
                         selectList[0].tubeColumns = vm.obox.stockInFrozenTubeList[i].tubeColumns;
+                        selectList[0].sampleTmpCode = vm.obox.stockInFrozenTubeList[i].frozenBoxCode+"-"+vm.obox.stockInFrozenTubeList[i].tubeRows+vm.obox.stockInFrozenTubeList[i].tubeColumns;
                         vm.obox.stockInFrozenTubeList[i] = selectList[0];
                         selectList.splice(0,1);
                     }
@@ -512,20 +518,18 @@
 
 
         };
-
+        //保存分装结果
         vm.saveBox = function () {
             var boxList = [];
             var obox = angular.copy(vm.obox);
             delete obox.addTubeCount;
             boxList.push(obox);
             console.log(JSON.stringify(boxList));
-            SplitedBoxService.saveSplit(vm.entity.stockInCode,vm.box.frozenBoxCode,boxList).then(function (data) {
+            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,boxList).then(function (data) {
                 AlertService.success("分装成功!");
             })
         };
-        vm.editBox = function () {
-            _splitABox();
-        }
+        //添加分装样本盒
         vm.addBoxModal = function () {
             modalInstance = $uibModal.open({
                 animation: true,

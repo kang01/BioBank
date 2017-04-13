@@ -342,7 +342,7 @@ public class TempResource {
         res.setStockInFrozenTubeList(new ArrayList<>());
         for(int i = 0; i<countOfSample; ++i){
             StockInTubeForBox tube = new StockInTubeForBox();
-            tube.setFrozenTubeId((id - 1) * 100 + i);
+            tube.setId((id - 1) * 100 + i);
             tube.setFrozenTubeCode("123456789-"+i);
             tube.setSampleType(sampleTypeMapper.sampleTypeDTOToSampleType(typeDTO));
             tube.setFrozenBoxCode(frozenBoxCode);

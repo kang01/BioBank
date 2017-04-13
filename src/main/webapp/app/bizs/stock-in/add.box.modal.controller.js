@@ -125,8 +125,8 @@
             $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
-            vm.box.rowsInShelf = vm.boxRowCol.charAt(0)
-            vm.box.columnsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
+            vm.box.columnsInShelf = vm.boxRowCol.charAt(0)
+            vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
             $uibModalInstance.close(vm.box);
         };
     }

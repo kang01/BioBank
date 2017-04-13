@@ -52,6 +52,9 @@
             // _.forEach(vm.frozenBoxes, function(box){vm.selectedBox[box.frozenBoxCode] = false;});
             var promiseForFrozenBox = StockInBoxService.getStockInBoxByCodes(boxCodes).then(function(res){
                 vm.frozenBoxes = res.data;
+                _.forEach(vm.frozenBoxes, function(box){
+                    vm.selectedBox[box.frozenBoxCode] = false;
+                })
             }, onError);
             $q.all([promiseForShelfType, promiseForEquipment, promiseForFrozenBox]).then(function(data){
             });
@@ -68,6 +71,8 @@
             };
             // 盒子上架
             vm.putInShelf = _putInShelf;
+            // 复原
+            vm.rollback = _rollback;
         }
         // 初始化选择冻存架功能的相关控件
         function _initShelvesList(){
@@ -180,8 +185,9 @@
                             if (boxesInShelf.length){
                                 arrayBoxes[j][i] = boxesInShelf[0];
                             } else {
+                                var boxesPos = vm.putInShelfBoxes[shelf.id];
                                 // 从已上架的盒子中查询架子中该位置的盒子
-                                boxesInShelf = _.filter(vm.putInShelfBoxes||[], pos);
+                                boxesInShelf = _.filter(boxesPos||[], pos);
                                 if (boxesInShelf.length){
                                     arrayBoxes[j][i] = boxesInShelf[0];
                                 } else {
@@ -499,6 +505,32 @@
                         cellRow = 0;
                     }
 
+                }
+            }
+
+            tableCtrl.render();
+            vm.dtBoxesListInstance.rerender();
+        }
+        function _rollback(){
+            var tableCtrl = _getShelfDetailsTableCtrl();
+            var shelf = vm.selectedShelf;
+            for(var shelfId in vm.putInShelfBoxes){
+                var boxes = vm.putInShelfBoxes[shelfId];
+                for (var code in boxes){
+                    var boxPos = boxes[code];
+                    var box = _.filter(vm.frozenBoxes, {frozenBoxCode: code})[0];
+                    box.isPutInShelf = undefined;
+                    vm.selectedBox[code] = false;
+                    vm.selectAllBox = false;
+
+                    if (shelf.id == shelfId){
+                        var cellData = tableCtrl.getDataAtCell(boxPos.rowNO, boxPos.colNO);
+                        cellData.frozenBoxId = null;
+                        cellData.frozenBoxCode = "";
+                        cellData.isEmpty = true;
+                    }
+
+                    delete boxes[code];
                 }
             }
 

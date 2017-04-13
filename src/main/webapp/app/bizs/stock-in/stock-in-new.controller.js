@@ -161,13 +161,26 @@
         }
         function _fnActionButtonsRender(data, type, full, meta) {
             // console.log(vm.splitIt, vm.putInShelf);
-            return '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
-                '   <i class="fa fa-sitemap"></i> 分装' +
-                '</button>&nbsp;' +
-                '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf(\''+ full.frozenBoxCode +'\')">' +
-                '   <i class="fa fa-sign-in"></i> 上架' +
-                '</button>';
+            var buttonHtml = "";
+            if (full.status == "2002"){
+                if (full.isSplit){
+                    buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
+                        '   <i class="fa fa-sitemap"></i> 分装' +
+                        '</button>';
+                } else {
+                    buttonHtml += '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf(\''+ full.frozenBoxCode +'\')">' +
+                        '   <i class="fa fa-sign-in"></i> 上架' +
+                        '</button>';
+                }
+            }
 
+            return buttonHtml;
+            // return '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
+            //     '   <i class="fa fa-sitemap"></i> 分装' +
+            //     '</button>&nbsp;' +
+            //     '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf(\''+ full.frozenBoxCode +'\')">' +
+            //     '   <i class="fa fa-sign-in"></i> 上架' +
+            //     '</button>';
         }
         function _fnRowSelectorRender(data, type, full, meta) {
             // todo::已上架状态的盒子不应该再被选中

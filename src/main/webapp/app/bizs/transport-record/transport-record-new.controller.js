@@ -55,6 +55,8 @@
         }
         if(vm.transportRecord.transhipBatch == null || vm.transportRecord.transhipBatch == " "){
             vm.transportRecord.transhipBatch = 1;
+        }else{
+            vm.transportRecord.transhipBatch = +vm.transportRecord.transhipBatch
         }
         if(vm.transportRecord.sampleSatisfaction == 0){
             vm.transportRecord.sampleSatisfaction = 10;
@@ -635,9 +637,16 @@
             saveBox();
         }
         function onSaveTranshipRecordSuccess(data) {
-            //保存完整
-            vm.saveFlag = true;
+
             AlertService.success("保存转运记录成功");
+            if(vm.saveFlag){
+                TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode).then(function () {
+                    AlertService.success("入库成功！");
+                    //保存完整
+                    vm.saveFlag = false;
+                    loadAll();
+                })
+            }
         }
 
         function saveBox(){
@@ -674,13 +683,10 @@
 
             });
             modalInstance.result.then(function () {
+                //保存完整
+                vm.saveFlag = true;
                 vm.saveRecord();
-                if(vm.saveFlag){
-                    TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode).then(function () {
-                        AlertService.success("入库成功！");
-                        loadAll();
-                    })
-                }
+
 
             });
 

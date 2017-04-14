@@ -2,10 +2,7 @@ package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
-import org.fwoxford.repository.FrozenBoxRepository;
-import org.fwoxford.repository.FrozenTubeRepository;
-import org.fwoxford.repository.TranshipRepository;
-import org.fwoxford.repository.TranshipRepositries;
+import org.fwoxford.repository.*;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
@@ -75,6 +72,11 @@ public class TranshipServiceImpl implements TranshipService{
     @Autowired
     private FrozenTubeRepository frozenTubeRepository;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+    @Autowired
+    private ProjectSiteRepository projectSiteRepository;
+
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
         this.transhipMapper = transhipMapper;
@@ -127,6 +129,12 @@ public class TranshipServiceImpl implements TranshipService{
         transhipDTO.setEmptyHoleNumber(transhipDTO.getEmptyHoleNumber()!=null?transhipDTO.getEmptyHoleNumber():countOfEmptyHole);
         transhipDTO.setEmptyTubeNumber(transhipDTO.getEmptyTubeNumber()!=null?transhipDTO.getEmptyTubeNumber():countOfEmptyTube);
         transhipDTO.setEffectiveSampleNumber(transhipDTO.getEffectiveSampleNumber()!=null?transhipDTO.getEffectiveSampleNumber():countOfTube);
+        Project project = projectRepository.findOne(transhipDTO.getProjectId());
+        transhipDTO.setProjectCode(project!=null?project.getProjectCode():new String(""));
+        transhipDTO.setProjectName(project!=null?project.getProjectName():new String(""));
+        ProjectSite projectSite = projectSiteRepository.findOne(transhipDTO.getProjectSiteId());
+        transhipDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():new String(""));
+        transhipDTO.setProjectSiteName(projectSite!=null?projectSite.getProjectSiteName():new String(""));
         Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
         tranship = transhipMapper.transhipToDefaultValue(tranship);
         tranship = transhipRepository.save(tranship);

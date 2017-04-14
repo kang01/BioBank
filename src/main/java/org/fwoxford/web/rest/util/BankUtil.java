@@ -32,8 +32,8 @@ public class BankUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        time = dateFormat.format(date).toString();
-
+//        time = dateFormat.format(date).toString();
+        time = String.valueOf(date.getTime());
         return time;
     }
 }

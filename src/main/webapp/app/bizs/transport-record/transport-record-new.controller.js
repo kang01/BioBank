@@ -53,7 +53,7 @@
         }else{
             vm.transportRecord.receiveDate = new Date();
         }
-        if(vm.transportRecord.transhipBatch == " "){
+        if(vm.transportRecord.transhipBatch == ""){
             vm.transportRecord.transhipBatch = 1;
         }
         if(vm.transportRecord.sampleSatisfaction == 0){

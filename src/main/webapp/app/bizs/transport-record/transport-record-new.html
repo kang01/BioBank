@@ -15,7 +15,7 @@
     </div>
 
     <form class="form-horizontal">
-        <div class="row">
+        <div class="row m-l-0 m-r-0">
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">转运日期</label>
                 <div class="col-sm-8">
@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row m-l-0 m-r-0">
 
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">转运批次</label>
@@ -87,7 +87,7 @@
             </div>
 
         </div>
-        <div class="row">
+        <div class="row m-l-0 m-r-0">
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">样本人份</label>
                 <div class="col-sm-8">
@@ -114,7 +114,7 @@
             </div>
 
         </div>
-        <div class="row">
+        <div class="row m-l-0 m-r-0">
             <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">空管数</label>
                 <div class="col-sm-8">
@@ -141,14 +141,14 @@
 
     </form>
     <hr>
-    <div class="row">
+    <div class="row m-l-0 m-r-0">
         <div class="col-sm-2">
             <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"  class="table table-bordered"></table>
         </div>
         <div class="col-sm-10 pipe-body p-l-0 p-r-0">
             <div class="">
                 <form class="form-horizontal" name="boxFrom" role="form" novalidate>
-                    <div class="row pipe-body-top ">
+                    <div class="row pipe-body-top m-l-0 m-r-0 ">
                         <div class="form-group col-sm-2">
                             <label  class="col-sm-4 control-label p-r-6">
                                 <span class="required-field"></span>
@@ -182,30 +182,29 @@
                         </div>
                         <div class="form-group col-sm-5 p-r-0 storage-location">
                             <label  class="col-sm-3 control-label p-r-6 ">
-                                <span class="required-field"></span>
                                 存储位置
                             </label>
                             <div class="col-sm-9 p-l-0 p-r-0">
-                                <div style="float:left;width: 80px;">
-                                    <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig" style="width: 80px;"
+                                <div style="" class="location">
+                                    <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig" style="width: 100%"
                                                ng-model="vm.box.equipmentId" ng-disabled="!vm.box"></selectize>
                                     <input type="hidden" ng-model="vm.box.equipmentId" required>
                                 </div>
-                                <div style="float:left;width: 80px; margin-left: 2px">
-                                    <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig" style="width: 80px;"
+                                <div  class="location">
+                                    <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig" style="width: 100%"
                                                ng-model="vm.box.areaId" ng-disabled="!vm.box"></selectize>
                                     <input type="hidden" ng-model="vm.box.areaId" required>
                                 </div>
-                                <div style="float:left;width: 80px;margin-left: 2px">
-                                    <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig" style="width: 80px;"
+                                <div  class="location">
+                                    <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig" style="width: 100%"
                                                ng-model="vm.box.supportRackId" ng-disabled="!vm.box"></selectize>
                                 </div>
-                                <div style="float:left;width: 80px;margin-left: 2px"><input type="text" class="form-control" maxlength="2" ng-model="vm.boxRowCol" ng-disabled="!vm.box">
+                                <div  class="location"><input type="text" class="form-control" maxlength="2" ng-model="vm.boxRowCol" ng-disabled="!vm.box">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row pipe-body-bottom">
+                    <div class="row pipe-body-bottom  m-l-0 m-r-0">
                         <div class="col-sm-4 txt-width">
                             <p style="margin-top: 10px">
                                 <span>样本数</span>

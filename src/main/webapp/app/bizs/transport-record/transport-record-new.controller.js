@@ -53,7 +53,7 @@
         }else{
             vm.transportRecord.receiveDate = new Date();
         }
-        if(vm.transportRecord.transhipBatch == ""){
+        if(vm.transportRecord.transhipBatch == null || vm.transportRecord.transhipBatch == " "){
             vm.transportRecord.transhipBatch = 1;
         }
         if(vm.transportRecord.sampleSatisfaction == 0){
@@ -178,7 +178,7 @@
             stretchH: 'all',
             autoWrapCol:true,
             wordWrap:true,
-            colWidths: 98,
+            colWidths: 94,
             onAfterSelectionEnd:function (row, col, row2, col2) {
                 remarkArray = this.getData(row,col,row2,col2);
                 vm.remarkFlag = true;

@@ -304,7 +304,7 @@ public class StockInServiceImpl implements StockInService {
         for(StockInBox box: stockInBoxes){
             frozenBoxRepository.updateStatusByFrozenBoxCode(box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
             //修改转运盒子
-            transhipBoxRepository.updateStatusByTranshipIdAndFrozenBoxCode(stockIn.getTranship().getId(),box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
+//            transhipBoxRepository.updateStatusByTranshipIdAndFrozenBoxCode(stockIn.getTranship().getId(),box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
         }
         //修改转运
         transhipRepository.updateTranshipStateById(stockIn.getTranship().getId(),Constants.TRANSHIPE_IN_STOCKED);

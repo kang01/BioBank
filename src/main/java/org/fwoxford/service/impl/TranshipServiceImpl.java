@@ -126,11 +126,11 @@ public class TranshipServiceImpl implements TranshipService{
             }
             List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipId);
         }
-        transhipDTO.setSampleNumber(transhipDTO.getSampleNumber()!=null?transhipDTO.getSampleNumber():map.size());
-        transhipDTO.setFrozenBoxNumber(transhipDTO.getFrozenBoxNumber()!=null?transhipDTO.getFrozenBoxNumber():response.size());
-        transhipDTO.setEmptyHoleNumber(transhipDTO.getEmptyHoleNumber()!=null?transhipDTO.getEmptyHoleNumber():countOfEmptyHole);
-        transhipDTO.setEmptyTubeNumber(transhipDTO.getEmptyTubeNumber()!=null?transhipDTO.getEmptyTubeNumber():countOfEmptyTube);
-        transhipDTO.setEffectiveSampleNumber(transhipDTO.getEffectiveSampleNumber()!=null?transhipDTO.getEffectiveSampleNumber():countOfTube);
+        transhipDTO.setSampleNumber(transhipDTO.getSampleNumber()!=null&& transhipDTO.getSampleNumber()!=0?transhipDTO.getSampleNumber():map.size());
+        transhipDTO.setFrozenBoxNumber(transhipDTO.getFrozenBoxNumber()!=null && transhipDTO.getFrozenBoxNumber()!=0?transhipDTO.getFrozenBoxNumber():response.size());
+        transhipDTO.setEmptyHoleNumber(transhipDTO.getEmptyHoleNumber()!=null && transhipDTO.getEmptyHoleNumber()!=0?transhipDTO.getEmptyHoleNumber():countOfEmptyHole);
+        transhipDTO.setEmptyTubeNumber(transhipDTO.getEmptyTubeNumber()!=null && transhipDTO.getEmptyTubeNumber()!=0?transhipDTO.getEmptyTubeNumber():countOfEmptyTube);
+        transhipDTO.setEffectiveSampleNumber(transhipDTO.getEffectiveSampleNumber()!=null && transhipDTO.getEffectiveSampleNumber()!=0?transhipDTO.getEffectiveSampleNumber():countOfTube);
         Project project = projectRepository.findOne(transhipDTO.getProjectId());
         transhipDTO.setProjectCode(project!=null?project.getProjectCode():new String(""));
         transhipDTO.setProjectName(project!=null?project.getProjectName():new String(""));

@@ -76,6 +76,8 @@ public class TranshipServiceImpl implements TranshipService{
     private ProjectRepository projectRepository;
     @Autowired
     private ProjectSiteRepository projectSiteRepository;
+    @Autowired
+    private TranshipBoxRepository transhipBoxRepository;
 
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
@@ -362,7 +364,7 @@ public class TranshipServiceImpl implements TranshipService{
             String row = box.getRowsInShelf();
             List<FrozenBoxDTO> frozenBoxDTOList =  frozenBoxService.countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId,areaId,supportRackId,column,row);
             for(FrozenBoxDTO b:frozenBoxDTOList){
-                if(!b.getId().equals(box.getId())){
+                if(!b.getId().equals(box.getId())&&!b.getStatus().equals(Constants.FROZEN_BOX_INVALID)){
                     throw new BankServiceException("该位置已有冻存盒存在，请更换冻存盒位置！",box.getEquipmentCode()+"."+box.getAreaCode()+"."+box.getSupportRackCode()+"."+box.getRowsInShelf()+box.getColumnsInShelf());
                 }
             }
@@ -388,5 +390,38 @@ public class TranshipServiceImpl implements TranshipService{
             alist.add(box);
         }
         return alist;
+    }
+
+    /**
+     * 作废转运记录
+     * @param transhipCode
+     * @return
+     */
+    @Override
+    public TranshipDTO invalidTranship(String transhipCode) {
+        TranshipDTO transhipDTO = new TranshipDTO();
+        Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
+        if(tranship == null){
+            throw new BankServiceException("转运记录不存在！",transhipCode);
+        }
+        if(!tranship.getTranshipState().equals(Constants.TRANSHIPE_IN_PENDING)){
+            throw new BankServiceException("转运已不在进行中的状态，不能作废！",transhipCode);
+        }
+
+        tranship.setTranshipState(Constants.TRANSHIPE_IN_INVALID);
+        transhipRepository.save(tranship);
+        //更改转运盒
+        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipId(tranship.getId());
+        for(TranshipBox tBox:transhipBoxes){
+            tBox.setStatus(Constants.FROZEN_BOX_INVALID);
+            transhipBoxRepository.save(tBox);
+        }
+        //更改冻存盒
+        List<FrozenBox> frozenBoxes = frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship.getId());
+        for(FrozenBox frozenBox :frozenBoxes){
+            frozenBox.setStatus(Constants.FROZEN_BOX_INVALID);
+            frozenBoxRepository.save(frozenBox);
+        }
+        return transhipMapper.transhipToTranshipDTO(tranship);
     }
 }

@@ -45,7 +45,6 @@ public class StockInDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 入库类型：（首次入库，移位入库，调整入库）
      */
-    @NotNull
     @Size(max = 20)
     private String stockInType;
     /**

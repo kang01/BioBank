@@ -84,7 +84,13 @@ public class StockInServiceImpl implements StockInService {
     @Override
     public StockInDTO save(StockInDTO stockInDTO) {
         log.debug("Request to save StockIn : {}", stockInDTO);
-        StockIn stockIn = stockInMapper.stockInDTOToStockIn(stockInDTO);
+        if(stockInDTO.getId()==null){
+            throw new BankServiceException("入库ID不能为空！",stockInDTO.toString());
+        }
+        StockIn stockIn = stockInRepository.findOne(stockInDTO.getId());
+        stockIn.setStoreKeeper1(stockInDTO.getStoreKeeper1());
+        stockIn.setStoreKeeper2(stockInDTO.getStoreKeeper2());
+        stockIn.setStockInDate(stockInDTO.getStockInDate());
         stockIn = stockInRepository.save(stockIn);
         StockInDTO result = stockInMapper.stockInToStockInDTO(stockIn);
         return result;

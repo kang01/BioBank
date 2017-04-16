@@ -604,7 +604,7 @@
                     items: function () {
                         return {
                             sampleTypes :vm.sampleTypes,
-                            box :box || {}
+                            box :box || {stockInFrozenTubeList:[]}
                         }
                     }
                 }

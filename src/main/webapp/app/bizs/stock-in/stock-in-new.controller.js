@@ -9,10 +9,10 @@
         .controller('StockInNewController', StockInNewController);
 
     StockInNewController.$inject = ['$timeout','$state','$stateParams', '$scope','$compile','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
-        'entity','AlertService','StockInService','StockInBoxService','frozenBoxByCodeService','SplitedBoxService',
+        'entity','AlertService','StockInService','StockInBoxService','frozenBoxByCodeService','SplitedBoxService','StockInSaveService',
         'SampleTypeService','SampleService','IncompleteBoxService']
     function StockInNewController($timeout,$state,$stateParams,$scope,$compile,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
-                                  entity,AlertService,StockInService,StockInBoxService,frozenBoxByCodeService,SplitedBoxService,
+                                  entity,AlertService,StockInService,StockInBoxService,frozenBoxByCodeService,SplitedBoxService,StockInSaveService,
                                   SampleTypeService,SampleService,IncompleteBoxService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
@@ -23,6 +23,7 @@
         vm.splittingBox = null;
         vm.splittedBoxes = {};
         vm.dtInstance = {};
+        var modalInstance;
 
 
 
@@ -318,10 +319,23 @@
                 templateUrl: 'app/bizs/stock-in/stock-in-info-modal.html',
                 controller: 'StockInInfoModalController',
                 controllerAs:'vm',
-                size:'lg'
+                size:'lg',
+                resolve: {
+                    items: function () {
+                        return {
+                            id: vm.entity.id,
+                            stockInDate: vm.entity.stockInDate,
+                            storeKeeper1: vm.entity.storeKeeper1,
+                            storeKeeper2: vm.entity.storeKeeper2
+                        }
+                    }
+                }
             });
             modalInstance.result.then(function (data) {
-
+                StockInSaveService.saveStockIn(vm.stockInCode).then(function () {
+                    AlertService.success("入库完成成功!");
+                    _initStockInBoxesTable();
+                })
             })
         };
         vm.isShowSplittingPanel = function(){
@@ -337,7 +351,6 @@
         vm.incompleteBoxesList = []; //分装后的样本类型盒子，未装满样本的盒子
         var tempTubeArray = [];//选中未满样本盒子的临时数据，需要操作管子
         var selectList = [];//选择单元格的管子数据
-        var modalInstance;
         var size = 10;
         var htm;
         //样本类型

@@ -10,7 +10,7 @@
                     <label class="col-sm-4 control-label text-left">入库日期</label>
                     <div class="col-sm-8">
                         <div class="input-group">
-                            <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockInDate" is-open="vm.datePickerOpenStatus.stockInDate"
+                            <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockInInfo.stockInDate" is-open="vm.datePickerOpenStatus.stockInDate"
                                     required  />
                             <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('stockInDate')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -23,7 +23,7 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label text-left">入库员1</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" ng-model="vm.entity.storeKeeper1" placeholder="入库员">
+                        <input type="text" class="form-control" ng-model="vm.stockInInfo.storeKeeper1" placeholder="入库员">
                     </div>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label text-left">入库员2</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" ng-model="vm.entity.storeKeeper2" placeholder="入库员">
+                        <input type="text" class="form-control" ng-model="vm.stockInInfo.storeKeeper2" placeholder="入库员">
                     </div>
                 </div>
             </div>

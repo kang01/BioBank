@@ -99,8 +99,18 @@
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {
+                        type: 'select',
+                        bRegex: true,
+                        bSmart: true,
+                        values: [
+                            {value:'7001',label:"进行中"},
+                            {value:"7002",label:"待入库"},
+                            {value:"7003",label:"已入库"},
+                            {value:"7004",label:"已作废"}
+                        ]
+                    },
+
                 ]
             };
 

@@ -129,7 +129,7 @@
                     bSmart: true,
                     iFilterLength:3
                 }, {
-                    type: 'text',
+                    type: 'Datepicker',
                     bRegex: true,
                     bSmart: true
                 }, {
@@ -144,12 +144,28 @@
                     type: 'select',
                     bRegex: false,
                     width:50,
-                    values: ['1', '2', '3', '4', '5','6','7','8','9','10']
+                    values: [
+                        {value:"10",label:"非常满意"},
+                        {value:"9",label:"较满意"},
+                        {value:"8",label:"满意"},
+                        {value:"7",label:"有少量空管"},
+                        {value:"6",label:"有许多空管"},
+                        {value:"5",label:"有大量空管"},
+                        {value:"4",label:"有少量空孔"},
+                        {value:"3",label:"有少量错位"},
+                        {value:"2",label:"有大量错位"},
+                        {value:"1",label:"非常不满意"}
+                        ]
                 }, {
                     type: 'select',
-                    bRegex: false,
+                    bRegex: true,
                     width:50,
-                    values: ['1001', '1002', '1003', '1004']
+                    values: [
+                        {value:'1001',label:"进行中"},
+                        {value:"1002",label:"待入库"},
+                        {value:"1003",label:"已入库"},
+                        {value:"1004",label:"已作废"}
+                        ]
                 }]
             });
 
@@ -165,6 +181,28 @@
             DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {
+            var transhipState = '';
+            var sampleSatisfaction = '';
+            switch (data.transhipState){
+                case '1001': transhipState = '进行中';break;
+                case '1002': transhipState = '待入库';break;
+                case '1003': transhipState = '已入库';break;
+                case '1004': transhipState = '已作废';break;
+            }
+            switch (data.sampleSatisfaction){
+                case 1: sampleSatisfaction = '非常不满意';break;
+                case 2: sampleSatisfaction = '有大量错位';break;
+                case 3: sampleSatisfaction = '有少量错位';break;
+                case 4: sampleSatisfaction = '有少量空孔';break;
+                case 5: sampleSatisfaction = '有大量空管';break;
+                case 6: sampleSatisfaction = '有许多空管';break;
+                case 7: sampleSatisfaction = '有少量空管';break;
+                case 8: sampleSatisfaction = '满意';break;
+                case 9: sampleSatisfaction = '较满意';break;
+                case 10: sampleSatisfaction = '非常满意';break;
+            }
+            $('td:eq(5)', row).html(sampleSatisfaction);
+            $('td:eq(6)', row).html(transhipState);
             $compile(angular.element(row).contents())($scope);
         }
         // function headerCallback(header) {

@@ -8,10 +8,11 @@
         .module('bioBankApp')
         .controller('AddBoxModalController', AddBoxModalController);
 
-    AddBoxModalController.$inject = ['$uibModalInstance','$uibModal','items','AlertService','FrozenBoxTypesService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService'];
+    AddBoxModalController.$inject = ['$uibModalInstance','$uibModal','items','AlertService','FrozenBoxTypesService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxCodeIsRepeatService'];
 
-    function AddBoxModalController($uibModalInstance,$uibModal,items,AlertService,FrozenBoxTypesService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService) {
+    function AddBoxModalController($uibModalInstance,$uibModal,items,AlertService,FrozenBoxTypesService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxCodeIsRepeatService) {
         var vm = this;
+        // console.log(JSON.stringify(items))
         vm.box = {
             frozenBoxRows:"",
             frozenBoxColumns:"",
@@ -21,6 +22,24 @@
             sampleType:{},
             stockInFrozenTubeList:[]
         };
+        if(items.box.stockInFrozenTubeList.length){
+            var m = 0,n = 0;
+            for(var i = 0; i < items.box.stockInFrozenTubeList.length; i++){
+                if(i >= +items.box.frozenBoxRows){
+                    m++;n = 0;
+                    items.box.stockInFrozenTubeList[i].tubeRows = String.fromCharCode(m+65);
+                    items.box.stockInFrozenTubeList[i].tubeColumns = n + 1;
+                    items.box.frozenBoxRows = items.box.frozenBoxRows*2;
+
+                }else{
+                    n++;
+                    items.box.stockInFrozenTubeList[i].tubeRows = String.fromCharCode(m + 65);
+                    items.box.stockInFrozenTubeList[i].tubeColumns = n;
+                }
+
+            }
+            vm.box.stockInFrozenTubeList = items.box.stockInFrozenTubeList;
+        }
         var loadAll = function () {
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);//盒子类型
             EquipmentService.query({},onEquipmentSuccess, onError);//设备
@@ -111,6 +130,7 @@
         }
 
         vm.sampleTypesOptions = items.sampleTypes;
+        vm.box.sampleTypeCode = items.box.sampleTypeCode;
         vm.box.sampleType.sampleTypeCode = items.box.sampleTypeCode;
         for(var i =0; i < vm.sampleTypesOptions.length; i++) {
             if (items.box.sampleTypeCode == vm.sampleTypesOptions[i].sampleTypeCode) {
@@ -133,6 +153,13 @@
             }
         };
 
+        vm.isRepeat = false;
+        vm.isBoxCodeRepeat = function () {
+            BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
+                vm.isRepeat = data
+            });
+        };
+
 
 
 
@@ -145,7 +172,8 @@
                 vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
                 vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
             }
-            vm.box.countOfSample = 0;
+            vm.box.countOfSample = vm.box.stockInFrozenTubeList.length;
+            // console.log(JSON.stringify(vm.box));
             $uibModalInstance.close(vm.box);
         };
     }

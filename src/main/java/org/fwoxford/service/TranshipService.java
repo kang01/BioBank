@@ -79,4 +79,6 @@ public interface TranshipService {
     List<FrozenTubeDTO> getFrozenTubeDTOList(List<FrozenBoxDTO> frozenBoxDTOList, List<FrozenBox> frozenBoxes);
 
     List<FrozenBoxDTO> getFrozenBoxDtoList(List<FrozenBoxDTO> frozenBoxDTOListLast, List<FrozenTubeDTO> frozenTubeDTOS);
+
+    TranshipDTO invalidTranship(String transhipCode);
 }

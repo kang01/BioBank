@@ -190,4 +190,20 @@ public class TranshipResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipDTO.getId().toString()))
             .body(result);
     }
+
+    /**
+     * 作废转运记录
+     * @param transhipCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/tranships/invalid/{transhipCode}")
+    @Timed
+    public ResponseEntity<TranshipDTO> invalidTranship(@PathVariable String transhipCode) throws URISyntaxException {
+        log.debug("REST request to save StockIn : {}", transhipCode);
+        TranshipDTO result = transhipService.invalidTranship(transhipCode);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 }

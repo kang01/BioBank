@@ -127,8 +127,8 @@
                 changeSampleStatus(tube.status,row,col,td,cellProperties)
             }
 
-            htm = "<div ng-if='value.sampleCode' style='line-height: 20px'>"+tube.sampleCode+"</div>"+
-                "<div  ng-if='tube.sampleTempCode' style='line-height: 20px'>"+tube.sampleTempCode+"</div>" +
+            htm = "<div ng-if='value.sampleCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleCode+"</div>"+
+                "<div  ng-if='tube.sampleTempCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleTempCode+"</div>" +
                 "<div  style='display: none'>"+tube.sampleTypeCode+"</div>" +
                 "<div id='microtubesStatus' style='display: none'>"+tube.status+"</div>"+
                 "<div id='microtubesRemark' style='display: none'>"+tube.memo+"</div>"+
@@ -181,6 +181,7 @@
             autoWrapCol:true,
             wordWrap:true,
             colWidths: 94,
+            editor: 'text',
             onAfterSelectionEnd:function (row, col, row2, col2) {
                 remarkArray = this.getData(row,col,row2,col2);
                 vm.remarkFlag = true;
@@ -462,7 +463,9 @@
         //项目编码
         function onProjectSuccess(data) {
             vm.projectOptions = data;
-            vm.transportRecord.projectId = data[0].id;
+            if(data.length){
+                vm.transportRecord.projectId = data[0].id;
+            }
             if(vm.transportRecord.projectId){
                 ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError)
             }
@@ -742,7 +745,6 @@
                 vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
                 vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)].frozenBoxCode = vm.box.frozenBoxCode
             }
-
             hotRegisterer.getInstance('my-handsontable').render();
         }
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {

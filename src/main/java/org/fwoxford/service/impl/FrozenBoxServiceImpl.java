@@ -281,15 +281,21 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         if (frozenBoxList.size() == 0) {
             frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode, sampleTypeCode, Constants.FROZEN_BOX_STOCKED);
         }
-        List<String> frozenBoxCodes = new ArrayList<>();
+        List<FrozenBox> unSplitedBoxList = new ArrayList<FrozenBox>();
         for (FrozenBox box : frozenBoxList) {
-            frozenBoxCodes.add(box.getFrozenBoxCode());
+            if(box.getIsSplit().equals(Constants.NO)){
+                unSplitedBoxList.add(box);
+            }
+        }
+        List<String> frozenBoxCodes = new ArrayList<>();
+        for (FrozenBox box : unSplitedBoxList) {
+             frozenBoxCodes.add(box.getFrozenBoxCode());
         }
         List<Object[]> map = new ArrayList<>();
-        if (frozenBoxList.size() > 0) {
+        if (unSplitedBoxList.size() > 0) {
             map = frozenTubeRepository.countSampleNumberByfrozenBoxList(frozenBoxCodes);
         }
-        for (FrozenBox box : frozenBoxList) {
+        for (FrozenBox box : unSplitedBoxList) {
             for (int i = 0; i < map.size(); i++) {
                 Object[] obj = map.get(i);
                 String frozenBoxCodeKey = obj[0].toString();
@@ -352,6 +358,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         List<FrozenBox> frozenBoxes = output.getData();
         List<StockInBoxDetail> res = new ArrayList<StockInBoxDetail>();
         for (FrozenBox frozenBox : frozenBoxes) {
+            if(frozenBox.getStatus()!=null&&(frozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)||frozenBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED))){
+                continue;
+            }
             StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
             stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
             stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
@@ -392,6 +401,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         List<FrozenBox> frozenBoxes = output.getData();
         List<StockInBoxDetail> res = new ArrayList<StockInBoxDetail>();
         for (FrozenBox frozenBox : frozenBoxes) {
+            if(frozenBox.getStatus()!=null&&(frozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)||frozenBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED))){
+                continue;
+            }
             StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
             stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
             stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
@@ -429,6 +441,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         List<FrozenBox> frozenBoxs = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(equipmentCode, areaCode, shelfCode);
         List<StockInBoxDetail> res = new ArrayList<StockInBoxDetail>();
         for (FrozenBox frozenBox : frozenBoxs) {
+            if(frozenBox.getStatus()!=null&&(frozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)||frozenBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED))){
+                continue;
+            }
             StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
             stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
             stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
@@ -501,7 +516,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
     public Boolean isRepeatFrozenBoxCode(String frozenBoxCode) {
         Boolean flag = false;
         FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
-        if(frozenBox!=null){
+        if(frozenBox!=null&&!frozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)){
             flag = true;
         }
         return flag;

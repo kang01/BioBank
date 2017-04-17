@@ -197,7 +197,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
         for(FrozenBoxDTO boxDTO : transhipBoxListDTO.getFrozenBoxDTOList()){
             FrozenBox oldBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(boxDTO.getFrozenBoxCode());
-            if (oldBox != null && (boxDTO.getId() == null || !boxDTO.getId().equals(oldBox.getId()))){
+            if (oldBox != null && (boxDTO.getId() == null || !boxDTO.getId().equals(oldBox.getId()))
+                 && !oldBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)){
                 // 盒子编码重复的错误需要抛异常
                 throw new BankServiceException("此冻存盒编码已存在！",oldBox.getFrozenBoxCode());
             }

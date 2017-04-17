@@ -84,7 +84,13 @@ public class StockInServiceImpl implements StockInService {
     @Override
     public StockInDTO save(StockInDTO stockInDTO) {
         log.debug("Request to save StockIn : {}", stockInDTO);
-        StockIn stockIn = stockInMapper.stockInDTOToStockIn(stockInDTO);
+        if(stockInDTO.getId()==null){
+            throw new BankServiceException("入库ID不能为空！",stockInDTO.toString());
+        }
+        StockIn stockIn = stockInRepository.findOne(stockInDTO.getId());
+        stockIn.setStoreKeeper1(stockInDTO.getStoreKeeper1());
+        stockIn.setStoreKeeper2(stockInDTO.getStoreKeeper2());
+        stockIn.setStockInDate(stockInDTO.getStockInDate());
         stockIn = stockInRepository.save(stockIn);
         StockInDTO result = stockInMapper.stockInToStockInDTO(stockIn);
         return result;
@@ -298,7 +304,7 @@ public class StockInServiceImpl implements StockInService {
         for(StockInBox box: stockInBoxes){
             frozenBoxRepository.updateStatusByFrozenBoxCode(box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
             //修改转运盒子
-            transhipBoxRepository.updateStatusByTranshipIdAndFrozenBoxCode(stockIn.getTranship().getId(),box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
+//            transhipBoxRepository.updateStatusByTranshipIdAndFrozenBoxCode(stockIn.getTranship().getId(),box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
         }
         //修改转运
         transhipRepository.updateTranshipStateById(stockIn.getTranship().getId(),Constants.TRANSHIPE_IN_STOCKED);

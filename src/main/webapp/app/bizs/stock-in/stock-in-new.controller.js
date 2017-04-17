@@ -9,10 +9,10 @@
         .controller('StockInNewController', StockInNewController);
 
     StockInNewController.$inject = ['$timeout','$state','$stateParams', '$scope','$compile','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
-        'entity','AlertService','StockInService','StockInBoxService','frozenBoxByCodeService','SplitedBoxService',
+        'entity','AlertService','StockInService','StockInBoxService','frozenBoxByCodeService','SplitedBoxService','StockInSaveService',
         'SampleTypeService','SampleService','IncompleteBoxService']
     function StockInNewController($timeout,$state,$stateParams,$scope,$compile,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
-                                  entity,AlertService,StockInService,StockInBoxService,frozenBoxByCodeService,SplitedBoxService,
+                                  entity,AlertService,StockInService,StockInBoxService,frozenBoxByCodeService,SplitedBoxService,StockInSaveService,
                                   SampleTypeService,SampleService,IncompleteBoxService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
@@ -23,6 +23,7 @@
         vm.splittingBox = null;
         vm.splittedBoxes = {};
         vm.dtInstance = {};
+        var modalInstance;
 
 
 
@@ -207,8 +208,28 @@
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {
+                        type: 'select',
+                        bRegex: true,
+                        bSmart: true,
+                        values: [
+                            {value:0,label:"否"},
+                            {value:1,label:"是"}
+                        ]
+                    },
+                    {
+                        type: 'select',
+                        bRegex: true,
+                        bSmart: true,
+                        values: [
+                            {value:'2001',label:"新建"},
+                            {value:'2002',label:"待分装"},
+                            {value:'2003',label:"已分装"},
+                            {value:"2004",label:"已入库"},
+                            {value:"2005",label:"已作废"},
+                            {value:"2006",label:"已上架"}
+                        ]
+                    },
                     null
                 ]
             };
@@ -224,14 +245,14 @@
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
                 DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
                 DTColumnBuilder.newColumn('position').withOption("width", "auto").withTitle('冻存位置'),
-                DTColumnBuilder.newColumn('countOfSample').withOption("width", "80").withTitle('样本量'),
-                DTColumnBuilder.newColumn('isSplit').withOption("width", "50").withTitle('是否分装'),
+                DTColumnBuilder.newColumn('countOfSample').withOption("width", "90").withTitle('样本量'),
+                DTColumnBuilder.newColumn('isSplit').withOption("width", "100").withTitle('是否分装'),
                 DTColumnBuilder.newColumn('status').withOption("width", "80").withTitle('状态'),
                 DTColumnBuilder.newColumn("").withOption("width", "120").withTitle('操作').notSortable().renderWith(_fnActionButtonsRender),
                 DTColumnBuilder.newColumn('id').notVisible(),
                 DTColumnBuilder.newColumn('sampleType').notVisible(),
                 DTColumnBuilder.newColumn('frozenBoxRows').notVisible(),
-                DTColumnBuilder.newColumn('frozenBoxColumns').notVisible(),
+                DTColumnBuilder.newColumn('frozenBoxColumns').notVisible()
             ];
 
             return columns;
@@ -318,10 +339,23 @@
                 templateUrl: 'app/bizs/stock-in/stock-in-info-modal.html',
                 controller: 'StockInInfoModalController',
                 controllerAs:'vm',
-                size:'lg'
+                size:'lg',
+                resolve: {
+                    items: function () {
+                        return {
+                            id: vm.entity.id,
+                            stockInDate: vm.entity.stockInDate,
+                            storeKeeper1: vm.entity.storeKeeper1,
+                            storeKeeper2: vm.entity.storeKeeper2
+                        }
+                    }
+                }
             });
             modalInstance.result.then(function (data) {
-
+                StockInSaveService.saveStockIn(vm.stockInCode).then(function () {
+                    AlertService.success("入库完成成功!");
+                    _initStockInBoxesTable();
+                })
             })
         };
         vm.isShowSplittingPanel = function(){
@@ -337,7 +371,6 @@
         vm.incompleteBoxesList = []; //分装后的样本类型盒子，未装满样本的盒子
         var tempTubeArray = [];//选中未满样本盒子的临时数据，需要操作管子
         var selectList = [];//选择单元格的管子数据
-        var modalInstance;
         var size = 10;
         var htm;
         //样本类型
@@ -354,12 +387,15 @@
         }
         function onIncompleteBoxesSuccess(data) {
             if(data.length){
-                vm.incompleteBoxesList.push(
-                    {
-                        sampleTypeCode:data[0].sampleType.sampleTypeCode,
-                        boxList:data
-                    }
-                );
+                if(data[0].frozenBoxCode != vm.box.frozenBoxCode){
+                    vm.incompleteBoxesList.push(
+                        {
+                            sampleTypeCode:data[0].sampleType.sampleTypeCode,
+                            boxList:data
+                        }
+                    );
+                }
+
             }
         }
         function onError(error) {
@@ -503,36 +539,55 @@
         };
         //分装操作
         vm.splitBox = function () {
-            //分装到哪个盒子中的数量
-            for(var j = 0; j < vm.incompleteBoxesList.length; j++){
-                for(var k = 0; k < vm.incompleteBoxesList[j].boxList.length;k++){
-                    if(vm.obox.sampleTypeCode == vm.incompleteBoxesList[j].boxList[k].sampleTypeCode){
-                        vm.incompleteBoxesList[j].boxList[k].addTubeCount = selectList.length
-
-                    }
-                }
-            }
             //盒子剩余数
             var surplusCount = vm.obox.stockInFrozenTubeList.length - vm.obox.countOfSample;
             //要分装的管子数
             var selectCount = selectList.length;
-            if( selectCount > surplusCount){
-                vm.addBoxModal(vm.obox);
+            //分装到哪个盒子中的数量
+            for(var j = 0; j < vm.incompleteBoxesList.length; j++){
+                for(var k = 0; k < vm.incompleteBoxesList[j].boxList.length;k++){
+                    if(vm.obox.sampleTypeCode == vm.incompleteBoxesList[j].boxList[k].sampleTypeCode){
+                        if( selectCount > surplusCount){
+                            vm.incompleteBoxesList[j].boxList[k].addTubeCount = surplusCount;
+                        }else{
+                            vm.incompleteBoxesList[j].boxList[k].addTubeCount = selectCount
+                        }
+
+
+                    }
+                }
+            }
+            //清空被分装的盒子数
+            for(var k = 0; k < selectList.length; k++){
+                vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";
             }
             //分装数据
             for(var i = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
                 if(!vm.obox.stockInFrozenTubeList[i].frozenTubeCode){
-                    if(surplusCount && selectList.length){
-                        selectList[0].tubeRows = vm.obox.stockInFrozenTubeList[i].tubeRows;
-                        selectList[0].tubeColumns = vm.obox.stockInFrozenTubeList[i].tubeColumns;
-                        selectList[0].sampleTmpCode = vm.obox.stockInFrozenTubeList[i].frozenBoxCode+"-"+selectList[0].tubeRows+selectList[0].tubeColumns;
-                        vm.obox.stockInFrozenTubeList[i] = selectList[0];
-                        selectList.splice(0,1);
-                        surplusCount--;
+                    if(surplusCount){
+                        if(selectList.length){
+                            selectList[0].tubeRows = vm.obox.stockInFrozenTubeList[i].tubeRows;
+                            selectList[0].tubeColumns = vm.obox.stockInFrozenTubeList[i].tubeColumns;
+                            selectList[0].sampleTmpCode = vm.obox.stockInFrozenTubeList[i].frozenBoxCode+"-"+selectList[0].tubeRows+selectList[0].tubeColumns;
+                            vm.obox.stockInFrozenTubeList[i] = selectList[0];
+                            selectList.splice(0,1);
+                            surplusCount --;
+                        }
+                    }else{
+                        var frozenBox = {};
+                        frozenBox.frozenBoxTypeId= vm.obox.frozenBoxTypeId;
+                        frozenBox.sampleTypeCode= vm.obox.sampleTypeCode;
+                        frozenBox.sampleTypes= vm.obox.sampleTypes;
+                        frozenBox.frozenBoxRows= vm.obox.frozenBoxRows;
+                        frozenBox.frozenBoxColumns= vm.obox.frozenBoxColumns;
+                        frozenBox.stockInFrozenTubeList= selectList;
+                        vm.addBoxModal(frozenBox);
+                        break;
                     }
                 }
             }
-
+            // console.log(JSON.stringify(vm.frozenTubeArray))
+            hotRegisterer.getInstance('my-handsontable').render();
 
             //删除空管子
             var deleteIndexList = [];
@@ -543,19 +598,19 @@
             }
             _.pullAt(vm.obox.stockInFrozenTubeList, deleteIndexList);
             var obox = angular.copy(vm.obox);
-            // delete obox.addTubeCount;
             vm.boxList.push(obox);
-            console.log(JSON.stringify(vm.boxList))
         };
         //保存分装结果
         vm.saveBox = function () {
-
-            // console.log(JSON.stringify(boxList));
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).then(function (data) {
                 AlertService.success("分装成功!");
                 _splitABox(vm.box.frozenBoxCode);
                 vm.boxList = [];
             })
+        };
+        //复原
+        vm.recover = function () {
+            _splitABox(vm.box.frozenBoxCode);
         };
         //添加分装样本盒
         vm.addBoxModal = function (box) {
@@ -569,7 +624,7 @@
                     items: function () {
                         return {
                             sampleTypes :vm.sampleTypes,
-                            box :box || {}
+                            box :box || {stockInFrozenTubeList:[]}
                         }
                     }
                 }
@@ -586,6 +641,7 @@
                         if(vm.incompleteBoxesList[i].sampleTypeCode == data.sampleType.sampleTypeCode){
                             if(vm.incompleteBoxesList[i].boxList.length < 2){
                                 vm.incompleteBoxesList[i].boxList.push(data);
+                                vm.boxList.push(data);
                             }
 
                         }

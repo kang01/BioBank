@@ -267,7 +267,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
         //验证盒子编码是否存在
         FrozenBox oldFrozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
-        if(oldFrozenBox!=null&&stockInBoxForDataSplit.getFrozenBoxId()!=oldFrozenBox.getId()){
+        if(oldFrozenBox!=null&&stockInBoxForDataSplit.getFrozenBoxId()!=oldFrozenBox.getId()
+            &&!oldFrozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)){
             throw new BankServiceException("冻存盒编码已经存在！",stockInBoxForDataSplit.getFrozenBoxCode());
         }
         //新增盒子
@@ -467,7 +468,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         FrozenBox oldFrozenBox = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(equipment.getEquipmentCode(),
             area.getAreaCode(),shelf.getSupportRackCode(),boxPositionDTO.getColumnsInShelf(),boxPositionDTO.getRowsInShelf());
 
-        if(oldFrozenBox!=null && oldFrozenBox.getId()!=frozenBox.getId()){
+        if(oldFrozenBox!=null && oldFrozenBox.getId()!=frozenBox.getId() && !oldFrozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)){
             throw new BankServiceException("此位置已存放冻存盒，请更换其他位置！",boxPositionDTO.toString());
         }
 

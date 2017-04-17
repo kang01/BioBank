@@ -21,7 +21,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " and box.area_id = ?2 " +
         " and box.support_rack_id = ?3 " +
         " and box.columns_in_shelf = ?4 " +
-        " and box.rows_in_shelf = ?5" , nativeQuery = true)
+        " and box.rows_in_shelf = ?5 and box.status!='2005'" , nativeQuery = true)
     List<FrozenBox> countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
 
     @Query("select t from FrozenBox t left join TranshipBox p on t.id=p.frozenBox.id where p.tranship.transhipCode=?1")

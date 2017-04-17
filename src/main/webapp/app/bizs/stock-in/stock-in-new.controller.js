@@ -165,9 +165,6 @@
             // console.log(vm.splitIt, vm.putInShelf);
             var buttonHtml = "";
             if (full.status == "2002"){
-                buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
-                    '   <i class="fa fa-sitemap"></i> 分装' +
-                    '</button>';
                 if (full.isSplit){
                     buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
                         '   <i class="fa fa-sitemap"></i> 分装' +
@@ -540,7 +537,6 @@
                 }
             }
 
-            console.log(JSON.stringify(vm.obox.stockInFrozenTubeList))
             // console.log(JSON.stringify(vm.obox.stockInFrozenTubeList))
             $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
             $($event.target).addClass("box-selected");
@@ -608,7 +604,7 @@
             _.pullAt(vm.obox.stockInFrozenTubeList, deleteIndexList);
             var obox = angular.copy(vm.obox);
             vm.boxList.push(obox);
-            console.log(JSON.stringify(vm.boxList))
+            // console.log(JSON.stringify(vm.boxList))
         };
         //保存分装结果
         vm.saveBox = function () {

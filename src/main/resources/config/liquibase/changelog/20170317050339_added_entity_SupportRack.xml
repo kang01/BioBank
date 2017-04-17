@@ -39,10 +39,6 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="area_code" type="varchar(100)" remarks="区域编码">
-                <constraints nullable="false" />
-            </column>
-
             <column name="memo" type="varchar(1024)" remarks="备注">
                 <constraints nullable="true" />
             </column>

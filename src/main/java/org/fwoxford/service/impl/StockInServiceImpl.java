@@ -266,7 +266,7 @@ public class StockInServiceImpl implements StockInService {
         stockInDTO.setReceiveId(null);
         stockInDTO.setReceiveDate(tranship.getReceiveDate());
         stockInDTO.setReceiveName(tranship.getReceiver());
-        stockInDTO.setCountOfSample(tranship.getSampleNumber());
+        stockInDTO.setCountOfSample(tranship.getEffectiveSampleNumber());
         stockInDTO.setSignId(null);
         stockInDTO.setSignDate(null);
         stockInDTO.setSignName("");

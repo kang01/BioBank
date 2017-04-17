@@ -101,7 +101,6 @@ public class SupportRackResourceIntTest {
     public static SupportRack createEntity(EntityManager em) {
         SupportRack supportRack = new SupportRack()
                 .supportRackTypeCode(DEFAULT_SUPPORT_RACK_TYPE_CODE)
-                .areaCode(DEFAULT_AREA_CODE)
                 .memo(DEFAULT_MEMO)
                 .status(DEFAULT_STATUS)
                 .supportRackCode(DEFAULT_SUPPORT_RACK_CODE);
@@ -141,7 +140,6 @@ public class SupportRackResourceIntTest {
         assertThat(supportRackList).hasSize(databaseSizeBeforeCreate + 1);
         SupportRack testSupportRack = supportRackList.get(supportRackList.size() - 1);
         assertThat(testSupportRack.getSupportRackTypeCode()).isEqualTo(DEFAULT_SUPPORT_RACK_TYPE_CODE);
-        assertThat(testSupportRack.getAreaCode()).isEqualTo(DEFAULT_AREA_CODE);
         assertThat(testSupportRack.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testSupportRack.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testSupportRack.getSupportRackCode()).isEqualTo(DEFAULT_SUPPORT_RACK_CODE);
@@ -191,9 +189,6 @@ public class SupportRackResourceIntTest {
     @Transactional
     public void checkAreaCodeIsRequired() throws Exception {
         int databaseSizeBeforeTest = supportRackRepository.findAll().size();
-        // set the field null
-        supportRack.setAreaCode(null);
-
         // Create the SupportRack, which fails.
         SupportRackDTO supportRackDTO = supportRackMapper.supportRackToSupportRackDTO(supportRack);
 
@@ -299,7 +294,6 @@ public class SupportRackResourceIntTest {
         SupportRack updatedSupportRack = supportRackRepository.findOne(supportRack.getId());
         updatedSupportRack
                 .supportRackTypeCode(UPDATED_SUPPORT_RACK_TYPE_CODE)
-                .areaCode(UPDATED_AREA_CODE)
                 .memo(UPDATED_MEMO)
                 .status(UPDATED_STATUS)
                 .supportRackCode(UPDATED_SUPPORT_RACK_CODE);
@@ -315,7 +309,6 @@ public class SupportRackResourceIntTest {
         assertThat(supportRackList).hasSize(databaseSizeBeforeUpdate);
         SupportRack testSupportRack = supportRackList.get(supportRackList.size() - 1);
         assertThat(testSupportRack.getSupportRackTypeCode()).isEqualTo(UPDATED_SUPPORT_RACK_TYPE_CODE);
-        assertThat(testSupportRack.getAreaCode()).isEqualTo(UPDATED_AREA_CODE);
         assertThat(testSupportRack.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testSupportRack.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testSupportRack.getSupportRackCode()).isEqualTo(UPDATED_SUPPORT_RACK_CODE);

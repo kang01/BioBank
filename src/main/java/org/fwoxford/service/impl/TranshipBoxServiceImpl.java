@@ -282,7 +282,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     box.setSampleTypeName(sampleType.getSampleTypeName());
                 }
             }
-            int countOfEmptyHole = 0;int countOfEmptyTube = 0;
+            int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfSample=0;
             for(FrozenTubeDTO tube : boxDTO.getFrozenTubeDTOS()){
                 if(tube.getStatus().equals(Constants.FROZEN_TUBE_HOLE_EMPTY)){
                     countOfEmptyHole++;
@@ -290,12 +290,22 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 if(tube.getStatus().equals(Constants.FROZEN_TUBE_EMPTY)){
                     countOfEmptyTube++;
                 }
+                if(tube.getStatus().equals(Constants.FROZEN_TUBE_NORMAL)){
+                    countOfSample++;
+                }
             }
 
             box.setEmptyTubeNumber(countOfEmptyTube);
             box.setEmptyHoleNumber(countOfEmptyHole);
-            box.setSampleNumber(boxDTO.getFrozenTubeDTOS().size());
+            int countOfSampleAll = boxDTO.getFrozenTubeDTOS().size();
+            String frozenBoxColumns = box.getFrozenBoxColumns()!=null?box.getFrozenBoxColumns():new String("0");
+            String frozenBoxRows = box.getFrozenBoxRows()!=null?box.getFrozenBoxRows():new String("0");
 
+            int allCount = Integer.parseInt(frozenBoxColumns)*Integer.parseInt(frozenBoxRows);
+            if(countOfSampleAll>allCount){
+                throw new BankServiceException("冻存管的数量已经超过冻存盒的最大容量值！",box.toString());
+            }
+            box.setSampleNumber(countOfSample);
             box = frozenBoxRepository.save(box);
 
             for(FrozenTubeDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){

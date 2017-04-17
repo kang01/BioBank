@@ -427,6 +427,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenTube.setFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
             frozenTube.setTubeColumns(tube.getTubeColumns());
             frozenTube.setTubeRows(tube.getTubeRows());
+            frozenTube.setSampleTempCode(tube.getSampleTempCode());
             frozenTubeRepository.save(frozenTube);
             tube.setId(frozenTube.getId());
             stockInTubeDTOList.add(tube);

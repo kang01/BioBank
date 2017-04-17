@@ -79,6 +79,12 @@
             });
         }
         function _fnCreatedRow(row, data, dataIndex) {
+            var status = '';
+            switch (data.status){
+                case '7001': status = '进行中'; break;
+                case '7002': status = '已入库'; break;
+            }
+            $('td:eq(8)', row).html(status);
             $("td:eq(5)", row).text([data.storeKeeper1, data.storeKeeper2].join("; "));
             $compile(angular.element(row).contents())($scope);
         }
@@ -105,9 +111,7 @@
                         bSmart: true,
                         values: [
                             {value:'7001',label:"进行中"},
-                            {value:"7002",label:"待入库"},
-                            {value:"7003",label:"已入库"},
-                            {value:"7004",label:"已作废"}
+                            {value:"7002",label:"已入库"}
                         ]
                     },
 

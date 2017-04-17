@@ -208,8 +208,28 @@
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {
+                        type: 'select',
+                        bRegex: true,
+                        bSmart: true,
+                        values: [
+                            {value:0,label:"否"},
+                            {value:1,label:"是"}
+                        ]
+                    },
+                    {
+                        type: 'select',
+                        bRegex: true,
+                        bSmart: true,
+                        values: [
+                            {value:'2001',label:"新建"},
+                            {value:'2002',label:"待分装"},
+                            {value:'2003',label:"已分装"},
+                            {value:"2004",label:"已入库"},
+                            {value:"2005",label:"已作废"},
+                            {value:"2006",label:"已上架"}
+                        ]
+                    },
                     null
                 ]
             };
@@ -225,14 +245,14 @@
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
                 DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
                 DTColumnBuilder.newColumn('position').withOption("width", "auto").withTitle('冻存位置'),
-                DTColumnBuilder.newColumn('countOfSample').withOption("width", "80").withTitle('样本量'),
-                DTColumnBuilder.newColumn('isSplit').withOption("width", "50").withTitle('是否分装'),
+                DTColumnBuilder.newColumn('countOfSample').withOption("width", "90").withTitle('样本量'),
+                DTColumnBuilder.newColumn('isSplit').withOption("width", "100").withTitle('是否分装'),
                 DTColumnBuilder.newColumn('status').withOption("width", "80").withTitle('状态'),
                 DTColumnBuilder.newColumn("").withOption("width", "120").withTitle('操作').notSortable().renderWith(_fnActionButtonsRender),
                 DTColumnBuilder.newColumn('id').notVisible(),
                 DTColumnBuilder.newColumn('sampleType').notVisible(),
                 DTColumnBuilder.newColumn('frozenBoxRows').notVisible(),
-                DTColumnBuilder.newColumn('frozenBoxColumns').notVisible(),
+                DTColumnBuilder.newColumn('frozenBoxColumns').notVisible()
             ];
 
             return columns;

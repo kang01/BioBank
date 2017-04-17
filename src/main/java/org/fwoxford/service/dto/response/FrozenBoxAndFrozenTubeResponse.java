@@ -86,6 +86,14 @@ public class FrozenBoxAndFrozenTubeResponse {
      */
     private Long supportRackId;
     /**
+     * 所在架子行数
+     */
+    private String rowsInShelf;
+    /**
+     * 所在架子列数
+     */
+    private String columnsInShelf;
+    /**
      * 冻存管列表
      */
     private List<FrozenTubeResponse> frozenTubeDTOS;
@@ -224,5 +232,21 @@ public class FrozenBoxAndFrozenTubeResponse {
 
     public void setSampleTypeCode(String sampleTypeCode) {
         this.sampleTypeCode = sampleTypeCode;
+    }
+
+    public String getRowsInShelf() {
+        return rowsInShelf;
+    }
+
+    public void setRowsInShelf(String rowsInShelf) {
+        this.rowsInShelf = rowsInShelf;
+    }
+
+    public String getColumnsInShelf() {
+        return columnsInShelf;
+    }
+
+    public void setColumnsInShelf(String columnsInShelf) {
+        this.columnsInShelf = columnsInShelf;
     }
 }

@@ -281,15 +281,21 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         if (frozenBoxList.size() == 0) {
             frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode, sampleTypeCode, Constants.FROZEN_BOX_STOCKED);
         }
-        List<String> frozenBoxCodes = new ArrayList<>();
+        List<FrozenBox> unSplitedBoxList = new ArrayList<FrozenBox>();
         for (FrozenBox box : frozenBoxList) {
-            frozenBoxCodes.add(box.getFrozenBoxCode());
+            if(box.getIsSplit().equals(Constants.NO)){
+                unSplitedBoxList.add(box);
+            }
+        }
+        List<String> frozenBoxCodes = new ArrayList<>();
+        for (FrozenBox box : unSplitedBoxList) {
+             frozenBoxCodes.add(box.getFrozenBoxCode());
         }
         List<Object[]> map = new ArrayList<>();
-        if (frozenBoxList.size() > 0) {
+        if (unSplitedBoxList.size() > 0) {
             map = frozenTubeRepository.countSampleNumberByfrozenBoxList(frozenBoxCodes);
         }
-        for (FrozenBox box : frozenBoxList) {
+        for (FrozenBox box : unSplitedBoxList) {
             for (int i = 0; i < map.size(); i++) {
                 Object[] obj = map.get(i);
                 String frozenBoxCodeKey = obj[0].toString();

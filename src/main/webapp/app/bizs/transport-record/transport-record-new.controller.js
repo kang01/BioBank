@@ -144,7 +144,6 @@
         vm.normalCount = 0;
         vm.emptyCount = 0;
         function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
-
             operateColor = td.style.backgroundColor;
             //正常
             if(sampleStatus == 3001){
@@ -251,6 +250,14 @@
         vm.flagStatus = false;
         vm.editStatus = function () {
             vm.operateStatus = 1;
+            var cellProperties = hotRegisterer.getInstance('my-handsontable').getCellsMeta();
+            for(var i = 0; i < cellProperties.length; i++){
+                if(vm.flagStatus){
+                    cellProperties[i].editor = false;
+                }else{
+                    cellProperties[i].editor = 'text';
+                }
+            }
         };
         //换位
         vm.exchangeFlag = false;
@@ -653,12 +660,13 @@
         }
 
         function saveBox(){
+            if(vm.boxRowCol){
+                vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
+                vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
+            }
             obox.frozenBoxDTOList = [];
             obox.frozenBoxDTOList.push(vm.box);
-            if(vm.boxRowCol){
-                obox.columnsInShelf = vm.boxRowCol.charAt(0);
-                obox.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
-            }
+
 
             TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
         }

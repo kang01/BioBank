@@ -31,14 +31,6 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
     @Column(name = "support_rack_type_code", length = 100, nullable = false)
     private String supportRackTypeCode;
     /**
-     * 区域编码
-     */
-    // todo:: 这个字段没有意义
-    @NotNull
-    @Size(max = 100)
-    @Column(name = "area_code", length = 100, nullable = false)
-    private String areaCode;
-    /**
      * 备注
      */
     @Size(max = 1024)
@@ -90,19 +82,6 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
 
     public void setSupportRackTypeCode(String supportRackTypeCode) {
         this.supportRackTypeCode = supportRackTypeCode;
-    }
-
-    public String getAreaCode() {
-        return areaCode;
-    }
-
-    public SupportRack areaCode(String areaCode) {
-        this.areaCode = areaCode;
-        return this;
-    }
-
-    public void setAreaCode(String areaCode) {
-        this.areaCode = areaCode;
     }
 
     public String getMemo() {
@@ -195,7 +174,6 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
         return "SupportRack{" +
             "id=" + id +
             ", supportRackTypeCode='" + supportRackTypeCode + "'" +
-            ", areaCode='" + areaCode + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
             ", supportRackCode='" + supportRackCode + "'" +

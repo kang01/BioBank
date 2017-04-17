@@ -240,7 +240,7 @@
                 }
             },
             afterBeginEditing:function (row,col) {
-                // console.log(row)
+                console.log(row)
             },
             // cells:function (row,col,prop) {
             //     console.log(row)

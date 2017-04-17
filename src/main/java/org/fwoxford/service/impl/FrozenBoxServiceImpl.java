@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import oracle.jdbc.driver.Const;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.Equipment;
 import org.fwoxford.domain.FrozenBox;
@@ -277,7 +278,10 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
     @Override
     public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(String projectCode, String sampleTypeCode) {
         List<StockInBoxForChangingPosition> stockInBoxForChangingPositionList = new ArrayList<StockInBoxForChangingPosition>();
-        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode, sampleTypeCode, Constants.FROZEN_BOX_STOCKING);
+        List<String> statusList = new ArrayList<>();
+        statusList.add(Constants.FROZEN_BOX_PUT_SHELVES);
+        statusList.add(Constants.FROZEN_BOX_STOCKING);
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatusIn(projectCode, sampleTypeCode, statusList);
         if (frozenBoxList.size() == 0) {
             frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode, sampleTypeCode, Constants.FROZEN_BOX_STOCKED);
         }

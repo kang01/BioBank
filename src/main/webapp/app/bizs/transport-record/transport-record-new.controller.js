@@ -158,6 +158,7 @@
                 vm.emptyCount++;
                 td.style.background = '';
                 td.style.backgroundColor = '#ffffff';
+                td.style.color = '#ffffff'
             }
             //异常
             if(sampleStatus == 3004){

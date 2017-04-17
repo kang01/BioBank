@@ -295,16 +295,19 @@ public class StockInServiceImpl implements StockInService {
         }
         //修改入库
         stockIn.setStatus(Constants.STOCK_IN_COMPLETE);
-//        stockIn.setStockInDate(LocalDate.now());
         stockInRepository.save(stockIn);
-        //修改入库盒子
         List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(stockInCode);
-        stockInBoxRepository.updateByStockCode(stockInCode , Constants.FROZEN_BOX_STOCKED);
         //修改盒子
         for(StockInBox box: stockInBoxes){
-            frozenBoxRepository.updateStatusByFrozenBoxCode(box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
-            //修改转运盒子
-//            transhipBoxRepository.updateStatusByTranshipIdAndFrozenBoxCode(stockIn.getTranship().getId(),box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
+            if(box.getStatus().equals(Constants.FROZEN_BOX_STOCKING)){
+                throw new BankServiceException("冻存盒未上架！",box.toString());
+            }
+            if(box.getStatus().equals(Constants.FROZEN_BOX_PUT_SHELVES)){
+                frozenBoxRepository.updateStatusByFrozenBoxCode(box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
+                //修改入库盒子
+                box.setStatus(Constants.FROZEN_BOX_STOCKED);
+                stockInBoxRepository.save(box);
+            }
         }
         //修改转运
         transhipRepository.updateTranshipStateById(stockIn.getTranship().getId(),Constants.TRANSHIPE_IN_STOCKED);

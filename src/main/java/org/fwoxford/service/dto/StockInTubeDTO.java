@@ -15,7 +15,7 @@ public class StockInTubeDTO {
     private String frozenBoxCode;
     private Long sampleTypeId;
     private Long frozenTubeTypeId;
-
+    private String sampleTempCode;
     @Override
     public String toString() {
         return "StockInTubeDTO{" +
@@ -30,6 +30,7 @@ public class StockInTubeDTO {
             ", frozenBoxCode='" + frozenBoxCode + '\'' +
             ", sampleTypeId=" + sampleTypeId +
             ", frozenTubeTypeId=" + frozenTubeTypeId +
+            ", sampleTempCode=" + sampleTempCode +
             '}';
     }
 
@@ -119,5 +120,13 @@ public class StockInTubeDTO {
 
     public void setFrozenTubeTypeId(Long frozenTubeTypeId) {
         this.frozenTubeTypeId = frozenTubeTypeId;
+    }
+
+    public String getSampleTempCode() {
+        return sampleTempCode;
+    }
+
+    public void setSampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
     }
 }

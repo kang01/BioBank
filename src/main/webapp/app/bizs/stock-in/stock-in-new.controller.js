@@ -165,6 +165,9 @@
             // console.log(vm.splitIt, vm.putInShelf);
             var buttonHtml = "";
             if (full.status == "2002"){
+                buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
+                    '   <i class="fa fa-sitemap"></i> 分装' +
+                    '</button>';
                 if (full.isSplit){
                     buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
                         '   <i class="fa fa-sitemap"></i> 分装' +
@@ -262,7 +265,7 @@
             frozenBoxByCodeService.get({code:code},onFrozenSuccess,onError);
             function onFrozenSuccess(data) {
                 vm.splittingBox = true;
-                initFrozenTube(size);
+                initFrozenTube(data.frozenBoxRows);
                 vm.box =  data;
                 for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
                     var tube = vm.box.frozenTubeDTOS[k];
@@ -522,11 +525,13 @@
                     tempTubeArray[i][j] = {
                         tubeColumns: j+1,
                         tubeRows: String.fromCharCode(i+65),
-                        frozenTubeCode:''
+                        frozenTubeCode:'',
+                        selectTubeCode:item.frozenBoxCode
                     };
                     vm.obox.stockInFrozenTubeList.push(tempTubeArray[i][j])
                 }
             }
+            // vm.obox.stockInFrozenTubeList = item.stockInFrozenTubeList;
             //把选中盒子里的管子放进空盒子中
             for(var k = 0; k <item.stockInFrozenTubeList.length; k++){
                 var tube = item.stockInFrozenTubeList[k];
@@ -534,6 +539,9 @@
                     vm.obox.stockInFrozenTubeList[k] = tube
                 }
             }
+
+            console.log(JSON.stringify(vm.obox.stockInFrozenTubeList))
+            // console.log(JSON.stringify(vm.obox.stockInFrozenTubeList))
             $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
             $($event.target).addClass("box-selected");
         };
@@ -568,7 +576,9 @@
                         if(selectList.length){
                             selectList[0].tubeRows = vm.obox.stockInFrozenTubeList[i].tubeRows;
                             selectList[0].tubeColumns = vm.obox.stockInFrozenTubeList[i].tubeColumns;
-                            selectList[0].sampleTmpCode = vm.obox.stockInFrozenTubeList[i].frozenBoxCode+"-"+selectList[0].tubeRows+selectList[0].tubeColumns;
+                            selectList[0].frozenBoxCode = vm.obox.stockInFrozenTubeList[i].selectTubeCode;
+                            vm.obox.stockInFrozenTubeList[i].frozenTubeCode = selectList[0].frozenTubeCode
+                            selectList[0].sampleTempCode = vm.obox.stockInFrozenTubeList[i].selectTubeCode+"-"+selectList[0].tubeRows+selectList[0].tubeColumns;
                             vm.obox.stockInFrozenTubeList[i] = selectList[0];
                             selectList.splice(0,1);
                             surplusCount --;
@@ -586,7 +596,6 @@
                     }
                 }
             }
-            // console.log(JSON.stringify(vm.frozenTubeArray))
             hotRegisterer.getInstance('my-handsontable').render();
 
             //删除空管子
@@ -599,6 +608,7 @@
             _.pullAt(vm.obox.stockInFrozenTubeList, deleteIndexList);
             var obox = angular.copy(vm.obox);
             vm.boxList.push(obox);
+            console.log(JSON.stringify(vm.boxList))
         };
         //保存分装结果
         vm.saveBox = function () {

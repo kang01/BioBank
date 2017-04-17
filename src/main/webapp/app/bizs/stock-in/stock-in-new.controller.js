@@ -61,7 +61,7 @@
 
             vm.dtOptions = DTOptionsBuilder.fromSource({"url": ajaxUrl,"dataSrc": "data"})
                 // 设置Table的DOM布局
-                .withDOM("<'row'<'col-xs-6' TB><'col-xs-6' f>r>t<'row'<'col-xs-6'i><'col-xs-6'p>>")
+                .withDOM("<'row'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
                 // 设置表格每页显示的行数
                 .withDisplayLength(6)
                 // 设置Tool button

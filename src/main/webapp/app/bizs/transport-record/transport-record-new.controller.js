@@ -180,6 +180,7 @@
             autoWrapCol:true,
             wordWrap:true,
             colWidths: 94,
+            rowHeaderWidth: 30,
             editor: 'text',
             onAfterSelectionEnd:function (row, col, row2, col2) {
                 remarkArray = this.getData(row,col,row2,col2);
@@ -240,7 +241,7 @@
                 }
             },
             afterBeginEditing:function (row,col) {
-                // console.log(row)
+                console.log(row)
             },
             // cells:function (row,col,prop) {
             //     console.log(row)

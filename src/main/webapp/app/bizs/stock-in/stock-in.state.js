@@ -16,7 +16,7 @@
                 parent: 'bizs',
                 url: '/stock-in?page&sort',
                 data: {
-                    authorities: ['ROLE_ADMIN'],
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: 'stockIn.home.title'
                 },
                 views: {
@@ -56,7 +56,7 @@
                 parent: 'bizs',
                 url: '/stock-in/add',
                 data: {
-                    authorities: ['ROLE_ADMIN'],
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: 'stockIn.new.title'
                 },
                 views: {
@@ -82,7 +82,7 @@
                 parent: 'bizs',
                 url: '/stock-in/{id}/edit',
                 data: {
-                    authorities: ['ROLE_ADMIN'],
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: 'stockIn.new.title'
                 },
                 views: {

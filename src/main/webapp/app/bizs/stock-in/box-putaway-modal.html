@@ -65,7 +65,7 @@
                     <td ng-switch="box.status">
                         <span ng-switch-when="2001">新建</span>
                         <span ng-switch-when="2002" ng-if="box.isSplit">待分装</span>
-                        <span ng-switch-when="2002" ng-else="box.isSplit">待入库</span>
+                        <span ng-switch-when="2002" ng-if="!box.isSplit">待入库</span>
                         <span ng-switch-when="2003">已分装</span>
                         <span ng-switch-when="2004">已入库</span>
                         <span ng-switch-when="2005">已作废</span>

@@ -23,4 +23,6 @@ public interface TranshipBoxRepository extends JpaRepository<TranshipBox,Long> {
     List<TranshipBox> findByFrozenBoxId(Long id);
 
     List<TranshipBox> findByTranshipId(Long id);
+
+    TranshipBox findByFrozenBoxCode(String frozenBoxCode);
 }

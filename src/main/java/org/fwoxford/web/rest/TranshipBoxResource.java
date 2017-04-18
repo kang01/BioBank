@@ -5,6 +5,7 @@ import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.service.TranshipBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.TranshipBoxListDTO;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.TranshipBoxDTO;
@@ -145,5 +146,30 @@ public class TranshipBoxResource {
         return ResponseEntity.created(new URI("/api/frozen-boxes/id/" + result.getTranshipId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getTranshipId().toString()))
             .body(result);
+    }
+    /**
+     * 根据冻存盒CODE查询冻存盒和冻存管信息（取转运的冻存盒以及冻存管数据）
+     * @param frozenBoxCode
+     * @return
+     */
+    @GetMapping("/tranship-boxes/code/{frozenBoxCode}")
+    @Timed
+    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByForzenBoxCode(@PathVariable String frozenBoxCode) {
+        log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
+        FrozenBoxAndFrozenTubeResponse res = transhipBoxService.findFrozenBoxAndTubeByBoxCode(frozenBoxCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
+     * 根据冻存盒编码删除转运中的冻存盒以及冻存管
+     * @param frozenBoxCode
+     * @return
+     */
+    @DeleteMapping("/tranship-boxes/frozenBox/{frozenBoxCode}")
+    @Timed
+    public ResponseEntity<Void> deleteTranshipBoxByFrozenBox(@PathVariable String frozenBoxCode) {
+        log.debug("REST request to delete TranshipBox : {}", frozenBoxCode);
+        transhipBoxService.deleteTranshipBoxByFrozenBox(frozenBoxCode);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, frozenBoxCode)).build();
     }
 }

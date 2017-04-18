@@ -3,6 +3,7 @@ package org.fwoxford.service;
 import org.fwoxford.domain.TranshipBox;
 import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.fwoxford.service.dto.TranshipBoxListDTO;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -64,4 +65,8 @@ public interface TranshipBoxService {
      * @return
      */
     TranshipBoxListDTO saveBatchTranshipBox(TranshipBoxListDTO transhipBoxListDTO);
+
+    FrozenBoxAndFrozenTubeResponse findFrozenBoxAndTubeByBoxCode(String frozenBoxCode);
+
+    void deleteTranshipBoxByFrozenBox(String frozenBoxCode);
 }

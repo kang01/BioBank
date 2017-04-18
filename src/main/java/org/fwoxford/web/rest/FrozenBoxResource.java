@@ -149,7 +149,7 @@ public class FrozenBoxResource {
     }
 
     /**
-     * 根据冻存盒CODE查询冻存盒和冻存管信息
+     * 根据冻存盒CODE查询冻存盒和冻存管信息（取现在的盒子的数据，若已分装过，则查询不出来）
      * @param frozenBoxCode
      * @return
      */

@@ -401,10 +401,9 @@
 
             }else{
                 // console.log("只能选择两个进行交换！");
-                AlertService.error("只能选择两个进行交换！");
+                AlertService.error("只能选择两个进行交换！",{},'center');
                 domArray = [];
             }
-            console.log(JSON.stringify(vm.frozenTubeArray))
             hotRegisterer.getInstance('my-handsontable').render();
 
 

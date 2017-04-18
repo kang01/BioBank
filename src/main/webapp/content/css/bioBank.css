@@ -73,6 +73,33 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+.import-box-modal-body .selectize-control.multi .selectize-input > div {
+    cursor: pointer;
+    margin: 0 3px 3px 0;
+    padding: 2px 6px;
+    background: #1da7ee;
+    color: #ffffff;
+    border: 1px solid #0073bb;
+}
+.import-box-modal-body .selectize-control.multi .selectize-input [data-value] {
+    text-shadow: 0 1px 0 rgba(0, 51, 83, 0.3);
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background-color: #1b9dec;
+    background-image: -moz-linear-gradient(top, #1da7ee, #178ee9);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#1da7ee), to(#178ee9));
+    background-image: -webkit-linear-gradient(top, #1da7ee, #178ee9);
+    background-image: -o-linear-gradient(top, #1da7ee, #178ee9);
+    background-image: linear-gradient(to bottom, #1da7ee, #178ee9);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff1da7ee', endColorstr='#ff178ee9', GradientType=0);
+    -webkit-box-shadow: 0 1px 0 rgba(0,0,0,0.2), inset 0 1px rgba(255,255,255,0.03);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.2), inset 0 1px rgba(255,255,255,0.03);
+}
+.boxes-table table.dataTable, table.dataTable.no-footer{
+    margin: 0;
+}
 .navbar{
     margin-bottom: 6px;
 }
@@ -224,7 +251,8 @@
 }
 .transport-record-new .pipe-body .pipe-operate{
     width: 8%;
-    margin-right: 28px;
+    margin-right: 50px;
+    margin-top: 28px;
 }
 @media (min-width:1400px) {
     .transport-record-new .pipe-body .pipe-body-bottom .box-remark{
@@ -232,7 +260,7 @@
         margin-left: 41px;
     }
     .transport-record-new .pipe-body .pipe-operate{
-        margin-right: 41px;
+        margin-right: 59px;
     }
     .project-sites .selectize-input > *{
         width: 226px;
@@ -256,7 +284,7 @@
         width: 32%;
     }
     .transport-record-new .pipe-body .pipe-operate{
-        margin-right: 1%;
+        margin-right: 0;
         width: 13%;
     }
     .split-box .box-right{

@@ -5,9 +5,9 @@
         <div class="form-group pull-right m-r-10">
             <div class="text-right">
                 <button type="button" class="btn btn-primary" ng-click="vm.cancellation()" ng-show="vm.transportRecord.transhipState == '1001'">作废</button>
-                <button type="button" class="btn btn-primary" ng-click="vm.stockIn()" ng-disabled="!vm.box" ng-show="vm.transportRecord.transhipState == '1001'">入库</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.stockIn()" ng-disabled="!vm.boxLength || !vm.transportRecord.receiver" ng-show="vm.transportRecord.transhipState == '1001'">入库</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.importFrozenStorageBox('lg')" ng-show="vm.transportRecord.transhipState == '1001'">导入冻存盒</button>
-                <button type="button" class="btn btn-primary" ng-click="vm.saveRecord()" ng-disabled="!vm.box" ng-show="vm.transportRecord.transhipState == '1001'">保存</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.saveRecord()" ng-disabled="!vm.transportRecord.receiver" ng-show="vm.transportRecord.transhipState == '1001'">保存</button>
                 <button type="button" class="btn btn-default" ui-sref="transport-record">关闭</button>
             </div>
         </div>

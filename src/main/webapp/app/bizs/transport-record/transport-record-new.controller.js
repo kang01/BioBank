@@ -713,7 +713,8 @@
         };
 
         function onBoxSuccess(data) {
-            vm.boxList = data[0];
+            vm.boxLength = data.length;
+            // vm.boxList = data[0];
             vm.dtOptions = DTOptionsBuilder.newOptions()
                 .withOption('data', data)
                 .withOption('info', false)
@@ -765,22 +766,28 @@
 
             AlertService.success("保存转运记录成功");
             if(vm.saveFlag){
-                TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode).then(function () {
+                TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode).then(function (data) {
                     AlertService.success("入库成功！");
                     //保存完整
                     vm.saveFlag = false;
-                    loadAll();
+                    $state.go('stock-in-edit({id:'+ data.data.id +'})');
+                    // loadAll();
                 })
             }
         }
 
         function saveBox(){
-            if(vm.boxRowCol){
-                vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
-                vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
+            if(vm.box == undefined){
+                obox.frozenBoxDTOList = [];
+            }else{
+                if(vm.boxRowCol){
+                    vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
+                    vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
+                }
+                obox.frozenBoxDTOList = [];
+                obox.frozenBoxDTOList.push(vm.box);
             }
-            obox.frozenBoxDTOList = [];
-            obox.frozenBoxDTOList.push(vm.box);
+
 
 
             TranshipBoxService.update(obox,onSaveBoxSuccess,onError);

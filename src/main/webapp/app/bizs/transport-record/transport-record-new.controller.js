@@ -93,22 +93,21 @@
         var htm; //渲染管子表格
         var tube= {};
         vm.myCustomRenderer = function(hotInstance, td, row, col, prop, value, cellProperties) {
-            // console.log(value)
             td.style.position = 'relative';
             if(typeof(value) == "string"){
-                if(value == ""){
-                    tube.sampleCode = "";
-                    tube.sampleTempCode = "";
-                    tube.sampleTypeCode = 'S_TYPE_00001';
-                    // value.status = "3003";//冻存管状态3001：正常，3002：空管，3003：空孔；3004：异常
-                    tube.tubeRows = getTubeRows(row);
-                    tube.tubeColumns = getTubeColumns(col);
-                    tube.memo = ""
-                }else{
-                    tube.sampleCode = value;
-                    tube.sampleTypeCode = vm.box.sampleTypeCode;
-                    tube.status = vm.box.status
-                }
+            if(value == ""){
+                tube.sampleCode = "";
+                tube.sampleTempCode = "";
+                tube.sampleTypeCode = 'S_TYPE_00001';
+                // value.status = "3003";//冻存管状态3001：正常，3002：空管，3003：空孔；3004：异常
+                tube.tubeRows = getTubeRows(row);
+                tube.tubeColumns = getTubeColumns(col);
+                tube.memo = ""
+            }else{
+                tube.sampleCode = value;
+                tube.sampleTypeCode = vm.box.sampleTypeCode;
+                tube.status = vm.box.status
+            }
             }else{
                 if(value == ""){
                     tube.sampleTempCode = "";
@@ -117,7 +116,9 @@
                 }
 
             }
-
+            if(tube.memo != " " && tube.memo != "" && tube.memo != null){
+                cellProperties.comment = tube.memo;
+            }
             //样本类型
             if(tube.sampleTypeCode){
                 SampleService.changeSampleType(tube.sampleTypeCode,td);
@@ -126,6 +127,7 @@
             if(tube.status){
                 changeSampleStatus(tube.status,row,col,td,cellProperties)
             }
+
 
             htm = "<div ng-if='value.sampleCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleCode+"</div>"+
                 "<div  ng-if='tube.sampleTempCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleTempCode+"</div>" +
@@ -137,8 +139,6 @@
                 "<div ng-if="+tube.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
 
             td.innerHTML = htm;
-            // console.log(JSON.stringify(vm.frozenTubeArray))
-
         };
         //修改样本状态正常、空管、空孔、异常
         vm.normalCount = 0;
@@ -147,7 +147,7 @@
             operateColor = td.style.backgroundColor;
             //正常
             if(sampleStatus == 3001){
-               vm.normalCount ++;
+                vm.normalCount ++;
             }
             //空管
             if(sampleStatus == 3002){
@@ -168,7 +168,7 @@
                 td.style.border = '3px solid red;margin:-3px';
             }
         }
-
+        var aRemarkArray = [];
         vm.settings = {
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
             rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
@@ -183,19 +183,32 @@
             colWidths: 94,
             rowHeaderWidth: 30,
             editor: 'text',
+            comments:true,
             onAfterSelectionEnd:function (row, col, row2, col2) {
-                remarkArray = this.getData(row,col,row2,col2);
                 vm.remarkFlag = true;
+                var td = this;
+                remarkArray = this.getData(row,col,row2,col2);
+                var selectTubeArray = this.getSelected();
+
                 if(window.event.ctrlKey){
+                    //换位
                     vm.exchangeFlag = true;
-                    var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:2px dotted #5292F7;"></div>';
-                    $(this.getCell(row,col)).append(txt);
                     domArray.push(vm.frozenTubeArray[row][col]);
-                    // console.log(JSON.stringify(domArray))
+
+                    //备注
+                    _fnRemarkSelectData(td,remarkArray,selectTubeArray)
                 }else{
                     domArray = [];
+                    domArray.push(vm.frozenTubeArray[row][col]);
+                    //备注
                     $(".temp").remove();
+                    aRemarkArray = [];
+                    _fnRemarkSelectData(td,remarkArray,selectTubeArray)
+
+
                 }
+
+
                 //管子
                 if(vm.operateStatus == 1) {
                     if(vm.flagStatus){
@@ -244,10 +257,112 @@
             afterBeginEditing:function (row,col) {
                 console.log(row)
             },
-            // cells:function (row,col,prop) {
-            //     console.log(row)
-            // }
+            afterSetDataAtCell:function (row,col,key,value) {
+                // console.log(row)
+                // console.log(col)
+            },
+            afterSetDataAtRowProp:function (row,col) {
+                // console.log(row)
+                // console.log(col)
+            },
+
         };
+        //备注 选择单元格数据
+        function _fnRemarkSelectData(td,remarkArray,selectTubeArray) {
+            var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:2px dotted #5292F7;"></div>';
+            for(var m = 0; m < remarkArray.length; m++){
+                for (var n = 0; n < remarkArray[m].length; n++){
+                    aRemarkArray.push(remarkArray[m][n])
+                }
+            }
+            for(var i = selectTubeArray[0];i <= selectTubeArray[2]; i++){
+                for(var j = selectTubeArray[1];  j <= selectTubeArray[3];j++)
+                    $(td.getCell(i,j)).append(txt);
+            }
+        }
+        function defaultValueRenderer(instance, td, row, col, prop, value, cellProperties) {
+            var args = arguments;
+            td.style.position = 'relative';
+            if(typeof(value) == "string"){
+                if(value == ""){
+                    tube.sampleCode = "";
+                    tube.sampleTempCode = "";
+                    tube.sampleTypeCode = 'S_TYPE_00001';
+                    // value.status = "3003";//冻存管状态3001：正常，3002：空管，3003：空孔；3004：异常
+                    tube.tubeRows = getTubeRows(row);
+                    tube.tubeColumns = getTubeColumns(col);
+                    tube.memo = ""
+                }else{
+                    tube.sampleCode = value;
+                    tube.sampleTypeCode = vm.box.sampleTypeCode;
+                    tube.status = vm.box.status
+                }
+            }else{
+                if(value == ""){
+                    tube.sampleTempCode = "";
+                }else{
+                    tube = value;
+                }
+
+            }
+
+            //样本类型
+            if(tube.sampleTypeCode){
+                SampleService.changeSampleType(tube.sampleTypeCode,td);
+            }
+            //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
+            if(tube.status){
+                changeSampleStatus(tube.status,row,col,td,cellProperties)
+            }
+
+            htm = "<div ng-if='value.sampleCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleCode+"</div>"+
+                "<div  ng-if='tube.sampleTempCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleTempCode+"</div>" +
+                "<div  style='display: none'>"+tube.sampleTypeCode+"</div>" +
+                "<div id='microtubesStatus' style='display: none'>"+tube.status+"</div>"+
+                "<div id='microtubesRemark' style='display: none'>"+tube.memo+"</div>"+
+                "<div id='microtubesRow' style='display: none'>"+tube.tubeRows+"</div>"+
+                "<div id='microtubesCol' style='display: none'>"+tube.tubeColumns+"</div>"+
+                "<div ng-if="+tube.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
+
+            td.innerHTML = htm;
+
+
+
+        }
+        // var CustomTextEditor = Handsontable.editors.TextEditor.prototype.extend();
+        // console.log(CustomTextEditor)
+        // CustomTextEditor.prototype.init = function() {
+        //     Handsontable.editors.TextEditor.prototype.createElements.apply(this, arguments);
+        //
+        //     // Create password input and update relevant properties
+        //     this.TEXTAREA = document.createElement('input');
+        //     this.TEXTAREA.setAttribute('type', 'text');
+        //     this.TEXTAREA.className = 'handsontableInput';
+        //     this.textareaStyle = this.TEXTAREA.style;
+        //     this.textareaStyle.width = 0;
+        //     this.textareaStyle.height = 0;
+        //
+        //     // Replace textarea with password input
+        //     Handsontable.Dom.empty(this.TEXTAREA_PARENT);
+        //     this.TEXTAREA_PARENT.appendChild(this.TEXTAREA);
+        //     Handsontable.editors.registerEditor('input', CustomTextEditor);
+        // };
+        // CustomTextEditor.prototype.getValue = function() {
+        //
+        // };
+        // CustomTextEditor.prototype.setValue  = function(newValue) {
+        //     console.log(newValue)
+        // };
+        // CustomTextEditor.prototype.open = function() {
+        //
+        // };
+        // CustomTextEditor.prototype.close = function() {
+        //
+        // };
+        // CustomTextEditor.prototype.focus  = function() {
+        //     this.editorInput.focus();
+        // };
+
         //修改样本状态
         vm.flagStatus = false;
         vm.editStatus = function () {
@@ -270,21 +385,26 @@
                 var row1 = getTubeRowIndex(domArray[1].tubeRows);
                 var col1 = getTubeColumnIndex(domArray[1].tubeColumns);
 
+                vm.frozenTubeArray[row][col] = domArray[1];
+                vm.frozenTubeArray[row][col].tubeRows = getTubeRows(row);
+                vm.frozenTubeArray[row][col].tubeColumns = getTubeColumns(col);
+
                 vm.frozenTubeArray[row1][col1] = domArray[0];
                 vm.frozenTubeArray[row1][col1].tubeRows = getTubeRows(row1);
                 vm.frozenTubeArray[row1][col1].tubeColumns = getTubeColumns(col1);
 
-                vm.frozenTubeArray[row][col] = domArray[1];
-                vm.frozenTubeArray[row][col].tubeRows = getTubeRows(row);
-                vm.frozenTubeArray[row][col].tubeColumns = getTubeColumns(col);
+
+
 
                 domArray = [];
                 vm.exchangeFlag = false;
 
             }else{
-                console.log("只能选择两个进行交换！");
+                // console.log("只能选择两个进行交换！");
+                AlertService.error("只能选择两个进行交换！");
                 domArray = [];
             }
+            console.log(JSON.stringify(vm.frozenTubeArray))
             hotRegisterer.getInstance('my-handsontable').render();
 
 
@@ -292,7 +412,7 @@
         //批注
         vm.remarkFlag = false;
         vm.tubeRemark = function () {
-            if(vm.remarkFlag &&  remarkArray.length > 0){
+            if(aRemarkArray.length > 0){
                 modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'app/bizs/transport-record/microtubes-remark-modal.html',
@@ -302,21 +422,14 @@
                     resolve: {
                         items: function () {
                             return {
-                                remarkArray :remarkArray
+                                remarkArray :aRemarkArray
                             }
                         }
                     }
 
                 });
                 modalInstance.result.then(function (selectedItem) {
-                    // console.log(JSON.stringify(selectedItem));
-                    // for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                    //     for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                    //             if(selectedItem[i][j].sampleCode != ''){
-                    //                 vm.frozenTubeArray[i][j].memo = selectedItem.remarkArray[i][j].memo;
-                    //             }
-                    //     }
-                    // }
+                    aRemarkArray = [];
                     hotRegisterer.getInstance('my-handsontable').render();
                 });
             }

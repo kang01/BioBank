@@ -72,7 +72,11 @@
 .triangle-topright {
     width: 0;
     height: 0;
-    border-top: 10px solid red;
+    border-top: 10px solid #0000FF;
+    border-left: 10px solid transparent;
+}
+.pipe-table .htCommentCell:after{
+    border-top: 10px solid #0000FF;
     border-left: 10px solid transparent;
 }
 .transport-record-index h2{

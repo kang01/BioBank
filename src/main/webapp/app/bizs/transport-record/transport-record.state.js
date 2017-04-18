@@ -16,7 +16,7 @@
                 parent: 'bizs',
                 url: '/transport-record?page&sort',
                 data: {
-                    authorities: ['ROLE_ADMIN'],
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: 'transportRecord.home.title'
                 },
                 views: {
@@ -57,7 +57,7 @@
                 url: '/transport-record/{transhipId}/{transhipCode}/add',
                 params:{transhipId : null,transhipCode : null},
                 data: {
-                    authorities: ['ROLE_ADMIN'],
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: 'transportRecord.new.title'
                 },
                 views: {
@@ -105,7 +105,7 @@
                 parent: 'bizs',
                 url: '/transport-record/{id}/edit',
                 data: {
-                    authorities: ['ROLE_ADMIN'],
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: 'transportRecord.new.title'
                 },
                 views: {

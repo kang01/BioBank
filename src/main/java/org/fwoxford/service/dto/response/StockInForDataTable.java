@@ -49,7 +49,7 @@ public class StockInForDataTable {
     @JsonView(DataTablesOutput.View.class)
     private String transhipCode;
 
-
+    private String stockInCode;
 
     @Override
     public boolean equals(Object o) {
@@ -86,6 +86,7 @@ public class StockInForDataTable {
             ", projectCode='" + projectCode + '\'' +
             ", projectSiteCode='" + projectSiteCode + '\'' +
             ", transhipCode='" + transhipCode + '\'' +
+            ", stockInCode='" + stockInCode + '\'' +
             '}';
     }
 
@@ -208,5 +209,13 @@ public class StockInForDataTable {
 
     public void setRecordDate(LocalDate recordDate) {
         this.recordDate = recordDate;
+    }
+
+    public String getStockInCode() {
+        return stockInCode;
+    }
+
+    public void setStockInCode(String stockInCode) {
+        this.stockInCode = stockInCode;
     }
 }

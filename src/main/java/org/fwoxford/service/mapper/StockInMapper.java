@@ -88,6 +88,7 @@ public interface StockInMapper {
         stockInTable.setTranshipCode(stockIn.getTranship().getTranshipCode());
         stockInTable.setCountOfBox(stockIn.getTranship().getFrozenBoxNumber());
         stockInTable.setRecordDate(stockIn.getTranship().getReceiveDate());
+        stockInTable.setStockInCode(stockIn.getStockInCode());
         return stockInTable;
     }
 

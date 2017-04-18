@@ -202,12 +202,23 @@ public class StockInServiceImpl implements StockInService {
 
         //构造返回列表
         List<StockInForDataTable> stockInDTOS = stockInMapper.stockInsToStockInTables(stockIns);
+        List<StockInForDataTable> stockInList = new ArrayList<StockInForDataTable>();
 
+        for(StockInForDataTable s:stockInDTOS){
+            List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(s.getStockInCode());
+            int countOfBox = 0;
+            for(StockInBox stockInBox :stockInBoxes){
+                if(!stockInBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED))
+                    countOfBox++;
+            }
+            s.setCountOfBox(countOfBox);
+            stockInList.add(s);
+        }
         //构造返回分页数据
         DataTablesOutput<StockInForDataTable> responseDataTablesOutput = new DataTablesOutput<>();
         responseDataTablesOutput.setDraw(stockInDataTablesOutput.getDraw());
         responseDataTablesOutput.setError(stockInDataTablesOutput.getError());
-        responseDataTablesOutput.setData(stockInDTOS);
+        responseDataTablesOutput.setData(stockInList);
         responseDataTablesOutput.setRecordsFiltered(stockInDataTablesOutput.getRecordsFiltered());
         responseDataTablesOutput.setRecordsTotal(stockInDataTablesOutput.getRecordsTotal());
         return responseDataTablesOutput;
@@ -220,9 +231,10 @@ public class StockInServiceImpl implements StockInService {
                 columnMap.get(data).setData("tranship.transhipCode");
             }
             if(data.equals("countOfBox")){
-                columnMap.get(data).setData("tranship.frozenBoxNumber");
+                columnMap.get(data).setData("");
             }
         }
+        input.addColumn("stockInCode", true, true, "");
         return input;
     }
 

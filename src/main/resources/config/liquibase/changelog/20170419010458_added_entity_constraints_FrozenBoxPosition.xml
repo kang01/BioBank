@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity FrozenBoxPosition.
+    -->
+    <changeSet id="20170419010458-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="equipment_id"
+                                 baseTableName="box_position"
+                                 constraintName="frozen_box_pos_equipment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="equipment"/>
+
+        <addForeignKeyConstraint baseColumnNames="area_id"
+                                 baseTableName="box_position"
+                                 constraintName="fk_frozen_box_position_area_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="area"/>
+
+        <addForeignKeyConstraint baseColumnNames="support_rack_id"
+                                 baseTableName="box_position"
+                                 constraintName="frozen_box_pos_support_rack_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="support_rack"/>
+
+        <addForeignKeyConstraint baseColumnNames="frozen_box_id"
+                                 baseTableName="box_position"
+                                 constraintName="frozen_box_pos_frozen_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_box"/>
+
+    </changeSet>
+</databaseChangeLog>

@@ -26,6 +26,7 @@
     <include file="classpath:config/liquibase/changelog/20170317160203_added_entity_StockIn.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170319150513_added_entity_FrozenTubeRecord.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170319153727_added_entity_StockInBox.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170419010458_added_entity_FrozenBoxPosition.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20170316050525_added_entity_constraints_ProjectRelate.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317021528_added_entity_constraints_Equipment.xml" relativeToChangelogFile="false"/>
@@ -40,5 +41,6 @@
     <include file="classpath:config/liquibase/changelog/20170319153727_added_entity_constraints_StockInBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317065947_added_entity_constraints_Tranship.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170419010458_added_entity_constraints_FrozenBoxPosition.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

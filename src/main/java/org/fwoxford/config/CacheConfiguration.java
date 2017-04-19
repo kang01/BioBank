@@ -68,6 +68,7 @@ public class CacheConfiguration {
             cm.createCache(org.fwoxford.domain.StockInBox.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.FrozenTube.class.getName() + ".frozenBoxes", jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.FrozenBox.class.getName() + ".frozenTubes", jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.FrozenBoxPosition.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

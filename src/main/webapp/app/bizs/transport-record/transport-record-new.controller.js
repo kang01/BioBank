@@ -606,7 +606,6 @@
                 ProjectSitesByProjectIdService.query({id:value},onProjectSitesSuccess,onError)
             }
         };
-
         //项目点
         function onProjectSitesSuccess(data) {
             vm.projectSitesOptions = data;
@@ -720,7 +719,7 @@
                 .withOption('paging', false)
                 .withOption('sorting', false)
                 .withScroller()
-                .withOption('scrollY', 450)
+                .withOption('scrollY', 500)
                 .withOption('rowCallback', rowCallback);
         }
         function onError(error) {

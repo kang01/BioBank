@@ -489,24 +489,24 @@
         };
 
         //上架操作
-        vm.putAway = function () {
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-in/box-putaway-modal.html',
-                controller: 'BoxPutAwayModalController',
-                controllerAs:'vm',
-                size:'lg',
-                resolve: {
-                    items: function () {
-                        return {
-                            transhipId :"aaaa"
-                        }
-                    }
-                }
-            });
-            modalInstance.result.then(function (data) {
-            });
-        };
+        // vm.putAway = function () {
+        //     modalInstance = $uibModal.open({
+        //         animation: true,
+        //         templateUrl: 'app/bizs/stock-in/box-putaway-modal.html',
+        //         controller: 'BoxPutAwayModalController',
+        //         controllerAs:'vm',
+        //         size:'lg',
+        //         resolve: {
+        //             items: function () {
+        //                 return {
+        //                     transhipId :"aaaa"
+        //                 }
+        //             }
+        //         }
+        //     });
+        //     modalInstance.result.then(function (data) {
+        //     });
+        // };
         //选择分装后的样本盒
         // var tubeList = [];
         vm.boxList = [];
@@ -543,6 +543,10 @@
         };
         //分装操作
         vm.splitBox = function () {
+            if(!selectList.length && !vm.obox.stockInFrozenTubeList){
+                AlertService.error("请选择被分装的冻存管或者请选择要分装到的盒子！");
+                return
+            }
             //盒子剩余数
             var surplusCount = vm.obox.stockInFrozenTubeList.length - vm.obox.countOfSample;
             //要分装的管子数
@@ -618,6 +622,26 @@
         vm.recover = function () {
             _splitABox(vm.box.frozenBoxCode);
         };
+        //关闭
+        vm.closeBox = function () {
+
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-in/stock-in-close-splittingBox-modal.html',
+                controller: 'CloseSplittingBoxController',
+                controllerAs:'vm',
+                size:'sm'
+            });
+            modalInstance.result.then(function (flag) {
+                if(flag && vm.boxList.length) {
+
+                    SplitedBoxService.saveSplit(vm.stockInCode, vm.box.frozenBoxCode, vm.boxList).then(function (data) {
+                        AlertService.success("分装成功!");
+                    })
+                }
+                vm.splittingBox = false;
+            });
+        };
         //添加分装样本盒
         vm.addBoxModal = function (box) {
             modalInstance = $uibModal.open({
@@ -625,7 +649,7 @@
                 templateUrl: 'app/bizs/stock-in/add-box-modal.html',
                 controller: 'AddBoxModalController',
                 controllerAs:'vm',
-                size:'lg',
+                size:'90',
                 resolve: {
                     items: function () {
                         return {

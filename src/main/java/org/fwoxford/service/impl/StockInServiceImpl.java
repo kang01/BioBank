@@ -12,6 +12,7 @@ import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
+import org.fwoxford.service.mapper.FrozenBoxPositionMapper;
 import org.fwoxford.service.mapper.SampleTypeMapper;
 import org.fwoxford.service.mapper.StockInMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -67,6 +68,19 @@ public class StockInServiceImpl implements StockInService {
     private TranshipBoxRepository transhipBoxRepository;
     @Autowired
     private StockInBoxRepository stockInBoxRepository;
+
+    @Autowired
+    private FrozenBoxPositionRepository frozenBoxPositionRepository;
+
+    @Autowired
+    private FrozenBoxPositionMapper frozenBoxPositionMapper;
+
+    @Autowired
+    private FrozenTubeRepository frozenTubeRepository;
+
+    @Autowired
+    StockInTubesRepository stockInTubesRepository;
+
     public StockInServiceImpl(StockInRepository stockInRepository,
                               StockInMapper stockInMapper,
                               StockInRepositries stockInRepositries) {
@@ -181,10 +195,41 @@ public class StockInServiceImpl implements StockInService {
         // 修改盒子状态，转运盒子状态
         for(FrozenBoxDTO boxDTO: frozenBoxDTOList){
             boxDTO.setStatus(Constants.FROZEN_BOX_STOCKING);
-            frozenBoxRepository.save(frozenBoxMapper.frozenBoxDTOToFrozenBox(boxDTO));
+            FrozenBox box = frozenBoxMapper.frozenBoxDTOToFrozenBox(boxDTO);
+            frozenBoxRepository.save(box);
             TranshipBox transhipBox = transhipBoxRepository.findByTranshipIdAndFrozenBoxId(tranship.getId(),boxDTO.getId());
             transhipBox.setStatus(Constants.FROZEN_BOX_STOCKING);
             transhipBoxRepository.save(transhipBox);
+            //保存盒子位置
+            FrozenBoxPosition frozenBoxPosition = frozenBoxPositionRepository.findOneByFrozenBoxIdAndStatus(box.getId(),Constants.FROZEN_BOX_STOCKING);
+            if(frozenBoxPosition == null){
+                frozenBoxPosition = new FrozenBoxPosition();
+            }
+            frozenBoxPosition = frozenBoxPositionMapper.frozenBoxToFrozenBoxPosition(frozenBoxPosition,box);
+            frozenBoxPositionRepository.save(frozenBoxPosition);
+
+            List<FrozenTube> frozenTubes =frozenTubeRepository.findFrozenTubeListByBoxId(box.getId());
+            for(FrozenTube tube:frozenTubes){
+                //保存入库与冻存管的关系
+                StockInTubes stockInTubes = new StockInTubes();
+                stockInTubes.setFrozenBox(box);
+                stockInTubes.setFrozenBoxCode(box.getFrozenBoxCode());
+                stockInTubes.setMemo(tube.getMemo());
+                stockInTubes.setStatus(box.getStatus());
+                stockInTubes.setColumnsInTube(tube.getTubeColumns());
+                stockInTubes.setRowsInTube(tube.getTubeRows());
+                stockInTubes.setFrozenBoxPosition(frozenBoxPosition);
+                stockInTubes.setFrozenTube(tube);
+                stockInTubes.setFrozenTubeCode(tube.getFrozenTubeCode());
+                stockInTubes.setSampleCode(tube.getSampleCode());
+                stockInTubes.setStockIn(stockIn);
+                stockInTubes.setStockInCode(stockIn.getStockInCode());
+                stockInTubes.setTranship(tranship);
+                stockInTubes.setTranshipBatch(tranship.getTranshipBatch());
+                stockInTubes.setTranshipCode(transhipCode);
+                stockInTubes.setSampleTempCode(tube.getSampleTempCode());
+                stockInTubesRepository.save(stockInTubes);
+            }
         }
 
         List<StockInBoxDTO> stockInBoxDTOS = createStockInBoxDTO(frozenBoxDTOList,stockIn);

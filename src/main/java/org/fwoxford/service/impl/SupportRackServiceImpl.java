@@ -144,7 +144,7 @@ public class SupportRackServiceImpl implements SupportRackService{
             for(FrozenBox box :frozenBoxes){
                 if(!box.getStatus().equals(Constants.FROZEN_BOX_STOCKED)
                     && !box.getStatus().equals(Constants.FROZEN_BOX_INVALID)
-                    && !rack.getId().equals(box.getSupportRack().getId())){
+                    && box.getSupportRack()!=null&& !rack.getId().equals(box.getSupportRack().getId())){
                     count++;
                 }
             }

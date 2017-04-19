@@ -32,6 +32,9 @@ public class StockInTubesDTO extends AbstractAuditingDTO implements Serializable
     private String sampleCode;
 
     @Size(max = 100)
+    private String sampleTempCode;
+
+    @Size(max = 100)
     private String frozenTubeCode;
 
     @NotNull
@@ -110,6 +113,14 @@ public class StockInTubesDTO extends AbstractAuditingDTO implements Serializable
     }
     public String getRowsInTube() {
         return rowsInTube;
+    }
+
+    public String getSampleTempCode() {
+        return sampleTempCode;
+    }
+
+    public void setSampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
     }
 
     public void setRowsInTube(String rowsInTube) {
@@ -208,6 +219,7 @@ public class StockInTubesDTO extends AbstractAuditingDTO implements Serializable
             ", frozenBoxCode='" + frozenBoxCode + "'" +
             ", sampleCode='" + sampleCode + "'" +
             ", frozenTubeCode='" + frozenTubeCode + "'" +
+            ", sampleTempCode='" + sampleTempCode + "'" +
             ", rowsInTube='" + rowsInTube + "'" +
             ", columnsInTube='" + columnsInTube + "'" +
             ", memo='" + memo + "'" +

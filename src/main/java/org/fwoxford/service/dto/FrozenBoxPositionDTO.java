@@ -29,14 +29,12 @@ public class FrozenBoxPositionDTO extends AbstractAuditingDTO implements Seriali
     @Size(max = 20)
     private String columnsInShelf;
 
-    @NotNull
     @Size(max = 100)
     private String frozenBoxCode;
 
     @Size(max = 1024)
     private String memo;
 
-    @NotNull
     @Size(max = 20)
     private String status;
 

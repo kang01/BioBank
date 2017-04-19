@@ -42,6 +42,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="sample_temp_code" type="varchar(100)" remarks="样本临时编码">
+                <constraints nullable="true" />
+            </column>
+
             <column name="frozen_tube_code" type="varchar(100)" remarks="冻存管编码">
                 <constraints nullable="true" />
             </column>

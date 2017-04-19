@@ -12,4 +12,11 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StockInTubesRepository extends JpaRepository<StockInTubes,Long> {
 
+    StockInTubes findByStockInCodeAndFrozenTubeId(String stockInCode, Long id);
+
+    List<StockInTubes> findByTranshipCode(String transhipCode);
+
+    List<StockInTubes> findByTranshipCodeAndFrozenBoxCode(String transhipCode, String frozenBoxCode);
+
+    List<StockInTubes> findByStockInCodeAndFrozenBoxCode(String stockInCode, String frozenBoxCode);
 }

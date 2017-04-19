@@ -46,6 +46,11 @@ public class StockInTubes extends AbstractAuditingEntity implements Serializable
     @Column(name = "sample_code", length = 100)
     private String sampleCode;
 
+
+    @Size(max = 100)
+    @Column(name = "sample_temp_code", length = 100)
+    private String sampleTempCode;
+
     @Size(max = 100)
     @Column(name = "frozen_tube_code", length = 100)
     private String frozenTubeCode;
@@ -172,6 +177,17 @@ public class StockInTubes extends AbstractAuditingEntity implements Serializable
 
     public void setFrozenTubeCode(String frozenTubeCode) {
         this.frozenTubeCode = frozenTubeCode;
+    }
+
+    public String getSampleTempCode() {
+        return sampleTempCode;
+    }
+    public StockInTubes sampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
+        return this;
+    }
+    public void setSampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
     }
 
     public String getRowsInTube() {
@@ -321,6 +337,7 @@ public class StockInTubes extends AbstractAuditingEntity implements Serializable
             ", frozenBoxCode='" + frozenBoxCode + "'" +
             ", sampleCode='" + sampleCode + "'" +
             ", frozenTubeCode='" + frozenTubeCode + "'" +
+            ", sampleTempCode='" + sampleTempCode + "'" +
             ", rowsInTube='" + rowsInTube + "'" +
             ", columnsInTube='" + columnsInTube + "'" +
             ", memo='" + memo + "'" +

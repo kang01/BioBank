@@ -63,4 +63,23 @@ public interface FrozenBoxPositionMapper {
         frozenBox.setId(id);
         return frozenBox;
     }
+
+    default FrozenBoxPosition frozenBoxToFrozenBoxPosition(FrozenBoxPosition frozenBoxPosition,FrozenBox box){
+        if(box == null){
+            return frozenBoxPosition;
+        }
+        frozenBoxPosition.setEquipment(box.getEquipment());
+        frozenBoxPosition.setEquipmentCode(box.getEquipmentCode());
+        frozenBoxPosition.setArea(box.getArea());
+        frozenBoxPosition.setAreaCode(box.getAreaCode());
+        frozenBoxPosition.setSupportRack(box.getSupportRack());
+        frozenBoxPosition.setSupportRackCode(box.getSupportRackCode());
+        frozenBoxPosition.setColumnsInShelf(box.getColumnsInShelf());
+        frozenBoxPosition.setRowsInShelf(box.getRowsInShelf());
+        frozenBoxPosition.setMemo(box.getMemo());
+        frozenBoxPosition.setStatus(box.getStatus());
+        frozenBoxPosition.setFrozenBox(box);
+        frozenBoxPosition.setFrozenBoxCode(box.getFrozenBoxCode());
+        return  frozenBoxPosition;
+    }
 }

@@ -465,10 +465,25 @@
         }
         //删除盒子
         function _fnDelBox() {
-            FrozenBoxDelService.delete({code:vm.box.frozenBoxCode},onDelBoxSuccess,onError)
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/transport-record/frozen-box-delete-modal.html',
+                controller: 'FrozenBoxDeleteController',
+                backdrop:'static',
+                controllerAs: 'vm'
+
+            });
+            modalInstance.result.then(function () {
+                FrozenBoxDelService.delete({code:vm.box.frozenBoxCode},onDelBoxSuccess,onError)
+            });
+
         }
         function onDelBoxSuccess() {
-            AlertService.success("删除成功!")
+            AlertService.success("删除成功!");
+            loadBox();
+            vm.box = null;
+            initFrozenTube(10);
+            hotRegisterer.getInstance('my-handsontable').render();
         }
         var loadAll = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);//样本类型

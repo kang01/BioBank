@@ -209,6 +209,8 @@ public class TranshipServiceImpl implements TranshipService{
     public DataTablesOutput<TranshipResponse> findAllTranship(DataTablesInput input) {
 
         //获取转运列表
+        input.addColumn("createdDate",true,true,"");
+        input.addOrder("createdDate",false);
         DataTablesOutput<Tranship> transhipDataTablesOutput =  transhipRepositries.findAll(input);
         List<Tranship> tranships =  transhipDataTablesOutput.getData();
 

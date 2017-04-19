@@ -196,7 +196,9 @@ public class StockInServiceImpl implements StockInService {
         //重新构造input
         input = createStockInFroDataTableInput(input);
 
-        //获取转运列表
+        //获取入库列表
+        input.addColumn("createdDate",true,true,"");
+        input.addOrder("createdDate",false);
         DataTablesOutput<StockIn> stockInDataTablesOutput =  stockInRepositries.findAll(input);
         List<StockIn> stockIns =  stockInDataTablesOutput.getData();
 

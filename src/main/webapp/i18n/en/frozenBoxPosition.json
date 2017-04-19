@@ -1,0 +1,32 @@
+{
+    "bioBankApp": {
+        "frozenBoxPosition" : {
+            "home": {
+                "title": "Frozen Box Positions",
+                "createLabel": "Create a new Frozen Box Position",
+                "createOrEditLabel": "Create or edit a Frozen Box Position"
+            },
+            "created": "A new Frozen Box Position is created with identifier {{ param }}",
+            "updated": "A Frozen Box Position is updated with identifier {{ param }}",
+            "deleted": "A Frozen Box Position is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Frozen Box Position {{ id }}?"
+            },
+            "detail": {
+                "title": "Frozen Box Position"
+            },
+            "equipmentCode": "Equipment Code",
+            "areaCode": "Area Code",
+            "supportRackCode": "Support Rack Code",
+            "rowsInShelf": "Rows In Shelf",
+            "columnsInShelf": "Columns In Shelf",
+            "frozenBoxCode": "Frozen Box Code",
+            "memo": "Memo",
+            "status": "Status",
+            "equipment": "Equipment",
+            "area": "Area",
+            "supportRack": "Support Rack",
+            "frozenBox": "Frozen Box"
+        }
+    }
+}

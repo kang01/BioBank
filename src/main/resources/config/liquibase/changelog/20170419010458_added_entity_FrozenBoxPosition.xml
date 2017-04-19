@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="sysdate" dbms="oracle"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity FrozenBoxPosition.
+    -->
+    <changeSet id="20170419010458-1" author="jhipster">
+        <createTable tableName="box_position" remarks = "冻存盒位置表">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="equipment_code" type="varchar(100)" remarks = "设备编码">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="area_code" type="varchar(100)" remarks = "区域编码">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="support_rack_code" type="varchar(100)" remarks = "冻存架编码">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="rows_in_shelf" type="varchar(20)" remarks = "所在架子行数">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="columns_in_shelf" type="varchar(20)" remarks = "所在架子列数">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="frozen_box_code" type="varchar(100)" remarks = "冻存盒编码">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="memo" type="varchar(1024)" remarks = "备注">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="status" type="varchar(20)" remarks = "状态">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="equipment_id" type="bigint" remarks = "设备ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="area_id" type="bigint" remarks = "区域ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="support_rack_id" type="bigint" remarks = "冻存架ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="frozen_box_id" type="bigint" remarks = "冻存盒ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+        </createTable>
+
+    </changeSet>
+</databaseChangeLog>

@@ -475,7 +475,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         List<FrozenTube> frozenTube = new ArrayList<FrozenTube>();
         List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
         if(stockInTubes.size()==0){
-            frozenTube = frozenTubeRepository.findTranshipFrozenTubeListByBoxCode(frozenBoxCode);
+            frozenTube = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
         }else{
             for(StockInTubes tube:stockInTubes){
                 tube.getFrozenTube().setTubeRows(tube.getRowsInTube());

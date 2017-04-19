@@ -257,6 +257,10 @@
                 <div class="text-right" style="margin-top: 2px">
                     <button type="button" class="btn btn-default" ng-click="vm.reImportFrozenBoxData()" ng-disabled="!vm.box">重新导入</button>
                 </div>
+                <div class="text-right" style="margin-top: 2px">
+                    <!--ng-disabled="boxForm.$invalid"-->
+                    <button type="button" class="btn btn-default"  ng-click="vm.delBox()" ng-disabled="!vm.box">删除盒子</button>
+                </div>
             </div>
         </div>
 

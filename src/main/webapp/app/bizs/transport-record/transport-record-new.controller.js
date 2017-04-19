@@ -10,10 +10,10 @@
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
     TransportRecordNewController.$inject = ['$scope','hotRegisterer','SampleService','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
-        'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService'];
+        'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
     function TransportRecordNewController($scope,hotRegisterer,SampleService,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
-                                          SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService) {
+                                          SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.transportRecord = entity; //转运记录
@@ -28,7 +28,8 @@
         vm.openCalendar = openCalendar; //时间
         vm.importFrozenStorageBox = importFrozenStorageBox; //导入冻存盒
         vm.someClickHandler = someClickHandler; //点击冻存盒的表格行
-        vm.reImportFrozenBoxData = reImportFrozenBoxData;//重新导入
+        vm.reImportFrozenBoxData = _fnReImportFrozenBoxData;//重新导入
+        vm.delBox = _fnDelBox;//删除盒子
         vm.saveRecord = saveRecord; //保存记录
         vm.saveBox = saveBox;//保存盒子
         vm.loadBox = loadBox;
@@ -265,6 +266,14 @@
                 // console.log(row)
                 // console.log(col)
             },
+            beforeKeyDown:function (event) {
+                if(vm.flagStatus){
+                    if(event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 40){
+                        Handsontable.Dom.stopImmediatePropagation(event);
+                    }
+                }
+
+            }
 
         };
         //备注 选择单元格数据
@@ -434,7 +443,7 @@
             }
         };
         //重新导入
-        function reImportFrozenBoxData(){
+        function _fnReImportFrozenBoxData(){
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'reImportDataModal.html',
@@ -453,6 +462,13 @@
                 frozenBoxByCodeService.get({code:vm.box.frozenBoxCode},onFrozenSuccess,onError);
             }, function () {
             });
+        }
+        //删除盒子
+        function _fnDelBox() {
+            FrozenBoxDelService.delete({code:vm.box.frozenBoxCode},onDelBoxSuccess,onError)
+        }
+        function onDelBoxSuccess() {
+            AlertService.success("删除成功!")
         }
         var loadAll = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);//样本类型

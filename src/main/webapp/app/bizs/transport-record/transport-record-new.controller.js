@@ -182,7 +182,7 @@
             wordWrap:true,
             colWidths: 94,
             rowHeaderWidth: 30,
-            editor: 'text',
+            editor: 'tube',
             onAfterSelectionEnd:function (row, col, row2, col2) {
                 remarkArray = this.getData(row,col,row2,col2);
                 vm.remarkFlag = true;

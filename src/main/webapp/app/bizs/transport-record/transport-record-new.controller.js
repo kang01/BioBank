@@ -20,7 +20,6 @@
         vm.transportRecord = entity; //转运记录
         vm.frozenTubeArray = [];//初始管子数据二位数组
         var remarkArray;//批注
-        vm.operateStatus;// 1.状态 2:换位 3.批注
         var domArray = [];//单元格操作的数据
         var operateColor;//单元格颜色
         var modalInstance;
@@ -192,6 +191,7 @@
             colWidths: 94,
             rowHeaderWidth: 30,
             editor: 'tube',
+            multiSelect:true,
             onAfterSelectionEnd:function (row, col, row2, col2) {
                 vm.remarkFlag = true;
                 var td = this;
@@ -215,26 +215,26 @@
 
 
                 }
-
+                console.log(vm.settings)
 
                 //管子
-                if(vm.operateStatus == 1) {
-                    if(vm.flagStatus){
-                        var tubeStatus = $(this.getCell(row, col)).find("#microtubesStatus").text();
-                        if(tubeStatus == 3001){
-                            vm.frozenTubeArray[row][col].status = 3002;
-                        }
-                        if(tubeStatus == 3002){
-                            vm.frozenTubeArray[row][col].status = 3003;
-                        }
-                        if(tubeStatus == 3003){
-                            vm.frozenTubeArray[row][col].status = 3004;
-                        }
-                        if(tubeStatus == 3004){
-                            vm.frozenTubeArray[row][col].status = 3001;
-                        }
-                        hotRegisterer.getInstance('my-handsontable').render();
+                if(vm.flagStatus){
+                    var tubeStatus = $(this.getCell(row, col)).find("#microtubesStatus").text();
+                    if(tubeStatus == 3001){
+                        vm.frozenTubeArray[row][col].status = 3002;
                     }
+                    if(tubeStatus == 3002){
+                        vm.frozenTubeArray[row][col].status = 3003;
+                    }
+                    if(tubeStatus == 3003){
+                        vm.frozenTubeArray[row][col].status = 3004;
+                    }
+                    if(tubeStatus == 3004){
+                        vm.frozenTubeArray[row][col].status = 3001;
+                    }
+                    vm.settings.multiSelect =  false;
+                    console.log(vm.settings);
+                    hotRegisterer.getInstance('my-handsontable').render();
                 }
             },
             enterMoves:function () {
@@ -331,8 +331,8 @@
                 changeSampleStatus(tube.status,row,col,td,cellProperties)
             }
 
-            htm = "<div ng-if='value.sampleCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleCode+"</div>"+
-                "<div  ng-if='tube.sampleTempCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleTempCode+"</div>" +
+            htm = "<div ng-if='tube.sampleCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleCode+"</div>"+
+                "<div  ng-if='!tube.sampleCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleTempCode+"</div>" +
                 "<div  style='display: none'>"+tube.sampleTypeCode+"</div>" +
                 "<div id='microtubesStatus' style='display: none'>"+tube.status+"</div>"+
                 "<div id='microtubesRemark' style='display: none'>"+tube.memo+"</div>"+
@@ -345,44 +345,9 @@
 
 
         }
-        // var CustomTextEditor = Handsontable.editors.TextEditor.prototype.extend();
-        // console.log(CustomTextEditor)
-        // CustomTextEditor.prototype.init = function() {
-        //     Handsontable.editors.TextEditor.prototype.createElements.apply(this, arguments);
-        //
-        //     // Create password input and update relevant properties
-        //     this.TEXTAREA = document.createElement('input');
-        //     this.TEXTAREA.setAttribute('type', 'text');
-        //     this.TEXTAREA.className = 'handsontableInput';
-        //     this.textareaStyle = this.TEXTAREA.style;
-        //     this.textareaStyle.width = 0;
-        //     this.textareaStyle.height = 0;
-        //
-        //     // Replace textarea with password input
-        //     Handsontable.Dom.empty(this.TEXTAREA_PARENT);
-        //     this.TEXTAREA_PARENT.appendChild(this.TEXTAREA);
-        //     Handsontable.editors.registerEditor('input', CustomTextEditor);
-        // };
-        // CustomTextEditor.prototype.getValue = function() {
-        //
-        // };
-        // CustomTextEditor.prototype.setValue  = function(newValue) {
-        //     console.log(newValue)
-        // };
-        // CustomTextEditor.prototype.open = function() {
-        //
-        // };
-        // CustomTextEditor.prototype.close = function() {
-        //
-        // };
-        // CustomTextEditor.prototype.focus  = function() {
-        //     this.editorInput.focus();
-        // };
-
         //修改样本状态
         vm.flagStatus = false;
         vm.editStatus = function () {
-            vm.operateStatus = 1;
             var cellProperties = hotRegisterer.getInstance('my-handsontable').getCellsMeta();
             for(var i = 0; i < cellProperties.length; i++){
                 if(vm.flagStatus){
@@ -513,39 +478,45 @@
             labelField:'frozenBoxTypeName',
             maxItems: 1,
             onChange:function(value){
-                    vm.frozenTubeArray = [];
-                    if(value == 18){
-                        initFrozenTube(8);
-                        vm.settings.columns = 8;
-                        vm.settings.minRows = 8;
+                for(var k =0; k < vm.frozenBoxTypeOptions.length; k++){
+                    if(value == vm.frozenBoxTypeOptions[k].id){
+                        initFrozenTube(vm.frozenBoxTypeOptions[k].frozenBoxTypeRows);
+                        vm.settings.minCols = vm.frozenBoxTypeOptions[k].frozenBoxTypeRows;
+                        vm.settings.minRows = vm.frozenBoxTypeOptions[k].frozenBoxTypeColumns;
+                        vm.settings.data.splice(vm.frozenBoxTypeOptions[k].frozenBoxTypeRows,2);
                     }else{
-                        initFrozenTube(10);
+                        initFrozenTube(vm.frozenBoxTypeOptions[k].frozenBoxTypeRows);
+                        vm.settings.minCols = vm.frozenBoxTypeOptions[k].frozenBoxTypeColumns;
+                        vm.settings.minRows = vm.frozenBoxTypeOptions[k].frozenBoxTypeRows;
                     }
-                    for(var i = 0; i < vm.box.frozenTubeDTOS.length; i++){
-                        if(value == 18){
+                    for(var i = 0; i < vm.box.frozenTubeDTOS.length; i++) {
+                        if (value == vm.frozenBoxTypeOptions[k].id) {
                             var indexRow = getTubeRowIndex(vm.box.frozenTubeDTOS[i].tubeRows);
                             var indexCol = getTubeColumnIndex(vm.box.frozenTubeDTOS[i].tubeColumns);
-                            if(indexCol < 8){
-                                if(indexRow < 8){
+                            if (indexCol < vm.settings.minRows) {
+                                if (indexRow < vm.settings.columns) {
                                     var tube = vm.box.frozenTubeDTOS[i];
                                     vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
                                     vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)].frozenBoxCode = vm.box.frozenBoxCode
                                 }
                             }
-                        }else{
+                        } else {
                             var tube = vm.box.frozenTubeDTOS[i];
                             vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
                             vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)].frozenBoxCode = vm.box.frozenBoxCode
                         }
 
                     }
-                    console.log(JSON.stringify(vm.frozenTubeArray));
+                }
+                console.log(vm.settings)
+
+
 
                 vm.box.frozenBoxTypeId = value;
 
-                // hotRegisterer.getInstance('my-handsontable').render();
+                hotRegisterer.getInstance('my-handsontable').render();
 
-                hotRegisterer.getInstance('my-handsontable').loadData(vm.frozenTubeArray)
+                // hotRegisterer.getInstance('my-handsontable').loadData(vm.frozenTubeArray)
             }
         };
 
@@ -728,7 +699,6 @@
         //架子
         function onShelfSuccess(data) {
             vm.frozenBoxShelfOptions = data;
-
         }
         vm.frozenBoxShelfConfig = {
             valueField:'id',
@@ -818,9 +788,6 @@
                 obox.frozenBoxDTOList = [];
                 obox.frozenBoxDTOList.push(vm.box);
             }
-
-
-
             TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
         }
         function openCalendar (date) {
@@ -855,13 +822,11 @@
             });
 
         };
-        // function onStockInSuccess(data) {
-        //     AlertService.success("入库成功！");
-        // }
         //点击冻存盒行
         var count = 0;
         function someClickHandler(td,boxInfo) {
-            if(count == 0){
+            vm.strbox = JSON.stringify(vm.box);
+            if(vm.strbox === vm.boxStr){
                 $(td).closest('table').find('.rowLight').removeClass("rowLight");
                 $(td).addClass('rowLight');
                 frozenBoxByCodeService.get({code:boxInfo.frozenBoxCode},onFrozenSuccess,onError);
@@ -890,6 +855,7 @@
             count++;
         }
         function onFrozenSuccess(data) {
+            vm.boxStr = JSON.stringify(data);
             vm.box = data;
             if(vm.box.equipmentId){
                 AreasByEquipmentIdService.query({id:vm.box.equipmentId},onAreaSuccess, onError);

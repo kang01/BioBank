@@ -50,11 +50,11 @@
 .m-t-40{
     margin-top: 40px !important;
 }
-.alerts{
-    position: absolute;
-    width: 100%;
-    z-index: 100;
-}
+/*.alerts{*/
+    /*position: absolute;*/
+    /*width: 100%;*/
+    /*z-index: 100;*/
+/*}*/
 .border{
     border:1px solid #ccc;
 }

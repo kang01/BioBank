@@ -165,9 +165,16 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         for(StockInBox box : alist){
             StockInBoxForDataTable stockInBoxForDataTable = new StockInBoxForDataTable();
 
-            String position = box.getEquipmentCode()+"."+box.getAreaCode()+"."+box.getSupportRackCode()+"."+box.getColumnsInShelf()+box.getRowsInShelf();
+            String position =
+                box.getEquipmentCode()!=null?box.getEquipmentCode():new String("")+"."+
+                    box.getAreaCode()!=null?box.getAreaCode():new String("")+"."+
+                    box.getSupportRackCode()!=null?box.getSupportRackCode():new String("")+"."+
+                    box.getColumnsInShelf()+box.getRowsInShelf();
             stockInBoxForDataTable.setPosition(position);
             FrozenBox frozenBox =frozenBoxRepository.findFrozenBoxDetailsByBoxCode(box.getFrozenBoxCode());
+            if(frozenBox == null){
+                throw new BankServiceException("冻存盒不存在！",box.getFrozenBoxCode());
+            }
             stockInBoxForDataTable.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
             stockInBoxForDataTable.setSampleTypeName(frozenBox.getSampleTypeName());
 //            List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);

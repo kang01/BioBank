@@ -96,20 +96,27 @@
         var tube= {};
         vm.myCustomRenderer = function(hotInstance, td, row, col, prop, value, cellProperties) {
             td.style.position = 'relative';
-            if(typeof(value) == "string"){
-            if(value == ""){
+            if(value == null){
                 tube.sampleCode = "";
                 tube.sampleTempCode = "";
                 tube.sampleTypeCode = 'S_TYPE_00001';
-                // value.status = "3003";//冻存管状态3001：正常，3002：空管，3003：空孔；3004：异常
                 tube.tubeRows = getTubeRows(row);
                 tube.tubeColumns = getTubeColumns(col);
                 tube.memo = ""
-            }else{
-                tube.sampleCode = value;
-                tube.sampleTypeCode = vm.box.sampleTypeCode;
-                tube.status = vm.box.status
             }
+            if(typeof(value) == "string"){
+                if(value == "" || value == null){
+                    tube.sampleCode = "";
+                    tube.sampleTempCode = "";
+                    tube.sampleTypeCode = 'S_TYPE_00001';
+                    tube.tubeRows = getTubeRows(row);
+                    tube.tubeColumns = getTubeColumns(col);
+                    tube.memo = ""
+                }else{
+                    tube.sampleCode = value;
+                    tube.sampleTypeCode = vm.box.sampleTypeCode;
+                    tube.status = vm.box.status
+                }
             }else{
                 if(value == ""){
                     tube.sampleTempCode = "";
@@ -131,8 +138,8 @@
             }
 
 
-            htm = "<div ng-if='value.sampleCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleCode+"</div>"+
-                "<div  ng-if='tube.sampleTempCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleTempCode+"</div>" +
+            htm = "<div ng-if='tube.sampleCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleCode+"</div>"+
+                "<div  ng-if='!tube.sampleCode' style='line-height: 20px;word-wrap: break-word'>"+tube.sampleTempCode+"</div>" +
                 "<div  style='display: none'>"+tube.sampleTypeCode+"</div>" +
                 "<div id='microtubesStatus' style='display: none'>"+tube.status+"</div>"+
                 "<div id='microtubesRemark' style='display: none'>"+tube.memo+"</div>"+
@@ -506,44 +513,39 @@
             labelField:'frozenBoxTypeName',
             maxItems: 1,
             onChange:function(value){
-                // var countRows = hotRegisterer.getInstance('my-handsontable').countRows();
-                // var countCols = hotRegisterer.getInstance('my-handsontable').countCols();
-                // console.log(countRows)
-                if(value == 18){
-                    // if(countRows != 8){
-                    //     for(var i = 0; i < countRows; i++){
-                    //         arr1 = vm.frozenTubeArray[i].splice(countRows-2,2);
-                    //     }
-                    // }
+                    vm.frozenTubeArray = [];
+                    if(value == 18){
+                        initFrozenTube(8);
+                        vm.settings.columns = 8;
+                        vm.settings.minRows = 8;
+                    }else{
+                        initFrozenTube(10);
+                    }
+                    for(var i = 0; i < vm.box.frozenTubeDTOS.length; i++){
+                        if(value == 18){
+                            var indexRow = getTubeRowIndex(vm.box.frozenTubeDTOS[i].tubeRows);
+                            var indexCol = getTubeColumnIndex(vm.box.frozenTubeDTOS[i].tubeColumns);
+                            if(indexCol < 8){
+                                if(indexRow < 8){
+                                    var tube = vm.box.frozenTubeDTOS[i];
+                                    vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
+                                    vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)].frozenBoxCode = vm.box.frozenBoxCode
+                                }
+                            }
+                        }else{
+                            var tube = vm.box.frozenTubeDTOS[i];
+                            vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
+                            vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)].frozenBoxCode = vm.box.frozenBoxCode
+                        }
 
-                    vm.settings.minRows = 8;
-                    vm.settings.minCols = 8;
+                    }
+                    console.log(JSON.stringify(vm.frozenTubeArray));
 
-                }else{
-                    vm.settings.minRows = 10;
-                    vm.settings.minCols = 10;
-
-                }
                 vm.box.frozenBoxTypeId = value;
 
-                // for(var i = 8; i < countRows; i++){
-                //     for(var j = 0; j <countCols; j++){
-                //         if(value == 18){
-                //             hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = 'rgb(0,0,0)';
-                //         }else{
-                //             hotRegisterer.getInstance('my-handsontable').getCell(i,j).style.backgroundColor = '#fff'
-                //         }
-                //     }
-                // }
-                // if(value == 18){
-                //     size = 8;
-                //     // console.log(hotRegisterer.getInstance('my-handsontable'))
-                //     // hotRegisterer.getInstance('my-handsontable').render()
-                // }else{
-                //     size = 10;
-                // }
-                //  init(size);
-                hotRegisterer.getInstance('my-handsontable').render()
+                // hotRegisterer.getInstance('my-handsontable').render();
+
+                hotRegisterer.getInstance('my-handsontable').loadData(vm.frozenTubeArray)
             }
         };
 

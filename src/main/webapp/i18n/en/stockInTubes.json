@@ -1,0 +1,35 @@
+{
+    "bioBankApp": {
+        "stockInTubes" : {
+            "home": {
+                "title": "Stock In Tubes",
+                "createLabel": "Create a new Stock In Tubes",
+                "createOrEditLabel": "Create or edit a Stock In Tubes"
+            },
+            "created": "A new Stock In Tubes is created with identifier {{ param }}",
+            "updated": "A Stock In Tubes is updated with identifier {{ param }}",
+            "deleted": "A Stock In Tubes is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock In Tubes {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock In Tubes"
+            },
+            "stockInCode": "Stock In Code",
+            "transhipCode": "Tranship Code",
+            "transhipBatch": "Tranship Batch",
+            "frozenBoxCode": "Frozen Box Code",
+            "sampleCode": "Sample Code",
+            "frozenTubeCode": "Frozen Tube Code",
+            "rowsInTube": "Rows In Tube",
+            "columnsInTube": "Columns In Tube",
+            "memo": "Memo",
+            "status": "Status",
+            "stockIn": "Stock In",
+            "tranship": "Tranship",
+            "frozenBox": "Frozen Box",
+            "frozenTube": "Frozen Tube",
+            "frozenBoxPosition": "Frozen Box Position"
+        }
+    }
+}

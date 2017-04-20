@@ -128,7 +128,7 @@
         function onError(error) {
             AlertService.error(error.data.message);
         }
-
+        items.sampleTypes.pop();
         vm.sampleTypesOptions = items.sampleTypes;
         vm.box.sampleTypeCode = items.box.sampleTypeCode;
         vm.box.sampleType.sampleTypeCode = items.box.sampleTypeCode;

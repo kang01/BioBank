@@ -1,0 +1,220 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myStockInTubesLabel" data-translate="bioBankApp.stockInTubes.home.createOrEditLabel">Create or edit a Stock In Tubes</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.stockInTubes.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.stockInTubes.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockInTubes.stockInCode" for="field_stockInCode">Stock In Code</label>
+            <input type="text" class="form-control" name="stockInCode" id="field_stockInCode"
+                    ng-model="vm.stockInTubes.stockInCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.stockInCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.stockInCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.stockInCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockInTubes.transhipCode" for="field_transhipCode">Tranship Code</label>
+            <input type="text" class="form-control" name="transhipCode" id="field_transhipCode"
+                    ng-model="vm.stockInTubes.transhipCode"
+                    ng-maxlength="100"/>
+            <div ng-show="editForm.transhipCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.transhipCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockInTubes.transhipBatch" for="field_transhipBatch">Tranship Batch</label>
+            <input type="text" class="form-control" name="transhipBatch" id="field_transhipBatch"
+                    ng-model="vm.stockInTubes.transhipBatch"
+                    ng-maxlength="100"/>
+            <div ng-show="editForm.transhipBatch.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.transhipBatch.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockInTubes.frozenBoxCode" for="field_frozenBoxCode">Frozen Box Code</label>
+            <input type="text" class="form-control" name="frozenBoxCode" id="field_frozenBoxCode"
+                    ng-model="vm.stockInTubes.frozenBoxCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.frozenBoxCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.frozenBoxCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockInTubes.sampleCode" for="field_sampleCode">Sample Code</label>
+            <input type="text" class="form-control" name="sampleCode" id="field_sampleCode"
+                    ng-model="vm.stockInTubes.sampleCode"
+                    ng-maxlength="100"/>
+            <div ng-show="editForm.sampleCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.sampleCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockInTubes.frozenTubeCode" for="field_frozenTubeCode">Frozen Tube Code</label>
+            <input type="text" class="form-control" name="frozenTubeCode" id="field_frozenTubeCode"
+                    ng-model="vm.stockInTubes.frozenTubeCode"
+                    ng-maxlength="100"/>
+            <div ng-show="editForm.frozenTubeCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.frozenTubeCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockInTubes.rowsInTube" for="field_rowsInTube">Rows In Tube</label>
+            <input type="text" class="form-control" name="rowsInTube" id="field_rowsInTube"
+                    ng-model="vm.stockInTubes.rowsInTube"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.rowsInTube.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.rowsInTube.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.rowsInTube.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockInTubes.columnsInTube" for="field_columnsInTube">Columns In Tube</label>
+            <input type="text" class="form-control" name="columnsInTube" id="field_columnsInTube"
+                    ng-model="vm.stockInTubes.columnsInTube"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.columnsInTube.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.columnsInTube.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.columnsInTube.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockInTubes.memo" for="field_memo">Memo</label>
+            <input type="text" class="form-control" name="memo" id="field_memo"
+                    ng-model="vm.stockInTubes.memo"
+                    ng-maxlength="1024"/>
+            <div ng-show="editForm.memo.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.memo.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
+                    This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockInTubes.status" for="field_status">Status</label>
+            <input type="text" class="form-control" name="status" id="field_status"
+                    ng-model="vm.stockInTubes.status"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.status.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.status.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.status.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label data-translate="bioBankApp.stockInTubes.stockIn" for="field_stockIn">Stock In</label>
+            <select class="form-control" id="field_stockIn" name="stockIn" ng-model="vm.stockInTubes.stockInId" ng-options="stockIn.id as stockIn.id for stockIn in vm.stockins"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.stockIn.$invalid">
+            <p class="help-block"
+                ng-show="editForm.stockIn.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.stockInTubes.tranship" for="field_tranship">Tranship</label>
+            <select class="form-control" id="field_tranship" name="tranship" ng-model="vm.stockInTubes.transhipId" ng-options="tranship.id as tranship.id for tranship in vm.tranships"            >
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.stockInTubes.frozenBox" for="field_frozenBox">Frozen Box</label>
+            <select class="form-control" id="field_frozenBox" name="frozenBox" ng-model="vm.stockInTubes.frozenBoxId" ng-options="frozenBox.id as frozenBox.id for frozenBox in vm.frozenboxes"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.frozenBox.$invalid">
+            <p class="help-block"
+                ng-show="editForm.frozenBox.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.stockInTubes.frozenTube" for="field_frozenTube">Frozen Tube</label>
+            <select class="form-control" id="field_frozenTube" name="frozenTube" ng-model="vm.stockInTubes.frozenTubeId" ng-options="frozenTube.id as frozenTube.id for frozenTube in vm.frozentubes"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.frozenTube.$invalid">
+            <p class="help-block"
+                ng-show="editForm.frozenTube.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.stockInTubes.frozenBoxPosition" for="field_frozenBoxPosition">Frozen Box Position</label>
+            <select class="form-control" id="field_frozenBoxPosition" name="frozenBoxPosition" ng-model="vm.stockInTubes.frozenBoxPositionId" ng-options="frozenBoxPosition.id as frozenBoxPosition.id for frozenBoxPosition in vm.frozenboxpositions"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.frozenBoxPosition.$invalid">
+            <p class="help-block"
+                ng-show="editForm.frozenBoxPosition.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

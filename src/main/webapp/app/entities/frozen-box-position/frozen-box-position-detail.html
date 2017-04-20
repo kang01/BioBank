@@ -1,0 +1,67 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.frozenBoxPosition.detail.title">Frozen Box Position</span> {{vm.frozenBoxPosition.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.frozenBoxPosition.equipmentCode">Equipment Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxPosition.equipmentCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxPosition.areaCode">Area Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxPosition.areaCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxPosition.supportRackCode">Support Rack Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxPosition.supportRackCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxPosition.rowsInShelf">Rows In Shelf</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxPosition.rowsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxPosition.columnsInShelf">Columns In Shelf</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxPosition.columnsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxPosition.frozenBoxCode">Frozen Box Code</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxPosition.frozenBoxCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxPosition.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxPosition.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxPosition.status">Status</span></dt>
+        <dd>
+            <span>{{vm.frozenBoxPosition.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxPosition.equipment">Equipment</span></dt>
+        <dd>
+            <a ui-sref="equipment-detail({id:vm.frozenBoxPosition.equipmentId})">{{vm.frozenBoxPosition.equipmentId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxPosition.area">Area</span></dt>
+        <dd>
+            <a ui-sref="area-detail({id:vm.frozenBoxPosition.areaId})">{{vm.frozenBoxPosition.areaId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxPosition.supportRack">Support Rack</span></dt>
+        <dd>
+            <a ui-sref="support-rack-detail({id:vm.frozenBoxPosition.supportRackId})">{{vm.frozenBoxPosition.supportRackId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.frozenBoxPosition.frozenBox">Frozen Box</span></dt>
+        <dd>
+            <a ui-sref="frozen-box-detail({id:vm.frozenBoxPosition.frozenBoxId})">{{vm.frozenBoxPosition.frozenBoxId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="frozen-box-position-detail.edit({id:vm.frozenBoxPosition.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

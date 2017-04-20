@@ -3,8 +3,12 @@ package org.fwoxford.service.impl;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
-import org.fwoxford.service.*;
+import org.fwoxford.service.FrozenBoxTypeService;
+import org.fwoxford.service.SampleTypeService;
+import org.fwoxford.service.TranshipBoxService;
 import org.fwoxford.service.dto.*;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipBoxMapper;
@@ -15,8 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,22 +47,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
     private final ProjectSiteRepository projectSiteRepository;
     private final FrozenTubeTypeRepository frozenTubeTypeRepository;
 
-
-
-
     private final TranshipBoxMapper transhipBoxMapper;
 
     @Autowired
-    private  FrozenBoxService frozenBoxService;
-
-    @Autowired
     private FrozenBoxMapper frozenBoxMapper;
-
-    @Autowired
-    private TranshipService transhipService;
-
-    @Autowired
-    private FrozenTubeService frozenTubeService;
 
     @Autowired
     private FrozenTubeMapper frozenTubeMapper;
@@ -68,6 +60,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
     @Autowired
     private SampleTypeService sampleTypeService;
+
+    @Autowired
+    private StockInTubesRepository stockInTubesRepository;
 
     public TranshipBoxServiceImpl(TranshipBoxRepository transhipBoxRepository,
                                   FrozenBoxRepository frozenBoxRepository,
@@ -307,7 +302,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
             box.setSampleNumber(countOfSample);
             box = frozenBoxRepository.save(box);
-
             for(FrozenTubeDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
                 FrozenTube tube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
 
@@ -414,7 +408,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 //        return transhipBoxListDTO;
     }
 
-
     /**
      * 删除冻存管，冻存盒，转运盒子
      * @param transhipBoxListDTO
@@ -461,5 +454,60 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             dtos.add(box);
         }
         return dtos;
+    }
+
+
+
+    @Override
+    public FrozenBoxAndFrozenTubeResponse findFrozenBoxAndTubeByBoxCode(String frozenBoxCode) {
+        FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
+
+        //查询冻存盒信息
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+        //查询冻存盒的转运记录
+        TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBoxCode);
+        if(transhipBox == null){
+            throw new BankServiceException("未查询到该冻存盒的转运记录！",frozenBoxCode);
+        }
+        //如果冻存管已经被分装，则需要查询入库管子
+        List<StockInTubes> stockInTubes = stockInTubesRepository.findByTranshipCodeAndFrozenBoxCode(transhipBox.getTranship().getTranshipCode(),frozenBoxCode);
+        //查询冻存管列表信息
+        List<FrozenTube> frozenTube = new ArrayList<FrozenTube>();
+        List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
+        if(stockInTubes.size()==0){
+            frozenTube = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
+        }else{
+            for(StockInTubes tube:stockInTubes){
+                tube.getFrozenTube().setTubeRows(tube.getRowsInTube());
+                tube.getFrozenTube().setTubeColumns(tube.getColumnsInTube());
+                tube.getFrozenTube().setFrozenBox(tube.getFrozenBox());
+                tube.getFrozenTube().setFrozenBoxCode(tube.getFrozenBoxCode());
+                frozenTube.add(tube.getFrozenTube());
+            }
+        }
+        frozenTubeResponses = frozenTubeMapper.frozenTubeToFrozenTubeResponse(frozenTube);
+
+        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox, frozenTubeResponses);
+
+        return res;
+    }
+
+    @Override
+    public void deleteTranshipBoxByFrozenBox(String frozenBoxCode) {
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+        if(frozenBox == null){
+            throw new BankServiceException("冻存盒不存在！",frozenBoxCode);
+        }
+        if(!frozenBox.getStatus().equals(Constants.FROZEN_BOX_NEW)){
+            throw new BankServiceException("冻存盒的状态已经不能进行删除操作！",frozenBoxCode);
+        }
+        TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBoxCode);
+        if(transhipBox == null){
+            throw new BankServiceException("未查询到该冻存盒的转运记录！",frozenBoxCode);
+        }
+        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
+        frozenTubeRepository.deleteInBatch(frozenTubes);//删除冻存管
+        transhipBoxRepository.delete(transhipBox);
+        frozenBoxRepository.delete(frozenBox);
     }
 }

@@ -469,20 +469,41 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         if(transhipBox == null){
             throw new BankServiceException("未查询到该冻存盒的转运记录！",frozenBoxCode);
         }
-        //如果冻存管已经转运至入库，则需要查询入库管子
-        List<StockInTubes> stockInTubes = stockInTubesRepository.findByTranshipCodeAndFrozenBoxCode(transhipBox.getTranship().getTranshipCode(),frozenBoxCode);
         //查询冻存管列表信息
         List<FrozenTube> frozenTube = new ArrayList<FrozenTube>();
         List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
-        if(stockInTubes.size()==0){
+
+        if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_NEW)){
             frozenTube = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
+            frozenTubeResponses = frozenTubeMapper.frozenTubeToFrozenTubeResponse(frozenTube);
         }else{
-            for(StockInTubes tube:stockInTubes){
-                frozenTube.add(tube.getFrozenTube());
+            //如果冻存管已经转运至入库，则需要查询入库管子
+            List<StockInTubes> stockInTubes = stockInTubesRepository.findByTranshipCodeAndFrozenBoxCode(transhipBox.getTranship().getTranshipCode(),frozenBoxCode);
+            for(StockInTubes inTube:stockInTubes){
+                FrozenTubeResponse tubeResponse = new FrozenTubeResponse();
+                FrozenTube tube = inTube.getFrozenTube();
+                tubeResponse.setProjectId(tube.getProject()!=null?tube.getProject().getId():null);
+                tubeResponse.setProjectCode(tube.getProjectCode());
+                tubeResponse.setId(tube.getId());
+                tubeResponse.setErrorType(tube.getErrorType());
+                tubeResponse.setFrozenTubeCode(tube.getFrozenTubeCode());
+                tubeResponse.setFrozenTubeTypeCode(tube.getFrozenTubeTypeCode());
+                tubeResponse.setFrozenTubeTypeId(tube.getFrozenTubeType()!=null?tube.getFrozenTubeType().getId():null);
+                tubeResponse.setMemo(tube.getMemo());
+                tubeResponse.setFrozenTubeTypeName(tube.getFrozenTubeTypeName());
+                tubeResponse.setSampleCode(tube.getSampleCode());
+                tubeResponse.setSampleTempCode(tube.getSampleTempCode());
+                tubeResponse.setSampleTypeCode(tube.getSampleTypeCode());
+                tubeResponse.setSampleTypeId(tube.getSampleType()!=null?tube.getSampleType().getId():null);
+                tubeResponse.setSampleTypeName(tube.getSampleTypeName());
+                tubeResponse.setStatus(tube.getStatus());
+                tubeResponse.setTubeColumns(inTube.getColumnsInTube());
+                tubeResponse.setTubeRows(inTube.getRowsInTube());
+                tubeResponse.setFrozenBoxCode(inTube.getFrozenBoxPosition().getFrozenBox().getFrozenBoxCode());
+                tubeResponse.setFrozenBoxId(inTube.getFrozenBoxPosition().getFrozenBox().getId());
+                frozenTubeResponses.add(tubeResponse);
             }
         }
-        frozenTubeResponses = frozenTubeMapper.frozenTubeToFrozenTubeResponse(frozenTube);
-
         res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox, frozenTubeResponses);
 
         return res;

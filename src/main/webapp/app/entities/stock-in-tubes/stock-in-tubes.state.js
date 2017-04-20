@@ -124,16 +124,13 @@
                     resolve: {
                         entity: function () {
                             return {
-                                stockInCode: null,
-                                transhipCode: null,
-                                transhipBatch: null,
-                                frozenBoxCode: null,
                                 sampleCode: null,
                                 frozenTubeCode: null,
                                 rowsInTube: null,
                                 columnsInTube: null,
                                 memo: null,
                                 status: null,
+                                sampleTempCode: null,
                                 id: null
                             };
                         }

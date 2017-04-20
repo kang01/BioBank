@@ -77,7 +77,6 @@ public interface FrozenBoxPositionMapper {
         frozenBoxPosition.setColumnsInShelf(box.getColumnsInShelf());
         frozenBoxPosition.setRowsInShelf(box.getRowsInShelf());
         frozenBoxPosition.setMemo(box.getMemo());
-        frozenBoxPosition.setStatus(box.getStatus());
         frozenBoxPosition.setFrozenBox(box);
         frozenBoxPosition.setFrozenBoxCode(box.getFrozenBoxCode());
         return  frozenBoxPosition;

@@ -5,19 +5,18 @@
         .module('bioBankApp')
         .controller('StockInTubesDialogController', StockInTubesDialogController);
 
-    StockInTubesDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'StockInTubes', 'StockIn', 'Tranship', 'FrozenBox', 'FrozenTube', 'FrozenBoxPosition'];
+    StockInTubesDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'StockInTubes', 'FrozenTube', 'FrozenBoxPosition', 'TranshipBox', 'StockInBox'];
 
-    function StockInTubesDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, StockInTubes, StockIn, Tranship, FrozenBox, FrozenTube, FrozenBoxPosition) {
+    function StockInTubesDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, StockInTubes, FrozenTube, FrozenBoxPosition, TranshipBox, StockInBox) {
         var vm = this;
 
         vm.stockInTubes = entity;
         vm.clear = clear;
         vm.save = save;
-        vm.stockins = StockIn.query();
-        vm.tranships = Tranship.query();
-        vm.frozenboxes = FrozenBox.query();
         vm.frozentubes = FrozenTube.query();
         vm.frozenboxpositions = FrozenBoxPosition.query();
+        vm.transhipboxes = TranshipBox.query();
+        vm.stockinboxes = StockInBox.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

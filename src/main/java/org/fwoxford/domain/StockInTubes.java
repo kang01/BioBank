@@ -24,32 +24,9 @@ public class StockInTubes extends AbstractAuditingEntity implements Serializable
 //    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @NotNull
-    @Size(max = 100)
-    @Column(name = "stock_in_code", length = 100, nullable = false)
-    private String stockInCode;
-
-    @Size(max = 100)
-    @Column(name = "tranship_code", length = 100)
-    private String transhipCode;
-
-    @Size(max = 100)
-    @Column(name = "tranship_batch", length = 100)
-    private String transhipBatch;
-
-    @NotNull
-    @Size(max = 100)
-    @Column(name = "frozen_box_code", length = 100, nullable = false)
-    private String frozenBoxCode;
-
     @Size(max = 100)
     @Column(name = "sample_code", length = 100)
     private String sampleCode;
-
-
-    @Size(max = 100)
-    @Column(name = "sample_temp_code", length = 100)
-    private String sampleTempCode;
 
     @Size(max = 100)
     @Column(name = "frozen_tube_code", length = 100)
@@ -74,16 +51,9 @@ public class StockInTubes extends AbstractAuditingEntity implements Serializable
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
-    @ManyToOne(optional = false)
-    @NotNull
-    private StockIn stockIn;
-
-    @ManyToOne
-    private Tranship tranship;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    private FrozenBox frozenBox;
+    @Size(max = 100)
+    @Column(name = "sample_temp_code", length = 100)
+    private String sampleTempCode;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -93,64 +63,19 @@ public class StockInTubes extends AbstractAuditingEntity implements Serializable
     @NotNull
     private FrozenBoxPosition frozenBoxPosition;
 
+    @ManyToOne
+    private TranshipBox transhipBox;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private StockInBox stockInBox;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getStockInCode() {
-        return stockInCode;
-    }
-
-    public StockInTubes stockInCode(String stockInCode) {
-        this.stockInCode = stockInCode;
-        return this;
-    }
-
-    public void setStockInCode(String stockInCode) {
-        this.stockInCode = stockInCode;
-    }
-
-    public String getTranshipCode() {
-        return transhipCode;
-    }
-
-    public StockInTubes transhipCode(String transhipCode) {
-        this.transhipCode = transhipCode;
-        return this;
-    }
-
-    public void setTranshipCode(String transhipCode) {
-        this.transhipCode = transhipCode;
-    }
-
-    public String getTranshipBatch() {
-        return transhipBatch;
-    }
-
-    public StockInTubes transhipBatch(String transhipBatch) {
-        this.transhipBatch = transhipBatch;
-        return this;
-    }
-
-    public void setTranshipBatch(String transhipBatch) {
-        this.transhipBatch = transhipBatch;
-    }
-
-    public String getFrozenBoxCode() {
-        return frozenBoxCode;
-    }
-
-    public StockInTubes frozenBoxCode(String frozenBoxCode) {
-        this.frozenBoxCode = frozenBoxCode;
-        return this;
-    }
-
-    public void setFrozenBoxCode(String frozenBoxCode) {
-        this.frozenBoxCode = frozenBoxCode;
     }
 
     public String getSampleCode() {
@@ -177,17 +102,6 @@ public class StockInTubes extends AbstractAuditingEntity implements Serializable
 
     public void setFrozenTubeCode(String frozenTubeCode) {
         this.frozenTubeCode = frozenTubeCode;
-    }
-
-    public String getSampleTempCode() {
-        return sampleTempCode;
-    }
-    public StockInTubes sampleTempCode(String sampleTempCode) {
-        this.sampleTempCode = sampleTempCode;
-        return this;
-    }
-    public void setSampleTempCode(String sampleTempCode) {
-        this.sampleTempCode = sampleTempCode;
     }
 
     public String getRowsInTube() {
@@ -242,43 +156,17 @@ public class StockInTubes extends AbstractAuditingEntity implements Serializable
         this.status = status;
     }
 
-    public StockIn getStockIn() {
-        return stockIn;
+    public String getSampleTempCode() {
+        return sampleTempCode;
     }
 
-    public StockInTubes stockIn(StockIn stockIn) {
-        this.stockIn = stockIn;
+    public StockInTubes sampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
         return this;
     }
 
-    public void setStockIn(StockIn stockIn) {
-        this.stockIn = stockIn;
-    }
-
-    public Tranship getTranship() {
-        return tranship;
-    }
-
-    public StockInTubes tranship(Tranship tranship) {
-        this.tranship = tranship;
-        return this;
-    }
-
-    public void setTranship(Tranship tranship) {
-        this.tranship = tranship;
-    }
-
-    public FrozenBox getFrozenBox() {
-        return frozenBox;
-    }
-
-    public StockInTubes frozenBox(FrozenBox frozenBox) {
-        this.frozenBox = frozenBox;
-        return this;
-    }
-
-    public void setFrozenBox(FrozenBox frozenBox) {
-        this.frozenBox = frozenBox;
+    public void setSampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
     }
 
     public FrozenTube getFrozenTube() {
@@ -307,6 +195,32 @@ public class StockInTubes extends AbstractAuditingEntity implements Serializable
         this.frozenBoxPosition = frozenBoxPosition;
     }
 
+    public TranshipBox getTranshipBox() {
+        return transhipBox;
+    }
+
+    public StockInTubes transhipBox(TranshipBox transhipBox) {
+        this.transhipBox = transhipBox;
+        return this;
+    }
+
+    public void setTranshipBox(TranshipBox transhipBox) {
+        this.transhipBox = transhipBox;
+    }
+
+    public StockInBox getStockInBox() {
+        return stockInBox;
+    }
+
+    public StockInTubes stockInBox(StockInBox stockInBox) {
+        this.stockInBox = stockInBox;
+        return this;
+    }
+
+    public void setStockInBox(StockInBox stockInBox) {
+        this.stockInBox = stockInBox;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -331,17 +245,13 @@ public class StockInTubes extends AbstractAuditingEntity implements Serializable
     public String toString() {
         return "StockInTubes{" +
             "id=" + id +
-            ", stockInCode='" + stockInCode + "'" +
-            ", transhipCode='" + transhipCode + "'" +
-            ", transhipBatch='" + transhipBatch + "'" +
-            ", frozenBoxCode='" + frozenBoxCode + "'" +
             ", sampleCode='" + sampleCode + "'" +
             ", frozenTubeCode='" + frozenTubeCode + "'" +
-            ", sampleTempCode='" + sampleTempCode + "'" +
             ", rowsInTube='" + rowsInTube + "'" +
             ", columnsInTube='" + columnsInTube + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
+            ", sampleTempCode='" + sampleTempCode + "'" +
             '}';
     }
 }

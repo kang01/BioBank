@@ -12,50 +12,21 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {})
 public interface StockInTubesMapper {
 
-    @Mapping(source = "stockIn.id", target = "stockInId")
-    @Mapping(source = "tranship.id", target = "transhipId")
-    @Mapping(source = "frozenBox.id", target = "frozenBoxId")
     @Mapping(source = "frozenTube.id", target = "frozenTubeId")
     @Mapping(source = "frozenBoxPosition.id", target = "frozenBoxPositionId")
+    @Mapping(source = "transhipBox.id", target = "transhipBoxId")
+    @Mapping(source = "stockInBox.id", target = "stockInBoxId")
     StockInTubesDTO stockInTubesToStockInTubesDTO(StockInTubes stockInTubes);
 
     List<StockInTubesDTO> stockInTubesToStockInTubesDTOs(List<StockInTubes> stockInTubes);
 
-    @Mapping(source = "stockInId", target = "stockIn")
-    @Mapping(source = "transhipId", target = "tranship")
-    @Mapping(source = "frozenBoxId", target = "frozenBox")
     @Mapping(source = "frozenTubeId", target = "frozenTube")
     @Mapping(source = "frozenBoxPositionId", target = "frozenBoxPosition")
+    @Mapping(source = "transhipBoxId", target = "transhipBox")
+    @Mapping(source = "stockInBoxId", target = "stockInBox")
     StockInTubes stockInTubesDTOToStockInTubes(StockInTubesDTO stockInTubesDTO);
 
     List<StockInTubes> stockInTubesDTOsToStockInTubes(List<StockInTubesDTO> stockInTubesDTOs);
-
-    default StockIn stockInFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        StockIn stockIn = new StockIn();
-        stockIn.setId(id);
-        return stockIn;
-    }
-
-    default Tranship transhipFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        Tranship tranship = new Tranship();
-        tranship.setId(id);
-        return tranship;
-    }
-
-    default FrozenBox frozenBoxFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        FrozenBox frozenBox = new FrozenBox();
-        frozenBox.setId(id);
-        return frozenBox;
-    }
 
     default FrozenTube frozenTubeFromId(Long id) {
         if (id == null) {
@@ -73,5 +44,23 @@ public interface StockInTubesMapper {
         FrozenBoxPosition frozenBoxPosition = new FrozenBoxPosition();
         frozenBoxPosition.setId(id);
         return frozenBoxPosition;
+    }
+
+    default TranshipBox transhipBoxFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        TranshipBox transhipBox = new TranshipBox();
+        transhipBox.setId(id);
+        return transhipBox;
+    }
+
+    default StockInBox stockInBoxFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        StockInBox stockInBox = new StockInBox();
+        stockInBox.setId(id);
+        return stockInBox;
     }
 }

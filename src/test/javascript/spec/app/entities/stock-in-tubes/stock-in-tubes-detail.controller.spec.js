@@ -4,7 +4,7 @@ describe('Controller Tests', function() {
 
     describe('StockInTubes Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockStockInTubes, MockStockIn, MockTranship, MockFrozenBox, MockFrozenTube, MockFrozenBoxPosition;
+        var MockEntity, MockPreviousState, MockStockInTubes, MockFrozenTube, MockFrozenBoxPosition, MockTranshipBox, MockStockInBox;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -13,11 +13,10 @@ describe('Controller Tests', function() {
             MockEntity = jasmine.createSpy('MockEntity');
             MockPreviousState = jasmine.createSpy('MockPreviousState');
             MockStockInTubes = jasmine.createSpy('MockStockInTubes');
-            MockStockIn = jasmine.createSpy('MockStockIn');
-            MockTranship = jasmine.createSpy('MockTranship');
-            MockFrozenBox = jasmine.createSpy('MockFrozenBox');
             MockFrozenTube = jasmine.createSpy('MockFrozenTube');
             MockFrozenBoxPosition = jasmine.createSpy('MockFrozenBoxPosition');
+            MockTranshipBox = jasmine.createSpy('MockTranshipBox');
+            MockStockInBox = jasmine.createSpy('MockStockInBox');
             
 
             var locals = {
@@ -26,11 +25,10 @@ describe('Controller Tests', function() {
                 'entity': MockEntity,
                 'previousState': MockPreviousState,
                 'StockInTubes': MockStockInTubes,
-                'StockIn': MockStockIn,
-                'Tranship': MockTranship,
-                'FrozenBox': MockFrozenBox,
                 'FrozenTube': MockFrozenTube,
-                'FrozenBoxPosition': MockFrozenBoxPosition
+                'FrozenBoxPosition': MockFrozenBoxPosition,
+                'TranshipBox': MockTranshipBox,
+                'StockInBox': MockStockInBox
             };
             createController = function() {
                 $injector.get('$controller')("StockInTubesDetailController", locals);

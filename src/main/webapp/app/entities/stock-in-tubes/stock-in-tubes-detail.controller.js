@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('StockInTubesDetailController', StockInTubesDetailController);
 
-    StockInTubesDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'StockInTubes', 'StockIn', 'Tranship', 'FrozenBox', 'FrozenTube', 'FrozenBoxPosition'];
+    StockInTubesDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'StockInTubes', 'FrozenTube', 'FrozenBoxPosition', 'TranshipBox', 'StockInBox'];
 
-    function StockInTubesDetailController($scope, $rootScope, $stateParams, previousState, entity, StockInTubes, StockIn, Tranship, FrozenBox, FrozenTube, FrozenBoxPosition) {
+    function StockInTubesDetailController($scope, $rootScope, $stateParams, previousState, entity, StockInTubes, FrozenTube, FrozenBoxPosition, TranshipBox, StockInBox) {
         var vm = this;
 
         vm.stockInTubes = entity;

@@ -14,25 +14,8 @@ public class StockInTubesDTO extends AbstractAuditingDTO implements Serializable
 
     private Long id;
 
-    @NotNull
-    @Size(max = 100)
-    private String stockInCode;
-
-    @Size(max = 100)
-    private String transhipCode;
-
-    @Size(max = 100)
-    private String transhipBatch;
-
-    @NotNull
-    @Size(max = 100)
-    private String frozenBoxCode;
-
     @Size(max = 100)
     private String sampleCode;
-
-    @Size(max = 100)
-    private String sampleTempCode;
 
     @Size(max = 100)
     private String frozenTubeCode;
@@ -52,15 +35,16 @@ public class StockInTubesDTO extends AbstractAuditingDTO implements Serializable
     @Size(max = 20)
     private String status;
 
-    private Long stockInId;
-
-    private Long transhipId;
-
-    private Long frozenBoxId;
+    @Size(max = 100)
+    private String sampleTempCode;
 
     private Long frozenTubeId;
 
     private Long frozenBoxPositionId;
+
+    private Long transhipBoxId;
+
+    private Long stockInBoxId;
 
     public Long getId() {
         return id;
@@ -68,34 +52,6 @@ public class StockInTubesDTO extends AbstractAuditingDTO implements Serializable
 
     public void setId(Long id) {
         this.id = id;
-    }
-    public String getStockInCode() {
-        return stockInCode;
-    }
-
-    public void setStockInCode(String stockInCode) {
-        this.stockInCode = stockInCode;
-    }
-    public String getTranshipCode() {
-        return transhipCode;
-    }
-
-    public void setTranshipCode(String transhipCode) {
-        this.transhipCode = transhipCode;
-    }
-    public String getTranshipBatch() {
-        return transhipBatch;
-    }
-
-    public void setTranshipBatch(String transhipBatch) {
-        this.transhipBatch = transhipBatch;
-    }
-    public String getFrozenBoxCode() {
-        return frozenBoxCode;
-    }
-
-    public void setFrozenBoxCode(String frozenBoxCode) {
-        this.frozenBoxCode = frozenBoxCode;
     }
     public String getSampleCode() {
         return sampleCode;
@@ -113,14 +69,6 @@ public class StockInTubesDTO extends AbstractAuditingDTO implements Serializable
     }
     public String getRowsInTube() {
         return rowsInTube;
-    }
-
-    public String getSampleTempCode() {
-        return sampleTempCode;
-    }
-
-    public void setSampleTempCode(String sampleTempCode) {
-        this.sampleTempCode = sampleTempCode;
     }
 
     public void setRowsInTube(String rowsInTube) {
@@ -147,29 +95,12 @@ public class StockInTubesDTO extends AbstractAuditingDTO implements Serializable
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public Long getStockInId() {
-        return stockInId;
+    public String getSampleTempCode() {
+        return sampleTempCode;
     }
 
-    public void setStockInId(Long stockInId) {
-        this.stockInId = stockInId;
-    }
-
-    public Long getTranshipId() {
-        return transhipId;
-    }
-
-    public void setTranshipId(Long transhipId) {
-        this.transhipId = transhipId;
-    }
-
-    public Long getFrozenBoxId() {
-        return frozenBoxId;
-    }
-
-    public void setFrozenBoxId(Long frozenBoxId) {
-        this.frozenBoxId = frozenBoxId;
+    public void setSampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
     }
 
     public Long getFrozenTubeId() {
@@ -186,6 +117,22 @@ public class StockInTubesDTO extends AbstractAuditingDTO implements Serializable
 
     public void setFrozenBoxPositionId(Long frozenBoxPositionId) {
         this.frozenBoxPositionId = frozenBoxPositionId;
+    }
+
+    public Long getTranshipBoxId() {
+        return transhipBoxId;
+    }
+
+    public void setTranshipBoxId(Long transhipBoxId) {
+        this.transhipBoxId = transhipBoxId;
+    }
+
+    public Long getStockInBoxId() {
+        return stockInBoxId;
+    }
+
+    public void setStockInBoxId(Long stockInBoxId) {
+        this.stockInBoxId = stockInBoxId;
     }
 
     @Override
@@ -213,17 +160,13 @@ public class StockInTubesDTO extends AbstractAuditingDTO implements Serializable
     public String toString() {
         return "StockInTubesDTO{" +
             "id=" + id +
-            ", stockInCode='" + stockInCode + "'" +
-            ", transhipCode='" + transhipCode + "'" +
-            ", transhipBatch='" + transhipBatch + "'" +
-            ", frozenBoxCode='" + frozenBoxCode + "'" +
             ", sampleCode='" + sampleCode + "'" +
             ", frozenTubeCode='" + frozenTubeCode + "'" +
-            ", sampleTempCode='" + sampleTempCode + "'" +
             ", rowsInTube='" + rowsInTube + "'" +
             ", columnsInTube='" + columnsInTube + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
+            ", sampleTempCode='" + sampleTempCode + "'" +
             '}';
     }
 }

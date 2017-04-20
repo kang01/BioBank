@@ -15,21 +15,17 @@
             "detail": {
                 "title": "Stock In Tubes"
             },
-            "stockInCode": "Stock In Code",
-            "transhipCode": "Tranship Code",
-            "transhipBatch": "Tranship Batch",
-            "frozenBoxCode": "Frozen Box Code",
             "sampleCode": "Sample Code",
             "frozenTubeCode": "Frozen Tube Code",
             "rowsInTube": "Rows In Tube",
             "columnsInTube": "Columns In Tube",
             "memo": "Memo",
             "status": "Status",
-            "stockIn": "Stock In",
-            "tranship": "Tranship",
-            "frozenBox": "Frozen Box",
+            "sampleTempCode": "Sample Temp Code",
             "frozenTube": "Frozen Tube",
-            "frozenBoxPosition": "Frozen Box Position"
+            "frozenBoxPosition": "Frozen Box Position",
+            "transhipBox": "Tranship Box",
+            "stockInBox": "Stock In Box"
         }
     }
 }

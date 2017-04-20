@@ -469,7 +469,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         if(transhipBox == null){
             throw new BankServiceException("未查询到该冻存盒的转运记录！",frozenBoxCode);
         }
-        //如果冻存管已经被分装，则需要查询入库管子
+        //如果冻存管已经转运至入库，则需要查询入库管子
         List<StockInTubes> stockInTubes = stockInTubesRepository.findByTranshipCodeAndFrozenBoxCode(transhipBox.getTranship().getTranshipCode(),frozenBoxCode);
         //查询冻存管列表信息
         List<FrozenTube> frozenTube = new ArrayList<FrozenTube>();
@@ -478,10 +478,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             frozenTube = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
         }else{
             for(StockInTubes tube:stockInTubes){
-                tube.getFrozenTube().setTubeRows(tube.getRowsInTube());
-                tube.getFrozenTube().setTubeColumns(tube.getColumnsInTube());
-                tube.getFrozenTube().setFrozenBox(tube.getFrozenBox());
-                tube.getFrozenTube().setFrozenBoxCode(tube.getFrozenBoxCode());
                 frozenTube.add(tube.getFrozenTube());
             }
         }

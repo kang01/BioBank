@@ -3,10 +3,9 @@ package org.fwoxford.web.rest;
 import org.fwoxford.BioBankApp;
 
 import org.fwoxford.domain.StockInTubes;
-import org.fwoxford.domain.StockIn;
-import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.FrozenBoxPosition;
+import org.fwoxford.domain.StockInBox;
 import org.fwoxford.repository.StockInTubesRepository;
 import org.fwoxford.service.StockInTubesService;
 import org.fwoxford.service.dto.StockInTubesDTO;
@@ -44,18 +43,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = BioBankApp.class)
 public class StockInTubesResourceIntTest {
 
-    private static final String DEFAULT_STOCK_IN_CODE = "AAAAAAAAAA";
-    private static final String UPDATED_STOCK_IN_CODE = "BBBBBBBBBB";
-
-    private static final String DEFAULT_TRANSHIP_CODE = "AAAAAAAAAA";
-    private static final String UPDATED_TRANSHIP_CODE = "BBBBBBBBBB";
-
-    private static final String DEFAULT_TRANSHIP_BATCH = "AAAAAAAAAA";
-    private static final String UPDATED_TRANSHIP_BATCH = "BBBBBBBBBB";
-
-    private static final String DEFAULT_FROZEN_BOX_CODE = "AAAAAAAAAA";
-    private static final String UPDATED_FROZEN_BOX_CODE = "BBBBBBBBBB";
-
     private static final String DEFAULT_SAMPLE_CODE = "AAAAAAAAAA";
     private static final String UPDATED_SAMPLE_CODE = "BBBBBBBBBB";
 
@@ -73,6 +60,9 @@ public class StockInTubesResourceIntTest {
 
     private static final String DEFAULT_STATUS = "AAAAAAAAAA";
     private static final String UPDATED_STATUS = "BBBBBBBBBB";
+
+    private static final String DEFAULT_SAMPLE_TEMP_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_SAMPLE_TEMP_CODE = "BBBBBBBBBB";
 
     @Autowired
     private StockInTubesRepository stockInTubesRepository;
@@ -117,26 +107,13 @@ public class StockInTubesResourceIntTest {
      */
     public static StockInTubes createEntity(EntityManager em) {
         StockInTubes stockInTubes = new StockInTubes()
-                .stockInCode(DEFAULT_STOCK_IN_CODE)
-                .transhipCode(DEFAULT_TRANSHIP_CODE)
-                .transhipBatch(DEFAULT_TRANSHIP_BATCH)
-                .frozenBoxCode(DEFAULT_FROZEN_BOX_CODE)
                 .sampleCode(DEFAULT_SAMPLE_CODE)
                 .frozenTubeCode(DEFAULT_FROZEN_TUBE_CODE)
                 .rowsInTube(DEFAULT_ROWS_IN_TUBE)
                 .columnsInTube(DEFAULT_COLUMNS_IN_TUBE)
                 .memo(DEFAULT_MEMO)
-                .status(DEFAULT_STATUS);
-        // Add required entity
-        StockIn stockIn = StockInResourceIntTest.createEntity(em);
-        em.persist(stockIn);
-        em.flush();
-        stockInTubes.setStockIn(stockIn);
-        // Add required entity
-        FrozenBox frozenBox = FrozenBoxResourceIntTest.createEntity(em);
-        em.persist(frozenBox);
-        em.flush();
-        stockInTubes.setFrozenBox(frozenBox);
+                .status(DEFAULT_STATUS)
+                .sampleTempCode(DEFAULT_SAMPLE_TEMP_CODE);
         // Add required entity
         FrozenTube frozenTube = FrozenTubeResourceIntTest.createEntity(em);
         em.persist(frozenTube);
@@ -147,6 +124,11 @@ public class StockInTubesResourceIntTest {
         em.persist(frozenBoxPosition);
         em.flush();
         stockInTubes.setFrozenBoxPosition(frozenBoxPosition);
+        // Add required entity
+        StockInBox stockInBox = StockInBoxResourceIntTest.createEntity(em);
+        em.persist(stockInBox);
+        em.flush();
+        stockInTubes.setStockInBox(stockInBox);
         return stockInTubes;
     }
 
@@ -172,16 +154,13 @@ public class StockInTubesResourceIntTest {
         List<StockInTubes> stockInTubesList = stockInTubesRepository.findAll();
         assertThat(stockInTubesList).hasSize(databaseSizeBeforeCreate + 1);
         StockInTubes testStockInTubes = stockInTubesList.get(stockInTubesList.size() - 1);
-        assertThat(testStockInTubes.getStockInCode()).isEqualTo(DEFAULT_STOCK_IN_CODE);
-        assertThat(testStockInTubes.getTranshipCode()).isEqualTo(DEFAULT_TRANSHIP_CODE);
-        assertThat(testStockInTubes.getTranshipBatch()).isEqualTo(DEFAULT_TRANSHIP_BATCH);
-        assertThat(testStockInTubes.getFrozenBoxCode()).isEqualTo(DEFAULT_FROZEN_BOX_CODE);
         assertThat(testStockInTubes.getSampleCode()).isEqualTo(DEFAULT_SAMPLE_CODE);
         assertThat(testStockInTubes.getFrozenTubeCode()).isEqualTo(DEFAULT_FROZEN_TUBE_CODE);
         assertThat(testStockInTubes.getRowsInTube()).isEqualTo(DEFAULT_ROWS_IN_TUBE);
         assertThat(testStockInTubes.getColumnsInTube()).isEqualTo(DEFAULT_COLUMNS_IN_TUBE);
         assertThat(testStockInTubes.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testStockInTubes.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testStockInTubes.getSampleTempCode()).isEqualTo(DEFAULT_SAMPLE_TEMP_CODE);
     }
 
     @Test
@@ -203,44 +182,6 @@ public class StockInTubesResourceIntTest {
         // Validate the Alice in the database
         List<StockInTubes> stockInTubesList = stockInTubesRepository.findAll();
         assertThat(stockInTubesList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    public void checkStockInCodeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = stockInTubesRepository.findAll().size();
-        // set the field null
-        stockInTubes.setStockInCode(null);
-
-        // Create the StockInTubes, which fails.
-        StockInTubesDTO stockInTubesDTO = stockInTubesMapper.stockInTubesToStockInTubesDTO(stockInTubes);
-
-        restStockInTubesMockMvc.perform(post("/api/stock-in-tubes")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stockInTubesDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<StockInTubes> stockInTubesList = stockInTubesRepository.findAll();
-        assertThat(stockInTubesList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkFrozenBoxCodeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = stockInTubesRepository.findAll().size();
-        // set the field null
-        stockInTubes.setFrozenBoxCode(null);
-
-        // Create the StockInTubes, which fails.
-        StockInTubesDTO stockInTubesDTO = stockInTubesMapper.stockInTubesToStockInTubesDTO(stockInTubes);
-
-        restStockInTubesMockMvc.perform(post("/api/stock-in-tubes")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stockInTubesDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<StockInTubes> stockInTubesList = stockInTubesRepository.findAll();
-        assertThat(stockInTubesList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -311,16 +252,13 @@ public class StockInTubesResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(stockInTubes.getId().intValue())))
-            .andExpect(jsonPath("$.[*].stockInCode").value(hasItem(DEFAULT_STOCK_IN_CODE.toString())))
-            .andExpect(jsonPath("$.[*].transhipCode").value(hasItem(DEFAULT_TRANSHIP_CODE.toString())))
-            .andExpect(jsonPath("$.[*].transhipBatch").value(hasItem(DEFAULT_TRANSHIP_BATCH.toString())))
-            .andExpect(jsonPath("$.[*].frozenBoxCode").value(hasItem(DEFAULT_FROZEN_BOX_CODE.toString())))
             .andExpect(jsonPath("$.[*].sampleCode").value(hasItem(DEFAULT_SAMPLE_CODE.toString())))
             .andExpect(jsonPath("$.[*].frozenTubeCode").value(hasItem(DEFAULT_FROZEN_TUBE_CODE.toString())))
             .andExpect(jsonPath("$.[*].rowsInTube").value(hasItem(DEFAULT_ROWS_IN_TUBE.toString())))
             .andExpect(jsonPath("$.[*].columnsInTube").value(hasItem(DEFAULT_COLUMNS_IN_TUBE.toString())))
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].sampleTempCode").value(hasItem(DEFAULT_SAMPLE_TEMP_CODE.toString())));
     }
 
     @Test
@@ -334,16 +272,13 @@ public class StockInTubesResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(stockInTubes.getId().intValue()))
-            .andExpect(jsonPath("$.stockInCode").value(DEFAULT_STOCK_IN_CODE.toString()))
-            .andExpect(jsonPath("$.transhipCode").value(DEFAULT_TRANSHIP_CODE.toString()))
-            .andExpect(jsonPath("$.transhipBatch").value(DEFAULT_TRANSHIP_BATCH.toString()))
-            .andExpect(jsonPath("$.frozenBoxCode").value(DEFAULT_FROZEN_BOX_CODE.toString()))
             .andExpect(jsonPath("$.sampleCode").value(DEFAULT_SAMPLE_CODE.toString()))
             .andExpect(jsonPath("$.frozenTubeCode").value(DEFAULT_FROZEN_TUBE_CODE.toString()))
             .andExpect(jsonPath("$.rowsInTube").value(DEFAULT_ROWS_IN_TUBE.toString()))
             .andExpect(jsonPath("$.columnsInTube").value(DEFAULT_COLUMNS_IN_TUBE.toString()))
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
+            .andExpect(jsonPath("$.sampleTempCode").value(DEFAULT_SAMPLE_TEMP_CODE.toString()));
     }
 
     @Test
@@ -364,16 +299,13 @@ public class StockInTubesResourceIntTest {
         // Update the stockInTubes
         StockInTubes updatedStockInTubes = stockInTubesRepository.findOne(stockInTubes.getId());
         updatedStockInTubes
-                .stockInCode(UPDATED_STOCK_IN_CODE)
-                .transhipCode(UPDATED_TRANSHIP_CODE)
-                .transhipBatch(UPDATED_TRANSHIP_BATCH)
-                .frozenBoxCode(UPDATED_FROZEN_BOX_CODE)
                 .sampleCode(UPDATED_SAMPLE_CODE)
                 .frozenTubeCode(UPDATED_FROZEN_TUBE_CODE)
                 .rowsInTube(UPDATED_ROWS_IN_TUBE)
                 .columnsInTube(UPDATED_COLUMNS_IN_TUBE)
                 .memo(UPDATED_MEMO)
-                .status(UPDATED_STATUS);
+                .status(UPDATED_STATUS)
+                .sampleTempCode(UPDATED_SAMPLE_TEMP_CODE);
         StockInTubesDTO stockInTubesDTO = stockInTubesMapper.stockInTubesToStockInTubesDTO(updatedStockInTubes);
 
         restStockInTubesMockMvc.perform(put("/api/stock-in-tubes")
@@ -385,16 +317,13 @@ public class StockInTubesResourceIntTest {
         List<StockInTubes> stockInTubesList = stockInTubesRepository.findAll();
         assertThat(stockInTubesList).hasSize(databaseSizeBeforeUpdate);
         StockInTubes testStockInTubes = stockInTubesList.get(stockInTubesList.size() - 1);
-        assertThat(testStockInTubes.getStockInCode()).isEqualTo(UPDATED_STOCK_IN_CODE);
-        assertThat(testStockInTubes.getTranshipCode()).isEqualTo(UPDATED_TRANSHIP_CODE);
-        assertThat(testStockInTubes.getTranshipBatch()).isEqualTo(UPDATED_TRANSHIP_BATCH);
-        assertThat(testStockInTubes.getFrozenBoxCode()).isEqualTo(UPDATED_FROZEN_BOX_CODE);
         assertThat(testStockInTubes.getSampleCode()).isEqualTo(UPDATED_SAMPLE_CODE);
         assertThat(testStockInTubes.getFrozenTubeCode()).isEqualTo(UPDATED_FROZEN_TUBE_CODE);
         assertThat(testStockInTubes.getRowsInTube()).isEqualTo(UPDATED_ROWS_IN_TUBE);
         assertThat(testStockInTubes.getColumnsInTube()).isEqualTo(UPDATED_COLUMNS_IN_TUBE);
         assertThat(testStockInTubes.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testStockInTubes.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testStockInTubes.getSampleTempCode()).isEqualTo(UPDATED_SAMPLE_TEMP_CODE);
     }
 
     @Test

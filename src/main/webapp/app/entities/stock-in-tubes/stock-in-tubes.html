@@ -19,51 +19,41 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="stockInCode"><span data-translate="bioBankApp.stockInTubes.stockInCode">Stock In Code</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="transhipCode"><span data-translate="bioBankApp.stockInTubes.transhipCode">Tranship Code</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="transhipBatch"><span data-translate="bioBankApp.stockInTubes.transhipBatch">Tranship Batch</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="frozenBoxCode"><span data-translate="bioBankApp.stockInTubes.frozenBoxCode">Frozen Box Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="sampleCode"><span data-translate="bioBankApp.stockInTubes.sampleCode">Sample Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="frozenTubeCode"><span data-translate="bioBankApp.stockInTubes.frozenTubeCode">Frozen Tube Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="rowsInTube"><span data-translate="bioBankApp.stockInTubes.rowsInTube">Rows In Tube</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="columnsInTube"><span data-translate="bioBankApp.stockInTubes.columnsInTube">Columns In Tube</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="memo"><span data-translate="bioBankApp.stockInTubes.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="bioBankApp.stockInTubes.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="stockInId"><span data-translate="bioBankApp.stockInTubes.stockIn">Stock In</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="transhipId"><span data-translate="bioBankApp.stockInTubes.tranship">Tranship</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="frozenBoxId"><span data-translate="bioBankApp.stockInTubes.frozenBox">Frozen Box</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="sampleTempCode"><span data-translate="bioBankApp.stockInTubes.sampleTempCode">Sample Temp Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="frozenTubeId"><span data-translate="bioBankApp.stockInTubes.frozenTube">Frozen Tube</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="frozenBoxPositionId"><span data-translate="bioBankApp.stockInTubes.frozenBoxPosition">Frozen Box Position</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="transhipBoxId"><span data-translate="bioBankApp.stockInTubes.transhipBox">Tranship Box</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="stockInBoxId"><span data-translate="bioBankApp.stockInTubes.stockInBox">Stock In Box</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="stockInTubes in vm.stockInTubes track by stockInTubes.id">
                     <td><a ui-sref="stock-in-tubes-detail({id:stockInTubes.id})">{{stockInTubes.id}}</a></td>
-                    <td>{{stockInTubes.stockInCode}}</td>
-                    <td>{{stockInTubes.transhipCode}}</td>
-                    <td>{{stockInTubes.transhipBatch}}</td>
-                    <td>{{stockInTubes.frozenBoxCode}}</td>
                     <td>{{stockInTubes.sampleCode}}</td>
                     <td>{{stockInTubes.frozenTubeCode}}</td>
                     <td>{{stockInTubes.rowsInTube}}</td>
                     <td>{{stockInTubes.columnsInTube}}</td>
                     <td>{{stockInTubes.memo}}</td>
                     <td>{{stockInTubes.status}}</td>
-                    <td>
-                        <a ui-sref="stock-in-detail({id:stockInTubes.stockInId})">{{stockInTubes.stockInId}}</a>
-                    </td>
-                    <td>
-                        <a ui-sref="tranship-detail({id:stockInTubes.transhipId})">{{stockInTubes.transhipId}}</a>
-                    </td>
-                    <td>
-                        <a ui-sref="frozen-box-detail({id:stockInTubes.frozenBoxId})">{{stockInTubes.frozenBoxId}}</a>
-                    </td>
+                    <td>{{stockInTubes.sampleTempCode}}</td>
                     <td>
                         <a ui-sref="frozen-tube-detail({id:stockInTubes.frozenTubeId})">{{stockInTubes.frozenTubeId}}</a>
                     </td>
                     <td>
                         <a ui-sref="frozen-box-position-detail({id:stockInTubes.frozenBoxPositionId})">{{stockInTubes.frozenBoxPositionId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="tranship-box-detail({id:stockInTubes.transhipBoxId})">{{stockInTubes.transhipBoxId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="stock-in-box-detail({id:stockInTubes.stockInBoxId})">{{stockInTubes.stockInBoxId}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

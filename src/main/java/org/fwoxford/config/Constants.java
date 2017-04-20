@@ -40,6 +40,7 @@ public final class Constants {
     public static final  String FROZEN_BOX_STOCKED = "2004" ;
     public static final  String FROZEN_BOX_INVALID = "2005" ;
     public static final String FROZEN_BOX_PUT_SHELVES = "2006";
+    public static final String FROZEN_BOX_SPLITING = "2007";
     /**
      * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常
      */

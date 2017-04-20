@@ -2,30 +2,6 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipName": "stockIn",
-            "otherEntityName": "stockIn",
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipName": "tranship",
-            "otherEntityName": "tranship",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipName": "frozenBox",
-            "otherEntityName": "frozenBox",
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "id"
-        },
-        {
             "relationshipName": "frozenTube",
             "otherEntityName": "frozenTube",
             "relationshipType": "many-to-one",
@@ -42,43 +18,24 @@
                 "required"
             ],
             "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "transhipBox",
+            "otherEntityName": "transhipBox",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "stockInBox",
+            "otherEntityName": "stockInBox",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
         }
     ],
     "fields": [
-        {
-            "fieldName": "stockInCode",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "100"
-        },
-        {
-            "fieldName": "transhipCode",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "100"
-        },
-        {
-            "fieldName": "transhipBatch",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "100"
-        },
-        {
-            "fieldName": "frozenBoxCode",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "100"
-        },
         {
             "fieldName": "sampleCode",
             "fieldType": "String",
@@ -129,6 +86,14 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": 20
+        },
+        {
+            "fieldName": "sampleTempCode",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "100"
         }
     ],
     "changelogDate": "20170419015417",

@@ -612,12 +612,12 @@
             _.pullAt(vm.obox.stockInFrozenTubeList, deleteIndexList);
             var obox = angular.copy(vm.obox);
             vm.boxList.push(obox);
-            console.log(JSON.stringify(vm.boxList));
-            // SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).then(function (data) {
-            //     AlertService.success("分装成功!");
-            //     _splitABox(vm.box.frozenBoxCode);
-            //     vm.boxList = [];
-            // })
+            // console.log(JSON.stringify(vm.boxList));
+            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).then(function (data) {
+                AlertService.success("分装成功!");
+                _splitABox(vm.box.frozenBoxCode);
+                vm.boxList = [];
+            })
         };
         //复原
         vm.recover = function () {

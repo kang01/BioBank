@@ -14,6 +14,7 @@
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
     function TransportRecordNewController($scope,hotRegisterer,SampleService,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
                                           SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService) {
+
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.transportRecord = entity; //转运记录
@@ -799,7 +800,7 @@
                     AlertService.success("入库成功！");
                     //保存完整
                     vm.saveFlag = false;
-                    $state.go('stock-in-edit({id:'+ data.data.id +'})');
+                    $state.go('stock-in-edit',{id:data.data.id});
                     // loadAll();
                 })
             }

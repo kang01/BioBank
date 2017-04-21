@@ -494,7 +494,7 @@
                             var indexRow = getTubeRowIndex(vm.box.frozenTubeDTOS[i].tubeRows);
                             var indexCol = getTubeColumnIndex(vm.box.frozenTubeDTOS[i].tubeColumns);
                             if (indexCol < vm.settings.minRows) {
-                                if (indexRow < vm.settings.columns) {
+                                if (indexRow < vm.settings.minCols) {
                                     var tube = vm.box.frozenTubeDTOS[i];
                                     vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
                                     vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)].frozenBoxCode = vm.box.frozenBoxCode

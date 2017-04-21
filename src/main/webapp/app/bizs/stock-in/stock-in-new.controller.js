@@ -615,6 +615,7 @@
             // console.log(JSON.stringify(vm.boxList));
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).then(function (data) {
                 AlertService.success("分装成功!");
+                vm.dtInstance.rerender();
                 _splitABox(vm.box.frozenBoxCode);
                 vm.boxList = [];
             })

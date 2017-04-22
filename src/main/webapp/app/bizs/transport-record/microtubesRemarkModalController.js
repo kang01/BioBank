@@ -18,15 +18,15 @@
             $uibModalInstance.dismiss('cancel');
         };
         this.ok = function () {
-            for(var i = 0; i < vm.items.remarkArray.length; i++){
-
-                if(vm.items.remarkArray[i].sampleCode){
-                    vm.items.remarkArray[i].memo = vm.memo;
-                }
-
-
-            }
-            $uibModalInstance.close(vm.items);
+            // for(var i = 0; i < vm.items.remarkArray.length; i++){
+            //
+            //     if(vm.items.remarkArray[i].sampleCode){
+            //         vm.items.remarkArray[i].memo = vm.memo;
+            //     }
+            //
+            //
+            // }
+            $uibModalInstance.close(vm.memo);
         };
     }
 })();

@@ -68,7 +68,7 @@
     z-index: 999;
 }
 .project-sites .selectize-input > *{
-    width: 200px;
+    width: 130px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -135,9 +135,9 @@
 .transport-record-body table.dataTable tbody td{
     padding: 4px 18px;
 }
-.transport-record-new .three-col{
-    width: 33%;
-}
+/*.transport-record-new .three-col{*/
+    /*width: 33%;*/
+/*}*/
 .transport-record-new .form-group{
     margin-bottom: 6px;
 }
@@ -290,9 +290,9 @@
     /*.transport-record-new .pipe-body .pipe-table{*/
         /*width: 67%;*/
     /*}*/
-    .transport-record-new .three-col{
-        width: 32%;
-    }
+    /*.transport-record-new .three-col{*/
+        /*width: 32%;*/
+    /*}*/
     .transport-record-new .pipe-body .pipe-operate{
         margin-right: 0;
         width: 13%;
@@ -300,9 +300,9 @@
     /*.split-box .box-right{*/
         /*width: 400px;*/
     /*}*/
-    .project-sites .selectize-input > *{
-        width: 230px;
-    }
+    /*.project-sites .selectize-input > *{*/
+        /*width: 230px;*/
+    /*}*/
     .add-box-modal-body  .box-place,
     .add-box-modal-body  .box-memo{
         margin-left: -7.8%;
@@ -313,6 +313,9 @@
 }
 /*1600*/
 @media(min-width: 1500px){
+    .project-sites .selectize-input > *{
+        width: 160px;
+    }
     .transport-record-new .pipe-body .pipe-body-top .col-sm-2 {
         width: 23%;
     }
@@ -326,8 +329,11 @@
 }
 /*1920*/
 @media (min-width:1900px) {
-    .transport-record-new .three-col{
-        width: 25%;
+    /*.transport-record-new .three-col{*/
+        /*width: 25%;*/
+    /*}*/
+    .project-sites .selectize-input > * {
+        width: 206px;
     }
     .transport-record-new .pipe-body .pipe-body-top .col-sm-2 {
         width: 20.2%;

@@ -260,7 +260,7 @@
 
         function _splitABox(code){
             _fnTubeByBoxCode(code);
-            vm.loadBox();
+
         }
         function _putInShelf(boxIds){
             var boxes = [];
@@ -364,9 +364,10 @@
         function _fnTubeByBoxCode(code) {
             frozenBoxByCodeService.get({code:code},onFrozenSuccess,onError);
             function onFrozenSuccess(data) {
+                vm.box =  data;
                 vm.splittingBox = true;
                 initFrozenTube(data.frozenBoxRows);
-                vm.box =  data;
+                vm.loadBox();
                 for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
                     var tube = vm.box.frozenTubeDTOS[k];
                     vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
@@ -374,7 +375,7 @@
             }
             $timeout(function(){
                 hotRegisterer.getInstance('my-handsontable').render();
-            }, 200);
+            }, 2000);
         }
         //样本类型
         vm.loadBox = function () {
@@ -533,7 +534,7 @@
                     vm.obox.stockInFrozenTubeList.push(tempTubeArray[i][j])
                 }
             }
-
+            //把已有管子放进去
             for(var m =0 ; m < vm.obox.stockInFrozenTubeList.length; m++){
                 for(var n = 0; n < tubeList.length;n++){
                     var tube = tubeList[n];
@@ -542,7 +543,7 @@
                     }
                 }
             }
-            if(!selectList.length && !vm.obox.stockInFrozenTubeList){
+            if(!selectList.length && !tubeList.length){
                 AlertService.error("请选择被分装的冻存管或者请选择要分装到的盒子！");
                 return
             }
@@ -589,7 +590,10 @@
 
                 }
             }
-            hotRegisterer.getInstance('my-handsontable').render();
+            $timeout(function(){
+                hotRegisterer.getInstance('my-handsontable').render();
+            },2000);
+
 
             //删除空管子
             var deleteIndexList = [];
@@ -626,7 +630,7 @@
                 }
             }
 
-            console.log(JSON.stringify(vm.boxList))
+            console.log(JSON.stringify(vm.incompleteBoxesList))
         };
         //保存分装结果
         vm.saveBox = function () {

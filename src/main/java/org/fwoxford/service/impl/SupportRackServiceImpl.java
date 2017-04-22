@@ -117,9 +117,8 @@ public class SupportRackServiceImpl implements SupportRackService{
             int countShelves = Integer.parseInt(rows)*Integer.parseInt(colomns);
             int count = 0;
             for(FrozenBox box :frozenBoxes){
-                if(!box.getStatus().equals(Constants.FROZEN_BOX_STOCKED)
-                    && !box.getStatus().equals(Constants.FROZEN_BOX_INVALID)
-                    && !rack.getId().equals(box.getSupportRack().getId())){
+                if(!box.getStatus().equals(Constants.FROZEN_BOX_INVALID)
+                    && rack.getId().equals(box.getSupportRack().getId())){
                     count++;
                 }
             }
@@ -142,9 +141,8 @@ public class SupportRackServiceImpl implements SupportRackService{
             int countShelves = Integer.parseInt(rows)*Integer.parseInt(colomns);
             int count = 0;
             for(FrozenBox box :frozenBoxes){
-                if(!box.getStatus().equals(Constants.FROZEN_BOX_STOCKED)
-                    && !box.getStatus().equals(Constants.FROZEN_BOX_INVALID)
-                    && box.getSupportRack()!=null&& !rack.getId().equals(box.getSupportRack().getId())){
+                if(!box.getStatus().equals(Constants.FROZEN_BOX_INVALID)
+                    && box.getSupportRack()!=null&& rack.getId().equals(box.getSupportRack().getId())){
                     count++;
                 }
             }

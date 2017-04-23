@@ -36,6 +36,8 @@
 
             // 处理盒子选中状态
             vm.toggleAll = function (selectAll, selectedItems) {
+                selectedItems = vm.selected;
+                selectAll = vm.selectAll;
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
                         selectedItems[id] = selectAll;
@@ -116,6 +118,9 @@
             data["stockInCode"] = vm.stockInCode;
             var jqDt = this;
             StockInBoxService.getJqDataTableValues(data, oSettings).then(function (res){
+                vm.selectAll = false;
+                vm.selected = {};
+
                 var json = res.data;
                 var error = json.error || json.sError;
                 if ( error ) {
@@ -237,7 +242,7 @@
             return filters;
         }
         function _createColumns(){
-            var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll(vm.selectAll, vm.selected)">';
+            var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
 
             var columns = [
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
@@ -310,6 +315,7 @@
                 }
             });
             modalInstance.result.then(function (data) {
+                vm.headerCompiled = false;
                 vm.dtInstance.rerender();
             });
         }
@@ -636,6 +642,7 @@
             // console.log(JSON.stringify(vm.boxList));
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).then(function (data) {
                 AlertService.success("分装成功!");
+                vm.headerCompiled = false;
                 vm.dtInstance.rerender();
                 _splitABox(vm.box.frozenBoxCode);
                 vm.boxList = [];

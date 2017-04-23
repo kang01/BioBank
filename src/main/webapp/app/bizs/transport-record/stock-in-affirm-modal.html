@@ -3,10 +3,10 @@
     <h3 class="modal-title" id="modal-title">入库</h3>
 </div>
 <div class="modal-body" id="modal-body">
-<p>入库操作，确定转运记录基本信息是否填写完整,准备创建入库单？</p>
+<p>入库操作，<span ng-show="vm.placeFlag">请补充完整盒子位置,</span>准备创建入库单？</p>
 
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-show="!vm.placeFlag">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>

@@ -138,7 +138,15 @@
                     templateUrl: 'app/bizs/transport-record/stock-in-affirm-modal.html',
                     controller: 'StockInAffirmModalController',
                     backdrop:'static',
-                    controllerAs: 'vm'
+                    controllerAs: 'vm',
+                    resolve:{
+                        items:function () {
+                            return{
+                                box:vm.box || {},
+                                boxRowCol:vm.boxRowCol
+                            }
+                        }
+                    }
                 });
                 modalInstance.result.then(function (flage) {
                     if (flage){

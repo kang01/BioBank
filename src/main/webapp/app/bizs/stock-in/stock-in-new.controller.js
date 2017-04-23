@@ -548,7 +548,7 @@
                 }
             }
             if(!selectList.length || !tubeList.length){
-                AlertService.error("请选择被分装的冻存管或者请选择要分装到的盒子！");
+                AlertService.error("请选择被分装的冻存管或者请选择要分装到的冻存盒！");
                 return
             }
             //总管子数
@@ -561,7 +561,7 @@
             for(var j = 0; j < vm.incompleteBoxesList.length; j++){
                 var incompleteBoxes = vm.incompleteBoxesList[j];
                 for(var k = 0; k < incompleteBoxes.boxList.length;k++){
-                    if(vm.obox.sampleTypeCode == incompleteBoxes.boxList[k].sampleTypeCode){
+                    if(vm.obox.sampleTypeCode == incompleteBoxes.boxList[k].sampleTypeCode && incompleteBoxes.boxList[k].length != 100){
                         if( selectCount > surplusCount){
                             incompleteBoxes.boxList[k].addTubeCount = surplusCount;
                         }else{

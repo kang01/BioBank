@@ -5,7 +5,9 @@
         <div class="form-group pull-right m-r-10">
             <div class="text-right">
                 <button type="button" class="btn btn-primary" ng-click="vm.cancellation()" ng-show="vm.transportRecord.transhipState == '1001'">作废</button>
-                <button type="button" class="btn btn-primary" ng-click="vm.stockIn()" ng-disabled="!vm.boxLength || !vm.transportRecord.receiver" ng-show="vm.transportRecord.transhipState == '1001'">入库</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.stockIn()"
+                        ng-disabled="!vm.boxLength || !vm.transportRecord.receiver || !vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate"
+                        ng-show="vm.transportRecord.transhipState == '1001'">入库</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.importFrozenStorageBox('lg')" ng-show="vm.transportRecord.transhipState == '1001'">导入冻存盒</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.saveRecord()" ng-disabled="!vm.transportRecord.receiver" ng-show="vm.transportRecord.transhipState == '1001'">保存</button>
                 <button type="button" class="btn btn-default" ui-sref="transport-record">关闭</button>
@@ -17,7 +19,10 @@
     <form class="form-horizontal">
         <div class="row m-l-0 m-r-0">
             <div class="form-group col-sm-3">
-                <label  class="col-sm-4 control-label p-r-6">转运日期</label>
+                <label  class="col-sm-4 control-label p-r-6">
+                    <span class="required-field"></span>
+                    转运日期
+                </label>
                 <div class="col-sm-8">
                     <div class="input-group">
                         <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.transhipDate" is-open="vm.datePickerOpenStatus.transhipDate"
@@ -29,7 +34,10 @@
                 </div>
             </div>
             <div class="form-group col-sm-3">
-                <label  class="col-sm-4 control-label p-r-6">项目编码</label>
+                <label  class="col-sm-4 control-label p-r-6">
+                    <span class="required-field"></span>
+                    项目编码
+                </label>
                 <div class="col-sm-8">
                     <selectize options='vm.projectOptions' config="vm.projectConfig"
                                ng-model="vm.transportRecord.projectId"></selectize>
@@ -37,7 +45,9 @@
                 </div>
             </div>
             <div class="form-group col-sm-3 three-col project-sites">
-                <label  class="col-sm-4 control-label p-r-6">项目点</label>
+                <label  class="col-sm-4 control-label p-r-6">
+                    <span class="required-field"></span>
+                    项目点</label>
                 <div class="col-sm-8">
                     <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
                                ng-model="vm.transportRecord.projectSiteId"></selectize>
@@ -77,7 +87,10 @@
                 </div>
             </div>
             <div class="form-group col-sm-3">
-                <label  class="col-sm-4 control-label p-r-6">接收日期</label>
+                <label  class="col-sm-4 control-label p-r-6">
+                    <span class="required-field"></span>
+                    接收日期
+                </label>
                 <div class="col-sm-8">
                     <div class="input-group">
                         <input  type="text" class="form-control" name="receiveDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"

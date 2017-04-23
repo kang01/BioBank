@@ -9,10 +9,10 @@
         .controller('StockInNewController', StockInNewController);
 
     StockInNewController.$inject = ['$timeout','$state','$stateParams', '$scope','$compile','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
-        'entity','AlertService','StockInService','StockInBoxService','frozenBoxByCodeService','SplitedBoxService','StockInSaveService',
+        'entity','AlertService','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','StockInSaveService',
         'SampleTypeService','SampleService','IncompleteBoxService']
     function StockInNewController($timeout,$state,$stateParams,$scope,$compile,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
-                                  entity,AlertService,StockInService,StockInBoxService,frozenBoxByCodeService,SplitedBoxService,StockInSaveService,
+                                  entity,AlertService,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,StockInSaveService,
                                   SampleTypeService,SampleService,IncompleteBoxService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
@@ -362,7 +362,7 @@
         var htm;
         //根据盒子编码取管子
         function _fnTubeByBoxCode(code) {
-            frozenBoxByCodeService.get({code:code},onFrozenSuccess,onError);
+            StockInBoxByCodeService.get({code:code},onFrozenSuccess,onError);
             function onFrozenSuccess(data) {
                 vm.box =  data;
                 vm.splittingBox = true;
@@ -391,8 +391,14 @@
         }
         function onIncompleteBoxesSuccess(data) {
             if(data.length){
-                // _fnReplaceBoxCode(data[0]);
                 data[0].addTubeCount = 0;
+                //盒子编码太长时，用星号代替
+                if(data[0].frozenBoxCode.length > 10){
+                    data[0].copyBoxCode = _fnReplaceBoxCode(data[0].frozenBoxCode);
+                }else{
+                    data[0].copyBoxCode = data[0].frozenBoxCode;
+                }
+
                 if(data[0].frozenBoxCode != vm.box.frozenBoxCode){
                     vm.incompleteBoxesList.push(
                         {
@@ -403,22 +409,15 @@
                 }
 
             }
-            // console.log(JSON.stringify(vm.incompleteBoxesList))
         }
         function onError(error) {
             AlertService.error(error.data.message);
         }
         //盒子编码太长时，用星号代替
-        vm.replaceBoxCode = function (code) {
-            if(code.length > 10){
-                return "***"+code.substring(9,-10)
-            }
-        };
-        // function _fnReplaceBoxCode(data) {
-        //     if(data.frozenBoxCode.length > 10){
-        //         data.frozenBoxCode="***"+data.frozenBoxCode.substring(9,-10)
-        //     }
-        // }
+        function _fnReplaceBoxCode(code) {
+            code = "***"+code.substring(code.length-10);
+            return code;
+        }
         //初始管子数
         function initFrozenTube(size) {
             for(var i = 0; i < size; i++){
@@ -519,7 +518,6 @@
         };
         //分装操作
         vm.splitBox = function () {
-
             vm.obox.stockInFrozenTubeList = [];
             //初始100个管子或者80个管子
             for(var i = 0; i < vm.obox.frozenBoxRows; i++){
@@ -543,7 +541,7 @@
                     }
                 }
             }
-            if(!selectList.length && !tubeList.length){
+            if(!selectList.length || !tubeList.length){
                 AlertService.error("请选择被分装的冻存管或者请选择要分装到的盒子！");
                 return
             }
@@ -605,7 +603,7 @@
             _.pullAt(vm.obox.stockInFrozenTubeList, deleteIndexList);
             vm.obox.countOfSample = vm.obox.stockInFrozenTubeList.length;
             tubeList = angular.copy(vm.obox.stockInFrozenTubeList);
-            if(vm.obox.countOfSample > tubeCount){
+            if(vm.obox.countOfSample == tubeCount){
                 var frozenBox = {};
                 frozenBox.frozenBoxTypeId= vm.obox.frozenBoxTypeId;
                 frozenBox.sampleTypeCode= vm.obox.sampleTypeCode;
@@ -630,7 +628,7 @@
                 }
             }
 
-            console.log(JSON.stringify(vm.incompleteBoxesList))
+            // console.log(JSON.stringify(vm.incompleteBoxesList))
         };
         //保存分装结果
         vm.saveBox = function () {
@@ -677,6 +675,20 @@
         };
         //添加分装样本盒
         vm.addBoxModal = function (box) {
+            var sampleTypesList = angular.copy(vm.sampleTypes);
+            if(!box){
+                var delIndex = [];
+                for(var i = 0; i < vm.sampleTypes.length; i++){
+                    for (var j = 0; j < vm.incompleteBoxesList.length; j++){
+                        if(vm.sampleTypes[i].sampleTypeCode == vm.incompleteBoxesList[j].sampleTypeCode){
+                            delIndex.push(i)
+
+                        }
+                    }
+                }
+                _.pullAt(sampleTypesList,delIndex);
+            }
+
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-in/add-box-modal.html',
@@ -686,7 +698,7 @@
                 resolve: {
                     items: function () {
                         return {
-                            sampleTypes :vm.sampleTypes,
+                            sampleTypes :sampleTypesList,
                             box :box || {stockInFrozenTubeList:[]}
                         }
                     }
@@ -700,7 +712,12 @@
                     boxTempList.push(data);
                     onIncompleteBoxesSuccess(boxTempList)
                 }else{
-                    // _fnReplaceBoxCode(data);
+                    //盒子编码太长时，用星号代替
+                    if(data.frozenBoxCode.length > 10){
+                        data.copyBoxCode = _fnReplaceBoxCode(data.frozenBoxCode);
+                    }else{
+                        data.copyBoxCode = data.frozenBoxCode;
+                    }
                     for(var i = 0; i < vm.incompleteBoxesList.length; i++){
                         if(vm.incompleteBoxesList[i].sampleTypeCode == data.sampleType.sampleTypeCode){
                             if(vm.incompleteBoxesList[i].boxList.length < 2){

@@ -1,4 +1,7 @@
 /**
+ * Created by gaoyankang on 2017/4/23.
+ */
+/**
  * Created by gaokangkang on 2017/3/29.
  * 根据冻存盒code字符串查询冻存盒和冻存管信息
  */
@@ -7,12 +10,12 @@
 
     angular
         .module('bioBankApp')
-        .factory('frozenBoxByCodeService', frozenBoxByCodeService);
+        .factory('StockInBoxByCodeService', StockInBoxByCodeService);
 
-    frozenBoxByCodeService.$inject = ['$resource', '$http'];
+    StockInBoxByCodeService.$inject = ['$resource', '$http'];
 
-    function frozenBoxByCodeService ($resource, $http) {
-        var service = $resource('api/tranship-boxes/code/:code', {}, {
+    function StockInBoxByCodeService ($resource, $http) {
+        var service = $resource('api/frozen-boxes/code/:code', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',
@@ -26,13 +29,6 @@
             'delete':{ method:'DELETE'}
         });
 
-        service.queryByCodes = function (codes){
-            var codeStr = (codes||[]).join(',');
-
-            // For Testing;
-            codeStr = '32,23432,123456,245';
-            return $http.get('api/frozen-boxes/code/' + codeStr);
-        };
 
         return service;
     }

@@ -22,7 +22,7 @@
                 </label>
                 <div class="col-sm-8">
                     <selectize options='vm.sampleTypesOptions' config="vm.sampleTypesConfig"
-                               ng-model="vm.box.sampleType.sampleTypeCode"></selectize>
+                               ng-model="vm.box.sampleType.sampleTypeCode" ng-disabled="vm.sampleType"></selectize>
                     <input type="hidden" class="form-control"  ng-model="vm.box.sampleType.sampleTypeCode"  required>
 
                 </div>

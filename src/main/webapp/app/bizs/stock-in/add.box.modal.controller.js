@@ -12,7 +12,7 @@
 
     function AddBoxModalController($uibModalInstance,$uibModal,items,AlertService,FrozenBoxTypesService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxCodeIsRepeatService) {
         var vm = this;
-        // console.log(JSON.stringify(items))
+        vm.sampleType = items.box.sampleTypeCode;
         vm.box = {
             frozenBoxRows:"",
             frozenBoxColumns:"",
@@ -155,9 +155,12 @@
 
         vm.isRepeat = false;
         vm.isBoxCodeRepeat = function () {
-            BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
-                vm.isRepeat = data
-            });
+            if(vm.box.frozenBoxCode){
+                BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
+                    vm.isRepeat = data
+                });
+            }
+
         };
 
 

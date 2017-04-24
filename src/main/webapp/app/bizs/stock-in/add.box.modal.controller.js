@@ -13,6 +13,11 @@
     function AddBoxModalController($uibModalInstance,$uibModal,items,AlertService,FrozenBoxTypesService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxCodeIsRepeatService) {
         var vm = this;
         vm.createBoxflag = false;
+        if(!items.box.stockInFrozenTubeList.length){
+            vm.createBoxflag = true;
+            _createBox();
+        }
+
         function onFrozenBoxTypeSuccess(data) {
             vm.frozenBoxTypeOptions = data;
         }

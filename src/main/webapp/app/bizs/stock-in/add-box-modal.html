@@ -52,19 +52,19 @@
                     <div class="col-sm-10">
                         <div style="float:left;width: 80px;">
                             <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig" style="width: 80px;"
-                                       ng-model="vm.box.equipmentId" ng-disabled="!vm.box"></selectize>
+                                       ng-model="vm.box.equipmentId" ></selectize>
                             <input type="hidden" ng-model="vm.box.equipmentId" required>
                         </div>
                         <div style="float:left;width: 80px; margin-left: 2px">
                             <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig" style="width: 80px;"
-                                       ng-model="vm.box.areaId" ng-disabled="!vm.box"></selectize>
+                                       ng-model="vm.box.areaId" ></selectize>
                             <input type="hidden" ng-model="vm.box.areaId" required>
                         </div>
                         <div style="float:left;width: 80px;margin-left: 2px">
                             <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig" style="width: 80px;"
-                                       ng-model="vm.box.supportRackId" ng-disabled="!vm.box"></selectize>
+                                       ng-model="vm.box.supportRackId" ></selectize>
                         </div>
-                        <div style="float:left;width: 80px;margin-left: 2px"><input type="text" class="form-control" maxlength="2" ng-model="vm.boxRowCol" ng-disabled="!vm.box">
+                        <div style="float:left;width: 80px;margin-left: 2px"><input type="text" class="form-control" maxlength="2" ng-model="vm.boxRowCol" >
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                 <div class="form-group box-memo">
                     <label  class="col-sm-2 control-label">备注</label>
                     <div class="col-sm-9">
-                        <textarea class="form-control"rows="2" style="resize: none" ng-model="vm.box.memo" ng-disabled="!vm.box"></textarea>
+                        <textarea class="form-control"rows="2" style="resize: none" ng-model="vm.box.memo" ></textarea>
                     </div>
                 </div>
             </div>

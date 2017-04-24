@@ -557,16 +557,32 @@
             }
             // 重新加载管子表控件
             function _reloadTubesForTable(box){
+                var tableCtrl = hotRegisterer.getInstance('my-handsontable');
+                var tableWidth = $(tableCtrl.container).width();
                 var settings = {
                     minCols: +box.frozenBoxColumns,
                     minRows: +box.frozenBoxRows
                 };
 
+                var rowHeaderWidth = 30;
+                // 架子定位列表每列的宽度
+                var colWidth = (tableWidth - rowHeaderWidth) / settings.minCols;
+
+                // colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
+                // rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
+
                 var tubesInTable = [];
+                var colHeaders = [];
+                var rowHeaders = [];
                 for (var i=0; i<settings.minRows; ++i){
+                    var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
                     var tubes = [];
+                    rowHeaders.push(pos.tubeRows);
                     for (var j=0; j<settings.minCols; ++j){
-                        var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: j + 1 + ""};
+                        pos.tubeColumns = j + 1 + "";
+                        if (colHeaders.length < settings.minCols){
+                            colHeaders.push(pos.tubeColumns);
+                        }
                         var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
                         var tube = _createTubeForTableCell(tubeInBox, box, i, j + 1, pos);
                         tubes.push(tube);
@@ -575,8 +591,13 @@
                 }
                 vm.frozenTubeArray = tubesInTable;
 
-                hotRegisterer.getInstance('my-handsontable').loadData(tubesInTable);
-                hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
+                settings.rowHeaders = rowHeaders;
+                settings.colHeaders = colHeaders;
+                settings.colWidths = colWidth;
+                settings.manualColumnResize = colWidth;
+
+                tableCtrl.updateSettings(settings);
+                tableCtrl.loadData(tubesInTable);
             }
             vm.createBoxDataFromTubesTable = _createBoxDataFromTubesTable;
             function _createBoxDataFromTubesTable(){

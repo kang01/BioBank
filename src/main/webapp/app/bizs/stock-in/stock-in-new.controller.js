@@ -516,7 +516,7 @@
         vm.sampleBoxSelect = function (item,$event) {
             tubeList = [];
             vm.frozenBoxCode = item.frozenBoxCode;
-            if(!vm.frozenBoxCode ){
+            if(vm.frozenBoxCode ){
                 tubeList = item.stockInFrozenTubeList
             }
             vm.obox = angular.copy(item);
@@ -548,7 +548,6 @@
                     }
                 }
             }
-            console.log(JSON.stringify(vm.obox.stockInFrozenTubeList));
             if(!selectList.length || !vm.frozenBoxCode ){
                 AlertService.error("请选择被分装的冻存管或者请选择要分装到的冻存盒！");
                 return
@@ -562,16 +561,17 @@
             //分装到哪个盒子中的数量
             for(var j = 0; j < vm.incompleteBoxesList.length; j++){
                 var incompleteBoxes = vm.incompleteBoxesList[j];
-                for(var k = 0; k < incompleteBoxes.boxList.length;k++){
-                    if(vm.obox.sampleTypeCode == incompleteBoxes.boxList[k].sampleTypeCode){
-                        if(incompleteBoxes.boxList[k].length > 1){
-                            continue;
-                        }
-                        if( selectCount > surplusCount){
-                            incompleteBoxes.boxList[k].addTubeCount = surplusCount;
-                        }else{
-                            incompleteBoxes.boxList[k].addTubeCount += selectCount
-                        }
+                if(incompleteBoxes.boxList.length > 1){
+                    if( selectCount > surplusCount){
+                        incompleteBoxes.boxList[1].addTubeCount = surplusCount;
+                    }else{
+                        incompleteBoxes.boxList[1].addTubeCount += selectCount
+                    }
+                }else{
+                    if( selectCount > surplusCount){
+                        incompleteBoxes.boxList[0].addTubeCount = surplusCount;
+                    }else{
+                        incompleteBoxes.boxList[0].addTubeCount += selectCount
                     }
                 }
             }
@@ -603,7 +603,6 @@
                 hotRegisterer.getInstance('my-handsontable').render();
             },2000);
 
-
             //删除空管子
             var deleteIndexList = [];
             for(var i = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
@@ -612,7 +611,6 @@
                 }
             }
             _.pullAt(vm.obox.stockInFrozenTubeList, deleteIndexList);
-            // vm.obox.countOfSample = vm.obox.stockInFrozenTubeList.length;
             tubeList = angular.copy(vm.obox.stockInFrozenTubeList);
             if(vm.obox.countOfSample+selectCount > tubeCount){
                 var frozenBox = {};
@@ -631,7 +629,12 @@
             }else{
                 for(var i = 0; i < vm.boxList.length; i++){
                     if(obox.sampleTypeCode == vm.boxList[i].sampleTypeCode){
-                        vm.boxList[i].stockInFrozenTubeList = obox.stockInFrozenTubeList;
+                        if(vm.boxList.length > 1){
+                            vm.boxList[1].stockInFrozenTubeList = obox.stockInFrozenTubeList;
+
+                        }else{
+                            vm.boxList[0].stockInFrozenTubeList = obox.stockInFrozenTubeList;
+                        }
                         break;
                     }else{
                         vm.boxList.push(obox);
@@ -732,6 +735,7 @@
                     }else{
                         data.copyBoxCode = data.frozenBoxCode;
                     }
+                    data.addTubeCount = 0;
                     for(var i = 0; i < vm.incompleteBoxesList.length; i++){
                         if(vm.incompleteBoxesList[i].sampleTypeCode == data.sampleType.sampleTypeCode){
                             if(vm.incompleteBoxesList[i].boxList.length < 2){

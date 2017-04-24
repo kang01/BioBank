@@ -641,13 +641,11 @@
                     }
                 }
             }
-
             // console.log(JSON.stringify(vm.incompleteBoxesList))
         };
+
         //保存分装结果
         vm.saveBox = function () {
-
-            // console.log(JSON.stringify(vm.boxList));
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).then(function (data) {
                 AlertService.success("分装成功!");
                 vm.headerCompiled = false;
@@ -722,30 +720,44 @@
                 }
             });
             modalInstance.result.then(function (data) {
-                //添加分装后的冻存盒，没有添加新的，有的话再添加相同的盒子，相同的最多添加2个
-                var index = _.findIndex(vm.incompleteBoxesList,{sampleTypeCode:data.sampleType.sampleTypeCode});
-                if(index == -1){
-                    var boxTempList  = [];
-                    boxTempList.push(data);
-                    onIncompleteBoxesSuccess(boxTempList)
-                }else{
-                    //盒子编码太长时，用星号代替
-                    if(data.frozenBoxCode.length > 10){
-                        data.copyBoxCode = _fnReplaceBoxCode(data.frozenBoxCode);
+                if(data){
+                    //添加分装后的冻存盒，没有添加新的，有的话再添加相同的盒子，相同的最多添加2个
+                    var index = _.findIndex(vm.incompleteBoxesList,{sampleTypeCode:data.sampleType.sampleTypeCode});
+                    if(index == -1){
+                        var boxTempList  = [];
+                        boxTempList.push(data);
+                        onIncompleteBoxesSuccess(boxTempList)
                     }else{
-                        data.copyBoxCode = data.frozenBoxCode;
-                    }
-                    data.addTubeCount = 0;
-                    for(var i = 0; i < vm.incompleteBoxesList.length; i++){
-                        if(vm.incompleteBoxesList[i].sampleTypeCode == data.sampleType.sampleTypeCode){
-                            if(vm.incompleteBoxesList[i].boxList.length < 2){
-                                vm.incompleteBoxesList[i].boxList.push(data);
-                                vm.boxList.push(data);
-                            }
-
+                        //盒子编码太长时，用星号代替
+                        if(data.frozenBoxCode.length > 10){
+                            data.copyBoxCode = _fnReplaceBoxCode(data.frozenBoxCode);
+                        }else{
+                            data.copyBoxCode = data.frozenBoxCode;
                         }
+                        data.addTubeCount = 0;
+                        for(var i = 0; i < vm.incompleteBoxesList.length; i++){
+                            if(vm.incompleteBoxesList[i].sampleTypeCode == data.sampleType.sampleTypeCode){
+                                if(vm.incompleteBoxesList[i].boxList.length < 2){
+                                    vm.incompleteBoxesList[i].boxList.push(data);
+                                    vm.boxList.push(data);
+                                }
+
+                            }
+                        }
+                        tubeList = [];
+                        vm.frozenBoxCode = "";
+                        $(".box-selected").removeClass("box-selected");
                     }
+                }else{
+                    //复原被分装的剩余管子数
+                    for(var k = 0; k < selectList.length; k++){
+                        vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = selectList[k];
+                    }
+                    $timeout(function(){
+                        hotRegisterer.getInstance('my-handsontable').render();
+                    },2000);
                 }
+
             });
         };
         function openCalendar (date) {

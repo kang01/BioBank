@@ -25,4 +25,8 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         "from frozen_tube t where t.frozen_box_code in ?1 group by t.frozen_box_code \n" +
         " order by t.frozen_box_code desc,sampleNumber asc " ,nativeQuery = true)
     List<Object[]> countSampleNumberByfrozenBoxList(List<String> frozenBoxList);
+
+    void deleteByFrozenBoxCode(String frozenBoxCode);
+
+    int countByFrozenBoxCodeAndStatus(String frozenBoxCode, String frozenTubeNormal);
 }

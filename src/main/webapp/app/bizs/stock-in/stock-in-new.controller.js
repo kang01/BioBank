@@ -515,7 +515,8 @@
         //选中要分装样本盒
         vm.sampleBoxSelect = function (item,$event) {
             tubeList = [];
-            if(!tubeList.length){
+            vm.frozenBoxCode = item.frozenBoxCode;
+            if(!vm.frozenBoxCode ){
                 tubeList = item.stockInFrozenTubeList
             }
             vm.obox = angular.copy(item);
@@ -547,7 +548,8 @@
                     }
                 }
             }
-            if(!selectList.length || !tubeList.length){
+            console.log(JSON.stringify(vm.obox.stockInFrozenTubeList));
+            if(!selectList.length || !vm.frozenBoxCode ){
                 AlertService.error("请选择被分装的冻存管或者请选择要分装到的冻存盒！");
                 return
             }
@@ -561,7 +563,10 @@
             for(var j = 0; j < vm.incompleteBoxesList.length; j++){
                 var incompleteBoxes = vm.incompleteBoxesList[j];
                 for(var k = 0; k < incompleteBoxes.boxList.length;k++){
-                    if(vm.obox.sampleTypeCode == incompleteBoxes.boxList[k].sampleTypeCode && incompleteBoxes.boxList[k].length != 100){
+                    if(vm.obox.sampleTypeCode == incompleteBoxes.boxList[k].sampleTypeCode){
+                        if(incompleteBoxes.boxList[k].length > 1){
+                            continue;
+                        }
                         if( selectCount > surplusCount){
                             incompleteBoxes.boxList[k].addTubeCount = surplusCount;
                         }else{
@@ -607,9 +612,9 @@
                 }
             }
             _.pullAt(vm.obox.stockInFrozenTubeList, deleteIndexList);
-            vm.obox.countOfSample = vm.obox.stockInFrozenTubeList.length;
+            // vm.obox.countOfSample = vm.obox.stockInFrozenTubeList.length;
             tubeList = angular.copy(vm.obox.stockInFrozenTubeList);
-            if(vm.obox.countOfSample == tubeCount){
+            if(vm.obox.countOfSample+selectCount > tubeCount){
                 var frozenBox = {};
                 frozenBox.frozenBoxTypeId= vm.obox.frozenBoxTypeId;
                 frozenBox.sampleTypeCode= vm.obox.sampleTypeCode;
@@ -646,6 +651,7 @@
                 vm.dtInstance.rerender();
                 _splitABox(vm.box.frozenBoxCode);
                 vm.boxList = [];
+                vm.frozenBoxCode = "";
             })
         };
         //复原
@@ -658,6 +664,7 @@
             }
             vm.boxList = [];
             tubeList = [];
+            vm.frozenBoxCode = "";
             $(".box-selected").removeClass("box-selected");
         };
         //关闭

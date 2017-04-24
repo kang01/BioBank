@@ -302,6 +302,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
             box.setSampleNumber(countOfSample);
             box = frozenBoxRepository.save(box);
+            //删除冻存管
+            frozenTubeRepository.deleteByFrozenBoxCode(box.getFrozenBoxCode());
             for(FrozenTubeDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
                 FrozenTube tube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
 

@@ -182,13 +182,13 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             stockInBoxForDataTable.setSampleTypeName(frozenBox.getSampleTypeName());
             int countOfSample = 0;
             if(box.getStatus().equals(Constants.FROZEN_BOX_STOCKING)&&frozenBox.getIsSplit().equals(Constants.YES)){
-                countOfSample = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(box.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL).size();
+                countOfSample = frozenTubeRepository.countByFrozenBoxCodeAndStatus(box.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
             }else if(box.getStatus().equals(Constants.FROZEN_BOX_SPLITED)){
                 countOfSample = 0;
             }else if(box.getStatus().equals(Constants.FROZEN_BOX_STOCKING)&&frozenBox.getIsSplit().equals(Constants.NO)){
-                countOfSample = stockInTubesRepository.findByStockInCodeAndFrozenBoxCodeAndStatus(stockInCode,box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKING).size();
+                countOfSample = stockInTubesRepository.countByStockInCodeAndFrozenBoxCodeAndStatus(stockInCode,box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKING).intValue();
             }else{
-                countOfSample = stockInTubesRepository.findByStockInCodeAndFrozenBoxCodeNotNullAndStatus(stockInCode,box.getFrozenBoxCode(),box.getStatus()).size();
+                countOfSample = stockInTubesRepository.countByStockInCodeAndFrozenBoxCodeNotNullAndStatus(stockInCode,box.getFrozenBoxCode(),box.getStatus()).intValue();
             }
             stockInBoxForDataTable.setCountOfSample(countOfSample);
             stockInBoxForDataTable.setFrozenBoxCode(box.getFrozenBoxCode());

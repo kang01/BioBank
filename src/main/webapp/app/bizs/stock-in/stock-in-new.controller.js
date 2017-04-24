@@ -345,17 +345,18 @@
                 }
             });
             modalInstance.result.then(function (data) {
-                // StockInSaveService.saveStockIn(vm.stockInCode).success(function () {
-                //
-                // }).error(function () {
-                //
-                // })
-                StockInSaveService.saveStockIn(vm.stockInCode).then(function () {
+                StockInSaveService.saveStockIn(vm.stockInCode).success(function (data) {
                     AlertService.success("入库完成成功!");
                     _initStockInBoxesTable();
-                }).then(function (data) {
-                    console.log(JSON.stringify(data))
-                })
+                }).error(function (data) {
+                    AlertService.error(data.message+"入库失败!");
+                });
+                // StockInSaveService.saveStockIn(vm.stockInCode).then(function () {
+                //     AlertService.success("入库完成成功!");
+                //     _initStockInBoxesTable();
+                // }).then(function (data) {
+                //     console.log(JSON.stringify(data))
+                // })
             })
         };
         vm.isShowSplittingPanel = function(){
@@ -556,7 +557,12 @@
                 }
             }
             if(!selectList.length || !vm.frozenBoxCode ){
-                AlertService.error("请选择被分装的冻存管或者请选择要分装到的冻存盒！");
+                modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/bizs/stock-in/stock-in-splittingBox-message-modal.html',
+                    controller: 'SplittingBoxMessageController',
+                    controllerAs:'vm'
+                });
                 return
             }
             //总管子数

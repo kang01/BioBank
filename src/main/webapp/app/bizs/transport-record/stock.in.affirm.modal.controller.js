@@ -15,7 +15,7 @@
         var vm = this;
         vm.box = items.box;
         vm.boxRowCol = items.boxRowCol;
-        if(!vm.box.equipmentId || !vm.box.areaId || !vm.box.supportRackId || !vm.boxRowCol){
+        if(!vm.box.equipmentId || !vm.box.areaId ){
             vm.placeFlag = true
         }else{
             vm.placeFlag = false;

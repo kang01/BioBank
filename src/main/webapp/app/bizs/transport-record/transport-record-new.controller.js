@@ -767,10 +767,6 @@
                 };
 
                 if(vm.box) {
-                    if(vm.boxRowCol){
-                        vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
-                        vm.box.rowsInShelf = vm.boxRowCol.substring(1);
-                    }
                     obox.frozenBoxDTOList = [];
                     obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
                 }
@@ -781,7 +777,12 @@
                     }
                 }
             }
-
+            vm.splitPlace = function () {
+                if(vm.boxRowCol){
+                    vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
+                    vm.box.rowsInShelf = vm.boxRowCol.substring(1);
+                }
+            };
             var aRemarkArray = [];
             //备注 选择单元格数据
             function _fnRemarkSelectData(td,remarkArray,selectTubeArray) {
@@ -918,9 +919,9 @@
                 if(vm.box.areaId){
                     SupportacksByAreaIdService.query({id:vm.box.areaId},onShelfSuccess, onError)
                 }
-                if(vm.box.supportRackId){
+                // if(vm.box.supportRackId){
                     vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
-                }
+                // }
                 initFrozenTube(vm.box.frozenBoxColumns);
                 _reloadTubesForTable(vm.box);
                 vm.boxStr = JSON.stringify(vm.createBoxDataFromTubesTable());

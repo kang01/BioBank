@@ -171,7 +171,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             stringBuffer.append(".");
             stringBuffer.append(box.getSupportRackCode()!=null?box.getSupportRackCode():new String(""));
             stringBuffer.append(".");
-            stringBuffer.append(box.getRowsInShelf()!=null?box.getRowsInShelf():new String(""));
+            stringBuffer.append(box.getColumnsInShelf()!=null?box.getColumnsInShelf():new String(""));
             stringBuffer.append(box.getRowsInShelf()!=null?box.getRowsInShelf():new String(""));
             stockInBoxForDataTable.setPosition(stringBuffer.toString());
             FrozenBox frozenBox =frozenBoxRepository.findFrozenBoxDetailsByBoxCode(box.getFrozenBoxCode());

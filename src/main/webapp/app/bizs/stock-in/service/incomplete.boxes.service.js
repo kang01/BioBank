@@ -11,7 +11,7 @@
     IncompleteBoxService.$inject = ['$resource'];
 
     function IncompleteBoxService ($resource) {
-        var service = $resource('api/frozen-boxes/incomplete-boxes/project/:projectCode/type/:sampleTypeCode', {}, {
+        var service = $resource('api/frozen-boxes/incomplete-boxes/project/:projectCode/type/:sampleTypeCode/tranship/:transhipCode', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

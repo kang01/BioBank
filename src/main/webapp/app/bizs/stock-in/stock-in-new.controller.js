@@ -402,7 +402,7 @@
             vm.sampleTypes = data;
             //未装满不同样本类型的盒子
             for(var i = 0; i < vm.sampleTypes.length-1;i++){
-                IncompleteBoxService.query({projectCode:vm.entity.projectCode,sampleTypeCode:vm.sampleTypes[i].sampleTypeCode},onIncompleteBoxesSuccess,onError)
+                IncompleteBoxService.query({projectCode:vm.entity.projectCode,sampleTypeCode:vm.sampleTypes[i].sampleTypeCode,transhipCode:vm.entity.transhipCode},onIncompleteBoxesSuccess,onError)
             }
         }
         function onIncompleteBoxesSuccess(data) {
@@ -577,8 +577,9 @@
             var selectCount = selectList.length;
             //分装到哪个盒子中的数量
             if( selectCount <= surplusCount){
-                // vm.obox.addTubeCount  = surplusCount;
                 vm.obox.addTubeCount  += selectCount
+            }else{
+                vm.obox.addTubeCount  = surplusCount;
             }
 // if(incompleteBoxes.sampleTypeCode == vm.obox.sampleTypeCode){
             // if(incompleteBoxes.boxList.length > 1){
@@ -695,6 +696,7 @@
             }
             vm.boxList = [];
             tubeList = [];
+            selectList = [];
             vm.frozenBoxCode = "";
             $(".box-selected").removeClass("box-selected");
         };

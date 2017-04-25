@@ -1,7 +1,9 @@
 package org.fwoxford.service;
 
+import org.fwoxford.service.dto.StockInCompleteDTO;
 import org.fwoxford.service.dto.StockInDTO;
 import org.fwoxford.service.dto.StockInForDataDetail;
+import org.fwoxford.service.dto.TranshipToStockInDTO;
 import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +53,7 @@ public interface StockInService {
      * @param transhipCode
      * @return
      */
-    StockInForDataDetail  saveStockIns(String transhipCode,String receiver,LocalDate receiveDate);
+    StockInForDataDetail  saveStockIns(String transhipCode,TranshipToStockInDTO transhipToStockInDTO);
 
     /**
      * 查询入库单信息
@@ -65,7 +67,7 @@ public interface StockInService {
      * @param stockInCode
      * @return
      */
-    StockInForDataDetail completedStockIn(String stockInCode,String loginName1,String loginName2,LocalDate stockInDate);
+    StockInForDataDetail completedStockIn(String stockInCode,StockInCompleteDTO stockInCompleteDTO);
 
     StockInForDataDetail getStockInById(Long id);
 

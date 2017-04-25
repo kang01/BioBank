@@ -7,8 +7,10 @@ import io.swagger.annotations.ApiParam;
 import org.fwoxford.security.SecurityUtils;
 import org.fwoxford.service.StockInService;
 import org.fwoxford.service.UserService;
+import org.fwoxford.service.dto.StockInCompleteDTO;
 import org.fwoxford.service.dto.StockInDTO;
 import org.fwoxford.service.dto.StockInForDataDetail;
+import org.fwoxford.service.dto.TranshipToStockInDTO;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -154,13 +156,10 @@ public class StockInResource {
      */
     @PostMapping("/stock-in/tranship/{transhipCode}")
     @Timed
-    public ResponseEntity<StockInForDataDetail> createStockIns(@PathVariable String transhipCode,String loginName,String password,LocalDate receiveDate) throws URISyntaxException {
+    public ResponseEntity<StockInForDataDetail> createStockIns(@PathVariable String transhipCode, @RequestBody @Valid TranshipToStockInDTO transhipToStockInDTO) throws URISyntaxException {
         log.debug("REST request to save StockIn : {}", transhipCode);
-        //TODO :以后需要为必填验证
-        if(loginName!=null&&password!=null){
-            userService.isCorrectUser(loginName,password);
-        }
-        StockInForDataDetail result = stockInService.saveStockIns(transhipCode,loginName,receiveDate);
+
+        StockInForDataDetail result = stockInService.saveStockIns(transhipCode,transhipToStockInDTO);
         return ResponseEntity.created(new URI("/api/res/stock-in" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -185,16 +184,10 @@ public class StockInResource {
      */
     @PutMapping("/stock-in/{stockInCode}/completed")
     @Timed
-    public ResponseEntity<StockInForDataDetail> completedStockIn(@PathVariable String stockInCode , String loginName1, String password1,String loginName2, String password2,LocalDate stockInDate) throws URISyntaxException {
+    public ResponseEntity<StockInForDataDetail> completedStockIn(@PathVariable String stockInCode ,@RequestBody @Valid StockInCompleteDTO stockInCompleteDTO) throws URISyntaxException {
         log.debug("REST request to update StockIn : {}", stockInCode);
-        //TODO :以后需要为必填验证
-        if(loginName1!=null&&password1!=null){
-            userService.isCorrectUser(loginName1,password1);
-        }
-        if(loginName2!=null&&password2!=null){
-            userService.isCorrectUser(loginName2,password2);
-        }
-        StockInForDataDetail result = stockInService.completedStockIn(stockInCode,loginName1,loginName2,stockInDate);
+
+        StockInForDataDetail result = stockInService.completedStockIn(stockInCode,stockInCompleteDTO);
 
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))

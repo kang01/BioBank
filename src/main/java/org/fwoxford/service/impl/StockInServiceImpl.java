@@ -7,6 +7,7 @@ import org.fwoxford.security.SecurityUtils;
 import org.fwoxford.service.StockInBoxService;
 import org.fwoxford.service.StockInService;
 import org.fwoxford.service.TranshipService;
+import org.fwoxford.service.UserService;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInForDataTable;
@@ -81,6 +82,9 @@ public class StockInServiceImpl implements StockInService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     public StockInServiceImpl(StockInRepository stockInRepository,
                               StockInMapper stockInMapper,
@@ -160,13 +164,18 @@ public class StockInServiceImpl implements StockInService {
      * @return
      */
     @Override
-    public StockInForDataDetail saveStockIns(String transhipCode,String receiver,LocalDate receiveDate) {
+    public StockInForDataDetail saveStockIns(String transhipCode,TranshipToStockInDTO transhipToStockInDTO) {
         StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
         stockInForDataDetail.setTranshipCode(transhipCode);
 
         if(transhipCode == null){
             throw new BankServiceException("转运编码不能为空！",transhipCode);
         }
+        String receiver = transhipToStockInDTO.getLogin();
+        LocalDate receiveDate = transhipToStockInDTO.getReceiveDate();
+        String password = transhipToStockInDTO.getPassword();
+        userService.isCorrectUser(receiver,password);
+
         TranshipByIdResponse transhipRes = new TranshipByIdResponse();
         Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
         if(tranship == null){
@@ -348,7 +357,7 @@ public class StockInServiceImpl implements StockInService {
      * @return
      */
     @Override
-    public StockInForDataDetail completedStockIn(String stockInCode,String loginName1,String loginName2,LocalDate stockInDate) {
+    public StockInForDataDetail completedStockIn(String stockInCode,StockInCompleteDTO stockInCompleteDTO) {
         StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
         StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
         if(stockIn == null){
@@ -356,13 +365,27 @@ public class StockInServiceImpl implements StockInService {
         }
         //修改入库
         stockIn.setStatus(Constants.STOCK_IN_COMPLETE);
+        String loginName1 = stockInCompleteDTO.getLoginName1();
+        String loginName2 = stockInCompleteDTO.getLoginName2();
+        String password1 = stockInCompleteDTO.getLoginName1();
+        String password2 = stockInCompleteDTO.getLoginName1();
+        LocalDate stockInDate = stockInCompleteDTO.getStockInDate();
+        if(loginName1 == loginName2){
+            throw new BankServiceException("两个入库员不能为用一个人！");
+        }
+        if(loginName1!=null&&password1!=null){
+            userService.isCorrectUser(loginName1,password1);
+        }
+        if(loginName2!=null&&password2!=null){
+            userService.isCorrectUser(loginName2,password2);
+        }
         User user1 = userRepository.findByLogin(loginName1);
         User user2 = userRepository.findByLogin(loginName2);
         stockIn.setStoreKeeperId1(user1!=null?user1.getId():null);
         stockIn.setStoreKeeperId2(user2!=null?user2.getId():null);
         stockIn.setStoreKeeper1(loginName1);
         stockIn.setStoreKeeper2(loginName2);
-        stockIn.setStockInCode(stockInCode);
+        stockIn.setStockInDate(stockInDate);
         stockInRepository.save(stockIn);
         List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(stockInCode);
         //修改盒子

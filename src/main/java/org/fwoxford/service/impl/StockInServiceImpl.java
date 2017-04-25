@@ -160,7 +160,7 @@ public class StockInServiceImpl implements StockInService {
      * @return
      */
     @Override
-    public StockInForDataDetail saveStockIns(String transhipCode,Long receiverId,LocalDate receiveDate) {
+    public StockInForDataDetail saveStockIns(String transhipCode,String receiver,LocalDate receiveDate) {
         StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
         stockInForDataDetail.setTranshipCode(transhipCode);
 
@@ -183,9 +183,9 @@ public class StockInServiceImpl implements StockInService {
         }
         //修改转运表中数据状态为待入库
         tranship.setTranshipState(Constants.TRANSHIPE_IN_STOCKING);
-        User user = userRepository.findOne(receiverId);
-        tranship.setReceiverId(receiverId);
-        tranship.setReceiver(user!=null?user.getLogin():null);
+        User user = userRepository.findByLogin(receiver);
+        tranship.setReceiverId(user!=null?user.getId():null);
+        tranship.setReceiver(receiver);
         tranship.setReceiveDate(receiveDate);
         transhipRepository.save(tranship);
 

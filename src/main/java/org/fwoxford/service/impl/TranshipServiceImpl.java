@@ -139,10 +139,12 @@ public class TranshipServiceImpl implements TranshipService{
         ProjectSite projectSite = projectSiteRepository.findOne(transhipDTO.getProjectSiteId());
         transhipDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():new String(""));
         transhipDTO.setProjectSiteName(projectSite!=null?projectSite.getProjectSiteName():new String(""));
-        if(transhipDTO.getReceiverId()!=null){
-            User user = userRepository.findOne(transhipDTO.getReceiverId());
-            transhipDTO.setReceiver(user!=null?user.getLogin():transhipDTO.getReceiver());
+        if(transhipDTO.getReceiver()==null){
+           throw new BankServiceException("接收人不能为空！",transhipDTO.toString());
         }
+        User user = userRepository.findByLogin(transhipDTO.getReceiver());
+        transhipDTO.setReceiverId(user!=null?user.getId():null);
+        transhipDTO.setReceiver(user!=null?user.getLogin():transhipDTO.getReceiver());
         Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
         tranship = transhipMapper.transhipToDefaultValue(tranship);
         tranship = transhipRepository.save(tranship);

@@ -154,13 +154,13 @@ public class StockInResource {
      */
     @PostMapping("/stock-in/tranship/{transhipCode}")
     @Timed
-    public ResponseEntity<StockInForDataDetail> createStockIns(@PathVariable String transhipCode,String loginName,String password,Long receiverId,LocalDate receiveDate) throws URISyntaxException {
+    public ResponseEntity<StockInForDataDetail> createStockIns(@PathVariable String transhipCode,String loginName,String password,LocalDate receiveDate) throws URISyntaxException {
         log.debug("REST request to save StockIn : {}", transhipCode);
         //TODO :以后需要为必填验证
         if(loginName!=null&&password!=null){
             userService.isCorrectUser(loginName,password);
         }
-        StockInForDataDetail result = stockInService.saveStockIns(transhipCode,receiverId,receiveDate);
+        StockInForDataDetail result = stockInService.saveStockIns(transhipCode,loginName,receiveDate);
         return ResponseEntity.created(new URI("/api/res/stock-in" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

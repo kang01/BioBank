@@ -51,7 +51,7 @@ public interface StockInService {
      * @param transhipCode
      * @return
      */
-    StockInForDataDetail  saveStockIns(String transhipCode,Long receiverId,LocalDate receiveDate);
+    StockInForDataDetail  saveStockIns(String transhipCode,String receiver,LocalDate receiveDate);
 
     /**
      * 查询入库单信息

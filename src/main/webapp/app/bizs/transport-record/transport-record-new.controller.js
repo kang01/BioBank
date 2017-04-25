@@ -10,10 +10,10 @@
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
     TransportRecordNewController.$inject = ['$scope','hotRegisterer','SampleService','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
-        'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService'];
+        'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
     function TransportRecordNewController($scope,hotRegisterer,SampleService,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
-                                          SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService) {
+                                          SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService) {
 
         var modalInstance;
         var vm = this;
@@ -61,6 +61,7 @@
             SampleTypeService.query({},onSampleTypeSuccess, onError);//样本类型
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);//盒子类型
             ProjectService.query({},onProjectSuccess, onError)//项目
+            SampleUserService.query({},onReceiverSuccess, onError)//接收人
 
             vm.projectConfig = {
                 valueField:'id',
@@ -123,6 +124,13 @@
                 maxItems: 1
 
             };
+            //接收人
+            vm.receiverConfig = {
+                valueField:'login',
+                labelField:'login',
+                maxItems: 1
+
+            };
 
             vm.datePickerOpenStatus = {};
             vm.openCalendar = openCalendar; //时间
@@ -143,17 +151,19 @@
                         items:function () {
                             return{
                                 box:vm.box || {},
-                                boxRowCol:vm.boxRowCol
+                                boxRowCol:vm.boxRowCol,
+                                receiver:vm.transportRecord.receiver,
+                                receiveDate: vm.transportRecord.receiveDate
                             }
                         }
                     }
                 });
-                modalInstance.result.then(function (flage) {
-                    if (flage){
+                modalInstance.result.then(function (transportRecord) {
+
                         //保存完整
                         vm.saveFlag = true;
-                        vm.saveRecord();
-                    }
+                        vm.saveRecord(transportRecord);
+
                 });
             };
             //导入冻存盒
@@ -178,14 +188,14 @@
                 });
             }
             //保存保存记录
-            function saveRecord() {
+            function saveRecord(transportRecord) {
                 vm.saveBox(function(){
                     AlertService.success("保存冻存盒成功！");
                     TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError);
                     function onSaveTranshipRecordSuccess(data) {
                         AlertService.success("保存转运记录成功");
                         if(vm.saveFlag){
-                            TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode).then(function (data) {
+                            TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).then(function (data) {
                                 AlertService.success("入库成功！");
                                 //保存完整
                                 vm.saveFlag = false;
@@ -226,6 +236,9 @@
             function onProjectSitesSuccess(data) {
                 vm.projectSitesOptions = data;
                 vm.transportRecord.projectSiteId = data[0].id;
+            }
+            function onReceiverSuccess(data) {
+                vm.receiverOptions = data;
             }
         }
 
@@ -278,6 +291,10 @@
 
             //点击冻存盒行
             function someClickHandler(td,boxInfo) {
+                vm.normalCount = 0;//正常
+                vm.emptyHoleCount = 0;//空孔
+                vm.emptyPipeCount = 0;//空管
+                vm.abnormalCount = 0;//异常
                 vm.strbox = JSON.stringify(vm.createBoxDataFromTubesTable());
                 if(!vm.boxStr || vm.strbox === vm.boxStr){
                     $(td).closest('table').find('.rowLight').removeClass("rowLight");
@@ -285,6 +302,7 @@
                     frozenBoxByCodeService.get({code:boxInfo.frozenBoxCode},vm.onFrozenSuccess,onError);
 
                 }else{
+
                     modalInstance = $uibModal.open({
                         animation: true,
                         templateUrl: 'boxModal.html',
@@ -477,9 +495,12 @@
             }
 
             //修改样本状态正常、空管、空孔、异常
-            vm.normalCount = 0;
-            vm.emptyCount = 0;
+            vm.normalCount = 0;//正常
+            vm.emptyHoleCount = 0;//空孔
+            vm.emptyPipeCount = 0;//空管
+            vm.abnormalCount = 0;//异常
             function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
+
                 operateColor = td.style.backgroundColor;
                 //正常
                 if(sampleStatus == 3001){
@@ -488,10 +509,11 @@
                 //空管
                 if(sampleStatus == 3002){
                     td.style.background = 'linear-gradient(to right,'+operateColor+',50%,black';
+                    vm.emptyPipeCount ++;
                 }
                 //空孔
                 if(sampleStatus == 3003){
-                    vm.emptyCount++;
+                    vm.emptyHoleCount++;
                     td.style.background = '';
                     td.style.backgroundColor = '#ffffff';
                     td.style.color = '#ffffff'
@@ -502,6 +524,7 @@
                     // $(td).append(dom);
                     td.style.backgroundColor = 'red';
                     td.style.border = '3px solid red;margin:-3px';
+                    vm.abnormalCount++
                 }
             }
 
@@ -595,7 +618,6 @@
                 settings.colHeaders = colHeaders;
                 settings.colWidths = colWidth;
                 settings.manualColumnResize = colWidth;
-
                 tableCtrl.updateSettings(settings);
                 tableCtrl.loadData(tubesInTable);
             }
@@ -634,6 +656,10 @@
                 labelField:'frozenBoxTypeName',
                 maxItems: 1,
                 onChange:function(value){
+                    // vm.normalCount = 0;//正常
+                    // vm.emptyHoleCount = 0;//空孔
+                    // vm.emptyPipeCount = 0;//空管
+                    // vm.abnormalCount = 0;//异常
                     var boxType = _.filter(vm.frozenBoxTypeOptions, {id:+value})[0];
                     if (!boxType) {
                         return;
@@ -805,6 +831,10 @@
                     editor: vm.flagStatus ? false : 'tube',
                     // multiSelect: !vm.flagStatus
                 };
+                vm.normalCount = 0;//正常
+                vm.emptyHoleCount = 0;//空孔
+                vm.emptyPipeCount = 0;//空管
+                vm.abnormalCount = 0;//异常
                 hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
             };
             //换位

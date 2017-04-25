@@ -4,9 +4,47 @@
 </div>
 <div class="modal-body" id="modal-body">
 <p>入库操作，<span ng-show="vm.placeFlag">请补充完整盒子位置,</span>准备创建入库单？</p>
-
+<div ng-show="!vm.placeFlag">
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label class="col-md-2 control-label">
+                <span class="required-field"></span>
+                接收日期
+            </label>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input  type="text" class="form-control" name="receiveDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"
+                            required  />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">
+                <span class="required-field"></span>
+                接收人
+            </label>
+            <div class="col-md-6">
+                <selectize options='vm.receiverOptions' config="vm.receiverConfig"
+                           ng-model="vm.transportRecord.login"></selectize>
+                <input type="hidden" class="form-control"   ng-model="vm.transportRecord.login">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">
+                <span class="required-field"></span>
+                密码
+            </label>
+            <div class="col-md-6">
+                <input type="password" class="form-control"   ng-model="vm.transportRecord.password">
+            </div>
+        </div>
+    </form>
+</div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-show="!vm.placeFlag">确定</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-show="!vm.placeFlag" ng-disabled="!vm.transportRecord.password || !vm.transportRecord.receiveDate || !vm.transportRecord.login">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>

@@ -25,7 +25,7 @@
             'update': { method:'PUT' },
             'delete':{ method:'DELETE'}
         });
-        service.saveStockIn = function(transhipCode){
+        service.saveStockIn = function(transhipCode,transportRecord){
             var ajaxUrl = 'api/stock-in/tranship/' + transhipCode;
 
             var req = {
@@ -35,7 +35,10 @@
                     'Content-Type': 'application/json'
                 },
                 data:{
-                    transhipCode:transhipCode
+
+                    receiveDate:transportRecord.receiveDate,
+                    login:transportRecord.login,
+                    password:transportRecord.password
                 }
             };
 

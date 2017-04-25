@@ -453,7 +453,7 @@
         }
 
         vm.customRenderer = function (hotInstance, td, row, col, prop, value, cellProperties) {
-            if(value != ""){
+            if(value != "" || value != null){
                 //样本类型
                 if(value.sampleTypeCode){
                     SampleService.changeSampleType(value.sampleTypeCode,td);

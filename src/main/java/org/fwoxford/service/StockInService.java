@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
+import java.time.LocalDate;
+
 /**
  * Service Interface for managing StockIn.
  */
@@ -49,7 +51,7 @@ public interface StockInService {
      * @param transhipCode
      * @return
      */
-    StockInForDataDetail  saveStockIns(String transhipCode);
+    StockInForDataDetail  saveStockIns(String transhipCode,Long receiverId,LocalDate receiveDate);
 
     /**
      * 查询入库单信息
@@ -63,7 +65,7 @@ public interface StockInService {
      * @param stockInCode
      * @return
      */
-    StockInForDataDetail completedStockIn(String stockInCode);
+    StockInForDataDetail completedStockIn(String stockInCode,String loginName1,String loginName2);
 
     StockInForDataDetail getStockInById(Long id);
 

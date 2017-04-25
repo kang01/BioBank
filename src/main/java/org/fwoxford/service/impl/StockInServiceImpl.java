@@ -160,7 +160,7 @@ public class StockInServiceImpl implements StockInService {
      * @return
      */
     @Override
-    public StockInForDataDetail saveStockIns(String transhipCode) {
+    public StockInForDataDetail saveStockIns(String transhipCode,Long receiverId,LocalDate receiveDate) {
         StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
         stockInForDataDetail.setTranshipCode(transhipCode);
 
@@ -183,6 +183,10 @@ public class StockInServiceImpl implements StockInService {
         }
         //修改转运表中数据状态为待入库
         tranship.setTranshipState(Constants.TRANSHIPE_IN_STOCKING);
+        User user = userRepository.findOne(receiverId);
+        tranship.setReceiverId(receiverId);
+        tranship.setReceiver(user!=null?user.getLogin():null);
+        tranship.setReceiveDate(receiveDate);
         transhipRepository.save(tranship);
 
         stockInForDataDetail.setProjectCode(tranship.getProjectCode());
@@ -344,7 +348,7 @@ public class StockInServiceImpl implements StockInService {
      * @return
      */
     @Override
-    public StockInForDataDetail completedStockIn(String stockInCode) {
+    public StockInForDataDetail completedStockIn(String stockInCode,String loginName1,String loginName2) {
         StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
         StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
         if(stockIn == null){
@@ -352,6 +356,12 @@ public class StockInServiceImpl implements StockInService {
         }
         //修改入库
         stockIn.setStatus(Constants.STOCK_IN_COMPLETE);
+        User user1 = userRepository.findByLogin(loginName1);
+        User user2 = userRepository.findByLogin(loginName2);
+        stockIn.setStoreKeeperId1(user1!=null?user1.getId():null);
+        stockIn.setStoreKeeperId2(user2!=null?user2.getId():null);
+        stockIn.setStoreKeeper1(loginName1);
+        stockIn.setStoreKeeper2(loginName2);
         stockInRepository.save(stockIn);
         List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(stockInCode);
         //修改盒子

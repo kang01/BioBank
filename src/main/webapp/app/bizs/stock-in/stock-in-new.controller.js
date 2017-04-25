@@ -389,7 +389,7 @@
             }
             setTimeout(function () {
                 hotRegisterer.getInstance('my-handsontable').render();
-            },1000)
+            },500)
 
 
         }
@@ -402,7 +402,7 @@
             vm.sampleTypes = data;
             //未装满不同样本类型的盒子
             for(var i = 0; i < vm.sampleTypes.length-1;i++){
-                IncompleteBoxService.query({projectCode:vm.entity.projectCode,sampleTypeCode:vm.sampleTypes[i].sampleTypeCode,transhipCode:vm.entity.transhipCode},onIncompleteBoxesSuccess,onError)
+                IncompleteBoxService.query({projectCode:vm.entity.projectCode,sampleTypeCode:vm.sampleTypes[i].sampleTypeCode,stockInCode:vm.entity.stockInCode},onIncompleteBoxesSuccess,onError)
             }
         }
         function onIncompleteBoxesSuccess(data) {
@@ -579,23 +579,10 @@
             if( selectCount <= surplusCount){
                 vm.obox.addTubeCount  += selectCount
             }else{
-                vm.obox.addTubeCount  = surplusCount;
+                if(surplusCount != 0){
+                    vm.obox.addTubeCount  = surplusCount;
+                }
             }
-// if(incompleteBoxes.sampleTypeCode == vm.obox.sampleTypeCode){
-            // if(incompleteBoxes.boxList.length > 1){
-            //     if( selectCount > surplusCount){
-            //         incompleteBoxes.boxList[1].addTubeCount = surplusCount;
-            //     }else{
-            //         incompleteBoxes.boxList[1].addTubeCount += selectCount
-            //     }
-            // }else{
-            //     if( selectCount > surplusCount){
-            //         incompleteBoxes.boxList[0].addTubeCount = surplusCount;
-            //     }else{
-            //         incompleteBoxes.boxList[0].addTubeCount += selectCount
-            //     }
-            // }
-            // }
             for(var i = 0; i < vm.incompleteBoxesList.length; i++){
                 var incompleteBoxes = vm.incompleteBoxesList[i];
                 for(var j = 0; j < incompleteBoxes.boxList.length;j++ ){
@@ -605,6 +592,15 @@
                 }
             }
             //清空被分装的盒子数
+            // if(selectList.length > surplusCount){
+            //     for(var k = 0; k < surplusCount; k++){
+            //         vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";
+            //     }
+            // }else{
+            //     for(var k = 0; k < selectList.length; k++){
+            //         vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";
+            //     }
+            // }
             for(var k = 0; k < selectList.length; k++){
                 vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";
             }
@@ -621,7 +617,6 @@
                             vm.obox.stockInFrozenTubeList[i].frozenTubeCode = selectList[0].frozenTubeCode;
                             vm.obox.stockInFrozenTubeList[i] = selectList[0];
                             selectList.splice(0,1);
-                            // surplusCount --;
                         }else{
                             break;
                         }
@@ -629,6 +624,7 @@
 
                 }
             }
+
             // $timeout(function(){
 
             // },2000);
@@ -651,6 +647,7 @@
                 frozenBox.frozenBoxRows= vm.obox.frozenBoxRows;
                 frozenBox.frozenBoxColumns= vm.obox.frozenBoxColumns;
                 frozenBox.stockInFrozenTubeList= selectList;
+
                 vm.addBoxModal(frozenBox);
             }
 
@@ -785,9 +782,9 @@
                     for(var k = 0; k < selectList.length; k++){
                         vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = selectList[k];
                     }
-                    $timeout(function(){
-                        hotRegisterer.getInstance('my-handsontable').render();
-                    },2000);
+                    // $timeout(function(){
+                    hotRegisterer.getInstance('my-handsontable').render();
+                    // },500);
                 }
 
             });

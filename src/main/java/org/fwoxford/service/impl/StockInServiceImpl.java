@@ -103,13 +103,13 @@ public class StockInServiceImpl implements StockInService {
             throw new BankServiceException("入库ID不能为空！",stockInDTO.toString());
         }
         StockIn stockIn = stockInRepository.findOne(stockInDTO.getId());
-        User user1 = userRepository.findOne(stockInDTO.getStoreKeeperId1());
-        User user2 = userRepository.findOne(stockInDTO.getStoreKeeperId2());
-        stockIn.setStoreKeeper1(user1!=null?user1.getLogin():stockInDTO.getStoreKeeper1());
-        stockIn.setStoreKeeper2(user2!=null?user2.getLogin():stockInDTO.getStoreKeeper2());
+        User user1 = userRepository.findByLogin(stockInDTO.getStoreKeeper1());
+        User user2 = userRepository.findByLogin(stockInDTO.getStoreKeeper2());
+        stockIn.setStoreKeeper1(stockInDTO.getStoreKeeper1());
+        stockIn.setStoreKeeper2(stockInDTO.getStoreKeeper2());
         stockIn.setStockInDate(stockInDTO.getStockInDate());
-        stockIn.setStoreKeeperId1(stockInDTO.getStoreKeeperId1());
-        stockIn.setStoreKeeperId2(stockInDTO.getStoreKeeperId2());
+        stockIn.setStoreKeeperId1(user1!=null?user1.getId():stockInDTO.getStoreKeeperId1());
+        stockIn.setStoreKeeperId2(user2!=null?user2.getId():stockInDTO.getStoreKeeperId2());
         stockIn = stockInRepository.save(stockIn);
         StockInDTO result = stockInMapper.stockInToStockInDTO(stockIn);
         return result;

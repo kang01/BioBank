@@ -276,12 +276,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
     }
 
     @Override
-    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(String projectCode, String sampleTypeCode) {
+    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(String projectCode, String sampleTypeCode,String transhipCode) {
         List<StockInBoxForChangingPosition> stockInBoxForChangingPositionList = new ArrayList<StockInBoxForChangingPosition>();
-        List<String> statusList = new ArrayList<>();
-        statusList.add(Constants.FROZEN_BOX_PUT_SHELVES);
-        statusList.add(Constants.FROZEN_BOX_STOCKING);
-        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatusIn(projectCode, sampleTypeCode, statusList);
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndTranshipCodeAndStatus(projectCode, sampleTypeCode,transhipCode, Constants.FROZEN_BOX_STOCKING);
         if (frozenBoxList.size() == 0) {
             frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode, sampleTypeCode, Constants.FROZEN_BOX_STOCKED);
         }

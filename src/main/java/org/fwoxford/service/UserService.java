@@ -8,14 +8,17 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.repository.UserRepository;
 import org.fwoxford.security.AuthoritiesConstants;
 import org.fwoxford.security.SecurityUtils;
+import org.fwoxford.service.dto.StockInUserDTO;
 import org.fwoxford.service.util.RandomUtil;
 import org.fwoxford.service.dto.UserDTO;
 
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -194,7 +197,7 @@ public class UserService {
         });
     }
 
-    @Transactional(readOnly = true)    
+    @Transactional(readOnly = true)
     public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
         return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
     }
@@ -245,6 +248,31 @@ public class UserService {
         for (User user : users) {
             log.debug("Deleting not activated user {}", user.getLogin());
             userRepository.delete(user);
+        }
+    }
+
+    public List<StockInUserDTO> getStockInUsers() {
+        List<String> loginList = Constants.LOGIN_NOT_STOCK_LIST;
+        List<User> userList = userRepository.findAllByLoginNotIn(loginList);
+        List<StockInUserDTO> stockInUsers = new ArrayList<>();
+        for(User u:userList){
+            StockInUserDTO stockInUserDTO = new StockInUserDTO();
+            stockInUserDTO.setId(u.getId());
+            stockInUserDTO.setLogin(u.getLogin());
+            stockInUserDTO.setUserName(u.getLastName()+u.getFirstName());
+            stockInUsers.add(stockInUserDTO);
+        }
+        return stockInUsers;
+    }
+
+    public  void isCorrectUser(String loginName, String password) {
+        User user = userRepository.findByLogin(loginName);
+
+        if(user == null){
+            throw new BankServiceException("用户名不存在！",loginName);
+        }
+        if(!passwordEncoder.matches(password,user.getPassword())){
+            throw new BankServiceException("用户名与密码不一致！",loginName);
         }
     }
 }

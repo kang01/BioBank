@@ -7,6 +7,7 @@ import org.fwoxford.repository.UserRepository;
 import org.fwoxford.security.AuthoritiesConstants;
 import org.fwoxford.service.MailService;
 import org.fwoxford.service.UserService;
+import org.fwoxford.service.dto.StockInUserDTO;
 import org.fwoxford.service.dto.UserDTO;
 import org.fwoxford.web.rest.vm.ManagedUserVM;
 import org.fwoxford.web.rest.util.HeaderUtil;
@@ -181,5 +182,13 @@ public class UserResource {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert( "userManagement.deleted", login)).build();
+    }
+
+
+    @GetMapping("/users/stockIn")
+    @Timed
+    public ResponseEntity<List<StockInUserDTO>> getStockInUsers(){
+        List<StockInUserDTO> userDTOS = userService.getStockInUsers();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(userDTOS));
     }
 }

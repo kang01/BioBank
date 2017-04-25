@@ -73,6 +73,12 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @Column(name = "tranship_state", length = 20, nullable = false)
     private String transhipState;
     /**
+     * 接收人ID
+     */
+    @Max(value = 100)
+    @Column(name = "receiver_id")
+    private Long receiverId;
+    /**
      * 接收人
      */
     @Size(max = 100)
@@ -259,6 +265,17 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
 
     public void setTranshipState(String transhipState) {
         this.transhipState = transhipState;
+    }
+
+    public Long getReceiverId() {
+        return receiverId;
+    }
+    public Tranship receiverId(Long receiverId) {
+        this.receiverId = receiverId;
+        return this;
+    }
+    public void setReceiverId(Long receiverId) {
+        this.receiverId = receiverId;
     }
 
     public String getReceiver() {
@@ -463,6 +480,7 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
             ", transhipBatch='" + transhipBatch + "'" +
             ", transhipState='" + transhipState + "'" +
             ", receiver='" + receiver + "'" +
+            ", receiverId='" + receiverId + "'" +
             ", receiveDate='" + receiveDate + "'" +
             ", sampleNumber='" + sampleNumber + "'" +
             ", frozenBoxNumber='" + frozenBoxNumber + "'" +

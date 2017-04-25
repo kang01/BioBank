@@ -54,6 +54,11 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 20)
     private String transhipState;
     /**
+     * 接收人ID
+     */
+    @Max(value = 100)
+    private Long receiverId;
+    /**
      * 接收人
      */
     @Size(max = 100)
@@ -177,6 +182,14 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     }
     public String getReceiver() {
         return receiver;
+    }
+
+    public Long getReceiverId() {
+        return receiverId;
+    }
+
+    public void setReceiverId(Long receiverId) {
+        this.receiverId = receiverId;
     }
 
     public void setReceiver(String receiver) {
@@ -311,6 +324,7 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
             ", transhipBatch='" + transhipBatch + "'" +
             ", transhipState='" + transhipState + "'" +
             ", receiver='" + receiver + "'" +
+            ", receiverId='" + receiverId + "'" +
             ", receiveDate='" + receiveDate + "'" +
             ", sampleNumber='" + sampleNumber + "'" +
             ", frozenBoxNumber='" + frozenBoxNumber + "'" +

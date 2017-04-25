@@ -78,6 +78,8 @@ public class TranshipServiceImpl implements TranshipService{
     private ProjectSiteRepository projectSiteRepository;
     @Autowired
     private TranshipBoxRepository transhipBoxRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
@@ -137,6 +139,10 @@ public class TranshipServiceImpl implements TranshipService{
         ProjectSite projectSite = projectSiteRepository.findOne(transhipDTO.getProjectSiteId());
         transhipDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():new String(""));
         transhipDTO.setProjectSiteName(projectSite!=null?projectSite.getProjectSiteName():new String(""));
+        if(transhipDTO.getReceiverId()!=null){
+            User user = userRepository.findOne(transhipDTO.getReceiverId());
+            transhipDTO.setReceiver(user!=null?user.getLogin():transhipDTO.getReceiver());
+        }
         Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
         tranship = transhipMapper.transhipToDefaultValue(tranship);
         tranship = transhipRepository.save(tranship);

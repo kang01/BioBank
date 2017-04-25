@@ -4,7 +4,9 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
+import org.fwoxford.security.SecurityUtils;
 import org.fwoxford.service.StockInService;
+import org.fwoxford.service.UserService;
 import org.fwoxford.service.dto.StockInDTO;
 import org.fwoxford.service.dto.StockInForDataDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
@@ -14,6 +16,7 @@ import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -22,12 +25,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.Security;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +51,9 @@ public class StockInResource {
     private static final String ENTITY_NAME = "stockIn";
 
     private final StockInService stockInService;
+
+    @Autowired
+    private UserService userService;
 
     public StockInResource(StockInService stockInService) {
         this.stockInService = stockInService;
@@ -146,8 +154,12 @@ public class StockInResource {
      */
     @PostMapping("/stock-in/tranship/{transhipCode}")
     @Timed
-    public ResponseEntity<StockInForDataDetail> createStockIns(@PathVariable String transhipCode) throws URISyntaxException {
+    public ResponseEntity<StockInForDataDetail> createStockIns(@PathVariable String transhipCode,String loginName,String password) throws URISyntaxException {
         log.debug("REST request to save StockIn : {}", transhipCode);
+        //TODO :以后需要为必填验证
+        if(loginName!=null&&password!=null){
+            userService.isCorrectUser(loginName,password);
+        }
         StockInForDataDetail result = stockInService.saveStockIns(transhipCode);
         return ResponseEntity.created(new URI("/api/res/stock-in" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -173,9 +185,17 @@ public class StockInResource {
      */
     @PutMapping("/stock-in/{stockInCode}/completed")
     @Timed
-    public ResponseEntity<StockInForDataDetail> completedStockIn(@PathVariable String stockInCode) throws URISyntaxException {
+    public ResponseEntity<StockInForDataDetail> completedStockIn(@PathVariable String stockInCode , String loginName1, String password1,String loginName2, String password2) throws URISyntaxException {
         log.debug("REST request to update StockIn : {}", stockInCode);
+        //TODO :以后需要为必填验证
+        if(loginName1!=null&&password1!=null){
+            userService.isCorrectUser(loginName1,password1);
+        }
+        if(loginName2!=null&&password2!=null){
+            userService.isCorrectUser(loginName2,password2);
+        }
         StockInForDataDetail result = stockInService.completedStockIn(stockInCode);
+
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

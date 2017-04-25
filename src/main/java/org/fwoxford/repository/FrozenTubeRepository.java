@@ -23,7 +23,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     List<FrozenTube> findFrozenTubeListByFrozenBoxCodeAndStatus(String frozenBoxCode, String frozenTubeNormal);
     @Query(value = "select t.frozen_box_code as frozenBoxCode,count(t.frozen_box_code) as sampleNumber \n" +
         "from frozen_tube t where t.frozen_box_code in ?1 group by t.frozen_box_code \n" +
-        " order by t.frozen_box_code desc,sampleNumber asc " ,nativeQuery = true)
+        " order by sampleNumber asc,t.frozen_box_code desc " ,nativeQuery = true)
     List<Object[]> countSampleNumberByfrozenBoxList(List<String> frozenBoxList);
 
     void deleteByFrozenBoxCode(String frozenBoxCode);

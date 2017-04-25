@@ -192,9 +192,9 @@ public class FrozenBoxResource {
      * @param sampleTypeCode
      * @return
      */
-    @RequestMapping(value = "/frozen-boxes/incomplete-boxes/project/{projectCode}/type/{sampleTypeCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
-    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(@PathVariable String projectCode, @PathVariable String sampleTypeCode) {
-        List<StockInBoxForChangingPosition> boxes =  frozenBoxService.getIncompleteFrozenBoxes(projectCode,sampleTypeCode);
+    @RequestMapping(value = "/frozen-boxes/incomplete-boxes/project/{projectCode}/type/{sampleTypeCode}/tranship/{transhipCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(@PathVariable String projectCode, @PathVariable String sampleTypeCode,@PathVariable String transhipCode) {
+        List<StockInBoxForChangingPosition> boxes =  frozenBoxService.getIncompleteFrozenBoxes(projectCode,sampleTypeCode,transhipCode);
         return boxes;
     }
 

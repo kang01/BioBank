@@ -54,6 +54,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="receiver_id" type="bigint" remarks="接收人ID">
+                <constraints nullable="true" />
+            </column>
+
             <column name="receiver" type="varchar(100)" remarks="接收人">
                 <constraints nullable="true" />
             </column>

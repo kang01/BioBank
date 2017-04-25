@@ -24,9 +24,6 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " and box.rows_in_shelf = ?5 and box.status!='2005'" , nativeQuery = true)
     List<FrozenBox> countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
 
-    @Query("select t from FrozenBox t left join TranshipBox p on t.id=p.frozenBox.id where p.tranship.transhipCode=?1")
-    List<FrozenBox> findFrozenBoxByTranshipCode(String transhipCode);
-
     @Modifying
     @Query("update FrozenBox b set b.status=?2 where b.frozenBoxCode=?1")
     void updateStatusByFrozenBoxCode(String frozenBoxCode, String status);
@@ -48,4 +45,10 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     List<FrozenBox> findByFrozenBoxCodeIn(List<String> frozenBoxCodeStr);
 
     List<FrozenBox> findByProjectCodeAndSampleTypeCodeAndStatusIn(String projectCode, String sampleTypeCode, List<String> statusList);
+
+    @Query(value = "select t.* from frozen_Box t left join tranship_Box b on t.frozen_box_code = b.frozen_box_code \n" +
+       "left join tranship s on b.tranship_id = s.id \n" +
+       "where t.project_code = ?1 and t.sample_type_code = ?2 and s.tranship_code = ?3 \n" +
+       "and t.status = ?4 order by t.sample_number asc",nativeQuery = true)
+    List<FrozenBox> findByProjectCodeAndSampleTypeCodeAndTranshipCodeAndStatus(String projectCode, String sampleTypeCode, String transhipCode,String status);
 }

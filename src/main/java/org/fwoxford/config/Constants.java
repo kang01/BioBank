@@ -1,5 +1,8 @@
 package org.fwoxford.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Application constants.
  */
@@ -53,6 +56,7 @@ public final class Constants {
      */
     public static final Integer NO = 0;
     public static final Integer YES = 1;
+    public static final List<String> LOGIN_NOT_STOCK_LIST = new ArrayList<String>(){{add("system");add("admin");add("user");add("anonymoususer");}};
 
     private Constants() {
     }

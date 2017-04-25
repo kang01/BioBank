@@ -57,8 +57,6 @@ public class StockInServiceImpl implements StockInService {
     private TranshipService transhipService;
 
     @Autowired
-    private StockInBoxService stockInBoxService;
-    @Autowired
     private TranshipRepository transhipRepository;
     @Autowired
     private FrozenBoxRepository frozenBoxRepository;
@@ -79,7 +77,10 @@ public class StockInServiceImpl implements StockInService {
     private FrozenTubeRepository frozenTubeRepository;
 
     @Autowired
-    StockInTubesRepository stockInTubesRepository;
+    private StockInTubesRepository stockInTubesRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public StockInServiceImpl(StockInRepository stockInRepository,
                               StockInMapper stockInMapper,
@@ -102,9 +103,13 @@ public class StockInServiceImpl implements StockInService {
             throw new BankServiceException("入库ID不能为空！",stockInDTO.toString());
         }
         StockIn stockIn = stockInRepository.findOne(stockInDTO.getId());
-        stockIn.setStoreKeeper1(stockInDTO.getStoreKeeper1());
-        stockIn.setStoreKeeper2(stockInDTO.getStoreKeeper2());
+        User user1 = userRepository.findOne(stockInDTO.getStoreKeeperId1());
+        User user2 = userRepository.findOne(stockInDTO.getStoreKeeperId2());
+        stockIn.setStoreKeeper1(user1!=null?user1.getLogin():stockInDTO.getStoreKeeper1());
+        stockIn.setStoreKeeper2(user2!=null?user2.getLogin():stockInDTO.getStoreKeeper2());
         stockIn.setStockInDate(stockInDTO.getStockInDate());
+        stockIn.setStoreKeeperId1(stockInDTO.getStoreKeeperId1());
+        stockIn.setStoreKeeperId2(stockInDTO.getStoreKeeperId2());
         stockIn = stockInRepository.save(stockIn);
         StockInDTO result = stockInMapper.stockInToStockInDTO(stockIn);
         return result;
@@ -342,7 +347,7 @@ public class StockInServiceImpl implements StockInService {
     public StockInForDataDetail completedStockIn(String stockInCode) {
         StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
         StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
-        if(stockIn.getId()==null){
+        if(stockIn == null){
             throw new BankServiceException("该入库记录不存在！",stockInCode);
         }
         //修改入库

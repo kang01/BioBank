@@ -674,6 +674,7 @@
 
         //保存分装结果
         vm.saveBox = function () {
+            // console.log(JSON.stringify(_.compact(vm.frozenTubeArray)));
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).then(function (data) {
                 AlertService.success("分装成功!");
                 vm.headerCompiled = false;
@@ -750,6 +751,7 @@
             });
             modalInstance.result.then(function (data) {
                 if(data){
+                    selectList = [];
                     //添加分装后的冻存盒，没有添加新的，有的话再添加相同的盒子，相同的最多添加2个
                     var index = _.findIndex(vm.incompleteBoxesList,{sampleTypeCode:data.sampleType.sampleTypeCode});
                     if(index == -1){
@@ -763,7 +765,8 @@
                         }else{
                             data.copyBoxCode = data.frozenBoxCode;
                         }
-                        data.addTubeCount = 0;
+                        data.addTubeCount = data.countOfSample;
+                        data.countOfSample = 0;
                         for(var i = 0; i < vm.incompleteBoxesList.length; i++){
                             if(vm.incompleteBoxesList[i].sampleTypeCode == data.sampleType.sampleTypeCode){
                                 if(vm.incompleteBoxesList[i].boxList.length < 2){

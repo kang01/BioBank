@@ -348,7 +348,7 @@ public class StockInServiceImpl implements StockInService {
      * @return
      */
     @Override
-    public StockInForDataDetail completedStockIn(String stockInCode,String loginName1,String loginName2) {
+    public StockInForDataDetail completedStockIn(String stockInCode,String loginName1,String loginName2,LocalDate stockInDate) {
         StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
         StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
         if(stockIn == null){
@@ -362,6 +362,7 @@ public class StockInServiceImpl implements StockInService {
         stockIn.setStoreKeeperId2(user2!=null?user2.getId():null);
         stockIn.setStoreKeeper1(loginName1);
         stockIn.setStoreKeeper2(loginName2);
+        stockIn.setStockInCode(stockInCode);
         stockInRepository.save(stockIn);
         List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(stockInCode);
         //修改盒子

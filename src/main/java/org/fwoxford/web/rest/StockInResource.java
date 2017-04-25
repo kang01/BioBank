@@ -185,7 +185,7 @@ public class StockInResource {
      */
     @PutMapping("/stock-in/{stockInCode}/completed")
     @Timed
-    public ResponseEntity<StockInForDataDetail> completedStockIn(@PathVariable String stockInCode , String loginName1, String password1,String loginName2, String password2) throws URISyntaxException {
+    public ResponseEntity<StockInForDataDetail> completedStockIn(@PathVariable String stockInCode , String loginName1, String password1,String loginName2, String password2,LocalDate stockInDate) throws URISyntaxException {
         log.debug("REST request to update StockIn : {}", stockInCode);
         //TODO :以后需要为必填验证
         if(loginName1!=null&&password1!=null){
@@ -194,7 +194,7 @@ public class StockInResource {
         if(loginName2!=null&&password2!=null){
             userService.isCorrectUser(loginName2,password2);
         }
-        StockInForDataDetail result = stockInService.completedStockIn(stockInCode,loginName1,loginName2);
+        StockInForDataDetail result = stockInService.completedStockIn(stockInCode,loginName1,loginName2,stockInDate);
 
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))

@@ -65,7 +65,7 @@ public interface StockInService {
      * @param stockInCode
      * @return
      */
-    StockInForDataDetail completedStockIn(String stockInCode,String loginName1,String loginName2);
+    StockInForDataDetail completedStockIn(String stockInCode,String loginName1,String loginName2,LocalDate stockInDate);
 
     StockInForDataDetail getStockInById(Long id);
 

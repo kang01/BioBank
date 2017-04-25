@@ -121,4 +121,6 @@ public interface FrozenBoxService {
     List<StockInBoxForDataTable> findFrozenBoxListByBoxCodeStr(List<String> frozenBoxCodeStr);
 
     Boolean isRepeatFrozenBoxCode(String frozenBoxCode);
+
+    List<StockInBoxForChangingPosition> getIncompleteFrozenBoxesByStockIn(String projectCode, String sampleTypeCode, String stockInCode);
 }

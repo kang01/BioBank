@@ -522,4 +522,46 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }
         return flag;
     }
+
+    @Override
+    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxesByStockIn(String projectCode, String sampleTypeCode, String stockInCode) {
+        List<StockInBoxForChangingPosition> stockInBoxForChangingPositionList = new ArrayList<StockInBoxForChangingPosition>();
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStockInCodeAndStatus(projectCode, sampleTypeCode,stockInCode, Constants.FROZEN_BOX_STOCKING);
+        if (frozenBoxList.size() == 0) {
+            frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode, sampleTypeCode, Constants.FROZEN_BOX_STOCKED);
+        }
+        List<FrozenBox> unSplitedBoxList = new ArrayList<FrozenBox>();
+        for (FrozenBox box : frozenBoxList) {
+            if(box.getIsSplit().equals(Constants.NO)){
+                unSplitedBoxList.add(box);
+            }
+        }
+        List<String> frozenBoxCodes = new ArrayList<>();
+        for (FrozenBox box : unSplitedBoxList) {
+            frozenBoxCodes.add(box.getFrozenBoxCode());
+        }
+        List<Object[]> map = new ArrayList<>();
+        if (unSplitedBoxList.size() > 0) {
+            map = frozenTubeRepository.countSampleNumberByfrozenBoxList(frozenBoxCodes);
+        }
+        for (FrozenBox box : unSplitedBoxList) {
+            for (int i = 0; i < map.size(); i++) {
+                Object[] obj = map.get(i);
+                String frozenBoxCodeKey = obj[0].toString();
+                String number = obj[1].toString();
+                if (box.getFrozenBoxCode().equals(frozenBoxCodeKey)) {
+                    String columns = box.getFrozenBoxColumns() != null ? box.getFrozenBoxColumns() : box.getFrozenBoxType().getFrozenBoxTypeColumns();
+                    String rows = box.getFrozenBoxRows() != null ? box.getFrozenBoxRows() : box.getFrozenBoxType().getFrozenBoxTypeRows();
+                    int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
+                    int countOfSample = Integer.parseInt(number);
+                    if (allCounts > countOfSample) {
+                        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
+                        StockInBoxForChangingPosition newBox = createStockInBoxForDataMoved(box, frozenTubeList, countOfSample);
+                        stockInBoxForChangingPositionList.add(newBox);
+                    }
+                }
+            }
+        }
+        return stockInBoxForChangingPositionList;
+    }
 }

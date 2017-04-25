@@ -259,5 +259,15 @@ public class FrozenBoxResource {
         Boolean boxes =  frozenBoxService.isRepeatFrozenBoxCode(frozenBoxCode);
         return boxes;
     }
-
+    /**
+     * 输入项目编码和样本类型编码，返回该入库单的某个盒子的信息
+     * @param projectCode
+     * @param sampleTypeCode
+     * @return
+     */
+    @RequestMapping(value = "/frozen-boxes/incomplete-boxes/project/{projectCode}/type/{sampleTypeCode}/stockIn/{stockInCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxesByStockIn(@PathVariable String projectCode, @PathVariable String sampleTypeCode,@PathVariable String stockInCode) {
+        List<StockInBoxForChangingPosition> boxes =  frozenBoxService.getIncompleteFrozenBoxesByStockIn(projectCode,sampleTypeCode,stockInCode);
+        return boxes;
+    }
 }

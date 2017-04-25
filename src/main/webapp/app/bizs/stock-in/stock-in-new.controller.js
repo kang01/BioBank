@@ -389,7 +389,7 @@
             }
             setTimeout(function () {
                 hotRegisterer.getInstance('my-handsontable').render();
-            },1000)
+            },500)
 
 
         }
@@ -402,7 +402,7 @@
             vm.sampleTypes = data;
             //未装满不同样本类型的盒子
             for(var i = 0; i < vm.sampleTypes.length-1;i++){
-                IncompleteBoxService.query({projectCode:vm.entity.projectCode,sampleTypeCode:vm.sampleTypes[i].sampleTypeCode,transhipCode:vm.entity.transhipCode},onIncompleteBoxesSuccess,onError)
+                IncompleteBoxService.query({projectCode:vm.entity.projectCode,sampleTypeCode:vm.sampleTypes[i].sampleTypeCode,stockInCode:vm.entity.stockInCode},onIncompleteBoxesSuccess,onError)
             }
         }
         function onIncompleteBoxesSuccess(data) {
@@ -453,7 +453,7 @@
         }
 
         vm.customRenderer = function (hotInstance, td, row, col, prop, value, cellProperties) {
-            if(value != ""){
+            if(value != "" || value != null){
                 //样本类型
                 if(value.sampleTypeCode){
                     SampleService.changeSampleType(value.sampleTypeCode,td);
@@ -579,23 +579,10 @@
             if( selectCount <= surplusCount){
                 vm.obox.addTubeCount  += selectCount
             }else{
-                vm.obox.addTubeCount  = surplusCount;
+                if(surplusCount != 0){
+                    vm.obox.addTubeCount  = surplusCount;
+                }
             }
-// if(incompleteBoxes.sampleTypeCode == vm.obox.sampleTypeCode){
-            // if(incompleteBoxes.boxList.length > 1){
-            //     if( selectCount > surplusCount){
-            //         incompleteBoxes.boxList[1].addTubeCount = surplusCount;
-            //     }else{
-            //         incompleteBoxes.boxList[1].addTubeCount += selectCount
-            //     }
-            // }else{
-            //     if( selectCount > surplusCount){
-            //         incompleteBoxes.boxList[0].addTubeCount = surplusCount;
-            //     }else{
-            //         incompleteBoxes.boxList[0].addTubeCount += selectCount
-            //     }
-            // }
-            // }
             for(var i = 0; i < vm.incompleteBoxesList.length; i++){
                 var incompleteBoxes = vm.incompleteBoxesList[i];
                 for(var j = 0; j < incompleteBoxes.boxList.length;j++ ){
@@ -605,6 +592,15 @@
                 }
             }
             //清空被分装的盒子数
+            // if(selectList.length > surplusCount){
+            //     for(var k = 0; k < surplusCount; k++){
+            //         vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";
+            //     }
+            // }else{
+            //     for(var k = 0; k < selectList.length; k++){
+            //         vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";
+            //     }
+            // }
             for(var k = 0; k < selectList.length; k++){
                 vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";
             }
@@ -621,7 +617,6 @@
                             vm.obox.stockInFrozenTubeList[i].frozenTubeCode = selectList[0].frozenTubeCode;
                             vm.obox.stockInFrozenTubeList[i] = selectList[0];
                             selectList.splice(0,1);
-                            // surplusCount --;
                         }else{
                             break;
                         }
@@ -629,6 +624,7 @@
 
                 }
             }
+
             // $timeout(function(){
 
             // },2000);
@@ -651,6 +647,7 @@
                 frozenBox.frozenBoxRows= vm.obox.frozenBoxRows;
                 frozenBox.frozenBoxColumns= vm.obox.frozenBoxColumns;
                 frozenBox.stockInFrozenTubeList= selectList;
+
                 vm.addBoxModal(frozenBox);
             }
 
@@ -677,6 +674,7 @@
 
         //保存分装结果
         vm.saveBox = function () {
+            // console.log(JSON.stringify(_.compact(vm.frozenTubeArray)));
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).then(function (data) {
                 AlertService.success("分装成功!");
                 vm.headerCompiled = false;
@@ -753,6 +751,7 @@
             });
             modalInstance.result.then(function (data) {
                 if(data){
+                    selectList = [];
                     //添加分装后的冻存盒，没有添加新的，有的话再添加相同的盒子，相同的最多添加2个
                     var index = _.findIndex(vm.incompleteBoxesList,{sampleTypeCode:data.sampleType.sampleTypeCode});
                     if(index == -1){
@@ -766,7 +765,8 @@
                         }else{
                             data.copyBoxCode = data.frozenBoxCode;
                         }
-                        data.addTubeCount = 0;
+                        data.addTubeCount = data.countOfSample;
+                        data.countOfSample = 0;
                         for(var i = 0; i < vm.incompleteBoxesList.length; i++){
                             if(vm.incompleteBoxesList[i].sampleTypeCode == data.sampleType.sampleTypeCode){
                                 if(vm.incompleteBoxesList[i].boxList.length < 2){
@@ -785,9 +785,9 @@
                     for(var k = 0; k < selectList.length; k++){
                         vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = selectList[k];
                     }
-                    $timeout(function(){
-                        hotRegisterer.getInstance('my-handsontable').render();
-                    },2000);
+                    // $timeout(function(){
+                    hotRegisterer.getInstance('my-handsontable').render();
+                    // },500);
                 }
 
             });

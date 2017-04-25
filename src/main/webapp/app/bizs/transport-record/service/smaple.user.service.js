@@ -1,17 +1,18 @@
 /**
- * Created by gaokangkang on 2017/4/5.
+ * Created by gaokangkang on 2017/4/25.
+ * 获得用户列表
  */
 (function () {
     'use strict';
 
     angular
         .module('bioBankApp')
-        .factory('IncompleteBoxService', IncompleteBoxService);
+        .factory('SampleUserService', SampleUserService);
 
-    IncompleteBoxService.$inject = ['$resource'];
+    SampleUserService.$inject = ['$resource'];
 
-    function IncompleteBoxService ($resource) {
-        var service = $resource('api/frozen-boxes/incomplete-boxes/project/:projectCode/type/:sampleTypeCode/stockIn/:stockInCode', {}, {
+    function SampleUserService ($resource) {
+        var service = $resource('api/users/stockIn', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

@@ -173,7 +173,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
      * @return
      */
     @Override
-    public TranshipBoxListDTO saveBatchTranshipBox(TranshipBoxListDTO transhipBoxListDTO) {
+    public synchronized TranshipBoxListDTO saveBatchTranshipBox(TranshipBoxListDTO transhipBoxListDTO) {
         TranshipBoxListDTO result = new TranshipBoxListDTO();
         Long transhipId = transhipBoxListDTO.getTranshipId();
         Tranship tranship = transhipRepository.findOne(transhipId);

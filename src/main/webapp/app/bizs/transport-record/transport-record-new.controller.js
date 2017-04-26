@@ -152,7 +152,7 @@
                 }).error(function () {
                     AlertService.error("作废功能报错！");
                 })
-            }
+            };
             //保存完整
             vm.saveFlag = false;
             vm.saveRecord = saveRecord; //保存记录

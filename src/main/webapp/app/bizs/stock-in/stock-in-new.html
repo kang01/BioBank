@@ -66,7 +66,7 @@
                 <div class="clear-both"></div>
                 <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"></hot-table>
             </div>
-            <div class="col-md-4 box-right">
+            <div class="col-md-3 p-l-0 p-r-0">
                 <h4>
                     分装后样本盒
                 </h4>
@@ -78,7 +78,7 @@
                                     {{item1.countOfSample}}/{{item1.frozenBoxColumns*item1.frozenBoxRows}}
                                     <span ng-if="item1.addTubeCount">+{{item1.addTubeCount}}</span>
                                 </div>
-                                <div class="text-center" ng-if="$index == 0">{{item1.sampleType.sampleTypeName}}&nbsp;</div>
+                                <div class="" ng-if="$index == 0">{{item1.sampleType.sampleTypeName}}&nbsp;</div>
                                 <div ng-class="{'second-box': $index == 1}">{{item1.copyBoxCode}}</div>
                             </div>
                             <div class="box-feature box-feature-copy" style="background-color: #fff;" ng-if="item.boxList.length == 2"></div>

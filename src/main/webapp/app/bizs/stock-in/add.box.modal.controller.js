@@ -20,6 +20,11 @@
 
         function onFrozenBoxTypeSuccess(data) {
             vm.frozenBoxTypeOptions = data;
+            if(!items.box.frozenBoxTypeId){
+                vm.box.frozenBoxTypeId = vm.frozenBoxTypeOptions[0].id;
+                vm.box.frozenBoxRows = vm.frozenBoxTypeOptions[0].frozenBoxTypeRows;
+                vm.box.frozenBoxColumns = vm.frozenBoxTypeOptions[0].frozenBoxTypeColumns
+            }
         }
         function onEquipmentSuccess(data) {
             vm.frozenBoxPlaceOptions = data;
@@ -72,8 +77,11 @@
                 };
                 loadAll();
                 //盒子类型
+                if(items.box.frozenBoxTypeId){
+                    vm.box.frozenBoxTypeId = items.box.frozenBoxTypeId;
+                }
 
-                vm.box.frozenBoxTypeId = items.box.frozenBoxTypeId;
+
                 if(items.box.frozenBoxTypeId == 17){
                     vm.box.frozenBoxRows = 10;
                     vm.box.frozenBoxColumns = 10;
@@ -143,9 +151,18 @@
                 };
 
                 items.sampleTypes.pop();
+                if(items.box.sampleTypeCode){
+                    vm.box.sampleType.sampleTypeCode = items.box.sampleTypeCode;
+                    vm.box.sampleTypeCode = items.box.sampleTypeCode;
+                }else{
+                    vm.box.sampleType.sampleTypeCode = items.sampleTypes[0].sampleTypeCode;
+                    vm.box.sampleType.sampleTypeName = items.sampleTypes[0].sampleTypeName;
+                    vm.box.sampleType.backColor = items.sampleTypes[0].backColor;
+                    vm.box.sampleTypeCode = items.sampleTypes[0].sampleTypeCode;
+                }
                 vm.sampleTypesOptions = items.sampleTypes;
-                vm.box.sampleTypeCode = items.box.sampleTypeCode;
-                vm.box.sampleType.sampleTypeCode = items.box.sampleTypeCode;
+
+
                 for(var i =0; i < vm.sampleTypesOptions.length; i++) {
                     if (items.box.sampleTypeCode == vm.sampleTypesOptions[i].sampleTypeCode) {
                         vm.box.sampleType.sampleTypeName = vm.sampleTypesOptions[i].sampleTypeName;

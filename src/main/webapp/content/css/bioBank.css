@@ -188,9 +188,9 @@
     width: 89%;
     padding-left: 12px;
 }
-.split-box .box-right{
-    width: 330px;
-}
+/*.split-box .box-right{*/
+    /*width: 330px;*/
+/*}*/
 .split-box ul{
     margin: 0;
     padding: 0;
@@ -200,7 +200,7 @@
     float: left;
     list-style: none;
     margin-right: 12px;
-    margin-top: 22px;
+    margin-top: 4px;
 }
 .split-box .box-feature{
     width: 80px;
@@ -356,9 +356,9 @@
         width: 89.4%;
         padding-left: 15px;
     }
-    .split-box .box-right {
-        width: 460px;
-    }
+    /*.split-box .box-right {*/
+        /*width: 460px;*/
+    /*}*/
 }
 
 .modal-90 {

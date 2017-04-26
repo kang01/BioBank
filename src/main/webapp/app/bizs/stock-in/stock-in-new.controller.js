@@ -418,7 +418,7 @@
         }
         function onIncompleteBoxesSuccess(data) {
             var boxList = [];
-            boxList.push(data[0])
+            boxList.push(data[0]);
             if(data.length){
                 data[0].addTubeCount = 0;
                 //盒子编码太长时，用星号代替
@@ -436,7 +436,6 @@
                         }
                     );
                 }
-
             }
         }
         function onError(error) {
@@ -603,15 +602,6 @@
                 }
             }
             //清空被分装的盒子数
-            // if(selectList.length > surplusCount){
-            //     for(var k = 0; k < surplusCount; k++){
-            //         vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";
-            //     }
-            // }else{
-            //     for(var k = 0; k < selectList.length; k++){
-            //         vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";
-            //     }
-            // }
             for(var k = 0; k < selectList.length; k++){
                 vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";
             }
@@ -635,10 +625,6 @@
 
                 }
             }
-
-            // $timeout(function(){
-
-            // },2000);
 
             //删除空管子
             var deleteIndexList = [];
@@ -685,8 +671,8 @@
 
         //保存分装结果
         vm.saveBox = function () {
-            _blockUiStart(blockUiMessage)
-            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).then(function (data) {
+            _blockUiStart(blockUiMessage);
+            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).success(function (data) {
                 _blockUiStop();
                 AlertService.success("分装成功!");
                 vm.headerCompiled = false;
@@ -694,6 +680,8 @@
                 _splitABox(vm.box.frozenBoxCode);
                 vm.boxList = [];
                 vm.frozenBoxCode = "";
+            }).error(function (data) {
+                _blockUiStop();
             })
         };
         //复原
@@ -761,6 +749,7 @@
                     }
                 }
             });
+
             modalInstance.result.then(function (data) {
                 if(data){
                     selectList = [];

@@ -252,19 +252,30 @@
             <div class="row  m-l-0 m-r-0">
 
                 <div class="col-sm-7">
-                    <p style="margin-top: 10px">
-                        <span>样本数</span>
-                        <span>{{vm.normalCount}}</span>
-                        <span>空管</span>
-                        <span>{{vm.emptyPipeCount}}</span>
-                        <span>空孔</span>
-                        <span>{{vm.emptyHoleCount}}</span>
-                        <span>异常</span>
-                        <span>{{vm.abnormalCount}}</span>
-                        <label class="checkbox-inline" style="margin-left: 10px;margin-top: -4px;padding-top: 0">
-                            <input type="checkbox" ng-model="vm.box.isSplit" ng-disabled="!vm.box" ng-true-value="1" ng-false-value="0">是否分装
-                        </label>
-                    </p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p style="margin-top: 10px">
+                                <span>样本数</span>
+                                <span>{{vm.normalCount}}</span>
+                                &nbsp;
+                                <span>空管</span>
+                                <span>{{vm.emptyPipeCount}}</span>
+                                &nbsp;
+                                <span>空孔</span>
+                                <span>{{vm.emptyHoleCount}}</span>
+                                &nbsp;
+                                <span>异常</span>
+                                <span>{{vm.abnormalCount}}</span>
+
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" ng-model="vm.box.isSplit" ng-disabled="!vm.box" ng-true-value="1" ng-false-value="0">是否分装
+                            </label>
+                        </div>
+                    </div>
+
 
                 </div>
                 <div class=" col-sm-5">

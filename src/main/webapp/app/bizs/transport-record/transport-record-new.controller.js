@@ -1,5 +1,6 @@
 /**
  * Created by gaokangkang on 2017/3/14.
+ * status 3001：正常，3002：空管，3003：空孔；3004：异常 样本状态
  */
 (function() {
     'use strict';
@@ -30,7 +31,21 @@
         _initTransportRecordPage();
         _initFrozenBoxesTable();
         _initFrozenBoxPanel();
+        //样本数统计
+        function _sampleCount(tubeList) {
+            //正常
+            vm.normalCount =  _.filter(tubeList,{'status':'3001'}).length;
+            //空管
+            vm.emptyPipeCount =  _.filter(tubeList,{'status':'3002'}).length;
+            //空孔
+            vm.emptyHoleCount =  _.filter(tubeList,{'status':'3003'}).length;
+            //异常
+            vm.abnormalCount =  _.filter(tubeList,{'status':'3004'}).length;
 
+            vm.transportRecord.emptyTubeNumber = vm.emptyPipeCount;
+            vm.transportRecord.emptyHoleNumber = vm.emptyHoleCount
+
+        }
         function _initTransportRecordPage(){
             if($stateParams.transhipId){
                 vm.transportRecord.id = $stateParams.transhipId;
@@ -80,6 +95,7 @@
                             vm.transportRecord.projectName = vm.projectOptions[i].projectName
                         }
                     }
+                    vm.transportRecord.projectSiteId = "";
 
                     ProjectSitesByProjectIdService.query({id:value},onProjectSitesSuccess,onError)
                 }
@@ -194,7 +210,9 @@
                     resolve: {
                         items: function () {
                             return {
-                                transhipId :vm.transportRecord.id
+                                transhipId :vm.transportRecord.id,
+                                frozenBoxTypeOptions:vm.frozenBoxTypeOptions,
+                                sampleTypeOptions:vm.sampleTypeOptions
                             }
                         }
                     }
@@ -238,30 +256,30 @@
 
             //样本类型
             function onSampleTypeSuccess(data) {
-                vm.sampleTypeOptions = data;
+                vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeCode'], ['esc']);;
             }
 
             //项目编码
             function onProjectSuccess(data) {
                 vm.projectOptions = data;
-                if(data.length){
+                if(!vm.transportRecord.projectId){
                     vm.transportRecord.projectId = data[0].id;
                 }
-                if(vm.transportRecord.projectId){
-                    ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError)
-                }
+                ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError)
             }
 
             // 项目点
             function onProjectSitesSuccess(data) {
                 vm.projectSitesOptions = data;
-                vm.transportRecord.projectSiteId = data[0].id;
+                if(!vm.transportRecord.projectSiteId){
+                    vm.transportRecord.projectSiteId = data[0].id;
+                }
+
             }
             function onReceiverSuccess(data) {
                 vm.receiverOptions = data;
             }
         }
-
 
         function _initFrozenBoxesTable(){
             vm.loadBox = loadBox;
@@ -310,15 +328,12 @@
 
             //点击冻存盒行
             function someClickHandler(td,boxInfo) {
-                vm.normalCount = 0;//正常
-                vm.emptyHoleCount = 0;//空孔
-                vm.emptyPipeCount = 0;//空管
-                vm.abnormalCount = 0;//异常
+                vm.rowBoxCode = boxInfo.frozenBoxCode;
                 vm.strbox = JSON.stringify(vm.createBoxDataFromTubesTable());
                 if(!vm.boxStr || vm.strbox === vm.boxStr){
                     $(td).closest('table').find('.rowLight').removeClass("rowLight");
                     $(td).addClass('rowLight');
-                    frozenBoxByCodeService.get({code:boxInfo.frozenBoxCode},vm.onFrozenSuccess,onError);
+                    frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
 
                 }else{
 
@@ -489,7 +504,7 @@
                 }
                 //样本类型
                 if(tube.sampleTypeCode){
-                    SampleService.changeSampleType(tube.sampleTypeCode,td);
+                    SampleService.changeSampleType(tube.sampleTypeCode,td,vm.sampleTypeOptions);
                 }
                 //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
                 if(tube.status){
@@ -506,25 +521,18 @@
             }
 
             //修改样本状态正常、空管、空孔、异常
-            vm.normalCount = 0;//正常
-            vm.emptyHoleCount = 0;//空孔
-            vm.emptyPipeCount = 0;//空管
-            vm.abnormalCount = 0;//异常
             function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
 
                 operateColor = td.style.backgroundColor;
                 //正常
                 if(sampleStatus == 3001){
-                    vm.normalCount ++;
                 }
                 //空管
                 if(sampleStatus == 3002){
                     td.style.background = 'linear-gradient(to right,'+operateColor+',50%,black';
-                    vm.emptyPipeCount ++;
                 }
                 //空孔
                 if(sampleStatus == 3003){
-                    vm.emptyHoleCount++;
                     td.style.background = '';
                     td.style.backgroundColor = '#ffffff';
                     td.style.color = '#ffffff'
@@ -535,7 +543,6 @@
                     // $(td).append(dom);
                     td.style.backgroundColor = 'red';
                     td.style.border = '3px solid red;margin:-3px';
-                    vm.abnormalCount++
                 }
             }
 
@@ -631,6 +638,13 @@
                 settings.manualColumnResize = colWidth;
                 tableCtrl.updateSettings(settings);
                 tableCtrl.loadData(tubesInTable);
+                var tubeList = [];
+                for(var m = 0; m < tubesInTable.length;m++){
+                    for(var n = 0; n < tubesInTable[m].length;n++){
+                        tubeList.push(tubesInTable[m][n]);
+                    }
+                }
+                _sampleCount(tubeList);
             }
             vm.createBoxDataFromTubesTable = _createBoxDataFromTubesTable;
             function _createBoxDataFromTubesTable(){
@@ -667,10 +681,6 @@
                 labelField:'frozenBoxTypeName',
                 maxItems: 1,
                 onChange:function(value){
-                    vm.normalCount = 0;//正常
-                    vm.emptyHoleCount = 0;//空孔
-                    vm.emptyPipeCount = 0;//空管
-                    vm.abnormalCount = 0;//异常
 
                     var boxType = _.filter(vm.frozenBoxTypeOptions, {id:+value})[0];
                     if (!boxType) {
@@ -707,34 +717,34 @@
                             for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
                                 switch(j){
                                     case 0:
-                                        vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00001';
+                                        vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
                                         break;
                                     case 1:
-                                        vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00002';
+                                        vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[1].sampleTypeCode;
                                         break;
                                     case 2:
-                                        vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00003';
+                                        vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[2].sampleTypeCode;
                                         break;
                                     case 3:
-                                        vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00004';
+                                        vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[3].sampleTypeCode;
                                         break;
                                     case 4:
-                                        vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00005';
+                                        vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[4].sampleTypeCode;
                                         break;
                                     case 5:
-                                        vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00006';
+                                        vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[5].sampleTypeCode;
                                         break;
                                     case 6:
-                                        vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00007';
+                                        vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[6].sampleTypeCode;
                                         break;
                                     case 7:
-                                        vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00008';
+                                        vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[7].sampleTypeCode;
                                         break;
                                     case 8:
-                                        vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00009';
+                                        vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[8].sampleTypeCode;
                                         break;
                                     case 9:
-                                        vm.frozenTubeArray[i][j].sampleTypeCode = 'S_TYPE_00010';
+                                        vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[9].sampleTypeCode;
                                         break;
                                 }
                             }}
@@ -792,7 +802,10 @@
             function onAreaSuccess(data) {
                 vm.frozenBoxAreaOptions = data;
                 if(vm.box){
-                    vm.box.areaId = vm.frozenBoxAreaOptions[0].id;
+                    if(!vm.box.areaId){
+                        vm.box.areaId = vm.frozenBoxAreaOptions[0].id;
+                    }
+
                 }
 
             }
@@ -845,6 +858,7 @@
                     if (typeof callback === "function"){
                         callback.call(this, res);
                     }
+                    frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
                 }
             }
             vm.splitPlace = function () {
@@ -875,10 +889,7 @@
                     editor: vm.flagStatus ? false : 'tube',
                     // multiSelect: !vm.flagStatus
                 };
-                vm.normalCount = 0;//正常
-                vm.emptyHoleCount = 0;//空孔
-                vm.emptyPipeCount = 0;//空管
-                vm.abnormalCount = 0;//异常
+                _sampleCount(vm.box.frozenTubeDTOS)
                 hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
             };
             //换位
@@ -1006,6 +1017,7 @@
                 initFrozenTube(vm.box.frozenBoxColumns);
                 _reloadTubesForTable(vm.box);
                 vm.boxStr = JSON.stringify(vm.createBoxDataFromTubesTable());
+                _sampleCount(vm.box.frozenTubeDTOS);
             }
         }
 

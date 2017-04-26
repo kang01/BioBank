@@ -466,9 +466,12 @@
 
         vm.customRenderer = function (hotInstance, td, row, col, prop, value, cellProperties) {
             if(value){
+                if(value.memo && value.memo != " "){
+                    cellProperties.comment = value.memo;
+                }
                 //样本类型
                 if(value.sampleTypeCode){
-                    SampleService.changeSampleType(value.sampleTypeCode,td);
+                    SampleService.changeSampleType(value.sampleTypeCode,td,vm.sampleTypes);
                 }
                 //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
                 if(value.status){
@@ -528,6 +531,7 @@
             colWidths: 90,
             editor: false,
             outsideClickDeselects:false,
+            comments: true,
             onAfterSelectionEnd:function (row, col, row2, col2) {
                 selectList = [];
                 vm.selectCell = $(this.getData(row,col,row2,col2));

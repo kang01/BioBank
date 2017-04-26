@@ -66,6 +66,23 @@
                   file="config/liquibase/support_rack.csv"
                   separator=";"
                   tableName="support_rack"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/tranship.csv"
+                  separator=";"
+                  tableName="tranship"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/frozen_box.csv"
+                  separator=";"
+                  tableName="frozen_box"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/tranship_box.csv"
+                  separator=";"
+                  tableName="tranship_box"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/frozen_tube.csv"
+                  separator=";"
+                  tableName="frozen_tube"/>
     </changeSet>
     <!--初始化数据 end -->
 </databaseChangeLog>

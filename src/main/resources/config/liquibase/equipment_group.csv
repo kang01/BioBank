@@ -1,5 +1,5 @@
-id;equipment_group_name;equipment_group_manager_id;equipment_manager_name;equipment_group_address;memo;status;created_by;last_modified_by
-1;第一层设备组;1;张主任;样本中心D座;;0001;system;system
-2;第二层设备组;1;张主任;样本中心D座;;0001;system;system
-3;第三层设备组;1;张主任;样本中心D座;;0001;system;system
-4;第四层设备组;1;张主任;样本中心D座;;0001;system;system
+equipment_group_name;equipment_group_manager_id;equipment_manager_name;equipment_group_address;memo;status;created_by;last_modified_by
+第一层设备组;1;张主任;样本中心D座;;0001;system;system
+第二层设备组;1;张主任;样本中心D座;;0001;system;system
+第三层设备组;1;张主任;样本中心D座;;0001;system;system
+第四层设备组;1;张主任;样本中心D座;;0001;system;system

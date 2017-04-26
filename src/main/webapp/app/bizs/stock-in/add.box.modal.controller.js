@@ -13,6 +13,7 @@
     function AddBoxModalController($uibModalInstance,$uibModal,items,AlertService,FrozenBoxTypesService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxCodeIsRepeatService) {
         var vm = this;
         vm.createBoxflag = false;
+        vm.boxes = items.incompleteBoxes;
         if(!items.box.stockInFrozenTubeList.length){
             vm.createBoxflag = true;
             _createBox();
@@ -195,8 +196,13 @@
         vm.ok = function () {
             vm.isRepeat = false;
             BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
-                vm.isRepeat = data
-                if (data){
+                vm.isRepeat = data;
+                data = _.filter(vm.boxes, function(b){
+                    var box = _.filter(b.boxList, {frozenBoxCode: vm.box.frozenBoxCode});
+                    return box && box.length;
+                });
+                vm.isRepeat = data && data.length;
+                if (vm.isRepeat){
                     return;
                 }
 

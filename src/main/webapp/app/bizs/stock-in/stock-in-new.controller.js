@@ -692,10 +692,11 @@
                         break;
                     }else{
                         vm.boxList.push(obox);
+                        break;
                     }
                 }
             }
-            // console.log(JSON.stringify(vm.incompleteBoxesList))
+            console.log(JSON.stringify(vm.boxList))
         };
 
         //保存分装结果

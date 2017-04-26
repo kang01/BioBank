@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .factory('StockInInfoService', StockInInfoService);
 
-    StockInInfoService.$inject = ['$resource'];
+    StockInInfoService.$inject = ['$resource','$http'];
 
-    function StockInInfoService ($resource) {
+    function StockInInfoService ($resource, $http) {
         var service = $resource('api/stock-in', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
@@ -24,6 +24,13 @@
             'update': { method:'PUT' },
             'delete':{ method:'DELETE'}
         });
+
+        service.complete = function(stockInCode, data){
+            var url = 'api/stock-in/'+stockInCode+'/completed';
+            var params = data;
+
+            return $http.put(url, params);
+        };
 
         return service;
     }

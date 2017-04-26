@@ -164,7 +164,7 @@
 .transport-record-new .pipe-body .pipe-body-top .storage-location .control-label{
     width: 17%;
 }
-.transport-record-new .pipe-body .pipe-body-top .storage-location .location{
+ .storage-location .location{
     float:left;
     width: 70px;
     margin-left: 2px

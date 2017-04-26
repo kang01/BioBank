@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
-                    <label class="col-sm-4 control-label text-left">入库日期</label>
+                    <label class="col-sm-4 control-label text-left"><span class="required-field"></span> 入库日期</label>
                     <div class="col-sm-8">
                         <div class="input-group">
                             <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockInInfo.stockInDate" is-open="vm.datePickerOpenStatus.stockInDate"
@@ -19,19 +19,43 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
-                    <label class="col-sm-4 control-label text-left">入库员1</label>
+                    <label class="col-sm-4 control-label text-left"><span class="required-field"></span> 入库员1</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" ng-model="vm.stockInInfo.storeKeeper1" placeholder="入库员">
+                        <selectize options='vm.loginOptions' config="vm.loginConfig"
+                                   ng-model="vm.loginName1"></selectize>
+                        <input type="hidden" class="form-control"   ng-model="vm.loginName1">
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label class="col-sm-4 control-label text-left">入库员2</label>
+                    <label class="col-sm-4 control-label text-left"><span class="required-field"></span> 密码</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" ng-model="vm.stockInInfo.storeKeeper2" placeholder="入库员">
+                        <input type="password" class="form-control" ng-model="vm.password1" placeholder="密码" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label text-left"><span class="required-field"></span> 入库员2</label>
+                    <div class="col-sm-8">
+                        <selectize options='vm.loginOptions' config="vm.loginConfig"
+                                   ng-model="vm.loginName2"></selectize>
+                        <input type="hidden" class="form-control"   ng-model="vm.loginName2">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label text-left"><span class="required-field"></span> 密码</label>
+                    <div class="col-sm-8">
+                        <input type="password" class="form-control" ng-model="vm.password2" placeholder="入库员" required>
                     </div>
                 </div>
             </div>
@@ -40,6 +64,6 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="!vm.loginName1 || !vm.loginName2 || !vm.password1 || !vm.password2 || !vm.stockInInfo.stockInDate">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>

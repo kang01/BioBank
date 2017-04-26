@@ -162,63 +162,84 @@
         <div class="col-sm-2 boxes-table">
             <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"  class="table table-bordered"></table>
         </div>
-        <div class="col-sm-10 pipe-body p-l-0 p-r-0 form-horizontal">
-            <div class="row pipe-body-top m-l-0 m-r-0 ">
-                <div class="form-group col-sm-2">
-                    <label  class="col-sm-4 control-label p-r-6">
-                        <span class="required-field"></span>
-                        冻存盒号
-                    </label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode" disabled required>
-                    </div>
-                </div>
-                <div class="form-group col-sm-2">
-                    <label  class="col-sm-4 control-label p-r-6">
-                        <span class="required-field"></span>
-                        盒类型
-                    </label>
-                    <div class="col-sm-8">
-                        <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
-                                   ng-model="vm.box.frozenBoxTypeId" ng-disabled="!vm.box"></selectize>
-                    </div>
-                </div>
-                <div class="form-group col-sm-2">
-                    <label  class="col-sm-4 control-label p-r-6">
-                        <span class="required-field"></span>
-                        样本类型
-                    </label>
-                    <div class="col-sm-8" >
-                        <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                   ng-model="vm.box.sampleTypeId" ng-disabled="!vm.box"></selectize>
-                    </div>
-                </div>
-                <div class="form-group col-sm-5 p-r-0 storage-location">
-                    <label  class="col-sm-3 control-label p-r-6 ">
-                        存储位置
-                    </label>
-                    <div class="col-sm-9 p-l-0 p-r-0">
-                        <div style="" class="location">
-                            <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig" style="width: 100%"
-                                       ng-model="vm.box.equipmentId" ng-disabled="!vm.box"></selectize>
-                            <input type="hidden" ng-model="vm.box.equipmentId" required>
+        <div class="col-sm-10 form-horizontal">
+            <div class="row m-l-0 m-r-0">
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <div class="row">
+                                <label  class="col-sm-5 control-label p-r-6">
+                                    <span class="required-field"></span>
+                                    冻存盒号
+                                </label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode" disabled required>
+                                </div>
+                            </div>
+
                         </div>
-                        <div  class="location">
-                            <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig" style="width: 100%"
-                                       ng-model="vm.box.areaId" ng-disabled="!vm.box"></selectize>
-                            <input type="hidden" ng-model="vm.box.areaId" required>
+                        <div class="form-group col-sm-4">
+                            <div class="row">
+                                <label  class="col-sm-5 control-label p-r-6">
+                                <span class="required-field"></span>
+                                盒类型
+                            </label>
+                                <div class="col-sm-7">
+                                    <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
+                                               ng-model="vm.box.frozenBoxTypeId" ng-disabled="!vm.box"></selectize>
+                                </div>
+                            </div>
+
                         </div>
-                        <div  class="location">
-                            <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig" style="width: 100%"
-                                       ng-model="vm.box.supportRackId" ng-disabled="!vm.box"></selectize>
-                        </div>
-                        <div  class="location"><input type="text" class="form-control" maxlength="2" ng-model="vm.boxRowCol" ng-blur="vm.splitPlace()" ng-disabled="!vm.box">
+                        <div class="form-group col-sm-4">
+                            <div class="row">
+                                <label  class="col-sm-5 control-label p-r-6">
+                                    <span class="required-field"></span>
+                                    样本类型
+                                </label>
+                                <div class="col-sm-7" >
+                                    <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                                               ng-model="vm.box.sampleTypeId" ng-disabled="!vm.box"></selectize>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
+
                 </div>
+                <div class="col-md-5">
+                    <div class="row">
+
+                            <label  class="col-sm-3 control-label p-r-6 ">
+                                存储位置
+                            </label>
+                            <div class="col-sm-9 p-l-0 p-r-0 storage-location">
+                                <div style="" class="location">
+                                    <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig" style="width: 100%"
+                                               ng-model="vm.box.equipmentId" ng-disabled="!vm.box"></selectize>
+                                    <input type="hidden" ng-model="vm.box.equipmentId" required>
+                                </div>
+                                <div  class="location">
+                                    <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig" style="width: 100%"
+                                               ng-model="vm.box.areaId" ng-disabled="!vm.box"></selectize>
+                                    <input type="hidden" ng-model="vm.box.areaId" required>
+                                </div>
+                                <div  class="location">
+                                    <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig" style="width: 100%"
+                                               ng-model="vm.box.supportRackId" ng-disabled="!vm.box"></selectize>
+                                </div>
+                                <div  class="location"><input type="text" class="form-control" maxlength="2" ng-model="vm.boxRowCol" ng-blur="vm.splitPlace()" ng-disabled="!vm.box">
+                                </div>
+                            </div>
+
+                    </div>
+                </div>
+
+
             </div>
-            <div class="row pipe-body-bottom  m-l-0 m-r-0">
-                <div class="col-sm-4 txt-width">
+            <div class="row  m-l-0 m-r-0">
+
+                <div class="col-sm-7">
                     <p style="margin-top: 10px">
                         <span>样本数</span>
                         <span>{{vm.normalCount}}</span>
@@ -234,12 +255,16 @@
                     </p>
 
                 </div>
-                <div class=" col-sm-8 box-remark">
-                    <label  class="col-sm-2 control-label p-r-6">备注</label>
-                    <div class="col-sm-10 ">
-                        <textarea name="memo" class="form-control"rows="1" style="resize: none" ng-model="vm.box.memo" ng-disabled="!vm.box"></textarea>
+                <div class=" col-sm-5">
+                    <div class="row">
+                        <label  class="col-sm-3 control-label p-r-6">备注</label>
+                        <div class="col-sm-9 p-l-0 p-r-0 ">
+                            <textarea name="memo" class="form-control"rows="1" style="resize: none" ng-model="vm.box.memo" ng-disabled="!vm.box"></textarea>
+                        </div>
                     </div>
                 </div>
+
+
 
             </div>
             <div class="row m-l-0 m-r-0">
@@ -249,7 +274,7 @@
                             </div>
                             <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"></hot-table>
                         </div>
-                        <div class="col-sm-2 pull-right text-right pipe-operate" ng-show="vm.transportRecord.transhipState == '1001'">
+                        <div class="col-sm-2 text-right p-r-0" ng-show="vm.transportRecord.transhipState == '1001'">
 
                             <div class="text-right" >
                                 <button type="button"   class="btn btn-default" ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus" uib-btn-checkbox ng-click="vm.editStatus()" ng-disabled="!vm.box">状态编辑</button>

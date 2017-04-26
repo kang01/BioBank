@@ -696,7 +696,7 @@
                     }
                 }
             }
-            console.log(JSON.stringify(vm.boxList))
+            // console.log(JSON.stringify(vm.boxList))
         };
 
         //保存分装结果

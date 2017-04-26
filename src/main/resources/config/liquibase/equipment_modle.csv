@@ -1,2 +1,4 @@
-id;equipment_model_code;equipment_model_name;equipment_type;area_number;shelve_number_in_area;memo;status;temperature_max;temperature_min;created_by;created_date;last_modified_by;last_modified_date
-22;EQ_MOD_0001;2001L嵌入式冰柜;冰柜;2;20;;0001;30;-30;system;24-3月 -17 06.39.55.862000000 下午;system;24-3月 -17 06.39.55.862000000 下午
+id;equipment_model_code;equipment_model_name;equipment_type;area_number;shelve_number_in_area;memo;status;temperature_max;temperature_min;created_by;last_modified_by
+1;EQ_MOD_00001;2001L嵌入式冰柜;冰柜;2;20;;0001;30;-30;system;system
+2;EQ_MOD_00002;冰箱;冰箱;2;20;;0001;30;-30;system;system
+3;EQ_MOD_00003;冻存罐;冻存罐;2;20;;0001;30;-30;system;system

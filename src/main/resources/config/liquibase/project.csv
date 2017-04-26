@@ -1,9 +1,9 @@
-id;status;project_code;project_name;memo;created_by;last_modified_by
-1;0001;0001;HPS2-waste;;system;system
-2;0001;0002;HPS2-THRIVE;;system;system
-3;0001;0003;Qing Dao Port Study;;system;system
-4;0001;0004;Heart transportation Sample;;system;system
-5;0001;0005;心血管疾病相关研究;;system;system
-6;0001;0006;中德合作研究;;system;system
-7;0001;0007;流行病研究室;;system;system
-8;0001;0029;高危II期样本管理;;system;system
+status;project_code;project_name;memo;created_by;last_modified_by
+0001;0001;HPS2-waste;;system;system
+0001;0002;HPS2-THRIVE;;system;system
+0001;0003;Qing Dao Port Study;;system;system
+0001;0004;Heart transportation Sample;;system;system
+0001;0005;心血管疾病相关研究;;system;system
+0001;0006;中德合作研究;;system;system
+0001;0007;流行病研究室;;system;system
+0001;0029;高危II期样本管理;;system;system

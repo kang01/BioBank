@@ -302,10 +302,9 @@
                     TranshipBoxByCodeService.query({code:vm.transportRecord.transhipCode},onBoxSuccess,onError)
                 }
                 function onBoxSuccess(data) {
+                    vm.arrayBox = data;
                     vm.boxLength = data.length;
-                    // vm.boxList = data[0];
                     vm.dtOptions.withOption('data', data);
-                    // vm.dtInstance.DataTable.data(data);
                 }
             }
 
@@ -748,7 +747,25 @@
             //设备
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = data;
+                vm.equipmentId = vm.frozenBoxPlaceOptions[0].id;
+                if(vm.equipmentId){
+                    AreasByEquipmentIdService.query({id:vm.equipmentId},onAreaHoldSuccess, onError);
+                }
             }
+            //暂存区
+            vm.frozenBoxPlaceConfig1 = {
+                valueField:'id',
+                labelField:'equipmentCode',
+                maxItems: 1,
+                onChange:function (value) {
+                    AreasByEquipmentIdService.query({id:value},onAreaHoldSuccess, onError);
+                }
+            };
+            vm.frozenBoxAreaConfig1 = {
+                valueField:'id',
+                labelField:'areaCode',
+                maxItems: 1
+            };
             vm.frozenBoxPlaceConfig = {
                 valueField:'id',
                 labelField:'equipmentCode',
@@ -762,9 +779,21 @@
                     }
                 }
             };
+            //暂存区域
+            function onAreaHoldSuccess(data) {
+                vm.frozenBoxHoldAreaOptions = data;
+                if(vm.equipmentId){
+                    vm.areaId = vm.frozenBoxHoldAreaOptions[0].id;
+                }
+
+
+            }
             //区域
             function onAreaSuccess(data) {
                 vm.frozenBoxAreaOptions = data;
+                if(vm.box){
+                    vm.box.areaId = vm.frozenBoxAreaOptions[0].id;
+                }
 
             }
             vm.frozenBoxAreaConfig = {
@@ -958,6 +987,13 @@
             vm.onFrozenSuccess = onFrozenSuccess;
             function onFrozenSuccess(data) {
                 vm.box = data;
+                if(!vm.box.equipmentId){
+                    vm.box.equipmentId = vm.equipmentId;
+                }
+                if(!vm.box.areaId){
+                    vm.box.areaId = vm.areaId;
+                }
+
                 if(vm.box.equipmentId){
                     AreasByEquipmentIdService.query({id:vm.box.equipmentId},onAreaSuccess, onError);
                 }

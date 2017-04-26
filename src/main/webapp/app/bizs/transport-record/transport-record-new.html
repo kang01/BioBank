@@ -144,7 +144,7 @@
                     <input type="number" class="form-control"  ng-model="vm.transportRecord.emptyHoleNumber">
                 </div>
             </div>
-            <div class="form-group col-sm-3 three-col">
+            <div class="form-group col-sm-3">
                 <label  class="col-sm-4 control-label p-r-6">样本满意度</label>
                 <div class="col-sm-8">
                     <selectize options='vm.satisfactionOptions' config="vm.satisfactionConfig"
@@ -152,7 +152,19 @@
                     <input type="hidden" class="form-control" ng-model="vm.transportRecord.sampleSatisfaction" >
                 </div>
             </div>
-
+            <div class="form-group col-md-3">
+                <label  class="col-sm-4 control-label p-r-6">暂存位置</label>
+                <div class="col-sm-8 storage-location">
+                    <div style="" class="location">
+                        <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig1" style="width: 100%"
+                                   ng-model="vm.equipmentId" ></selectize>
+                    </div>
+                    <div  class="location">
+                        <selectize options='vm.frozenBoxHoldAreaOptions' config="vm.frozenBoxAreaConfig1" style="width: 100%"
+                                   ng-model="vm.areaId" ></selectize>
+                    </div>
+                </div>
+            </div>
 
         </div>
 

@@ -435,9 +435,11 @@
                             boxList:boxList
                         }
                     );
+                    vm.incompleteBoxesList  = _.orderBy(vm.incompleteBoxesList, ['sampleTypeCode'], ['esc']);
                 }
             }
         }
+
         function onError(error) {
             AlertService.error(error.data.message);
         }
@@ -726,6 +728,7 @@
             tubeList = [];
             selectList = [];
             vm.frozenBoxCode = "";
+
             $(".box-selected").removeClass("box-selected");
         };
         //关闭

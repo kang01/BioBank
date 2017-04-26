@@ -78,6 +78,7 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/angular-object-diff/dist/angular-object-diff.js',
             'src/main/webapp/bower_components/angular-bootstrap-switch/dist/angular-bootstrap-switch.js',
             'src/main/webapp/bower_components/selectize/dist/js/selectize.js',
+            'src/main/webapp/bower_components/angular-block-ui/dist/angular-block-ui.js',
             'src/main/webapp/bower_components/angular-mocks/angular-mocks.js',
             'src/main/webapp/bower_components/ngHandsontable/dist/ngHandsontable.js',
             'src/main/webapp/bower_components/angular-selectize2/dist/angular-selectize.js',

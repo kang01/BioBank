@@ -8,10 +8,10 @@
         .module('bioBankApp')
         .controller('StockInNewController', StockInNewController);
 
-    StockInNewController.$inject = ['$timeout','$state','$stateParams', '$scope','$compile','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
+    StockInNewController.$inject = ['$timeout','blockUI','$state','$stateParams', '$scope','$compile','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
         'entity','AlertService','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','StockInSaveService',
         'SampleTypeService','SampleService','IncompleteBoxService']
-    function StockInNewController($timeout,$state,$stateParams,$scope,$compile,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
+    function StockInNewController($timeout,blockUI,$state,$stateParams,$scope,$compile,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
                                   entity,AlertService,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,StockInSaveService,
                                   SampleTypeService,SampleService,IncompleteBoxService) {
         var vm = this;
@@ -324,7 +324,15 @@
 
 
 
-
+        var blockUiMessage = "处理中……";
+        function _blockUiStart(message) {
+            blockUI.start(message);
+        }
+        function _blockUiStop() {
+            $timeout(function() {
+                blockUI.stop();
+            }, 1000);
+        }
         //入库完成
         vm.saveStockIn = function () {
             modalInstance = $uibModal.open({
@@ -346,8 +354,10 @@
                 }
             });
             modalInstance.result.then(function (data) {
+                _blockUiStart(blockUiMessage);
                 StockInSaveService.saveStockIn(vm.stockInCode).success(function (data) {
                     AlertService.success("入库完成成功!");
+                    _blockUiStop();
                     _initStockInBoxesTable();
                 }).error(function (data) {
                     AlertService.error(data.message+"入库失败!");
@@ -675,8 +685,9 @@
 
         //保存分装结果
         vm.saveBox = function () {
-            // console.log(JSON.stringify(_.compact(vm.frozenTubeArray)));
+            _blockUiStart(blockUiMessage)
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).then(function (data) {
+                _blockUiStop();
                 AlertService.success("分装成功!");
                 vm.headerCompiled = false;
                 vm.dtInstance.rerender();

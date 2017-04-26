@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .factory('TranshipInvalidService', TranshipInvalidService);
 
-    TranshipInvalidService.$inject = ['$resource'];
+    TranshipInvalidService.$inject = ['$resource','$http'];
 
-    function TranshipInvalidService ($resource) {
+    function TranshipInvalidService ($resource,$http) {
         var service = $resource('api/tranships/invalid/:transhipCode', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
@@ -24,7 +24,7 @@
             'update': { method:'PUT' },
             'delete':{ method:'DELETE'}
         });
-        service.saveStockIn = function(transhipCode){
+        service.invalid = function(transhipCode){
             var ajaxUrl = 'api/tranships/invalid/'+transhipCode;
 
             var req = {

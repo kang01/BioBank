@@ -9,18 +9,24 @@
         .controller('TransportRecordNewController', TransportRecordNewController)
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
-    TransportRecordNewController.$inject = ['$scope','hotRegisterer','SampleService','TransportRecordService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
+    TransportRecordNewController.$inject = ['$scope','blockUI','$timeout','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
         'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
-    function TransportRecordNewController($scope,hotRegisterer,SampleService,TransportRecordService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
+    function TransportRecordNewController($scope,blockUI,$timeout,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
                                           SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService) {
 
         var modalInstance;
         var vm = this;
         vm.transportRecord = entity; //转运记录
-
-
-
+        var blockUiMessage = "处理中……";
+        function _blockUiStart(message) {
+            blockUI.start(message);
+        }
+        function _blockUiStop() {
+            $timeout(function() {
+                blockUI.stop();
+            }, 1000);
+        }
         _initTransportRecordPage();
         _initFrozenBoxesTable();
         _initFrozenBoxPanel();
@@ -136,6 +142,17 @@
             vm.openCalendar = openCalendar; //时间
             vm.importFrozenStorageBox = importFrozenStorageBox; //导入冻存盒
 
+            //作废
+            vm.invalid = function () {
+                _blockUiStart(blockUiMessage);
+                TranshipInvalidService.invalid(vm.transportRecord.transhipCode).success(function () {
+                    AlertService.success("已作废！");
+                    _blockUiStop();
+                    $state.go('transport-record');
+                }).error(function () {
+                    AlertService.error("作废功能报错！");
+                })
+            }
             //保存完整
             vm.saveFlag = false;
             vm.saveRecord = saveRecord; //保存记录
@@ -190,12 +207,15 @@
             //保存保存记录
             function saveRecord(transportRecord) {
                 vm.saveBox(function(){
+                    _blockUiStart(blockUiMessage);
                     AlertService.success("保存冻存盒成功！");
                     TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError);
                     function onSaveTranshipRecordSuccess(data) {
+                        _blockUiStop();
                         AlertService.success("保存转运记录成功");
                         if(vm.saveFlag){
                             TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).then(function (data) {
+                                _blockUiStop
                                 AlertService.success("入库成功！");
                                 //保存完整
                                 vm.saveFlag = false;
@@ -663,6 +683,7 @@
 
                     var box = vm.box;
                     _reloadTubesForTable(box);
+                    hotRegisterer.getInstance('my-handsontable').render();
                 }
             };
             vm.sampleTypeConfig = {
@@ -779,6 +800,7 @@
 
             vm.saveBox = saveBox;//保存盒子
             function saveBox(callback){
+                _blockUiStart(blockUiMessage);
                 var obox = {
                     transhipId:vm.transportRecord.id,
                     frozenBoxDTOList:[]
@@ -790,6 +812,7 @@
                 }
                 TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
                 function onSaveBoxSuccess(res) {
+                    _blockUiStop();
                     if (typeof callback === "function"){
                         callback.call(this, res);
                     }

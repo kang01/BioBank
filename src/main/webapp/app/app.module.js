@@ -26,7 +26,8 @@
             'ngHandsontable',
             'frapontillo.bootstrap-switch',
             'datatables.scroller',
-            'selectize'
+            'selectize',
+            'blockUI'
         ])
         .run(run);
 

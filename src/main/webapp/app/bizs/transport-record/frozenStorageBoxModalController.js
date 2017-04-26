@@ -9,10 +9,10 @@
         .controller('FrozenStorageBoxModalController', FrozenStorageBoxModalController)
         .controller('ModalInstanceCtrl', ModalInstanceCtrl);
 
-    FrozenStorageBoxModalController.$inject = ['$scope','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService'];
+    FrozenStorageBoxModalController.$inject = ['$scope','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService','blockUI'];
     ModalInstanceCtrl.$inject = ['$uibModalInstance','$uibModal'];
 
-    function FrozenStorageBoxModalController($scope,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService) {
+    function FrozenStorageBoxModalController($scope,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService,blockUI) {
 
         var vm = this;
         vm.items = items;
@@ -95,11 +95,14 @@
             $uibModalInstance.dismiss('cancel');
         };
         this.ok = function () {
+            blockUI.start("正在保存冻存盒中……");
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
 
         };
         function onSaveBoxSuccess(data) {
+            blockUI.stop();
             $uibModalInstance.close();
+
         }
         function onError() {
 

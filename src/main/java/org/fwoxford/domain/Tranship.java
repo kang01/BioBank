@@ -75,7 +75,6 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     /**
      * 接收人ID
      */
-    @Max(value = 100)
     @Column(name = "receiver_id")
     private Long receiverId;
     /**

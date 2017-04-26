@@ -56,7 +56,6 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 接收人ID
      */
-    @Max(value = 100)
     private Long receiverId;
     /**
      * 接收人

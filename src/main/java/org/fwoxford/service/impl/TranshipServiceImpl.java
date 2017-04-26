@@ -105,6 +105,7 @@ public class TranshipServiceImpl implements TranshipService{
                 throw new BankServiceException("转运已不在进行中状态，不能修改记录！",transhipDTO.toString());
             }
         }
+        //todo 查询慢
         List<FrozenBoxAndFrozenTubeResponse> response =  frozenBoxService.getFrozenBoxAndTubeByTranshipCode(transhipDTO.getTranshipCode());
         int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfTube = 0;
         Map<String,FrozenTubeResponse> map = new HashMap<String,FrozenTubeResponse>();
@@ -122,8 +123,8 @@ public class TranshipServiceImpl implements TranshipService{
                 if(tube.getStatus().equals(Constants.FROZEN_TUBE_NORMAL)){
                     countOfTube++;
                 }
-                if(map.get(tube.getFrozenTubeCode().toString())==null){
-                    map.put(tube.getFrozenTubeCode().toString(),tube);
+                if(map.get(tube.getSampleCode().toString())==null){
+                    map.put(tube.getSampleCode().toString(),tube);
                 }
             }
             List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipId);
@@ -139,9 +140,9 @@ public class TranshipServiceImpl implements TranshipService{
         ProjectSite projectSite = projectSiteRepository.findOne(transhipDTO.getProjectSiteId());
         transhipDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():new String(""));
         transhipDTO.setProjectSiteName(projectSite!=null?projectSite.getProjectSiteName():new String(""));
-        if(transhipDTO.getReceiver()==null){
-           throw new BankServiceException("接收人不能为空！",transhipDTO.toString());
-        }
+//        if(transhipDTO.getReceiver()==null){
+//           throw new BankServiceException("接收人不能为空！",transhipDTO.toString());
+//        }
         User user = userRepository.findByLogin(transhipDTO.getReceiver());
         transhipDTO.setReceiverId(user!=null?user.getId():null);
         transhipDTO.setReceiver(user!=null?user.getLogin():transhipDTO.getReceiver());

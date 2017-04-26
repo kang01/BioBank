@@ -468,6 +468,10 @@
                 if(value.sampleTypeCode){
                     SampleService.changeSampleType(value.sampleTypeCode,td);
                 }
+                //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
+                if(value.status){
+                    changeSampleStatus(value.status,row,col,td,cellProperties)
+                }
                 htm = "<div ng-if='value.sampleCode' style='line-height: 20px'>"+value.sampleCode+"</div>"+
                     "<div ng-if='value.sampleTmpCode' style='line-height: 20px'>"+value.sampleTempCode+"</div>"+
                     "<div  style='display: none'>"+value.sampleTypeCode+"</div>"+
@@ -484,6 +488,31 @@
 
             td.innerHTML = htm;
         };
+        var operateColor;
+        function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
+
+            operateColor = td.style.backgroundColor;
+            //正常
+            if(sampleStatus == 3001){
+            }
+            //空管
+            if(sampleStatus == 3002){
+                td.style.background = 'linear-gradient(to right,'+operateColor+',50%,black';
+            }
+            //空孔
+            if(sampleStatus == 3003){
+                td.style.background = '';
+                td.style.backgroundColor = '#ffffff';
+                td.style.color = '#ffffff'
+            }
+            //异常
+            if(sampleStatus == 3004){
+                // var dom = '<div class="abnormal" style="position:absolute;top:0;bottom:0;left:0;right:0;border:3px solid red;"></div>';
+                // $(td).append(dom);
+                td.style.backgroundColor = 'red';
+                td.style.border = '3px solid red;margin:-3px';
+            }
+        }
         vm.settings ={
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
             rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],

@@ -763,6 +763,9 @@
                 }
                 _.pullAt(sampleTypesList,delIndex);
             }
+            if(!sampleTypesList.length){
+                return;
+            }
 
             modalInstance = $uibModal.open({
                 animation: true,
@@ -774,7 +777,8 @@
                     items: function () {
                         return {
                             sampleTypes :sampleTypesList,
-                            box :box || {stockInFrozenTubeList:[]}
+                            box :box || {stockInFrozenTubeList:[]},
+                            incompleteBoxes: vm.incompleteBoxesList
                         }
                     }
                 }

@@ -1,4 +1,9 @@
-id;project_site_code;project_site_name;memo;status;created_by;created_date;last_modified_by;last_modified_date
-2;P_SITE_00001;心血管高危筛查项目天坛医院项目点;;0001;system;24-3月 -17 06.39.55.862000000 下午;system;24-3月 -17 06.39.55.862000000 下午
-3;P_SITE_00002;心血管高危筛查项目宣武医院项目点;;0001;system;24-3月 -17 06.39.55.862000000 下午;system;24-3月 -17 06.39.55.862000000 下午
-4;P_SITE_00003;阜外医院-血栓中心;;0001;system;24-3月 -17 06.39.55.862000000 下午;system;24-3月 -17 06.39.55.862000000 下午
+id;project_site_code;project_site_name;memo;status;created_by;last_modified_by
+1;2102;辽宁省中国医科大学附属盛京医学大连医院;;0001;system;system
+2;2106;辽宁省北镇市人民医院;;0001;system;system
+3;4205;湖北省咸阳市疾病预防控制中心;;0001;system;system
+4;6102;陕西省宝鸡市金台区东风路社区卫生服务中心;;0001;system;system
+5;3704;山东省泰安市岱岳区疾病预防控制中心;;0001;system;system
+6;3704;山东省泰安市岱岳区疾病预防控制中心;;0001;system;system
+7;3301;浙江省杭州千麦医学检验所有限公司;;0001;system;system
+8;6103;陕西省商洛市疾控中心;;0001;system;system

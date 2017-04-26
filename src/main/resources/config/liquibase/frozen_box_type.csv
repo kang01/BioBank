@@ -1,3 +1,3 @@
-id;frozen_box_type_code;frozen_box_type_name;frozen_box_type_rows;frozen_box_type_columns;memo;status;created_by;created_date;last_modified_by;last_modified_date
-17;BOX_TYPE_0002;10*10;10;10;;0001;system;24-3月 -17 06.39.55.862000000 下午;system;24-3月 -17 06.39.55.862000000 下午
-18;BOX_TYPE_0003;8*8;8;8;;0001;system;24-3月 -17 06.39.55.862000000 下午;system;24-3月 -17 06.39.55.862000000 下午
+id;frozen_box_type_code;frozen_box_type_name;frozen_box_type_rows;frozen_box_type_columns;memo;status;created_by;last_modified_by
+17;BOX_TYPE_00002;10*10;10;10;;0001;system;system
+18;BOX_TYPE_00003;8*8;8;8;;0001;system;system

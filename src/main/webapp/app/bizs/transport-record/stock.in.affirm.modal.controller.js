@@ -32,7 +32,7 @@
         //接收人
         vm.receiverConfig = {
             valueField:'login',
-            labelField:'login',
+            labelField:'userName',
             maxItems: 1
 
         };

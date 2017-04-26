@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('StockInInfoModalController', StockInInfoModalController);
 
-    StockInInfoModalController.$inject = ['$uibModalInstance','$uibModal','AlertService','StockInInfoService','StockInSaveService','items'];
+    StockInInfoModalController.$inject = ['$uibModalInstance','$uibModal','AlertService','StockInInfoService','SampleUserService','items'];
 
-    function StockInInfoModalController($uibModalInstance,$uibModal,AlertService,StockInInfoService,StockInSaveService,items) {
+    function StockInInfoModalController($uibModalInstance,$uibModal,AlertService,StockInInfoService,SampleUserService,items) {
         var vm = this;
 
         vm.stockInInfo = items;
@@ -18,7 +18,20 @@
 
         vm.loginName1 = vm.stockInInfo.storeKeeper1;
         vm.loginName2 = vm.stockInInfo.storeKeeper2;
+        //接收人
+        vm.loginConfig = {
+            valueField:'login',
+            labelField:'userName',
+            maxItems: 1
 
+        };
+        SampleUserService.query({},onReceiverSuccess, onError)//接收人
+        function onReceiverSuccess(data) {
+            vm.loginOptions = data;
+        }
+        function onError(error) {
+            AlertService.error(error.data.message);
+        }
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };

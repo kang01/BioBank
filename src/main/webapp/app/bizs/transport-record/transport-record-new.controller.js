@@ -127,7 +127,7 @@
             //接收人
             vm.receiverConfig = {
                 valueField:'login',
-                labelField:'login',
+                labelField:'userName',
                 maxItems: 1
 
             };
@@ -449,14 +449,6 @@
                 afterBeginEditing:function (row,col) {
                     console.log(row)
                 },
-                afterSetDataAtCell:function (row,col,key,value) {
-                    // console.log(row)
-                    // console.log(col)
-                },
-                afterSetDataAtRowProp:function (row,col) {
-                    // console.log(row)
-                    // console.log(col)
-                },
                 beforeKeyDown:function (event) {
                     if(vm.flagStatus){
                         if(event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 40){
@@ -656,15 +648,15 @@
                 labelField:'frozenBoxTypeName',
                 maxItems: 1,
                 onChange:function(value){
-                    // vm.normalCount = 0;//正常
-                    // vm.emptyHoleCount = 0;//空孔
-                    // vm.emptyPipeCount = 0;//空管
-                    // vm.abnormalCount = 0;//异常
+                    vm.normalCount = 0;//正常
+                    vm.emptyHoleCount = 0;//空孔
+                    vm.emptyPipeCount = 0;//空管
+                    vm.abnormalCount = 0;//异常
+
                     var boxType = _.filter(vm.frozenBoxTypeOptions, {id:+value})[0];
                     if (!boxType) {
                         return;
                     }
-
                     vm.box.frozenBoxTypeId = value;
                     vm.box.frozenBoxRows = boxType.frozenBoxTypeRows;
                     vm.box.frozenBoxColumns = boxType.frozenBoxTypeColumns;

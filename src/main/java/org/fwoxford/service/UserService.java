@@ -259,7 +259,7 @@ public class UserService {
             StockInUserDTO stockInUserDTO = new StockInUserDTO();
             stockInUserDTO.setId(u.getId());
             stockInUserDTO.setLogin(u.getLogin());
-            stockInUserDTO.setUserName(u.getLastName()+u.getFirstName());
+            stockInUserDTO.setUserName(u.getFirstName()+u.getLastName());
             stockInUsers.add(stockInUserDTO);
         }
         return stockInUsers;

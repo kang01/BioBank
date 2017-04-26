@@ -337,6 +337,7 @@
                     items: function () {
                         return {
                             id: vm.entity.id,
+                            stockInCode: vm.entity.stockInCode,
                             stockInDate: vm.entity.stockInDate,
                             storeKeeper1: vm.entity.storeKeeper1,
                             storeKeeper2: vm.entity.storeKeeper2

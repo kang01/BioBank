@@ -183,32 +183,32 @@
                         }
                     }
                 };
-                vm.isRepeat = false;
                 vm.isBoxCodeRepeat = function () {
-                    if(vm.box.frozenBoxCode){
-                        BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
-                            vm.isRepeat = data
-                        });
-                    }
-
-                };
-
-                vm.cancel = function () {
-                    $uibModalInstance.dismiss('cancel');
-                };
-                vm.ok = function () {
-                    if(vm.boxRowCol){
-                        vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
-                        vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
-                    }
-                    vm.box.countOfSample = vm.box.stockInFrozenTubeList.length;
-                    // console.log(JSON.stringify(vm.box));
-                    $uibModalInstance.close(vm.box);
+                    vm.isRepeat = false;
                 };
             }
         }
 
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+        vm.ok = function () {
+            vm.isRepeat = false;
+            BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
+                vm.isRepeat = data
+                if (data){
+                    return;
+                }
 
+                if(vm.boxRowCol){
+                    vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
+                    vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
+                }
+                vm.box.countOfSample = vm.box.stockInFrozenTubeList.length;
+                // console.log(JSON.stringify(vm.box));
+                $uibModalInstance.close(vm.box);
+            });
+        };
 
         vm.yes = function () {
             vm.createBoxflag = true;

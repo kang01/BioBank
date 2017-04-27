@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.domain.FrozenBox;
+import org.fwoxford.domain.Tranship;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.TranshipDTO;
@@ -54,7 +55,7 @@ public interface TranshipService {
      * @param input
      * @return
      */
-    DataTablesOutput<TranshipResponse> findAllTranship(DataTablesInput input);
+    DataTablesOutput<Tranship> findAllTranship(DataTablesInput input);
 
     /**
      * 根据转运记录ID查询转运记录以及冻存盒信息

@@ -19,3 +19,4 @@ id;login;password_hash;first_name;last_name;email;image_url;activated;lang_key;c
 18;zhouxinyue;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;欣月;周;zhouxinyue@localhost;;true;zh-cn;system;system
 19;hewei;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;炜;何;hewei@localhost;;true;zh-cn;system;system
 20;zhuzhihong;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;志鸿;朱;zhuzhihong@localhost;;true;zh-cn;system;system
+21;daihao;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;浩;戴;daihao@localhost;;true;zh-cn;system;system

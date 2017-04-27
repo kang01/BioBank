@@ -111,6 +111,7 @@ public interface TranshipMapper {
         tranship.setProjectSite(ship.getProjectSite()!=null && ship.getProjectSite().getId()!=null ? ship.getProjectSite():null);
         tranship.setProjectSiteCode(ship.getProjectSiteCode()!=null?ship.getProjectSiteCode():new String(""));
         tranship.setProjectSiteName(ship.getProjectSiteName() !=null ? ship.getProjectSiteName():new String(""));
+        tranship.setReceiverId(ship.getReceiverId() !=null ? ship.getReceiverId():null);
         tranship.setReceiver(ship.getReceiver() !=null ? ship.getReceiver():new String(""));
         tranship.setReceiveDate(ship.getReceiveDate() !=null ? ship.getReceiveDate():null);
         tranship.setSampleNumber(ship.getSampleNumber()!=null?ship.getSampleNumber():0);

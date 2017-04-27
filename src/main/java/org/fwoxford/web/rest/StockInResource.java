@@ -4,6 +4,11 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
+import org.fwoxford.config.Constants;
+import org.fwoxford.domain.StockIn;
+import org.fwoxford.domain.StockInBox;
+import org.fwoxford.domain.User;
+import org.fwoxford.repository.StockInBoxRepository;
 import org.fwoxford.security.SecurityUtils;
 import org.fwoxford.service.StockInService;
 import org.fwoxford.service.UserService;
@@ -13,6 +18,7 @@ import org.fwoxford.service.dto.StockInForDataDetail;
 import org.fwoxford.service.dto.TranshipToStockInDTO;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInForDataTable;
+import org.fwoxford.service.mapper.StockInMapper;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -56,6 +62,12 @@ public class StockInResource {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private StockInMapper stockInMapper;
+
+    @Autowired
+    private StockInBoxRepository stockInBoxRepository;
 
     public StockInResource(StockInService stockInService) {
         this.stockInService = stockInService;
@@ -173,7 +185,41 @@ public class StockInResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-in", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockInForDataTable> getPageStockIn(@RequestBody DataTablesInput input) {
-        return stockInService.findStockIn(input);
+        DataTablesOutput<StockIn> stockInDataTablesOutput = stockInService.findStockIn(input);
+        List<StockIn> stockIns =  stockInDataTablesOutput.getData();
+        List<User> userList = userService.findAll();
+        for(StockIn t :stockIns){
+            for(User u :userList){
+                if(t.getStoreKeeperId1()!=null&&t.getStoreKeeperId1().equals(u.getId())){
+                    t.setStoreKeeper1(u.getLastName()+u.getFirstName());
+                }
+                if(t.getStoreKeeperId2()!=null&&t.getStoreKeeperId2().equals(u.getId())){
+                    t.setStoreKeeper2(u.getLastName()+u.getFirstName());
+                }
+            }
+        }
+        //构造返回列表
+        List<StockInForDataTable> stockInDTOS = stockInMapper.stockInsToStockInTables(stockIns);
+        List<StockInForDataTable> stockInList = new ArrayList<StockInForDataTable>();
+
+        for(StockInForDataTable s:stockInDTOS){
+            List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(s.getStockInCode());
+            int countOfBox = 0;
+            for(StockInBox stockInBox :stockInBoxes){
+                if(!stockInBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED))
+                    countOfBox++;
+            }
+            s.setCountOfBox(countOfBox);
+            stockInList.add(s);
+        }
+        //构造返回分页数据
+        DataTablesOutput<StockInForDataTable> responseDataTablesOutput = new DataTablesOutput<>();
+        responseDataTablesOutput.setDraw(stockInDataTablesOutput.getDraw());
+        responseDataTablesOutput.setError(stockInDataTablesOutput.getError());
+        responseDataTablesOutput.setData(stockInList);
+        responseDataTablesOutput.setRecordsFiltered(stockInDataTablesOutput.getRecordsFiltered());
+        responseDataTablesOutput.setRecordsTotal(stockInDataTablesOutput.getRecordsTotal());
+        return responseDataTablesOutput;
     }
 
     /**

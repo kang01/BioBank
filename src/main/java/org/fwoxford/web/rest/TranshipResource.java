@@ -4,14 +4,19 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
+import org.fwoxford.domain.Tranship;
+import org.fwoxford.domain.User;
 import org.fwoxford.service.TranshipService;
+import org.fwoxford.service.UserService;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
+import org.fwoxford.service.mapper.TranshipMapper;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -40,6 +45,11 @@ public class TranshipResource {
     private static final String ENTITY_NAME = "tranship";
 
     private final TranshipService transhipService;
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private TranshipMapper transhipMapper;
 
     public TranshipResource(TranshipService transhipService) {
         this.transhipService = transhipService;
@@ -156,7 +166,28 @@ public class TranshipResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/tranships", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<TranshipResponse> getPageTranship(@RequestBody DataTablesInput input) {
-        return transhipService.findAllTranship(input);
+        DataTablesOutput<Tranship> transhipsTablesOutput = transhipService.findAllTranship(input);
+        List<Tranship> tranships =  transhipsTablesOutput.getData();
+        List<User> userList = userService.findAll();
+        for(Tranship t :tranships){
+            for(User u :userList){
+                if(t.getReceiverId()!=null&&t.getReceiverId().equals(u.getId())){
+                    t.setReceiver(u.getLastName()+u.getFirstName());
+                }
+            }
+        }
+        //构造返回列表
+        List<TranshipResponse> transhipDTOS = transhipMapper.transhipsToTranshipTranshipResponse(tranships);
+
+        //构造返回分页数据
+        DataTablesOutput<TranshipResponse> responseDataTablesOutput = new DataTablesOutput<>();
+        responseDataTablesOutput.setDraw(transhipsTablesOutput.getDraw());
+        responseDataTablesOutput.setError(transhipsTablesOutput.getError());
+        responseDataTablesOutput.setData(transhipDTOS);
+        responseDataTablesOutput.setRecordsFiltered(transhipsTablesOutput.getRecordsFiltered());
+        responseDataTablesOutput.setRecordsTotal(transhipsTablesOutput.getRecordsTotal());
+
+        return responseDataTablesOutput;
     }
 
     /**

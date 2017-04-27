@@ -215,26 +215,13 @@ public class TranshipServiceImpl implements TranshipService{
      * @return
      */
     @Override
-    public DataTablesOutput<TranshipResponse> findAllTranship(DataTablesInput input) {
+    public DataTablesOutput<Tranship> findAllTranship(DataTablesInput input) {
 
         //获取转运列表
         input.addColumn("createdDate",true,true,"");
         input.addOrder("createdDate",false);
         DataTablesOutput<Tranship> transhipDataTablesOutput =  transhipRepositries.findAll(input);
-        List<Tranship> tranships =  transhipDataTablesOutput.getData();
-
-        //构造返回列表
-        List<TranshipResponse> transhipDTOS = transhipMapper.transhipsToTranshipTranshipResponse(tranships);
-
-        //构造返回分页数据
-        DataTablesOutput<TranshipResponse> responseDataTablesOutput = new DataTablesOutput<>();
-        responseDataTablesOutput.setDraw(transhipDataTablesOutput.getDraw());
-        responseDataTablesOutput.setError(transhipDataTablesOutput.getError());
-        responseDataTablesOutput.setData(transhipDTOS);
-        responseDataTablesOutput.setRecordsFiltered(transhipDataTablesOutput.getRecordsFiltered());
-        responseDataTablesOutput.setRecordsTotal(transhipDataTablesOutput.getRecordsTotal());
-
-        return responseDataTablesOutput;
+        return transhipDataTablesOutput;
     }
 
     /**

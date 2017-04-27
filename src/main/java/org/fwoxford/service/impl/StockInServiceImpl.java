@@ -256,7 +256,7 @@ public class StockInServiceImpl implements StockInService {
         return stockInForDataDetail;
     }
     @Override
-    public DataTablesOutput<StockInForDataTable> findStockIn(DataTablesInput input) {
+    public DataTablesOutput<StockIn> findStockIn(DataTablesInput input) {
         //重新构造input
         input = createStockInFroDataTableInput(input);
 
@@ -264,30 +264,7 @@ public class StockInServiceImpl implements StockInService {
         input.addColumn("createdDate",true,true,"");
         input.addOrder("createdDate",false);
         DataTablesOutput<StockIn> stockInDataTablesOutput =  stockInRepositries.findAll(input);
-        List<StockIn> stockIns =  stockInDataTablesOutput.getData();
-
-        //构造返回列表
-        List<StockInForDataTable> stockInDTOS = stockInMapper.stockInsToStockInTables(stockIns);
-        List<StockInForDataTable> stockInList = new ArrayList<StockInForDataTable>();
-
-        for(StockInForDataTable s:stockInDTOS){
-            List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(s.getStockInCode());
-            int countOfBox = 0;
-            for(StockInBox stockInBox :stockInBoxes){
-                if(!stockInBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED))
-                    countOfBox++;
-            }
-            s.setCountOfBox(countOfBox);
-            stockInList.add(s);
-        }
-        //构造返回分页数据
-        DataTablesOutput<StockInForDataTable> responseDataTablesOutput = new DataTablesOutput<>();
-        responseDataTablesOutput.setDraw(stockInDataTablesOutput.getDraw());
-        responseDataTablesOutput.setError(stockInDataTablesOutput.getError());
-        responseDataTablesOutput.setData(stockInList);
-        responseDataTablesOutput.setRecordsFiltered(stockInDataTablesOutput.getRecordsFiltered());
-        responseDataTablesOutput.setRecordsTotal(stockInDataTablesOutput.getRecordsTotal());
-        return responseDataTablesOutput;
+        return stockInDataTablesOutput;
     }
 
     private DataTablesInput createStockInFroDataTableInput(DataTablesInput input) {
@@ -333,7 +310,7 @@ public class StockInServiceImpl implements StockInService {
         stockInDTO.setProjectSiteCode(tranship.getProjectSiteCode());
         stockInDTO.setProjectCode(tranship.getProjectCode());
         stockInDTO.setProjectSiteId(tranship.getProjectSite().getId());
-        stockInDTO.setReceiveId(null);
+        stockInDTO.setReceiveId(tranship.getReceiverId());
         stockInDTO.setReceiveDate(tranship.getReceiveDate());
         stockInDTO.setReceiveName(tranship.getReceiver());
         stockInDTO.setCountOfSample(tranship.getEffectiveSampleNumber());
@@ -438,6 +415,12 @@ public class StockInServiceImpl implements StockInService {
     @Override
     public StockInForDataDetail getStockInById(Long id) {
         StockIn stockIn = stockInRepository.findOne(id);
+        List<User> userList = userRepository.findAll();
+            for(User u :userList){
+                if(stockIn.getReceiveId()!=null&&stockIn.getReceiveId().equals(u.getId())){
+                    stockIn.setReceiveName(u.getLastName()+u.getFirstName());
+                }
+            }
         return stockInMapper.stockInToStockInDetail(stockIn);
     }
 

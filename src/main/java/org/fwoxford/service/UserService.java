@@ -275,4 +275,8 @@ public class UserService {
             throw new BankServiceException("用户名与密码不一致！",loginName);
         }
     }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
 }

@@ -41,7 +41,7 @@
                 password1:vm.password1,
                 loginName2:vm.loginName2,
                 password2:vm.password2,
-                stockInDate:vm.stockInInfo.stockInDate,
+                stockInDate:vm.stockInInfo.stockInDate
             }).then(onSaveSuccess,onError);
             function onSaveSuccess(data) {
                 $uibModalInstance.close(true);

@@ -341,7 +341,7 @@
                 if(!vm.boxStr || vm.strbox === vm.boxStr){
                     $(td).closest('table').find('.rowLight').removeClass("rowLight");
                     $(td).addClass('rowLight');
-                    frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
+                    frozenBoxByCodeService.get({code:boxInfo.frozenBoxCode},vm.onFrozenSuccess,onError);
 
                 }else{
 
@@ -870,14 +870,15 @@
                     obox.frozenBoxDTOList = [];
                     obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
                 }
-                obox.sampleTypeId = vm.sampleTypeId;
                 TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
                 function onSaveBoxSuccess(res) {
                     _blockUiStop();
                     if (typeof callback === "function"){
                         callback.call(this, res);
                     }
-                    frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
+                    if(vm.rowBoxCode){
+                        frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
+                    }
                 }
             }
             vm.splitPlace = function () {

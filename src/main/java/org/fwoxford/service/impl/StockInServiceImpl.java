@@ -347,7 +347,7 @@ public class StockInServiceImpl implements StockInService {
         String password1 = stockInCompleteDTO.getPassword1();
         String password2 = stockInCompleteDTO.getPassword2();
         LocalDate stockInDate = stockInCompleteDTO.getStockInDate();
-        if(loginName1 == loginName2){
+        if(loginName1 .equals(loginName2)){
             throw new BankServiceException("两个入库员不能为用一个人！");
         }
         if(loginName1!=null&&password1!=null){

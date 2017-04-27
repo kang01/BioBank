@@ -335,6 +335,7 @@
 
             //点击冻存盒行
             function someClickHandler(td,boxInfo) {
+                vm.flagStatus = false;
                 vm.rowBoxCode = boxInfo.frozenBoxCode;
                 vm.strbox = JSON.stringify(vm.createBoxDataFromTubesTable());
                 if(!vm.boxStr || vm.strbox === vm.boxStr){
@@ -902,7 +903,6 @@
             //修改样本状态
             vm.flagStatus = false;
             vm.editStatus = function () {
-
                 var settings = {
                     editor: vm.flagStatus ? false : 'tube'
                     // multiSelect: !vm.flagStatus

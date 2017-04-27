@@ -43,7 +43,11 @@
             vm.abnormalCount =  _.filter(tubeList,{'status':'3004'}).length;
 
             vm.transportRecord.emptyTubeNumber = vm.emptyPipeCount;
-            vm.transportRecord.emptyHoleNumber = vm.emptyHoleCount
+            vm.transportRecord.emptyHoleNumber = vm.emptyHoleCount;
+            if(!$scope.$$phase) {
+                $scope.$apply();
+            }
+
 
         }
         function _initTransportRecordPage(){
@@ -166,6 +170,7 @@
                     _blockUiStop();
                     $state.go('transport-record');
                 }).error(function () {
+                    _blockUiStop();
                     AlertService.error("作废功能报错！");
                 })
             };
@@ -184,7 +189,6 @@
                         items:function () {
                             return{
                                 box:vm.box || {},
-                                boxRowCol:vm.boxRowCol,
                                 receiver:vm.transportRecord.receiver,
                                 receiveDate: vm.transportRecord.receiveDate
                             }
@@ -232,13 +236,15 @@
                         _blockUiStop();
                         AlertService.success("保存转运记录成功");
                         if(vm.saveFlag){
-                            TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).then(function (data) {
-                                _blockUiStop
+                            TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
+                                _blockUiStop();
                                 AlertService.success("入库成功！");
                                 //保存完整
                                 vm.saveFlag = false;
-                                $state.go('stock-in-edit',{id:data.data.id});
+                                $state.go('stock-in-edit',{id:data.id});
                                 // loadAll();
+                            }).error(function (data) {
+                                _blockUiStop();
                             })
                         }
                     }
@@ -302,9 +308,10 @@
                 $('td', nRow).unbind('click');
                 $('td', nRow).bind('click', function() {
                     var td = this;
-                    $scope.$apply(function() {
-                        someClickHandler(td,oData);
-                    });
+                $scope.$apply(function () {
+                    someClickHandler(td,oData);
+                })
+
                 });
                 if (vm.box && vm.box.frozenBoxCode == oData.frozenBoxCode){
                     $('td', nRow).addClass('rowLight');
@@ -360,6 +367,7 @@
                     }, function () {
                     });
                 }
+
             }
 
         }
@@ -644,7 +652,9 @@
                         tubeList.push(tubesInTable[m][n]);
                     }
                 }
-                _sampleCount(tubeList);
+
+                    _sampleCount(tubeList);
+
             }
             vm.createBoxDataFromTubesTable = _createBoxDataFromTubesTable;
             function _createBoxDataFromTubesTable(){
@@ -708,11 +718,18 @@
                                     if(vm.frozenTubeArray[i][j].sampleTypeCode == vm.sampleTypeOptions[k].sampleTypeCode){
                                         vm.frozenTubeArray[i][j].sampleTypeName = vm.sampleTypeOptions[k].sampleTypeName;
                                         vm.frozenTubeArray[i][j].sampleTypeId = vm.sampleTypeOptions[k].id;
+                                        vm.box.sampleTypeId = vm.sampleTypeOptions[k].id
                                     }
                                 }
                             }
                         }
                     }else{
+                        for(var k = 0; k < vm.sampleTypeOptions.length; k++){
+                            if(value == vm.sampleTypeOptions[k].sampleTypeCode){
+                                vm.box.sampleTypeId = vm.sampleTypeOptions[k].id
+                            }
+                        }
+
                         for(var i =0; i <  vm.frozenTubeArray.length; i++){
                             for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
                                 switch(j){
@@ -852,6 +869,7 @@
                     obox.frozenBoxDTOList = [];
                     obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
                 }
+                obox.sampleTypeId = vm.sampleTypeId;
                 TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
                 function onSaveBoxSuccess(res) {
                     _blockUiStop();
@@ -889,7 +907,6 @@
                     editor: vm.flagStatus ? false : 'tube'
                     // multiSelect: !vm.flagStatus
                 };
-                _sampleCount(vm.box.frozenTubeDTOS);
                 hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
             };
             //换位
@@ -1022,6 +1039,7 @@
         }
 
         function onError(error) {
+            _blockUiStop();
             AlertService.error(error.data.message);
         }
 

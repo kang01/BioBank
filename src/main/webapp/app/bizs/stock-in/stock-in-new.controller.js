@@ -340,7 +340,6 @@
                 templateUrl: 'app/bizs/stock-in/stock-in-info-modal.html',
                 controller: 'StockInInfoModalController',
                 controllerAs:'vm',
-                size:'lg',
                 resolve: {
                     items: function () {
                         return {
@@ -354,20 +353,18 @@
                 }
             });
             modalInstance.result.then(function (data) {
-                _blockUiStart(blockUiMessage);
-                StockInSaveService.saveStockIn(vm.stockInCode).success(function (data) {
-                    AlertService.success("入库完成成功!");
-                    _blockUiStop();
-                    _initStockInBoxesTable();
-                }).error(function (data) {
-                    AlertService.error(data.message+"入库失败!");
-                });
-                // StockInSaveService.saveStockIn(vm.stockInCode).then(function () {
+                $state.go('stock-in')
+
+                // _blockUiStart(blockUiMessage);
+                // StockInSaveService.saveStockIn(vm.stockInCode).success(function (data) {
                 //     AlertService.success("入库完成成功!");
-                //     _initStockInBoxesTable();
-                // }).then(function (data) {
-                //     console.log(JSON.stringify(data))
-                // })
+                //     _blockUiStop();
+                //     vm.dtInstance.rerender();
+                //     $state.go('stock-in')
+                // }).error(function (data) {
+                //     _blockUiStop();
+                //     AlertService.error(data.message+"入库失败!");
+                // });
             })
         };
         vm.isShowSplittingPanel = function(){

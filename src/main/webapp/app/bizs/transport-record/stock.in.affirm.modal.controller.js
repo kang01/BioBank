@@ -17,13 +17,13 @@
         vm.box = items.box;
         vm.transportRecord.receiveDate = items.receiveDate;
         vm.transportRecord.login = items.receiver;
-        vm.boxRowCol = items.boxRowCol;
+        // vm.boxRowCol = items.boxRowCol;
 
-        if(!vm.box.equipmentId || !vm.box.areaId ){
-            vm.placeFlag = true
-        }else{
-            vm.placeFlag = false;
-        }
+        // if(!vm.box.equipmentId || !vm.box.areaId ){
+        //     vm.placeFlag = true
+        // }else{
+        //     vm.placeFlag = false;
+        // }
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
         function openCalendar (date) {

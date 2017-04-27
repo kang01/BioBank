@@ -375,21 +375,26 @@
 
 
 
-
+        //样本类型
+        vm.loadBox = function () {
+            SampleTypeService.query({},onSampleTypeSuccess, onError);
+        };
         vm.frozenTubeArray = [];//初始管子的单元格
         vm.incompleteBoxesList = []; //分装后的样本类型盒子，未装满样本的盒子
         var tempTubeArray = [];//选中未满样本盒子的临时数据，需要操作管子
         var selectList = [];//选择单元格的管子数据
         var size = 10;
         var htm;
+        vm.loadBox();
         //根据盒子编码取管子
         function _fnTubeByBoxCode(code) {
             StockInBoxByCodeService.get({code:code},onFrozenSuccess,onError);
             function onFrozenSuccess(data) {
                 vm.box =  data;
                 vm.splittingBox = true;
+
                 initFrozenTube(data.frozenBoxRows);
-                vm.loadBox();
+
                 for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
                     var tube = vm.box.frozenTubeDTOS[k];
                     vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
@@ -401,10 +406,7 @@
 
 
         }
-        //样本类型
-        vm.loadBox = function () {
-            SampleTypeService.query({},onSampleTypeSuccess, onError);
-        };
+
         function onSampleTypeSuccess(data) {
             vm.incompleteBoxesList = [];
             vm.sampleTypes = data;

@@ -696,18 +696,18 @@
                 }
             };
             vm.sampleTypeConfig = {
-                valueField:'id',
+                valueField:'sampleTypeCode',
                 labelField:'sampleTypeName',
                 maxItems: 1,
                 onChange:function (value) {
-                    if(value != 16){
+                    if(value != 'S_TYPE_00011'){
                         for(var i =0; i <  vm.frozenTubeArray.length; i++){
                             for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                                vm.frozenTubeArray[i][j].sampleTypeId = value;
+                                vm.frozenTubeArray[i][j].sampleTypeCode = value;
                                 for(var k = 0; k < vm.sampleTypeOptions.length; k++){
-                                    if(vm.frozenTubeArray[i][j].sampleTypeId == vm.sampleTypeOptions[k].id){
+                                    if(vm.frozenTubeArray[i][j].sampleTypeCode == vm.sampleTypeOptions[k].sampleTypeCode){
                                         vm.frozenTubeArray[i][j].sampleTypeName = vm.sampleTypeOptions[k].sampleTypeName;
-                                        vm.frozenTubeArray[i][j].sampleTypeCode = vm.sampleTypeOptions[k].sampleTypeCode;
+                                        vm.frozenTubeArray[i][j].sampleTypeId = vm.sampleTypeOptions[k].id;
                                     }
                                 }
                             }
@@ -886,10 +886,10 @@
             vm.editStatus = function () {
 
                 var settings = {
-                    editor: vm.flagStatus ? false : 'tube',
+                    editor: vm.flagStatus ? false : 'tube'
                     // multiSelect: !vm.flagStatus
                 };
-                _sampleCount(vm.box.frozenTubeDTOS)
+                _sampleCount(vm.box.frozenTubeDTOS);
                 hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
             };
             //换位

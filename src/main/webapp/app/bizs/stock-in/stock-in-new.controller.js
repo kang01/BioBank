@@ -392,9 +392,8 @@
             function onFrozenSuccess(data) {
                 vm.box =  data;
                 vm.splittingBox = true;
-
                 initFrozenTube(data.frozenBoxRows);
-
+                vm.loadBox();
                 for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
                     var tube = vm.box.frozenTubeDTOS[k];
                     vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;

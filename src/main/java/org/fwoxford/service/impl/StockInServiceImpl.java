@@ -23,10 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.mapping.Column;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.mapping.Search;
+import org.springframework.data.jpa.datatables.mapping.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -258,27 +255,52 @@ public class StockInServiceImpl implements StockInService {
     @Override
     public DataTablesOutput<StockIn> findStockIn(DataTablesInput input) {
         //重新构造input
-        input = createStockInFroDataTableInput(input);
+        DataTablesInput inputs = createStockInFroDataTableInput(input);
 
         //获取入库列表
-        input.addColumn("createdDate",true,true,"");
-        input.addOrder("createdDate",false);
-        DataTablesOutput<StockIn> stockInDataTablesOutput =  stockInRepositries.findAll(input);
+        DataTablesOutput<StockIn> stockInDataTablesOutput =  stockInRepositries.findAll(inputs);
         return stockInDataTablesOutput;
     }
 
     private DataTablesInput createStockInFroDataTableInput(DataTablesInput input) {
-        Map<String,Column> columnMap =  input.getColumnsAsMap();
-        for(String data:columnMap.keySet()){
-            if(data.equals("transhipCode")){
-                columnMap.get(data).setData("tranship.transhipCode");
-            }
-            if(data.equals("countOfBox")){
-                columnMap.get(data).setData("");
+        DataTablesInput dataTablesInput = new DataTablesInput();
+        dataTablesInput.setSearch(input.getSearch());
+        dataTablesInput.setDraw(input.getDraw());
+        dataTablesInput.setLength(input.getLength());
+
+        dataTablesInput.setStart(input.getStart());
+
+        List<Order> newOrders = new ArrayList<Order>();
+        List<Column> newColumns = new ArrayList<Column>();
+
+        List<Order> orders = input.getOrder();
+        List<Column> columns = input.getColumns();
+
+
+        Search searches = dataTablesInput.getSearch();
+        for(Order o:orders){
+            if(!columns.get(o.getColumn()).getData().equals("countOfBox")){
+                newOrders.add(o);
             }
         }
-        input.addColumn("stockInCode", true, true, "");
-        return input;
+        for(Column c:columns){
+            Column column = c;
+            if(column.getData().equals("transhipCode")){
+                column.setData("tranship.transhipCode");
+            }
+            if(column.getData().equals("countOfBox")){
+                column.setData("");
+            }
+            if(column.getData().equals("recordDate")){
+                column.setData("receiveDate");
+            }
+            newColumns.add(column);
+        }
+
+        dataTablesInput.setOrder(newOrders);
+        dataTablesInput.setColumns(newColumns);
+        dataTablesInput.addColumn("stockInCode", true, true, "");
+        return dataTablesInput;
     }
 
     private StockInBox createStockInBox(FrozenBox box, StockIn stockIn) {

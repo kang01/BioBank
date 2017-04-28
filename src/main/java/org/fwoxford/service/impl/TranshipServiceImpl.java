@@ -179,6 +179,8 @@ public class TranshipServiceImpl implements TranshipService{
         transhipDTO.setEmptyTubeNumber(transhipDTO.getEmptyTubeNumber()!=null && transhipDTO.getEmptyTubeNumber()!=0?transhipDTO.getEmptyTubeNumber():countOfEmptyTube);
         transhipDTO.setEffectiveSampleNumber(transhipDTO.getEffectiveSampleNumber()!=null && transhipDTO.getEffectiveSampleNumber()!=0?transhipDTO.getEffectiveSampleNumber():countOfTube);
         Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
+        tranship.setTranshipState(oldTranship.getTranshipState());
+        tranship.setStatus(oldTranship.getStatus());
         tranship = transhipRepository.save(tranship);
         TranshipDTO result = transhipMapper.transhipToTranshipDTO(tranship);
         return result;

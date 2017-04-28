@@ -27,8 +27,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.Column;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.mapping.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,10 +44,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Security;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * REST controller for managing StockIn.
@@ -212,6 +211,26 @@ public class StockInResource {
             s.setCountOfBox(countOfBox);
             stockInList.add(s);
         }
+        List<Order> orders = input.getOrder();
+        List<Column> column = input.getColumns();
+        for(Order o :orders){
+            Integer a = o.getColumn();
+            Column column1 = column.get(a);
+            String orderColumn = column1.getData();
+
+            if(column.get(a).getData().equals("countOfBox")){
+
+            }
+            if(column.get(a).getData().equals("countOfBox")){
+                Collections.sort(stockInList, new Comparator<StockInForDataTable>() {
+                    @Override
+                    public int compare(StockInForDataTable o1, StockInForDataTable o2) {
+                       return o.getDir().equals("asc")?o1.getCountOfBox().compareTo(o2.getCountOfBox()):o2.getCountOfBox().compareTo(o1.getCountOfBox());
+                    }
+                });
+            }
+        }
+
         //构造返回分页数据
         DataTablesOutput<StockInForDataTable> responseDataTablesOutput = new DataTablesOutput<>();
         responseDataTablesOutput.setDraw(stockInDataTablesOutput.getDraw());

@@ -101,33 +101,27 @@ public class TranshipServiceImpl implements TranshipService{
     @Override
     public TranshipDTO save(TranshipDTO transhipDTO) {
         log.debug("Request to save Tranship : {}", transhipDTO);
-        Long transhipId = null;
-        if(transhipDTO.getId() != null){
-            transhipId = transhipDTO.getId();
-            Tranship oldTranship = transhipRepository.findOne(transhipDTO.getId());
-            if(oldTranship!=null&&(oldTranship.getTranshipState().equals(Constants.TRANSHIPE_IN_STOCKED)
-                || oldTranship.getTranshipState().equals(Constants.TRANSHIPE_IN_STOCKING))){
-                throw new BankServiceException("转运已不在进行中状态，不能修改记录！",transhipDTO.toString());
-            }
+        Long transhipId = transhipDTO.getId();
+        if(transhipId == null){
+            throw new BankServiceException("转运记录不存在！",transhipDTO.toString());
+        }
+        Tranship oldTranship = transhipRepository.findOne(transhipDTO.getId());
+        if(oldTranship!=null&&(oldTranship.getTranshipState().equals(Constants.TRANSHIPE_IN_STOCKED)
+            || oldTranship.getTranshipState().equals(Constants.TRANSHIPE_IN_STOCKING))){
+            throw new BankServiceException("转运已不在进行中状态，不能修改记录！",transhipDTO.toString());
         }
         //验证运单号不能重复----true：已经存在，false:不存在
         String trackNumber = transhipDTO.getTrackNumber();
-        Boolean isRepeatTrackNumber = isRepeatTrackNumber(trackNumber);
-
-        if(isRepeatTrackNumber){
+        Tranship transhipByTrack = transhipRepository.findByTrackNumber(trackNumber);
+        if(transhipByTrack!=null&&transhipByTrack.getId()!=transhipId){
             throw new BankServiceException("运单号不能重复！",trackNumber);
         }
-
-
         Project project = projectRepository.findOne(transhipDTO.getProjectId());
         transhipDTO.setProjectCode(project!=null?project.getProjectCode():new String(""));
         transhipDTO.setProjectName(project!=null?project.getProjectName():new String(""));
         ProjectSite projectSite = projectSiteRepository.findOne(transhipDTO.getProjectSiteId());
         transhipDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():new String(""));
         transhipDTO.setProjectSiteName(projectSite!=null?projectSite.getProjectSiteName():new String(""));
-//        if(transhipDTO.getReceiver()==null){
-//           throw new BankServiceException("接收人不能为空！",transhipDTO.toString());
-//        }
         User user = userRepository.findByLogin(transhipDTO.getReceiver());
         transhipDTO.setReceiverId(user!=null?user.getId():null);
         transhipDTO.setReceiver(user!=null?user.getLogin():transhipDTO.getReceiver());
@@ -149,7 +143,7 @@ public class TranshipServiceImpl implements TranshipService{
             box.setProjectSite(projectSite);
             box.setProjectSiteName(transhipDTO.getProjectSiteName());
             box.setProjectSiteCode(transhipDTO.getProjectSiteCode());
-            if(transhipDTO.getTempEquipmentId()==null){
+            if(transhipDTO.getTempEquipmentId()!=null){
                 box.setEquipment(equipment);
                 box.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
 

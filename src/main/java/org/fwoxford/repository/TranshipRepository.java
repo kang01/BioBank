@@ -20,4 +20,6 @@ public interface TranshipRepository extends JpaRepository<Tranship,Long> {
 
     @Query(value = "select count(*) from tranship s where s.tranship_state !='1004' and s.track_number=?1",nativeQuery = true)
     Long countByTrackNumber(String trackNumber);
+
+    Tranship findByTrackNumber(String trackNumber);
 }

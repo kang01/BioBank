@@ -96,32 +96,4 @@ public interface TranshipMapper {
         res.setProjectSiteId(tranship.getProjectSite()!=null?tranship.getProjectSite().getId():null);
         return res;
     }
-
-    default  Tranship transhipToDefaultValue(Tranship ship){
-        Tranship tranship = new Tranship();
-        tranship.setId(ship.getId());
-        tranship.setTranshipCode(ship.getTranshipCode()!=null ?ship.getTranshipCode():BankUtil.getUniqueID());
-        tranship.setEffectiveSampleNumber(ship.getEffectiveSampleNumber()!=null?ship.getEffectiveSampleNumber():0);
-        tranship.setProjectCode(ship.getProjectCode()!=null?ship.getProjectCode():new String(""));
-        tranship.setProject(ship.getProject()!=null && ship.getProject().getId()!=null?ship.getProject():null);
-        tranship.setEmptyHoleNumber(ship.getEmptyHoleNumber()!=null?ship.getEmptyHoleNumber():0);
-        tranship.setEmptyTubeNumber(ship.getEmptyTubeNumber()!=null?ship.getEmptyTubeNumber():0);
-        tranship.setFrozenBoxNumber(ship.getFrozenBoxNumber()!=null?ship.getFrozenBoxNumber():0);
-        tranship.setProjectName(ship.getProjectName()!=null?ship.getProjectName():new String(""));
-        tranship.setProjectSite(ship.getProjectSite()!=null && ship.getProjectSite().getId()!=null ? ship.getProjectSite():null);
-        tranship.setProjectSiteCode(ship.getProjectSiteCode()!=null?ship.getProjectSiteCode():new String(""));
-        tranship.setProjectSiteName(ship.getProjectSiteName() !=null ? ship.getProjectSiteName():new String(""));
-        tranship.setReceiverId(ship.getReceiverId() !=null ? ship.getReceiverId():null);
-        tranship.setReceiver(ship.getReceiver() !=null ? ship.getReceiver():new String(""));
-        tranship.setReceiveDate(ship.getReceiveDate() !=null ? ship.getReceiveDate():null);
-        tranship.setSampleNumber(ship.getSampleNumber()!=null?ship.getSampleNumber():0);
-        tranship.setTrackNumber(ship.getTrackNumber() !=null ? ship.getTrackNumber():new String(""));
-        tranship.setTranshipBatch(ship.getTranshipBatch() !=null ? ship.getTranshipBatch():new String(""));
-        tranship.setSampleSatisfaction(ship.getSampleSatisfaction()!=null?ship.getSampleSatisfaction():0);
-        tranship.setTranshipDate(ship.getTranshipDate() !=null ? ship.getTranshipDate():null);
-        tranship.setTranshipState(ship.getTranshipState()!=null?ship.getTranshipState():Constants.TRANSHIPE_IN_PENDING);
-        tranship.setStatus(ship.getStatus()!=null?ship.getStatus():Constants.VALID);
-        tranship.setMemo(ship.getMemo());
-        return tranship;
-    }
 }

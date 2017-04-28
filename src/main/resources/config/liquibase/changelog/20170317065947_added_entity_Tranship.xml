@@ -93,6 +93,21 @@
             <column name="tranship_code" type="varchar(255)" remarks="转运编码">
                 <constraints nullable="false" />
             </column>
+            <column name="temp_equipment_code" type="varchar(255)" remarks="暂存设备">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="temp_area_code" type="varchar(255)" remarks="暂存区域">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="temp_equipment_id" type="bigint" remarks="临时设备ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="temp_area_id" type="bigint" remarks="临时区域ID">
+                <constraints nullable="true" />
+            </column>
 
             <column name="project_id" type="bigint" remarks="项目ID">
                 <constraints nullable="true" />

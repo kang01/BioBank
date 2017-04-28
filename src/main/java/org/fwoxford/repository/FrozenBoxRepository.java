@@ -56,4 +56,6 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         "where t.project_code = ?1 and t.sample_type_code = ?2 and b.stock_in_code = ?3 \n" +
         "and t.status = ?4 order by t.sample_number asc",nativeQuery = true)
     List<FrozenBox> findByProjectCodeAndSampleTypeCodeAndStockInCodeAndStatus(String projectCode, String sampleTypeCode, String stockInCode, String frozenBoxStocking);
+
+
 }

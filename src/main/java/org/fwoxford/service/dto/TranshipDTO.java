@@ -107,6 +107,23 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 255)
     private String transhipCode;
     /**
+     * 临时设备编码
+     */
+    private String tempEquipmentCode;
+    /**
+     * 临时区域编码
+     */
+    private String tempAreaCode;
+    /**
+     * 临时设备ID
+     */
+    private Long tempEquipmentId;
+
+    /**
+     * 临时区域ID
+     */
+    private Long tempAreaId;
+    /**
      * 项目Id
      */
     private Long projectId;
@@ -265,6 +282,38 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
         this.transhipCode = transhipCode;
     }
 
+    public String getTempEquipmentCode() {
+        return tempEquipmentCode;
+    }
+
+    public void setTempEquipmentCode(String tempEquipmentCode) {
+        this.tempEquipmentCode = tempEquipmentCode;
+    }
+
+    public String getTempAreaCode() {
+        return tempAreaCode;
+    }
+
+    public void setTempAreaCode(String tempAreaCode) {
+        this.tempAreaCode = tempAreaCode;
+    }
+
+    public Long getTempEquipmentId() {
+        return tempEquipmentId;
+    }
+
+    public void setTempEquipmentId(Long tempEquipmentId) {
+        this.tempEquipmentId = tempEquipmentId;
+    }
+
+    public Long getTempAreaId() {
+        return tempAreaId;
+    }
+
+    public void setTempAreaId(Long tempAreaId) {
+        this.tempAreaId = tempAreaId;
+    }
+
     public Long getProjectId() {
         return projectId;
     }
@@ -334,6 +383,10 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
             ", transhipCode='" + transhipCode + "'" +
+            ", tempEquipmentCode='" + tempEquipmentCode + "'" +
+            ", tempAreaCode='" + tempAreaCode + "'" +
+            ", tempEquipmentId='" + tempEquipmentId + "'" +
+            ", tempAreaId='" + tempAreaId + "'" +
             '}';
     }
 }

@@ -145,6 +145,29 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @Column(name = "tranship_code", length = 255, nullable = false)
     private String transhipCode;
     /**
+     * 临时设备编码
+     */
+    @Size(max = 255)
+    @Column(name = "temp_equipment_code", length = 255)
+    private String tempEquipmentCode;
+    /**
+     * 临时区域编码
+     */
+    @Size(max = 255)
+    @Column(name = "temp_area_code", length = 255)
+    private String tempAreaCode;
+    /**
+     * 临时设备ID
+     */
+    @Column(name = "temp_equipment_id")
+    private Long tempEquipmentId;
+
+    /**
+     * 临时区域ID
+     */
+    @Column(name = "temp_area_id")
+    private Long tempAreaId;
+    /**
      * 项目
      */
     @ManyToOne(optional = true)
@@ -420,6 +443,51 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
         this.transhipCode = transhipCode;
     }
 
+    public String getTempEquipmentCode() {
+        return tempEquipmentCode;
+    }
+    public Tranship tempEquipmentCode(String tempEquipmentCode) {
+        this.tempEquipmentCode = tempEquipmentCode;
+        return this;
+    }
+    public void setTempEquipmentCode(String tempEquipmentCode) {
+        this.tempEquipmentCode = tempEquipmentCode;
+    }
+
+    public String getTempAreaCode() {
+        return tempAreaCode;
+    }
+    public Tranship tempAreaCode(String tempAreaCode) {
+        this.tempAreaCode = tempAreaCode;
+        return this;
+    }
+
+    public void setTempAreaCode(String tempAreaCode) {
+        this.tempAreaCode = tempAreaCode;
+    }
+
+    public Long getTempEquipmentId() {
+        return tempEquipmentId;
+    }
+    public Tranship tempEquipmentId(Long tempEquipmentId) {
+        this.tempEquipmentId = tempEquipmentId;
+        return this;
+    }
+    public void setTempEquipmentId(Long tempEquipmentId) {
+        this.tempEquipmentId = tempEquipmentId;
+    }
+
+    public Long getTempAreaId() {
+        return tempAreaId;
+    }
+    public Tranship tempAreaId(Long tempAreaId) {
+        this.tempAreaId = tempAreaId;
+        return this;
+    }
+    public void setTempAreaId(Long tempAreaId) {
+        this.tempAreaId = tempAreaId;
+    }
+
     public Project getProject() {
         return project;
     }
@@ -490,6 +558,10 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
             ", transhipCode='" + transhipCode + "'" +
+            ", tempEquipmentCode='" + tempEquipmentCode + "'" +
+            ", tempAreaCode='" + tempAreaCode + "'" +
+            ", tempEquipmentId='" + tempEquipmentId + "'" +
+            ", transhipCode='" + tempAreaId + "'" +
             '}';
     }
 }

@@ -135,6 +135,7 @@ public class TranshipResource {
         TranshipByIdResponse transhipByIdResponse = transhipService.findTranshipAndFrozenBox(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(transhipByIdResponse));
     }
+
     @GetMapping("/tranships/id/{id}")
     @Timed
     public ResponseEntity<TranshipDTO> getTranshipById(@PathVariable Long id) {
@@ -156,6 +157,7 @@ public class TranshipResource {
         transhipService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
     /**
      * GET  /tranships : get all the tranships. 获取转运记录
      *
@@ -236,5 +238,16 @@ public class TranshipResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+    /**
+     * 判断转运单号是否已经存在  ----true：已经存在，false:不存在
+     * @param trackNumber
+     * @return
+     */
+    @RequestMapping(value = "/tranships/isRepeat/{trackNumber}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public Boolean isRepeatFrozenBoxCode(@PathVariable String trackNumber) {
+        Boolean flag =  transhipService.isRepeatTrackNumber(trackNumber);
+        return flag;
     }
 }

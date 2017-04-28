@@ -17,4 +17,7 @@ public interface TranshipRepository extends JpaRepository<Tranship,Long> {
     @Modifying
     @Query("update Tranship t set t.transhipState=?2 where t.id=?1")
     void updateTranshipStateById(Long id,String status);
+
+    @Query(value = "select count(*) from tranship s where s.tranship_state !='1004' and s.track_number=?1",nativeQuery = true)
+    Long countByTrackNumber(String trackNumber);
 }

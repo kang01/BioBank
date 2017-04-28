@@ -82,4 +82,6 @@ public interface TranshipService {
     List<FrozenBoxDTO> getFrozenBoxDtoList(List<FrozenBoxDTO> frozenBoxDTOListLast, List<FrozenTubeDTO> frozenTubeDTOS);
 
     TranshipDTO invalidTranship(String transhipCode);
+
+    Boolean isRepeatTrackNumber(String trackNumber);
 }

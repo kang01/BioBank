@@ -1,5 +1,6 @@
 package org.fwoxford.repository;
 
+import org.fwoxford.domain.Tranship;
 import org.fwoxford.domain.TranshipBox;
 
 import org.springframework.data.jpa.repository.*;

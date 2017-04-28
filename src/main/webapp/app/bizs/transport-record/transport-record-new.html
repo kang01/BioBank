@@ -1,15 +1,14 @@
-<jhi-alert></jhi-alert>
 <div class="transport-record-new">
     <div>
         <h3 class="pull-left">新增转运记录<small>&nbsp;{{vm.transportRecord.transhipCode}}</small></h3>
         <div class="form-group pull-right m-r-10">
             <div class="text-right">
-                <button type="button" class="btn btn-primary" ng-click="vm.invalid()" ng-show="vm.transportRecord.transhipState == '1001'">作废</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.importFrozenStorageBox('lg')" ng-show="vm.transportRecord.transhipState == '1001'">导入冻存盒</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.stockIn()"
                         ng-disabled="!vm.boxLength || !vm.transportRecord.receiver || !vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate"
                         ng-show="vm.transportRecord.transhipState == '1001'">入库</button>
-                <button type="button" class="btn btn-primary" ng-click="vm.importFrozenStorageBox('lg')" ng-show="vm.transportRecord.transhipState == '1001'">导入冻存盒</button>
-                <button type="button" class="btn btn-primary" ng-click="vm.saveRecord()" ng-disabled="!vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId" ng-show="vm.transportRecord.transhipState == '1001'">保存</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.saveRecord()" ng-disabled="!vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId" ng-show="vm.transportRecord.transhipState == '1001'">保存转运记录</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.invalid()" ng-show="vm.transportRecord.transhipState == '1001'">作废</button>
                 <button type="button" class="btn btn-default" ui-sref="transport-record">关闭</button>
             </div>
         </div>

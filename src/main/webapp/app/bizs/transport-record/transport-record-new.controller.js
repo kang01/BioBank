@@ -10,10 +10,10 @@
         .controller('TransportRecordNewController', TransportRecordNewController)
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
-    TransportRecordNewController.$inject = ['$scope','blockUI','$timeout','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
+    TransportRecordNewController.$inject = ['$scope','blockUI','$timeout','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
         'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
-    function TransportRecordNewController($scope,blockUI,$timeout,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
+    function TransportRecordNewController($scope,blockUI,$timeout,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
                                           SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService) {
 
         var modalInstance;
@@ -174,8 +174,9 @@
                     AlertService.error("作废功能报错！");
                 })
             };
-            //保存完整
-            vm.saveFlag = false;
+            //入库保存
+            vm.saveStockInFlag = false;
+            vm.saveRecordFlag = false;
             vm.saveRecord = saveRecord; //保存记录
             //转运入库
             vm.stockIn = function () {
@@ -196,10 +197,8 @@
                     }
                 });
                 modalInstance.result.then(function (transportRecord) {
-
-                        //保存完整
-                        vm.saveFlag = true;
-                        vm.saveRecord(transportRecord);
+                    vm.saveStockInFlag = true;
+                    vm.saveRecord(transportRecord);
 
                 });
             };
@@ -228,27 +227,29 @@
             }
             //保存保存记录
             function saveRecord(transportRecord) {
+                vm.saveRecordFlag = true;
                 vm.saveBox(function(){
                     _blockUiStart(blockUiMessage);
-                    AlertService.success("保存冻存盒成功！");
                     TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError);
                     function onSaveTranshipRecordSuccess(data) {
+                        vm.saveRecordFlag = false;
                         _blockUiStop();
-                        AlertService.success("保存转运记录成功");
-                        if(vm.saveFlag){
+                        if(vm.saveStockInFlag){
                             TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
                                 _blockUiStop();
-                                AlertService.success("入库成功！");
-                                //保存完整
-                                vm.saveFlag = false;
+                                toastr.success("入库成功！");
+                                vm.saveStockInFlag = false;
                                 $state.go('stock-in-edit',{id:data.id});
-                                // loadAll();
                             }).error(function (data) {
                                 _blockUiStop();
+                                toastr.error(data.message+"入库失败！");
                             })
+                        }else{
+                            toastr.success("保存转运记录成功");
                         }
                     }
                 });
+
             }
 
             function openCalendar (date) {
@@ -385,7 +386,7 @@
 
             vm.settings = {
                 colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
-                rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
+                rowHeaders : ['A','B','C','D','E','F','G','H','J','K'],
                 data:vm.frozenTubeArray,
                 renderer: myCustomRenderer,
                 minRows: 10,
@@ -626,6 +627,9 @@
                 var rowHeaders = [];
                 for (var i=0; i<settings.minRows; ++i){
                     var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
+                    if(i > 7){
+                        pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1)
+                    }
                     var tubes = [];
                     rowHeaders.push(pos.tubeRows);
                     for (var j=0; j<settings.minCols; ++j){
@@ -872,6 +876,10 @@
                 }
                 TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
                 function onSaveBoxSuccess(res) {
+                    if(!vm.saveStockInFlag && !vm.saveRecordFlag){
+                        toastr.success("保存盒子成功！");
+                    }
+
                     _blockUiStop();
                     if (typeof callback === "function"){
                         callback.call(this, res);
@@ -1035,13 +1043,14 @@
                 initFrozenTube(vm.box.frozenBoxColumns);
                 _reloadTubesForTable(vm.box);
                 vm.boxStr = JSON.stringify(vm.createBoxDataFromTubesTable());
+                //统计样本数
                 _sampleCount(vm.box.frozenTubeDTOS);
             }
         }
 
         function onError(error) {
             _blockUiStop();
-            AlertService.error(error.data.message);
+            toastr.error(error.data.message);
         }
 
 

@@ -8,10 +8,10 @@
         .module('bioBankApp')
         .controller('StockInNewController', StockInNewController);
 
-    StockInNewController.$inject = ['$timeout','blockUI','$state','$stateParams', '$scope','$compile','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
+    StockInNewController.$inject = ['$timeout','blockUI','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
         'entity','AlertService','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','StockInSaveService',
         'SampleTypeService','SampleService','IncompleteBoxService']
-    function StockInNewController($timeout,blockUI,$state,$stateParams,$scope,$compile,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
+    function StockInNewController($timeout,blockUI,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
                                   entity,AlertService,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,StockInSaveService,
                                   SampleTypeService,SampleService,IncompleteBoxService) {
         var vm = this;
@@ -459,7 +459,12 @@
             }
         }
         function getTubeRowIndex(row) {
-            return row.charCodeAt(0) -65;
+            if(row.charCodeAt(0) -65 > 7){
+                return row.charCodeAt(0) -66;
+            }else {
+                return row.charCodeAt(0) -65;
+
+            }
         }
         function getTubeColumnIndex(col) {
             return +col -1;
@@ -479,13 +484,7 @@
                     changeSampleStatus(value.status,row,col,td,cellProperties)
                 }
                 htm = "<div ng-if='value.sampleCode' style='line-height: 20px'>"+value.sampleCode+"</div>"+
-                    "<div ng-if='value.sampleTmpCode' style='line-height: 20px'>"+value.sampleTempCode+"</div>"+
-                    "<div  style='display: none'>"+value.sampleTypeCode+"</div>"+
-                    "<div  style='display: none'>"+value.status+"</div>"+
-                    "<div  style='display: none'>"+value.memo+"</div>"+
-                    "<div  style='display: none'>"+value.tubeRows+"</div>"+
-                    "<div  style='display: none'>"+value.tubeColumns+"</div>"+
-                    "<div ng-if="+value.memo+" class='triangle-topright' style='position: absolute;top:0;right: 0;'></div>"
+                    "<div ng-if='value.sampleTmpCode && !value.sampleCode' style='line-height: 20px'>"+value.sampleTempCode+"</div>"
             }else {
                 htm = ""
             }
@@ -519,7 +518,7 @@
         }
         vm.settings ={
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
-            rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
+            rowHeaders : ['A','B','C','D','E','F','G','H','J','K'],
             minRows: 10,
             minCols: 10,
             data:vm.frozenTubeArray,
@@ -706,19 +705,20 @@
 
         //保存分装结果
         vm.saveBox = function () {
-            console.log(JSON.stringify(vm.frozenTubeArray))
-            // _blockUiStart(blockUiMessage);
-            // SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).success(function (data) {
-            //     _blockUiStop();
-            //     AlertService.success("分装成功!");
-            //     vm.headerCompiled = false;
-            //     vm.dtInstance.rerender();
-            //     _splitABox(vm.box.frozenBoxCode);
-            //     vm.boxList = [];
-            //     vm.frozenBoxCode = "";
-            // }).error(function (data) {
-            //     _blockUiStop();
-            // })
+            // console.log(JSON.stringify(vm.frozenTubeArray))
+            _blockUiStart(blockUiMessage);
+            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).success(function (data) {
+                _blockUiStop();
+                toastr.success("分装成功!");
+                vm.headerCompiled = false;
+                vm.dtInstance.rerender();
+                _splitABox(vm.box.frozenBoxCode);
+                vm.boxList = [];
+                vm.frozenBoxCode = "";
+            }).error(function (data) {
+                _blockUiStop();
+                toastr.error(data.message)
+            })
         };
         //复原
         vm.recover = function () {
@@ -749,7 +749,7 @@
                 if(flag && vm.boxList.length) {
 
                     SplitedBoxService.saveSplit(vm.stockInCode, vm.box.frozenBoxCode, vm.boxList).then(function (data) {
-                        AlertService.success("分装成功!");
+                        toastr.success("分装成功!");
                     })
                 }
                 vm.splittingBox = false;

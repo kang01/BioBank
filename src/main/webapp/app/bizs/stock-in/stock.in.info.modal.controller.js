@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('StockInInfoModalController', StockInInfoModalController);
 
-    StockInInfoModalController.$inject = ['$uibModalInstance','$uibModal','AlertService','StockInInfoService','SampleUserService','items'];
+    StockInInfoModalController.$inject = ['$uibModalInstance','$uibModal','toastr','StockInInfoService','SampleUserService','items'];
 
-    function StockInInfoModalController($uibModalInstance,$uibModal,AlertService,StockInInfoService,SampleUserService,items) {
+    function StockInInfoModalController($uibModalInstance,$uibModal,toastr,StockInInfoService,SampleUserService,items) {
         var vm = this;
 
         vm.stockInInfo = items;
@@ -30,7 +30,7 @@
             vm.loginOptions = data;
         }
         function onError(error) {
-            AlertService.error(error.data.message);
+            toastr.error(error.message);
         }
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
@@ -42,12 +42,12 @@
                 loginName2:vm.loginName2,
                 password2:vm.password2,
                 stockInDate:vm.stockInInfo.stockInDate
-            }).then(onSaveSuccess,onError);
+            }).success(onSaveSuccess).error(function (data) {
+                toastr.error(data.message);
+            });
             function onSaveSuccess(data) {
+                toastr.success("入库完成成功！");
                 $uibModalInstance.close(true);
-            }
-            function onError(error) {
-                AlertService.error(error.data.message);
             }
 
         };

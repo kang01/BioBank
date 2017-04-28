@@ -1,15 +1,11 @@
 package org.fwoxford.service.impl;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
-import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
-import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
-import org.fwoxford.service.dto.response.TranshipResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipMapper;
@@ -188,16 +184,18 @@ public class TranshipServiceImpl implements TranshipService{
 
     /**
      * 判断运单号是否重复
+     *
+     * @param transhipCode
      * @param trackNumber
      * @return
      */
-    public Boolean isRepeatTrackNumber(String trackNumber) {
+    public Boolean isRepeatTrackNumber(String transhipCode, String trackNumber) {
         if(trackNumber==null || trackNumber.equals(null)){
             throw new BankServiceException("运单号不能为空！",trackNumber);
         }
         Boolean flag = false;
-        Long count = transhipRepository.countByTrackNumber(trackNumber);
-        if(count!=null&&count>0){
+        Tranship tranship = transhipRepository.findByTrackNumber(trackNumber);
+        if(tranship!=null&&!tranship.getTranshipCode().equals(transhipCode)){
             flag = true;
         }
         return flag;

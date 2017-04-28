@@ -6,7 +6,6 @@ import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
-import org.fwoxford.service.dto.response.TranshipResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -83,5 +82,5 @@ public interface TranshipService {
 
     TranshipDTO invalidTranship(String transhipCode);
 
-    Boolean isRepeatTrackNumber(String trackNumber);
+    Boolean isRepeatTrackNumber(String transhipCode, String trackNumber);
 }

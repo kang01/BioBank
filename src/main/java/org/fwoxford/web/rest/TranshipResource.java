@@ -245,9 +245,9 @@ public class TranshipResource {
      * @param trackNumber
      * @return
      */
-    @RequestMapping(value = "/tranships/isRepeat/{trackNumber}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
-    public Boolean isRepeatFrozenBoxCode(@PathVariable String trackNumber) {
-        Boolean flag =  transhipService.isRepeatTrackNumber(trackNumber);
+    @RequestMapping(value = "/tranships/isRepeat/{transhipCode}/{trackNumber}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public Boolean isRepeatFrozenBoxCode(@PathVariable String transhipCode ,@PathVariable String trackNumber) {
+        Boolean flag =  transhipService.isRepeatTrackNumber(transhipCode,trackNumber);
         return flag;
     }
 }

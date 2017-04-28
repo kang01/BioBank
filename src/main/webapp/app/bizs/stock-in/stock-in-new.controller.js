@@ -409,10 +409,13 @@
         function onSampleTypeSuccess(data) {
             vm.incompleteBoxesList = [];
             vm.sampleTypes = data;
-            //未装满不同样本类型的盒子
-            for(var i = 0; i < vm.sampleTypes.length-1;i++){
-                IncompleteBoxService.query({projectCode:vm.entity.projectCode,sampleTypeCode:vm.sampleTypes[i].sampleTypeCode,stockInCode:vm.entity.stockInCode},onIncompleteBoxesSuccess,onError)
+            if(vm.box){
+                //未装满不同样本类型的盒子
+                for(var i = 0; i < vm.sampleTypes.length-1;i++){
+                    IncompleteBoxService.query({projectCode:vm.entity.projectCode,sampleTypeCode:vm.sampleTypes[i].sampleTypeCode,stockInCode:vm.entity.stockInCode},onIncompleteBoxesSuccess,onError)
+                }
             }
+
         }
         function onIncompleteBoxesSuccess(data) {
             var boxList = [];
@@ -510,8 +513,6 @@
             }
             //异常
             if(sampleStatus == 3004){
-                // var dom = '<div class="abnormal" style="position:absolute;top:0;bottom:0;left:0;right:0;border:3px solid red;"></div>';
-                // $(td).append(dom);
                 td.style.backgroundColor = 'red';
                 td.style.border = '3px solid red;margin:-3px';
             }
@@ -705,18 +706,19 @@
 
         //保存分装结果
         vm.saveBox = function () {
-            _blockUiStart(blockUiMessage);
-            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).success(function (data) {
-                _blockUiStop();
-                AlertService.success("分装成功!");
-                vm.headerCompiled = false;
-                vm.dtInstance.rerender();
-                _splitABox(vm.box.frozenBoxCode);
-                vm.boxList = [];
-                vm.frozenBoxCode = "";
-            }).error(function (data) {
-                _blockUiStop();
-            })
+            console.log(JSON.stringify(vm.frozenTubeArray))
+            // _blockUiStart(blockUiMessage);
+            // SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).success(function (data) {
+            //     _blockUiStop();
+            //     AlertService.success("分装成功!");
+            //     vm.headerCompiled = false;
+            //     vm.dtInstance.rerender();
+            //     _splitABox(vm.box.frozenBoxCode);
+            //     vm.boxList = [];
+            //     vm.frozenBoxCode = "";
+            // }).error(function (data) {
+            //     _blockUiStop();
+            // })
         };
         //复原
         vm.recover = function () {

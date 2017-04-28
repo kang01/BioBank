@@ -214,14 +214,7 @@ public class StockInResource {
         List<Order> orders = input.getOrder();
         List<Column> column = input.getColumns();
         for(Order o :orders){
-            Integer a = o.getColumn();
-            Column column1 = column.get(a);
-            String orderColumn = column1.getData();
-
-            if(column.get(a).getData().equals("countOfBox")){
-
-            }
-            if(column.get(a).getData().equals("countOfBox")){
+            if(column.get(o.getColumn()).getData().equals("countOfBox")){
                 Collections.sort(stockInList, new Comparator<StockInForDataTable>() {
                     @Override
                     public int compare(StockInForDataTable o1, StockInForDataTable o2) {

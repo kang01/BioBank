@@ -284,15 +284,19 @@ public class StockInServiceImpl implements StockInService {
             }
         }
         for(Column c:columns){
-            Column column = c;
-            if(column.getData().equals("transhipCode")){
+            Column column = new Column();
+            column.setSearch(c.getSearch());
+            column.setName(c.getName());
+            column.setOrderable(c.getOrderable());
+            column.setSearchable(c.getSearchable());
+            if(c.getData().equals("transhipCode")){
                 column.setData("tranship.transhipCode");
-            }
-            if(column.getData().equals("countOfBox")){
+            }else if(c.getData().equals("countOfBox")){
                 column.setData("");
-            }
-            if(column.getData().equals("recordDate")){
+            }else if(c.getData().equals("recordDate")){
                 column.setData("receiveDate");
+            }else{
+                column.setData(c.getData());
             }
             newColumns.add(column);
         }

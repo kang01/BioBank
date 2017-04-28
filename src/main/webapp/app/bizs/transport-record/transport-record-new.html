@@ -6,8 +6,10 @@
                 <button type="button" class="btn btn-primary" ng-click="vm.importFrozenStorageBox('lg')" ng-show="vm.transportRecord.transhipState == '1001'">导入冻存盒</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.stockIn()"
                         ng-disabled="!vm.boxLength || !vm.transportRecord.receiver || !vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate"
-                        ng-show="vm.transportRecord.transhipState == '1001'">入库</button>
-                <button type="button" class="btn btn-primary" ng-click="vm.saveRecord()" ng-disabled="!vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId" ng-show="vm.transportRecord.transhipState == '1001'">保存转运记录</button>
+                        ng-show="vm.transportRecord.transhipState == '1001' || !vm.transportRecord.trackNumber">入库</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.saveRecord()"
+                        ng-disabled="!vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId || !vm.transportRecord.trackNumber"
+                        ng-show="vm.transportRecord.transhipState == '1001'">保存转运记录</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.invalid()" ng-show="vm.transportRecord.transhipState == '1001'">作废</button>
                 <button type="button" class="btn btn-default" ui-sref="transport-record">关闭</button>
             </div>
@@ -53,9 +55,12 @@
                 </div>
             </div>
             <div class="form-group col-sm-3">
-                <label  class="col-sm-4 control-label p-r-6">运单号</label>
+                <label  class="col-sm-4 control-label p-r-6">
+                    <span class="required-field"></span>
+                    运单号
+                </label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control"  ng-model="vm.transportRecord.trackNumber">
+                    <input type="text" class="form-control"  ng-model="vm.transportRecord.trackNumber" ng-blur="vm.trackNumberIsRepeat()">
                 </div>
             </div>
         </div>
@@ -156,11 +161,11 @@
                 <div class="col-sm-8 storage-location">
                     <div style="" class="location">
                         <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig1" style="width: 100%"
-                                   ng-model="vm.equipmentId" ></selectize>
+                                   ng-model="vm.transportRecord.equipmentId" ></selectize>
                     </div>
                     <div  class="location">
                         <selectize options='vm.frozenBoxHoldAreaOptions' config="vm.frozenBoxAreaConfig1" style="width: 100%"
-                                   ng-model="vm.areaId" ></selectize>
+                                   ng-model="vm.transportRecord.areaId" ></selectize>
                     </div>
                 </div>
             </div>

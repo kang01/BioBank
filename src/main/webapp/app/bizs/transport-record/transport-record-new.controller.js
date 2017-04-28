@@ -11,10 +11,10 @@
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
     TransportRecordNewController.$inject = ['$scope','blockUI','$timeout','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
-        'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService'];
+        'SampleTypeService','AlertService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
     function TransportRecordNewController($scope,blockUI,$timeout,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
-                                          SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService) {
+                                          SampleTypeService,AlertService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService) {
 
         var modalInstance;
         var vm = this;
@@ -161,7 +161,18 @@
             vm.datePickerOpenStatus = {};
             vm.openCalendar = openCalendar; //时间
             vm.importFrozenStorageBox = importFrozenStorageBox; //导入冻存盒
+            //判断运单号是否重复
+            vm.trackNumberIsRepeat = function () {
+                if(vm.transportRecord.trackNumber){
+                    TrackNumberService.getTrackNum(vm.transportRecord.trackNumber).then(function (data) {
+                        if(data){
+                            toastr.warning("转运运单号不能重复！");
+                            vm.transportRecord.trackNumber = "";
+                        }
+                    })
+                }
 
+            };
             //作废
             vm.invalid = function () {
                 _blockUiStart(blockUiMessage);
@@ -174,11 +185,11 @@
                     AlertService.error("作废功能报错！");
                 })
             };
-            //入库保存
+            //为提示框的判断
             vm.saveStockInFlag = false;
             vm.saveRecordFlag = false;
-            vm.saveRecord = saveRecord; //保存记录
-            //转运入库
+            //保存记录
+            vm.saveRecord = saveRecord;
             vm.stockIn = function () {
                 modalInstance = $uibModal.open({
                     animation: true,
@@ -779,9 +790,9 @@
             //设备
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = data;
-                vm.equipmentId = vm.frozenBoxPlaceOptions[0].id;
-                if(vm.equipmentId){
-                    AreasByEquipmentIdService.query({id:vm.equipmentId},onAreaHoldSuccess, onError);
+                vm.transportRecord.equipmentId = vm.frozenBoxPlaceOptions[0].id;
+                if(vm.transportRecord.equipmentId){
+                    AreasByEquipmentIdService.query({id:vm.transportRecord.equipmentId},onAreaHoldSuccess, onError);
                 }
             }
             //暂存区
@@ -814,8 +825,8 @@
             //暂存区域
             function onAreaHoldSuccess(data) {
                 vm.frozenBoxHoldAreaOptions = data;
-                if(vm.equipmentId){
-                    vm.areaId = vm.frozenBoxHoldAreaOptions[0].id;
+                if(vm.transportRecord.equipmentId){
+                    vm.transportRecord.areaId = vm.frozenBoxHoldAreaOptions[0].id;
                 }
 
 
@@ -1025,10 +1036,10 @@
             function onFrozenSuccess(data) {
                 vm.box = data;
                 if(!vm.box.equipmentId){
-                    vm.box.equipmentId = vm.equipmentId;
+                    vm.box.equipmentId = vm.transportRecord.equipmentId;
                 }
                 if(!vm.box.areaId){
-                    vm.box.areaId = vm.areaId;
+                    vm.box.areaId = vm.transportRecord.areaId;
                 }
 
                 if(vm.box.equipmentId){

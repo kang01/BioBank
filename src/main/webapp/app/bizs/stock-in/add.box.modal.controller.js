@@ -137,7 +137,6 @@
                     }
                 };
                 //架子
-
                 vm.frozenBoxShelfConfig = {
                     valueField:'id',
                     labelField:'supportRackCode',

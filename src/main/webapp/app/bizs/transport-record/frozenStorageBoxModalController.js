@@ -9,10 +9,10 @@
         .controller('FrozenStorageBoxModalController', FrozenStorageBoxModalController)
         .controller('ModalInstanceCtrl', ModalInstanceCtrl);
 
-    FrozenStorageBoxModalController.$inject = ['$scope','AlertService','$timeout','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService','blockUI'];
+    FrozenStorageBoxModalController.$inject = ['$scope','toastr','$timeout','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService','blockUI'];
     ModalInstanceCtrl.$inject = ['$uibModalInstance','$uibModal'];
 
-    function FrozenStorageBoxModalController($scope,AlertService,$timeout,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService,blockUI) {
+    function FrozenStorageBoxModalController($scope,toastr,$timeout,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService,blockUI) {
 
         var vm = this;
         vm.items = items;
@@ -48,9 +48,9 @@
                             sampleTypeId: sampleTypeOptions[0].id,//样本类型ID
                             frozenTubeDTOS:[]
                         };
-                        for(var j = 0; j < 10;j++){
+                        for(var j = 0; j < frozenBoxTypeOptions[0].frozenBoxTypeRows;j++){
                             tubeList[j] = [];
-                            for(var k = 0; k < 10; k++){
+                            for(var k = 0; k < frozenBoxTypeOptions[0].frozenBoxTypeColumns; k++){
                                 tubeList[j][k] = {
                                     frozenBoxCode: codeList[i],
                                     frozenTubeCode:codeList[i]+j,
@@ -60,9 +60,14 @@
                                     sampleTypeCode: sampleTypeOptions[0].sampleTypeCode,
                                     status: "3001",
                                     memo:"",
-                                    tubeColumns: k+1,
-                                    tubeRows: String.fromCharCode(j+65)
+                                    tubeRows:String.fromCharCode(j+65),
+                                    tubeColumns: k+1
                                 };
+                                if(j > 7){
+                                    tubeList[j][k].tubeRows = String.fromCharCode(j+1+65);
+                                    tubeList[j][k].sampleTempCode = codeList[i]+"-"+String.fromCharCode(j+1+65)+(k+1)
+                                }
+
                                 vm.obox.frozenBoxDTOList[i].frozenTubeDTOS.push(tubeList[j][k])
                             }
                         }
@@ -72,14 +77,6 @@
                 $scope.$apply();
             }
         };
-
-
-
-        // function addData(event) {
-        //     if(window.event.keyCode == 13){
-        //
-        //     }
-        // }
         function importSample() {
             var modalInstance = $uibModal.open({
                 animation: true,
@@ -107,8 +104,7 @@
 
         }
         function onError(data) {
-            console.log(data);
-            AlertService.error(data.data.message);
+            toastr.error(data.data.message);
             $timeout(function () {
                 blockUI.stop();
             },1000)

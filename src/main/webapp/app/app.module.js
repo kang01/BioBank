@@ -27,7 +27,8 @@
             'frapontillo.bootstrap-switch',
             'datatables.scroller',
             'selectize',
-            'blockUI'
+            'blockUI',
+            'toastr'
         ])
         .run(run);
 

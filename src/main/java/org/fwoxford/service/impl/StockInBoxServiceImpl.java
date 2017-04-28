@@ -299,7 +299,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
         //验证盒子编码是否存在
         FrozenBox oldFrozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
-        if(oldFrozenBox!=null&&stockInBoxForDataSplit.getFrozenBoxId()!=oldFrozenBox.getId()
+
+        if(oldFrozenBox!=null && !stockInBoxForDataSplit.getFrozenBoxId().equals(oldFrozenBox.getId())
             &&!oldFrozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)){
             throw new BankServiceException("冻存盒编码已经存在！",stockInBoxForDataSplit.getFrozenBoxCode());
         }

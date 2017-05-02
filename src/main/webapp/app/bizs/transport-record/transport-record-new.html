@@ -160,12 +160,12 @@
                 <label  class="col-sm-4 control-label p-r-6">暂存位置</label>
                 <div class="col-sm-8 storage-location">
                     <div style="" class="location">
-                        <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig1" style="width: 100%"
-                                   ng-model="vm.transportRecord.equipmentId" ></selectize>
+                        <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfigTemp" style="width: 100%"
+                                   ng-model="vm.transportRecord.tempEquipmentId" ></selectize>
                     </div>
                     <div  class="location">
-                        <selectize options='vm.frozenBoxHoldAreaOptions' config="vm.frozenBoxAreaConfig1" style="width: 100%"
-                                   ng-model="vm.transportRecord.areaId" ></selectize>
+                        <selectize options='vm.frozenBoxHoldAreaOptions' config="vm.frozenBoxAreaConfigTemp" style="width: 100%"
+                                   ng-model="vm.transportRecord.tempAreaId" ></selectize>
                     </div>
                 </div>
             </div>

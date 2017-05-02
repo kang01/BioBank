@@ -62,7 +62,7 @@
     clear: both;
 }
 .rowLight{
-    background-color: lightskyblue;
+    background-color: lightskyblue !important;
 }
 .selectize-dropdown{
     z-index: 999;

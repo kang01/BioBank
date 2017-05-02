@@ -108,6 +108,9 @@ public class TranshipServiceImpl implements TranshipService{
         }
         //验证运单号不能重复----true：已经存在，false:不存在
         String trackNumber = transhipDTO.getTrackNumber();
+        if(trackNumber==null||trackNumber.equals(null)){
+            throw new BankServiceException("运单号不能为空！",trackNumber);
+        }
         Tranship transhipByTrack = transhipRepository.findByTrackNumber(trackNumber);
         if(transhipByTrack!=null&&transhipByTrack.getId()!=transhipId){
             throw new BankServiceException("运单号不能重复！",trackNumber);

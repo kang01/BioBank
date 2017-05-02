@@ -10,6 +10,7 @@ import org.fwoxford.service.dto.StockInTubeDTO;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxSplit;
+import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
@@ -17,12 +18,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.mapping.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -158,7 +160,50 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             throw new BankServiceException("入库记录不存在！",stockInCode);
         }
         input.addColumn("stockInCode", true, true, stockInCode);
-        DataTablesOutput<StockInBox> output =stockInBoxRepositries.findAll(input);
+
+        DataTablesInput dataTablesInput = new DataTablesInput();
+        dataTablesInput.setSearch(input.getSearch());
+        dataTablesInput.setDraw(input.getDraw());
+        dataTablesInput.setLength(input.getLength());
+
+        dataTablesInput.setStart(input.getStart());
+
+        List<Order> newOrders = new ArrayList<Order>();
+        List<Column> newColumns = new ArrayList<Column>();
+
+        List<Order> orders = input.getOrder();
+        List<Column> columns = input.getColumns();
+
+
+        Search searches = dataTablesInput.getSearch();
+        for(Order o:orders){
+            if(columns.get(o.getColumn()).getData().equals("sampleTypeName")){
+
+            }
+            if(columns.get(o.getColumn()).getData().equals("position")){
+
+            }
+        }
+        for(Column c:columns){
+            Column column = new Column();
+            column.setSearch(c.getSearch());
+            column.setName(c.getName());
+            column.setOrderable(c.getOrderable());
+            column.setSearchable(c.getSearchable());
+            if(c.getData().equals("sampleTypeName")||c.getData().equals("position")
+                ||c.getData().equals("isSplit")||c.getData().equals("countOfSample")){
+                column.setData("");
+            }{
+                column.setData(c.getData());
+            }
+            newColumns.add(column);
+        }
+
+        dataTablesInput.setOrder(newOrders);
+        dataTablesInput.setColumns(newColumns);
+
+
+        DataTablesOutput<StockInBox> output =stockInBoxRepositries.findAll(dataTablesInput);
         List<StockInBox> alist = output.getData();
 
         List<StockInBoxForDataTable> stockInBoxForDataTables = new ArrayList<StockInBoxForDataTable>();
@@ -223,6 +268,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxDetail.setFrozenBoxCode(boxCode);
         stockInBoxDetail.setMemo(frozenBox.getMemo());
         stockInBoxDetail.setStockInCode(stockInCode);
+        //todo 修改为count 查询
         List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(boxCode, Constants.FROZEN_TUBE_NORMAL);
         stockInBoxDetail.setCountOfSample(frozenTubes.size());
         stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));

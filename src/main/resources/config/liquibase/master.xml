@@ -45,4 +45,7 @@
     <include file="classpath:config/liquibase/changelog/20170419010458_added_entity_constraints_FrozenBoxPosition.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170419015417_added_entity_constraints_StockInTubes.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+
+    <include file="classpath:config/liquibase/changelog/20170502015417_added_view_StockIn.xml" relativeToChangelogFile="false"/>
+
 </databaseChangeLog>

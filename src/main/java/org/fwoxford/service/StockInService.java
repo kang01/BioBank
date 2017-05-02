@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.domain.StockIn;
+import org.fwoxford.domain.StockInForDataTableEntity;
 import org.fwoxford.service.dto.StockInCompleteDTO;
 import org.fwoxford.service.dto.StockInDTO;
 import org.fwoxford.service.dto.StockInForDataDetail;
@@ -61,7 +62,7 @@ public interface StockInService {
      * @param input
      * @return
      */
-    DataTablesOutput<StockIn> findStockIn(DataTablesInput input);
+    DataTablesOutput<StockInForDataTableEntity> findStockIn(DataTablesInput input);
 
     /**
      * 入库完成

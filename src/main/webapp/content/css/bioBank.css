@@ -62,7 +62,7 @@
     clear: both;
 }
 .rowLight{
-    background-color: lightskyblue;
+    background-color: lightskyblue !important;
 }
 .selectize-dropdown{
     z-index: 999;
@@ -246,7 +246,7 @@
 .box-selected{
     outline:2px solid red !important;
 }
-.import-box-modal-body .selectize-input{
+.import-box-modal-body .import-box-input .selectize-input{
     height: 368px;
 }
 .transport-record-new .pipe-body .pipe-operate{

@@ -180,30 +180,37 @@
             vm.saveRecord = saveRecord;
             //入库
             vm.stockIn = function () {
-                if(vm.trackNumberIsRepeat()){
-                    return;
-                }
-                modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'app/bizs/transport-record/stock-in-affirm-modal.html',
-                    controller: 'StockInAffirmModalController',
-                    backdrop:'static',
-                    controllerAs: 'vm',
-                    resolve:{
-                        items:function () {
-                            return{
-                                box:vm.box || {},
-                                receiver:vm.transportRecord.receiver,
-                                receiveDate: vm.transportRecord.receiveDate
-                            }
+                if(vm.transportRecord.trackNumber){
+                    TrackNumberService.getTrackNum(vm.transportRecord.transhipCode,vm.transportRecord.trackNumber).then(function (data) {
+                        if(data){
+                            toastr.warning("运单号不能重复！");
+                            vm.transportRecord.trackNumber = "";
+                            return;
                         }
-                    }
-                });
-                modalInstance.result.then(function (transportRecord) {
-                    vm.saveStockInFlag = true;
-                    vm.saveRecord(transportRecord);
+                        modalInstance = $uibModal.open({
+                            animation: true,
+                            templateUrl: 'app/bizs/transport-record/stock-in-affirm-modal.html',
+                            controller: 'StockInAffirmModalController',
+                            backdrop:'static',
+                            controllerAs: 'vm',
+                            resolve:{
+                                items:function () {
+                                    return{
+                                        box:vm.box || {},
+                                        receiver:vm.transportRecord.receiver,
+                                        receiveDate: vm.transportRecord.receiveDate
+                                    }
+                                }
+                            }
+                        });
+                        modalInstance.result.then(function (transportRecord) {
+                            vm.saveStockInFlag = true;
+                            vm.saveRecord(transportRecord);
 
-                });
+                        });
+                    })
+                }
+
             };
             //导入冻存盒
             function importFrozenStorageBox() {

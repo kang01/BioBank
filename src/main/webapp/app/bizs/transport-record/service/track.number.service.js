@@ -13,11 +13,11 @@
 
     function TrackNumberService($q,$http) {
         return {
-             getTrackNum:function(trackNumber){
+             getTrackNum:function(transhipCode,trackNumber){
                 var defer = $q.defer();
                 $http({
                     method:'get',
-                    url:'api/tranships/isRepeat/'+trackNumber
+                    url:'api/tranships/isRepeat/'+transhipCode+'/'+trackNumber
                 }).success(function (data,status,headers,config) {
                     defer.resolve(data);
                 }).error(function (data,status,headers,config) {

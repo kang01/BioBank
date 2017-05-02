@@ -163,14 +163,6 @@
             vm.importFrozenStorageBox = importFrozenStorageBox; //导入冻存盒
             //判断运单号是否重复
             vm.trackNumberIsRepeat = function () {
-                if(vm.transportRecord.trackNumber){
-                    TrackNumberService.getTrackNum(vm.transportRecord.trackNumber).then(function (data) {
-                        if(data){
-                            toastr.warning("转运运单号不能重复！");
-                            vm.transportRecord.trackNumber = "";
-                        }
-                    })
-                }
 
             };
             //作废
@@ -190,7 +182,11 @@
             vm.saveRecordFlag = false;
             //保存记录
             vm.saveRecord = saveRecord;
+            //入库
             vm.stockIn = function () {
+                if(vm.trackNumberIsRepeat()){
+                    return;
+                }
                 modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'app/bizs/transport-record/stock-in-affirm-modal.html',
@@ -238,28 +234,40 @@
             }
             //保存保存记录
             function saveRecord(transportRecord) {
-                vm.saveRecordFlag = true;
-                vm.saveBox(function(){
-                    _blockUiStart(blockUiMessage);
-                    TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError);
-                    function onSaveTranshipRecordSuccess(data) {
-                        vm.saveRecordFlag = false;
-                        _blockUiStop();
-                        if(vm.saveStockInFlag){
-                            TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
-                                _blockUiStop();
-                                toastr.success("入库成功！");
-                                vm.saveStockInFlag = false;
-                                $state.go('stock-in-edit',{id:data.id});
-                            }).error(function (data) {
-                                _blockUiStop();
-                                toastr.error(data.message+"入库失败！");
-                            })
-                        }else{
-                            toastr.success("保存转运记录成功");
+                // console.log(vm.trackNumberIsRepeat());
+                if(vm.transportRecord.trackNumber){
+                    TrackNumberService.getTrackNum(vm.transportRecord.transhipCode,vm.transportRecord.trackNumber).then(function (data) {
+                        if(data){
+                            toastr.warning("运单号不能重复！");
+                            vm.transportRecord.trackNumber = "";
+                            return;
                         }
-                    }
-                });
+
+                        vm.saveRecordFlag = true;
+                        vm.saveBox(function(){
+                            _blockUiStart(blockUiMessage);
+                            TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError);
+                            function onSaveTranshipRecordSuccess(data) {
+                                vm.saveRecordFlag = false;
+                                _blockUiStop();
+                                if(vm.saveStockInFlag){
+                                    TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
+                                        _blockUiStop();
+                                        toastr.success("入库成功！");
+                                        vm.saveStockInFlag = false;
+                                        $state.go('stock-in-edit',{id:data.id});
+                                    }).error(function (data) {
+                                        _blockUiStop();
+                                        toastr.error(data.message+"入库失败！");
+                                    })
+                                }else{
+                                    toastr.success("保存转运记录成功");
+                                }
+                            }
+                        });
+                    })
+                }
+
 
             }
 

@@ -369,8 +369,8 @@
 
                     });
                     modalInstance.result.then(function (flag) {
-                        $(td).closest('table').find('.rowLight').removeClass("rowLight");
-                        $(td).addClass('rowLight');
+                        $(tr).closest('table').find('.rowLight').removeClass("rowLight");
+                        $(tr).addClass('rowLight');
                         //true:保存 false:不保存
                         if(flag){
                             vm.saveBox(function(res){
@@ -705,7 +705,6 @@
                 labelField:'frozenBoxTypeName',
                 maxItems: 1,
                 onChange:function(value){
-
                     var boxType = _.filter(vm.frozenBoxTypeOptions, {id:+value})[0];
                     if (!boxType) {
                         return;
@@ -1032,12 +1031,12 @@
             vm.onFrozenSuccess = onFrozenSuccess;
             function onFrozenSuccess(data) {
                 vm.box = data;
-                if(!vm.box.equipmentId){
-                    vm.box.equipmentId = vm.transportRecord.equipmentId;
-                }
-                if(!vm.box.areaId){
-                    vm.box.areaId = vm.transportRecord.areaId;
-                }
+                // if(!vm.box.equipmentId){
+                //     vm.box.equipmentId = vm.transportRecord.equipmentId;
+                // }
+                // if(!vm.box.areaId){
+                //     vm.box.areaId = vm.transportRecord.areaId;
+                // }
 
                 if(vm.box.equipmentId){
                     AreasByEquipmentIdService.query({id:vm.box.equipmentId},onAreaSuccess, onError);

@@ -246,7 +246,7 @@
 .box-selected{
     outline:2px solid red !important;
 }
-.import-box-modal-body .selectize-input{
+.import-box-modal-body .import-box-input .selectize-input{
     height: 368px;
 }
 .transport-record-new .pipe-body .pipe-operate{

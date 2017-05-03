@@ -196,6 +196,9 @@
             vm.isRepeat = false;
             BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
                 vm.isRepeat = data;
+                if (vm.isRepeat){
+                    return;
+                }
                 data = _.filter(vm.boxes, function(b){
                     var box = _.filter(b.boxList, {frozenBoxCode: vm.box.frozenBoxCode});
                     return box && box.length;

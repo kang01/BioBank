@@ -103,8 +103,8 @@
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
-                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {type: 'text',bRegex: true,bSmart: true},
+                    {type: 'text',bRegex: true,bSmart: true},
                     {
                         type: 'select',
                         bRegex: true,

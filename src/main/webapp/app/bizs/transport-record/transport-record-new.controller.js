@@ -402,7 +402,7 @@
 
             EquipmentService.query({},onEquipmentSuccess, onError);//设备
 
-            initFrozenTube(10);
+            initFrozenTube(10,10);
 
             vm.settings = {
                 colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
@@ -443,8 +443,6 @@
 
 
                     }
-                    // console.log(vm.settings)
-
                     //管子
                     if(vm.flagStatus){
                         var tubeStatus = $(this.getCell(row, col)).find("#microtubesStatus").text();
@@ -573,10 +571,10 @@
             }
 
 
-            function initFrozenTube(size) {
-                for(var i = 0; i < size; i++){
+            function initFrozenTube(row,col) {
+                for(var i = 0; i < row; i++){
                     vm.frozenTubeArray[i] = [];
-                    for(var j = 0;j < size; j++){
+                    for(var j = 0;j < col; j++){
                         vm.frozenTubeArray[i][j] = "";
                     }
                 }
@@ -1029,7 +1027,7 @@
                         vm.loadBox();
                         vm.box = null;
                         vm.boxStr = null;
-                        initFrozenTube(10);
+                        initFrozenTube(10,10);
                         hotRegisterer.getInstance('my-handsontable').render();
                     }
                 });
@@ -1054,7 +1052,7 @@
                 // if(vm.box.supportRackId){
                     vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
                 // }
-                initFrozenTube(vm.box.frozenBoxColumns);
+                initFrozenTube(vm.box.frozenBoxRows,vm.box.frozenBoxColumns);
                 _reloadTubesForTable(vm.box);
                 vm.boxStr = JSON.stringify(vm.createBoxDataFromTubesTable());
                 //统计样本数

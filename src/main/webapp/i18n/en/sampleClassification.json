@@ -1,0 +1,26 @@
+{
+    "bioBankApp": {
+        "sampleClassification" : {
+            "home": {
+                "title": "Sample Classifications",
+                "createLabel": "Create a new Sample Classification",
+                "createOrEditLabel": "Create or edit a Sample Classification"
+            },
+            "created": "A new Sample Classification is created with identifier {{ param }}",
+            "updated": "A Sample Classification is updated with identifier {{ param }}",
+            "deleted": "A Sample Classification is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Sample Classification {{ id }}?"
+            },
+            "detail": {
+                "title": "Sample Classification"
+            },
+            "sampleClassificationName": "Sample Classification Name",
+            "sampleClassificationCode": "Sample Classification Code",
+            "status": "Status",
+            "memo": "Memo",
+            "frontColor": "Front Color",
+            "backColor": "Back Color"
+        }
+    }
+}

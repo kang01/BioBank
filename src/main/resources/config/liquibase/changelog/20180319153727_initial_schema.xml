@@ -83,6 +83,14 @@
                   file="config/liquibase/frozen_tube.csv"
                   separator=";"
                   tableName="frozen_tube"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/sample_class.csv"
+                  separator=";"
+                  tableName="sample_class"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/project_sample.csv"
+                  separator=";"
+                  tableName="project_sample"/>
     </changeSet>
     <!--初始化数据 end -->
 </databaseChangeLog>

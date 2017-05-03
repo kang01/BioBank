@@ -1,0 +1,27 @@
+{
+    "bioBankApp": {
+        "projectSampleClass" : {
+            "home": {
+                "title": "Project Sample Classes",
+                "createLabel": "Create a new Project Sample Class",
+                "createOrEditLabel": "Create or edit a Project Sample Class"
+            },
+            "created": "A new Project Sample Class is created with identifier {{ param }}",
+            "updated": "A Project Sample Class is updated with identifier {{ param }}",
+            "deleted": "A Project Sample Class is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Project Sample Class {{ id }}?"
+            },
+            "detail": {
+                "title": "Project Sample Class"
+            },
+            "projectCode": "Project Code",
+            "status": "Status",
+            "memo": "Memo",
+            "columnsNumber": "Columns Number",
+            "project": "Project",
+            "sampleType": "Sample Type",
+            "sampleClassification": "Sample Classification"
+        }
+    }
+}

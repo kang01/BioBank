@@ -1,0 +1,43 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.sampleClassification.detail.title">Sample Classification</span> {{vm.sampleClassification.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.sampleClassification.sampleClassificationName">Sample Classification Name</span></dt>
+        <dd>
+            <span>{{vm.sampleClassification.sampleClassificationName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.sampleClassification.sampleClassificationCode">Sample Classification Code</span></dt>
+        <dd>
+            <span>{{vm.sampleClassification.sampleClassificationCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.sampleClassification.status">Status</span></dt>
+        <dd>
+            <span>{{vm.sampleClassification.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.sampleClassification.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.sampleClassification.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.sampleClassification.frontColor">Front Color</span></dt>
+        <dd>
+            <span>{{vm.sampleClassification.frontColor}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.sampleClassification.backColor">Back Color</span></dt>
+        <dd>
+            <span>{{vm.sampleClassification.backColor}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="sample-classification-detail.edit({id:vm.sampleClassification.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

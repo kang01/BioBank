@@ -1,0 +1,47 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.projectSampleClass.detail.title">Project Sample Class</span> {{vm.projectSampleClass.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.projectSampleClass.projectCode">Project Code</span></dt>
+        <dd>
+            <span>{{vm.projectSampleClass.projectCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.projectSampleClass.status">Status</span></dt>
+        <dd>
+            <span>{{vm.projectSampleClass.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.projectSampleClass.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.projectSampleClass.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.projectSampleClass.columnsNumber">Columns Number</span></dt>
+        <dd>
+            <span>{{vm.projectSampleClass.columnsNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.projectSampleClass.project">Project</span></dt>
+        <dd>
+            <a ui-sref="project-detail({id:vm.projectSampleClass.projectId})">{{vm.projectSampleClass.projectId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.projectSampleClass.sampleType">Sample Type</span></dt>
+        <dd>
+            <a ui-sref="sample-type-detail({id:vm.projectSampleClass.sampleTypeId})">{{vm.projectSampleClass.sampleTypeId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.projectSampleClass.sampleClassification">Sample Classification</span></dt>
+        <dd>
+            <a ui-sref="sample-classification-detail({id:vm.projectSampleClass.sampleClassificationId})">{{vm.projectSampleClass.sampleClassificationId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="project-sample-class-detail.edit({id:vm.projectSampleClass.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

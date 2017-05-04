@@ -116,11 +116,7 @@ public class TranshipServiceImpl implements TranshipService{
             throw new BankServiceException("运单号不能重复！",trackNumber);
         }
         Project project = projectRepository.findOne(transhipDTO.getProjectId());
-        transhipDTO.setProjectCode(project!=null?project.getProjectCode():new String(""));
-        transhipDTO.setProjectName(project!=null?project.getProjectName():new String(""));
-        ProjectSite projectSite = projectSiteRepository.findOne(transhipDTO.getProjectSiteId());
-        transhipDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():new String(""));
-        transhipDTO.setProjectSiteName(projectSite!=null?projectSite.getProjectSiteName():new String(""));
+
         User user = userRepository.findByLogin(transhipDTO.getReceiver());
         transhipDTO.setReceiverId(user!=null?user.getId():null);
         transhipDTO.setReceiver(user!=null?user.getLogin():transhipDTO.getReceiver());
@@ -136,12 +132,6 @@ public class TranshipServiceImpl implements TranshipService{
         int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfTube = 0;
         Map<String,FrozenTube> map = new HashMap<String,FrozenTube>();
         for(FrozenBox box : frozenBoxList){
-            box.setProject(project);
-            box.setProjectCode(transhipDTO.getProjectCode());
-            box.setProjectName(transhipDTO.getProjectName());
-            box.setProjectSite(projectSite);
-            box.setProjectSiteName(transhipDTO.getProjectSiteName());
-            box.setProjectSiteCode(transhipDTO.getProjectSiteCode());
             if(transhipDTO.getTempEquipmentId()!=null){
                 box.setEquipment(equipment);
                 box.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
@@ -152,9 +142,6 @@ public class TranshipServiceImpl implements TranshipService{
             frozenBoxRepository.save(box);
             List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxId(box.getId());
             for(FrozenTube tube :frozenTubes){
-
-                tube.setProject(project);
-                tube.setProjectCode(transhipDTO.getProjectCode());
                 frozenTubeRepository.save(tube);
 
                 if(tube.getStatus().equals(Constants.FROZEN_TUBE_HOLE_EMPTY)){
@@ -177,6 +164,14 @@ public class TranshipServiceImpl implements TranshipService{
         transhipDTO.setEmptyHoleNumber(transhipDTO.getEmptyHoleNumber()!=null && transhipDTO.getEmptyHoleNumber()!=0?transhipDTO.getEmptyHoleNumber():countOfEmptyHole);
         transhipDTO.setEmptyTubeNumber(transhipDTO.getEmptyTubeNumber()!=null && transhipDTO.getEmptyTubeNumber()!=0?transhipDTO.getEmptyTubeNumber():countOfEmptyTube);
         transhipDTO.setEffectiveSampleNumber(transhipDTO.getEffectiveSampleNumber()!=null && transhipDTO.getEffectiveSampleNumber()!=0?transhipDTO.getEffectiveSampleNumber():countOfTube);
+        if(frozenBoxList.size()==0){
+            transhipDTO.setProjectCode(project!=null?project.getProjectCode():new String(""));
+            transhipDTO.setProjectName(project!=null?project.getProjectName():new String(""));
+            ProjectSite projectSite = projectSiteRepository.findOne(transhipDTO.getProjectSiteId());
+            transhipDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():new String(""));
+            transhipDTO.setProjectSiteName(projectSite!=null?projectSite.getProjectSiteName():new String(""));
+        }
+
         Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
         tranship.setTranshipState(oldTranship.getTranshipState());
         tranship.setStatus(oldTranship.getStatus());

@@ -3,7 +3,7 @@
         <h3 class="pull-left">新增转运记录<small>&nbsp;{{vm.transportRecord.transhipCode}}</small></h3>
         <div class="form-group pull-right m-r-10">
             <div class="text-right">
-                <button type="button" class="btn btn-primary" ng-click="vm.importFrozenStorageBox('lg')" ng-show="vm.transportRecord.transhipState == '1001'">导入冻存盒</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.importFrozenStorageBox('lg')" ng-disabled = "!vm.transportRecord.trackNumber" ng-show="vm.transportRecord.transhipState == '1001'">导入冻存盒</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.stockIn()"
                         ng-disabled="!vm.boxLength || !vm.transportRecord.receiver || !vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate || !vm.transportRecord.trackNumber"
                         ng-show="vm.transportRecord.transhipState == '1001'">入库</button>
@@ -40,7 +40,7 @@
                 </label>
                 <div class="col-sm-8">
                     <selectize options='vm.projectOptions' config="vm.projectConfig"
-                               ng-model="vm.transportRecord.projectId"></selectize>
+                               ng-model="vm.transportRecord.projectId" ng-disabled="vm.boxLength"></selectize>
                     <!--<input type="text" class="form-control"  ng-model="vm.transportRecord.projectSiteCode">-->
                 </div>
             </div>
@@ -50,7 +50,7 @@
                     项目点</label>
                 <div class="col-sm-8">
                     <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
-                               ng-model="vm.transportRecord.projectSiteId"></selectize>
+                               ng-model="vm.transportRecord.projectSiteId" ></selectize>
                     <!--<input type="text" class="form-control"  ng-model="vm.transportRecord.projectCode">-->
                 </div>
             </div>
@@ -175,55 +175,76 @@
     </form>
     <hr>
     <div class="row m-l-0 m-r-0 ">
-        <div class="col-sm-2 boxes-table">
+        <div class="col-md-2 boxes-table">
             <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"  class="table table-bordered"></table>
         </div>
-        <div class="col-sm-10 form-horizontal">
+        <div class="col-md-10 form-horizontal">
             <div class="row m-l-0 m-r-0">
-                <div class="col-md-7">
+                <div class="col-md-8">
                     <div class="row">
-                        <div class="form-group col-sm-4">
+                        <div class="col-md-6 p-r-0">
                             <div class="row">
-                                <label  class="col-sm-5 control-label p-r-6">
-                                    <span class="required-field"></span>
-                                    冻存盒号
-                                </label>
-                                <div class="col-sm-7">
-                                    <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode" disabled required>
+                                <div class="form-group col-md-6">
+                                    <div class="row">
+                                        <label  class="col-md-6 control-label p-r-6">
+                                            <span class="required-field"></span>
+                                            冻存盒号
+                                        </label>
+                                        <div class="col-md-6 p-l-6">
+                                            <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode" disabled required>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="row">
+                                        <label  class="col-md-5 control-label p-r-6">
+                                            <span class="required-field"></span>
+                                            盒类型
+                                        </label>
+                                        <div class="col-md-7 p-l-6">
+                                            <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
+                                                       ng-model="vm.box.frozenBoxTypeId" ng-disabled="!vm.box"></selectize>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-
                         </div>
-                        <div class="form-group col-sm-4">
+                        <div class="col-md-6 p-l-0">
                             <div class="row">
-                                <label  class="col-sm-5 control-label p-r-6">
-                                <span class="required-field"></span>
-                                盒类型
-                            </label>
-                                <div class="col-sm-7">
-                                    <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
-                                               ng-model="vm.box.frozenBoxTypeId" ng-disabled="!vm.box"></selectize>
+                                <div class="form-group col-md-6">
+                                    <div class="row">
+                                        <label  class="col-md-6 control-label p-r-6">
+                                            <span class="required-field"></span>
+                                            样本类型
+                                        </label>
+                                        <div class="col-md-6 p-l-6" >
+                                            <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                                                       ng-model="vm.box.sampleTypeCode"></selectize>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="row">
+                                        <label  class="col-md-6 control-label p-r-6">
+                                            <span class="required-field"></span>
+                                            样本分类
+                                        </label>
+                                        <div class="col-md-6 p-l-6" >
+                                            <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
+                                                       ng-model="vm.box.sampleClassificationId"></selectize>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-
-                        </div>
-                        <div class="form-group col-sm-4">
-                            <div class="row">
-                                <label  class="col-sm-5 control-label p-r-6">
-                                    <span class="required-field"></span>
-                                    样本类型
-                                </label>
-                                <div class="col-sm-7" >
-                                    <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                               ng-model="vm.box.sampleTypeCode" ng-disabled="!vm.box"></selectize>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
 
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-4">
                     <div class="row">
 
                             <label  class="col-sm-3 control-label p-r-6 ">
@@ -244,7 +265,7 @@
                                     <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig" style="width: 100%"
                                                ng-model="vm.box.supportRackId" ng-disabled="!vm.box"></selectize>
                                 </div>
-                                <div  class="location"><input type="text" class="form-control" maxlength="2" ng-model="vm.boxRowCol" ng-blur="vm.splitPlace()" ng-disabled="!vm.box">
+                                <div  class="location" style="width: 18%"><input type="text" class="form-control" maxlength="2" ng-model="vm.boxRowCol" ng-blur="vm.splitPlace()" ng-disabled="!vm.box">
                                 </div>
                             </div>
 
@@ -255,7 +276,7 @@
             </div>
             <div class="row  m-l-0 m-r-0">
 
-                <div class="col-sm-7">
+                <div class="col-sm-8">
                     <div class="row">
                         <div class="col-md-6">
                             <p style="margin-top: 10px">
@@ -280,7 +301,7 @@
                         </div>
                     </div>
                 </div>
-                <div class=" col-sm-5">
+                <div class=" col-sm-4">
                     <div class="row">
                         <label  class="col-sm-3 control-label p-r-6">备注</label>
                         <div class="col-sm-9 p-l-0 p-r-0 ">

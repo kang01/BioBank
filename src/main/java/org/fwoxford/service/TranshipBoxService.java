@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.domain.TranshipBox;
+import org.fwoxford.service.dto.FrozenBoxCodeForTranshipDTO;
 import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.fwoxford.service.dto.TranshipBoxListDTO;
 import org.fwoxford.service.dto.TranshipBoxListForSaveBatchDTO;
@@ -70,4 +71,6 @@ public interface TranshipBoxService {
     FrozenBoxAndFrozenTubeResponse findFrozenBoxAndTubeByBoxCode(String frozenBoxCode);
 
     void deleteTranshipBoxByFrozenBox(String frozenBoxCode);
+
+    List<FrozenBoxCodeForTranshipDTO> getFrozenBoxCodeByTranshipCode(String transhipCode);
 }

@@ -3,13 +3,10 @@ package org.fwoxford.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.service.TranshipBoxService;
-import org.fwoxford.service.dto.FrozenBoxDTO;
-import org.fwoxford.service.dto.TranshipBoxListDTO;
-import org.fwoxford.service.dto.TranshipBoxListForSaveBatchDTO;
+import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
-import org.fwoxford.service.dto.TranshipBoxDTO;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -172,5 +169,18 @@ public class TranshipBoxResource {
         log.debug("REST request to delete TranshipBox : {}", frozenBoxCode);
         transhipBoxService.deleteTranshipBoxByFrozenBox(frozenBoxCode);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, frozenBoxCode)).build();
+    }
+
+    /**
+     * 根据转运编码查询冻存盒编码List
+     * @param transhipCode
+     * @return
+     */
+    @GetMapping("/tranship-boxes/transhipCode/{transhipCode}")
+    @Timed
+    public ResponseEntity<List<FrozenBoxCodeForTranshipDTO>> getFrozenBoxCodeByTranshipCode(@PathVariable String transhipCode) {
+        log.debug("REST request to get FrozenBox : {}", transhipCode);
+        List<FrozenBoxCodeForTranshipDTO> res = transhipBoxService.getFrozenBoxCodeByTranshipCode(transhipCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

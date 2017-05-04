@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -491,5 +492,27 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         frozenTubeRepository.deleteInBatch(frozenTubes);//删除冻存管
         transhipBoxRepository.delete(transhipBox);
         frozenBoxRepository.delete(frozenBox);
+    }
+
+    @Override
+    public List<FrozenBoxCodeForTranshipDTO> getFrozenBoxCodeByTranshipCode(String transhipCode) {
+        if(StringUtils.isEmpty(transhipCode)){
+            throw new BankServiceException("转运编码不能为空！");
+        }
+
+        Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
+        if(tranship == null){
+            throw new BankServiceException("转运记录不存在！",transhipCode);
+        }
+
+        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipId(tranship.getId());
+        List<FrozenBoxCodeForTranshipDTO> frozenBoxCodeForTranshipDTOS = new ArrayList<FrozenBoxCodeForTranshipDTO>();
+        for(TranshipBox t : transhipBoxes){
+            FrozenBoxCodeForTranshipDTO frozenBoxCodeForTranshipDTO = new FrozenBoxCodeForTranshipDTO();
+            frozenBoxCodeForTranshipDTO.setFrozenBoxId(t.getFrozenBox()!=null?t.getFrozenBox().getId():null);
+            frozenBoxCodeForTranshipDTO.setFrozenBoxCode(t.getFrozenBoxCode());
+            frozenBoxCodeForTranshipDTOS.add(frozenBoxCodeForTranshipDTO);
+        }
+        return frozenBoxCodeForTranshipDTOS;
     }
 }

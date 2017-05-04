@@ -179,19 +179,22 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @ManyToOne(optional = false)
     private SampleType sampleType;
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = false)
+    private SampleClassification sampleClassification;
+
+    @ManyToOne
     private Project project;
 
-    @ManyToOne(optional = true)
+    @ManyToOne
     private ProjectSite projectSite;
 
-    @ManyToOne(optional = true)
+    @ManyToOne
     private Equipment equipment;
 
-    @ManyToOne(optional = true)
+    @ManyToOne
     private Area area;
 
-    @ManyToOne(optional = true)
+    @ManyToOne
     private SupportRack supportRack;
 
     public Long getId() {
@@ -515,6 +518,17 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
 
     public void setSampleType(SampleType sampleType) {
         this.sampleType = sampleType;
+    }
+
+    public SampleClassification getSampleClassification() {
+        return sampleClassification;
+    }
+    public FrozenBox sampleClassification(SampleClassification sampleClassification){
+        this.sampleClassification = sampleClassification;
+        return this;
+    }
+    public void setSampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
     }
 
     public Project getProject() {

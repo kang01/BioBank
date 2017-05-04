@@ -122,6 +122,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="sample_classification_id" type="bigint" remarks="样本分类ID">
+                <constraints nullable="false" />
+            </column>
+
             <column name="project_id" type="bigint" remarks="项目ID">
                 <constraints nullable="true" />
             </column>

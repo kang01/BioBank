@@ -7,7 +7,7 @@
         Added the constraints for entity FrozenTube.
     -->
     <changeSet id="20170317080522-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="frozen_tube_type_id"
                                  baseTableName="frozen_tube"
                                  constraintName="frozen_tube_frozen_tube_t_id"
@@ -32,5 +32,10 @@
                                  referencedColumnNames="id"
                                  referencedTableName="frozen_box"/>
 
+        <addForeignKeyConstraint baseColumnNames="sample_classification_id"
+                                 baseTableName="frozen_tube"
+                                 constraintName="fk_frozen_tube_sample_class_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_class"/>
     </changeSet>
 </databaseChangeLog>

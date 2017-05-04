@@ -188,6 +188,12 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     @ManyToOne(optional = false)
     private SampleType sampleType;
     /**
+     * 样本分类
+     */
+    @ManyToOne(optional = false)
+    private SampleClassification sampleClassification;
+
+    /**
      * 项目
      */
     @ManyToOne(optional = true)
@@ -257,7 +263,16 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     public void setSampleCode(String sampleCode) {
         this.sampleCode = sampleCode;
     }
-
+    public SampleClassification getSampleClassification() {
+        return sampleClassification;
+    }
+    public FrozenTube sampleClassification(SampleClassification sampleClassification){
+        this.sampleClassification = sampleClassification;
+        return this;
+    }
+    public void setSampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
+    }
     public String getFrozenTubeTypeCode() {
         return frozenTubeTypeCode;
     }

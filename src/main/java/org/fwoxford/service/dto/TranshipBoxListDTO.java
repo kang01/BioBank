@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * A DTO for the TranshipBox entity.
  */
-public class TranshipBoxListDTO extends AbstractAuditingDTO implements Serializable {
+public class TranshipBoxListDTO implements Serializable {
 
 
     /**
@@ -18,7 +18,7 @@ public class TranshipBoxListDTO extends AbstractAuditingDTO implements Serializa
      */
     private Long transhipId;
 
-    private List<FrozenBoxDTO> frozenBoxDTOList;
+    private List<FrozenBoxForSaveBatchDTO> frozenBoxDTOList;
 
     public Long getTranshipId() {
         return transhipId;
@@ -28,11 +28,11 @@ public class TranshipBoxListDTO extends AbstractAuditingDTO implements Serializa
         this.transhipId = transhipId;
     }
 
-    public List<FrozenBoxDTO> getFrozenBoxDTOList() {
+    public List<FrozenBoxForSaveBatchDTO> getFrozenBoxDTOList() {
         return frozenBoxDTOList;
     }
 
-    public void setFrozenBoxDTOList(List<FrozenBoxDTO> frozenBoxDTOList) {
+    public void setFrozenBoxDTOList(List<FrozenBoxForSaveBatchDTO> frozenBoxDTOList) {
         this.frozenBoxDTOList = frozenBoxDTOList;
     }
 }

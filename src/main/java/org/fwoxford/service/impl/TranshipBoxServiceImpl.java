@@ -4,6 +4,7 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.FrozenBoxTypeService;
+import org.fwoxford.service.ProjectSampleClassService;
 import org.fwoxford.service.SampleTypeService;
 import org.fwoxford.service.TranshipBoxService;
 import org.fwoxford.service.dto.*;
@@ -63,6 +64,12 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
     @Autowired
     private StockInTubesRepository stockInTubesRepository;
+
+    @Autowired
+    private SampleClassificationRepository sampleClassificationRepository;
+
+    @Autowired
+    private ProjectSampleClassService projectSampleClassService;
 
     public TranshipBoxServiceImpl(TranshipBoxRepository transhipBoxRepository,
                                   FrozenBoxRepository frozenBoxRepository,
@@ -173,8 +180,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
      * @return
      */
     @Override
-    public synchronized TranshipBoxListDTO saveBatchTranshipBox(TranshipBoxListDTO transhipBoxListDTO) {
-        TranshipBoxListDTO result = new TranshipBoxListDTO();
+    public synchronized TranshipBoxListForSaveBatchDTO saveBatchTranshipBox(TranshipBoxListDTO transhipBoxListDTO) {
+        TranshipBoxListForSaveBatchDTO result = new TranshipBoxListForSaveBatchDTO();
         Long transhipId = transhipBoxListDTO.getTranshipId();
         Tranship tranship = transhipRepository.findOne(transhipId);
 
@@ -184,13 +191,14 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         }
 
         List<SampleType> sampleTypes = sampleTypeRepository.findAllSampleTypes();
+        List<SampleClassification> sampleClassifications = sampleClassificationRepository.findAll();
         List<FrozenBoxType> boxTypes = frozenBoxTypeRepository.findAllFrozenBoxTypes();
         List<FrozenTubeType> tubeTypes = frozenTubeTypeRepository.findAll();
 
         result.setTranshipId(transhipId);
         result.setFrozenBoxDTOList(new ArrayList<>());
 
-        for(FrozenBoxDTO boxDTO : transhipBoxListDTO.getFrozenBoxDTOList()){
+        for(FrozenBoxForSaveBatchDTO boxDTO : transhipBoxListDTO.getFrozenBoxDTOList()){
             FrozenBox oldBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(boxDTO.getFrozenBoxCode());
             if (oldBox != null && (boxDTO.getId() == null || !boxDTO.getId().equals(oldBox.getId()))
                  && !oldBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)){
@@ -198,17 +206,12 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 throw new BankServiceException("此冻存盒编码已存在！",oldBox.getFrozenBoxCode());
             }
 
-            FrozenBox box = frozenBoxMapper.frozenBoxDTOToFrozenBox(boxDTO);
+            FrozenBox box = frozenBoxMapper.frozenBoxForSaveBatchDTOToFrozenBox(boxDTO);
             box = (FrozenBox) EntityUtil.avoidFieldValueNull(box);
             if (oldBox != null) {
                 box.setId(oldBox.getId());
             }
-            if (box.getProject() != null){
-                Project project = projectRepository.findOne(box.getProject().getId());
-                box.setProject(project);
-                box.setProjectCode(project.getProjectCode());
-                box.setProjectName(project.getProjectName());
-            } else if (tranship.getProject() != null ) {
+            if (tranship.getProject() != null ) {
                 Project project = tranship.getProject();
                 box.setProject(project);
                 box.setProjectCode(project.getProjectCode());
@@ -220,7 +223,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 box.setEquipment(equipment);
                 box.setEquipmentCode(equipment.getEquipmentCode());
             } else {
-                // 把盒子位置信息单独拿出来放一个表
                 box.setEquipment(null);
                 box.setEquipmentCode(null);
             }
@@ -230,7 +232,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 box.setArea(area);
                 box.setAreaCode(area.getAreaCode());
             } else {
-                // 把盒子位置信息单独拿出来放一个表
                 box.setArea(null);
                 box.setAreaCode(null);
             }
@@ -240,17 +241,11 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 box.setSupportRack(shelf);
                 box.setSupportRackCode(shelf.getSupportRackCode());
             } else {
-                // 把盒子位置信息单独拿出来放一个表
                 box.setSupportRack(null);
                 box.setSupportRackCode(null);
             }
 
-            if (box.getProjectSite() != null) {
-                ProjectSite projectSite = projectSiteRepository.findOne(box.getProjectSite().getId());
-                box.setProjectSite(projectSite);
-                box.setProjectSiteCode(projectSite.getProjectSiteCode());
-                box.setProjectSiteName(projectSite.getProjectSiteName());
-            } else if (tranship.getProjectSite() != null) {
+            if (tranship.getProjectSite() != null) {
                 ProjectSite projectSite = tranship.getProjectSite();
                 box.setProjectSite(projectSite);
                 box.setProjectSiteCode(projectSite.getProjectSiteCode());
@@ -265,6 +260,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     box.setFrozenBoxTypeCode(boxType.getFrozenBoxTypeCode());
                     box.setFrozenBoxColumns(boxType.getFrozenBoxTypeColumns());
                     box.setFrozenBoxRows(boxType.getFrozenBoxTypeRows());
+                }else {
+                    throw new BankServiceException("冻存盒类型不能为空！",box.toString());
                 }
             }
 
@@ -275,10 +272,33 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     box.setSampleType(sampleType);
                     box.setSampleTypeCode(sampleType.getSampleTypeCode());
                     box.setSampleTypeName(sampleType.getSampleTypeName());
+                }else{
+                    throw new BankServiceException("样本类型不能为空！",box.toString());
+                }
+            }
+            if (box.getSampleClassification() != null) {
+                int boxClassificationIndex = sampleClassifications.indexOf(box.getSampleClassification());
+                if (boxClassificationIndex >= 0) {
+                    SampleClassification sampleClass = sampleClassifications.get(boxClassificationIndex);
+                    box.setSampleClassification(sampleClass);
+                }
+            }
+            //验证项目下样本类型以及样本分类的有效性
+            List<ProjectSampleClass> projectSampleClasses = projectSampleClassService.findByProjectIdAndSampleTypeIdAndSampleClassificationId(box.getProject()!=null?box.getProject().getId():null,boxDTO.getSampleTypeId(),boxDTO.getSampleClassificationId());
+            if(projectSampleClasses.size()==0){
+                throw new BankServiceException("样本类型无效！",box.toString());
+            }else{
+                if(boxDTO.getSampleClassificationId()!=null){
+                    ProjectSampleClass sampleType = projectSampleClasses.stream()
+                        .filter(s->s.getSampleClassification().getId().equals(boxDTO.getSampleClassificationId()))
+                        .findFirst().orElse(null);
+                    if(sampleType == null){
+                        throw new BankServiceException("样本类型无效！",box.toString());
+                    }
                 }
             }
             int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfSample=0;
-            for(FrozenTubeDTO tube : boxDTO.getFrozenTubeDTOS()){
+            for(FrozenTubeForSaveBatchDTO tube : boxDTO.getFrozenTubeDTOS()){
                 if(tube.getStatus().equals(Constants.FROZEN_TUBE_HOLE_EMPTY)){
                     countOfEmptyHole++;
                 }
@@ -301,35 +321,53 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 throw new BankServiceException("冻存管的数量已经超过冻存盒的最大容量值！",box.toString());
             }
             box.setSampleNumber(countOfSample);
+            box.setStatus(Constants.FROZEN_BOX_NEW);
             box = frozenBoxRepository.save(box);
             //删除冻存管
             frozenTubeRepository.deleteByFrozenBoxCode(box.getFrozenBoxCode());
-            for(FrozenTubeDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
-                FrozenTube tube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
+            for(FrozenTubeForSaveBatchDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
+                FrozenTube tube = frozenTubeMapper.frozenTubeForSaveBatchDTOToFrozenTube(tubeDTO);
 
                 tube = (FrozenTube) EntityUtil.avoidFieldValueNull(tube);
-
-                if (tube.getSampleTypeCode() == null){
-                    tube.setSampleTypeCode(box.getSampleTypeCode());
+                if (tube.getSampleType() == null){
+                    tube.setSampleType(box.getSampleType());
                 } else {
-//                    FrozenTube finalTube = tube;
-//                    SampleType sampleType = sampleTypes.stream()
-//                        .filter(s->s.getSampleTypeCode().equals(finalTube.getSampleTypeCode()))
-//                        .findFirst().orElse(null);
-                    SampleType sampleType = new SampleType();
-                    for(SampleType sam :sampleTypes){
-                        if(tube.getSampleTypeCode().equals(sam.getSampleTypeCode())){
-                            sampleType = sam;
-                        }
-                    }
-                    if(sampleType!=null){
+                    int sampleTypeIndex = sampleTypes.indexOf(box.getSampleType());
+                    if (sampleTypeIndex >= 0) {
+                        SampleType sampleType = sampleTypes.get(sampleTypeIndex);
                         tube.setSampleType(sampleType);
-                    }else{
-                        tube.setSampleType(tube.getSampleType());
+                    } else {
+                        tube.getSampleType().setSampleTypeCode(tube.getSampleTypeCode());
                         tube.getSampleType().setSampleTypeName(tube.getSampleTypeName());
                     }
                 }
-                tube.setSampleType(tube.getSampleType());
+
+                if (tube.getSampleClassification() == null){
+                    tube.setSampleClassification(box.getSampleClassification());
+                } else {
+                    int sampleClassificationsIndex = sampleClassifications.indexOf(tube.getSampleClassification());
+                    if (sampleClassificationsIndex >= 0) {
+                        SampleClassification sampleClass = sampleClassifications.get(sampleClassificationsIndex);
+                        tube.setSampleClassification(sampleClass);
+                    } else {
+                       throw new BankServiceException("样本分类不能为空！");
+                    }
+                }
+                //验证项目下样本类型以及样本分类的有效性
+                List<ProjectSampleClass> projectSampleClassList = projectSampleClassService.findByProjectIdAndSampleTypeIdAndSampleClassificationId(box.getProject().getId(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
+                if(projectSampleClassList.size()==0){
+                    throw new BankServiceException("样本类型无效！",box.toString());
+                }else{
+                    if(tubeDTO.getSampleClassificationId()!=null){
+                        ProjectSampleClass sampleType = projectSampleClassList.stream()
+                            .filter(s->s.getSampleClassification().getId().equals(tubeDTO.getSampleClassificationId()))
+                            .findFirst().orElse(null);
+                        if(sampleType == null){
+                            throw new BankServiceException("样本类型无效！",box.toString());
+                        }
+                    }
+                }
+                tube.setSampleTypeCode(tube.getSampleType().getSampleTypeCode());
                 tube.setSampleTypeName(tube.getSampleType().getSampleTypeName());
 
                 tube.setFrozenBox(box);
@@ -340,7 +378,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     tube.setProjectCode(box.getProjectCode());
                 } else {
                     Project project = projectRepository.findOne(tube.getProject().getId());
-                    tube.setProject(project);
+                    tube.setProject(box.getProject());
                     tube.setProjectCode(project.getProjectCode());
                 }
 
@@ -382,82 +420,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             result.getFrozenBoxDTOList().add(frozenBoxMapper.frozenBoxToFrozenBoxDTO(box));
         }
         return result;
-
-//        Long transhipId = transhipBoxListDTO.getTranshipId();
-//        List<FrozenBoxDTO> frozenBoxDTOList = transhipBoxListDTO.getFrozenBoxDTOList();
-//        frozenBoxDTOList = createFrozenBoxAndTubeDetail(frozenBoxDTOList);
-//        //保存冻存盒
-//        Tranship tranship = new Tranship();tranship.setId(transhipId);
-//        List<FrozenBoxDTO> frozenBoxDTOLists =  frozenBoxMapper.frozenTranshipAndBoxToFrozenBoxDTOList(frozenBoxDTOList,tranship);
-//        List<FrozenBox> frozenBoxes =  frozenBoxService.saveBatch(frozenBoxDTOLists);
-//        List<FrozenBoxDTO> frozenBoxDTOListLast = frozenBoxMapper.frozenBoxesToFrozenBoxDTOs(frozenBoxes);
-//
-//        //保存冻存盒和转运的关系
-//        List<TranshipBoxDTO> transhipBoxDTOList = new ArrayList<TranshipBoxDTO>();
-//        for(FrozenBoxDTO boxDTO : frozenBoxDTOListLast){
-//            TranshipBoxDTO transhipBoxDTO = frozenBoxMapper.frozenBoxToTranshipBoxDTO(boxDTO);
-//            transhipBoxDTOList.add(transhipBoxDTO);
-//        }
-//        List<TranshipBoxDTO> transhipBoxes =  this.saveBatch(transhipBoxDTOList);
-//
-//        //保存冻存管
-////        List<FrozenTubeDTO> frozenTubeDTOList = frozenTubeMapper.frozenBoxAndTubeToFrozenTubeDTOList(frozenBoxDTOList,frozenBoxes);
-//        List<FrozenTubeDTO> frozenTubeDTOList = transhipService.getFrozenTubeDTOList(frozenBoxDTOList,frozenBoxes);
-//        List<FrozenTube> frozenTubes =  frozenTubeService.saveBatch(frozenTubeDTOList);
-//        List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubes);
-//        List<FrozenBoxDTO> alist = transhipService.getFrozenBoxDtoList(frozenBoxDTOListLast,frozenTubeDTOS);
-//        transhipBoxListDTO.setFrozenBoxDTOList(alist);
-//        return transhipBoxListDTO;
     }
-
-    /**
-     * 删除冻存管，冻存盒，转运盒子
-     * @param transhipBoxListDTO
-     */
-    public void deleteTranshipBoxAndTube(TranshipBoxListDTO transhipBoxListDTO) {
-        List<FrozenBoxDTO> frozenBoxDTOList = transhipBoxListDTO.getFrozenBoxDTOList();
-        for(FrozenBoxDTO box:frozenBoxDTOList){
-            transhipBoxRepository.deleteByFrozenBoxId(box.getId());
-
-//            FrozenBox frozenBox = frozenBoxService.findFrozenBoxDetailsByBoxCode(box.getFrozenBoxCode());
-//            if(frozenBox != null){
-//                List<FrozenTube> frozenTubeS = frozenTubeService.findFrozenTubeListByBoxId(frozenBox.getId());
-//                for(FrozenTube tube: frozenTubeS){
-//                    //删除管子
-//                    frozenTubeService.delete(tube.getId());
-//                }
-//                //删除转运盒子
-//                transhipBoxRepository.deleteByFrozenBoxId(box.getId());
-//                //删除盒子
-//                frozenBoxService.delete(frozenBox.getId());
-//            }
-        }
-    }
-
-    public List<FrozenBoxDTO> createFrozenBoxAndTubeDetail(List<FrozenBoxDTO> frozenBoxDTOList) {
-        List<FrozenBoxDTO> dtos = new ArrayList<FrozenBoxDTO>();
-
-        List<FrozenBoxTypeDTO> frozenBoxTypeDTOList = frozenBoxTypeService.findAllFrozenBoxTypes();
-        List<SampleTypeDTO> sampleTypeDTOS = sampleTypeService.findAllSampleTypes();
-        for(FrozenBoxDTO box :frozenBoxDTOList){
-            for(FrozenBoxTypeDTO boxType: frozenBoxTypeDTOList){
-                if(box.getFrozenBoxTypeId().equals(boxType.getId())){
-                    box.setFrozenBoxColumns(boxType.getFrozenBoxTypeColumns());
-                    box.setFrozenBoxTypeCode(boxType.getFrozenBoxTypeCode());
-                    box.setFrozenBoxRows(boxType.getFrozenBoxTypeRows());
-                }
-            }
-            for(SampleTypeDTO sampleType : sampleTypeDTOS){
-                if(box.getSampleTypeId().equals(sampleType.getId())){
-                    box.setSampleTypeName(sampleType.getSampleTypeName());
-                    box.setSampleTypeCode(sampleType.getSampleTypeCode());
-                }
-            }
-            dtos.add(box);
-        }
-        return dtos;
-    }
-
 
 
     @Override

@@ -179,7 +179,7 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @ManyToOne(optional = false)
     private SampleType sampleType;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     private SampleClassification sampleClassification;
 
     @ManyToOne

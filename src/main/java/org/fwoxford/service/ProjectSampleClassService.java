@@ -1,5 +1,6 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.ProjectSampleClass;
 import org.fwoxford.service.dto.ProjectSampleClassDTO;
 import org.fwoxford.service.dto.ProjectSampleClassificationDTO;
 import org.fwoxford.service.dto.ProjectSampleTypeDTO;
@@ -46,4 +47,6 @@ public interface ProjectSampleClassService {
     List<ProjectSampleTypeDTO> getSampleTypeByProjectId(Long projectId);
 
     List<ProjectSampleClassificationDTO> getSampleClassificationByProjectIdAndsampleTypeId(Long projectId, Long sampleTypeId);
+
+    List<ProjectSampleClass> findByProjectIdAndSampleTypeIdAndSampleClassificationId(Long projectId, Long sampleTypeId, Long sampleClassificationId);
 }

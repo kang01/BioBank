@@ -2,6 +2,7 @@ package org.fwoxford.service.mapper;
 
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
+import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
 import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
@@ -212,5 +213,30 @@ public interface FrozenBoxMapper {
         stockInBoxForDataTable.setSampleTypeName(box.getSampleTypeName());
         stockInBoxForDataTable.setStatus(box.getStatus());
         return stockInBoxForDataTable;
+    }
+
+    default FrozenBox frozenBoxForSaveBatchDTOToFrozenBox(FrozenBoxForSaveBatchDTO frozenBoxDTO){
+        if ( frozenBoxDTO == null ) {
+            return null;
+        }
+        FrozenBox frozenBox = new FrozenBox();
+        frozenBox.setArea( areaFromId( frozenBoxDTO.getAreaId() ) );
+        frozenBox.setSupportRack( supportRackFromId( frozenBoxDTO.getSupportRackId() ) );
+        frozenBox.setFrozenBoxType( frozenBoxTypeFromId( frozenBoxDTO.getFrozenBoxTypeId() ) );
+        frozenBox.setEquipment( equipmentFromId( frozenBoxDTO.getEquipmentId() ) );
+        frozenBox.setSampleType( sampleTypeFromId( frozenBoxDTO.getSampleTypeId() ) );
+        frozenBox.setId( frozenBoxDTO.getId() );
+        frozenBox.setFrozenBoxCode( frozenBoxDTO.getFrozenBoxCode() );
+        frozenBox.setSampleNumber( frozenBoxDTO.getSampleNumber() );
+        frozenBox.setIsSplit( frozenBoxDTO.getIsSplit() );
+        frozenBox.setMemo( frozenBoxDTO.getMemo() );
+        frozenBox.setStatus( frozenBoxDTO.getStatus() );
+        frozenBox.setEmptyTubeNumber( frozenBoxDTO.getEmptyTubeNumber() );
+        frozenBox.setEmptyHoleNumber( frozenBoxDTO.getEmptyHoleNumber() );
+        frozenBox.setDislocationNumber( frozenBoxDTO.getDislocationNumber() );
+        frozenBox.setIsRealData( frozenBoxDTO.getIsRealData() );
+        frozenBox.setRowsInShelf( frozenBoxDTO.getRowsInShelf() );
+        frozenBox.setColumnsInShelf( frozenBoxDTO.getColumnsInShelf() );
+        return frozenBox;
     }
 }

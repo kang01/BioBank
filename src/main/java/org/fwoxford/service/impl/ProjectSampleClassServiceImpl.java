@@ -97,7 +97,7 @@ public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
     @Override
     public List<ProjectSampleTypeDTO> getSampleTypeByProjectId(Long projectId) {
         if(projectId == null){
-            throw new BankServiceException("项目编码不能为空！",null);
+            throw new BankServiceException("项目ID不能为空！");
         }
         List<Object[]> projectSample =  projectSampleClassRepository.findSampleTypeByProject(projectId);
         List<ProjectSampleTypeDTO> projectSampleTypeDTOList = new ArrayList<>();
@@ -116,13 +116,25 @@ public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
     @Override
     public List<ProjectSampleClassificationDTO> getSampleClassificationByProjectIdAndsampleTypeId(Long projectId, Long sampleTypeId) {
         if(projectId ==null){
-            throw new BankServiceException("项目编码不能为空！",null);
+            throw new BankServiceException("项目ID不能为空！");
         }
         if(sampleTypeId ==null){
-            throw new BankServiceException("样本类型Id不能为空！",null);
+            throw new BankServiceException("样本类型Id不能为空！");
         }
         List<ProjectSampleClass> projectSampleClasses = projectSampleClassRepository.findByProjectAndSampleTypeId(projectId,sampleTypeId);
         List<ProjectSampleClassificationDTO> projectSampleClassificationDTOS = projectSampleClassMapper.projectSampleClassesToProjectClassificationDTOs(projectSampleClasses);
         return projectSampleClassificationDTOS;
+    }
+
+    @Override
+    public List<ProjectSampleClass> findByProjectIdAndSampleTypeIdAndSampleClassificationId(Long projectId, Long sampleTypeId, Long sampleClassificationId) {
+        if(projectId ==null){
+            throw new BankServiceException("项目ID不能为空！");
+        }
+        if(sampleTypeId==null){
+            throw new BankServiceException("样本类型Id不能为空！");
+        }
+        List<ProjectSampleClass> projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeId(projectId,sampleTypeId);
+        return projectSampleClass;
     }
 }

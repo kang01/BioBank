@@ -19,4 +19,8 @@ public interface ProjectSampleClassRepository extends JpaRepository<ProjectSampl
 
     @Query("select p from ProjectSampleClass p where p.project.id=?1 and p.sampleType.id=?2")
     List<ProjectSampleClass> findByProjectAndSampleTypeId(Long projectId, Long sampleTypeId);
+
+    ProjectSampleClass findByProjectIdAndSampleTypeIdAndSampleClassificationId(Long projectId, Long sampleTypeId, Long sampleClassificationId);
+
+    List<ProjectSampleClass> findByProjectIdAndSampleTypeId(Long projectId, Long sampleTypeId);
 }

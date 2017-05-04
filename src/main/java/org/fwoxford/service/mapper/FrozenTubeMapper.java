@@ -2,6 +2,7 @@ package org.fwoxford.service.mapper;
 
 import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.FrozenBoxDTO;
+import org.fwoxford.service.dto.FrozenTubeForSaveBatchDTO;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.FrozenTubeDTO;
 
@@ -122,4 +123,34 @@ public interface FrozenTubeMapper {
        }
        return frozenTubeDTOList;
    }
+
+    default FrozenTube frozenTubeForSaveBatchDTOToFrozenTube(FrozenTubeForSaveBatchDTO frozenTubeDTO){
+        if ( frozenTubeDTO == null ) {
+            return null;
+        }
+
+        FrozenTube frozenTube = new FrozenTube();
+
+        frozenTube.setFrozenBox( frozenBoxFromId( frozenTubeDTO.getFrozenBoxId() ) );
+        frozenTube.setSampleType( sampleTypeFromId( frozenTubeDTO.getSampleTypeId() ) );
+        frozenTube.setId( frozenTubeDTO.getId() );
+        frozenTube.setSampleTempCode( frozenTubeDTO.getSampleTempCode() );
+        frozenTube.setSampleCode( frozenTubeDTO.getSampleCode() );
+        frozenTube.setTubeRows( frozenTubeDTO.getTubeRows() );
+        frozenTube.setTubeColumns( frozenTubeDTO.getTubeColumns() );
+        frozenTube.setMemo( frozenTubeDTO.getMemo() );
+        frozenTube.setSampleClassification( sampleClassificationFromId( frozenTubeDTO.getSampleClassificationId() ));
+        frozenTube.setStatus( frozenTubeDTO.getStatus() );
+        frozenTube.setFrozenBoxCode( frozenTubeDTO.getFrozenBoxCode() );
+        return frozenTube;
+    }
+
+    default SampleClassification sampleClassificationFromId(Long id){
+        if (id == null) {
+            return null;
+        }
+        SampleClassification sampleClassification = new SampleClassification();
+        sampleClassification.setId(id);
+        return sampleClassification;
+    }
 }

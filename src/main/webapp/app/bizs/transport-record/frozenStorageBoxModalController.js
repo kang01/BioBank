@@ -148,6 +148,9 @@
                     areaId:vm.frozenBox.areaId,
                     frozenTubeDTOS:[]
                 };
+                if(vm.frozenBox.sampleClassificationId){
+                    vm.obox.frozenBoxDTOList[i].sampleClassificationId = vm.frozenBox.sampleClassificationId;
+                }
                 for(var j = 0; j < vm.frozenBox.frozenBoxTypeRows;j++){
                     tubeList[j] = [];
                     for(var k = 0; k < vm.frozenBox.frozenBoxTypeColumns; k++){

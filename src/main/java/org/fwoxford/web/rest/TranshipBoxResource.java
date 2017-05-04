@@ -3,12 +3,10 @@ package org.fwoxford.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.service.TranshipBoxService;
-import org.fwoxford.service.dto.FrozenBoxDTO;
-import org.fwoxford.service.dto.TranshipBoxListDTO;
+import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
-import org.fwoxford.service.dto.TranshipBoxDTO;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -76,12 +74,12 @@ public class TranshipBoxResource {
      */
     @PutMapping("/tranship-boxes/batch")
     @Timed
-    public ResponseEntity<TranshipBoxListDTO> updateTranshipBox(@Valid @RequestBody TranshipBoxListDTO transhipBoxListDTO) throws URISyntaxException {
+    public ResponseEntity<TranshipBoxListForSaveBatchDTO> updateTranshipBox(@Valid @RequestBody TranshipBoxListDTO transhipBoxListDTO) throws URISyntaxException {
         log.debug("REST request to update TranshipBox : {}", transhipBoxListDTO);
         if (transhipBoxListDTO.getTranshipId() == null) {
             return createTranshipBox(transhipBoxListDTO);
         }
-        TranshipBoxListDTO result = transhipBoxService.saveBatchTranshipBox(transhipBoxListDTO);
+        TranshipBoxListForSaveBatchDTO result = transhipBoxService.saveBatchTranshipBox(transhipBoxListDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipBoxListDTO.getTranshipId().toString()))
             .body(result);
@@ -140,9 +138,9 @@ public class TranshipBoxResource {
      */
     @PostMapping("/tranship-boxes/batch")
     @Timed
-    public ResponseEntity<TranshipBoxListDTO> createTranshipBox(@Valid @RequestBody TranshipBoxListDTO transhipBoxListDTO) throws URISyntaxException {
+    public ResponseEntity<TranshipBoxListForSaveBatchDTO> createTranshipBox(@Valid @RequestBody TranshipBoxListDTO transhipBoxListDTO) throws URISyntaxException {
         log.debug("REST request to save TranshipBox : {}", transhipBoxListDTO);
-        TranshipBoxListDTO result = transhipBoxService.saveBatchTranshipBox(transhipBoxListDTO);
+        TranshipBoxListForSaveBatchDTO result = transhipBoxService.saveBatchTranshipBox(transhipBoxListDTO);
         return ResponseEntity.created(new URI("/api/frozen-boxes/id/" + result.getTranshipId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getTranshipId().toString()))
             .body(result);
@@ -171,5 +169,18 @@ public class TranshipBoxResource {
         log.debug("REST request to delete TranshipBox : {}", frozenBoxCode);
         transhipBoxService.deleteTranshipBoxByFrozenBox(frozenBoxCode);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, frozenBoxCode)).build();
+    }
+
+    /**
+     * 根据转运编码查询冻存盒编码List
+     * @param transhipCode
+     * @return
+     */
+    @GetMapping("/tranship-boxes/transhipCode/{transhipCode}")
+    @Timed
+    public ResponseEntity<List<FrozenBoxCodeForTranshipDTO>> getFrozenBoxCodeByTranshipCode(@PathVariable String transhipCode) {
+        log.debug("REST request to get FrozenBox : {}", transhipCode);
+        List<FrozenBoxCodeForTranshipDTO> res = transhipBoxService.getFrozenBoxCodeByTranshipCode(transhipCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

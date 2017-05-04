@@ -30,6 +30,8 @@
                 "storageInBOx": "Storage In B Ox",
                 "frozenBoxPosition": "Frozen Box Position",
                 "stockInTubes": "Stock In Tubes",
+                "sampleClassification": "Sample Classification",
+                "projectSampleClass": "Project Sample Class",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
                 "transportrecord":"转运记录"
             },

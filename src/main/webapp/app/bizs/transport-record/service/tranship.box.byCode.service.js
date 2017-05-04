@@ -12,7 +12,7 @@
     TranshipBoxByCodeService.$inject = ['$resource'];
 
     function TranshipBoxByCodeService ($resource) {
-        var service = $resource('api/frozen-boxes/tranship/:code', {}, {
+        var service = $resource('api/tranship-boxes/transhipCode/:code', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

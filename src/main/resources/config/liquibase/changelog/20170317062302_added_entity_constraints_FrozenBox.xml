@@ -50,5 +50,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="support_rack"/>
 
+        <addForeignKeyConstraint baseColumnNames="sample_classification_id"
+                                 baseTableName="frozen_box"
+                                 constraintName="fk_frozen_box_sample_class_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_class"/>
+
     </changeSet>
 </databaseChangeLog>

@@ -9,10 +9,10 @@
         .controller('StockInNewController', StockInNewController);
 
     StockInNewController.$inject = ['$timeout','blockUI','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
-        'entity','AlertService','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','StockInSaveService',
+        'entity','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','StockInSaveService',
         'SampleTypeService','SampleService','IncompleteBoxService']
     function StockInNewController($timeout,blockUI,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
-                                  entity,AlertService,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,StockInSaveService,
+                                  entity,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,StockInSaveService,
                                   SampleTypeService,SampleService,IncompleteBoxService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
@@ -353,7 +353,7 @@
                 }
             });
             modalInstance.result.then(function (data) {
-                $state.go('stock-in')
+                $state.go('stock-in');
 
                 // _blockUiStart(blockUiMessage);
                 // StockInSaveService.saveStockIn(vm.stockInCode).success(function (data) {
@@ -376,7 +376,7 @@
 
 
         //样本类型
-        vm.loadBox = function () {
+        vm.loadBoxSample = function () {
             SampleTypeService.query({},onSampleTypeSuccess, onError);
         };
         vm.frozenTubeArray = [];//初始管子的单元格
@@ -385,23 +385,84 @@
         var selectList = [];//选择单元格的管子数据
         var size = 10;
         var htm;
-        vm.loadBox();
+        vm.loadBoxSample();
+        // 创建一个对象用于管子Table的控件
+        function _createTubeForTableCell(tubeInBox, box, pos){
+            var tube = {
+                id: null,
+                sampleCode: "",
+                sampleTempCode: "",
+                sampleTypeId: box.sampleTypeId,
+                sampleTypeCode: box.sampleTypeCode,
+                frozenBoxId: box.id,
+                frozenBoxCode: box.frozenBoxCode,
+                frozenTubeCode: box.frozenBoxCode,
+                status: "",
+                memo: "",
+                tubeRows: pos.tubeRows,
+                tubeColumns: pos.tubeColumns
+            };
+            if (tubeInBox){
+                tube.id = tubeInBox.id;
+                tube.sampleCode = tubeInBox.sampleCode;
+                tube.sampleTempCode = tubeInBox.sampleTempCode;
+                tube.sampleTypeId = tubeInBox.sampleTypeId;
+                tube.sampleTypeCode = tubeInBox.sampleTypeCode;
+                tube.status = tubeInBox.status;
+                tube.memo = tubeInBox.memo;
+            }
+            return tube;
+        }
         //根据盒子编码取管子
         function _fnTubeByBoxCode(code) {
             StockInBoxByCodeService.get({code:code},onFrozenSuccess,onError);
             function onFrozenSuccess(data) {
+                // console.log(JSON.stringify(data));
                 vm.box =  data;
                 vm.splittingBox = true;
-                initFrozenTube(data.frozenBoxRows);
-                vm.loadBox();
-                for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
-                    var tube = vm.box.frozenTubeDTOS[k];
-                    vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
+                var settings = {
+                    minCols: +vm.box.frozenBoxColumns,
+                    minRows: +vm.box.frozenBoxRows
+                };
+                var tubesInTable = [];
+                var colHeaders = [];
+                var rowHeaders = [];
+                for(var i = 0; i < settings.minRows; i++){
+                    var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
+                    if(i > 7){
+                        pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1)
+                    }
+                    rowHeaders.push(pos.tubeRows);
+                    var tubes = [];
+                    for(var j = 0; j < settings.minCols;j++){
+                        pos.tubeColumns = j + 1 + "";
+                        if (colHeaders.length < settings.minCols){
+                            colHeaders.push(pos.tubeColumns);
+                        }
+                        var tubeInBox = _.filter(vm.box.frozenTubeDTOS, pos)[0];
+                        var tube = _createTubeForTableCell(tubeInBox, vm.box, pos);
+                        tubes.push(tube);
+                    }
+                    tubesInTable.push(tubes);
                 }
+                vm.frozenTubeArray = tubesInTable;
+                settings.rowHeaders = rowHeaders;
+                settings.colHeaders = colHeaders;
+                // initFrozenTube(vm.box.frozenBoxRows,vm.box.frozenBoxColumns);
+
+                vm.loadBoxSample();
+
+                // for(var k = 0; k < vm.box.frozenTubeDTOS.length; k++){
+                //     var tube = vm.box.frozenTubeDTOS[k];
+                //     vm.frozenTubeArray[getTubeRowIndex(tube.tubeRows)][getTubeColumnIndex(tube.tubeColumns)] = tube;
+                // }
+                setTimeout(function () {
+                    hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
+                    hotRegisterer.getInstance('my-handsontable').loadData(tubesInTable);
+                    hotRegisterer.getInstance('my-handsontable').render();
+                },500)
             }
-            setTimeout(function () {
-                hotRegisterer.getInstance('my-handsontable').render();
-            },500)
+
 
 
         }
@@ -442,7 +503,7 @@
         }
 
         function onError(error) {
-            AlertService.error(error.data.message);
+            toastr.error(error.data.message);
         }
         //盒子编码太长时，用星号代替
         function _fnReplaceBoxCode(code) {
@@ -450,10 +511,10 @@
             return code;
         }
         //初始管子数
-        function initFrozenTube(size) {
-            for(var i = 0; i < size; i++){
+        function initFrozenTube(row,col) {
+            for(var i = 0; i < +row; i++){
                 vm.frozenTubeArray[i] = [];
-                for(var j = 0;j < size; j++){
+                for(var j = 0;j < +col; j++){
                     vm.frozenTubeArray[i][j] = "";
                 }
             }
@@ -521,7 +582,6 @@
             rowHeaders : ['A','B','C','D','E','F','G','H','J','K'],
             minRows: 10,
             minCols: 10,
-            data:vm.frozenTubeArray,
             renderer:vm.customRenderer,
             fillHandle:false,
             stretchH: 'all',
@@ -700,12 +760,10 @@
                     }
                 }
             }
-            // console.log(JSON.stringify(vm.boxList))
         };
 
         //保存分装结果
         vm.saveBox = function () {
-            // console.log(JSON.stringify(vm.frozenTubeArray))
             _blockUiStart(blockUiMessage);
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).success(function (data) {
                 _blockUiStop();

@@ -137,7 +137,7 @@
                     bRegex: true,
                     bSmart: true
                 }, {
-                    type: 'text',
+                    type: 'Datepicker',
                     bRegex: true,
                     bSmart: true
                 }, {

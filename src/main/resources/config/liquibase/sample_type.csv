@@ -1,12 +1,6 @@
 sample_type_code;sample_type_name;front_color;back_color;memo;status;created_by;last_modified_by
-S_TYPE_00001;血浆-紫1;black;rgb(240,224,255);;0001;system;system
-S_TYPE_00002;血浆-紫2;black;rgb(240,224,255);;0001;system;system
-S_TYPE_00003;白细胞-白;black;rgb(255,255,255);;0001;system;system
-S_TYPE_00004;白细胞-灰;black;rgb(236,236,236);;0001;system;system
-S_TYPE_00005;血浆-绿1;black;rgb(179,255,179);;0001;system;system
-S_TYPE_00006;血浆-绿2;black;rgb(179,255,179);;0001;system;system
-S_TYPE_00007;血清-红1;black;rgb(255,179,179);;0001;system;system
-S_TYPE_00008;血清-红2;black;rgb(255,179,179);;0001;system;system
-S_TYPE_00009;尿-黄1;black;rgb(255,255,179);;0001;system;system
-S_TYPE_00010;尿-黄2;black;rgb(255,255,179);;0001;system;system
+S_TYPE_00001;血浆1;black;rgb(240,224,255);;0001;system;system
+S_TYPE_00002;白细胞;black;rgb(255,255,255);;0001;system;system
+S_TYPE_00003;血清;black;rgb(255,179,179);;0001;system;system
+S_TYPE_00004;尿;black;rgb(255,255,179);;0001;system;system
 S_TYPE_00011;99;black; ;;0001;system;system

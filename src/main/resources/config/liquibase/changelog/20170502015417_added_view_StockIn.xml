@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockIns.
+    -->
+    <changeSet id="20170502015417-2" author="jhipster">
+
+        <createView viewName="view_stock_in">
+            select
+            s.id as id,
+            (select count(*) from stock_in_box a where a.stock_in_code = s.stock_in_code and a.status!='2003') as count_Of_box ,
+            s.project_code as project_code,
+            s.project_site_code as project_site_code,
+            s.receive_date as record_date,
+            s.status as status, s.stock_in_code as stock_in_code,
+            s.stock_in_date as stock_in_date,
+            (select u.last_name from jhi_user u where u.id=s.store_keeper_id_1) as store_keeper_1,
+            (select u.last_name from jhi_user u where u.id=s.store_keeper_id_2) as store_keeper_2,
+            t.effective_sample_number as count_of_sample,
+            t.tranship_code
+            from stock_in s left join tranship t on s.tranship_id=t.id
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

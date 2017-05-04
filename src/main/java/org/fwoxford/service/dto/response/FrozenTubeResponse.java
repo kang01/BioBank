@@ -104,6 +104,8 @@ public class FrozenTubeResponse {
 
     private Long frozenBoxId;
 
+    private Long sampleClassificationId;
+
     public Long getId() {
         return id;
     }
@@ -254,5 +256,13 @@ public class FrozenTubeResponse {
 
     public void setFrozenBoxId(Long frozenBoxId) {
         this.frozenBoxId = frozenBoxId;
+    }
+
+    public Long getSampleClassificationId() {
+        return sampleClassificationId;
+    }
+
+    public void setSampleClassificationId(Long sampleClassificationId) {
+        this.sampleClassificationId = sampleClassificationId;
     }
 }

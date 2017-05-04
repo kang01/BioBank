@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiParam;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.StockIn;
 import org.fwoxford.domain.StockInBox;
+import org.fwoxford.domain.StockInForDataTableEntity;
 import org.fwoxford.domain.User;
 import org.fwoxford.repository.StockInBoxRepository;
 import org.fwoxford.security.SecurityUtils;
@@ -183,55 +184,8 @@ public class StockInResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-in", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<StockInForDataTable> getPageStockIn(@RequestBody DataTablesInput input) {
-        DataTablesOutput<StockIn> stockInDataTablesOutput = stockInService.findStockIn(input);
-        List<StockIn> stockIns =  stockInDataTablesOutput.getData();
-        List<User> userList = userService.findAll();
-        for(StockIn t :stockIns){
-            for(User u :userList){
-                if(t.getStoreKeeperId1()!=null&&t.getStoreKeeperId1().equals(u.getId())){
-                    t.setStoreKeeper1(u.getLastName()+u.getFirstName());
-                }
-                if(t.getStoreKeeperId2()!=null&&t.getStoreKeeperId2().equals(u.getId())){
-                    t.setStoreKeeper2(u.getLastName()+u.getFirstName());
-                }
-            }
-        }
-        //构造返回列表
-        List<StockInForDataTable> stockInDTOS = stockInMapper.stockInsToStockInTables(stockIns);
-        List<StockInForDataTable> stockInList = new ArrayList<StockInForDataTable>();
-
-        for(StockInForDataTable s:stockInDTOS){
-            List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(s.getStockInCode());
-            int countOfBox = 0;
-            for(StockInBox stockInBox :stockInBoxes){
-                if(!stockInBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED))
-                    countOfBox++;
-            }
-            s.setCountOfBox(countOfBox);
-            stockInList.add(s);
-        }
-        List<Order> orders = input.getOrder();
-        List<Column> column = input.getColumns();
-        for(Order o :orders){
-            if(column.get(o.getColumn()).getData().equals("countOfBox")){
-                Collections.sort(stockInList, new Comparator<StockInForDataTable>() {
-                    @Override
-                    public int compare(StockInForDataTable o1, StockInForDataTable o2) {
-                       return o.getDir().equals("asc")?o1.getCountOfBox().compareTo(o2.getCountOfBox()):o2.getCountOfBox().compareTo(o1.getCountOfBox());
-                    }
-                });
-            }
-        }
-
-        //构造返回分页数据
-        DataTablesOutput<StockInForDataTable> responseDataTablesOutput = new DataTablesOutput<>();
-        responseDataTablesOutput.setDraw(stockInDataTablesOutput.getDraw());
-        responseDataTablesOutput.setError(stockInDataTablesOutput.getError());
-        responseDataTablesOutput.setData(stockInList);
-        responseDataTablesOutput.setRecordsFiltered(stockInDataTablesOutput.getRecordsFiltered());
-        responseDataTablesOutput.setRecordsTotal(stockInDataTablesOutput.getRecordsTotal());
-        return responseDataTablesOutput;
+    public DataTablesOutput<StockInForDataTableEntity> getPageStockIn(@RequestBody DataTablesInput input) {
+        return stockInService.findStockIn(input);
     }
 
     /**

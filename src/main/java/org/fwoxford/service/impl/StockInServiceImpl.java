@@ -24,9 +24,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -253,12 +258,9 @@ public class StockInServiceImpl implements StockInService {
         return stockInForDataDetail;
     }
     @Override
-    public DataTablesOutput<StockIn> findStockIn(DataTablesInput input) {
-        //重新构造input
-        DataTablesInput inputs = createStockInFroDataTableInput(input);
-
+    public DataTablesOutput<StockInForDataTableEntity> findStockIn(DataTablesInput input) {
         //获取入库列表
-        DataTablesOutput<StockIn> stockInDataTablesOutput =  stockInRepositries.findAll(inputs);
+        DataTablesOutput<StockInForDataTableEntity> stockInDataTablesOutput =  stockInRepositries.findAll(input);
         return stockInDataTablesOutput;
     }
 
@@ -267,22 +269,10 @@ public class StockInServiceImpl implements StockInService {
         dataTablesInput.setSearch(input.getSearch());
         dataTablesInput.setDraw(input.getDraw());
         dataTablesInput.setLength(input.getLength());
-
         dataTablesInput.setStart(input.getStart());
-
-        List<Order> newOrders = new ArrayList<Order>();
+        dataTablesInput.setOrder(input.getOrder());
         List<Column> newColumns = new ArrayList<Column>();
-
-        List<Order> orders = input.getOrder();
         List<Column> columns = input.getColumns();
-
-
-        Search searches = dataTablesInput.getSearch();
-        for(Order o:orders){
-            if(!columns.get(o.getColumn()).getData().equals("countOfBox")){
-                newOrders.add(o);
-            }
-        }
         for(Column c:columns){
             Column column = new Column();
             column.setSearch(c.getSearch());
@@ -300,8 +290,6 @@ public class StockInServiceImpl implements StockInService {
             }
             newColumns.add(column);
         }
-
-        dataTablesInput.setOrder(newOrders);
         dataTablesInput.setColumns(newColumns);
         dataTablesInput.addColumn("stockInCode", true, true, "");
         return dataTablesInput;

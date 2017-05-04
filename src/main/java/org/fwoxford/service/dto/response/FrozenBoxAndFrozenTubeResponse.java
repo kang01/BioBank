@@ -71,7 +71,13 @@ public class FrozenBoxAndFrozenTubeResponse {
      * 样本类型ID
      */
     private Long sampleTypeId;
-
+    /**
+     * 样本分类ID
+     */
+    private Long sampleClassificationId;
+    /**
+     * 样本类型编码
+     */
     private String sampleTypeCode;
     /**
      * 设备ID
@@ -192,6 +198,14 @@ public class FrozenBoxAndFrozenTubeResponse {
 
     public void setSampleTypeId(Long sampleTypeId) {
         this.sampleTypeId = sampleTypeId;
+    }
+
+    public Long getSampleClassificationId() {
+        return sampleClassificationId;
+    }
+
+    public void setSampleClassificationId(Long sampleClassificationId) {
+        this.sampleClassificationId = sampleClassificationId;
     }
 
     public List<FrozenTubeResponse> getFrozenTubeDTOS() {

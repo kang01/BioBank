@@ -67,22 +67,30 @@
                   separator=";"
                   tableName="support_rack"/>
 
+        <!--<loadData encoding="UTF-8"-->
+                  <!--file="config/liquibase/tranship.csv"-->
+                  <!--separator=";"-->
+                  <!--tableName="tranship"/>-->
+        <!--<loadData encoding="UTF-8"-->
+                  <!--file="config/liquibase/frozen_box.csv"-->
+                  <!--separator=";"-->
+                  <!--tableName="frozen_box"/>-->
+        <!--<loadData encoding="UTF-8"-->
+                  <!--file="config/liquibase/tranship_box.csv"-->
+                  <!--separator=";"-->
+                  <!--tableName="tranship_box"/>-->
+        <!--<loadData encoding="UTF-8"-->
+                  <!--file="config/liquibase/frozen_tube.csv"-->
+                  <!--separator=";"-->
+                  <!--tableName="frozen_tube"/>-->
         <loadData encoding="UTF-8"
-                  file="config/liquibase/tranship.csv"
+                  file="config/liquibase/sample_class.csv"
                   separator=";"
-                  tableName="tranship"/>
+                  tableName="sample_class"/>
         <loadData encoding="UTF-8"
-                  file="config/liquibase/frozen_box.csv"
+                  file="config/liquibase/project_sample.csv"
                   separator=";"
-                  tableName="frozen_box"/>
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/tranship_box.csv"
-                  separator=";"
-                  tableName="tranship_box"/>
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/frozen_tube.csv"
-                  separator=";"
-                  tableName="frozen_tube"/>
+                  tableName="project_sample"/>
     </changeSet>
     <!--初始化数据 end -->
 </databaseChangeLog>

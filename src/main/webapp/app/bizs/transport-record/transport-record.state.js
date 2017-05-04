@@ -88,7 +88,7 @@
                             receiveDate: new Date(),
                             receiver:null,
                             sampleNumber:0,//样本人份
-                            sampleSatisfaction: 10,
+                            sampleSatisfaction: 8,
                             trackNumber: null,
                             transhipBatch: 1,
                             transhipDate:new Date(),

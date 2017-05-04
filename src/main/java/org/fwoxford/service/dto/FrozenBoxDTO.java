@@ -151,6 +151,10 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
      */
     private Long sampleTypeId;
     /**
+     *样本分类ID
+     */
+    private Long sampleClassificationId;
+    /**
      * 项目ID
      */
     private Long projectId;
@@ -364,6 +368,14 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSampleTypeId(Long sampleTypeId) {
         this.sampleTypeId = sampleTypeId;
+    }
+
+    public Long getSampleClassificationId() {
+        return sampleClassificationId;
+    }
+
+    public void setSampleClassificationId(Long sampleClassificationId) {
+        this.sampleClassificationId = sampleClassificationId;
     }
 
     public Long getProjectId() {

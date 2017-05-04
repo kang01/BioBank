@@ -1,0 +1,78 @@
+<div>
+    <h2 data-translate="bioBankApp.projectSampleClass.home.title">Project Sample Classes</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="project-sample-class.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.projectSampleClass.home.createLabel">
+                        Create new Project Sample Class
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectCode"><span data-translate="bioBankApp.projectSampleClass.projectCode">Project Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.projectSampleClass.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.projectSampleClass.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="columnsNumber"><span data-translate="bioBankApp.projectSampleClass.columnsNumber">Columns Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectId"><span data-translate="bioBankApp.projectSampleClass.project">Project</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="sampleTypeId"><span data-translate="bioBankApp.projectSampleClass.sampleType">Sample Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="sampleClassificationId"><span data-translate="bioBankApp.projectSampleClass.sampleClassification">Sample Classification</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="projectSampleClass in vm.projectSampleClasses track by projectSampleClass.id">
+                    <td><a ui-sref="project-sample-class-detail({id:projectSampleClass.id})">{{projectSampleClass.id}}</a></td>
+                    <td>{{projectSampleClass.projectCode}}</td>
+                    <td>{{projectSampleClass.status}}</td>
+                    <td>{{projectSampleClass.memo}}</td>
+                    <td>{{projectSampleClass.columnsNumber}}</td>
+                    <td>
+                        <a ui-sref="project-detail({id:projectSampleClass.projectId})">{{projectSampleClass.projectId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="sample-type-detail({id:projectSampleClass.sampleTypeId})">{{projectSampleClass.sampleTypeId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="sample-classification-detail({id:projectSampleClass.sampleClassificationId})">{{projectSampleClass.sampleClassificationId}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="project-sample-class-detail({id:projectSampleClass.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="project-sample-class.edit({id:projectSampleClass.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="project-sample-class.delete({id:projectSampleClass.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

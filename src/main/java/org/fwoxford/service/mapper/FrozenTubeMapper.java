@@ -99,6 +99,7 @@ public interface FrozenTubeMapper {
         res.setSampleTypeCode(tube.getSampleTypeCode());
         res.setSampleTypeId(tube.getSampleType()!=null?tube.getSampleType().getId():null);
         res.setSampleTypeName(tube.getSampleTypeName());
+        res.setSampleClassificationId(tube.getSampleClassification()!=null?tube.getSampleClassification().getId():null);
         res.setStatus(tube.getStatus());
         res.setTubeColumns(tube.getTubeColumns());
         res.setTubeRows(tube.getTubeRows());

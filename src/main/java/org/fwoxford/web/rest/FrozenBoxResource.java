@@ -174,7 +174,7 @@ public class FrozenBoxResource {
     }
 
     /**
-     * 根据转运编码查询冻存盒列表
+     * 根据转运编码查询冻存盒和冻存管列表
      * @param transhipCode
      * @return
      */

@@ -95,11 +95,11 @@ public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
     }
 
     @Override
-    public List<ProjectSampleTypeDTO> getSampleTypeByProjectCode(String projectCode) {
-        if(StringUtils.isEmpty(projectCode)){
-            throw new BankServiceException("项目编码不能为空！",projectCode);
+    public List<ProjectSampleTypeDTO> getSampleTypeByProjectId(Long projectId) {
+        if(projectId == null){
+            throw new BankServiceException("项目编码不能为空！",null);
         }
-        List<Object[]> projectSample =  projectSampleClassRepository.findSampleTypeByProject(projectCode);
+        List<Object[]> projectSample =  projectSampleClassRepository.findSampleTypeByProject(projectId);
         List<ProjectSampleTypeDTO> projectSampleTypeDTOList = new ArrayList<>();
         for(int i= 0 ;i<projectSample.size();i++){
             Object[] obj = projectSample.get(i);
@@ -114,14 +114,14 @@ public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
     }
 
     @Override
-    public List<ProjectSampleClassificationDTO> getSampleClassificationByProjectCodeAndsampleTypeId(String projectCode, Long sampleTypeId) {
-        if(StringUtils.isEmpty(projectCode)){
-            throw new BankServiceException("项目编码不能为空！",projectCode);
+    public List<ProjectSampleClassificationDTO> getSampleClassificationByProjectIdAndsampleTypeId(Long projectId, Long sampleTypeId) {
+        if(projectId ==null){
+            throw new BankServiceException("项目编码不能为空！",null);
         }
         if(sampleTypeId ==null){
-            throw new BankServiceException("样本类型Id不能为空！",projectCode);
+            throw new BankServiceException("样本类型Id不能为空！",null);
         }
-        List<ProjectSampleClass> projectSampleClasses = projectSampleClassRepository.findByProjectCodeAndSampleTypeId(projectCode,sampleTypeId);
+        List<ProjectSampleClass> projectSampleClasses = projectSampleClassRepository.findByProjectAndSampleTypeId(projectId,sampleTypeId);
         List<ProjectSampleClassificationDTO> projectSampleClassificationDTOS = projectSampleClassMapper.projectSampleClassesToProjectClassificationDTOs(projectSampleClasses);
         return projectSampleClassificationDTOS;
     }

@@ -14,9 +14,9 @@ import java.util.List;
 public interface ProjectSampleClassRepository extends JpaRepository<ProjectSampleClass,Long> {
 
     @Query(value="select t.sample_type_id as sampleTypeId,s.sample_type_name as sampleTypeName from project_sample  t\n" +
-        "left join sample_type s on t.sample_type_id=s.id where t.project_code=?1 group by t.sample_type_id,s.sample_type_name",nativeQuery = true)
-    List<Object[]> findSampleTypeByProject(String projectCode);
+        "left join sample_type s on t.sample_type_id=s.id where t.project_id=?1 group by t.sample_type_id,s.sample_type_name",nativeQuery = true)
+    List<Object[]> findSampleTypeByProject(Long projectCode);
 
-    @Query("select p from ProjectSampleClass p where p.projectCode=?1 and p.sampleType.id=?2")
-    List<ProjectSampleClass> findByProjectCodeAndSampleTypeId(String projectCode, Long sampleTypeId);
+    @Query("select p from ProjectSampleClass p where p.project.id=?1 and p.sampleType.id=?2")
+    List<ProjectSampleClass> findByProjectAndSampleTypeId(Long projectId, Long sampleTypeId);
 }

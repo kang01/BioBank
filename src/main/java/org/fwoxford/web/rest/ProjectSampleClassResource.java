@@ -132,33 +132,33 @@ public class ProjectSampleClassResource {
     //如果样本类型为99,则不需要查询样本分类,直接返回样本分类,若不是99,则需要查询样本分类,再根据项目编码,样本类型,样本分类,查询样本类型信息
 
     /**
-     * 根据项目编码查询样本类型
-     * @param projectCode
+     * 根据项目Id查询样本类型
+     * @param projectId
      * @return
      * @throws URISyntaxException
      */
-    @GetMapping("/project-sample-classes/projectCode/{projectCode}")
+    @GetMapping("/project-sample-classes/projectId/{projectId}")
     @Timed
-    public ResponseEntity<List<ProjectSampleTypeDTO>> getSampleTypeByProjectCode(@PathVariable String projectCode)
+    public ResponseEntity<List<ProjectSampleTypeDTO>> getSampleTypeByProjectId(@PathVariable Long projectId)
         throws URISyntaxException {
         log.debug("REST request to get a page of ProjectSampleClasses");
-        List<ProjectSampleTypeDTO> result = projectSampleClassService.getSampleTypeByProjectCode(projectCode);
+        List<ProjectSampleTypeDTO> result = projectSampleClassService.getSampleTypeByProjectId(projectId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
     /**
-     * 根据项目编码，样本类型ID，查询样本分类
-     * @param projectCode
+     * 根据项目ID，样本类型ID，查询样本分类
+     * @param projectId
      * @param sampleTypeId
      * @return
      * @throws URISyntaxException
      */
-    @GetMapping("/project-sample-classes/projectCode/{projectCode}/sampleTypeId/{sampleTypeId}")
+    @GetMapping("/project-sample-classes/projectId/{projectId}/sampleTypeId/{sampleTypeId}")
     @Timed
-    public ResponseEntity<List<ProjectSampleClassificationDTO>> getSampleClassificationByProjectCodeAndsampleTypeId(@PathVariable String projectCode, @PathVariable Long sampleTypeId)
+    public ResponseEntity<List<ProjectSampleClassificationDTO>> getSampleClassificationByProjectCodeAndsampleTypeId(@PathVariable Long projectId, @PathVariable Long sampleTypeId)
         throws URISyntaxException {
         log.debug("REST request to get a page of ProjectSampleClasses");
-        List<ProjectSampleClassificationDTO> result = projectSampleClassService.getSampleClassificationByProjectCodeAndsampleTypeId(projectCode,sampleTypeId);
+        List<ProjectSampleClassificationDTO> result = projectSampleClassService.getSampleClassificationByProjectIdAndsampleTypeId(projectId,sampleTypeId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 }

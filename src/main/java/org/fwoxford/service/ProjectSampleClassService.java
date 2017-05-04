@@ -43,7 +43,7 @@ public interface ProjectSampleClassService {
      */
     void delete(Long id);
 
-    List<ProjectSampleTypeDTO> getSampleTypeByProjectCode(String projectCode);
+    List<ProjectSampleTypeDTO> getSampleTypeByProjectId(Long projectId);
 
-    List<ProjectSampleClassificationDTO> getSampleClassificationByProjectCodeAndsampleTypeId(String projectCode, Long sampleTypeId);
+    List<ProjectSampleClassificationDTO> getSampleClassificationByProjectIdAndsampleTypeId(Long projectId, Long sampleTypeId);
 }

@@ -393,6 +393,7 @@
                 sampleCode: "",
                 sampleTempCode: "",
                 sampleTypeId: box.sampleTypeId,
+                sampleTypeCode: box.sampleTypeCode,
                 frozenBoxId: box.id,
                 frozenBoxCode: box.frozenBoxCode,
                 frozenTubeCode: box.frozenBoxCode,

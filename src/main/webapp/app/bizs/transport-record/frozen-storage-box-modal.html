@@ -7,12 +7,11 @@
         <div class="form-group col-sm-3">
             <div class="row">
                 <label  class="col-sm-5 control-label p-r-6">
-                    <span class="required-field"></span>
                     样本类型
                 </label>
                 <div class="col-sm-7" >
                     <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                               ng-model="vm.frozenBox.sampleTypeCode"></selectize>
+                               ng-model="vm.frozenBox.sampleTypeId"></selectize>
                 </div>
             </div>
 
@@ -20,12 +19,11 @@
         <div class="form-group col-sm-3">
             <div class="row">
                 <label  class="col-sm-5 control-label p-r-6">
-                    <span class="required-field"></span>
                     样本分类
                 </label>
                 <div class="col-sm-7" >
-                    <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                               ng-model="vm.frozenBox.sampleTypeCode"></selectize>
+                    <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
+                               ng-model="vm.frozenBox.sampleClassificationId"></selectize>
                 </div>
             </div>
 
@@ -33,7 +31,6 @@
         <div class="form-group col-sm-3">
             <div class="row">
                 <label  class="col-sm-5 control-label p-r-6">
-                    <span class="required-field"></span>
                     盒类型
                 </label>
                 <div class="col-sm-7">
@@ -64,7 +61,7 @@
             <div>
                 <p>导入冻存盒</p>
             </div>
-            <selectize placeholder='' options='vm.myOptions' config="vm.myConfig" ng-model="vm.arrayBoxCode" ng-disabled='disable' required='true' style="height:368px;"></selectize>
+            <selectize placeholder='' options='vm.myOptions' config="vm.boxCodeConfig" ng-model="vm.arrayBoxCode" ng-disabled='disable' required='true' style="height:368px;"></selectize>
         </div>
         <div class="col-md-10">
 

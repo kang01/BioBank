@@ -462,6 +462,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 tubeResponse.setSampleTypeCode(tube.getSampleTypeCode());
                 tubeResponse.setSampleTypeId(tube.getSampleType()!=null?tube.getSampleType().getId():null);
                 tubeResponse.setSampleTypeName(tube.getSampleTypeName());
+                tubeResponse.setSampleClassificationId(tube.getSampleClassification()!=null?tube.getSampleClassification().getId():null);
                 tubeResponse.setStatus(tube.getStatus());
                 tubeResponse.setTubeColumns(inTube.getColumnsInTube());
                 tubeResponse.setTubeRows(inTube.getRowsInTube());

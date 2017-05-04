@@ -1,6 +1,8 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.ProjectSampleClassDTO;
+import org.fwoxford.service.dto.ProjectSampleClassificationDTO;
+import org.fwoxford.service.dto.ProjectSampleTypeDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -20,7 +22,7 @@ public interface ProjectSampleClassService {
 
     /**
      *  Get all the projectSampleClasses.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +42,8 @@ public interface ProjectSampleClassService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    List<ProjectSampleTypeDTO> getSampleTypeByProjectCode(String projectCode);
+
+    List<ProjectSampleClassificationDTO> getSampleClassificationByProjectCodeAndsampleTypeId(String projectCode, Long sampleTypeId);
 }

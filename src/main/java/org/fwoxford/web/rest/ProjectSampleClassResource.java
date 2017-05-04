@@ -2,6 +2,8 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.ProjectSampleClassService;
+import org.fwoxford.service.dto.ProjectSampleClassificationDTO;
+import org.fwoxford.service.dto.ProjectSampleTypeDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.ProjectSampleClassDTO;
@@ -34,7 +36,7 @@ public class ProjectSampleClassResource {
     private final Logger log = LoggerFactory.getLogger(ProjectSampleClassResource.class);
 
     private static final String ENTITY_NAME = "projectSampleClass";
-        
+
     private final ProjectSampleClassService projectSampleClassService;
 
     public ProjectSampleClassResource(ProjectSampleClassService projectSampleClassService) {
@@ -127,5 +129,36 @@ public class ProjectSampleClassResource {
         projectSampleClassService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+    //如果样本类型为99,则不需要查询样本分类,直接返回样本分类,若不是99,则需要查询样本分类,再根据项目编码,样本类型,样本分类,查询样本类型信息
 
+    /**
+     * 根据项目编码查询样本类型
+     * @param projectCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/project-sample-classes/projectCode/{projectCode}")
+    @Timed
+    public ResponseEntity<List<ProjectSampleTypeDTO>> getSampleTypeByProjectCode(@PathVariable String projectCode)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of ProjectSampleClasses");
+        List<ProjectSampleTypeDTO> result = projectSampleClassService.getSampleTypeByProjectCode(projectCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+
+    /**
+     * 根据项目编码，样本类型ID，查询样本分类
+     * @param projectCode
+     * @param sampleTypeId
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/project-sample-classes/projectCode/{projectCode}/sampleTypeId/{sampleTypeId}")
+    @Timed
+    public ResponseEntity<List<ProjectSampleClassificationDTO>> getSampleClassificationByProjectCodeAndsampleTypeId(@PathVariable String projectCode, @PathVariable Long sampleTypeId)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of ProjectSampleClasses");
+        List<ProjectSampleClassificationDTO> result = projectSampleClassService.getSampleClassificationByProjectCodeAndsampleTypeId(projectCode,sampleTypeId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
 }

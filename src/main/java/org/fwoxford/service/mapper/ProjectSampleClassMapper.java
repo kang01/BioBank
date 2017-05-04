@@ -3,7 +3,10 @@ package org.fwoxford.service.mapper;
 import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.ProjectSampleClassDTO;
 
+import org.fwoxford.service.dto.ProjectSampleClassificationDTO;
 import org.mapstruct.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,5 +54,29 @@ public interface ProjectSampleClassMapper {
         SampleClassification sampleClassification = new SampleClassification();
         sampleClassification.setId(id);
         return sampleClassification;
+    }
+
+    default List<ProjectSampleClassificationDTO> projectSampleClassesToProjectClassificationDTOs(List<ProjectSampleClass> projectSampleClasses){
+        if(projectSampleClasses == null){
+            return null;
+        }
+        List<ProjectSampleClassificationDTO> projectSampleClassificationDTOS = new ArrayList<ProjectSampleClassificationDTO>();
+        for(ProjectSampleClass p: projectSampleClasses){
+            projectSampleClassificationDTOS.add(projectSampleClassToProjectClassificationDTO(p));
+        }
+        return projectSampleClassificationDTOS;
+    }
+
+    default ProjectSampleClassificationDTO projectSampleClassToProjectClassificationDTO(ProjectSampleClass p){
+        if(p == null){
+            return null;
+        }
+        ProjectSampleClassificationDTO dto = new ProjectSampleClassificationDTO();
+        dto.setSampleClassficationName(p.getSampleClassification().getSampleClassificationName());
+        dto.setSampleClassificationId(p.getSampleClassification().getId());
+        dto.setBackColor(p.getSampleClassification().getBackColor());
+        dto.setFrontColor(p.getSampleClassification().getFrontColor());
+        dto.setColumnsNumber(p.getColumnsNumber());
+        return dto;
     }
 }

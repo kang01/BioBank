@@ -4,14 +4,19 @@ import org.fwoxford.service.ProjectSampleClassService;
 import org.fwoxford.domain.ProjectSampleClass;
 import org.fwoxford.repository.ProjectSampleClassRepository;
 import org.fwoxford.service.dto.ProjectSampleClassDTO;
+import org.fwoxford.service.dto.ProjectSampleClassificationDTO;
+import org.fwoxford.service.dto.ProjectSampleTypeDTO;
 import org.fwoxford.service.mapper.ProjectSampleClassMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +29,7 @@ import java.util.stream.Collectors;
 public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
 
     private final Logger log = LoggerFactory.getLogger(ProjectSampleClassServiceImpl.class);
-    
+
     private final ProjectSampleClassRepository projectSampleClassRepository;
 
     private final ProjectSampleClassMapper projectSampleClassMapper;
@@ -51,7 +56,7 @@ public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
 
     /**
      *  Get all the projectSampleClasses.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +92,37 @@ public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
     public void delete(Long id) {
         log.debug("Request to delete ProjectSampleClass : {}", id);
         projectSampleClassRepository.delete(id);
+    }
+
+    @Override
+    public List<ProjectSampleTypeDTO> getSampleTypeByProjectCode(String projectCode) {
+        if(StringUtils.isEmpty(projectCode)){
+            throw new BankServiceException("项目编码不能为空！",projectCode);
+        }
+        List<Object[]> projectSample =  projectSampleClassRepository.findSampleTypeByProject(projectCode);
+        List<ProjectSampleTypeDTO> projectSampleTypeDTOList = new ArrayList<>();
+        for(int i= 0 ;i<projectSample.size();i++){
+            Object[] obj = projectSample.get(i);
+            Long sampleTypeId = Long.valueOf(obj[0].toString());
+            String sampleTypeName = obj[1].toString();
+            ProjectSampleTypeDTO projectSampleTypeDTO = new ProjectSampleTypeDTO();
+            projectSampleTypeDTO.setSampleTypeId(sampleTypeId);
+            projectSampleTypeDTO.setSampleTypeName(sampleTypeName);
+            projectSampleTypeDTOList.add(projectSampleTypeDTO);
+        }
+        return projectSampleTypeDTOList;
+    }
+
+    @Override
+    public List<ProjectSampleClassificationDTO> getSampleClassificationByProjectCodeAndsampleTypeId(String projectCode, Long sampleTypeId) {
+        if(StringUtils.isEmpty(projectCode)){
+            throw new BankServiceException("项目编码不能为空！",projectCode);
+        }
+        if(sampleTypeId ==null){
+            throw new BankServiceException("样本类型Id不能为空！",projectCode);
+        }
+        List<ProjectSampleClass> projectSampleClasses = projectSampleClassRepository.findByProjectCodeAndSampleTypeId(projectCode,sampleTypeId);
+        List<ProjectSampleClassificationDTO> projectSampleClassificationDTOS = projectSampleClassMapper.projectSampleClassesToProjectClassificationDTOs(projectSampleClasses);
+        return projectSampleClassificationDTOS;
     }
 }

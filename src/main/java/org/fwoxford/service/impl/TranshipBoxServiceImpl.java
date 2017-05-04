@@ -448,21 +448,13 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             for(StockInTubes inTube:stockInTubes){
                 FrozenTubeResponse tubeResponse = new FrozenTubeResponse();
                 FrozenTube tube = inTube.getFrozenTube();
-                tubeResponse.setProjectId(tube.getProject()!=null?tube.getProject().getId():null);
-                tubeResponse.setProjectCode(tube.getProjectCode());
                 tubeResponse.setId(tube.getId());
-                tubeResponse.setErrorType(tube.getErrorType());
-                tubeResponse.setFrozenTubeCode(tube.getFrozenTubeCode());
-                tubeResponse.setFrozenTubeTypeCode(tube.getFrozenTubeTypeCode());
-                tubeResponse.setFrozenTubeTypeId(tube.getFrozenTubeType()!=null?tube.getFrozenTubeType().getId():null);
+                tubeResponse.setFrozenTubeType(tube.getFrozenTubeType());
                 tubeResponse.setMemo(tube.getMemo());
-                tubeResponse.setFrozenTubeTypeName(tube.getFrozenTubeTypeName());
                 tubeResponse.setSampleCode(tube.getSampleCode());
                 tubeResponse.setSampleTempCode(tube.getSampleTempCode());
-                tubeResponse.setSampleTypeCode(tube.getSampleTypeCode());
-                tubeResponse.setSampleTypeId(tube.getSampleType()!=null?tube.getSampleType().getId():null);
-                tubeResponse.setSampleTypeName(tube.getSampleTypeName());
-                tubeResponse.setSampleClassificationId(tube.getSampleClassification()!=null?tube.getSampleClassification().getId():null);
+                tubeResponse.setSampleType(tube.getSampleType());
+                tubeResponse.setSampleClassification(tube.getSampleClassification());
                 tubeResponse.setStatus(tube.getStatus());
                 tubeResponse.setTubeColumns(inTube.getColumnsInTube());
                 tubeResponse.setTubeRows(inTube.getRowsInTube());

@@ -46,6 +46,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="count_of_sample" type="bigint" remarks="样本数量">
+                <constraints nullable="false" />
+            </column>
+
             <column name="stock_in_id" type="bigint" remarks="入库ID">
                 <constraints nullable="false" />
             </column>

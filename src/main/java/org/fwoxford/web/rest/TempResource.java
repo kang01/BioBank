@@ -182,19 +182,13 @@ public class TempResource {
 
         res.setStatus("2001");
         res.setId(id);
-        res.setFrozenBoxTypeId(17L);
-        res.setSampleTypeId(typeDTO.getId());
-
+//        res.setFrozenBoxType();
+//        res.setSampleType(typeDTO);
         res.setEquipmentId(23L);
-        res.setEquipmentCode("F3-01");
         res.setAreaId(24L);
-        res.setAreaCode("S01");
         res.setSupportRackId(29L);
-        res.setSupportRackCode("R01");
 
         res.setFrozenBoxCode(frozenBoxCode);
-        res.setFrozenBoxColumns("10");
-        res.setFrozenBoxRows("10");
 
         res.setIsSplit(0);
         res.setFrozenTubeDTOS(new ArrayList<>());
@@ -202,18 +196,9 @@ public class TempResource {
             FrozenTubeResponse tube = new FrozenTubeResponse();
             tube.setId((id - 1) * 100 + i);
             tube.setStatus("3001");
-            tube.setProjectId(1L);
-            tube.setProjectCode("1234567890");
 
-            tube.setSampleTypeId(typeDTO.getId());
-            tube.setSampleTypeCode(typeDTO.getSampleTypeCode());
-            tube.setSampleTypeName(typeDTO.getSampleTypeName());
-
-            tube.setFrozenTubeTypeId(1L);
-            tube.setFrozenTubeTypeName("");
-
-//            tube.setSampleCode("");
-            tube.setFrozenTubeCode("");
+//            tube.setSampleType(typeDTO);
+//            tube.setFrozenTubeType(1L);
 
             tube.setTubeColumns((i % 10 + 1) + "");
             tube.setTubeRows(String.valueOf((char) (65 + i / 10)));
@@ -221,7 +206,6 @@ public class TempResource {
 //            tube.setSampleTempCode(String.format("%s-%s%2s",  res.getFrozenBoxCode(), tube.getTubeRows(), tube.getTubeColumns()).replace(" ", "0"));
 
             tube.setMemo("");
-            tube.setErrorType("");
             res.getFrozenTubeDTOS().add(tube);
         }
 

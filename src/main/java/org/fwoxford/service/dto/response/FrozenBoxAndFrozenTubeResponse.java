@@ -1,6 +1,10 @@
 package org.fwoxford.service.dto.response;
 
 
+import org.fwoxford.domain.FrozenBoxType;
+import org.fwoxford.domain.SampleClassification;
+import org.fwoxford.domain.SampleType;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -18,36 +22,6 @@ public class FrozenBoxAndFrozenTubeResponse {
     @Size(max = 100)
     private String frozenBoxCode;
     /**
-     * 冻存盒行数
-     */
-    @NotNull
-    @Size(max = 20)
-    private String frozenBoxRows;
-    /**
-     * 冻存盒列数
-     */
-    @NotNull
-    @Size(max = 20)
-    private String frozenBoxColumns;
-    /**
-     * 设备编码
-     */
-    @NotNull
-    @Size(max = 100)
-    private String equipmentCode;
-    /**
-     * 区域编码
-     */
-    @NotNull
-    @Size(max = 100)
-    private String areaCode;
-    /**
-     * 冻存架编码
-     */
-    @NotNull
-    @Size(max = 100)
-    private String supportRackCode;
-    /**
      * 是否分装（1：是；0：否）
      */
     @NotNull
@@ -64,21 +38,18 @@ public class FrozenBoxAndFrozenTubeResponse {
     @Size(max = 20)
     private String status;
     /**
-     * 冻存盒类型ID
+     * 冻存盒类型
      */
-    private Long frozenBoxTypeId;
+    private FrozenBoxType frozenBoxType;
+
     /**
-     * 样本类型ID
+     * 样本分类
      */
-    private Long sampleTypeId;
+    private SampleClassification sampleClassification;
     /**
-     * 样本分类ID
+     * 样本类型
      */
-    private Long sampleClassificationId;
-    /**
-     * 样本类型编码
-     */
-    private String sampleTypeCode;
+    private SampleType sampleType;
     /**
      * 设备ID
      */
@@ -120,46 +91,6 @@ public class FrozenBoxAndFrozenTubeResponse {
         this.frozenBoxCode = frozenBoxCode;
     }
 
-    public String getFrozenBoxRows() {
-        return frozenBoxRows;
-    }
-
-    public void setFrozenBoxRows(String frozenBoxRows) {
-        this.frozenBoxRows = frozenBoxRows;
-    }
-
-    public String getFrozenBoxColumns() {
-        return frozenBoxColumns;
-    }
-
-    public void setFrozenBoxColumns(String frozenBoxColumns) {
-        this.frozenBoxColumns = frozenBoxColumns;
-    }
-
-    public String getEquipmentCode() {
-        return equipmentCode;
-    }
-
-    public void setEquipmentCode(String equipmentCode) {
-        this.equipmentCode = equipmentCode;
-    }
-
-    public String getAreaCode() {
-        return areaCode;
-    }
-
-    public void setAreaCode(String areaCode) {
-        this.areaCode = areaCode;
-    }
-
-    public String getSupportRackCode() {
-        return supportRackCode;
-    }
-
-    public void setSupportRackCode(String supportRackCode) {
-        this.supportRackCode = supportRackCode;
-    }
-
     public Integer getIsSplit() {
         return isSplit;
     }
@@ -182,30 +113,6 @@ public class FrozenBoxAndFrozenTubeResponse {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Long getFrozenBoxTypeId() {
-        return frozenBoxTypeId;
-    }
-
-    public void setFrozenBoxTypeId(Long frozenBoxTypeId) {
-        this.frozenBoxTypeId = frozenBoxTypeId;
-    }
-
-    public Long getSampleTypeId() {
-        return sampleTypeId;
-    }
-
-    public void setSampleTypeId(Long sampleTypeId) {
-        this.sampleTypeId = sampleTypeId;
-    }
-
-    public Long getSampleClassificationId() {
-        return sampleClassificationId;
-    }
-
-    public void setSampleClassificationId(Long sampleClassificationId) {
-        this.sampleClassificationId = sampleClassificationId;
     }
 
     public List<FrozenTubeResponse> getFrozenTubeDTOS() {
@@ -240,14 +147,6 @@ public class FrozenBoxAndFrozenTubeResponse {
         this.supportRackId = supportRackId;
     }
 
-    public String getSampleTypeCode() {
-        return sampleTypeCode;
-    }
-
-    public void setSampleTypeCode(String sampleTypeCode) {
-        this.sampleTypeCode = sampleTypeCode;
-    }
-
     public String getRowsInShelf() {
         return rowsInShelf;
     }
@@ -262,5 +161,29 @@ public class FrozenBoxAndFrozenTubeResponse {
 
     public void setColumnsInShelf(String columnsInShelf) {
         this.columnsInShelf = columnsInShelf;
+    }
+
+    public FrozenBoxType getFrozenBoxType() {
+        return frozenBoxType;
+    }
+
+    public void setFrozenBoxType(FrozenBoxType frozenBoxType) {
+        this.frozenBoxType = frozenBoxType;
+    }
+
+    public SampleClassification getSampleClassification() {
+        return sampleClassification;
+    }
+
+    public void setSampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
+    }
+
+    public SampleType getSampleType() {
+        return sampleType;
+    }
+
+    public void setSampleType(SampleType sampleType) {
+        this.sampleType = sampleType;
     }
 }

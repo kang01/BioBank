@@ -1,5 +1,7 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.domain.SampleType;
+import org.fwoxford.repository.SampleTypeRepository;
 import org.fwoxford.service.ProjectSampleClassService;
 import org.fwoxford.domain.ProjectSampleClass;
 import org.fwoxford.repository.ProjectSampleClassRepository;
@@ -10,6 +12,7 @@ import org.fwoxford.service.mapper.ProjectSampleClassMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +36,9 @@ public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
     private final ProjectSampleClassRepository projectSampleClassRepository;
 
     private final ProjectSampleClassMapper projectSampleClassMapper;
+
+    @Autowired
+    private SampleTypeRepository sampleTypeRepository;
 
     public ProjectSampleClassServiceImpl(ProjectSampleClassRepository projectSampleClassRepository, ProjectSampleClassMapper projectSampleClassMapper) {
         this.projectSampleClassRepository = projectSampleClassRepository;
@@ -101,13 +107,23 @@ public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
         }
         List<Object[]> projectSample =  projectSampleClassRepository.findSampleTypeByProject(projectId);
         List<ProjectSampleTypeDTO> projectSampleTypeDTOList = new ArrayList<>();
+        List<SampleType> sampleTypeList = sampleTypeRepository.findAll();
         for(int i= 0 ;i<projectSample.size();i++){
             Object[] obj = projectSample.get(i);
             Long sampleTypeId = Long.valueOf(obj[0].toString());
             String sampleTypeName = obj[1].toString();
+            SampleType sampleType = new SampleType();
+            for(SampleType s :sampleTypeList){
+                if(s.getId()==sampleTypeId){
+                    sampleType = s;
+                }
+            }
             ProjectSampleTypeDTO projectSampleTypeDTO = new ProjectSampleTypeDTO();
             projectSampleTypeDTO.setSampleTypeId(sampleTypeId);
             projectSampleTypeDTO.setSampleTypeName(sampleTypeName);
+
+            projectSampleTypeDTO.setBackColor(sampleType!=null?sampleType.getBackColor():null);
+            projectSampleTypeDTO.setFrontColor(sampleType!=null?sampleType.getFrontColor():null);
             projectSampleTypeDTOList.add(projectSampleTypeDTO);
         }
         return projectSampleTypeDTOList;

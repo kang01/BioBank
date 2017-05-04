@@ -6,7 +6,8 @@ package org.fwoxford.service.dto;
 public class ProjectSampleTypeDTO {
     private Long sampleTypeId;
     private String sampleTypeName;
-
+    private String frontColor;
+    private String backColor;
     public Long getSampleTypeId() {
         return sampleTypeId;
     }
@@ -21,5 +22,21 @@ public class ProjectSampleTypeDTO {
 
     public void setSampleTypeName(String sampleTypeName) {
         this.sampleTypeName = sampleTypeName;
+    }
+
+    public String getFrontColor() {
+        return frontColor;
+    }
+
+    public void setFrontColor(String frontColor) {
+        this.frontColor = frontColor;
+    }
+
+    public String getBackColor() {
+        return backColor;
+    }
+
+    public void setBackColor(String backColor) {
+        this.backColor = backColor;
     }
 }

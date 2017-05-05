@@ -162,8 +162,8 @@
                 case '2006': status = '已上架'; break;
             }
             // $('td:eq(2)', row).html(sampleType);
-            $('td:eq(5)', row).html(isSplit ? '需要分装' : '');
-            $('td:eq(6)', row).html(status);
+            $('td:eq(6)', row).html(isSplit ? '需要分装' : '');
+            $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function _fnActionButtonsRender(data, type, full, meta) {
@@ -213,6 +213,7 @@
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {
                         type: 'select',
                         bRegex: true,
@@ -249,6 +250,7 @@
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
                 DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
+                DTColumnBuilder.newColumn('sampleClassificationName').withOption("width", "80").withTitle('样本分类'),
                 DTColumnBuilder.newColumn('position').withOption("width", "auto").withTitle('冻存位置'),
                 DTColumnBuilder.newColumn('countOfSample').withOption("width", "90").withTitle('样本量'),
                 DTColumnBuilder.newColumn('isSplit').withOption("width", "100").withTitle('是否分装'),
@@ -371,13 +373,14 @@
             return vm.splittingBox && true;
         };
 
-
-
-
-
         //样本类型
         vm.loadBoxSample = function () {
-            SampleTypeService.query({},onSampleTypeSuccess, onError);
+            //获取样本类型
+            function _fnQuerySampleType() {
+                SampleTypeService.querySampleType().success(function (data) {
+                    vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['esc']);
+                });
+            }
         };
         vm.frozenTubeArray = [];//初始管子的单元格
         vm.incompleteBoxesList = []; //分装后的样本类型盒子，未装满样本的盒子

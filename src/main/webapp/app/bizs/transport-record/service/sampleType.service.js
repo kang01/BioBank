@@ -15,8 +15,10 @@
           querySampleType:_querySampleType,
           queryProjectSampleClasses:_queryProjectSampleClasses
         };
-        function _querySampleType(projectId) {
-            return $http.get('api/project-sample-classes/projectId/'+projectId)
+        function _querySampleType() {
+
+            // return $http.get('api/project-sample-classes/projectId/'+projectId)
+            return $http.get('api/sample-types/all')
         }
         function _queryProjectSampleClasses(projectId,sampleTypeId) {
             return $http.get('api/project-sample-classes/projectId/'+projectId+'/sampleTypeId/'+sampleTypeId)

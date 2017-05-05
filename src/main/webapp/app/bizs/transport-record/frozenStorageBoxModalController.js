@@ -43,7 +43,7 @@
             onChange:function (value) {
                 vm.frozenBox.sampleTypeId = value;
                 _fnQueryProjectSampleClass(vm.items.projectId,value)
-                _fnInitBoxInfo();
+
             }
         };
         vm.projectSampleTypeConfig = {
@@ -135,7 +135,8 @@
         function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.projectSampleTypeOptions = data;
-                vm.frozenBox.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId
+                vm.frozenBox.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                _fnInitBoxInfo();
             });
         }
         function _fnInitBoxInfo() {

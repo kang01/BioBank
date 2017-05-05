@@ -334,7 +334,7 @@
                             }
                         }
 
-                        vm.box.sampleClassificationId = 100;
+                        vm.box.sampleClassificationId = "";
                     }else{
                         vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
                         for (var i = 0; i < vm.frozenTubeArray.length; i++) {
@@ -659,7 +659,7 @@
                     sampleTempCode: "",
                     sampleTypeId: box.sampleType.id,
                     // sampleTypeCode: box.sampleType.sampleTypeCode,
-                    sampleClassificationId: box.sampleClassification.id,
+                    // sampleClassificationId: box.sampleClassification.id,
                     frozenBoxId: box.frozenBoxType.id,
                     frozenBoxCode: box.frozenBoxCode,
                     status: "",
@@ -669,6 +669,9 @@
                     rowNO: rowNO,
                     colNO: colNO
                 };
+                if(box.sampleClassificationId){
+                    tube.sampleClassificationId = box.sampleClassificationId
+                }
                 if (tubeInBox){
                     tube.id = tubeInBox.id;
                     tube.sampleCode = tubeInBox.sampleCode;
@@ -1065,8 +1068,14 @@
                 vm.box.frozenBoxTypeId = data.frozenBoxType.id;
                 vm.box.sampleTypeId = data.sampleType.id;
                 vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,vm.box.sampleTypeId);
-                vm.box.sampleClassificationId = data.sampleClassification.id;
-
+                if(data.sampleClassification){
+                    vm.box.sampleClassificationId = data.sampleClassification.id;
+                }
+                if(vm.box.sampleTypeId == 5){
+                    vm.sampleClassFlag = true;
+                }else{
+                    vm.sampleClassFlag = false;
+                }
                 if(vm.box.equipmentId){
                     AreasByEquipmentIdService.query({id:vm.box.equipmentId},onAreaSuccess, onError);
                 }

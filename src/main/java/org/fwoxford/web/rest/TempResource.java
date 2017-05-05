@@ -327,8 +327,6 @@ public class TempResource {
         for(int i = 0; i<countOfSample; ++i){
             StockInTubeForBox tube = new StockInTubeForBox();
             tube.setId((id - 1) * 100 + i);
-            tube.setFrozenTubeCode("123456789-"+i);
-            tube.setSampleType(sampleTypeMapper.sampleTypeDTOToSampleType(typeDTO));
             tube.setFrozenBoxCode(frozenBoxCode);
             tube.setTubeColumns((i % 10 + 1) + "");
             tube.setTubeRows(String.valueOf((char) (65 + i / 10)));

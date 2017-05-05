@@ -6,10 +6,7 @@ import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
-import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
-import org.fwoxford.service.dto.response.StockInBoxDetail;
-import org.fwoxford.service.dto.response.StockInBoxForChangingPosition;
-import org.fwoxford.service.dto.response.StockInBoxForDataTable;
+import org.fwoxford.service.dto.response.*;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -268,6 +265,18 @@ public class FrozenBoxResource {
     @RequestMapping(value = "/frozen-boxes/incomplete-boxes/project/{projectCode}/type/{sampleTypeCode}/stockIn/{stockInCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
     public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxesByStockIn(@PathVariable String projectCode, @PathVariable String sampleTypeCode,@PathVariable String stockInCode) {
         List<StockInBoxForChangingPosition> boxes =  frozenBoxService.getIncompleteFrozenBoxesByStockIn(projectCode,sampleTypeCode,stockInCode);
+        return boxes;
+    }
+
+    /**
+     * 输入被分装的冻存盒编码和项目编码，返回该入库单的未装满的盒子的信息
+     * @param frozenBoxCode
+     * @param stockInCode
+     * @return
+     */
+    @RequestMapping(value = "/frozen-boxes/incomplete-boxes/frozenBox/{frozenBoxCode}/stockIn/{stockInCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public List<StockInBoxForIncomplete> getIncompleteFrozenBoxeList( @PathVariable String frozenBoxCode, @PathVariable String stockInCode) {
+        List<StockInBoxForIncomplete> boxes =  frozenBoxService.getIncompleteFrozenBoxeList(frozenBoxCode,stockInCode);
         return boxes;
     }
 }

@@ -180,9 +180,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxDetail.setFrozenBoxCode(boxCode);
         stockInBoxDetail.setMemo(frozenBox.getMemo());
         stockInBoxDetail.setStockInCode(stockInCode);
-        //todo 修改为count 查询
-        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(boxCode, Constants.FROZEN_TUBE_NORMAL);
-        stockInBoxDetail.setCountOfSample(frozenTubes.size());
+        int number = frozenTubeRepository.countByFrozenBoxCodeAndStatus(boxCode, Constants.FROZEN_TUBE_NORMAL);
+        stockInBoxDetail.setCountOfSample(number);
         stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
         stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
         stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
@@ -195,7 +194,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxDetail.setFrozenBoxRows(frozenBox.getFrozenBoxRows());
         stockInBoxDetail.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
         stockInBoxDetail.setStatus(frozenBox.getStatus());
-
         return stockInBoxDetail;
     }
 
@@ -313,6 +311,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         int equipmentIndex = equipments.indexOf(equipment);
         if (equipmentIndex >= 0){
             equipment = equipments.get(equipmentIndex);
+        }else{
+            equipment = frozenBox.getEquipment();
         }
         frozenBoxNew.setEquipment(equipment!=null&&equipment.getId()!=null?equipment:null);
         frozenBoxNew.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():new String(""));
@@ -323,6 +323,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         if (areaIndex >= 0){
             area = areas.get(areaIndex);
+        }else {
+            area = frozenBox.getArea();
         }
 
         frozenBoxNew.setArea(area!=null&&area.getId()!=null?area:null);
@@ -332,6 +334,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         int supportIndex = supportRacks.indexOf(supportRack);
         if (supportIndex >= 0){
             supportRack = supportRacks.get(supportIndex);
+        }else{
+            supportRack = frozenBox.getSupportRack();
         }
         frozenBoxNew.setSupportRack(supportRack!=null&&supportRack.getId()!=null?supportRack:null);
         frozenBoxNew.setSupportRackCode(supportRack!=null?supportRack.getSupportRackCode():new String(""));

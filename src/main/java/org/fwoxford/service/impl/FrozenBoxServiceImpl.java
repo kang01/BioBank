@@ -2,14 +2,8 @@ package org.fwoxford.service.impl;
 
 import oracle.jdbc.driver.Const;
 import org.fwoxford.config.Constants;
-import org.fwoxford.domain.Equipment;
-import org.fwoxford.domain.FrozenBox;
-import org.fwoxford.domain.FrozenTube;
-import org.fwoxford.domain.Tranship;
-import org.fwoxford.repository.FrozenBoxRepositories;
-import org.fwoxford.repository.FrozenBoxRepository;
-import org.fwoxford.repository.FrozenTubeRepository;
-import org.fwoxford.repository.TranshipRepository;
+import org.fwoxford.domain.*;
+import org.fwoxford.repository.*;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
@@ -26,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.core.support.ExampleMatcherAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +62,12 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
     private SampleTypeMapper sampleTypeMapper;
     @Autowired
     private FrozenBoxTypeMapper frozenBoxTypeMapper;
+    @Autowired
+    private ProjectSampleClassRepository projectSampleClassRepository;
+
+    @Autowired
+    private SampleClassificationMapper sampleClassificationMapper;
+
     public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper, FrozenBoxRepositories frozenBoxRepositories) {
         this.frozenBoxRepository = frozenBoxRepository;
         this.frozenBoxMapper = frozenBoxMapper;
@@ -341,8 +342,6 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         for (FrozenTube tubes : frozenTubeList) {
             StockInTubeForBox tube = new StockInTubeForBox();
             tube.setId(tubes.getId());
-            tube.setFrozenTubeCode(tubes.getFrozenTubeCode());
-            tube.setSampleType(tubes.getSampleType());
             tube.setFrozenBoxCode(box.getFrozenBoxCode());
             tube.setTubeColumns(tubes.getTubeColumns());
             tube.setTubeRows(tubes.getTubeRows());
@@ -563,5 +562,64 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             }
         }
         return stockInBoxForChangingPositionList;
+    }
+
+    @Override
+    public List<StockInBoxForIncomplete> getIncompleteFrozenBoxeList(String frozenBoxCode, String stockInCode) {
+        List<StockInBoxForIncomplete> stockInBoxForIncompleteList = new ArrayList<StockInBoxForIncomplete>();
+
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+        SampleType sampleType = frozenBox.getSampleType();
+        if(sampleType == null){
+            throw new BankServiceException("该冻存盒没有样本类型！",frozenBoxCode);
+        }
+
+        FrozenBoxType frozenBoxType = frozenBox.getFrozenBoxType();
+        if(frozenBoxType == null){
+            throw new BankServiceException("未查询到该冻存盒的类型！",frozenBoxCode);
+        }
+        List<ProjectSampleClass> projectSampleClasses =  projectSampleClassRepository.findByProjectIdAndSampleTypeId(frozenBox.getProject().getId(),sampleType.getId());
+
+        List<Long> sampleClassificationIdStr = new ArrayList<Long>();
+
+        for(ProjectSampleClass s : projectSampleClasses ){
+            sampleClassificationIdStr.add(s.getSampleClassification().getId());
+        }
+        List<FrozenBox> frozenBoxList = new ArrayList<FrozenBox>();
+        if(sampleClassificationIdStr.size()==0) {
+            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdAndAll(frozenBoxCode, frozenBox.getProjectCode(), sampleType.getId(), stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
+        }else{
+            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdAndSampleClassificationId(frozenBoxCode, frozenBox.getProjectCode(), sampleType.getId(), sampleClassificationIdStr, stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
+        }
+        if (frozenBoxList.size() == 0) {
+            if(sampleClassificationIdStr.size()==0){
+                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdAndAll(frozenBoxCode, frozenBox.getProjectCode(), sampleType.getId(), stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+            }else{
+                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdAndSampleClassificationId(frozenBoxCode, frozenBox.getProjectCode(), sampleType.getId(), sampleClassificationIdStr, stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+            }
+        }
+
+        for(FrozenBox f :frozenBoxList){
+            StockInBoxForIncomplete stockInBoxForIncomplete = new StockInBoxForIncomplete();
+            stockInBoxForIncomplete.setCountOfSample(f.getSampleNumber());
+            stockInBoxForIncomplete.setFrozenBoxId(f.getId());
+            stockInBoxForIncomplete.setFrozenBoxCode(f.getFrozenBoxCode());
+            stockInBoxForIncomplete.setSampleTypeId(f.getSampleType().getId());
+            stockInBoxForIncomplete.setSampleClassificationDTO(sampleClassificationMapper.sampleClassificationToSampleClassificationDTO(f.getSampleClassification()));
+            List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(f.getFrozenBoxCode());
+            List<StockInTubeForBox> stockInTubeForBoxes = new ArrayList<StockInTubeForBox>();
+            for(FrozenTube t :frozenTubes){
+                StockInTubeForBox inTubeForBox = new StockInTubeForBox();
+                inTubeForBox.setId(t.getId());
+                inTubeForBox.setFrozenBoxCode(f.getFrozenBoxCode());
+                inTubeForBox.setTubeColumns(t.getTubeColumns());
+                inTubeForBox.setTubeRows(t.getTubeRows());
+                stockInTubeForBoxes.add(inTubeForBox);
+            }
+            stockInBoxForIncomplete.setStockInFrozenTubeList(stockInTubeForBoxes);
+            stockInBoxForIncompleteList.add(stockInBoxForIncomplete);
+        }
+
+        return stockInBoxForIncompleteList;
     }
 }

@@ -206,6 +206,7 @@ public interface FrozenBoxMapper {
         stockInBoxForDataTable.setFrozenBoxCode(box.getFrozenBoxCode());
         stockInBoxForDataTable.setPosition(box.getEquipmentCode()+"."+box.getAreaCode()+"."+box.getSupportRackCode()+"."+box.getColumnsInShelf()+box.getRowsInShelf());
         stockInBoxForDataTable.setSampleTypeName(box.getSampleTypeName());
+        stockInBoxForDataTable.setSampleClassificationName(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationName():null);
         stockInBoxForDataTable.setStatus(box.getStatus());
         return stockInBoxForDataTable;
     }

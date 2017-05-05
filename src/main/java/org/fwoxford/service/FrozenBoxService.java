@@ -2,10 +2,7 @@ package org.fwoxford.service;
 
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.service.dto.FrozenBoxDTO;
-import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
-import org.fwoxford.service.dto.response.StockInBoxDetail;
-import org.fwoxford.service.dto.response.StockInBoxForChangingPosition;
-import org.fwoxford.service.dto.response.StockInBoxForDataTable;
+import org.fwoxford.service.dto.response.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -123,4 +120,6 @@ public interface FrozenBoxService {
     Boolean isRepeatFrozenBoxCode(String frozenBoxCode);
 
     List<StockInBoxForChangingPosition> getIncompleteFrozenBoxesByStockIn(String projectCode, String sampleTypeCode, String stockInCode);
+
+    List<StockInBoxForIncomplete> getIncompleteFrozenBoxeList(String frozenBoxCode, String stockInCode);
 }

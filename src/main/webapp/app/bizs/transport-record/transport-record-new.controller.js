@@ -327,7 +327,13 @@
                                         }
                                     }
                             }
+                            for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
+                                if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber){
+                                    vm.box.frozenTubeDTOS[m].sampleClassification.id = data[k].sampleClassificationId
+                                }
+                            }
                         }
+
                         vm.box.sampleClassificationId = ""
                     }else{
                         vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;

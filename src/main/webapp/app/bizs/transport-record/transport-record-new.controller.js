@@ -334,7 +334,7 @@
                             }
                         }
 
-                        vm.box.sampleClassificationId = ""
+                        vm.box.sampleClassificationId = 100;
                     }else{
                         vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
                         for (var i = 0; i < vm.frozenTubeArray.length; i++) {
@@ -787,6 +787,7 @@
                     hotRegisterer.getInstance('my-handsontable').render();
                 }
             };
+            vm.sampleClassFlag = false;
             vm.sampleTypeConfig = {
                 valueField:'id',
                 labelField:'sampleTypeName',
@@ -797,7 +798,11 @@
                         sampleTypeName =  _.filter(vm.sampleTypeOptions,{'id':+value})[0].sampleTypeName;
                     }
                     vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value);
-
+                    if(value == 5){
+                        vm.sampleClassFlag = true;
+                    }else{
+                        vm.sampleClassFlag = false;
+                    }
                 }
             };
             vm.projectSampleTypeConfig = {

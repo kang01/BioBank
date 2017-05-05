@@ -18,7 +18,7 @@ public interface StockInBoxRepository extends JpaRepository<StockInBox,Long> {
 
     List<StockInBox> findStockInBoxByStockInCode(String stockInCode);
 
-    List<StockInBox> findStockInBoxByStockInCodeAndFrozenBoxCode(String stockInCode, String frozenBoxCode);
+    StockInBox findStockInBoxByStockInCodeAndFrozenBoxCode(String stockInCode, String frozenBoxCode);
 
     @Modifying
     @Query("update StockInBox t set t.status=?3 where t.stockInCode=?1 and t.frozenBoxCode=?2")

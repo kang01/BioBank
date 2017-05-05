@@ -7,6 +7,7 @@ import org.fwoxford.service.StockInBoxService;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
+import org.fwoxford.service.dto.response.StockInBoxForSplit;
 import org.fwoxford.service.dto.response.StockInBoxSplit;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -169,8 +170,8 @@ public class StockInBoxResource {
      * @throws URISyntaxException
      */
     @RequestMapping(value = "/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/splited", method = RequestMethod.PUT, produces={MediaType.APPLICATION_JSON_VALUE})
-    public List<StockInBoxSplit> splitedStockIn(@PathVariable String stockInCode,@PathVariable  String boxCode,@Valid @RequestBody  List<StockInBoxSplit> stockInBoxForDataSplit) throws URISyntaxException {
-        List<StockInBoxSplit> detail = stockInBoxService.splitedStockIn(stockInCode,boxCode,stockInBoxForDataSplit);
+    public List<StockInBoxForSplit> splitedStockIn(@PathVariable String stockInCode,@PathVariable  String boxCode,@Valid @RequestBody  List<StockInBoxForSplit> stockInBoxForDataSplit) throws URISyntaxException {
+        List<StockInBoxForSplit> detail = stockInBoxService.splitedStockIn(stockInCode,boxCode,stockInBoxForDataSplit);
         return detail;
     }
     /**

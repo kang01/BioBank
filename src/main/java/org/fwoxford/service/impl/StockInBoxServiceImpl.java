@@ -9,6 +9,7 @@ import org.fwoxford.service.dto.StockInBoxDTO;
 import org.fwoxford.service.dto.StockInTubeDTO;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
+import org.fwoxford.service.dto.response.StockInBoxForSplit;
 import org.fwoxford.service.dto.response.StockInBoxSplit;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -79,6 +80,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
     @Autowired
     private TranshipBoxRepository transhipBoxRepository;
+
+    @Autowired
+    private SampleClassificationRepository sampleClassificationRepository;
 
     public StockInBoxServiceImpl(StockInBoxRepository stockInBoxRepository, StockInBoxMapper stockInBoxMapper,
                                  StockInBoxRepositries stockInBoxRepositries,StockInRepository stockInRepository) {
@@ -165,8 +169,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     @Override
     public StockInBoxDetail getStockInBoxDetail(String stockInCode, String boxCode) {
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
-        List<StockInBox> stockInBox = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,boxCode);
-        if(stockInBox.size() == 0){
+        StockInBox stockInBox = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,boxCode);
+        if(stockInBox == null){
             throw new BankServiceException("未查询到该冻存盒的入库记录！",stockInCode+","+boxCode);
         }
         FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(boxCode);
@@ -203,7 +207,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
      * @return
      */
     @Override
-    public List<StockInBoxSplit> splitedStockIn(String stockInCode, String boxCode, List<StockInBoxSplit> stockInBoxForDataSplits) {
+    public List<StockInBoxForSplit> splitedStockIn(String stockInCode, String boxCode, List<StockInBoxForSplit> stockInBoxForDataSplits) {
         StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
         if(stockIn == null){
             throw new BankServiceException("入库记录不存在！",stockInCode);
@@ -219,35 +223,37 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             throw new BankServiceException("该冻存盒不具备分装条件！",boxCode);
         }
         List<SampleType> sampleTypes = sampleTypeRepository.findAll();
+        List<SampleClassification> sampleClassifications = sampleClassificationRepository.findAll();
         List<Equipment> equipments = equipmentRepository.findAll();
         List<Area> areas = areaRepository.findAll();
         List<SupportRack> supportRacks = supportRackRepository.findAll();
-        List<StockInBoxSplit> stockInBoxForDataSplitList = new ArrayList<StockInBoxSplit>();
+        List<StockInBoxForSplit> stockInBoxForDataSplitList = new ArrayList<StockInBoxForSplit>();
         List<FrozenBoxType> frozenBoxTypeList = frozenBoxTypeRepository.findAll();
 
-        for( StockInBoxSplit stockInBoxForDataSplit :stockInBoxForDataSplits){
-            StockInBoxSplit stockInBoxSplit = splitedStockInSave(stockInBoxForDataSplit,sampleTypes,equipments,areas,supportRacks,frozenBox,stockInCode,frozenBoxTypeList);
+        for( StockInBoxForSplit stockInBoxForDataSplit :stockInBoxForDataSplits){
+            StockInBoxForSplit stockInBoxSplit = splitedStockInSave(stockInBoxForDataSplit,sampleTypes,equipments,areas,supportRacks,frozenBox,stockInCode,frozenBoxTypeList,sampleClassifications);
             stockInBoxForDataSplitList.add(stockInBoxSplit);
         }
         //更改盒子状态
         //如果在盒子内还有剩余的管子，状态还是待入库
         List<FrozenTube> tubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(boxCode);
         FrozenBoxPosition frozenBoxPosition = frozenBoxPositionRepository.findOneByFrozenBoxIdAndStatus(frozenBox.getId(),Constants.FROZEN_BOX_SPLITING);
+        StockInBox frozenBoxForSplit = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,boxCode);
         if(tubeList.size()==0){
             frozenBox.setStatus(Constants.FROZEN_BOX_SPLITED);
-            //更改入库盒子状态
-            stockInBoxRepository.updateByStockCodeAndFrozenBoxCode(stockInCode,boxCode,Constants.FROZEN_BOX_SPLITED);
+            frozenBoxForSplit.setStatus(Constants.FROZEN_BOX_SPLITED);
             if(frozenBoxPosition!=null){
                 frozenBoxPosition.setStatus(Constants.FROZEN_BOX_SPLITED);
                 frozenBoxPositionRepository.save(frozenBoxPosition);
             }
         }
+        frozenBoxForSplit.setCountOfSample(tubeList.size());
         frozenBox.setSampleNumber(tubeList.size());
         frozenBoxRepository.save(frozenBox);
       return stockInBoxForDataSplitList;
     }
 
-    private StockInBoxSplit splitedStockInSave(StockInBoxSplit stockInBoxForDataSplit, List<SampleType> sampleTypes, List<Equipment> equipments, List<Area> areas, List<SupportRack> supportRacks, FrozenBox frozenBox, String stockInCode, List<FrozenBoxType> frozenBoxTypeList) {
+    private StockInBoxForSplit splitedStockInSave(StockInBoxForSplit stockInBoxForDataSplit, List<SampleType> sampleTypes, List<Equipment> equipments, List<Area> areas, List<SupportRack> supportRacks, FrozenBox frozenBox, String stockInCode, List<FrozenBoxType> frozenBoxTypeList,List<SampleClassification> sampleClassifications) {
         if(stockInBoxForDataSplit.getFrozenBoxTypeId()==null){
             throw new BankServiceException("冻存盒类型不能为空！",stockInBoxForDataSplit.getFrozenBoxCode());
         }
@@ -281,9 +287,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         if (boxTypeIndex >= 0){
             boxType = frozenBoxTypeList.get(boxTypeIndex);
-            stockInBoxForDataSplit.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(boxType));
-            stockInBoxForDataSplit.setFrozenBoxRows(boxType.getFrozenBoxTypeRows());
-            stockInBoxForDataSplit.setFrozenBoxColumns(boxType.getFrozenBoxTypeColumns());
         }else{
             throw new BankServiceException("冻存盒类型不存在！",stockInBoxForDataSplit.toString());
         }
@@ -298,28 +301,27 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
 
         frozenBoxNew.setFrozenBoxType(boxType);
-        frozenBoxNew.setFrozenBoxRows(stockInBoxForDataSplit.getFrozenBoxRows());
-        frozenBoxNew.setFrozenBoxColumns(stockInBoxForDataSplit.getFrozenBoxColumns());
+        frozenBoxNew.setFrozenBoxRows(boxType.getFrozenBoxTypeRows());
+        frozenBoxNew.setFrozenBoxColumns(boxType.getFrozenBoxTypeColumns());
         frozenBoxNew.setFrozenBoxTypeCode(boxType.getFrozenBoxTypeCode());
 
         frozenBoxNew.setIsRealData(frozenBox.getIsRealData());
-        frozenBoxNew.setIsSplit(stockInBoxForDataSplit.getIsSplit()!=null?stockInBoxForDataSplit.getIsSplit():Constants.NO);
+        frozenBoxNew.setIsSplit(Constants.NO);
         Equipment equipment = new Equipment();
         equipment.setId(stockInBoxForDataSplit.getEquipmentId());
         int equipmentIndex = equipments.indexOf(equipment);
         if (equipmentIndex >= 0){
             equipment = equipments.get(equipmentIndex);
-            stockInBoxForDataSplit.setEquipment(equipmentMapper.equipmentToEquipmentDTO(equipment));
         }
         frozenBoxNew.setEquipment(equipment!=null&&equipment.getId()!=null?equipment:null);
         frozenBoxNew.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():new String(""));
+
         Area area = new Area();
         area.setId(stockInBoxForDataSplit.getAreaId());
         int areaIndex = areas.indexOf(area);
 
         if (areaIndex >= 0){
             area = areas.get(areaIndex);
-            stockInBoxForDataSplit.setArea(areaMapper.areaToAreaDTO(area));
         }
 
         frozenBoxNew.setArea(area!=null&&area.getId()!=null?area:null);
@@ -329,19 +331,20 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         int supportIndex = supportRacks.indexOf(supportRack);
         if (supportIndex >= 0){
             supportRack = supportRacks.get(supportIndex);
-            stockInBoxForDataSplit.setShelf(supportRackMapper.supportRackToSupportRackDTO(supportRack));
         }
         frozenBoxNew.setSupportRack(supportRack!=null&&supportRack.getId()!=null?supportRack:null);
         frozenBoxNew.setSupportRackCode(supportRack!=null?supportRack.getSupportRackCode():new String(""));
 
-        SampleType sampleType = sampleTypes.stream().filter(s-> s.getSampleTypeCode().equals(stockInBoxForDataSplit.getSampleTypeCode())).findFirst().orElse(null);
-
-        stockInBoxForDataSplit.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(sampleType));
-        stockInBoxForDataSplit.setSampleTypeCode(sampleType.getSampleTypeCode());
+        SampleType sampleType = sampleTypes.stream().filter(s-> s.getId().equals(stockInBoxForDataSplit.getSampleTypeId())).findFirst().orElse(null);
 
         frozenBoxNew.setSampleType(sampleType);
         frozenBoxNew.setSampleTypeCode(sampleType.getSampleTypeCode());
         frozenBoxNew.setSampleTypeName(sampleType.getSampleTypeName());
+
+        //样本分类
+        SampleClassification sampleClassification = sampleClassifications.stream().filter(s->s.getId().equals(stockInBoxForDataSplit.getSampleClassificationId())).findFirst().orElse(null);
+        frozenBoxNew.setSampleClassification(sampleClassification);
+
 
         frozenBoxNew.setColumnsInShelf(stockInBoxForDataSplit.getColumnsInShelf());
         frozenBoxNew.setRowsInShelf(stockInBoxForDataSplit.getRowsInShelf());
@@ -359,14 +362,12 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBoxPosition.setStatus(Constants.FROZEN_BOX_STOCKING);
         frozenBoxPositionRepository.save(frozenBoxPosition);
         stockInBoxForDataSplit.setFrozenBoxId(frozenBoxNew.getId());
-        stockInBoxForDataSplit.setCountOfSample(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
-
         TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBoxNew.getFrozenBoxCode());
 
         //新增入库盒子
         StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
-        List<StockInBox> stockInBoxList = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBoxNew.getFrozenBoxCode());
-        StockInBox stockInBox = stockInBoxList.size()>0?stockInBoxList.get(0):new StockInBox();
+        StockInBox stockInBox = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBoxNew.getFrozenBoxCode())!=null?
+            stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBoxNew.getFrozenBoxCode()):new StockInBox();
         stockInBox.setStockIn(stockIn);
         stockInBox.setFrozenBox(frozenBoxNew);
         stockInBox.setFrozenBoxCode(frozenBoxNew.getFrozenBoxCode());
@@ -380,6 +381,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setColumnsInShelf(stockInBoxForDataSplit.getColumnsInShelf());
         stockInBox.setRowsInShelf(stockInBoxForDataSplit.getRowsInShelf());
         stockInBox.setStatus(Constants.FROZEN_BOX_STOCKING);
+        stockInBox.setCountOfSample(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
         stockInBoxRepository.save(stockInBox);
 
         stockInBoxForDataSplit.setFrozenBoxId(stockInBox.getId());
@@ -414,25 +416,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             stockInTubes.setTranshipBox(transhipBox);
             stockInTubes.setStockInBox(stockInBox);
             stockInTubesRepository.save(stockInTubes);
-//            //保存管子历史记录
-//            FrozenTubeRecord frozenTubeRecord = new FrozenTubeRecord();
-//            frozenTubeRecord.setFrozenTube(frozenTube);
-//            frozenTubeRecord.setStatus(frozenTube.getStatus());
-//            frozenTubeRecord.setProjectranshipBoxtCode(frozenTube.getProjectCode());
-//            frozenTubeRecord.setFrozenBox(frozenTube.getFrozenBox());
-//            frozenTubeRecord.setFrozenBoxCode(frozenTube.getFrozenBoxCode());
-//            frozenTubeRecord.setIsModifyPosition(tube.getIsModifyPosition()!=null?tube.getIsModifyPosition():Constants.YES);
-//            frozenTubeRecord.setIsModifyState(tube.getIsModifyState()!=null?tube.getIsModifyState():Constants.NO);
-//            frozenTubeRecord.setSampleCode(frozenTube.getSampleCode());
-//            frozenTubeRecord.setSampleTempCode(frozenTube.getSampleTempCode());
-//            frozenTubeRecord.setSampleType(frozenTube.getSampleType());
-//            frozenTubeRecord.setSampleTypeName(frozenTube.getSampleTypeName());
-//            frozenTubeRecord.setSampleTypeCode(frozenTube.getSampleTypeCode());
-//            frozenTubeRecord.setTubeRows(frozenTube.getTubeRows());
-//            frozenTubeRecord.setTubeColumns(frozenTube.getTubeColumns());
-//            frozenTubeRecord.setTubeType(frozenTube.getFrozenTubeType());
-//            frozenTubeRecord.setMemo(frozenTube.getMemo());
-//            frozenTubeRecordRepository.save(frozenTubeRecord);
             //更改管子的位置信息
             frozenTube.setFrozenBox(frozenBoxNew);
             frozenTube.setFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
@@ -460,8 +443,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(frozenBox == null){
             throw new BankServiceException("冻存盒不存在！",boxCode);
         }
-        List<StockInBox> stockInBoxList = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,boxCode);
-        if(stockInBoxList.size()==0){
+        StockInBox stockInBox = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,boxCode);
+        if(stockInBox == null){
             throw new BankServiceException("未查询到该盒子的待入库信息！",boxCode);
         }
         Equipment equipment = equipmentRepository.findOneByEquipmentCode(boxPositionDTO.getEquipmentCode());
@@ -494,7 +477,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBox.setStatus(Constants.FROZEN_BOX_PUT_SHELVES);
         frozenBoxRepository.save(frozenBox);
 
-        StockInBox stockInBox = stockInBoxList.get(0);
         stockInBox.setEquipmentCode(frozenBox.getEquipmentCode());
         stockInBox.setFrozenBox(frozenBox);
         stockInBox.setEquipment(frozenBox.getEquipment());

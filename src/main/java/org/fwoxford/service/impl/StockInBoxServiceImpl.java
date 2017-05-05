@@ -249,6 +249,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
         frozenBoxForSplit.setCountOfSample(tubeList.size());
         frozenBox.setSampleNumber(tubeList.size());
+        stockInBoxRepository.save(frozenBoxForSplit);
         frozenBoxRepository.save(frozenBox);
       return stockInBoxForDataSplitList;
     }

@@ -32,5 +32,10 @@
                                  referencedColumnNames="id"
                                  referencedTableName="area"/>
 
+        <addForeignKeyConstraint baseColumnNames="frozen_box_id"
+                                 baseTableName="stock_in_box"
+                                 constraintName="fk_stock_box_frozen_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_box"/>
     </changeSet>
 </databaseChangeLog>

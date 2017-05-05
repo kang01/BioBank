@@ -308,8 +308,10 @@ public class StockInServiceImpl implements StockInService {
         inBox.setFrozenBoxCode(box.getFrozenBoxCode());
         inBox.setStockIn(stockIn);
         inBox.setStockInCode(stockIn.getStockInCode());
+        inBox.setCountOfSample(box.getSampleNumber());
         inBox.setMemo(box.getMemo());
         inBox.setStatus(box.getStatus());
+        inBox.setFrozenBox(box);
         return inBox;
     }
 

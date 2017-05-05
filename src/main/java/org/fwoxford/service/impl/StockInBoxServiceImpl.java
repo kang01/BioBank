@@ -160,50 +160,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             throw new BankServiceException("入库记录不存在！",stockInCode);
         }
         input.addColumn("stockInCode", true, true, stockInCode);
-
-        DataTablesInput dataTablesInput = new DataTablesInput();
-        dataTablesInput.setSearch(input.getSearch());
-        dataTablesInput.setDraw(input.getDraw());
-        dataTablesInput.setLength(input.getLength());
-
-        dataTablesInput.setStart(input.getStart());
-
-        List<Order> newOrders = new ArrayList<Order>();
-        List<Column> newColumns = new ArrayList<Column>();
-
-        List<Order> orders = input.getOrder();
-        List<Column> columns = input.getColumns();
-
-
-        Search searches = dataTablesInput.getSearch();
-        for(Order o:orders){
-            if(columns.get(o.getColumn()).getData().equals("sampleTypeName")){
-
-            }
-            if(columns.get(o.getColumn()).getData().equals("position")){
-
-            }
-        }
-        for(Column c:columns){
-            Column column = new Column();
-            column.setSearch(c.getSearch());
-            column.setName(c.getName());
-            column.setOrderable(c.getOrderable());
-            column.setSearchable(c.getSearchable());
-            if(c.getData().equals("sampleTypeName")||c.getData().equals("position")
-                ||c.getData().equals("isSplit")||c.getData().equals("countOfSample")){
-                column.setData("");
-            }{
-                column.setData(c.getData());
-            }
-            newColumns.add(column);
-        }
-
-        dataTablesInput.setOrder(newOrders);
-        dataTablesInput.setColumns(newColumns);
-
-
-        DataTablesOutput<StockInBox> output =stockInBoxRepositries.findAll(dataTablesInput);
+        DataTablesOutput<StockInBox> output =stockInBoxRepositries.findAll(input);
         List<StockInBox> alist = output.getData();
 
         List<StockInBoxForDataTable> stockInBoxForDataTables = new ArrayList<StockInBoxForDataTable>();
@@ -223,22 +180,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             if(frozenBox == null){
                 throw new BankServiceException("冻存盒不存在！",box.getFrozenBoxCode());
             }
-            stockInBoxForDataTable.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
             stockInBoxForDataTable.setSampleTypeName(frozenBox.getSampleTypeName());
-            int countOfSample = 0;
-            if(box.getStatus().equals(Constants.FROZEN_BOX_STOCKING)&&frozenBox.getIsSplit().equals(Constants.YES)){
-                countOfSample = frozenTubeRepository.countByFrozenBoxCodeAndStatus(box.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
-            }else if(box.getStatus().equals(Constants.FROZEN_BOX_SPLITED)){
-                countOfSample = 0;
-            }else if(box.getStatus().equals(Constants.FROZEN_BOX_STOCKING)&&frozenBox.getIsSplit().equals(Constants.NO)){
-                countOfSample = stockInTubesRepository.countByStockInCodeAndFrozenBoxCodeAndStatus(stockInCode,box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKING).intValue();
-            }else{
-                countOfSample = stockInTubesRepository.countByStockInCodeAndFrozenBoxCodeNotNullAndStatus(stockInCode,box.getFrozenBoxCode(),box.getStatus()).intValue();
-            }
-            stockInBoxForDataTable.setCountOfSample(countOfSample);
             stockInBoxForDataTable.setFrozenBoxCode(box.getFrozenBoxCode());
-            stockInBoxForDataTable.setFrozenBoxColumns(Integer.parseInt(frozenBox.getFrozenBoxColumns()));
-            stockInBoxForDataTable.setFrozenBoxRows(Integer.parseInt(frozenBox.getFrozenBoxRows()));
             stockInBoxForDataTable.setId(frozenBox.getId());
             stockInBoxForDataTable.setIsSplit(frozenBox.getIsSplit());
             stockInBoxForDataTable.setStatus(box.getStatus());
@@ -460,6 +403,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         List<StockInBox> stockInBoxList = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBoxNew.getFrozenBoxCode());
         StockInBox stockInBox = stockInBoxList.size()>0?stockInBoxList.get(0):new StockInBox();
         stockInBox.setStockIn(stockIn);
+        stockInBox.setFrozenBox(frozenBoxNew);
         stockInBox.setFrozenBoxCode(frozenBoxNew.getFrozenBoxCode());
         stockInBox.setStockInCode(stockInCode);
         stockInBox.setEquipment(equipment!=null&&equipment.getId()!=null?equipment:null);
@@ -587,6 +531,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         StockInBox stockInBox = stockInBoxList.get(0);
         stockInBox.setEquipmentCode(frozenBox.getEquipmentCode());
+        stockInBox.setFrozenBox(frozenBox);
         stockInBox.setEquipment(frozenBox.getEquipment());
         stockInBox.setArea(frozenBox.getArea());
         stockInBox.setAreaCode(frozenBox.getAreaCode());

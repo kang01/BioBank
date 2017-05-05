@@ -286,16 +286,12 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
             //验证项目下样本类型以及样本分类的有效性
             List<ProjectSampleClass> projectSampleClasses = projectSampleClassService.findByProjectIdAndSampleTypeIdAndSampleClassificationId(box.getProject()!=null?box.getProject().getId():null,boxDTO.getSampleTypeId(),boxDTO.getSampleClassificationId());
-            if(projectSampleClasses.size()==0){
-                throw new BankServiceException("样本类型无效！",box.toString());
-            }else{
-                if(boxDTO.getSampleClassificationId()!=null){
-                    ProjectSampleClass sampleType = projectSampleClasses.stream()
-                        .filter(s->s.getSampleClassification().getId().equals(boxDTO.getSampleClassificationId()))
-                        .findFirst().orElse(null);
-                    if(sampleType == null){
-                        throw new BankServiceException("样本类型无效！",box.toString());
-                    }
+            if(boxDTO.getSampleClassificationId()!=null){
+                ProjectSampleClass sampleType = projectSampleClasses.stream()
+                    .filter(s->s.getSampleClassification().getId().equals(boxDTO.getSampleClassificationId()))
+                    .findFirst().orElse(null);
+                if(sampleType == null){
+                    throw new BankServiceException("样本类型无效！",box.toString());
                 }
             }
             int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfSample=0;

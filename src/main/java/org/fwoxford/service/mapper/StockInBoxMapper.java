@@ -13,6 +13,7 @@ import java.util.List;
 public interface StockInBoxMapper {
 
     @Mapping(source = "stockIn.id", target = "stockInId")
+    @Mapping(source = "frozenBox.id", target = "frozenBoxId")
     @Mapping(source = "equipment.id", target = "equipmentId")
     @Mapping(source = "supportRack.id", target = "supportRackId")
     @Mapping(source = "area.id", target = "areaId")
@@ -21,6 +22,7 @@ public interface StockInBoxMapper {
     List<StockInBoxDTO> stockInBoxesToStockInBoxDTOs(List<StockInBox> stockInBoxes);
 
     @Mapping(source = "stockInId", target = "stockIn")
+    @Mapping(source = "frozenBoxId", target = "frozenBox")
     @Mapping(source = "equipmentId", target = "equipment")
     @Mapping(source = "supportRackId", target = "supportRack")
     @Mapping(source = "areaId", target = "area")
@@ -37,6 +39,14 @@ public interface StockInBoxMapper {
         return stockIn;
     }
 
+    default FrozenBox frozenBoxFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        FrozenBox frozenBox = new FrozenBox();
+        frozenBox.setId(id);
+        return frozenBox;
+    }
     default Equipment equipmentFromId(Long id) {
         if (id == null) {
             return null;

@@ -73,6 +73,13 @@ public class StockInBox extends AbstractAuditingEntity implements Serializable {
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
+
+    /**
+     * 冻存盒
+     */
+    @ManyToOne(optional = false)
+    private FrozenBox frozenBox;
+
     /**
      * 冻存盒编码
      */
@@ -221,6 +228,17 @@ public class StockInBox extends AbstractAuditingEntity implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public FrozenBox getFrozenBox() {
+        return frozenBox;
+    }
+    public StockInBox frozenBox(FrozenBox frozenBox) {
+        this.frozenBox = frozenBox;
+        return this;
+    }
+    public void setFrozenBox(FrozenBox frozenBox) {
+        this.frozenBox = frozenBox;
     }
 
     public String getFrozenBoxCode() {

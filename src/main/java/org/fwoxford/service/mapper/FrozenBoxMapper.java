@@ -22,6 +22,7 @@ public interface FrozenBoxMapper {
 
     @Mapping(source = "frozenBoxType.id", target = "frozenBoxTypeId")
     @Mapping(source = "sampleType.id", target = "sampleTypeId")
+    @Mapping(source = "sampleClassification.id", target = "sampleClassificationId")
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "projectSite.id", target = "projectSiteId")
     @Mapping(source = "equipment.id", target = "equipmentId")
@@ -33,6 +34,7 @@ public interface FrozenBoxMapper {
 
     @Mapping(source = "frozenBoxTypeId", target = "frozenBoxType")
     @Mapping(source = "sampleTypeId", target = "sampleType")
+    @Mapping(source = "sampleClassificationId", target = "sampleClassification")
     @Mapping(source = "projectId", target = "project")
     @Mapping(source = "projectSiteId", target = "projectSite")
     @Mapping(source = "equipmentId", target = "equipment")
@@ -192,7 +194,7 @@ public interface FrozenBoxMapper {
         }
         return stockInBoxForDataTables;
     }
-
+    //todo 需要检查这个方法在哪里用过
     default StockInBoxForDataTable frozenBoxToStockInBoxForDataTable(FrozenBox box){
         StockInBoxForDataTable stockInBoxForDataTable = new StockInBoxForDataTable();
         if(box == null){
@@ -201,8 +203,6 @@ public interface FrozenBoxMapper {
         stockInBoxForDataTable.setIsSplit(box.getIsSplit());
         stockInBoxForDataTable.setCountOfSample(box.getSampleNumber());
         stockInBoxForDataTable.setId(box.getId());
-        stockInBoxForDataTable.setFrozenBoxRows(box.getFrozenBoxRows()!=null?Integer.parseInt(box.getFrozenBoxRows()):0);
-        stockInBoxForDataTable.setFrozenBoxColumns(box.getFrozenBoxColumns()!=null?Integer.parseInt(box.getFrozenBoxColumns()):0);
         stockInBoxForDataTable.setFrozenBoxCode(box.getFrozenBoxCode());
         stockInBoxForDataTable.setPosition(box.getEquipmentCode()+"."+box.getAreaCode()+"."+box.getSupportRackCode()+"."+box.getColumnsInShelf()+box.getRowsInShelf());
         stockInBoxForDataTable.setSampleTypeName(box.getSampleTypeName());

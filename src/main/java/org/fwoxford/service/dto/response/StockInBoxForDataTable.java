@@ -36,13 +36,7 @@ public class StockInBoxForDataTable {
     private Integer isSplit;
 
     @JsonView(DataTablesOutput.View.class)
-    private SampleTypeDTO sampleType;
-    @JsonView(DataTablesOutput.View.class)
-    private Integer frozenBoxRows;
-    @JsonView(DataTablesOutput.View.class)
-    private Integer frozenBoxColumns;
-
-
+    private String sampleClassificationName;
 
     @Override
     public boolean equals(Object o) {
@@ -70,9 +64,7 @@ public class StockInBoxForDataTable {
             ", sampleTypeName='" + sampleTypeName + '\'' +
             ", position='" + position + '\'' +
             ", isSplit=" + isSplit +
-            ", sampleType=" + sampleType +
-            ", frozenBoxRows=" + frozenBoxRows +
-            ", frozenBoxColumns=" + frozenBoxColumns +
+            ", sampleClassificationName=" + sampleClassificationName +
             '}';
     }
 
@@ -138,27 +130,11 @@ public class StockInBoxForDataTable {
         this.isSplit = isSplit;
     }
 
-    public SampleTypeDTO getSampleType() {
-        return sampleType;
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
     }
 
-    public void setSampleType(SampleTypeDTO sampleType) {
-        this.sampleType = sampleType;
-    }
-
-    public Integer getFrozenBoxRows() {
-        return frozenBoxRows;
-    }
-
-    public void setFrozenBoxRows(Integer frozenBoxRows) {
-        this.frozenBoxRows = frozenBoxRows;
-    }
-
-    public Integer getFrozenBoxColumns() {
-        return frozenBoxColumns;
-    }
-
-    public void setFrozenBoxColumns(Integer frozenBoxColumns) {
-        this.frozenBoxColumns = frozenBoxColumns;
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
     }
 }

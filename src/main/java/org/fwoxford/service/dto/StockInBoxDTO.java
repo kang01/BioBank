@@ -58,6 +58,10 @@ public class StockInBoxDTO extends AbstractAuditingDTO implements Serializable {
      */
     private Integer countOfSample;
     /**
+     * 冻存盒Id
+     */
+    private Long frozenBoxId;
+    /**
      * 入库Id
      */
     private Long stockInId;
@@ -140,6 +144,14 @@ public class StockInBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setFrozenBoxCode(String frozenBoxCode) {
         this.frozenBoxCode = frozenBoxCode;
+    }
+
+    public Long getFrozenBoxId() {
+        return frozenBoxId;
+    }
+
+    public void setFrozenBoxId(Long frozenBoxId) {
+        this.frozenBoxId = frozenBoxId;
     }
 
     public Integer getCountOfSample() {

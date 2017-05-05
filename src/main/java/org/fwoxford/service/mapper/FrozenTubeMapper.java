@@ -19,6 +19,7 @@ public interface FrozenTubeMapper {
 
     @Mapping(source = "frozenTubeType.id", target = "frozenTubeTypeId")
     @Mapping(source = "sampleType.id", target = "sampleTypeId")
+    @Mapping(source = "sampleClassification.id", target = "sampleClassificationId")
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "frozenBox.id", target = "frozenBoxId")
     FrozenTubeDTO frozenTubeToFrozenTubeDTO(FrozenTube frozenTube);
@@ -27,6 +28,7 @@ public interface FrozenTubeMapper {
 
     @Mapping(source = "frozenTubeTypeId", target = "frozenTubeType")
     @Mapping(source = "sampleTypeId", target = "sampleType")
+    @Mapping(source = "sampleClassificationId", target = "sampleClassification")
     @Mapping(source = "projectId", target = "project")
     @Mapping(source = "frozenBoxId", target = "frozenBox")
     FrozenTube frozenTubeDTOToFrozenTube(FrozenTubeDTO frozenTubeDTO);

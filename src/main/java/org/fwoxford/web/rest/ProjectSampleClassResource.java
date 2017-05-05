@@ -131,20 +131,20 @@ public class ProjectSampleClassResource {
     }
     //如果样本类型为99,则不需要查询样本分类,直接返回样本分类,若不是99,则需要查询样本分类,再根据项目编码,样本类型,样本分类,查询样本类型信息
 
-    /**
-     * 根据项目Id查询样本类型
-     * @param projectId
-     * @return
-     * @throws URISyntaxException
-     */
-    @GetMapping("/project-sample-classes/projectId/{projectId}")
-    @Timed
-    public ResponseEntity<List<ProjectSampleTypeDTO>> getSampleTypeByProjectId(@PathVariable Long projectId)
-        throws URISyntaxException {
-        log.debug("REST request to get a page of ProjectSampleClasses");
-        List<ProjectSampleTypeDTO> result = projectSampleClassService.getSampleTypeByProjectId(projectId);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
-    }
+//    /**
+//     * 根据项目Id查询样本类型
+//     * @param projectId
+//     * @return
+//     * @throws URISyntaxException
+//     */
+//    @GetMapping("/project-sample-classes/projectId/{projectId}")
+//    @Timed
+//    public ResponseEntity<List<ProjectSampleTypeDTO>> getSampleTypeByProjectId(@PathVariable Long projectId)
+//        throws URISyntaxException {
+//        log.debug("REST request to get a page of ProjectSampleClasses");
+//        List<ProjectSampleTypeDTO> result = projectSampleClassService.getSampleTypeByProjectId(projectId);
+//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+//    }
 
     /**
      * 根据项目ID，样本类型ID，查询样本分类

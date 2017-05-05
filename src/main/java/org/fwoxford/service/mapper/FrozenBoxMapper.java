@@ -220,6 +220,7 @@ public interface FrozenBoxMapper {
         frozenBox.setFrozenBoxType( frozenBoxTypeFromId( frozenBoxDTO.getFrozenBoxTypeId() ) );
         frozenBox.setEquipment( equipmentFromId( frozenBoxDTO.getEquipmentId() ) );
         frozenBox.setSampleType( sampleTypeFromId( frozenBoxDTO.getSampleTypeId() ) );
+        frozenBox.setSampleClassification(sampleClassificationFromId(frozenBoxDTO.getSampleClassificationId()));
         frozenBox.setId( frozenBoxDTO.getId() );
         frozenBox.setFrozenBoxCode( frozenBoxDTO.getFrozenBoxCode() );
         frozenBox.setSampleNumber( frozenBoxDTO.getSampleNumber() );
@@ -233,5 +234,14 @@ public interface FrozenBoxMapper {
         frozenBox.setRowsInShelf( frozenBoxDTO.getRowsInShelf() );
         frozenBox.setColumnsInShelf( frozenBoxDTO.getColumnsInShelf() );
         return frozenBox;
+    }
+
+    default SampleClassification sampleClassificationFromId(Long id){
+        if (id == null) {
+            return null;
+        }
+        SampleClassification sampleClassification = new SampleClassification();
+        sampleClassification.setId(id);
+        return sampleClassification;
     }
 }

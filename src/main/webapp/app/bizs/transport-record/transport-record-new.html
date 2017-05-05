@@ -221,7 +221,7 @@
                                         </label>
                                         <div class="col-md-6 p-l-6" >
                                             <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                                       ng-model="vm.box.sampleTypeCode"></selectize>
+                                                       ng-model="vm.box.sampleTypeId" ng-disabled="!vm.box"></selectize>
                                         </div>
                                     </div>
 
@@ -234,7 +234,7 @@
                                         </label>
                                         <div class="col-md-6 p-l-6" >
                                             <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
-                                                       ng-model="vm.box.sampleClassificationId"></selectize>
+                                                       ng-model="vm.box.sampleClassificationId" ng-disabled="!vm.box"></selectize>
                                         </div>
                                     </div>
 

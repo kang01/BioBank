@@ -28,21 +28,22 @@
         vm.frozenBox.frozenBoxTypeId = vm.frozenBoxTypeOptions[0].id;
         vm.frozenBox.frozenBoxTypeRows = vm.frozenBoxTypeOptions[0].frozenBoxTypeRows;
         vm.frozenBox.frozenBoxTypeColumns = vm.frozenBoxTypeOptions[0].frozenBoxTypeColumns;
+
         if(vm.sampleTypeOptions.length){
-            vm.frozenBox.sampleTypeId = vm.sampleTypeOptions[0].sampleTypeId;
+            vm.frozenBox.sampleTypeId = vm.sampleTypeOptions[0].id;
             _fnQueryProjectSampleClass(vm.items.projectId,vm.frozenBox.sampleTypeId)
         }
         //设备
         EquipmentService.query({},onEquipmentTempSuccess, onError);
         //样本类型
         vm.sampleTypeConfig = {
-            valueField:'sampleTypeId',
+            valueField:'id',
             labelField:'sampleTypeName',
             maxItems: 1,
             onChange:function (value) {
                 vm.frozenBox.sampleTypeId = value;
-                _fnInitBoxInfo();
                 _fnQueryProjectSampleClass(vm.items.projectId,value)
+                _fnInitBoxInfo();
             }
         };
         vm.projectSampleTypeConfig = {

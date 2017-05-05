@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.fwoxford.domain.StockInBoxForDataTableEntity;
 import org.fwoxford.service.StockInBoxService;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
@@ -142,7 +143,7 @@ public class StockInBoxResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-in-boxes/stock-in/{stockInCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<StockInBoxForDataTable> getPageStockInBoxes(@RequestBody DataTablesInput input, @PathVariable String stockInCode) {
+    public DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(@RequestBody DataTablesInput input, @PathVariable String stockInCode) {
         return stockInBoxService.getPageStockInBoxes(input,stockInCode);
     }
 

@@ -1,10 +1,11 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.StockInBoxForDataTableEntity;
+import org.fwoxford.service.dto.FrozenBoxPositionDTO;
 import org.fwoxford.service.dto.StockInBoxDTO;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxSplit;
-import org.fwoxford.service.dto.FrozenBoxPositionDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -50,7 +51,7 @@ public interface StockInBoxService {
 
     List<StockInBoxDTO> saveBatch(List<StockInBoxDTO> stockInBoxDTOS);
 
-    DataTablesOutput<StockInBoxForDataTable> getPageStockInBoxes(DataTablesInput input, String stockInCode);
+    DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(DataTablesInput input, String stockInCode);
 
     StockInBoxDetail getStockInBoxDetail(String stockInCode, String boxCode);
 

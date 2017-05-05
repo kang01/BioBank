@@ -50,5 +50,6 @@
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 
     <include file="classpath:config/liquibase/changelog/20170502015417_added_view_StockIn.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170505000000_added_view_StockInBox.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

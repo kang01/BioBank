@@ -10,7 +10,6 @@ import org.fwoxford.service.dto.StockInTubeDTO;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxSplit;
-import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
@@ -18,13 +17,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.mapping.*;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -154,47 +152,14 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
 
     @Override
-    public DataTablesOutput<StockInBoxForDataTable> getPageStockInBoxes(DataTablesInput input, String stockInCode) {
+    public DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(DataTablesInput input, String stockInCode) {
         StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
         if(stockIn == null){
             throw new BankServiceException("入库记录不存在！",stockInCode);
         }
         input.addColumn("stockInCode", true, true, stockInCode);
-        DataTablesOutput<StockInBox> output =stockInBoxRepositries.findAll(input);
-        List<StockInBox> alist = output.getData();
-
-        List<StockInBoxForDataTable> stockInBoxForDataTables = new ArrayList<StockInBoxForDataTable>();
-        for(StockInBox box : alist){
-            StockInBoxForDataTable stockInBoxForDataTable = new StockInBoxForDataTable();
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append(box.getEquipmentCode()!=null?box.getEquipmentCode():new String(""));
-            stringBuffer.append(".");
-            stringBuffer.append(box.getAreaCode()!=null?box.getAreaCode():new String(""));
-            stringBuffer.append(".");
-            stringBuffer.append(box.getSupportRackCode()!=null?box.getSupportRackCode():new String(""));
-            stringBuffer.append(".");
-            stringBuffer.append(box.getColumnsInShelf()!=null?box.getColumnsInShelf():new String(""));
-            stringBuffer.append(box.getRowsInShelf()!=null?box.getRowsInShelf():new String(""));
-            stockInBoxForDataTable.setPosition(stringBuffer.toString());
-            FrozenBox frozenBox =frozenBoxRepository.findFrozenBoxDetailsByBoxCode(box.getFrozenBoxCode());
-            if(frozenBox == null){
-                throw new BankServiceException("冻存盒不存在！",box.getFrozenBoxCode());
-            }
-            stockInBoxForDataTable.setSampleTypeName(frozenBox.getSampleTypeName());
-            stockInBoxForDataTable.setFrozenBoxCode(box.getFrozenBoxCode());
-            stockInBoxForDataTable.setId(frozenBox.getId());
-            stockInBoxForDataTable.setIsSplit(frozenBox.getIsSplit());
-            stockInBoxForDataTable.setStatus(box.getStatus());
-            stockInBoxForDataTables.add(stockInBoxForDataTable);
-        }
-        //构造返回分页数据
-        DataTablesOutput<StockInBoxForDataTable> responseDataTablesOutput = new DataTablesOutput<>();
-        responseDataTablesOutput.setDraw(output.getDraw());
-        responseDataTablesOutput.setError(output.getError());
-        responseDataTablesOutput.setData(stockInBoxForDataTables);
-        responseDataTablesOutput.setRecordsFiltered(output.getRecordsFiltered());
-        responseDataTablesOutput.setRecordsTotal(output.getRecordsTotal());
-        return responseDataTablesOutput;
+        DataTablesOutput<StockInBoxForDataTableEntity> output =stockInBoxRepositries.findAll(input);
+        return output;
     }
 
     @Override

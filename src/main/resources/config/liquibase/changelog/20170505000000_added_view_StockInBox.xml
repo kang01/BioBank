@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockInBox.
+    -->
+    <changeSet id="20170502000000-2" author="jhipster">
+
+        <createView viewName="view_stock_in_box">
+            SELECT a.ID,a.FROZEN_BOX_CODE,
+            (a.EQUIPMENT_CODE||'.'||a.AREA_CODE||'.'||a.SUPPORT_RACK_CODE || '.'||a.ROWS_IN_SHELF ||'.'||a.COLUMNS_IN_SHELF) as position,
+            s.SAMPLE_TYPE_NAME,sc.SAMPLE_CLASSIFICATION_NAME ,f.IS_SPLIT ,
+            a.STATUS,a.COUNT_OF_SAMPLE,a.STOCK_IN_CODE
+            FROM STOCK_IN_BOX a
+            LEFT JOIN FROZEN_BOX f on a.FROZEN_BOX_ID=f.ID
+            LEFT JOIN SAMPLE_TYPE s on f.SAMPLE_TYPE_ID=s.ID
+            LEFT JOIN SAMPLE_CLASS sc on f.SAMPLE_CLASSIFICATION_ID=sc.ID
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

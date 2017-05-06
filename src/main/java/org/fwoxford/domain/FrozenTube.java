@@ -190,7 +190,7 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     /**
      * 样本分类
      */
-    @ManyToOne(optional = false)
+    @ManyToOne
     private SampleClassification sampleClassification;
 
     /**

@@ -284,10 +284,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     box.setSampleClassification(sampleClass);
                 }
             }
-            //验证项目下样本类型以及样本分类的有效性
-            List<ProjectSampleClass> projectSampleClasses = projectSampleClassService.findByProjectIdAndSampleTypeIdAndSampleClassificationId(box.getProject()!=null?box.getProject().getId():null,boxDTO.getSampleTypeId(),boxDTO.getSampleClassificationId());
-            if(boxDTO.getSampleClassificationId()!=null){
-                ProjectSampleClass sampleType = projectSampleClasses.stream()
+           if(boxDTO.getSampleClassificationId()!=null){
+               //验证项目下样本类型以及样本分类的有效性
+               List<ProjectSampleClass> projectSampleClasses = projectSampleClassService.findByProjectIdAndSampleTypeIdAndSampleClassificationId(box.getProject()!=null?box.getProject().getId():null,boxDTO.getSampleTypeId(),boxDTO.getSampleClassificationId());
+               ProjectSampleClass sampleType = projectSampleClasses.stream()
                     .filter(s->s.getSampleClassification().getId().equals(boxDTO.getSampleClassificationId()))
                     .findFirst().orElse(null);
                 if(sampleType == null){
@@ -350,18 +350,17 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                        throw new BankServiceException("样本分类不能为空！");
                     }
                 }
-                //验证项目下样本类型以及样本分类的有效性
-                List<ProjectSampleClass> projectSampleClassList = projectSampleClassService.findByProjectIdAndSampleTypeIdAndSampleClassificationId(box.getProject().getId(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
-                if(projectSampleClassList.size()==0){
-                    throw new BankServiceException("样本类型无效！",box.toString());
-                }else{
-                    if(tubeDTO.getSampleClassificationId()!=null){
-                        ProjectSampleClass sampleType = projectSampleClassList.stream()
-                            .filter(s->s.getSampleClassification().getId().equals(tubeDTO.getSampleClassificationId()))
-                            .findFirst().orElse(null);
-                        if(sampleType == null){
-                            throw new BankServiceException("样本类型无效！",box.toString());
-                        }
+                if(tubeDTO.getSampleClassificationId()!=null){
+                    //验证项目下样本类型以及样本分类的有效性
+                    List<ProjectSampleClass> projectSampleClassList = projectSampleClassService.findByProjectIdAndSampleTypeIdAndSampleClassificationId(box.getProject().getId(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
+                    if(projectSampleClassList.size()==0){
+                        throw new BankServiceException("样本类型无效！",box.toString());
+                    }
+                    ProjectSampleClass sampleType = projectSampleClassList.stream()
+                        .filter(s->s.getSampleClassification().getId().equals(tubeDTO.getSampleClassificationId()))
+                        .findFirst().orElse(null);
+                    if(sampleType == null){
+                        throw new BankServiceException("样本类型无效！",box.toString());
                     }
                 }
                 tube.setSampleTypeCode(tube.getSampleType().getSampleTypeCode());

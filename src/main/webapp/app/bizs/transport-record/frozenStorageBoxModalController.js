@@ -132,7 +132,13 @@
 
         };
         //不同项目下的样本分类
+        vm.sampleTypeFlag = false;
         function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
+            if(sampleTypeId == 5){
+                vm.sampleTypeFlag = true;
+            }else{
+                vm.sampleTypeFlag = false;
+            }
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.projectSampleTypeOptions = data;
                 vm.frozenBox.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;

@@ -175,7 +175,7 @@ public class StockInBoxResource {
         return detail;
     }
     /**
-     * 输入入库单编码和盒子编码，以及冻存位置信息，返回保存后的盒子信息
+     * 上架保存-输入入库单编码和盒子编码，以及冻存位置信息，返回保存后的盒子信息
      * @param stockInCode
      * @param boxCode
      * @param boxPositionDTO
@@ -202,5 +202,21 @@ public class StockInBoxResource {
         log.debug("REST request to get FrozenBox By codes : {}", frozenBoxCodeStr);
         List<StockInBoxForDataTable> res = stockInBoxService.findFrozenBoxListByBoxCodeStr(frozenBoxCodeStr);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
+     * 撤销上架
+     * @param stockInCode
+     * @param boxCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-in-boxes/stock-in/{stockInCode}/box/{boxCode}/moveDown")
+    @Timed
+    public ResponseEntity<StockInBoxDetail> movedDownStockIn(@PathVariable String stockInCode,@PathVariable  String boxCode) throws URISyntaxException {
+        StockInBoxDetail stockInBoxDetail = stockInBoxService.movedDownStockIn(stockInCode,boxCode);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getFrozenBoxId().toString()))
+            .body(stockInBoxDetail);
     }
 }

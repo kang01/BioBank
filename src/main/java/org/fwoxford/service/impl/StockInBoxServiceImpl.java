@@ -564,4 +564,77 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxDetail.setStatus(frozenBox.getStatus());
         return stockInBoxDetail;
     }
+
+    /**
+     * 撤销上架--输入入库单编码和盒子编码，返回保存后的盒子信息
+     * @param stockInCode
+     * @param boxCode
+     * @return
+     */
+    @Override
+    public StockInBoxDetail movedDownStockIn(String stockInCode, String boxCode) {
+        StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(boxCode);
+        if(frozenBox == null){
+            throw new BankServiceException("冻存盒不存在！",boxCode);
+        }
+        StockInBox stockInBox = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,boxCode);
+        if(stockInBox == null){
+            throw new BankServiceException("未查询到该盒子的待入库信息！",boxCode);
+        }
+        frozenBox.setEquipmentCode(null);
+        frozenBox.setEquipment(null);
+        frozenBox.setArea(null);
+        frozenBox.setAreaCode(null);
+        frozenBox.setSupportRack(null);
+        frozenBox.setSupportRackCode(null);
+        frozenBox.setColumnsInShelf(null);
+        frozenBox.setRowsInShelf(null);
+        frozenBox.setStatus(Constants.FROZEN_BOX_STOCKING);
+        frozenBoxRepository.save(frozenBox);
+
+        stockInBox.setEquipmentCode(frozenBox.getEquipmentCode());
+        stockInBox.setFrozenBox(frozenBox);
+        stockInBox.setEquipment(frozenBox.getEquipment());
+        stockInBox.setArea(frozenBox.getArea());
+        stockInBox.setAreaCode(frozenBox.getAreaCode());
+        stockInBox.setSupportRack(frozenBox.getSupportRack());
+        stockInBox.setSupportRackCode(frozenBox.getSupportRackCode());
+        stockInBox.setColumnsInShelf(frozenBox.getColumnsInShelf());
+        stockInBox.setRowsInShelf(frozenBox.getRowsInShelf());
+        stockInBox.setStatus(Constants.FROZEN_BOX_STOCKING);
+        stockInBoxRepository.save(stockInBox);
+        //增加冻存盒位置记录
+        FrozenBoxPosition frozenBoxPositionOld =  frozenBoxPositionRepository.findOneByFrozenBoxIdAndStatus(frozenBox.getId(),Constants.FROZEN_BOX_STOCKING);
+        if(frozenBoxPositionOld == null){
+            throw new BankServiceException("未查询到该冻存盒的待入库记录！",frozenBox.toString());
+        }
+        FrozenBoxPosition frozenBoxPos = new FrozenBoxPosition();
+        frozenBoxPos = frozenBoxPositionMapper.frozenBoxToFrozenBoxPosition(frozenBoxPos,frozenBox);
+        frozenBoxPos.setStatus(Constants.FROZEN_BOX_STOCKING);
+        frozenBoxPos = frozenBoxPositionRepository.save(frozenBoxPos);
+        TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        //保存冻存管历史
+        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(boxCode);
+        for(FrozenTube tube : frozenTubes){
+            //保存入库与冻存管的关系
+            StockInTubes stockInTubes = new StockInTubes();
+            stockInTubes.setMemo(tube.getMemo());
+            stockInTubes.setStatus(Constants.FROZEN_BOX_STOCKING);
+            stockInTubes.setColumnsInTube(tube.getTubeColumns());
+            stockInTubes.setRowsInTube(tube.getTubeRows());
+            stockInTubes.setFrozenBoxPosition(frozenBoxPos);
+            stockInTubes.setFrozenTube(tube);
+            stockInTubes.setFrozenTubeCode(tube.getFrozenTubeCode());
+            stockInTubes.setSampleCode(tube.getSampleCode());
+            stockInTubes.setStockInBox(stockInBox);
+            stockInTubes.setTranshipBox(transhipBox);
+            stockInTubes.setSampleTempCode(tube.getSampleTempCode());
+            stockInTubesRepository.save(stockInTubes);
+        }
+
+        stockInBoxDetail = createStockInBoxDetail(frozenBox,stockInCode);
+
+        return stockInBoxDetail;
+    }
 }

@@ -60,4 +60,6 @@ public interface StockInBoxService {
     StockInBoxDetail movedStockIn(String stockInCode, String boxCode, FrozenBoxPositionDTO boxPositionDTO);
 
     List<StockInBoxForDataTable> findFrozenBoxListByBoxCodeStr(List<String> frozenBoxCodeStr);
+
+    StockInBoxDetail movedDownStockIn(String stockInCode, String boxCode);
 }

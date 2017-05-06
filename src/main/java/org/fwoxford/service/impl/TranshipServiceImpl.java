@@ -167,6 +167,10 @@ public class TranshipServiceImpl implements TranshipService{
         if(frozenBoxList.size()==0){
             transhipDTO.setProjectCode(project!=null?project.getProjectCode():new String(""));
             transhipDTO.setProjectName(project!=null?project.getProjectName():new String(""));
+        }else{
+            transhipDTO.setProjectCode(oldTranship.getProjectCode());
+            transhipDTO.setProjectName(oldTranship.getProjectName());
+            transhipDTO.setProjectId(oldTranship.getProject()!=null?oldTranship.getProject().getId():null);
         }
         ProjectSite projectSite = projectSiteRepository.findOne(transhipDTO.getProjectSiteId());
         transhipDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():new String(""));

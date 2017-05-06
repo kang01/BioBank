@@ -100,6 +100,7 @@ public interface StockInMapper {
         StockInForDataDetail stockInDetail = new StockInForDataDetail();
 
         stockInDetail.setId( stockIn.getId() );
+        stockInDetail.setProjectId(stockIn.getProject().getId());
         stockInDetail.setProjectCode( stockIn.getProjectCode() );
         stockInDetail.setProjectSiteCode( stockIn.getProjectSiteCode() );
         stockInDetail.setStoreKeeper1( stockIn.getStoreKeeper1() );

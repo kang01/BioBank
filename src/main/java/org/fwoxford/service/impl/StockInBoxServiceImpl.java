@@ -378,11 +378,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setFrozenBoxCode(frozenBoxNew.getFrozenBoxCode());
         stockInBox.setStockInCode(stockInCode);
         stockInBox.setEquipment(equipment!=null&&equipment.getId()!=null?equipment:null);
-        stockInBox.setEquipmentCode(equipment.getEquipmentCode());
+        stockInBox.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
         stockInBox.setArea(area!=null&&area.getId()!=null?area:null);
-        stockInBox.setAreaCode(area.getAreaCode());
+        stockInBox.setAreaCode(area!=null?area.getAreaCode():null);
         stockInBox.setSupportRack(supportRack!=null&&supportRack.getId()!=null?supportRack:null);
-        stockInBox.setSupportRackCode(supportRack.getSupportRackCode());
+        stockInBox.setSupportRackCode(supportRack!=null?supportRack.getSupportRackCode():null);
         stockInBox.setColumnsInShelf(stockInBoxForDataSplit.getColumnsInShelf());
         stockInBox.setRowsInShelf(stockInBoxForDataSplit.getRowsInShelf());
         stockInBox.setStatus(Constants.FROZEN_BOX_STOCKING);

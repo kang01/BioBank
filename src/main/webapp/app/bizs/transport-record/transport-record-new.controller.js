@@ -336,7 +336,9 @@
 
                         vm.box.sampleClassificationId = "";
                     }else{
-                        vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                        if(!vm.box.sampleClassificationId){
+                            vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                        }
                         for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                             for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
                                 vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
@@ -813,7 +815,16 @@
                 labelField:'sampleClassficationName',
                 maxItems: 1,
                 onChange:function (value) {
-
+                    vm.box.sampleClassificationId = value;
+                    for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                        for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                            vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
+                        }
+                    }
+                    for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
+                        vm.box.frozenTubeDTOS[m].sampleClassification.id = vm.box.sampleClassificationId
+                    }
+                    hotRegisterer.getInstance('my-handsontable').render()
                 }
             };
 
@@ -920,15 +931,16 @@
                 function onSaveBoxSuccess(res) {
                     if(!vm.saveStockInFlag && !vm.saveRecordFlag){
                         toastr.success("保存盒子成功！");
+                        if(vm.rowBoxCode){
+                            frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
+                        }
                     }
 
                     _blockUiStop();
                     if (typeof callback === "function"){
                         callback.call(this, res);
                     }
-                    if(vm.rowBoxCode){
-                        frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
-                    }
+
                 }
             }
             vm.splitPlace = function () {
@@ -1082,10 +1094,8 @@
                 if(vm.box.areaId){
                     SupportacksByAreaIdService.query({id:vm.box.areaId},onShelfSuccess, onError)
                 }
-                // if(vm.box.supportRackId){
-                    vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
-                // }
-                initFrozenTube(vm.box.frozenBoxType.frozenBoxRows,vm.box.frozenBoxType.frozenBoxColumns);
+                vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
+                initFrozenTube(vm.box.frozenBoxType.frozenBoxTypeRows,vm.box.frozenBoxType.frozenBoxTypeColumns);
                 _reloadTubesForTable(vm.box);
                 vm.boxStr = JSON.stringify(vm.createBoxDataFromTubesTable());
                 //统计样本数

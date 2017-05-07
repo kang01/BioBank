@@ -75,7 +75,7 @@
                         <li ng-repeat="item in vm.incompleteBoxesList"  >
                             <div ng-repeat="item1 in item.boxList track by $index">
                                 <div class="box-feature current" ng-style="{backgroundColor:item1.sampleType.backColor}"  ng-click="vm.sampleBoxSelect(item1,$event)">
-                                    {{item1.countOfSample}}/{{item1.frozenBoxColumns*item1.frozenBoxRows}}
+                                    {{item1.countOfSample}}/{{item1.frozenBoxType.frozenBoxTypeColumns*item1.frozenBoxType.frozenBoxTypeRows}}
                                     <span ng-if="item1.addTubeCount">+{{item1.addTubeCount}}</span>
                                 </div>
                                 <div class="" ng-if="$index == 0">{{item1.sampleType.sampleTypeName}}&nbsp;</div>

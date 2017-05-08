@@ -78,7 +78,7 @@
                     <th>是否分装</th>
                 </thead>
                 <tbody >
-                    <tr ng-repeat="item in vm.obox.frozenBoxDTOList">
+                    <tr ng-repeat="item in vm.obox.frozenBoxDTOList" ng-if="item">
                         <td>{{item.frozenBoxCode}}</td>
                         <td></td>
                         <td></td>

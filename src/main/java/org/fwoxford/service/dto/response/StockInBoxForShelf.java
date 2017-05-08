@@ -17,8 +17,8 @@ public class StockInBoxForShelf {
     private String status;
 
     private Integer countOfSample;
-    private String frozenBoxColumns;
-    private String frozenBoxRows;
+    private String frozenBoxTypeColumns;
+    private String frozenBoxTypeRows;
 
     private Long equipmentId;
     private Long areaId;
@@ -73,20 +73,20 @@ public class StockInBoxForShelf {
         this.countOfSample = countOfSample;
     }
 
-    public String getFrozenBoxColumns() {
-        return frozenBoxColumns;
+    public String getFrozenBoxTypeColumns() {
+        return frozenBoxTypeColumns;
     }
 
-    public void setFrozenBoxColumns(String frozenBoxColumns) {
-        this.frozenBoxColumns = frozenBoxColumns;
+    public void setFrozenBoxTypeColumns(String frozenBoxTypeColumns) {
+        this.frozenBoxTypeColumns = frozenBoxTypeColumns;
     }
 
-    public String getFrozenBoxRows() {
-        return frozenBoxRows;
+    public String getFrozenBoxTypeRows() {
+        return frozenBoxTypeRows;
     }
 
-    public void setFrozenBoxRows(String frozenBoxRows) {
-        this.frozenBoxRows = frozenBoxRows;
+    public void setFrozenBoxTypeRows(String frozenBoxTypeRows) {
+        this.frozenBoxTypeRows = frozenBoxTypeRows;
     }
 
     public Long getEquipmentId() {

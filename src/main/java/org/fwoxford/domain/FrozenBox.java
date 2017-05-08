@@ -231,7 +231,7 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
         this.frozenBoxTypeCode = frozenBoxTypeCode;
     }
 
-    public String getFrozenBoxRows() {
+    public String getFrozenBoxTypeRows() {
         return frozenBoxTypeRows;
     }
 
@@ -244,7 +244,7 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
         this.frozenBoxTypeRows = frozenBoxTypeRows;
     }
 
-    public String getFrozenBoxColumns() {
+    public String getFrozenBoxTypeColumns() {
         return frozenBoxTypeColumns;
     }
 

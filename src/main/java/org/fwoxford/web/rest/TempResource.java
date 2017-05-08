@@ -320,8 +320,8 @@ public class TempResource {
         res.setCountOfSample(countOfSample);
         res.setFrozenBoxId(id);
         res.setFrozenBoxCode(frozenBoxCode);
-        res.setFrozenBoxColumns("10");
-        res.setFrozenBoxRows("10");
+        res.setFrozenBoxTypeColumns("10");
+        res.setFrozenBoxTypeRows("10");
         res.setIsSplit(1);
         res.setStockInFrozenTubeList(new ArrayList<>());
         for(int i = 0; i<countOfSample; ++i){

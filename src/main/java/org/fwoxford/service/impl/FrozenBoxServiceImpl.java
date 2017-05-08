@@ -587,15 +587,15 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }
         List<FrozenBox> frozenBoxList = new ArrayList<FrozenBox>();
         if(sampleClassificationIdStr.size()==0) {
-            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdAndAll(frozenBoxCode, frozenBox.getProject().getId(), sampleType.getId(), stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
+            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBox(frozenBoxCode, frozenBox.getProject().getId(),stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
         }else{
-            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdAndSampleClassificationId(frozenBoxCode, frozenBox.getProject().getId(), sampleType.getId(), sampleClassificationIdStr, stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
+            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationId(frozenBoxCode, frozenBox.getProject().getId(), sampleClassificationIdStr, stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
         }
         if (frozenBoxList.size() == 0) {
             if(sampleClassificationIdStr.size()==0){
-                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdAndAll(frozenBoxCode, frozenBox.getProject().getId(), sampleType.getId(), stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBox(frozenBoxCode, frozenBox.getProject().getId(), stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
             }else{
-                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdAndSampleClassificationId(frozenBoxCode,frozenBox.getProject().getId(), sampleType.getId(), sampleClassificationIdStr, stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationId(frozenBoxCode,frozenBox.getProject().getId(),sampleClassificationIdStr, stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
             }
         }
 
@@ -604,6 +604,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             stockInBoxForIncomplete.setCountOfSample(f.getSampleNumber());
             stockInBoxForIncomplete.setFrozenBoxId(f.getId());
             stockInBoxForIncomplete.setFrozenBoxCode(f.getFrozenBoxCode());
+            stockInBoxForIncomplete.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(f.getFrozenBoxType()));
             stockInBoxForIncomplete.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(f.getSampleType()));
             stockInBoxForIncomplete.setSampleClassification(sampleClassificationMapper.sampleClassificationToSampleClassificationDTO(f.getSampleClassification()));
             List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(f.getFrozenBoxCode());

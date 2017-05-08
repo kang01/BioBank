@@ -1,6 +1,7 @@
 package org.fwoxford.service.dto.response;
 
 import org.fwoxford.domain.SampleType;
+import org.fwoxford.service.dto.FrozenBoxTypeDTO;
 import org.fwoxford.service.dto.SampleClassificationDTO;
 import org.fwoxford.service.dto.SampleTypeDTO;
 
@@ -14,6 +15,7 @@ public class StockInBoxForIncomplete {
     private String frozenBoxCode;
     private Integer countOfSample;
     private SampleTypeDTO sampleType;
+    private FrozenBoxTypeDTO frozenBoxType;
     private SampleClassificationDTO sampleClassification;
     private List<StockInTubeForBox> stockInFrozenTubeList;
 
@@ -55,6 +57,14 @@ public class StockInBoxForIncomplete {
 
     public void setSampleClassification(SampleClassificationDTO sampleClassification) {
         this.sampleClassification = sampleClassification;
+    }
+
+    public FrozenBoxTypeDTO getFrozenBoxType() {
+        return frozenBoxType;
+    }
+
+    public void setFrozenBoxType(FrozenBoxTypeDTO frozenBoxType) {
+        this.frozenBoxType = frozenBoxType;
     }
 
     public List<StockInTubeForBox> getStockInFrozenTubeList() {

@@ -60,26 +60,24 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     @Query(value = "select f.* from frozen_box f left join stock_in_box s on f.id=s.frozen_box_id " +
         " where f.frozen_box_code != ?1 " +
         " and f.project_id=?2 " +
-        " and f.sample_type_id = ?3" +
-        " and f.sample_classification_id in ?4" +
-        " and s.stock_in_code =?5" +
-        " and f.frozen_box_type_id=?6 " +
-        " and f.status=?7" +
-        " and f.sample_number<(f.frozen_box_columns*f.frozen_box_rows) " +
-        " and f.is_split = 0 " +
-        " order by f.sample_number asc",nativeQuery = true)
-    List<FrozenBox> findIncompleteFrozenBoxBySampleTypeIdAndSampleClassificationId(String frozenBoxCode,  Long projectId, Long sampleTypeId,
-                                            List<Long> sampleClassificationIdStr, String stockInCode, Long frozenBoxTypeId, String frozenBoxStocked);
-    @Query(value = "select f.* from frozen_box f left join stock_in_box s on f.id=s.frozen_box_id " +
-        " where f.frozen_box_code != ?1 " +
-        " and f.project_id=?2 " +
-        " and f.sample_type_id = ?3" +
+        " and f.sample_classification_id in ?3" +
         " and s.stock_in_code =?4" +
         " and f.frozen_box_type_id=?5 " +
         " and f.status=?6" +
         " and f.sample_number<(f.frozen_box_columns*f.frozen_box_rows) " +
         " and f.is_split = 0 " +
         " order by f.sample_number asc",nativeQuery = true)
-    List<FrozenBox> findIncompleteFrozenBoxBySampleTypeIdAndAll(String frozenBoxCode, Long projectId, Long sampleTypeCode, String stockInCode, Long frozenBoxTypeId, String status);
+    List<FrozenBox> findIncompleteFrozenBoxBySampleClassificationId(String frozenBoxCode,  Long projectId,
+                                            List<Long> sampleClassificationIdStr, String stockInCode, Long frozenBoxTypeId, String frozenBoxStocked);
+    @Query(value = "select f.* from frozen_box f left join stock_in_box s on f.id=s.frozen_box_id " +
+        " where f.frozen_box_code != ?1 " +
+        " and f.project_id=?2 " +
+        " and s.stock_in_code =?3" +
+        " and f.frozen_box_type_id=?4 " +
+        " and f.status=?5" +
+        " and f.sample_number<(f.frozen_box_columns*f.frozen_box_rows) " +
+        " and f.is_split = 0 " +
+        " order by f.sample_number asc",nativeQuery = true)
+    List<FrozenBox> findIncompleteFrozenBox(String frozenBoxCode, Long projectId, String stockInCode, Long frozenBoxTypeId, String status);
 
 }

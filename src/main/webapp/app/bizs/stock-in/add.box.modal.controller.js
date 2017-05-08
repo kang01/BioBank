@@ -14,16 +14,13 @@
         var vm = this;
         vm.createBoxflag = false;
         vm.boxes = items.incompleteBoxes;
+        vm.box = {};
         var projectId = items.projectId;
         var sampleTypeId = items.sampleTypeId;
         var sampleTypeClassId = items.sampleTypeClassId;
-        if(!items.box.stockInFrozenTubeList.length){
-            vm.createBoxflag = true;
-            _createBox();
-        }
+        var frozenBoxTypeId = items.frozenBoxTypeId;
         var initData = function () {
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);//盒子类型
-            // EquipmentService.query({},onEquipmentSuccess, onError);//设备
             _fnQuerySampleType();
         };
         initData();
@@ -46,14 +43,18 @@
         function _fnQueryProjectSampleClasses(projectId,sampleTypeId) {
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.sampleTypeClassOptions = _.orderBy(data, ['sampleClassificationId'], ['esc']);
-                if(sampleTypeClassId){
-                    _.remove(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})
-                }
+                // if(sampleTypeClassId){
+                //     vm.delSampleTypeClassOptions = _.remove(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})
+                // }
                 if(vm.sampleTypeClassOptions.length){
                     vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
                     vm.box.sampleClassification = vm.sampleTypeClassOptions[0]
                 }
-
+                //创建第一个新盒子，空管子
+                if(!items.box.stockInFrozenTubeList.length){
+                    vm.createBoxflag = true;
+                    _createBox();
+                }
             });
         }
 
@@ -62,8 +63,6 @@
             if(!items.box.frozenBoxTypeId){
                 vm.box.frozenBoxTypeId = vm.frozenBoxTypeOptions[0].id;
                 vm.box.frozenBoxType = vm.frozenBoxTypeOptions[0];
-                // vm.box.frozenBoxRows = vm.frozenBoxTypeOptions[0].frozenBoxTypeRows;
-                // vm.box.frozenBoxColumns = vm.frozenBoxTypeOptions[0].frozenBoxTypeColumns
             }
         }
         // function onEquipmentSuccess(data) {
@@ -81,20 +80,20 @@
 
         function _createBox() {
             if(vm.createBoxflag){
-                vm.sampleType = items.box.sampleTypeCode;
                 vm.box = {
                     frozenBoxCode:'',
                     memo:'',
                     stockInFrozenTubeList:[]
                 };
                 if(items.box.stockInFrozenTubeList.length){
+                    var rows = +items.box.sampleType.frozenBoxTypeRows;
+                    var cols = +items.box.sampleType.frozenBoxTypeColumns;
                     var m = 0,n = 0;
                     for(var i = 0; i < items.box.stockInFrozenTubeList.length; i++){
-                        if(i >= +items.box.frozenBoxRows){
+                        if(i >= rows){
                             m++;n = 0;
                             items.box.stockInFrozenTubeList[i].tubeRows = String.fromCharCode(m+65);
                             items.box.stockInFrozenTubeList[i].tubeColumns = n + 1;
-                            items.box.frozenBoxRows = items.box.frozenBoxRows*2;
 
                         }else{
                             n++;
@@ -106,9 +105,16 @@
                     vm.box.stockInFrozenTubeList = items.box.stockInFrozenTubeList;
                 }
                 //盒子类型
-                if(items.box.frozenBoxTypeId){
-                    vm.box.frozenBoxTypeId = items.box.frozenBoxTypeId;
+                if(frozenBoxTypeId){
+                    vm.box.frozenBoxTypeId = frozenBoxTypeId;
+                    vm.box.frozenBoxType = _.filter(vm.frozenBoxTypeOptions,{'id':+vm.box.frozenBoxTypeId})[0];
                 }
+                if(items.sampleTypeId){
+                    vm.box.sampleTypeId = sampleTypeId;
+                    vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
+                }
+                vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
                 vm.boxTypeConfig = {
                     valueField:'id',
                     labelField:'frozenBoxTypeName',
@@ -135,6 +141,7 @@
                     maxItems: 1,
                     onChange:function (value) {
                         vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{'sampleClassificationId':+value})[0];
+                        vm.box.sampleClassificationId = value;
                     }
                 };
                 // //设备
@@ -203,6 +210,7 @@
                 vm.isBoxCodeRepeat = function () {
                     vm.isRepeat = false;
                 };
+                // console.log(JSON.stringify(vm.box))
             }
         }
 
@@ -242,10 +250,6 @@
         vm.no = function () {
             $uibModalInstance.close();
         };
-
-
-
-
 
     }
 })();

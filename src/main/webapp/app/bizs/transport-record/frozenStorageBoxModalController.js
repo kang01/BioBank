@@ -51,7 +51,8 @@
             labelField:'sampleClassificationName',
             maxItems: 1,
             onChange:function (value) {
-
+                vm.frozenBox.sampleClassificationId = value;
+                _fnCreateTempBox();
             }
         };
         //盒类型
@@ -176,8 +177,11 @@
             }
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.projectSampleTypeOptions = data;
-                vm.frozenBox.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                if(vm.projectSampleTypeOptions.length){
+                    vm.frozenBox.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                }
                 _fnCreateTempBox();
+
             });
         }
         function _fnCreateTempBox(code){

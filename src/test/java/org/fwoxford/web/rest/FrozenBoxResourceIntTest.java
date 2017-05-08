@@ -156,8 +156,8 @@ public class FrozenBoxResourceIntTest {
         FrozenBox frozenBox = new FrozenBox()
                 .frozenBoxCode(DEFAULT_FROZEN_BOX_CODE)
                 .frozenBoxTypeCode(DEFAULT_FROZEN_BOX_TYPE_CODE)
-                .frozenBoxRows(DEFAULT_FROZEN_BOX_ROWS)
-                .frozenBoxColumns(DEFAULT_FROZEN_BOX_COLUMNS)
+                .frozenBoxTypeRows(DEFAULT_FROZEN_BOX_ROWS)
+                .frozenBoxTypeColumns(DEFAULT_FROZEN_BOX_COLUMNS)
                 .projectCode(DEFAULT_PROJECT_CODE)
                 .projectName(DEFAULT_PROJECT_NAME)
                 .projectSiteCode(DEFAULT_PROJECT_SITE_CODE)
@@ -326,7 +326,7 @@ public class FrozenBoxResourceIntTest {
     public void checkFrozenBoxRowsIsRequired() throws Exception {
         int databaseSizeBeforeTest = frozenBoxRepository.findAll().size();
         // set the field null
-        frozenBox.setFrozenBoxRows(null);
+        frozenBox.setFrozenBoxTypeRows(null);
 
         // Create the FrozenBox, which fails.
         FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
@@ -345,7 +345,7 @@ public class FrozenBoxResourceIntTest {
     public void checkFrozenBoxColumnsIsRequired() throws Exception {
         int databaseSizeBeforeTest = frozenBoxRepository.findAll().size();
         // set the field null
-        frozenBox.setFrozenBoxColumns(null);
+        frozenBox.setFrozenBoxTypeColumns(null);
 
         // Create the FrozenBox, which fails.
         FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
@@ -751,8 +751,8 @@ public class FrozenBoxResourceIntTest {
         updatedFrozenBox
                 .frozenBoxCode(UPDATED_FROZEN_BOX_CODE)
                 .frozenBoxTypeCode(UPDATED_FROZEN_BOX_TYPE_CODE)
-                .frozenBoxRows(UPDATED_FROZEN_BOX_ROWS)
-                .frozenBoxColumns(UPDATED_FROZEN_BOX_COLUMNS)
+                .frozenBoxTypeRows(UPDATED_FROZEN_BOX_ROWS)
+                .frozenBoxTypeColumns(UPDATED_FROZEN_BOX_COLUMNS)
                 .projectCode(UPDATED_PROJECT_CODE)
                 .projectName(UPDATED_PROJECT_NAME)
                 .projectSiteCode(UPDATED_PROJECT_SITE_CODE)

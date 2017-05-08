@@ -31,13 +31,13 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
      */
     @NotNull
     @Size(max = 20)
-    private String frozenBoxRows;
+    private String frozenBoxTypeRows;
     /**
      * 冻存盒列数
      */
     @NotNull
     @Size(max = 20)
-    private String frozenBoxColumns;
+    private String frozenBoxTypeColumns;
     /**
      * 项目编码
      */
@@ -204,19 +204,19 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     public void setFrozenBoxTypeCode(String frozenBoxTypeCode) {
         this.frozenBoxTypeCode = frozenBoxTypeCode;
     }
-    public String getFrozenBoxRows() {
-        return frozenBoxRows;
+    public String getFrozenBoxTypeRows() {
+        return frozenBoxTypeRows;
     }
 
-    public void setFrozenBoxRows(String frozenBoxRows) {
-        this.frozenBoxRows = frozenBoxRows;
+    public void setFrozenBoxTypeRows(String frozenBoxTypeRows) {
+        this.frozenBoxTypeRows = frozenBoxTypeRows;
     }
-    public String getFrozenBoxColumns() {
-        return frozenBoxColumns;
+    public String getFrozenBoxTypeColumns() {
+        return frozenBoxTypeColumns;
     }
 
-    public void setFrozenBoxColumns(String frozenBoxColumns) {
-        this.frozenBoxColumns = frozenBoxColumns;
+    public void setFrozenBoxTypeColumns(String frozenBoxTypeColumns) {
+        this.frozenBoxTypeColumns = frozenBoxTypeColumns;
     }
     public String getProjectCode() {
         return projectCode;
@@ -461,8 +461,8 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
             "id=" + id +
             ", frozenBoxCode='" + frozenBoxCode + "'" +
             ", frozenBoxTypeCode='" + frozenBoxTypeCode + "'" +
-            ", frozenBoxRows='" + frozenBoxRows + "'" +
-            ", frozenBoxColumns='" + frozenBoxColumns + "'" +
+            ", frozenBoxTypeRows='" + frozenBoxTypeRows + "'" +
+            ", frozenBoxTypeColumns='" + frozenBoxTypeColumns + "'" +
             ", projectCode='" + projectCode + "'" +
             ", projectName='" + projectName + "'" +
             ", projectSiteCode='" + projectSiteCode + "'" +

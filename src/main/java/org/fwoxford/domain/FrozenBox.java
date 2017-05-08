@@ -47,14 +47,14 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Size(max = 20)
     @Column(name = "frozen_box_rows", length = 20, nullable = false)
-    private String frozenBoxRows;
+    private String frozenBoxTypeRows;
     /**
      * 冻存盒列数
      */
     @NotNull
     @Size(max = 20)
     @Column(name = "frozen_box_columns", length = 20, nullable = false)
-    private String frozenBoxColumns;
+    private String frozenBoxTypeColumns;
     /**
      * 项目编码
      */
@@ -232,29 +232,29 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     }
 
     public String getFrozenBoxRows() {
-        return frozenBoxRows;
+        return frozenBoxTypeRows;
     }
 
-    public FrozenBox frozenBoxRows(String frozenBoxRows) {
-        this.frozenBoxRows = frozenBoxRows;
+    public FrozenBox frozenBoxTypeRows(String frozenBoxTypeRows) {
+        this.frozenBoxTypeRows = frozenBoxTypeRows;
         return this;
     }
 
-    public void setFrozenBoxRows(String frozenBoxRows) {
-        this.frozenBoxRows = frozenBoxRows;
+    public void setFrozenBoxTypeRows(String frozenBoxTypeRows) {
+        this.frozenBoxTypeRows = frozenBoxTypeRows;
     }
 
     public String getFrozenBoxColumns() {
-        return frozenBoxColumns;
+        return frozenBoxTypeColumns;
     }
 
-    public FrozenBox frozenBoxColumns(String frozenBoxColumns) {
-        this.frozenBoxColumns = frozenBoxColumns;
+    public FrozenBox frozenBoxTypeColumns(String frozenBoxTypeColumns) {
+        this.frozenBoxTypeColumns = frozenBoxTypeColumns;
         return this;
     }
 
-    public void setFrozenBoxColumns(String frozenBoxColumns) {
-        this.frozenBoxColumns = frozenBoxColumns;
+    public void setFrozenBoxTypeColumns(String frozenBoxTypeColumns) {
+        this.frozenBoxTypeColumns = frozenBoxTypeColumns;
     }
 
     public String getProjectCode() {
@@ -622,8 +622,8 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
             "id=" + id +
             ", frozenBoxCode='" + frozenBoxCode + "'" +
             ", frozenBoxTypeCode='" + frozenBoxTypeCode + "'" +
-            ", frozenBoxRows='" + frozenBoxRows + "'" +
-            ", frozenBoxColumns='" + frozenBoxColumns + "'" +
+            ", frozenBoxTypeRows='" + frozenBoxTypeRows + "'" +
+            ", frozenBoxTypeColumns='" + frozenBoxTypeColumns + "'" +
             ", projectCode='" + projectCode + "'" +
             ", projectName='" + projectName + "'" +
             ", projectSiteCode='" + projectSiteCode + "'" +

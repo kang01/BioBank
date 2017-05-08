@@ -300,8 +300,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
 
         frozenBoxNew.setFrozenBoxType(boxType);
-        frozenBoxNew.setFrozenBoxRows(boxType.getFrozenBoxTypeRows());
-        frozenBoxNew.setFrozenBoxColumns(boxType.getFrozenBoxTypeColumns());
+        frozenBoxNew.setFrozenBoxTypeRows(boxType.getFrozenBoxTypeRows());
+        frozenBoxNew.setFrozenBoxTypeColumns(boxType.getFrozenBoxTypeColumns());
         frozenBoxNew.setFrozenBoxTypeCode(boxType.getFrozenBoxTypeCode());
 
         frozenBoxNew.setIsRealData(frozenBox.getIsRealData());

@@ -6,14 +6,16 @@
 
     angular
         .module('bioBankApp')
-        .controller('StockInNewController', StockInNewController);
+        .controller('StockInNewController', StockInNewController)
+        .controller('RescindPutAwayModalController', RescindPutAwayModalController);
 
     StockInNewController.$inject = ['$timeout','blockUI','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
         'entity','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','StockInSaveService',
-        'SampleTypeService','SampleService','IncompleteBoxService']
+        'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService'];
+    RescindPutAwayModalController.$inject = ['$uibModalInstance'];
     function StockInNewController($timeout,blockUI,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
                                   entity,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,StockInSaveService,
-                                  SampleTypeService,SampleService,IncompleteBoxService) {
+                                  SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
@@ -107,6 +109,8 @@
             vm.splitIt = _splitABox;
             // 上架按钮
             vm.putInShelf = _putInShelf;
+            //撤销上架
+            vm.rescindInShelf = _rescindInShelf;
         }
 
         function _fnServerData( sSource, aoData, fnCallback, oSettings ) {
@@ -172,13 +176,18 @@
             if (full.status == "2002"){
                 if (full.isSplit){
                     buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
-                        '   <i class="fa fa-sitemap"></i> 分装' +
+                       '   <i class="fa fa-sitemap"></i> 分装' +
                         '</button>';
                 } else {
                     buttonHtml += '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf(\''+ full.frozenBoxCode +'\')">' +
                         '   <i class="fa fa-sign-in"></i> 上架' +
                         '</button>';
                 }
+            }
+            if(full.status == "2006"){
+                buttonHtml += '<button type="button" class="btn btn-xs btn-error" ng-click="vm.rescindInShelf(\''+ full.frozenBoxCode +'\')">' +
+                    '   <i class="fa fa-sitemap"></i> 撤销上架' +
+                    '</button>';
             }
 
             return buttonHtml;
@@ -312,7 +321,7 @@
                         return {
                             stockInCode: vm.stockInCode,
                             boxIds: boxIds,
-                            boxes: boxes,
+                            boxes: boxes
                         }
                     }
                 }
@@ -322,8 +331,21 @@
                 vm.dtInstance.rerender();
             });
         }
+        function _rescindInShelf(boxCode) {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-in/rescind-putaway-modal.html',
+                controller: 'RescindPutAwayModalController',
+                controllerAs:'vm'
+            });
+            modalInstance.result.then(function (data) {
+                RescindPutAwayService.rescindPutAway(vm.entity.stockInCode,boxCode).then(function (data) {
+                    vm.headerCompiled = false;
+                    vm.dtInstance.rerender();
+                })
+            });
 
-
+        }
 
 
 
@@ -964,5 +986,14 @@
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }
+    }
+    function RescindPutAwayModalController($uibModalInstance) {
+        var vm = this;
+        vm.ok = function () {
+            $uibModalInstance.close(true);
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     }
 })();

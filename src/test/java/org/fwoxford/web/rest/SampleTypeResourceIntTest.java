@@ -58,6 +58,9 @@ public class SampleTypeResourceIntTest {
     private static final String DEFAULT_BACK_COLOR = "AAAAAAAAAA";
     private static final String UPDATED_BACK_COLOR = "BBBBBBBBBB";
 
+    private static final Integer DEFAULT_IS_MIXED = 20;
+    private static final Integer UPDATED_IS_MIXED = 19;
+
     @Autowired
     private SampleTypeRepository sampleTypeRepository;
 
@@ -106,7 +109,8 @@ public class SampleTypeResourceIntTest {
                 .memo(DEFAULT_MEMO)
                 .status(DEFAULT_STATUS)
                 .frontColor(DEFAULT_FRONT_COLOR)
-                .backColor(DEFAULT_BACK_COLOR);
+                .backColor(DEFAULT_BACK_COLOR)
+                .isMixed(DEFAULT_IS_MIXED);
         return sampleType;
     }
 
@@ -138,6 +142,7 @@ public class SampleTypeResourceIntTest {
         assertThat(testSampleType.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testSampleType.getFrontColor()).isEqualTo(DEFAULT_FRONT_COLOR);
         assertThat(testSampleType.getBackColor()).isEqualTo(DEFAULT_BACK_COLOR);
+        assertThat(testSampleType.getIsMixed()).isEqualTo(DEFAULT_IS_MIXED);
     }
 
     @Test
@@ -258,6 +263,25 @@ public class SampleTypeResourceIntTest {
 
     @Test
     @Transactional
+    public void checkIsMixedIsRequired() throws Exception {
+        int databaseSizeBeforeTest = sampleTypeRepository.findAll().size();
+        // set the field null
+        sampleType.setIsMixed(null);
+
+        // Create the SampleType, which fails.
+        SampleTypeDTO sampleTypeDTO = sampleTypeMapper.sampleTypeToSampleTypeDTO(sampleType);
+
+        restSampleTypeMockMvc.perform(post("/api/sample-types")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(sampleTypeDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<SampleType> sampleTypeList = sampleTypeRepository.findAll();
+        assertThat(sampleTypeList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllSampleTypes() throws Exception {
         // Initialize the database
         sampleTypeRepository.saveAndFlush(sampleType);
@@ -272,7 +296,8 @@ public class SampleTypeResourceIntTest {
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].frontColor").value(hasItem(DEFAULT_FRONT_COLOR.toString())))
-            .andExpect(jsonPath("$.[*].backColor").value(hasItem(DEFAULT_BACK_COLOR.toString())));
+            .andExpect(jsonPath("$.[*].backColor").value(hasItem(DEFAULT_BACK_COLOR.toString())))
+            .andExpect(jsonPath("$.[*].isMixed").value(hasItem(DEFAULT_IS_MIXED)));
     }
 
     @Test
@@ -291,7 +316,8 @@ public class SampleTypeResourceIntTest {
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.frontColor").value(DEFAULT_FRONT_COLOR.toString()))
-            .andExpect(jsonPath("$.backColor").value(DEFAULT_BACK_COLOR.toString()));
+            .andExpect(jsonPath("$.backColor").value(DEFAULT_BACK_COLOR.toString()))
+            .andExpect(jsonPath("$.isMixed").value(DEFAULT_IS_MIXED));
     }
 
     @Test
@@ -317,7 +343,8 @@ public class SampleTypeResourceIntTest {
                 .memo(UPDATED_MEMO)
                 .status(UPDATED_STATUS)
                 .frontColor(UPDATED_FRONT_COLOR)
-                .backColor(UPDATED_BACK_COLOR);
+                .backColor(UPDATED_BACK_COLOR)
+                .isMixed(UPDATED_IS_MIXED);
         SampleTypeDTO sampleTypeDTO = sampleTypeMapper.sampleTypeToSampleTypeDTO(updatedSampleType);
 
         restSampleTypeMockMvc.perform(put("/api/sample-types")
@@ -335,6 +362,7 @@ public class SampleTypeResourceIntTest {
         assertThat(testSampleType.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testSampleType.getFrontColor()).isEqualTo(UPDATED_FRONT_COLOR);
         assertThat(testSampleType.getBackColor()).isEqualTo(UPDATED_BACK_COLOR);
+        assertThat(testSampleType.getIsMixed()).isEqualTo(UPDATED_IS_MIXED);
     }
 
     @Test

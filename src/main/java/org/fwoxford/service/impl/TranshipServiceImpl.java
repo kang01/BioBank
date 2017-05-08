@@ -107,14 +107,14 @@ public class TranshipServiceImpl implements TranshipService{
             throw new BankServiceException("转运已不在进行中状态，不能修改记录！",transhipDTO.toString());
         }
         //验证运单号不能重复----true：已经存在，false:不存在
-        String trackNumber = transhipDTO.getTrackNumber();
-        if(trackNumber==null||trackNumber.equals(null)){
-            throw new BankServiceException("运单号不能为空！",trackNumber);
-        }
-        Tranship transhipByTrack = transhipRepository.findByTrackNumber(trackNumber);
-        if(transhipByTrack!=null&&transhipByTrack.getId()!=transhipId){
-            throw new BankServiceException("运单号不能重复！",trackNumber);
-        }
+//        String trackNumber = transhipDTO.getTrackNumber();
+//        if(trackNumber==null||trackNumber.equals(null)){
+//            throw new BankServiceException("运单号不能为空！",trackNumber);
+//        }
+//        Tranship transhipByTrack = transhipRepository.findByTrackNumber(trackNumber);
+//        if(transhipByTrack!=null&&transhipByTrack.getId()!=transhipId){
+//            throw new BankServiceException("运单号不能重复！",trackNumber);
+//        }
         Project project = projectRepository.findOne(transhipDTO.getProjectId());
 
         User user = userRepository.findByLogin(transhipDTO.getReceiver());

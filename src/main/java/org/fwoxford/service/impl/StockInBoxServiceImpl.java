@@ -190,8 +190,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxDetail.setSupportRackId(frozenBox.getArea()!=null?frozenBox.getSupportRack().getId():null);
         stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
         stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
-        stockInBoxDetail.setFrozenBoxColumns(frozenBox.getFrozenBoxColumns());
-        stockInBoxDetail.setFrozenBoxRows(frozenBox.getFrozenBoxRows());
+        stockInBoxDetail.setFrozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns());
+        stockInBoxDetail.setFrozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows());
         stockInBoxDetail.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
         stockInBoxDetail.setStatus(frozenBox.getStatus());
         return stockInBoxDetail;
@@ -300,8 +300,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
 
         frozenBoxNew.setFrozenBoxType(boxType);
-        frozenBoxNew.setFrozenBoxRows(boxType.getFrozenBoxTypeRows());
-        frozenBoxNew.setFrozenBoxColumns(boxType.getFrozenBoxTypeColumns());
+        frozenBoxNew.setFrozenBoxTypeRows(boxType.getFrozenBoxTypeRows());
+        frozenBoxNew.setFrozenBoxTypeColumns(boxType.getFrozenBoxTypeColumns());
         frozenBoxNew.setFrozenBoxTypeCode(boxType.getFrozenBoxTypeCode());
 
         frozenBoxNew.setIsRealData(frozenBox.getIsRealData());
@@ -558,8 +558,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxDetail.setSupportRackId(frozenBox.getArea()!=null?frozenBox.getSupportRack().getId():null);
         stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
         stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
-        stockInBoxDetail.setFrozenBoxColumns(frozenBox.getFrozenBoxColumns());
-        stockInBoxDetail.setFrozenBoxRows(frozenBox.getFrozenBoxRows());
+        stockInBoxDetail.setFrozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns());
+        stockInBoxDetail.setFrozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows());
         stockInBoxDetail.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
         stockInBoxDetail.setStatus(frozenBox.getStatus());
         return stockInBoxDetail;

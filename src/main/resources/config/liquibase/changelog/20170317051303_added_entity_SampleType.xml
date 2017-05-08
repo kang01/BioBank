@@ -38,6 +38,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="is_mixed" type="integer" remarks="是否混合类型">
+                <constraints nullable="false" />
+            </column>
+
             <column name="memo" type="varchar(1024)" remarks="备注">
                 <constraints nullable="true" />
             </column>

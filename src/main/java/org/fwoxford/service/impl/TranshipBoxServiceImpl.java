@@ -259,8 +259,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     FrozenBoxType boxType = boxTypes.get(boxTypeIndex);
                     box.setFrozenBoxType(boxType);
                     box.setFrozenBoxTypeCode(boxType.getFrozenBoxTypeCode());
-                    box.setFrozenBoxColumns(boxType.getFrozenBoxTypeColumns());
-                    box.setFrozenBoxRows(boxType.getFrozenBoxTypeRows());
+                    box.setFrozenBoxTypeColumns(boxType.getFrozenBoxTypeColumns());
+                    box.setFrozenBoxTypeRows(boxType.getFrozenBoxTypeRows());
                 }else {
                     throw new BankServiceException("冻存盒类型不能为空！",box.toString());
                 }
@@ -310,8 +310,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             box.setEmptyTubeNumber(countOfEmptyTube);
             box.setEmptyHoleNumber(countOfEmptyHole);
             int countOfSampleAll = boxDTO.getFrozenTubeDTOS().size();
-            String frozenBoxColumns = box.getFrozenBoxColumns()!=null?box.getFrozenBoxColumns():new String("0");
-            String frozenBoxRows = box.getFrozenBoxRows()!=null?box.getFrozenBoxRows():new String("0");
+            String frozenBoxColumns = box.getFrozenBoxTypeColumns()!=null?box.getFrozenBoxTypeColumns():new String("0");
+            String frozenBoxRows = box.getFrozenBoxTypeRows()!=null?box.getFrozenBoxTypeRows():new String("0");
 
             int allCount = Integer.parseInt(frozenBoxColumns)*Integer.parseInt(frozenBoxRows);
             if(countOfSampleAll>allCount){

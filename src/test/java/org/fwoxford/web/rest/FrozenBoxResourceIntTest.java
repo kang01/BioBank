@@ -156,8 +156,8 @@ public class FrozenBoxResourceIntTest {
         FrozenBox frozenBox = new FrozenBox()
                 .frozenBoxCode(DEFAULT_FROZEN_BOX_CODE)
                 .frozenBoxTypeCode(DEFAULT_FROZEN_BOX_TYPE_CODE)
-                .frozenBoxRows(DEFAULT_FROZEN_BOX_ROWS)
-                .frozenBoxColumns(DEFAULT_FROZEN_BOX_COLUMNS)
+                .frozenBoxTypeRows(DEFAULT_FROZEN_BOX_ROWS)
+                .frozenBoxTypeColumns(DEFAULT_FROZEN_BOX_COLUMNS)
                 .projectCode(DEFAULT_PROJECT_CODE)
                 .projectName(DEFAULT_PROJECT_NAME)
                 .projectSiteCode(DEFAULT_PROJECT_SITE_CODE)
@@ -241,8 +241,8 @@ public class FrozenBoxResourceIntTest {
         FrozenBox testFrozenBox = frozenBoxList.get(frozenBoxList.size() - 1);
         assertThat(testFrozenBox.getFrozenBoxCode()).isEqualTo(DEFAULT_FROZEN_BOX_CODE);
         assertThat(testFrozenBox.getFrozenBoxTypeCode()).isEqualTo(DEFAULT_FROZEN_BOX_TYPE_CODE);
-        assertThat(testFrozenBox.getFrozenBoxRows()).isEqualTo(DEFAULT_FROZEN_BOX_ROWS);
-        assertThat(testFrozenBox.getFrozenBoxColumns()).isEqualTo(DEFAULT_FROZEN_BOX_COLUMNS);
+        assertThat(testFrozenBox.getFrozenBoxTypeRows()).isEqualTo(DEFAULT_FROZEN_BOX_ROWS);
+        assertThat(testFrozenBox.getFrozenBoxTypeColumns()).isEqualTo(DEFAULT_FROZEN_BOX_COLUMNS);
         assertThat(testFrozenBox.getProjectCode()).isEqualTo(DEFAULT_PROJECT_CODE);
         assertThat(testFrozenBox.getProjectName()).isEqualTo(DEFAULT_PROJECT_NAME);
         assertThat(testFrozenBox.getProjectSiteCode()).isEqualTo(DEFAULT_PROJECT_SITE_CODE);
@@ -326,7 +326,7 @@ public class FrozenBoxResourceIntTest {
     public void checkFrozenBoxRowsIsRequired() throws Exception {
         int databaseSizeBeforeTest = frozenBoxRepository.findAll().size();
         // set the field null
-        frozenBox.setFrozenBoxRows(null);
+        frozenBox.setFrozenBoxTypeRows(null);
 
         // Create the FrozenBox, which fails.
         FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
@@ -345,7 +345,7 @@ public class FrozenBoxResourceIntTest {
     public void checkFrozenBoxColumnsIsRequired() throws Exception {
         int databaseSizeBeforeTest = frozenBoxRepository.findAll().size();
         // set the field null
-        frozenBox.setFrozenBoxColumns(null);
+        frozenBox.setFrozenBoxTypeColumns(null);
 
         // Create the FrozenBox, which fails.
         FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
@@ -676,8 +676,8 @@ public class FrozenBoxResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(frozenBox.getId().intValue())))
             .andExpect(jsonPath("$.[*].frozenBoxCode").value(hasItem(DEFAULT_FROZEN_BOX_CODE.toString())))
             .andExpect(jsonPath("$.[*].frozenBoxTypeCode").value(hasItem(DEFAULT_FROZEN_BOX_TYPE_CODE.toString())))
-            .andExpect(jsonPath("$.[*].frozenBoxRows").value(hasItem(DEFAULT_FROZEN_BOX_ROWS.toString())))
-            .andExpect(jsonPath("$.[*].frozenBoxColumns").value(hasItem(DEFAULT_FROZEN_BOX_COLUMNS.toString())))
+            .andExpect(jsonPath("$.[*].frozenBoxTypeRows").value(hasItem(DEFAULT_FROZEN_BOX_ROWS.toString())))
+            .andExpect(jsonPath("$.[*].frozenBoxTypeColumns").value(hasItem(DEFAULT_FROZEN_BOX_COLUMNS.toString())))
             .andExpect(jsonPath("$.[*].projectCode").value(hasItem(DEFAULT_PROJECT_CODE.toString())))
             .andExpect(jsonPath("$.[*].projectName").value(hasItem(DEFAULT_PROJECT_NAME.toString())))
             .andExpect(jsonPath("$.[*].projectSiteCode").value(hasItem(DEFAULT_PROJECT_SITE_CODE.toString())))
@@ -710,8 +710,8 @@ public class FrozenBoxResourceIntTest {
             .andExpect(jsonPath("$.id").value(frozenBox.getId().intValue()))
             .andExpect(jsonPath("$.frozenBoxCode").value(DEFAULT_FROZEN_BOX_CODE.toString()))
             .andExpect(jsonPath("$.frozenBoxTypeCode").value(DEFAULT_FROZEN_BOX_TYPE_CODE.toString()))
-            .andExpect(jsonPath("$.frozenBoxRows").value(DEFAULT_FROZEN_BOX_ROWS.toString()))
-            .andExpect(jsonPath("$.frozenBoxColumns").value(DEFAULT_FROZEN_BOX_COLUMNS.toString()))
+            .andExpect(jsonPath("$.frozenBoxTypeRows").value(DEFAULT_FROZEN_BOX_ROWS.toString()))
+            .andExpect(jsonPath("$.frozenBoxTypeColumns").value(DEFAULT_FROZEN_BOX_COLUMNS.toString()))
             .andExpect(jsonPath("$.projectCode").value(DEFAULT_PROJECT_CODE.toString()))
             .andExpect(jsonPath("$.projectName").value(DEFAULT_PROJECT_NAME.toString()))
             .andExpect(jsonPath("$.projectSiteCode").value(DEFAULT_PROJECT_SITE_CODE.toString()))
@@ -751,8 +751,8 @@ public class FrozenBoxResourceIntTest {
         updatedFrozenBox
                 .frozenBoxCode(UPDATED_FROZEN_BOX_CODE)
                 .frozenBoxTypeCode(UPDATED_FROZEN_BOX_TYPE_CODE)
-                .frozenBoxRows(UPDATED_FROZEN_BOX_ROWS)
-                .frozenBoxColumns(UPDATED_FROZEN_BOX_COLUMNS)
+                .frozenBoxTypeRows(UPDATED_FROZEN_BOX_ROWS)
+                .frozenBoxTypeColumns(UPDATED_FROZEN_BOX_COLUMNS)
                 .projectCode(UPDATED_PROJECT_CODE)
                 .projectName(UPDATED_PROJECT_NAME)
                 .projectSiteCode(UPDATED_PROJECT_SITE_CODE)
@@ -783,8 +783,8 @@ public class FrozenBoxResourceIntTest {
         FrozenBox testFrozenBox = frozenBoxList.get(frozenBoxList.size() - 1);
         assertThat(testFrozenBox.getFrozenBoxCode()).isEqualTo(UPDATED_FROZEN_BOX_CODE);
         assertThat(testFrozenBox.getFrozenBoxTypeCode()).isEqualTo(UPDATED_FROZEN_BOX_TYPE_CODE);
-        assertThat(testFrozenBox.getFrozenBoxRows()).isEqualTo(UPDATED_FROZEN_BOX_ROWS);
-        assertThat(testFrozenBox.getFrozenBoxColumns()).isEqualTo(UPDATED_FROZEN_BOX_COLUMNS);
+        assertThat(testFrozenBox.getFrozenBoxTypeRows()).isEqualTo(UPDATED_FROZEN_BOX_ROWS);
+        assertThat(testFrozenBox.getFrozenBoxTypeColumns()).isEqualTo(UPDATED_FROZEN_BOX_COLUMNS);
         assertThat(testFrozenBox.getProjectCode()).isEqualTo(UPDATED_PROJECT_CODE);
         assertThat(testFrozenBox.getProjectName()).isEqualTo(UPDATED_PROJECT_NAME);
         assertThat(testFrozenBox.getProjectSiteCode()).isEqualTo(UPDATED_PROJECT_SITE_CODE);

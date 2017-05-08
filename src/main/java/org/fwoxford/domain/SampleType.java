@@ -65,6 +65,10 @@ public class SampleType extends AbstractAuditingEntity implements Serializable {
     @Column(name = "back_color", length = 100, nullable = false)
     private String backColor;
 
+    @NotNull
+    @Size(max = 20)
+    @Column(name = "is_mixed",  nullable = false)
+    private Integer isMixed;
     public Long getId() {
         return id;
     }
@@ -151,6 +155,18 @@ public class SampleType extends AbstractAuditingEntity implements Serializable {
         this.backColor = backColor;
     }
 
+    public Integer getIsMixed() {
+        return isMixed;
+    }
+
+    public SampleType isMixed(Integer isMixed) {
+        this.isMixed = isMixed;
+        return this;
+    }
+    public void setIsMixed(Integer isMixed) {
+        this.isMixed = isMixed;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -181,6 +197,7 @@ public class SampleType extends AbstractAuditingEntity implements Serializable {
             ", status='" + status + "'" +
             ", frontColor='" + frontColor + "'" +
             ", backColor='" + backColor + "'" +
+            ", isMixed='" + isMixed + "'" +
             '}';
     }
 }

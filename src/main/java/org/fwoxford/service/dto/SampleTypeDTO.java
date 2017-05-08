@@ -47,6 +47,10 @@ public class SampleTypeDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 100)
     private String backColor;
 
+    @NotNull
+    @Size(max = 20)
+    private Integer isMixed;
+
     public Long getId() {
         return id;
     }
@@ -97,6 +101,14 @@ public class SampleTypeDTO extends AbstractAuditingDTO implements Serializable {
         this.backColor = backColor;
     }
 
+    public Integer getIsMixed() {
+        return isMixed;
+    }
+
+    public void setIsMixed(Integer isMixed) {
+        this.isMixed = isMixed;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -128,6 +140,7 @@ public class SampleTypeDTO extends AbstractAuditingDTO implements Serializable {
             ", status='" + status + "'" +
             ", frontColor='" + frontColor + "'" +
             ", backColor='" + backColor + "'" +
+            ", isMixed='" + isMixed + "'" +
             '}';
     }
 }

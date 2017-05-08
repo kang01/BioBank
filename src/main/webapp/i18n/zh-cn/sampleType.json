@@ -20,7 +20,8 @@
             "memo": "Memo",
             "status": "Status",
             "frontColor": "Front Color",
-            "backColor": "Back Color"
+            "backColor": "Back Color",
+            "isMixed": "Is Mixed"
         }
     }
 }

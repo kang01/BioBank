@@ -130,6 +130,7 @@
                                 status: null,
                                 frontColor: null,
                                 backColor: null,
+                                isMixed: null,
                                 id: null
                             };
                         }

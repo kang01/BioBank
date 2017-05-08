@@ -257,12 +257,17 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             throw new BankServiceException("冻存盒类型不能为空！",stockInBoxForDataSplit.getFrozenBoxCode());
         }
         //验证盒子编码是否存在
-        FrozenBox oldFrozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
 
-        if(oldFrozenBox!=null && !stockInBoxForDataSplit.getFrozenBoxId().equals(oldFrozenBox.getId())
-            &&!oldFrozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)){
-            throw new BankServiceException("冻存盒编码已经存在！",stockInBoxForDataSplit.getFrozenBoxCode());
+        List<Object[]> obj = frozenBoxRepository.countByFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
+        for(Object[] o:obj){
+            String frozenBoxId = o[0].toString();
+            if(stockInBoxForDataSplit.getFrozenBoxId()==null){
+                throw new BankServiceException("冻存盒编码已存在！",stockInBoxForDataSplit.getFrozenBoxCode());
+            }else if(stockInBoxForDataSplit.getFrozenBoxId()!=null&&!stockInBoxForDataSplit.getFrozenBoxId().toString().equals(frozenBoxId)){
+                throw new BankServiceException("冻存盒编码已存在！",stockInBoxForDataSplit.getFrozenBoxCode());
+            }
         }
+
         //新增盒子
         FrozenBox frozenBoxNew = new FrozenBox();
         frozenBoxNew.setId(stockInBoxForDataSplit.getFrozenBoxId());

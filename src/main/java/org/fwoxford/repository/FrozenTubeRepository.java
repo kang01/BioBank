@@ -14,20 +14,18 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
-    @Query("select t from FrozenTube t where t.frozenBox.id = ?1")
+    @Query("select t from FrozenTube t where t.frozenBox.id = ?1 and t.status!='0000'")
     List<FrozenTube> findFrozenTubeListByBoxId(Long frozenBoxId);
 
-    @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and status!='0000'")
+    @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000'")
     List<FrozenTube> findFrozenTubeListByBoxCode(String frozenBoxCode);
 
-    List<FrozenTube> findFrozenTubeListByFrozenBoxCodeAndStatus(String frozenBoxCode, String frozenTubeNormal);
+    List<FrozenTube> findFrozenTubeListByFrozenBoxCodeAndStatus(String frozenBoxCode, String status);
 
     @Query(value = "select t.frozen_box_code as frozenBoxCode,count(t.frozen_box_code) as sampleNumber \n" +
-        "from frozen_tube t where t.frozen_box_code in ?1 group by t.frozen_box_code \n" +
+        "from frozen_tube t where t.frozen_box_code in ?1 and t.status!='0000' group by t.frozen_box_code \n" +
         " order by sampleNumber asc,t.frozen_box_code desc " ,nativeQuery = true)
     List<Object[]> countSampleNumberByfrozenBoxList(List<String> frozenBoxList);
 
-    void deleteByFrozenBoxCode(String frozenBoxCode);
-
-    int countByFrozenBoxCodeAndStatus(String frozenBoxCode, String frozenTubeNormal);
+    int countByFrozenBoxCodeAndStatus(String frozenBoxCode, String status);
 }

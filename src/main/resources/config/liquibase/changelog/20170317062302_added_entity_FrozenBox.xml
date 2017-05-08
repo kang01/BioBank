@@ -23,7 +23,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="frozen_box_code" type="varchar(100)" remarks="冻存盒编码">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>
 
             <column name="frozen_box_type_code" type="varchar(100)" remarks="冻存盒类型编码">

@@ -18,4 +18,7 @@ public interface StockInRepository extends JpaRepository<StockIn,Long> {
 
     @Query("select s from StockIn s where s.tranship.transhipCode=?1")
     List<StockIn> findByTranshipCode(String transhipCode);
+
+    @Query("select count(s) from StockIn s where s.tranship.transhipCode=?1")
+    int countByTranshipCode(String transhipCode);
 }

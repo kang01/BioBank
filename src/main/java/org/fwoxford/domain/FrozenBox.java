@@ -32,7 +32,7 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
      */
     @NotNull
     @Size(max = 100)
-    @Column(name = "frozen_box_code", length = 100, nullable = false,unique = true)
+    @Column(name = "frozen_box_code", length = 100, nullable = false)
     private String frozenBoxCode;
     /**
      * 冻存盒类型编码
@@ -142,7 +142,7 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @Column(name = "memo", length = 255)
     private String memo;
     /**
-     * 状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废
+     * 状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，0000：无效
      */
     @NotNull
     @Size(max = 20)

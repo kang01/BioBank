@@ -186,8 +186,8 @@ public class StockInServiceImpl implements StockInService {
         if(tranship.getTrackNumber()==null||tranship.getTrackNumber()==""){
             throw new BankServiceException("运单号不能为空！",tranship.toString());
         }
-        List<StockIn> stockIns = stockInRepository.findByTranshipCode(transhipCode);
-        if(stockIns.size()>0){
+        int number = stockInRepository.countByTranshipCode(transhipCode);
+        if(number>0){
             throw new BankServiceException("此次转运已经在执行入库！",transhipCode);
         }
         transhipRes = transhipService.findTranshipAndFrozenBox(tranship.getId());

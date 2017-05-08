@@ -200,18 +200,18 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         result.setFrozenBoxDTOList(new ArrayList<>());
 
         for(FrozenBoxForSaveBatchDTO boxDTO : transhipBoxListDTO.getFrozenBoxDTOList()){
-            FrozenBox oldBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(boxDTO.getFrozenBoxCode());
-            if (oldBox != null && (boxDTO.getId() == null || !boxDTO.getId().equals(oldBox.getId()))
-                 && !oldBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)){
-                // 盒子编码重复的错误需要抛异常
-                throw new BankServiceException("此冻存盒编码已存在！",oldBox.getFrozenBoxCode());
+            List<Object[]> obj = frozenBoxRepository.countByFrozenBoxCode(boxDTO.getFrozenBoxCode());
+            for(Object[] o:obj){
+                String frozenBoxId = o[0].toString();
+                if(boxDTO.getId()==null){
+                    throw new BankServiceException("冻存盒编码已存在！",boxDTO.getFrozenBoxCode());
+                }else if(boxDTO.getId()!=null&&!boxDTO.getId().toString().equals(frozenBoxId)){
+                    throw new BankServiceException("冻存盒编码已存在！",boxDTO.getFrozenBoxCode());
+                }
             }
 
             FrozenBox box = frozenBoxMapper.frozenBoxForSaveBatchDTOToFrozenBox(boxDTO);
             box = (FrozenBox) EntityUtil.avoidFieldValueNull(box);
-            if (oldBox != null) {
-                box.setId(oldBox.getId());
-            }
             if (tranship.getProject() != null ) {
                 Project project = tranship.getProject();
                 box.setProject(project);
@@ -320,11 +320,15 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             box.setSampleNumber(countOfSample);
             box.setStatus(Constants.FROZEN_BOX_NEW);
             box = frozenBoxRepository.save(box);
+
+            //
+            List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxId(box.getId());
+            for(FrozenTube f :frozenTubes){
+                f.setStatus(Constants.INVALID);
+            }
             //删除冻存管
-            frozenTubeRepository.deleteByFrozenBoxCode(box.getFrozenBoxCode());
             for(FrozenTubeForSaveBatchDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
                 FrozenTube tube = frozenTubeMapper.frozenTubeForSaveBatchDTOToFrozenTube(tubeDTO);
-
                 tube = (FrozenTube) EntityUtil.avoidFieldValueNull(tube);
                 if (tube.getSampleType() == null){
                     tube.setSampleType(box.getSampleType());
@@ -477,9 +481,11 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             throw new BankServiceException("未查询到该冻存盒的转运记录！",frozenBoxCode);
         }
         List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
-        frozenTubeRepository.deleteInBatch(frozenTubes);//删除冻存管
-        transhipBoxRepository.delete(transhipBox);
-        frozenBoxRepository.delete(frozenBox);
+        for(FrozenTube f:frozenTubes){
+            f.setStatus(Constants.INVALID);
+        }
+        transhipBox.setStatus(Constants.INVALID);
+        frozenBox.setStatus(Constants.INVALID);
     }
 
     @Override

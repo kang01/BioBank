@@ -72,7 +72,7 @@ public interface ProjectSampleClassMapper {
             return null;
         }
         ProjectSampleClassificationDTO dto = new ProjectSampleClassificationDTO();
-        dto.setSampleClassficationName(p.getSampleClassification().getSampleClassificationName());
+        dto.setSampleClassificationName(p.getSampleClassification().getSampleClassificationName());
         dto.setSampleClassificationId(p.getSampleClassification().getId());
         dto.setBackColor(p.getSampleClassification().getBackColor());
         dto.setFrontColor(p.getSampleClassification().getFrontColor());

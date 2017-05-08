@@ -48,7 +48,7 @@
         };
         vm.projectSampleTypeConfig = {
             valueField:'sampleClassificationId',
-            labelField:'sampleClassficationName',
+            labelField:'sampleClassificationName',
             maxItems: 1,
             onChange:function (value) {
 
@@ -67,7 +67,7 @@
                         vm.frozenBox.frozenBoxTypeColumns = vm.frozenBoxTypeOptions[i].frozenBoxTypeColumns
                     }
                 }
-                _fnInitBoxInfo();
+                _fnCreateTempBox();
             }
         };
         //暂存区位置
@@ -85,7 +85,7 @@
             maxItems: 1,
             onChange:function (value) {
                 vm.frozenBox.areaId  = value;
-                _fnInitBoxInfo();
+                _fnCreateTempBox();
             }
         };
 
@@ -177,7 +177,7 @@
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.projectSampleTypeOptions = data;
                 vm.frozenBox.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
-                _fnInitBoxInfo();
+                _fnCreateTempBox();
             });
         }
         function _fnCreateTempBox(code){
@@ -226,7 +226,7 @@
         function onAreaTempSuccess(data) {
             vm.frozenBoxHoldAreaOptions = data;
             vm.frozenBox.areaId = vm.frozenBoxHoldAreaOptions[0].id;
-            _fnInitBoxInfo();
+            _fnCreateTempBox();
         }
         function onSaveBoxSuccess(data) {
             blockUI.stop();

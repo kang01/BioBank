@@ -50,6 +50,7 @@
 
 
         }
+
         function _initTransportRecordPage(){
             if($stateParams.transhipId){
                 vm.transportRecord.id = $stateParams.transhipId;
@@ -79,11 +80,10 @@
             // if(!vm.transportRecord.sampleSatisfaction){
             //     vm.transportRecord.sampleSatisfaction = 8
             // }
-
+            _fnQuerySampleType();
             if(vm.transportRecord.projectId){
                 ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError)
             }
-            _fnQuerySampleType();
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);//盒子类型
             ProjectService.query({},onProjectSuccess, onError)//项目
             SampleUserService.query({},onReceiverSuccess, onError)//接收人
@@ -221,66 +221,57 @@
             }
             //保存记录
             function saveRecord(transportRecord) {
-                if(vm.transportRecord.trackNumber){
-                    TrackNumberService.getTrackNum(vm.transportRecord.transhipCode,vm.transportRecord.trackNumber).then(function (data) {
-                        if(data){
-                            toastr.warning("运单号不能重复！");
-                            vm.transportRecord.trackNumber = "";
-                            return;
-                        }
-                        vm.saveRecordFlag = true;
-                        vm.saveBox(function(){
-                            _blockUiStart(blockUiMessage);
-                            TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError);
-                            function onSaveTranshipRecordSuccess(data) {
-                                if(importBoxFlag){
-                                    modalInstance = $uibModal.open({
-                                        animation: true,
-                                        templateUrl: 'app/bizs/transport-record/frozen-storage-box-modal.html',
-                                        controller: 'FrozenStorageBoxModalController',
-                                        controllerAs:'vm',
-                                        size:'lg',
-                                        resolve: {
-                                            items: function () {
-                                                return {
-                                                    transhipId :vm.transportRecord.id,
-                                                    projectId :vm.transportRecord.projectId,
-                                                    frozenBoxTypeOptions:vm.frozenBoxTypeOptions,
-                                                    sampleTypeOptions:vm.sampleTypeOptions
-                                                }
-                                            }
+                vm.saveRecordFlag = true;
+                vm.saveBox(function(){
+                    _blockUiStart(blockUiMessage);
+                    TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError);
+                    function onSaveTranshipRecordSuccess(data) {
+                        if(importBoxFlag){
+                            modalInstance = $uibModal.open({
+                                animation: true,
+                                templateUrl: 'app/bizs/transport-record/frozen-storage-box-modal.html',
+                                controller: 'FrozenStorageBoxModalController',
+                                controllerAs:'vm',
+                                size:'lg',
+                                resolve: {
+                                    items: function () {
+                                        return {
+                                            transhipId :vm.transportRecord.id,
+                                            projectId :vm.transportRecord.projectId,
+                                            frozenBoxTypeOptions:vm.frozenBoxTypeOptions,
+                                            sampleTypeOptions:vm.sampleTypeOptions
                                         }
-
-                                    });
-                                    modalInstance.result.then(function (data) {
-                                        vm.loadBox();
-                                        importBoxFlag = false;
-                                    });
+                                    }
                                 }
 
-                                vm.saveRecordFlag = false;
+                            });
+                            modalInstance.result.then(function (data) {
+                                vm.loadBox();
+                                importBoxFlag = false;
+                            });
+                        }
 
+                        vm.saveRecordFlag = false;
+
+                        _blockUiStop();
+
+
+                        if(vm.saveStockInFlag){
+                            TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
                                 _blockUiStop();
-
-
-                                if(vm.saveStockInFlag){
-                                    TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
-                                        _blockUiStop();
-                                        toastr.success("入库成功！");
-                                        vm.saveStockInFlag = false;
-                                        $state.go('stock-in-edit',{id:data.id});
-                                    }).error(function (data) {
-                                        _blockUiStop();
-                                        toastr.error(data.message+"入库失败！");
-                                    })
-                                }
-                                if(!vm.saveStockInFlag && !importBoxFlag){
-                                    toastr.success("保存转运记录成功");
-                                }
-                            }
-                        });
-                    })
-                }
+                                toastr.success("入库成功！");
+                                vm.saveStockInFlag = false;
+                                $state.go('stock-in-edit',{id:data.id});
+                            }).error(function (data) {
+                                _blockUiStop();
+                                toastr.error(data.message+"入库失败！");
+                            })
+                        }
+                        if(!vm.saveStockInFlag && !importBoxFlag){
+                            toastr.success("保存转运记录成功");
+                        }
+                    }
+                });
 
 
             }
@@ -337,16 +328,23 @@
                         vm.box.sampleClassificationId = "";
                     }else{
                         if(!vm.box.sampleClassificationId){
-                            vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                            if(vm.projectSampleTypeOptions.length){
+                                vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                            }
                         }
                         for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                             for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                                vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
+                                if(vm.box.sampleClassification){
+                                    vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
+                                }
                                 vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
                             }
                         }
                         for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
-                            vm.box.frozenTubeDTOS[m].sampleClassification.id = vm.box.sampleClassificationId
+                            if(vm.box.sampleClassification){
+                                vm.box.frozenTubeDTOS[m].sampleClassification.id = vm.box.sampleClassificationId;
+                            }
+                            vm.box.frozenTubeDTOS[m].sampleType.id = vm.box.sampleTypeId;
                         }
                     }
 
@@ -367,7 +365,6 @@
                 vm.receiverOptions = data;
             }
         }
-
         function _initFrozenBoxesTable(){
             vm.loadBox = loadBox;
             loadAll();
@@ -453,7 +450,6 @@
             }
 
         }
-
         function _initFrozenBoxPanel(){
             vm.frozenTubeArray = [];//初始管子数据二位数组
             var remarkArray;//批注
@@ -589,8 +585,13 @@
                 //样本类型
                 if(tube.sampleClassificationId){
                     // vm.sampleTypeOptions
-                    SampleService.changeSampleType(tube.sampleClassificationId,td,vm.projectSampleTypeOptions);
+                    SampleService.changeSampleType(tube.sampleClassificationId,td,vm.projectSampleTypeOptions,1);
+                }else{
+                    if(vm.sampleTypeOptions){
+                        SampleService.changeSampleType(tube.sampleTypeId,td,vm.sampleTypeOptions,2);
+                    }
                 }
+
                 //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
                 if(tube.status){
                     changeSampleStatus(tube.status,row,col,td,cellProperties)
@@ -680,9 +681,11 @@
                     tube.sampleTempCode = tubeInBox.sampleTempCode;
                     tube.sampleTypeId = tubeInBox.sampleType.id;
                     // tube.sampleTypeCode = tubeInBox.sampleTypeCode;
-                    tube.sampleClassificationId = tubeInBox.sampleClassification.id;
                     tube.status = tubeInBox.status;
                     tube.memo = tubeInBox.memo;
+                }
+                if(tubeInBox.sampleClassification){
+                    tube.sampleClassificationId = tubeInBox.sampleClassification.id;
                 }
                 return tube;
             }
@@ -812,7 +815,7 @@
             };
             vm.projectSampleTypeConfig = {
                 valueField:'sampleClassificationId',
-                labelField:'sampleClassficationName',
+                labelField:'sampleClassificationName',
                 maxItems: 1,
                 onChange:function (value) {
                     vm.box.sampleClassificationId = value;

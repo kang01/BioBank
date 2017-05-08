@@ -3,12 +3,12 @@
         <h3 class="pull-left">新增转运记录<small>&nbsp;{{vm.transportRecord.transhipCode}}</small></h3>
         <div class="form-group pull-right m-r-10">
             <div class="text-right">
-                <button type="button" class="btn btn-primary" ng-click="vm.importFrozenStorageBox('lg')" ng-disabled = "!vm.transportRecord.trackNumber" ng-show="vm.transportRecord.transhipState == '1001'">导入冻存盒</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.importFrozenStorageBox('lg')"  ng-show="vm.transportRecord.transhipState == '1001'">导入冻存盒</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.stockIn()"
                         ng-disabled="!vm.boxLength || !vm.transportRecord.receiver || !vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate || !vm.transportRecord.trackNumber"
                         ng-show="vm.transportRecord.transhipState == '1001'">入库</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.saveRecord()"
-                        ng-disabled="!vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId || !vm.transportRecord.trackNumber"
+                        ng-disabled="!vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId"
                         ng-show="vm.transportRecord.transhipState == '1001'">保存转运记录</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.invalid()" ng-show="vm.transportRecord.transhipState == '1001'">作废</button>
                 <button type="button" class="btn btn-default" ui-sref="transport-record">关闭</button>
@@ -229,7 +229,6 @@
                                 <div class="form-group col-md-6" ng-hide="vm.sampleClassFlag">
                                     <div class="row">
                                         <label  class="col-md-6 control-label p-r-6">
-                                            <span class="required-field"></span>
                                             样本分类
                                         </label>
                                         <div class="col-md-6 p-l-6" >

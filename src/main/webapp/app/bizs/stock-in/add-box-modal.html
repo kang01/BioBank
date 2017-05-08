@@ -56,7 +56,7 @@
                             </label>
                             <div class="col-sm-8">
                                 <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                           ng-model="vm.box.sampleTypeId" ng-disabled="vm.sampleType"></selectize>
+                                           ng-model="vm.box.sampleTypeId" ng-disabled="vm.box.sampleTypeId != 5"></selectize>
                                 <input type="hidden" class="form-control"  ng-model="vm.box.sampleTypeId"  required>
 
                             </div>
@@ -65,13 +65,12 @@
                     <div class="row">
                         <div class="form-group">
                             <label  class="col-sm-4 control-label">
-                                <span class="required-field"></span>
                                 样本分类
                             </label>
                             <div class="col-sm-8">
                                 <selectize options='vm.sampleTypeClassOptions' config="vm.sampleTypeClassConfig"
                                            ng-model="vm.box.sampleClassificationId" ng-disabled="vm.sampleType"></selectize>
-                                <input type="hidden" class="form-control"  ng-model="vm.box.sampleClassificationId"  required>
+                                <!--<input type="hidden" class="form-control"  ng-model="vm.box.sampleClassificationId"  required>-->
 
                             </div>
                         </div>

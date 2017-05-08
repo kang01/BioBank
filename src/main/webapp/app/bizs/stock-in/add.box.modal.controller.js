@@ -15,6 +15,8 @@
         vm.createBoxflag = false;
         vm.boxes = items.incompleteBoxes;
         var projectId = items.projectId;
+        var sampleTypeId = items.sampleTypeId;
+        var sampleTypeClassId = items.sampleTypeClassId;
         if(!items.box.stockInFrozenTubeList.length){
             vm.createBoxflag = true;
             _createBox();
@@ -30,16 +32,28 @@
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data, ['id'], ['esc']);
                 vm.sampleTypeOptions.pop();
-                vm.box.sampleType = vm.sampleTypeOptions[0];
-                vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                if(!sampleTypeId){
+                    vm.box.sampleType = vm.sampleTypeOptions[0];
+                    vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                }else{
+                    vm.box.sampleTypeId = sampleTypeId;
+                    vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id': + sampleTypeId})[0]
+                }
+
                 _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
             });
         }
         function _fnQueryProjectSampleClasses(projectId,sampleTypeId) {
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
-                vm.sampleTypeClassOptions = _.orderBy(data, ['id'], ['esc']);
-                vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
-                vm.box.sampleClassification = vm.sampleTypeClassOptions[0]
+                vm.sampleTypeClassOptions = _.orderBy(data, ['sampleClassificationId'], ['esc']);
+                if(sampleTypeClassId){
+                    _.remove(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})
+                }
+                if(vm.sampleTypeClassOptions.length){
+                    vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                    vm.box.sampleClassification = vm.sampleTypeClassOptions[0]
+                }
+
             });
         }
 
@@ -117,9 +131,10 @@
                 //样本分类
                 vm.sampleTypeClassConfig = {
                     valueField:'sampleClassificationId',
-                    labelField:'sampleClassficationName',
+                    labelField:'sampleClassificationName',
                     maxItems: 1,
                     onChange:function (value) {
+                        vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{'sampleClassificationId':+value})[0];
                     }
                 };
                 // //设备

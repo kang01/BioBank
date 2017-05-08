@@ -13,4 +13,6 @@ import java.util.List;
 public interface FrozenBoxPositionRepository extends JpaRepository<FrozenBoxPosition,Long> {
 
     FrozenBoxPosition findOneByFrozenBoxIdAndStatus(Long id, String frozenBoxStauts);
+
+    List<FrozenBoxPosition> findByFrozenBoxIdAndStatus(Long id, String frozenBoxStauts);
 }

@@ -499,8 +499,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setStatus(Constants.FROZEN_BOX_PUT_SHELVES);
         stockInBoxRepository.save(stockInBox);
         //增加冻存盒位置记录
-        FrozenBoxPosition frozenBoxPositionOld =  frozenBoxPositionRepository.findOneByFrozenBoxIdAndStatus(frozenBox.getId(),Constants.FROZEN_BOX_STOCKING);
-        if(frozenBoxPositionOld == null){
+        List<FrozenBoxPosition> frozenBoxPositionOld =  frozenBoxPositionRepository.findByFrozenBoxIdAndStatus(frozenBox.getId(),Constants.FROZEN_BOX_STOCKING);
+        if(frozenBoxPositionOld.size() ==0){
             throw new BankServiceException("未查询到该冻存盒的待入库记录！",frozenBox.toString());
         }
         FrozenBoxPosition frozenBoxPos = new FrozenBoxPosition();
@@ -610,8 +610,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setStatus(Constants.FROZEN_BOX_STOCKING);
         stockInBoxRepository.save(stockInBox);
         //增加冻存盒位置记录
-        FrozenBoxPosition frozenBoxPositionOld =  frozenBoxPositionRepository.findOneByFrozenBoxIdAndStatus(frozenBox.getId(),Constants.FROZEN_BOX_STOCKING);
-        if(frozenBoxPositionOld == null){
+        List<FrozenBoxPosition> frozenBoxPositionOld =  frozenBoxPositionRepository.findByFrozenBoxIdAndStatus(frozenBox.getId(),Constants.FROZEN_BOX_STOCKING);
+        if(frozenBoxPositionOld.size() == 0){
             throw new BankServiceException("未查询到该冻存盒的待入库记录！",frozenBox.toString());
         }
         FrozenBoxPosition frozenBoxPos = new FrozenBoxPosition();

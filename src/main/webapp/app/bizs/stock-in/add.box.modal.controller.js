@@ -29,7 +29,7 @@
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data, ['id'], ['esc']);
                 vm.sampleTypeOptions.pop();
-                if(!sampleTypeId){
+                if(!sampleTypeId || sampleTypeId == 5){
                     vm.box.sampleType = vm.sampleTypeOptions[0];
                     vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                 }else{
@@ -109,12 +109,17 @@
                     vm.box.frozenBoxTypeId = frozenBoxTypeId;
                     vm.box.frozenBoxType = _.filter(vm.frozenBoxTypeOptions,{'id':+vm.box.frozenBoxTypeId})[0];
                 }
-                if(items.sampleTypeId){
+                if(sampleTypeId && sampleTypeId !=5){
                     vm.box.sampleTypeId = sampleTypeId;
                     vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
+                }else{
+                    vm.box.sampleTypeId = vm.sampleTypeOptions[0].id
+                    vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
                 }
-                vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
-                vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                if(vm.sampleTypeClassOptions.length){
+                    vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                    vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                }
                 vm.boxTypeConfig = {
                     valueField:'id',
                     labelField:'frozenBoxTypeName',

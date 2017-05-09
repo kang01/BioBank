@@ -888,7 +888,7 @@
                 vm.headerCompiled = false;
                 vm.dtInstance.rerender();
                 _splitABox(vm.box.frozenBoxCode);
-                vm.incompleteBoxesList = [];
+                vm.boxList = [];
                 vm.frozenBoxCode = "";
                 $(".box-selected").removeClass("box-selected");
             }).error(function (data) {

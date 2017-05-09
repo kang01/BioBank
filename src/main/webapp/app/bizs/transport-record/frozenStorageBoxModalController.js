@@ -162,6 +162,7 @@
             $uibModalInstance.dismiss('cancel');
         };
         this.ok = function () {
+            // console.log(JSON.stringify(vm.obox))
             blockUI.start("正在保存冻存盒中……");
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
 
@@ -173,6 +174,7 @@
                 vm.sampleTypeFlag = true;
             }else{
                 vm.sampleTypeFlag = false;
+
             }
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.projectSampleTypeOptions = data;
@@ -196,7 +198,7 @@
                 frozenTubeDTOS:[]
             };
             for(var j = 0; j < vm.frozenBox.frozenBoxTypeRows;j++){
-                tubeList[j] = []
+                tubeList[j] = [];
                 var rowNO = j > 7 ? j+1 : j;
                 rowNO = String.fromCharCode(rowNO+65);
                 for(var k = 0; k < vm.frozenBox.frozenBoxTypeColumns; k++){
@@ -210,11 +212,20 @@
                         tubeRows:rowNO,
                         tubeColumns: k+1
                     };
-
+                    if(box.sampleTypeId == 5) {
+                        for (var l = 0; l < vm.projectSampleTypeOptions.length; l++) {
+                            if (vm.projectSampleTypeOptions[l].columnsNumber == k + 1) {
+                                tubeList[j][k].sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
+                            }
+                        }
+                    }
                     box.frozenTubeDTOS.push(tubeList[j][k])
+
                 }
             }
-
+            if(box.sampleTypeId == 5){
+                delete box.sampleClassificationId;
+            }
             return box;
         }
         function _fnInitBoxInfo() {

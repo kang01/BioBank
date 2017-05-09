@@ -638,10 +638,18 @@
                     data[i].sampleTypeName = data[i].sampleType.sampleTypeName;
                 }
                 boxList.push(data[i]);
-                vm.incompleteBoxesList.push({
-                    sampleTypeId:data[i].sampleClassification.id || data[i].sampleClassification.sampleClassificationId,
-                    boxList:boxList
-                })
+                if(data[i].sampleClassification){
+                    vm.incompleteBoxesList.push({
+                        sampleTypeId:data[i].sampleClassification.id || data[i].sampleClassification.sampleClassificationId,
+                        boxList:boxList
+                    })
+                }else{
+                    vm.incompleteBoxesList.push({
+                        sampleTypeId:data[i].sampleTypeId,
+                        boxList:boxList
+                    })
+                }
+
             }
             // if(data.length){
             //     if(data[0].sampleClassification){

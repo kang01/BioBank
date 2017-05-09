@@ -136,7 +136,10 @@
                     onChange:function (value) {
                         vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+value})[0];
                         vm.box.sampleTypeId = value;
-                        _fnQueryProjectSampleClasses(projectId,value);
+                        if(sampleTypeClassId){
+                            _fnQueryProjectSampleClasses(projectId,value);
+                        }
+
                     }
                 };
                 //样本分类

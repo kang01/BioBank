@@ -622,6 +622,12 @@
 
             for(var i = 0; i < data.length; i++){
                 var boxList = [];
+                //盒子编码太长时，用星号代替
+                    if(data[i].frozenBoxCode.length > 10){
+                        data[i].copyBoxCode = _fnReplaceBoxCode(data[i].frozenBoxCode);
+                    }else{
+                        data[i].copyBoxCode = data[i].frozenBoxCode;
+                    }
                 data[i].addTubeCount = 0;
                 if(data[i].sampleClassification){
                     data[i].backColor = data[i].sampleClassification.backColor;

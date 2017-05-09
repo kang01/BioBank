@@ -52,7 +52,7 @@
             maxItems: 1,
             onChange:function (value) {
                 vm.frozenBox.sampleClassificationId = value;
-                _fnCreateTempBox();
+                _fnInitBoxInfo();
             }
         };
         //盒类型
@@ -68,7 +68,7 @@
                         vm.frozenBox.frozenBoxTypeColumns = vm.frozenBoxTypeOptions[i].frozenBoxTypeColumns
                     }
                 }
-                _fnCreateTempBox();
+                _fnInitBoxInfo();
             }
         };
         //暂存区位置
@@ -86,7 +86,7 @@
             maxItems: 1,
             onChange:function (value) {
                 vm.frozenBox.areaId  = value;
-                _fnCreateTempBox();
+                _fnInitBoxInfo();
             }
         };
 
@@ -162,7 +162,6 @@
             $uibModalInstance.dismiss('cancel');
         };
         this.ok = function () {
-            // console.log(JSON.stringify(vm.obox));
             blockUI.start("正在保存冻存盒中……");
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
 
@@ -180,7 +179,8 @@
                 if(vm.projectSampleTypeOptions.length){
                     vm.frozenBox.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
                 }
-                _fnCreateTempBox();
+                _fnInitBoxInfo();
+
 
             });
         }
@@ -218,6 +218,7 @@
             return box;
         }
         function _fnInitBoxInfo() {
+            vm.obox.frozenBoxDTOList = [];
             for(var i = 0; i < vm.codeList.length; i++){
                 vm.obox.frozenBoxDTOList.push(_fnCreateTempBox(vm.codeList[i]));
             }
@@ -230,7 +231,7 @@
         function onAreaTempSuccess(data) {
             vm.frozenBoxHoldAreaOptions = data;
             vm.frozenBox.areaId = vm.frozenBoxHoldAreaOptions[0].id;
-            _fnCreateTempBox();
+            _fnInitBoxInfo();
         }
         function onSaveBoxSuccess(data) {
             blockUI.stop();

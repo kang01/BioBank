@@ -55,9 +55,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     @Autowired
     private SupportRackMapper supportRackMapper;
     @Autowired
-    private FrozenBoxTypeMapper frozenBoxTypeMapper;
-    @Autowired
-    private FrozenTubeRecordRepository frozenTubeRecordRepository;
+    private ProjectSampleClassRepository projectSampleClassRepository;
     @Autowired
     private EquipmentRepository equipmentRepository;
     @Autowired
@@ -295,6 +293,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             throw new BankServiceException("冻存盒类型不存在！",stockInBoxForDataSplit.toString());
         }
 
+        //判断冻存盒类型是否一致
+
+        if(frozenBox.getFrozenBoxType().getId()!=stockInBoxForDataSplit.getFrozenBoxTypeId()){
+            throw new BankServiceException("冻存盒类型不一致，不能执行分装！",stockInBoxForDataSplit.toString());
+        }
 
         int countOfTube = stockInBoxForDataSplit.getStockInFrozenTubeList().size();
         String columns = boxType.getFrozenBoxTypeColumns()!=null?boxType.getFrozenBoxTypeColumns():new String("0");
@@ -346,11 +349,23 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBoxNew.setSupportRackCode(supportRack!=null?supportRack.getSupportRackCode():new String(""));
 
         SampleType sampleType = sampleTypes.stream().filter(s-> s.getId().equals(stockInBoxForDataSplit.getSampleTypeId())).findFirst().orElse(null);
-
+        if(sampleType == null){
+            throw new BankServiceException("样本类型不存在！");
+        }
+        if(frozenBox.getSampleType().getIsMixed().equals(Constants.NO)
+            && (!sampleType.getId().equals(frozenBox.getSampleType().getId()) || sampleType.getId()!= frozenBox.getSampleType().getId())){
+            throw new BankServiceException("需要分装的冻存盒与分装后的冻存盒的样本类型不一致，不能分装！");
+        }
         frozenBoxNew.setSampleType(sampleType);
         frozenBoxNew.setSampleTypeCode(sampleType.getSampleTypeCode());
         frozenBoxNew.setSampleTypeName(sampleType.getSampleTypeName());
 
+        //验证项目下该样本类型是否有样本分类，如果已经配置了样本分类，则样本分类ID不能为空，（99的除外）
+        int countOfSampleClassForTube = projectSampleClassRepository.countByProjectIdAndSampleTypeId(frozenBoxNew.getProject()!=null?frozenBoxNew.getProject().getId():null,frozenBoxNew.getSampleType().getId());
+        if(countOfSampleClassForTube>0 && sampleType.getIsMixed().equals(Constants.NO)
+            && stockInBoxForDataSplit.getSampleClassificationId()==null){
+            throw new BankServiceException("该项目下已经配置样本分类，样本分类不能为空！");
+        }
         //样本分类
         SampleClassification sampleClassification = sampleClassifications.stream().filter(s->s.getId().equals(stockInBoxForDataSplit.getSampleClassificationId())).findFirst().orElse(null);
         frozenBoxNew.setSampleClassification(sampleClassification);

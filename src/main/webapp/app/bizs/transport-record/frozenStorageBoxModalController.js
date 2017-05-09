@@ -105,7 +105,7 @@
             persist:false,
             onChange: function(value){
                 clearTimeout(changeTableTimer);
-                console.log('onChange', arguments);
+                // console.log('onChange', arguments);
                 changeTableTimer = setTimeout(function () {
                     vm.obox.frozenBoxDTOList = [];
                     if(value.length){

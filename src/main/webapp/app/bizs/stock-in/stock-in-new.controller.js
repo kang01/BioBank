@@ -619,48 +619,66 @@
         }
 
         function onIncompleteBoxesSuccess(data) {
-            if(data.length){
-                if(data[0].sampleClassification){
-                    data[0].backColor = data[0].sampleClassification.backColor;
-                    data[0].sampleTypeName = data[0].sampleClassification.sampleClassificationName;
-                    vm.sampleTypeClassId = data[0].sampleClassification.sampleClassificationId || data[0].sampleClassification.id;
-                }else{
-                    data[0].backColor = data[0].sampleType.backColor;
-                    data[0].sampleTypeName = data[0].sampleType.sampleTypeName;
-                }
-                data[0].frozenBoxTypeId = data[0].frozenBoxType.id;
-                vm.frozenBoxType = data[0].frozenBoxType;
-                data[0].sampleTypeId = data[0].sampleType.id;
-                data[0].sampleClassificationId = data[0].sampleClassification.sampleClassificationId || data[0].sampleClassification.id;
+
+            for(var i = 0; i < data.length; i++){
                 var boxList = [];
-                boxList.push(data[0]);
-                data[0].addTubeCount = 0;
-                //盒子编码太长时，用星号代替
-                if(data[0].frozenBoxCode.length > 10){
-                    data[0].copyBoxCode = _fnReplaceBoxCode(data[0].frozenBoxCode);
+                data[i].addTubeCount = 0;
+                if(data[i].sampleClassification){
+                    data[i].backColor = data[i].sampleClassification.backColor;
+                    data[i].sampleTypeName = data[i].sampleClassification.sampleClassificationName;
+                    vm.sampleTypeClassId = data[i].sampleClassification.sampleClassificationId || data[i].sampleClassification.id;
                 }else{
-                    data[0].copyBoxCode = data[0].frozenBoxCode;
+                    data[i].backColor = data[i].sampleType.backColor;
+                    data[i].sampleTypeName = data[i].sampleType.sampleTypeName;
                 }
-                if(data[0].frozenBoxCode != vm.box.frozenBoxCode){
-                    if(data[0].sampleClassificationId){
-                        vm.incompleteBoxesList.push(
-                            {
-                                sampleTypeId:data[0].sampleClassificationId,
-                                boxList:boxList
-                            }
-                        );
-                    }else{
-                        vm.incompleteBoxesList.push(
-                            {
-                                sampleTypeId:data[0].sampleTypeId,
-                                boxList:boxList
-                            }
-                        );
-                    }
+                boxList.push(data[i]);
+                vm.incompleteBoxesList.push({
+                    sampleTypeId:data[i].sampleClassification.id || data[i].sampleClassification.sampleClassificationId,
+                    boxList:boxList
+                })
+            }
+            // if(data.length){
+            //     if(data[0].sampleClassification){
+            //         data[0].backColor = data[0].sampleClassification.backColor;
+            //         data[0].sampleTypeName = data[0].sampleClassification.sampleClassificationName;
+            //         vm.sampleTypeClassId = data[0].sampleClassification.sampleClassificationId || data[0].sampleClassification.id;
+            //     }else{
+            //         data[0].backColor = data[0].sampleType.backColor;
+            //         data[0].sampleTypeName = data[0].sampleType.sampleTypeName;
+            //     }
+            //     data[0].frozenBoxTypeId = data[0].frozenBoxType.id;
+            //     vm.frozenBoxType = data[0].frozenBoxType;
+            //     data[0].sampleTypeId = data[0].sampleType.id;
+            //     data[0].sampleClassificationId = data[0].sampleClassification.sampleClassificationId || data[0].sampleClassification.id;
+            //     var boxList = [];
+            //     boxList.push(data[0]);
+            //     data[0].addTubeCount = 0;
+            //     //盒子编码太长时，用星号代替
+            //     if(data[0].frozenBoxCode.length > 10){
+            //         data[0].copyBoxCode = _fnReplaceBoxCode(data[0].frozenBoxCode);
+            //     }else{
+            //         data[0].copyBoxCode = data[0].frozenBoxCode;
+            //     }
+            //     if(data[0].frozenBoxCode != vm.box.frozenBoxCode){
+            //         if(data[0].sampleClassificationId){
+            //             vm.incompleteBoxesList.push(
+            //                 {
+            //                     sampleTypeId:data[0].sampleClassificationId,
+            //                     boxList:boxList
+            //                 }
+            //             );
+            //         }else{
+            //             vm.incompleteBoxesList.push(
+            //                 {
+            //                     sampleTypeId:data[0].sampleTypeId,
+            //                     boxList:boxList
+            //                 }
+            //             );
+            //         }
                     vm.incompleteBoxesList  = _.orderBy(vm.incompleteBoxesList, ['sampleTypeId'], ['esc']);
                     // console.log(JSON.stringify(vm.incompleteBoxesList))
-                }
-            }
+            //     }
+            // }
         }
 
         function onError(error) {
@@ -803,9 +821,9 @@
             tubeList = angular.copy(vm.obox.stockInFrozenTubeList);
             if(vm.obox.countOfSample == tubeCount && selectList.length){
                 var frozenBox = {};
-                frozenBox.frozenBoxTypeId= vm.obox.frozenBoxTypeId;
-                frozenBox.sampleTypeId= vm.obox.sampleTypeId;
-                frozenBox.sampleType= vm.frozenBoxType;
+                frozenBox.frozenBoxTypeId= vm.obox.frozenBoxType.id;
+                frozenBox.sampleTypeId= vm.obox.sampleType.id;
+                frozenBox.sampleType= vm.obox.sampleType;
                 frozenBox.sampleClassificationId= vm.obox.sampleClassificationId;
                 frozenBox.stockInFrozenTubeList= selectList;
 
@@ -817,7 +835,7 @@
                 vm.boxList.push(obox);
             }else{
                 for(var i = 0; i < vm.boxList.length; i++){
-                    if(obox.frozenBoxTypeId == vm.boxList[i].frozenBoxTypeId){
+                    if(obox.frozenBoxId == vm.boxList[i].frozenBoxId){
                         if(vm.boxList.length > 1){
                             vm.boxList[1].stockInFrozenTubeList = obox.stockInFrozenTubeList;
 
@@ -836,25 +854,29 @@
         var boxArray = [];
         vm.saveBox = function () {
 
-            for(var i = 0; i < vm.incompleteBoxesList.length; i++){
-                for(var j = 0; j < vm.incompleteBoxesList[i].boxList.length;j++){
-                    boxArray.push(vm.incompleteBoxesList[i].boxList[j])
+            // for(var i = 0; i < vm.incompleteBoxesList.length; i++){
+            //     for(var j = 0; j < vm.incompleteBoxesList[i].boxList.length;j++){
+            //         boxArray.push(vm.incompleteBoxesList[i].boxList[j])
+            //     }
+            // }
+            //
+            for(var i = 0; i < vm.boxList.length; i++){
+                vm.boxList[i].sampleTypeId = vm.boxList[i].sampleTypeId || vm.boxList[i].sampleType.id;
+                vm.boxList[i].frozenBoxTypeId = vm.boxList[i].frozenBoxTypeId || vm.boxList[i].frozenBoxType.id;
+                if(!vm.boxList[i].sampleClassificationId){
+                    vm.boxList[i].sampleClassificationId =  vm.boxList[i].sampleClassification.id;
                 }
+                delete vm.boxList[i].sampleType;
+                delete vm.boxList[i].frozenBoxType;
+                delete vm.boxList[i].sampleClassification;
+                delete vm.boxList[i].addTubeCount;
+                delete vm.boxList[i].copyBoxCode;
+                delete vm.boxList[i].countOfSample;
+                delete vm.boxList[i].backColor;
+                delete vm.boxList[i].sampleTypeName;
             }
-
-            for(var i = 0; i < boxArray.length; i++){
-                delete boxArray[i].sampleType;
-                delete boxArray[i].frozenBoxType;
-                delete boxArray[i].sampleClassification;
-                delete boxArray[i].addTubeCount;
-                delete boxArray[i].copyBoxCode;
-                delete boxArray[i].countOfSample;
-                delete boxArray[i].backColor;
-                delete boxArray[i].sampleTypeName;
-            }
-            console.log(JSON.stringify(boxArray));
             _blockUiStart(blockUiMessage);
-            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,boxArray).success(function (data) {
+            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,vm.boxList).success(function (data) {
                 _blockUiStop();
                 toastr.success("分装成功!");
                 vm.headerCompiled = false;

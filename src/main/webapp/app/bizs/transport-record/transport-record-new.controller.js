@@ -205,6 +205,7 @@
                         });
                         modalInstance.result.then(function (transportRecord) {
                             vm.saveStockInFlag = true;
+                            importBoxFlag = false;
                             vm.saveRecord(transportRecord);
 
                         });

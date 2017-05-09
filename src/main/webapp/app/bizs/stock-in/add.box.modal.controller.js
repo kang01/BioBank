@@ -19,6 +19,8 @@
         var sampleTypeId = items.sampleTypeId;
         var sampleTypeClassId = items.sampleTypeClassId;
         var frozenBoxTypeId = items.frozenBoxTypeId;
+
+        var countFlag = true;
         var initData = function () {
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);//盒子类型
             _fnQuerySampleType();
@@ -29,7 +31,7 @@
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data, ['id'], ['esc']);
                 vm.sampleTypeOptions.pop();
-                if(!sampleTypeId || sampleTypeId == 5){
+                if(sampleTypeId == 5){
                     vm.box.sampleType = vm.sampleTypeOptions[0];
                     vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                 }else{
@@ -50,11 +52,15 @@
                     vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
                     vm.box.sampleClassification = vm.sampleTypeClassOptions[0]
                 }
-                //创建第一个新盒子，空管子
-                if(!items.box.stockInFrozenTubeList.length){
-                    vm.createBoxflag = true;
-                    _createBox();
+                if(countFlag){
+                    //创建第一个新盒子，空管子
+                    if(!items.box.stockInFrozenTubeList.length){
+                        vm.createBoxflag = true;
+                        _createBox();
+                    }
+                    countFlag = false;
                 }
+
             });
         }
 
@@ -65,15 +71,6 @@
                 vm.box.frozenBoxType = vm.frozenBoxTypeOptions[0];
             }
         }
-        // function onEquipmentSuccess(data) {
-        //     vm.frozenBoxPlaceOptions = data;
-        // }
-        // function onAreaSuccess(data) {
-        //     vm.frozenBoxAreaOptions = data;
-        // }
-        // function onShelfSuccess(data) {
-        //     vm.frozenBoxShelfOptions = data;
-        // }
         function onError(error) {
             AlertService.error(error.data.message);
         }
@@ -109,17 +106,29 @@
                     vm.box.frozenBoxTypeId = frozenBoxTypeId;
                     vm.box.frozenBoxType = _.filter(vm.frozenBoxTypeOptions,{'id':+vm.box.frozenBoxTypeId})[0];
                 }
-                if(sampleTypeId && sampleTypeId !=5){
-                    vm.box.sampleTypeId = sampleTypeId;
+                //样本类型为混合型时，同时有样本分类
+                if(sampleTypeId == 5){
+                    vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                     vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
                 }else{
-                    vm.box.sampleTypeId = vm.sampleTypeOptions[0].id
+                    vm.box.sampleTypeId = sampleTypeId;
                     vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
                 }
-                if(vm.sampleTypeClassOptions.length){
-                    vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
-                    vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                //有无样本分类
+                if(sampleTypeClassId){
+                    vm.box.sampleClassificationId = sampleTypeClassId;
+                    vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{'sampleClassificationId':+vm.box.sampleClassificationId})[0];
+                }else{
+                    vm.box.sampleClassificationId = "";
+                    vm.box.sampleClassification = "";
                 }
+                // if(sampleTypeId == 5 && !sampleTypeClassId){
+                //     vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                //     vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                // }else{
+                //     vm.box.sampleClassificationId = sampleTypeClassId;
+                //     vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{'sampleClassificationId':+vm.box.sampleClassificationId})[0];
+                // }
                 vm.boxTypeConfig = {
                     valueField:'id',
                     labelField:'frozenBoxTypeName',
@@ -136,9 +145,9 @@
                     onChange:function (value) {
                         vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+value})[0];
                         vm.box.sampleTypeId = value;
-                        if(sampleTypeClassId){
+                        // if(sampleTypeClassId){
                             _fnQueryProjectSampleClasses(projectId,value);
-                        }
+                        // }
 
                     }
                 };
@@ -152,68 +161,6 @@
                         vm.box.sampleClassificationId = value;
                     }
                 };
-                // //设备
-                // vm.frozenBoxPlaceConfig = {
-                //     valueField:'id',
-                //     labelField:'equipmentCode',
-                //     maxItems: 1,
-                //     onChange:function (value) {
-                //         AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
-                //         for(var i = 0; i < vm.frozenBoxPlaceOptions.length; i++){
-                //             if(value == vm.frozenBoxPlaceOptions[i].id){
-                //                 vm.box.equipmentCode = vm.frozenBoxPlaceOptions[i].equipmentCode
-                //             }
-                //         }
-                //     }
-                // };
-                //区域
-                // vm.frozenBoxAreaConfig = {
-                //     valueField:'id',
-                //     labelField:'areaCode',
-                //     maxItems: 1,
-                //     onChange:function (value) {
-                //         for(var i = 0; i < vm.frozenBoxAreaOptions.length; i++){
-                //             if(value == vm.frozenBoxAreaOptions[i].id){
-                //                 vm.box.areaCode = vm.frozenBoxAreaOptions[i].areaCode
-                //             }
-                //         }
-                //         SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError)
-                //
-                //     }
-                // };
-                //架子
-                // vm.frozenBoxShelfConfig = {
-                //     valueField:'id',
-                //     labelField:'supportRackCode',
-                //     maxItems: 1,
-                //     onChange:function (value) {
-                //         for(var i = 0; i < vm.frozenBoxShelfOptions.length; i++){
-                //             if(value == vm.frozenBoxShelfOptions[i].id){
-                //                 vm.box.supportRackCode = vm.frozenBoxShelfOptions[i].areaCode
-                //             }
-                //         }
-                //     }
-                // };
-
-                // items.sampleTypes.pop();
-                // if(items.box.sampleTypeCode){
-                //     vm.box.sampleType.sampleTypeCode = items.box.sampleTypeCode;
-                //     vm.box.sampleTypeCode = items.box.sampleTypeCode;
-                // }else{
-                //     vm.box.sampleType.sampleTypeCode = items.sampleTypes[0].sampleTypeCode;
-                //     vm.box.sampleType.sampleTypeName = items.sampleTypes[0].sampleTypeName;
-                //     vm.box.sampleType.backColor = items.sampleTypes[0].backColor;
-                //     vm.box.sampleTypeCode = items.sampleTypes[0].sampleTypeCode;
-                // }
-                // vm.sampleTypesOptions = items.sampleTypes;
-
-
-                // for(var i =0; i < vm.sampleTypesOptions.length; i++) {
-                //     if (items.box.sampleTypeCode == vm.sampleTypesOptions[i].sampleTypeCode) {
-                //         vm.box.sampleType.sampleTypeName = vm.sampleTypesOptions[i].sampleTypeName;
-                //         vm.box.sampleType.backColor = vm.sampleTypesOptions[i].backColor
-                //     }
-                // }
 
                 vm.isBoxCodeRepeat = function () {
                     vm.isRepeat = false;

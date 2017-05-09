@@ -24,4 +24,5 @@ public interface ProjectSampleClassRepository extends JpaRepository<ProjectSampl
 
     List<ProjectSampleClass> findByProjectIdAndSampleTypeId(Long projectId, Long sampleTypeId);
 
+    int countByProjectIdAndSampleTypeId(Long projectId, Long sampleTypeId);
 }

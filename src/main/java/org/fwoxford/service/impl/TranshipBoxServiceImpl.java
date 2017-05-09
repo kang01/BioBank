@@ -194,6 +194,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         List<FrozenBoxType> boxTypes = frozenBoxTypeRepository.findAllFrozenBoxTypes();
         List<FrozenTubeType> tubeTypes = frozenTubeTypeRepository.findAll();
 
+        List<ProjectSampleClass> projectSampleClasses = projectSampleClassRepository.findSampleTypeByProjectCode(tranship.getProjectCode());
         result.setTranshipId(transhipId);
         result.setFrozenBoxDTOList(new ArrayList<>());
 
@@ -276,6 +277,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 }
             }
             //验证项目下该样本类型是否有样本分类，如果已经配置了样本分类，则样本分类ID不能为空，（99的除外）
+            if(box.getSampleType().getIsMixed().equals(Constants.YES)&&box.getSampleClassification()!=null){
+                throw new BankServiceException("混合型样本的冻存盒，样本分类应该为空！");
+            }
             int countOfSampleClass = projectSampleClassRepository.countByProjectIdAndSampleTypeId(box.getProject()!=null?box.getProject().getId():null,boxDTO.getSampleTypeId());
             if(countOfSampleClass>0&&box.getSampleType().getIsMixed().equals(Constants.NO)&&box.getSampleClassification()==null){
                 throw new BankServiceException("该项目下已经配置样本分类，样本分类不能为空！");
@@ -290,11 +294,13 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
            if(boxDTO.getSampleClassificationId()!=null){
                //验证项目下样本类型以及样本分类的有效性
-               List<ProjectSampleClass> projectSampleClasses = projectSampleClassService.findByProjectIdAndSampleTypeIdAndSampleClassificationId(box.getProject()!=null?box.getProject().getId():null,boxDTO.getSampleTypeId(),boxDTO.getSampleClassificationId());
-
-               ProjectSampleClass sampleType = projectSampleClasses.stream()
-                    .filter(s->s.getSampleClassification().getId().equals(boxDTO.getSampleClassificationId()))
-                    .findFirst().orElse(null);
+               ProjectSampleClass sampleType = null;
+               for(ProjectSampleClass p :projectSampleClasses){
+                    if(boxDTO.getSampleClassificationId().equals(p.getSampleClassification().getId())
+                      &&boxDTO.getSampleTypeId().equals(p.getSampleType().getId())){
+                      sampleType = p;
+                    }
+                }
                 if(sampleType == null){
                     throw new BankServiceException("冻存盒的样本类型无效！",box.toString());
                 }
@@ -354,11 +360,11 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 }
 
                 //验证项目下该样本类型是否有样本分类，如果已经配置了样本分类，则样本分类ID不能为空，（99的除外）
-                int countOfSampleClassForTube = projectSampleClassRepository.countByProjectIdAndSampleTypeId(box.getProject()!=null?box.getProject().getId():null,tube.getSampleType().getId());
-                if(countOfSampleClassForTube>0 && tube.getSampleType().getIsMixed().equals(Constants.NO)
-                     && tube.getSampleClassification()==null){
-                    throw new BankServiceException("该项目下已经配置样本分类，样本分类不能为空！");
-                }
+//                int countOfSampleClassForTube = projectSampleClassRepository.countByProjectIdAndSampleTypeId(box.getProject()!=null?box.getProject().getId():null,tube.getSampleType().getId());
+//                if(countOfSampleClassForTube>0 && tube.getSampleType().getIsMixed().equals(Constants.NO)
+//                     && tube.getSampleClassification()==null){
+//                    throw new BankServiceException("该项目下已经配置样本分类，样本分类不能为空！");
+//                }
                 if (tube.getSampleClassification() == null){
                     tube.setSampleClassification(box.getSampleClassification());
                 } else {
@@ -372,13 +378,13 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 }
                 if(tubeDTO.getSampleClassificationId()!=null){
                     //验证项目下样本类型以及样本分类的有效性
-                    List<ProjectSampleClass> projectSampleClassList = projectSampleClassService.findByProjectIdAndSampleTypeIdAndSampleClassificationId(box.getProject().getId(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
-                    if(projectSampleClassList.size()==0){
-                        throw new BankServiceException("样本类型无效！",box.toString());
+                    ProjectSampleClass sampleType = null;
+                    for(ProjectSampleClass p :projectSampleClasses){
+                        if(boxDTO.getSampleClassificationId().equals(p.getSampleClassification().getId())
+                            &&boxDTO.getSampleTypeId().equals(p.getSampleType().getId())){
+                            sampleType = p;
+                        }
                     }
-                    ProjectSampleClass sampleType = projectSampleClassList.stream()
-                        .filter(s->s.getSampleClassification().getId().equals(tubeDTO.getSampleClassificationId()))
-                        .findFirst().orElse(null);
                     if(sampleType == null){
                         throw new BankServiceException("样本类型无效！",box.toString());
                     }
@@ -389,14 +395,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 tube.setFrozenBox(box);
                 tube.setFrozenBoxCode(box.getFrozenBoxCode());
 
-                if (tube.getProject() == null || box.getProject().equals(tube.getProject())){
-                    tube.setProject(box.getProject());
-                    tube.setProjectCode(box.getProjectCode());
-                } else {
-                    Project project = projectRepository.findOne(tube.getProject().getId());
-                    tube.setProject(box.getProject());
-                    tube.setProjectCode(project.getProjectCode());
-                }
+                tube.setProject(box.getProject());
+                tube.setProjectCode(box.getProjectCode());
 
                 if (tube.getFrozenTubeType() != null){
                     int tubeTypeIndex = tubeTypes.indexOf(tube.getFrozenTubeType());

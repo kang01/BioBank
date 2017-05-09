@@ -28,4 +28,10 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     List<Object[]> countSampleNumberByfrozenBoxList(List<String> frozenBoxList);
 
     int countByFrozenBoxCodeAndStatus(String frozenBoxCode, String status);
+
+    @Query(value = "select count(*) from frozen_tube t where t.frozen_box_id in ?1 and t.status=?2" ,nativeQuery = true)
+    int countByFrozenBoxCodeStrAndStatus(List<Long> boxIds, String status);
+
+    @Query(value = "select count(t.sample_code) from frozen_tube t where t.frozen_box_id in ?1 and t.status!='0000'" ,nativeQuery = true)
+    int countByFrozenBoxCodeStrAndGroupBySampleCode(List<Long> boxIds);
 }

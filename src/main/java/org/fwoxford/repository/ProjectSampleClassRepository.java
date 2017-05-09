@@ -15,7 +15,7 @@ public interface ProjectSampleClassRepository extends JpaRepository<ProjectSampl
 
     @Query(value="select t.sample_type_id as sampleTypeId,s.sample_type_name as sampleTypeName from project_sample  t\n" +
         "left join sample_type s on t.sample_type_id=s.id where t.project_id=?1 group by t.sample_type_id,s.sample_type_name",nativeQuery = true)
-    List<Object[]> findSampleTypeByProject(Long projectCode);
+    List<Object[]> findSampleTypeByProject(Long projectId);
 
     @Query("select p from ProjectSampleClass p where p.project.id=?1 and p.sampleType.id=?2")
     List<ProjectSampleClass> findByProjectAndSampleTypeId(Long projectId, Long sampleTypeId);
@@ -25,4 +25,6 @@ public interface ProjectSampleClassRepository extends JpaRepository<ProjectSampl
     List<ProjectSampleClass> findByProjectIdAndSampleTypeId(Long projectId, Long sampleTypeId);
 
     int countByProjectIdAndSampleTypeId(Long projectId, Long sampleTypeId);
+
+    List<ProjectSampleClass> findSampleTypeByProjectCode(String projectCode);
 }

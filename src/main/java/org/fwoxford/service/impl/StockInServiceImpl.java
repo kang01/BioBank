@@ -178,7 +178,6 @@ public class StockInServiceImpl implements StockInService {
         String password = transhipToStockInDTO.getPassword();
         userService.isCorrectUser(receiver,password);
 
-        TranshipByIdResponse transhipRes = new TranshipByIdResponse();
         Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
         if(tranship == null){
             throw new BankServiceException("转运记录不存在！",transhipCode);
@@ -190,7 +189,7 @@ public class StockInServiceImpl implements StockInService {
         if(number>0){
             throw new BankServiceException("此次转运已经在执行入库！",transhipCode);
         }
-        transhipRes = transhipService.findTranshipAndFrozenBox(tranship.getId());
+        TranshipByIdResponse transhipRes = transhipService.findTranshipAndFrozenBox(tranship.getId());
         List<FrozenBoxDTO> frozenBoxDTOList =  transhipRes.getFrozenBoxDTOList();
         if(frozenBoxDTOList.size()==0){
             throw new BankServiceException("此次转运没有冻存盒数据！",transhipCode);
@@ -215,6 +214,7 @@ public class StockInServiceImpl implements StockInService {
         stockInForDataDetail.setId(stockIn.getId());
         stockInForDataDetail.setStockInCode(stockIn.getStockInCode());
         // 修改盒子状态，转运盒子状态
+        List<StockInTubes> stockInTubesList = new ArrayList<StockInTubes>();
         for(FrozenBoxDTO boxDTO: frozenBoxDTOList){
             boxDTO.setStatus(Constants.FROZEN_BOX_STOCKING);
             FrozenBox box = frozenBoxMapper.frozenBoxDTOToFrozenBox(boxDTO);
@@ -227,12 +227,8 @@ public class StockInServiceImpl implements StockInService {
             StockInBox stockInBox = createStockInBox(box,stockIn);
             stockInBoxRepository.save(stockInBox);
             //保存盒子位置
-            FrozenBoxPosition frozenBoxPosition = frozenBoxPositionRepository.findOneByFrozenBoxIdAndStatus(box.getId(),Constants.FROZEN_BOX_STOCKING);
-            if(frozenBoxPosition == null){
-                frozenBoxPosition = new FrozenBoxPosition();
-            }
+            FrozenBoxPosition frozenBoxPosition = new FrozenBoxPosition();
             frozenBoxPosition = frozenBoxPositionMapper.frozenBoxToFrozenBoxPosition(frozenBoxPosition,box);
-
             String status = Constants.FROZEN_BOX_STOCKING;
             if(box.getIsSplit().equals(Constants.YES)){
                 status = Constants.FROZEN_BOX_SPLITING;
@@ -255,8 +251,15 @@ public class StockInServiceImpl implements StockInService {
                 stockInTubes.setSampleTempCode(tube.getSampleTempCode());
                 stockInTubes.setStockInBox(stockInBox);
                 stockInTubes.setTranshipBox(transhipBox);
-                stockInTubesRepository.save(stockInTubes);
+                stockInTubesList.add(stockInTubes);
+                if (stockInTubesList.size() >= 1000){
+                    stockInTubesRepository.save(stockInTubesList);
+                    stockInTubesList.clear();
+                }
             }
+        }
+        if (stockInTubesList.size() > 0){
+            stockInTubesRepository.save(stockInTubesList);
         }
         return stockInForDataDetail;
     }

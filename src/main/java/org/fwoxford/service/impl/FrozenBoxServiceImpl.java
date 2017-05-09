@@ -586,16 +586,26 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             sampleClassificationIdStr.add(s.getSampleClassification().getId());
         }
         List<FrozenBox> frozenBoxList = new ArrayList<FrozenBox>();
-        if(sampleClassificationIdStr.size()==0) {
-            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeId(frozenBoxCode, frozenBox.getProject().getId(),sampleType.getId(),stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
-        }else{
+        if(sampleClassificationIdStr.size()==0&&sampleType.getIsMixed().equals(Constants.YES)){//无分类--是混合类型
+            //该项目下所有未满的冻存盒
+            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBox(frozenBoxCode, frozenBox.getProject().getId(),stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
+        }else if(sampleClassificationIdStr.size()>0&&sampleType.getIsMixed().equals(Constants.YES)){//有分类--是混合类型
+            //该项目下该类型下所有样本分类的不分类型的未装满的冻存盒
             frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationId(frozenBoxCode, frozenBox.getProject().getId(), sampleClassificationIdStr, stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
+        }else{//无分类--不是混合类型，有分类--不是混合类型
+            //该项目下该类型的所有未满冻存盒
+            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeId(frozenBoxCode, frozenBox.getProject().getId(),sampleType.getId(),stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
         }
         if (frozenBoxList.size() == 0) {
-            if(sampleClassificationIdStr.size()==0){
-                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeId(frozenBoxCode, frozenBox.getProject().getId(),sampleType.getId(), stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
-            }else{
-                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationId(frozenBoxCode,frozenBox.getProject().getId(),sampleClassificationIdStr, stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+            if(sampleClassificationIdStr.size()==0&&sampleType.getIsMixed().equals(Constants.YES)){//无分类--是混合类型
+                //该项目下所有未满的冻存盒
+                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBox(frozenBoxCode, frozenBox.getProject().getId(),stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+            }else if(sampleClassificationIdStr.size()>0&&sampleType.getIsMixed().equals(Constants.YES)){//有分类--是混合类型
+                //该项目下该类型下所有样本分类的不分类型的未装满的冻存盒
+                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationId(frozenBoxCode, frozenBox.getProject().getId(), sampleClassificationIdStr, stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+            }else{//无分类--不是混合类型，有分类--不是混合类型
+                //该项目下该类型的所有未满冻存盒
+                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeId(frozenBoxCode, frozenBox.getProject().getId(),sampleType.getId(),stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
             }
         }
 

@@ -380,8 +380,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     //验证项目下样本类型以及样本分类的有效性
                     ProjectSampleClass sampleType = null;
                     for(ProjectSampleClass p :projectSampleClasses){
-                        if(boxDTO.getSampleClassificationId().equals(p.getSampleClassification().getId())
-                            &&boxDTO.getSampleTypeId().equals(p.getSampleType().getId())){
+                        if(tubeDTO.getSampleClassificationId().equals(p.getSampleClassification().getId())
+                            &&tubeDTO.getSampleTypeId().equals(p.getSampleType().getId())){
                             sampleType = p;
                         }
                     }

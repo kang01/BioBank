@@ -16,7 +16,7 @@
         vm.boxes = items.incompleteBoxes;
         vm.box = {};
         var projectId = items.projectId;
-        var sampleTypeId = items.sampleTypeId;
+        vm.sampleTypeId = items.sampleTypeId;
         var sampleTypeClassId = items.sampleTypeClassId;
         var frozenBoxTypeId = items.frozenBoxTypeId;
 
@@ -31,12 +31,12 @@
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data, ['id'], ['esc']);
                 vm.sampleTypeOptions.pop();
-                if(sampleTypeId == 5){
+                if(vm.sampleTypeId == 5){
                     vm.box.sampleType = vm.sampleTypeOptions[0];
                     vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                 }else{
-                    vm.box.sampleTypeId = sampleTypeId;
-                    vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id': + sampleTypeId})[0]
+                    vm.box.sampleTypeId = vm.sampleTypeId;
+                    vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id': + vm.box.sampleTypeId})[0]
                 }
 
                 _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
@@ -50,7 +50,9 @@
                 // }
                 if(vm.sampleTypeClassOptions.length){
                     vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
-                    vm.box.sampleClassification = vm.sampleTypeClassOptions[0]
+                    vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                    sampleTypeClassId = vm.box.sampleClassificationId;
+
                 }
                 if(countFlag){
                     //创建第一个新盒子，空管子
@@ -107,11 +109,11 @@
                     vm.box.frozenBoxType = _.filter(vm.frozenBoxTypeOptions,{'id':+vm.box.frozenBoxTypeId})[0];
                 }
                 //样本类型为混合型时，同时有样本分类
-                if(sampleTypeId == 5){
+                if(vm.sampleTypeId == 5){
                     vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                     vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
                 }else{
-                    vm.box.sampleTypeId = sampleTypeId;
+                    vm.box.sampleTypeId = vm.sampleTypeId;
                     vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
                 }
                 //有无样本分类

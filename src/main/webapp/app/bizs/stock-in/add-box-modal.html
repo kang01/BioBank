@@ -57,7 +57,7 @@
                             <div class="col-sm-8">
                                 <!--{{vm.sampleTypeOptions}}-->
                                 <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                           ng-model="vm.box.sampleTypeId" ></selectize>
+                                           ng-model="vm.box.sampleTypeId" ng-disabled="vm.sampleTypeId != 5"></selectize>
                                 <input type="hidden" class="form-control"  ng-model="vm.box.sampleTypeId"  required>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                             </label>
                             <div class="col-sm-8">
                                 <selectize options='vm.sampleTypeClassOptions' config="vm.sampleTypeClassConfig"
-                                           ng-model="vm.box.sampleClassificationId"></selectize>
+                                           ng-model="vm.box.sampleClassificationId" ng-disabled="!vm.box.sampleClassificationId"></selectize>
                                 <!--<input type="hidden" class="form-control"  ng-model="vm.box.sampleClassificationId"  required>-->
 
                             </div>
@@ -83,7 +83,7 @@
                             </label>
                             <div class="col-sm-8">
                                 <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
-                                           ng-model="vm.box.frozenBoxTypeId" ng-disabled="!vm.box"></selectize>
+                                           ng-model="vm.box.frozenBoxTypeId" ng-disabled="true"></selectize>
                                 <input type="hidden" name="level" ng-model="vm.box.frozenBoxTypeId"  required>
 
                             </div>

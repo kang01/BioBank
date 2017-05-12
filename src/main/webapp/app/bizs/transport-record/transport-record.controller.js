@@ -62,26 +62,21 @@
             AlertService.error(error.data.message);
         }
 
-        vm.dtInstanceCallback = function(instance){
-            vm.dtInstance = instance;
-        };
+        // vm.dtInstanceCallback = function(instance){
+        //     vm.dtInstance = instance;
+        // };
 
-        vm.searchSomething = function(){
-            var table = vm.dtInstance.DataTable;
-            table
-                .column( 0 )
-                .search( "hello" )
-                .draw();
-        };
+        // vm.searchSomething = function(){
+        //     var table = vm.dtInstance.DataTable;
+        //     table
+        //         .column( 0 )
+        //         .search( "hello" )
+        //         .draw();
+        // };
 
-        vm.dtOptions = DTOptionsBuilder.fromSource({
-                "url": 'api/res/tranships',
-                "dataSrc": "data"
-            })
-            .withOption('sServerMethod','POST')
+        vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('processing',true)
             .withOption('serverSide',true)
-            // .withOption('sAjaxSource', 'api/res/tranships')
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};
                 for(var i=0; aoData && i<aoData.length; ++i){
@@ -114,8 +109,6 @@
                     jqDt._fnProcessingDisplay( oSettings, false );
                 });
             })
-
-
             .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow)
             .withColumnFilter({
@@ -170,7 +163,6 @@
             });
 
         vm.dtColumns = [
-            // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
             DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点'),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编号'),
             DTColumnBuilder.newColumn('transhipDate').withTitle('转运日期'),

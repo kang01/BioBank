@@ -23,12 +23,6 @@
 .p-r-15{
     padding-right: 15px !important;
 }
-.m-l-0{
-    margin-left: 0!important;
-}
-.m-r-0{
-    margin-right: 0!important;
-}
 .p-5{
     padding: 5px;
 }
@@ -37,6 +31,15 @@
 }
 .p-l-6{
     padding-left: 6px !important;
+}
+.m0{
+    margin: 0 !important;
+}
+.m-l-0{
+    margin-left: 0!important;
+}
+.m-r-0{
+    margin-right: 0!important;
 }
 .m-l-5{
     margin-left: 5px !important;

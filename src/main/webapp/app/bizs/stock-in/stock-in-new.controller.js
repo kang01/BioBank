@@ -9,11 +9,11 @@
         .controller('StockInNewController', StockInNewController)
         .controller('RescindPutAwayModalController', RescindPutAwayModalController);
 
-    StockInNewController.$inject = ['$timeout','blockUI','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
+    StockInNewController.$inject = ['$timeout','BioBankBlockUi','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
         'entity','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','StockInSaveService',
         'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService'];
     RescindPutAwayModalController.$inject = ['$uibModalInstance'];
-    function StockInNewController($timeout,blockUI,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
+    function StockInNewController($timeout,BioBankBlockUi,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
                                   entity,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,StockInSaveService,
                                   SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService) {
         var vm = this;
@@ -349,15 +349,6 @@
 
 
 
-        var blockUiMessage = "处理中……";
-        function _blockUiStart(message) {
-            blockUI.start(message);
-        }
-        function _blockUiStop() {
-            $timeout(function() {
-                blockUI.stop();
-            }, 1000);
-        }
         //入库完成
         vm.saveStockIn = function () {
             modalInstance = $uibModal.open({
@@ -854,9 +845,9 @@
                 // delete vm.boxList[i].sampleTypeId;
             }
             // console.log(JSON.stringify(saveBoxList))
-            _blockUiStart(blockUiMessage);
+            BioBankBlockUi.blockUiStart();
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
-                _blockUiStop();
+                BioBankBlockUi.blockUiStop();
                 toastr.success("分装成功!");
                 vm.headerCompiled = false;
                 vm.dtInstance.rerender();
@@ -865,7 +856,7 @@
                 vm.frozenBoxCode = "";
                 $(".box-selected").removeClass("box-selected");
             }).error(function (data) {
-                _blockUiStop();
+                BioBankBlockUi.blockUiStop();
                 toastr.error(data.message)
             })
         };

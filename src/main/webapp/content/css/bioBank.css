@@ -35,6 +35,9 @@
 .m0{
     margin: 0 !important;
 }
+.m-5{
+    margin: 5px !important;
+}
 .m-l-0{
     margin-left: 0!important;
 }
@@ -46,6 +49,12 @@
 }
 .m-r-10{
     margin-right: 10px !important;
+}
+.m-t-10{
+    margin-top: 10px !important;
+}
+.m-t-20{
+    margin-top: 20px !important;
 }
 .m-b-10{
     margin-bottom: 10px !important;
@@ -265,6 +274,16 @@
 }
 .add-box-modal-body  .box-memo .col-sm-9{
     width: 75.4%;
+}
+/*出库*/
+td .details-control {
+    width: 10px;
+    height: 10px;
+    background: url('../images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td .details-control {
+    background: url('../images/details_close.png') no-repeat center center;
 }
 /*1440*/
 @media (min-width:1400px) {

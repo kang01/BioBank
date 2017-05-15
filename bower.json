@@ -40,7 +40,8 @@
     "datatables-buttons": "^1.2.4",
     "lodash": "^4.17.4",
     "angular-block-ui": "^0.2.2",
-    "angular-toastr": "^2.1.1"
+    "angular-toastr": "^2.1.1",
+    "ion.rangeSlider": "ionrangeslider#^2.1.7"
   },
   "devDependencies": {
     "angular-mocks": "1.5.8"

@@ -11,23 +11,16 @@
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
     TransportRecordNewController.$inject = ['$scope','blockUI','$timeout','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
-        'SampleTypeService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService'];
+        'SampleTypeService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService',
+    'BioBankBlockUi'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
     function TransportRecordNewController($scope,blockUI,$timeout,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
-                                          SampleTypeService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService) {
+                                          SampleTypeService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService,
+                                          BioBankBlockUi) {
 
         var modalInstance;
         var vm = this;
         vm.transportRecord = entity; //转运记录
-        var blockUiMessage = "处理中……";
-        function _blockUiStart(message) {
-            blockUI.start(message);
-        }
-        function _blockUiStop() {
-            $timeout(function() {
-                blockUI.stop();
-            }, 1000);
-        }
         _initTransportRecordPage();
         _initFrozenBoxesTable();
         _initFrozenBoxPanel();
@@ -163,13 +156,13 @@
             vm.fnQueryProjectSampleClass = _fnQueryProjectSampleClass;
             //作废
             vm.invalid = function () {
-                _blockUiStart(blockUiMessage);
+                BioBankBlockUi.blockUiStart();
                 TranshipInvalidService.invalid(vm.transportRecord.transhipCode).success(function () {
                     toastr.success("已作废！");
-                    _blockUiStop();
+                    BioBankBlockUi.blockUiStop();
                     $state.go('transport-record');
                 }).error(function () {
-                    _blockUiStop();
+                    BioBankBlockUi.blockUiStop();
                     toastr.error("作废功能报错！");
                 })
             };
@@ -180,37 +173,38 @@
             vm.saveRecord = saveRecord;
             //入库
             vm.stockIn = function () {
-                if(vm.transportRecord.trackNumber){
-                    TrackNumberService.getTrackNum(vm.transportRecord.transhipCode,vm.transportRecord.trackNumber).then(function (data) {
-                        if(data){
-                            toastr.warning("运单号不能重复！");
-                            vm.transportRecord.trackNumber = "";
-                            return;
-                        }
-                        modalInstance = $uibModal.open({
-                            animation: true,
-                            templateUrl: 'app/bizs/transport-record/stock-in-affirm-modal.html',
-                            controller: 'StockInAffirmModalController',
-                            backdrop:'static',
-                            controllerAs: 'vm',
-                            resolve:{
-                                items:function () {
-                                    return{
-                                        box:vm.box || {},
-                                        receiver:vm.transportRecord.receiver,
-                                        receiveDate: vm.transportRecord.receiveDate
-                                    }
-                                }
+                // if(vm.transportRecord.trackNumber){
+                //     TrackNumberService.getTrackNum(vm.transportRecord.transhipCode,vm.transportRecord.trackNumber).then(function (data) {
+                //         if(data){
+                //             toastr.warning("运单号不能重复！");
+                //             vm.transportRecord.trackNumber = "";
+                //             return;
+                //         }
+                //
+                //     })
+                // }
+                modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/bizs/transport-record/stock-in-affirm-modal.html',
+                    controller: 'StockInAffirmModalController',
+                    backdrop:'static',
+                    controllerAs: 'vm',
+                    resolve:{
+                        items:function () {
+                            return{
+                                box:vm.box || {},
+                                receiver:vm.transportRecord.receiver,
+                                receiveDate: vm.transportRecord.receiveDate
                             }
-                        });
-                        modalInstance.result.then(function (transportRecord) {
-                            vm.saveStockInFlag = true;
-                            importBoxFlag = false;
-                            vm.saveRecord(transportRecord);
+                        }
+                    }
+                });
+                modalInstance.result.then(function (transportRecord) {
+                    vm.saveStockInFlag = true;
+                    importBoxFlag = false;
+                    vm.saveRecord(transportRecord);
 
-                        });
-                    })
-                }
+                });
 
             };
             //导入冻存盒
@@ -224,7 +218,7 @@
             function saveRecord(transportRecord) {
                 vm.saveRecordFlag = true;
                 vm.saveBox(function(){
-                    _blockUiStart(blockUiMessage);
+                    BioBankBlockUi.blockUiStart();
                     TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError);
                     function onSaveTranshipRecordSuccess(data) {
                         if(importBoxFlag){
@@ -253,18 +247,17 @@
                         }
 
                         vm.saveRecordFlag = false;
-
-                        _blockUiStop();
+                        BioBankBlockUi.blockUiStop();
 
 
                         if(vm.saveStockInFlag){
                             TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
-                                _blockUiStop();
+                                BioBankBlockUi.blockUiStop();
                                 toastr.success("入库成功！");
                                 vm.saveStockInFlag = false;
                                 $state.go('stock-in-edit',{id:data.id});
                             }).error(function (data) {
-                                _blockUiStop();
+                                BioBankBlockUi.blockUiStop();
                                 toastr.error(data.message+"入库失败！");
                             })
                         }
@@ -924,8 +917,7 @@
 
             vm.saveBox = saveBox;//保存盒子
             function saveBox(callback){
-
-                _blockUiStart(blockUiMessage);
+                BioBankBlockUi.blockUiStart();
                 var obox = {
                     transhipId:vm.transportRecord.id,
                     frozenBoxDTOList:[]
@@ -943,8 +935,7 @@
                             frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
                         }
                     }
-
-                    _blockUiStop();
+                    BioBankBlockUi.blockUiStop();
                     if (typeof callback === "function"){
                         callback.call(this, res);
                     }
@@ -1117,7 +1108,7 @@
         }
 
         function onError(error) {
-            _blockUiStop();
+            BioBankBlockUi.blockUiStop();
             toastr.error(error.data.message);
         }
     }

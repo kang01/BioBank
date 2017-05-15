@@ -15,7 +15,41 @@
         </div>
     </div>
     <div class="row m0">
-        <div class="row"></div>
+        <div class="row">
+            <div class="col-md-4">
+                <input  type="text"  ng-model="vm.age"  class="irs-hidden-input"  readonly=""
+                        age-slider  form-to="vm.age"   required>
+            </div>
+            <div class="col-md-4">
+                <form name="myForm">
+                    <fieldset>
+                        <legend>Upload on form submit</legend>
+                        Username:
+                        <input type="text" name="userName" ng-model="vm.username" size="31" required>
+                        <i ng-show="myForm.userName.$error.required">*required</i>
+                        <br>Photo:
+                        <input type="file" ngf-select ng-model="vm.picFile" name="file"
+                               accept="image/*" ngf-max-size="2MB" required
+                               ngf-model-invalid="errorFile">
+                        <i ng-show="myForm.file.$error.required">*required</i><br>
+                        <i ng-show="myForm.file.$error.maxSize">File too large
+                            {{errorFile.size / 1000000|number:1}}MB: max 2M</i>
+                        <img ng-show="myForm.file.$valid" ngf-thumbnail="vm.picFile" class="thumb"> <button ng-click="vm.picFile = null" ng-show="vm.picFile">Remove</button>
+                        <br>
+                        <button ng-disabled="!myForm.$valid"
+                                ng-click="vm.uploadPic(vm.picFile)">Submit</button>
+                        <span class="progress" ng-show="vm.picFile.progress >= 0">
+        <div style="width:{{vm.picFile.progress}}%"
+             ng-bind="vm.picFile.progress + '%'"></div>
+      </span>
+                        <span ng-show="picFile.result">Upload Successful</span>
+                        <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+                    </fieldset>
+                    <br>
+                </form>
+            </div>
+
+        </div>
         <div class="row"></div>
         <div class="row"></div>
     </div>

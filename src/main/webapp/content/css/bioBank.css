@@ -134,9 +134,11 @@
 }
 .transport-record-body .btn{
     padding: 2px 12px;
-} .transport-record-body table.dataTable tbody th,
-.transport-record-body table.dataTable tbody td{
+}
+ table.dataTable tbody th,
+ table.dataTable tbody td{
     padding: 4px 18px;
+     vertical-align: middle;
 }
 /*.transport-record-new .three-col{*/
     /*width: 33%;*/

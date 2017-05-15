@@ -39,7 +39,7 @@ public class StockInForDataTableEntity {
     @Column(name = "count_Of_box")
     @NotNull
     @JsonView(DataTablesOutput.View.class)
-    private Integer countOfBox;
+    private Long countOfBox;
 
     @Column(name = "status")
     @NotNull
@@ -151,11 +151,11 @@ public class StockInForDataTableEntity {
     /**
      * 冻存盒数量
      */
-    public Integer getCountOfBox() {
+    public Long getCountOfBox() {
         return countOfBox;
     }
 
-    public void setCountOfBox(Integer countOfBox) {
+    public void setCountOfBox(Long countOfBox) {
         this.countOfBox = countOfBox;
     }
 

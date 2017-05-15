@@ -1,0 +1,35 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockOutApplyProject.detail.title">Stock Out Apply Project</span> {{vm.stockOutApplyProject.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockOutApplyProject.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockOutApplyProject.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApplyProject.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockOutApplyProject.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApplyProject.stockOutApply">Stock Out Apply</span></dt>
+        <dd>
+            <a ui-sref="stock-out-apply-detail({id:vm.stockOutApplyProject.stockOutApplyId})">{{vm.stockOutApplyProject.stockOutApplyId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApplyProject.project">Project</span></dt>
+        <dd>
+            <a ui-sref="project-detail({id:vm.stockOutApplyProject.projectId})">{{vm.stockOutApplyProject.projectId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-out-apply-project-detail.edit({id:vm.stockOutApplyProject.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

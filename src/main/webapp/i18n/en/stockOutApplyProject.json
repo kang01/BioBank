@@ -1,0 +1,24 @@
+{
+    "bioBankApp": {
+        "stockOutApplyProject" : {
+            "home": {
+                "title": "Stock Out Apply Projects",
+                "createLabel": "Create a new Stock Out Apply Project",
+                "createOrEditLabel": "Create or edit a Stock Out Apply Project"
+            },
+            "created": "A new Stock Out Apply Project is created with identifier {{ param }}",
+            "updated": "A Stock Out Apply Project is updated with identifier {{ param }}",
+            "deleted": "A Stock Out Apply Project is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock Out Apply Project {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock Out Apply Project"
+            },
+            "status": "Status",
+            "memo": "Memo",
+            "stockOutApply": "Stock Out Apply",
+            "project": "Project"
+        }
+    }
+}

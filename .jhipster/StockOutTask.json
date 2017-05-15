@@ -1,0 +1,54 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "stockOutPlan",
+            "otherEntityName": "stockOutPlan",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "stockOutHeadId1",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "stockOutHeadId2",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "stockOutDate",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "20"
+        },
+        {
+            "fieldName": "memo",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "1024"
+        }
+    ],
+    "changelogDate": "20170515014750",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "stock_out_task",
+    "pagination": "pager",
+    "enableEntityAudit": true
+}

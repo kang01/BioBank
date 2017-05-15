@@ -1,0 +1,39 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockOutRequiredSample.detail.title">Stock Out Required Sample</span> {{vm.stockOutRequiredSample.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockOutRequiredSample.sampleCode">Sample Code</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequiredSample.sampleCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequiredSample.sampleType">Sample Type</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequiredSample.sampleType}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequiredSample.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequiredSample.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequiredSample.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequiredSample.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequiredSample.stockOutRequirement">Stock Out Requirement</span></dt>
+        <dd>
+            <a ui-sref="stock-out-requirement-detail({id:vm.stockOutRequiredSample.stockOutRequirementId})">{{vm.stockOutRequiredSample.stockOutRequirementId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-out-required-sample-detail.edit({id:vm.stockOutRequiredSample.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

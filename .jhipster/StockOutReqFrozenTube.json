@@ -1,0 +1,75 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "frozenBox",
+            "otherEntityName": "frozenBox",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "frozenTube",
+            "otherEntityName": "frozenTube",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "stockOutRequirement",
+            "otherEntityName": "stockOutRequirement",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "status",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "20"
+        },
+        {
+            "fieldName": "memo",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "1024"
+        },
+        {
+            "fieldName": "tubeRows",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "20"
+        },
+        {
+            "fieldName": "tubeColumns",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "20"
+        }
+    ],
+    "changelogDate": "20170515010614",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "stock_out_tube",
+    "pagination": "pager",
+    "enableEntityAudit": true
+}

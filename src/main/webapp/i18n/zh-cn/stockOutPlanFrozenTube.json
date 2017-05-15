@@ -1,0 +1,27 @@
+{
+    "bioBankApp": {
+        "stockOutPlanFrozenTube" : {
+            "home": {
+                "title": "Stock Out Plan Frozen Tubes",
+                "createLabel": "Create a new Stock Out Plan Frozen Tube",
+                "createOrEditLabel": "Create or edit a Stock Out Plan Frozen Tube"
+            },
+            "created": "A new Stock Out Plan Frozen Tube is created with identifier {{ param }}",
+            "updated": "A Stock Out Plan Frozen Tube is updated with identifier {{ param }}",
+            "deleted": "A Stock Out Plan Frozen Tube is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock Out Plan Frozen Tube {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock Out Plan Frozen Tube"
+            },
+            "tubeRows": "Tube Rows",
+            "tubeColumns": "Tube Columns",
+            "status": "Status",
+            "memo": "Memo",
+            "stockOutPlan": "Stock Out Plan",
+            "frozenBox": "Frozen Box",
+            "frozenTube": "Frozen Tube"
+        }
+    }
+}

@@ -1,0 +1,98 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myStockOutPlanLabel" data-translate="bioBankApp.stockOutPlan.home.createOrEditLabel">Create or edit a Stock Out Plan</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.stockOutPlan.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.stockOutPlan.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockOutPlan.stockOutPlanCode" for="field_stockOutPlanCode">Stock Out Plan Code</label>
+            <input type="text" class="form-control" name="stockOutPlanCode" id="field_stockOutPlanCode"
+                    ng-model="vm.stockOutPlan.stockOutPlanCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.stockOutPlanCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.stockOutPlanCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.stockOutPlanCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockOutPlan.status" for="field_status">Status</label>
+            <input type="text" class="form-control" name="status" id="field_status"
+                    ng-model="vm.stockOutPlan.status"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.status.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.status.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.status.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockOutPlan.memo" for="field_memo">Memo</label>
+            <input type="text" class="form-control" name="memo" id="field_memo"
+                    ng-model="vm.stockOutPlan.memo"
+                    ng-maxlength="1024"/>
+            <div ng-show="editForm.memo.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.memo.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
+                    This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockOutPlan.applyNumber" for="field_applyNumber">Apply Number</label>
+            <input type="text" class="form-control" name="applyNumber" id="field_applyNumber"
+                    ng-model="vm.stockOutPlan.applyNumber"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.applyNumber.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.applyNumber.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.applyNumber.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label data-translate="bioBankApp.stockOutPlan.stockOutApply" for="field_stockOutApply">Stock Out Apply</label>
+            <select class="form-control" id="field_stockOutApply" name="stockOutApply" ng-model="vm.stockOutPlan.stockOutApplyId" ng-options="stockOutApply.id as stockOutApply.id for stockOutApply in vm.stockoutapplies"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.stockOutApply.$invalid">
+            <p class="help-block"
+                ng-show="editForm.stockOutApply.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

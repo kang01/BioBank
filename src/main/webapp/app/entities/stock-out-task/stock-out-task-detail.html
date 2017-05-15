@@ -1,0 +1,43 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockOutTask.detail.title">Stock Out Task</span> {{vm.stockOutTask.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockOutTask.stockOutHeadId1">Stock Out Head Id 1</span></dt>
+        <dd>
+            <span>{{vm.stockOutTask.stockOutHeadId1}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutTask.stockOutHeadId2">Stock Out Head Id 2</span></dt>
+        <dd>
+            <span>{{vm.stockOutTask.stockOutHeadId2}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutTask.stockOutDate">Stock Out Date</span></dt>
+        <dd>
+            <span>{{vm.stockOutTask.stockOutDate | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutTask.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockOutTask.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutTask.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockOutTask.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutTask.stockOutPlan">Stock Out Plan</span></dt>
+        <dd>
+            <a ui-sref="stock-out-plan-detail({id:vm.stockOutTask.stockOutPlanId})">{{vm.stockOutTask.stockOutPlanId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-out-task-detail.edit({id:vm.stockOutTask.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,108 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "delegate",
+            "otherEntityName": "delegate",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "applyNumber",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "100"
+        },
+        {
+            "fieldName": "delegatePersionName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "255"
+        },
+        {
+            "fieldName": "delegateDate",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": []
+        },
+        {
+            "fieldName": "startTime",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "endTime",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": []
+        },
+        {
+            "fieldName": "countOfSample",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "purposeOfSample",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "1024"
+        },
+        {
+            "fieldName": "recordTime",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "recordId",
+            "fieldType": "Long",
+            "fieldValidateRules": []
+        },
+        {
+            "fieldName": "projectIds",
+            "fieldType": "String",
+            "fieldValidateRules": []
+        },
+        {
+            "fieldName": "parentApplyId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "approverId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "approveTime",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "20"
+        },
+        {
+            "fieldName": "memo",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "1024"
+        }
+    ],
+    "changelogDate": "20170514062123",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "stock_out",
+    "pagination": "pager",
+    "enableEntityAudit": true
+}

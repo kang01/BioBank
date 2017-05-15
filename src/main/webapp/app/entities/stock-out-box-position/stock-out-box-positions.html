@@ -1,0 +1,88 @@
+<div>
+    <h2 data-translate="bioBankApp.stockOutBoxPosition.home.title">Stock Out Box Positions</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="stock-out-box-position.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.stockOutBoxPosition.home.createLabel">
+                        Create new Stock Out Box Position
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentCode"><span data-translate="bioBankApp.stockOutBoxPosition.equipmentCode">Equipment Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="areaCode"><span data-translate="bioBankApp.stockOutBoxPosition.areaCode">Area Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="supportRackCode"><span data-translate="bioBankApp.stockOutBoxPosition.supportRackCode">Support Rack Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="rowsInShelf"><span data-translate="bioBankApp.stockOutBoxPosition.rowsInShelf">Rows In Shelf</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="columnsInShelf"><span data-translate="bioBankApp.stockOutBoxPosition.columnsInShelf">Columns In Shelf</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.stockOutBoxPosition.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.stockOutBoxPosition.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentId"><span data-translate="bioBankApp.stockOutBoxPosition.equipment">Equipment</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="areaId"><span data-translate="bioBankApp.stockOutBoxPosition.area">Area</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="supportRackId"><span data-translate="bioBankApp.stockOutBoxPosition.supportRack">Support Rack</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxId"><span data-translate="bioBankApp.stockOutBoxPosition.frozenBox">Frozen Box</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="stockOutBoxPosition in vm.stockOutBoxPositions track by stockOutBoxPosition.id">
+                    <td><a ui-sref="stock-out-box-position-detail({id:stockOutBoxPosition.id})">{{stockOutBoxPosition.id}}</a></td>
+                    <td>{{stockOutBoxPosition.equipmentCode}}</td>
+                    <td>{{stockOutBoxPosition.areaCode}}</td>
+                    <td>{{stockOutBoxPosition.supportRackCode}}</td>
+                    <td>{{stockOutBoxPosition.rowsInShelf}}</td>
+                    <td>{{stockOutBoxPosition.columnsInShelf}}</td>
+                    <td>{{stockOutBoxPosition.status}}</td>
+                    <td>{{stockOutBoxPosition.memo}}</td>
+                    <td>
+                        <a ui-sref="equipment-detail({id:stockOutBoxPosition.equipmentId})">{{stockOutBoxPosition.equipmentId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="area-detail({id:stockOutBoxPosition.areaId})">{{stockOutBoxPosition.areaId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="support-rack-detail({id:stockOutBoxPosition.supportRackId})">{{stockOutBoxPosition.supportRackId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="frozen-box-detail({id:stockOutBoxPosition.frozenBoxId})">{{stockOutBoxPosition.frozenBoxId}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="stock-out-box-position-detail({id:stockOutBoxPosition.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="stock-out-box-position.edit({id:stockOutBoxPosition.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="stock-out-box-position.delete({id:stockOutBoxPosition.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

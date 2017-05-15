@@ -1,0 +1,78 @@
+<div>
+    <h2 data-translate="bioBankApp.stockOutPlanFrozenTube.home.title">Stock Out Plan Frozen Tubes</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="stock-out-plan-frozen-tube.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.stockOutPlanFrozenTube.home.createLabel">
+                        Create new Stock Out Plan Frozen Tube
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="tubeRows"><span data-translate="bioBankApp.stockOutPlanFrozenTube.tubeRows">Tube Rows</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="tubeColumns"><span data-translate="bioBankApp.stockOutPlanFrozenTube.tubeColumns">Tube Columns</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.stockOutPlanFrozenTube.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.stockOutPlanFrozenTube.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="stockOutPlanId"><span data-translate="bioBankApp.stockOutPlanFrozenTube.stockOutPlan">Stock Out Plan</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxId"><span data-translate="bioBankApp.stockOutPlanFrozenTube.frozenBox">Frozen Box</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenTubeId"><span data-translate="bioBankApp.stockOutPlanFrozenTube.frozenTube">Frozen Tube</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="stockOutPlanFrozenTube in vm.stockOutPlanFrozenTubes track by stockOutPlanFrozenTube.id">
+                    <td><a ui-sref="stock-out-plan-frozen-tube-detail({id:stockOutPlanFrozenTube.id})">{{stockOutPlanFrozenTube.id}}</a></td>
+                    <td>{{stockOutPlanFrozenTube.tubeRows}}</td>
+                    <td>{{stockOutPlanFrozenTube.tubeColumns}}</td>
+                    <td>{{stockOutPlanFrozenTube.status}}</td>
+                    <td>{{stockOutPlanFrozenTube.memo}}</td>
+                    <td>
+                        <a ui-sref="stock-out-plan-detail({id:stockOutPlanFrozenTube.stockOutPlanId})">{{stockOutPlanFrozenTube.stockOutPlanId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="frozen-box-detail({id:stockOutPlanFrozenTube.frozenBoxId})">{{stockOutPlanFrozenTube.frozenBoxId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="frozen-tube-detail({id:stockOutPlanFrozenTube.frozenTubeId})">{{stockOutPlanFrozenTube.frozenTubeId}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="stock-out-plan-frozen-tube-detail({id:stockOutPlanFrozenTube.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="stock-out-plan-frozen-tube.edit({id:stockOutPlanFrozenTube.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="stock-out-plan-frozen-tube.delete({id:stockOutPlanFrozenTube.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

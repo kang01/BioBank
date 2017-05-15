@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="sysdate" dbms="oracle"/>
+    <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+    <!--
+        Added the entity StockOutRequirement.
+    -->
+    <changeSet id="20170514063802-1" author="jhipster">
+        <createTable tableName="stock_out_requirement">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="apply_number" type="varchar(100)" remarks="出库申请">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="requirement_number" type="varchar(100)" remarks="需求编号">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="requirement_name" type="varchar(255)" remarks="需求名称">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="count_of_sample" type="integer" remarks="需求样本量">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="sex" type="varchar(255)" remarks="性别">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="age_min" type="integer" remarks="年龄最小值">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="age_max" type="integer" remarks="年龄最大值">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="disease_type" type="integer" remarks="疾病类型">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="is_hemolysis" type="bit" remarks="是否溶血">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="is_blood_lipid" type="bit" remarks="是否脂质血">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="status" type="varchar(20)" remarks="状态">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="memo" type="varchar(1024)" remarks="备注">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="stock_out_apply_id" type="bigint" remarks="出库申请ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="sample_type_id" type="bigint" remarks="样本类型ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="sample_classification_id" type="bigint" remarks="样本分类ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="frozen_tube_type_id" type="bigint" remarks="冻存管类型ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="created_by" type="varchar(50)" remarks="创建人">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}" remarks="创建时间">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(50)" remarks="修改人"/>
+            <column name="last_modified_date" type="timestamp" remarks="修改时间"/>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+        </createTable>
+
+    </changeSet>
+</databaseChangeLog>

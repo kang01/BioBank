@@ -1,0 +1,78 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "equipment",
+            "otherEntityName": "equipment",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "area",
+            "otherEntityName": "area",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "supportRack",
+            "otherEntityName": "supportRack",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "frozenBox",
+            "otherEntityName": "frozenBox",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "equipmentCode",
+            "fieldType": "String",
+            "fieldValidateRules": []
+        },
+        {
+            "fieldName": "areaCode",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "supportRackCode",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "rowsInShelf",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "columnsInShelf",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "20"
+        },
+        {
+            "fieldName": "memo",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "1024"
+        }
+    ],
+    "changelogDate": "20170515015924",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "stock_out_box_pos",
+    "pagination": "pager",
+    "enableEntityAudit": true
+}

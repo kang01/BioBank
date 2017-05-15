@@ -1,0 +1,36 @@
+{
+    "bioBankApp": {
+        "stockOutApply" : {
+            "home": {
+                "title": "Stock Out Applies",
+                "createLabel": "Create a new Stock Out Apply",
+                "createOrEditLabel": "Create or edit a Stock Out Apply"
+            },
+            "created": "A new Stock Out Apply is created with identifier {{ param }}",
+            "updated": "A Stock Out Apply is updated with identifier {{ param }}",
+            "deleted": "A Stock Out Apply is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock Out Apply {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock Out Apply"
+            },
+            "applyNumber": "Apply Number",
+            "delegatePersionName": "Delegate Persion Name",
+            "delegateDate": "Delegate Date",
+            "startTime": "Start Time",
+            "endTime": "End Time",
+            "countOfSample": "Count Of Sample",
+            "purposeOfSample": "Purpose Of Sample",
+            "recordTime": "Record Time",
+            "recordId": "Record Id",
+            "projectIds": "Project Ids",
+            "parentApplyId": "Parent Apply Id",
+            "approverId": "Approver Id",
+            "approveTime": "Approve Time",
+            "status": "Status",
+            "memo": "Memo",
+            "delegate": "Delegate"
+        }
+    }
+}

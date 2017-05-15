@@ -1,0 +1,31 @@
+{
+    "bioBankApp": {
+        "stockOutBoxPosition" : {
+            "home": {
+                "title": "Stock Out Box Positions",
+                "createLabel": "Create a new Stock Out Box Position",
+                "createOrEditLabel": "Create or edit a Stock Out Box Position"
+            },
+            "created": "A new Stock Out Box Position is created with identifier {{ param }}",
+            "updated": "A Stock Out Box Position is updated with identifier {{ param }}",
+            "deleted": "A Stock Out Box Position is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock Out Box Position {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock Out Box Position"
+            },
+            "equipmentCode": "Equipment Code",
+            "areaCode": "Area Code",
+            "supportRackCode": "Support Rack Code",
+            "rowsInShelf": "Rows In Shelf",
+            "columnsInShelf": "Columns In Shelf",
+            "status": "Status",
+            "memo": "Memo",
+            "equipment": "Equipment",
+            "area": "Area",
+            "supportRack": "Support Rack",
+            "frozenBox": "Frozen Box"
+        }
+    }
+}

@@ -1,0 +1,83 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockOutRequirement.detail.title">Stock Out Requirement</span> {{vm.stockOutRequirement.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockOutRequirement.apply_number">Apply Number</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequirement.apply_number}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.requirementNumber">Requirement Number</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequirement.requirementNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.requirementName">Requirement Name</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequirement.requirementName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.countOfSample">Count Of Sample</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequirement.countOfSample}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.sex">Sex</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequirement.sex}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.ageMin">Age Min</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequirement.ageMin}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.ageMax">Age Max</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequirement.ageMax}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.diseaseType">Disease Type</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequirement.diseaseType}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.isHemolysis">Is Hemolysis</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequirement.isHemolysis}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.isBloodLipid">Is Blood Lipid</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequirement.isBloodLipid}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequirement.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockOutRequirement.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.stockOutApply">Stock Out Apply</span></dt>
+        <dd>
+            <a ui-sref="stock-out-apply-detail({id:vm.stockOutRequirement.stockOutApplyId})">{{vm.stockOutRequirement.stockOutApplyId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.sampleType">Sample Type</span></dt>
+        <dd>
+            <a ui-sref="sample-type-detail({id:vm.stockOutRequirement.sampleTypeId})">{{vm.stockOutRequirement.sampleTypeId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.sampleClassification">Sample Classification</span></dt>
+        <dd>
+            <a ui-sref="sample-classification-detail({id:vm.stockOutRequirement.sampleClassificationId})">{{vm.stockOutRequirement.sampleClassificationId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutRequirement.frozenTubeType">Frozen Tube Type</span></dt>
+        <dd>
+            <a ui-sref="frozen-tube-type-detail({id:vm.stockOutRequirement.frozenTubeTypeId})">{{vm.stockOutRequirement.frozenTubeTypeId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-out-requirement-detail.edit({id:vm.stockOutRequirement.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

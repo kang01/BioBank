@@ -1,0 +1,25 @@
+{
+    "bioBankApp": {
+        "stockOutRequiredSample" : {
+            "home": {
+                "title": "Stock Out Required Samples",
+                "createLabel": "Create a new Stock Out Required Sample",
+                "createOrEditLabel": "Create or edit a Stock Out Required Sample"
+            },
+            "created": "A new Stock Out Required Sample is created with identifier {{ param }}",
+            "updated": "A Stock Out Required Sample is updated with identifier {{ param }}",
+            "deleted": "A Stock Out Required Sample is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock Out Required Sample {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock Out Required Sample"
+            },
+            "sampleCode": "Sample Code",
+            "sampleType": "Sample Type",
+            "status": "Status",
+            "memo": "Memo",
+            "stockOutRequirement": "Stock Out Requirement"
+        }
+    }
+}

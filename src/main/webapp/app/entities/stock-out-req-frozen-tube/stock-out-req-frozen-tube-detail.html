@@ -1,0 +1,47 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockOutReqFrozenTube.detail.title">Stock Out Req Frozen Tube</span> {{vm.stockOutReqFrozenTube.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockOutReqFrozenTube.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockOutReqFrozenTube.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutReqFrozenTube.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockOutReqFrozenTube.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutReqFrozenTube.tubeRows">Tube Rows</span></dt>
+        <dd>
+            <span>{{vm.stockOutReqFrozenTube.tubeRows}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutReqFrozenTube.tubeColumns">Tube Columns</span></dt>
+        <dd>
+            <span>{{vm.stockOutReqFrozenTube.tubeColumns}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutReqFrozenTube.frozenBox">Frozen Box</span></dt>
+        <dd>
+            <a ui-sref="frozen-box-detail({id:vm.stockOutReqFrozenTube.frozenBoxId})">{{vm.stockOutReqFrozenTube.frozenBoxId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutReqFrozenTube.frozenTube">Frozen Tube</span></dt>
+        <dd>
+            <a ui-sref="frozen-tube-detail({id:vm.stockOutReqFrozenTube.frozenTubeId})">{{vm.stockOutReqFrozenTube.frozenTubeId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutReqFrozenTube.stockOutRequirement">Stock Out Requirement</span></dt>
+        <dd>
+            <a ui-sref="stock-out-requirement-detail({id:vm.stockOutReqFrozenTube.stockOutRequirementId})">{{vm.stockOutReqFrozenTube.stockOutRequirementId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-out-req-frozen-tube-detail.edit({id:vm.stockOutReqFrozenTube.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

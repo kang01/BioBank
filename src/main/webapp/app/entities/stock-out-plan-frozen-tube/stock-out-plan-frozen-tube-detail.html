@@ -1,0 +1,47 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockOutPlanFrozenTube.detail.title">Stock Out Plan Frozen Tube</span> {{vm.stockOutPlanFrozenTube.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.tubeRows">Tube Rows</span></dt>
+        <dd>
+            <span>{{vm.stockOutPlanFrozenTube.tubeRows}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.tubeColumns">Tube Columns</span></dt>
+        <dd>
+            <span>{{vm.stockOutPlanFrozenTube.tubeColumns}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockOutPlanFrozenTube.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockOutPlanFrozenTube.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.stockOutPlan">Stock Out Plan</span></dt>
+        <dd>
+            <a ui-sref="stock-out-plan-detail({id:vm.stockOutPlanFrozenTube.stockOutPlanId})">{{vm.stockOutPlanFrozenTube.stockOutPlanId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.frozenBox">Frozen Box</span></dt>
+        <dd>
+            <a ui-sref="frozen-box-detail({id:vm.stockOutPlanFrozenTube.frozenBoxId})">{{vm.stockOutPlanFrozenTube.frozenBoxId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.frozenTube">Frozen Tube</span></dt>
+        <dd>
+            <a ui-sref="frozen-tube-detail({id:vm.stockOutPlanFrozenTube.frozenTubeId})">{{vm.stockOutPlanFrozenTube.frozenTubeId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-out-plan-frozen-tube-detail.edit({id:vm.stockOutPlanFrozenTube.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

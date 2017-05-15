@@ -1,0 +1,24 @@
+{
+    "bioBankApp": {
+        "delegate" : {
+            "home": {
+                "title": "Delegates",
+                "createLabel": "Create a new Delegate",
+                "createOrEditLabel": "Create or edit a Delegate"
+            },
+            "created": "A new Delegate is created with identifier {{ param }}",
+            "updated": "A Delegate is updated with identifier {{ param }}",
+            "deleted": "A Delegate is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Delegate {{ id }}?"
+            },
+            "detail": {
+                "title": "Delegate"
+            },
+            "delegate_code": "Delegate Code",
+            "delegate_name": "Delegate Name",
+            "status": "Status",
+            "memo": "Memo"
+        }
+    }
+}

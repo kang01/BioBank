@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity StockOutRequirement.
+    -->
+    <changeSet id="20170514063802-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="stock_out_apply_id"
+                                 baseTableName="stock_out_requirement"
+                                 constraintName="stock_out_req_apply_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock_out_apply"/>
+
+        <addForeignKeyConstraint baseColumnNames="sample_type_id"
+                                 baseTableName="stock_out_requirement"
+                                 constraintName="stock_out_req_sample_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="sample_classification_id"
+                                 baseTableName="stock_out_requirement"
+                                 constraintName="stock_out_req_sample_classi_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_class"/>
+
+        <addForeignKeyConstraint baseColumnNames="frozen_tube_type_id"
+                                 baseTableName="stock_out_requirement"
+                                 constraintName="stock_out_req_tube_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_tube_type"/>
+
+    </changeSet>
+</databaseChangeLog>

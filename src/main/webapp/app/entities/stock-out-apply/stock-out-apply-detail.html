@@ -1,0 +1,83 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockOutApply.detail.title">Stock Out Apply</span> {{vm.stockOutApply.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockOutApply.applyNumber">Apply Number</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.applyNumber}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.delegatePersionName">Delegate Persion Name</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.delegatePersionName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.delegateDate">Delegate Date</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.delegateDate | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.startTime">Start Time</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.startTime | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.endTime">End Time</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.endTime | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.countOfSample">Count Of Sample</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.countOfSample}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.purposeOfSample">Purpose Of Sample</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.purposeOfSample}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.recordTime">Record Time</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.recordTime | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.recordId">Record Id</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.recordId}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.projectIds">Project Ids</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.projectIds}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.parentApplyId">Parent Apply Id</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.parentApplyId}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.approverId">Approver Id</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.approverId}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.approveTime">Approve Time</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.approveTime | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockOutApply.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutApply.delegate">Delegate</span></dt>
+        <dd>
+            <a ui-sref="delegate-detail({id:vm.stockOutApply.delegateId})">{{vm.stockOutApply.delegateId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-out-apply-detail.edit({id:vm.stockOutApply.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

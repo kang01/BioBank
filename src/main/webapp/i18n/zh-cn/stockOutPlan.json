@@ -1,0 +1,25 @@
+{
+    "bioBankApp": {
+        "stockOutPlan" : {
+            "home": {
+                "title": "Stock Out Plans",
+                "createLabel": "Create a new Stock Out Plan",
+                "createOrEditLabel": "Create or edit a Stock Out Plan"
+            },
+            "created": "A new Stock Out Plan is created with identifier {{ param }}",
+            "updated": "A Stock Out Plan is updated with identifier {{ param }}",
+            "deleted": "A Stock Out Plan is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock Out Plan {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock Out Plan"
+            },
+            "stockOutPlanCode": "Stock Out Plan Code",
+            "status": "Status",
+            "memo": "Memo",
+            "applyNumber": "Apply Number",
+            "stockOutApply": "Stock Out Apply"
+        }
+    }
+}

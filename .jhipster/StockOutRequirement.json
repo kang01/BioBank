@@ -1,0 +1,115 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "stockOutApply",
+            "otherEntityName": "stockOutApply",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "sampleType",
+            "otherEntityName": "sampleType",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [],
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "sampleClassification",
+            "otherEntityName": "sampleClassification",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "frozenTubeType",
+            "otherEntityName": "frozenTubeType",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "apply_number",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "100"
+        },
+        {
+            "fieldName": "requirementNumber",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "100"
+        },
+        {
+            "fieldName": "requirementName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "255"
+        },
+        {
+            "fieldName": "countOfSample",
+            "fieldType": "Integer",
+            "fieldValidateRules": []
+        },
+        {
+            "fieldName": "sex",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "ageMin",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "ageMax",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "diseaseType",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "isHemolysis",
+            "fieldType": "Boolean",
+            "fieldValidateRules": []
+        },
+        {
+            "fieldName": "isBloodLipid",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "20"
+        },
+        {
+            "fieldName": "memo",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "1024"
+        }
+    ],
+    "changelogDate": "20170514063802",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "stock_out_req",
+    "pagination": "pager",
+    "enableEntityAudit": true
+}

@@ -1,0 +1,92 @@
+<div>
+    <h2 data-translate="bioBankApp.stockOutApply.home.title">Stock Out Applies</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="stock-out-apply.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.stockOutApply.home.createLabel">
+                        Create new Stock Out Apply
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="applyNumber"><span data-translate="bioBankApp.stockOutApply.applyNumber">Apply Number</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="delegatePersionName"><span data-translate="bioBankApp.stockOutApply.delegatePersionName">Delegate Persion Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="delegateDate"><span data-translate="bioBankApp.stockOutApply.delegateDate">Delegate Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="startTime"><span data-translate="bioBankApp.stockOutApply.startTime">Start Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="endTime"><span data-translate="bioBankApp.stockOutApply.endTime">End Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="countOfSample"><span data-translate="bioBankApp.stockOutApply.countOfSample">Count Of Sample</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="purposeOfSample"><span data-translate="bioBankApp.stockOutApply.purposeOfSample">Purpose Of Sample</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="recordTime"><span data-translate="bioBankApp.stockOutApply.recordTime">Record Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="recordId"><span data-translate="bioBankApp.stockOutApply.recordId">Record Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectIds"><span data-translate="bioBankApp.stockOutApply.projectIds">Project Ids</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="parentApplyId"><span data-translate="bioBankApp.stockOutApply.parentApplyId">Parent Apply Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="approverId"><span data-translate="bioBankApp.stockOutApply.approverId">Approver Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="approveTime"><span data-translate="bioBankApp.stockOutApply.approveTime">Approve Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.stockOutApply.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.stockOutApply.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="delegateId"><span data-translate="bioBankApp.stockOutApply.delegate">Delegate</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="stockOutApply in vm.stockOutApplies track by stockOutApply.id">
+                    <td><a ui-sref="stock-out-apply-detail({id:stockOutApply.id})">{{stockOutApply.id}}</a></td>
+                    <td>{{stockOutApply.applyNumber}}</td>
+                    <td>{{stockOutApply.delegatePersionName}}</td>
+                        <td>{{stockOutApply.delegateDate | date:'mediumDate'}}</td>
+                        <td>{{stockOutApply.startTime | date:'mediumDate'}}</td>
+                        <td>{{stockOutApply.endTime | date:'mediumDate'}}</td>
+                    <td>{{stockOutApply.countOfSample}}</td>
+                    <td>{{stockOutApply.purposeOfSample}}</td>
+                        <td>{{stockOutApply.recordTime | date:'mediumDate'}}</td>
+                    <td>{{stockOutApply.recordId}}</td>
+                    <td>{{stockOutApply.projectIds}}</td>
+                    <td>{{stockOutApply.parentApplyId}}</td>
+                    <td>{{stockOutApply.approverId}}</td>
+                        <td>{{stockOutApply.approveTime | date:'mediumDate'}}</td>
+                    <td>{{stockOutApply.status}}</td>
+                    <td>{{stockOutApply.memo}}</td>
+                    <td>
+                        <a ui-sref="delegate-detail({id:stockOutApply.delegateId})">{{stockOutApply.delegateId}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="stock-out-apply-detail({id:stockOutApply.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="stock-out-apply.edit({id:stockOutApply.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="stock-out-apply.delete({id:stockOutApply.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

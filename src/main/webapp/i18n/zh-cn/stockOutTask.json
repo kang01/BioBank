@@ -1,0 +1,26 @@
+{
+    "bioBankApp": {
+        "stockOutTask" : {
+            "home": {
+                "title": "Stock Out Tasks",
+                "createLabel": "Create a new Stock Out Task",
+                "createOrEditLabel": "Create or edit a Stock Out Task"
+            },
+            "created": "A new Stock Out Task is created with identifier {{ param }}",
+            "updated": "A Stock Out Task is updated with identifier {{ param }}",
+            "deleted": "A Stock Out Task is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock Out Task {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock Out Task"
+            },
+            "stockOutHeadId1": "Stock Out Head Id 1",
+            "stockOutHeadId2": "Stock Out Head Id 2",
+            "stockOutDate": "Stock Out Date",
+            "status": "Status",
+            "memo": "Memo",
+            "stockOutPlan": "Stock Out Plan"
+        }
+    }
+}

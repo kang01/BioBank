@@ -22,7 +22,7 @@
         return  directive;
 
         function  linkFunc(scope,  element,  attrs)  {
-            var  ageValue  =  "1;9";
+            var  ageValue  =  "30;65";
             if(scope.value){
                 ageValue  =  scope.value;
             }
@@ -31,12 +31,12 @@
                 type:  "double",
                 grid:  true,
                 min:  1,
-                max:  9,
-                step:1,
+                max:  125,
+                step:5,
                 from:strs[0],
                 to:strs[1],
                 postfix:  "  岁",
-                value:[3,6]
+                value:[30,65]
             });
         }
     }

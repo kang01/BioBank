@@ -56,8 +56,12 @@
             })
             .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow)
+            .withOption('rowCallback', rowCallback)
             .withColumnFilter({
-                aoColumns: [{
+                aoColumns: [
+                    {
+                    },
+                    {
                     type: 'text',
                     width:50,
                     iFilterLength:3
@@ -67,7 +71,7 @@
                     bSmart: true,
                     iFilterLength:3
                 }, {
-                    type: 'Datepicker',
+                    type: 'text',
                     bRegex: true,
                     bSmart: true
                 }, {
@@ -75,7 +79,7 @@
                     bRegex: true,
                     bSmart: true
                 }, {
-                    type: 'Datepicker',
+                    type: 'text',
                     bRegex: true,
                     bSmart: true
                 }, {
@@ -108,6 +112,7 @@
             });
 
         vm.dtColumns = [
+            DTColumnBuilder.newColumn("").withTitle('').withOption('width', '50px').notSortable().renderWith(extraHtml),
             DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点'),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编号'),
             DTColumnBuilder.newColumn('transhipDate').withTitle('转运日期'),
@@ -117,6 +122,7 @@
             DTColumnBuilder.newColumn('transhipState').withTitle('状态'),
             DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
         ];
+        //列表中字段替换
         function createdRow(row, data, dataIndex) {
             var transhipState = '';
             var sampleSatisfaction = '';
@@ -142,10 +148,52 @@
             $('td:eq(6)', row).html(transhipState);
             $compile(angular.element(row).contents())($scope);
         }
+        //展开
+        function rowCallback(nRow, oData)  {
+            $('td', nRow).unbind('click');
+            $('td:first',nRow).css("cursor","pointer");
+            $('td:first', nRow).bind('click',function () {
+                $scope.$apply(function () {
+                    extraClickHandler(nRow);
+                })
+            });
+        }
+        function extraClickHandler(tr) {
+            var row =  vm.dtInstance.DataTable.row(tr);
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                $(tr).removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child(format(row.data())).show();
+                $(tr).addClass('shown');
+            }
+        }
+        function format ( d ) {
+            return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+                '<tr>'+
+                '<td>projectCode:</td>'+
+                '<td>'+d.projectCode+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                '<td>receiver:</td>'+
+                '<td>'+d.receiver+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                '<td>transhipCode:</td>'+
+                '<td>'+d.transhipCode+'</td>'+
+                '</tr>'+
+                '</table>';
+        }
         function actionsHtml(data, type, full, meta) {
             return '<button type="button" class="btn btn-warning" ui-sref="transport-record-edit({id:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;'
+        }
+        function extraHtml(data, type, full, meta) {
+            return '<div class="details-control"></div>'
         }
     }
 })();

@@ -1,56 +1,208 @@
-<div>
+<div class="form-horizontal">
+    <div>
+        <div class="row m0 m-b-10">
+            <div class="col-md-12">
+                <div class="pull-left ">
+                    <h2 class="m0">添加出库申请</h2>
+                </div>
+                <div class="pull-right">
+                    <button class="btn btn-primary" >附加申请</button>
+                    <button class="btn btn-primary" ng-click="vm.approvalModal()">批准</button>
+                    <button class="btn btn-primary" ng-click="vm.sampleDescModal()">样本库存详情</button>
+                    <button class="btn btn-primary" >打印出库申请</button>
+                    <button class="btn btn-primary" >保存申请</button>
+                    <button class="btn btn-default" ui-sref="requirement-list">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row m0">
+        <div class="row m0 m-b-10">
+            <div class="col-md-5">
+                <div class="col-md-6">
+                    <label class="control-label col-md-4">委托方</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label col-md-4">委托方</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="col-md-4">
+                    <label class="control-label col-md-4">记录人</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label col-md-4">记录日期</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label col-md-4">状态</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m0 m-b-10">
+            <div class="col-md-5">
+                <div class="col-md-6">
+                    <label class="control-label col-md-4">开始时间</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label col-md-4">结束时间</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="col-md-4">
+                    <label class="control-label col-md-4">用途</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m0">
+            <div class="col-md-5">
+                <div class="col-md-6">
+                    <label class="control-label col-md-4">授权的项目</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row m0">
         <div class="col-md-12">
-            <div class="pull-left ">
-                <h2 class="m0">添加出库申请</h2>
+            <div class="pull-left">
+                <h2>样本需求</h2>
             </div>
             <div class="pull-right">
-                <button class="btn btn-primary" >附加申请</button>
-                <button class="btn btn-primary" ng-click="vm.approvalModal()">批准</button>
-                <button class="btn btn-primary" ng-click="vm.sampleDescModal()">样本库存详情</button>
-                <button class="btn btn-primary" >打印出库申请</button>
-                <button class="btn btn-primary" >保存申请</button>
-                <button class="btn btn-default" ui-sref="requirement-list">关闭</button>
+                <button class="btn btn-primary">添加</button>
+                <button class="btn btn-primary">核对库存</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row m-b-10">
+                <div class="col-md-8">
+                    <label class="control-label col-md-2">需求名称</label>
+                    <div class="col-md-10">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label col-md-4">样本量</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="control-label col-md-4">样本类型</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label col-md-4">样本分类</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label col-md-4">冻存管类型</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="control-label col-md-4">性别</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <label class="control-label col-md-2">年龄</label>
+                    <div class="col-md-10">
+                        <input  type="text"  ng-model="vm.age"  class="irs-hidden-input"  readonly=""
+                                age-slider  form-to="vm.age"  style="display:none" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row m-b-10">
+                <div class="col-md-4">
+                    <label class="control-label col-md-4">疾病类型</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <label class="checkbox-inline">
+                        <input type="checkbox"  value="option1"> 溶血
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox"  value="option2"> 脂质血
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <label class="control-label col-md-2">备注</label>
+                    <div class="col-md-10">
+                        <textarea rows="3" class="form-control" style="resize: none"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="col-md-12">
+                <!--<label class="control-label col-md-2">指定样本编码</label>-->
+                <!--<div class="col-md-10">-->
+                    <!--<input type="file">-->
+                <!--</div>-->
+                指定样本编码：<input type="file" style="display: inline-block;">
+            </div>
+            <div class="col-md-12">
+                <textarea rows="12" class="form-control" style="resize: none"></textarea>
             </div>
         </div>
     </div>
     <div class="row m0">
-        <div class="row">
-            <div class="col-md-4">
-                <input  type="text"  ng-model="vm.age"  class="irs-hidden-input"  readonly=""
-                        age-slider  form-to="vm.age"   required>
-            </div>
-            <div class="col-md-4">
-                <form name="myForm">
-                    <fieldset>
-                        <legend>Upload on form submit</legend>
-                        Username:
-                        <input type="text" name="userName" ng-model="vm.username" size="31" required>
-                        <i ng-show="myForm.userName.$error.required">*required</i>
-                        <br>Photo:
-                        <input type="file" ngf-select ng-model="vm.picFile" name="file"
-                               accept="image/*" ngf-max-size="2MB" required
-                               ngf-model-invalid="errorFile">
-                        <i ng-show="myForm.file.$error.required">*required</i><br>
-                        <i ng-show="myForm.file.$error.maxSize">File too large
-                            {{errorFile.size / 1000000|number:1}}MB: max 2M</i>
-                        <img ng-show="myForm.file.$valid" ngf-thumbnail="vm.picFile" class="thumb"> <button ng-click="vm.picFile = null" ng-show="vm.picFile">Remove</button>
-                        <br>
-                        <button ng-disabled="!myForm.$valid"
-                                ng-click="vm.uploadPic(vm.picFile)">Submit</button>
-                        <span class="progress" ng-show="vm.picFile.progress >= 0">
-        <div style="width:{{vm.picFile.progress}}%"
-             ng-bind="vm.picFile.progress + '%'"></div>
-      </span>
-                        <span ng-show="picFile.result">Upload Successful</span>
-                        <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
-                    </fieldset>
-                    <br>
-                </form>
-            </div>
-
+        <div class="col-md-12">
+            <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstanceCallback" class=" table table-striped table-bordered">
+            <tfoot>
+            <tr>
+                <th>项目点</th>
+                <th>项目编号</th>
+                <th>转运日期</th>
+                <th>接收人</th>
+                <th>接收日期</th>
+                <th>满意度</th>
+                <th>状态</th>
+                <th style="width: 100px"></th>
+            </tr>
+            </tfoot>
+        </table>
         </div>
-        <div class="row"></div>
-        <div class="row"></div>
     </div>
 </div>
+

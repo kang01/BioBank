@@ -10,7 +10,7 @@
 
         <addForeignKeyConstraint baseColumnNames="delegate_id"
                                  baseTableName="stock_out_apply"
-                                 constraintName="fk_stock_out_apply_delegate_id"
+                                 constraintName="fk_stock_out_delegate_id"
                                  referencedColumnNames="id"
                                  referencedTableName="delegate"/>
 

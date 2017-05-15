@@ -1,0 +1,56 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockOutFiles.detail.title">Stock Out Files</span> {{vm.stockOutFiles.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockOutFiles.businessId">Business Id</span></dt>
+        <dd>
+            <span>{{vm.stockOutFiles.businessId}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutFiles.filePath">File Path</span></dt>
+        <dd>
+            <span>{{vm.stockOutFiles.filePath}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutFiles.fileName">File Name</span></dt>
+        <dd>
+            <span>{{vm.stockOutFiles.fileName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutFiles.fileType">File Type</span></dt>
+        <dd>
+            <span>{{vm.stockOutFiles.fileType}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutFiles.fileSize">File Size</span></dt>
+        <dd>
+            <span>{{vm.stockOutFiles.fileSize}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutFiles.files">Files</span></dt>
+        <dd>
+            <div ng-if="vm.stockOutFiles.files">
+                <a ng-click="vm.openFile(vm.stockOutFiles.filesContentType, vm.stockOutFiles.files)">
+                    <img data-ng-src="{{'data:' + vm.stockOutFiles.filesContentType + ';base64,' + vm.stockOutFiles.files}}" style="max-width: 100%;" alt="stockOutFiles image"/>
+                </a>
+                {{vm.stockOutFiles.filesContentType}}, {{vm.byteSize(vm.stockOutFiles.files)}}
+            </div>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutFiles.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockOutFiles.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutFiles.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockOutFiles.memo}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-out-files-detail.edit({id:vm.stockOutFiles.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

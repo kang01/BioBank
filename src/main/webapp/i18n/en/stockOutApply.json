@@ -15,21 +15,18 @@
             "detail": {
                 "title": "Stock Out Apply"
             },
-            "applyNumber": "Apply Number",
-            "delegatePersionName": "Delegate Persion Name",
-            "delegateDate": "Delegate Date",
             "startTime": "Start Time",
             "endTime": "End Time",
-            "countOfSample": "Count Of Sample",
             "purposeOfSample": "Purpose Of Sample",
             "recordTime": "Record Time",
             "recordId": "Record Id",
-            "projectIds": "Project Ids",
             "parentApplyId": "Parent Apply Id",
             "approverId": "Approver Id",
             "approveTime": "Approve Time",
             "status": "Status",
             "memo": "Memo",
+            "applyPersonName": "Apply Person Name",
+            "applyCode": "Apply Code",
             "delegate": "Delegate"
         }
     }

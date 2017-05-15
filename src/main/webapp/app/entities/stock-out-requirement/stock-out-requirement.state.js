@@ -124,8 +124,6 @@
                     resolve: {
                         entity: function () {
                             return {
-                                apply_number: null,
-                                requirementNumber: null,
                                 requirementName: null,
                                 countOfSample: null,
                                 sex: null,
@@ -136,6 +134,8 @@
                                 isBloodLipid: null,
                                 status: null,
                                 memo: null,
+                                applyCode: null,
+                                requirementCode: null,
                                 id: null
                             };
                         }

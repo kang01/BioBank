@@ -13,28 +13,6 @@
     ],
     "fields": [
         {
-            "fieldName": "applyNumber",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "100"
-        },
-        {
-            "fieldName": "delegatePersionName",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "255"
-        },
-        {
-            "fieldName": "delegateDate",
-            "fieldType": "LocalDate",
-            "fieldValidateRules": []
-        },
-        {
             "fieldName": "startTime",
             "fieldType": "LocalDate"
         },
@@ -42,10 +20,6 @@
             "fieldName": "endTime",
             "fieldType": "LocalDate",
             "fieldValidateRules": []
-        },
-        {
-            "fieldName": "countOfSample",
-            "fieldType": "Integer"
         },
         {
             "fieldName": "purposeOfSample",
@@ -62,11 +36,6 @@
         {
             "fieldName": "recordId",
             "fieldType": "Long",
-            "fieldValidateRules": []
-        },
-        {
-            "fieldName": "projectIds",
-            "fieldType": "String",
             "fieldValidateRules": []
         },
         {
@@ -97,6 +66,23 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": "1024"
+        },
+        {
+            "fieldName": "applyPersonName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "255"
+        },
+        {
+            "fieldName": "applyCode",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "100"
         }
     ],
     "changelogDate": "20170514062123",

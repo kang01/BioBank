@@ -1,0 +1,28 @@
+{
+    "bioBankApp": {
+        "stockOutFiles" : {
+            "home": {
+                "title": "Stock Out Files",
+                "createLabel": "Create a new Stock Out Files",
+                "createOrEditLabel": "Create or edit a Stock Out Files"
+            },
+            "created": "A new Stock Out Files is created with identifier {{ param }}",
+            "updated": "A Stock Out Files is updated with identifier {{ param }}",
+            "deleted": "A Stock Out Files is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock Out Files {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock Out Files"
+            },
+            "businessId": "Business Id",
+            "filePath": "File Path",
+            "fileName": "File Name",
+            "fileType": "File Type",
+            "fileSize": "File Size",
+            "files": "Files",
+            "status": "Status",
+            "memo": "Memo"
+        }
+    }
+}

@@ -14,44 +14,6 @@
                     ng-model="vm.stockOutApply.id" readonly />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.stockOutApply.applyNumber" for="field_applyNumber">Apply Number</label>
-            <input type="text" class="form-control" name="applyNumber" id="field_applyNumber"
-                    ng-model="vm.stockOutApply.applyNumber"
-                    required ng-maxlength="100"/>
-            <div ng-show="editForm.applyNumber.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.applyNumber.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.applyNumber.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
-                    This field cannot be longer than 100 characters.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.stockOutApply.delegatePersionName" for="field_delegatePersionName">Delegate Persion Name</label>
-            <input type="text" class="form-control" name="delegatePersionName" id="field_delegatePersionName"
-                    ng-model="vm.stockOutApply.delegatePersionName"
-                    ng-maxlength="255"/>
-            <div ng-show="editForm.delegatePersionName.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.delegatePersionName.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
-                    This field cannot be longer than 255 characters.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.stockOutApply.delegateDate" for="field_delegateDate">Delegate Date</label>
-                <div class="input-group">
-                    <input id="field_delegateDate" type="text" class="form-control" name="delegateDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockOutApply.delegateDate" is-open="vm.datePickerOpenStatus.delegateDate"
-                    />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('delegateDate')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-        <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.stockOutApply.startTime" for="field_startTime">Start Time</label>
                 <div class="input-group">
                     <input id="field_startTime" type="text" class="form-control" name="startTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockOutApply.startTime" is-open="vm.datePickerOpenStatus.startTime"
@@ -70,12 +32,6 @@
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('endTime')"><i class="glyphicon glyphicon-calendar"></i></button>
                     </span>
                 </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.stockOutApply.countOfSample" for="field_countOfSample">Count Of Sample</label>
-            <input type="number" class="form-control" name="countOfSample" id="field_countOfSample"
-                    ng-model="vm.stockOutApply.countOfSample"
-                    />
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.stockOutApply.purposeOfSample" for="field_purposeOfSample">Purpose Of Sample</label>
@@ -103,12 +59,6 @@
             <label class="control-label" data-translate="bioBankApp.stockOutApply.recordId" for="field_recordId">Record Id</label>
             <input type="number" class="form-control" name="recordId" id="field_recordId"
                     ng-model="vm.stockOutApply.recordId"
-                    />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.stockOutApply.projectIds" for="field_projectIds">Project Ids</label>
-            <input type="text" class="form-control" name="projectIds" id="field_projectIds"
-                    ng-model="vm.stockOutApply.projectIds"
                     />
         </div>
         <div class="form-group">
@@ -158,6 +108,34 @@
                 <p class="help-block"
                     ng-show="editForm.memo.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
                     This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockOutApply.applyPersonName" for="field_applyPersonName">Apply Person Name</label>
+            <input type="text" class="form-control" name="applyPersonName" id="field_applyPersonName"
+                    ng-model="vm.stockOutApply.applyPersonName"
+                    ng-maxlength="255"/>
+            <div ng-show="editForm.applyPersonName.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.applyPersonName.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="255">
+                    This field cannot be longer than 255 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockOutApply.applyCode" for="field_applyCode">Apply Code</label>
+            <input type="text" class="form-control" name="applyCode" id="field_applyCode"
+                    ng-model="vm.stockOutApply.applyCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.applyCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.applyCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.applyCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
                 </p>
             </div>
         </div>

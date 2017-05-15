@@ -124,21 +124,18 @@
                     resolve: {
                         entity: function () {
                             return {
-                                applyNumber: null,
-                                delegatePersionName: null,
-                                delegateDate: null,
                                 startTime: null,
                                 endTime: null,
-                                countOfSample: null,
                                 purposeOfSample: null,
                                 recordTime: null,
                                 recordId: null,
-                                projectIds: null,
                                 parentApplyId: null,
                                 approverId: null,
                                 approveTime: null,
                                 status: null,
                                 memo: null,
+                                applyPersonName: null,
+                                applyCode: null,
                                 id: null
                             };
                         }

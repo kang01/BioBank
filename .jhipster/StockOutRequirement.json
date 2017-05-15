@@ -32,24 +32,6 @@
     ],
     "fields": [
         {
-            "fieldName": "apply_number",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "100"
-        },
-        {
-            "fieldName": "requirementNumber",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "100"
-        },
-        {
             "fieldName": "requirementName",
             "fieldType": "String",
             "fieldValidateRules": [
@@ -104,6 +86,24 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": "1024"
+        },
+        {
+            "fieldName": "applyCode",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "100"
+        },
+        {
+            "fieldName": "requirementCode",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "100"
         }
     ],
     "changelogDate": "20170514063802",

@@ -19,8 +19,6 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="apply_number"><span data-translate="bioBankApp.stockOutRequirement.apply_number">Apply Number</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="requirementNumber"><span data-translate="bioBankApp.stockOutRequirement.requirementNumber">Requirement Number</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="requirementName"><span data-translate="bioBankApp.stockOutRequirement.requirementName">Requirement Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="countOfSample"><span data-translate="bioBankApp.stockOutRequirement.countOfSample">Count Of Sample</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="sex"><span data-translate="bioBankApp.stockOutRequirement.sex">Sex</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -31,6 +29,8 @@
                     <th jh-sort-by="isBloodLipid"><span data-translate="bioBankApp.stockOutRequirement.isBloodLipid">Is Blood Lipid</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="bioBankApp.stockOutRequirement.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="memo"><span data-translate="bioBankApp.stockOutRequirement.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="applyCode"><span data-translate="bioBankApp.stockOutRequirement.applyCode">Apply Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="requirementCode"><span data-translate="bioBankApp.stockOutRequirement.requirementCode">Requirement Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="stockOutApplyId"><span data-translate="bioBankApp.stockOutRequirement.stockOutApply">Stock Out Apply</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="sampleTypeId"><span data-translate="bioBankApp.stockOutRequirement.sampleType">Sample Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="sampleClassificationId"><span data-translate="bioBankApp.stockOutRequirement.sampleClassification">Sample Classification</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -41,8 +41,6 @@
             <tbody>
                 <tr ng-repeat="stockOutRequirement in vm.stockOutRequirements track by stockOutRequirement.id">
                     <td><a ui-sref="stock-out-requirement-detail({id:stockOutRequirement.id})">{{stockOutRequirement.id}}</a></td>
-                    <td>{{stockOutRequirement.apply_number}}</td>
-                    <td>{{stockOutRequirement.requirementNumber}}</td>
                     <td>{{stockOutRequirement.requirementName}}</td>
                     <td>{{stockOutRequirement.countOfSample}}</td>
                     <td>{{stockOutRequirement.sex}}</td>
@@ -53,6 +51,8 @@
                     <td>{{stockOutRequirement.isBloodLipid}}</td>
                     <td>{{stockOutRequirement.status}}</td>
                     <td>{{stockOutRequirement.memo}}</td>
+                    <td>{{stockOutRequirement.applyCode}}</td>
+                    <td>{{stockOutRequirement.requirementCode}}</td>
                     <td>
                         <a ui-sref="stock-out-apply-detail({id:stockOutRequirement.stockOutApplyId})">{{stockOutRequirement.stockOutApplyId}}</a>
                     </td>

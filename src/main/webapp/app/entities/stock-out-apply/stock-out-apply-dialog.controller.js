@@ -44,7 +44,6 @@
             vm.isSaving = false;
         }
 
-        vm.datePickerOpenStatus.delegateDate = false;
         vm.datePickerOpenStatus.startTime = false;
         vm.datePickerOpenStatus.endTime = false;
         vm.datePickerOpenStatus.recordTime = false;

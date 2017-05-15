@@ -14,38 +14,6 @@
                     ng-model="vm.stockOutRequirement.id" readonly />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.stockOutRequirement.apply_number" for="field_apply_number">Apply Number</label>
-            <input type="text" class="form-control" name="apply_number" id="field_apply_number"
-                    ng-model="vm.stockOutRequirement.apply_number"
-                    required ng-maxlength="100"/>
-            <div ng-show="editForm.apply_number.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.apply_number.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.apply_number.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
-                    This field cannot be longer than 100 characters.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.stockOutRequirement.requirementNumber" for="field_requirementNumber">Requirement Number</label>
-            <input type="text" class="form-control" name="requirementNumber" id="field_requirementNumber"
-                    ng-model="vm.stockOutRequirement.requirementNumber"
-                    required ng-maxlength="100"/>
-            <div ng-show="editForm.requirementNumber.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.requirementNumber.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.requirementNumber.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
-                    This field cannot be longer than 100 characters.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.stockOutRequirement.requirementName" for="field_requirementName">Requirement Name</label>
             <input type="text" class="form-control" name="requirementName" id="field_requirementName"
                     ng-model="vm.stockOutRequirement.requirementName"
@@ -126,6 +94,38 @@
                 <p class="help-block"
                     ng-show="editForm.memo.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
                     This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockOutRequirement.applyCode" for="field_applyCode">Apply Code</label>
+            <input type="text" class="form-control" name="applyCode" id="field_applyCode"
+                    ng-model="vm.stockOutRequirement.applyCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.applyCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.applyCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.applyCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockOutRequirement.requirementCode" for="field_requirementCode">Requirement Code</label>
+            <input type="text" class="form-control" name="requirementCode" id="field_requirementCode"
+                    ng-model="vm.stockOutRequirement.requirementCode"
+                    required ng-maxlength="100"/>
+            <div ng-show="editForm.requirementCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.requirementCode.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.requirementCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="100">
+                    This field cannot be longer than 100 characters.
                 </p>
             </div>
         </div>

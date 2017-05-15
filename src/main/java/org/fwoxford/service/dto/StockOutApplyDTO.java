@@ -14,20 +14,9 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
 
     private Long id;
 
-    @NotNull
-    @Size(max = 100)
-    private String applyNumber;
-
-    @Size(max = 255)
-    private String delegatePersionName;
-
-    private LocalDate delegateDate;
-
     private LocalDate startTime;
 
     private LocalDate endTime;
-
-    private Integer countOfSample;
 
     @Size(max = 1024)
     private String purposeOfSample;
@@ -35,8 +24,6 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
     private LocalDate recordTime;
 
     private Long recordId;
-
-    private String projectIds;
 
     private Long parentApplyId;
 
@@ -51,6 +38,13 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
     @Size(max = 1024)
     private String memo;
 
+    @Size(max = 255)
+    private String applyPersonName;
+
+    @NotNull
+    @Size(max = 100)
+    private String applyCode;
+
     private Long delegateId;
 
     public Long getId() {
@@ -59,27 +53,6 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setId(Long id) {
         this.id = id;
-    }
-    public String getApplyNumber() {
-        return applyNumber;
-    }
-
-    public void setApplyNumber(String applyNumber) {
-        this.applyNumber = applyNumber;
-    }
-    public String getDelegatePersionName() {
-        return delegatePersionName;
-    }
-
-    public void setDelegatePersionName(String delegatePersionName) {
-        this.delegatePersionName = delegatePersionName;
-    }
-    public LocalDate getDelegateDate() {
-        return delegateDate;
-    }
-
-    public void setDelegateDate(LocalDate delegateDate) {
-        this.delegateDate = delegateDate;
     }
     public LocalDate getStartTime() {
         return startTime;
@@ -94,13 +67,6 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setEndTime(LocalDate endTime) {
         this.endTime = endTime;
-    }
-    public Integer getCountOfSample() {
-        return countOfSample;
-    }
-
-    public void setCountOfSample(Integer countOfSample) {
-        this.countOfSample = countOfSample;
     }
     public String getPurposeOfSample() {
         return purposeOfSample;
@@ -122,13 +88,6 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setRecordId(Long recordId) {
         this.recordId = recordId;
-    }
-    public String getProjectIds() {
-        return projectIds;
-    }
-
-    public void setProjectIds(String projectIds) {
-        this.projectIds = projectIds;
     }
     public Long getParentApplyId() {
         return parentApplyId;
@@ -165,6 +124,20 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
     public void setMemo(String memo) {
         this.memo = memo;
     }
+    public String getApplyPersonName() {
+        return applyPersonName;
+    }
+
+    public void setApplyPersonName(String applyPersonName) {
+        this.applyPersonName = applyPersonName;
+    }
+    public String getApplyCode() {
+        return applyCode;
+    }
+
+    public void setApplyCode(String applyCode) {
+        this.applyCode = applyCode;
+    }
 
     public Long getDelegateId() {
         return delegateId;
@@ -199,21 +172,18 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
     public String toString() {
         return "StockOutApplyDTO{" +
             "id=" + id +
-            ", applyNumber='" + applyNumber + "'" +
-            ", delegatePersionName='" + delegatePersionName + "'" +
-            ", delegateDate='" + delegateDate + "'" +
             ", startTime='" + startTime + "'" +
             ", endTime='" + endTime + "'" +
-            ", countOfSample='" + countOfSample + "'" +
             ", purposeOfSample='" + purposeOfSample + "'" +
             ", recordTime='" + recordTime + "'" +
             ", recordId='" + recordId + "'" +
-            ", projectIds='" + projectIds + "'" +
             ", parentApplyId='" + parentApplyId + "'" +
             ", approverId='" + approverId + "'" +
             ", approveTime='" + approveTime + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
+            ", applyPersonName='" + applyPersonName + "'" +
+            ", applyCode='" + applyCode + "'" +
             '}';
     }
 }

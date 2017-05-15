@@ -45,6 +45,8 @@
                 "stockOutFrozenTube": "Stock Out Frozen Tube",
                 "stockOutHandover": "Stock Out Handover",
                 "stockOutHandoverDetails": "Stock Out Handover Details",
+                "stockOutFiles": "Stock Out Files",
+                "userLoginHistory": "User Login History",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

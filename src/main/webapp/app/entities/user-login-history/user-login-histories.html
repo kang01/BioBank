@@ -1,0 +1,70 @@
+<div>
+    <h2 data-translate="bioBankApp.userLoginHistory.home.title">User Login Histories</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="user-login-history.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.userLoginHistory.home.createLabel">
+                        Create new User Login History
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="userToken"><span data-translate="bioBankApp.userLoginHistory.userToken">User Token</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="loginUserId"><span data-translate="bioBankApp.userLoginHistory.loginUserId">Login User Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="businessName"><span data-translate="bioBankApp.userLoginHistory.businessName">Business Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="invalidDate"><span data-translate="bioBankApp.userLoginHistory.invalidDate">Invalid Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.userLoginHistory.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.userLoginHistory.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="userLoginHistory in vm.userLoginHistories track by userLoginHistory.id">
+                    <td><a ui-sref="user-login-history-detail({id:userLoginHistory.id})">{{userLoginHistory.id}}</a></td>
+                    <td>{{userLoginHistory.userToken}}</td>
+                    <td>{{userLoginHistory.loginUserId}}</td>
+                    <td>{{userLoginHistory.businessName}}</td>
+                    <td>{{userLoginHistory.invalidDate | date:'medium'}}</td>
+                    <td>{{userLoginHistory.status}}</td>
+                    <td>{{userLoginHistory.memo}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="user-login-history-detail({id:userLoginHistory.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="user-login-history.edit({id:userLoginHistory.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="user-login-history.delete({id:userLoginHistory.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

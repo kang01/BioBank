@@ -15,14 +15,6 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
     private Long id;
 
     @NotNull
-    @Size(max = 100)
-    private String apply_number;
-
-    @NotNull
-    @Size(max = 100)
-    private String requirementNumber;
-
-    @NotNull
     @Size(max = 255)
     private String requirementName;
 
@@ -47,6 +39,14 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
     @Size(max = 1024)
     private String memo;
 
+    @NotNull
+    @Size(max = 100)
+    private String applyCode;
+
+    @NotNull
+    @Size(max = 100)
+    private String requirementCode;
+
     private Long stockOutApplyId;
 
     private Long sampleTypeId;
@@ -61,20 +61,6 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
 
     public void setId(Long id) {
         this.id = id;
-    }
-    public String getApply_number() {
-        return apply_number;
-    }
-
-    public void setApply_number(String apply_number) {
-        this.apply_number = apply_number;
-    }
-    public String getRequirementNumber() {
-        return requirementNumber;
-    }
-
-    public void setRequirementNumber(String requirementNumber) {
-        this.requirementNumber = requirementNumber;
     }
     public String getRequirementName() {
         return requirementName;
@@ -146,6 +132,20 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
     public void setMemo(String memo) {
         this.memo = memo;
     }
+    public String getApplyCode() {
+        return applyCode;
+    }
+
+    public void setApplyCode(String applyCode) {
+        this.applyCode = applyCode;
+    }
+    public String getRequirementCode() {
+        return requirementCode;
+    }
+
+    public void setRequirementCode(String requirementCode) {
+        this.requirementCode = requirementCode;
+    }
 
     public Long getStockOutApplyId() {
         return stockOutApplyId;
@@ -204,8 +204,6 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
     public String toString() {
         return "StockOutRequirementDTO{" +
             "id=" + id +
-            ", apply_number='" + apply_number + "'" +
-            ", requirementNumber='" + requirementNumber + "'" +
             ", requirementName='" + requirementName + "'" +
             ", countOfSample='" + countOfSample + "'" +
             ", sex='" + sex + "'" +
@@ -216,6 +214,8 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
             ", isBloodLipid='" + isBloodLipid + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
+            ", applyCode='" + applyCode + "'" +
+            ", requirementCode='" + requirementCode + "'" +
             '}';
     }
 }

@@ -26,13 +26,13 @@ public class StockOutRequirement extends AbstractAuditingEntity implements Seria
 
     @NotNull
     @Size(max = 100)
-    @Column(name = "apply_number", length = 100, nullable = false)
-    private String apply_number;
+    @Column(name = "apply_code", length = 100, nullable = false)
+    private String applyCode;
 
     @NotNull
     @Size(max = 100)
-    @Column(name = "requirement_number", length = 100, nullable = false)
-    private String requirementNumber;
+    @Column(name = "requirement_code", length = 100, nullable = false)
+    private String requirementCode;
 
     @NotNull
     @Size(max = 255)
@@ -90,30 +90,30 @@ public class StockOutRequirement extends AbstractAuditingEntity implements Seria
         this.id = id;
     }
 
-    public String getApply_number() {
-        return apply_number;
+    public String getApplyCode() {
+        return applyCode;
     }
 
-    public StockOutRequirement apply_number(String apply_number) {
-        this.apply_number = apply_number;
+    public StockOutRequirement applyCode(String applyCode) {
+        this.applyCode = applyCode;
         return this;
     }
 
-    public void setApply_number(String apply_number) {
-        this.apply_number = apply_number;
+    public void setApplyCode(String applyCode) {
+        this.applyCode = applyCode;
     }
 
-    public String getRequirementNumber() {
-        return requirementNumber;
+    public String getRequirementCode() {
+        return requirementCode;
     }
 
-    public StockOutRequirement requirementNumber(String requirementNumber) {
-        this.requirementNumber = requirementNumber;
+    public StockOutRequirement requirementCode(String requirementCode) {
+        this.requirementCode = requirementCode;
         return this;
     }
 
-    public void setRequirementNumber(String requirementNumber) {
-        this.requirementNumber = requirementNumber;
+    public void setRequirementCode(String requirementCode) {
+        this.requirementCode = requirementCode;
     }
 
     public String getRequirementName() {
@@ -322,8 +322,8 @@ public class StockOutRequirement extends AbstractAuditingEntity implements Seria
     public String toString() {
         return "StockOutRequirement{" +
             "id=" + id +
-            ", apply_number='" + apply_number + "'" +
-            ", requirementNumber='" + requirementNumber + "'" +
+            ", applyCode='" + applyCode + "'" +
+            ", requirementCode='" + requirementCode + "'" +
             ", requirementName='" + requirementName + "'" +
             ", countOfSample='" + countOfSample + "'" +
             ", sex='" + sex + "'" +

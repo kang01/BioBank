@@ -1,0 +1,43 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.userLoginHistory.detail.title">User Login History</span> {{vm.userLoginHistory.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.userLoginHistory.userToken">User Token</span></dt>
+        <dd>
+            <span>{{vm.userLoginHistory.userToken}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.userLoginHistory.loginUserId">Login User Id</span></dt>
+        <dd>
+            <span>{{vm.userLoginHistory.loginUserId}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.userLoginHistory.businessName">Business Name</span></dt>
+        <dd>
+            <span>{{vm.userLoginHistory.businessName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.userLoginHistory.invalidDate">Invalid Date</span></dt>
+        <dd>
+            <span>{{vm.userLoginHistory.invalidDate | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.userLoginHistory.status">Status</span></dt>
+        <dd>
+            <span>{{vm.userLoginHistory.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.userLoginHistory.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.userLoginHistory.memo}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="user-login-history-detail.edit({id:vm.userLoginHistory.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

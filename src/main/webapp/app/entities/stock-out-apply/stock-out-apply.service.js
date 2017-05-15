@@ -16,7 +16,6 @@
                 transformResponse: function (data) {
                     if (data) {
                         data = angular.fromJson(data);
-                        data.delegateDate = DateUtils.convertLocalDateFromServer(data.delegateDate);
                         data.startTime = DateUtils.convertLocalDateFromServer(data.startTime);
                         data.endTime = DateUtils.convertLocalDateFromServer(data.endTime);
                         data.recordTime = DateUtils.convertLocalDateFromServer(data.recordTime);
@@ -29,7 +28,6 @@
                 method: 'PUT',
                 transformRequest: function (data) {
                     var copy = angular.copy(data);
-                    copy.delegateDate = DateUtils.convertLocalDateToServer(copy.delegateDate);
                     copy.startTime = DateUtils.convertLocalDateToServer(copy.startTime);
                     copy.endTime = DateUtils.convertLocalDateToServer(copy.endTime);
                     copy.recordTime = DateUtils.convertLocalDateToServer(copy.recordTime);
@@ -41,7 +39,6 @@
                 method: 'POST',
                 transformRequest: function (data) {
                     var copy = angular.copy(data);
-                    copy.delegateDate = DateUtils.convertLocalDateToServer(copy.delegateDate);
                     copy.startTime = DateUtils.convertLocalDateToServer(copy.startTime);
                     copy.endTime = DateUtils.convertLocalDateToServer(copy.endTime);
                     copy.recordTime = DateUtils.convertLocalDateToServer(copy.recordTime);

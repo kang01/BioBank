@@ -41,12 +41,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = BioBankApp.class)
 public class StockOutRequirementResourceIntTest {
 
-    private static final String DEFAULT_APPLY_NUMBER = "AAAAAAAAAA";
-    private static final String UPDATED_APPLY_NUMBER = "BBBBBBBBBB";
-
-    private static final String DEFAULT_REQUIREMENT_NUMBER = "AAAAAAAAAA";
-    private static final String UPDATED_REQUIREMENT_NUMBER = "BBBBBBBBBB";
-
     private static final String DEFAULT_REQUIREMENT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_REQUIREMENT_NAME = "BBBBBBBBBB";
 
@@ -76,6 +70,12 @@ public class StockOutRequirementResourceIntTest {
 
     private static final String DEFAULT_MEMO = "AAAAAAAAAA";
     private static final String UPDATED_MEMO = "BBBBBBBBBB";
+
+    private static final String DEFAULT_APPLY_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_APPLY_CODE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_REQUIREMENT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_REQUIREMENT_CODE = "BBBBBBBBBB";
 
     @Autowired
     private StockOutRequirementRepository stockOutRequirementRepository;
@@ -120,8 +120,6 @@ public class StockOutRequirementResourceIntTest {
      */
     public static StockOutRequirement createEntity(EntityManager em) {
         StockOutRequirement stockOutRequirement = new StockOutRequirement()
-                .apply_number(DEFAULT_APPLY_NUMBER)
-                .requirementNumber(DEFAULT_REQUIREMENT_NUMBER)
                 .requirementName(DEFAULT_REQUIREMENT_NAME)
                 .countOfSample(DEFAULT_COUNT_OF_SAMPLE)
                 .sex(DEFAULT_SEX)
@@ -131,7 +129,9 @@ public class StockOutRequirementResourceIntTest {
                 .isHemolysis(DEFAULT_IS_HEMOLYSIS)
                 .isBloodLipid(DEFAULT_IS_BLOOD_LIPID)
                 .status(DEFAULT_STATUS)
-                .memo(DEFAULT_MEMO);
+                .memo(DEFAULT_MEMO)
+                .applyCode(DEFAULT_APPLY_CODE)
+                .requirementCode(DEFAULT_REQUIREMENT_CODE);
         // Add required entity
         StockOutApply stockOutApply = StockOutApplyResourceIntTest.createEntity(em);
         em.persist(stockOutApply);
@@ -162,8 +162,6 @@ public class StockOutRequirementResourceIntTest {
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findAll();
         assertThat(stockOutRequirementList).hasSize(databaseSizeBeforeCreate + 1);
         StockOutRequirement testStockOutRequirement = stockOutRequirementList.get(stockOutRequirementList.size() - 1);
-        assertThat(testStockOutRequirement.getApply_number()).isEqualTo(DEFAULT_APPLY_NUMBER);
-        assertThat(testStockOutRequirement.getRequirementNumber()).isEqualTo(DEFAULT_REQUIREMENT_NUMBER);
         assertThat(testStockOutRequirement.getRequirementName()).isEqualTo(DEFAULT_REQUIREMENT_NAME);
         assertThat(testStockOutRequirement.getCountOfSample()).isEqualTo(DEFAULT_COUNT_OF_SAMPLE);
         assertThat(testStockOutRequirement.getSex()).isEqualTo(DEFAULT_SEX);
@@ -174,6 +172,8 @@ public class StockOutRequirementResourceIntTest {
         assertThat(testStockOutRequirement.isIsBloodLipid()).isEqualTo(DEFAULT_IS_BLOOD_LIPID);
         assertThat(testStockOutRequirement.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testStockOutRequirement.getMemo()).isEqualTo(DEFAULT_MEMO);
+        assertThat(testStockOutRequirement.getApplyCode()).isEqualTo(DEFAULT_APPLY_CODE);
+        assertThat(testStockOutRequirement.getRequirementCode()).isEqualTo(DEFAULT_REQUIREMENT_CODE);
     }
 
     @Test
@@ -195,44 +195,6 @@ public class StockOutRequirementResourceIntTest {
         // Validate the Alice in the database
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findAll();
         assertThat(stockOutRequirementList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    public void checkApply_numberIsRequired() throws Exception {
-        int databaseSizeBeforeTest = stockOutRequirementRepository.findAll().size();
-        // set the field null
-        stockOutRequirement.setApply_number(null);
-
-        // Create the StockOutRequirement, which fails.
-        StockOutRequirementDTO stockOutRequirementDTO = stockOutRequirementMapper.stockOutRequirementToStockOutRequirementDTO(stockOutRequirement);
-
-        restStockOutRequirementMockMvc.perform(post("/api/stock-out-requirements")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stockOutRequirementDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findAll();
-        assertThat(stockOutRequirementList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkRequirementNumberIsRequired() throws Exception {
-        int databaseSizeBeforeTest = stockOutRequirementRepository.findAll().size();
-        // set the field null
-        stockOutRequirement.setRequirementNumber(null);
-
-        // Create the StockOutRequirement, which fails.
-        StockOutRequirementDTO stockOutRequirementDTO = stockOutRequirementMapper.stockOutRequirementToStockOutRequirementDTO(stockOutRequirement);
-
-        restStockOutRequirementMockMvc.perform(post("/api/stock-out-requirements")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stockOutRequirementDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findAll();
-        assertThat(stockOutRequirementList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -275,6 +237,44 @@ public class StockOutRequirementResourceIntTest {
 
     @Test
     @Transactional
+    public void checkApplyCodeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = stockOutRequirementRepository.findAll().size();
+        // set the field null
+        stockOutRequirement.setApplyCode(null);
+
+        // Create the StockOutRequirement, which fails.
+        StockOutRequirementDTO stockOutRequirementDTO = stockOutRequirementMapper.stockOutRequirementToStockOutRequirementDTO(stockOutRequirement);
+
+        restStockOutRequirementMockMvc.perform(post("/api/stock-out-requirements")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(stockOutRequirementDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findAll();
+        assertThat(stockOutRequirementList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkRequirementCodeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = stockOutRequirementRepository.findAll().size();
+        // set the field null
+        stockOutRequirement.setRequirementCode(null);
+
+        // Create the StockOutRequirement, which fails.
+        StockOutRequirementDTO stockOutRequirementDTO = stockOutRequirementMapper.stockOutRequirementToStockOutRequirementDTO(stockOutRequirement);
+
+        restStockOutRequirementMockMvc.perform(post("/api/stock-out-requirements")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(stockOutRequirementDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findAll();
+        assertThat(stockOutRequirementList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllStockOutRequirements() throws Exception {
         // Initialize the database
         stockOutRequirementRepository.saveAndFlush(stockOutRequirement);
@@ -284,8 +284,6 @@ public class StockOutRequirementResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(stockOutRequirement.getId().intValue())))
-            .andExpect(jsonPath("$.[*].apply_number").value(hasItem(DEFAULT_APPLY_NUMBER.toString())))
-            .andExpect(jsonPath("$.[*].requirementNumber").value(hasItem(DEFAULT_REQUIREMENT_NUMBER.toString())))
             .andExpect(jsonPath("$.[*].requirementName").value(hasItem(DEFAULT_REQUIREMENT_NAME.toString())))
             .andExpect(jsonPath("$.[*].countOfSample").value(hasItem(DEFAULT_COUNT_OF_SAMPLE)))
             .andExpect(jsonPath("$.[*].sex").value(hasItem(DEFAULT_SEX.toString())))
@@ -295,7 +293,9 @@ public class StockOutRequirementResourceIntTest {
             .andExpect(jsonPath("$.[*].isHemolysis").value(hasItem(DEFAULT_IS_HEMOLYSIS.booleanValue())))
             .andExpect(jsonPath("$.[*].isBloodLipid").value(hasItem(DEFAULT_IS_BLOOD_LIPID.booleanValue())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())));
+            .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
+            .andExpect(jsonPath("$.[*].applyCode").value(hasItem(DEFAULT_APPLY_CODE.toString())))
+            .andExpect(jsonPath("$.[*].requirementCode").value(hasItem(DEFAULT_REQUIREMENT_CODE.toString())));
     }
 
     @Test
@@ -309,8 +309,6 @@ public class StockOutRequirementResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(stockOutRequirement.getId().intValue()))
-            .andExpect(jsonPath("$.apply_number").value(DEFAULT_APPLY_NUMBER.toString()))
-            .andExpect(jsonPath("$.requirementNumber").value(DEFAULT_REQUIREMENT_NUMBER.toString()))
             .andExpect(jsonPath("$.requirementName").value(DEFAULT_REQUIREMENT_NAME.toString()))
             .andExpect(jsonPath("$.countOfSample").value(DEFAULT_COUNT_OF_SAMPLE))
             .andExpect(jsonPath("$.sex").value(DEFAULT_SEX.toString()))
@@ -320,7 +318,9 @@ public class StockOutRequirementResourceIntTest {
             .andExpect(jsonPath("$.isHemolysis").value(DEFAULT_IS_HEMOLYSIS.booleanValue()))
             .andExpect(jsonPath("$.isBloodLipid").value(DEFAULT_IS_BLOOD_LIPID.booleanValue()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
-            .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()));
+            .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
+            .andExpect(jsonPath("$.applyCode").value(DEFAULT_APPLY_CODE.toString()))
+            .andExpect(jsonPath("$.requirementCode").value(DEFAULT_REQUIREMENT_CODE.toString()));
     }
 
     @Test
@@ -341,8 +341,6 @@ public class StockOutRequirementResourceIntTest {
         // Update the stockOutRequirement
         StockOutRequirement updatedStockOutRequirement = stockOutRequirementRepository.findOne(stockOutRequirement.getId());
         updatedStockOutRequirement
-                .apply_number(UPDATED_APPLY_NUMBER)
-                .requirementNumber(UPDATED_REQUIREMENT_NUMBER)
                 .requirementName(UPDATED_REQUIREMENT_NAME)
                 .countOfSample(UPDATED_COUNT_OF_SAMPLE)
                 .sex(UPDATED_SEX)
@@ -352,7 +350,9 @@ public class StockOutRequirementResourceIntTest {
                 .isHemolysis(UPDATED_IS_HEMOLYSIS)
                 .isBloodLipid(UPDATED_IS_BLOOD_LIPID)
                 .status(UPDATED_STATUS)
-                .memo(UPDATED_MEMO);
+                .memo(UPDATED_MEMO)
+                .applyCode(UPDATED_APPLY_CODE)
+                .requirementCode(UPDATED_REQUIREMENT_CODE);
         StockOutRequirementDTO stockOutRequirementDTO = stockOutRequirementMapper.stockOutRequirementToStockOutRequirementDTO(updatedStockOutRequirement);
 
         restStockOutRequirementMockMvc.perform(put("/api/stock-out-requirements")
@@ -364,8 +364,6 @@ public class StockOutRequirementResourceIntTest {
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findAll();
         assertThat(stockOutRequirementList).hasSize(databaseSizeBeforeUpdate);
         StockOutRequirement testStockOutRequirement = stockOutRequirementList.get(stockOutRequirementList.size() - 1);
-        assertThat(testStockOutRequirement.getApply_number()).isEqualTo(UPDATED_APPLY_NUMBER);
-        assertThat(testStockOutRequirement.getRequirementNumber()).isEqualTo(UPDATED_REQUIREMENT_NUMBER);
         assertThat(testStockOutRequirement.getRequirementName()).isEqualTo(UPDATED_REQUIREMENT_NAME);
         assertThat(testStockOutRequirement.getCountOfSample()).isEqualTo(UPDATED_COUNT_OF_SAMPLE);
         assertThat(testStockOutRequirement.getSex()).isEqualTo(UPDATED_SEX);
@@ -376,6 +374,8 @@ public class StockOutRequirementResourceIntTest {
         assertThat(testStockOutRequirement.isIsBloodLipid()).isEqualTo(UPDATED_IS_BLOOD_LIPID);
         assertThat(testStockOutRequirement.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testStockOutRequirement.getMemo()).isEqualTo(UPDATED_MEMO);
+        assertThat(testStockOutRequirement.getApplyCode()).isEqualTo(UPDATED_APPLY_CODE);
+        assertThat(testStockOutRequirement.getRequirementCode()).isEqualTo(UPDATED_REQUIREMENT_CODE);
     }
 
     @Test

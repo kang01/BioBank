@@ -25,26 +25,11 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
 //    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @NotNull
-    @Size(max = 100)
-    @Column(name = "apply_number", length = 100, nullable = false)
-    private String applyNumber;
-
-    @Size(max = 255)
-    @Column(name = "delegate_persion_name", length = 255)
-    private String delegatePersionName;
-
-    @Column(name = "delegate_date")
-    private LocalDate delegateDate;
-
     @Column(name = "start_time")
     private LocalDate startTime;
 
     @Column(name = "end_time")
     private LocalDate endTime;
-
-    @Column(name = "count_of_sample")
-    private Integer countOfSample;
 
     @Size(max = 1024)
     @Column(name = "purpose_of_sample", length = 1024)
@@ -55,9 +40,6 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
 
     @Column(name = "record_id")
     private Long recordId;
-
-    @Column(name = "project_ids")
-    private String projectIds;
 
     @Column(name = "parent_apply_id")
     private Long parentApplyId;
@@ -77,6 +59,15 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
     @Column(name = "memo", length = 1024)
     private String memo;
 
+    @Size(max = 255)
+    @Column(name = "apply_person_name", length = 255)
+    private String applyPersonName;
+
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "apply_code", length = 100, nullable = false)
+    private String applyCode;
+
     @ManyToOne(optional = false)
     @NotNull
     private Delegate delegate;
@@ -87,45 +78,6 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getApplyNumber() {
-        return applyNumber;
-    }
-
-    public StockOutApply applyNumber(String applyNumber) {
-        this.applyNumber = applyNumber;
-        return this;
-    }
-
-    public void setApplyNumber(String applyNumber) {
-        this.applyNumber = applyNumber;
-    }
-
-    public String getDelegatePersionName() {
-        return delegatePersionName;
-    }
-
-    public StockOutApply delegatePersionName(String delegatePersionName) {
-        this.delegatePersionName = delegatePersionName;
-        return this;
-    }
-
-    public void setDelegatePersionName(String delegatePersionName) {
-        this.delegatePersionName = delegatePersionName;
-    }
-
-    public LocalDate getDelegateDate() {
-        return delegateDate;
-    }
-
-    public StockOutApply delegateDate(LocalDate delegateDate) {
-        this.delegateDate = delegateDate;
-        return this;
-    }
-
-    public void setDelegateDate(LocalDate delegateDate) {
-        this.delegateDate = delegateDate;
     }
 
     public LocalDate getStartTime() {
@@ -152,19 +104,6 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
 
     public void setEndTime(LocalDate endTime) {
         this.endTime = endTime;
-    }
-
-    public Integer getCountOfSample() {
-        return countOfSample;
-    }
-
-    public StockOutApply countOfSample(Integer countOfSample) {
-        this.countOfSample = countOfSample;
-        return this;
-    }
-
-    public void setCountOfSample(Integer countOfSample) {
-        this.countOfSample = countOfSample;
     }
 
     public String getPurposeOfSample() {
@@ -204,19 +143,6 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
 
     public void setRecordId(Long recordId) {
         this.recordId = recordId;
-    }
-
-    public String getProjectIds() {
-        return projectIds;
-    }
-
-    public StockOutApply projectIds(String projectIds) {
-        this.projectIds = projectIds;
-        return this;
-    }
-
-    public void setProjectIds(String projectIds) {
-        this.projectIds = projectIds;
     }
 
     public Long getParentApplyId() {
@@ -284,6 +210,32 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
         this.memo = memo;
     }
 
+    public String getApplyPersonName() {
+        return applyPersonName;
+    }
+
+    public StockOutApply applyPersonName(String applyPersonName) {
+        this.applyPersonName = applyPersonName;
+        return this;
+    }
+
+    public void setApplyPersonName(String applyPersonName) {
+        this.applyPersonName = applyPersonName;
+    }
+
+    public String getApplyCode() {
+        return applyCode;
+    }
+
+    public StockOutApply applyCode(String applyCode) {
+        this.applyCode = applyCode;
+        return this;
+    }
+
+    public void setApplyCode(String applyCode) {
+        this.applyCode = applyCode;
+    }
+
     public Delegate getDelegate() {
         return delegate;
     }
@@ -321,21 +273,18 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
     public String toString() {
         return "StockOutApply{" +
             "id=" + id +
-            ", applyNumber='" + applyNumber + "'" +
-            ", delegatePersionName='" + delegatePersionName + "'" +
-            ", delegateDate='" + delegateDate + "'" +
             ", startTime='" + startTime + "'" +
             ", endTime='" + endTime + "'" +
-            ", countOfSample='" + countOfSample + "'" +
             ", purposeOfSample='" + purposeOfSample + "'" +
             ", recordTime='" + recordTime + "'" +
             ", recordId='" + recordId + "'" +
-            ", projectIds='" + projectIds + "'" +
             ", parentApplyId='" + parentApplyId + "'" +
             ", approverId='" + approverId + "'" +
             ", approveTime='" + approveTime + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
+            ", applyPersonName='" + applyPersonName + "'" +
+            ", applyCode='" + applyCode + "'" +
             '}';
     }
 }

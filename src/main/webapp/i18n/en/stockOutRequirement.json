@@ -15,8 +15,6 @@
             "detail": {
                 "title": "Stock Out Requirement"
             },
-            "apply_number": "Apply Number",
-            "requirementNumber": "Requirement Number",
             "requirementName": "Requirement Name",
             "countOfSample": "Count Of Sample",
             "sex": "Sex",
@@ -27,6 +25,8 @@
             "isBloodLipid": "Is Blood Lipid",
             "status": "Status",
             "memo": "Memo",
+            "applyCode": "Apply Code",
+            "requirementCode": "Requirement Code",
             "stockOutApply": "Stock Out Apply",
             "sampleType": "Sample Type",
             "sampleClassification": "Sample Classification",

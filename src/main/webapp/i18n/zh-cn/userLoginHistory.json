@@ -1,0 +1,26 @@
+{
+    "bioBankApp": {
+        "userLoginHistory" : {
+            "home": {
+                "title": "User Login Histories",
+                "createLabel": "Create a new User Login History",
+                "createOrEditLabel": "Create or edit a User Login History"
+            },
+            "created": "A new User Login History is created with identifier {{ param }}",
+            "updated": "A User Login History is updated with identifier {{ param }}",
+            "deleted": "A User Login History is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete User Login History {{ id }}?"
+            },
+            "detail": {
+                "title": "User Login History"
+            },
+            "userToken": "User Token",
+            "loginUserId": "Login User Id",
+            "businessName": "Business Name",
+            "invalidDate": "Invalid Date",
+            "status": "Status",
+            "memo": "Memo"
+        }
+    }
+}

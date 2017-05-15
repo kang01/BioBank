@@ -44,6 +44,11 @@ public class StockOutTask extends AbstractAuditingEntity implements Serializable
     @Column(name = "memo", length = 1024)
     private String memo;
 
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "stock_out_task_code", length = 100, nullable = false)
+    private String stockOutTaskCode;
+
     @ManyToOne(optional = false)
     @NotNull
     private StockOutPlan stockOutPlan;
@@ -121,6 +126,19 @@ public class StockOutTask extends AbstractAuditingEntity implements Serializable
         this.memo = memo;
     }
 
+    public String getStockOutTaskCode() {
+        return stockOutTaskCode;
+    }
+
+    public StockOutTask stockOutTaskCode(String stockOutTaskCode) {
+        this.stockOutTaskCode = stockOutTaskCode;
+        return this;
+    }
+
+    public void setStockOutTaskCode(String stockOutTaskCode) {
+        this.stockOutTaskCode = stockOutTaskCode;
+    }
+
     public StockOutPlan getStockOutPlan() {
         return stockOutPlan;
     }
@@ -163,6 +181,7 @@ public class StockOutTask extends AbstractAuditingEntity implements Serializable
             ", stockOutDate='" + stockOutDate + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
+            ", stockOutTaskCode='" + stockOutTaskCode + "'" +
             '}';
     }
 }

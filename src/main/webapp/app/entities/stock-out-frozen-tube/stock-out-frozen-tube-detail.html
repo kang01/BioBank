@@ -1,0 +1,43 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockOutFrozenTube.detail.title">Stock Out Frozen Tube</span> {{vm.stockOutFrozenTube.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockOutFrozenTube.tubeRows">Tube Rows</span></dt>
+        <dd>
+            <span>{{vm.stockOutFrozenTube.tubeRows}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutFrozenTube.tubeColumns">Tube Columns</span></dt>
+        <dd>
+            <span>{{vm.stockOutFrozenTube.tubeColumns}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutFrozenTube.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockOutFrozenTube.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutFrozenTube.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockOutFrozenTube.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutFrozenTube.stockOutFrozenBox">Stock Out Frozen Box</span></dt>
+        <dd>
+            <a ui-sref="stock-out-frozen-box-detail({id:vm.stockOutFrozenTube.stockOutFrozenBoxId})">{{vm.stockOutFrozenTube.stockOutFrozenBoxId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutFrozenTube.frozenTube">Frozen Tube</span></dt>
+        <dd>
+            <a ui-sref="frozen-tube-detail({id:vm.stockOutFrozenTube.frozenTubeId})">{{vm.stockOutFrozenTube.frozenTubeId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-out-frozen-tube-detail.edit({id:vm.stockOutFrozenTube.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

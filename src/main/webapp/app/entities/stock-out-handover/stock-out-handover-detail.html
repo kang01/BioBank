@@ -1,0 +1,55 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockOutHandover.detail.title">Stock Out Handover</span> {{vm.stockOutHandover.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockOutHandover.handoverCode">Handover Code</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandover.handoverCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandover.receiverName">Receiver Name</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandover.receiverName}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandover.receiverPhone">Receiver Phone</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandover.receiverPhone}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandover.receiverOrganization">Receiver Organization</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandover.receiverOrganization}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandover.handoverPersonId">Handover Person Id</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandover.handoverPersonId}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandover.handoverTime">Handover Time</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandover.handoverTime | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandover.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandover.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandover.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandover.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandover.stockOutTask">Stock Out Task</span></dt>
+        <dd>
+            <a ui-sref="stock-out-task-detail({id:vm.stockOutHandover.stockOutTaskId})">{{vm.stockOutHandover.stockOutTaskId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-out-handover-detail.edit({id:vm.stockOutHandover.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

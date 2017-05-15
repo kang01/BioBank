@@ -43,6 +43,15 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": "1024"
+        },
+        {
+            "fieldName": "stockOutTaskCode",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": "100"
         }
     ],
     "changelogDate": "20170515014750",

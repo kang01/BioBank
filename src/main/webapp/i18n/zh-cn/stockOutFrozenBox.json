@@ -1,0 +1,25 @@
+{
+    "bioBankApp": {
+        "stockOutFrozenBox" : {
+            "home": {
+                "title": "Stock Out Frozen Boxes",
+                "createLabel": "Create a new Stock Out Frozen Box",
+                "createOrEditLabel": "Create or edit a Stock Out Frozen Box"
+            },
+            "created": "A new Stock Out Frozen Box is created with identifier {{ param }}",
+            "updated": "A Stock Out Frozen Box is updated with identifier {{ param }}",
+            "deleted": "A Stock Out Frozen Box is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock Out Frozen Box {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock Out Frozen Box"
+            },
+            "status": "Status",
+            "memo": "Memo",
+            "frozenBox": "Frozen Box",
+            "stockOutBoxPosition": "Stock Out Box Position",
+            "stockOutTask": "Stock Out Task"
+        }
+    }
+}

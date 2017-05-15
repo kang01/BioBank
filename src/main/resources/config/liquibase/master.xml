@@ -39,6 +39,10 @@
     <include file="classpath:config/liquibase/changelog/20170515013527_added_entity_StockOutPlanFrozenTube.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515014750_added_entity_StockOutTask.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515015924_added_entity_StockOutBoxPosition.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170515022141_added_entity_StockOutFrozenBox.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170515022954_added_entity_StockOutFrozenTube.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170515045047_added_entity_StockOutHandover.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170515051138_added_entity_StockOutHandoverDetails.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20170316050525_added_entity_constraints_ProjectRelate.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317021528_added_entity_constraints_Equipment.xml" relativeToChangelogFile="false"/>
@@ -64,6 +68,10 @@
     <include file="classpath:config/liquibase/changelog/20170515013527_added_entity_constraints_StockOutPlanFrozenTube.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515014750_added_entity_constraints_StockOutTask.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515015924_added_entity_constraints_StockOutBoxPosition.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170515022141_added_entity_constraints_StockOutFrozenBox.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170515022954_added_entity_constraints_StockOutFrozenTube.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170515045047_added_entity_constraints_StockOutHandover.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170515051138_added_entity_constraints_StockOutHandoverDetails.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 
     <include file="classpath:config/liquibase/changelog/20170502015417_added_view_StockIn.xml" relativeToChangelogFile="false"/>

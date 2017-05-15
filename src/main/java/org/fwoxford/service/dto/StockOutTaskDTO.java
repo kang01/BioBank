@@ -28,6 +28,10 @@ public class StockOutTaskDTO extends AbstractAuditingDTO implements Serializable
     @Size(max = 1024)
     private String memo;
 
+    @NotNull
+    @Size(max = 100)
+    private String stockOutTaskCode;
+
     private Long stockOutPlanId;
 
     public Long getId() {
@@ -72,6 +76,13 @@ public class StockOutTaskDTO extends AbstractAuditingDTO implements Serializable
     public void setMemo(String memo) {
         this.memo = memo;
     }
+    public String getStockOutTaskCode() {
+        return stockOutTaskCode;
+    }
+
+    public void setStockOutTaskCode(String stockOutTaskCode) {
+        this.stockOutTaskCode = stockOutTaskCode;
+    }
 
     public Long getStockOutPlanId() {
         return stockOutPlanId;
@@ -111,6 +122,7 @@ public class StockOutTaskDTO extends AbstractAuditingDTO implements Serializable
             ", stockOutDate='" + stockOutDate + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
+            ", stockOutTaskCode='" + stockOutTaskCode + "'" +
             '}';
     }
 }

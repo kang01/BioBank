@@ -58,6 +58,9 @@ public class StockOutTaskResourceIntTest {
     private static final String DEFAULT_MEMO = "AAAAAAAAAA";
     private static final String UPDATED_MEMO = "BBBBBBBBBB";
 
+    private static final String DEFAULT_STOCK_OUT_TASK_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_STOCK_OUT_TASK_CODE = "BBBBBBBBBB";
+
     @Autowired
     private StockOutTaskRepository stockOutTaskRepository;
 
@@ -105,7 +108,8 @@ public class StockOutTaskResourceIntTest {
                 .stockOutHeadId2(DEFAULT_STOCK_OUT_HEAD_ID_2)
                 .stockOutDate(DEFAULT_STOCK_OUT_DATE)
                 .status(DEFAULT_STATUS)
-                .memo(DEFAULT_MEMO);
+                .memo(DEFAULT_MEMO)
+                .stockOutTaskCode(DEFAULT_STOCK_OUT_TASK_CODE);
         // Add required entity
         StockOutPlan stockOutPlan = StockOutPlanResourceIntTest.createEntity(em);
         em.persist(stockOutPlan);
@@ -141,6 +145,7 @@ public class StockOutTaskResourceIntTest {
         assertThat(testStockOutTask.getStockOutDate()).isEqualTo(DEFAULT_STOCK_OUT_DATE);
         assertThat(testStockOutTask.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testStockOutTask.getMemo()).isEqualTo(DEFAULT_MEMO);
+        assertThat(testStockOutTask.getStockOutTaskCode()).isEqualTo(DEFAULT_STOCK_OUT_TASK_CODE);
     }
 
     @Test
@@ -204,6 +209,25 @@ public class StockOutTaskResourceIntTest {
 
     @Test
     @Transactional
+    public void checkStockOutTaskCodeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = stockOutTaskRepository.findAll().size();
+        // set the field null
+        stockOutTask.setStockOutTaskCode(null);
+
+        // Create the StockOutTask, which fails.
+        StockOutTaskDTO stockOutTaskDTO = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
+
+        restStockOutTaskMockMvc.perform(post("/api/stock-out-tasks")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(stockOutTaskDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<StockOutTask> stockOutTaskList = stockOutTaskRepository.findAll();
+        assertThat(stockOutTaskList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllStockOutTasks() throws Exception {
         // Initialize the database
         stockOutTaskRepository.saveAndFlush(stockOutTask);
@@ -217,7 +241,8 @@ public class StockOutTaskResourceIntTest {
             .andExpect(jsonPath("$.[*].stockOutHeadId2").value(hasItem(DEFAULT_STOCK_OUT_HEAD_ID_2.intValue())))
             .andExpect(jsonPath("$.[*].stockOutDate").value(hasItem(DEFAULT_STOCK_OUT_DATE.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())));
+            .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
+            .andExpect(jsonPath("$.[*].stockOutTaskCode").value(hasItem(DEFAULT_STOCK_OUT_TASK_CODE.toString())));
     }
 
     @Test
@@ -235,7 +260,8 @@ public class StockOutTaskResourceIntTest {
             .andExpect(jsonPath("$.stockOutHeadId2").value(DEFAULT_STOCK_OUT_HEAD_ID_2.intValue()))
             .andExpect(jsonPath("$.stockOutDate").value(DEFAULT_STOCK_OUT_DATE.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
-            .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()));
+            .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
+            .andExpect(jsonPath("$.stockOutTaskCode").value(DEFAULT_STOCK_OUT_TASK_CODE.toString()));
     }
 
     @Test
@@ -260,7 +286,8 @@ public class StockOutTaskResourceIntTest {
                 .stockOutHeadId2(UPDATED_STOCK_OUT_HEAD_ID_2)
                 .stockOutDate(UPDATED_STOCK_OUT_DATE)
                 .status(UPDATED_STATUS)
-                .memo(UPDATED_MEMO);
+                .memo(UPDATED_MEMO)
+                .stockOutTaskCode(UPDATED_STOCK_OUT_TASK_CODE);
         StockOutTaskDTO stockOutTaskDTO = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(updatedStockOutTask);
 
         restStockOutTaskMockMvc.perform(put("/api/stock-out-tasks")
@@ -277,6 +304,7 @@ public class StockOutTaskResourceIntTest {
         assertThat(testStockOutTask.getStockOutDate()).isEqualTo(UPDATED_STOCK_OUT_DATE);
         assertThat(testStockOutTask.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testStockOutTask.getMemo()).isEqualTo(UPDATED_MEMO);
+        assertThat(testStockOutTask.getStockOutTaskCode()).isEqualTo(UPDATED_STOCK_OUT_TASK_CODE);
     }
 
     @Test

@@ -1,0 +1,90 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myStockOutFrozenBoxLabel" data-translate="bioBankApp.stockOutFrozenBox.home.createOrEditLabel">Create or edit a Stock Out Frozen Box</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.stockOutFrozenBox.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.stockOutFrozenBox.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockOutFrozenBox.status" for="field_status">Status</label>
+            <input type="text" class="form-control" name="status" id="field_status"
+                    ng-model="vm.stockOutFrozenBox.status"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.status.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.status.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.status.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockOutFrozenBox.memo" for="field_memo">Memo</label>
+            <input type="text" class="form-control" name="memo" id="field_memo"
+                    ng-model="vm.stockOutFrozenBox.memo"
+                    ng-maxlength="1024"/>
+            <div ng-show="editForm.memo.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.memo.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
+                    This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label data-translate="bioBankApp.stockOutFrozenBox.frozenBox" for="field_frozenBox">Frozen Box</label>
+            <select class="form-control" id="field_frozenBox" name="frozenBox" ng-model="vm.stockOutFrozenBox.frozenBoxId" ng-options="frozenBox.id as frozenBox.id for frozenBox in vm.frozenboxes"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.frozenBox.$invalid">
+            <p class="help-block"
+                ng-show="editForm.frozenBox.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.stockOutFrozenBox.stockOutBoxPosition" for="field_stockOutBoxPosition">Stock Out Box Position</label>
+            <select class="form-control" id="field_stockOutBoxPosition" name="stockOutBoxPosition" ng-model="vm.stockOutFrozenBox.stockOutBoxPositionId" ng-options="stockOutBoxPosition.id as stockOutBoxPosition.id for stockOutBoxPosition in vm.stockoutboxpositions"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.stockOutBoxPosition.$invalid">
+            <p class="help-block"
+                ng-show="editForm.stockOutBoxPosition.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.stockOutFrozenBox.stockOutTask" for="field_stockOutTask">Stock Out Task</label>
+            <select class="form-control" id="field_stockOutTask" name="stockOutTask" ng-model="vm.stockOutFrozenBox.stockOutTaskId" ng-options="stockOutTask.id as stockOutTask.id for stockOutTask in vm.stockouttasks"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.stockOutTask.$invalid">
+            <p class="help-block"
+                ng-show="editForm.stockOutTask.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

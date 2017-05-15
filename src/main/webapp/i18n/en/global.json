@@ -41,6 +41,10 @@
                 "stockOutPlanFrozenTube": "Stock Out Plan Frozen Tube",
                 "stockOutTask": "Stock Out Task",
                 "stockOutBoxPosition": "Stock Out Box Position",
+                "stockOutFrozenBox": "Stock Out Frozen Box",
+                "stockOutFrozenTube": "Stock Out Frozen Tube",
+                "stockOutHandover": "Stock Out Handover",
+                "stockOutHandoverDetails": "Stock Out Handover Details",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

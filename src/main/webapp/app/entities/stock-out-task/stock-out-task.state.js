@@ -129,6 +129,7 @@
                                 stockOutDate: null,
                                 status: null,
                                 memo: null,
+                                stockOutTaskCode: null,
                                 id: null
                             };
                         }

@@ -1,0 +1,24 @@
+{
+    "bioBankApp": {
+        "stockOutHandoverDetails" : {
+            "home": {
+                "title": "Stock Out Handover Details",
+                "createLabel": "Create a new Stock Out Handover Details",
+                "createOrEditLabel": "Create or edit a Stock Out Handover Details"
+            },
+            "created": "A new Stock Out Handover Details is created with identifier {{ param }}",
+            "updated": "A Stock Out Handover Details is updated with identifier {{ param }}",
+            "deleted": "A Stock Out Handover Details is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock Out Handover Details {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock Out Handover Details"
+            },
+            "status": "Status",
+            "memo": "Memo",
+            "stockOutHandover": "Stock Out Handover",
+            "stockOutFrozenTube": "Stock Out Frozen Tube"
+        }
+    }
+}

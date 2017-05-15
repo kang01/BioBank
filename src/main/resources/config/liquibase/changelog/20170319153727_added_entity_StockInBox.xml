@@ -50,7 +50,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="count_of_sample" type="bigint" remarks="样本数量">
+            <column name="count_of_sample" type="integer" remarks="样本数量">
                 <constraints nullable="false" />
             </column>
 

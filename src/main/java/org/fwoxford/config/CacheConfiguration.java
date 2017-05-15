@@ -81,6 +81,10 @@ public class CacheConfiguration {
             cm.createCache(org.fwoxford.domain.StockOutPlanFrozenTube.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.StockOutTask.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.StockOutBoxPosition.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.StockOutFrozenBox.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.StockOutFrozenTube.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.StockOutHandover.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.StockOutHandoverDetails.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

@@ -20,6 +20,7 @@
             "stockOutDate": "Stock Out Date",
             "status": "Status",
             "memo": "Memo",
+            "stockOutTaskCode": "Stock Out Task Code",
             "stockOutPlan": "Stock Out Plan"
         }
     }

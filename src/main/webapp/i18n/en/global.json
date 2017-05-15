@@ -47,6 +47,7 @@
                 "stockOutHandoverDetails": "Stock Out Handover Details",
                 "stockOutFiles": "Stock Out Files",
                 "userLoginHistory": "User Login History",
+                "stockOutApplyProject": "Stock Out Apply Project",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

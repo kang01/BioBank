@@ -1,8 +1,12 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutApplyDTO;
+import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import java.util.List;
 
 /**
@@ -20,7 +24,7 @@ public interface StockOutApplyService {
 
     /**
      *  Get all the stockOutApplies.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +44,6 @@ public interface StockOutApplyService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    DataTablesOutput<StockOutApplyForDataTableEntity> findStockOutApply(DataTablesInput input);
 }

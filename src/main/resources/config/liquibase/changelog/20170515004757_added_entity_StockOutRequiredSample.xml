@@ -18,7 +18,7 @@
         Added the entity StockOutRequiredSample.
     -->
     <changeSet id="20170515004757-1" author="jhipster">
-        <createTable tableName="stock_out_required_sample">
+        <createTable tableName="stock_out_required_sample" remarks="出库需求指定样本表">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

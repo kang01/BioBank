@@ -4,11 +4,14 @@ import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.domain.StockOutApply;
 import org.fwoxford.repository.StockOutApplyRepository;
 import org.fwoxford.service.dto.StockOutApplyDTO;
+import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
 import org.fwoxford.service.mapper.StockOutApplyMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +27,7 @@ import java.util.stream.Collectors;
 public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     private final Logger log = LoggerFactory.getLogger(StockOutApplyServiceImpl.class);
-    
+
     private final StockOutApplyRepository stockOutApplyRepository;
 
     private final StockOutApplyMapper stockOutApplyMapper;
@@ -51,7 +54,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     /**
      *  Get all the stockOutApplies.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +90,10 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     public void delete(Long id) {
         log.debug("Request to delete StockOutApply : {}", id);
         stockOutApplyRepository.delete(id);
+    }
+
+    @Override
+    public DataTablesOutput<StockOutApplyForDataTableEntity> findStockOutApply(DataTablesInput input) {
+        return null;
     }
 }

@@ -18,7 +18,7 @@
         Added the entity StockOutPlan.
     -->
     <changeSet id="20170515011940-1" author="jhipster">
-        <createTable tableName="stock_out_plan">
+        <createTable tableName="stock_out_plan" remarks="出库计划表">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

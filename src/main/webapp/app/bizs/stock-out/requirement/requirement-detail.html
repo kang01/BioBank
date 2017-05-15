@@ -117,7 +117,8 @@
                 <div class="col-md-4">
                     <label class="control-label col-md-4">样本类型</label>
                     <div class="col-md-8">
-                        <input type="text" class="form-control">
+                        <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                                   ng-model="vm.sampleTypeId"></selectize>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -137,7 +138,8 @@
                 <div class="col-md-4">
                     <label class="control-label col-md-4">性别</label>
                     <div class="col-md-8">
-                        <input type="text" class="form-control">
+                        <selectize options='vm.sexOptions' config="vm.sexConfig"
+                                   ng-model="vm.sex" ></selectize>
                     </div>
                 </div>
                 <div class="col-md-8">

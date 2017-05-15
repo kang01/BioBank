@@ -390,7 +390,7 @@
                 vm.box =  data;
                 vm.splittingBox = true;
                 //获取样本分类
-                _fnQueryProjectSampleClass(vm.entity.projectId,vm.box.sampleType.id);
+                _fnQueryProjectSampleClass(vm.entity.projectId,vm.box.sampleType.id,vm.box.sampleType.isMixed);
                 var settings = {
                     minCols: +vm.box.frozenBoxType.frozenBoxTypeColumns,
                     minRows: +vm.box.frozenBoxType.frozenBoxTypeRows
@@ -562,10 +562,10 @@
             });
         }
         //不同项目下的样本分类
-        function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
+        function _fnQueryProjectSampleClass(projectId,sampleTypeId,isMixed) {
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.projectSampleTypeOptions = data;
-                if(sampleTypeId == 5){
+                if(isMixed == 1){
                     for(var k = 0; k < data.length; k++){
                         for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                             for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
@@ -818,6 +818,7 @@
         //保存分装结果
         var saveBoxList = [];
         vm.saveBox = function () {
+            saveBoxList = [];
             for(var i = 0; i < vm.boxList.length; i++){
                 var objBox = {};
                 objBox.frozenBoxId = vm.boxList[i].frozenBoxId;

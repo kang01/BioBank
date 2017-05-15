@@ -12,7 +12,7 @@ import java.util.Objects;
  * A StockOutRequiredSample.
  */
 @Entity
-@Table(name = "stock_out_req_sam")
+@Table(name = "stock_out_required_sample")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockOutRequiredSample extends AbstractAuditingEntity implements Serializable {
 

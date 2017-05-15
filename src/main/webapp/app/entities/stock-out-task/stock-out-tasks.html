@@ -25,6 +25,7 @@
                     <th jh-sort-by="status"><span data-translate="bioBankApp.stockOutTask.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="memo"><span data-translate="bioBankApp.stockOutTask.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="stockOutTaskCode"><span data-translate="bioBankApp.stockOutTask.stockOutTaskCode">Stock Out Task Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="usedTime"><span data-translate="bioBankApp.stockOutTask.usedTime">Used Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="stockOutPlanId"><span data-translate="bioBankApp.stockOutTask.stockOutPlan">Stock Out Plan</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
@@ -38,6 +39,7 @@
                     <td>{{stockOutTask.status}}</td>
                     <td>{{stockOutTask.memo}}</td>
                     <td>{{stockOutTask.stockOutTaskCode}}</td>
+                    <td>{{stockOutTask.usedTime}}</td>
                     <td>
                         <a ui-sref="stock-out-plan-detail({id:stockOutTask.stockOutPlanId})">{{stockOutTask.stockOutPlanId}}</a>
                     </td>

@@ -49,6 +49,10 @@ public class StockOutTask extends AbstractAuditingEntity implements Serializable
     @Column(name = "stock_out_task_code", length = 100, nullable = false)
     private String stockOutTaskCode;
 
+    @NotNull
+    @Column(name = "used_time", nullable = false)
+    private Integer usedTime;
+
     @ManyToOne(optional = false)
     @NotNull
     private StockOutPlan stockOutPlan;
@@ -139,6 +143,19 @@ public class StockOutTask extends AbstractAuditingEntity implements Serializable
         this.stockOutTaskCode = stockOutTaskCode;
     }
 
+    public Integer getUsedTime() {
+        return usedTime;
+    }
+
+    public StockOutTask usedTime(Integer usedTime) {
+        this.usedTime = usedTime;
+        return this;
+    }
+
+    public void setUsedTime(Integer usedTime) {
+        this.usedTime = usedTime;
+    }
+
     public StockOutPlan getStockOutPlan() {
         return stockOutPlan;
     }
@@ -182,6 +199,7 @@ public class StockOutTask extends AbstractAuditingEntity implements Serializable
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             ", stockOutTaskCode='" + stockOutTaskCode + "'" +
+            ", usedTime='" + usedTime + "'" +
             '}';
     }
 }

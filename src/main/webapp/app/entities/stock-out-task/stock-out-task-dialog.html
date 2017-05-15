@@ -85,6 +85,22 @@
                 </p>
             </div>
         </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.stockOutTask.usedTime" for="field_usedTime">Used Time</label>
+            <input type="number" class="form-control" name="usedTime" id="field_usedTime"
+                    ng-model="vm.stockOutTask.usedTime"
+                    required/>
+            <div ng-show="editForm.usedTime.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.usedTime.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.usedTime.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
 
         <div class="form-group">
             <label data-translate="bioBankApp.stockOutTask.stockOutPlan" for="field_stockOutPlan">Stock Out Plan</label>

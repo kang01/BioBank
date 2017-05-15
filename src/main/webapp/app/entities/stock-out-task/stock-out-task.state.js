@@ -130,6 +130,7 @@
                                 status: null,
                                 memo: null,
                                 stockOutTaskCode: null,
+                                usedTime: null,
                                 id: null
                             };
                         }

@@ -52,6 +52,13 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": "100"
+        },
+        {
+            "fieldName": "usedTime",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "changelogDate": "20170515014750",

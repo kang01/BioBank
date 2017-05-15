@@ -21,6 +21,7 @@
             "status": "Status",
             "memo": "Memo",
             "stockOutTaskCode": "Stock Out Task Code",
+            "usedTime": "Used Time",
             "stockOutPlan": "Stock Out Plan"
         }
     }

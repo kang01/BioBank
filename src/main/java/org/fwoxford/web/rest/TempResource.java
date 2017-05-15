@@ -629,4 +629,38 @@ public class TempResource {
         return ResponseEntity.ok()
             .body(result);
     }
+
+    /**
+     * 查询出库申请列表
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-applies", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutApplyForDataTableEntity> getPageStockOutApply(@RequestBody DataTablesInput input) {
+        List<StockOutApplyForDataTableEntity> stockInList =  new ArrayList<>();
+
+        for (int i = 0; i < input.getLength(); ++i){
+            StockOutApplyForDataTableEntity rowData = new StockOutApplyForDataTableEntity();
+            rowData.setId(0L + i + input.getStart());
+
+            rowData.setApplyCode(BankUtil.getUniqueID());
+            rowData.setCountOfSample(100L);
+            rowData.setStatus("1101");
+            rowData.setApplyPersonName("王东东");
+            rowData.setApplyTime("2017-07-07至2017-07-17");
+            rowData.setDelegateName("实验室");
+            rowData.setPurposeOfSample("实验");
+            rowData.setSampleTypes("血清，血浆");
+            stockInList.add(rowData);
+        }
+
+        DataTablesOutput<StockOutApplyForDataTableEntity> result = new DataTablesOutput<StockOutApplyForDataTableEntity>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(stockInList);
+        result.setRecordsFiltered(stockInList.size());
+        result.setRecordsTotal(stockInList.size() * 10);
+        return result;
+    }
 }

@@ -131,13 +131,13 @@ public class StockOutApplyResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
     /**
-     * 查询入库列表
+     * 查询出库申请列表
      * @param input
      * @return
      */
     @JsonView(DataTablesOutput.View.class)
-    @RequestMapping(value = "/res//stock-out-applies", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<StockOutApplyForDataTableEntity> getPageStockIn(@RequestBody DataTablesInput input) {
+    @RequestMapping(value = "/res/stock-out-applies", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutApplyForDataTableEntity> getPageStockOutApply(@RequestBody DataTablesInput input) {
         return stockOutApplyService.findStockOutApply(input);
     }
 }

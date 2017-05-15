@@ -299,37 +299,49 @@
                 });
             }
             //不同项目下的样本分类
-            function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
+            function _fnQueryProjectSampleClass(projectId,sampleTypeId,isMixed) {
                 SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                     vm.projectSampleTypeOptions = data;
-                    if(sampleTypeId == 5){
-                        for(var k = 0; k < data.length; k++){
-                            for (var i = 0; i < vm.frozenTubeArray.length; i++) {
-                                for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                                    if(data[k].columnsNumber == j+1){
-                                        vm.frozenTubeArray[i][j].sampleClassificationId = data[k].sampleClassificationId;
-                                        vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                    //是否混合类型
+                    if(isMixed == 1){
+                        //类型下有无分类
+                        if(data.length){
+                            for(var k = 0; k < data.length; k++){
+                                for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                                    for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                                        if(data[k].columnsNumber == j+1){
+                                            vm.frozenTubeArray[i][j].sampleClassificationId = data[k].sampleClassificationId;
+                                            vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                                        }
+                                    }
+                                }
+                                for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
+                                    if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber){
+                                        vm.box.frozenTubeDTOS[m].sampleClassification.id = data[k].sampleClassificationId
                                     }
                                 }
                             }
-                            for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
-                                if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber){
-                                    vm.box.frozenTubeDTOS[m].sampleClassification.id = data[k].sampleClassificationId
+                        }else{
+                            //混合型无分类
+                            for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                                for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                                        vm.frozenTubeArray[i][j].sampleClassificationId = "";
+                                        vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
                                 }
+
                             }
                         }
 
-
-
-
-
-                        // vm.box.sampleClassificationId = "";
                     }else{
-                        if(!vm.box.sampleClassificationId){
+                        //无分类时取第一个
+                        // if(!vm.box.sampleClassificationId){
                             if(vm.projectSampleTypeOptions.length){
                                 vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                                vm.box.sampleClassification = vm.projectSampleTypeOptions[0];
                             }
-                        }
+                        // }else{
+                        //     vm.box.sampleClassificationId = vm.box.sampleClassificationId
+                        // }
                         for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                             for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
                                 if(vm.box.sampleClassification){
@@ -799,12 +811,13 @@
                 labelField:'sampleTypeName',
                 maxItems: 1,
                 onChange:function (value) {
-                    var sampleTypeName;
-                    if(vm.sampleTypeOptions.length){
-                        sampleTypeName =  _.filter(vm.sampleTypeOptions,{'id':+value})[0].sampleTypeName;
-                    }
-                    vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value);
-                    if(value == 5){
+                    // var sampleTypeName;
+                    // if(vm.sampleTypeOptions.length){
+                    //     sampleTypeName =  _.filter(vm.sampleTypeOptions,{'id':+value})[0].sampleTypeName;
+                    // }
+                    var isMixed = _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed;
+                    vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value,isMixed);
+                    if(isMixed == 1){
                         vm.sampleClassFlag = true;
                     }else{
                         vm.sampleClassFlag = false;
@@ -1078,13 +1091,14 @@
                 vm.box = data;
                 vm.box.frozenBoxTypeId = vm.box.frozenBoxType.id;
                 vm.box.sampleTypeId = vm.box.sampleType.id;
+                var isMixed = vm.box.sampleType.isMixed;
                 // _fnloadProjectSampleClass(vm.transportRecord.projectId,vm.box.sampleTypeId);
                 SampleTypeService.queryProjectSampleClasses(vm.transportRecord.projectId,vm.box.sampleTypeId).success(function (data1) {
                     vm.projectSampleTypeOptions = data1;
                     if(vm.box.sampleClassification){
                         vm.box.sampleClassificationId = vm.box.sampleClassification.id;
                     }
-                    if(vm.box.sampleTypeId == 5){
+                    if(isMixed == 1){
                         vm.sampleClassFlag = true;
                     }else{
                         vm.sampleClassFlag = false;

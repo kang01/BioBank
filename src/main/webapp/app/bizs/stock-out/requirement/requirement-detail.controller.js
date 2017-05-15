@@ -9,19 +9,81 @@
         .module('bioBankApp')
         .controller('RequirementDetailController', RequirementDetailController);
 
-    RequirementDetailController.$inject = ['$scope','$compile','$uibModal','$timeout','Upload','DTColumnBuilder','DTOptionsBuilder','RequirementService'];
+    RequirementDetailController.$inject = ['$scope','$compile','$uibModal','$timeout','Upload','DTColumnBuilder','DTOptionsBuilder','RequirementService','MasterData','SampleTypeService'];
 
-    function RequirementDetailController($scope,$compile,$uibModal,$timeout,Upload,DTColumnBuilder,DTOptionsBuilder,RequirementService ) {
+    function RequirementDetailController($scope,$compile,$uibModal,$timeout,Upload,DTColumnBuilder,DTOptionsBuilder,RequirementService,MasterData,SampleTypeService) {
         var vm = this;
         var modalInstance;
+
         //批准
         vm.approvalModal = _fnApprovalModal;
         //样本库存详情
         vm.sampleDescModal = _fnSampleDescModal;
+        //初始化数据
+        function _initData() {
+            _fnQuerySampleType();
+        }
+        _initData();
+        //样本需求
+        //获取样本类型
+        function _fnQuerySampleType() {
+            SampleTypeService.querySampleType().success(function (data) {
+                vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['esc']);
+            });
+        }
+        vm.sampleTypeConfig = {
+            valueField:'id',
+            labelField:'sampleTypeName',
+            maxItems: 1,
+            onChange:function (value) {
+                console.log( _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed);
+                // var sampleTypeName;
+                // if(vm.sampleTypeOptions.length){
+                //     sampleTypeName =  _.filter(vm.sampleTypeOptions,{'id':+value})[0].sampleTypeName;
+                // }
+                // vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value);
+                // if(value == 5){
+                //     vm.sampleClassFlag = true;
+                // }else{
+                //     vm.sampleClassFlag = false;
+                // }
+            }
+        };
+        //性别
+        vm.sexOptions = MasterData.sexDict;
+        vm.sexConfig = {
+            valueField:'type',
+            labelField:'name',
+            maxItems: 1
+        };
+        //上传
         vm.submit = function () {
             vm.upload(vm.file);
             console.log(JSON.stringify(vm.file))
         };
+        vm.uploadPic = function(file) {
+            file.upload = Upload.upload({
+                url: 'https://angular-file-upload-cors-srv.appspot.com/upload',
+                data: {username: vm.username, file: file},
+            });
+
+            file.upload.then(function (response) {
+                $timeout(function () {
+                    file.result = response.data;
+                });
+            }, function (response) {
+                if (response.status > 0)
+                    vm.errorMsg = response.status + ': ' + response.data;
+            }, function (evt) {
+                // Math.min is to fix IE which reports 200% sometimes
+                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });
+        };
+
+
+
+
+        //弹出框
         function _fnApprovalModal() {
             modalInstance = $uibModal.open({
                 animation: true,
@@ -60,6 +122,8 @@
 
             });
         }
+
+        //列表
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('processing',true)
             .withOption('serverSide',true)
@@ -189,24 +253,5 @@
                 '</button>&nbsp;'
         }
 
-
-        vm.uploadPic = function(file) {
-            file.upload = Upload.upload({
-                url: 'https://angular-file-upload-cors-srv.appspot.com/upload',
-                data: {username: vm.username, file: file},
-            });
-
-            file.upload.then(function (response) {
-                $timeout(function () {
-                    file.result = response.data;
-                });
-            }, function (response) {
-                if (response.status > 0)
-                    vm.errorMsg = response.status + ': ' + response.data;
-            }, function (evt) {
-                // Math.min is to fix IE which reports 200% sometimes
-                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-            });
-        }
     }
 })();

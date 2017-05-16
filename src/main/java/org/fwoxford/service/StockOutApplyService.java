@@ -46,4 +46,6 @@ public interface StockOutApplyService {
     void delete(Long id);
 
     DataTablesOutput<StockOutApplyForDataTableEntity> findStockOutApply(DataTablesInput input);
+
+    StockOutApplyDTO initStockOutApply();
 }

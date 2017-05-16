@@ -140,4 +140,19 @@ public class StockOutApplyResource {
     public DataTablesOutput<StockOutApplyForDataTableEntity> getPageStockOutApply(@RequestBody DataTablesInput input) {
         return stockOutApplyService.findStockOutApply(input);
     }
+
+    /**
+     * 添加转运记录
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-out-applies/new-empty")
+    @Timed
+    public ResponseEntity<StockOutApplyDTO> initStockOutApply() throws URISyntaxException {
+        log.debug("REST request to create StockOutApply first");
+        StockOutApplyDTO result = stockOutApplyService.initStockOutApply();
+        return ResponseEntity.created(new URI("/api/stock-out-applies/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 }

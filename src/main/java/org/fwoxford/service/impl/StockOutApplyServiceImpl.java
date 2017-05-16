@@ -1,11 +1,13 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.domain.StockOutApply;
 import org.fwoxford.repository.StockOutApplyRepository;
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
 import org.fwoxford.service.mapper.StockOutApplyMapper;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -95,5 +97,14 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     @Override
     public DataTablesOutput<StockOutApplyForDataTableEntity> findStockOutApply(DataTablesInput input) {
         return null;
+    }
+
+    @Override
+    public StockOutApplyDTO initStockOutApply() {
+        StockOutApply stockOutApply = new StockOutApply();
+        stockOutApply.setStatus(Constants.STOCK_OUT_PENDING);
+        stockOutApply.setApplyCode(BankUtil.getUniqueID());
+        stockOutApplyRepository.save(stockOutApply);
+        return stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
     }
 }

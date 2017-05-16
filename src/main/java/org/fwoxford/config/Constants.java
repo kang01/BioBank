@@ -57,7 +57,13 @@ public final class Constants {
     public static final Integer NO = 0;
     public static final Integer YES = 1;
     public static final List<String> LOGIN_NOT_STOCK_LIST = new ArrayList<String>(){{add("system");add("admin");add("user");add("anonymoususer");}};
-
+    /**
+     * 出库状态：1101：进行中，1102：待批准，1103：已批准，1104：已作废
+     */
+    public static final String STOCK_OUT_PENDING = "1101";
+    public static final String STOCK_OUT_PENDING_APPROVAL = "1102";
+    public static final String STOCK_OUT_APPROVED = "1103";
+    public static final String STOCK_OUT_INVALID = "1104";
     private Constants() {
     }
 }

@@ -638,7 +638,7 @@ public class TempResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-applies", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutApplyForDataTableEntity> getPageStockOutApply(@RequestBody DataTablesInput input) {
-        List<StockOutApplyForDataTableEntity> stockInList =  new ArrayList<>();
+        List<StockOutApplyForDataTableEntity> stockOutApplyList =  new ArrayList<>();
 
         for (int i = 0; i < input.getLength(); ++i){
             StockOutApplyForDataTableEntity rowData = new StockOutApplyForDataTableEntity();
@@ -652,15 +652,43 @@ public class TempResource {
             rowData.setDelegateName("实验室");
             rowData.setPurposeOfSample("实验");
             rowData.setSampleTypes("血清，血浆");
-            stockInList.add(rowData);
+            stockOutApplyList.add(rowData);
         }
 
         DataTablesOutput<StockOutApplyForDataTableEntity> result = new DataTablesOutput<StockOutApplyForDataTableEntity>();
         result.setDraw(input.getDraw());
         result.setError("");
-        result.setData(stockInList);
-        result.setRecordsFiltered(stockInList.size());
-        result.setRecordsTotal(stockInList.size() * 10);
+        result.setData(stockOutApplyList);
+        result.setRecordsFiltered(stockOutApplyList.size());
+        result.setRecordsTotal(stockOutApplyList.size() * 10);
         return result;
+    }
+
+    /**
+     * 根据上一级申请ID，取下一级出库申请列表
+     * @param applyId
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-applies/parentApply/{id}")
+    @Timed
+    public ResponseEntity<List<StockOutApplyForDataTableEntity>> movedStockIn(@PathVariable Long id) throws URISyntaxException {
+        List<StockOutApplyForDataTableEntity> result =  new ArrayList<>();
+
+        for (int i = 0; i < 10; ++i){
+            StockOutApplyForDataTableEntity rowData = new StockOutApplyForDataTableEntity();
+            rowData.setId(0L + i);
+            rowData.setApplyCode(BankUtil.getUniqueID());
+            rowData.setCountOfSample(200L);
+            rowData.setStatus("1101");
+            rowData.setApplyPersonName("王西西");
+            rowData.setApplyTime("2017-07-07至2017-07-17");
+            rowData.setDelegateName("实验室");
+            rowData.setPurposeOfSample("实验");
+            rowData.setSampleTypes("血清，血浆");
+            result.add(rowData);
+        }
+        return ResponseEntity.ok()
+            .body(result);
     }
 }

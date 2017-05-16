@@ -49,4 +49,6 @@ public interface ProjectSampleClassService {
     List<ProjectSampleClassificationDTO> getSampleClassificationByProjectIdAndsampleTypeId(Long projectId, Long sampleTypeId);
 
     List<ProjectSampleClass> findByProjectIdAndSampleTypeIdAndSampleClassificationId(Long projectId, Long sampleTypeId, Long sampleClassificationId);
+
+    List<ProjectSampleClassificationDTO> getSampleClassificationByProjectIdsAndsampleTypeId(String projectIds, Long sampleTypeId);
 }

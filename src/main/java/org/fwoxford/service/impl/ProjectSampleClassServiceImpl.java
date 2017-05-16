@@ -153,4 +153,25 @@ public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
         List<ProjectSampleClass> projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeId(projectId,sampleTypeId);
         return projectSampleClass;
     }
+
+    @Override
+    public List<ProjectSampleClassificationDTO> getSampleClassificationByProjectIdsAndsampleTypeId(String projectIds, Long sampleTypeId) {
+        List<ProjectSampleClassificationDTO> projectSampleClassificationDTOS = new ArrayList<ProjectSampleClassificationDTO>();
+        if(StringUtils.isEmpty(projectIds)){
+            throw new BankServiceException("项目ID不能为空！",projectIds);
+        }
+        if(sampleTypeId ==null){
+            throw new BankServiceException("样本类型Id不能为空！");
+        }
+        List<ProjectSampleClass> projectSampleClasses = new ArrayList<ProjectSampleClass>();
+        String[] projectIdStr = projectIds.split(",");
+        List<Long> projectIdList = new ArrayList<Long>();
+        for(String s :projectIdStr){
+            Long projectId = Long.valueOf(s);
+            projectIdList.add(projectId);
+        }
+        projectSampleClasses = projectSampleClassRepository.findByProjectIdInAndSampleTypeId(projectIdList,sampleTypeId);
+        projectSampleClassificationDTOS = projectSampleClassMapper.projectSampleClassesToProjectClassificationDTOs(projectSampleClasses);
+        return projectSampleClassificationDTOS;
+    }
 }

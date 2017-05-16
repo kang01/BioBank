@@ -129,7 +129,6 @@ public class ProjectSampleClassResource {
         projectSampleClassService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-    //如果样本类型为99,则不需要查询样本分类,直接返回样本分类,若不是99,则需要查询样本分类,再根据项目编码,样本类型,样本分类,查询样本类型信息
 
 //    /**
 //     * 根据项目Id查询样本类型
@@ -159,6 +158,22 @@ public class ProjectSampleClassResource {
         throws URISyntaxException {
         log.debug("REST request to get a page of ProjectSampleClasses");
         List<ProjectSampleClassificationDTO> result = projectSampleClassService.getSampleClassificationByProjectIdAndsampleTypeId(projectId,sampleTypeId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+
+    /**
+     * 根据多个项目和样本类型取分类
+     * @param projectIds
+     * @param sampleTypeId
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/project-sample-classes/projectIds/{projectIds}/sampleTypeId/{sampleTypeId}")
+    @Timed
+    public ResponseEntity<List<ProjectSampleClassificationDTO>> getSampleClassificationByProjectIdsAndsampleTypeId(@PathVariable String projectIds, @PathVariable Long sampleTypeId)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of ProjectSampleClasses");
+        List<ProjectSampleClassificationDTO> result = projectSampleClassService.getSampleClassificationByProjectIdsAndsampleTypeId(projectIds,sampleTypeId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 }

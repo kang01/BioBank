@@ -150,6 +150,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         List<Long> projectIds = stockOutApplyForSave.getProjectIds();
         stockOutApplyProjectRepository.deleteByStockOutApplyId(stockOutApply.getId());
         List<StockOutApplyProject> stockOutApplyProjects = new ArrayList<StockOutApplyProject>();
+        if(projectIds!=null)
         for(Long projectId :projectIds){
             if( projectId !=null){
                 StockOutApplyProject stockOutApplyProject = new StockOutApplyProject();

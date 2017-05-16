@@ -666,7 +666,7 @@ public class TempResource {
 
     /**
      * 根据上一级申请ID，取下一级出库申请列表
-     * @param applyId
+     * @param id
      * @return
      * @throws URISyntaxException
      */

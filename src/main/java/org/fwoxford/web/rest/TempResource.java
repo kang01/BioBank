@@ -730,7 +730,7 @@ public class TempResource {
         StockOutRequirementForApplyTable res = new StockOutRequirementForApplyTable();
         String samples = new String();
         res.setStatus("1201");
-        res.setId(0L+i);
+        res.setId(1L+i);
         res.setCountOfSample(10000);
         for(int j = 1 ;j<=10000;j++){
             samples+="1234567890-"+j+"-血浆";
@@ -743,7 +743,7 @@ public class TempResource {
     private StockOutRequirementForApplyTable createStockOutRequirementForApplyTable(int i) {
         StockOutRequirementForApplyTable res = new StockOutRequirementForApplyTable();
         res.setStatus("1201");
-        res.setId(0L+i);
+        res.setId(1L+i);
         res.setAge(10+i+"-30岁");
         res.setCountOfSample(10+i*100);
         res.setDisease("AMI，有溶血，有脂血");
@@ -751,5 +751,41 @@ public class TempResource {
         res.setSampleTypeName("血浆");
         res.setSex("男");
         return res;
+    }
+
+    /**
+     * 根据需求ID获取需求详情
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-requirements/{id}")
+    @Timed
+    public ResponseEntity<StockOutRequirementForApply> getRequirement(@PathVariable Long id) throws URISyntaxException {
+        StockOutRequirementForApply result = new StockOutRequirementForApply();
+        result.setId(id);
+        result.setStatus("1201");
+        if(id<=3){
+            result.setSex("m");
+            result.setAge("10;20");
+            result.setBloodLipid(true);
+            result.setCountOfSample(100);
+            result.setFrozenTubeTypeId(1L);
+            result.setDiseaseType(1);
+            result.setHemolysis(true);
+            result.setMemo("待核对样本");
+            result.setSampleTypeId(1L);
+            result.setSampleClassificationId(1L);
+            result.setRequirementName("100只 男性 15岁 血浆样本");
+        }else{
+            String samples = new String();
+            for(int j = 1 ;j<=10000;j++){
+                samples+="1234567890-"+j+"-血浆";
+                if(j<10000){samples+=",";};
+            }
+            result.setSamples(samples);
+        }
+
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 }

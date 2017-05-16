@@ -1,18 +1,23 @@
-package org.fwoxford.service.dto;
+package org.fwoxford.service.dto.response;
 
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import javax.validation.constraints.*;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.Objects;
 
 /**
- * A DTO for the StockOutApply entity.
+ * Created by gengluying on 2017/5/16.
  */
-public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializable {
-
+public class StockOutApplyForSave {
+    /**
+     * 申请ID
+     */
     private Long id;
+    /**
+     * 申请编码
+     */
+    @Size(max = 100)
+    private String applyCode;
     /**
      * 开始时间
      */
@@ -34,30 +39,19 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
      * 记录人ID
      */
     private Long recordId;
-
-    private Long parentApplyId;
-
-    private Long approverId;
-
-    private LocalDate approveTime;
-
-    @NotNull
-    @Size(max = 20)
-    private String status;
-
-    @Size(max = 1024)
-    private String memo;
-
+    /**
+     * 委托人
+     */
     @Size(max = 255)
     private String applyPersonName;
-
-    @NotNull
-    @Size(max = 100)
-    private String applyCode;
     /**
      * 委托方ID
      */
     private Long delegateId;
+    /**
+     * 项目IDs
+     */
+    private List<Long> projectIds;
 
     public Long getId() {
         return id;
@@ -66,83 +60,7 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
     public void setId(Long id) {
         this.id = id;
     }
-    public LocalDate getStartTime() {
-        return startTime;
-    }
 
-    public void setStartTime(LocalDate startTime) {
-        this.startTime = startTime;
-    }
-    public LocalDate getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDate endTime) {
-        this.endTime = endTime;
-    }
-    public String getPurposeOfSample() {
-        return purposeOfSample;
-    }
-
-    public void setPurposeOfSample(String purposeOfSample) {
-        this.purposeOfSample = purposeOfSample;
-    }
-    public LocalDate getRecordTime() {
-        return recordTime;
-    }
-
-    public void setRecordTime(LocalDate recordTime) {
-        this.recordTime = recordTime;
-    }
-    public Long getRecordId() {
-        return recordId;
-    }
-
-    public void setRecordId(Long recordId) {
-        this.recordId = recordId;
-    }
-    public Long getParentApplyId() {
-        return parentApplyId;
-    }
-
-    public void setParentApplyId(Long parentApplyId) {
-        this.parentApplyId = parentApplyId;
-    }
-    public Long getApproverId() {
-        return approverId;
-    }
-
-    public void setApproverId(Long approverId) {
-        this.approverId = approverId;
-    }
-    public LocalDate getApproveTime() {
-        return approveTime;
-    }
-
-    public void setApproveTime(LocalDate approveTime) {
-        this.approveTime = approveTime;
-    }
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-    public String getApplyPersonName() {
-        return applyPersonName;
-    }
-
-    public void setApplyPersonName(String applyPersonName) {
-        this.applyPersonName = applyPersonName;
-    }
     public String getApplyCode() {
         return applyCode;
     }
@@ -151,12 +69,68 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
         this.applyCode = applyCode;
     }
 
+    public LocalDate getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDate startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDate getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDate endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getPurposeOfSample() {
+        return purposeOfSample;
+    }
+
+    public void setPurposeOfSample(String purposeOfSample) {
+        this.purposeOfSample = purposeOfSample;
+    }
+
+    public LocalDate getRecordTime() {
+        return recordTime;
+    }
+
+    public void setRecordTime(LocalDate recordTime) {
+        this.recordTime = recordTime;
+    }
+
+    public Long getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(Long recordId) {
+        this.recordId = recordId;
+    }
+
+    public String getApplyPersonName() {
+        return applyPersonName;
+    }
+
+    public void setApplyPersonName(String applyPersonName) {
+        this.applyPersonName = applyPersonName;
+    }
+
     public Long getDelegateId() {
         return delegateId;
     }
 
     public void setDelegateId(Long delegateId) {
         this.delegateId = delegateId;
+    }
+
+    public List<Long> getProjectIds() {
+        return projectIds;
+    }
+
+    public void setProjectIds(List<Long> projectIds) {
+        this.projectIds = projectIds;
     }
 
     @Override
@@ -168,9 +142,9 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
             return false;
         }
 
-        StockOutApplyDTO stockOutApplyDTO = (StockOutApplyDTO) o;
+        StockOutApplyForSave stockOutApplyForSave = (StockOutApplyForSave) o;
 
-        if ( ! Objects.equals(id, stockOutApplyDTO.id)) { return false; }
+        if ( ! Objects.equals(id, stockOutApplyForSave.id)) { return false; }
 
         return true;
     }
@@ -189,11 +163,6 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
             ", purposeOfSample='" + purposeOfSample + "'" +
             ", recordTime='" + recordTime + "'" +
             ", recordId='" + recordId + "'" +
-            ", parentApplyId='" + parentApplyId + "'" +
-            ", approverId='" + approverId + "'" +
-            ", approveTime='" + approveTime + "'" +
-            ", status='" + status + "'" +
-            ", memo='" + memo + "'" +
             ", applyPersonName='" + applyPersonName + "'" +
             ", applyCode='" + applyCode + "'" +
             '}';

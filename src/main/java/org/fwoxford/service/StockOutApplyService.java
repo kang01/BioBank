@@ -2,6 +2,7 @@ package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutApplyForSave;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -48,4 +49,6 @@ public interface StockOutApplyService {
     DataTablesOutput<StockOutApplyForDataTableEntity> findStockOutApply(DataTablesInput input);
 
     StockOutApplyDTO initStockOutApply();
+
+    StockOutApplyForSave saveStockOutApply(StockOutApplyForSave stockOutApplyForSave);
 }

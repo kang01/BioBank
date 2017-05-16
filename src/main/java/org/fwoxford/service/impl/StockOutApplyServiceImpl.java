@@ -1,22 +1,33 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
+import org.fwoxford.domain.Delegate;
+import org.fwoxford.domain.Project;
+import org.fwoxford.domain.StockOutApplyProject;
+import org.fwoxford.repository.DelegateRepository;
+import org.fwoxford.repository.ProjectRepository;
+import org.fwoxford.repository.StockOutApplyProjectRepository;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.domain.StockOutApply;
 import org.fwoxford.repository.StockOutApplyRepository;
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutApplyForSave;
 import org.fwoxford.service.mapper.StockOutApplyMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +44,15 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     private final StockOutApplyRepository stockOutApplyRepository;
 
     private final StockOutApplyMapper stockOutApplyMapper;
+
+    @Autowired
+    private DelegateRepository delegateRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private StockOutApplyProjectRepository stockOutApplyProjectRepository;
 
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
@@ -106,5 +126,44 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         stockOutApply.setApplyCode(BankUtil.getUniqueID());
         stockOutApplyRepository.save(stockOutApply);
         return stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
+    }
+
+    @Override
+    public StockOutApplyForSave saveStockOutApply(StockOutApplyForSave stockOutApplyForSave) {
+        Long id = stockOutApplyForSave.getId();
+        if(id == null){
+            throw new BankServiceException("出库申请ID不能为空！",stockOutApplyForSave.toString());
+        }
+        StockOutApply stockOutApply = stockOutApplyRepository.findById(id);
+        if(stockOutApply == null){
+            throw new BankServiceException("未查询到需要修改的出库申请！");
+        }
+        stockOutApply.setApplyPersonName(stockOutApplyForSave.getApplyPersonName());
+        Delegate delegate = delegateRepository.findOne(stockOutApplyForSave.getDelegateId());
+        stockOutApply.setDelegate(delegate);
+        stockOutApply.setStartTime(stockOutApplyForSave.getStartTime());
+        stockOutApply.setEndTime(stockOutApplyForSave.getEndTime());
+        stockOutApply.setRecordId(stockOutApplyForSave.getRecordId());
+        stockOutApply.setRecordTime(stockOutApplyForSave.getRecordTime());
+        stockOutApply.setPurposeOfSample(stockOutApplyForSave.getPurposeOfSample());
+        stockOutApplyRepository.save(stockOutApply);
+        List<Long> projectIds = stockOutApplyForSave.getProjectIds();
+        stockOutApplyProjectRepository.deleteByStockOutApplyId(stockOutApply.getId());
+        List<StockOutApplyProject> stockOutApplyProjects = new ArrayList<StockOutApplyProject>();
+        for(Long projectId :projectIds){
+            if( projectId !=null){
+                StockOutApplyProject stockOutApplyProject = new StockOutApplyProject();
+                stockOutApplyProject.setStatus(Constants.VALID);
+                Project project = projectRepository.findOne(projectId);
+                if(project == null){
+                    throw new BankServiceException("项目不存在！",projectId.toString());
+                }
+                stockOutApplyProject.setProject(project);
+                stockOutApplyProject.setStockOutApply(stockOutApply);
+                stockOutApplyProjects.add(stockOutApplyProject);
+            }
+        }
+        stockOutApplyProjectRepository.save(stockOutApplyProjects);
+        return stockOutApplyForSave;
     }
 }

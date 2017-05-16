@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StockOutApplyProjectRepository extends JpaRepository<StockOutApplyProject,Long> {
 
+    void deleteByStockOutApplyId(Long id);
 }

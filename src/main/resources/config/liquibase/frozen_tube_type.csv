@@ -1,5 +1,5 @@
 frozen_tube_type_code;frozen_tube_type_name;sample_used_times_most;frozen_tube_volumn;frozen_tube_volumn_unit;memo;status;created_by;last_modified_by
-TUBE_TYPE_0001;血浆;10;100;ml;;0001;system;system
-TUBE_TYPE_0002;血清;10;200;ml;;0001;system;system
-TUBE_TYPE_0003;白细胞;10;200;ml;;0001;system;system
-TUBE_TYPE_0004;尿;10;100;ml;;0001;system;system
+TUBE_TYPE_0001;10ml;10;10;ml;;0001;system;system
+TUBE_TYPE_0002;50ml;10;50;ml;;0001;system;system
+TUBE_TYPE_0003;100ml;10;100;ml;;0001;system;system
+TUBE_TYPE_0004;200ml;10;200;ml;;0001;system;system

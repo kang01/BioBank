@@ -95,8 +95,8 @@ public class DelegateResourceIntTest {
      */
     public static Delegate createEntity(EntityManager em) {
         Delegate delegate = new Delegate()
-                .delegate_code(DEFAULT_DELEGATE_CODE)
-                .delegate_name(DEFAULT_DELEGATE_NAME)
+                .delegateCode(DEFAULT_DELEGATE_CODE)
+                .delegateName(DEFAULT_DELEGATE_NAME)
                 .status(DEFAULT_STATUS)
                 .memo(DEFAULT_MEMO);
         return delegate;
@@ -124,8 +124,8 @@ public class DelegateResourceIntTest {
         List<Delegate> delegateList = delegateRepository.findAll();
         assertThat(delegateList).hasSize(databaseSizeBeforeCreate + 1);
         Delegate testDelegate = delegateList.get(delegateList.size() - 1);
-        assertThat(testDelegate.getDelegate_code()).isEqualTo(DEFAULT_DELEGATE_CODE);
-        assertThat(testDelegate.getDelegate_name()).isEqualTo(DEFAULT_DELEGATE_NAME);
+        assertThat(testDelegate.getDelegateCode()).isEqualTo(DEFAULT_DELEGATE_CODE);
+        assertThat(testDelegate.getDelegateName()).isEqualTo(DEFAULT_DELEGATE_NAME);
         assertThat(testDelegate.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testDelegate.getMemo()).isEqualTo(DEFAULT_MEMO);
     }
@@ -156,7 +156,7 @@ public class DelegateResourceIntTest {
     public void checkDelegate_codeIsRequired() throws Exception {
         int databaseSizeBeforeTest = delegateRepository.findAll().size();
         // set the field null
-        delegate.setDelegate_code(null);
+        delegate.setDelegateCode(null);
 
         // Create the Delegate, which fails.
         DelegateDTO delegateDTO = delegateMapper.delegateToDelegateDTO(delegate);
@@ -175,7 +175,7 @@ public class DelegateResourceIntTest {
     public void checkDelegate_nameIsRequired() throws Exception {
         int databaseSizeBeforeTest = delegateRepository.findAll().size();
         // set the field null
-        delegate.setDelegate_name(null);
+        delegate.setDelegateName(null);
 
         // Create the Delegate, which fails.
         DelegateDTO delegateDTO = delegateMapper.delegateToDelegateDTO(delegate);
@@ -260,8 +260,8 @@ public class DelegateResourceIntTest {
         // Update the delegate
         Delegate updatedDelegate = delegateRepository.findOne(delegate.getId());
         updatedDelegate
-                .delegate_code(UPDATED_DELEGATE_CODE)
-                .delegate_name(UPDATED_DELEGATE_NAME)
+                .delegateCode(UPDATED_DELEGATE_CODE)
+                .delegateName(UPDATED_DELEGATE_NAME)
                 .status(UPDATED_STATUS)
                 .memo(UPDATED_MEMO);
         DelegateDTO delegateDTO = delegateMapper.delegateToDelegateDTO(updatedDelegate);
@@ -275,8 +275,8 @@ public class DelegateResourceIntTest {
         List<Delegate> delegateList = delegateRepository.findAll();
         assertThat(delegateList).hasSize(databaseSizeBeforeUpdate);
         Delegate testDelegate = delegateList.get(delegateList.size() - 1);
-        assertThat(testDelegate.getDelegate_code()).isEqualTo(UPDATED_DELEGATE_CODE);
-        assertThat(testDelegate.getDelegate_name()).isEqualTo(UPDATED_DELEGATE_NAME);
+        assertThat(testDelegate.getDelegateCode()).isEqualTo(UPDATED_DELEGATE_CODE);
+        assertThat(testDelegate.getDelegateName()).isEqualTo(UPDATED_DELEGATE_NAME);
         assertThat(testDelegate.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testDelegate.getMemo()).isEqualTo(UPDATED_MEMO);
     }

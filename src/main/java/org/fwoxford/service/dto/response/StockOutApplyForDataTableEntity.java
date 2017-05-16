@@ -54,7 +54,7 @@ public class StockOutApplyForDataTableEntity {
     @JsonView(DataTablesOutput.View.class)
     private String sampleTypes;
     /**
-     * 状态
+     * 状态（1101：进行中，1102：待批准，1103：已批准，1104：已作废）
      */
     @NotNull
     @JsonView(DataTablesOutput.View.class)

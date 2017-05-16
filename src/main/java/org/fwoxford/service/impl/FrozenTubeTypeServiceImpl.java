@@ -1,9 +1,11 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.service.FrozenTubeTypeService;
 import org.fwoxford.domain.FrozenTubeType;
 import org.fwoxford.repository.FrozenTubeTypeRepository;
 import org.fwoxford.service.dto.FrozenTubeTypeDTO;
+import org.fwoxford.service.dto.response.FrozenTubeTypeResponse;
 import org.fwoxford.service.mapper.FrozenTubeTypeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,5 +95,11 @@ public class FrozenTubeTypeServiceImpl implements FrozenTubeTypeService{
     public FrozenTubeTypeDTO findTopOne() {
         FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findTopOne();
         return frozenTubeTypeMapper.frozenTubeTypeToFrozenTubeTypeDTO(frozenTubeType);
+    }
+
+    @Override
+    public List<FrozenTubeTypeResponse> getAllFrozenTubeTypeList() {
+        List<FrozenTubeType> frozenTubeTypes = frozenTubeTypeRepository.findByStatusNot(Constants.INVALID);
+        return frozenTubeTypeMapper.frozenTubeTypesToFrozenTubeTypeResponses(frozenTubeTypes);
     }
 }

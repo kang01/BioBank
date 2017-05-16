@@ -2,6 +2,9 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.FrozenTubeTypeService;
+import org.fwoxford.service.dto.FrozenTubeDTO;
+import org.fwoxford.service.dto.response.FrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenTubeTypeResponse;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.FrozenTubeTypeDTO;
@@ -34,7 +37,7 @@ public class FrozenTubeTypeResource {
     private final Logger log = LoggerFactory.getLogger(FrozenTubeTypeResource.class);
 
     private static final String ENTITY_NAME = "frozenTubeType";
-        
+
     private final FrozenTubeTypeService frozenTubeTypeService;
 
     public FrozenTubeTypeResource(FrozenTubeTypeService frozenTubeTypeService) {
@@ -127,5 +130,16 @@ public class FrozenTubeTypeResource {
         frozenTubeTypeService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
+    /**
+    * 查询所有的有效冻存管类型
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/frozen-tube-types/all")
+    @Timed
+    public ResponseEntity<List<FrozenTubeTypeResponse>> getAllFrozenTubeTypeList() {
+        log.debug("REST request to get all FrozenTubeTypeResponse");
+        List<FrozenTubeTypeResponse> list = frozenTubeTypeService.getAllFrozenTubeTypeList();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
 }

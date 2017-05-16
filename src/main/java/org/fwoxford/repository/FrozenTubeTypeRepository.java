@@ -13,4 +13,6 @@ import java.util.List;
 public interface FrozenTubeTypeRepository extends JpaRepository<FrozenTubeType,Long> {
     @Query(value = "select p.* from frozen_tube_type p  where rownum <= 1 " , nativeQuery = true)
     FrozenTubeType findTopOne();
+
+    List<FrozenTubeType> findByStatusNot(String status);
 }

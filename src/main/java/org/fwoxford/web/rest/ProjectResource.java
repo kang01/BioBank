@@ -134,7 +134,7 @@ public class ProjectResource {
      */
     @GetMapping("/projects/all")
     @Timed
-    public ResponseEntity<List<ProjectDTO>> getAllSampleTypeList() {
+    public ResponseEntity<List<ProjectDTO>> getAllProjectList() {
         log.debug("REST request to get all ProjectDTO");
         List<ProjectDTO> list = projectService.findAllProjectDTOs();
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));

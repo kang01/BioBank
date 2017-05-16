@@ -1,9 +1,11 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.service.DelegateService;
 import org.fwoxford.domain.Delegate;
 import org.fwoxford.repository.DelegateRepository;
 import org.fwoxford.service.dto.DelegateDTO;
+import org.fwoxford.service.dto.response.DelegateResponse;
 import org.fwoxford.service.mapper.DelegateMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 public class DelegateServiceImpl implements DelegateService{
 
     private final Logger log = LoggerFactory.getLogger(DelegateServiceImpl.class);
-    
+
     private final DelegateRepository delegateRepository;
 
     private final DelegateMapper delegateMapper;
@@ -51,7 +53,7 @@ public class DelegateServiceImpl implements DelegateService{
 
     /**
      *  Get all the delegates.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +89,11 @@ public class DelegateServiceImpl implements DelegateService{
     public void delete(Long id) {
         log.debug("Request to delete Delegate : {}", id);
         delegateRepository.delete(id);
+    }
+
+    @Override
+    public List<DelegateResponse> getAllDelegateList() {
+        List<Delegate> delegates = delegateRepository.findByStatusNot(Constants.INVALID);
+        return delegateMapper.delegatesToDelegateResponses(delegates);
     }
 }

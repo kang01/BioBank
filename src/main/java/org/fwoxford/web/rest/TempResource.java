@@ -6,6 +6,8 @@ import io.github.jhipster.web.util.ResponseUtil;
 import net.sf.json.JSONObject;
 import org.fwoxford.domain.Area;
 import org.fwoxford.domain.Equipment;
+import org.fwoxford.domain.SampleClassification;
+import org.fwoxford.service.ProjectService;
 import org.fwoxford.service.SampleTypeService;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.dto.*;
@@ -32,10 +34,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 /**
  * REST controller for managing Tranship.
@@ -672,7 +671,7 @@ public class TempResource {
      */
     @GetMapping("/stock-out-applies/parentApply/{id}")
     @Timed
-    public ResponseEntity<List<StockOutApplyForDataTableEntity>> movedStockIn(@PathVariable Long id) throws URISyntaxException {
+    public ResponseEntity<List<StockOutApplyForDataTableEntity>> getNextStockOutApplyList(@PathVariable Long id) throws URISyntaxException {
         List<StockOutApplyForDataTableEntity> result =  new ArrayList<>();
 
         for (int i = 0; i < 10; ++i){
@@ -690,5 +689,67 @@ public class TempResource {
         }
         return ResponseEntity.ok()
             .body(result);
+    }
+
+    @Autowired
+    private ProjectService projectService;
+    /**
+     * 出库申请，查看详情接口
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-applies/{id}")
+    @Timed
+    public ResponseEntity<StockOutApplyByOne> get(@PathVariable Long id) throws URISyntaxException {
+        StockOutApplyByOne result = new StockOutApplyByOne();
+        result.setId(id);
+        result.setPurposeOfSample("实验");
+        result.setApplyPersonName("王东东");
+        result.setStatus("1101");
+        result.setApplyCode(BankUtil.getUniqueID());
+        result.setDelegateId(1L);
+        result.setRecordId(5L);
+        result.setStartTime(LocalDate.parse("2017-07-07"));
+        result.setEndTime(LocalDate.parse("2017-07-17"));
+        result.setRecordTime(LocalDate.now());
+        List<ProjectResponse> projectResponses = projectService.getProjectResponse();
+        result.setProjects(projectResponses);
+        List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            stockOutRequirementForApplyTables.add(createStockOutRequirementForApplyTable(i));
+        }
+        for (int j = 0; j < 3; j++) {
+            stockOutRequirementForApplyTables.add(createStockOutRequirementForSureApplyTable(j));
+        }
+        result.setStockOutRequirement(stockOutRequirementForApplyTables);
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+
+    private StockOutRequirementForApplyTable createStockOutRequirementForSureApplyTable(int i) {
+        StockOutRequirementForApplyTable res = new StockOutRequirementForApplyTable();
+        String samples = new String();
+        res.setStatus("1201");
+        res.setId(0L+i);
+        res.setCountOfSample(10000);
+        for(int j = 1 ;j<=10000;j++){
+            samples+="1234567890-"+j+"-血浆";
+            if(j<10000){samples+=",";};
+        }
+        res.setSamples(samples);
+        return res;
+    }
+
+    private StockOutRequirementForApplyTable createStockOutRequirementForApplyTable(int i) {
+        StockOutRequirementForApplyTable res = new StockOutRequirementForApplyTable();
+        res.setStatus("1201");
+        res.setId(0L+i);
+        res.setAge(10+i+"-30岁");
+        res.setCountOfSample(10+i*100);
+        res.setDisease("AMI，有溶血，有脂血");
+        res.setFrozenTubeTypeName("5L");
+        res.setSampleTypeName("血浆");
+        res.setSex("男");
+        return res;
     }
 }

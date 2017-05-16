@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.FrozenTubeTypeDTO;
+import org.fwoxford.service.dto.response.FrozenTubeTypeResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -42,4 +43,6 @@ public interface FrozenTubeTypeService {
     void delete(Long id);
 
     FrozenTubeTypeDTO findTopOne();
+
+    List<FrozenTubeTypeResponse> getAllFrozenTubeTypeList();
 }

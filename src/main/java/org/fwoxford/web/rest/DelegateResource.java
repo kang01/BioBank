@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.DelegateService;
+import org.fwoxford.service.dto.response.DelegateResponse;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.DelegateDTO;
@@ -34,7 +35,7 @@ public class DelegateResource {
     private final Logger log = LoggerFactory.getLogger(DelegateResource.class);
 
     private static final String ENTITY_NAME = "delegate";
-        
+
     private final DelegateService delegateService;
 
     public DelegateResource(DelegateService delegateService) {
@@ -127,5 +128,16 @@ public class DelegateResource {
         delegateService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
+    /**
+     * 查询所有的有效冻存管类型
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/delegates/all")
+    @Timed
+    public ResponseEntity<List<DelegateResponse>> getAllDelegateList() {
+        log.debug("REST request to get all FrozenTubeTypeResponse");
+        List<DelegateResponse> list = delegateService.getAllDelegateList();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
 }

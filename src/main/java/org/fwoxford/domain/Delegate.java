@@ -27,12 +27,12 @@ public class Delegate extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Size(max = 100)
     @Column(name = "delegate_code", length = 100, nullable = false)
-    private String delegate_code;
+    private String delegateCode;
 
     @NotNull
     @Size(max = 255)
     @Column(name = "delegate_name", length = 255, nullable = false)
-    private String delegate_name;
+    private String delegateName;
 
     @NotNull
     @Size(max = 20)
@@ -51,30 +51,30 @@ public class Delegate extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public String getDelegate_code() {
-        return delegate_code;
+    public String getDelegateCode() {
+        return delegateCode;
     }
 
-    public Delegate delegate_code(String delegate_code) {
-        this.delegate_code = delegate_code;
+    public Delegate delegateCode(String delegateCode) {
+        this.delegateCode = delegateCode;
         return this;
     }
 
-    public void setDelegate_code(String delegate_code) {
-        this.delegate_code = delegate_code;
+    public void setDelegateCode(String delegateCode) {
+        this.delegateCode = delegateCode;
     }
 
-    public String getDelegate_name() {
-        return delegate_name;
+    public String getDelegateName() {
+        return delegateName;
     }
 
-    public Delegate delegate_name(String delegate_name) {
-        this.delegate_name = delegate_name;
+    public Delegate delegateName(String delegateName) {
+        this.delegateName = delegateName;
         return this;
     }
 
-    public void setDelegate_name(String delegate_name) {
-        this.delegate_name = delegate_name;
+    public void setDelegateName(String delegateName) {
+        this.delegateName = delegateName;
     }
 
     public String getStatus() {
@@ -127,8 +127,8 @@ public class Delegate extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Delegate{" +
             "id=" + id +
-            ", delegate_code='" + delegate_code + "'" +
-            ", delegate_name='" + delegate_name + "'" +
+            ", delegateCode='" + delegateCode + "'" +
+            ", delegateName='" + delegateName + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             '}';

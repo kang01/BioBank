@@ -4,6 +4,7 @@ import org.fwoxford.service.ProjectService;
 import org.fwoxford.domain.Project;
 import org.fwoxford.repository.ProjectRepository;
 import org.fwoxford.service.dto.ProjectDTO;
+import org.fwoxford.service.dto.response.ProjectResponse;
 import org.fwoxford.service.mapper.ProjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,5 +95,11 @@ public class ProjectServiceImpl implements ProjectService{
         log.debug("Request to get all Projects");
         List<Project> projects =  projectRepository.findAllProject();
         return projectMapper.projectsToProjectDTOs(projects);
+    }
+
+    @Override
+    public List<ProjectResponse> getProjectResponse() {
+        List<Project> projects =  projectRepository.findAllProject();
+        return projectMapper.projectsToProjectResponses(projects);
     }
 }

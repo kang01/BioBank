@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface DelegateRepository extends JpaRepository<Delegate,Long> {
 
+    List<Delegate> findByStatusNot(String status);
 }

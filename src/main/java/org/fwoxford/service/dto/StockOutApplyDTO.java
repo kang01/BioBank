@@ -13,16 +13,26 @@ import java.util.Objects;
 public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
-
+    /**
+     * 开始时间
+     */
     private LocalDate startTime;
-
+    /**
+     * 记录时间
+     */
     private LocalDate endTime;
-
+    /**
+     * 样本用途
+     */
     @Size(max = 1024)
     private String purposeOfSample;
-
+    /**
+     * 记录日期
+     */
     private LocalDate recordTime;
-
+    /**
+     * 记录人ID
+     */
     private Long recordId;
 
     private Long parentApplyId;
@@ -44,7 +54,9 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
     @NotNull
     @Size(max = 100)
     private String applyCode;
-
+    /**
+     * 委托方ID
+     */
     private Long delegateId;
 
     public Long getId() {

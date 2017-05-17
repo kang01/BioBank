@@ -168,4 +168,15 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         stockOutApplyProjectRepository.save(stockOutApplyProjects);
         return stockOutApplyForSave;
     }
+
+    /**
+     * 根据上一级申请ID，取下一级出库申请列表
+     * @param id
+     * @return
+     */
+    @Override
+    public List<StockOutApplyForDataTableEntity> getNextStockOutApplyList(Long id) {
+        List<StockOutApplyForDataTableEntity> stockOutApplyForDataTableEntities= stockOutApplyRepositries.findByParentApplyId(id);
+        return stockOutApplyForDataTableEntities;
+    }
 }

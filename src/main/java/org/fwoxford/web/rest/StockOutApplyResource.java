@@ -8,6 +8,7 @@ import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutApplyForSave;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -171,5 +173,16 @@ public class StockOutApplyResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockOutApplyForSave.getId().toString()))
             .body(result);
     }
-
+    /**
+     * 根据上一级申请ID，取下一级出库申请列表
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-applies/parentApply/{id}")
+    @Timed
+    public ResponseEntity<List<StockOutApplyForDataTableEntity>> getNextStockOutApplyList(@PathVariable Long id) throws URISyntaxException {
+        List<StockOutApplyForDataTableEntity> result =  stockOutApplyService.getNextStockOutApplyList(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
 }

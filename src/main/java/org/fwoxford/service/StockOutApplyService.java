@@ -51,4 +51,6 @@ public interface StockOutApplyService {
     StockOutApplyDTO initStockOutApply();
 
     StockOutApplyForSave saveStockOutApply(StockOutApplyForSave stockOutApplyForSave);
+
+    List<StockOutApplyForDataTableEntity> getNextStockOutApplyList(Long id);
 }

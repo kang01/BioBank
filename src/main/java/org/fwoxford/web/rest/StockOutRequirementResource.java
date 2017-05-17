@@ -1,6 +1,9 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
+import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.service.dto.response.StockOutRequirementForSave;
 import org.fwoxford.web.rest.util.HeaderUtil;
@@ -10,16 +13,23 @@ import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -131,19 +141,25 @@ public class StockOutRequirementResource {
 
     /**
      * 保存出库申请需求
+     *
      * @param stockOutApplyId
-     * @param stockOutRequirementDTO
+     * @param stockOutRequirement
      * @return
      * @throws URISyntaxException
      */
-    @PostMapping("/stock-out-requirements/stockOutApply/{stockOutApplyId}")
+    @RequestMapping(value = "/stock-out-requirements/stockOutApply/{stockOutApplyId}",method = RequestMethod.POST)
     @Timed
-    public ResponseEntity<StockOutRequirementForSave> saveStockOutRequirement(@PathVariable Long stockOutApplyId,@Valid @RequestBody StockOutRequirementForSave stockOutRequirement) throws URISyntaxException {
-        log.debug("REST request to save StockOutRequirement : {}", stockOutRequirement);
-        if (stockOutRequirement.getId() != null) {
+    public ResponseEntity<StockOutRequirementForSave> saveStockOutRequirement(@PathVariable Long stockOutApplyId,
+                                                                              @RequestParam(value = "stockOutRequirement") String stockOutRequirement,
+                                                                              @RequestParam("file") MultipartFile file) throws URISyntaxException {
+        JSONObject jsonObject = JSONObject.fromObject(stockOutRequirement);
+        StockOutRequirementForSave requirement = (StockOutRequirementForSave) JSONObject.toBean(jsonObject, StockOutRequirementForSave.class);
+        log.debug("REST request to save StockOutRequirement : {}", requirement);
+        if (requirement.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new stockOutRequirement cannot already have an ID")).body(null);
         }
-        StockOutRequirementForSave result = stockOutRequirementService.saveStockOutRequirement(stockOutRequirement,stockOutApplyId);
+        StockOutRequirementForSave result = stockOutRequirementService.saveStockOutRequirement(requirement, stockOutApplyId,file);
+
         return ResponseEntity.created(new URI("/api/stock-out-requirements/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

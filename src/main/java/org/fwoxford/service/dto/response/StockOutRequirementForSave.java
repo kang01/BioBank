@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 /**
  * Created by gengluying on 2017/5/16.
  */
-public class StockOutRequirementForSave {
+public  class StockOutRequirementForSave {
     /**
      * 需求ID
      */
@@ -16,7 +16,6 @@ public class StockOutRequirementForSave {
     /**
      * 需求名称
      */
-    @NotNull
     @Size(max = 255)
     private String requirementName;
     /**
@@ -58,8 +57,6 @@ public class StockOutRequirementForSave {
      * 冻存管类型ID
      */
     private Long frozenTubeTypeId;
-
-    private MultipartFile file;
 
     public Long getId() {
         return id;
@@ -157,10 +154,21 @@ public class StockOutRequirementForSave {
         this.frozenTubeTypeId = frozenTubeTypeId;
     }
 
-    public MultipartFile getFile() {
-        return file;
-    }
-    public void setFile(MultipartFile file) {
-        this.file = file;
+    @Override
+    public String toString() {
+        return "StockOutRequirementForSave{" +
+            "id=" + id +
+            ", requirementName='" + requirementName + '\'' +
+            ", countOfSample=" + countOfSample +
+            ", sex='" + sex  +
+            ", age='" + age  +
+            ", diseaseTypeId=" + diseaseTypeId +
+            ", isHemolysis=" + isHemolysis +
+            ", isBloodLipid=" + isBloodLipid +
+            ", memo='" + memo  +
+            ", sampleTypeId=" + sampleTypeId +
+            ", sampleClassificationId=" + sampleClassificationId +
+            ", frozenTubeTypeId=" + frozenTubeTypeId +
+            '}';
     }
 }

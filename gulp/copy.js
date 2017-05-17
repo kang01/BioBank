@@ -18,7 +18,8 @@ module.exports = {
     fonts: fonts,
     common: common,
     swagger: swagger,
-    images: images
+    images: images,
+    templates: templates
 }
 
 var yorc = require('../.yo-rc.json')['generator-jhipster'];
@@ -63,6 +64,13 @@ function fonts() {
         }))
         .pipe(gulp.dest(config.dist))
     );
+}
+
+function templates() {
+    return gulp.src(config.app + 'content/templates/**/*.*')
+        .pipe(plumber({errorHandler: handleErrors}))
+        .pipe(changed(config.dist + 'content/templates/'))
+        .pipe(gulp.dest(config.dist + 'content/templates/'));
 }
 
 function common() {

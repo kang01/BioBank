@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiParam;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutApplyForSave;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -140,4 +141,35 @@ public class StockOutApplyResource {
     public DataTablesOutput<StockOutApplyForDataTableEntity> getPageStockOutApply(@RequestBody DataTablesInput input) {
         return stockOutApplyService.findStockOutApply(input);
     }
+
+    /**
+     * 添加出库申请
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-out-applies/new-empty")
+    @Timed
+    public ResponseEntity<StockOutApplyDTO> initStockOutApply() throws URISyntaxException {
+        log.debug("REST request to create StockOutApply first");
+        StockOutApplyDTO result = stockOutApplyService.initStockOutApply();
+        return ResponseEntity.created(new URI("/api/stock-out-applies/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * 修改保存出库申请单
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-applies/update-object")
+    @Timed
+    public ResponseEntity<StockOutApplyForSave> saveStockOutApply(@Valid @RequestBody StockOutApplyForSave stockOutApplyForSave) throws URISyntaxException {
+        log.debug("REST request to update StockOutApply : {}", stockOutApplyForSave);
+        StockOutApplyForSave result = stockOutApplyService.saveStockOutApply(stockOutApplyForSave);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockOutApplyForSave.getId().toString()))
+            .body(result);
+    }
+
 }

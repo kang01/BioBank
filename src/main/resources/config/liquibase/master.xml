@@ -20,11 +20,9 @@
     <include file="classpath:config/liquibase/changelog/20170317054842_added_entity_FrozenTubeType.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317062302_added_entity_FrozenBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317065947_added_entity_Tranship.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170317075947_added_entity_Relations.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317080522_added_entity_FrozenTube.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317083114_added_entity_TranshipBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317160203_added_entity_StockIn.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170319150513_added_entity_FrozenTubeRecord.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170319153727_added_entity_StockInBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170419010458_added_entity_FrozenBoxPosition.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170419015417_added_entity_StockInTubes.xml" relativeToChangelogFile="false"/>
@@ -52,11 +50,9 @@
     <include file="classpath:config/liquibase/changelog/20170317023912_added_entity_constraints_Area.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317050339_added_entity_constraints_SupportRack.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317062302_added_entity_constraints_FrozenBox.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170317075947_added_entity_constraints_Relations.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317080522_added_entity_constraints_FrozenTube.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317083114_added_entity_constraints_TranshipBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317160203_added_entity_constraints_StockIn.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170319150513_added_entity_constraints_FrozenTubeRecord.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170319153727_added_entity_constraints_StockInBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317065947_added_entity_constraints_Tranship.xml" relativeToChangelogFile="false"/>
 

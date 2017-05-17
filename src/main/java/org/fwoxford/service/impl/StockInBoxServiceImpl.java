@@ -378,14 +378,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBoxNew.setMemo(stockInBoxForDataSplit.getMemo());
         frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
 
-        //保存盒子位置
-        FrozenBoxPosition frozenBoxPosition = frozenBoxPositionRepository.findOneByFrozenBoxIdAndStatus(frozenBoxNew.getId(),Constants.FROZEN_BOX_STOCKING);
-        if(frozenBoxPosition == null){
-            frozenBoxPosition = new FrozenBoxPosition();
-        }
-        frozenBoxPosition = frozenBoxPositionMapper.frozenBoxToFrozenBoxPosition(frozenBoxPosition,frozenBoxNew);
-        frozenBoxPosition.setStatus(Constants.FROZEN_BOX_STOCKING);
-        frozenBoxPositionRepository.save(frozenBoxPosition);
         stockInBoxForDataSplit.setFrozenBoxId(frozenBoxNew.getId());
         TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBoxNew.getFrozenBoxCode());
 
@@ -427,20 +419,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 &&tube.getTubeColumns().equals(frozenTube.getTubeColumns())){
                 continue;
             }
-            //保存入库与冻存管的关系
-            StockInTubes stockInTubes = new StockInTubes();
-            stockInTubes.setMemo(frozenTube.getMemo());
-            stockInTubes.setStatus(Constants.FROZEN_BOX_STOCKING);
-            stockInTubes.setColumnsInTube(tube.getTubeColumns());
-            stockInTubes.setRowsInTube(tube.getTubeRows());
-            stockInTubes.setFrozenBoxPosition(frozenBoxPosition);
-            stockInTubes.setFrozenTube(frozenTube);
-            stockInTubes.setFrozenTubeCode(frozenTube.getFrozenTubeCode());
-            stockInTubes.setSampleCode(frozenTube.getSampleCode());
-            stockInTubes.setSampleTempCode(frozenTube.getSampleTempCode());
-            stockInTubes.setTranshipBox(transhipBox);
-            stockInTubes.setStockInBox(stockInBox);
-            stockInTubesRepository.save(stockInTubes);
             //更改管子的位置信息
             frozenTube.setFrozenBox(frozenBoxNew);
             frozenTube.setFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
@@ -513,37 +491,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setRowsInShelf(frozenBox.getRowsInShelf());
         stockInBox.setStatus(Constants.FROZEN_BOX_PUT_SHELVES);
         stockInBoxRepository.save(stockInBox);
-        //增加冻存盒位置记录
-        List<FrozenBoxPosition> frozenBoxPositionOld =  frozenBoxPositionRepository.findByFrozenBoxIdAndStatus(frozenBox.getId(),Constants.FROZEN_BOX_STOCKING);
-        if(frozenBoxPositionOld.size() ==0){
-            throw new BankServiceException("未查询到该冻存盒的待入库记录！",frozenBox.toString());
-        }
-        FrozenBoxPosition frozenBoxPos = new FrozenBoxPosition();
-        frozenBoxPos = frozenBoxPositionMapper.frozenBoxToFrozenBoxPosition(frozenBoxPos,frozenBox);
-        frozenBoxPos.setStatus(Constants.FROZEN_BOX_PUT_SHELVES);
-        frozenBoxPos = frozenBoxPositionRepository.save(frozenBoxPos);
-        TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBox.getFrozenBoxCode());
-        //保存冻存管历史
-        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(boxCode);
-        for(FrozenTube tube : frozenTubes){
-            //保存入库与冻存管的关系
-            StockInTubes stockInTubes = new StockInTubes();
-            stockInTubes.setMemo(tube.getMemo());
-            stockInTubes.setStatus(Constants.FROZEN_BOX_PUT_SHELVES);
-            stockInTubes.setColumnsInTube(tube.getTubeColumns());
-            stockInTubes.setRowsInTube(tube.getTubeRows());
-            stockInTubes.setFrozenBoxPosition(frozenBoxPos);
-            stockInTubes.setFrozenTube(tube);
-            stockInTubes.setFrozenTubeCode(tube.getFrozenTubeCode());
-            stockInTubes.setSampleCode(tube.getSampleCode());
-            stockInTubes.setStockInBox(stockInBox);
-            stockInTubes.setTranshipBox(transhipBox);
-            stockInTubes.setSampleTempCode(tube.getSampleTempCode());
-            stockInTubesRepository.save(stockInTubes);
-        }
-
         stockInBoxDetail = createStockInBoxDetail(frozenBox,stockInCode);
-
         return stockInBoxDetail;
     }
 

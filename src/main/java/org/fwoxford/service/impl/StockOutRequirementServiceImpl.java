@@ -4,6 +4,7 @@ import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.domain.StockOutRequirement;
 import org.fwoxford.repository.StockOutRequirementRepository;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
+import org.fwoxford.service.dto.response.StockOutRequirementForSave;
 import org.fwoxford.service.mapper.StockOutRequirementMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 public class StockOutRequirementServiceImpl implements StockOutRequirementService{
 
     private final Logger log = LoggerFactory.getLogger(StockOutRequirementServiceImpl.class);
-    
+
     private final StockOutRequirementRepository stockOutRequirementRepository;
 
     private final StockOutRequirementMapper stockOutRequirementMapper;
@@ -51,7 +52,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
     /**
      *  Get all the stockOutRequirements.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +88,10 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
     public void delete(Long id) {
         log.debug("Request to delete StockOutRequirement : {}", id);
         stockOutRequirementRepository.delete(id);
+    }
+
+    @Override
+    public StockOutRequirementForSave saveStockOutRequirement(StockOutRequirementForSave stockOutRequirement) {
+        return null;
     }
 }

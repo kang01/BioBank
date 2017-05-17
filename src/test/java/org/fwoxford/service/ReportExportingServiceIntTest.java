@@ -1,8 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.BioBankApp;
-import org.fwoxford.service.dto.response.StockOutApplyReportDTO;
-import org.fwoxford.service.dto.response.StockOutRequirementReportDTO;
+import org.fwoxford.service.dto.response.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -65,5 +64,78 @@ public class ReportExportingServiceIntTest {
 //        assertThat(allManagedUsers.getContent().stream()
 //            .noneMatch(user -> Constants.ANONYMOUS_USER.equals(user.getLogin())))
 //            .isTrue();
+    }
+
+    @Test
+    public void testMakeStockOutRequirementCheckReport(){
+        StockOutRequirementDetailReportDTO dto = new StockOutRequirementDetailReportDTO();
+        try {
+            dto.setRequirementNO("123456");
+            dto.setCountOfSample(3);
+            dto.setSampleType("血浆");
+            dto.setSex("男");
+            dto.setAges("30-65");
+            dto.setDiseaseType("AMI; PCI;");
+            dto.setProjects("123456;123456;");
+            dto.setMemo("Hello");
+            StockOutSampleCheckResultDTO req = new StockOutSampleCheckResultDTO();
+            req.setSampleCode("1234567890");
+            req.setMemo("Test");
+            dto.setCheckResults(new ArrayList<>());
+            dto.getCheckResults().add(req);
+            dto.getCheckResults().add(req);
+            dto.getCheckResults().add(req);
+
+            ByteArrayOutputStream stream = reportExportingService.makeStockOutRequirementCheckReport(dto);
+            File dir = new File(".");
+
+            System.out.println(dir.getCanonicalPath());
+            System.out.println(dir.getAbsolutePath());
+
+            OutputStream ofs = null;
+            ofs = new FileOutputStream(dir.getCanonicalPath() + "/" + stream.hashCode() + ".xlsx");
+            stream.writeTo(ofs);
+
+            ofs.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testMakeStockOutHandoverReport(){
+        StockOutHandoverReportDTO dto = new StockOutHandoverReportDTO();
+        try {
+            dto.setHandOverNumber("123456");
+            dto.setApplicationNumber("1234567");
+            dto.setCountOfSample(3);
+            dto.setCountOfBox(3);
+            dto.setMemo("Hello");
+            StockOutHandoverSampleReportDTO req = new StockOutHandoverSampleReportDTO();
+            req.setSampleCode("1234567890");
+            req.setProjectCode("0987654321");
+            dto.setSamples(new ArrayList<>());
+            dto.getSamples().add(req);
+            dto.getSamples().add(req);
+            dto.getSamples().add(req);
+
+            ByteArrayOutputStream stream = reportExportingService.makeStockOutHandoverReport(dto);
+            File dir = new File(".");
+
+            System.out.println(dir.getCanonicalPath());
+            System.out.println(dir.getAbsolutePath());
+
+            OutputStream ofs = null;
+            ofs = new FileOutputStream(dir.getCanonicalPath() + "/" + stream.hashCode() + ".xlsx");
+            stream.writeTo(ofs);
+
+            ofs.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

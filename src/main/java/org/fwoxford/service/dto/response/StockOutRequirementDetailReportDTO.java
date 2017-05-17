@@ -10,6 +10,15 @@ public class StockOutRequirementDetailReportDTO {
 
     private Long id;
 
+    public String getRequirementNO() {
+        return requirementNO;
+    }
+
+    public void setRequirementNO(String requirementNO) {
+        this.requirementNO = requirementNO;
+    }
+
+    private String requirementNO;
     private String requirementName;
 
     private Integer countOfSample;

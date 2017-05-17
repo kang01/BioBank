@@ -5,7 +5,9 @@ package org.fwoxford.service;
  */
 
 public enum BBISReportType {
-    StockOutRequirement(1, "report-stock-out-application.xlsx");
+    StockOutRequirement(1, "report-stock-out-application.xlsx"),
+    StockOutCheckResult(2, "report-stock-out-check-result.xlsx"),
+    StockOutHandover(3, "report-stock-out-take-over.xlsx");
 
     private int index;
 

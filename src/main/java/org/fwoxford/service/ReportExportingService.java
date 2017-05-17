@@ -2,9 +2,8 @@ package org.fwoxford.service;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
-import org.fwoxford.service.dto.response.StockOutApplyReportDTO;
-import org.fwoxford.service.dto.response.StockOutRequirementDetailReportDTO;
-import org.fwoxford.service.dto.response.StockOutRequirementReportDTO;
+import org.fwoxford.domain.StockOutHandover;
+import org.fwoxford.service.dto.response.*;
 import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.krysalis.barcode4j.tools.UnitConv;
@@ -25,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import static org.fwoxford.service.BBISReportType.StockOutCheckResult;
 import static org.fwoxford.service.BBISReportType.StockOutRequirement;
 
 @Service
@@ -40,6 +40,8 @@ public class ReportExportingService {
         ServletContext ctx = request.getServletContext();
         switch (type){
             case StockOutRequirement:
+            case StockOutCheckResult:
+            case StockOutHandover:
                 if (stream == null){
                     stream = ctx.getResourceAsStream("/content/templates/" + type.getTemplateFilePath());
                 }
@@ -76,7 +78,13 @@ public class ReportExportingService {
         colIndex = colIndex < 0 ? 0 : colIndex;
 
         XSSFRow dataRow = sheet.getRow(rowIndex);
+        if (dataRow == null){
+            dataRow = sheet.createRow(rowIndex);
+        }
         XSSFCell cell = dataRow.getCell(colIndex);
+        if (cell == null){
+            cell = dataRow.createCell(colIndex);
+        }
 
         return cell;
     }
@@ -98,7 +106,13 @@ public class ReportExportingService {
         colIndex = colIndex < 0 ? 0 : colIndex;
 
         XSSFRow dataRow = sheet.getRow(rowIndex);
+        if (dataRow == null){
+            dataRow = sheet.createRow(rowIndex);
+        }
         XSSFCell cell = dataRow.getCell(colIndex);
+        if (cell == null){
+            cell = dataRow.createCell(colIndex);
+        }
 
         return cell;
     }
@@ -168,7 +182,6 @@ public class ReportExportingService {
     public ByteArrayOutputStream makeStockOutRequirementReport(StockOutApplyReportDTO applyDTO){
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
-            int dpi = 150;
             ByteArrayOutputStream barCodeImage = makeBarcodeImage(applyDTO.getApplyNumber());
             Integer barCodePicIndex = null;
 
@@ -310,7 +323,292 @@ public class ReportExportingService {
     }
 
     public ByteArrayOutputStream makeStockOutRequirementCheckReport(StockOutRequirementDetailReportDTO requirementDTO){
-        return null;
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            ByteArrayOutputStream barCodeImage = makeBarcodeImage(requirementDTO.getRequirementNO());
+            Integer barCodePicIndex = null;
+
+            XSSFWorkbook workbook = openReportTemplate(StockOutCheckResult, null);
+            // 找到Sheet
+            XSSFSheet summarySheet = workbook.getSheetAt(0);
+
+            // 需求编号
+            XSSFCell cellNO = getCell(summarySheet, "I2");
+            if (requirementDTO.getRequirementNO() != null && requirementDTO.getRequirementNO().length() > 0){
+//                cellNO.setCellValue(applyDTO.getApplyNumber());
+                barCodePicIndex = insertImageToCell(cellNO, barCodeImage.toByteArray());
+                barCodeImage.close();
+            }
+
+            // 委托方
+            String requirement = "";
+            if (requirementDTO.getCountOfSample() != null){
+                requirement += String.format("样本 %d 只; ", requirementDTO.getCountOfSample());
+            }
+            if (requirementDTO.getSampleType() != null && requirementDTO.getSampleType().length() > 0){
+                requirement += String.format("%s 类型; ", requirementDTO.getSampleType());
+            }
+            if (requirementDTO.getSex() != null && requirementDTO.getSex().length() > 0){
+                requirement += String.format("性别 %s; ", requirementDTO.getSex());
+            }
+            if (requirementDTO.getAges() != null && requirementDTO.getAges().length() > 0){
+                requirement += String.format("年龄 %s; ", requirementDTO.getAges());
+            }
+            if (requirementDTO.getDiseaseType() != null && requirementDTO.getDiseaseType().length() > 0){
+                requirement += String.format("%s 疾病; ", requirementDTO.getDiseaseType());
+            }
+            if (requirementDTO.getProjects() != null && requirementDTO.getProjects().length() > 0){
+                requirement += String.format("可用项目 %s ", requirementDTO.getProjects());
+            }
+            if (requirementDTO.getMemo() != null && requirementDTO.getMemo().length() > 0){
+                requirement += String.format("\r\n%s。 ", requirementDTO.getMemo());
+            }
+            // 需求信息
+            XSSFCell cellRequirement = getCell(summarySheet, "A4");
+            cellRequirement.setCellValue(requirement);
+
+            List<StockOutSampleCheckResultDTO> results = requirementDTO.getCheckResults();
+            if (results == null){
+                results = new ArrayList<>();
+            }
+
+            int no = 1;
+            int startRowPos = 6;
+            XSSFCell startCell = getCell(summarySheet, "A", startRowPos);
+            XSSFCellStyle style = startCell.getCellStyle();
+            for(StockOutSampleCheckResultDTO r : results){
+
+                // 序号
+                XSSFCell cellOneRequireNO = getCell(summarySheet, "A", startRowPos);
+                cellOneRequireNO.setCellStyle(style);
+                cellOneRequireNO.setCellValue(no++);
+
+                // 样本编码
+                XSSFCell cellOneSampleCode = getCell(summarySheet, "B", startRowPos);
+                cellOneSampleCode.setCellStyle(style);
+                cellOneSampleCode.setCellValue(r.getSampleCode());
+
+                // 样本类型
+                XSSFCell cellOneSampleType = getCell(summarySheet, "C", startRowPos);
+                cellOneSampleType.setCellStyle(style);
+                cellOneSampleType.setCellValue(r.getSampleType());
+
+                // 性别
+                XSSFCell cellOneSex = getCell(summarySheet, "D", startRowPos);
+                cellOneSex.setCellStyle(style);
+                cellOneSex.setCellValue(r.getSex());
+
+                // 年龄
+                XSSFCell cellOneAge = getCell(summarySheet, "E", startRowPos);
+                cellOneAge.setCellStyle(style);
+                cellOneAge.setCellValue(r.getAge());
+
+                // 使用次数
+                XSSFCell cellOneTiems = getCell(summarySheet, "F", startRowPos);
+                cellOneTiems.setCellStyle(style);
+                if (r.getTimes() != null){
+                    cellOneTiems.setCellValue(r.getTimes());
+                }
+
+                // 疾病类型
+                XSSFCell cellOneDiseaseType = getCell(summarySheet, "G", startRowPos);
+                cellOneDiseaseType.setCellStyle(style);
+                cellOneDiseaseType.setCellValue(r.getDiseaseType());
+
+                // 项目编码
+                XSSFCell cellOneProject = getCell(summarySheet, "H", startRowPos);
+                cellOneProject.setCellStyle(style);
+                cellOneProject.setCellValue(r.getProjectCode());
+
+                // 状态
+                XSSFCell cellOneStatus = getCell(summarySheet, "I", startRowPos);
+                cellOneStatus.setCellStyle(style);
+                cellOneStatus.setCellValue(r.getStatus());
+
+                // 批注
+                XSSFCell cellOneMemo = getCell(summarySheet, "J", startRowPos);
+                cellOneMemo.setCellStyle(style);
+                cellOneMemo.setCellValue(r.getMemo());
+
+                startRowPos++;
+            }
+
+            // 输出Excel文档到 Output Stream
+            workbook.write(outputStream);
+            workbook.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return outputStream;
+    }
+
+    public ByteArrayOutputStream makeStockOutHandoverReport(StockOutHandoverReportDTO handoverDTO){
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            ByteArrayOutputStream barCodeImage = makeBarcodeImage(handoverDTO.getHandOverNumber());
+            ByteArrayOutputStream barCodeImageForApplication = makeBarcodeImage(handoverDTO.getApplicationNumber());
+            Integer barCodePicIndex = null;
+            Integer barCodePicIndexForApplication = null;
+
+            XSSFWorkbook workbook = openReportTemplate(BBISReportType.StockOutHandover, null);
+            // 找到Sheet
+            XSSFSheet summarySheet = workbook.getSheetAt(0);
+
+            // 交接单编号
+            XSSFCell cellNO = getCell(summarySheet, "G2");
+            if (handoverDTO.getHandOverNumber() != null && handoverDTO.getHandOverNumber().length() > 0){
+                barCodePicIndex = insertImageToCell(cellNO, barCodeImage.toByteArray());
+                barCodeImage.close();
+            }
+
+            // 申请单编号
+            XSSFCell cellApplyNO = getCell(summarySheet, "B5");
+            if (handoverDTO.getApplicationNumber() != null && handoverDTO.getApplicationNumber().length() > 0){
+                barCodePicIndexForApplication = insertImageToCell(cellApplyNO, barCodeImageForApplication.toByteArray());
+                barCodeImageForApplication.close();
+            }
+
+            // 出库计划编号
+            XSSFCell cellPlanCode = getCell(summarySheet, "I5");
+            cellPlanCode.setCellValue(handoverDTO.getPlanNumber());
+
+            // 出库任务编号
+            XSSFCell cellTaskCode = getCell(summarySheet, "I6");
+            cellTaskCode.setCellValue(handoverDTO.getTaskNumber());
+
+            // 接收方
+            XSSFCell cellReceiverCompany = getCell(summarySheet, "B8");
+            cellReceiverCompany.setCellValue(handoverDTO.getReceiverCompany());
+
+            // 联系电话
+            XSSFCell cellReceiverContact = getCell(summarySheet, "I8");
+            cellReceiverContact.setCellValue(handoverDTO.getReceiverContact());
+
+            // 接收人
+            XSSFCell cellReceiver = getCell(summarySheet, "B9");
+            cellReceiver.setCellValue(handoverDTO.getReceiver());
+
+            // 交付人
+            XSSFCell cellDeliver = getCell(summarySheet, "E9");
+            cellDeliver.setCellValue(handoverDTO.getDeliver());
+
+            // 交接时间
+            XSSFCell cellHandoverDate = getCell(summarySheet, "I9");
+            cellHandoverDate.setCellValue(handoverDTO.getHandoverDate());
+
+            // 样本数量
+            XSSFCell cellSampleQty = getCell(summarySheet, "B10");
+            if (handoverDTO.getCountOfSample() != null){
+                cellSampleQty.setCellValue(handoverDTO.getCountOfSample());
+            }
+
+            // 盒子数量
+            XSSFCell cellBoxQty = getCell(summarySheet, "E10");
+            if (handoverDTO.getCountOfBox() != null){
+                cellBoxQty.setCellValue(handoverDTO.getCountOfBox());
+            }
+
+            // 备注
+            XSSFCell cellMemo = getCell(summarySheet, "A12");
+            cellMemo.setCellValue(handoverDTO.getMemo());
+
+            // 接收日期
+            XSSFCell cellReceiveDate = getCell(summarySheet, "H13");
+            cellReceiveDate.setCellValue(handoverDTO.getReceiveDate());
+
+            // 接收人
+            XSSFCell cellReceiver2 = getCell(summarySheet, "A14");
+            cellReceiver2.setCellValue(handoverDTO.getReceiver());
+
+            // 交付日期
+            XSSFCell cellDeliverDate = getCell(summarySheet, "J13");
+            cellDeliverDate.setCellValue(handoverDTO.getDeliverDate());
+
+            // 交付人
+            XSSFCell cellRequirePeople = getCell(summarySheet, "J14");
+            cellRequirePeople.setCellValue(handoverDTO.getDeliver());
+
+            XSSFSheet detailSheet = workbook.getSheetAt(1);
+            List<StockOutHandoverSampleReportDTO> samples = handoverDTO.getSamples();
+            if (samples == null){
+                samples = new ArrayList<>();
+            } else {
+                if (handoverDTO.getHandOverNumber() != null && handoverDTO.getHandOverNumber().length() > 0){
+                    cellNO = getCell(detailSheet, "H2");
+                    barCodePicIndex = insertImageToCell(cellNO, barCodePicIndex);
+                }
+            }
+
+            int no = 1;
+            int startRowPos = 5;
+            XSSFCell startCell = getCell(summarySheet, "A", startRowPos);
+            XSSFCellStyle style = startCell.getCellStyle();
+            style.setBorderLeft(BorderStyle.THIN);
+            style.setBorderRight(BorderStyle.THIN);
+            style.setBorderTop(BorderStyle.THIN);
+            style.setBorderBottom(BorderStyle.THIN);
+            for(StockOutHandoverSampleReportDTO r : samples){
+
+                // 序号
+                XSSFCell cellOneRequireNO = getCell(detailSheet, "A", startRowPos);
+                cellOneRequireNO.setCellStyle(style);
+                cellOneRequireNO.setCellValue(no++);
+
+                // 临时盒编码
+                XSSFCell cellOneBoxCode = getCell(detailSheet, "B", startRowPos);
+                cellOneBoxCode.setCellStyle(style);
+                cellOneBoxCode.setCellValue(r.getBoxCode());
+
+                // 位置
+                XSSFCell cellOneLocation = getCell(detailSheet, "C", startRowPos);
+                cellOneLocation.setCellStyle(style);
+                cellOneLocation.setCellValue(r.getLocation());
+
+                // 样本编码
+                XSSFCell cellOneSampleCode = getCell(detailSheet, "D", startRowPos);
+                cellOneSampleCode.setCellStyle(style);
+                cellOneSampleCode.setCellValue(r.getSampleCode());
+
+                // 类型
+                XSSFCell cellOneSampleType = getCell(detailSheet, "E", startRowPos);
+                cellOneSampleType.setCellStyle(style);
+                cellOneSampleType.setCellValue(r.getSampleType());
+
+                // 性别
+                XSSFCell cellOneSex = getCell(detailSheet, "F", startRowPos);
+                cellOneSex.setCellStyle(style);
+                cellOneSex.setCellValue(r.getSex());
+
+                // 年龄
+                XSSFCell cellOneAge = getCell(detailSheet, "G", startRowPos);
+                cellOneAge.setCellStyle(style);
+                cellOneAge.setCellValue(r.getAge());
+
+                // 疾病
+                XSSFCell cellOneDiseaseType = getCell(detailSheet, "H", startRowPos);
+                cellOneDiseaseType.setCellStyle(style);
+                cellOneDiseaseType.setCellValue(r.getDiseaseType());
+
+                // 项目编码
+                XSSFCell cellOneProjectCode = getCell(detailSheet, "I", startRowPos);
+                cellOneProjectCode.setCellStyle(style);
+                cellOneProjectCode.setCellValue(r.getProjectCode());
+
+                startRowPos++;
+            }
+
+            // 输出Excel文档到 Output Stream
+            workbook.write(outputStream);
+            workbook.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return outputStream;
     }
 
     public HashSet<String[]> readRequiredSamplesFromExcelFile(InputStream stream){

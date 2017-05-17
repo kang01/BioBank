@@ -20,7 +20,11 @@
             //获取委托方
             queryDelegates:_queryDelegates,
             //冻存管类型
-            queryFrozenTubeType:_queryFrozenTubeType
+            queryFrozenTubeType:_queryFrozenTubeType,
+            //根据项目和样本类型获取样本分类
+            queryRequirementSampleClasses:_queryRequirementSampleClasses,
+            //保存申请空对象
+            saveRequirement:_saveRequirement
         };
         function _queryDemo(data,oSettings) {
             return $http.post('api/res/tranships',JSON.stringify(data))
@@ -37,6 +41,13 @@
         function _queryFrozenTubeType() {
             return $http.get('/api/frozen-tube-types/all')
         }
+        function _queryRequirementSampleClasses(projectIds,sampleTypeId) {
+            return $http.get('/api/project-sample-classes/projectIds/'+projectIds+'/sampleTypeId/'+sampleTypeId)
+        }
+        function _saveRequirement(requirement) {
+            return $http.post('/api/stock-out-applies/new-empty',requirement)
+        }
+
         return service;
     }
 })();

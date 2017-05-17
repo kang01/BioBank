@@ -17,10 +17,7 @@ import org.fwoxford.service.dto.StockInCompleteDTO;
 import org.fwoxford.service.dto.StockInDTO;
 import org.fwoxford.service.dto.StockInForDataDetail;
 import org.fwoxford.service.dto.TranshipToStockInDTO;
-import org.fwoxford.service.dto.response.StockInBoxForDataTable;
-import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.fwoxford.service.mapper.StockInMapper;
-import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -28,23 +25,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.mapping.Column;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.mapping.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.Security;
-import java.time.LocalDate;
 import java.util.*;
 
 /**

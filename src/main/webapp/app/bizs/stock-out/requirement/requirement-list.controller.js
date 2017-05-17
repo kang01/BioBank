@@ -19,6 +19,7 @@
         function _fnAdd() {
             $state.go('requirement-new');
         }
+
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('processing',true)
             .withOption('serverSide',true)
@@ -60,8 +61,7 @@
             .withColumnFilter({
                 aoColumns: [
                     {
-                    },
-                    {
+                    },{
                     type: 'text',
                     width:50,
                     iFilterLength:3
@@ -83,69 +83,49 @@
                     bRegex: true,
                     bSmart: true
                 }, {
-                    type: 'select',
+                    type: 'text',
                     bRegex: false,
-                    width:50,
-                    values: [
-                        {value:"10",label:"非常满意"},
-                        {value:"9",label:"较满意"},
-                        {value:"8",label:"满意"},
-                        {value:"7",label:"有少量空管"},
-                        {value:"6",label:"有许多空管"},
-                        {value:"5",label:"有大量空管"},
-                        {value:"4",label:"有少量空孔"},
-                        {value:"3",label:"有少量错位"},
-                        {value:"2",label:"有大量错位"},
-                        {value:"1",label:"非常不满意"}
-                    ]
+                    width:50
+                }, {
+                    type: 'text',
+                    bRegex: false,
+                    width:50
                 }, {
                     type: 'select',
                     bRegex: true,
                     width:50,
                     values: [
-                        {value:'1001',label:"进行中"},
-                        {value:"1002",label:"待入库"},
-                        {value:"1003",label:"已入库"},
-                        {value:"1004",label:"已作废"}
+                        {value:'1101',label:"进行中"},
+                        {value:"1102",label:"待批准"},
+                        {value:"1103",label:"已批准"},
+                        {value:"1104",label:"已作废"}
                     ]
                 }]
             });
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn("").withTitle('').withOption('width', '50px').notSortable().renderWith(extraHtml),
-            DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点'),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目编号'),
-            DTColumnBuilder.newColumn('transhipDate').withTitle('转运日期'),
-            DTColumnBuilder.newColumn('receiver').withTitle('接收人'),
-            DTColumnBuilder.newColumn('receiveDate').withTitle('接收日期'),
-            DTColumnBuilder.newColumn('sampleSatisfaction').withTitle('满意度'),
-            DTColumnBuilder.newColumn('transhipState').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn("").withTitle('').withOption('width', '10px').notSortable().renderWith(extraHtml),
+            DTColumnBuilder.newColumn('applyCode').withTitle('申请单号').withOption('width', '100px'),
+            DTColumnBuilder.newColumn('delegateName').withTitle('委托方').withOption('width', '220px'),
+            DTColumnBuilder.newColumn('applyPersonName').withTitle('委托人').withOption('width', '100px'),
+            DTColumnBuilder.newColumn('applyTime').withTitle('需求日期').withOption('width', '120px'),
+            DTColumnBuilder.newColumn('purposeOfSample').withTitle('用途').withOption('width', '220px'),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('样本需求量').withOption('width', '90px'),
+            DTColumnBuilder.newColumn('sampleTypes').withTitle('样本类型').withOption('width', '100px'),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption('width', '50px'),
+            DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml).withOption('width', '100px'),
+            DTColumnBuilder.newColumn('id').notVisible()
         ];
         //列表中字段替换
         function createdRow(row, data, dataIndex) {
-            var transhipState = '';
-            var sampleSatisfaction = '';
-            switch (data.transhipState){
-                case '1001': transhipState = '进行中';break;
-                case '1002': transhipState = '待入库';break;
-                case '1003': transhipState = '已入库';break;
-                case '1004': transhipState = '已作废';break;
+            var status = '';
+            switch (data.status){
+                case '1101': status = '进行中';break;
+                case '1102': status = '待批准';break;
+                case '1103': status = '已批准';break;
+                case '1104': status = '已作废';break;
             }
-            switch (data.sampleSatisfaction){
-                case 1: sampleSatisfaction = '非常不满意';break;
-                case 2: sampleSatisfaction = '有大量错位';break;
-                case 3: sampleSatisfaction = '有少量错位';break;
-                case 4: sampleSatisfaction = '有少量空孔';break;
-                case 5: sampleSatisfaction = '有大量空管';break;
-                case 6: sampleSatisfaction = '有许多空管';break;
-                case 7: sampleSatisfaction = '有少量空管';break;
-                case 8: sampleSatisfaction = '满意';break;
-                case 9: sampleSatisfaction = '较满意';break;
-                case 10: sampleSatisfaction = '非常满意';break;
-            }
-            $('td:eq(5)', row).html(sampleSatisfaction);
-            $('td:eq(6)', row).html(transhipState);
+            $('td:eq(8)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         //展开
@@ -167,29 +147,53 @@
             }
             else {
                 // Open this row
-                row.child(format(row.data())).show();
-                $(tr).addClass('shown');
+                RequirementService.copyRequirementList(row.data().id).then(function (data) {
+                    // console.log(JSON.stringify(data.data))
+                    row.child(format(data.data)).show();
+                    $(tr).addClass('shown');
+                });
+
             }
         }
-        function format ( d ) {
-            return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-                '<tr>'+
-                '<td>projectCode:</td>'+
-                '<td>'+d.projectCode+'</td>'+
-                '</tr>'+
-                '<tr>'+
-                '<td>receiver:</td>'+
-                '<td>'+d.receiver+'</td>'+
-                '</tr>'+
-                '<tr>'+
-                '<td>transhipCode:</td>'+
-                '<td>'+d.transhipCode+'</td>'+
-                '</tr>'+
-                '</table>';
+        function format ( items ) {
+            var html =  $('<table class="table" style="width: 100%"></table>');
+            for(var i = 0; i < items.length; i++){
+                var tbody =
+                    "<tbody>"+
+                    "<tr>"+
+                    "<td style='width: 2%'> </td>"+
+                    "<td style='width: 13%'>"+items[i].applyCode+"</td>"+
+                    "<td style='width: 17%'>"+items[i].delegateName+"</td>"+
+                    "<td style='width: 10%'>"+items[i].applyPersonName+"</td>"+
+                    "<td style='width: 13%'>"+items[i].applyTime+"</td>"+
+                    "<td style='width: 17%'>"+items[i].purposeOfSample+"</td>"+
+                    "<td style='width: 10%'>"+items[i].countOfSample+"</td>"+
+                    "<td style='width: 12%'>"+items[i].sampleTypes+"</td>"+
+                    "<td style='width: 10%'>"+statusShow(items[i].status)  +"</td>"+
+                    "<td ><button class='btn btn-warning'><i class='fa fa-edit'></i></button></td>"+
+                    "</tr>"+
+                    "</tbody>";
+                html.append(tbody)
+            }
+
+            return html;
+        }
+        function statusShow(staus) {
+            var statusVal = "";
+            switch (staus){
+                case '1101': statusVal = '进行中';break;
+                case '1102': statusVal = '待批准';break;
+                case '1103': statusVal = '已批准';break;
+                case '1104': statusVal = '已作废';break;
+            }
+            return statusVal
+
         }
         function actionsHtml(data, type, full, meta) {
             return '<button type="button" class="btn btn-warning" ui-sref="transport-record-edit({id:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
+                '</button>&nbsp;'+ '<button type="button" class="btn btn-warning" ui-sref="transport-record-edit({id:'+ full.id +'})">' +
+                '附加' +
                 '</button>&nbsp;'
         }
         function extraHtml(data, type, full, meta) {

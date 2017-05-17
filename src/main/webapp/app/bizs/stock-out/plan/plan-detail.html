@@ -12,8 +12,101 @@
         </div>
     </div>
     <div class="row m0">
-        <div class="row"></div>
-        <div class="row"></div>
-        <div class="row"></div>
+        <div class="row m0 form-horizontal">
+            <div class="col-md-2">
+                <label class="col-md-4 control-label">申请单</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-12">
+                <p>委托方XXXXXXX，在XXXX-XX-XX至XXXX-XX-XX期间，申请出库样本10000只</p>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row m0">
+                    <div class="">
+                        <div class="pull-left">
+                            <h4>申请出库的样本</h4>
+                        </div>
+                        <div class="pull-right">
+                            <button class="btn btn-default">创建任务</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row m0">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <label class="checkbox">
+                                <input type="checkbox"> 全选
+                            </label>
+                        </div>
+                        <div class="col-md-4" ng-repeat="item in [1,2,3,4,5,6,7,8,9,10,4,2,324,3242,423,23,4,324,34,2342,32,42,23,3443] track by $index">
+                            <label class="checkbox">
+                                <input type="checkbox"> 1000只 男性 65岁 血浆样本
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row m0">
+                    <div class="col-md-6">
+                        <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstanceCallback" class=" table table-striped table-bordered">
+                            <tfoot>
+                            <tr>
+                                <th>项目点</th>
+                                <th>项目编号</th>
+                                <th>转运日期</th>
+                                <th>接收人</th>
+                                <th>接收日期</th>
+                                <th>满意度</th>
+                                <th>状态</th>
+                                <th style="width: 100px"></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstanceCallback" class=" table table-striped table-bordered">
+                            <tfoot>
+                            <tr>
+                                <th>项目点</th>
+                                <th>项目编号</th>
+                                <th>转运日期</th>
+                                <th>接收人</th>
+                                <th>接收日期</th>
+                                <th>满意度</th>
+                                <th>状态</th>
+                                <th style="width: 100px"></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="row m0">
+                    <div class="col-md-12">
+                        <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstanceCallback" class=" table table-striped table-bordered">
+                            <tfoot>
+                            <tr>
+                                <th>项目点</th>
+                                <th>项目编号</th>
+                                <th>转运日期</th>
+                                <th>接收人</th>
+                                <th>接收日期</th>
+                                <th>满意度</th>
+                                <th>状态</th>
+                                <th style="width: 100px"></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
     </div>
 </div>

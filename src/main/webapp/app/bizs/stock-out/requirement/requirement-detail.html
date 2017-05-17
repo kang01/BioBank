@@ -1,163 +1,165 @@
-<div class="form-horizontal">
-    <div>
-        <div class="row m0 m-b-10">
-            <div class="col-md-12">
-                <div class="pull-left ">
-                    <h2 class="m0">添加出库申请</h2>
-                </div>
-                <div class="pull-right">
-                    <button class="btn btn-primary" >附加申请</button>
-                    <button class="btn btn-primary" ng-click="vm.approvalModal()">批准</button>
-                    <button class="btn btn-primary" ng-click="vm.sampleDescModal()">样本库存详情</button>
-                    <button class="btn btn-primary" >打印出库申请</button>
-                    <button class="btn btn-primary" >保存申请</button>
-                    <button class="btn btn-default" ui-sref="requirement-list">关闭</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row m0">
-        <div class="row m0 m-b-10">
-            <div class="col-md-5">
-                <div class="col-md-6">
-                    <label class="control-label col-md-4">委托方</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <label class="control-label col-md-4">委托方</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-7">
-                <div class="col-md-4">
-                    <label class="control-label col-md-4">记录人</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <label class="control-label col-md-4">记录日期</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <label class="control-label col-md-4">状态</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row m0 m-b-10">
-            <div class="col-md-5">
-                <div class="col-md-6">
-                    <label class="control-label col-md-4">开始时间</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <label class="control-label col-md-4">结束时间</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-7">
-                <div class="col-md-4">
-                    <label class="control-label col-md-4">用途</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row m0">
-            <div class="col-md-5">
-                <div class="col-md-6">
-                    <label class="control-label col-md-4">授权的项目</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row m0">
+<div class="">
+
+    <div class="row m0 m-b-10">
         <div class="col-md-12">
-            <div class="pull-left">
-                <h2>样本需求</h2>
+            <div class="pull-left ">
+                <h2 class="m0">添加出库申请</h2>
             </div>
             <div class="pull-right">
-                <button class="btn btn-primary">添加</button>
-                <button class="btn btn-primary">核对库存</button>
+                <button class="btn btn-primary" >附加申请</button>
+                <button class="btn btn-primary" ng-click="vm.approvalModal()">批准</button>
+                <button class="btn btn-primary" ng-click="vm.sampleDescModal()">样本库存详情</button>
+                <button class="btn btn-primary" >打印出库申请</button>
+                <button class="btn btn-primary" >保存申请</button>
+                <button class="btn btn-default" ui-sref="requirement-list">关闭</button>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="row m-b-10">
-                <div class="col-md-8">
-                    <label class="control-label col-md-2">需求名称</label>
-                    <div class="col-md-10">
-                        <input type="text" class="form-control">
-                    </div>
+    </div>
+
+    <div class="row m0">
+        <div class="row m0">
+            <div class="form-group col-md-6">
+                <label >委托方</label>
+                <selectize options='vm.delegatesOptions' config="vm.delegatesConfig"
+                           ng-model="vm.requirement.delegateId"></selectize>
+            </div>
+            <div class="form-group col-md-2">
+                <label>委托人</label>
+                <input type="text" class="form-control" ng-model="vm.requirement.applyPersonName">
+            </div>
+            <div class="form-group col-md-2">
+                <label>开始时间</label>
+                <div class="input-group">
+                    <input  type="text" class="form-control" name="startTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.startTime" is-open="vm.datePickerOpenStatus.startTime"
+                            required  />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('startTime')"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
                 </div>
-                <div class="col-md-4">
-                    <label class="control-label col-md-4">样本量</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
+            </div>
+            <div class="form-group col-md-2">
+                <label>结束时间</label>
+                <div class="input-group">
+                    <input  type="text" class="form-control" name="endTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.endTime" is-open="vm.datePickerOpenStatus.endTime"
+                            required  />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('endTime')"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                </div>
+            </div>
+        </div>
+        <div class="row m0" style="position: relative">
+            <div class="form-group col-md-3">
+                <label >记录人</label>
+                <selectize options='vm.recorderOptions' config="vm.recorderConfig"
+                           ng-model="vm.requirement.recordId"></selectize>
+            </div>
+            <div class="form-group col-md-3">
+                <label>记录时间</label>
+                <div class="input-group">
+                    <input  type="text" class="form-control" name="recordTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.recordTime" is-open="vm.datePickerOpenStatus.recordTime"
+                            required  />
+                    <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="vm.openCalendar('recordTime')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group col-md-2">
+                <label>状态</label>
+                <selectize options='vm.statusOptions' config="vm.statusConfig"
+                           ng-model="vm.status" ng-disabled = "true"></selectize>
+            </div>
+            <div class="form-group col-md-4">
+                <label class="control-label">用途</label>
+                <textarea type="text" class="form-control resize-none" ng-model="vm.requirement.purposeOfSample" rows="5"></textarea>
+            </div>
+            <div class="form-group col-md-8" style="position: absolute;top:77px;">
+                <label class="control-label">授权的项目</label>
+                <selectize options='vm.projectOptions' config="vm.projectConfig"
+                           ng-model="vm.requirement.projectIds"></selectize>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row m0">
+                <div class="col-md-12">
+                    <div class="pull-left">
+                        <h4>样本需求</h4>
+                    </div>
+                    <div class="pull-right">
+                        <button class="btn btn-primary" ng-click="vm.submit()">添加</button>
+                        <button class="btn btn-primary">核对库存</button>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <label class="control-label col-md-4">样本类型</label>
-                    <div class="col-md-8">
-                        <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                   ng-model="vm.sampleTypeId"></selectize>
-                    </div>
+        </div>
+        <div class="panel-body">
+            <div class="row m0">
+                <div class="form-group col-md-6">
+                    <label >需求名称</label>
+                    <input type="text" class="form-control">
                 </div>
-                <div class="col-md-4">
-                    <label class="control-label col-md-4">样本分类</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
-                    </div>
+                <div class="form-group col-md-2">
+                    <label >样本量</label>
+                    <input type="text" class="form-control">
                 </div>
-                <div class="col-md-4">
-                    <label class="control-label col-md-4">冻存管类型</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
+                <div class="form-group col-md-4 self-upload">
+                    <label >上传</label>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <!--<div class="input-group-addon">$</div>-->
+
+                            <input type="text" class=" form-control" ng-model="vm.file.name" disabled>
+                            <div class="input-group-addon">
+                                <a href="javascript:;" name="file">
+                                <input type="file" ngf-select ng-model="vm.file"/>上传
+                                </a>
+                                <!--<input type="file" ngf-select ng-model="vm.file" name="file"-->
+                                        <!--required>-->
+                                <!--<div class="button" ngf-select ng-model="vm.file" name="file">上传</div>-->
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <label class="control-label col-md-4">性别</label>
-                    <div class="col-md-8">
-                        <selectize options='vm.sexOptions' config="vm.sexConfig"
-                                   ng-model="vm.sex" ></selectize>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <label class="control-label col-md-2">年龄</label>
-                    <div class="col-md-10">
-                        <input  type="text"  ng-model="vm.age"  class="irs-hidden-input"  readonly=""
-                                age-slider  form-to="vm.age"  style="display:none" required>
-                    </div>
+                    <!--<input class="filename form-control" type="text" readonly="readonly" />-->
+                    <!--<a href="javascript:;" name="file" class="btn btn-default" type="button">-->
+                        <!--<input type="file" name="key"/>浏览-->
+                    <!--</a>-->
                 </div>
             </div>
-            <div class="row m-b-10">
-                <div class="col-md-4">
-                    <label class="control-label col-md-4">疾病类型</label>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control">
-                    </div>
+            <div class="row m0">
+                <div class="form-group col-md-2">
+                    <label >样本类型</label>
+                    <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                               ng-model="vm.requirement.sampleTypeId"></selectize>
                 </div>
-                <div class="col-md-8">
+                <div class="form-group col-md-2">
+                    <label >样本分类</label>
+                    <input type="text" class="form-control">
+                </div>
+                <div class="form-group col-md-2">
+                    <label >冻存管类型</label>
+                    <selectize options='vm.frozenTubeTypeOptions' config="vm.frozenTubeTypeConfig"
+                               ng-model="vm.requirement.frozenTubeTypeId"></selectize>
+                </div>
+                <div class="form-group col-md-2">
+                    <label >性别</label>
+                    <selectize options='vm.sexOptions' config="vm.sexConfig"
+                               ng-model="vm.requirement.sex" ></selectize>
+                </div>
+                <div class="form-group col-md-4">
+                    <label >年龄</label>
+                    <input  type="text"  ng-model="vm.age"  class="irs-hidden-input"  readonly=""
+                            age-slider  form-to="vm.age"  style="display:none" required>
+                </div>
+            </div>
+            <div class="row m0">
+                <div class="form-group col-md-2">
+                    <label >疾病类型</label>
+                    <selectize options='vm.diseaseTypeOptions' config="vm.diseaseTypeConfig"
+                               ng-model="vm.requirement.diseaseTypeId"></selectize>
+                </div>
+                <div class="form-group col-md-2" style="margin-top: 28px">
                     <label class="checkbox-inline">
                         <input type="checkbox"  value="option1"> 溶血
                     </label>
@@ -165,45 +167,30 @@
                         <input type="checkbox"  value="option2"> 脂质血
                     </label>
                 </div>
+                <div class="form-group col-md-8">
+                    <label>备注</label>
+                    <textarea rows="1" class="form-control resize-none"></textarea>
+                </div>
+
             </div>
-            <div class="row">
-                <div class="col-md-12 form-group">
-                    <label class="control-label col-md-2">备注</label>
-                    <div class="col-md-10">
-                        <textarea rows="3" class="form-control" style="resize: none"></textarea>
-                    </div>
+            <div class="row m0">
+                <div class="col-md-12">
+                    <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstanceCallback" class=" table table-striped table-bordered">
+                        <tfoot>
+                        <tr>
+                            <th>项目点</th>
+                            <th>项目编号</th>
+                            <th>转运日期</th>
+                            <th>接收人</th>
+                            <th>接收日期</th>
+                            <th>满意度</th>
+                            <th>状态</th>
+                            <th style="width: 100px"></th>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="col-md-12">
-                <!--<label class="control-label col-md-2">指定样本编码</label>-->
-                <!--<div class="col-md-10">-->
-                    <!--<input type="file">-->
-                <!--</div>-->
-                指定样本编码：<input type="file" style="display: inline-block;">
-            </div>
-            <div class="col-md-12">
-                <textarea rows="12" class="form-control" style="resize: none"></textarea>
-            </div>
-        </div>
-    </div>
-    <div class="row m0">
-        <div class="col-md-12">
-            <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstanceCallback" class=" table table-striped table-bordered">
-            <tfoot>
-            <tr>
-                <th>项目点</th>
-                <th>项目编号</th>
-                <th>转运日期</th>
-                <th>接收人</th>
-                <th>接收日期</th>
-                <th>满意度</th>
-                <th>状态</th>
-                <th style="width: 100px"></th>
-            </tr>
-            </tfoot>
-        </table>
         </div>
     </div>
 </div>

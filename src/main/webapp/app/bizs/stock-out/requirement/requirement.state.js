@@ -53,7 +53,7 @@
             })
             .state('requirement-new', {
                 parent: 'bizs',
-                url: '/requirement-list/new',
+                url: '/requirement-list/{applyId}/{applyCode}/new',
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: 'stockOut.new.title'

@@ -17,7 +17,10 @@
         vm.dtInstance = {};
         vm.add = _fnAdd;
         function _fnAdd() {
-            $state.go('requirement-new');
+            RequirementService.saveRequirement().success(function (data) {
+                $state.go('requirement-new',{applyId : data.id,applyCode : data.applyCode});
+            })
+
         }
 
         vm.dtOptions = DTOptionsBuilder.newOptions()

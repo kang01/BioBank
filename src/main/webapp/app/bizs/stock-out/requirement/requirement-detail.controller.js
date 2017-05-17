@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('RequirementDetailController', RequirementDetailController);
 
-    RequirementDetailController.$inject = ['$scope','$compile','entity','$uibModal','$timeout','Upload','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','MasterData','SampleTypeService','SampleUserService','BioBankBlockUi','ProjectService'];
+    RequirementDetailController.$inject = ['$scope','$stateParams','$compile','entity','$uibModal','$timeout','Upload','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','MasterData','SampleTypeService','SampleUserService','BioBankBlockUi','ProjectService'];
 
-    function RequirementDetailController($scope,$compile,entity,$uibModal,$timeout,Upload,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,MasterData,SampleTypeService,SampleUserService,BioBankBlockUi,ProjectService) {
+    function RequirementDetailController($scope,$stateParams,$compile,entity,$uibModal,$timeout,Upload,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,MasterData,SampleTypeService,SampleUserService,BioBankBlockUi,ProjectService) {
         var vm = this;
         var modalInstance;
         vm.requirement = entity;
@@ -20,10 +20,20 @@
         vm.approvalModal = _fnApprovalModal;
         //样本库存详情
         vm.sampleDescModal = _fnSampleDescModal;
+        //保存申请
+        vm.saveRequirement = _fnSaveRequirement;
+
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
+
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
+        }
+        if($stateParams.applyId){
+            vm.requirement.id = $stateParams.applyId;
+        }
+        if($stateParams.applyCode){
+            vm.requirement.applyCode = $stateParams.applyCode;
         }
         //初始化数据
         function _initData() {
@@ -49,12 +59,12 @@
             }
         };
         //委托人
-        SampleUserService.query({},onRecorderSuccess, onError)
+        SampleUserService.query({},onRecorderSuccess, onError);
         function onRecorderSuccess(data) {
             vm.recorderOptions = data;
         }
         vm.recorderConfig = {
-            valueField:'login',
+            valueField:'id',
             labelField:'userName',
             maxItems: 1
 
@@ -85,33 +95,72 @@
             valueField:'id',
             labelField:'projectName',
             onChange:function(value){
-                console.log(value);
+                vm.projectIds = _.join(value, ',');
+                if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
+                    _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
+                }else{
+                    vm.sampleClassOptions = [];
+                    vm.sampleRequirement.sampleClassId = "";
+                    $scope.$apply();
+                }
             }
         };
+        //保存申请记录
+        function _fnSaveRequirement() {
+            BioBankBlockUi.blockUiStart();
+            RequirementService.saveRequirement(vm.requirement).success(function (data) {
+                BioBankBlockUi.blockUiStop();
+                toastr.success("保存申请记录成功！");
+            })
+        }
         //---------------------------样本需求--------------------------
+        vm.sampleRequirement = {};
         vm.sampleTypeConfig = {
             valueField:'id',
             labelField:'sampleTypeName',
             maxItems: 1,
             onChange:function (value) {
-                console.log( _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed);
+                vm.sampleRequirement.sampleTypeId = value;
+                if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
+                    _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
+                }
+
             }
         };
+        //根据项目和样本类型获取样本分类
+        function _fuQuerySampleClass(projectIds,sampleTypeId) {
+            RequirementService.queryRequirementSampleClasses(projectIds,sampleTypeId).success(function (data) {
+                vm.sampleClassOptions = data;
+                if(vm.sampleClassOptions.length){
+                    vm.sampleRequirement.sampleClassId = vm.sampleClassOptions[0].sampleClassificationId;
+                }
+            })
+        }
+
         //获取样本类型
         function _fnQuerySampleType() {
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data, ['id'], ['esc']);
-                if(!vm.requirement.sampleTypeId){
-                    vm.requirement.sampleTypeId = vm.sampleTypeOptions[0].id;
+                vm.sampleTypeOptions.pop();
+                if(!vm.sampleRequirement.sampleTypeId){
+                    vm.sampleRequirement.sampleTypeId = vm.sampleTypeOptions[0].id;
                 }
             });
         }
+        //样本分类
+        vm.sampleClassConfig = {
+            valueField:'sampleClassificationId',
+            labelField:'sampleClassificationName',
+            maxItems: 1,
+            onChange:function (value) {
+            }
+        };
         //获取冻存管类型
         function _fuQueryFrozenTubeType() {
             RequirementService.queryFrozenTubeType().success(function (data) {
                 vm.frozenTubeTypeOptions = data;
-                if(!vm.requirement.frozenTubeTypeId){
-                    vm.requirement.frozenTubeTypeId = vm.frozenTubeTypeOptions[0].id;
+                if(!vm.sampleRequirement.frozenTubeTypeId){
+                    vm.sampleRequirement.frozenTubeTypeId = vm.frozenTubeTypeOptions[0].id;
                 }
             })
         }
@@ -126,7 +175,7 @@
         //性别
         vm.sexOptions = MasterData.sexDict;
         if(!vm.requirement.sex){
-            vm.requirement.sex = vm.sexOptions[0].type;
+            vm.sampleRequirement.sex = vm.sexOptions[0].type;
         }
         vm.sexConfig = {
             valueField:'type',
@@ -135,8 +184,8 @@
         };
         //疾病类型
         vm.diseaseTypeOptions = MasterData.diseaseType;
-        if(!vm.requirement.diseaseTypeId){
-            vm.requirement.diseaseTypeId = vm.diseaseTypeOptions[0].id;
+        if(!vm.sampleRequirement.diseaseTypeId){
+            vm.sampleRequirement.diseaseTypeId = vm.diseaseTypeOptions[0].id;
         }
         vm.diseaseTypeConfig = {
             valueField:'id',
@@ -154,7 +203,7 @@
             console.log(file);
             file.upload = Upload.upload({
                 url: 'https://angular-file-upload-cors-srv.appspot.com/upload',
-                data: {username: vm.username, file: file},
+                data: {file: file},
             });
 
             file.upload.then(function (response) {

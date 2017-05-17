@@ -10,7 +10,7 @@
                 <button class="btn btn-primary" ng-click="vm.approvalModal()">批准</button>
                 <button class="btn btn-primary" ng-click="vm.sampleDescModal()">样本库存详情</button>
                 <button class="btn btn-primary" >打印出库申请</button>
-                <button class="btn btn-primary" >保存申请</button>
+                <button class="btn btn-primary" ng-click="vm.saveRequirement()">保存申请</button>
                 <button class="btn btn-default" ui-sref="requirement-list">关闭</button>
             </div>
         </div>
@@ -98,7 +98,7 @@
             <div class="row m0">
                 <div class="form-group col-md-6">
                     <label >需求名称</label>
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" ng-model="vm.sampleRequirement.name">
                 </div>
                 <div class="form-group col-md-2">
                     <label >样本量</label>
@@ -131,33 +131,34 @@
                 <div class="form-group col-md-2">
                     <label >样本类型</label>
                     <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                               ng-model="vm.requirement.sampleTypeId"></selectize>
+                               ng-model="vm.sampleRequirement.sampleTypeId"></selectize>
                 </div>
                 <div class="form-group col-md-2">
                     <label >样本分类</label>
-                    <input type="text" class="form-control">
+                    <selectize options='vm.sampleClassOptions' config="vm.sampleClassConfig"
+                               ng-model="vm.sampleRequirement.sampleClassId"></selectize>
                 </div>
                 <div class="form-group col-md-2">
                     <label >冻存管类型</label>
                     <selectize options='vm.frozenTubeTypeOptions' config="vm.frozenTubeTypeConfig"
-                               ng-model="vm.requirement.frozenTubeTypeId"></selectize>
+                               ng-model="vm.sampleRequirement.frozenTubeTypeId"></selectize>
                 </div>
                 <div class="form-group col-md-2">
                     <label >性别</label>
                     <selectize options='vm.sexOptions' config="vm.sexConfig"
-                               ng-model="vm.requirement.sex" ></selectize>
+                               ng-model="vm.sampleRequirement.sex" ></selectize>
                 </div>
                 <div class="form-group col-md-4">
                     <label >年龄</label>
                     <input  type="text"  ng-model="vm.age"  class="irs-hidden-input"  readonly=""
-                            age-slider  form-to="vm.age"  style="display:none" required>
+                            age-slider  form-to="vm.sampleRequirement.age"  style="display:none" required>
                 </div>
             </div>
             <div class="row m0">
                 <div class="form-group col-md-2">
                     <label >疾病类型</label>
                     <selectize options='vm.diseaseTypeOptions' config="vm.diseaseTypeConfig"
-                               ng-model="vm.requirement.diseaseTypeId"></selectize>
+                               ng-model="vm.sampleRequirement.diseaseTypeId"></selectize>
                 </div>
                 <div class="form-group col-md-2" style="margin-top: 28px">
                     <label class="checkbox-inline">

@@ -68,7 +68,15 @@
                 resolve: {
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                         return $translate.refresh();
-                    }]
+                    }],
+                    entity: function () {
+                        return {
+                            delegateId:null,
+                            recordTime:new Date(),
+                            startTime:new Date(),
+                            endTime:new Date()
+                        };
+                    }
                 }
             })
     }

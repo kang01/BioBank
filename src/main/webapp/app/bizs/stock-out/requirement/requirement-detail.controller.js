@@ -9,59 +9,149 @@
         .module('bioBankApp')
         .controller('RequirementDetailController', RequirementDetailController);
 
-    RequirementDetailController.$inject = ['$scope','$compile','$uibModal','$timeout','Upload','DTColumnBuilder','DTOptionsBuilder','RequirementService','MasterData','SampleTypeService'];
+    RequirementDetailController.$inject = ['$scope','$compile','entity','$uibModal','$timeout','Upload','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','MasterData','SampleTypeService','SampleUserService','BioBankBlockUi','ProjectService'];
 
-    function RequirementDetailController($scope,$compile,$uibModal,$timeout,Upload,DTColumnBuilder,DTOptionsBuilder,RequirementService,MasterData,SampleTypeService) {
+    function RequirementDetailController($scope,$compile,entity,$uibModal,$timeout,Upload,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,MasterData,SampleTypeService,SampleUserService,BioBankBlockUi,ProjectService) {
         var vm = this;
         var modalInstance;
+        vm.requirement = entity;
 
         //批准
         vm.approvalModal = _fnApprovalModal;
         //样本库存详情
         vm.sampleDescModal = _fnSampleDescModal;
+        vm.datePickerOpenStatus = {};
+        vm.openCalendar = openCalendar; //时间
+        function openCalendar (date) {
+            vm.datePickerOpenStatus[date] = true;
+        }
         //初始化数据
         function _initData() {
             _fnQuerySampleType();
+            _fuQueryDelegates();
+            _fuQueryFrozenTubeType();
         }
         _initData();
-        //样本需求
-        //获取样本类型
-        function _fnQuerySampleType() {
-            SampleTypeService.querySampleType().success(function (data) {
-                vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['esc']);
-            });
+        //委托方查询
+        function _fuQueryDelegates() {
+            RequirementService.queryDelegates().success(function (data) {
+                vm.delegatesOptions = data;
+                if(!vm.requirement.delegateId){
+                    vm.requirement.delegateId = vm.delegatesOptions[0].id;
+                }
+            })
         }
+        vm.delegatesConfig = {
+            valueField:'id',
+            labelField:'delegateName',
+            maxItems: 1,
+            onChange:function (value) {
+            }
+        };
+        //委托人
+        SampleUserService.query({},onRecorderSuccess, onError)
+        function onRecorderSuccess(data) {
+            vm.recorderOptions = data;
+        }
+        vm.recorderConfig = {
+            valueField:'login',
+            labelField:'userName',
+            maxItems: 1
+
+        };
+        //状态
+        vm.statusOptions = [
+            {id:"1101",name:"进行中"},
+            {id:"1102",name:"待批准"},
+            {id:"1103",name:"已批准"},
+            {id:"1104",name:"已作废"}
+        ];
+        vm.statusConfig = {
+            valueField:'id',
+            labelField:'name',
+            maxItems: 1,
+            onChange:function (value) {
+            }
+        };
+        if(!vm.status){
+            vm.status = vm.statusOptions[0].id;
+        }
+        //获取项目
+        ProjectService.query({},onProjectSuccess, onError);
+        function onProjectSuccess(data) {
+            vm.projectOptions = data;
+        }
+        vm.projectConfig = {
+            valueField:'id',
+            labelField:'projectName',
+            onChange:function(value){
+                console.log(value);
+            }
+        };
+        //---------------------------样本需求--------------------------
         vm.sampleTypeConfig = {
             valueField:'id',
             labelField:'sampleTypeName',
             maxItems: 1,
             onChange:function (value) {
                 console.log( _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed);
-                // var sampleTypeName;
-                // if(vm.sampleTypeOptions.length){
-                //     sampleTypeName =  _.filter(vm.sampleTypeOptions,{'id':+value})[0].sampleTypeName;
-                // }
-                // vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value);
-                // if(value == 5){
-                //     vm.sampleClassFlag = true;
-                // }else{
-                //     vm.sampleClassFlag = false;
-                // }
+            }
+        };
+        //获取样本类型
+        function _fnQuerySampleType() {
+            SampleTypeService.querySampleType().success(function (data) {
+                vm.sampleTypeOptions = _.orderBy(data, ['id'], ['esc']);
+                if(!vm.requirement.sampleTypeId){
+                    vm.requirement.sampleTypeId = vm.sampleTypeOptions[0].id;
+                }
+            });
+        }
+        //获取冻存管类型
+        function _fuQueryFrozenTubeType() {
+            RequirementService.queryFrozenTubeType().success(function (data) {
+                vm.frozenTubeTypeOptions = data;
+                if(!vm.requirement.frozenTubeTypeId){
+                    vm.requirement.frozenTubeTypeId = vm.frozenTubeTypeOptions[0].id;
+                }
+            })
+        }
+        vm.frozenTubeTypeConfig = {
+            valueField:'id',
+            labelField:'frozenTubeTypeName',
+            maxItems: 1,
+            onChange:function (value) {
+                // console.log( _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed);
             }
         };
         //性别
         vm.sexOptions = MasterData.sexDict;
+        if(!vm.requirement.sex){
+            vm.requirement.sex = vm.sexOptions[0].type;
+        }
         vm.sexConfig = {
             valueField:'type',
             labelField:'name',
             maxItems: 1
+        };
+        //疾病类型
+        vm.diseaseTypeOptions = MasterData.diseaseType;
+        if(!vm.requirement.diseaseTypeId){
+            vm.requirement.diseaseTypeId = vm.diseaseTypeOptions[0].id;
+        }
+        vm.diseaseTypeConfig = {
+            valueField:'id',
+            labelField:'name',
+            maxItems: 1,
+            onChange:function (value) {
+            }
         };
         //上传
         vm.submit = function () {
             vm.upload(vm.file);
             console.log(JSON.stringify(vm.file))
         };
-        vm.uploadPic = function(file) {
+        vm.upload = function(file) {
+            console.log(file);
             file.upload = Upload.upload({
                 url: 'https://angular-file-upload-cors-srv.appspot.com/upload',
                 data: {username: vm.username, file: file},
@@ -80,50 +170,7 @@
             });
         };
 
-
-
-
-        //弹出框
-        function _fnApprovalModal() {
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-approval-modal.html',
-                controller: 'RequirementApprovalModalController',
-                controllerAs:'vm',
-                size:'lg',
-                resolve: {
-                    items: function () {
-                        return {
-                        }
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (data) {
-
-            });
-        }
-        function _fnSampleDescModal() {
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-sample-desc-modal.html',
-                controller: 'RequirementSampleDescModalController',
-                controllerAs:'vm',
-                size:'lg',
-                resolve: {
-                    items: function () {
-                        return {
-                        }
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (data) {
-
-            });
-        }
-
-        //列表
+        //---------------------------样本需求列表--------------------------
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('processing',true)
             .withOption('serverSide',true)
@@ -134,7 +181,7 @@
                     data[oData.name] = oData.value;
                 }
                 var jqDt = this;
-                RequirementService.queryRequirementList(data, oSettings).then(function (res){
+                RequirementService.queryDemo(data, oSettings).then(function (res){
                     var json = res.data;
                     var error = json.error || json.sError;
                     if ( error ) {
@@ -251,6 +298,55 @@
             return '<button type="button" class="btn btn-warning" ui-sref="transport-record-edit({id:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;'
+        }
+
+        //---------------------------弹出框--------------------------
+        //批准
+        function _fnApprovalModal() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-approval-modal.html',
+                controller: 'RequirementApprovalModalController',
+                controllerAs:'vm',
+                size:'lg',
+                resolve: {
+                    items: function () {
+                        return {
+                        }
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (data) {
+
+            });
+        }
+        //样本库存详情
+        function _fnSampleDescModal() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-sample-desc-modal.html',
+                controller: 'RequirementSampleDescModalController',
+                controllerAs:'vm',
+                size:'lg',
+                resolve: {
+                    items: function () {
+                        return {
+                        }
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (data) {
+
+            });
+        }
+
+
+
+        function onError(error) {
+            BioBankBlockUi.blockUiStop();
+            toastr.error(error.data.message);
         }
 
     }

@@ -62,6 +62,9 @@
 .m-t-40{
     margin-top: 40px !important;
 }
+.form-group{
+    margin-bottom: 8px;
+}
 /*.alerts{*/
     /*position: absolute;*/
     /*width: 100%;*/
@@ -73,11 +76,35 @@
 .clear-both{
     clear: both;
 }
+.resize-none{
+    resize: none;
+}
 .rowLight{
     background-color: lightskyblue !important;
 }
 .selectize-dropdown{
     z-index: 999;
+}
+.self-upload .filename{
+    width: 300px;
+    height: 30px;
+    line-height: 30px;
+}
+.self-upload a{
+    /*width: 50px;*/
+    /*text-align: center;*/
+    /*height: 30px;*/
+    /*line-height: 30px;*/
+    position: relative;
+    /*cursor: pointer;*/
+    overflow:hidden;
+    display: inline-block;
+}
+.self-upload a input{
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
 }
 .project-sites .selectize-input > *{
     width: 130px;
@@ -85,7 +112,14 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-.import-box-modal-body .selectize-control.multi .selectize-input > div {
+.over-ellipsis .selectize-input > *{
+    width: 130px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+ .selectize-control.multi .selectize-input > div {
     cursor: pointer;
     margin: 0 3px 3px 0;
     padding: 2px 6px;
@@ -93,7 +127,7 @@
     color: #ffffff;
     border: 1px solid #0073bb;
 }
-.import-box-modal-body .selectize-control.multi .selectize-input [data-value] {
+ .selectize-control.multi .selectize-input [data-value] {
     text-shadow: 0 1px 0 rgba(0, 51, 83, 0.3);
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -144,6 +178,10 @@
 .transport-record-body .btn{
     padding: 2px 12px;
 }
+.table-operate .btn{
+    padding: 2px 12px;
+}
+
  table.dataTable tbody th,
  table.dataTable tbody td{
     padding: 4px 18px;
@@ -281,6 +319,7 @@ td .details-control {
     height: 10px;
     background: url('../images/details_open.png') no-repeat center center;
     cursor: pointer;
+    margin-left: 6px;
 }
 tr.shown td .details-control {
     background: url('../images/details_close.png') no-repeat center center;
@@ -340,6 +379,9 @@ tr.shown td .details-control {
     .project-sites .selectize-input > *{
         width: 160px;
     }
+    .over-ellipsis .selectize-input > *{
+        width: 160px;
+    }
     .transport-record-new .pipe-body .pipe-body-top .col-sm-2 {
         width: 23%;
     }
@@ -359,6 +401,9 @@ tr.shown td .details-control {
     .project-sites .selectize-input > * {
         width: 206px;
     }
+    /*.over-ellipsis .selectize-input > * {*/
+        /*width: 206px;*/
+    /*}*/
     .transport-record-new .pipe-body .pipe-body-top .col-sm-2 {
         width: 20.2%;
     }

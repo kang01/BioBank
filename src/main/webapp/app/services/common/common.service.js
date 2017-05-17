@@ -21,8 +21,22 @@
         }])
         .factory('MasterData',function () {
             var _sexDict= [{type:'M',name:'男'},{type:'F',name:'女'},{type:'O',name:'其他'}];
+            //疾病类型
+            var _diseaseType = [
+                {
+                    id:'1',
+                    name:"AMI"
+                },{
+                    id:'2',
+                    name:"PCI"
+                },{
+                    id:'3',
+                    name:"不祥"
+                }
+            ];
             var masterData = {
-                sexDict :_sexDict
+                sexDict :_sexDict,
+                diseaseType :_diseaseType
             };
             return masterData;
         })

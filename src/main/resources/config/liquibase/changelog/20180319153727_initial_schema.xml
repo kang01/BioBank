@@ -66,23 +66,6 @@
                   file="config/liquibase/support_rack.csv"
                   separator=";"
                   tableName="support_rack"/>
-
-        <!--<loadData encoding="UTF-8"-->
-                  <!--file="config/liquibase/tranship.csv"-->
-                  <!--separator=";"-->
-                  <!--tableName="tranship"/>-->
-        <!--<loadData encoding="UTF-8"-->
-                  <!--file="config/liquibase/frozen_box.csv"-->
-                  <!--separator=";"-->
-                  <!--tableName="frozen_box"/>-->
-        <!--<loadData encoding="UTF-8"-->
-                  <!--file="config/liquibase/tranship_box.csv"-->
-                  <!--separator=";"-->
-                  <!--tableName="tranship_box"/>-->
-        <!--<loadData encoding="UTF-8"-->
-                  <!--file="config/liquibase/frozen_tube.csv"-->
-                  <!--separator=";"-->
-                  <!--tableName="frozen_tube"/>-->
         <loadData encoding="UTF-8"
                   file="config/liquibase/sample_class.csv"
                   separator=";"
@@ -95,6 +78,41 @@
                   file="config/liquibase/delegate.csv"
                   separator=";"
                   tableName="delegate"/>
+    </changeSet>
+
+    <changeSet id="20180319153727-2" author="jhipster">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/tranship.csv"
+                  separator=";"
+                  tableName="tranship"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/frozen_box.csv"
+                  separator=";"
+                  tableName="frozen_box"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/tranship_box.csv"
+                  separator=";"
+                  tableName="tranship_box"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/frozen_tube.csv"
+                  separator=";"
+                  tableName="frozen_tube"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/stock_in.csv"
+                  separator=";"
+                  tableName="stock_in"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/stock_in_box.csv"
+                  separator=";"
+                  tableName="stock_in_box"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/box_position.csv"
+                  separator=";"
+                  tableName="box_position"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/stock_in_tubes.csv"
+                  separator=";"
+                  tableName="stock_in_tubes"/>
     </changeSet>
     <!--初始化数据 end -->
 </databaseChangeLog>

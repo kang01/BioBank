@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.StockOutRequirementService;
+import org.fwoxford.service.dto.response.StockOutRequirementForSave;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
@@ -34,7 +35,7 @@ public class StockOutRequirementResource {
     private final Logger log = LoggerFactory.getLogger(StockOutRequirementResource.class);
 
     private static final String ENTITY_NAME = "stockOutRequirement";
-        
+
     private final StockOutRequirementService stockOutRequirementService;
 
     public StockOutRequirementResource(StockOutRequirementService stockOutRequirementService) {
@@ -128,4 +129,23 @@ public class StockOutRequirementResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * 保存出库申请需求
+     * @param stockOutApplyId
+     * @param stockOutRequirementDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-out-requirements/stockOutApply/{stockOutApplyId}")
+    @Timed
+    public ResponseEntity<StockOutRequirementForSave> saveStockOutRequirement(@PathVariable Long stockOutApplyId,@Valid @RequestBody StockOutRequirementForSave stockOutRequirement) throws URISyntaxException {
+        log.debug("REST request to save StockOutRequirement : {}", stockOutRequirement);
+        if (stockOutRequirement.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new stockOutRequirement cannot already have an ID")).body(null);
+        }
+        StockOutRequirementForSave result = stockOutRequirementService.saveStockOutRequirement(stockOutRequirement);
+        return ResponseEntity.created(new URI("/api/stock-out-requirements/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 }

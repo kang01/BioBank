@@ -17,12 +17,12 @@
             s.receive_date as record_date,
             s.status as status, s.stock_in_code as stock_in_code,
             s.stock_in_date as stock_in_date,
-            (select u.last_name from jhi_user u where u.id=s.store_keeper_id_1) as store_keeper_1,
-            (select u.last_name from jhi_user u where u.id=s.store_keeper_id_2) as store_keeper_2,
+            (select u.last_name||u.first_name from jhi_user u where u.id=s.store_keeper_id_1) as store_keeper_1,
+            (select u.last_name||u.first_name from jhi_user u where u.id=s.store_keeper_id_2) as store_keeper_2,
             t.effective_sample_number as count_of_sample,
             t.tranship_code
             from stock_in s left join tranship t on s.tranship_id=t.id
         </createView>
-
     </changeSet>
+
 </databaseChangeLog>

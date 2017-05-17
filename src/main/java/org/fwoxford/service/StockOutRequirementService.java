@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutRequirementDTO;
+import org.fwoxford.service.dto.response.StockOutRequirementForSave;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -20,7 +21,7 @@ public interface StockOutRequirementService {
 
     /**
      *  Get all the stockOutRequirements.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +41,6 @@ public interface StockOutRequirementService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    StockOutRequirementForSave saveStockOutRequirement(StockOutRequirementForSave stockOutRequirement);
 }

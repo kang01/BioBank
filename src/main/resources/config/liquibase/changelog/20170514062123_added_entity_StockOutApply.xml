@@ -71,7 +71,7 @@
             </column>
 
             <column name="delegate_id" type="bigint" remarks="委托方ID">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="created_by" type="varchar(50)" remarks="创建人">

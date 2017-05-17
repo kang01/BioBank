@@ -4,7 +4,6 @@ import org.fwoxford.service.dto.StockOutRequirementDTO;
 import org.fwoxford.service.dto.response.StockOutRequirementForSave;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import java.util.List;
 
 /**
  * Service Interface for managing StockOutRequirement.
@@ -42,5 +41,5 @@ public interface StockOutRequirementService {
      */
     void delete(Long id);
 
-    StockOutRequirementForSave saveStockOutRequirement(StockOutRequirementForSave stockOutRequirement);
+    StockOutRequirementForSave saveStockOutRequirement(StockOutRequirementForSave stockOutRequirement, Long stockOutApplyId);
 }

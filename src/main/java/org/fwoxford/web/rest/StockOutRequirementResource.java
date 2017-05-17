@@ -143,7 +143,7 @@ public class StockOutRequirementResource {
         if (stockOutRequirement.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new stockOutRequirement cannot already have an ID")).body(null);
         }
-        StockOutRequirementForSave result = stockOutRequirementService.saveStockOutRequirement(stockOutRequirement);
+        StockOutRequirementForSave result = stockOutRequirementService.saveStockOutRequirement(stockOutRequirement,stockOutApplyId);
         return ResponseEntity.created(new URI("/api/stock-out-requirements/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

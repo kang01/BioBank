@@ -64,6 +64,10 @@ public final class Constants {
     public static final String STOCK_OUT_PENDING_APPROVAL = "1102";
     public static final String STOCK_OUT_APPROVED = "1103";
     public static final String STOCK_OUT_INVALID = "1104";
+
+    public static final String STOCK_OUT_REQUIREMENT_CKECKING = "1201";
+    public static final String STOCK_OUT_REQUIREMENT_CHECKED_PASS = "1202";
+    public static final String STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT = "1203";
     private Constants() {
     }
 }

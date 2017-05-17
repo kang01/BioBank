@@ -1,5 +1,7 @@
 package org.fwoxford.service.dto.response;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -32,7 +34,7 @@ public class StockOutRequirementForSave {
     /**
      * 疾病类型：1：2：3：
      */
-    private Integer diseaseType;
+    private Integer diseaseTypeId;
     /**
      * 是否溶血 ：true:是  false:否
      */
@@ -49,10 +51,6 @@ public class StockOutRequirementForSave {
      */
     private Long sampleTypeId;
     /**
-     * 状态：1201：待核对，1202：库存不够，1203：库存满足
-     */
-    private String status;
-    /**
      * 样本分类ID
      */
     private Long sampleClassificationId;
@@ -60,6 +58,8 @@ public class StockOutRequirementForSave {
      * 冻存管类型ID
      */
     private Long frozenTubeTypeId;
+
+    private MultipartFile file;
 
     public Long getId() {
         return id;
@@ -101,30 +101,6 @@ public class StockOutRequirementForSave {
         this.age = age;
     }
 
-    public Integer getDiseaseType() {
-        return diseaseType;
-    }
-
-    public void setDiseaseType(Integer diseaseType) {
-        this.diseaseType = diseaseType;
-    }
-
-    public Boolean getHemolysis() {
-        return isHemolysis;
-    }
-
-    public void setHemolysis(Boolean hemolysis) {
-        isHemolysis = hemolysis;
-    }
-
-    public Boolean getBloodLipid() {
-        return isBloodLipid;
-    }
-
-    public void setBloodLipid(Boolean bloodLipid) {
-        isBloodLipid = bloodLipid;
-    }
-
     public String getMemo() {
         return memo;
     }
@@ -141,12 +117,28 @@ public class StockOutRequirementForSave {
         this.sampleTypeId = sampleTypeId;
     }
 
-    public String getStatus() {
-        return status;
+    public Integer getDiseaseTypeId() {
+        return diseaseTypeId;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setDiseaseTypeId(Integer diseaseTypeId) {
+        this.diseaseTypeId = diseaseTypeId;
+    }
+
+    public Boolean getIsHemolysis() {
+        return isHemolysis;
+    }
+
+    public void setIsHemolysis(Boolean isHemolysis) {
+        this.isHemolysis = isHemolysis;
+    }
+
+    public Boolean getIsBloodLipid() {
+        return isBloodLipid;
+    }
+
+    public void setIsBloodLipid(Boolean isBloodLipid) {
+        this.isBloodLipid = isBloodLipid;
     }
 
     public Long getSampleClassificationId() {
@@ -163,5 +155,12 @@ public class StockOutRequirementForSave {
 
     public void setFrozenTubeTypeId(Long frozenTubeTypeId) {
         this.frozenTubeTypeId = frozenTubeTypeId;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
 }

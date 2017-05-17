@@ -1,21 +1,22 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
+import org.fwoxford.domain.*;
+import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutRequirementService;
-import org.fwoxford.domain.StockOutRequirement;
-import org.fwoxford.repository.StockOutRequirementRepository;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
 import org.fwoxford.service.dto.response.StockOutRequirementForSave;
 import org.fwoxford.service.mapper.StockOutRequirementMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.util.StringUtils;
 
 /**
  * Service Implementation for managing StockOutRequirement.
@@ -29,6 +30,18 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
     private final StockOutRequirementRepository stockOutRequirementRepository;
 
     private final StockOutRequirementMapper stockOutRequirementMapper;
+
+    @Autowired
+    private StockOutApplyRepository stockOutApplyRepository;
+
+    @Autowired
+    private FrozenTubeTypeRepository frozenTubeTypeRepository;
+
+    @Autowired
+    private SampleTypeRepository sampleTypeRepository;
+
+    @Autowired
+    private SampleClassificationRepository sampleClassificationRepository;
 
     public StockOutRequirementServiceImpl(StockOutRequirementRepository stockOutRequirementRepository, StockOutRequirementMapper stockOutRequirementMapper) {
         this.stockOutRequirementRepository = stockOutRequirementRepository;
@@ -91,7 +104,65 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
     }
 
     @Override
-    public StockOutRequirementForSave saveStockOutRequirement(StockOutRequirementForSave stockOutRequirement) {
-        return null;
+    public StockOutRequirementForSave saveStockOutRequirement(StockOutRequirementForSave stockOutRequirement, Long stockOutApplyId) {
+        if(stockOutApplyId == null){
+            throw new BankServiceException("申请ID不能为空！");
+        }
+        if(StringUtils.isEmpty(stockOutRequirement.getRequirementName())){
+            throw new BankServiceException("需求名称不能为空！",stockOutRequirement.toString());
+        }
+        StockOutApply stockOutApply = stockOutApplyRepository.findById(stockOutApplyId);
+        if(stockOutApply == null){
+            throw new BankServiceException("未查询到申请单的记录！",stockOutApplyId.toString());
+        }
+        if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_PENDING)){
+            throw new BankServiceException("申请单的状态不能新增需求！",stockOutApply.getStatus());
+        }
+
+        StockOutRequirement requirement = new StockOutRequirement();
+        requirement.setStatus(Constants.STOCK_OUT_REQUIREMENT_CKECKING);
+        requirement.setStockOutApply(stockOutApply);
+        requirement.setRequirementName(stockOutRequirement.getRequirementName());
+        requirement.setRequirementCode(BankUtil.getUniqueID());
+        requirement.setApplyCode(stockOutApply.getApplyCode());
+        requirement.setCountOfSample(stockOutRequirement.getCountOfSample());
+        requirement.setDiseaseType(stockOutRequirement.getDiseaseTypeId());
+        requirement.setSex(stockOutRequirement.getSex());
+        requirement.setMemo(stockOutRequirement.getMemo());
+        requirement.setIsBloodLipid(stockOutRequirement.getIsBloodLipid());
+        requirement.setIsHemolysis(stockOutRequirement.getIsHemolysis());
+
+        String age = stockOutRequirement.getAge();
+        if(!StringUtils.isEmpty(age)){
+            String[] ageStr = age.split(";");
+            Integer ageMax = ageStr[1]!=null?Integer.valueOf(ageStr[1]):null;
+            Integer ageMin = ageStr[0]!=null?Integer.valueOf(ageStr[0]):null;
+            requirement.setAgeMax(ageMax);
+            requirement.setAgeMin(ageMin);
+        }
+        if(stockOutRequirement.getFrozenTubeTypeId() != null){
+            FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findOne(stockOutRequirement.getFrozenTubeTypeId());
+            if(frozenTubeType ==null){
+                throw new BankServiceException("未查到冻存管类型！");
+            }
+            requirement.setFrozenTubeType(frozenTubeType);
+        }
+        if(stockOutRequirement.getSampleTypeId()!=null){
+            SampleType sampleType = sampleTypeRepository.findOne(stockOutRequirement.getSampleTypeId());
+            if(sampleType ==null){
+                throw new BankServiceException("未查到样本类型！");
+            }
+            requirement.setSampleType(sampleType);
+        }
+        if(stockOutRequirement.getSampleClassificationId()!=null){
+            SampleClassification sampleClassification = sampleClassificationRepository.findOne(stockOutRequirement.getSampleClassificationId());
+            if(sampleClassification ==null){
+                throw new BankServiceException("未查到样本分类！");
+            }
+            requirement.setSampleClassification(sampleClassification);
+        }
+        stockOutRequirementRepository.save(requirement);
+        stockOutRequirement.setId(requirement.getId());
+        return stockOutRequirement;
     }
 }

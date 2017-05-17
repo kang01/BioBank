@@ -768,11 +768,11 @@ public class TempResource {
         if(id<=3){
             result.setSex("m");
             result.setAge("10;20");
-            result.setBloodLipid(true);
+            result.setIsBloodLipid(true);
             result.setCountOfSample(100);
             result.setFrozenTubeTypeId(1L);
-            result.setDiseaseType(1);
-            result.setHemolysis(true);
+            result.setDiseaseTypeId(1);
+            result.setIsHemolysis(true);
             result.setMemo("待核对样本");
             result.setSampleTypeId(1L);
             result.setSampleClassificationId(1L);

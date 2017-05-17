@@ -32,7 +32,7 @@ public class StockOutRequirementForApply {
     /**
      * 疾病类型：1：2：3：
      */
-    private Integer diseaseType;
+    private Integer diseaseTypeId;
     /**
      * 是否溶血 ：true:是  false:否
      */
@@ -105,28 +105,28 @@ public class StockOutRequirementForApply {
         this.age = age;
     }
 
-    public Integer getDiseaseType() {
-        return diseaseType;
+    public Integer getDiseaseTypeId() {
+        return diseaseTypeId;
     }
 
-    public void setDiseaseType(Integer diseaseType) {
-        this.diseaseType = diseaseType;
+    public void setDiseaseTypeId(Integer diseaseTypeId) {
+        this.diseaseTypeId = diseaseTypeId;
     }
 
-    public Boolean getHemolysis() {
+    public Boolean getIsHemolysis() {
         return isHemolysis;
     }
 
-    public void setHemolysis(Boolean hemolysis) {
-        isHemolysis = hemolysis;
+    public void setIsHemolysis(Boolean isHemolysis) {
+        isHemolysis = isHemolysis;
     }
 
-    public Boolean getBloodLipid() {
+    public Boolean getIsBloodLipid() {
         return isBloodLipid;
     }
 
-    public void setBloodLipid(Boolean bloodLipid) {
-        isBloodLipid = bloodLipid;
+    public void setIsBloodLipid(Boolean isBloodLipid) {
+        isBloodLipid = isBloodLipid;
     }
 
     public String getMemo() {

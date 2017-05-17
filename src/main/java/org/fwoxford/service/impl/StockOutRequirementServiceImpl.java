@@ -175,7 +175,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         }
         stockOutRequirementRepository.save(requirement);
         stockOutRequirement.setId(requirement.getId());
-        if(file!=null){
+        if(!file.isEmpty()){
             List<StockOutRequiredSample> stockOutRequiredSamples = new ArrayList<StockOutRequiredSample>();
             Map<String,String> map = new HashMap<>();
             try {

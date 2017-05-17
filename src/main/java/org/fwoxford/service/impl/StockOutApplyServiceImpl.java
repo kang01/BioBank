@@ -4,12 +4,9 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.Delegate;
 import org.fwoxford.domain.Project;
 import org.fwoxford.domain.StockOutApplyProject;
-import org.fwoxford.repository.DelegateRepository;
-import org.fwoxford.repository.ProjectRepository;
-import org.fwoxford.repository.StockOutApplyProjectRepository;
+import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.domain.StockOutApply;
-import org.fwoxford.repository.StockOutApplyRepository;
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutApplyForSave;
@@ -53,6 +50,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     @Autowired
     private StockOutApplyProjectRepository stockOutApplyProjectRepository;
+
+    @Autowired
+    private StockOutApplyRepositries stockOutApplyRepositries;
 
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
@@ -116,7 +116,8 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     @Override
     public DataTablesOutput<StockOutApplyForDataTableEntity> findStockOutApply(DataTablesInput input) {
-        return null;
+        DataTablesOutput<StockOutApplyForDataTableEntity> output = stockOutApplyRepositries.findAll(input);
+        return output;
     }
 
     @Override

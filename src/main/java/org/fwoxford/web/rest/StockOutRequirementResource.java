@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Null;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -151,7 +152,7 @@ public class StockOutRequirementResource {
     @Timed
     public ResponseEntity<StockOutRequirementForSave> saveStockOutRequirement(@PathVariable Long stockOutApplyId,
                                                                               @RequestParam(value = "stockOutRequirement") String stockOutRequirement,
-                                                                              @RequestParam("file") MultipartFile file) throws URISyntaxException {
+                                                                              @RequestParam(value = "file",required = false) MultipartFile file) throws URISyntaxException {
         JSONObject jsonObject = JSONObject.fromObject(stockOutRequirement);
         StockOutRequirementForSave requirement = (StockOutRequirementForSave) JSONObject.toBean(jsonObject, StockOutRequirementForSave.class);
         log.debug("REST request to save StockOutRequirement : {}", requirement);

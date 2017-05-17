@@ -26,6 +26,7 @@ import java.util.List;
 
 import static org.fwoxford.service.BBISReportType.StockOutCheckResult;
 import static org.fwoxford.service.BBISReportType.StockOutRequirement;
+import static org.fwoxford.service.BBISReportType.StockOutTakeBox;
 
 @Service
 @Transactional
@@ -42,6 +43,7 @@ public class ReportExportingService {
             case StockOutRequirement:
             case StockOutCheckResult:
             case StockOutHandover:
+            case StockOutTakeBox:
                 if (stream == null){
                     stream = ctx.getResourceAsStream("/content/templates/" + type.getTemplateFilePath());
                 }
@@ -161,6 +163,7 @@ public class ReportExportingService {
 
         return picIndex;
     }
+
     private Integer insertImageToCell(XSSFCell cell, byte[] image){
         XSSFSheet sheet = cell.getSheet();
         XSSFWorkbook workbook = sheet.getWorkbook();
@@ -598,6 +601,73 @@ public class ReportExportingService {
                 cellOneProjectCode.setCellValue(r.getProjectCode());
 
                 startRowPos++;
+            }
+
+            // 输出Excel文档到 Output Stream
+            workbook.write(outputStream);
+            workbook.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return outputStream;
+    }
+
+    public ByteArrayOutputStream makeStockOutTakeBoxReport(List<StockOutTakeBoxReportDTO> takeBoxDTOs){
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            XSSFWorkbook workbook = openReportTemplate(StockOutTakeBox, null);
+            // 找到Sheet
+            XSSFSheet detailSheet = workbook.getSheetAt(0);
+
+            int no = 1;
+            int startRowPos = 3;
+            XSSFCell startCell = getCell(detailSheet, "A", startRowPos);
+            XSSFCellStyle style = startCell.getCellStyle();
+            style.setBorderLeft(BorderStyle.THIN);
+            style.setBorderRight(BorderStyle.THIN);
+            style.setBorderTop(BorderStyle.THIN);
+            style.setBorderBottom(BorderStyle.THIN);
+
+            for(StockOutTakeBoxReportDTO r : takeBoxDTOs){
+                // 序号
+                XSSFCell cellOneNO = getCell(detailSheet, no % 2 == 0 ? "I" : "A", startRowPos);
+                cellOneNO.setCellStyle(style);
+                cellOneNO.setCellValue(no);
+
+                // 设备
+                XSSFCell cellOneEquipment = getCell(detailSheet, no % 2 == 0 ? "J" : "B", startRowPos);
+                cellOneEquipment.setCellStyle(style);
+                cellOneEquipment.setCellValue(r.getEquipmentCode());
+
+                // 区域
+                XSSFCell cellOneArea = getCell(detailSheet, no % 2 == 0 ? "K" : "C", startRowPos);
+                cellOneArea.setCellStyle(style);
+                cellOneArea.setCellValue(r.getAreaCode());
+
+                // 架子
+                XSSFCell cellOneShelf = getCell(detailSheet, no % 2 == 0 ? "L" : "D", startRowPos);
+                cellOneShelf.setCellStyle(style);
+                cellOneShelf.setCellValue(r.getShelfCode());
+
+                // 位置
+                XSSFCell cellOneLocation = getCell(detailSheet, no % 2 == 0 ? "M" : "E", startRowPos);
+                cellOneLocation.setCellStyle(style);
+                cellOneLocation.setCellValue(r.getShelfLocation());
+
+                // 盒编码
+                XSSFCell cellOneBox = getCell(detailSheet, no % 2 == 0 ? "N" : "F", startRowPos);
+                cellOneBox.setCellStyle(style);
+                cellOneBox.setCellValue(r.getBoxCode());
+
+                // 盒编码
+                XSSFCell cellOneCheck = getCell(detailSheet, no % 2 == 0 ? "O" : "G", startRowPos);
+                cellOneCheck.setCellStyle(style);
+                cellOneCheck.setCellValue("□");
+
+                startRowPos += no % 2 == 0 ? 1 : 0;
+                no++;
             }
 
             // 输出Excel文档到 Output Stream

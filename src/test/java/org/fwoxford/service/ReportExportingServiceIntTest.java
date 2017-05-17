@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -122,6 +123,39 @@ public class ReportExportingServiceIntTest {
             dto.getSamples().add(req);
 
             ByteArrayOutputStream stream = reportExportingService.makeStockOutHandoverReport(dto);
+            File dir = new File(".");
+
+            System.out.println(dir.getCanonicalPath());
+            System.out.println(dir.getAbsolutePath());
+
+            OutputStream ofs = null;
+            ofs = new FileOutputStream(dir.getCanonicalPath() + "/" + stream.hashCode() + ".xlsx");
+            stream.writeTo(ofs);
+
+            ofs.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testMakeStockOutTakeBoxReport(){
+        StockOutTakeBoxReportDTO dto = new StockOutTakeBoxReportDTO();
+        try {
+            dto.setEquipmentCode("F3-01");
+            dto.setAreaCode("S01");
+            dto.setShelfCode("R01");
+            dto.setShelfLocation("A3");
+            dto.setBoxCode("1234567890");
+
+            List<StockOutTakeBoxReportDTO> dtos = new ArrayList<>();
+            dtos.add(dto);
+            dtos.add(dto);
+            dtos.add(dto);
+
+            ByteArrayOutputStream stream = reportExportingService.makeStockOutTakeBoxReport(dtos);
             File dir = new File(".");
 
             System.out.println(dir.getCanonicalPath());

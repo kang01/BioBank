@@ -50,7 +50,7 @@ public class StockOutApplyDetail {
     /**
      * 授权的项目
      */
-    private String projectIds;
+    private List<Long> projectIds;
     /**
      * 样本需求
      */
@@ -135,11 +135,11 @@ public class StockOutApplyDetail {
         this.status = status;
     }
 
-    public String getProjectIds() {
+    public List<Long> getProjectIds() {
         return projectIds;
     }
 
-    public void setProjectIds(String projectIds) {
+    public void setProjectIds(List<Long> projectIds) {
         this.projectIds = projectIds;
     }
 

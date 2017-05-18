@@ -200,14 +200,11 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         List<ProjectResponse> projectResponses = new ArrayList<ProjectResponse>();
         //获取授权的项目
         List<StockOutApplyProject> stockOutApplyProjects = stockOutApplyProjectRepository.findByStockOutApplyId(id);
-        StringBuffer projectIds = new StringBuffer();
+        List<Long> projectIds = new ArrayList<Long>();
        for(StockOutApplyProject s :stockOutApplyProjects){
-           projectIds.append(s.getProject().getId());
-           projectIds.append(",");
+           projectIds.add(s.getProject().getId());
        }
-       if(!StringUtils.isEmpty(projectIds)){
-           res.setProjectIds(projectIds.toString());
-       }
+       res.setProjectIds(projectIds);
        //获取申请的需求
         List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<StockOutRequirementForApplyTable>();
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(id);

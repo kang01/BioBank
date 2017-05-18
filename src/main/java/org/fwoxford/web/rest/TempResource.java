@@ -713,7 +713,9 @@ public class TempResource {
         result.setStartTime(LocalDate.parse("2017-07-07"));
         result.setEndTime(LocalDate.parse("2017-07-17"));
         result.setRecordTime(LocalDate.now());
-        result.setProjectIds("1,2,3,");
+        List<Long> projectIds = new ArrayList<Long>();
+        projectIds.add(1L);projectIds.add(2L);projectIds.add(3L);
+        result.setProjectIds(projectIds);
         List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             stockOutRequirementForApplyTables.add(createStockOutRequirementForApplyTable(i));

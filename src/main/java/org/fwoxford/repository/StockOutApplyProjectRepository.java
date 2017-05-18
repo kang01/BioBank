@@ -13,4 +13,6 @@ import java.util.List;
 public interface StockOutApplyProjectRepository extends JpaRepository<StockOutApplyProject,Long> {
 
     void deleteByStockOutApplyId(Long id);
+
+    List<StockOutApplyProject> findByStockOutApplyId(Long id);
 }

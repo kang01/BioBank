@@ -13,4 +13,6 @@ import java.util.List;
 public interface StockOutRequiredSampleRepository extends JpaRepository<StockOutRequiredSample,Long> {
 
     List<StockOutRequiredSample> findByStockOutRequirementId(Long id);
+
+    void deleteByStockOutRequirementId(Long id);
 }

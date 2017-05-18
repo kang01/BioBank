@@ -7,6 +7,7 @@ import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.service.dto.response.StockOutRequirementForApply;
 import org.fwoxford.service.dto.response.StockOutRequirementForSave;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
@@ -152,15 +153,12 @@ public class StockOutRequirementResource {
     @RequestMapping(value = "/stock-out-requirements/stockOutApply/{stockOutApplyId}",method = RequestMethod.POST)
     @Timed
     public ResponseEntity<StockOutRequirementForSave> saveStockOutRequirement(@PathVariable Long stockOutApplyId,
-                                                                              @RequestParam(value = "stockOutRequirement") String stockOutRequirement,
-                                                                              @RequestParam(value = "file",required = false) MultipartFile file) throws URISyntaxException {
-        JSONObject jsonObject = JSONObject.fromObject(stockOutRequirement);
-        StockOutRequirementForSave requirement = (StockOutRequirementForSave) JSONObject.toBean(jsonObject, StockOutRequirementForSave.class);
-        log.debug("REST request to save StockOutRequirement : {}", requirement);
-        if (requirement.getId() != null) {
+                                                                              @RequestBody StockOutRequirementForSave stockOutRequirement) throws URISyntaxException {
+        log.debug("REST request to save StockOutRequirement : {}", stockOutRequirement);
+        if (stockOutRequirement.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new stockOutRequirement cannot already have an ID")).body(null);
         }
-        StockOutRequirementForSave result = stockOutRequirementService.saveStockOutRequirement(requirement, stockOutApplyId);
+        StockOutRequirementForSave result = stockOutRequirementService.saveStockOutRequirement(stockOutRequirement, stockOutApplyId);
 
         return ResponseEntity.created(new URI("/api/stock-out-requirements/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -203,5 +201,27 @@ public class StockOutRequirementResource {
     public ResponseEntity<StockOutRequirementForApply> getRequirement(@PathVariable Long id) throws URISyntaxException {
         StockOutRequirementForApply result = stockOutRequirementService.getRequirementById(id);
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+
+    /**
+     * 保存出库申请需求
+     *
+     * @param stockOutApplyId
+     * @param stockOutRequirement
+     * @return
+     * @throws URISyntaxException
+     */
+    @RequestMapping(value = "/stock-out-requirements/stockOutApply/{stockOutApplyId}",method = RequestMethod.PUT)
+    @Timed
+    public ResponseEntity<StockOutRequirementForSave> updateStockOutRequirement(@PathVariable Long stockOutApplyId,
+                                                                                @RequestBody StockOutRequirementForSave stockOutRequirement) throws URISyntaxException {
+        if (stockOutRequirement.getId() == null) {
+            throw new BankServiceException("出库需求ID不能为空！");
+        }
+        StockOutRequirementForSave result = stockOutRequirementService.saveStockOutRequirement(stockOutRequirement, stockOutApplyId);
+
+        return ResponseEntity.created(new URI("/api/stock-out-requirements/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 }

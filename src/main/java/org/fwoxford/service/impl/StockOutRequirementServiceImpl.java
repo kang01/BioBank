@@ -133,6 +133,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         }
 
         StockOutRequirement requirement = new StockOutRequirement();
+        if(stockOutRequirement.getId()!=null){
+            requirement.setId(stockOutRequirement.getId());
+        }
         requirement.setStatus(Constants.STOCK_OUT_REQUIREMENT_CKECKING);
         requirement.setStockOutApply(stockOutApply);
         requirement.setRequirementName(stockOutRequirement.getRequirementName());
@@ -196,6 +199,10 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         }
 
         StockOutRequirement requirement = new StockOutRequirement();
+        if(stockOutRequirement.getId()!=null){
+            requirement.setId(stockOutRequirement.getId());
+            stockOutRequiredSampleRepository.deleteByStockOutRequirementId(stockOutRequirement.getId());
+        }
         requirement.setStatus(Constants.STOCK_OUT_REQUIREMENT_CKECKING);
         requirement.setStockOutApply(stockOutApply);
         requirement.setRequirementName(stockOutRequirement.getRequirementName());
@@ -203,6 +210,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         requirement.setApplyCode(stockOutApply.getApplyCode());
         requirement.setMemo(stockOutRequirement.getMemo());
         stockOutRequirementRepository.save(requirement);
+
         List<StockOutRequiredSample> stockOutRequiredSamples = new ArrayList<StockOutRequiredSample>();
         Map<String,String> map = new HashMap<>();
         StringBuffer samples = new StringBuffer();

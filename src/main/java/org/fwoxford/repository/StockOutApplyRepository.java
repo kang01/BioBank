@@ -12,5 +12,4 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StockOutApplyRepository extends JpaRepository<StockOutApply,Long> {
 
-    StockOutApply findById(Long id);
 }

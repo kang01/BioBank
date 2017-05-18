@@ -68,7 +68,7 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
     @Column(name = "apply_code", length = 100, nullable = false)
     private String applyCode;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Delegate delegate;
 
     public Long getId() {

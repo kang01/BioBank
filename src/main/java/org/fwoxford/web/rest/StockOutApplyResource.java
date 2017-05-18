@@ -6,7 +6,7 @@ import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.dto.StockOutApplyDTO;
-import org.fwoxford.service.dto.response.StockOutApplyByOne;
+import org.fwoxford.service.dto.response.StockOutApplyDetail;
 import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutApplyForSave;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -195,8 +195,8 @@ public class StockOutApplyResource {
      */
     @GetMapping("/stock-out-applies/{id}")
     @Timed
-    public ResponseEntity<StockOutApplyByOne> get(@PathVariable Long id) throws URISyntaxException {
-        StockOutApplyByOne result = stockOutApplyService.getStockOutDetailAndRequirement(id);
+    public ResponseEntity<StockOutApplyDetail> get(@PathVariable Long id) throws URISyntaxException {
+        StockOutApplyDetail result = stockOutApplyService.getStockOutDetailAndRequirement(id);
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 

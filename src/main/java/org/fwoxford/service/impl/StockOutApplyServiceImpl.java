@@ -138,7 +138,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         if(id == null){
             throw new BankServiceException("出库申请ID不能为空！",stockOutApplyForSave.toString());
         }
-        StockOutApply stockOutApply = stockOutApplyRepository.findById(id);
+        StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
         if(stockOutApply == null){
             throw new BankServiceException("未查询到需要修改的出库申请！");
         }
@@ -186,7 +186,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     @Override
     public StockOutApplyByOne getStockOutDetailAndRequirement(Long id) {
         StockOutApplyByOne res = new StockOutApplyByOne();
-        StockOutApply stockOutApply = stockOutApplyRepository.findById(id);
+        StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
         res.setId(id);
         res.setRecordId(stockOutApply.getRecordId());
         res.setRecordTime(stockOutApply.getRecordTime());
@@ -219,14 +219,17 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
             //获取指定样本
             List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(requirement.getId());
-            String samples = new String();
-            for(int i = 0;i<stockOutRequiredSamples.size();i++){
-                samples+=stockOutRequiredSamples.get(i).getSampleCode()+"-"+stockOutRequiredSamples.get(i).getSampleType();
-                if(i+1<stockOutRequiredSamples.size()){
-                    samples+=",";
-                }
+            StringBuffer samples = new StringBuffer();
+            for(StockOutRequiredSample s :stockOutRequiredSamples){
+                samples.append(s.getSampleCode());
+                samples.append("-");
+                samples.append(s.getSampleType());
+                samples.append(",");
             }
-            stockOutRequirementForApplyTable.setSamples(samples);
+            if(!StringUtils.isEmpty(samples)){
+                String samplesStr = samples.substring(0,samples.length()-1);
+                stockOutRequirementForApplyTable.setSamples(samplesStr);
+            }
             if(StringUtils.isEmpty(samples)){
                 stockOutRequirementForApplyTable.setDiseaseTypeId(requirement.getDiseaseType());
                 stockOutRequirementForApplyTable.setIsBloodLipid(requirement.isIsBloodLipid());

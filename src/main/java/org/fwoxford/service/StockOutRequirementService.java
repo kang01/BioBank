@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutRequirementDTO;
+import org.fwoxford.service.dto.response.StockOutRequirementForApply;
 import org.fwoxford.service.dto.response.StockOutRequirementForSave;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,5 +43,9 @@ public interface StockOutRequirementService {
      */
     void delete(Long id);
 
-    StockOutRequirementForSave saveStockOutRequirement(StockOutRequirementForSave stockOutRequirement, Long stockOutApplyId, MultipartFile file);
+    StockOutRequirementForSave saveStockOutRequirement(StockOutRequirementForSave stockOutRequirement, Long stockOutApplyId);
+
+    StockOutRequirementForApply saveAndUploadStockOutRequirement(StockOutRequirementForSave stockOutRequirement, Long stockOutApplyId, MultipartFile file);
+
+    StockOutRequirementForApply getRequirementById(Long id);
 }

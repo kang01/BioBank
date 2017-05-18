@@ -6,8 +6,10 @@ import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.dto.StockOutApplyDTO;
+import org.fwoxford.service.dto.response.StockOutApplyByOne;
 import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutApplyForSave;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -104,19 +107,19 @@ public class StockOutApplyResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    /**
-     * GET  /stock-out-applies/:id : get the "id" stockOutApply.
-     *
-     * @param id the id of the stockOutApplyDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the stockOutApplyDTO, or with status 404 (Not Found)
-     */
-    @GetMapping("/stock-out-applies/{id}")
-    @Timed
-    public ResponseEntity<StockOutApplyDTO> getStockOutApply(@PathVariable Long id) {
-        log.debug("REST request to get StockOutApply : {}", id);
-        StockOutApplyDTO stockOutApplyDTO = stockOutApplyService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutApplyDTO));
-    }
+//    /**
+//     * GET  /stock-out-applies/:id : get the "id" stockOutApply.
+//     *
+//     * @param id the id of the stockOutApplyDTO to retrieve
+//     * @return the ResponseEntity with status 200 (OK) and with body the stockOutApplyDTO, or with status 404 (Not Found)
+//     */
+//    @GetMapping("/stock-out-applies/{id}")
+//    @Timed
+//    public ResponseEntity<StockOutApplyDTO> getStockOutApply(@PathVariable Long id) {
+//        log.debug("REST request to get StockOutApply : {}", id);
+//        StockOutApplyDTO stockOutApplyDTO = stockOutApplyService.findOne(id);
+//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutApplyDTO));
+//    }
 
     /**
      * DELETE  /stock-out-applies/:id : delete the "id" stockOutApply.
@@ -170,6 +173,31 @@ public class StockOutApplyResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockOutApplyForSave.getId().toString()))
             .body(result);
+    }
+    /**
+     * 根据上一级申请ID，取下一级出库申请列表
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-applies/parentApply/{id}")
+    @Timed
+    public ResponseEntity<List<StockOutApplyForDataTableEntity>> getNextStockOutApplyList(@PathVariable Long id) throws URISyntaxException {
+        List<StockOutApplyForDataTableEntity> result =  stockOutApplyService.getNextStockOutApplyList(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+
+    /**
+     * 出库申请，查看详情接口
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-applies/{id}")
+    @Timed
+    public ResponseEntity<StockOutApplyByOne> get(@PathVariable Long id) throws URISyntaxException {
+        StockOutApplyByOne result = stockOutApplyService.getStockOutDetailAndRequirement(id);
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
 }

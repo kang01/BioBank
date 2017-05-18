@@ -3,6 +3,7 @@ package org.fwoxford.service.impl;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
+import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
 import org.fwoxford.service.dto.response.StockOutRequirementForSave;
@@ -17,6 +18,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * Service Implementation for managing StockOutRequirement.
@@ -42,6 +48,12 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
     @Autowired
     private SampleClassificationRepository sampleClassificationRepository;
+
+    @Autowired
+    private ReportExportingService reportExportingService;
+
+    @Autowired
+    private StockOutRequiredSampleRepository stockOutRequiredSampleRepository;
 
     public StockOutRequirementServiceImpl(StockOutRequirementRepository stockOutRequirementRepository, StockOutRequirementMapper stockOutRequirementMapper) {
         this.stockOutRequirementRepository = stockOutRequirementRepository;
@@ -104,7 +116,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
     }
 
     @Override
-    public StockOutRequirementForSave saveStockOutRequirement(StockOutRequirementForSave stockOutRequirement, Long stockOutApplyId) {
+    public StockOutRequirementForSave saveStockOutRequirement(StockOutRequirementForSave stockOutRequirement, Long stockOutApplyId, MultipartFile file) {
         if(stockOutApplyId == null){
             throw new BankServiceException("申请ID不能为空！");
         }
@@ -163,6 +175,38 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         }
         stockOutRequirementRepository.save(requirement);
         stockOutRequirement.setId(requirement.getId());
+        if(!file.isEmpty()){
+            List<StockOutRequiredSample> stockOutRequiredSamples = new ArrayList<StockOutRequiredSample>();
+            Map<String,String> map = new HashMap<>();
+            try {
+                InputStream stream = file.getInputStream();
+                HashSet<String[]> hashSet =  reportExportingService.readRequiredSamplesFromExcelFile(stream);
+                for(String[] s : hashSet){
+                    StockOutRequiredSample stockOutRequiredSample = new StockOutRequiredSample();
+                    String code = s[0];
+                    String type = s[1];
+                    stockOutRequiredSample.setStatus(Constants.VALID);
+                    stockOutRequiredSample.setSampleCode(code);
+                    stockOutRequiredSample.setSampleType(type);
+                    stockOutRequiredSample.setStockOutRequirement(requirement);
+                    if(map.get(code)!=null){
+                        continue;
+                    }
+                    map.put(code,type);
+                    stockOutRequiredSamples.add(stockOutRequiredSample);
+                    if(stockOutRequiredSamples.size()>=1000){
+                        stockOutRequiredSampleRepository.save(stockOutRequiredSamples);
+                        stockOutRequiredSamples.clear();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stockOutRequiredSampleRepository.save(stockOutRequiredSamples);
+            requirement.setCountOfSample(stockOutRequiredSamples.size());
+            stockOutRequirement.setCountOfSample(stockOutRequiredSamples.size());
+            stockOutRequirementRepository.save(requirement);
+        }
         return stockOutRequirement;
     }
 }

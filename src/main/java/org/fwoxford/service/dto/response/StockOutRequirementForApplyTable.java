@@ -24,9 +24,18 @@ public class StockOutRequirementForApplyTable {
      */
     private String age;
     /**
-     * 疾病
+     * 疾病类型：1：2：3：
      */
-    private String disease;
+    private Integer diseaseTypeId;
+    /**
+     * 是否溶血 ：true:是  false:否
+     */
+    private Boolean isHemolysis;
+    /**
+     * 是否脂质血 ：true:是  false:否
+     */
+    private Boolean isBloodLipid;
+
     /**
      * 样本类型
      */
@@ -75,13 +84,28 @@ public class StockOutRequirementForApplyTable {
     public void setAge(String age) {
         this.age = age;
     }
-
-    public String getDisease() {
-        return disease;
+    public Integer getDiseaseTypeId() {
+        return diseaseTypeId;
     }
 
-    public void setDisease(String disease) {
-        this.disease = disease;
+    public void setDiseaseTypeId(Integer diseaseTypeId) {
+        this.diseaseTypeId = diseaseTypeId;
+    }
+
+    public Boolean getIsHemolysis() {
+        return isHemolysis;
+    }
+
+    public void setIsHemolysis(Boolean isHemolysis) {
+        isHemolysis = isHemolysis;
+    }
+
+    public Boolean getIsBloodLipid() {
+        return isBloodLipid;
+    }
+
+    public void setIsBloodLipid(Boolean isBloodLipid) {
+        isBloodLipid = isBloodLipid;
     }
 
     public String getSampleTypeName() {

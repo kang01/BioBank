@@ -746,7 +746,9 @@ public class TempResource {
         res.setId(1L+i);
         res.setAge(10+i+"-30岁");
         res.setCountOfSample(10+i*100);
-        res.setDisease("AMI，有溶血，有脂血");
+        res.setDiseaseTypeId(1);
+        res.setIsHemolysis(true);
+        res.setIsHemolysis(false);
         res.setFrozenTubeTypeName("5L");
         res.setSampleTypeName("血浆");
         res.setSex("男");

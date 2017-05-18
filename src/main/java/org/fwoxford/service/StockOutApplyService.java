@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutApplyDTO;
+import org.fwoxford.service.dto.response.StockOutApplyByOne;
 import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutApplyForSave;
 import org.springframework.data.domain.Page;
@@ -51,4 +52,8 @@ public interface StockOutApplyService {
     StockOutApplyDTO initStockOutApply();
 
     StockOutApplyForSave saveStockOutApply(StockOutApplyForSave stockOutApplyForSave);
+
+    List<StockOutApplyForDataTableEntity> getNextStockOutApplyList(Long id);
+
+    StockOutApplyByOne getStockOutDetailAndRequirement(Long id);
 }

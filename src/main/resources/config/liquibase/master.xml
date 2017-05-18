@@ -76,5 +76,6 @@
 
     <include file="classpath:config/liquibase/changelog/20170502015417_added_view_StockIn.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170505000000_added_view_StockInBox.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170506000000_added_view_StockOutApply.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

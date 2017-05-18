@@ -693,12 +693,26 @@ public class ReportExportingService {
             int startRowIndex = 1;
             int countOfEmptyRow = 0;
             List<Integer> emptyRowIndexos = new ArrayList<Integer>();
-            for(int i = startRowIndex; i < 65536 && countOfEmptyRow >= 10; ++i){
+            for(int i = startRowIndex; i < 65536 && countOfEmptyRow <= 10; ++i){
                 XSSFRow dataRow = samplesSheet.getRow(i);
+                if (dataRow == null){
+                    if (emptyRowIndexos.size() == 0 || i-1 == emptyRowIndexos.get(emptyRowIndexos.size() - 1)){
+                        countOfEmptyRow++;
+                    }
+                    emptyRowIndexos.add(i);
+                    continue;
+                }
                 XSSFCell cell = dataRow.getCell(sampleCodeColIndex);
-                String sampleCode = cell.getRawValue();
+                if (cell == null){
+                    if (emptyRowIndexos.size() == 0 || i-1 == emptyRowIndexos.get(emptyRowIndexos.size() - 1)){
+                        countOfEmptyRow++;
+                    }
+                    emptyRowIndexos.add(i);
+                    continue;
+                }
+                String sampleCode = cell.getStringCellValue();
                 cell = dataRow.getCell(sampleTypeColIndex);
-                String sampleType = cell.getRawValue();
+                String sampleType = cell.getStringCellValue();
                 if (sampleCode == null || sampleType == null || sampleCode.length() == 0 || sampleType.length() == 0){
                     if (emptyRowIndexos.size() == 0 || i-1 == emptyRowIndexos.get(emptyRowIndexos.size() - 1)){
                         countOfEmptyRow++;

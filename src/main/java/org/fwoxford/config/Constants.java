@@ -1,7 +1,9 @@
 package org.fwoxford.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Application constants.
@@ -68,6 +70,11 @@ public final class Constants {
     public static final String STOCK_OUT_REQUIREMENT_CKECKING = "1201";
     public static final String STOCK_OUT_REQUIREMENT_CHECKED_PASS = "1202";
     public static final String STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT = "1203";
+    public static final  Map SEX_MAP = new HashMap(){{
+        put("f","女");
+        put("m","男");
+        put("n","不详");
+    }};
     private Constants() {
     }
 }

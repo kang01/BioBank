@@ -1,18 +1,11 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
-import org.fwoxford.domain.Delegate;
-import org.fwoxford.domain.Project;
-import org.fwoxford.domain.StockOutApplyProject;
-import org.fwoxford.repository.DelegateRepository;
-import org.fwoxford.repository.ProjectRepository;
-import org.fwoxford.repository.StockOutApplyProjectRepository;
+import org.fwoxford.domain.*;
+import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutApplyService;
-import org.fwoxford.domain.StockOutApply;
-import org.fwoxford.repository.StockOutApplyRepository;
 import org.fwoxford.service.dto.StockOutApplyDTO;
-import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
-import org.fwoxford.service.dto.response.StockOutApplyForSave;
+import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.StockOutApplyMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -27,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,6 +47,15 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     @Autowired
     private StockOutApplyProjectRepository stockOutApplyProjectRepository;
+
+    @Autowired
+    private StockOutApplyRepositries stockOutApplyRepositries;
+
+    @Autowired
+    private StockOutRequiredSampleRepository stockOutRequiredSampleRepository;
+
+    @Autowired
+    private StockOutRequirementRepository stockOutRequirementRepository;
 
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
@@ -116,7 +119,8 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     @Override
     public DataTablesOutput<StockOutApplyForDataTableEntity> findStockOutApply(DataTablesInput input) {
-        return null;
+        DataTablesOutput<StockOutApplyForDataTableEntity> output = stockOutApplyRepositries.findAll(input);
+        return output;
     }
 
     @Override
@@ -166,5 +170,75 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         }
         stockOutApplyProjectRepository.save(stockOutApplyProjects);
         return stockOutApplyForSave;
+    }
+
+    /**
+     * 根据上一级申请ID，取下一级出库申请列表
+     * @param id
+     * @return
+     */
+    @Override
+    public List<StockOutApplyForDataTableEntity> getNextStockOutApplyList(Long id) {
+        List<StockOutApplyForDataTableEntity> stockOutApplyForDataTableEntities= stockOutApplyRepositries.findByParentApplyId(id);
+        return stockOutApplyForDataTableEntities;
+    }
+
+    @Override
+    public StockOutApplyByOne getStockOutDetailAndRequirement(Long id) {
+        StockOutApplyByOne res = new StockOutApplyByOne();
+        StockOutApply stockOutApply = stockOutApplyRepository.findById(id);
+        res.setId(id);
+        res.setRecordId(stockOutApply.getRecordId());
+        res.setRecordTime(stockOutApply.getRecordTime());
+        res.setDelegateId(stockOutApply.getDelegate()!=null?stockOutApply.getDelegate().getId():null);
+        res.setApplyCode(stockOutApply.getApplyCode());
+        res.setApplyPersonName(stockOutApply.getApplyPersonName());
+        res.setEndTime(stockOutApply.getEndTime());
+        res.setStartTime(stockOutApply.getStartTime());
+        res.setPurposeOfSample(stockOutApply.getPurposeOfSample());
+        res.setStatus(stockOutApply.getStatus());
+        List<ProjectResponse> projectResponses = new ArrayList<ProjectResponse>();
+        //获取授权的项目
+        List<StockOutApplyProject> stockOutApplyProjects = stockOutApplyProjectRepository.findByStockOutApplyId(id);
+       for(StockOutApplyProject s :stockOutApplyProjects){
+           ProjectResponse projectResponse = new ProjectResponse();
+           projectResponse.setId(s.getProject().getId());
+           projectResponse.setProjectName(s.getProject().getProjectName());
+           projectResponse.setProjectCode(s.getProject().getProjectCode());
+           projectResponses.add(projectResponse);
+       }
+        res.setProjects(projectResponses);
+       //获取申请的需求
+        List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<StockOutRequirementForApplyTable>();
+        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(id);
+        for(StockOutRequirement requirement : stockOutRequirementList){
+            StockOutRequirementForApplyTable stockOutRequirementForApplyTable = new StockOutRequirementForApplyTable();
+            stockOutRequirementForApplyTable.setId(requirement.getId());
+            stockOutRequirementForApplyTable.setStatus(requirement.getStatus());
+            stockOutRequirementForApplyTable.setCountOfSample(requirement.getCountOfSample());
+
+            //获取指定样本
+            List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(requirement.getId());
+            String samples = new String();
+            for(int i = 0;i<stockOutRequiredSamples.size();i++){
+                samples+=stockOutRequiredSamples.get(i).getSampleCode()+"-"+stockOutRequiredSamples.get(i).getSampleType();
+                if(i+1<stockOutRequiredSamples.size()){
+                    samples+=",";
+                }
+            }
+            stockOutRequirementForApplyTable.setSamples(samples);
+            if(StringUtils.isEmpty(samples)){
+                stockOutRequirementForApplyTable.setDiseaseTypeId(requirement.getDiseaseType());
+                stockOutRequirementForApplyTable.setIsBloodLipid(requirement.isIsBloodLipid());
+                stockOutRequirementForApplyTable.setIsHemolysis(requirement.isIsHemolysis());
+                stockOutRequirementForApplyTable.setFrozenTubeTypeName(requirement.getFrozenTubeType()!=null?requirement.getFrozenTubeType().getFrozenTubeTypeName():null);
+                stockOutRequirementForApplyTable.setSampleTypeName(requirement.getSampleType()!=null?requirement.getSampleType().getSampleTypeName():null);
+                stockOutRequirementForApplyTable.setSex(Constants.SEX_MAP.get(requirement.getSex())!=null?Constants.SEX_MAP.get(requirement.getSex()).toString():null);
+                stockOutRequirementForApplyTable.setAge(requirement.getAgeMin()+"-"+requirement.getAgeMax()+"岁");
+            }
+            stockOutRequirementForApplyTables.add(stockOutRequirementForApplyTable);
+        }
+        res.setStockOutRequirement(stockOutRequirementForApplyTables);
+        return res;
     }
 }

@@ -166,6 +166,12 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     @Size(max = 255)
     @Column(name = "disease_type", length = 255)
     private String diseaseType;
+
+    @Column(name = "is_hemolysis")
+    private Boolean isHemolysis;
+
+    @Column(name = "is_blood_lipid")
+    private Boolean isBloodLipid;
     /**
      * 就诊类型
      */
@@ -506,7 +512,31 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     public void setDiseaseType(String diseaseType) {
         this.diseaseType = diseaseType;
     }
+    public Boolean isIsHemolysis() {
+        return isHemolysis;
+    }
 
+    public FrozenTube isHemolysis(Boolean isHemolysis) {
+        this.isHemolysis = isHemolysis;
+        return this;
+    }
+
+    public void setIsHemolysis(Boolean isHemolysis) {
+        this.isHemolysis = isHemolysis;
+    }
+
+    public Boolean isIsBloodLipid() {
+        return isBloodLipid;
+    }
+
+    public FrozenTube isBloodLipid(Boolean isBloodLipid) {
+        this.isBloodLipid = isBloodLipid;
+        return this;
+    }
+
+    public void setIsBloodLipid(Boolean isBloodLipid) {
+        this.isBloodLipid = isBloodLipid;
+    }
     public String getVisitType() {
         return visitType;
     }
@@ -631,6 +661,8 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
             ", dob='" + dob + "'" +
             ", gender='" + gender + "'" +
             ", diseaseType='" + diseaseType + "'" +
+            ", isHemolysis='" + isHemolysis + "'" +
+            ", isBloodLipid='" + isBloodLipid + "'" +
             ", visitType='" + visitType + "'" +
             ", visitDate='" + visitDate + "'" +
             '}';

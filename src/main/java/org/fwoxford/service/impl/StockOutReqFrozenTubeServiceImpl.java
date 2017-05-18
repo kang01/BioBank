@@ -1,5 +1,11 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
+import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.domain.StockOutRequiredSample;
+import org.fwoxford.domain.StockOutRequirement;
+import org.fwoxford.repository.FrozenTubeRepository;
+import org.fwoxford.repository.StockOutRequirementRepository;
 import org.fwoxford.service.StockOutReqFrozenTubeService;
 import org.fwoxford.domain.StockOutReqFrozenTube;
 import org.fwoxford.repository.StockOutReqFrozenTubeRepository;
@@ -7,6 +13,7 @@ import org.fwoxford.service.dto.StockOutReqFrozenTubeDTO;
 import org.fwoxford.service.mapper.StockOutReqFrozenTubeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +31,16 @@ import java.util.stream.Collectors;
 public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeService{
 
     private final Logger log = LoggerFactory.getLogger(StockOutReqFrozenTubeServiceImpl.class);
-    
+
     private final StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
 
     private final StockOutReqFrozenTubeMapper stockOutReqFrozenTubeMapper;
+
+    @Autowired
+    private StockOutRequirementRepository stockOutRequirementRepository;
+
+    @Autowired
+    private FrozenTubeRepository frozenTubeRepository;
 
     public StockOutReqFrozenTubeServiceImpl(StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository, StockOutReqFrozenTubeMapper stockOutReqFrozenTubeMapper) {
         this.stockOutReqFrozenTubeRepository = stockOutReqFrozenTubeRepository;
@@ -51,7 +64,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
 
     /**
      *  Get all the stockOutReqFrozenTubes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +100,51 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
     public void delete(Long id) {
         log.debug("Request to delete StockOutReqFrozenTube : {}", id);
         stockOutReqFrozenTubeRepository.delete(id);
+    }
+
+    @Override
+    public String checkStockOutSampleByAppointedSample(List<StockOutRequiredSample> stockOutRequiredSamples) {
+        String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
+        for(StockOutRequiredSample s :stockOutRequiredSamples){
+            StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
+            String appointedSampleCode = s.getSampleCode();
+            String appointedSampleType = s.getSampleType();
+            FrozenTube frozenTube = frozenTubeRepository.findBySampleCodeAndSampleTypeCode(appointedSampleCode,appointedSampleType,s.getStockOutRequirement().getId());
+            if(frozenTube == null){
+                status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
+            }
+            stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE);
+            stockOutReqFrozenTube.setStockOutRequirement(s.getStockOutRequirement());
+            stockOutReqFrozenTube.setMemo(frozenTube!=null?frozenTube.getMemo():null);
+            stockOutReqFrozenTube.setFrozenBox(frozenTube!=null?frozenTube.getFrozenBox():null);
+            stockOutReqFrozenTube.setFrozenTube(frozenTube!=null?frozenTube:null);
+            stockOutReqFrozenTube.setTubeColumns(frozenTube!=null?frozenTube.getTubeColumns():null);
+            stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
+            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
+        }
+        return status;
+    }
+
+    @Override
+    public String checkStockOutSampleByRequirement(Long id) {
+        String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
+        StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
+        Integer countOfSample = stockOutRequirement.getCountOfSample();
+        List<FrozenTube> frozenTubes = frozenTubeRepository.findByRequirement(id);
+        if(frozenTubes.size()<countOfSample){
+            status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
+        }
+        for(FrozenTube frozenTube :frozenTubes){
+            StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
+            stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE);
+            stockOutReqFrozenTube.setStockOutRequirement(stockOutRequirement);
+            stockOutReqFrozenTube.setMemo(frozenTube!=null?frozenTube.getMemo():null);
+            stockOutReqFrozenTube.setFrozenBox(frozenTube!=null?frozenTube.getFrozenBox():null);
+            stockOutReqFrozenTube.setFrozenTube(frozenTube!=null?frozenTube:null);
+            stockOutReqFrozenTube.setTubeColumns(frozenTube!=null?frozenTube.getTubeColumns():null);
+            stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
+            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
+        }
+        return status;
     }
 }

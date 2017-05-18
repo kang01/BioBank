@@ -26,7 +26,7 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
 
     private Integer ageMax;
 
-    private Integer diseaseType;
+    private String diseaseType;
 
     private Boolean isHemolysis;
 
@@ -97,11 +97,11 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
     public void setAgeMax(Integer ageMax) {
         this.ageMax = ageMax;
     }
-    public Integer getDiseaseType() {
+    public String getDiseaseType() {
         return diseaseType;
     }
 
-    public void setDiseaseType(Integer diseaseType) {
+    public void setDiseaseType(String diseaseType) {
         this.diseaseType = diseaseType;
     }
     public Boolean getIsHemolysis() {

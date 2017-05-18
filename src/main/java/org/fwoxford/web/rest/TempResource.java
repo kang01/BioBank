@@ -745,7 +745,7 @@ public class TempResource {
         res.setId(1L+i);
         res.setAge(10+i+"-30岁");
         res.setCountOfSample(10+i*100);
-        res.setDiseaseTypeId(1);
+        res.setDiseaseTypeId("1");
         res.setIsHemolysis(true);
         res.setIsHemolysis(false);
         res.setFrozenTubeTypeName("5L");
@@ -772,7 +772,7 @@ public class TempResource {
             result.setIsBloodLipid(true);
             result.setCountOfSample(100);
             result.setFrozenTubeTypeId(1L);
-            result.setDiseaseTypeId(1);
+            result.setDiseaseTypeId("1");
             result.setIsHemolysis(true);
             result.setMemo("待核对样本");
             result.setSampleTypeId(1L);

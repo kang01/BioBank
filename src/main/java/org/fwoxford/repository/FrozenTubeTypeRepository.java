@@ -1,5 +1,6 @@
 package org.fwoxford.repository;
 
+import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.FrozenTubeType;
 
 import org.springframework.data.jpa.repository.*;

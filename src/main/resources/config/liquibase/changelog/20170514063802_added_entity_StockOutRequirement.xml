@@ -49,7 +49,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="disease_type" type="integer" remarks="疾病类型">
+            <column name="disease_type" type="varchar(255)" remarks="疾病类型">
                 <constraints nullable="true" />
             </column>
 

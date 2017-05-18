@@ -103,6 +103,14 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="is_hemolysis" type="bit" remarks="是否溶血">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="is_blood_lipid" type="bit" remarks="是否脂质血">
+                <constraints nullable="true" />
+            </column>
+
             <column name="visit_type" type="varchar(255)" remarks="就诊类型">
                 <constraints nullable="true" />
             </column>

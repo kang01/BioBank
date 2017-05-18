@@ -33,7 +33,7 @@ public  class StockOutRequirementForSave {
     /**
      * 疾病类型：1：2：3：
      */
-    private Integer diseaseTypeId;
+    private String diseaseTypeId;
     /**
      * 是否溶血 ：true:是  false:否
      */
@@ -114,11 +114,11 @@ public  class StockOutRequirementForSave {
         this.sampleTypeId = sampleTypeId;
     }
 
-    public Integer getDiseaseTypeId() {
+    public String getDiseaseTypeId() {
         return diseaseTypeId;
     }
 
-    public void setDiseaseTypeId(Integer diseaseTypeId) {
+    public void setDiseaseTypeId(String diseaseTypeId) {
         this.diseaseTypeId = diseaseTypeId;
     }
 

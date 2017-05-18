@@ -184,8 +184,8 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     }
 
     @Override
-    public StockOutApplyByOne getStockOutDetailAndRequirement(Long id) {
-        StockOutApplyByOne res = new StockOutApplyByOne();
+    public StockOutApplyDetail getStockOutDetailAndRequirement(Long id) {
+        StockOutApplyDetail res = new StockOutApplyDetail();
         StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
         res.setId(id);
         res.setRecordId(stockOutApply.getRecordId());
@@ -200,14 +200,14 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         List<ProjectResponse> projectResponses = new ArrayList<ProjectResponse>();
         //获取授权的项目
         List<StockOutApplyProject> stockOutApplyProjects = stockOutApplyProjectRepository.findByStockOutApplyId(id);
+        StringBuffer projectIds = new StringBuffer();
        for(StockOutApplyProject s :stockOutApplyProjects){
-           ProjectResponse projectResponse = new ProjectResponse();
-           projectResponse.setId(s.getProject().getId());
-           projectResponse.setProjectName(s.getProject().getProjectName());
-           projectResponse.setProjectCode(s.getProject().getProjectCode());
-           projectResponses.add(projectResponse);
+           projectIds.append(s.getProject().getId());
+           projectIds.append(",");
        }
-        res.setProjects(projectResponses);
+       if(!StringUtils.isEmpty(projectIds)){
+           res.setProjectIds(projectIds.toString());
+       }
        //获取申请的需求
         List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<StockOutRequirementForApplyTable>();
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(id);

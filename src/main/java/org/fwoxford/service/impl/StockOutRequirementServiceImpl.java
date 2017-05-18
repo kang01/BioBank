@@ -296,4 +296,16 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         }
         return result;
     }
+
+    /**
+     * 核对样本需求
+     * @param stockOutApplyId
+     * @return
+     */
+    @Override
+    public StockOutRequirementForApply checkStockOutRequirement(Long stockOutApplyId) {
+        StockOutRequirementForApply requirement = this.getRequirementById(stockOutApplyId);
+
+        return null;
+    }
 }

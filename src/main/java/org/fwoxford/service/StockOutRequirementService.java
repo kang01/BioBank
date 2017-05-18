@@ -48,4 +48,6 @@ public interface StockOutRequirementService {
     StockOutRequirementForApply saveAndUploadStockOutRequirement(StockOutRequirementForSave stockOutRequirement, Long stockOutApplyId, MultipartFile file);
 
     StockOutRequirementForApply getRequirementById(Long id);
+
+    StockOutRequirementForApply checkStockOutRequirement(Long stockOutApplyId);
 }

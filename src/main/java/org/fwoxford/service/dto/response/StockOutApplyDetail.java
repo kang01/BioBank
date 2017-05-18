@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by gengluying on 2017/5/15.
  */
-public class StockOutApplyByOne {
+public class StockOutApplyDetail {
     /**
        * 申请ID
      */
@@ -50,7 +50,7 @@ public class StockOutApplyByOne {
     /**
      * 授权的项目
      */
-    private List<ProjectResponse> projects;
+    private String projectIds;
     /**
      * 样本需求
      */
@@ -135,12 +135,12 @@ public class StockOutApplyByOne {
         this.status = status;
     }
 
-    public List<ProjectResponse> getProjects() {
-        return projects;
+    public String getProjectIds() {
+        return projectIds;
     }
 
-    public void setProjects(List<ProjectResponse> projects) {
-        this.projects = projects;
+    public void setProjectIds(String projectIds) {
+        this.projectIds = projectIds;
     }
 
     public List<StockOutRequirementForApplyTable> getStockOutRequirement() {

@@ -701,8 +701,8 @@ public class TempResource {
      */
     @GetMapping("/stock-out-applies/{id}")
     @Timed
-    public ResponseEntity<StockOutApplyByOne> get(@PathVariable Long id) throws URISyntaxException {
-        StockOutApplyByOne result = new StockOutApplyByOne();
+    public ResponseEntity<StockOutApplyDetail> get(@PathVariable Long id) throws URISyntaxException {
+        StockOutApplyDetail result = new StockOutApplyDetail();
         result.setId(id);
         result.setPurposeOfSample("实验");
         result.setApplyPersonName("王东东");
@@ -713,8 +713,7 @@ public class TempResource {
         result.setStartTime(LocalDate.parse("2017-07-07"));
         result.setEndTime(LocalDate.parse("2017-07-17"));
         result.setRecordTime(LocalDate.now());
-        List<ProjectResponse> projectResponses = projectService.getProjectResponse();
-        result.setProjects(projectResponses);
+        result.setProjectIds("1,2,3,");
         List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             stockOutRequirementForApplyTables.add(createStockOutRequirementForApplyTable(i));

@@ -118,7 +118,7 @@ public class StockOutRequirementForApply {
     }
 
     public void setIsHemolysis(Boolean isHemolysis) {
-        isHemolysis = isHemolysis;
+        this.isHemolysis = isHemolysis;
     }
 
     public Boolean getIsBloodLipid() {
@@ -126,7 +126,7 @@ public class StockOutRequirementForApply {
     }
 
     public void setIsBloodLipid(Boolean isBloodLipid) {
-        isBloodLipid = isBloodLipid;
+        this.isBloodLipid = isBloodLipid;
     }
 
     public String getMemo() {

@@ -13,4 +13,6 @@ import java.util.List;
 public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutReqFrozenTube,Long> {
 
     List<StockOutReqFrozenTube> findByStockOutRequirementId(Long id);
+
+    void deleteByStockOutRequirementId(Long id);
 }

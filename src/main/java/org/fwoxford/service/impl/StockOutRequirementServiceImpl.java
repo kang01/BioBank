@@ -126,7 +126,21 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
     @Override
     public void delete(Long id) {
         log.debug("Request to delete StockOutRequirement : {}", id);
+        //验证申请状态是否可以删除
+        StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
+        if(stockOutRequirement ==null){
+            throw new BankServiceException("未查询到需要删除的需求！");
+        }
+        if(!stockOutRequirement.getStockOutApply().getStatus().equals(Constants.STOCK_OUT_PENDING)){
+            throw new BankServiceException("由于申请的状态已不在进行中，需求不能删除！");
+        }
+        //删除需求的样本
+        stockOutRequiredSampleRepository.deleteByStockOutRequirementId(id);
+        //删除核对通过的样本
+        stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
+
         stockOutRequirementRepository.delete(id);
+
     }
 
     @Override

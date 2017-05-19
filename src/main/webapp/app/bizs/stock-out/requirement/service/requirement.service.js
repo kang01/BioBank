@@ -32,6 +32,7 @@
             saveSampleRequirementOfUpload:_saveSampleRequirementOfUpload,
             //保存样本需求
             saveSampleRequirement:_saveSampleRequirement,
+            saveEditSampleRequirement:_saveEditSampleRequirement,
             //根据样本库存查询
             querySampleRequirement:_querySampleRequirement
         };
@@ -45,7 +46,7 @@
             return $http.get('api/stock-out-applies/parentApply/'+id)
         }
         function _queryRequirementDesc(id) {
-            return $http.get('/api/stock-out-applies/'+id).then(function(res){
+            return $http.get('api/stock-out-applies/'+id).then(function(res){
                 return res.data;
             });
         }
@@ -69,6 +70,9 @@
         }
         function _saveSampleRequirement(applyId,param) {
             return $http.post('/api/stock-out-requirements/stockOutApply/'+applyId,param)
+        }
+        function _saveEditSampleRequirement(applyId,param) {
+            return $http.put('/api/stock-out-requirements/stockOutApply/'+applyId,param)
         }
         function _querySampleRequirement(id) {
             return $http.get('/api/stock-out-requirements/'+id)

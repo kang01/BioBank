@@ -5,7 +5,6 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.dto.StockOutApplyDTO;
-import org.fwoxford.service.dto.StockOutApplyProjectDTO;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.StockOutApplyMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -17,15 +16,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import javax.validation.constraints.Null;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockOutApply.
@@ -57,6 +54,12 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     @Autowired
     private StockOutRequirementRepository stockOutRequirementRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private  PasswordEncoder passwordEncoder;
 
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
@@ -275,5 +278,34 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         }
         stockOutApplyProjectRepository.save(stockOutApplyProjects);
         return stockOutApplyDTO;
+    }
+
+    /**
+     * 出库申请批准
+     * @param id
+     * @param stockOutApplyForApprove
+     * @return
+     */
+    @Override
+    public StockOutApplyDTO approveStockOutApply(Long id, StockOutApplyForApprove stockOutApplyForApprove) {
+        StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
+        if(stockOutApply == null){
+            throw new BankServiceException("未查询到出库申请！");
+        }
+        Long approveId = stockOutApplyForApprove.getApproverId();
+        String password = stockOutApplyForApprove.getPassword();
+        User user = userRepository.findOne(approveId);
+        if(user == null){
+            throw new BankServiceException("申请人不存在！");
+        }
+        if(!passwordEncoder.matches(password,user.getPassword())){
+            throw new BankServiceException("用户名与密码不一致！");
+        }
+        LocalDate date = stockOutApplyForApprove.getApproveTime();
+        stockOutApply.setApproverId(approveId);
+        stockOutApply.setApproveTime(date);
+        stockOutApply.setStatus(Constants.STOCK_OUT_APPROVED);
+        stockOutApplyRepository.save(stockOutApply);
+        return stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
     }
 }

@@ -4,9 +4,11 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
+import org.fwoxford.domain.StockOutApply;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.StockOutApplyDetail;
+import org.fwoxford.service.dto.response.StockOutApplyForApprove;
 import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutApplyForSave;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -211,6 +213,22 @@ public class StockOutApplyResource {
         StockOutApplyDTO result = stockOutApplyService.additionalApply(parentApplyId);
         return ResponseEntity.created(new URI("/api/stock-out-applies/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * 出库批准
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-applies/approve/{id}")
+    @Timed
+    public ResponseEntity<StockOutApplyDTO> approveStockOutApply(@PathVariable Long id, @RequestBody StockOutApplyForApprove stockOutApplyForApprove) throws URISyntaxException {
+        log.debug("REST request to approve StockOutApply : {}", id);
+        StockOutApplyDTO result = stockOutApplyService.approveStockOutApply(id ,stockOutApplyForApprove);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, id.toString()))
             .body(result);
     }
 }

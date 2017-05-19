@@ -146,7 +146,7 @@
                         toastr.success("保存样本需求成功！");
                         vm.sampleRequirement.requirementName = '';
                         vm.sampleRequirement.countOfSample = '';
-                        _loadRequirement(vm.requirement.id);
+                        _loadRequirement();
                     }).error(function (data) {
                         BioBankBlockUi.blockUiStop();
                     })
@@ -155,7 +155,7 @@
                     RequirementService.saveSampleRequirement(vm.requirement.id,vm.sampleRequirement).success(function (data) {
                         BioBankBlockUi.blockUiStop();
                         toastr.success("保存样本需求成功！");
-                        _loadRequirement(vm.requirement.id);
+                        _loadRequirement();
                     }).error(function (data) {
                         BioBankBlockUi.blockUiStop();
                     })
@@ -167,6 +167,9 @@
             })
         }
         //---------------------------样本需求--------------------------
+        //批量核对
+        vm.sampleRequirementListCheck = _fnSampleRequirementCheckList;
+
         vm.sampleRequirement = {};
         vm.sampleTypeConfig = {
             valueField:'id',
@@ -192,7 +195,6 @@
 
             })
         }
-
         //获取样本类型
         function _fnQuerySampleType() {
             SampleTypeService.querySampleType().success(function (data) {
@@ -254,14 +256,15 @@
         vm.saveSampleRequirement = function (file) {
             BioBankBlockUi.blockUiStart();
             console.log(file);
+            var obj = {};
+            obj.requirementName = vm.sampleRequirement.requirementName;
             var fb = new FormData();
-            // fb.append('stockOutRequirement', JSON.stringify(vm.sampleRequirement));
+            fb.append('stockOutRequirement', angular.toJson(obj));
             fb.append('file', file);
             //是否上传附件
             if(file){
-                var obj = {};
-                obj.requirementName = vm.sampleRequirement.requirementName;
-                RequirementService.saveSampleRequirementOfUpload(vm.requirement.id,JSON.stringify(obj),fb).success(function (data) {
+
+                RequirementService.saveSampleRequirementOfUpload(vm.requirement.id,fb).success(function (data) {
                     BioBankBlockUi.blockUiStop();
                     toastr.success("保存样本需求成功！");
                 }).error(function (data) {
@@ -272,14 +275,33 @@
                 _fnSaveRequirement();
             }
         };
-        function _loadRequirement(id) {
-            RequirementService.queryRequirementDesc(id).then(function (data) {
+        //批量核对
+        function _fnSampleRequirementCheckList() {
+            var sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
+            RequirementService.checkSampleRequirementList(sampleRequirementIds).success(function (data) {
+                _loadRequirement();
+            }).error(function (data) {
+            })
+        }
+        function _loadRequirement() {
+            RequirementService.queryRequirementDesc(vm.requirement.id).then(function (data) {
                 vm.requirement = data;
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 vm.dtInstance.rerender();
             });
         }
         //---------------------------样本需求列表--------------------------
+        //核对
+        vm.sampleRequirementCheck = _fnSampleRequirementCheck;
+        //删除
+        vm.sampleRequirementDel = _fnSampleRequirementDel;
+        //详情
+        vm.sampleRequirementDescModel = _fnSampleRequirementDescModel;
+        //修改
+        vm.sampleRequirementEdit = _fnSampleRequirementEdit;
+        //复原
+        vm.sampleRequirementRevert = _fnSampleRequirementRevert;
+
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow);
@@ -319,19 +341,64 @@
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<a  ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;' +
-                    '<a ng-click="vm.sampleRequirementCheck()">核对</a>&nbsp;'+
-                    '<a ng-click="vm.sampleRequirementDel()">删除</a>&nbsp;'+
-                    '<a ng-click="vm.sampleRequirementDescModel()">详情</a>'
+            return '<a  ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementRevert('+full.id+')">复原</a>&nbsp;' +
+                    '<a ng-if="'+full.status+'== 1201" ng-click="vm.sampleRequirementCheck('+full.id+')">核对</a>&nbsp;' +
+                    '<a ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;'+
+                    '<a ng-click="vm.sampleRequirementDel('+full.id+')">删除</a>&nbsp;'+
+                    '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementDescModel('+full.id+')">详情</a>'
         }
-        vm.sampleRequirementEdit = function (sampleRequirementId) {
+        //编辑
+        function _fnSampleRequirementEdit(sampleRequirementId) {
             RequirementService.querySampleRequirement(sampleRequirementId).success(function (data) {
                 vm.sampleRequirement = data;
                 _fuQuerySampleClass(vm.projectIds,data.sampleTypeId)
 
             }).error(function (data) {
             })
-        };
+        }
+        //核对
+        function _fnSampleRequirementCheck(sampleRequirementId) {
+            RequirementService.checkSampleRequirement(sampleRequirementId).success(function (data) {
+                _loadRequirement();
+            }).error(function (data) {
+            })
+        }
+        //复原
+        function _fnSampleRequirementRevert(sampleRequirementId) {
+            RequirementService.revertSampleRequirement(sampleRequirementId).success(function (data) {
+                _loadRequirement();
+            }).error(function (data) {
+            })
+        }
+        //删除
+        function _fnSampleRequirementDel(sampleRequirementId) {
+            RequirementService.delSampleRequirement(sampleRequirementId).success(function (data) {
+                _loadRequirement();
+            }).error(function (data) {
+            })
+        }
+        //详情
+        function _fnSampleRequirementDescModel(sampleRequirementId) {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-sample-desc-modal.html',
+                controller: 'RequirementSampleDescModalController',
+                controllerAs:'vm',
+                size:'lg',
+                resolve: {
+                    items: function () {
+                        return {
+                            sampleRequirementId:sampleRequirementId
+                        }
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (data) {
+
+            });
+
+        }
 
         //---------------------------弹出框--------------------------
         //批准
@@ -374,8 +441,6 @@
 
             });
         }
-
-
 
         function onError(error) {
             BioBankBlockUi.blockUiStop();

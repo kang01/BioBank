@@ -4,20 +4,16 @@
 </div>
 <div class="modal-body" id="modal-body">
     <div class="row m0">
+        <h5>样本量:{{vm.requirementDesc.countOfSample}}&nbsp;&nbsp;样本分类:{{vm.requirementDesc.sampleType}}&nbsp;&nbsp;管类型:{{vm.requirementDesc.tubeType}}&nbsp;&nbsp;性别:{{vm.requirementDesc.sex}}&nbsp;&nbsp;年龄段:{{vm.requirementDesc.ages}}&nbsp;&nbsp;疾病类型:{{vm.requirementDesc.diseaseType}}&nbsp;
+            <span ng-if="vm.requirementDesc.isHemolysis">&nbsp;有溶血</span>
+            <span ng-if="vm.requirementDesc.isBloodLipid">&nbsp;有脂质血</span>
+        </h5>
+        <h5>可用项目:{{vm.requirementDesc.projects}}</h5>
+        <h5>备注:{{vm.requirementDesc.memo}}</h5>
+    </div>
+    <div class="row m0">
         <div class="col-md-12">
-            <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstanceCallback" class=" table table-striped table-bordered">
-                <tfoot>
-                <tr>
-                    <th>项目点</th>
-                    <th>项目编号</th>
-                    <th>转运日期</th>
-                    <th>接收人</th>
-                    <th>接收日期</th>
-                    <th>满意度</th>
-                    <th>状态</th>
-                    <th style="width: 100px"></th>
-                </tr>
-                </tfoot>
+            <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance" class=" table table-striped table-bordered">
             </table>
         </div>
     </div>

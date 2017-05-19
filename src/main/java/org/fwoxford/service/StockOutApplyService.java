@@ -2,6 +2,7 @@ package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.StockOutApplyDetail;
+import org.fwoxford.service.dto.response.StockOutApplyForApprove;
 import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutApplyForSave;
 import org.springframework.data.domain.Page;
@@ -58,4 +59,6 @@ public interface StockOutApplyService {
     StockOutApplyDetail getStockOutDetailAndRequirement(Long id);
 
     StockOutApplyDTO additionalApply(Long parentApplyId);
+
+    StockOutApplyDTO approveStockOutApply(Long id, StockOutApplyForApprove stockOutApplyForApprove);
 }

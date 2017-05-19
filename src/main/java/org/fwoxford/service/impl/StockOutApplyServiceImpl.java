@@ -223,11 +223,10 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
                 samples.append(s.getSampleType());
                 samples.append(",");
             }
-            if(!StringUtils.isEmpty(samples)){
+            if(samples.length()>0){
                 String samplesStr = samples.substring(0,samples.length()-1);
                 stockOutRequirementForApplyTable.setSamples(samplesStr);
-            }
-            if(StringUtils.isEmpty(samples)){
+            }else {
                 stockOutRequirementForApplyTable.setDiseaseTypeId(requirement.getDiseaseType());
                 stockOutRequirementForApplyTable.setIsBloodLipid(requirement.isIsBloodLipid());
                 stockOutRequirementForApplyTable.setIsHemolysis(requirement.isIsHemolysis());

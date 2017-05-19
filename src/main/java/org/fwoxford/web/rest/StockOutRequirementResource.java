@@ -7,6 +7,7 @@ import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.service.dto.response.StockOutRequirementForApply;
 import org.fwoxford.service.dto.response.StockOutRequirementForSave;
+import org.fwoxford.service.dto.response.StockOutRequirementSampleDetail;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -239,5 +240,18 @@ public class StockOutRequirementResource {
         return ResponseEntity.created(new URI("/api/stock-out-requirements/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+    /**
+     * 根据样本需求查询需求核对详情
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-requirements/getCheckDetail/{id}")
+    @Timed
+    public ResponseEntity<StockOutRequirementSampleDetail> getCheckDetail(@PathVariable Long id) throws URISyntaxException {
+        StockOutRequirementSampleDetail result = stockOutRequirementService.getCheckDetail(id);
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 }

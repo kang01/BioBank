@@ -3,6 +3,7 @@ package org.fwoxford.service;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
 import org.fwoxford.service.dto.response.StockOutRequirementForApply;
 import org.fwoxford.service.dto.response.StockOutRequirementForSave;
+import org.fwoxford.service.dto.response.StockOutRequirementSampleDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,4 +51,6 @@ public interface StockOutRequirementService {
     StockOutRequirementForApply getRequirementById(Long id);
 
     StockOutRequirementForApply checkStockOutRequirement(Long id);
+
+    StockOutRequirementSampleDetail getCheckDetail(Long id);
 }

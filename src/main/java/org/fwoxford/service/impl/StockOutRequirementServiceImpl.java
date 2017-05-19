@@ -9,6 +9,8 @@ import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
 import org.fwoxford.service.dto.response.StockOutRequirementForApply;
 import org.fwoxford.service.dto.response.StockOutRequirementForSave;
+import org.fwoxford.service.dto.response.StockOutRequirementFrozenTubeDetail;
+import org.fwoxford.service.dto.response.StockOutRequirementSampleDetail;
 import org.fwoxford.service.mapper.StockOutRequirementMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -24,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
@@ -59,6 +62,12 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
     @Autowired
     private StockOutReqFrozenTubeService stockOutReqFrozenTubeService;
+
+    @Autowired
+    private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
+
+    @Autowired
+    private StockOutApplyProjectRepository stockOutApplyProjectRepository;
 
     public StockOutRequirementServiceImpl(StockOutRequirementRepository stockOutRequirementRepository, StockOutRequirementMapper stockOutRequirementMapper) {
         this.stockOutRequirementRepository = stockOutRequirementRepository;
@@ -328,5 +337,93 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         stockOutRequirementForApply.setId(id);
         stockOutRequirementForApply.setStatus(status);
         return stockOutRequirementForApply;
+    }
+
+    @Override
+    public StockOutRequirementSampleDetail getCheckDetail(Long id) {
+        StockOutRequirementSampleDetail details = new StockOutRequirementSampleDetail();
+        StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
+        if(stockOutRequirement == null){
+            throw new BankServiceException("未查询到样本需求！");
+        }
+        List<StockOutReqFrozenTube> stockOutRequiredSamples = stockOutReqFrozenTubeRepository.findByStockOutRequirementId(id);
+
+        details.setId(id);
+        details.setSex(stockOutRequirement.getSex());
+        details.setCountOfStockOutSample(stockOutRequiredSamples.size());
+        details.setCountOfSample(stockOutRequirement.getCountOfSample());
+        details.setMemo(stockOutRequirement.getMemo());
+        if(stockOutRequirement.getAgeMin() != null)
+        details.setAges(stockOutRequirement.getAgeMin()+"至"+stockOutRequirement.getAgeMax());
+
+        List<StockOutApplyProject> stockOutApplyProjects = stockOutApplyProjectRepository.findByStockRequirementId(id);
+        StringBuffer stringBuffer = new StringBuffer();
+        for(StockOutApplyProject s :stockOutApplyProjects){
+            stringBuffer.append(s.getProject().getProjectName());
+            stringBuffer.append(",");
+        }
+        if(stringBuffer.length()>0){
+            String projects = stringBuffer.toString().substring(0,stringBuffer.length()-1);
+            details.setProjects(projects);
+        }
+
+        details.setIsHemolysis(stockOutRequirement.isIsHemolysis());
+        details.setIsBloodLipid(stockOutRequirement.isIsBloodLipid());
+        details.setTubeType(stockOutRequirement.getFrozenTubeType()!=null?stockOutRequirement.getFrozenTubeType().getFrozenTubeTypeName():null);
+        details.setSampleType(stockOutRequirement.getSampleType()!=null?stockOutRequirement.getSampleType().getSampleTypeName():null);
+        //获取样本详情
+        List<StockOutRequirementFrozenTubeDetail> frozenTubes = new ArrayList<StockOutRequirementFrozenTubeDetail>();
+        for(StockOutReqFrozenTube sample:stockOutRequiredSamples){
+            StockOutRequirementFrozenTubeDetail frozenTubeDetail = new StockOutRequirementFrozenTubeDetail();
+            FrozenTube tube = sample.getFrozenTube();
+            frozenTubeDetail.setStatus(tube.getStatus());
+            frozenTubeDetail.setProjectCode(tube.getProjectCode());
+            frozenTubeDetail.setIsBloodLipid(tube.isIsBloodLipid());
+            frozenTubeDetail.setIsHemolysis(tube.isIsHemolysis());
+            frozenTubeDetail.setDiseaseTypeId(tube.getDiseaseType());
+            frozenTubeDetail.setMemo(tube.getMemo());
+            frozenTubeDetail.setSampleCode(tube.getSampleCode());
+            frozenTubeDetail.setSampleTypeName(tube.getSampleTypeName());
+            frozenTubeDetail.setSampleUsedTimes(tube.getSampleUsedTimes());
+            frozenTubeDetail.setSex(tube.getGender());
+            try {
+                if(tube.getDob()!=null){
+                    frozenTubeDetail.setAge(getAge(tube.getDob()));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        details.setFrozenTubeList(frozenTubes);
+        return details;
+    }
+    //由出生日期获得年龄
+    public  int getAge(ZonedDateTime birthDay) throws Exception {
+        Date date = Date.from(birthDay.toInstant());
+        Calendar cal = Calendar.getInstance();
+
+        if (cal.before(date)) {
+            throw new IllegalArgumentException(
+                "The birthDay is before Now.It's unbelievable!");
+        }
+        int yearNow = cal.get(Calendar.YEAR);
+        int monthNow = cal.get(Calendar.MONTH);
+        int dayOfMonthNow = cal.get(Calendar.DAY_OF_MONTH);
+        cal.setTime(date);
+
+        int yearBirth = cal.get(Calendar.YEAR);
+        int monthBirth = cal.get(Calendar.MONTH);
+        int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
+
+        int age = yearNow - yearBirth;
+
+        if (monthNow <= monthBirth) {
+            if (monthNow == monthBirth) {
+                if (dayOfMonthNow < dayOfMonthBirth) age--;
+            }else{
+                age--;
+            }
+        }
+        return age;
     }
 }

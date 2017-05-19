@@ -53,4 +53,6 @@ public interface StockOutRequirementService {
     StockOutRequirementForApply checkStockOutRequirement(Long id);
 
     StockOutRequirementSampleDetail getCheckDetail(Long id);
+
+    StockOutRequirementForApply revertStockOutRequirement(Long id);
 }

@@ -401,7 +401,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             frozenTubeDetail.setSex(tube.getGender());
             try {
                 if(tube.getDob()!=null){
-                    frozenTubeDetail.setAge(getAge(tube.getDob()));
+                    frozenTubeDetail.setAge(BankUtil.getAge(tube.getDob()));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -410,33 +410,26 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         details.setFrozenTubeList(frozenTubes);
         return details;
     }
-    //由出生日期获得年龄
-    public  int getAge(ZonedDateTime birthDay) throws Exception {
-        Date date = Date.from(birthDay.toInstant());
-        Calendar cal = Calendar.getInstance();
 
-        if (cal.before(date)) {
-            throw new IllegalArgumentException(
-                "The birthDay is before Now.It's unbelievable!");
+    /**
+     * 复原核对
+     * @param id
+     * @return
+     */
+    @Override
+    public StockOutRequirementForApply revertStockOutRequirement(Long id) {
+        StockOutRequirementForApply stockOutRequirementForApply = new StockOutRequirementForApply();
+        StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
+        if(stockOutRequirement == null){
+            throw new BankServiceException("未查询到样本需求！");
         }
-        int yearNow = cal.get(Calendar.YEAR);
-        int monthNow = cal.get(Calendar.MONTH);
-        int dayOfMonthNow = cal.get(Calendar.DAY_OF_MONTH);
-        cal.setTime(date);
+        stockOutRequirement.setStatus(Constants.STOCK_OUT_REQUIREMENT_CKECKING);
+        stockOutRequirementRepository.save(stockOutRequirement);
+        //删除核对通过的样本
+        stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
 
-        int yearBirth = cal.get(Calendar.YEAR);
-        int monthBirth = cal.get(Calendar.MONTH);
-        int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
-
-        int age = yearNow - yearBirth;
-
-        if (monthNow <= monthBirth) {
-            if (monthNow == monthBirth) {
-                if (dayOfMonthNow < dayOfMonthBirth) age--;
-            }else{
-                age--;
-            }
-        }
-        return age;
+        stockOutRequirementForApply.setId(id);
+        stockOutRequirementForApply.setStatus(stockOutRequirement.getStatus());
+        return stockOutRequirementForApply;
     }
 }

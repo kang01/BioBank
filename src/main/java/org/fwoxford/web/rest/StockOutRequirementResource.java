@@ -254,4 +254,14 @@ public class StockOutRequirementResource {
         StockOutRequirementSampleDetail result = stockOutRequirementService.getCheckDetail(id);
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
+
+    @PutMapping("/stock-out-requirements/revert/{id}")
+    @Timed
+    public ResponseEntity<StockOutRequirementForApply> revertStockOutRequirement(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to revert StockOutRequirement : {}", id);
+        StockOutRequirementForApply result = stockOutRequirementService.revertStockOutRequirement(id);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, id.toString()))
+            .body(result);
+    }
 }

@@ -14,7 +14,10 @@
     function RequirementDetailController($scope,$stateParams,$compile,entity,$uibModal,$timeout,Upload,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,MasterData,SampleTypeService,SampleUserService,BioBankBlockUi,ProjectService) {
         var vm = this;
         var modalInstance;
+        vm.dtInstance = {};
         vm.requirement = entity;
+        //判断是否需求保存
+        vm.sampleflag = false;
 
         //批准
         vm.approvalModal = _fnApprovalModal;
@@ -53,8 +56,8 @@
             if(vm.requirement.recordTime){
                 vm.requirement.recordTime = new Date(vm.requirement.recordTime)
             }
-            if(vm.requirement.projects){
-                vm.requirement.projectIds = _.map(vm.requirement.projects,'id')
+            if(vm.requirement.projectIds){
+                vm.projectIds = _.join(vm.requirement.projectIds, ',');
             }
             setTimeout(function () {
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
@@ -114,6 +117,7 @@
             labelField:'projectName',
             onChange:function(value){
                 vm.projectIds = _.join(value, ',');
+
                 if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
                     _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
                 }else{
@@ -129,7 +133,34 @@
             BioBankBlockUi.blockUiStart();
             RequirementService.saveRequirementInfo(vm.requirement).success(function (data) {
                 BioBankBlockUi.blockUiStop();
-                toastr.success("保存申请记录成功！");
+                if(!vm.sampleflag){
+                    toastr.success("保存申请记录成功！");
+                }
+                if(vm.sampleRequirement.id){
+                    if(vm.sampleRequirement.status){
+                        delete  vm.sampleRequirement.status;
+                    }
+                    delete  vm.sampleRequirement.samples;
+                    RequirementService.saveEditSampleRequirement(vm.requirement.id,vm.sampleRequirement).success(function (data) {
+                        BioBankBlockUi.blockUiStop();
+                        toastr.success("保存样本需求成功！");
+                        vm.sampleRequirement.requirementName = '';
+                        vm.sampleRequirement.countOfSample = '';
+                        _loadRequirement(vm.requirement.id);
+                    }).error(function (data) {
+                        BioBankBlockUi.blockUiStop();
+                    })
+
+                }else{
+                    RequirementService.saveSampleRequirement(vm.requirement.id,vm.sampleRequirement).success(function (data) {
+                        BioBankBlockUi.blockUiStop();
+                        toastr.success("保存样本需求成功！");
+                        _loadRequirement(vm.requirement.id);
+                    }).error(function (data) {
+                        BioBankBlockUi.blockUiStop();
+                    })
+                }
+
             }).error(function (data) {
                 BioBankBlockUi.blockUiStop();
                 toastr.error("保存申请记录失败！");
@@ -153,9 +184,12 @@
         function _fuQuerySampleClass(projectIds,sampleTypeId) {
             RequirementService.queryRequirementSampleClasses(projectIds,sampleTypeId).success(function (data) {
                 vm.sampleClassOptions = data;
-                if(vm.sampleClassOptions.length){
-                    vm.sampleRequirement.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
+                if(!vm.sampleRequirement.sampleClassificationId){
+                    if(vm.sampleClassOptions.length){
+                        vm.sampleRequirement.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
+                    }
                 }
+
             })
         }
 
@@ -216,30 +250,7 @@
             onChange:function (value) {
             }
         };
-        //上传
-        // vm.submit = function () {
-        //     vm.upload(vm.file);
-        //     console.log(JSON.stringify(vm.file))
-        // };
-        vm.upload = function(file) {
-            console.log(file);
-            file.upload = Upload.upload({
-                url: 'https://angular-file-upload-cors-srv.appspot.com/upload',
-                data: {file: file},
-            });
 
-            file.upload.then(function (response) {
-                $timeout(function () {
-                    file.result = response.data;
-                });
-            }, function (response) {
-                if (response.status > 0)
-                    vm.errorMsg = response.status + ': ' + response.data;
-            }, function (evt) {
-                // Math.min is to fix IE which reports 200% sometimes
-                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-            });
-        };
         vm.saveSampleRequirement = function (file) {
             BioBankBlockUi.blockUiStart();
             console.log(file);
@@ -257,21 +268,24 @@
                     BioBankBlockUi.blockUiStop();
                 })
             }else{
-                RequirementService.saveSampleRequirement(vm.requirement.id,vm.sampleRequirement).success(function (data) {
-                    BioBankBlockUi.blockUiStop();
-                    toastr.success("保存样本需求成功！");
-                    vm.requirement = RequirementService.queryRequirementDesc(vm.requirement.id);
-                }).error(function (data) {
-                    BioBankBlockUi.blockUiStop();
-                })
+                vm.sampleflag = true;
+                _fnSaveRequirement();
             }
         };
+        function _loadRequirement(id) {
+            RequirementService.queryRequirementDesc(id).then(function (data) {
+                vm.requirement = data;
+                vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
+                vm.dtInstance.rerender();
+            });
+        }
         //---------------------------样本需求列表--------------------------
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow);
 
         vm.dtColumns = [
+            DTColumnBuilder.newColumn('id').notVisible(),
             DTColumnBuilder.newColumn('countOfSample').withTitle('样本量'),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
             DTColumnBuilder.newColumn('frozenTubeTypeName').withTitle('管类型'),
@@ -292,23 +306,32 @@
             switch (data.diseaseTypeId){
                 case 1: diseaseType = 'AMI';break;
                 case 2: diseaseType = 'PCI';break;
-                case 3: diseaseType = '不祥';break;
+                case 3: diseaseType = '不详';break;
             }
             if(data.isBloodLipid){
-                diseaseType += "脂质血"
+                diseaseType += "脂质血　"
             }
             if(data.isHemolysis){
-                diseaseType += "溶血"
+                diseaseType += "溶血　"
             }
             $('td:eq(4)', row).html(diseaseType);
             $('td:eq(6)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-warning" ui-sref="transport-record-edit({id:'+ full.id +'})">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;'
+            return '<a  ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;' +
+                    '<a ng-click="vm.sampleRequirementCheck()">核对</a>&nbsp;'+
+                    '<a ng-click="vm.sampleRequirementDel()">删除</a>&nbsp;'+
+                    '<a ng-click="vm.sampleRequirementDescModel()">详情</a>'
         }
+        vm.sampleRequirementEdit = function (sampleRequirementId) {
+            RequirementService.querySampleRequirement(sampleRequirementId).success(function (data) {
+                vm.sampleRequirement = data;
+                _fuQuerySampleClass(vm.projectIds,data.sampleTypeId)
+
+            }).error(function (data) {
+            })
+        };
 
         //---------------------------弹出框--------------------------
         //批准

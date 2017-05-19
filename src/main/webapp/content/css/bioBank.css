@@ -118,7 +118,11 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-
+.text-ellipsis{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
  .selectize-control.multi .selectize-input > div {
     cursor: pointer;
     margin: 0 3px 3px 0;

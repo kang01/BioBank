@@ -17,7 +17,7 @@
         vm.dtInstance = {};
         vm.add = _fnAdd;
         function _fnAdd() {
-            RequirementService.saveRequirement().success(function (data) {
+            RequirementService.saveRequirementEmpty().success(function (data) {
                 $state.go('requirement-new',{applyId : data.id,applyCode : data.applyCode});
             })
 
@@ -193,7 +193,7 @@
 
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-warning" ui-sref="transport-record-edit({id:'+ full.id +'})">' +
+            return '<button type="button" class="btn btn-warning" ui-sref="requirement-edit({applyId:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;'+ '<button type="button" class="btn btn-warning" ui-sref="transport-record-edit({id:'+ full.id +'})">' +
                 '附加' +

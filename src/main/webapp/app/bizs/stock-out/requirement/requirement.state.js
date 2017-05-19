@@ -79,5 +79,28 @@
                     }
                 }
             })
+            .state('requirement-edit', {
+                parent: 'bizs',
+                url: '/requirement-list/{applyId}/edit',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
+                    pageTitle: 'stockOut.new.title'
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/stock-out/requirement/requirement-detail.html',
+                        controller: 'RequirementDetailController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        return $translate.refresh();
+                    }],
+                    entity: ['$stateParams', 'RequirementService', function($stateParams, RequirementService) {
+                        return RequirementService.queryRequirementDesc($stateParams.applyId);
+                    }]
+                }
+            })
     }
 })();

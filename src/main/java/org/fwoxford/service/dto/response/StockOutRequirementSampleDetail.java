@@ -110,7 +110,7 @@ public class StockOutRequirementSampleDetail {
     }
 
     public void setIsHemolysis(Boolean isHemolysis) {
-        isHemolysis = isHemolysis;
+        this.isHemolysis = isHemolysis;
     }
 
     public Boolean getIsBloodLipid() {
@@ -118,7 +118,7 @@ public class StockOutRequirementSampleDetail {
     }
 
     public void setIsBloodLipid(Boolean isBloodLipid) {
-        isBloodLipid = isBloodLipid;
+        this.isBloodLipid = isBloodLipid;
     }
 
     public List<StockOutRequirementFrozenTubeDetail> getFrozenTubeList() {

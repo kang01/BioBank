@@ -75,6 +75,11 @@ public final class Constants {
         put("m","男");
         put("n","不详");
     }};
+    /**
+     * 需求样本，已被使用：1301，释放样本：1302
+     */
+    public static final String STOCK_OUT_SAMPLE_IN_USE = "1301";
+    public static final String STOCK_OUT_SAMPLE_IN_USE_NOT = "1302";
     private Constants() {
     }
 }

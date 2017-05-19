@@ -227,15 +227,15 @@ public class StockOutRequirementResource {
 
     /**
      * 导入样本
-     * @param stockOutApplyId
+     * @param id
      * @return
      * @throws URISyntaxException
      */
-    @RequestMapping(value = "/stock-out-requirements/stockOutApply/{stockOutApplyId}/check",method = RequestMethod.POST)
+    @RequestMapping(value = "/stock-out-requirements/{id}/check",method = RequestMethod.POST)
     @Timed
-    public ResponseEntity<StockOutRequirementForApply> checkStockOutRequirement(@PathVariable Long stockOutApplyId) throws URISyntaxException {
-        log.debug("REST request to check StockOutRequirement : {}", stockOutApplyId);
-        StockOutRequirementForApply result = stockOutRequirementService.checkStockOutRequirement(stockOutApplyId);
+    public ResponseEntity<StockOutRequirementForApply> checkStockOutRequirement(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to check StockOutRequirement : {}", id);
+        StockOutRequirementForApply result = stockOutRequirementService.checkStockOutRequirement(id);
         return ResponseEntity.created(new URI("/api/stock-out-requirements/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

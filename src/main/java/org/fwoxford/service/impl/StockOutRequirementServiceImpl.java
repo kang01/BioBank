@@ -4,6 +4,7 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.ReportExportingService;
+import org.fwoxford.service.StockOutReqFrozenTubeService;
 import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
 import org.fwoxford.service.dto.response.StockOutRequirementForApply;
@@ -55,6 +56,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
     @Autowired
     private StockOutRequiredSampleRepository stockOutRequiredSampleRepository;
+
+    @Autowired
+    private StockOutReqFrozenTubeService stockOutReqFrozenTubeService;
 
     public StockOutRequirementServiceImpl(StockOutRequirementRepository stockOutRequirementRepository, StockOutRequirementMapper stockOutRequirementMapper) {
         this.stockOutRequirementRepository = stockOutRequirementRepository;
@@ -299,13 +303,30 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
     /**
      * 核对样本需求
-     * @param stockOutApplyId
+     * @param id
      * @return
      */
     @Override
-    public StockOutRequirementForApply checkStockOutRequirement(Long stockOutApplyId) {
-        StockOutRequirementForApply requirement = this.getRequirementById(stockOutApplyId);
-
-        return null;
+    public StockOutRequirementForApply checkStockOutRequirement(Long id) {
+        StockOutRequirementForApply stockOutRequirementForApply = new StockOutRequirementForApply();
+        StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
+        if(stockOutRequirement == null){
+            throw new BankServiceException("未查询到需求！");
+        }
+        String status = Constants.STOCK_OUT_REQUIREMENT_CKECKING;
+        //获取指定样本
+        List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(id);
+        if(stockOutRequiredSamples.size()>0){
+            //核对导入指定样本
+            status = stockOutReqFrozenTubeService.checkStockOutSampleByAppointedSample(stockOutRequiredSamples);
+        }else{
+            //核对录入部分需求
+            status = stockOutReqFrozenTubeService.checkStockOutSampleByRequirement(id);
+        }
+        stockOutRequirement.setStatus(status);
+        stockOutRequirementRepository.save(stockOutRequirement);
+        stockOutRequirementForApply.setId(id);
+        stockOutRequirementForApply.setStatus(status);
+        return stockOutRequirementForApply;
     }
 }

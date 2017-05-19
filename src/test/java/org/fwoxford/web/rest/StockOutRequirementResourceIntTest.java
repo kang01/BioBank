@@ -56,8 +56,8 @@ public class StockOutRequirementResourceIntTest {
     private static final Integer DEFAULT_AGE_MAX = 1;
     private static final Integer UPDATED_AGE_MAX = 2;
 
-    private static final Integer DEFAULT_DISEASE_TYPE = 1;
-    private static final Integer UPDATED_DISEASE_TYPE = 2;
+    private static final String DEFAULT_DISEASE_TYPE = "1";
+    private static final String UPDATED_DISEASE_TYPE = "2";
 
     private static final Boolean DEFAULT_IS_HEMOLYSIS = false;
     private static final Boolean UPDATED_IS_HEMOLYSIS = true;

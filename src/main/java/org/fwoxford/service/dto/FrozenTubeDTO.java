@@ -133,6 +133,10 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
      */
     @Size(max = 255)
     private String diseaseType;
+
+    private Boolean isHemolysis;
+
+    private Boolean isBloodLipid;
     /**
      * 就诊类型
      */
@@ -324,6 +328,16 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     public void setDiseaseType(String diseaseType) {
         this.diseaseType = diseaseType;
     }
+    public void setIsHemolysis(Boolean isHemolysis) {
+        this.isHemolysis = isHemolysis;
+    }
+    public Boolean getIsBloodLipid() {
+        return isBloodLipid;
+    }
+
+    public void setIsBloodLipid(Boolean isBloodLipid) {
+        this.isBloodLipid = isBloodLipid;
+    }
     public String getVisitType() {
         return visitType;
     }
@@ -426,6 +440,8 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
             ", dob='" + dob + "'" +
             ", gender='" + gender + "'" +
             ", diseaseType='" + diseaseType + "'" +
+            ", isHemolysis='" + isHemolysis + "'" +
+            ", isBloodLipid='" + isBloodLipid + "'" +
             ", visitType='" + visitType + "'" +
             ", visitDate='" + visitDate + "'" +
             '}';

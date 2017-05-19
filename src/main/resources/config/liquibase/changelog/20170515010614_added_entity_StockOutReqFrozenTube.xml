@@ -31,18 +31,18 @@
             </column>
 
             <column name="tube_rows" type="varchar(20)" remarks="行数">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="tube_columns" type="varchar(20)" remarks="列数">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
             <column name="frozen_box_id" type="bigint" remarks="冻存盒ID">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="frozen_tube_id" type="bigint" remarks="冻存管ID">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="stock_out_requirement_id" type="bigint" remarks="出库需求ID">

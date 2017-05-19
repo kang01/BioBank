@@ -33,22 +33,18 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     @Column(name = "memo", length = 1024)
     private String memo;
 
-    @NotNull
     @Size(max = 20)
     @Column(name = "tube_rows", length = 20, nullable = false)
     private String tubeRows;
 
-    @NotNull
     @Size(max = 20)
     @Column(name = "tube_columns", length = 20, nullable = false)
     private String tubeColumns;
 
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     private FrozenBox frozenBox;
 
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     private FrozenTube frozenTube;
 
     @ManyToOne(optional = false)

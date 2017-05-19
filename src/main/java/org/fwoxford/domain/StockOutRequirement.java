@@ -52,7 +52,7 @@ public class StockOutRequirement extends AbstractAuditingEntity implements Seria
     private Integer ageMax;
 
     @Column(name = "disease_type")
-    private Integer diseaseType;
+    private String diseaseType;
 
     @Column(name = "is_hemolysis")
     private Boolean isHemolysis;
@@ -181,16 +181,16 @@ public class StockOutRequirement extends AbstractAuditingEntity implements Seria
         this.ageMax = ageMax;
     }
 
-    public Integer getDiseaseType() {
+    public String getDiseaseType() {
         return diseaseType;
     }
 
-    public StockOutRequirement diseaseType(Integer diseaseType) {
+    public StockOutRequirement diseaseType(String diseaseType) {
         this.diseaseType = diseaseType;
         return this;
     }
 
-    public void setDiseaseType(Integer diseaseType) {
+    public void setDiseaseType(String diseaseType) {
         this.diseaseType = diseaseType;
     }
 

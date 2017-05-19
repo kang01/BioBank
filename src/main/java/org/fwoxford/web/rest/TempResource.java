@@ -713,7 +713,9 @@ public class TempResource {
         result.setStartTime(LocalDate.parse("2017-07-07"));
         result.setEndTime(LocalDate.parse("2017-07-17"));
         result.setRecordTime(LocalDate.now());
-        result.setProjectIds("1,2,3,");
+        List<Long> projectIds = new ArrayList<Long>();
+        projectIds.add(1L);projectIds.add(2L);projectIds.add(3L);
+        result.setProjectIds(projectIds);
         List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             stockOutRequirementForApplyTables.add(createStockOutRequirementForApplyTable(i));
@@ -745,7 +747,7 @@ public class TempResource {
         res.setId(1L+i);
         res.setAge(10+i+"-30岁");
         res.setCountOfSample(10+i*100);
-        res.setDiseaseTypeId(1);
+        res.setDiseaseTypeId("1");
         res.setIsHemolysis(true);
         res.setIsHemolysis(false);
         res.setFrozenTubeTypeName("5L");
@@ -772,7 +774,7 @@ public class TempResource {
             result.setIsBloodLipid(true);
             result.setCountOfSample(100);
             result.setFrozenTubeTypeId(1L);
-            result.setDiseaseTypeId(1);
+            result.setDiseaseTypeId("1");
             result.setIsHemolysis(true);
             result.setMemo("待核对样本");
             result.setSampleTypeId(1L);

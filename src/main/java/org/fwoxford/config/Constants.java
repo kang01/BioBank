@@ -74,6 +74,9 @@ public final class Constants {
         put("f","女");
         put("m","男");
         put("n","不详");
+        put("F","女");
+        put("M","男");
+        put("N","不详");
     }};
     /**
      * 需求样本，已被使用：1301，释放样本：1302

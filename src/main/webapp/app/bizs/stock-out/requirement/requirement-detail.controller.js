@@ -37,11 +37,29 @@
         }
         //初始化数据
         function _initData() {
+            _requirementInfo();
             _fnQuerySampleType();
             _fuQueryDelegates();
             _fuQueryFrozenTubeType();
         }
         _initData();
+        function _requirementInfo() {
+            if(vm.requirement.startTime){
+                vm.requirement.startTime = new Date(vm.requirement.startTime)
+            }
+            if(vm.requirement.endTime){
+                vm.requirement.endTime = new Date(vm.requirement.endTime)
+            }
+            if(vm.requirement.recordTime){
+                vm.requirement.recordTime = new Date(vm.requirement.recordTime)
+            }
+            if(vm.requirement.projects){
+                vm.requirement.projectIds = _.map(vm.requirement.projects,'id')
+            }
+            setTimeout(function () {
+                vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
+            },100)
+        }
         //委托方查询
         function _fuQueryDelegates() {
             RequirementService.queryDelegates().success(function (data) {
@@ -107,10 +125,14 @@
         };
         //保存申请记录
         function _fnSaveRequirement() {
+            delete vm.requirement.stockOutRequirement;
             BioBankBlockUi.blockUiStart();
-            RequirementService.saveRequirement(vm.requirement).success(function (data) {
+            RequirementService.saveRequirementInfo(vm.requirement).success(function (data) {
                 BioBankBlockUi.blockUiStop();
                 toastr.success("保存申请记录成功！");
+            }).error(function (data) {
+                BioBankBlockUi.blockUiStop();
+                toastr.error("保存申请记录失败！");
             })
         }
         //---------------------------样本需求--------------------------
@@ -132,7 +154,7 @@
             RequirementService.queryRequirementSampleClasses(projectIds,sampleTypeId).success(function (data) {
                 vm.sampleClassOptions = data;
                 if(vm.sampleClassOptions.length){
-                    vm.sampleRequirement.sampleClassId = vm.sampleClassOptions[0].sampleClassificationId;
+                    vm.sampleRequirement.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
                 }
             })
         }
@@ -195,10 +217,10 @@
             }
         };
         //上传
-        vm.submit = function () {
-            vm.upload(vm.file);
-            console.log(JSON.stringify(vm.file))
-        };
+        // vm.submit = function () {
+        //     vm.upload(vm.file);
+        //     console.log(JSON.stringify(vm.file))
+        // };
         vm.upload = function(file) {
             console.log(file);
             file.upload = Upload.upload({
@@ -218,129 +240,68 @@
                 file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
             });
         };
-
+        vm.saveSampleRequirement = function (file) {
+            BioBankBlockUi.blockUiStart();
+            console.log(file);
+            var fb = new FormData();
+            // fb.append('stockOutRequirement', JSON.stringify(vm.sampleRequirement));
+            fb.append('file', file);
+            //是否上传附件
+            if(file){
+                var obj = {};
+                obj.requirementName = vm.sampleRequirement.requirementName;
+                RequirementService.saveSampleRequirementOfUpload(vm.requirement.id,JSON.stringify(obj),fb).success(function (data) {
+                    BioBankBlockUi.blockUiStop();
+                    toastr.success("保存样本需求成功！");
+                }).error(function (data) {
+                    BioBankBlockUi.blockUiStop();
+                })
+            }else{
+                RequirementService.saveSampleRequirement(vm.requirement.id,vm.sampleRequirement).success(function (data) {
+                    BioBankBlockUi.blockUiStop();
+                    toastr.success("保存样本需求成功！");
+                    vm.requirement = RequirementService.queryRequirementDesc(vm.requirement.id);
+                }).error(function (data) {
+                    BioBankBlockUi.blockUiStop();
+                })
+            }
+        };
         //---------------------------样本需求列表--------------------------
         vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withOption('processing',true)
-            .withOption('serverSide',true)
-            .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
-                var data = {};
-                for(var i=0; aoData && i<aoData.length; ++i){
-                    var oData = aoData[i];
-                    data[oData.name] = oData.value;
-                }
-                var jqDt = this;
-                RequirementService.queryDemo(data, oSettings).then(function (res){
-                    var json = res.data;
-                    var error = json.error || json.sError;
-                    if ( error ) {
-                        jqDt._fnLog( oSettings, 0, error );
-                    }
-                    oSettings.json = json;
-                    fnCallback( json );
-                }).catch(function(res){
-                    console.log(res);
-
-                    var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
-
-                    if ( $.inArray( true, ret ) === -1 ) {
-                        if ( error == "parsererror" ) {
-                            jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
-                        }
-                        else if ( res.readyState === 4 ) {
-                            jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
-                        }
-                    }
-
-                    jqDt._fnProcessingDisplay( oSettings, false );
-                });
-            })
             .withPaginationType('full_numbers')
-            .withOption('createdRow', createdRow)
-            .withColumnFilter({
-                aoColumns: [{
-                    type: 'text',
-                    width:50,
-                    iFilterLength:3
-                }, {
-                    type: 'text',
-                    bRegex: true,
-                    bSmart: true,
-                    iFilterLength:3
-                }, {
-                    type: 'Datepicker',
-                    bRegex: true,
-                    bSmart: true
-                }, {
-                    type: 'text',
-                    bRegex: true,
-                    bSmart: true
-                }, {
-                    type: 'Datepicker',
-                    bRegex: true,
-                    bSmart: true
-                }, {
-                    type: 'select',
-                    bRegex: false,
-                    width:50,
-                    values: [
-                        {value:"10",label:"非常满意"},
-                        {value:"9",label:"较满意"},
-                        {value:"8",label:"满意"},
-                        {value:"7",label:"有少量空管"},
-                        {value:"6",label:"有许多空管"},
-                        {value:"5",label:"有大量空管"},
-                        {value:"4",label:"有少量空孔"},
-                        {value:"3",label:"有少量错位"},
-                        {value:"2",label:"有大量错位"},
-                        {value:"1",label:"非常不满意"}
-                    ]
-                }, {
-                    type: 'select',
-                    bRegex: true,
-                    width:50,
-                    values: [
-                        {value:'1001',label:"进行中"},
-                        {value:"1002",label:"待入库"},
-                        {value:"1003",label:"已入库"},
-                        {value:"1004",label:"已作废"}
-                    ]
-                }]
-            });
+            .withOption('createdRow', createdRow);
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点'),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目编号'),
-            DTColumnBuilder.newColumn('transhipDate').withTitle('转运日期'),
-            DTColumnBuilder.newColumn('receiver').withTitle('接收人'),
-            DTColumnBuilder.newColumn('receiveDate').withTitle('接收日期'),
-            DTColumnBuilder.newColumn('sampleSatisfaction').withTitle('满意度'),
-            DTColumnBuilder.newColumn('transhipState').withTitle('状态'),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量'),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
+            DTColumnBuilder.newColumn('frozenTubeTypeName').withTitle('管类型'),
+            DTColumnBuilder.newColumn('sex').withTitle('性别'),
+            DTColumnBuilder.newColumn('diseaseTypeId').withTitle('疾病'),
+            DTColumnBuilder.newColumn('samples').withTitle('指定样本编码').withClass('text-ellipsis'),
+            DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {
-            var transhipState = '';
-            var sampleSatisfaction = '';
-            switch (data.transhipState){
-                case '1001': transhipState = '进行中';break;
-                case '1002': transhipState = '待入库';break;
-                case '1003': transhipState = '已入库';break;
-                case '1004': transhipState = '已作废';break;
+            var status = '';
+            var diseaseType = '';
+            switch (data.status){
+                case '1201': status = '待核对';break;
+                case '1202': status = '库存不足';break;
+                case '1203': status = '库存满足';break;
             }
-            switch (data.sampleSatisfaction){
-                case 1: sampleSatisfaction = '非常不满意';break;
-                case 2: sampleSatisfaction = '有大量错位';break;
-                case 3: sampleSatisfaction = '有少量错位';break;
-                case 4: sampleSatisfaction = '有少量空孔';break;
-                case 5: sampleSatisfaction = '有大量空管';break;
-                case 6: sampleSatisfaction = '有许多空管';break;
-                case 7: sampleSatisfaction = '有少量空管';break;
-                case 8: sampleSatisfaction = '满意';break;
-                case 9: sampleSatisfaction = '较满意';break;
-                case 10: sampleSatisfaction = '非常满意';break;
+            switch (data.diseaseTypeId){
+                case 1: diseaseType = 'AMI';break;
+                case 2: diseaseType = 'PCI';break;
+                case 3: diseaseType = '不祥';break;
             }
-            $('td:eq(5)', row).html(sampleSatisfaction);
-            $('td:eq(6)', row).html(transhipState);
+            if(data.isBloodLipid){
+                diseaseType += "脂质血"
+            }
+            if(data.isHemolysis){
+                diseaseType += "溶血"
+            }
+            $('td:eq(4)', row).html(diseaseType);
+            $('td:eq(6)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

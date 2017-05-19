@@ -307,11 +307,10 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             samples.append(s.getSampleType());
             samples.append(",");
         }
-        if(!StringUtils.isEmpty(samples)){
+        if(samples.length()>0){
             String samplesStr = samples.substring(0,samples.length()-1);
             result.setSamples(samplesStr);
-        }
-        if(StringUtils.isEmpty(samples)){
+        }else{
             result.setSex(stockOutRequirement.getSex());
             result.setAge(stockOutRequirement.getAgeMin()+";"+stockOutRequirement.getAgeMax());
             result.setIsBloodLipid(stockOutRequirement.isIsBloodLipid());

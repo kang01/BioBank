@@ -7,10 +7,7 @@ import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutReqFrozenTubeService;
 import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
-import org.fwoxford.service.dto.response.StockOutRequirementForApply;
-import org.fwoxford.service.dto.response.StockOutRequirementForSave;
-import org.fwoxford.service.dto.response.StockOutRequirementFrozenTubeDetail;
-import org.fwoxford.service.dto.response.StockOutRequirementSampleDetail;
+import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.StockOutRequirementMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -431,5 +428,92 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         stockOutRequirementForApply.setId(id);
         stockOutRequirementForApply.setStatus(stockOutRequirement.getStatus());
         return stockOutRequirementForApply;
+    }
+
+    /**
+     * 批量核对
+     * @param ids
+     * @return
+     */
+    @Override
+    public void batchCheckStockOutRequirement(List<Long> ids) {
+        //查询全部样本需求
+        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByIdIn(ids);
+
+        if(stockOutRequirementList.size()>0){
+            Map<Double,StockOutRequirement> map = getOrderStockOutRequirement(stockOutRequirementList);
+            for(Double d :map.keySet()){
+                StockOutRequirement stockOutRequirements = map.get(d);
+                checkStockOutRequirement(stockOutRequirements.getId());
+            }
+        }
+    }
+
+    /**
+     * 权重说明：SUM（权重系数）/ COUNT(权重系数) = 权重
+     * @param stockOutRequirementList
+     * @return
+     */
+    private Map<Double,StockOutRequirement> getOrderStockOutRequirement(List<StockOutRequirement> stockOutRequirementList) {
+        Map<Double, StockOutRequirement> map = new TreeMap<Double, StockOutRequirement>(
+            new Comparator<Double>() {
+                public int compare(Double obj1, Double obj2) {
+                    // 降序排序
+                    return obj2.compareTo(obj1);
+                }
+            });
+        for(StockOutRequirement s : stockOutRequirementList){
+            Double key = 0.0;Double keySum = 0.0;Double keyCount = 0.0;
+            if(s.getCountOfSample()!=null){//样本数量，权重系数0（因为所有的需求都有这个基本条件）
+                keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("countOfSample").toString());
+                keyCount++;
+            }
+            Long countProject = stockOutApplyProjectRepository.countByStockRequirementId(s.getId());
+            if(countProject.intValue()>0){//项目编码，权重系数0（因为所有的需求都有这个基本条件）
+                keySum += Integer.parseInt(Constants.KEY_NUMBER_MAP.get("projectCode").toString());
+                keyCount++;
+            }
+            //获取指定样本
+            Long countSample = stockOutRequiredSampleRepository.countByStockOutRequirementId(s.getId());
+            if(countSample.intValue()>0){//样本编码，权重系数101（因为已经具体到管子，没有比它更具体的需求了）
+                keySum += Integer.parseInt(Constants.KEY_NUMBER_MAP.get("sampleCode").toString());
+                keyCount++;
+            }
+            if(s.getSampleType()!=null){// 样本类型，权重系数1
+                keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("sampleType").toString());
+                keyCount++;
+            }
+            if(s.getSampleClassification()!=null){// 样本分类，权重系数2
+                keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("sampleClassificationType").toString());
+                keyCount++;
+            }
+            if(s.getFrozenTubeType()!=null){//  冻存管类型，权重系数1
+                keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("frozenTubeType").toString());
+                keyCount++;
+            }
+            if(s.getSex()!=null){//  性别，权重系数1
+                keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("sex").toString());
+                keyCount++;
+            }
+            if(s.getAgeMin()!=null){//  年龄段，权重系数3
+                keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("ages").toString());
+                keyCount++;
+            }
+            if(s.getDiseaseType()!=null){//  疾病类型，权重系数5
+                keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("diseaseType").toString());
+                keyCount++;
+            }
+            if(s.isIsHemolysis()!=null){//  溶血，权重系数5
+                keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("isHemolysis").toString());
+                keyCount++;
+            }
+            if(s.isIsBloodLipid()!=null){//  脂质血，权重系数5
+                keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("isBloodLipid").toString());
+                keyCount++;
+            }
+            key = keySum/keyCount;
+            map.put(key,s);
+        }
+        return map;
     }
 }

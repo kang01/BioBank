@@ -3,8 +3,10 @@ package org.fwoxford.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
+import org.fwoxford.domain.StockOutApply;
 import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutRequirementService;
+import org.fwoxford.service.dto.response.StockOutApplyDetail;
 import org.fwoxford.service.dto.response.StockOutRequirementForApply;
 import org.fwoxford.service.dto.response.StockOutRequirementForSave;
 import org.fwoxford.service.dto.response.StockOutRequirementSampleDetail;
@@ -227,7 +229,7 @@ public class StockOutRequirementResource {
     }
 
     /**
-     * 导入样本
+     * 核对样本
      * @param id
      * @return
      * @throws URISyntaxException
@@ -264,4 +266,19 @@ public class StockOutRequirementResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, id.toString()))
             .body(result);
     }
+
+    /**
+     * 批量核对样本
+     * @param ids
+     * @return
+     * @throws URISyntaxException
+     */
+    @RequestMapping(value = "/stock-out-requirements/check/{ids}",method = RequestMethod.POST)
+    @Timed
+    public ResponseEntity<Void> batchCheckStockOutRequirement(@PathVariable List<Long> ids) throws URISyntaxException {
+        log.debug("REST request to check StockOutRequirement : {}", ids);
+        stockOutRequirementService.batchCheckStockOutRequirement(ids);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, ids.toString())).build();
+    }
+
 }

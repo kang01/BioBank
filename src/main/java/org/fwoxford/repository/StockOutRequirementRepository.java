@@ -13,4 +13,6 @@ import java.util.List;
 public interface StockOutRequirementRepository extends JpaRepository<StockOutRequirement,Long> {
 
     List<StockOutRequirement> findByStockOutApplyId(Long id);
+
+    List<StockOutRequirement> findByIdIn(List<Long> ids);
 }

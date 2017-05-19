@@ -15,4 +15,6 @@ public interface StockOutRequiredSampleRepository extends JpaRepository<StockOut
     List<StockOutRequiredSample> findByStockOutRequirementId(Long id);
 
     void deleteByStockOutRequirementId(Long id);
+
+    Long countByStockOutRequirementId(Long id);
 }

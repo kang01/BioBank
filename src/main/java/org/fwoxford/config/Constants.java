@@ -68,8 +68,8 @@ public final class Constants {
     public static final String STOCK_OUT_INVALID = "1104";
 
     public static final String STOCK_OUT_REQUIREMENT_CKECKING = "1201";
-    public static final String STOCK_OUT_REQUIREMENT_CHECKED_PASS = "1202";
-    public static final String STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT = "1203";
+    public static final String STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT = "1202";
+    public static final String STOCK_OUT_REQUIREMENT_CHECKED_PASS = "1203";
     public static final  Map SEX_MAP = new HashMap(){{
         put("f","女");
         put("m","男");
@@ -83,6 +83,33 @@ public final class Constants {
      */
     public static final String STOCK_OUT_SAMPLE_IN_USE = "1301";
     public static final String STOCK_OUT_SAMPLE_IN_USE_NOT = "1302";
+    /**
+     *  样本数量，权重系数0（因为所有的需求都有这个基本条件）
+     项目编码，权重系数0（因为所有的需求都有这个基本条件）
+     样本编码，权重系数101（因为已经具体到管子，没有比它更具体的需求了）
+     样本类型，权重系数1
+     样本分类，权重系数2
+     冻存管类型，权重系数1
+     性别，权重系数1
+     年龄段，权重系数3
+     疾病类型，权重系数5
+     溶血，权重系数5
+     脂质血，权重系数5
+     */
+    public static final Map KEY_NUMBER_MAP = new HashMap(){{
+        put("countOfSample",0);
+        put("projectCode",0);
+        put("sampleCode",101);
+        put("sampleType",1);
+        put("sampleClassificationType",2);
+        put("frozenTubeType",1);
+        put("sex",1);
+        put("ages",3);
+        put("diseaseType",5);
+        put("isHemolysis",5);
+        put("isBloodLipid",5);
+    }};
+
     private Constants() {
     }
 }

@@ -56,4 +56,6 @@ public interface StockOutApplyService {
     List<StockOutApplyForDataTableEntity> getNextStockOutApplyList(Long id);
 
     StockOutApplyDetail getStockOutDetailAndRequirement(Long id);
+
+    StockOutApplyDTO additionalApply(Long parentApplyId);
 }

@@ -5,6 +5,7 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.dto.StockOutApplyDTO;
+import org.fwoxford.service.dto.StockOutApplyProjectDTO;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.StockOutApplyMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -239,5 +240,40 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         }
         res.setStockOutRequirement(stockOutRequirementForApplyTables);
         return res;
+    }
+
+    /**
+     * 新增附加申请
+     * @param parentApplyId
+     * @return
+     */
+    @Override
+    public StockOutApplyDTO additionalApply(Long parentApplyId) {
+        StockOutApply stockOutApply = stockOutApplyRepository.findOne(parentApplyId);
+        if(stockOutApply == null){
+            throw new BankServiceException("未查询到可以附加的申请！");
+        }
+        StockOutApplyDTO stockOutApplyDTO = stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
+        stockOutApplyDTO.setId(null);
+        stockOutApplyDTO.setApplyCode(BankUtil.getUniqueID());
+        stockOutApplyDTO.setParentApplyId(parentApplyId);
+        stockOutApplyDTO.setStatus(Constants.STOCK_OUT_PENDING);
+        StockOutApply stockOutApplyChild = stockOutApplyMapper.stockOutApplyDTOToStockOutApply(stockOutApplyDTO);
+        stockOutApplyRepository.save(stockOutApplyChild);
+        stockOutApplyDTO.setId(stockOutApplyChild.getId());
+
+        List<StockOutApplyProject> stockOutApplyProjects = stockOutApplyProjectRepository.findByStockOutApplyId(parentApplyId);
+        List<StockOutApplyProject> stockOutApplyProjectList = new ArrayList<StockOutApplyProject>();
+        if(stockOutApplyProjects!=null && stockOutApplyProjects.size()>0){
+            for(StockOutApplyProject s:stockOutApplyProjects){
+                StockOutApplyProject stockOutApplyProject = new StockOutApplyProject();
+                stockOutApplyProject.setStatus(Constants.VALID);
+                stockOutApplyProject.setProject(s.getProject());
+                stockOutApplyProject.setStockOutApply(stockOutApplyChild);
+                stockOutApplyProjectList.add(stockOutApplyProject);
+            }
+        }
+        stockOutApplyProjectRepository.save(stockOutApplyProjects);
+        return stockOutApplyDTO;
     }
 }

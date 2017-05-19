@@ -199,5 +199,18 @@ public class StockOutApplyResource {
         StockOutApplyDetail result = stockOutApplyService.getStockOutDetailAndRequirement(id);
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
-
+    /**
+     * 添加出库申请
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-out-applies/additionalApply/{parentApplyId}")
+    @Timed
+    public ResponseEntity<StockOutApplyDTO> additionalApply(@PathVariable Long parentApplyId) throws URISyntaxException {
+        log.debug("REST request to create StockOutApply by parentApplyId");
+        StockOutApplyDTO result = stockOutApplyService.additionalApply(parentApplyId);
+        return ResponseEntity.created(new URI("/api/stock-out-applies/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 }

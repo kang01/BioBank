@@ -169,6 +169,8 @@
         //---------------------------样本需求--------------------------
         //批量核对
         vm.sampleRequirementListCheck = _fnSampleRequirementCheckList;
+        //附加申请
+        vm.addApplyRequirement = _addApplyRequirement;
 
         vm.sampleRequirement = {};
         vm.sampleTypeConfig = {
@@ -252,7 +254,13 @@
             onChange:function (value) {
             }
         };
-
+        //附加
+        function _addApplyRequirement() {
+            RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
+                console.log(JSON.stringify(data))
+            });
+        }
+        //保存样本需求
         vm.saveSampleRequirement = function (file) {
             BioBankBlockUi.blockUiStart();
             console.log(file);
@@ -263,7 +271,6 @@
             fb.append('file', file);
             //是否上传附件
             if(file){
-
                 RequirementService.saveSampleRequirementOfUpload(vm.requirement.id,fb).success(function (data) {
                     BioBankBlockUi.blockUiStop();
                     toastr.success("保存样本需求成功！");
@@ -401,6 +408,17 @@
         }
 
         //---------------------------弹出框--------------------------
+        //附加
+        vm.additionApply = _additionApply;
+        vm.applyFlag = false;
+        function _additionApply() {
+            vm.applyFlag = true;
+            vm.requirement.stockOutRequirement = [];
+            vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
+            vm.dtInstance.rerender();
+            vm.sampleRequirement.requirementName = "";
+        }
+
         //批准
         function _fnApprovalModal() {
             modalInstance = $uibModal.open({

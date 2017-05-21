@@ -17,8 +17,10 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
         vm.requirement = items.requirement;
+        vm.approve.approverId = vm.requirement.recordId;
         vm.startTime = moment(vm.requirement.startTime).format("YYYY-MM-DD");
         vm.endTime = moment(vm.requirement.endTime).format("YYYY-MM-DD");
+        vm.approve.recordTime = new Date();
         //批注人
         SampleUserService.query({},onApproverSuccess, onError);
         function onApproverSuccess(data) {

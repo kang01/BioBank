@@ -32,9 +32,24 @@
             saveSampleRequirementOfUpload:_saveSampleRequirementOfUpload,
             //保存样本需求
             saveSampleRequirement:_saveSampleRequirement,
+            //修改保存样本需求
             saveEditSampleRequirement:_saveEditSampleRequirement,
             //根据样本库存查询
-            querySampleRequirement:_querySampleRequirement
+            querySampleRequirement:_querySampleRequirement,
+            //核对
+            checkSampleRequirement:_checkSampleRequirement,
+            //批量核对
+            checkSampleRequirementList:_checkSampleRequirementList,
+            //删除
+            delSampleRequirement:_delSampleRequirement,
+            //详情
+            descSampleRequirement:_descSampleRequirement,
+            //复原
+            revertSampleRequirement:_revertSampleRequirement,
+            //批准
+            approveSampleRequirement:_approveSampleRequirement,
+            //附加
+            addApplyRequirement:_addApplyRequirement
         };
         function _queryDemo(data,oSettings) {
             return $http.post('api/res/tranships',JSON.stringify(data))
@@ -51,31 +66,60 @@
             });
         }
         function _queryDelegates() {
-            return $http.get('/api/delegates/all')
+            return $http.get('api/delegates/all')
         }
         function _queryFrozenTubeType() {
-            return $http.get('/api/frozen-tube-types/all')
+            return $http.get('api/frozen-tube-types/all')
         }
         function _queryRequirementSampleClasses(projectIds,sampleTypeId) {
-            return $http.get('/api/project-sample-classes/projectIds/'+projectIds+'/sampleTypeId/'+sampleTypeId)
+            return $http.get('api/project-sample-classes/projectIds/'+projectIds+'/sampleTypeId/'+sampleTypeId)
         }
         function _saveRequirementEmpty() {
-            return $http.post('/api/stock-out-applies/new-empty')
+            return $http.post('api/stock-out-applies/new-empty')
         }
         function _saveRequirementInfo(param) {
-            return $http.put('/api/stock-out-applies/update-object',param)
+            return $http.put('api/stock-out-applies/update-object',param)
         }
-        function _saveSampleRequirementOfUpload(applyId,param,file) {
-            return $http.post('/api/stock-out-requirements/stockOutApply/'+applyId+'/upload/stockOutRequirement='+param,file)
+        function _saveSampleRequirementOfUpload(applyId,file) {
+            var req = {
+                method: 'POST',
+                url: 'api/stock-out-requirements/stockOutApply/'+applyId+'/upload',
+                headers: {
+                    'Content-Type': undefined
+                },
+                data: file
+            };
+            return $http(req);
         }
         function _saveSampleRequirement(applyId,param) {
-            return $http.post('/api/stock-out-requirements/stockOutApply/'+applyId,param)
+            return $http.post('api/stock-out-requirements/stockOutApply/'+applyId,param)
         }
         function _saveEditSampleRequirement(applyId,param) {
-            return $http.put('/api/stock-out-requirements/stockOutApply/'+applyId,param)
+            return $http.put('api/stock-out-requirements/stockOutApply/'+applyId,param)
         }
         function _querySampleRequirement(id) {
-            return $http.get('/api/stock-out-requirements/'+id)
+            return $http.get('api/stock-out-requirements/'+id)
+        }
+        function _checkSampleRequirement(id) {
+            return $http.post('api/stock-out-requirements/'+id+'/check')
+        }
+        function _checkSampleRequirementList(ids) {
+            return $http.post('api/stock-out-requirements/check/'+ids)
+        }
+        function _delSampleRequirement(id) {
+            return $http.delete('api/stock-out-requirements/'+id)
+        }
+        function _descSampleRequirement(id) {
+            return $http.get('api/stock-out-requirements/getCheckDetail/'+id)
+        }
+        function _revertSampleRequirement(id) {
+            return $http.put('api/stock-out-requirements/revert/'+id)
+        }
+        function _approveSampleRequirement(applyId,param) {
+            return $http.put('api/stock-out-applies/approve/'+applyId,param)
+        }
+        function _addApplyRequirement(applyId) {
+            return $http.post('api/stock-out-applies/additionalApply/'+applyId)
         }
 
         return service;

@@ -13,6 +13,14 @@
 
     function RequirementSampleDescModalController($scope,$uibModalInstance,$compile,$uibModal,items,DTOptionsBuilder,DTColumnBuilder,RequirementService) {
         var vm = this;
+        var sampleRequirementId = items.sampleRequirementId;
+        function _initSampleRequirementDesc() {
+            RequirementService.descSampleRequirement(sampleRequirementId).success(function (data) {
+                vm.requirementDesc = data;
+            }).error(function (data) {
+            })
+        }
+        _initSampleRequirementDesc();
 
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('processing',true)
@@ -50,66 +58,16 @@
                 });
             })
             .withPaginationType('full_numbers')
-            .withOption('createdRow', createdRow)
-            .withColumnFilter({
-                aoColumns: [{
-                    type: 'text',
-                    width:50,
-                    iFilterLength:3
-                }, {
-                    type: 'text',
-                    bRegex: true,
-                    bSmart: true,
-                    iFilterLength:3
-                }, {
-                    type: 'Datepicker',
-                    bRegex: true,
-                    bSmart: true
-                }, {
-                    type: 'text',
-                    bRegex: true,
-                    bSmart: true
-                }, {
-                    type: 'Datepicker',
-                    bRegex: true,
-                    bSmart: true
-                }, {
-                    type: 'select',
-                    bRegex: false,
-                    width:50,
-                    values: [
-                        {value:"10",label:"非常满意"},
-                        {value:"9",label:"较满意"},
-                        {value:"8",label:"满意"},
-                        {value:"7",label:"有少量空管"},
-                        {value:"6",label:"有许多空管"},
-                        {value:"5",label:"有大量空管"},
-                        {value:"4",label:"有少量空孔"},
-                        {value:"3",label:"有少量错位"},
-                        {value:"2",label:"有大量错位"},
-                        {value:"1",label:"非常不满意"}
-                    ]
-                }, {
-                    type: 'select',
-                    bRegex: true,
-                    width:50,
-                    values: [
-                        {value:'1001',label:"进行中"},
-                        {value:"1002",label:"待入库"},
-                        {value:"1003",label:"已入库"},
-                        {value:"1004",label:"已作废"}
-                    ]
-                }]
-            });
+            .withOption('createdRow', createdRow);
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点'),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目编号'),
-            DTColumnBuilder.newColumn('transhipDate').withTitle('转运日期'),
-            DTColumnBuilder.newColumn('receiver').withTitle('接收人'),
-            DTColumnBuilder.newColumn('receiveDate').withTitle('接收日期'),
-            DTColumnBuilder.newColumn('sampleSatisfaction').withTitle('满意度'),
-            DTColumnBuilder.newColumn('transhipState').withTitle('状态'),
+            DTColumnBuilder.newColumn('projectSiteCode').withTitle('样本编码'),
+            DTColumnBuilder.newColumn('projectCode').withTitle('状态'),
+            DTColumnBuilder.newColumn('transhipDate').withTitle('样本类型'),
+            DTColumnBuilder.newColumn('receiver').withTitle('性别'),
+            DTColumnBuilder.newColumn('receiveDate').withTitle('年龄'),
+            DTColumnBuilder.newColumn('sampleSatisfaction').withTitle('项目编码'),
+            DTColumnBuilder.newColumn('transhipState').withTitle('标签'),
             DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {

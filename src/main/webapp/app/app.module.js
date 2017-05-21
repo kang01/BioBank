@@ -28,7 +28,8 @@
             'datatables.scroller',
             'selectize',
             'blockUI',
-            'toastr'
+            'toastr',
+            'angularMoment'
         ])
         .run(run);
 

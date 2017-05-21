@@ -6,12 +6,18 @@
                 <h2 class="m0">添加出库申请</h2>
             </div>
             <div class="pull-right">
-                <button class="btn btn-primary" >附加申请</button>
-                <button class="btn btn-primary" ng-click="vm.approvalModal()">批准</button>
-                <button class="btn btn-primary" ng-click="vm.sampleDescModal()">样本库存详情</button>
-                <button class="btn btn-primary" >打印出库申请</button>
-                <button class="btn btn-primary" ng-click="vm.saveRequirement()">保存申请</button>
-                <button class="btn btn-default" ui-sref="requirement-list">关闭</button>
+                <button class="btn btn-primary" ng-click="vm.additionApply()" ng-if="vm.requirement.status == '1103'">附加申请</button>
+                <div class="pull-left" ng-if="vm.requirement.status != '1103'">
+
+                    <button class="btn btn-primary" >打印出库申请</button>
+                    <button class="btn btn-primary" ng-click="vm.approvalModal()">批准</button>
+                    <!--<button class="btn btn-primary" ng-click="vm.sampleDescModal()">样本库存详情</button>-->
+
+                    <button class="btn btn-primary" ng-click="vm.saveRequirement()">保存申请</button>
+                </div>
+                <div class="pull-right m-l-5">
+                    <button class="btn btn-default" ui-sref="requirement-list">关闭</button>
+                </div>
             </div>
         </div>
     </div>
@@ -21,17 +27,17 @@
             <div class="form-group col-md-6">
                 <label >委托方</label>
                 <selectize options='vm.delegatesOptions' config="vm.delegatesConfig"
-                           ng-model="vm.requirement.delegateId"></selectize>
+                           ng-model="vm.requirement.delegateId" ng-disabled="vm.applyFlag"></selectize>
             </div>
             <div class="form-group col-md-2">
                 <label>委托人</label>
-                <input type="text" class="form-control" ng-model="vm.requirement.applyPersonName">
+                <input type="text" class="form-control" ng-model="vm.requirement.applyPersonName" ng-disabled="vm.applyFlag">
             </div>
             <div class="form-group col-md-2">
                 <label>开始时间</label>
                 <div class="input-group">
                     <input  type="text" class="form-control" name="startTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.startTime" is-open="vm.datePickerOpenStatus.startTime"
-                            required  />
+                            ng-disabled="vm.applyFlag" required  />
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('startTime')"><i class="glyphicon glyphicon-calendar"></i></button>
                         </span>
@@ -41,7 +47,7 @@
                 <label>结束时间</label>
                 <div class="input-group">
                     <input  type="text" class="form-control" name="endTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.endTime" is-open="vm.datePickerOpenStatus.endTime"
-                            required  />
+                            ng-disabled="vm.applyFlag" required  />
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('endTime')"><i class="glyphicon glyphicon-calendar"></i></button>
                         </span>
@@ -52,13 +58,13 @@
             <div class="form-group col-md-3">
                 <label >记录人</label>
                 <selectize options='vm.recorderOptions' config="vm.recorderConfig"
-                           ng-model="vm.requirement.recordId"></selectize>
+                           ng-model="vm.requirement.recordId" ng-disabled="vm.applyFlag"></selectize>
             </div>
             <div class="form-group col-md-3">
                 <label>记录时间</label>
                 <div class="input-group">
                     <input  type="text" class="form-control" name="recordTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.recordTime" is-open="vm.datePickerOpenStatus.recordTime"
-                            required  />
+                            ng-disabled="vm.applyFlag" required  />
                     <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="vm.openCalendar('recordTime')"><i class="glyphicon glyphicon-calendar"></i></button>
                     </span>
@@ -71,12 +77,12 @@
             </div>
             <div class="form-group col-md-4">
                 <label class="control-label">用途</label>
-                <textarea type="text" class="form-control resize-none" ng-model="vm.requirement.purposeOfSample" rows="5"></textarea>
+                <textarea type="text" class="form-control resize-none" ng-model="vm.requirement.purposeOfSample" rows="5" ng-disabled="vm.applyFlag"></textarea>
             </div>
             <div class="form-group col-md-8" style="position: absolute;top:77px;">
                 <label class="control-label">授权的项目</label>
                 <selectize options='vm.projectOptions' config="vm.projectConfig"
-                           ng-model="vm.requirement.projectIds"></selectize>
+                           ng-model="vm.requirement.projectIds" ng-disabled="vm.applyFlag"></selectize>
             </div>
         </div>
     </div>
@@ -87,9 +93,15 @@
                     <div class="pull-left">
                         <h4>样本需求</h4>
                     </div>
-                    <div class="pull-right">
-                        <button class="btn btn-primary" ng-click="vm.saveSampleRequirement(vm.file)" ng-disabled="!vm.sampleRequirement.requirementName">添加</button>
-                        <button class="btn btn-primary">核对库存</button>
+                    <div class="pull-right" >
+                        <!--<div ng-if="vm.requirement.status == '1103'">-->
+                            <!--<button class="btn btn-primary" ng-click="vm.addApplyRequirement()">添加</button>-->
+                        <!--</div>-->
+                        <!--<div ng-if="vm.requirement.status != '1103'">-->
+                            <button class="btn btn-primary" ng-click="vm.saveSampleRequirement(vm.file)" ng-disabled="!vm.sampleRequirement.requirementName">添加</button>
+                            <button class="btn btn-primary" ng-click="vm.sampleRequirementListCheck()">核对库存</button>
+                        <!--</div>-->
+
                     </div>
                 </div>
             </div>
@@ -110,23 +122,14 @@
                     <label >上传</label>
                     <div class="form-group">
                         <div class="input-group">
-                            <!--<div class="input-group-addon">$</div>-->
-
                             <input type="text" class=" form-control" ng-model="vm.file.name" disabled>
                             <div class="input-group-addon">
                                 <a href="javascript:;" name="file">
                                 <input type="file" ngf-select ng-model="vm.file"/>上传
                                 </a>
-                                <!--<input type="file" ngf-select ng-model="vm.file" name="file"-->
-                                        <!--required>-->
-                                <!--<div class="button" ngf-select ng-model="vm.file" name="file">上传</div>-->
                             </div>
                         </div>
                     </div>
-                    <!--<input class="filename form-control" type="text" readonly="readonly" />-->
-                    <!--<a href="javascript:;" name="file" class="btn btn-default" type="button">-->
-                        <!--<input type="file" name="key"/>浏览-->
-                    <!--</a>-->
                 </div>
             </div>
             <div class="row m0">

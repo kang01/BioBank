@@ -195,7 +195,7 @@
         function actionsHtml(data, type, full, meta) {
             return '<button type="button" class="btn btn-warning" ui-sref="requirement-edit({applyId:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;'+ '<button type="button" class="btn btn-warning" ui-sref="transport-record-edit({id:'+ full.id +'})">' +
+                '</button>&nbsp;'+ '<button ng-if="'+full.status+'== 1103" type="button" class="btn btn-warning" ui-sref="requirement-edit({applyId:'+ full.id +'})">' +
                 '附加' +
                 '</button>&nbsp;'
         }

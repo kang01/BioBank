@@ -6,12 +6,16 @@
                 <h2 class="m0">添加出库申请</h2>
             </div>
             <div class="pull-right">
-                <button class="btn btn-primary" >附加申请</button>
-                <button class="btn btn-primary" ng-click="vm.approvalModal()">批准</button>
-                <button class="btn btn-primary" ng-click="vm.sampleDescModal()">样本库存详情</button>
-                <button class="btn btn-primary" >打印出库申请</button>
-                <button class="btn btn-primary" ng-click="vm.saveRequirement()">保存申请</button>
-                <button class="btn btn-default" ui-sref="requirement-list">关闭</button>
+                <div class="pull-left" ng-if="vm.requirement.status != '1103'">
+                    <button class="btn btn-primary" >附加申请</button>
+                    <button class="btn btn-primary" ng-click="vm.approvalModal()">批准</button>
+                    <button class="btn btn-primary" ng-click="vm.sampleDescModal()">样本库存详情</button>
+                    <button class="btn btn-primary" >打印出库申请</button>
+                    <button class="btn btn-primary" ng-click="vm.saveRequirement()">保存申请</button>
+                </div>
+                <div class="pull-right m-l-5">
+                    <button class="btn btn-default" ui-sref="requirement-list">关闭</button>
+                </div>
             </div>
         </div>
     </div>
@@ -87,7 +91,7 @@
                     <div class="pull-left">
                         <h4>样本需求</h4>
                     </div>
-                    <div class="pull-right">
+                    <div class="pull-right" ng-if="vm.requirement.status != '1103'">
                         <button class="btn btn-primary" ng-click="vm.saveSampleRequirement(vm.file)" ng-disabled="!vm.sampleRequirement.requirementName">添加</button>
                         <button class="btn btn-primary" ng-click="vm.sampleRequirementListCheck()">核对库存</button>
                     </div>
@@ -110,23 +114,14 @@
                     <label >上传</label>
                     <div class="form-group">
                         <div class="input-group">
-                            <!--<div class="input-group-addon">$</div>-->
-
                             <input type="text" class=" form-control" ng-model="vm.file.name" disabled>
                             <div class="input-group-addon">
                                 <a href="javascript:;" name="file">
                                 <input type="file" ngf-select ng-model="vm.file"/>上传
                                 </a>
-                                <!--<input type="file" ngf-select ng-model="vm.file" name="file"-->
-                                        <!--required>-->
-                                <!--<div class="button" ngf-select ng-model="vm.file" name="file">上传</div>-->
                             </div>
                         </div>
                     </div>
-                    <!--<input class="filename form-control" type="text" readonly="readonly" />-->
-                    <!--<a href="javascript:;" name="file" class="btn btn-default" type="button">-->
-                        <!--<input type="file" name="key"/>浏览-->
-                    <!--</a>-->
                 </div>
             </div>
             <div class="row m0">

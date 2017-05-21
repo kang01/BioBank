@@ -5,33 +5,15 @@
     </div>
     <div class="modal-body" id="modal-body">
         <div>
-            <p>委托方，在2015-10-22至2016-11-25期间，申请出库样本10000只。用于手动阀手动阀手动阀手动阀是</p>
-            <p>委托方，在2015-10-22至2016-11-25期间，申请出库样本10000只。用于手动阀手动阀手动阀手动阀是</p>
+            <p>委托方{{vm.requirement.applyPersonName}}，在{{vm.requirement.startTime}}至{{vm.requirement.endTime}}期间，申请出库样本10000只。</p>
+            <p>用于:{{vm.requirement.purposeOfSample}}</p>
         </div>
         <div class="row ">
             <div class="col-md-12">
-                <div class="checkbox">
+                <div class="checkbox" ng-repeat="item in vm.conditions track by $index">
                     <label>
-                        <input type="checkbox" value="">
-                       已将样本出库申请单送达委托方
-                    </label>
-                </div>
-                <div class="checkbox ">
-                    <label>
-                        <input type="checkbox" value="">
-                        委托方有使用样本的授权
-                    </label>
-                </div>
-                <div class="checkbox ">
-                    <label>
-                        <input type="checkbox" value="">
-                        委托方已经核对过样本出库单申请
-                    </label>
-                </div>
-                <div class="checkbox ">
-                    <label>
-                        <input type="checkbox" value="" >
-                        委托方已经获知部分需求样本，库存不能满足需求
+                        <input type="checkbox" ng-model="item.checked" ng-click="vm.checkCondition()" ng-true-value="true" ng-false-value="false">
+                       {{item.name}}
                     </label>
                 </div>
             </div>
@@ -41,7 +23,9 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label">批准人</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control">
+                        <selectize options='vm.approverOptions' config="vm.approverConfig"
+                                   ng-model="vm.approve.approverId"></selectize>
+                        <input type="hidden" ng-model="vm.approve.approverId" required>
                     </div>
                 </div>
 
@@ -50,7 +34,7 @@
                 <div class="form-group">
                     <label  class="col-sm-4 control-label">密码</label>
                     <div class="col-sm-8">
-                        <input type="password" class="form-control" >
+                        <input type="password" class="form-control" ng-model="vm.approve.password" required>
                     </div>
                 </div>
             </div>
@@ -58,14 +42,20 @@
                 <div class="form-group">
                     <label  class="col-sm-4 control-label">批准日期</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control">
+                        <div class="input-group">
+                            <input  type="text" class="form-control" name="approveTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.approve.recordTime" is-open="vm.datePickerOpenStatus.approveTime"
+                                    required  />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="vm.openCalendar('approveTime')"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-click="vm.ok()"  ng-disabled="approvalForm.$invalid">确定</button>
+        <button class="btn btn-primary" type="button" ng-click="vm.ok()"  ng-disabled="vm.conditionLen != 4 || approvalForm.$invalid">确定</button>
         <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
     </div>
 </form>

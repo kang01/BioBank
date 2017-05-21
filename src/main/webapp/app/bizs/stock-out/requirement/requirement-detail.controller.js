@@ -412,6 +412,7 @@
                 resolve: {
                     items: function () {
                         return {
+                            requirement:vm.requirement
                         }
                     }
                 }
@@ -432,6 +433,7 @@
                 resolve: {
                     items: function () {
                         return {
+
                         }
                     }
                 }

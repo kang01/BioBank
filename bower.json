@@ -41,7 +41,9 @@
     "lodash": "^4.17.4",
     "angular-block-ui": "^0.2.2",
     "angular-toastr": "^2.1.1",
-    "ion.rangeSlider": "ionrangeslider#^2.1.7"
+    "ion.rangeSlider": "ionrangeslider#^2.1.7",
+    "moment": "^2.18.1",
+    "angular-moment": "^1.0.1"
   },
   "devDependencies": {
     "angular-mocks": "1.5.8"

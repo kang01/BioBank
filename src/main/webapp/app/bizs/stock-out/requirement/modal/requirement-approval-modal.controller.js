@@ -9,15 +9,16 @@
         .module('bioBankApp')
         .controller('RequirementApprovalModalController', RequirementApprovalModalController);
 
-    RequirementApprovalModalController.$inject = ['$uibModalInstance','toastr','$uibModal','BioBankBlockUi','items','SampleUserService','RequirementService'];
+    RequirementApprovalModalController.$inject = ['$uibModalInstance','toastr','$uibModal','BioBankBlockUi','items','SampleUserService','RequirementService','moment'];
 
-    function RequirementApprovalModalController($uibModalInstance,toastr,$uibModal,BioBankBlockUi,items,SampleUserService,RequirementService) {
+    function RequirementApprovalModalController($uibModalInstance,toastr,$uibModal,BioBankBlockUi,items,SampleUserService,RequirementService,moment) {
         var vm = this;
         vm.approve = {};
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
         vm.requirement = items.requirement;
-
+        vm.startTime = moment(vm.requirement.startTime).format("YYYY-MM-DD");
+        vm.endTime = moment(vm.requirement.endTime).format("YYYY-MM-DD");
         //批注人
         SampleUserService.query({},onApproverSuccess, onError);
         function onApproverSuccess(data) {
@@ -40,7 +41,6 @@
         ];
         vm.checkCondition = function () {
             vm.conditionLen = _.filter(vm.conditions,{checked:true}).length;
-            console.log(vm.conditionLen)
         };
         vm.ok = function () {
             RequirementService.approveSampleRequirement(vm.requirement.id,vm.approve).success(function (data) {

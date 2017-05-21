@@ -11,6 +11,7 @@ import org.fwoxford.domain.StockOutReqFrozenTube;
 import org.fwoxford.repository.StockOutReqFrozenTubeRepository;
 import org.fwoxford.service.dto.StockOutReqFrozenTubeDTO;
 import org.fwoxford.service.mapper.StockOutReqFrozenTubeMapper;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -130,7 +132,18 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
         StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
         Integer countOfSample = stockOutRequirement.getCountOfSample();
-        List<FrozenTube> frozenTubes = frozenTubeRepository.findByRequirement(id);
+        Long sampleTypeId = stockOutRequirement.getSampleType()!=null?stockOutRequirement.getSampleType().getId():0;
+        Long samplyClassificationId = stockOutRequirement.getSampleClassification()!=null?stockOutRequirement.getSampleClassification().getId():0;
+        Integer ageMin = stockOutRequirement.getAgeMin();
+        Integer ageMax = stockOutRequirement.getAgeMax();
+        String diseaseType = stockOutRequirement.getDiseaseType();
+        Long frozenTubeTypeId = stockOutRequirement.getFrozenTubeType()!=null?stockOutRequirement.getFrozenTubeType().getId():0;
+        String sex = stockOutRequirement.getSex();
+        Boolean isBloodLipid = stockOutRequirement.isIsBloodLipid();
+        Boolean isHemolysis = stockOutRequirement.isIsHemolysis();
+        List<FrozenTube> frozenTubes = getFrozenTubeList(stockOutRequirement);
+//        List<FrozenTube> frozenTubes = frozenTubeRepository.findByRequirement(sampleTypeId,samplyClassificationId,
+//            frozenTubeTypeId,ageMin,ageMax,diseaseType,sex,isBloodLipid,isHemolysis,id);
         if(frozenTubes.size()<countOfSample){
             status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
         }
@@ -146,5 +159,89 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
         }
         return status;
+    }
+
+    private List<FrozenTube> getFrozenTubeList(StockOutRequirement stockOutRequirement) {
+        Integer countOfSample = stockOutRequirement.getCountOfSample();
+        Long sampleTypeId = stockOutRequirement.getSampleType()!=null?stockOutRequirement.getSampleType().getId():null;
+        Long samplyClassificationId = stockOutRequirement.getSampleClassification()!=null?stockOutRequirement.getSampleClassification().getId():null;
+        Integer ageMin = stockOutRequirement.getAgeMin();
+        Integer ageMax = stockOutRequirement.getAgeMax();
+        String diseaseType = stockOutRequirement.getDiseaseType();
+        Long frozenTubeTypeId = stockOutRequirement.getFrozenTubeType()!=null?stockOutRequirement.getFrozenTubeType().getId():null;
+        String sex = stockOutRequirement.getSex();
+        Boolean isBloodLipid = stockOutRequirement.isIsBloodLipid();
+        Boolean isHemolysis = stockOutRequirement.isIsHemolysis();
+        List<FrozenTube> frozenTubes = frozenTubeRepository.findByRequirementId(stockOutRequirement.getId());
+        for(FrozenTube f : frozenTubes){
+            if(sampleTypeId!=null&&f.getSampleType()!=null&&f.getSampleType().getId()!=sampleTypeId){
+                frozenTubes.remove(f);
+            }
+            if(samplyClassificationId!=null&&f.getSampleClassification()!=null&&f.getSampleClassification().getId()!=samplyClassificationId){
+                frozenTubes.remove(f);
+            }
+            if(frozenTubeTypeId!=null){
+                Boolean flag = false;
+                if(f.getSampleClassification()!=null&&f.getSampleClassification().getId()==samplyClassificationId){
+                    flag=true;
+                }
+                if(flag==false){
+                    frozenTubes.remove(f);
+                }
+            }
+            if(ageMin!=null){
+                Boolean flag = false;
+                if(f.getDob()!=null){
+                    try {
+                        int age =  BankUtil.getAge(f.getDob());
+                        if(age<ageMax&&age>ageMin){
+                            flag=true;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if(flag==false){
+                    frozenTubes.remove(f);
+                }
+            }
+            if(diseaseType!=null){
+                Boolean flag = false;
+                if(f.getDiseaseType()!=null&&f.getDiseaseType().equals(diseaseType)){
+                    flag = true;
+                }
+                if(flag==false){
+                    frozenTubes.remove(f);
+                }
+            }
+            if(sex!=null){
+                Boolean flag = false;
+                if(f.getGender()!=null&&f.getGender().equals(sex)){
+                    flag = true;
+                }
+                if(flag==false){
+                    frozenTubes.remove(f);
+                }
+            }
+            if(isBloodLipid!=null){
+                Boolean flag = false;
+                if(f.isIsBloodLipid()!=null&&f.isIsBloodLipid()==isBloodLipid){
+                    flag = true;
+                }
+                if(flag==false){
+                    frozenTubes.remove(f);
+                }
+            }
+            if(isHemolysis!=null){
+                Boolean flag = false;
+                if(f.isIsHemolysis()!=null&&f.isIsHemolysis()==isHemolysis){
+                    flag = true;
+                }
+                if(flag==false){
+                    frozenTubes.remove(f);
+                }
+            }
+        }
+        return frozenTubes;
     }
 }

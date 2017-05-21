@@ -403,6 +403,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            frozenTubes.add(frozenTubeDetail);
         }
         details.setFrozenTubeList(frozenTubes);
         return details;

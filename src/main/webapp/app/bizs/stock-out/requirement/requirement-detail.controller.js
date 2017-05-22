@@ -7,10 +7,10 @@
 
     angular
         .module('bioBankApp')
-        .controller('RequirementDetailController', RequirementDetailController);
-
+        .controller('RequirementDetailController', RequirementDetailController)
+        .controller('RequirementSampleDelModalController', RequirementSampleDelModalController);
     RequirementDetailController.$inject = ['$scope','$stateParams','$compile','entity','$uibModal','$timeout','Upload','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','MasterData','SampleTypeService','SampleUserService','BioBankBlockUi','ProjectService'];
-
+    RequirementSampleDelModalController.$inject = ['$uibModalInstance'];
     function RequirementDetailController($scope,$stateParams,$compile,entity,$uibModal,$timeout,Upload,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,MasterData,SampleTypeService,SampleUserService,BioBankBlockUi,ProjectService) {
         var vm = this;
         var modalInstance;
@@ -25,6 +25,8 @@
         vm.sampleDescModal = _fnSampleDescModal;
         //保存申请
         vm.saveRequirement = _fnSaveRequirement;
+        //附加功能
+        vm.additionApply = _fnAdditionApply;
 
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
@@ -37,6 +39,10 @@
         }
         if($stateParams.applyCode){
             vm.requirement.applyCode = $stateParams.applyCode;
+        }
+        //列表附加
+        if($stateParams.addApplyFlag == 1){
+            vm.additionApply();
         }
         //初始化数据
         function _initData() {
@@ -58,6 +64,9 @@
             }
             if(vm.requirement.projectIds){
                 vm.projectIds = _.join(vm.requirement.projectIds, ',');
+            }
+            if(vm.requirement.status){
+                vm.status = vm.requirement.status
             }
             setTimeout(function () {
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
@@ -166,11 +175,26 @@
                 toastr.error("保存申请记录失败！");
             })
         }
+        //附加
+        vm.applyFlag = false;
+        function _fnAdditionApply() {
+            RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
+                vm.status = data.status;
+                vm.requirement.id = data.id;
+            });
+            vm.applyFlag = true;
+            vm.requirement.stockOutRequirement = [];
+            setTimeout(function () {
+                vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
+                vm.dtInstance.rerender();
+                vm.sampleRequirement.requirementName = "";
+            },500);
+
+
+        }
         //---------------------------样本需求--------------------------
         //批量核对
         vm.sampleRequirementListCheck = _fnSampleRequirementCheckList;
-        //附加申请
-        vm.addApplyRequirement = _addApplyRequirement;
 
         vm.sampleRequirement = {};
         vm.sampleTypeConfig = {
@@ -254,12 +278,6 @@
             onChange:function (value) {
             }
         };
-        //附加
-        function _addApplyRequirement() {
-            RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
-                console.log(JSON.stringify(data))
-            });
-        }
         //保存样本需求
         vm.saveSampleRequirement = function (file) {
             BioBankBlockUi.blockUiStart();
@@ -348,11 +366,13 @@
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<a  ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementRevert('+full.id+')">复原</a>&nbsp;' +
+            return '<div ng-if="vm.status != 1103">'+
+                    '<a  ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementRevert('+full.id+')">复原</a>&nbsp;' +
                     '<a ng-if="'+full.status+'== 1201" ng-click="vm.sampleRequirementCheck('+full.id+')">核对</a>&nbsp;' +
                     '<a ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;'+
                     '<a ng-click="vm.sampleRequirementDel('+full.id+')">删除</a>&nbsp;'+
-                    '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementDescModel('+full.id+')">详情</a>'
+                    '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementDescModel('+full.id+')">详情</a>'+
+                    '</div>'
         }
         //编辑
         function _fnSampleRequirementEdit(sampleRequirementId) {
@@ -379,10 +399,22 @@
         }
         //删除
         function _fnSampleRequirementDel(sampleRequirementId) {
-            RequirementService.delSampleRequirement(sampleRequirementId).success(function (data) {
-                _loadRequirement();
-            }).error(function (data) {
-            })
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-sample-delete-modal.html',
+                controller: 'RequirementSampleDelModalController',
+                controllerAs:'vm'
+            });
+
+            modalInstance.result.then(function (data) {
+                RequirementService.delSampleRequirement(sampleRequirementId).success(function (data) {
+                    toastr.success(data.message);
+                    _loadRequirement();
+                }).error(function (data) {
+                    toastr.error(data.message);
+                })
+            });
+
         }
         //详情
         function _fnSampleRequirementDescModel(sampleRequirementId) {
@@ -408,16 +440,6 @@
         }
 
         //---------------------------弹出框--------------------------
-        //附加
-        vm.additionApply = _additionApply;
-        vm.applyFlag = false;
-        function _additionApply() {
-            vm.applyFlag = true;
-            vm.requirement.stockOutRequirement = [];
-            vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
-            vm.dtInstance.rerender();
-            vm.sampleRequirement.requirementName = "";
-        }
 
         //批准
         function _fnApprovalModal() {
@@ -467,5 +489,14 @@
             toastr.error(error.data.message);
         }
 
+    }
+    function RequirementSampleDelModalController($uibModalInstance) {
+        var vm = this;
+        vm.ok = function () {
+            $uibModalInstance.close(true);
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     }
 })();

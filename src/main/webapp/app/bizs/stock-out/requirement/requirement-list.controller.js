@@ -173,7 +173,7 @@
                     "<td style='width: 10%'>"+items[i].countOfSample+"</td>"+
                     "<td style='width: 12%'>"+items[i].sampleTypes+"</td>"+
                     "<td style='width: 10%'>"+statusShow(items[i].status)  +"</td>"+
-                    "<td ><button class='btn btn-warning'><i class='fa fa-edit'></i></button></td>"+
+                    "<td ><button class='btn btn-warning' ui-sref='requirement-edit({applyId:"+ items[i].id +"})'><i class='fa fa-edit'></i></button></td>"+
                     "</tr>"+
                     "</tbody>";
                 html.append(tbody)
@@ -195,7 +195,7 @@
         function actionsHtml(data, type, full, meta) {
             return '<button type="button" class="btn btn-warning" ui-sref="requirement-edit({applyId:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;'+ '<button ng-if="'+full.status+'== 1103" type="button" class="btn btn-warning" ui-sref="requirement-edit({applyId:'+ full.id +'})">' +
+                '</button>&nbsp;'+ '<button ng-if="'+full.status+'== 1103" type="button" class="btn btn-warning" ui-sref="requirement-edit({applyId:'+ full.id +',addApplyFlag:1})">' +
                 '附加' +
                 '</button>&nbsp;'
         }

@@ -54,6 +54,8 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
     @NotNull
     @Size(max = 100)
     private String applyCode;
+
+    private LocalDate applyDate;
     /**
      * 委托方ID
      */
@@ -151,6 +153,14 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
         this.applyCode = applyCode;
     }
 
+    public LocalDate getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(LocalDate applyDate) {
+        this.applyDate = applyDate;
+    }
+
     public Long getDelegateId() {
         return delegateId;
     }
@@ -196,6 +206,7 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
             ", memo='" + memo + "'" +
             ", applyPersonName='" + applyPersonName + "'" +
             ", applyCode='" + applyCode + "'" +
+            ", applyDate='" + applyDate + "'" +
             '}';
     }
 }

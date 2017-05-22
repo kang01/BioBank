@@ -68,6 +68,9 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
     @Column(name = "apply_code", length = 100, nullable = false)
     private String applyCode;
 
+    @Column(name = "apply_date")
+    private LocalDate applyDate;
+
     @ManyToOne
     private Delegate delegate;
 
@@ -233,6 +236,19 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
 
     public void setApplyCode(String applyCode) {
         this.applyCode = applyCode;
+    }
+
+    public LocalDate getApplyDate() {
+        return applyDate;
+    }
+
+    public  StockOutApply applyDate(LocalDate applyDate){
+        this.applyDate = applyDate;
+        return this;
+    }
+
+    public void setApplyDate(LocalDate applyDate) {
+        this.applyDate = applyDate;
     }
 
     public Delegate getDelegate() {

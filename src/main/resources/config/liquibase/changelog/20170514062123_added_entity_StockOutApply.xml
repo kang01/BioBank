@@ -70,6 +70,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="apply_date" type="date" remarks="申请时间">
+                <constraints nullable="true" />
+            </column>
+
             <column name="delegate_id" type="bigint" remarks="委托方ID">
                 <constraints nullable="true" />
             </column>

@@ -147,6 +147,10 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
      */
     private ZonedDateTime visitDate;
     /**
+     * 年龄
+     */
+    private Integer age;
+    /**
      * 冻存管类型ID
      */
     private Long frozenTubeTypeId;
@@ -353,6 +357,14 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
         this.visitDate = visitDate;
     }
 
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
     public Long getFrozenTubeTypeId() {
         return frozenTubeTypeId;
     }
@@ -444,6 +456,7 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
             ", isBloodLipid='" + isBloodLipid + "'" +
             ", visitType='" + visitType + "'" +
             ", visitDate='" + visitDate + "'" +
+            ", age='" + age + "'" +
             '}';
     }
 }

@@ -333,6 +333,11 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     private StockOutApplyReportDTO createApplyReportDTO(Long id) {
         StockOutApplyReportDTO applyDTO = new StockOutApplyReportDTO();
         StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
+        if(stockOutApply.getStatus()!=Constants.STOCK_OUT_APPROVED){
+            stockOutApply.setStatus(Constants.STOCK_OUT_PENDING_APPROVAL);
+            stockOutApply.setApplyDate(LocalDate.now());
+            stockOutApplyRepository.save(stockOutApply);
+        }
         List<String> projects = new ArrayList<String>();
         Integer countOfSample = 0;
         Integer countOfStockOutSample = 0;
@@ -353,17 +358,14 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             stockOutRequirementReportDTO.setRequirementName(requirement.getRequirementName());
             stockOutRequirementReportDTO.setMemo(requirement.getMemo());
             stockOutRequirementReportDTO.setCountOfStockOutSample(stockOutRequiredSamples.size());
-            Map<String,String> map = new HashMap<String,String>();
-            map.put("code","type");
-            stockOutRequirementReportDTO.setErrorSamples(map);
             requirements.add(stockOutRequirementReportDTO);
-            countOfSample +=requirement.getCountOfSample();
+            countOfSample += requirement.getCountOfSample();
             countOfStockOutSample += stockOutRequiredSamples.size();
         }
         applyDTO.setId(id);
         applyDTO.setCountOfSample(countOfSample);
         applyDTO.setApplicantName(stockOutApply.getApplyPersonName());
-        applyDTO.setApplicationDate(stockOutApply.getCreatedDate().toLocalDate());
+        applyDTO.setApplicationDate(stockOutApply.getApplyDate()!=null?stockOutApply.getApplyDate():LocalDate.now());
         applyDTO.setApplyCompany(stockOutApply.getDelegate()!=null?stockOutApply.getDelegate().getDelegateName():null);
         applyDTO.setApplyNumber(stockOutApply.getApplyCode());
         applyDTO.setCountOfStockOutSample(countOfStockOutSample);

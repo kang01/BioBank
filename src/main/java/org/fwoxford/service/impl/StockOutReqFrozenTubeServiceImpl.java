@@ -142,12 +142,12 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         String sex = stockOutRequirement.getSex();
         Boolean isBloodLipid = stockOutRequirement.isIsBloodLipid();
         Boolean isHemolysis = stockOutRequirement.isIsHemolysis();
-//        List<FrozenTube> frozenTubes = getFrozenTubeList(stockOutRequirement);
         List<FrozenTube> frozenTubes = frozenTubeRepository.findByRequirement(sampleTypeId,samplyClassificationId,
-            frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis);
+            frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis,ageMin,ageMax);
         if(frozenTubes.size()<countOfSample){
             status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
         }
+        int i = 0;
         for(FrozenTube frozenTube :frozenTubes){
             StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
             stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE);
@@ -157,7 +157,10 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             stockOutReqFrozenTube.setFrozenTube(frozenTube!=null?frozenTube:null);
             stockOutReqFrozenTube.setTubeColumns(frozenTube!=null?frozenTube.getTubeColumns():null);
             stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
-            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
+            if(i<countOfSample){
+                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
+            }
+            i++;
         }
         return status;
     }

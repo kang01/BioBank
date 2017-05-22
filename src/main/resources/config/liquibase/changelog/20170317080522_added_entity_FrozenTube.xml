@@ -119,6 +119,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="age" type="integer" remarks="年龄">
+                <constraints nullable="true" />
+            </column>
+
             <column name="frozen_tube_type_id" type="bigint" remarks="冻存管类型ID">
                 <constraints nullable="false" />
             </column>

@@ -1,5 +1,6 @@
 package org.fwoxford.domain;
 
+import io.swagger.models.auth.In;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -183,6 +184,9 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
      */
     @Column(name = "visit_date")
     private ZonedDateTime visitDate;
+
+    @Column(name = "age")
+    private Integer age;
     /**
      * 冻存管类型
      */
@@ -563,6 +567,17 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
         this.visitDate = visitDate;
     }
 
+    public Integer getAge() {
+        return age;
+    }
+    public FrozenTube age(Integer age) {
+        this.age = age;
+        return this;
+    }
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
     public FrozenTubeType getFrozenTubeType() {
         return frozenTubeType;
     }
@@ -665,6 +680,7 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
             ", isBloodLipid='" + isBloodLipid + "'" +
             ", visitType='" + visitType + "'" +
             ", visitDate='" + visitDate + "'" +
+            ", age='" + age + "'" +
             '}';
     }
 }

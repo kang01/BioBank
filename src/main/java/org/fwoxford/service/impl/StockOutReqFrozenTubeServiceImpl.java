@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -132,18 +133,18 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
         StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
         Integer countOfSample = stockOutRequirement.getCountOfSample();
-        Long sampleTypeId = stockOutRequirement.getSampleType()!=null?stockOutRequirement.getSampleType().getId():0;
-        Long samplyClassificationId = stockOutRequirement.getSampleClassification()!=null?stockOutRequirement.getSampleClassification().getId():0;
+        Long sampleTypeId = stockOutRequirement.getSampleType()!=null?stockOutRequirement.getSampleType().getId():null;
+        Long samplyClassificationId = stockOutRequirement.getSampleClassification()!=null?stockOutRequirement.getSampleClassification().getId():null;
         Integer ageMin = stockOutRequirement.getAgeMin();
         Integer ageMax = stockOutRequirement.getAgeMax();
         String diseaseType = stockOutRequirement.getDiseaseType();
-        Long frozenTubeTypeId = stockOutRequirement.getFrozenTubeType()!=null?stockOutRequirement.getFrozenTubeType().getId():0;
+        Long frozenTubeTypeId = stockOutRequirement.getFrozenTubeType()!=null?stockOutRequirement.getFrozenTubeType().getId():null;
         String sex = stockOutRequirement.getSex();
         Boolean isBloodLipid = stockOutRequirement.isIsBloodLipid();
         Boolean isHemolysis = stockOutRequirement.isIsHemolysis();
-        List<FrozenTube> frozenTubes = getFrozenTubeList(stockOutRequirement);
-//        List<FrozenTube> frozenTubes = frozenTubeRepository.findByRequirement(sampleTypeId,samplyClassificationId,
-//            frozenTubeTypeId,ageMin,ageMax,diseaseType,sex,isBloodLipid,isHemolysis,id);
+//        List<FrozenTube> frozenTubes = getFrozenTubeList(stockOutRequirement);
+        List<FrozenTube> frozenTubes = frozenTubeRepository.findByRequirement(sampleTypeId,samplyClassificationId,
+            frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis);
         if(frozenTubes.size()<countOfSample){
             status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
         }

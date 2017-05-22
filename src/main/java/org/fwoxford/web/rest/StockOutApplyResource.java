@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.io.IOUtils;
 import org.fwoxford.domain.StockOutApply;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.dto.StockOutApplyDTO;
@@ -27,9 +28,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -230,5 +234,39 @@ public class StockOutApplyResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, id.toString()))
             .body(result);
+    }
+
+    /**
+     * 打印出库申请
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @RequestMapping(value = "/stock-out-applies/print/{id}",method = RequestMethod.GET,
+        produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    @Timed
+    public ResponseEntity printStockOutApply(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to create StockOutApply by parentApplyId");
+
+        try {
+                ByteArrayOutputStream result = stockOutApplyService.printStockOutApply(id);
+                byte[] fileInByte = result.toByteArray();
+                final HttpHeaders headers = new HttpHeaders();
+                String fileReportName = "test.xlsx";
+                headers.setContentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+                headers.set("Content-disposition", "attachment; filename="+URLEncoder.encode(fileReportName, "UTF-8"));
+
+//            File dir = new File(".");
+//            OutputStream ofs = null;
+//            ofs = new FileOutputStream(dir.getCanonicalPath() + "/" + result.hashCode() + ".xlsx");
+//            result.writeTo(ofs);
+//
+//            ofs.close();
+
+                return new ResponseEntity(fileInByte, headers, HttpStatus.CREATED);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        return ResponseEntity.badRequest().build();
     }
 }

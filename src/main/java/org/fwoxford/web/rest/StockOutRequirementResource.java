@@ -31,10 +31,12 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Null;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -281,4 +283,28 @@ public class StockOutRequirementResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, ids.toString())).build();
     }
 
+    /**
+     * 打印出库申请详情
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @RequestMapping(value = "/stock-out-requirements/print/{id}",method = RequestMethod.GET)
+    @Timed
+    public ResponseEntity printStockOutRequirementDetailReport(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to get StockOutRequirementDetailReport by id");
+
+        try {
+            ByteArrayOutputStream result = stockOutRequirementService.printStockOutRequirementDetailReport(id);
+            byte[] fileInByte = result.toByteArray();
+            final HttpHeaders headers = new HttpHeaders();
+            String fileReportName = "test";
+            headers.setContentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.set("Content-disposition", "attachment; filename="+ URLEncoder.encode(fileReportName, "GBK"));
+            return new ResponseEntity(fileInByte, headers, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }

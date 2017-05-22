@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 /**
@@ -61,4 +62,6 @@ public interface StockOutApplyService {
     StockOutApplyDTO additionalApply(Long parentApplyId);
 
     StockOutApplyDTO approveStockOutApply(Long id, StockOutApplyForApprove stockOutApplyForApprove);
+
+    ByteArrayOutputStream printStockOutApply(Long id);
 }

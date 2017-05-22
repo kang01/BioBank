@@ -1,8 +1,10 @@
 package org.fwoxford.service.impl;
 
+import io.swagger.models.auth.In;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
+import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.*;
@@ -20,9 +22,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service Implementation for managing StockOutApply.
@@ -60,6 +65,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     @Autowired
     private  PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ReportExportingService reportExportingService;
 
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
@@ -308,4 +316,69 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         stockOutApplyRepository.save(stockOutApply);
         return stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
     }
+
+    /**
+     * 打印出库申请
+     * @param id
+     * @return
+     */
+    @Override
+    public ByteArrayOutputStream printStockOutApply(Long id) {
+        StockOutApplyReportDTO applyDTO = new StockOutApplyReportDTO();
+        applyDTO = createApplyReportDTO(id);
+        ByteArrayOutputStream outputStream = reportExportingService.makeStockOutRequirementReport(applyDTO);
+        return outputStream;
+    }
+
+    private StockOutApplyReportDTO createApplyReportDTO(Long id) {
+        StockOutApplyReportDTO applyDTO = new StockOutApplyReportDTO();
+        StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
+        List<String> projects = new ArrayList<String>();
+        Integer countOfSample = 0;
+        Integer countOfStockOutSample = 0;
+        //获取授权的项目
+        List<StockOutApplyProject> stockOutApplyProjects = stockOutApplyProjectRepository.findByStockOutApplyId(id);
+        for(StockOutApplyProject s :stockOutApplyProjects){
+            projects.add(s.getProject().getProjectCode());
+        }
+        //获取申请的需求
+        List<StockOutRequirementReportDTO> requirements = new ArrayList<StockOutRequirementReportDTO>();
+        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(id);
+        for(StockOutRequirement requirement : stockOutRequirementList){
+            StockOutRequirementReportDTO stockOutRequirementReportDTO = new StockOutRequirementReportDTO();
+            //获取指定样本
+            List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(requirement.getId());
+            stockOutRequirementReportDTO.setId(requirement.getId());
+            stockOutRequirementReportDTO.setCountOfSample(requirement.getCountOfSample());
+            stockOutRequirementReportDTO.setRequirementName(requirement.getRequirementName());
+            stockOutRequirementReportDTO.setMemo(requirement.getMemo());
+            stockOutRequirementReportDTO.setCountOfStockOutSample(stockOutRequiredSamples.size());
+            Map<String,String> map = new HashMap<String,String>();
+            map.put("code","type");
+            stockOutRequirementReportDTO.setErrorSamples(map);
+            requirements.add(stockOutRequirementReportDTO);
+            countOfSample +=requirement.getCountOfSample();
+            countOfStockOutSample += stockOutRequiredSamples.size();
+        }
+        applyDTO.setId(id);
+        applyDTO.setCountOfSample(countOfSample);
+        applyDTO.setApplicantName(stockOutApply.getApplyPersonName());
+        applyDTO.setApplicationDate(stockOutApply.getCreatedDate().toLocalDate());
+        applyDTO.setApplyCompany(stockOutApply.getDelegate()!=null?stockOutApply.getDelegate().getDelegateName():null);
+        applyDTO.setApplyNumber(stockOutApply.getApplyCode());
+        applyDTO.setCountOfStockOutSample(countOfStockOutSample);
+        applyDTO.setEndDate(stockOutApply.getEndTime());
+        applyDTO.setMemo(stockOutApply.getMemo());
+        applyDTO.setProjects(projects);
+        applyDTO.setPurposeOfSample(stockOutApply.getPurposeOfSample());
+        applyDTO.setRecordDate(stockOutApply.getRecordTime());
+        if(stockOutApply.getRecordId()!=null){
+            User user = userRepository.findOne(stockOutApply.getRecordId());
+            applyDTO.setRecorderName(user!=null?user.getLastName()+user.getFirstName():null);
+        }
+        applyDTO.setStartDate(stockOutApply.getStartTime());
+        applyDTO.setRequirements(requirements);
+        return applyDTO;
+    }
+
 }

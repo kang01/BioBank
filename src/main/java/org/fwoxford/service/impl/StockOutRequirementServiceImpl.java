@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.ZonedDateTime;
@@ -449,7 +450,6 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             }
         }
     }
-
     /**
      * 权重说明：SUM（权重系数）/ COUNT(权重系数) = 权重
      * @param stockOutRequirementList
@@ -517,4 +517,81 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         }
         return map;
     }
+
+    /**
+     * 打印出库申请详情
+     * @param id
+     * @return
+     */
+    @Override
+    public ByteArrayOutputStream printStockOutRequirementDetailReport(Long id) {
+        StockOutRequirementDetailReportDTO requirementDTO = checkStockOutRequirementDetailReportDTO(id);
+        ByteArrayOutputStream outputStream = reportExportingService.makeStockOutRequirementCheckReport(requirementDTO);
+        return outputStream;
+    }
+
+    private StockOutRequirementDetailReportDTO checkStockOutRequirementDetailReportDTO(Long id) {
+        StockOutRequirementDetailReportDTO report = new StockOutRequirementDetailReportDTO();
+        StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
+        if(stockOutRequirement == null){
+            throw new BankServiceException("未查询到样本需求！");
+        }
+        List<StockOutReqFrozenTube> stockOutRequiredSamples = stockOutReqFrozenTubeRepository.findByStockOutRequirementId(id);
+
+        report.setId(id);
+        report.setSex(stockOutRequirement.getSex());
+        report.setCountOfStockOutSample(stockOutRequiredSamples.size());
+        report.setCountOfSample(stockOutRequirement.getCountOfSample());
+        report.setMemo(stockOutRequirement.getMemo());
+        report.setRequirementNO(stockOutRequirement.getRequirementCode());
+        report.setRequirementName(stockOutRequirement.getRequirementName());
+        //todo
+        report.setDiseaseType(stockOutRequirement.getDiseaseType());
+        //todo
+        report.setErrorSamples(null);
+        report.setTubeType(stockOutRequirement.getFrozenTubeType()!=null?stockOutRequirement.getFrozenTubeType().getFrozenTubeTypeName():null);
+        report.setSampleType(stockOutRequirement.getSampleType()!=null?stockOutRequirement.getSampleType().getSampleTypeName():null);
+        if(stockOutRequirement.getAgeMin() != null)
+            report.setAges(stockOutRequirement.getAgeMin()+"至"+stockOutRequirement.getAgeMax());
+        List<StockOutApplyProject> stockOutApplyProjects = stockOutApplyProjectRepository.findByStockRequirementId(id);
+        StringBuffer stringBuffer = new StringBuffer();
+        for(StockOutApplyProject s :stockOutApplyProjects){
+            stringBuffer.append(s.getProject().getProjectName());
+            stringBuffer.append(",");
+        }
+        if(stringBuffer.length()>0){
+            String projects = stringBuffer.toString().substring(0,stringBuffer.length()-1);
+            report.setProjects(projects);
+        }
+
+        //获取样本详情
+        List<StockOutSampleCheckResultDTO> frozenTubes = new ArrayList<StockOutSampleCheckResultDTO>();
+        for(StockOutReqFrozenTube sample:stockOutRequiredSamples){
+            StockOutSampleCheckResultDTO frozenTubeDetail = new StockOutSampleCheckResultDTO();
+            FrozenTube tube = sample.getFrozenTube();
+            frozenTubeDetail.setId(tube.getId());
+            //todo
+            frozenTubeDetail.setDiseaseType(tube.getDiseaseType());
+            frozenTubeDetail.setStatus(tube.getStatus());
+            frozenTubeDetail.setProjectCode(tube.getProjectCode());
+            frozenTubeDetail.setMemo(tube.getMemo());
+            frozenTubeDetail.setSampleCode(tube.getSampleCode());
+            frozenTubeDetail.setSampleType(tube.getSampleTypeName());
+            frozenTubeDetail.setTimes(Long.valueOf(tube.getSampleUsedTimes()!=null?tube.getSampleUsedTimes():0));
+            frozenTubeDetail.setSex(tube.getGender());
+            //todo
+            frozenTubeDetail.setStatus(tube.getStatus());
+            try {
+                if(tube.getDob()!=null){
+                    frozenTubeDetail.setAge("");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            frozenTubes.add(frozenTubeDetail);
+        }
+        report.setCheckResults(frozenTubes);
+        return report;
+    }
+
 }

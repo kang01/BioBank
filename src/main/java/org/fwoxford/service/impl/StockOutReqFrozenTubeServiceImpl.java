@@ -177,9 +177,11 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         for(FrozenTube f : frozenTubes){
             if(sampleTypeId!=null&&f.getSampleType()!=null&&f.getSampleType().getId()!=sampleTypeId){
                 frozenTubes.remove(f);
+                break;
             }
             if(samplyClassificationId!=null&&f.getSampleClassification()!=null&&f.getSampleClassification().getId()!=samplyClassificationId){
                 frozenTubes.remove(f);
+                break;
             }
             if(frozenTubeTypeId!=null){
                 Boolean flag = false;
@@ -188,6 +190,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
                 }
                 if(flag==false){
                     frozenTubes.remove(f);
+                    break;
                 }
             }
             if(ageMin!=null){
@@ -204,6 +207,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
                 }
                 if(flag==false){
                     frozenTubes.remove(f);
+                    break;
                 }
             }
             if(diseaseType!=null){
@@ -213,6 +217,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
                 }
                 if(flag==false){
                     frozenTubes.remove(f);
+                    break;
                 }
             }
             if(sex!=null){
@@ -222,6 +227,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
                 }
                 if(flag==false){
                     frozenTubes.remove(f);
+                    break;
                 }
             }
             if(isBloodLipid!=null){
@@ -231,6 +237,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
                 }
                 if(flag==false){
                     frozenTubes.remove(f);
+                    break;
                 }
             }
             if(isHemolysis!=null){
@@ -240,6 +247,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
                 }
                 if(flag==false){
                     frozenTubes.remove(f);
+                    break;
                 }
             }
         }

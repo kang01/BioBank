@@ -21,7 +21,7 @@
         <div class="row form-horizontal m-t-20">
             <div class="col-md-4">
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">批准人</label>
+                    <label class="col-sm-4 control-label">审核人</label>
                     <div class="col-sm-8">
                         <selectize options='vm.approverOptions' config="vm.approverConfig"
                                    ng-model="vm.approve.approverId"></selectize>
@@ -40,7 +40,7 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label  class="col-sm-4 control-label">批准日期</label>
+                    <label  class="col-sm-4 control-label">审核日期</label>
                     <div class="col-sm-8">
                         <div class="input-group">
                             <input  type="text" class="form-control" name="approveTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.approve.recordTime" is-open="vm.datePickerOpenStatus.approveTime"

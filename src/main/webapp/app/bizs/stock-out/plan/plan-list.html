@@ -1,10 +1,13 @@
 <div>
-    <div class="pull-left">
-        <h2 style="margin: 0">出库计划</h2>
+    <div class="col-md-12">
+        <div class="pull-left">
+            <h2 style="margin: 0">出库计划</h2>
+        </div>
+        <div class="pull-right">
+            <button type="button" class="btn btn-default" ng-click="vm.add()">添加</button>
+        </div>
     </div>
-    <div class="pull-right">
-        <button type="button" class="btn btn-default" ng-click="vm.add()">添加</button>
-    </div>
+
     <div class="row m0">
         <div class="col-md-12">
             <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstanceCallback" class=" table table-striped table-bordered">

@@ -27,6 +27,7 @@
                 ageValue  =  scope.value;
             }
             var  strs  =  ageValue.split(";");
+            var isChanging = false;
             $(element).ionRangeSlider({
                 type:  "double",
                 grid:  true,
@@ -36,7 +37,26 @@
                 from:strs[0],
                 to:strs[1],
                 postfix:  "  岁",
-                value:[30,65]
+                value:[30,65],
+                onChange: function (data) {
+                    isChanging = true;
+                },
+                onFinish: function (data) {
+                    isChanging = false;
+                    scope.value = [data.from, data.to].join(";");
+                    scope.$apply();
+                },
+            });
+            var slider = $(element).data("ionRangeSlider");
+            scope.$watch("value", function(newValue, oldValue){
+                if (isChanging){
+                    return;
+                }
+                var  strs  =  (newValue||"30;65").split(";");
+                slider.update({
+                    from: strs[0],
+                    to: strs[1]
+                });
             });
         }
     }

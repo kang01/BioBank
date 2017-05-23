@@ -195,8 +195,9 @@
         //---------------------------样本需求--------------------------
         //批量核对
         vm.sampleRequirementListCheck = _fnSampleRequirementCheckList;
-
         vm.sampleRequirement = {};
+        vm.sampleRequirement.age = "30;70";
+
         vm.sampleTypeConfig = {
             valueField:'id',
             labelField:'sampleTypeName',
@@ -228,6 +229,9 @@
                 vm.sampleTypeOptions.pop();
                 if(!vm.sampleRequirement.sampleTypeId){
                     vm.sampleRequirement.sampleTypeId = vm.sampleTypeOptions[0].id;
+                    if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
+                        _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
+                    }
                 }
             });
         }
@@ -281,17 +285,18 @@
         //保存样本需求
         vm.saveSampleRequirement = function (file) {
             BioBankBlockUi.blockUiStart();
-            console.log(file);
-            var obj = {};
-            obj.requirementName = vm.sampleRequirement.requirementName;
-            var fb = new FormData();
-            fb.append('stockOutRequirement', angular.toJson(obj));
-            fb.append('file', file);
+
             //是否上传附件
             if(file){
+                var obj = {};
+                obj.requirementName = vm.sampleRequirement.requirementName;
+                var fb = new FormData();
+                fb.append('stockOutRequirement', angular.toJson(obj));
+                fb.append('file', file);
                 RequirementService.saveSampleRequirementOfUpload(vm.requirement.id,fb).success(function (data) {
                     BioBankBlockUi.blockUiStop();
                     toastr.success("保存样本需求成功！");
+                    _loadRequirement();
                 }).error(function (data) {
                     BioBankBlockUi.blockUiStop();
                 })
@@ -369,7 +374,7 @@
             return '<div ng-if="vm.status != 1103">'+
                     '<a  ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementRevert('+full.id+')">复原</a>&nbsp;' +
                     '<a ng-if="'+full.status+'== 1201" ng-click="vm.sampleRequirementCheck('+full.id+')">核对</a>&nbsp;' +
-                    '<a ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;'+
+                    '<a ng-if="'+full.status+'== 1201" ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;'+
                     '<a ng-click="vm.sampleRequirementDel('+full.id+')">删除</a>&nbsp;'+
                     '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementDescModel('+full.id+')">详情</a>'+
                     '</div>'
@@ -377,9 +382,11 @@
         //编辑
         function _fnSampleRequirementEdit(sampleRequirementId) {
             RequirementService.querySampleRequirement(sampleRequirementId).success(function (data) {
+                vm.file = {};
                 vm.sampleRequirement = data;
-                _fuQuerySampleClass(vm.projectIds,data.sampleTypeId)
-
+                if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
+                    _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
+                }
             }).error(function (data) {
             })
         }

@@ -159,11 +159,11 @@
             }
         }
         function format ( items ) {
-            var html =  $('<table class="table" style="width: 100%"></table>');
+            var html =  $('<table class="table" style="width: 100%"><tbody></tbody></table>');
             for(var i = 0; i < items.length; i++){
-                var tbody =
-                    "<tbody>"+
-                    "<tr>"+
+                var tr = $("<tr />").html(
+
+                    "<td style='display: none'>"+items[i].id+"</td>"+
                     "<td style='width: 2%'> </td>"+
                     "<td style='width: 13%'>"+items[i].applyCode+"</td>"+
                     "<td style='width: 17%'>"+items[i].delegateName+"</td>"+
@@ -173,10 +173,14 @@
                     "<td style='width: 10%'>"+items[i].countOfSample+"</td>"+
                     "<td style='width: 12%'>"+items[i].sampleTypes+"</td>"+
                     "<td style='width: 10%'>"+statusShow(items[i].status)  +"</td>"+
-                    "<td ><button class='btn btn-warning' ui-sref='requirement-edit({applyId:"+ items[i].id +"})'><i class='fa fa-edit'></i></button></td>"+
-                    "</tr>"+
-                    "</tbody>";
-                html.append(tbody)
+                    "<td ><button  class='btn btn-warning addApplyId'><i class='fa fa-edit'></i></button></td>"
+                    );
+                $(".addApplyId", tr).click(function(){
+                   var applyId = $(tr)[0].childNodes[0].innerText;
+                    $state.go('requirement-edit',{applyId:applyId});
+                });
+                html.append(tr);
+
             }
 
             return html;

@@ -37,7 +37,9 @@
             DTColumnBuilder.newColumn('sex').withTitle('性别'),
             DTColumnBuilder.newColumn('age').withTitle('年龄'),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
-            DTColumnBuilder.newColumn('diseaseTypeId').withTitle('疾病')
+            DTColumnBuilder.newColumn('diseaseTypeId').withTitle('疾病'),
+            DTColumnBuilder.newColumn('sampleUsedTimes').withTitle('使用次数'),
+            DTColumnBuilder.newColumn('memo').withTitle('批注')
 
         ];
         function createdRow(row, data, dataIndex) {

@@ -22,11 +22,11 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="frozen_tube_type_code" type="varchar(100)" remarks="冻存管类型编码">
+            <column name="frozen_tube_type_code" type="nvarchar(100)" remarks="冻存管类型编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="frozen_tube_type_name" type="varchar(255)" remarks="冻存管类型名称">
+            <column name="frozen_tube_type_name" type="nvarchar(255)" remarks="冻存管类型名称">
                 <constraints nullable="false" />
             </column>
 
@@ -38,25 +38,25 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="frozen_tube_volumn_unit" type="varchar(20)" remarks="冻存管容量单位">
+            <column name="frozen_tube_volumn_unit" type="nvarchar(20)" remarks="冻存管容量单位">
                 <constraints nullable="false" />
             </column>
 
-            <column name="memo" type="varchar(1024)" remarks="备注">
+            <column name="memo" type="nvarchar(1024)" remarks="备注">
                 <constraints nullable="true" />
             </column>
 
-            <column name="status" type="varchar(20)" remarks="状态">
+            <column name="status" type="nvarchar(20)" remarks="状态">
                 <constraints nullable="false" />
             </column>
 
-            <column name="created_by" type="varchar(50)" remarks="创建人">
+            <column name="created_by" type="nvarchar(50)" remarks="创建人">
                 <constraints nullable="false"/>
             </column>
             <column name="created_date" type="timestamp" defaultValueDate="${now}" remarks="创建时间">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_modified_by" type="varchar(50)" remarks="修改人"/>
+            <column name="last_modified_by" type="nvarchar(50)" remarks="修改人"/>
             <column name="last_modified_date" type="timestamp" remarks="修改时间"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>

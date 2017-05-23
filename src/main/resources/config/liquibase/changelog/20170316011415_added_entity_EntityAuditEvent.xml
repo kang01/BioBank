@@ -24,15 +24,15 @@
             <column name="entity_id" type="bigint">
                 <constraints nullable="false" />
             </column>
-            <column name="entity_type" type="varchar(255)">
+            <column name="entity_type" type="nvarchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="action" type="varchar(20)">
+            <column name="action" type="nvarchar(20)">
                 <constraints nullable="false" />
             </column>
             <column name="entity_value" type="clob"/>
             <column name="commit_version" type="integer"/>
-            <column name="modified_by" type="varchar(100)"/>
+            <column name="modified_by" type="nvarchar(100)"/>
             <column name="modified_date" type="timestamp">
                 <constraints nullable="false" />
             </column>

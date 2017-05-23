@@ -26,31 +26,31 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="project_code" type="varchar(100)" remarks="项目编码">
+            <column name="project_code" type="nvarchar(100)" remarks="项目编码">
                 <constraints nullable="true" />
             </column>
 
-            <column name="project_name" type="varchar(255)" remarks="项目名称">
+            <column name="project_name" type="nvarchar(255)" remarks="项目名称">
                 <constraints nullable="true" />
             </column>
 
-            <column name="project_site_code" type="varchar(100)" remarks="项目点编码">
+            <column name="project_site_code" type="nvarchar(100)" remarks="项目点编码">
                 <constraints nullable="true" />
             </column>
 
-            <column name="project_site_name" type="varchar(255)" remarks="项目点名称">
+            <column name="project_site_name" type="nvarchar(255)" remarks="项目点名称">
                 <constraints nullable="true" />
             </column>
 
-            <column name="track_number" type="varchar(100)" remarks="运单号">
+            <column name="track_number" type="nvarchar(100)" remarks="运单号">
                 <constraints nullable="true" />
             </column>
 
-            <column name="tranship_batch" type="varchar(100)" remarks="批次">
+            <column name="tranship_batch" type="nvarchar(100)" remarks="批次">
                 <constraints nullable="true" />
             </column>
 
-            <column name="tranship_state" type="varchar(20)" remarks="转运状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废">
+            <column name="tranship_state" type="nvarchar(20)" remarks="转运状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废">
                 <constraints nullable="false" />
             </column>
 
@@ -58,7 +58,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="receiver" type="varchar(100)" remarks="接收人">
+            <column name="receiver" type="nvarchar(100)" remarks="接收人">
                 <constraints nullable="true" />
             </column>
 
@@ -90,14 +90,14 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="tranship_code" type="varchar(255)" remarks="转运编码">
+            <column name="tranship_code" type="nvarchar(255)" remarks="转运编码">
                 <constraints nullable="false" />
             </column>
-            <column name="temp_equipment_code" type="varchar(255)" remarks="暂存设备">
+            <column name="temp_equipment_code" type="nvarchar(255)" remarks="暂存设备">
                 <constraints nullable="true" />
             </column>
 
-            <column name="temp_area_code" type="varchar(255)" remarks="暂存区域">
+            <column name="temp_area_code" type="nvarchar(255)" remarks="暂存区域">
                 <constraints nullable="true" />
             </column>
 
@@ -117,21 +117,21 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="memo" type="varchar(1024)" remarks="备注">
+            <column name="memo" type="nvarchar(1024)" remarks="备注">
                 <constraints nullable="true" />
             </column>
 
-            <column name="status" type="varchar(20)" remarks="状态">
+            <column name="status" type="nvarchar(20)" remarks="状态">
                 <constraints nullable="false" />
             </column>
 
-            <column name="created_by" type="varchar(50)" remarks="创建人">
+            <column name="created_by" type="nvarchar(50)" remarks="创建人">
                 <constraints nullable="false"/>
             </column>
             <column name="created_date" type="timestamp" defaultValueDate="${now}" remarks="创建日期">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_modified_by" type="varchar(50)" remarks="修改人"/>
+            <column name="last_modified_by" type="nvarchar(50)" remarks="修改人"/>
             <column name="last_modified_date" type="timestamp" remarks="修改日期"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>

@@ -23,15 +23,15 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="stock_in_code" type="varchar(100)" remarks="入库编码">
+            <column name="stock_in_code" type="nvarchar(100)" remarks="入库编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="project_code" type="varchar(100)" remarks="项目编码">
+            <column name="project_code" type="nvarchar(100)" remarks="项目编码">
                 <constraints nullable="false" />
             </column>
 
-            <column name="project_site_code" type="varchar(100)" remarks="项目点编码">
+            <column name="project_site_code" type="nvarchar(100)" remarks="项目点编码">
                 <constraints nullable="false" />
             </column>
 
@@ -43,11 +43,11 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="receive_name" type="varchar(100)" remarks="接收人姓名">
+            <column name="receive_name" type="nvarchar(100)" remarks="接收人姓名">
                 <constraints nullable="true" />
             </column>
 
-            <column name="stock_in_type" type="varchar(20)" remarks="入库类型：8001：首次入库，8002：移位入库，8003：调整入库">
+            <column name="stock_in_type" type="nvarchar(20)" remarks="入库类型：8001：首次入库，8002：移位入库，8003：调整入库">
                 <constraints nullable="false" />
             </column>
 
@@ -55,7 +55,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="store_keeper_1" type="varchar(100)" remarks="入库人1名称">
+            <column name="store_keeper_1" type="nvarchar(100)" remarks="入库人1名称">
                 <constraints nullable="true" />
             </column>
 
@@ -63,7 +63,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="store_keeper_2" type="varchar(100)" remarks="入库人2名称">
+            <column name="store_keeper_2" type="nvarchar(100)" remarks="入库人2名称">
                 <constraints nullable="true" />
             </column>
 
@@ -79,7 +79,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="sign_name" type="varchar(100)" remarks="签名人名称">
+            <column name="sign_name" type="nvarchar(100)" remarks="签名人名称">
                 <constraints nullable="true" />
             </column>
 
@@ -99,21 +99,21 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="memo" type="varchar(1024)" remarks="备注">
+            <column name="memo" type="nvarchar(1024)" remarks="备注">
                 <constraints nullable="true" />
             </column>
 
-            <column name="status" type="varchar(20)" remarks="状态">
+            <column name="status" type="nvarchar(20)" remarks="状态">
                 <constraints nullable="false" />
             </column>
 
-            <column name="created_by" type="varchar(50)" remarks="创建人">
+            <column name="created_by" type="nvarchar(50)" remarks="创建人">
                 <constraints nullable="false"/>
             </column>
             <column name="created_date" type="timestamp" defaultValueDate="${now}" remarks="创建时间">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_modified_by" type="varchar(50)" remarks="修改人"/>
+            <column name="last_modified_by" type="nvarchar(50)" remarks="修改人"/>
             <column name="last_modified_date" type="timestamp" remarks="修改时间"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>

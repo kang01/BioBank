@@ -31,20 +31,20 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="memo" type="varchar(1024)" remarks="备注">
+            <column name="memo" type="nvarchar(1024)" remarks="备注">
                 <constraints nullable="true" />
             </column>
 
-            <column name="status" type="varchar(20)"  remarks="状态">
+            <column name="status" type="nvarchar(20)"  remarks="状态">
                 <constraints nullable="false" />
             </column>
-            <column name="created_by" type="varchar(50)">
+            <column name="created_by" type="nvarchar(50)">
                 <constraints nullable="false"/>
             </column>
             <column name="created_date" type="timestamp" defaultValueDate="${now}">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_by" type="nvarchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>

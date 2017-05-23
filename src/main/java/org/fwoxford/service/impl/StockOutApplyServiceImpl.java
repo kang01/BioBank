@@ -154,6 +154,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         if(stockOutApply == null){
             throw new BankServiceException("未查询到需要修改的出库申请！");
         }
+        if(stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVED) || stockOutApply.getStatus().equals(Constants.STOCK_OUT_INVALID)){
+            throw new BankServiceException("出库申请状态不满足修改条件！");
+        }
         stockOutApply.setApplyPersonName(stockOutApplyForSave.getApplyPersonName());
         Delegate delegate = delegateRepository.findOne(stockOutApplyForSave.getDelegateId());
         stockOutApply.setDelegate(delegate);

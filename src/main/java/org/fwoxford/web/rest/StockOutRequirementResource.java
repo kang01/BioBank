@@ -259,6 +259,12 @@ public class StockOutRequirementResource {
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
+    /**
+     * 复原核对
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
     @PutMapping("/stock-out-requirements/revert/{id}")
     @Timed
     public ResponseEntity<StockOutRequirementForApply> revertStockOutRequirement(@PathVariable Long id) throws URISyntaxException {

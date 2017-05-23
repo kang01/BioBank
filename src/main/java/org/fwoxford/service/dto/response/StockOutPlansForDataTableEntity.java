@@ -1,43 +1,66 @@
 package org.fwoxford.service.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.time.LocalDate;
 
 /**
  * Created by gengluying on 2017/5/23.
  */
 public class StockOutPlansForDataTableEntity {
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private Long id;
     /**
      * 申请单号
      */
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private String applyNumber;
     /**
      * 计划编号
      */
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private String stockOutPlanCode;
     /**
      * 计划时间
      */
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private LocalDate planDate;
     /**
      * 出库目的
      */
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private String purposeOfSample;
     /**
      * 计划样本量
      */
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private Long countOfStockOutPlanSample;
     /**
      * 出库任务量
      */
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private String countOfStockOutTask;
     /**
      * 交接进度
      */
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private String handOverSchedule;
     /**
      * 状态:1401:进行中，1402：已完成，1403：已作废
      */
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private String status;
 
     public Long getId() {

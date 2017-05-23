@@ -825,4 +825,104 @@ public class TempResource {
         return result;
     }
 
+    /**
+     * 计划查看详情
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-plans/{id}")
+    @Timed
+    public ResponseEntity<StockOutPlanDetail> getStockOutPlanDetail(@PathVariable Long id) throws URISyntaxException {
+        StockOutPlanDetail result = new StockOutPlanDetail();
+        result.setId(id);
+        result.setApplyNumber(BankUtil.getUniqueID());
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+
+    /**
+     * 根据申请单号查询申请单详情
+     * @param applyNumber
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-plans/applyNumber/{applyNumber}")
+    @Timed
+    public ResponseEntity<StockOutApplyForPlanDetail> getStockOutApplyDetail(@PathVariable String applyNumber) throws URISyntaxException {
+        StockOutApplyForPlanDetail result = new StockOutApplyForPlanDetail();
+        result.setId(1L);
+        result.setApplyNumber(applyNumber);
+        result.setCountOfSample(1000L);
+        result.setCountOfStockOutSample(1000L);
+        result.setStartTime(LocalDate.parse("2017-05-05"));
+        result.setEndTime(LocalDate.parse("2017-06-05"));
+        result.setPurposeOfSample("实验");
+        result.setDelegateName("实验室");
+        List<StockOutRequirementForPlan> requirementForPlans = new ArrayList<StockOutRequirementForPlan>();
+        for(int i= 0;i<10;i++){
+            StockOutRequirementForPlan stockOutRequirementForPlan = new StockOutRequirementForPlan();
+            stockOutRequirementForPlan.setId(1L+i);
+            stockOutRequirementForPlan.setRequirementName(i+10+"支 男性 65岁 血浆样本");
+            requirementForPlans.add(stockOutRequirementForPlan);
+        }
+        result.setRequirements(requirementForPlans);
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+
+    /**
+     * 根据需求查询核对通过的不在任务内的冻存盒（带分页）
+     * @param input
+     * @param ids
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-frozen-boxes/requirement/{ids}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input,@PathVariable List<Long> ids) {
+        List<StockOutFrozenBoxForDataTableEntity> stockOutApplyList =  new ArrayList<StockOutFrozenBoxForDataTableEntity>();
+
+        for (int i = 0; i < input.getLength(); ++i){
+            StockOutFrozenBoxForDataTableEntity rowData = new StockOutFrozenBoxForDataTableEntity();
+            rowData.setId(0L + i + input.getStart());
+            rowData.setCountOfSample(20L);
+            rowData.setFrozenBoxCode("98765432"+i);
+            rowData.setPosition("F3-71.S01");
+            rowData.setSampleTypeName("血浆");
+            stockOutApplyList.add(rowData);
+        }
+
+        DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = new DataTablesOutput<StockOutFrozenBoxForDataTableEntity>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(stockOutApplyList);
+        result.setRecordsFiltered(stockOutApplyList.size());
+        result.setRecordsTotal(stockOutApplyList.size() * 10);
+        return result;
+    }
+
+    /**
+     * 根据出库申请ID以及冻存盒ID查询出库的样本
+     * @param applyId
+     * @param frozenBoxId
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-frozen-tubes/apply/{applyId}/frozenBox/{frozenBoxId}")
+    @Timed
+    public ResponseEntity<List<StockOutFrozenTubeForPlan>> getStockOutFrozenTubeForPlanByApplyAndBox(@PathVariable Long applyId,@PathVariable Long frozenBoxId) throws URISyntaxException {
+       List<StockOutFrozenTubeForPlan> result = new ArrayList<StockOutFrozenTubeForPlan>();
+       for(int i = 0 ; i<20 ;i++){
+           StockOutFrozenTubeForPlan tube = new StockOutFrozenTubeForPlan();
+           tube.setId(1L+i);
+           tube.setSampleTypeName("血浆");
+           tube.setStatus("3001");
+           tube.setAge(65);
+           tube.setSex("男");
+           tube.setSampleUsedTimes(0L);
+           tube.setSampleCode(BankUtil.getUniqueID());
+           tube.setMemo("正常");
+           result.add(tube);
+       }
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+
 }

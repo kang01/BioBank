@@ -153,7 +153,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         if(stockOutApply == null){
             throw new BankServiceException("未查询到申请单的记录！",stockOutApplyId.toString());
         }
-        if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_PENDING)){
+        if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_PENDING)||!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVE_REFUSED)){
             throw new BankServiceException("申请单的状态不能新增需求！",stockOutApply.getStatus());
         }
 
@@ -517,6 +517,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             }else{
                 map.put(key,s);
             }
+            map.put(key,s);
         }
         return map;
     }

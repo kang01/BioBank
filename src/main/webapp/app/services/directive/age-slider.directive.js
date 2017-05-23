@@ -31,7 +31,7 @@
             $(element).ionRangeSlider({
                 type:  "double",
                 grid:  true,
-                min:  1,
+                min:  0,
                 max:  125,
                 step:5,
                 from:strs[0],

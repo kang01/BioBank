@@ -14,6 +14,11 @@
     function RequirementSampleDescModalController($scope,$uibModalInstance,$compile,$uibModal,items,DTOptionsBuilder,DTColumnBuilder,RequirementService) {
         var vm = this;
         var sampleRequirementId = items.sampleRequirementId;
+        //打印详情
+        vm.printRequirementDesc = _fnPrintRequirementDesc;
+        function _fnPrintRequirementDesc() {
+            window.open ('/api/stock-out-requirements/print/' + sampleRequirementId);
+        }
         function _initSampleRequirementDesc() {
             RequirementService.descSampleRequirement(sampleRequirementId).success(function (data) {
                 vm.requirementDesc = data;

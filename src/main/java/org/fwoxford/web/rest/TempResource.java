@@ -925,4 +925,37 @@ public class TempResource {
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
+    /**
+     * 新增保存出库计划
+     * @param stockOutPlanForSave
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-out-plans")
+    @Timed
+    public ResponseEntity<StockOutPlanForSave> createStockOutPlan(@Valid @RequestBody StockOutPlanForSave stockOutPlanForSave) throws URISyntaxException {
+        log.debug("REST request to save StockOutPlan : {}", stockOutPlanForSave);
+        StockOutPlanForSave result = stockOutPlanForSave;
+        return ResponseEntity.created(new URI("/api/stock-out-plans/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * 修改保存出库计划
+     * @param stockOutPlanForSave
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-plans")
+    @Timed
+    public ResponseEntity<StockOutPlanForSave> updateStockOutPlan(@Valid @RequestBody StockOutPlanForSave stockOutPlanForSave) throws URISyntaxException {
+        log.debug("REST request to save StockOutPlan : {}", stockOutPlanForSave);
+        StockOutPlanForSave result = stockOutPlanForSave;
+        return ResponseEntity.created(new URI("/api/stock-out-plans/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+
 }

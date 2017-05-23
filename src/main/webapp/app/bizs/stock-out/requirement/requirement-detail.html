@@ -9,11 +9,11 @@
                 <button class="btn btn-primary" ng-click="vm.additionApply()" ng-if="vm.requirement.status == '1103'">附加申请</button>
                 <div class="pull-left" ng-if="vm.requirement.status != '1103'">
 
-                    <button class="btn btn-primary" >打印出库申请</button>
-                    <button class="btn btn-primary" ng-click="vm.approvalModal()">批准</button>
+                    <button class="btn btn-primary" ng-click="vm.printRequirement()">打印出库申请</button>
+                    <button class="btn btn-primary" ng-click="vm.approvalModal()" ng-disabled="!vm.requirementApplyFlag">批准</button>
                     <!--<button class="btn btn-primary" ng-click="vm.sampleDescModal()">样本库存详情</button>-->
 
-                    <button class="btn btn-primary" ng-click="vm.saveRequirement()">保存申请</button>
+                    <button class="btn btn-primary" ng-click="vm.saveRequirement()" ng-disabled="vm.requirementPrintFlag">保存申请</button>
                 </div>
                 <div class="pull-right m-l-5">
                     <button class="btn btn-default" ui-sref="requirement-list">关闭</button>
@@ -155,9 +155,8 @@
                             <selectize options='vm.sexOptions' config="vm.sexConfig"
                                        ng-model="vm.sampleRequirement.sex" ></selectize>
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-4 requirement-age">
                             <label >年龄</label>
-                            {{vm.sampleRequirement.age}}
                             <input  type="text"   class="irs-hidden-input"  readonly=""
                                     age-slider  form-to="vm.sampleRequirement.age"  style="display:none" required>
                         </div>

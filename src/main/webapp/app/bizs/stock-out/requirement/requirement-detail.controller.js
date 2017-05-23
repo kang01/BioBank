@@ -27,6 +27,8 @@
         vm.saveRequirement = _fnSaveRequirement;
         //附加功能
         vm.additionApply = _fnAdditionApply;
+        //打印申请
+        vm.printRequirement = _fnPrintRequirement;
 
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
@@ -70,6 +72,7 @@
             }
             setTimeout(function () {
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
+                vm.isApproval();
             },100)
         }
         //委托方查询
@@ -144,6 +147,7 @@
                 BioBankBlockUi.blockUiStop();
                 if(!vm.sampleflag){
                     toastr.success("保存申请记录成功！");
+                    return;
                 }
                 if(vm.sampleRequirement.id){
                     if(vm.sampleRequirement.status){
@@ -158,6 +162,7 @@
                         _loadRequirement();
                     }).error(function (data) {
                         BioBankBlockUi.blockUiStop();
+                        toastr.success(data.message);
                     })
 
                 }else{
@@ -191,6 +196,10 @@
             },500);
 
 
+        }
+        //打印申请
+        function _fnPrintRequirement() {
+            window.open ('/api/stock-out-applies/print/' + vm.requirement.id);
         }
         //---------------------------样本需求--------------------------
         //批量核对
@@ -309,6 +318,7 @@
         function _fnSampleRequirementCheckList() {
             var sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
             RequirementService.checkSampleRequirementList(sampleRequirementIds).success(function (data) {
+                vm.requirementApplyFlag = true;
                 _loadRequirement();
             }).error(function (data) {
             })
@@ -318,6 +328,7 @@
                 vm.requirement = data;
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 vm.dtInstance.rerender();
+                vm.isApproval();
             });
         }
         //---------------------------样本需求列表--------------------------
@@ -331,6 +342,8 @@
         vm.sampleRequirementEdit = _fnSampleRequirementEdit;
         //复原
         vm.sampleRequirementRevert = _fnSampleRequirementRevert;
+        //判断是否都是核对完的列表
+        vm.isApproval = _fnIsApproval;
 
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
@@ -445,7 +458,19 @@
             });
 
         }
+        //判断是否都核对完了
+        vm.requirementApplyFlag = false;
+          function _fnIsApproval() {
+            if(vm.requirement.stockOutRequirement){
+                var len =  _.filter(vm.requirement.stockOutRequirement,{status:'1202'}).length;
+                if(len == vm.requirement.stockOutRequirement.length){
+                    vm.requirementApplyFlag = true;
+                }else{
+                    vm.requirementApplyFlag = false;
+                }
+            }
 
+        }
         //---------------------------弹出框--------------------------
 
         //批准

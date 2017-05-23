@@ -328,6 +328,32 @@ td .details-control {
 tr.shown td .details-control {
     background: url('../images/details_close.png') no-repeat center center;
 }
+
+.requirement-age .irs-with-grid{
+    height: 40px;
+}
+.requirement-age .irs-line{
+    top: 15px;
+}
+.requirement-age .irs-line{
+    top: 16px;
+}
+.requirement-age .irs-min,
+.requirement-age .irs-max{
+    top: -4px;
+}
+.requirement-age .irs-from,
+.requirement-age .irs-to,
+.requirement-age .irs-single{
+    top: -8px;
+}
+.requirement-age .irs-bar{
+    top:16px
+}
+.requirement-age .irs-slider{
+    top:13px
+}
+
 /*1440*/
 @media (min-width:1400px) {
     .transport-record-new .pipe-body .pipe-body-bottom .box-remark .col-sm-10 {

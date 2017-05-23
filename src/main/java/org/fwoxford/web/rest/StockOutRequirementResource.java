@@ -298,10 +298,10 @@ public class StockOutRequirementResource {
             ByteArrayOutputStream result = stockOutRequirementService.printStockOutRequirementDetailReport(id);
             byte[] fileInByte = result.toByteArray();
             final HttpHeaders headers = new HttpHeaders();
-            String fileReportName = "test";
+            String fileReportName = "出库申请详情.xlsx";
             headers.setContentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-            headers.set("Content-disposition", "attachment; filename="+ URLEncoder.encode(fileReportName, "GBK"));
-            return new ResponseEntity(fileInByte, headers, HttpStatus.CREATED);
+            headers.set("Content-disposition", "attachment; filename="+URLEncoder.encode(fileReportName, "UTF-8"));
+
         } catch (Exception e) {
             e.printStackTrace();
         }

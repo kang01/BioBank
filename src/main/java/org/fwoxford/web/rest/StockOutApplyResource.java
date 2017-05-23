@@ -252,7 +252,7 @@ public class StockOutApplyResource {
                 ByteArrayOutputStream result = stockOutApplyService.printStockOutApply(id);
                 byte[] fileInByte = result.toByteArray();
                 final HttpHeaders headers = new HttpHeaders();
-                String fileReportName = "test.xlsx";
+                String fileReportName = "出库申请.xlsx";
                 headers.setContentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
                 headers.set("Content-disposition", "attachment; filename="+URLEncoder.encode(fileReportName, "UTF-8"));
 

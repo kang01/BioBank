@@ -791,4 +791,38 @@ public class TempResource {
 
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
+
+    /**
+     * 查询出库申请列表
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-plans", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutPlansForDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input) {
+        List<StockOutPlansForDataTableEntity> stockOutApplyList =  new ArrayList<>();
+
+        for (int i = 0; i < input.getLength(); ++i){
+            StockOutPlansForDataTableEntity rowData = new StockOutPlansForDataTableEntity();
+            rowData.setId(0L + i + input.getStart());
+            rowData.setApplyNumber(BankUtil.getUniqueID());
+            rowData.setStockOutPlanCode(BankUtil.getUniqueID());
+            rowData.setPlanDate(LocalDate.now());
+            rowData.setPurposeOfSample("实验");
+            rowData.setCountOfStockOutPlanSample(1000L);
+            rowData.setCountOfStockOutTask("01/10");
+            rowData.setHandOverSchedule("1%");
+            rowData.setStatus("1401");
+            stockOutApplyList.add(rowData);
+        }
+
+        DataTablesOutput<StockOutPlansForDataTableEntity> result = new DataTablesOutput<StockOutPlansForDataTableEntity>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(stockOutApplyList);
+        result.setRecordsFiltered(stockOutApplyList.size());
+        result.setRecordsTotal(stockOutApplyList.size() * 10);
+        return result;
+    }
+
 }

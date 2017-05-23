@@ -849,26 +849,12 @@ public class TempResource {
      */
     @GetMapping("/stock-out-plans/applyNumber/{applyNumber}")
     @Timed
-    public ResponseEntity<List<StockOutApplyForPlanDetail>> getStockOutApplyDetail(@PathVariable String applyNumber) throws URISyntaxException {
-        List<StockOutApplyForPlanDetail> alist = new ArrayList<StockOutApplyForPlanDetail>();
+    public ResponseEntity<List<StockOutApplyForPlan>> getStockOutApplyDetail(@PathVariable String applyNumber) throws URISyntaxException {
+        List<StockOutApplyForPlan> alist = new ArrayList<StockOutApplyForPlan>();
         for(int i = 0;i<50;i++){
-            StockOutApplyForPlanDetail result = new StockOutApplyForPlanDetail();
+            StockOutApplyForPlan result = new StockOutApplyForPlan();
             result.setId(1L);
             result.setApplyNumber(applyNumber+i);
-            result.setCountOfSample(1000L);
-            result.setCountOfStockOutSample(1000L);
-            result.setStartTime(LocalDate.parse("2017-05-05"));
-            result.setEndTime(LocalDate.parse("2017-06-05"));
-            result.setPurposeOfSample("实验");
-            result.setDelegateName("实验室");
-            List<StockOutRequirementForPlan> requirementForPlans = new ArrayList<StockOutRequirementForPlan>();
-            for(int j= 0;j<10;j++){
-                StockOutRequirementForPlan stockOutRequirementForPlan = new StockOutRequirementForPlan();
-                stockOutRequirementForPlan.setId(1L+j);
-                stockOutRequirementForPlan.setRequirementName(j+10+"支 男性 65岁 血浆样本");
-                requirementForPlans.add(stockOutRequirementForPlan);
-            }
-            result.setRequirements(requirementForPlans);
             alist.add(result);
         }
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(alist));

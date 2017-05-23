@@ -6,7 +6,7 @@ package org.fwoxford.service.dto.response;
 public class StockOutPlanForSave {
     private Long id;
     private Long applyId;
-
+    private String Status;
     public Long getId() {
         return id;
     }
@@ -21,5 +21,13 @@ public class StockOutPlanForSave {
 
     public void setApplyId(Long applyId) {
         this.applyId = applyId;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
     }
 }

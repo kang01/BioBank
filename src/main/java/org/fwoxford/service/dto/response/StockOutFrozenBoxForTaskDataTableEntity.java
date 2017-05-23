@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Created by gengluying on 2017/5/23.
  */
-public class StockOutFrozenBoxForDataTableEntity {
+public class StockOutFrozenBoxForTaskDataTableEntity {
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private Long id;

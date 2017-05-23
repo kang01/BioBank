@@ -112,7 +112,12 @@ public final class Constants {
         put("isHemolysis",5);
         put("isBloodLipid",5);
     }};
-
+    /**
+     * 出库计划状态：1401:进行中，1402：已完成，1403：已作废
+     */
+    public static final String STOCK_OUT_PLAN_INVALID = "1403";
+    public static final String STOCK_OUT_PLAN_PENDING = "1401";
+    public static final String STOCK_OUT_PLAN_COMPLETED = "1402";
     private Constants() {
     }
 }

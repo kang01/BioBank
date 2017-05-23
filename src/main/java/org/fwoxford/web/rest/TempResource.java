@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import net.sf.json.JSONObject;
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.Area;
 import org.fwoxford.domain.Equipment;
 import org.fwoxford.domain.SampleClassification;
@@ -848,10 +849,43 @@ public class TempResource {
      */
     @GetMapping("/stock-out-plans/applyNumber/{applyNumber}")
     @Timed
-    public ResponseEntity<StockOutApplyForPlanDetail> getStockOutApplyDetail(@PathVariable String applyNumber) throws URISyntaxException {
+    public ResponseEntity<List<StockOutApplyForPlanDetail>> getStockOutApplyDetail(@PathVariable String applyNumber) throws URISyntaxException {
+        List<StockOutApplyForPlanDetail> alist = new ArrayList<StockOutApplyForPlanDetail>();
+        for(int i = 0;i<50;i++){
+            StockOutApplyForPlanDetail result = new StockOutApplyForPlanDetail();
+            result.setId(1L);
+            result.setApplyNumber(applyNumber+i);
+            result.setCountOfSample(1000L);
+            result.setCountOfStockOutSample(1000L);
+            result.setStartTime(LocalDate.parse("2017-05-05"));
+            result.setEndTime(LocalDate.parse("2017-06-05"));
+            result.setPurposeOfSample("实验");
+            result.setDelegateName("实验室");
+            List<StockOutRequirementForPlan> requirementForPlans = new ArrayList<StockOutRequirementForPlan>();
+            for(int j= 0;j<10;j++){
+                StockOutRequirementForPlan stockOutRequirementForPlan = new StockOutRequirementForPlan();
+                stockOutRequirementForPlan.setId(1L+j);
+                stockOutRequirementForPlan.setRequirementName(j+10+"支 男性 65岁 血浆样本");
+                requirementForPlans.add(stockOutRequirementForPlan);
+            }
+            result.setRequirements(requirementForPlans);
+            alist.add(result);
+        }
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(alist));
+    }
+
+    /**
+     * 根据申请ID查询申请详情（包含需求）
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-plans/apply/{id}")
+    @Timed
+    public ResponseEntity<StockOutApplyForPlanDetail> getStockOutApplyDetail(@PathVariable Long id) throws URISyntaxException {
         StockOutApplyForPlanDetail result = new StockOutApplyForPlanDetail();
-        result.setId(1L);
-        result.setApplyNumber(applyNumber);
+        result.setId(id);
+        result.setApplyNumber(BankUtil.getUniqueID());
         result.setCountOfSample(1000L);
         result.setCountOfStockOutSample(1000L);
         result.setStartTime(LocalDate.parse("2017-05-05"));
@@ -868,7 +902,6 @@ public class TempResource {
         result.setRequirements(requirementForPlans);
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
-
     /**
      * 根据需求查询核对通过的不在任务内的冻存盒（带分页）
      * @param input
@@ -957,5 +990,117 @@ public class TempResource {
             .body(result);
     }
 
+    /**
+     * 作废计划
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-plans/{id}/invalid")
+    @Timed
+    public ResponseEntity<StockOutPlanForSave> invalidStockOutPlan(@PathVariable Long id ) throws URISyntaxException {
+        StockOutPlanForSave result = new StockOutPlanForSave();
+        result.setId(id);
+        result.setStatus(Constants.STOCK_OUT_PLAN_INVALID);
+        result.setApplyId(1L);
+        return ResponseEntity.created(new URI("/api/stock-out-plans/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 
+    /**
+     * 新增保存任务
+     * @param id
+     * @param boxIds
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-out-tasks/plan/{id}/frozenBox/{boxIds}")
+    @Timed
+    public ResponseEntity<StockOutTaskDTO> createStockOutTask(@PathVariable Long id,@PathVariable List<Long> boxIds) throws URISyntaxException {
+        StockOutTaskDTO result = new StockOutTaskDTO();
+        result.setId(1L);
+        result.setUsedTime(0);
+        result.setStockOutTaskCode(BankUtil.getUniqueID());
+        result.setStatus("");
+        return ResponseEntity.created(new URI("/api/stock-out-tasks/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * 删除任务
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/stock-out-tasks/{id}")
+    @Timed
+    public ResponseEntity<Void> deleteStockOutTask(@PathVariable Long id) {
+        log.debug("REST request to delete StockOutTask : {}", id);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * 获取出库任务列表
+     * @param input
+     * @param id
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-tasks/plan/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutTaskForPlanDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input,@PathVariable Long id) {
+        List<StockOutTaskForPlanDataTableEntity> stockOutApplyList =  new ArrayList<StockOutTaskForPlanDataTableEntity>();
+
+        for (int i = 0; i < input.getLength(); ++i){
+            StockOutTaskForPlanDataTableEntity rowData = new StockOutTaskForPlanDataTableEntity();
+            rowData.setId(0L + i + input.getStart());
+            rowData.setCountOfSample(20L);
+            rowData.setStatus("1501");
+            rowData.setStockOutTaskCode(BankUtil.getUniqueID());
+            rowData.setMemo("");
+            rowData.setCountOfFrozenBox(1L);
+            rowData.setCreateDate(LocalDate.now());
+            rowData.setStockOutDate(LocalDate.now());
+            rowData.setOperators("小张，小王");
+            stockOutApplyList.add(rowData);
+        }
+
+        DataTablesOutput<StockOutTaskForPlanDataTableEntity> result = new DataTablesOutput<StockOutTaskForPlanDataTableEntity>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(stockOutApplyList);
+        result.setRecordsFiltered(stockOutApplyList.size());
+        result.setRecordsTotal(stockOutApplyList.size() * 10);
+        return result;
+    }
+
+    /**
+     * 出库任务查看详情
+     * @param input
+     * @param id
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-frozen-boxes/task/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> getPageStockOutBoxForTask(@RequestBody DataTablesInput input,@PathVariable Long id) {
+        List<StockOutFrozenBoxForTaskDataTableEntity> stockOutApplyList =  new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
+
+        for (int i = 0; i < input.getLength(); ++i){
+            StockOutFrozenBoxForTaskDataTableEntity rowData = new StockOutFrozenBoxForTaskDataTableEntity();
+            rowData.setId(0L + i + input.getStart());
+            rowData.setCountOfSample(20L);
+            rowData.setFrozenBoxCode("98765432"+i);
+            rowData.setPosition("F3-71.S01");
+            rowData.setSampleTypeName("血浆");
+            stockOutApplyList.add(rowData);
+        }
+
+        DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> result = new DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(stockOutApplyList);
+        result.setRecordsFiltered(stockOutApplyList.size());
+        result.setRecordsTotal(stockOutApplyList.size() * 10);
+        return result;
+    }
 }

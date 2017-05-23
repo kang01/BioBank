@@ -465,6 +465,8 @@
                 var len =  _.filter(vm.requirement.stockOutRequirement,{status:'1202'}).length;
                 if(len == vm.requirement.stockOutRequirement.length){
                     vm.requirementApplyFlag = true;
+                }else{
+                    vm.requirementApplyFlag = false;
                 }
             }
 

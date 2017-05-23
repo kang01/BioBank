@@ -240,8 +240,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         Map<String,String> map = new HashMap<>();
         StringBuffer samples = new StringBuffer();
         try {
-            InputStream stream = file.getInputStream();
-            HashSet<String[]> hashSet =  reportExportingService.readRequiredSamplesFromExcelFile(stream);
+            InputStream stream = file.getInputStream(); HashSet<String[]> hashSet =  reportExportingService.readRequiredSamplesFromExcelFile(stream);
             for(String[] s : hashSet){
                 StockOutRequiredSample stockOutRequiredSample = new StockOutRequiredSample();
                 String code = s[0];
@@ -440,7 +439,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
     @Override
     public void batchCheckStockOutRequirement(List<Long> ids) {
         //查询全部样本需求
-        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByIdIn(ids);
+        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByIdInAndStatus(ids,Constants.STOCK_OUT_REQUIREMENT_CKECKING);
 
         if(stockOutRequirementList.size()>0){
             Map<Double,StockOutRequirement> map = getOrderStockOutRequirement(stockOutRequirementList);
@@ -513,7 +512,11 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 keyCount++;
             }
             key = keySum/keyCount;
-            map.put(key,s);
+            if(map.get(key)!=null){
+                map.put(key+1,s);
+            }else{
+                map.put(key,s);
+            }
         }
         return map;
     }

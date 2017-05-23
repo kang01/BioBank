@@ -153,7 +153,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         if(stockOutApply == null){
             throw new BankServiceException("未查询到申请单的记录！",stockOutApplyId.toString());
         }
-        if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_PENDING)||!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVE_REFUSED)){
+        if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_PENDING)&&!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVE_REFUSED)){
             throw new BankServiceException("申请单的状态不能新增需求！",stockOutApply.getStatus());
         }
 
@@ -462,7 +462,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                     return obj2.compareTo(obj1);
                 }
             });
+        Double i= 0.0001;
         for(StockOutRequirement s : stockOutRequirementList){
+            i+=0.0001;
             Double key = 0.0;Double keySum = 0.0;Double keyCount = 0.0;
             if(s.getCountOfSample()!=null){//样本数量，权重系数0（因为所有的需求都有这个基本条件）
                 keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("countOfSample").toString());
@@ -513,11 +515,10 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             }
             key = keySum/keyCount;
             if(map.get(key)!=null){
-                map.put(key+1,s);
+                map.put(key+i,s);
             }else{
                 map.put(key,s);
             }
-            map.put(key,s);
         }
         return map;
     }

@@ -1,0 +1,84 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
+    <h3 class="modal-title" id="modal-title">样本需求</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label >需求名称
+                <span class="required-field"></span>
+            </label>
+            <input type="text" class="form-control" ng-model="vm.sampleRequirement.requirementName">
+        </div>
+        <div class="form-group col-md-2">
+            <label >样本量</label>
+            <input type="text" class="form-control" ng-model="vm.sampleRequirement.countOfSample">
+        </div>
+        <div class="form-group col-md-4 self-upload">
+            <label >上传</label>
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class=" form-control" ng-model="vm.file.name" disabled>
+                    <div class="input-group-addon" style="cursor: pointer">
+                        <a href="javascript:;" name="file">
+                            <input type="file" ngf-select ng-model="vm.file" />上传
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-2">
+            <label >样本类型</label>
+            <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                       ng-model="vm.sampleRequirement.sampleTypeId"></selectize>
+        </div>
+        <div class="form-group col-md-2">
+            <label >样本分类</label>
+            <selectize options='vm.sampleClassOptions' config="vm.sampleClassConfig"
+                       ng-model="vm.sampleRequirement.sampleClassificationId"></selectize>
+        </div>
+        <div class="form-group col-md-2">
+            <label >冻存管类型</label>
+            <selectize options='vm.frozenTubeTypeOptions' config="vm.frozenTubeTypeConfig"
+                       ng-model="vm.sampleRequirement.frozenTubeTypeId"></selectize>
+        </div>
+        <div class="form-group col-md-2">
+            <label >性别</label>
+            <selectize options='vm.sexOptions' config="vm.sexConfig"
+                       ng-model="vm.sampleRequirement.sex" ></selectize>
+        </div>
+        <div class="form-group col-md-4 requirement-age">
+            <label >年龄
+                <input type="checkbox" ng-model="vm.isAge" ng-click="vm.isUseAge()">启用
+            </label>
+            <input  type="text"   class="irs-hidden-input"  readonly=""
+                    age-slider  form-to="vm.sampleRequirement.age"  style="display:none" required>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-2">
+            <label >疾病类型</label>
+            <selectize options='vm.diseaseTypeOptions' config="vm.diseaseTypeConfig"
+                       ng-model="vm.sampleRequirement.diseaseTypeId"></selectize>
+        </div>
+        <div class="form-group col-md-2" style="margin-top: 28px">
+            <label class="checkbox-inline">
+                <input type="checkbox"  value="option1" ng-model="vm.sampleRequirement.isHemolysis" ng-true-value="true" ng-false-value="false"> 溶血
+            </label>
+            <label class="checkbox-inline">
+                <input type="checkbox"  value="option2" ng-model="vm.sampleRequirement.isBloodLipid" ng-true-value="true" ng-false-value="false"> 脂质血
+            </label>
+        </div>
+        <div class="form-group col-md-8">
+            <label>备注</label>
+            <textarea rows="1" class="form-control resize-none" ng-model="vm.sampleRequirement.memo"></textarea>
+        </div>
+
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" >确定</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+</div>

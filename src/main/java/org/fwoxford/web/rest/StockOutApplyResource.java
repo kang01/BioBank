@@ -4,15 +4,12 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
-import org.apache.commons.io.IOUtils;
-import org.fwoxford.domain.StockOutApply;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.StockOutApplyDetail;
 import org.fwoxford.service.dto.response.StockOutApplyForApprove;
 import org.fwoxford.service.dto.response.StockOutApplyForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutApplyForSave;
-import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -32,8 +29,6 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -158,9 +153,9 @@ public class StockOutApplyResource {
      */
     @PostMapping("/stock-out-applies/new-empty")
     @Timed
-    public ResponseEntity<StockOutApplyDTO> initStockOutApply() throws URISyntaxException {
+    public ResponseEntity<StockOutApplyForSave> initStockOutApply() throws URISyntaxException {
         log.debug("REST request to create StockOutApply first");
-        StockOutApplyDTO result = stockOutApplyService.initStockOutApply();
+        StockOutApplyForSave result = stockOutApplyService.initStockOutApply();
         return ResponseEntity.created(new URI("/api/stock-out-applies/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -206,7 +201,7 @@ public class StockOutApplyResource {
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
     /**
-     * 添加出库申请
+     * 附加出库申请
      * @return
      * @throws URISyntaxException
      */
@@ -268,5 +263,19 @@ public class StockOutApplyResource {
                 e.printStackTrace();
             }
         return ResponseEntity.badRequest().build();
+    }
+
+    /**
+     * 复原核对
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-applies/revert/{id}")
+    @Timed
+    public ResponseEntity<Void> revertStockOutRequirement(@PathVariable Long id) {
+        log.debug("REST request to revert StockOutRequirementCheck : {}", id);
+        stockOutApplyService.revertStockOutRequirementCheck(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

@@ -27,6 +27,7 @@
             "memo": "Memo",
             "applyCode": "Apply Code",
             "requirementCode": "Requirement Code",
+            "importingFileId": "Importing File Id",
             "stockOutApply": "Stock Out Apply",
             "sampleType": "Sample Type",
             "sampleClassification": "Sample Classification",

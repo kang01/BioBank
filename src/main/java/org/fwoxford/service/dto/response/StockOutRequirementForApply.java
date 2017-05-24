@@ -65,6 +65,8 @@ public class StockOutRequirementForApply {
      */
     private String samples;
 
+    private Long importingFileId;
+
     public Long getId() {
         return id;
     }
@@ -175,5 +177,13 @@ public class StockOutRequirementForApply {
 
     public void setSamples(String samples) {
         this.samples = samples;
+    }
+
+    public Long getImportingFileId() {
+        return importingFileId;
+    }
+
+    public void setImportingFileId(Long importingFileId) {
+        this.importingFileId = importingFileId;
     }
 }

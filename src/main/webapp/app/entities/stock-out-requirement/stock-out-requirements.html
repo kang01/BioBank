@@ -31,6 +31,7 @@
                     <th jh-sort-by="memo"><span data-translate="bioBankApp.stockOutRequirement.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="applyCode"><span data-translate="bioBankApp.stockOutRequirement.applyCode">Apply Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="requirementCode"><span data-translate="bioBankApp.stockOutRequirement.requirementCode">Requirement Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="importingFileId"><span data-translate="bioBankApp.stockOutRequirement.importingFileId">Importing File Id</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="stockOutApplyId"><span data-translate="bioBankApp.stockOutRequirement.stockOutApply">Stock Out Apply</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="sampleTypeId"><span data-translate="bioBankApp.stockOutRequirement.sampleType">Sample Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="sampleClassificationId"><span data-translate="bioBankApp.stockOutRequirement.sampleClassification">Sample Classification</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -53,6 +54,7 @@
                     <td>{{stockOutRequirement.memo}}</td>
                     <td>{{stockOutRequirement.applyCode}}</td>
                     <td>{{stockOutRequirement.requirementCode}}</td>
+                    <td>{{stockOutRequirement.importingFileId}}</td>
                     <td>
                         <a ui-sref="stock-out-apply-detail({id:stockOutRequirement.stockOutApplyId})">{{stockOutRequirement.stockOutApplyId}}</a>
                     </td>

@@ -107,6 +107,11 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
 
     @Override
     public String checkStockOutSampleByAppointedSample(List<StockOutRequiredSample> stockOutRequiredSamples) {
+        if(stockOutRequiredSamples!=null&&stockOutRequiredSamples.size()>0){
+            //删除核对通过的样本
+            stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(stockOutRequiredSamples.get(0).getId());
+        }
+
         String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
         for(StockOutRequiredSample s :stockOutRequiredSamples){
             StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
@@ -130,6 +135,9 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
 
     @Override
     public String checkStockOutSampleByRequirement(Long id) {
+        //删除核对通过的样本
+        stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
+
         String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
         StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
         Integer countOfSample = stockOutRequirement.getCountOfSample();

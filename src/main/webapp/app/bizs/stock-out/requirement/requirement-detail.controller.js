@@ -294,7 +294,6 @@
         //保存样本需求
         vm.saveSampleRequirement = function (file) {
             BioBankBlockUi.blockUiStart();
-
             //是否上传附件
             if(file){
                 var obj = {};
@@ -395,7 +394,7 @@
         //编辑
         function _fnSampleRequirementEdit(sampleRequirementId) {
             RequirementService.querySampleRequirement(sampleRequirementId).success(function (data) {
-                vm.file = {};
+                vm.file = "";
                 vm.sampleRequirement = data;
                 if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
                     _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);

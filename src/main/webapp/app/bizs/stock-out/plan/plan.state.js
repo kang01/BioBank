@@ -69,5 +69,24 @@
                     }]
                 }
             })
+            .state('plan-edit', {
+                parent: 'bizs',
+                url: '/plan-list/{planId}/new',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN']
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/stock-out/plan/plan-detail.html',
+                        controller: 'PlanDetailController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        return $translate.refresh();
+                    }]
+                }
+            })
     }
 })();

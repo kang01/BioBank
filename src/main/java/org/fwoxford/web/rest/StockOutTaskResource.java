@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.StockOutTaskService;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.StockOutTaskDTO;
@@ -34,7 +35,7 @@ public class StockOutTaskResource {
     private final Logger log = LoggerFactory.getLogger(StockOutTaskResource.class);
 
     private static final String ENTITY_NAME = "stockOutTask";
-        
+
     private final StockOutTaskService stockOutTaskService;
 
     public StockOutTaskResource(StockOutTaskService stockOutTaskService) {
@@ -114,18 +115,48 @@ public class StockOutTaskResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutTaskDTO));
     }
 
+//    /**
+//     * DELETE  /stock-out-tasks/:id : delete the "id" stockOutTask.
+//     *
+//     * @param id the id of the stockOutTaskDTO to delete
+//     * @return the ResponseEntity with status 200 (OK)
+//     */
+//    @DeleteMapping("/stock-out-tasks/{id}")
+//    @Timed
+//    public ResponseEntity<Void> deleteStockOutTask(@PathVariable Long id) {
+//        log.debug("REST request to delete StockOutTask : {}", id);
+//        stockOutTaskService.delete(id);
+//        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+//    }
+
     /**
-     * DELETE  /stock-out-tasks/:id : delete the "id" stockOutTask.
-     *
-     * @param id the id of the stockOutTaskDTO to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * 新增保存任务
+     * @param id
+     * @param boxIds
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-out-tasks/plan/{id}/frozenBox/{boxIds}")
+    @Timed
+    public ResponseEntity<StockOutTaskDTO> createStockOutTask(@PathVariable Long id,@PathVariable List<Long> boxIds) throws URISyntaxException {
+        StockOutTaskDTO result = stockOutTaskService.save(id, boxIds);
+        return ResponseEntity.created(new URI("/api/stock-out-tasks/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * 删除任务
+     * @param id
+     * @return
      */
     @DeleteMapping("/stock-out-tasks/{id}")
     @Timed
     public ResponseEntity<Void> deleteStockOutTask(@PathVariable Long id) {
         log.debug("REST request to delete StockOutTask : {}", id);
+
         stockOutTaskService.delete(id);
+
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
 }

@@ -20,7 +20,7 @@ public interface StockOutTaskService {
 
     /**
      *  Get all the stockOutTasks.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,6 @@ public interface StockOutTaskService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    StockOutTaskDTO save(Long planId, List<Long> boxIds);
 }

@@ -1,10 +1,11 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.domain.*;
+import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutTaskService;
-import org.fwoxford.domain.StockOutTask;
-import org.fwoxford.repository.StockOutTaskRepository;
 import org.fwoxford.service.dto.StockOutTaskDTO;
 import org.fwoxford.service.mapper.StockOutTaskMapper;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,9 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockOutTask.
@@ -24,13 +24,22 @@ import java.util.stream.Collectors;
 public class StockOutTaskServiceImpl implements StockOutTaskService{
 
     private final Logger log = LoggerFactory.getLogger(StockOutTaskServiceImpl.class);
-    
+
     private final StockOutTaskRepository stockOutTaskRepository;
+    private final StockOutPlanRepository stockOutPlanRepository;
+    private final FrozenBoxRepository frozenBoxRepository;
+    private final StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
+    private final StockOutBoxPositionRepository stockOutBoxPositionRepository;
+
 
     private final StockOutTaskMapper stockOutTaskMapper;
 
-    public StockOutTaskServiceImpl(StockOutTaskRepository stockOutTaskRepository, StockOutTaskMapper stockOutTaskMapper) {
+    public StockOutTaskServiceImpl(StockOutTaskRepository stockOutTaskRepository, StockOutPlanRepository stockOutPlanRepository, FrozenBoxRepository frozenBoxRepository, StockOutFrozenBoxRepository stockOutFrozenBoxRepository, StockOutBoxPositionRepository stockOutBoxPositionRepository, StockOutTaskMapper stockOutTaskMapper) {
         this.stockOutTaskRepository = stockOutTaskRepository;
+        this.stockOutPlanRepository = stockOutPlanRepository;
+        this.frozenBoxRepository = frozenBoxRepository;
+        this.stockOutFrozenBoxRepository = stockOutFrozenBoxRepository;
+        this.stockOutBoxPositionRepository = stockOutBoxPositionRepository;
         this.stockOutTaskMapper = stockOutTaskMapper;
     }
 
@@ -51,7 +60,7 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
 
     /**
      *  Get all the stockOutTasks.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -86,6 +95,57 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     @Override
     public void delete(Long id) {
         log.debug("Request to delete StockOutTask : {}", id);
+        StockOutTask stockOutTask = stockOutTaskRepository.findOne(id);
+
+        if (stockOutTask != null){
+            List<Long> posIds = stockOutFrozenBoxRepository.findAllBoxPositionByTask(stockOutTask.getId());
+            stockOutFrozenBoxRepository.deleteByStockOutTaskId(stockOutTask.getId());
+            stockOutBoxPositionRepository.deleteByIds(posIds);
+        }
+
         stockOutTaskRepository.delete(id);
     }
+
+    /**
+     * Save a stockOutTask.
+     *
+     * @param stockOutTaskDTO the entity to save
+     * @return the persisted entity
+     */
+    @Override
+    public StockOutTaskDTO save(Long planId, List<Long> boxIds) {
+        log.debug("Request to save StockOutTask : {} {}", planId, boxIds);
+
+        StockOutPlan stockOutPlan = stockOutPlanRepository.findOne(planId);
+        StockOutTask stockOutTask = new StockOutTask();
+        stockOutTask.status("XXXXX")
+            .stockOutTaskCode(BankUtil.getUniqueID())
+            .stockOutPlan(stockOutPlan);
+
+        stockOutTask = stockOutTaskRepository.save(stockOutTask);
+
+        List<StockOutFrozenBox> boxes = new ArrayList<>();
+        for(Long id : boxIds){
+            FrozenBox box = frozenBoxRepository.findOne(id);
+            if (box == null){
+                continue;
+            }
+
+            StockOutFrozenBox stockOutFrozenBox = new StockOutFrozenBox();
+            stockOutFrozenBox.status("XXXXX")
+                .stockOutTask(stockOutTask)
+//                .stockOutBoxPosition(????)
+                .frozenBox(box);
+
+            boxes.add(stockOutFrozenBox);
+        }
+
+        if (boxes.size() > 0){
+            stockOutFrozenBoxRepository.save(boxes);
+        }
+
+        StockOutTaskDTO result = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
+        return result;
+    }
+
 }

@@ -1004,6 +1004,7 @@ public class TempResource {
     @PostMapping("/stock-out-tasks/plan/{id}/frozenBox/{boxIds}")
     @Timed
     public ResponseEntity<StockOutTaskDTO> createStockOutTask(@PathVariable Long id,@PathVariable List<Long> boxIds) throws URISyntaxException {
+        // zhuyu 做过了 in StockOutTaskResource
         StockOutTaskDTO result = new StockOutTaskDTO();
         result.setId(1L);
         result.setUsedTime(0);
@@ -1022,6 +1023,7 @@ public class TempResource {
     @DeleteMapping("/stock-out-tasks/{id}")
     @Timed
     public ResponseEntity<Void> deleteStockOutTask(@PathVariable Long id) {
+        // zhuyu 做过了 in StockOutTaskResource
         log.debug("REST request to delete StockOutTask : {}", id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }

@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
+import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -20,7 +21,7 @@ public interface StockOutFrozenBoxService {
 
     /**
      *  Get all the stockOutFrozenBoxes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +41,12 @@ public interface StockOutFrozenBoxService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     *  获取指定任务的指定分页的出库盒子.
+     *  @param taskId The task id
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     */
+    Page<StockOutFrozenBoxForTaskDataTableEntity> findAllByTask(Long taskId, Pageable pageable);
 }

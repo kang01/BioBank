@@ -20,7 +20,7 @@
         }else{
             vm.sampleRequirement = {};
         }
-        
+
         _fnQuerySampleType();
         _fuQueryFrozenTubeType();
         vm.sampleRequirement.age = "30;70";

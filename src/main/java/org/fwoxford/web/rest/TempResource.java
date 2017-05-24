@@ -853,7 +853,7 @@ public class TempResource {
         List<StockOutApplyForPlan> alist = new ArrayList<StockOutApplyForPlan>();
         for(int i = 0;i<50;i++){
             StockOutApplyForPlan result = new StockOutApplyForPlan();
-            result.setId(1L);
+            result.setId(1L+i);
             result.setApplyNumber(applyNumber+i);
             alist.add(result);
         }

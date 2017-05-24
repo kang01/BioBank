@@ -61,6 +61,10 @@
                     type: 'text',
                     width:50,
                     iFilterLength:3
+                },{
+                    type: 'text',
+                    width:50,
+                    iFilterLength:3
                 }, {
                     type: 'text',
                     bRegex: true,
@@ -75,75 +79,48 @@
                     bRegex: true,
                     bSmart: true
                 }, {
-                    type: 'Datepicker',
+                    type: 'text',
                     bRegex: true,
                     bSmart: true
                 }, {
-                    type: 'select',
-                    bRegex: false,
-                    width:50,
-                    values: [
-                        {value:"10",label:"非常满意"},
-                        {value:"9",label:"较满意"},
-                        {value:"8",label:"满意"},
-                        {value:"7",label:"有少量空管"},
-                        {value:"6",label:"有许多空管"},
-                        {value:"5",label:"有大量空管"},
-                        {value:"4",label:"有少量空孔"},
-                        {value:"3",label:"有少量错位"},
-                        {value:"2",label:"有大量错位"},
-                        {value:"1",label:"非常不满意"}
-                    ]
+                    type: 'text',
+                    bRegex: false
                 }, {
                     type: 'select',
                     bRegex: true,
                     width:50,
                     values: [
-                        {value:'1001',label:"进行中"},
-                        {value:"1002",label:"待入库"},
-                        {value:"1003",label:"已入库"},
-                        {value:"1004",label:"已作废"}
+                        {value:'1401',label:"进行中"},
+                        {value:"1402",label:"已完成"},
+                        {value:"1403",label:"已作废"}
                     ]
                 }]
             });
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点'),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目编号'),
-            DTColumnBuilder.newColumn('transhipDate').withTitle('转运日期'),
-            DTColumnBuilder.newColumn('receiver').withTitle('接收人'),
-            DTColumnBuilder.newColumn('receiveDate').withTitle('接收日期'),
-            DTColumnBuilder.newColumn('sampleSatisfaction').withTitle('满意度'),
-            DTColumnBuilder.newColumn('transhipState').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn('applyNumber').withTitle('申请单号'),
+            DTColumnBuilder.newColumn('stockOutPlanCode').withTitle('计划编号'),
+            DTColumnBuilder.newColumn('planDate').withTitle('计划时间'),
+            DTColumnBuilder.newColumn('purposeOfSample').withTitle('出库目的'),
+            DTColumnBuilder.newColumn('countOfStockOutPlanSample').withTitle('计划样本量'),
+            DTColumnBuilder.newColumn('countOfStockOutTask').withTitle('出库任务量'),
+            DTColumnBuilder.newColumn('handOverSchedule').withTitle('交接进度'),
+            DTColumnBuilder.newColumn('status').withTitle('状态'),
+            DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml),
+            DTColumnBuilder.newColumn('id').notVisible()
         ];
         function createdRow(row, data, dataIndex) {
-            var transhipState = '';
-            var sampleSatisfaction = '';
-            switch (data.transhipState){
-                case '1001': transhipState = '进行中';break;
-                case '1002': transhipState = '待入库';break;
-                case '1003': transhipState = '已入库';break;
-                case '1004': transhipState = '已作废';break;
+            var planStatus = '';
+            switch (data.status){
+                case '1401': planStatus = '进行中';break;
+                case '1402': planStatus = '已完成';break;
+                case '1403': planStatus = '已作废';break;
             }
-            switch (data.sampleSatisfaction){
-                case 1: sampleSatisfaction = '非常不满意';break;
-                case 2: sampleSatisfaction = '有大量错位';break;
-                case 3: sampleSatisfaction = '有少量错位';break;
-                case 4: sampleSatisfaction = '有少量空孔';break;
-                case 5: sampleSatisfaction = '有大量空管';break;
-                case 6: sampleSatisfaction = '有许多空管';break;
-                case 7: sampleSatisfaction = '有少量空管';break;
-                case 8: sampleSatisfaction = '满意';break;
-                case 9: sampleSatisfaction = '较满意';break;
-                case 10: sampleSatisfaction = '非常满意';break;
-            }
-            $('td:eq(5)', row).html(sampleSatisfaction);
-            $('td:eq(6)', row).html(transhipState);
+            $('td:eq(7)', row).html(planStatus);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-warning" ui-sref="transport-record-edit({id:'+ full.id +'})">' +
+            return '<button type="button" class="btn btn-warning" ui-sref="plan-edit({planId:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;'
         }

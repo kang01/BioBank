@@ -81,7 +81,7 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
         }
         Long cout = stockOutPlanRepository.countByStockOutApplyId(applyId, null);
 
-        if (cout > 0){
+        if (cout.intValue() > 0){
             throw new BankServiceException("计划已经存在！");
         }
 

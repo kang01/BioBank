@@ -30,7 +30,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="tube_rows" type="nvarchar(20)" remarks="行好">
+            <column name="tube_rows" type="nvarchar(20)" remarks="行号">
                 <constraints nullable="true" />
             </column>
 

@@ -130,11 +130,6 @@
         vm.projectConfig = {
             valueField:'id',
             labelField:'projectName',
-            render: {
-                option: function(item, escape) {
-                    return '<div>'+item.projectName+'ahhh</div>';
-                }
-            },
             onInitialize: function(){
                 selector = arguments[0];
             },
@@ -192,7 +187,7 @@
         //批量核对
         vm.sampleRequirementListCheck = _fnSampleRequirementCheckList;
         //添加样本需求
-        vm.addSampleModal = function () {
+        vm.addSampleModal = function (sampleRequirement) {
             vm.sampleflag = true;
             _fnSaveRequirement();
             modalInstance = $uibModal.open({
@@ -206,7 +201,7 @@
                         return {
                             projectIds:vm.projectIds,
                             requirementId:vm.requirement.id,
-                            sampleRequirement:vm.sampleRequirement || ""
+                            sampleRequirement:sampleRequirement || ""
                         }
                     }
                 }
@@ -322,7 +317,7 @@
             RequirementService.querySampleRequirement(sampleRequirementId).success(function (data) {
                 vm.file = "";
                 vm.sampleRequirement = data;
-                vm.addSampleModal(vm.sampleRequirement)
+                vm.addSampleModal(vm.sampleRequirement);
                 // if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
                 //     _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
                 // }

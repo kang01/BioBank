@@ -20,7 +20,7 @@
             return factory;
         }])
         .factory('MasterData',function () {
-            var _sexDict= [{type:'M',name:'男'},{type:'F',name:'女'},{type:'N',name:'不详'}];
+            var _sexDict= [{type:'M',name:'男'},{type:'F',name:'女'},{type:'null',name:'不详'}];
             //疾病类型
             var _diseaseType = [
                 {
@@ -30,7 +30,7 @@
                     id:'2',
                     name:"PCI"
                 },{
-                    id:'3',
+                    id:'null',
                     name:"不祥"
                 }
             ];

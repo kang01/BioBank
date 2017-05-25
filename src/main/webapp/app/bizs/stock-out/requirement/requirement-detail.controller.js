@@ -135,7 +135,8 @@
                 }
             },
             onChange:function(value){
-                if(vm.requirement.stockOutRequirement){
+                _fnIsApproval();
+                if(vm.isVerifyFlag){
                     _fnIsChangeProjectModal();
                 }
                 vm.projectIds = _.join(value, ',');
@@ -216,6 +217,11 @@
         function _loadRequirement() {
             RequirementService.queryRequirementDesc(vm.requirement.id).then(function (data) {
                 vm.requirement = data;
+                vm.requirement.startTime = new Date(data.startTime);
+                vm.requirement.endTime = new Date(data.endTime);
+                vm.requirement.recordTime = new Date(data.recordTime);
+                // vm.requirement.recordId = data.recordId;
+                // vm.requirement.recordId = data.applyPersonName;
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 vm.dtInstance.rerender();
                 vm.isApproval();
@@ -350,15 +356,20 @@
             });
 
         }
-        //判断是否都核对完了
+        //判断是否都已核对 1201：待核对，1202：库存不够，1203：库存满足
         vm.requirementApplyFlag = false;
           function _fnIsApproval() {
             if(vm.requirement.stockOutRequirement){
-                var len =  _.filter(vm.requirement.stockOutRequirement,{status:'1202'}).length;
-                if(len == vm.requirement.stockOutRequirement.length){
-                    vm.requirementApplyFlag = true;
-                }else{
+                var len =  _.filter(vm.requirement.stockOutRequirement,{status:'1201'}).length;
+                if(len){
                     vm.requirementApplyFlag = false;
+                }else{
+                    vm.requirementApplyFlag = true;
+                }
+                if(len != vm.requirement.stockOutRequirement.length){
+                    vm.isVerifyFlag = true;
+                }else{
+                    vm.isVerifyFlag = false
                 }
             }
 

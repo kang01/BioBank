@@ -64,12 +64,16 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": "20"
+        },
+        {
+            "fieldName": "importingSampleId",
+            "fieldType": "Long"
         }
     ],
     "changelogDate": "20170515010614",
     "dto": "mapstruct",
     "service": "serviceImpl",
-    "entityTableName": "stock_out_tube",
+    "entityTableName": "stock_out_req_frozen_tube",
     "pagination": "pager",
     "enableEntityAudit": true
 }

@@ -55,6 +55,9 @@ public class StockOutReqFrozenTubeResourceIntTest {
     private static final String DEFAULT_TUBE_COLUMNS = "AAAAAAAAAA";
     private static final String UPDATED_TUBE_COLUMNS = "BBBBBBBBBB";
 
+    private static final Long DEFAULT_IMPORTING_SAMPLE_ID = 1L;
+    private static final Long UPDATED_IMPORTING_SAMPLE_ID = 2L;
+
     @Autowired
     private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
 
@@ -101,7 +104,8 @@ public class StockOutReqFrozenTubeResourceIntTest {
                 .status(DEFAULT_STATUS)
                 .memo(DEFAULT_MEMO)
                 .tubeRows(DEFAULT_TUBE_ROWS)
-                .tubeColumns(DEFAULT_TUBE_COLUMNS);
+                .tubeColumns(DEFAULT_TUBE_COLUMNS)
+                .importingSampleId(DEFAULT_IMPORTING_SAMPLE_ID);
         // Add required entity
         FrozenBox frozenBox = FrozenBoxResourceIntTest.createEntity(em);
         em.persist(frozenBox);
@@ -146,6 +150,7 @@ public class StockOutReqFrozenTubeResourceIntTest {
         assertThat(testStockOutReqFrozenTube.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testStockOutReqFrozenTube.getTubeRows()).isEqualTo(DEFAULT_TUBE_ROWS);
         assertThat(testStockOutReqFrozenTube.getTubeColumns()).isEqualTo(DEFAULT_TUBE_COLUMNS);
+        assertThat(testStockOutReqFrozenTube.getImportingSampleId()).isEqualTo(DEFAULT_IMPORTING_SAMPLE_ID);
     }
 
     @Test
@@ -240,7 +245,8 @@ public class StockOutReqFrozenTubeResourceIntTest {
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
             .andExpect(jsonPath("$.[*].tubeRows").value(hasItem(DEFAULT_TUBE_ROWS.toString())))
-            .andExpect(jsonPath("$.[*].tubeColumns").value(hasItem(DEFAULT_TUBE_COLUMNS.toString())));
+            .andExpect(jsonPath("$.[*].tubeColumns").value(hasItem(DEFAULT_TUBE_COLUMNS.toString())))
+            .andExpect(jsonPath("$.[*].importingSampleId").value(hasItem(DEFAULT_IMPORTING_SAMPLE_ID.intValue())));
     }
 
     @Test
@@ -257,7 +263,8 @@ public class StockOutReqFrozenTubeResourceIntTest {
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
             .andExpect(jsonPath("$.tubeRows").value(DEFAULT_TUBE_ROWS.toString()))
-            .andExpect(jsonPath("$.tubeColumns").value(DEFAULT_TUBE_COLUMNS.toString()));
+            .andExpect(jsonPath("$.tubeColumns").value(DEFAULT_TUBE_COLUMNS.toString()))
+            .andExpect(jsonPath("$.importingSampleId").value(DEFAULT_IMPORTING_SAMPLE_ID.intValue()));
     }
 
     @Test
@@ -281,7 +288,8 @@ public class StockOutReqFrozenTubeResourceIntTest {
                 .status(UPDATED_STATUS)
                 .memo(UPDATED_MEMO)
                 .tubeRows(UPDATED_TUBE_ROWS)
-                .tubeColumns(UPDATED_TUBE_COLUMNS);
+                .tubeColumns(UPDATED_TUBE_COLUMNS)
+                .importingSampleId(UPDATED_IMPORTING_SAMPLE_ID);
         StockOutReqFrozenTubeDTO stockOutReqFrozenTubeDTO = stockOutReqFrozenTubeMapper.stockOutReqFrozenTubeToStockOutReqFrozenTubeDTO(updatedStockOutReqFrozenTube);
 
         restStockOutReqFrozenTubeMockMvc.perform(put("/api/stock-out-req-frozen-tubes")
@@ -297,6 +305,7 @@ public class StockOutReqFrozenTubeResourceIntTest {
         assertThat(testStockOutReqFrozenTube.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testStockOutReqFrozenTube.getTubeRows()).isEqualTo(UPDATED_TUBE_ROWS);
         assertThat(testStockOutReqFrozenTube.getTubeColumns()).isEqualTo(UPDATED_TUBE_COLUMNS);
+        assertThat(testStockOutReqFrozenTube.getImportingSampleId()).isEqualTo(UPDATED_IMPORTING_SAMPLE_ID);
     }
 
     @Test

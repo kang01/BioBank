@@ -33,18 +33,25 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     @Column(name = "memo", length = 1024)
     private String memo;
 
+    @NotNull
     @Size(max = 20)
     @Column(name = "tube_rows", length = 20, nullable = false)
     private String tubeRows;
 
+    @NotNull
     @Size(max = 20)
     @Column(name = "tube_columns", length = 20, nullable = false)
     private String tubeColumns;
 
-    @ManyToOne
+    @Column(name = "importing_sample_id")
+    private Long importingSampleId;
+
+    @ManyToOne(optional = false)
+    @NotNull
     private FrozenBox frozenBox;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     private FrozenTube frozenTube;
 
     @ManyToOne(optional = false)
@@ -109,6 +116,19 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
 
     public void setTubeColumns(String tubeColumns) {
         this.tubeColumns = tubeColumns;
+    }
+
+    public Long getImportingSampleId() {
+        return importingSampleId;
+    }
+
+    public StockOutReqFrozenTube importingSampleId(Long importingSampleId) {
+        this.importingSampleId = importingSampleId;
+        return this;
+    }
+
+    public void setImportingSampleId(Long importingSampleId) {
+        this.importingSampleId = importingSampleId;
     }
 
     public FrozenBox getFrozenBox() {
@@ -178,6 +198,7 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
             ", memo='" + memo + "'" +
             ", tubeRows='" + tubeRows + "'" +
             ", tubeColumns='" + tubeColumns + "'" +
+            ", importingSampleId='" + importingSampleId + "'" +
             '}';
     }
 }

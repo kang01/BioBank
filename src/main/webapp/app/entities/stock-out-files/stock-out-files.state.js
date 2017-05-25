@@ -124,7 +124,6 @@
                     resolve: {
                         entity: function () {
                             return {
-                                businessId: null,
                                 filePath: null,
                                 fileName: null,
                                 fileType: null,

@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
@@ -142,7 +141,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
     }
 
     @Override
-    public StockOutRequirementForSave saveStockOutRequirement(StockOutRequirementForSave stockOutRequirement, Long stockOutApplyId) {
+    public StockOutRequirementForApply saveStockOutRequirement(StockOutRequirementForApply stockOutRequirement, Long stockOutApplyId) {
         if(stockOutApplyId == null){
             throw new BankServiceException("申请ID不能为空！");
         }
@@ -180,6 +179,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             Integer ageMin = ageStr[0]!=null?Integer.valueOf(ageStr[0]):null;
             requirement.setAgeMax(ageMax);
             requirement.setAgeMin(ageMin);
+        }else{
+            requirement.setAgeMax(null);
+            requirement.setAgeMin(null);
         }
         if(stockOutRequirement.getFrozenTubeTypeId() != null){
             FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findOne(stockOutRequirement.getFrozenTubeTypeId());
@@ -187,6 +189,8 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 throw new BankServiceException("未查到冻存管类型！");
             }
             requirement.setFrozenTubeType(frozenTubeType);
+        }else{
+            requirement.setFrozenTubeType(null);
         }
         if(stockOutRequirement.getSampleTypeId()!=null){
             SampleType sampleType = sampleTypeRepository.findOne(stockOutRequirement.getSampleTypeId());
@@ -194,6 +198,8 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 throw new BankServiceException("未查到样本类型！");
             }
             requirement.setSampleType(sampleType);
+        }else{
+            requirement.setSampleType(null);
         }
         if(stockOutRequirement.getSampleClassificationId()!=null){
             SampleClassification sampleClassification = sampleClassificationRepository.findOne(stockOutRequirement.getSampleClassificationId());
@@ -201,13 +207,15 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 throw new BankServiceException("未查到样本分类！");
             }
             requirement.setSampleClassification(sampleClassification);
+        }else{
+            requirement.setSampleClassification(null);
         }
         stockOutRequirementRepository.save(requirement);
         stockOutRequirement.setId(requirement.getId());
         return stockOutRequirement;
     }
     @Override
-    public StockOutRequirementForApply saveAndUploadStockOutRequirement(StockOutRequirementForSave stockOutRequirement, Long stockOutApplyId, MultipartFile file) {
+    public StockOutRequirementForApply saveAndUploadStockOutRequirement(StockOutRequirementForApply stockOutRequirement, Long stockOutApplyId, MultipartFile file) {
         StockOutRequirementForApply stockOutRequirementForApply = new StockOutRequirementForApply();
         if(stockOutApplyId == null){
             throw new BankServiceException("申请ID不能为空！");
@@ -439,7 +447,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
     @Override
     public void batchCheckStockOutRequirement(List<Long> ids) {
         //查询全部样本需求
-        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByIdInAndStatus(ids,Constants.STOCK_OUT_REQUIREMENT_CKECKING);
+        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByIdInAndStatusNot(ids,Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS);
 
         if(stockOutRequirementList.size()>0){
             Map<Double,StockOutRequirement> map = getOrderStockOutRequirement(stockOutRequirementList);

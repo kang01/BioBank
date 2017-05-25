@@ -22,9 +22,6 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="business_id" type="bigint" remarks="业务ID">
-                <constraints nullable="false" />
-            </column>
 
             <column name="file_path" type="nvarchar(255)" remarks="文件路径">
                 <constraints nullable="false" />

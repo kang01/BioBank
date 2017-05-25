@@ -19,7 +19,6 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="businessId"><span data-translate="bioBankApp.stockOutFiles.businessId">Business Id</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="filePath"><span data-translate="bioBankApp.stockOutFiles.filePath">File Path</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="fileName"><span data-translate="bioBankApp.stockOutFiles.fileName">File Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="fileType"><span data-translate="bioBankApp.stockOutFiles.fileType">File Type</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -33,7 +32,6 @@
             <tbody>
                 <tr ng-repeat="stockOutFiles in vm.stockOutFiles track by stockOutFiles.id">
                     <td><a ui-sref="stock-out-files-detail({id:stockOutFiles.id})">{{stockOutFiles.id}}</a></td>
-                    <td>{{stockOutFiles.businessId}}</td>
                     <td>{{stockOutFiles.filePath}}</td>
                     <td>{{stockOutFiles.fileName}}</td>
                     <td>{{stockOutFiles.fileType}}</td>

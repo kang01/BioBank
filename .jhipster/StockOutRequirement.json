@@ -104,6 +104,10 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": "100"
+        },
+        {
+            "fieldName": "importingFileId",
+            "fieldType": "Long"
         }
     ],
     "changelogDate": "20170514063802",

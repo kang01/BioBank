@@ -77,6 +77,9 @@ public class StockOutRequirementResourceIntTest {
     private static final String DEFAULT_REQUIREMENT_CODE = "AAAAAAAAAA";
     private static final String UPDATED_REQUIREMENT_CODE = "BBBBBBBBBB";
 
+    private static final Long DEFAULT_IMPORTING_FILE_ID = 1L;
+    private static final Long UPDATED_IMPORTING_FILE_ID = 2L;
+
     @Autowired
     private StockOutRequirementRepository stockOutRequirementRepository;
 
@@ -131,7 +134,8 @@ public class StockOutRequirementResourceIntTest {
                 .status(DEFAULT_STATUS)
                 .memo(DEFAULT_MEMO)
                 .applyCode(DEFAULT_APPLY_CODE)
-                .requirementCode(DEFAULT_REQUIREMENT_CODE);
+                .requirementCode(DEFAULT_REQUIREMENT_CODE)
+                .importingFileId(DEFAULT_IMPORTING_FILE_ID);
         // Add required entity
         StockOutApply stockOutApply = StockOutApplyResourceIntTest.createEntity(em);
         em.persist(stockOutApply);
@@ -174,6 +178,7 @@ public class StockOutRequirementResourceIntTest {
         assertThat(testStockOutRequirement.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testStockOutRequirement.getApplyCode()).isEqualTo(DEFAULT_APPLY_CODE);
         assertThat(testStockOutRequirement.getRequirementCode()).isEqualTo(DEFAULT_REQUIREMENT_CODE);
+        assertThat(testStockOutRequirement.getImportingFileId()).isEqualTo(DEFAULT_IMPORTING_FILE_ID);
     }
 
     @Test
@@ -295,7 +300,8 @@ public class StockOutRequirementResourceIntTest {
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
             .andExpect(jsonPath("$.[*].applyCode").value(hasItem(DEFAULT_APPLY_CODE.toString())))
-            .andExpect(jsonPath("$.[*].requirementCode").value(hasItem(DEFAULT_REQUIREMENT_CODE.toString())));
+            .andExpect(jsonPath("$.[*].requirementCode").value(hasItem(DEFAULT_REQUIREMENT_CODE.toString())))
+            .andExpect(jsonPath("$.[*].importingFileId").value(hasItem(DEFAULT_IMPORTING_FILE_ID.intValue())));
     }
 
     @Test
@@ -320,7 +326,8 @@ public class StockOutRequirementResourceIntTest {
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
             .andExpect(jsonPath("$.applyCode").value(DEFAULT_APPLY_CODE.toString()))
-            .andExpect(jsonPath("$.requirementCode").value(DEFAULT_REQUIREMENT_CODE.toString()));
+            .andExpect(jsonPath("$.requirementCode").value(DEFAULT_REQUIREMENT_CODE.toString()))
+            .andExpect(jsonPath("$.importingFileId").value(DEFAULT_IMPORTING_FILE_ID.intValue()));
     }
 
     @Test
@@ -352,7 +359,8 @@ public class StockOutRequirementResourceIntTest {
                 .status(UPDATED_STATUS)
                 .memo(UPDATED_MEMO)
                 .applyCode(UPDATED_APPLY_CODE)
-                .requirementCode(UPDATED_REQUIREMENT_CODE);
+                .requirementCode(UPDATED_REQUIREMENT_CODE)
+                .importingFileId(UPDATED_IMPORTING_FILE_ID);
         StockOutRequirementDTO stockOutRequirementDTO = stockOutRequirementMapper.stockOutRequirementToStockOutRequirementDTO(updatedStockOutRequirement);
 
         restStockOutRequirementMockMvc.perform(put("/api/stock-out-requirements")
@@ -376,6 +384,7 @@ public class StockOutRequirementResourceIntTest {
         assertThat(testStockOutRequirement.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testStockOutRequirement.getApplyCode()).isEqualTo(UPDATED_APPLY_CODE);
         assertThat(testStockOutRequirement.getRequirementCode()).isEqualTo(UPDATED_REQUIREMENT_CODE);
+        assertThat(testStockOutRequirement.getImportingFileId()).isEqualTo(UPDATED_IMPORTING_FILE_ID);
     }
 
     @Test

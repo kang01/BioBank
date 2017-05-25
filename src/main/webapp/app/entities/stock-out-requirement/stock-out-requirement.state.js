@@ -136,6 +136,7 @@
                                 memo: null,
                                 applyCode: null,
                                 requirementCode: null,
+                                importingFileId: null,
                                 id: null
                             };
                         }

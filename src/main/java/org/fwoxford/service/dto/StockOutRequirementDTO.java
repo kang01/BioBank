@@ -32,6 +32,8 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
 
     private Boolean isBloodLipid;
 
+    private Long importingFileId;
+
     @NotNull
     @Size(max = 20)
     private String status;
@@ -118,6 +120,15 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
     public void setIsBloodLipid(Boolean isBloodLipid) {
         this.isBloodLipid = isBloodLipid;
     }
+
+    public Long getImportingFileId() {
+        return importingFileId;
+    }
+
+    public void setImportingFileId(Long importingFileId) {
+        this.importingFileId = importingFileId;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -213,6 +224,7 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
             ", isHemolysis='" + isHemolysis + "'" +
             ", isBloodLipid='" + isBloodLipid + "'" +
             ", status='" + status + "'" +
+            ", importingFileId='" + importingFileId+"'"+
             ", memo='" + memo + "'" +
             ", applyCode='" + applyCode + "'" +
             ", requirementCode='" + requirementCode + "'" +

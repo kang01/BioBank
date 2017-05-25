@@ -8,9 +8,11 @@
     angular
         .module('bioBankApp')
         .controller('RequirementDetailController', RequirementDetailController)
-        .controller('RequirementSampleDelModalController', RequirementSampleDelModalController);
+        .controller('RequirementSampleDelModalController', RequirementSampleDelModalController)
+        .controller('RequirementApplyProjectModalController', RequirementApplyProjectModalController);
     RequirementDetailController.$inject = ['$scope','$stateParams','$compile','entity','$uibModal','$timeout','Upload','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','MasterData','SampleTypeService','SampleUserService','BioBankBlockUi','ProjectService'];
     RequirementSampleDelModalController.$inject = ['$uibModalInstance'];
+    RequirementApplyProjectModalController.$inject = ['$uibModalInstance'];
     function RequirementDetailController($scope,$stateParams,$compile,entity,$uibModal,$timeout,Upload,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,MasterData,SampleTypeService,SampleUserService,BioBankBlockUi,ProjectService) {
         var vm = this;
         var modalInstance;
@@ -49,9 +51,9 @@
         //初始化数据
         function _initData() {
             _requirementInfo();
-            _fnQuerySampleType();
+
             _fuQueryDelegates();
-            _fuQueryFrozenTubeType();
+
         }
         _initData();
         function _requirementInfo() {
@@ -128,58 +130,19 @@
             valueField:'id',
             labelField:'projectName',
             onChange:function(value){
+                _fnIsChangeProjectModal();
                 vm.projectIds = _.join(value, ',');
-
-                if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
-                    _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
-                }else{
-                    vm.sampleClassOptions = [];
-                    vm.sampleRequirement.sampleClassId = "";
-                    $scope.$apply();
-                }
+                // //获取样本分类
+                // if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
+                //     _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
+                // }else{
+                //     vm.sampleClassOptions = [];
+                //     vm.sampleRequirement.sampleClassId = "";
+                //     $scope.$apply();
+                // }
             }
         };
-        //保存申请记录
-        function _fnSaveRequirement() {
-            delete vm.requirement.stockOutRequirement;
-            BioBankBlockUi.blockUiStart();
-            RequirementService.saveRequirementInfo(vm.requirement).success(function (data) {
-                BioBankBlockUi.blockUiStop();
-                if(!vm.sampleflag){
-                    toastr.success("保存申请记录成功！");
-                    return;
-                }
-                if(vm.sampleRequirement.id){
-                    if(vm.sampleRequirement.status){
-                        delete  vm.sampleRequirement.status;
-                    }
-                    delete  vm.sampleRequirement.samples;
-                    RequirementService.saveEditSampleRequirement(vm.requirement.id,vm.sampleRequirement).success(function (data) {
-                        BioBankBlockUi.blockUiStop();
-                        toastr.success("保存样本需求成功！");
-                        vm.sampleRequirement.requirementName = '';
-                        vm.sampleRequirement.countOfSample = '';
-                        _loadRequirement();
-                    }).error(function (data) {
-                        BioBankBlockUi.blockUiStop();
-                        toastr.success(data.message);
-                    })
 
-                }else{
-                    RequirementService.saveSampleRequirement(vm.requirement.id,vm.sampleRequirement).success(function (data) {
-                        BioBankBlockUi.blockUiStop();
-                        toastr.success("保存样本需求成功！");
-                        _loadRequirement();
-                    }).error(function (data) {
-                        BioBankBlockUi.blockUiStop();
-                    })
-                }
-
-            }).error(function (data) {
-                BioBankBlockUi.blockUiStop();
-                toastr.error("保存申请记录失败！");
-            })
-        }
         //附加
         vm.applyFlag = false;
         function _fnAdditionApply() {
@@ -204,115 +167,44 @@
         //---------------------------样本需求--------------------------
         //批量核对
         vm.sampleRequirementListCheck = _fnSampleRequirementCheckList;
-        vm.sampleRequirement = {};
-        vm.sampleRequirement.age = "30;70";
-
-        vm.sampleTypeConfig = {
-            valueField:'id',
-            labelField:'sampleTypeName',
-            maxItems: 1,
-            onChange:function (value) {
-                vm.sampleRequirement.sampleTypeId = value;
-                if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
-                    _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
-                }
-
-            }
-        };
-        //根据项目和样本类型获取样本分类
-        function _fuQuerySampleClass(projectIds,sampleTypeId) {
-            RequirementService.queryRequirementSampleClasses(projectIds,sampleTypeId).success(function (data) {
-                vm.sampleClassOptions = data;
-                if(!vm.sampleRequirement.sampleClassificationId){
-                    if(vm.sampleClassOptions.length){
-                        vm.sampleRequirement.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
-                    }
-                }
-
-            })
-        }
-        //获取样本类型
-        function _fnQuerySampleType() {
-            SampleTypeService.querySampleType().success(function (data) {
-                vm.sampleTypeOptions = _.orderBy(data, ['id'], ['esc']);
-                vm.sampleTypeOptions.pop();
-                if(!vm.sampleRequirement.sampleTypeId){
-                    vm.sampleRequirement.sampleTypeId = vm.sampleTypeOptions[0].id;
-                    if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
-                        _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
+        //添加样本需求
+        vm.addSampleModal = function () {
+            vm.sampleflag = true;
+            _fnSaveRequirement();
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-sample-edit-modal.html',
+                controller: 'RequirementSampleEditModalController',
+                controllerAs:'vm',
+                size:'90',
+                resolve: {
+                    items: function () {
+                        return {
+                            projectIds:vm.projectIds,
+                            requirementId:vm.requirement.id,
+                            sampleRequirement:vm.sampleRequirement || ""
+                        }
                     }
                 }
             });
-        }
-        //样本分类
-        vm.sampleClassConfig = {
-            valueField:'sampleClassificationId',
-            labelField:'sampleClassificationName',
-            maxItems: 1,
-            onChange:function (value) {
-            }
+
+            modalInstance.result.then(function (data) {
+                _loadRequirement();
+            });
         };
-        //获取冻存管类型
-        function _fuQueryFrozenTubeType() {
-            RequirementService.queryFrozenTubeType().success(function (data) {
-                vm.frozenTubeTypeOptions = data;
-                if(!vm.sampleRequirement.frozenTubeTypeId){
-                    vm.sampleRequirement.frozenTubeTypeId = vm.frozenTubeTypeOptions[0].id;
+        function _fnSaveRequirement() {
+            delete vm.requirement.stockOutRequirement;
+            BioBankBlockUi.blockUiStart();
+            RequirementService.saveRequirementInfo(vm.requirement).success(function (data) {
+                BioBankBlockUi.blockUiStop();
+                if(!vm.sampleflag){
+                    toastr.success("保存申请记录成功！");
                 }
+            }).error(function (data) {
+                BioBankBlockUi.blockUiStop();
+                toastr.error("保存申请记录失败！");
             })
         }
-        vm.frozenTubeTypeConfig = {
-            valueField:'id',
-            labelField:'frozenTubeTypeName',
-            maxItems: 1,
-            onChange:function (value) {
-                // console.log( _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed);
-            }
-        };
-        //性别
-        vm.sexOptions = MasterData.sexDict;
-        if(!vm.requirement.sex){
-            vm.sampleRequirement.sex = vm.sexOptions[0].type;
-        }
-        vm.sexConfig = {
-            valueField:'type',
-            labelField:'name',
-            maxItems: 1
-        };
-        //疾病类型
-        vm.diseaseTypeOptions = MasterData.diseaseType;
-        if(!vm.sampleRequirement.diseaseTypeId){
-            vm.sampleRequirement.diseaseTypeId = vm.diseaseTypeOptions[0].id;
-        }
-        vm.diseaseTypeConfig = {
-            valueField:'id',
-            labelField:'name',
-            maxItems: 1,
-            onChange:function (value) {
-            }
-        };
-        //保存样本需求
-        vm.saveSampleRequirement = function (file) {
-            BioBankBlockUi.blockUiStart();
-            //是否上传附件
-            if(file){
-                var obj = {};
-                obj.requirementName = vm.sampleRequirement.requirementName;
-                var fb = new FormData();
-                fb.append('stockOutRequirement', angular.toJson(obj));
-                fb.append('file', file);
-                RequirementService.saveSampleRequirementOfUpload(vm.requirement.id,fb).success(function (data) {
-                    BioBankBlockUi.blockUiStop();
-                    toastr.success("保存样本需求成功！");
-                    _loadRequirement();
-                }).error(function (data) {
-                    BioBankBlockUi.blockUiStop();
-                })
-            }else{
-                vm.sampleflag = true;
-                _fnSaveRequirement();
-            }
-        };
         //批量核对
         function _fnSampleRequirementCheckList() {
             var sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
@@ -384,9 +276,9 @@
         }
         function actionsHtml(data, type, full, meta) {
             return '<div ng-if="vm.status != 1103">'+
-                    '<a  ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementRevert('+full.id+')">复原</a>&nbsp;' +
+                    '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementRevert('+full.id+')">复原</a>&nbsp;' +
                     '<a ng-if="'+full.status+'== 1201" ng-click="vm.sampleRequirementCheck('+full.id+')">核对</a>&nbsp;' +
-                    '<a ng-if="'+full.status+'== 1201" ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;'+
+                    '<a ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;'+
                     '<a ng-click="vm.sampleRequirementDel('+full.id+')">删除</a>&nbsp;'+
                     '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementDescModel('+full.id+')">详情</a>'+
                     '</div>'
@@ -396,9 +288,10 @@
             RequirementService.querySampleRequirement(sampleRequirementId).success(function (data) {
                 vm.file = "";
                 vm.sampleRequirement = data;
-                if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
-                    _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
-                }
+                vm.addSampleModal(vm.sampleRequirement)
+                // if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
+                //     _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
+                // }
             }).error(function (data) {
             })
         }
@@ -514,6 +407,20 @@
 
             });
         }
+        //改变项目是，任务列表是否复原
+        function _fnIsChangeProjectModal() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-apply-project-modal.html',
+                controller: 'RequirementApplyProjectModalController',
+                controllerAs:'vm'
+
+            });
+
+            modalInstance.result.then(function (data) {
+
+            });
+        }
 
         function onError(error) {
             BioBankBlockUi.blockUiStop();
@@ -522,6 +429,15 @@
 
     }
     function RequirementSampleDelModalController($uibModalInstance) {
+        var vm = this;
+        vm.ok = function () {
+            $uibModalInstance.close(true);
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    }
+    function RequirementApplyProjectModalController($uibModalInstance) {
         var vm = this;
         vm.ok = function () {
             $uibModalInstance.close(true);

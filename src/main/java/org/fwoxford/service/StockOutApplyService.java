@@ -51,7 +51,7 @@ public interface StockOutApplyService {
 
     DataTablesOutput<StockOutApplyForDataTableEntity> findStockOutApply(DataTablesInput input);
 
-    StockOutApplyDTO initStockOutApply();
+    StockOutApplyForSave initStockOutApply();
 
     StockOutApplyForSave saveStockOutApply(StockOutApplyForSave stockOutApplyForSave);
 
@@ -64,4 +64,6 @@ public interface StockOutApplyService {
     StockOutApplyDTO approveStockOutApply(Long id, StockOutApplyForApprove stockOutApplyForApprove);
 
     ByteArrayOutputStream printStockOutApply(Long id);
+
+    void revertStockOutRequirementCheck(Long id);
 }

@@ -25,10 +25,6 @@ public class StockOutFiles extends AbstractAuditingEntity implements Serializabl
     private Long id;
 
     @NotNull
-    @Column(name = "business_id", nullable = false)
-    private Long businessId;
-
-    @NotNull
     @Size(max = 255)
     @Column(name = "file_path", length = 255, nullable = false)
     private String filePath;
@@ -68,19 +64,6 @@ public class StockOutFiles extends AbstractAuditingEntity implements Serializabl
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getBusinessId() {
-        return businessId;
-    }
-
-    public StockOutFiles businessId(Long businessId) {
-        this.businessId = businessId;
-        return this;
-    }
-
-    public void setBusinessId(Long businessId) {
-        this.businessId = businessId;
     }
 
     public String getFilePath() {
@@ -211,7 +194,6 @@ public class StockOutFiles extends AbstractAuditingEntity implements Serializabl
     public String toString() {
         return "StockOutFiles{" +
             "id=" + id +
-            ", businessId='" + businessId + "'" +
             ", filePath='" + filePath + "'" +
             ", fileName='" + fileName + "'" +
             ", fileType='" + fileType + "'" +

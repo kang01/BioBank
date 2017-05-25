@@ -3,6 +3,7 @@ package org.fwoxford.service.mapper;
 import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.StockOutApplyDTO;
 
+import org.fwoxford.service.dto.response.StockOutApplyForSave;
 import org.mapstruct.*;
 import java.util.List;
 

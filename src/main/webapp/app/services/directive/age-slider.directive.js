@@ -53,10 +53,26 @@
                     return;
                 }
                 var  strs  =  (newValue||"30;65").split(";");
-                slider.update({
-                    from: strs[0],
-                    to: strs[1]
-                });
+                if(strs[0] == 0 && strs[1] == 0){
+                    slider.update({
+                        from: strs[0],
+                        to: strs[1],
+                        from_min: 0,
+                        from_max: 0,
+                        to_min: 0,
+                        to_max: 0,
+                    });
+                }else{
+                    slider.update({
+                        from: strs[0],
+                        to: strs[1],
+                        from_min: 0,
+                        from_max: 125,
+                        to_min: 1,
+                        to_max: 125,
+                    });
+                }
+
             });
         }
     }

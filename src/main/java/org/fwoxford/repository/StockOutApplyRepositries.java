@@ -11,7 +11,7 @@ public interface StockOutApplyRepositries extends DataTablesRepository<StockOutA
     @Query(value = " select ap.id,ap.purpose_of_sample,\n" +
         "            (case when ap.start_time !=null then (ap.start_time||'至'||ap.end_time) else null end )  as apply_time,ap.apply_person_name,ap.apply_code,ap.status,\n" +
         "            (select d.delegate_name from delegate d where d.id = ap.delegate_id) as delegate_name,\n" +
-        "            (select LISTAGG(sample,',') WITHIN GROUP (ORDER BY sample) from\n" +
+        "            (select LISTAGG(TO_CHAR(sample),',') WITHIN GROUP (ORDER BY sample) from\n" +
         "            (select distinct s.sample_type_name as sample\n" +
         "            from stock_out_requirement req\n" +
         "            left join sample_type s on req.sample_type_id=s.id\n" +

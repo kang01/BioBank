@@ -9,22 +9,16 @@
     <changeSet id="20170515013527-2" author="jhipster">
 
         <addForeignKeyConstraint baseColumnNames="stock_out_plan_id"
-                                 baseTableName="stock_out_plan_frozen_tube"
+                                 baseTableName="stock_out_plan_tube"
                                  constraintName="stock_out_plan_id"
                                  referencedColumnNames="id"
                                  referencedTableName="stock_out_plan"/>
 
-        <addForeignKeyConstraint baseColumnNames="frozen_box_id"
-                                 baseTableName="stock_out_plan_frozen_tube"
-                                 constraintName="stock_out_plan_box_id"
+        <addForeignKeyConstraint baseColumnNames="stock_out_req_frozen_tube_id"
+                                 baseTableName="stock_out_plan_tube"
+                                 constraintName="stock_out_plan_req_tube_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="frozen_box"/>
-
-        <addForeignKeyConstraint baseColumnNames="frozen_tube_id"
-                                 baseTableName="stock_out_plan_frozen_tube"
-                                 constraintName="stock_out_plan_tube_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="frozen_tube"/>
+                                 referencedTableName="stock_out_req_frozen_tube"/>
 
     </changeSet>
 </databaseChangeLog>

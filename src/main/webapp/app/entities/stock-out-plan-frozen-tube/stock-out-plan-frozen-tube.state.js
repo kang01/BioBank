@@ -124,8 +124,6 @@
                     resolve: {
                         entity: function () {
                             return {
-                                tubeRows: null,
-                                tubeColumns: null,
                                 status: null,
                                 memo: null,
                                 id: null

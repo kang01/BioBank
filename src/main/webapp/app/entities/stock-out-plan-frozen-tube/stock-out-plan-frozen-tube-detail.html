@@ -4,14 +4,6 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row jh-entity-details">
-        <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.tubeRows">Tube Rows</span></dt>
-        <dd>
-            <span>{{vm.stockOutPlanFrozenTube.tubeRows}}</span>
-        </dd>
-        <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.tubeColumns">Tube Columns</span></dt>
-        <dd>
-            <span>{{vm.stockOutPlanFrozenTube.tubeColumns}}</span>
-        </dd>
         <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.status">Status</span></dt>
         <dd>
             <span>{{vm.stockOutPlanFrozenTube.status}}</span>
@@ -24,13 +16,9 @@
         <dd>
             <a ui-sref="stock-out-plan-detail({id:vm.stockOutPlanFrozenTube.stockOutPlanId})">{{vm.stockOutPlanFrozenTube.stockOutPlanId}}</a>
         </dd>
-        <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.frozenBox">Frozen Box</span></dt>
+        <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.stockOutReqFrozenTube">Stock Out Req Frozen Tube</span></dt>
         <dd>
-            <a ui-sref="frozen-box-detail({id:vm.stockOutPlanFrozenTube.frozenBoxId})">{{vm.stockOutPlanFrozenTube.frozenBoxId}}</a>
-        </dd>
-        <dt><span data-translate="bioBankApp.stockOutPlanFrozenTube.frozenTube">Frozen Tube</span></dt>
-        <dd>
-            <a ui-sref="frozen-tube-detail({id:vm.stockOutPlanFrozenTube.frozenTubeId})">{{vm.stockOutPlanFrozenTube.frozenTubeId}}</a>
+            <a ui-sref="stock-out-req-frozen-tube-detail({id:vm.stockOutPlanFrozenTube.stockOutReqFrozenTubeId})">{{vm.stockOutPlanFrozenTube.stockOutReqFrozenTubeId}}</a>
         </dd>
     </dl>
 

@@ -14,23 +14,21 @@ public class StockOutApplyForSave {
      */
     private Long id;
     /**
-     * 申请编码
+     * 申请单号
      */
-    @Size(max = 100)
     private String applyCode;
     /**
-     * 开始时间
+     * 委托方ID
      */
-    private LocalDate startTime;
-    /**
-     * 结束时间
-     */
-    private LocalDate endTime;
+    private Long delegateId;
     /**
      * 样本用途
      */
-    @Size(max = 1024)
     private String purposeOfSample;
+    /**
+     * 委托人
+     */
+    private String applyPersonName;
     /**
      * 记录日期
      */
@@ -40,16 +38,20 @@ public class StockOutApplyForSave {
      */
     private Long recordId;
     /**
-     * 委托人
+     * 开始时间
      */
-    @Size(max = 255)
-    private String applyPersonName;
+    private LocalDate startTime;
     /**
-     * 委托方ID
+     * 记录时间
      */
-    private Long delegateId;
+    private LocalDate endTime;
+
     /**
-     * 项目IDs
+     * 状态
+     */
+    private String status;
+    /**
+     * 授权的项目
      */
     private List<Long> projectIds;
 
@@ -125,6 +127,14 @@ public class StockOutApplyForSave {
         this.delegateId = delegateId;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public List<Long> getProjectIds() {
         return projectIds;
     }
@@ -149,22 +159,4 @@ public class StockOutApplyForSave {
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-
-    @Override
-    public String toString() {
-        return "StockOutApplyDTO{" +
-            "id=" + id +
-            ", startTime='" + startTime + "'" +
-            ", endTime='" + endTime + "'" +
-            ", purposeOfSample='" + purposeOfSample + "'" +
-            ", recordTime='" + recordTime + "'" +
-            ", recordId='" + recordId + "'" +
-            ", applyPersonName='" + applyPersonName + "'" +
-            ", applyCode='" + applyCode + "'" +
-            '}';
-    }
 }

@@ -60,6 +60,9 @@ public class StockOutRequirement extends AbstractAuditingEntity implements Seria
     @Column(name = "is_blood_lipid")
     private Boolean isBloodLipid;
 
+    @Column(name = "importing_file_id")
+    private Long importingFileId;
+
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
@@ -220,6 +223,17 @@ public class StockOutRequirement extends AbstractAuditingEntity implements Seria
         this.isBloodLipid = isBloodLipid;
     }
 
+    public Long getImportingFileId() {
+        return importingFileId;
+    }
+    public StockOutRequirement importingFileId(Long importingFileId){
+        this.importingFileId = importingFileId;
+        return this;
+    }
+    public void setImportingFileId(Long importingFileId) {
+        this.importingFileId = importingFileId;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -332,6 +346,7 @@ public class StockOutRequirement extends AbstractAuditingEntity implements Seria
             ", diseaseType='" + diseaseType + "'" +
             ", isHemolysis='" + isHemolysis + "'" +
             ", isBloodLipid='" + isBloodLipid + "'" +
+            ", importingFileId='" + importingFileId + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             '}';

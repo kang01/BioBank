@@ -12,7 +12,7 @@ import java.util.Objects;
  * A StockOutPlanFrozenTube.
  */
 @Entity
-@Table(name = "stock_out_plan_frozen_tube")
+@Table(name = "stock_out_plan_tube")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockOutPlanFrozenTube extends AbstractAuditingEntity implements Serializable {
 
@@ -23,16 +23,6 @@ public class StockOutPlanFrozenTube extends AbstractAuditingEntity implements Se
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
 //    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-
-    @NotNull
-    @Size(max = 100)
-    @Column(name = "tube_rows", length = 100, nullable = false)
-    private String tubeRows;
-
-    @NotNull
-    @Size(max = 100)
-    @Column(name = "tube_columns", length = 100, nullable = false)
-    private String tubeColumns;
 
     @NotNull
     @Size(max = 20)
@@ -49,11 +39,7 @@ public class StockOutPlanFrozenTube extends AbstractAuditingEntity implements Se
 
     @ManyToOne(optional = false)
     @NotNull
-    private FrozenBox frozenBox;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    private FrozenTube frozenTube;
+    private StockOutReqFrozenTube stockOutReqFrozenTube;
 
     public Long getId() {
         return id;
@@ -61,32 +47,6 @@ public class StockOutPlanFrozenTube extends AbstractAuditingEntity implements Se
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTubeRows() {
-        return tubeRows;
-    }
-
-    public StockOutPlanFrozenTube tubeRows(String tubeRows) {
-        this.tubeRows = tubeRows;
-        return this;
-    }
-
-    public void setTubeRows(String tubeRows) {
-        this.tubeRows = tubeRows;
-    }
-
-    public String getTubeColumns() {
-        return tubeColumns;
-    }
-
-    public StockOutPlanFrozenTube tubeColumns(String tubeColumns) {
-        this.tubeColumns = tubeColumns;
-        return this;
-    }
-
-    public void setTubeColumns(String tubeColumns) {
-        this.tubeColumns = tubeColumns;
     }
 
     public String getStatus() {
@@ -128,30 +88,17 @@ public class StockOutPlanFrozenTube extends AbstractAuditingEntity implements Se
         this.stockOutPlan = stockOutPlan;
     }
 
-    public FrozenBox getFrozenBox() {
-        return frozenBox;
+    public StockOutReqFrozenTube getStockOutReqFrozenTube() {
+        return stockOutReqFrozenTube;
     }
 
-    public StockOutPlanFrozenTube frozenBox(FrozenBox frozenBox) {
-        this.frozenBox = frozenBox;
+    public StockOutPlanFrozenTube stockOutReqFrozenTube(StockOutReqFrozenTube stockOutReqFrozenTube) {
+        this.stockOutReqFrozenTube = stockOutReqFrozenTube;
         return this;
     }
 
-    public void setFrozenBox(FrozenBox frozenBox) {
-        this.frozenBox = frozenBox;
-    }
-
-    public FrozenTube getFrozenTube() {
-        return frozenTube;
-    }
-
-    public StockOutPlanFrozenTube frozenTube(FrozenTube frozenTube) {
-        this.frozenTube = frozenTube;
-        return this;
-    }
-
-    public void setFrozenTube(FrozenTube frozenTube) {
-        this.frozenTube = frozenTube;
+    public void setStockOutReqFrozenTube(StockOutReqFrozenTube stockOutReqFrozenTube) {
+        this.stockOutReqFrozenTube = stockOutReqFrozenTube;
     }
 
     @Override
@@ -178,8 +125,6 @@ public class StockOutPlanFrozenTube extends AbstractAuditingEntity implements Se
     public String toString() {
         return "StockOutPlanFrozenTube{" +
             "id=" + id +
-            ", tubeRows='" + tubeRows + "'" +
-            ", tubeColumns='" + tubeColumns + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             '}';

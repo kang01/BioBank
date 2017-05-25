@@ -12,6 +12,10 @@ public class StockOutRequirementForApplyTable {
      */
     private Long id;
     /**
+     * 需求名称
+     */
+    private String requirementName;
+    /**
      * 样本量
      */
     private Integer countOfSample;
@@ -59,6 +63,14 @@ public class StockOutRequirementForApplyTable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getRequirementName() {
+        return requirementName;
+    }
+
+    public void setRequirementName(String requirementName) {
+        this.requirementName = requirementName;
     }
 
     public Integer getCountOfSample() {

@@ -6,6 +6,7 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutApplyService;
+import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.service.dto.StockOutApplyDTO;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.StockOutApplyMapper;
@@ -68,6 +69,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     @Autowired
     private ReportExportingService reportExportingService;
+
+    @Autowired
+    private StockOutRequirementService stockOutRequirementService;
 
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
@@ -136,12 +140,16 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     }
 
     @Override
-    public StockOutApplyDTO initStockOutApply() {
+    public StockOutApplyForSave initStockOutApply() {
         StockOutApply stockOutApply = new StockOutApply();
         stockOutApply.setStatus(Constants.STOCK_OUT_PENDING);
         stockOutApply.setApplyCode(BankUtil.getUniqueID());
         stockOutApplyRepository.save(stockOutApply);
-        return stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
+        StockOutApplyForSave stockOutApplyForSave = new StockOutApplyDetail();
+        stockOutApplyForSave.setId(stockOutApply.getId());
+        stockOutApplyForSave.setStatus(stockOutApply.getStatus());
+        stockOutApplyForSave.setApplyCode(stockOutApply.getApplyCode());
+        return stockOutApplyForSave;
     }
 
     @Override
@@ -228,7 +236,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             stockOutRequirementForApplyTable.setId(requirement.getId());
             stockOutRequirementForApplyTable.setStatus(requirement.getStatus());
             stockOutRequirementForApplyTable.setCountOfSample(requirement.getCountOfSample());
-
+            stockOutRequirementForApplyTable.setRequirementName(requirement.getRequirementName());
             //获取指定样本
             List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(requirement.getId());
             StringBuffer samples = new StringBuffer();
@@ -386,4 +394,16 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         return applyDTO;
     }
 
+    /**
+     * 复原核对信息
+     * @param id
+     * @return
+     */
+    @Override
+    public void revertStockOutRequirementCheck(Long id) {
+        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(id);
+        for(StockOutRequirement s : stockOutRequirementList){
+            stockOutRequirementService.revertStockOutRequirement(id);
+        }
+    }
 }

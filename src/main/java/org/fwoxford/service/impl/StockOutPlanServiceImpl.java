@@ -1,7 +1,11 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.domain.StockOutApply;
+import org.fwoxford.domain.StockOutPlanFrozenTube;
+import org.fwoxford.domain.StockOutReqFrozenTube;
 import org.fwoxford.repository.StockOutApplyRepository;
+import org.fwoxford.repository.StockOutPlanFrozenTubeRepository;
+import org.fwoxford.repository.StockOutReqFrozenTubeRepository;
 import org.fwoxford.service.StockOutPlanService;
 import org.fwoxford.domain.StockOutPlan;
 import org.fwoxford.repository.StockOutPlanRepository;
@@ -15,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,12 +33,16 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
 
     private final StockOutPlanRepository stockOutPlanRepository;
     private final StockOutApplyRepository stockOutApplyRepository;
+    private final StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
+    private final StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository;
 
     private final StockOutPlanMapper stockOutPlanMapper;
 
-    public StockOutPlanServiceImpl(StockOutPlanRepository stockOutPlanRepository, StockOutApplyRepository stockOutApplyRepository, StockOutPlanMapper stockOutPlanMapper) {
+    public StockOutPlanServiceImpl(StockOutPlanRepository stockOutPlanRepository, StockOutApplyRepository stockOutApplyRepository, StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository, StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository, StockOutPlanMapper stockOutPlanMapper) {
         this.stockOutPlanRepository = stockOutPlanRepository;
         this.stockOutApplyRepository = stockOutApplyRepository;
+        this.stockOutReqFrozenTubeRepository = stockOutReqFrozenTubeRepository;
+        this.stockOutPlanFrozenTubeRepository = stockOutPlanFrozenTubeRepository;
         this.stockOutPlanMapper = stockOutPlanMapper;
     }
 
@@ -78,7 +87,25 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
             .stockOutApply(apply);
         stockOutPlan = stockOutPlanRepository.save(stockOutPlan);
 
+        List<StockOutPlanFrozenTube> planTubes = new ArrayList<>();
+        List<StockOutReqFrozenTube> reqTubes = stockOutReqFrozenTubeRepository.findAllByStockOutApplyId(applyId);
+        StockOutPlan finalStockOutPlan = stockOutPlan;
 
+        reqTubes.forEach(t -> {
+            StockOutPlanFrozenTube planTube = new StockOutPlanFrozenTube();
+            planTube.status("XXXXX")
+                .stockOutPlan(finalStockOutPlan)
+                .stockOutReqFrozenTube(t);
+            planTubes.add(planTube);
+            if (planTubes.size() >= 1000){
+                stockOutPlanFrozenTubeRepository.save(planTubes);
+                planTubes.clear();
+            }
+        });
+        if (planTubes.size() > 0){
+            stockOutPlanFrozenTubeRepository.save(planTubes);
+            planTubes.clear();
+        }
 
 
         StockOutPlanDTO result = stockOutPlanMapper.stockOutPlanToStockOutPlanDTO(stockOutPlan);

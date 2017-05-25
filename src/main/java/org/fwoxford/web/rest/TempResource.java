@@ -953,6 +953,7 @@ public class TempResource {
     @PostMapping("/stock-out-plans")
     @Timed
     public ResponseEntity<StockOutPlanForSave> createStockOutPlan(@Valid @RequestBody StockOutPlanForSave stockOutPlanForSave) throws URISyntaxException {
+        // zhuyu 做过了 in StockOutPlanResource
         log.debug("REST request to save StockOutPlan : {}", stockOutPlanForSave);
         StockOutPlanForSave result = stockOutPlanForSave;
         return ResponseEntity.created(new URI("/api/stock-out-plans/" + result.getId()))

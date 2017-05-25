@@ -813,7 +813,6 @@ public class TempResource {
             rowData.setPurposeOfSample("实验");
             rowData.setCountOfStockOutPlanSample(1000L);
             rowData.setCountOfStockOutTask("01/10");
-            rowData.setHandOverSchedule("1%");
             rowData.setStatus("1401");
             stockOutApplyList.add(rowData);
         }
@@ -850,7 +849,7 @@ public class TempResource {
      */
     @GetMapping("/stock-out-plans/applyNumber/{applyNumber}")
     @Timed
-    public ResponseEntity<List<StockOutApplyForPlan>> getStockOutApplyDetail(@PathVariable String applyNumber) throws URISyntaxException {
+    public ResponseEntity<List<StockOutApplyForPlan>> getStockOutApplyDetailByNumber(@PathVariable String applyNumber) throws URISyntaxException {
         List<StockOutApplyForPlan> alist = new ArrayList<StockOutApplyForPlan>();
         for(int i = 0;i<50;i++){
             StockOutApplyForPlan result = new StockOutApplyForPlan();
@@ -1209,28 +1208,28 @@ public class TempResource {
 
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(data));
     }
-    /**
-     * 获取出库计划
-     * @param id
-     * @return
-     * @throws URISyntaxException
-     */
-    @GetMapping("/stock-out-plans/apply/{id}")
-    @Timed
-    public ResponseEntity<List<StockOutPlanDTO>> getStockOutPlans(@PathVariable Long id) throws URISyntaxException {
-        List<StockOutPlanDTO> data = new ArrayList<>();
-
-        for (int i=0; i<10; ++i){
-            StockOutPlanDTO result = new StockOutPlanDTO();
-            result.setId((long)i);
-            result.setStockOutApplyId(id);
-            result.setStockOutPlanCode(BankUtil.getUniqueID());
-
-            data.add(result);
-        }
-
-        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(data));
-    }
+//    /**
+//     * 获取出库计划
+//     * @param id
+//     * @return
+//     * @throws URISyntaxException
+//     */
+//    @GetMapping("/stock-out-plans/apply/{id}")
+//    @Timed
+//    public ResponseEntity<List<StockOutPlanDTO>> getStockOutPlans(@PathVariable Long id) throws URISyntaxException {
+//        List<StockOutPlanDTO> data = new ArrayList<>();
+//
+//        for (int i=0; i<10; ++i){
+//            StockOutPlanDTO result = new StockOutPlanDTO();
+//            result.setId((long)i);
+//            result.setStockOutApplyId(id);
+//            result.setStockOutPlanCode(BankUtil.getUniqueID());
+//
+//            data.add(result);
+//        }
+//
+//        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(data));
+//    }
 
     /**
      * 获取出库计划

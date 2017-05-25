@@ -126,6 +126,7 @@
         function onProjectSuccess(data) {
             vm.projectOptions = data;
         }
+        var selector = null;
         vm.projectConfig = {
             valueField:'id',
             labelField:'projectName',
@@ -134,11 +135,34 @@
                     return '<div>'+item.projectName+'ahhh</div>';
                 }
             },
-            onChange:function(value){
+            onInitialize: function(){
+                selector = arguments[0];
+            },
+            onFocus: function(){
                 _fnIsApproval();
+                // console.log('onFocus', vm.isVerifyFlag);
+                // 有需求已经进行过核对
                 if(vm.isVerifyFlag){
-                    _fnIsChangeProjectModal();
+                    // 先组织本次的修改操作,拒绝响应Focus时间。
+                    selector.disable();
+                    // 弹窗询问
+                    var result = _fnIsChangeProjectModal();
+                    result.then(function () {
+                        // 复原已核对需求
+                        RequirementService.sampleRevert(vm.requirement.id).success(function (data) {
+                            // 重新加载需求列表
+                            _loadRequirement(function(){
+                                // 开启授权项目选择框
+                                selector.enable();
+                            });
+                        })
+                    }, function () {
+                        // 开启授权项目选择框, 继续接受编辑
+                        selector.enable();
+                    });
                 }
+            },
+            onChange:function(value){
                 vm.projectIds = _.join(value, ',');
             }
         };
@@ -214,7 +238,7 @@
             }).error(function (data) {
             })
         }
-        function _loadRequirement() {
+        function _loadRequirement(success, error) {
             RequirementService.queryRequirementDesc(vm.requirement.id).then(function (data) {
                 vm.requirement = data;
                 vm.requirement.startTime = new Date(data.startTime);
@@ -225,6 +249,10 @@
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 vm.dtInstance.rerender();
                 vm.isApproval();
+
+                if (typeof success === "function"){
+                    success(data);
+                }
             });
         }
         //---------------------------样本需求列表--------------------------
@@ -358,21 +386,24 @@
         }
         //判断是否都已核对 1201：待核对，1202：库存不够，1203：库存满足
         vm.requirementApplyFlag = false;
-          function _fnIsApproval() {
+        function _fnIsApproval() {
             if(vm.requirement.stockOutRequirement){
                 var len =  _.filter(vm.requirement.stockOutRequirement,{status:'1201'}).length;
                 if(len){
+                    // 不能批准
                     vm.requirementApplyFlag = false;
                 }else{
+                    // 可以批准
                     vm.requirementApplyFlag = true;
                 }
                 if(len != vm.requirement.stockOutRequirement.length){
+                    // 不能修改授权项目
                     vm.isVerifyFlag = true;
                 }else{
+                    // 可以修改授权项目
                     vm.isVerifyFlag = false
                 }
             }
-
         }
         //---------------------------弹出框--------------------------
 
@@ -428,11 +459,8 @@
 
             });
 
-            modalInstance.result.then(function () {
-                RequirementService.sampleRevert(vm.requirement.id).success(function (data) {
-                    _loadRequirement()
-                })
-            });
+            return modalInstance.result;
+
         }
 
         function onError(error) {
@@ -456,6 +484,7 @@
             $uibModalInstance.close(true);
         };
         vm.cancel = function () {
+            // $uibModalInstance.close(false);
             $uibModalInstance.dismiss('cancel');
         };
     }

@@ -51,7 +51,9 @@
             //附加
             addApplyRequirement:_addApplyRequirement,
             //项目更改样本列表复原
-            sampleRevert:_sampleRevert
+            sampleRevert:_sampleRevert,
+            //保存计划
+            savePlan:_savePlan
         };
         function _queryDemo(data,oSettings) {
             return $http.post('api/res/tranships',JSON.stringify(data))
@@ -125,6 +127,9 @@
         }
         function _sampleRevert(applyId) {
             return $http.put('/api/stock-out-applies/revert/'+applyId)
+        }
+        function _savePlan(applyId) {
+            return $http.post('/api/stock-out-plans/'+applyId)
         }
 
         return service;

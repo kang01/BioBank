@@ -24,7 +24,15 @@
             //保存计划
             savePlan:_savePlan,
             //编辑计划
-            editPlan:_editPlan
+            editPlan:_editPlan,
+            //创建任务
+            createTask:_createTask,
+            //根据计划Id获取任务列表
+            queryTaskList:_queryTaskList,
+            //任务详情
+            queryTaskBoxesDes:_queryTaskBoxesDes,
+            //删除任务
+            delTask:_delTask
         };
         function _queryPlanList(data,oSettings) {
             return $http.post('api/temp/res/stock-out-plans',JSON.stringify(data))
@@ -48,6 +56,18 @@
         }
         function _editPlan(applyId,param) {
             return $http.put('api/stock-out-plans/'+applyId,param)
+        }
+        function _createTask(planId,boxIds) {
+            return $http.post('api/temp/stock-out-tasks/plan/'+planId+'/frozenBox/'+boxIds)
+        }
+        function _queryTaskList(planId,data) {
+            return $http.post('api/temp/res/stock-out-tasks/plan/'+planId,JSON.stringify(data))
+        }
+        function _queryTaskBoxesDes(taskId,data) {
+            return $http.post('api/temp/res/stock-out-frozen-boxes/task/'+taskId,JSON.stringify(data))
+        }
+        function _delTask(taskId) {
+            return $http.delete('api/temp/stock-out-tasks/'+taskId)
         }
         return service;
     }

@@ -184,7 +184,6 @@
                 if(!vm.isAge){
                     sampleRequirement.age = null;
                 }
-                console.log(JSON.stringify(sampleRequirement));
                 RequirementService.saveSampleRequirement(requirementId,sampleRequirement).success(function (data) {
                     BioBankBlockUi.blockUiStop();
                     toastr.success("保存样本需求成功！");

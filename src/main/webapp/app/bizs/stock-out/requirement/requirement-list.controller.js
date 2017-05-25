@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('requirementListController', requirementListController);
 
-    requirementListController.$inject = ['$scope','$compile','$state','DTOptionsBuilder','DTColumnBuilder','RequirementService'];
+    requirementListController.$inject = ['$scope','$compile','$state','toastr','DTOptionsBuilder','DTColumnBuilder','RequirementService'];
 
-    function requirementListController($scope,$compile,$state,DTOptionsBuilder,DTColumnBuilder,RequirementService) {
+    function requirementListController($scope,$compile,$state,toastr,DTOptionsBuilder,DTColumnBuilder,RequirementService) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dtInstance = {};
@@ -201,10 +201,15 @@
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;'+ '<button ng-if="'+full.status+'== 1103" type="button" class="btn btn-warning" ui-sref="requirement-edit({applyId:'+ full.id +',addApplyFlag:1})">' +
                 '附加' +
-                '</button>&nbsp;'
+                '</button>&nbsp;';
         }
         function extraHtml(data, type, full, meta) {
             return '<div class="details-control"></div>'
         }
+
+
+        setTimeout(function () {
+            vm.dtInstance.rerender();
+        },500)
     }
 })();

@@ -1,8 +1,12 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutPlanDTO;
+import org.fwoxford.service.dto.response.StockOutPlansForDataTableEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import java.util.List;
 
 /**
@@ -42,4 +46,6 @@ public interface StockOutPlanService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    DataTablesOutput<StockOutPlansForDataTableEntity> findAllStockOutPlan(DataTablesInput input);
 }

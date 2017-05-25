@@ -4,20 +4,21 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.StockOutApply;
 import org.fwoxford.domain.StockOutPlanFrozenTube;
 import org.fwoxford.domain.StockOutReqFrozenTube;
-import org.fwoxford.repository.StockOutApplyRepository;
-import org.fwoxford.repository.StockOutPlanFrozenTubeRepository;
-import org.fwoxford.repository.StockOutReqFrozenTubeRepository;
+import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutPlanService;
 import org.fwoxford.domain.StockOutPlan;
-import org.fwoxford.repository.StockOutPlanRepository;
 import org.fwoxford.service.dto.StockOutPlanDTO;
+import org.fwoxford.service.dto.response.StockOutPlansForDataTableEntity;
 import org.fwoxford.service.mapper.StockOutPlanMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,8 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
     private final StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository;
 
     private final StockOutPlanMapper stockOutPlanMapper;
+    @Autowired
+    private StockOutPlanRepositories stockOutPlanRepositories;
 
     public StockOutPlanServiceImpl(StockOutPlanRepository stockOutPlanRepository, StockOutApplyRepository stockOutApplyRepository, StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository, StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository, StockOutPlanMapper stockOutPlanMapper) {
         this.stockOutPlanRepository = stockOutPlanRepository;
@@ -79,10 +82,11 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
         if(!apply.getStatus().equals(Constants.STOCK_OUT_APPROVED)){
             throw new BankServiceException("申请未批准，不能创建计划！");
         }
-        Long cout = stockOutPlanRepository.countByStockOutApplyId(applyId, null);
+        List<StockOutPlan> stockOutPlans = stockOutPlanRepository.findAllByStockOutApplyId(applyId);
 
-        if (cout.intValue() > 0){
-            throw new BankServiceException("计划已经存在！");
+        if (stockOutPlans!=null && stockOutPlans.size() > 0){
+            StockOutPlanDTO stockOutPlanDTO = stockOutPlanMapper.stockOutPlanToStockOutPlanDTO(stockOutPlans.get(0));
+            return stockOutPlanDTO;
         }
 
         StockOutPlan stockOutPlan = new StockOutPlan();
@@ -155,5 +159,10 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
     public void delete(Long id) {
         log.debug("Request to delete StockOutPlan : {}", id);
         stockOutPlanRepository.delete(id);
+    }
+
+    @Override
+    public DataTablesOutput<StockOutPlansForDataTableEntity> findAllStockOutPlan(DataTablesInput input) {
+        return stockOutPlanRepositories.findAll(input);
     }
 }

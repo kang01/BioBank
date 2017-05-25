@@ -1,8 +1,13 @@
 package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.time.LocalDate;
@@ -10,7 +15,12 @@ import java.time.LocalDate;
 /**
  * Created by gengluying on 2017/5/23.
  */
+
+@Entity
+@Table(name = "view_stock_out_plan")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockOutPlansForDataTableEntity {
+    @Id
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private Long id;

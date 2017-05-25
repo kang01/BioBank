@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
@@ -168,15 +169,16 @@ public class StockOutRequirementResource {
     @RequestMapping(value = "/stock-out-requirements/stockOutApply/{stockOutApplyId}/upload",method = RequestMethod.POST)
     @Timed
     public ResponseEntity<StockOutRequirementForApply> saveAndUploadStockOutRequirement(@PathVariable Long stockOutApplyId,
-                                                                              @RequestParam(value = "stockOutRequirement") String stockOutRequirement,
-                                                                              @RequestParam(value = "file",required = false) MultipartFile file) throws URISyntaxException {
+                                                                                        @RequestParam(value = "stockOutRequirement") String stockOutRequirement,
+                                                                                        @RequestParam(value = "file",required = false) MultipartFile file,
+                                                                                        HttpServletRequest request) throws URISyntaxException {
         JSONObject jsonObject = JSONObject.fromObject(stockOutRequirement);
         StockOutRequirementForApply requirement = (StockOutRequirementForApply) JSONObject.toBean(jsonObject, StockOutRequirementForApply.class);
         log.debug("REST request to save StockOutRequirement : {}", requirement);
         if (requirement.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new stockOutRequirement cannot already have an ID")).body(null);
         }
-        StockOutRequirementForApply result = stockOutRequirementService.saveAndUploadStockOutRequirement(requirement, stockOutApplyId,file);
+        StockOutRequirementForApply result = stockOutRequirementService.saveAndUploadStockOutRequirement(requirement, stockOutApplyId,file,request);
 
         return ResponseEntity.created(new URI("/api/stock-out-requirements/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))

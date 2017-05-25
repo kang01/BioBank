@@ -53,7 +53,7 @@ public class StockOutRequirementForApplyTable {
      */
     private String frozenTubeTypeName;
     /**
-     * 指定的样本：code+类型，如：1234567890-血浆，1234567891-血清
+     * 指定的样本名称
      */
     private String samples;
 

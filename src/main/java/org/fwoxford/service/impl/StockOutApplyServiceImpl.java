@@ -73,6 +73,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     @Autowired
     private StockOutRequirementService stockOutRequirementService;
 
+    @Autowired
+    private StockOutFilesRepository stockOutFilesRepository;
+
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
         this.stockOutApplyMapper = stockOutApplyMapper;
@@ -238,17 +241,18 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             stockOutRequirementForApplyTable.setCountOfSample(requirement.getCountOfSample());
             stockOutRequirementForApplyTable.setRequirementName(requirement.getRequirementName());
             //获取指定样本
-            List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(requirement.getId());
-            StringBuffer samples = new StringBuffer();
-            for(StockOutRequiredSample s :stockOutRequiredSamples){
-                samples.append(s.getSampleCode());
-                samples.append("-");
-                samples.append(s.getSampleType());
-                samples.append(",");
-            }
-            if(samples.length()>0){
-                String samplesStr = samples.substring(0,samples.length()-1);
-                stockOutRequirementForApplyTable.setSamples(samplesStr);
+//            List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(requirement.getId());
+//            StringBuffer samples = new StringBuffer();
+//            for(StockOutRequiredSample s :stockOutRequiredSamples){
+//                samples.append(s.getSampleCode());
+//                samples.append("-");
+//                samples.append(s.getSampleType());
+//                samples.append(",");
+//            }
+            ;
+            if(requirement.getImportingFileId()!=null){
+                StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(requirement.getImportingFileId());
+                stockOutRequirementForApplyTable.setSamples(stockOutFiles!=null?stockOutFiles.getFileName():null);
             }else {
                 stockOutRequirementForApplyTable.setDiseaseTypeId(requirement.getDiseaseType());
                 stockOutRequirementForApplyTable.setIsBloodLipid(requirement.isIsBloodLipid());

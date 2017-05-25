@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.service.StockOutFilesService;
 import org.fwoxford.domain.StockOutFiles;
 import org.fwoxford.repository.StockOutFilesRepository;
@@ -11,7 +12,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +28,7 @@ import java.util.stream.Collectors;
 public class StockOutFilesServiceImpl implements StockOutFilesService{
 
     private final Logger log = LoggerFactory.getLogger(StockOutFilesServiceImpl.class);
-    
+
     private final StockOutFilesRepository stockOutFilesRepository;
 
     private final StockOutFilesMapper stockOutFilesMapper;
@@ -51,7 +55,7 @@ public class StockOutFilesServiceImpl implements StockOutFilesService{
 
     /**
      *  Get all the stockOutFiles.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +91,28 @@ public class StockOutFilesServiceImpl implements StockOutFilesService{
     public void delete(Long id) {
         log.debug("Request to delete StockOutFiles : {}", id);
         stockOutFilesRepository.delete(id);
+    }
+
+    @Override
+    public StockOutFiles saveFiles(MultipartFile file, HttpServletRequest request) {
+        StockOutFiles stockOutFiles = new StockOutFiles();
+        if (!file.isEmpty()) {
+            try {
+                stockOutFiles.setFileName(file.getOriginalFilename());
+                // 文件保存路径
+                String filePath = request.getSession().getServletContext().getRealPath("/") + "upload/"
+                    + file.getOriginalFilename();
+                stockOutFiles.setFilePath(filePath);
+                stockOutFiles.setFiles(file.getBytes());
+                stockOutFiles.setFilesContentType(file.getContentType());
+                stockOutFiles.setFileSize((int)file.getSize());
+                stockOutFiles.setFileType(file.getContentType());
+                stockOutFiles.setStatus(Constants.VALID);
+                stockOutFilesRepository.save(stockOutFiles);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return stockOutFiles;
     }
 }

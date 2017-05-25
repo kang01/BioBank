@@ -4,6 +4,7 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.ReportExportingService;
+import org.fwoxford.service.StockOutFilesService;
 import org.fwoxford.service.StockOutReqFrozenTubeService;
 import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,6 +67,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
     @Autowired
     private StockOutApplyProjectRepository stockOutApplyProjectRepository;
+
+    @Autowired
+    private StockOutFilesService stockOutFilesService;
 
     public StockOutRequirementServiceImpl(StockOutRequirementRepository stockOutRequirementRepository, StockOutRequirementMapper stockOutRequirementMapper) {
         this.stockOutRequirementRepository = stockOutRequirementRepository;
@@ -215,7 +220,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         return stockOutRequirement;
     }
     @Override
-    public StockOutRequirementForApply saveAndUploadStockOutRequirement(StockOutRequirementForApply stockOutRequirement, Long stockOutApplyId, MultipartFile file) {
+    public StockOutRequirementForApply saveAndUploadStockOutRequirement(StockOutRequirementForApply stockOutRequirement, Long stockOutApplyId, MultipartFile file, HttpServletRequest request) {
         StockOutRequirementForApply stockOutRequirementForApply = new StockOutRequirementForApply();
         if(stockOutApplyId == null){
             throw new BankServiceException("申请ID不能为空！");
@@ -230,7 +235,8 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_PENDING)){
             throw new BankServiceException("申请单的状态不能新增需求！",stockOutApply.getStatus());
         }
-
+        //保存附件
+        StockOutFiles stockOutFiles = stockOutFilesService.saveFiles(file,request);
         StockOutRequirement requirement = new StockOutRequirement();
         if(stockOutRequirement.getId()!=null){
             requirement.setId(stockOutRequirement.getId());
@@ -242,6 +248,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         requirement.setRequirementCode(BankUtil.getUniqueID());
         requirement.setApplyCode(stockOutApply.getApplyCode());
         requirement.setMemo(stockOutRequirement.getMemo());
+        requirement.setImportingFileId(stockOutFiles!=null?stockOutFiles.getId():null);
         stockOutRequirementRepository.save(requirement);
 
         List<StockOutRequiredSample> stockOutRequiredSamples = new ArrayList<StockOutRequiredSample>();

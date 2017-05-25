@@ -1,8 +1,12 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.StockOutFiles;
 import org.fwoxford.service.dto.StockOutFilesDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -20,7 +24,7 @@ public interface StockOutFilesService {
 
     /**
      *  Get all the stockOutFiles.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +44,6 @@ public interface StockOutFilesService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    StockOutFiles saveFiles(MultipartFile file, HttpServletRequest request);
 }

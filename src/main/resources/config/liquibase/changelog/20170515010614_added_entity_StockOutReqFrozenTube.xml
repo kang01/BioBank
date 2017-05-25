@@ -37,7 +37,12 @@
             <column name="tube_columns" type="nvarchar(20)" remarks="列号">
                 <constraints nullable="true" />
             </column>
+
             <column name="frozen_box_id" type="bigint" remarks="冻存盒ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="importing_sample_id" type="bigint" remarks="指定样本ID">
                 <constraints nullable="true" />
             </column>
 

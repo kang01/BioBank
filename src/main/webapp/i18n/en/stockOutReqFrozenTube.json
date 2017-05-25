@@ -19,6 +19,7 @@
             "memo": "Memo",
             "tubeRows": "Tube Rows",
             "tubeColumns": "Tube Columns",
+            "importingSampleId": "Importing Sample Id",
             "frozenBox": "Frozen Box",
             "frozenTube": "Frozen Tube",
             "stockOutRequirement": "Stock Out Requirement"

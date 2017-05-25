@@ -14,9 +14,6 @@ public class StockOutFilesDTO extends AbstractAuditingDTO implements Serializabl
     private Long id;
 
     @NotNull
-    private Long businessId;
-
-    @NotNull
     @Size(max = 255)
     private String filePath;
 
@@ -47,13 +44,6 @@ public class StockOutFilesDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setId(Long id) {
         this.id = id;
-    }
-    public Long getBusinessId() {
-        return businessId;
-    }
-
-    public void setBusinessId(Long businessId) {
-        this.businessId = businessId;
     }
     public String getFilePath() {
         return filePath;
@@ -138,7 +128,6 @@ public class StockOutFilesDTO extends AbstractAuditingDTO implements Serializabl
     public String toString() {
         return "StockOutFilesDTO{" +
             "id=" + id +
-            ", businessId='" + businessId + "'" +
             ", filePath='" + filePath + "'" +
             ", fileName='" + fileName + "'" +
             ", fileType='" + fileType + "'" +

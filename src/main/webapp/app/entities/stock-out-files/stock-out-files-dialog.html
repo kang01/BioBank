@@ -14,22 +14,6 @@
                     ng-model="vm.stockOutFiles.id" readonly />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.stockOutFiles.businessId" for="field_businessId">Business Id</label>
-            <input type="number" class="form-control" name="businessId" id="field_businessId"
-                    ng-model="vm.stockOutFiles.businessId"
-                    required/>
-            <div ng-show="editForm.businessId.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.businessId.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.businessId.$error.number" data-translate="entity.validation.number">
-                    This field should be a number.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.stockOutFiles.filePath" for="field_filePath">File Path</label>
             <input type="text" class="form-control" name="filePath" id="field_filePath"
                     ng-model="vm.stockOutFiles.filePath"

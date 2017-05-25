@@ -4,7 +4,7 @@ describe('Controller Tests', function() {
 
     describe('StockOutPlanFrozenTube Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockStockOutPlanFrozenTube, MockStockOutPlan, MockFrozenBox, MockFrozenTube;
+        var MockEntity, MockPreviousState, MockStockOutPlanFrozenTube, MockStockOutPlan, MockStockOutReqFrozenTube;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -14,8 +14,7 @@ describe('Controller Tests', function() {
             MockPreviousState = jasmine.createSpy('MockPreviousState');
             MockStockOutPlanFrozenTube = jasmine.createSpy('MockStockOutPlanFrozenTube');
             MockStockOutPlan = jasmine.createSpy('MockStockOutPlan');
-            MockFrozenBox = jasmine.createSpy('MockFrozenBox');
-            MockFrozenTube = jasmine.createSpy('MockFrozenTube');
+            MockStockOutReqFrozenTube = jasmine.createSpy('MockStockOutReqFrozenTube');
             
 
             var locals = {
@@ -25,8 +24,7 @@ describe('Controller Tests', function() {
                 'previousState': MockPreviousState,
                 'StockOutPlanFrozenTube': MockStockOutPlanFrozenTube,
                 'StockOutPlan': MockStockOutPlan,
-                'FrozenBox': MockFrozenBox,
-                'FrozenTube': MockFrozenTube
+                'StockOutReqFrozenTube': MockStockOutReqFrozenTube
             };
             createController = function() {
                 $injector.get('$controller')("StockOutPlanFrozenTubeDetailController", locals);

@@ -4,8 +4,7 @@ import org.fwoxford.BioBankApp;
 
 import org.fwoxford.domain.StockOutPlanFrozenTube;
 import org.fwoxford.domain.StockOutPlan;
-import org.fwoxford.domain.FrozenBox;
-import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.domain.StockOutReqFrozenTube;
 import org.fwoxford.repository.StockOutPlanFrozenTubeRepository;
 import org.fwoxford.service.StockOutPlanFrozenTubeService;
 import org.fwoxford.service.dto.StockOutPlanFrozenTubeDTO;
@@ -42,12 +41,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BioBankApp.class)
 public class StockOutPlanFrozenTubeResourceIntTest {
-
-    private static final String DEFAULT_TUBE_ROWS = "AAAAAAAAAA";
-    private static final String UPDATED_TUBE_ROWS = "BBBBBBBBBB";
-
-    private static final String DEFAULT_TUBE_COLUMNS = "AAAAAAAAAA";
-    private static final String UPDATED_TUBE_COLUMNS = "BBBBBBBBBB";
 
     private static final String DEFAULT_STATUS = "AAAAAAAAAA";
     private static final String UPDATED_STATUS = "BBBBBBBBBB";
@@ -98,8 +91,6 @@ public class StockOutPlanFrozenTubeResourceIntTest {
      */
     public static StockOutPlanFrozenTube createEntity(EntityManager em) {
         StockOutPlanFrozenTube stockOutPlanFrozenTube = new StockOutPlanFrozenTube()
-                .tubeRows(DEFAULT_TUBE_ROWS)
-                .tubeColumns(DEFAULT_TUBE_COLUMNS)
                 .status(DEFAULT_STATUS)
                 .memo(DEFAULT_MEMO);
         // Add required entity
@@ -108,15 +99,10 @@ public class StockOutPlanFrozenTubeResourceIntTest {
         em.flush();
         stockOutPlanFrozenTube.setStockOutPlan(stockOutPlan);
         // Add required entity
-        FrozenBox frozenBox = FrozenBoxResourceIntTest.createEntity(em);
-        em.persist(frozenBox);
+        StockOutReqFrozenTube stockOutReqFrozenTube = StockOutReqFrozenTubeResourceIntTest.createEntity(em);
+        em.persist(stockOutReqFrozenTube);
         em.flush();
-        stockOutPlanFrozenTube.setFrozenBox(frozenBox);
-        // Add required entity
-        FrozenTube frozenTube = FrozenTubeResourceIntTest.createEntity(em);
-        em.persist(frozenTube);
-        em.flush();
-        stockOutPlanFrozenTube.setFrozenTube(frozenTube);
+        stockOutPlanFrozenTube.setStockOutReqFrozenTube(stockOutReqFrozenTube);
         return stockOutPlanFrozenTube;
     }
 
@@ -142,8 +128,6 @@ public class StockOutPlanFrozenTubeResourceIntTest {
         List<StockOutPlanFrozenTube> stockOutPlanFrozenTubeList = stockOutPlanFrozenTubeRepository.findAll();
         assertThat(stockOutPlanFrozenTubeList).hasSize(databaseSizeBeforeCreate + 1);
         StockOutPlanFrozenTube testStockOutPlanFrozenTube = stockOutPlanFrozenTubeList.get(stockOutPlanFrozenTubeList.size() - 1);
-        assertThat(testStockOutPlanFrozenTube.getTubeRows()).isEqualTo(DEFAULT_TUBE_ROWS);
-        assertThat(testStockOutPlanFrozenTube.getTubeColumns()).isEqualTo(DEFAULT_TUBE_COLUMNS);
         assertThat(testStockOutPlanFrozenTube.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testStockOutPlanFrozenTube.getMemo()).isEqualTo(DEFAULT_MEMO);
     }
@@ -167,44 +151,6 @@ public class StockOutPlanFrozenTubeResourceIntTest {
         // Validate the Alice in the database
         List<StockOutPlanFrozenTube> stockOutPlanFrozenTubeList = stockOutPlanFrozenTubeRepository.findAll();
         assertThat(stockOutPlanFrozenTubeList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    public void checkTubeRowsIsRequired() throws Exception {
-        int databaseSizeBeforeTest = stockOutPlanFrozenTubeRepository.findAll().size();
-        // set the field null
-        stockOutPlanFrozenTube.setTubeRows(null);
-
-        // Create the StockOutPlanFrozenTube, which fails.
-        StockOutPlanFrozenTubeDTO stockOutPlanFrozenTubeDTO = stockOutPlanFrozenTubeMapper.stockOutPlanFrozenTubeToStockOutPlanFrozenTubeDTO(stockOutPlanFrozenTube);
-
-        restStockOutPlanFrozenTubeMockMvc.perform(post("/api/stock-out-plan-frozen-tubes")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stockOutPlanFrozenTubeDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<StockOutPlanFrozenTube> stockOutPlanFrozenTubeList = stockOutPlanFrozenTubeRepository.findAll();
-        assertThat(stockOutPlanFrozenTubeList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkTubeColumnsIsRequired() throws Exception {
-        int databaseSizeBeforeTest = stockOutPlanFrozenTubeRepository.findAll().size();
-        // set the field null
-        stockOutPlanFrozenTube.setTubeColumns(null);
-
-        // Create the StockOutPlanFrozenTube, which fails.
-        StockOutPlanFrozenTubeDTO stockOutPlanFrozenTubeDTO = stockOutPlanFrozenTubeMapper.stockOutPlanFrozenTubeToStockOutPlanFrozenTubeDTO(stockOutPlanFrozenTube);
-
-        restStockOutPlanFrozenTubeMockMvc.perform(post("/api/stock-out-plan-frozen-tubes")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stockOutPlanFrozenTubeDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<StockOutPlanFrozenTube> stockOutPlanFrozenTubeList = stockOutPlanFrozenTubeRepository.findAll();
-        assertThat(stockOutPlanFrozenTubeList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -237,8 +183,6 @@ public class StockOutPlanFrozenTubeResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(stockOutPlanFrozenTube.getId().intValue())))
-            .andExpect(jsonPath("$.[*].tubeRows").value(hasItem(DEFAULT_TUBE_ROWS.toString())))
-            .andExpect(jsonPath("$.[*].tubeColumns").value(hasItem(DEFAULT_TUBE_COLUMNS.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())));
     }
@@ -254,8 +198,6 @@ public class StockOutPlanFrozenTubeResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(stockOutPlanFrozenTube.getId().intValue()))
-            .andExpect(jsonPath("$.tubeRows").value(DEFAULT_TUBE_ROWS.toString()))
-            .andExpect(jsonPath("$.tubeColumns").value(DEFAULT_TUBE_COLUMNS.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()));
     }
@@ -278,8 +220,6 @@ public class StockOutPlanFrozenTubeResourceIntTest {
         // Update the stockOutPlanFrozenTube
         StockOutPlanFrozenTube updatedStockOutPlanFrozenTube = stockOutPlanFrozenTubeRepository.findOne(stockOutPlanFrozenTube.getId());
         updatedStockOutPlanFrozenTube
-                .tubeRows(UPDATED_TUBE_ROWS)
-                .tubeColumns(UPDATED_TUBE_COLUMNS)
                 .status(UPDATED_STATUS)
                 .memo(UPDATED_MEMO);
         StockOutPlanFrozenTubeDTO stockOutPlanFrozenTubeDTO = stockOutPlanFrozenTubeMapper.stockOutPlanFrozenTubeToStockOutPlanFrozenTubeDTO(updatedStockOutPlanFrozenTube);
@@ -293,8 +233,6 @@ public class StockOutPlanFrozenTubeResourceIntTest {
         List<StockOutPlanFrozenTube> stockOutPlanFrozenTubeList = stockOutPlanFrozenTubeRepository.findAll();
         assertThat(stockOutPlanFrozenTubeList).hasSize(databaseSizeBeforeUpdate);
         StockOutPlanFrozenTube testStockOutPlanFrozenTube = stockOutPlanFrozenTubeList.get(stockOutPlanFrozenTubeList.size() - 1);
-        assertThat(testStockOutPlanFrozenTube.getTubeRows()).isEqualTo(UPDATED_TUBE_ROWS);
-        assertThat(testStockOutPlanFrozenTube.getTubeColumns()).isEqualTo(UPDATED_TUBE_COLUMNS);
         assertThat(testStockOutPlanFrozenTube.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testStockOutPlanFrozenTube.getMemo()).isEqualTo(UPDATED_MEMO);
     }

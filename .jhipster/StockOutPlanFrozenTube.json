@@ -11,17 +11,8 @@
             "otherEntityField": "id"
         },
         {
-            "relationshipName": "frozenBox",
-            "otherEntityName": "frozenBox",
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipName": "frozenTube",
-            "otherEntityName": "frozenTube",
+            "relationshipName": "stockOutReqFrozenTube",
+            "otherEntityName": "stockOutReqFrozenTube",
             "relationshipType": "many-to-one",
             "relationshipValidateRules": [
                 "required"
@@ -30,24 +21,6 @@
         }
     ],
     "fields": [
-        {
-            "fieldName": "tubeRows",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "100"
-        },
-        {
-            "fieldName": "tubeColumns",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "100"
-        },
         {
             "fieldName": "status",
             "fieldType": "String",

@@ -3,13 +3,6 @@
     "relationships": [],
     "fields": [
         {
-            "fieldName": "businessId",
-            "fieldType": "Long",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
             "fieldName": "filePath",
             "fieldType": "String",
             "fieldValidateRules": [

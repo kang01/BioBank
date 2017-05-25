@@ -15,14 +15,6 @@ public class StockOutPlanFrozenTubeDTO extends AbstractAuditingDTO implements Se
     private Long id;
 
     @NotNull
-    @Size(max = 100)
-    private String tubeRows;
-
-    @NotNull
-    @Size(max = 100)
-    private String tubeColumns;
-
-    @NotNull
     @Size(max = 20)
     private String status;
 
@@ -31,9 +23,7 @@ public class StockOutPlanFrozenTubeDTO extends AbstractAuditingDTO implements Se
 
     private Long stockOutPlanId;
 
-    private Long frozenBoxId;
-
-    private Long frozenTubeId;
+    private Long stockOutReqFrozenTubeId;
 
     public Long getId() {
         return id;
@@ -41,20 +31,6 @@ public class StockOutPlanFrozenTubeDTO extends AbstractAuditingDTO implements Se
 
     public void setId(Long id) {
         this.id = id;
-    }
-    public String getTubeRows() {
-        return tubeRows;
-    }
-
-    public void setTubeRows(String tubeRows) {
-        this.tubeRows = tubeRows;
-    }
-    public String getTubeColumns() {
-        return tubeColumns;
-    }
-
-    public void setTubeColumns(String tubeColumns) {
-        this.tubeColumns = tubeColumns;
     }
     public String getStatus() {
         return status;
@@ -79,20 +55,12 @@ public class StockOutPlanFrozenTubeDTO extends AbstractAuditingDTO implements Se
         this.stockOutPlanId = stockOutPlanId;
     }
 
-    public Long getFrozenBoxId() {
-        return frozenBoxId;
+    public Long getStockOutReqFrozenTubeId() {
+        return stockOutReqFrozenTubeId;
     }
 
-    public void setFrozenBoxId(Long frozenBoxId) {
-        this.frozenBoxId = frozenBoxId;
-    }
-
-    public Long getFrozenTubeId() {
-        return frozenTubeId;
-    }
-
-    public void setFrozenTubeId(Long frozenTubeId) {
-        this.frozenTubeId = frozenTubeId;
+    public void setStockOutReqFrozenTubeId(Long stockOutReqFrozenTubeId) {
+        this.stockOutReqFrozenTubeId = stockOutReqFrozenTubeId;
     }
 
     @Override
@@ -120,8 +88,6 @@ public class StockOutPlanFrozenTubeDTO extends AbstractAuditingDTO implements Se
     public String toString() {
         return "StockOutPlanFrozenTubeDTO{" +
             "id=" + id +
-            ", tubeRows='" + tubeRows + "'" +
-            ", tubeColumns='" + tubeColumns + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             '}';

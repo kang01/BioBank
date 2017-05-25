@@ -18,7 +18,7 @@
         Added the entity StockOutReqFrozenTube.
     -->
     <changeSet id="20170515010614-1" author="jhipster">
-        <createTable tableName="stock_out_req_frozen_tube">
+        <createTable tableName="stock_out_req_frozen_tube" remarks="出库申请需求样本详情表">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -30,11 +30,11 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="tube_rows" type="nvarchar(20)" remarks="行数">
+            <column name="tube_rows" type="nvarchar(20)" remarks="行好">
                 <constraints nullable="true" />
             </column>
 
-            <column name="tube_columns" type="nvarchar(20)" remarks="列数">
+            <column name="tube_columns" type="nvarchar(20)" remarks="列号">
                 <constraints nullable="true" />
             </column>
             <column name="frozen_box_id" type="bigint" remarks="冻存盒ID">

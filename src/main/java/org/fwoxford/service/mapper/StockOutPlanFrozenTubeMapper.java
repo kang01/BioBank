@@ -13,15 +13,13 @@ import java.util.List;
 public interface StockOutPlanFrozenTubeMapper {
 
     @Mapping(source = "stockOutPlan.id", target = "stockOutPlanId")
-    @Mapping(source = "frozenBox.id", target = "frozenBoxId")
-    @Mapping(source = "frozenTube.id", target = "frozenTubeId")
+    @Mapping(source = "stockOutReqFrozenTube.id", target = "stockOutReqFrozenTubeId")
     StockOutPlanFrozenTubeDTO stockOutPlanFrozenTubeToStockOutPlanFrozenTubeDTO(StockOutPlanFrozenTube stockOutPlanFrozenTube);
 
     List<StockOutPlanFrozenTubeDTO> stockOutPlanFrozenTubesToStockOutPlanFrozenTubeDTOs(List<StockOutPlanFrozenTube> stockOutPlanFrozenTubes);
 
     @Mapping(source = "stockOutPlanId", target = "stockOutPlan")
-    @Mapping(source = "frozenBoxId", target = "frozenBox")
-    @Mapping(source = "frozenTubeId", target = "frozenTube")
+    @Mapping(source = "stockOutReqFrozenTubeId", target = "stockOutReqFrozenTube")
     StockOutPlanFrozenTube stockOutPlanFrozenTubeDTOToStockOutPlanFrozenTube(StockOutPlanFrozenTubeDTO stockOutPlanFrozenTubeDTO);
 
     List<StockOutPlanFrozenTube> stockOutPlanFrozenTubeDTOsToStockOutPlanFrozenTubes(List<StockOutPlanFrozenTubeDTO> stockOutPlanFrozenTubeDTOs);
@@ -35,21 +33,12 @@ public interface StockOutPlanFrozenTubeMapper {
         return stockOutPlan;
     }
 
-    default FrozenBox frozenBoxFromId(Long id) {
+    default StockOutReqFrozenTube stockOutReqFrozenTubeFromId(Long id) {
         if (id == null) {
             return null;
         }
-        FrozenBox frozenBox = new FrozenBox();
-        frozenBox.setId(id);
-        return frozenBox;
-    }
-
-    default FrozenTube frozenTubeFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        FrozenTube frozenTube = new FrozenTube();
-        frozenTube.setId(id);
-        return frozenTube;
+        StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
+        stockOutReqFrozenTube.setId(id);
+        return stockOutReqFrozenTube;
     }
 }

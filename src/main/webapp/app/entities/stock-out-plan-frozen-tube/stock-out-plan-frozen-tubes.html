@@ -19,31 +19,23 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="tubeRows"><span data-translate="bioBankApp.stockOutPlanFrozenTube.tubeRows">Tube Rows</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="tubeColumns"><span data-translate="bioBankApp.stockOutPlanFrozenTube.tubeColumns">Tube Columns</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="bioBankApp.stockOutPlanFrozenTube.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="memo"><span data-translate="bioBankApp.stockOutPlanFrozenTube.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="stockOutPlanId"><span data-translate="bioBankApp.stockOutPlanFrozenTube.stockOutPlan">Stock Out Plan</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="frozenBoxId"><span data-translate="bioBankApp.stockOutPlanFrozenTube.frozenBox">Frozen Box</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="frozenTubeId"><span data-translate="bioBankApp.stockOutPlanFrozenTube.frozenTube">Frozen Tube</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="stockOutReqFrozenTubeId"><span data-translate="bioBankApp.stockOutPlanFrozenTube.stockOutReqFrozenTube">Stock Out Req Frozen Tube</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="stockOutPlanFrozenTube in vm.stockOutPlanFrozenTubes track by stockOutPlanFrozenTube.id">
                     <td><a ui-sref="stock-out-plan-frozen-tube-detail({id:stockOutPlanFrozenTube.id})">{{stockOutPlanFrozenTube.id}}</a></td>
-                    <td>{{stockOutPlanFrozenTube.tubeRows}}</td>
-                    <td>{{stockOutPlanFrozenTube.tubeColumns}}</td>
                     <td>{{stockOutPlanFrozenTube.status}}</td>
                     <td>{{stockOutPlanFrozenTube.memo}}</td>
                     <td>
                         <a ui-sref="stock-out-plan-detail({id:stockOutPlanFrozenTube.stockOutPlanId})">{{stockOutPlanFrozenTube.stockOutPlanId}}</a>
                     </td>
                     <td>
-                        <a ui-sref="frozen-box-detail({id:stockOutPlanFrozenTube.frozenBoxId})">{{stockOutPlanFrozenTube.frozenBoxId}}</a>
-                    </td>
-                    <td>
-                        <a ui-sref="frozen-tube-detail({id:stockOutPlanFrozenTube.frozenTubeId})">{{stockOutPlanFrozenTube.frozenTubeId}}</a>
+                        <a ui-sref="stock-out-req-frozen-tube-detail({id:stockOutPlanFrozenTube.stockOutReqFrozenTubeId})">{{stockOutPlanFrozenTube.stockOutReqFrozenTubeId}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

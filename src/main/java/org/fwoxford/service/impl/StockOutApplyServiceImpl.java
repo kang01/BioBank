@@ -236,7 +236,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             stockOutRequirementForApplyTable.setId(requirement.getId());
             stockOutRequirementForApplyTable.setStatus(requirement.getStatus());
             stockOutRequirementForApplyTable.setCountOfSample(requirement.getCountOfSample());
-
+            stockOutRequirementForApplyTable.setRequirementName(requirement.getRequirementName());
             //获取指定样本
             List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(requirement.getId());
             StringBuffer samples = new StringBuffer();

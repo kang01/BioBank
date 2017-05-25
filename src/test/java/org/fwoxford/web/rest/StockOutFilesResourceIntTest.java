@@ -41,9 +41,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = BioBankApp.class)
 public class StockOutFilesResourceIntTest {
 
-    private static final Long DEFAULT_BUSINESS_ID = 1L;
-    private static final Long UPDATED_BUSINESS_ID = 2L;
-
     private static final String DEFAULT_FILE_PATH = "AAAAAAAAAA";
     private static final String UPDATED_FILE_PATH = "BBBBBBBBBB";
 
@@ -110,7 +107,6 @@ public class StockOutFilesResourceIntTest {
      */
     public static StockOutFiles createEntity(EntityManager em) {
         StockOutFiles stockOutFiles = new StockOutFiles()
-                .businessId(DEFAULT_BUSINESS_ID)
                 .filePath(DEFAULT_FILE_PATH)
                 .fileName(DEFAULT_FILE_NAME)
                 .fileType(DEFAULT_FILE_TYPE)
@@ -144,7 +140,6 @@ public class StockOutFilesResourceIntTest {
         List<StockOutFiles> stockOutFilesList = stockOutFilesRepository.findAll();
         assertThat(stockOutFilesList).hasSize(databaseSizeBeforeCreate + 1);
         StockOutFiles testStockOutFiles = stockOutFilesList.get(stockOutFilesList.size() - 1);
-        assertThat(testStockOutFiles.getBusinessId()).isEqualTo(DEFAULT_BUSINESS_ID);
         assertThat(testStockOutFiles.getFilePath()).isEqualTo(DEFAULT_FILE_PATH);
         assertThat(testStockOutFiles.getFileName()).isEqualTo(DEFAULT_FILE_NAME);
         assertThat(testStockOutFiles.getFileType()).isEqualTo(DEFAULT_FILE_TYPE);
@@ -174,25 +169,6 @@ public class StockOutFilesResourceIntTest {
         // Validate the Alice in the database
         List<StockOutFiles> stockOutFilesList = stockOutFilesRepository.findAll();
         assertThat(stockOutFilesList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    public void checkBusinessIdIsRequired() throws Exception {
-        int databaseSizeBeforeTest = stockOutFilesRepository.findAll().size();
-        // set the field null
-        stockOutFiles.setBusinessId(null);
-
-        // Create the StockOutFiles, which fails.
-        StockOutFilesDTO stockOutFilesDTO = stockOutFilesMapper.stockOutFilesToStockOutFilesDTO(stockOutFiles);
-
-        restStockOutFilesMockMvc.perform(post("/api/stock-out-files")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stockOutFilesDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<StockOutFiles> stockOutFilesList = stockOutFilesRepository.findAll();
-        assertThat(stockOutFilesList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -282,7 +258,6 @@ public class StockOutFilesResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(stockOutFiles.getId().intValue())))
-            .andExpect(jsonPath("$.[*].businessId").value(hasItem(DEFAULT_BUSINESS_ID.intValue())))
             .andExpect(jsonPath("$.[*].filePath").value(hasItem(DEFAULT_FILE_PATH.toString())))
             .andExpect(jsonPath("$.[*].fileName").value(hasItem(DEFAULT_FILE_NAME.toString())))
             .andExpect(jsonPath("$.[*].fileType").value(hasItem(DEFAULT_FILE_TYPE.toString())))
@@ -304,7 +279,6 @@ public class StockOutFilesResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(stockOutFiles.getId().intValue()))
-            .andExpect(jsonPath("$.businessId").value(DEFAULT_BUSINESS_ID.intValue()))
             .andExpect(jsonPath("$.filePath").value(DEFAULT_FILE_PATH.toString()))
             .andExpect(jsonPath("$.fileName").value(DEFAULT_FILE_NAME.toString()))
             .andExpect(jsonPath("$.fileType").value(DEFAULT_FILE_TYPE.toString()))
@@ -333,7 +307,6 @@ public class StockOutFilesResourceIntTest {
         // Update the stockOutFiles
         StockOutFiles updatedStockOutFiles = stockOutFilesRepository.findOne(stockOutFiles.getId());
         updatedStockOutFiles
-                .businessId(UPDATED_BUSINESS_ID)
                 .filePath(UPDATED_FILE_PATH)
                 .fileName(UPDATED_FILE_NAME)
                 .fileType(UPDATED_FILE_TYPE)
@@ -353,7 +326,6 @@ public class StockOutFilesResourceIntTest {
         List<StockOutFiles> stockOutFilesList = stockOutFilesRepository.findAll();
         assertThat(stockOutFilesList).hasSize(databaseSizeBeforeUpdate);
         StockOutFiles testStockOutFiles = stockOutFilesList.get(stockOutFilesList.size() - 1);
-        assertThat(testStockOutFiles.getBusinessId()).isEqualTo(UPDATED_BUSINESS_ID);
         assertThat(testStockOutFiles.getFilePath()).isEqualTo(UPDATED_FILE_PATH);
         assertThat(testStockOutFiles.getFileName()).isEqualTo(UPDATED_FILE_NAME);
         assertThat(testStockOutFiles.getFileType()).isEqualTo(UPDATED_FILE_TYPE);

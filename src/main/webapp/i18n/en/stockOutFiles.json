@@ -15,7 +15,6 @@
             "detail": {
                 "title": "Stock Out Files"
             },
-            "businessId": "Business Id",
             "filePath": "File Path",
             "fileName": "File Name",
             "fileType": "File Type",

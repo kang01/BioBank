@@ -2,6 +2,8 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.StockOutPlanService;
+import org.fwoxford.service.dto.response.StockOutPlanDetail;
+import org.fwoxford.service.dto.response.StockOutPlanForSave;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.StockOutPlanDTO;
@@ -34,7 +36,7 @@ public class StockOutPlanResource {
     private final Logger log = LoggerFactory.getLogger(StockOutPlanResource.class);
 
     private static final String ENTITY_NAME = "stockOutPlan";
-        
+
     private final StockOutPlanService stockOutPlanService;
 
     public StockOutPlanResource(StockOutPlanService stockOutPlanService) {
@@ -128,4 +130,20 @@ public class StockOutPlanResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+
+    /**
+     * 新增保存出库计划
+     * @param stockOutPlanForSave
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-out-plans/{applyId}")
+    @Timed
+    public ResponseEntity<StockOutPlanDTO> createStockOutPlan(@PathVariable Long applyId) throws URISyntaxException {
+        log.debug("REST request to save StockOutPlan : {}", applyId);
+        StockOutPlanDTO result = stockOutPlanService.save(applyId);
+        return ResponseEntity.created(new URI("/api/stock-out-plans/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 }

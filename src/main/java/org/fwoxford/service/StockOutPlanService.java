@@ -18,9 +18,11 @@ public interface StockOutPlanService {
      */
     StockOutPlanDTO save(StockOutPlanDTO stockOutPlanDTO);
 
+    StockOutPlanDTO save(Long applyId);
+
     /**
      *  Get all the stockOutPlans.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */

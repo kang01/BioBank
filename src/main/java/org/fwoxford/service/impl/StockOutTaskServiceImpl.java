@@ -1,18 +1,22 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutTaskService;
 import org.fwoxford.service.dto.StockOutTaskDTO;
 import org.fwoxford.service.mapper.StockOutTaskMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +35,11 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     private final StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
     private final StockOutBoxPositionRepository stockOutBoxPositionRepository;
 
+    @Autowired
+    private StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository;
+
+    @Autowired
+    private StockOutFrozenTubeRepository stockOutFrozenTubeRepository;
 
     private final StockOutTaskMapper stockOutTaskMapper;
 
@@ -109,7 +118,6 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     /**
      * Save a stockOutTask.
      *
-     * @param stockOutTaskDTO the entity to save
      * @return the persisted entity
      */
     @Override
@@ -117,14 +125,18 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         log.debug("Request to save StockOutTask : {} {}", planId, boxIds);
 
         StockOutPlan stockOutPlan = stockOutPlanRepository.findOne(planId);
+        if(stockOutPlan == null){
+            throw new BankServiceException("查询计划失败！");
+        }
         StockOutTask stockOutTask = new StockOutTask();
-        stockOutTask.status("XXXXX")
+        stockOutTask.status(Constants.STOCK_OUT_TASK_NEW)
             .stockOutTaskCode(BankUtil.getUniqueID())
-            .stockOutPlan(stockOutPlan);
+            .stockOutPlan(stockOutPlan).usedTime(0)
+            .stockOutDate(LocalDate.now());
 
         stockOutTask = stockOutTaskRepository.save(stockOutTask);
 
-        List<StockOutFrozenBox> boxes = new ArrayList<>();
+//        List<StockOutFrozenBox> boxes = new ArrayList<>();
         for(Long id : boxIds){
             FrozenBox box = frozenBoxRepository.findOne(id);
             if (box == null){
@@ -132,17 +144,30 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             }
 
             StockOutFrozenBox stockOutFrozenBox = new StockOutFrozenBox();
-            stockOutFrozenBox.status("XXXXX")
+            stockOutFrozenBox.status(Constants.STOCK_OUT_FROZEN_BOX_NEW)
                 .stockOutTask(stockOutTask)
-//                .stockOutBoxPosition(????)
                 .frozenBox(box);
+            stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+//            boxes.add(stockOutFrozenBox);
+            List<StockOutPlanFrozenTube> stockOutPlanFrozenTubes = stockOutPlanFrozenTubeRepository.findByStockOutPlanId(id);
+            //保存出库样本
+            List<StockOutFrozenTube> tubes = new ArrayList<StockOutFrozenTube>();
+            for(StockOutPlanFrozenTube t: stockOutPlanFrozenTubes){
+                StockOutFrozenTube stockOutFrozenTube = new StockOutFrozenTube();
+                stockOutFrozenTube.status(Constants.STOCK_OUT_FROZEN_TUBE_NEW)
+                    .stockOutFrozenBox(stockOutFrozenBox)
+                    .frozenTube(t.getStockOutReqFrozenTube().getFrozenTube())
+                    .tubeColumns(t.getStockOutReqFrozenTube().getFrozenTube().getTubeColumns())
+                    .tubeRows(t.getStockOutReqFrozenTube().getFrozenTube().getTubeRows());
+                tubes.add(stockOutFrozenTube);
+            }
 
-            boxes.add(stockOutFrozenBox);
+            stockOutFrozenTubeRepository.save(tubes);
         }
 
-        if (boxes.size() > 0){
-            stockOutFrozenBoxRepository.save(boxes);
-        }
+//        if (boxes.size() > 0){
+//            stockOutFrozenBoxRepository.save(boxes);
+//        }
 
         StockOutTaskDTO result = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
         return result;

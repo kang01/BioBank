@@ -122,6 +122,22 @@ public final class Constants {
      * 出库计划样本状态：1501：新建
      */
     public static final String STOCK_OUT_PLAN_TUBE_PENDING = "1501";
+    /**
+     * 出库任务状态：1601：待出库，1602：进行中，1603：已出库，1604：异常出库，1605：已作废
+     */
+    public static final String STOCK_OUT_TASK_NEW = "1601";
+    public static final String STOCK_OUT_TASK_PENDING = "1602";
+    public static final String STOCK_OUT_TASK_COMPLETED = "1603";
+    public static final String STOCK_OUT_TASK_ABNORMAL = "1604";
+    public static final String STOCK_OUT_TASK_INVALID = "1605";
+    /**
+     * 出库冻存盒状态：1701：待出库
+     */
+    public static final String STOCK_OUT_FROZEN_BOX_NEW = "1701";
+    /**
+     * 出库冻存管状态：1801：待出库
+     */
+    public static final String STOCK_OUT_FROZEN_TUBE_NEW = "1801";
 
     private Constants() {
     }

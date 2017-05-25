@@ -40,8 +40,8 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
     private final StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository;
 
     private final StockOutPlanMapper stockOutPlanMapper;
-    @Autowired
-    private StockOutPlanRepositories stockOutPlanRepositories;
+//    @Autowired
+//    private StockOutPlanRepositories stockOutPlanRepositories;
 
     public StockOutPlanServiceImpl(StockOutPlanRepository stockOutPlanRepository, StockOutApplyRepository stockOutApplyRepository, StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository, StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository, StockOutPlanMapper stockOutPlanMapper) {
         this.stockOutPlanRepository = stockOutPlanRepository;
@@ -163,6 +163,7 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
 
     @Override
     public DataTablesOutput<StockOutPlansForDataTableEntity> findAllStockOutPlan(DataTablesInput input) {
-        return stockOutPlanRepositories.findAll(input);
+//        return stockOutPlanRepositories.findAll(input);
+        return null;
     }
 }

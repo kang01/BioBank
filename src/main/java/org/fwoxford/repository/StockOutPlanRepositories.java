@@ -6,5 +6,5 @@ import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 /**
  * Created by gengluying on 2017/5/25.
  */
-public interface StockOutPlanRepositories  extends DataTablesRepository<StockOutPlansForDataTableEntity,Long> {
-}
+//public interface StockOutPlanRepositories  extends DataTablesRepository<StockOutPlansForDataTableEntity,Long> {
+//}

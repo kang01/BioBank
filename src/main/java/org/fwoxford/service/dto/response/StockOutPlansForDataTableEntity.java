@@ -16,9 +16,9 @@ import java.time.LocalDate;
  * Created by gengluying on 2017/5/23.
  */
 
-@Entity
-@Table(name = "view_stock_out_plan")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Entity
+//@Table(name = "view_stock_out_plan")
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockOutPlansForDataTableEntity {
     @Id
     @NotNull

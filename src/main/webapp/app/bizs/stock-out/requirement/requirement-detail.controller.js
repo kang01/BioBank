@@ -283,7 +283,7 @@
         function actionsHtml(data, type, full, meta) {
             return '<div ng-if="vm.status != 1103">'+
                     '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementRevert('+full.id+')">复原</a>&nbsp;' +
-                    '<a ng-if="'+full.status+'== 1201" ng-click="vm.sampleRequirementCheck('+full.id+')">核对</a>&nbsp;' +
+                    '<a ng-if="'+full.status+'== 1201 || '+full.status+'== 1202" ng-click="vm.sampleRequirementCheck('+full.id+')">核对</a>&nbsp;' +
                     '<a ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;'+
                     '<a ng-click="vm.sampleRequirementDel('+full.id+')">删除</a>&nbsp;'+
                     '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementDescModel('+full.id+')">详情</a>'+

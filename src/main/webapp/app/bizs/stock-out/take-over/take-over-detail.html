@@ -1,6 +1,6 @@
 <div>
-    <div class="row m0">
-        <div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12 pb-10">
             <div class="pull-left ">
                 <h2 class="m0">添加出库交接</h2>
             </div>
@@ -11,9 +11,143 @@
             </div>
         </div>
     </div>
-    <div class="row m0">
-        <div class="row"></div>
-        <div class="row"></div>
-        <div class="row"></div>
+    <form name="handoverForm" class="form-horizontal" novalidate>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-md-6">交接时间
+                        <span class="required-field"></span>
+                    </label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-md-6">交付人
+                        <span class="required-field"></span>
+                    </label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-md-6">接收人
+                        <span class="required-field"></span>
+                    </label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-md-6">联系电话
+                        <span class="required-field"></span>
+                    </label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-md-3">所属机构
+                        <span class="required-field"></span>
+                    </label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-md-6">出库申请
+                        <span class="required-field"></span>
+                    </label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-md-6">出库计划
+                        <!--<span class="required-field"></span>-->
+                    </label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-md-6">出库任务
+                        <!--<span class="required-field"></span>-->
+                    </label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-md-6">状态
+                        <!--<span class="required-field"></span>-->
+                    </label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" disabled="disabled"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="col-md-1">备注
+                        <!--<span class="required-field"></span>-->
+                    </label>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-left">
+                        <h4>已出库冻存盒</h4>
+                    </div>
+                    <div class="pull-right">
+                        <!--<div ng-if="vm.requirement.status == '1103'">-->
+                        <!--<button class="btn btn-primary" ng-click="vm.addApplyRequirement()">添加</button>-->
+                        <!--</div>-->
+                        <div ng-if="vm.status != '1103'">
+                            <!--<button class="btn btn-primary" ng-click="vm.addSampleModal()" ng-disabled="!vm.projectIds || !vm.requirement.delegateId">交接</button>-->
+                            <!--<button class="btn btn-primary" ng-click="vm.sampleRequirementListCheck()">核对库存</button>-->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"
+                           class=" table table-striped table-bordered" style="table-layout: fixed;">
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+
 </div>

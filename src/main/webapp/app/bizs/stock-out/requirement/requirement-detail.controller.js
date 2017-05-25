@@ -10,10 +10,10 @@
         .controller('RequirementDetailController', RequirementDetailController)
         .controller('RequirementSampleDelModalController', RequirementSampleDelModalController)
         .controller('RequirementApplyProjectModalController', RequirementApplyProjectModalController);
-    RequirementDetailController.$inject = ['$scope','$stateParams','$compile','entity','$uibModal','$timeout','Upload','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','MasterData','SampleTypeService','SampleUserService','BioBankBlockUi','ProjectService'];
+    RequirementDetailController.$inject = ['$scope','$stateParams','$state','$compile','entity','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService'];
     RequirementSampleDelModalController.$inject = ['$uibModalInstance'];
     RequirementApplyProjectModalController.$inject = ['$uibModalInstance'];
-    function RequirementDetailController($scope,$stateParams,$compile,entity,$uibModal,$timeout,Upload,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,MasterData,SampleTypeService,SampleUserService,BioBankBlockUi,ProjectService) {
+    function RequirementDetailController($scope,$stateParams,$state,$compile,entity,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService) {
         var vm = this;
         var modalInstance;
         vm.dtInstance = {};
@@ -159,6 +159,7 @@
             },
             onChange:function(value){
                 vm.projectIds = _.join(value, ',');
+                $scope.$apply();
             }
         };
 
@@ -420,9 +421,19 @@
             });
 
             modalInstance.result.then(function (data) {
-
+                $state.go("requirement-list")
             });
         }
+        vm.planSave = function (applyId) {
+            var planId;
+            RequirementService.savePlan(applyId).success(function (data) {
+                planId = data.id;
+            }).error(function (data) {
+                toastr.error(data.message);
+            })
+            $state.go('plan-edit',{planId:planId});
+
+        };
         //样本库存详情
         function _fnSampleDescModal() {
             modalInstance = $uibModal.open({

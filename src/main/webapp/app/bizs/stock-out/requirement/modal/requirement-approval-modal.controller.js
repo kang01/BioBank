@@ -45,8 +45,9 @@
             vm.conditionLen = _.filter(vm.conditions,{checked:true}).length;
         };
         vm.ok = function () {
+            BioBankBlockUi.blockUiStart();
             RequirementService.approveSampleRequirement(vm.requirement.id,vm.approve).success(function (data) {
-                BioBankBlockUi.blockUiStart();
+                BioBankBlockUi.blockUiStop();
                 toastr.success("批准成功!");
             }).error(function (data) {
                 BioBankBlockUi.blockUiStop();

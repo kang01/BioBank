@@ -403,7 +403,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     public void revertStockOutRequirementCheck(Long id) {
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(id);
         for(StockOutRequirement s : stockOutRequirementList){
-            stockOutRequirementService.revertStockOutRequirement(id);
+            stockOutRequirementService.revertStockOutRequirement(s.getId());
         }
     }
 }

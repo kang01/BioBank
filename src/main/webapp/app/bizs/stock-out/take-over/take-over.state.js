@@ -69,5 +69,27 @@
                     }]
                 }
             })
+            .state('take-over-view', {
+                parent: 'bizs',
+                url: '/take-over-list/{id}/view',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN']
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/stock-out/take-over/take-over-view.html',
+                        controller: 'TakeOverViewController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        return $translate.refresh();
+                    }],
+                    entity: ['$stateParams', 'TakeOverService', function($stateParams, TakeOverService) {
+                        return {id: $stateParams.id};
+                    }]
+                }
+            })
     }
 })();

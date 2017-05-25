@@ -39,6 +39,8 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
     private String memo;
 
     private Long stockOutTaskId;
+    private Long stockOutPlanId;
+    private Long stockOutApplyId;
 
     public Long getId() {
         return id;
@@ -112,6 +114,22 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
         this.stockOutTaskId = stockOutTaskId;
     }
 
+    public Long getStockOutPlanId() {
+        return stockOutPlanId;
+    }
+
+    public void setStockOutPlanId(Long stockOutPlanId) {
+        this.stockOutPlanId = stockOutPlanId;
+    }
+
+    public Long getStockOutApplyId() {
+        return stockOutApplyId;
+    }
+
+    public void setStockOutApplyId(Long stockOutApplyId) {
+        this.stockOutApplyId = stockOutApplyId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -137,14 +155,17 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
     public String toString() {
         return "StockOutHandoverDTO{" +
             "id=" + id +
-            ", handoverCode='" + handoverCode + "'" +
-            ", receiverName='" + receiverName + "'" +
-            ", receiverPhone='" + receiverPhone + "'" +
-            ", receiverOrganization='" + receiverOrganization + "'" +
-            ", handoverPersonId='" + handoverPersonId + "'" +
-            ", handoverTime='" + handoverTime + "'" +
-            ", status='" + status + "'" +
-            ", memo='" + memo + "'" +
+            ", handoverCode='" + handoverCode + '\'' +
+            ", receiverName='" + receiverName + '\'' +
+            ", receiverPhone='" + receiverPhone + '\'' +
+            ", receiverOrganization='" + receiverOrganization + '\'' +
+            ", handoverPersonId=" + handoverPersonId +
+            ", handoverTime=" + handoverTime +
+            ", status='" + status + '\'' +
+            ", memo='" + memo + '\'' +
+            ", stockOutTaskId=" + stockOutTaskId +
+            ", stockOutPlanId=" + stockOutPlanId +
+            ", stockOutApplyId=" + stockOutApplyId +
             '}';
     }
 }

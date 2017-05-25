@@ -8,6 +8,7 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.Area;
 import org.fwoxford.domain.Equipment;
 import org.fwoxford.domain.SampleClassification;
+import org.fwoxford.domain.StockOutHandover;
 import org.fwoxford.service.ProjectService;
 import org.fwoxford.service.SampleTypeService;
 import org.fwoxford.service.TranshipService;
@@ -1091,5 +1092,264 @@ public class TempResource {
         result.setRecordsFiltered(stockOutApplyList.size());
         result.setRecordsTotal(stockOutApplyList.size() * 10);
         return result;
+    }
+
+
+    /**
+     * 查询出库交接列表
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-handovers", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutHandoverForDataTableEntity> getPageStockOutHandOver(@RequestBody DataTablesInput input) {
+        List<StockOutHandoverForDataTableEntity> dataList =  new ArrayList<>();
+
+        for (int i = 0; i < input.getLength(); ++i){
+            StockOutHandoverForDataTableEntity rowData = new StockOutHandoverForDataTableEntity();
+            rowData.setId(0L + i + input.getStart());
+
+            rowData.setApplyCode(BankUtil.getUniqueID());
+            rowData.setHandoverCode(BankUtil.getUniqueID());
+            rowData.setCountOfSample(100L);
+            rowData.setStatus("1101");
+            rowData.setDeliverName("王东东");
+            rowData.setReceiveDate(LocalDate.now());
+            rowData.setReceiver("实验室");
+            rowData.setUsage("实验");
+            dataList.add(rowData);
+        }
+
+        DataTablesOutput<StockOutHandoverForDataTableEntity> result = new DataTablesOutput<>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(dataList);
+        result.setRecordsFiltered(dataList.size());
+        result.setRecordsTotal(dataList.size() * 10);
+        return result;
+    }
+    /**
+     * 查询待交接冻存盒
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-frozen-boxes/handover/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageStockOutFrozenBoxes(@PathVariable Long id, @RequestBody DataTablesInput input) {
+        List<StockOutFrozenBoxForDataTableEntity> dataList =  new ArrayList<>();
+
+        for (int i = 0; i < input.getLength(); ++i){
+            StockOutFrozenBoxForDataTableEntity rowData = new StockOutFrozenBoxForDataTableEntity();
+            rowData.setId(0L + i + input.getStart());
+
+            rowData.setFrozenBoxCode(BankUtil.getUniqueID());
+            rowData.setApplyId(1L);
+            rowData.setApplyCode(BankUtil.getUniqueID());
+            rowData.setPlanId(1L);
+            rowData.setPlanCode(BankUtil.getUniqueID());
+            rowData.setCountOfSample(100L);
+            rowData.setStatus("1101");
+            rowData.setDelegateId(1L);
+            rowData.setDelegate("王东东");
+            rowData.setMemo("实验");
+            dataList.add(rowData);
+        }
+
+        DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = new DataTablesOutput<>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(dataList);
+        result.setRecordsFiltered(dataList.size());
+        result.setRecordsTotal(dataList.size() * 10);
+        return result;
+    }
+
+    /**
+     * 获取交接单详情
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-handovers/{id}")
+    @Timed
+    public ResponseEntity<StockOutHandoverDTO> getStockOutHandoverDetail(@PathVariable Long id) throws URISyntaxException {
+        StockOutHandoverDTO result = new StockOutHandoverDTO();
+        result.setId(id);
+        result.setStockOutApplyId(id);
+        result.setStockOutPlanId(id);
+        result.setStockOutTaskId(id);
+        result.setHandoverPersonId(id);
+        result.setHandoverCode(BankUtil.getUniqueID());
+        result.setHandoverTime(LocalDate.parse("2017-05-05"));
+        result.setReceiverName("实验员");
+        result.setReceiverOrganization("实验室");
+        result.setReceiverPhone("1234567890123");
+
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+
+    /**
+     * 获取出库申请
+     * @param code
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-applies/code/{code}")
+    @Timed
+    public ResponseEntity<List<StockOutApplyDTO>> getStockOutApplies(@PathVariable String code) throws URISyntaxException {
+        List<StockOutApplyDTO> data = new ArrayList<>();
+
+        for (int i=0; i<10; ++i){
+            StockOutApplyDTO result = new StockOutApplyDTO();
+            result.setId((long)i);
+            result.setApplyCode(BankUtil.getUniqueID());
+
+            data.add(result);
+        }
+
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(data));
+    }
+    /**
+     * 获取出库计划
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-plans/apply/{id}")
+    @Timed
+    public ResponseEntity<List<StockOutPlanDTO>> getStockOutPlans(@PathVariable Long id) throws URISyntaxException {
+        List<StockOutPlanDTO> data = new ArrayList<>();
+
+        for (int i=0; i<10; ++i){
+            StockOutPlanDTO result = new StockOutPlanDTO();
+            result.setId((long)i);
+            result.setStockOutApplyId(id);
+            result.setStockOutPlanCode(BankUtil.getUniqueID());
+
+            data.add(result);
+        }
+
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(data));
+    }
+
+    /**
+     * 获取出库计划
+     * @param code
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-plans/code/{code}")
+    @Timed
+    public ResponseEntity<List<StockOutPlanDTO>> getStockOutPlans(@PathVariable String code) throws URISyntaxException {
+        List<StockOutPlanDTO> data = new ArrayList<>();
+
+        for (int i=0; i<10; ++i){
+            StockOutPlanDTO result = new StockOutPlanDTO();
+            result.setId((long)i);
+            result.setStockOutApplyId((long)i);
+            result.setStockOutPlanCode(BankUtil.getUniqueID());
+
+            data.add(result);
+        }
+
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(data));
+    }
+
+    /**
+     * 获取出库任务
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-tasks/plan/{id}")
+    @Timed
+    public ResponseEntity<List<StockOutTaskDTO>> getStockOutTasks(@PathVariable Long id) throws URISyntaxException {
+        List<StockOutTaskDTO> data = new ArrayList<>();
+
+        for (int i=0; i<10; ++i){
+            StockOutTaskDTO result = new StockOutTaskDTO();
+            result.setId((long)i);
+            result.setStockOutPlanId(id);
+            result.setStockOutTaskCode(BankUtil.getUniqueID());
+
+            data.add(result);
+        }
+
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(data));
+    }
+
+    /**
+     * 获取出库任务
+     * @param code
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-tasks/code/{code}")
+    @Timed
+    public ResponseEntity<List<StockOutTaskDTO>> getStockOutTasks(@PathVariable String code) throws URISyntaxException {
+        List<StockOutTaskDTO> data = new ArrayList<>();
+
+        for (int i=0; i<10; ++i){
+            StockOutTaskDTO result = new StockOutTaskDTO();
+            result.setId((long)i);
+            result.setStockOutPlanId((long)i);
+            result.setStockOutTaskCode(BankUtil.getUniqueID());
+
+            data.add(result);
+        }
+
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(data));
+    }
+
+    /**
+     * 创建交接单根据指定任务
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-out-handovers/task/{id}")
+    @Timed
+    public ResponseEntity<StockOutHandoverDTO> creatStockOutHandoverByTask(@PathVariable Long id) throws URISyntaxException {
+        StockOutHandoverDTO result = new StockOutHandoverDTO();
+        result.setId(id);
+        result.setStockOutApplyId(id);
+        result.setStockOutPlanId(id);
+        result.setStockOutTaskId(id);
+//        result.setHandoverPersonId(id);
+        result.setHandoverCode(BankUtil.getUniqueID());
+//        result.setHandoverTime(LocalDate.parse("2017-05-05"));
+//        result.setReceiverName("实验员");
+//        result.setReceiverOrganization("实验室");
+//        result.setReceiverPhone("1234567890123");
+
+        return ResponseEntity.created(new URI("/api/stock-out-handovers/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * 修改交接单
+     * @param stockOutHandoverDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-handovers")
+    @Timed
+    public ResponseEntity<StockOutHandoverDTO> updateStockOutHandover(@Valid @RequestBody StockOutHandoverDTO stockOutHandoverDTO) throws URISyntaxException {
+        StockOutHandoverDTO result = new StockOutHandoverDTO();
+        result.setId(1L);
+        result.setStockOutApplyId(1L);
+        result.setStockOutPlanId(1L);
+        result.setStockOutTaskId(1L);
+//        result.setHandoverPersonId(id);
+        result.setHandoverCode(BankUtil.getUniqueID());
+//        result.setHandoverTime(LocalDate.parse("2017-05-05"));
+//        result.setReceiverName("实验员");
+//        result.setReceiverOrganization("实验室");
+//        result.setReceiverPhone("1234567890123");
+
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, "1"))
+            .body(result);
     }
 }

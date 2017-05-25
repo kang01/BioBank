@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.StockOutApply;
 import org.fwoxford.domain.StockOutPlanFrozenTube;
 import org.fwoxford.domain.StockOutReqFrozenTube;
@@ -11,6 +12,7 @@ import org.fwoxford.domain.StockOutPlan;
 import org.fwoxford.repository.StockOutPlanRepository;
 import org.fwoxford.service.dto.StockOutPlanDTO;
 import org.fwoxford.service.mapper.StockOutPlanMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,14 +76,17 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
     public StockOutPlanDTO save(Long applyId) {
         log.debug("Request to save StockOutPlan : {}", applyId);
         StockOutApply apply = stockOutApplyRepository.findOne(applyId);
+        if(!apply.getStatus().equals(Constants.STOCK_OUT_APPROVED)){
+            throw new BankServiceException("申请未批准，不能创建计划！");
+        }
         Long cout = stockOutPlanRepository.countByStockOutApplyId(applyId, null);
 
         if (cout > 0){
-            //  重复的计划
+            throw new BankServiceException("计划已经存在！");
         }
 
         StockOutPlan stockOutPlan = new StockOutPlan();
-        stockOutPlan.status("XXXXX")
+        stockOutPlan.status(Constants.STOCK_OUT_PLAN_PENDING)
             .stockOutPlanCode(BankUtil.getUniqueID())
             .applyNumber(apply.getApplyCode())
             .stockOutApply(apply);
@@ -93,7 +98,7 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
 
         reqTubes.forEach(t -> {
             StockOutPlanFrozenTube planTube = new StockOutPlanFrozenTube();
-            planTube.status("XXXXX")
+            planTube.status(Constants.STOCK_OUT_PLAN_TUBE_PENDING)
                 .stockOutPlan(finalStockOutPlan)
                 .stockOutReqFrozenTube(t);
             planTubes.add(planTube);

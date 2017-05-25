@@ -118,6 +118,11 @@ public final class Constants {
     public static final String STOCK_OUT_PLAN_INVALID = "1403";
     public static final String STOCK_OUT_PLAN_PENDING = "1401";
     public static final String STOCK_OUT_PLAN_COMPLETED = "1402";
+    /**
+     * 出库计划样本状态：1501：新建
+     */
+    public static final String STOCK_OUT_PLAN_TUBE_PENDING = "1501";
+
     private Constants() {
     }
 }

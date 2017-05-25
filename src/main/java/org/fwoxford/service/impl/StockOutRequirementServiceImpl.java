@@ -71,6 +71,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
     @Autowired
     private StockOutFilesService stockOutFilesService;
 
+    @Autowired
+    private StockOutFilesRepository stockOutFilesRepository;
+
     public StockOutRequirementServiceImpl(StockOutRequirementRepository stockOutRequirementRepository, StockOutRequirementMapper stockOutRequirementMapper) {
         this.stockOutRequirementRepository = stockOutRequirementRepository;
         this.stockOutRequirementMapper = stockOutRequirementMapper;
@@ -253,7 +256,6 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
         List<StockOutRequiredSample> stockOutRequiredSamples = new ArrayList<StockOutRequiredSample>();
         Map<String,String> map = new HashMap<>();
-        StringBuffer samples = new StringBuffer();
         try {
             InputStream stream = file.getInputStream(); HashSet<String[]> hashSet =  reportExportingService.readRequiredSamplesFromExcelFile(stream);
             for(String[] s : hashSet){
@@ -277,7 +279,11 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         } catch (IOException e) {
             e.printStackTrace();
         }
-        stockOutRequiredSampleRepository.save(stockOutRequiredSamples);
+        if (stockOutRequiredSamples.size() > 0){
+            stockOutRequiredSampleRepository.save(stockOutRequiredSamples);
+            stockOutRequiredSamples.clear();
+        }
+
         requirement.setCountOfSample(stockOutRequiredSamples.size());
         stockOutRequirement.setCountOfSample(stockOutRequiredSamples.size());
         stockOutRequirementRepository.save(requirement);
@@ -286,16 +292,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         stockOutRequirementForApply.setRequirementName(requirement.getRequirementName());
         stockOutRequirementForApply.setMemo(requirement.getMemo());
         stockOutRequirementForApply.setStatus(requirement.getStatus());
-        for(String s : map.keySet()){
-            samples.append(s);
-            samples.append("-");
-            samples.append(map.get(s));
-            samples.append(",");
-        }
-        if(!StringUtils.isEmpty(samples)){
-            String samplesStr = samples.substring(0,samples.length()-1);
-            stockOutRequirementForApply.setSamples(samplesStr);
-        }
+         stockOutRequirementForApply.setSamples(file.getOriginalFilename());
         return stockOutRequirementForApply;
     }
     @Override
@@ -312,16 +309,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         result.setMemo(stockOutRequirement.getMemo());
         //获取指定样本
         List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(id);
-        StringBuffer samples = new StringBuffer();
-        for(StockOutRequiredSample s :stockOutRequiredSamples){
-            samples.append(s.getSampleCode());
-            samples.append("-");
-            samples.append(s.getSampleType());
-            samples.append(",");
-        }
-        if(samples.length()>0){
-            String samplesStr = samples.substring(0,samples.length()-1);
-            result.setSamples(samplesStr);
+        if(stockOutRequirement.getImportingFileId()!=null){
+            StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(stockOutRequirement.getImportingFileId());
+            result.setSamples(stockOutFiles!=null?stockOutFiles.getFileName():null);
         }else{
             result.setSex(stockOutRequirement.getSex());
             result.setAge(stockOutRequirement.getAgeMin()+";"+stockOutRequirement.getAgeMax());

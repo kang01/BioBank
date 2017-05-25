@@ -26,7 +26,7 @@
         //样本库存详情
         vm.sampleDescModal = _fnSampleDescModal;
         //保存申请
-        // vm.saveRequirement = _fnSaveRequirement;
+        vm.saveRequirement = _fnSaveRequirement;
         //附加功能
         vm.additionApply = _fnAdditionApply;
         //打印申请
@@ -167,8 +167,9 @@
         //---------------------------样本需求--------------------------
         //批量核对
         vm.sampleRequirementListCheck = _fnSampleRequirementCheckList;
-
+        //添加样本需求
         vm.addSampleModal = function () {
+            vm.sampleflag = true;
             _fnSaveRequirement();
             modalInstance = $uibModal.open({
                 animation: true,
@@ -179,7 +180,9 @@
                 resolve: {
                     items: function () {
                         return {
-                            projectIds:vm.projectIds
+                            projectIds:vm.projectIds,
+                            requirementId:vm.requirement.id,
+                            sampleRequirement:vm.sampleRequirement || ""
                         }
                     }
                 }
@@ -194,34 +197,9 @@
             BioBankBlockUi.blockUiStart();
             RequirementService.saveRequirementInfo(vm.requirement).success(function (data) {
                 BioBankBlockUi.blockUiStop();
-                // if(!vm.sampleflag){
-                //     toastr.success("保存申请记录成功！");
-                //     return;
-                // }
-                // if(vm.sampleRequirement.id){
-                //     if(vm.sampleRequirement.status){
-                //         delete  vm.sampleRequirement.status;
-                //     }
-                //     delete  vm.sampleRequirement.samples;
-                //     RequirementService.saveEditSampleRequirement(vm.requirement.id,vm.sampleRequirement).success(function (data) {
-                //         BioBankBlockUi.blockUiStop();
-                //         toastr.success("保存样本需求成功！");
-                //         vm.sampleRequirement.requirementName = '';
-                //         vm.sampleRequirement.countOfSample = '';
-                //     }).error(function (data) {
-                //         BioBankBlockUi.blockUiStop();
-                //         toastr.success(data.message);
-                //     })
-                //
-                // }else{
-                //     RequirementService.saveSampleRequirement(vm.requirement.id,vm.sampleRequirement).success(function (data) {
-                //         BioBankBlockUi.blockUiStop();
-                //         toastr.success("保存样本需求成功！");
-                //     }).error(function (data) {
-                //         BioBankBlockUi.blockUiStop();
-                //     })
-                // }
-
+                if(!vm.sampleflag){
+                    toastr.success("保存申请记录成功！");
+                }
             }).error(function (data) {
                 BioBankBlockUi.blockUiStop();
                 toastr.error("保存申请记录失败！");
@@ -310,9 +288,10 @@
             RequirementService.querySampleRequirement(sampleRequirementId).success(function (data) {
                 vm.file = "";
                 vm.sampleRequirement = data;
-                if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
-                    _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
-                }
+                vm.addSampleModal(vm.sampleRequirement)
+                // if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
+                //     _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
+                // }
             }).error(function (data) {
             })
         }

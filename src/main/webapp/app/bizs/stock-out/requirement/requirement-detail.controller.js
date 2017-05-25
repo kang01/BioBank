@@ -130,11 +130,6 @@
         vm.projectConfig = {
             valueField:'id',
             labelField:'projectName',
-            render: {
-                option: function(item, escape) {
-                    return '<div>'+item.projectName+'ahhh</div>';
-                }
-            },
             onInitialize: function(){
                 selector = arguments[0];
             },
@@ -192,7 +187,7 @@
         //批量核对
         vm.sampleRequirementListCheck = _fnSampleRequirementCheckList;
         //添加样本需求
-        vm.addSampleModal = function () {
+        vm.addSampleModal = function (sampleRequirement) {
             vm.sampleflag = true;
             _fnSaveRequirement();
             modalInstance = $uibModal.open({
@@ -206,7 +201,7 @@
                         return {
                             projectIds:vm.projectIds,
                             requirementId:vm.requirement.id,
-                            sampleRequirement:vm.sampleRequirement || ""
+                            sampleRequirement:sampleRequirement || ""
                         }
                     }
                 }
@@ -311,7 +306,7 @@
         function actionsHtml(data, type, full, meta) {
             return '<div ng-if="vm.status != 1103">'+
                     '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementRevert('+full.id+')">复原</a>&nbsp;' +
-                    '<a ng-if="'+full.status+'== 1201" ng-click="vm.sampleRequirementCheck('+full.id+')">核对</a>&nbsp;' +
+                    '<a ng-if="'+full.status+'== 1201 || '+full.status+'== 1202" ng-click="vm.sampleRequirementCheck('+full.id+')">核对</a>&nbsp;' +
                     '<a ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;'+
                     '<a ng-click="vm.sampleRequirementDel('+full.id+')">删除</a>&nbsp;'+
                     '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementDescModel('+full.id+')">详情</a>'+
@@ -322,7 +317,7 @@
             RequirementService.querySampleRequirement(sampleRequirementId).success(function (data) {
                 vm.file = "";
                 vm.sampleRequirement = data;
-                vm.addSampleModal(vm.sampleRequirement)
+                vm.addSampleModal(vm.sampleRequirement);
                 // if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
                 //     _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
                 // }

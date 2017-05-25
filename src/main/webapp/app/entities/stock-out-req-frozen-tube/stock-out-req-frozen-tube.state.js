@@ -128,6 +128,7 @@
                                 memo: null,
                                 tubeRows: null,
                                 tubeColumns: null,
+                                importingSampleId: null,
                                 id: null
                             };
                         }

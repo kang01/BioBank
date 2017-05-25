@@ -795,7 +795,7 @@ public class TempResource {
     }
 
     /**
-     * 查询出库申请列表
+     * 查询出库计划列表
      * @param input
      * @return
      */

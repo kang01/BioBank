@@ -11,7 +11,8 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface StockOutPlanRepository extends JpaRepository<StockOutPlan,Long> {
-    @Query("SELECT p FROM StockOutPlan p WHERE p.stockOutApply.id = ?1 AND (?2 IS NULL OR p.id <> ?2) AND p.status = 'XXXX'")
+    @Query("SELECT count(p) FROM StockOutPlan p WHERE p.stockOutApply.id = ?1 AND (?2 IS NULL OR p.id <> ?2) AND p.status = '1401'")
     Long countByStockOutApplyId(Long applyId, Long excludeId);
+
     List<StockOutPlan> findAllByStockOutApplyId(Long applyId);
 }

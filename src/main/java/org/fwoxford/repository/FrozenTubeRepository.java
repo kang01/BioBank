@@ -1,5 +1,6 @@
 package org.fwoxford.repository;
 
+import io.swagger.models.auth.In;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
 
@@ -75,8 +76,8 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         + " and (?5 is null or t.gender = ?5)\n"
         + " and (?6 is null or t.isBloodLipid  = ?6)\n"
         + " and (?7 is null or t.isHemolysis  = ?7)\n"
-        + " and (?8 is null or t.age >= ?8)\n"
-        + " and (?9 is null or t.age <= ?9)\n"
+        + " and (?8 is null or t.age >= ?8 )\n"
+        + " and (?9 is null or t.age <= ?9 )\n"
     )
     List<FrozenTube> findByRequirement(Long sampleTypeId, Long samplyClassificationId, Long frozenTubeTypeId,
                                        String diseaseType, String sex, Boolean isBloodLipid, Boolean isHemolysis, Integer ageMin, Integer ageMax);

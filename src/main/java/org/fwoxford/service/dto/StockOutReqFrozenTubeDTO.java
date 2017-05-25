@@ -29,6 +29,8 @@ public class StockOutReqFrozenTubeDTO extends AbstractAuditingDTO implements Ser
     @Size(max = 20)
     private String tubeColumns;
 
+    private Long importingSampleId;
+
     private Long frozenBoxId;
 
     private Long frozenTubeId;
@@ -69,6 +71,13 @@ public class StockOutReqFrozenTubeDTO extends AbstractAuditingDTO implements Ser
 
     public void setTubeColumns(String tubeColumns) {
         this.tubeColumns = tubeColumns;
+    }
+    public Long getImportingSampleId() {
+        return importingSampleId;
+    }
+
+    public void setImportingSampleId(Long importingSampleId) {
+        this.importingSampleId = importingSampleId;
     }
 
     public Long getFrozenBoxId() {
@@ -124,6 +133,7 @@ public class StockOutReqFrozenTubeDTO extends AbstractAuditingDTO implements Ser
             ", memo='" + memo + "'" +
             ", tubeRows='" + tubeRows + "'" +
             ", tubeColumns='" + tubeColumns + "'" +
+            ", importingSampleId='" + importingSampleId + "'" +
             '}';
     }
 }

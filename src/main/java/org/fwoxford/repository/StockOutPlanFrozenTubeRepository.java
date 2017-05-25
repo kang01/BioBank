@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StockOutPlanFrozenTubeRepository extends JpaRepository<StockOutPlanFrozenTube,Long> {
 
+    List<StockOutPlanFrozenTube> findByStockOutPlanId(Long id);
 }

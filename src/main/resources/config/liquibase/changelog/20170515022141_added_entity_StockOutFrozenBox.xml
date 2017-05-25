@@ -35,7 +35,7 @@
             </column>
 
             <column name="stock_out_box_position_id" type="bigint" remarks="冻存盒位置ID">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="stock_out_task_id" type="bigint" remarks="出库任务ID">

@@ -37,8 +37,7 @@ public class StockOutFrozenBox extends AbstractAuditingEntity implements Seriali
     @NotNull
     private FrozenBox frozenBox;
 
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     private StockOutBoxPosition stockOutBoxPosition;
 
     @ManyToOne(optional = false)

@@ -129,17 +129,16 @@
         vm.projectConfig = {
             valueField:'id',
             labelField:'projectName',
+            render: {
+                option: function(item, escape) {
+                    return '<div>'+item.projectName+'ahhh</div>';
+                }
+            },
             onChange:function(value){
-                _fnIsChangeProjectModal();
+                if(vm.requirement.stockOutRequirement){
+                    _fnIsChangeProjectModal();
+                }
                 vm.projectIds = _.join(value, ',');
-                // //获取样本分类
-                // if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
-                //     _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
-                // }else{
-                //     vm.sampleClassOptions = [];
-                //     vm.sampleRequirement.sampleClassId = "";
-                //     $scope.$apply();
-                // }
             }
         };
 
@@ -242,6 +241,7 @@
 
         vm.dtColumns = [
             DTColumnBuilder.newColumn('id').notVisible(),
+            DTColumnBuilder.newColumn('requirementName').withTitle('需求名称'),
             DTColumnBuilder.newColumn('countOfSample').withTitle('样本量'),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
             DTColumnBuilder.newColumn('frozenTubeTypeName').withTitle('管类型'),
@@ -270,8 +270,8 @@
             if(data.isHemolysis){
                 diseaseType += "溶血　"
             }
-            $('td:eq(4)', row).html(diseaseType);
-            $('td:eq(6)', row).html(status);
+            $('td:eq(5)', row).html(diseaseType);
+            $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
@@ -417,8 +417,10 @@
 
             });
 
-            modalInstance.result.then(function (data) {
-
+            modalInstance.result.then(function () {
+                RequirementService.sampleRevert(vm.requirement.id).success(function (data) {
+                    _loadRequirement()
+                })
             });
         }
 

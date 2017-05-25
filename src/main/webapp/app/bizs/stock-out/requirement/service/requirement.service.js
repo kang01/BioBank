@@ -49,7 +49,9 @@
             //批准
             approveSampleRequirement:_approveSampleRequirement,
             //附加
-            addApplyRequirement:_addApplyRequirement
+            addApplyRequirement:_addApplyRequirement,
+            //项目更改样本列表复原
+            sampleRevert:_sampleRevert
         };
         function _queryDemo(data,oSettings) {
             return $http.post('api/res/tranships',JSON.stringify(data))
@@ -120,6 +122,9 @@
         }
         function _addApplyRequirement(applyId) {
             return $http.post('api/stock-out-applies/additionalApply/'+applyId)
+        }
+        function _sampleRevert(applyId) {
+            return $http.put('/api/stock-out-applies/revert/'+applyId)
         }
 
         return service;

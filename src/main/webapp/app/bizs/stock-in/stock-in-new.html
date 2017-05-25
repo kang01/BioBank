@@ -1,7 +1,7 @@
 <div class="stock-in-new">
     <div class="">
         <h3 class="pull-left">新增入库记录</h3>
-        <div class="form-group pull-right m-r-10">
+        <div class="form-group pull-right mr-10">
             <div class="text-right">
                 <button type="button" class="btn btn-primary" ng-click="vm.saveStockIn()" ng-show="vm.entity.status == '7001'">入库完成</button>
                 <button type="button" class="btn" ui-sref="stock-in">关闭</button>
@@ -10,7 +10,7 @@
         <div style="clear: both"></div>
     </div>
 
-    <div class="row m-l-0 m-r-0">
+    <div class="row ml-0 mr-0">
         <div class="col-md-1 text-right"><strong>入库单编号</strong></div>
         <div class="col-md-1">{{vm.entity.stockInCode}}</div>
         <div class="col-md-1 text-right"><strong>转运编号</strong></div>
@@ -30,7 +30,7 @@
 
 
 
-    <div class="row m-l-0 m-r-0">
+    <div class="row ml-0 mr-0">
         <div class="col-md-12">
             <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstanceCallback"
                    class=" table table-striped table-bordered">
@@ -52,12 +52,12 @@
     </div>
     <!--ng-if="vm.showSplittingPanel()"-->
     <div ng-if="vm.isShowSplittingPanel()">
-        <div class="row split-box m-l-0 m-r-0">
+        <div class="row split-box ml-0 mr-0">
             <div class="col-md-9">
                 <div class="col-md-5">
                     <h4>待分装样本盒{{vm.box.frozenBoxCode}}</h4>
                 </div>
-                <div class="col-md-7 text-right m-b-10">
+                <div class="col-md-7 text-right mb-10">
                     <button type="button" class="btn btn-default" ng-click="vm.closeBox()">关闭</button>
                     <button type="button" class="btn btn-default" ng-click="vm.splitBox()">分装</button>
                     <button type="button" class="btn btn-default" ng-click="vm.recover()">复原</button>
@@ -66,7 +66,7 @@
                 <div class="clear-both"></div>
                 <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"></hot-table>
             </div>
-            <div class="col-md-3 p-l-0 p-r-0">
+            <div class="col-md-3 pl-0 p-r-0">
                 <h4>
                     分装后样本盒
                 </h4>

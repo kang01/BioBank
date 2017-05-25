@@ -15,7 +15,7 @@
             queryTakeOverList:_queryTakeOverList
         };
         function _queryTakeOverList(data,oSettings) {
-            return $http.post('api/res/tranships',JSON.stringify(data))
+            return $http.post('/api/temp/res/stock-out-handovers',JSON.stringify(data))
         }
         return service;
     }

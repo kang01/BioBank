@@ -24,6 +24,30 @@ public class StockOutFrozenBoxForDataTableEntity {
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private String sampleTypeName;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private Long applyId;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private String applyCode;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private Long planId;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private String planCode;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private Long delegateId;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private String delegate;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private String memo;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private String status;
 
     public Long getId() {
         return id;
@@ -63,5 +87,69 @@ public class StockOutFrozenBoxForDataTableEntity {
 
     public void setSampleTypeName(String sampleTypeName) {
         this.sampleTypeName = sampleTypeName;
+    }
+
+    public Long getApplyId() {
+        return applyId;
+    }
+
+    public void setApplyId(Long applyId) {
+        this.applyId = applyId;
+    }
+
+    public String getApplyCode() {
+        return applyCode;
+    }
+
+    public void setApplyCode(String applyCode) {
+        this.applyCode = applyCode;
+    }
+
+    public Long getPlanId() {
+        return planId;
+    }
+
+    public void setPlanId(Long planId) {
+        this.planId = planId;
+    }
+
+    public String getPlanCode() {
+        return planCode;
+    }
+
+    public void setPlanCode(String planCode) {
+        this.planCode = planCode;
+    }
+
+    public Long getDelegateId() {
+        return delegateId;
+    }
+
+    public void setDelegateId(Long delegateId) {
+        this.delegateId = delegateId;
+    }
+
+    public String getDelegate() {
+        return delegate;
+    }
+
+    public void setDelegate(String delegate) {
+        this.delegate = delegate;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

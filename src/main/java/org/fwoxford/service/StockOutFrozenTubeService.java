@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutFrozenTubeDTO;
+import org.fwoxford.service.dto.response.StockOutFrozenTubeForPlan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -20,7 +21,7 @@ public interface StockOutFrozenTubeService {
 
     /**
      *  Get all the stockOutFrozenTubes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +41,6 @@ public interface StockOutFrozenTubeService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    List<StockOutFrozenTubeForPlan> getStockOutFrozenTubeForPlanByApplyAndBox(Long applyId, Long frozenBoxId);
 }

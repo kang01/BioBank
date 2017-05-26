@@ -2,6 +2,8 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.StockOutFrozenTubeService;
+import org.fwoxford.service.dto.response.StockOutFrozenTubeForPlan;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.StockOutFrozenTubeDTO;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +37,7 @@ public class StockOutFrozenTubeResource {
     private final Logger log = LoggerFactory.getLogger(StockOutFrozenTubeResource.class);
 
     private static final String ENTITY_NAME = "stockOutFrozenTube";
-        
+
     private final StockOutFrozenTubeService stockOutFrozenTubeService;
 
     public StockOutFrozenTubeResource(StockOutFrozenTubeService stockOutFrozenTubeService) {
@@ -127,5 +130,17 @@ public class StockOutFrozenTubeResource {
         stockOutFrozenTubeService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
+    /**
+     * 根据出库申请ID以及冻存盒ID查询出库的样本
+     * @param applyId
+     * @param frozenBoxId
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-frozen-tubes/apply/{applyId}/frozenBox/{frozenBoxId}")
+    @Timed
+    public ResponseEntity<List<StockOutFrozenTubeForPlan>> getStockOutFrozenTubeForPlanByApplyAndBox(@PathVariable Long applyId, @PathVariable Long frozenBoxId) throws URISyntaxException {
+        List<StockOutFrozenTubeForPlan> result = stockOutFrozenTubeService.getStockOutFrozenTubeForPlanByApplyAndBox(applyId,frozenBoxId);
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
 }

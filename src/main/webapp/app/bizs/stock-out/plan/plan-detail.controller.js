@@ -357,6 +357,7 @@
             PlanService.createTask(vm.planId,vm.strBoxIds).success(function (data) {
                 BioBankBlockUi.blockUiStop();
                 toastr.success("创建任务成功!");
+                _queryPlanBoxes();
                 vm.strBoxIds = "";
                 vm.taskInstance.rerender();
             })
@@ -392,8 +393,11 @@
             });
 
             modalInstance.result.then(function (data) {
+                BioBankBlockUi.blockUiStart();
                 PlanService.delTask(taskId).success(function (data) {
-                    vm.dtInstance.rerender();
+                    BioBankBlockUi.blockUiStop();
+                    toastr.success("删除任务成功!");
+                    _queryPlanBoxes();
                     vm.taskInstance.rerender();
                 });
             });

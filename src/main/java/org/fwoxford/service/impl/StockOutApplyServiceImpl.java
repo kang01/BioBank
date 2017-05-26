@@ -79,6 +79,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     @Autowired
     private StockOutPlanRepository stockOutPlanRepository;
 
+    @Autowired
+    private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
+
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
         this.stockOutApplyMapper = stockOutApplyMapper;
@@ -238,7 +241,8 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
        //获取申请的需求
         List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<StockOutRequirementForApplyTable>();
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(id);
-        int countOfStockOutSample = 0;
+        Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByApply(id);
+        int countOfSampleAll=0;
         for(StockOutRequirement requirement : stockOutRequirementList){
             StockOutRequirementForApplyTable stockOutRequirementForApplyTable = new StockOutRequirementForApplyTable();
             stockOutRequirementForApplyTable.setId(requirement.getId());
@@ -258,10 +262,11 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
                 stockOutRequirementForApplyTable.setAge(requirement.getAgeMin()+"-"+requirement.getAgeMax()+"岁");
             }
             stockOutRequirementForApplyTables.add(stockOutRequirementForApplyTable);
-            countOfStockOutSample +=requirement.getCountOfSample();
+            countOfSampleAll +=requirement.getCountOfSample();
         }
         res.setStockOutRequirement(stockOutRequirementForApplyTables);
-        res.setCountOfStockOutSample(Long.valueOf(countOfStockOutSample));
+        res.setCountOfStockOutSample(countOfStockOutSample);
+        res.setCountOfSample(Long.valueOf(countOfSampleAll));
         return res;
     }
 

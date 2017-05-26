@@ -26,6 +26,10 @@ public class StockOutApplyForSave {
      */
     private Long countOfStockOutSample;
     /**
+     * 样本量
+     */
+    private Long countOfSample;
+    /**
      * 委托方名称
      */
     private String delegateName;
@@ -133,6 +137,14 @@ public class StockOutApplyForSave {
 
     public void setDelegateId(Long delegateId) {
         this.delegateId = delegateId;
+    }
+
+    public Long getCountOfSample() {
+        return countOfSample;
+    }
+
+    public void setCountOfSample(Long countOfSample) {
+        this.countOfSample = countOfSample;
     }
 
     public Long getCountOfStockOutSample() {

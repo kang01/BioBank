@@ -14,12 +14,12 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StockOutFrozenBoxRepository extends JpaRepository<StockOutFrozenBox,Long> {
 
-    @Query("SELECT s FROM StockOutFrozenBox s WHERE s.stockOutTask.id = ?1 AND s.status='XXXXX'")
+    @Query("SELECT s FROM StockOutFrozenBox s WHERE s.stockOutTask.id = ?1")
     Page<StockOutFrozenBox> findAllByTask(Long taskId, Pageable pageable);
 
     void deleteByStockOutTaskId(Long taskId);
 
-    @Query("SELECT s.stockOutBoxPosition.id FROM StockOutFrozenBox s WHERE s.stockOutTask.id = ?1 AND s.status='XXXXX'")
+    @Query("SELECT s.stockOutBoxPosition.id FROM StockOutFrozenBox s WHERE s.stockOutTask.id = ?1")
     List<Long> findAllBoxPositionByTask(Long taskId);
 
 }

@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StockOutHandoverRepository extends JpaRepository<StockOutHandover,Long> {
 
+    Long countByStockOutTaskId(Long id);
 }

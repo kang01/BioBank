@@ -868,7 +868,7 @@ public class TempResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-frozen-boxes/requirement/{ids}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input,@PathVariable List<Long> ids) {
+    public DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> getPageStockOutFrozenBox(@RequestBody DataTablesInput input,@PathVariable List<Long> ids) {
         List<StockOutFrozenBoxForTaskDataTableEntity> stockOutApplyList =  new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
 
         for (int i = 0; i < input.getLength(); ++i){
@@ -1009,7 +1009,7 @@ public class TempResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-tasks/plan/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<StockOutTaskForPlanDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input,@PathVariable Long id) {
+    public DataTablesOutput<StockOutTaskForPlanDataTableEntity> getPageStockTaskByPlan(@RequestBody DataTablesInput input,@PathVariable Long id) {
         List<StockOutTaskForPlanDataTableEntity> stockOutApplyList =  new ArrayList<StockOutTaskForPlanDataTableEntity>();
 
         for (int i = 0; i < input.getLength(); ++i){
@@ -1322,5 +1322,38 @@ public class TempResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, "1"))
             .body(result);
+    }
+
+    /**
+     * 获取出库任务列表
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-tasks", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutTaskForDataTableEntity> getDataTableStockOutTask(@RequestBody DataTablesInput input) {
+        List<StockOutTaskForDataTableEntity> dataList =  new ArrayList<>();
+
+        for (int i = 0; i < input.getLength(); ++i){
+            StockOutTaskForDataTableEntity rowData = new StockOutTaskForDataTableEntity();
+            rowData.setId(0L + i + input.getStart());
+            rowData.setCountOfStockOutSample(100L);
+            rowData.setCountOfHandOverSample(20L);
+            rowData.setHandOverTimes(1L);
+            rowData.setPurposeOfSample("实验");
+            rowData.setStockOutDate(LocalDate.now());
+            rowData.setStockOutPlanCode(BankUtil.getUniqueID());
+            rowData.setStockOutTaskCode(BankUtil.getUniqueID());
+            rowData.setStatus("1601");
+            dataList.add(rowData);
+        }
+
+        DataTablesOutput<StockOutTaskForDataTableEntity> result = new DataTablesOutput<StockOutTaskForDataTableEntity>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(dataList);
+        result.setRecordsFiltered(dataList.size());
+        result.setRecordsTotal(dataList.size() * 10);
+        return result;
     }
 }

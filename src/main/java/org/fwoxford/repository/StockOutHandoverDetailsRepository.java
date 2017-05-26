@@ -1,7 +1,6 @@
 package org.fwoxford.repository;
 
 import org.fwoxford.domain.StockOutHandoverDetails;
-
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
@@ -11,5 +10,6 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface StockOutHandoverDetailsRepository extends JpaRepository<StockOutHandoverDetails,Long> {
-
+    @Query("select count(t) from StockOutHandoverDetails t where t.stockOutHandover.stockOutTask.id=?1")
+    Long countByStockOutTaskId(Long id);
 }

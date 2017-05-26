@@ -5,6 +5,7 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutTaskService;
 import org.fwoxford.service.dto.StockOutTaskDTO;
+import org.fwoxford.service.dto.response.StockOutTaskForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutTaskForPlanDataTableEntity;
 import org.fwoxford.service.mapper.StockOutTaskMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -44,6 +45,12 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private StockOutHandoverDetailsRepository stockOutHandoverDetailsRepository;
+
+    @Autowired
+    private StockOutHandoverRepository stockOutHandoverRepository;
 
     private final StockOutTaskMapper stockOutTaskMapper;
 
@@ -205,7 +212,7 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
                 operators.add(user!=null?user.getLastName()+user.getFirstName():null);
             }
             rowData.setOperators(String.join(".", operators));
-            Long count = stockOutFrozenTubeRepository.countStockOutTaskId(o.getId());
+            Long count = stockOutFrozenTubeRepository.countByStockOutTaskId(o.getId());
             Long countOfBox = stockOutFrozenBoxRepository.countByStockOutTaskId(o.getId());
             rowData.setCountOfSample(count);
             rowData.setCountOfFrozenBox(countOfBox);
@@ -213,4 +220,24 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         });
     }
 
+    @Override
+    public Page<StockOutTaskForDataTableEntity> getDataTableStockOutTask(Pageable pageRequest) {
+        Page<StockOutTask> result = stockOutTaskRepository.findAll(pageRequest);
+        return result.map(o -> {
+            StockOutTaskForDataTableEntity rowData = new StockOutTaskForDataTableEntity();
+            rowData.setId(o.getId());
+            rowData.setStatus(o.getStatus());
+            rowData.setStockOutTaskCode(o.getStockOutTaskCode());
+            rowData.setStockOutPlanCode(o.getStockOutPlan().getStockOutPlanCode());
+            rowData.setStockOutDate(o.getStockOutDate());
+            rowData.setPurposeOfSample(o.getStockOutPlan().getStockOutApply().getPurposeOfSample());
+            Long count = stockOutFrozenTubeRepository.countByStockOutTaskId(o.getId());
+            Long countOfhandOver = stockOutHandoverDetailsRepository.countByStockOutTaskId(o.getId());
+            Long countTimes = stockOutHandoverRepository.countByStockOutTaskId(o.getId());
+            rowData.setCountOfStockOutSample(count);//任务样本量
+            rowData.setCountOfHandOverSample(countOfhandOver);//已交接样本
+            rowData.setHandOverTimes(countTimes);//交接次数
+            return rowData;
+        });
+    }
 }

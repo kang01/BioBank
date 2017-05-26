@@ -76,6 +76,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     @Autowired
     private StockOutFilesRepository stockOutFilesRepository;
 
+    @Autowired
+    private StockOutPlanRepository stockOutPlanRepository;
+
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
         this.stockOutApplyMapper = stockOutApplyMapper;
@@ -403,5 +406,15 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         for(StockOutRequirement s : stockOutRequirementList){
             stockOutRequirementService.revertStockOutRequirement(s.getId());
         }
+    }
+
+    @Override
+    public StockOutApplyDetail getStockOutDetailAndRequirementByPlanId(Long id) {
+        StockOutPlan stockOutPlan = stockOutPlanRepository.findOne(id);
+        if(stockOutPlan == null){
+            throw new BankServiceException("计划不存在！");
+        }
+
+        return this.getStockOutDetailAndRequirement(stockOutPlan.getId());
     }
 }

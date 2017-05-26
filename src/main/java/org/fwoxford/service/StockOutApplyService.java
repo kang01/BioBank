@@ -66,4 +66,6 @@ public interface StockOutApplyService {
     ByteArrayOutputStream printStockOutApply(Long id);
 
     void revertStockOutRequirementCheck(Long id);
+
+    StockOutApplyDetail getStockOutDetailAndRequirementByPlanId(Long id);
 }

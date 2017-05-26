@@ -278,4 +278,17 @@ public class StockOutApplyResource {
         stockOutApplyService.revertStockOutRequirementCheck(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    /**
+     * 出库申请，查看详情接口
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-applies/plan/{id}")
+    @Timed
+    public ResponseEntity<StockOutApplyDetail> getApplyByPlanId(@PathVariable Long id) throws URISyntaxException {
+        StockOutApplyDetail result = stockOutApplyService.getStockOutDetailAndRequirementByPlanId(id);
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
 }

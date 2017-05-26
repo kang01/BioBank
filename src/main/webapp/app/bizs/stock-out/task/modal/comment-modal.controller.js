@@ -13,6 +13,9 @@
 
     function TaskCommentModalController($uibModalInstance,$uibModal,items) {
         var vm = this;
+        //1：未出库样本批注、2：已出库样本批注
+        vm.status = items.status;
+
         vm.ok = function () {
             $uibModalInstance.close();
         };

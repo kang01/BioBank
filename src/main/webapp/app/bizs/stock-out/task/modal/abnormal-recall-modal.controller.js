@@ -13,6 +13,9 @@
 
     function AbnormalRecallModalController($uibModalInstance,$uibModal,items) {
         var vm = this;
+        //1:异常 2:撤销申请
+        vm.status = items.status;
+
         vm.ok = function () {
             $uibModalInstance.close();
         };

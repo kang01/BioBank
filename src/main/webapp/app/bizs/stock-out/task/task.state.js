@@ -69,5 +69,24 @@
                     }]
                 }
             })
+            .state('task-edit', {
+                parent: 'bizs',
+                url: '/task-list/{taskId}/edit',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN']
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/stock-out/task/task-detail.html',
+                        controller: 'TaskDetailController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        return $translate.refresh();
+                    }]
+                }
+            })
     }
 })();

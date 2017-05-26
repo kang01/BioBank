@@ -3,7 +3,13 @@
     <h3 class="modal-title" id="modal-title">批注</h3>
 </div>
 <div class="modal-body" id="modal-body">
-    待出库样本或已出库样本批注
+    <form>
+        <div class="form-group">
+            <label>批注</label>
+            <textarea ng-if="vm.status == 1" class="form-control resize-none" ></textarea>
+            <textarea ng-if="vm.status == 2" class="form-control resize-none" ></textarea>
+        </div>
+    </form>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="vm.ok()" >确定</button>

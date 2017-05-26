@@ -8,12 +8,12 @@
                 <h2 class="m0">编辑出库任务</h2>
             </div>
             <div class="pull-right">
-                <button class="btn btn-primary" ng-click="vm.abnormalModal()">异常或撤销申请</button>
-                <button class="btn btn-primary" ng-click="vm.commentModal()">批注</button>
-                <button class="btn btn-primary" ng-click="vm.boxInModal()">装盒</button>
+                <!--<button class="btn btn-primary" ng-click="vm.abnormalModal()">异常或撤销申请</button>-->
+                <!--<button class="btn btn-primary" ng-click="vm.commentModal()">批注</button>-->
+                <!--<button class="btn btn-primary" ng-click="vm.boxInModal()">装盒</button>-->
                 <button class="btn btn-primary" ng-click="vm.taskStockOutModal()">出库</button>
                 <button class="btn btn-primary" >保存任务</button>
-                <button class="btn btn-default" ui-sref="take-over">关闭</button>
+                <button class="btn btn-default" ui-sref="task-list">关闭</button>
             </div>
         </div>
     </div>
@@ -21,41 +21,45 @@
         <div class="row m0">
             <div class="form-group col-md-2">
                 <label>计划编码</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" ng-model="vm.task.stockOutPlanCode" ng-disabled="true">
             </div>
             <div class="form-group col-md-2">
                 <label>任务编码</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" ng-model="vm.task.stockOutTaskCode" ng-disabled="true">
             </div>
             <div class="form-group col-md-2">
                 <label>出库日期</label>
                 <div class="input-group">
-                    <input  type="text" class="form-control" name="startTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.task.startTime" is-open="vm.datePickerOpenStatus.startTime"
+                    <input  type="text" class="form-control" name="stockOutDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.task.stockOutDate" is-open="vm.datePickerOpenStatus.stockOutDate"
                             ng-disabled="vm.applyFlag" required  />
                     <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('startTime')"><i class="glyphicon glyphicon-calendar"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('stockOutDate')"><i class="glyphicon glyphicon-calendar"></i></button>
                         </span>
                 </div>
             </div>
             <div class="form-group col-md-2">
                 <label>出库负责人1</label>
-                <selectize options='vm.recorderOptions' config="vm.recorderConfig"
-                           ng-model="vm.task.recordId" ng-disabled="vm.applyFlag"></selectize>
-                <input type="hidden" ng-model="vm.task.recordId" required>
+                <selectize options='vm.personOptions' config="vm.personConfig"
+                           ng-model="vm.task.stockOutHeadId1"></selectize>
+                <input type="hidden" ng-model="vm.task.stockOutHeadId1" required>
             </div>
             <div class="form-group col-md-2">
                 <label>出库负责人2</label>
-                <input type="text" class="form-control">
+                <selectize options='vm.personOptions' config="vm.personConfig"
+                           ng-model="vm.task.stockOutHeadId2"></selectize>
+                <input type="hidden" ng-model="vm.task.stockOutHeadId2" required>
             </div>
             <div class="form-group col-md-2">
                 <label>状态</label>
-                <input type="text" class="form-control">
+                <selectize options='vm.taskStatusOptions' config="vm.taskStatusConfig"
+                           ng-model="vm.task.status" ng-disabled="true"></selectize>
+                <input type="hidden" ng-model="vm.task.status" required>
             </div>
         </div>
         <div class="row m0">
             <div class="form-group col-md-12">
                 <label>备注</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" ng-model="vm.task.memo">
             </div>
         </div>
         <div class="row"></div>
@@ -97,10 +101,10 @@
                     </div>
                     <div class="pull-right">
                                 <button class="btn btn-default" ng-click="focusInput=true">扫码取样</button>
-                                <button class="btn btn-default">装盒</button>
-                                <button class="btn btn-default">异常</button>
-                                <button class="btn btn-default">撤销申请</button>
-                                <button class="btn btn-default">批注</button>
+                                <button class="btn btn-default" ng-click="vm.boxInModal()">装盒</button>
+                                <button class="btn btn-default" ng-click="vm.abnormalModal(1)">异常</button>
+                                <button class="btn btn-default" ng-click="vm.abnormalModal(2)">撤销申请</button>
+                                <button class="btn btn-default" ng-click="vm.commentModal(1)">批注</button>
                             </div>
                     <div class="clear-both"></div>
                 </div>

@@ -86,7 +86,7 @@
             }
         }
 
-
+        //异常、撤销
         function _fnAbnormalModal() {
             modalInstance = $uibModal.open({
                 animation: true,
@@ -106,6 +106,7 @@
 
             });
         }
+        //未出库样本、已出库样本批注
         function _fnCommentModal() {
             modalInstance = $uibModal.open({
                 animation: true,
@@ -125,6 +126,7 @@
 
             });
         }
+        //装盒
         function _fnBoxInModal() {
             modalInstance = $uibModal.open({
                 animation: true,
@@ -144,6 +146,7 @@
 
             });
         }
+        //出库
         function _fnTaskStockOutModal() {
             modalInstance = $uibModal.open({
                 animation: true,

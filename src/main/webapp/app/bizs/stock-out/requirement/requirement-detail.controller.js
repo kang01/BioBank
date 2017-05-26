@@ -424,14 +424,15 @@
                 $state.go("requirement-list")
             });
         }
-        vm.planSave = function (applyId) {
+        vm.planSave = function () {
             var planId;
-            RequirementService.savePlan(applyId).success(function (data) {
-                planId = data.id;
-            }).error(function (data) {
+            RequirementService.savePlan(vm.requirement.id).then(function (res) {
+                planId = res.data.id;
+                $state.go('plan-edit',{planId:planId});
+            }).then(function (data) {
                 toastr.error(data.message);
             })
-            $state.go('plan-edit',{planId:planId});
+
 
         };
         //样本库存详情

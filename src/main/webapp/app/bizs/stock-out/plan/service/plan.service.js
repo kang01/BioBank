@@ -35,15 +35,15 @@
             delTask:_delTask
         };
         function _queryPlanList(data,oSettings) {
-            return $http.post('api/temp/res/stock-out-plans',JSON.stringify(data))
+            return $http.post('api/res/stock-out-plans',JSON.stringify(data))
         }
         function _queryApplyNumInfo(applyNumber) {
 
             return $http.get('api/temp/stock-out-plans/applyNumber/'+applyNumber)
 
         }
-        function _queryPlanSampleInfo(applyId) {
-            return $http.get('api/temp/stock-out-plans/apply/'+applyId)
+        function _queryPlanSampleInfo(planId) {
+            return $http.get('api/stock-out-applies/plan/'+planId)
         }
         function _queryPlanBoxes(sampleIds,data) {
             return $http.post('api/temp/res/stock-out-frozen-boxes/requirement/'+sampleIds,JSON.stringify(data))

@@ -5,8 +5,8 @@
                 <h2 class="m0">添加出库计划</h2>
             </div>
             <div class="pull-right">
-                <button class="btn btn-primary" ng-click="vm.taskDescModal()">查看出库任务</button>
-                <!--<button class="btn btn-primary" >保存计划</button>-->
+                <!--<button class="btn btn-primary" ng-click="vm.taskDescModal()">查看出库任务</button>-->
+                <!--<button class="btn btn-primary" ng-click="vm.savePlan()">保存计划</button>-->
                 <button class="btn btn-default" ui-sref="plan-list">关闭</button>
             </div>
         </div>
@@ -24,9 +24,10 @@
                 <!--</div>-->
             <!--</div>-->
             <div class="col-md-12">
-                <p>申请单:{{vm.plan.applyNumber}}</p>
-                <p>委托方{{vm.plan.delegateName}}，在{{vm.plan.startTime}}至{{vm.plan.endTime}}期间，申请出库样本{{vm.plan.countOfSample}}只</p>
+                <p>申请单：{{vm.plan.applyCode}}</p>
+                <p>委托方：{{vm.plan.delegateName}}，在{{vm.plan.startTime}}至{{vm.plan.endTime}}期间，申请出库样本{{vm.plan.countOfSample}}只</p>
                 <p>用于：{{vm.plan.purposeOfSample}}</p>
+                <p>当前库存能够满足符合要求的样本{{vm.plan.countOfStockOutSample}}只</p>
             </div>
         </div>
         <div class="panel panel-default">
@@ -38,7 +39,6 @@
                         </div>
                         <div class="pull-right">
                             <button class="btn btn-default" ng-click="vm.createTask()">创建任务</button>
-                            <button class="btn btn-default" ng-click="vm.savePlan()">保存计划</button>
                         </div>
                     </div>
                 </div>
@@ -46,13 +46,13 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="col-md-2 " ng-show="vm.plan.requirements.length">
+                        <div class="col-md-2 " ng-show="vm.plan.stockOutRequirement.length">
                             <label class="checkbox" style="margin-left: 15px">
                                 <input type="checkbox" ng-model="vm.select_all" ng-click="vm.selectDemandAll()"> 全选
                             </label>
                         </div>
                         <div class="col-md-12" style="height: 200px;overflow: auto;border: 1px solid #ccc;">
-                            <div class="col-md-4" ng-repeat="item in vm.plan.requirements track by $index">
+                            <div class="col-md-4" ng-repeat="item in vm.plan.stockOutRequirement track by $index">
                                 <label class="checkbox">
                                     <input type="checkbox" ng-model="vm.demand[item.id]" ng-click="vm.selectDemandOne()"> {{item.requirementName}}
                                 </label>

@@ -104,7 +104,6 @@
             DTColumnBuilder.newColumn('purposeOfSample').withTitle('出库目的'),
             DTColumnBuilder.newColumn('countOfStockOutPlanSample').withTitle('计划样本量'),
             DTColumnBuilder.newColumn('countOfStockOutTask').withTitle('出库任务量'),
-            DTColumnBuilder.newColumn('handOverSchedule').withTitle('交接进度'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml),
             DTColumnBuilder.newColumn('id').notVisible()
@@ -116,7 +115,7 @@
                 case '1402': planStatus = '已完成';break;
                 case '1403': planStatus = '已作废';break;
             }
-            $('td:eq(7)', row).html(planStatus);
+            $('td:eq(6)', row).html(planStatus);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

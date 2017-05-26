@@ -28,6 +28,7 @@
         //创建任务
         vm.createTask = _fnCreateTask;
 
+
         if($stateParams.planId){
             vm.planId = $stateParams.planId;
             PlanService.queryPlanSampleInfo(vm.planId).success(function (data) {
@@ -36,6 +37,7 @@
 
             })
         }
+        
 
         // vm.applyNumberOptions = [];
         // vm.applyNumberConfig = {
@@ -138,6 +140,16 @@
                             }
                             jqDt._fnProcessingDisplay( oSettings, false );
                         });
+                    }else{
+                        var array = {
+                            draw : 1,
+                            recordsTotal : 100,
+                            recordsFiltered : 10,
+                            data: [ ],
+                            error : ""
+                        }
+                        fnCallback( array );
+
                     }
 
                 })
@@ -284,10 +296,11 @@
         vm.checked = [];
         //全选
         vm.selectDemandAll = function () {
+
             if(vm.select_all) {
                 vm.select_one = true;
                 vm.checked = [];
-                angular.forEach(vm.plan.requirements, function (data, index) {
+                angular.forEach(vm.plan.stockOutRequirement, function (data, index) {
                     vm.checked.push(data.id);
                     vm.demand[data.id] = true;
                 })
@@ -296,6 +309,8 @@
                 vm.checked = [];
                 vm.demand = [];
             }
+            vm.sampleIds = vm.checked.join(",");
+            _queryPlanBoxes()
         };
         vm.selectDemandOne = function () {
             angular.forEach(vm.demand , function (data, id) {
@@ -306,7 +321,7 @@
                     vm.checked.splice(index, 1);
                 };
             });
-            if (vm.plan.requirements.length === vm.checked.length) {
+            if (vm.plan.stockOutRequirement.length === vm.checked.length) {
                 vm.select_all = true;
             } else {
                 vm.select_all = false;

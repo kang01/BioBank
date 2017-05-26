@@ -2,6 +2,8 @@ package org.fwoxford.repository;
 
 import org.fwoxford.domain.FrozenBox;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
@@ -105,4 +107,11 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " and f.is_split = 0 " +
         " order by f.sample_number asc",nativeQuery = true)
     List<FrozenBox> findIncompleteFrozenBox(String frozenBoxCode, Long projectId, String stockInCode, Long frozenBoxTypeId, String status);
+
+    @Query("SELECT DISTINCT s FROM FrozenBox s "
+        + " left join StockOutReqFrozenTube r on s.id = r.frozenBox.id "
+        + " left join StockOutFrozenBox f on s.id = f.frozenBox.id "
+        +" WHERE r.stockOutRequirement.id in ?1 "
+        + " AND f.frozenBox.id is null")
+    Page<FrozenBox> findAllByrequirementIds(List<Long> ids, Pageable pageable);
 }

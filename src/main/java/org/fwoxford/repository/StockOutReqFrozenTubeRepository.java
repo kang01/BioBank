@@ -1,7 +1,10 @@
 package org.fwoxford.repository;
 
+import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.StockOutReqFrozenTube;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;

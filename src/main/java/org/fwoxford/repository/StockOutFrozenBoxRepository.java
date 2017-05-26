@@ -3,6 +3,7 @@ package org.fwoxford.repository;
 import org.fwoxford.domain.StockOutFrozenBox;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 

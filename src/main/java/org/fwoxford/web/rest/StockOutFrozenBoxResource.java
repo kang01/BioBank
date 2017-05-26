@@ -183,25 +183,30 @@ public class StockOutFrozenBoxResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-frozen-boxes/requirement/{ids}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input, @PathVariable List<Long> ids) {
-        List<StockOutFrozenBoxForDataTableEntity> stockOutApplyList =  new ArrayList<StockOutFrozenBoxForDataTableEntity>();
+    public DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input, @PathVariable List<Long> ids) {
+        List<Sort.Order> orders = new ArrayList<>();
+        List<Column> columns = input.getColumns();
+        input.getOrder().forEach(o -> {
+            Column col = columns.get(o.getColumn());
+            Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
+            orders.add(order);
+        });
+        Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
+        orders.add(order);
+        Sort sort = new Sort(orders);
+        PageRequest pageRequest = new PageRequest(input.getStart() / input.getLength(), input.getLength(), sort);
 
-        for (int i = 0; i < input.getLength(); ++i){
-            StockOutFrozenBoxForDataTableEntity rowData = new StockOutFrozenBoxForDataTableEntity();
-            rowData.setId(0L + i + input.getStart());
-            rowData.setCountOfSample(20L);
-            rowData.setFrozenBoxCode("98765432"+i);
-            rowData.setPosition("F3-71.S01");
-            rowData.setSampleTypeName("血浆");
-            stockOutApplyList.add(rowData);
-        }
 
-        DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = new DataTablesOutput<StockOutFrozenBoxForDataTableEntity>();
+        Page<StockOutFrozenBoxForTaskDataTableEntity> entities = stockOutFrozenBoxService.findAllByrequirementIds(ids, pageRequest);
+        List<StockOutFrozenBoxForTaskDataTableEntity> stockOutApplyList =  entities == null ?
+            new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>() : entities.getContent();
+
+        DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> result = new DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity>();
         result.setDraw(input.getDraw());
         result.setError("");
         result.setData(stockOutApplyList);
         result.setRecordsFiltered(stockOutApplyList.size());
-        result.setRecordsTotal(stockOutApplyList.size() * 10);
+        result.setRecordsTotal(entities.getTotalElements());
         return result;
     }
 }

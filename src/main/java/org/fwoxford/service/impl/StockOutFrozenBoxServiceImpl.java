@@ -1,7 +1,11 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.StockOutBoxPosition;
+import org.fwoxford.domain.StockOutReqFrozenTube;
+import org.fwoxford.repository.FrozenBoxRepository;
 import org.fwoxford.repository.StockOutFrozenTubeRepository;
+import org.fwoxford.repository.StockOutReqFrozenTubeRepository;
 import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.domain.StockOutFrozenBox;
 import org.fwoxford.repository.StockOutFrozenBoxRepository;
@@ -10,7 +14,9 @@ import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity
 import org.fwoxford.service.mapper.StockOutFrozenBoxMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -33,6 +39,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     private final StockOutFrozenTubeRepository stockOutFrozenTubeRepository;
 
     private final StockOutFrozenBoxMapper stockOutFrozenBoxMapper;
+
+    @Autowired
+    private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
+
+    @Autowired
+    private FrozenBoxRepository frozenBoxRepository;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper
@@ -139,7 +151,8 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             dto.setFrozenBoxCode(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode());
             dto.setSampleTypeName(stockOutFrozenBox.getFrozenBox().getSampleTypeName());
 
-            String position = toPositionString(stockOutFrozenBox.getStockOutBoxPosition());
+//            String position = toPositionString(stockOutFrozenBox.getStockOutBoxPosition());
+            String position = getPositionString(stockOutFrozenBox.getFrozenBox());
             dto.setPosition(position);
 
             Long count = stockOutFrozenTubeRepository.countByFrozenBox(stockOutFrozenBox.getId());
@@ -148,5 +161,50 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
             return dto;
         });
+    }
+
+    @Override
+    public Page<StockOutFrozenBoxForTaskDataTableEntity> findAllByrequirementIds(List<Long> ids, Pageable pageable) {
+        Page<FrozenBox> result = frozenBoxRepository.findAllByrequirementIds(ids, pageable);
+
+        return result.map(frozenBox -> {
+            StockOutFrozenBoxForTaskDataTableEntity dto = new StockOutFrozenBoxForTaskDataTableEntity();
+            dto.setId(frozenBox.getId());
+            dto.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            dto.setSampleTypeName(frozenBox.getSampleTypeName());
+            String position = getPositionString(frozenBox);
+            dto.setPosition(position);
+
+            Long count = stockOutFrozenTubeRepository.countByFrozenBox(frozenBox.getId());
+
+            dto.setCountOfSample(count);
+
+            return dto;
+        });
+    }
+
+    private String getPositionString(FrozenBox frozenBox) {
+        String position = "";
+        if(frozenBox == null){
+            return null;
+        }
+        ArrayList<String> positions = new ArrayList<>();
+        if (frozenBox.getEquipmentCode() != null || frozenBox.getEquipmentCode().length() > 0){
+            positions.add(frozenBox.getEquipmentCode());
+        }
+
+        if (frozenBox.getAreaCode() != null && frozenBox.getAreaCode().length() > 0) {
+            positions.add(frozenBox.getAreaCode());
+        }
+
+        if (frozenBox.getSupportRackCode() != null && frozenBox.getSupportRackCode().length() > 0){
+            positions.add(frozenBox.getSupportRackCode());
+        }
+
+        if (frozenBox.getRowsInShelf() != null && frozenBox.getRowsInShelf().length() > 0 && frozenBox.getColumnsInShelf() != null && frozenBox.getColumnsInShelf().length() > 0){
+            positions.add(frozenBox.getColumnsInShelf()+frozenBox.getRowsInShelf());
+        }
+
+        return String.join(".", positions);
     }
 }

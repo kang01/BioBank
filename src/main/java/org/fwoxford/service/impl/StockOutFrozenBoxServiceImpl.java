@@ -10,6 +10,7 @@ import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.domain.StockOutFrozenBox;
 import org.fwoxford.repository.StockOutFrozenBoxRepository;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
+import org.fwoxford.service.dto.response.StockOutFrozenBoxForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.fwoxford.service.mapper.StockOutFrozenBoxMapper;
 import org.slf4j.Logger;
@@ -175,13 +176,14 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             String position = getPositionString(frozenBox);
             dto.setPosition(position);
 
-            Long count = stockOutFrozenTubeRepository.countByFrozenBox(frozenBox.getId());
+            Long count = stockOutFrozenTubeRepository.countByFrozenBoxId(frozenBox.getId());
 
             dto.setCountOfSample(count);
 
             return dto;
         });
     }
+
 
     private String getPositionString(FrozenBox frozenBox) {
         String position = "";
@@ -206,5 +208,28 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         }
 
         return String.join(".", positions);
+    }
+
+
+    @Override
+    public List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId) {
+        List<StockOutFrozenBoxForTaskDataTableEntity> alist = new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
+        List<StockOutFrozenBox> boxes = stockOutFrozenBoxRepository.findByStockOutTaskId(taskId);
+        for(StockOutFrozenBox s :boxes){
+            StockOutFrozenBoxForTaskDataTableEntity box = new StockOutFrozenBoxForTaskDataTableEntity();
+            FrozenBox frozenBox = s.getFrozenBox();
+            if(frozenBox ==null){continue;}
+            box.setId(frozenBox.getId());
+            box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            box.setSampleTypeName(frozenBox.getSampleTypeName());
+            String position = getPositionString(frozenBox);
+            box.setPosition(position);
+
+            Long count = stockOutFrozenTubeRepository.countByFrozenBox(s.getId());
+
+            box.setCountOfSample(count);
+            alist.add(box);
+        }
+        return alist;
     }
 }

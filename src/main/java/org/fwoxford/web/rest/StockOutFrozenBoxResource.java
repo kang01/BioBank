@@ -18,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.datatables.mapping.Column;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.mapping.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,10 +28,8 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing StockOutFrozenBox.
@@ -211,5 +208,14 @@ public class StockOutFrozenBoxResource {
         result.setRecordsFiltered(stockOutApplyList.size());
         result.setRecordsTotal(entities.getTotalElements());
         return result;
+    }
+
+    @GetMapping("/stock-out-frozen-boxes/task/{taskId}")
+    @Timed
+    public ResponseEntity<List<StockOutFrozenBoxForTaskDataTableEntity>> getAllStockOutFrozenBoxesByTask(@PathVariable Long taskId)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of StockOutFrozenBoxes");
+        List<StockOutFrozenBoxForTaskDataTableEntity> list = stockOutFrozenBoxService.getAllStockOutFrozenBoxesByTask(taskId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
     }
 }

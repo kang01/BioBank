@@ -24,4 +24,7 @@ public interface StockOutFrozenTubeRepository extends JpaRepository<StockOutFroz
 
     @Query("select count(t) from StockOutFrozenTube t where t.stockOutFrozenBox.stockOutTask.id=?1")
     Long countByStockOutTaskId(Long id);
+
+    @Query("select count(t) from StockOutFrozenTube t where t.stockOutFrozenBox.frozenBox.id=?1")
+    Long countByFrozenBoxId(Long id);
 }

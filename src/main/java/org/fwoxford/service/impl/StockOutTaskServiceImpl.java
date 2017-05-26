@@ -105,6 +105,7 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         log.debug("Request to get StockOutTask : {}", id);
         StockOutTask stockOutTask = stockOutTaskRepository.findOne(id);
         StockOutTaskDTO stockOutTaskDTO = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
+        stockOutTaskDTO.setStockOutPlanCode(stockOutTask.getStockOutPlan()!=null?stockOutTask.getStockOutPlan().getStockOutPlanCode():null);
         return stockOutTaskDTO;
     }
 

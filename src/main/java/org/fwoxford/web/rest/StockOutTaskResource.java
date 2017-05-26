@@ -127,20 +127,6 @@ public class StockOutTaskResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutTaskDTO));
     }
 
-//    /**
-//     * DELETE  /stock-out-tasks/:id : delete the "id" stockOutTask.
-//     *
-//     * @param id the id of the stockOutTaskDTO to delete
-//     * @return the ResponseEntity with status 200 (OK)
-//     */
-//    @DeleteMapping("/stock-out-tasks/{id}")
-//    @Timed
-//    public ResponseEntity<Void> deleteStockOutTask(@PathVariable Long id) {
-//        log.debug("REST request to delete StockOutTask : {}", id);
-//        stockOutTaskService.delete(id);
-//        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
-//    }
-
     /**
      * 新增保存任务
      * @param id

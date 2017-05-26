@@ -1356,4 +1356,23 @@ public class TempResource {
         result.setRecordsTotal(dataList.size() * 10);
         return result;
     }
+
+    @GetMapping("/stock-out-tasks/{id}")
+    @Timed
+    public ResponseEntity<StockOutTaskDTO> getStockOutTask(@PathVariable Long id) {
+        log.debug("REST request to get StockOutTask : {}", id);
+        StockOutTaskDTO stockOutTaskDTO = new StockOutTaskDTO();
+
+        stockOutTaskDTO.setStockOutPlanId(1L );
+        stockOutTaskDTO.setId( id );
+        stockOutTaskDTO.setStockOutHeadId1( 5L );
+        stockOutTaskDTO.setStockOutHeadId2( 6L );
+        stockOutTaskDTO.setStockOutDate( LocalDate.now() );
+        stockOutTaskDTO.setStatus( "1601" );
+        stockOutTaskDTO.setMemo("" );
+        stockOutTaskDTO.setStockOutTaskCode( BankUtil.getUniqueID() );
+        stockOutTaskDTO.setUsedTime( 1 );
+        stockOutTaskDTO.setStockOutPlanCode(BankUtil.getUniqueID());
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutTaskDTO));
+    }
 }

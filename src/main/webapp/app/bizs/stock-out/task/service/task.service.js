@@ -12,10 +12,15 @@
     function TaskService($http) {
         var service = {
             //获取任務列表
-            queryTaskList:_queryTaskList
+            queryTaskList:_queryTaskList,
+            //任务详情
+            queryTaskDesc:_queryTaskDesc
         };
         function _queryTaskList(data,oSettings) {
-            return $http.post('api/res/tranships',JSON.stringify(data))
+            return $http.post('api/res/stock-out-tasks',JSON.stringify(data))
+        }
+        function _queryTaskDesc(taskId) {
+            return $http.get('api/stock-out-tasks/'+taskId)
         }
         return service;
     }

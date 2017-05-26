@@ -34,9 +34,18 @@
                     name:"不祥"
                 }
             ];
+            //任务状态
+            var _taskStatus = [
+                {id:"1601",name:"待出库"},
+                {id:"1602",name:"进行中"},
+                {id:"1603",name:"已出库"},
+                {id:"1604",name:"异常出库"},
+                {id:"1605",name:"已作废"}
+            ];
             var masterData = {
                 sexDict :_sexDict,
-                diseaseType :_diseaseType
+                diseaseType :_diseaseType,
+                taskStatus :_taskStatus
             };
             return masterData;
         })

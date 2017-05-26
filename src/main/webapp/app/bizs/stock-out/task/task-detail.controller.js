@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskDetailController', TaskDetailController);
 
-    TaskDetailController.$inject = ['$scope','$uibModal','hotRegisterer','$timeout','SampleUserService','BioBankBlockUi','toastr'];
+    TaskDetailController.$inject = ['$scope','$stateParams','$uibModal','hotRegisterer','$timeout','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr'];
 
-    function TaskDetailController($scope,$uibModal,hotRegisterer,$timeout,SampleUserService,BioBankBlockUi,toastr) {
+    function TaskDetailController($scope,$stateParams,$uibModal,hotRegisterer,$timeout,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr) {
         var vm = this;
         var modalInstance;
         vm.task = {};
@@ -23,15 +23,35 @@
             vm.datePickerOpenStatus[date] = true;
         }
 
+        var taskId;
+        if($stateParams.taskId){
+            vm.taskId = $stateParams.taskId;
+            TaskService.queryTaskDesc(vm.taskId).success(function (data) {
+                vm.task = data;
+                vm.task.stockOutDate = new Date(data.stockOutDate)
+                taskId = data.id;
+            }).then(function () {
+
+            })
+        }
+
         //出库负责人
         SampleUserService.query({}, onPersonSuccess, onError);
         function onPersonSuccess(data) {
-            vm.recorderOptions = data;
+            vm.personOptions = data;
         }
 
-        vm.recorderConfig = {
+        vm.personConfig = {
             valueField: 'id',
             labelField: 'userName',
+            maxItems: 1
+
+        };
+        //出库状态
+        vm.taskStatusOptions = MasterData.taskStatus;
+        vm.taskStatusConfig = {
+            valueField: 'id',
+            labelField: 'name',
             maxItems: 1
 
         };
@@ -141,8 +161,8 @@
             },200);
         }
 
-        //异常、撤销
-        function _fnAbnormalModal() {
+        //1：异常、2：撤销
+        function _fnAbnormalModal(status) {
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/task/modal/abnormal-recall-modal.html',
@@ -151,7 +171,9 @@
                 size: 'lg',
                 resolve: {
                     items: function () {
-                        return {}
+                        return {
+                            status:status
+                        }
                     }
                 }
             });
@@ -161,8 +183,8 @@
             });
         }
 
-        //未出库样本、已出库样本批注
-        function _fnCommentModal() {
+        //1：未出库样本批注、2：已出库样本批注
+        function _fnCommentModal(status) {
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/task/modal/comment-modal.html',
@@ -171,7 +193,9 @@
                 size: 'lg',
                 resolve: {
                     items: function () {
-                        return {}
+                        return {
+                            status:status
+                        }
                     }
                 }
             });

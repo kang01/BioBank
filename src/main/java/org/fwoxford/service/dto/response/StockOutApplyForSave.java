@@ -22,6 +22,14 @@ public class StockOutApplyForSave {
      */
     private Long delegateId;
     /**
+     * 实际样本量
+     */
+    private Long countOfStockOutSample;
+    /**
+     * 委托方名称
+     */
+    private String delegateName;
+    /**
      * 样本用途
      */
     private String purposeOfSample;
@@ -125,6 +133,22 @@ public class StockOutApplyForSave {
 
     public void setDelegateId(Long delegateId) {
         this.delegateId = delegateId;
+    }
+
+    public Long getCountOfStockOutSample() {
+        return countOfStockOutSample;
+    }
+
+    public void setCountOfStockOutSample(Long countOfStockOutSample) {
+        this.countOfStockOutSample = countOfStockOutSample;
+    }
+
+    public String getDelegateName() {
+        return delegateName;
+    }
+
+    public void setDelegateName(String delegateName) {
+        this.delegateName = delegateName;
     }
 
     public String getStatus() {

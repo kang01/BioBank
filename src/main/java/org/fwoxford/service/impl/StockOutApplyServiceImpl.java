@@ -217,6 +217,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         res.setRecordId(stockOutApply.getRecordId());
         res.setRecordTime(stockOutApply.getRecordTime());
         res.setDelegateId(stockOutApply.getDelegate()!=null?stockOutApply.getDelegate().getId():null);
+        res.setDelegateName(stockOutApply.getDelegate()!=null?stockOutApply.getDelegate().getDelegateName():null);
         res.setApplyCode(stockOutApply.getApplyCode());
         res.setApplyPersonName(stockOutApply.getApplyPersonName());
         res.setEndTime(stockOutApply.getEndTime());
@@ -234,22 +235,13 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
        //获取申请的需求
         List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<StockOutRequirementForApplyTable>();
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(id);
+        int countOfStockOutSample = 0;
         for(StockOutRequirement requirement : stockOutRequirementList){
             StockOutRequirementForApplyTable stockOutRequirementForApplyTable = new StockOutRequirementForApplyTable();
             stockOutRequirementForApplyTable.setId(requirement.getId());
             stockOutRequirementForApplyTable.setStatus(requirement.getStatus());
             stockOutRequirementForApplyTable.setCountOfSample(requirement.getCountOfSample());
             stockOutRequirementForApplyTable.setRequirementName(requirement.getRequirementName());
-            //获取指定样本
-//            List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(requirement.getId());
-//            StringBuffer samples = new StringBuffer();
-//            for(StockOutRequiredSample s :stockOutRequiredSamples){
-//                samples.append(s.getSampleCode());
-//                samples.append("-");
-//                samples.append(s.getSampleType());
-//                samples.append(",");
-//            }
-            ;
             if(requirement.getImportingFileId()!=null){
                 StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(requirement.getImportingFileId());
                 stockOutRequirementForApplyTable.setSamples(stockOutFiles!=null?stockOutFiles.getFileName():null);
@@ -263,8 +255,10 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
                 stockOutRequirementForApplyTable.setAge(requirement.getAgeMin()+"-"+requirement.getAgeMax()+"岁");
             }
             stockOutRequirementForApplyTables.add(stockOutRequirementForApplyTable);
+            countOfStockOutSample +=requirement.getCountOfSample();
         }
         res.setStockOutRequirement(stockOutRequirementForApplyTables);
+        res.setCountOfStockOutSample(Long.valueOf(countOfStockOutSample));
         return res;
     }
 

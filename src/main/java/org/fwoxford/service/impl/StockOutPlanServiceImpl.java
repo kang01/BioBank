@@ -1,14 +1,14 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
-import org.fwoxford.domain.StockOutApply;
-import org.fwoxford.domain.StockOutPlanFrozenTube;
-import org.fwoxford.domain.StockOutReqFrozenTube;
+import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
+import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.StockOutPlanService;
-import org.fwoxford.domain.StockOutPlan;
 import org.fwoxford.service.dto.StockOutPlanDTO;
+import org.fwoxford.service.dto.response.StockOutApplyForPlanDetail;
 import org.fwoxford.service.dto.response.StockOutPlansForDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutRequirementForPlan;
 import org.fwoxford.service.mapper.StockOutPlanMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -22,6 +22,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,8 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
 
     @Autowired
     private StockOutPlanRepositories stockOutPlanRepositories;
+    @Autowired
+    private StockOutRequirementRepository stockOutRequirementRepository;
 
     public StockOutPlanServiceImpl(StockOutPlanRepository stockOutPlanRepository, StockOutApplyRepository stockOutApplyRepository, StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository, StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository, StockOutPlanMapper stockOutPlanMapper) {
         this.stockOutPlanRepository = stockOutPlanRepository;

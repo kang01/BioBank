@@ -70,7 +70,6 @@
             vm.selectAll = false;
             // 处理盒子选中状态
             vm.toggleAll = function (selectAll, selectedItems) {
-
                 selectedItems = vm.selected;
                 selectAll = vm.selectAll;
                 var arrayId = [];
@@ -81,6 +80,9 @@
                     }
                 }
                 vm.strBoxIds = _.join(arrayId,",");
+                if(!selectAll){
+                    vm.strBoxIds = "";
+                }
             };
 
             vm.toggleOne = function (selectedItems) {
@@ -161,12 +163,12 @@
                     $compile(angular.element(row).contents())($scope);
                 })
                 .withOption('headerCallback', function(header) {
-                    if (!vm.headerCompiled) {
-                        // Use this headerCompiled field to only compile header once
-                        vm.headerCompiled = true;
-                        $compile(angular.element(header).contents())($scope);
-                    }
-
+                    // if (!vm.headerCompiled) {
+                    //     // Use this headerCompiled field to only compile header once
+                    //     vm.headerCompiled = true;
+                    //
+                    // }
+                    $compile(angular.element(header).contents())($scope);
                 });
 
             var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';

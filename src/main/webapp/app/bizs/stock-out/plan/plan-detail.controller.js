@@ -10,9 +10,9 @@
         .controller('PlanDetailController', PlanDetailController)
         .controller('PlanDelModalController', PlanDelModalController)
 
-    PlanDetailController.$inject = ['$scope','$compile','$stateParams','$uibModal','DTOptionsBuilder','DTColumnBuilder','PlanService','RequirementService'];
+    PlanDetailController.$inject = ['$scope','$compile','$stateParams','toastr','$uibModal','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankBlockUi'];
     PlanDelModalController.$inject = ['$uibModalInstance'];
-    function PlanDetailController($scope,$compile,$stateParams,$uibModal,DTOptionsBuilder,DTColumnBuilder,PlanService,RequirementService) {
+    function PlanDetailController($scope,$compile,$stateParams,toastr,$uibModal,DTOptionsBuilder,DTColumnBuilder,PlanService,BioBankBlockUi) {
         var vm = this;
         var modalInstance;
         vm.dtInstance = {};
@@ -28,16 +28,17 @@
         //创建任务
         vm.createTask = _fnCreateTask;
 
-
+        var applyId;
         if($stateParams.planId){
             vm.planId = $stateParams.planId;
             PlanService.queryPlanSampleInfo(vm.planId).success(function (data) {
                 vm.plan = data;
+                applyId = data.id;
             }).then(function () {
 
             })
         }
-        
+
 
         // vm.applyNumberOptions = [];
         // vm.applyNumberConfig = {
@@ -199,7 +200,7 @@
             function rowClickHandler(tr,oData) {
                 $(tr).closest('table').find('.rowLight').removeClass("rowLight");
                 $(tr).addClass('rowLight');
-                PlanService.queryPlanTubes(1,oData.id).success(function (data) {
+                PlanService.queryPlanTubes(applyId,oData.id).success(function (data) {
                     vm.tubeOptions.withOption('data', data);
                     vm.tubeInstance.rerender();
                 })
@@ -207,7 +208,18 @@
 
             //管子列表
             vm.tubeOptions = DTOptionsBuilder.newOptions()
-                .withPaginationType('full_numbers');
+                .withPaginationType('full_numbers')
+                .withOption('createdRow', function(row, data, dataIndex) {
+                    var status = '';
+                    switch (data.status){
+                        case '3001': status = '正常';break;
+                        case '3002': status = '空管';break;
+                        case '3003': status = '空孔';break;
+                        case '3004': status = '异常';break;
+                    }
+                    $('td:eq(1)', row).html(status);
+                    $compile(angular.element(row).contents())($scope);
+                });
             vm.tubeColumns = [
                 DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),
                 DTColumnBuilder.newColumn('status').withTitle('状态'),
@@ -219,11 +231,7 @@
                 DTColumnBuilder.newColumn('id').notVisible()
             ];
         }
-        function _fnCreateTask() {
-            PlanService.createTask(vm.planId,vm.strBoxIds).success(function (data) {
-                vm.taskInstance.rerender();
-            })
-        }
+
         //任务列表
         vm.taskOptions = DTOptionsBuilder.newOptions()
             .withOption('processing',true)
@@ -281,8 +289,11 @@
         function createdRow(row, data, dataIndex) {
             var status = '';
             switch (data.status){
-                case '1501': status = '待出库';break;
-                case '1502': status = '已出库';break;
+                case '1601': status = '待出库';break;
+                case '1602': status = '进行中';break;
+                case '1603': status = '已出库';break;
+                case '1604': status = '异常出库';break;
+                case '1605': status = '已作废';break;
             }
             $('td:eq(1)', row).html(status);
             $compile(angular.element(row).contents())($scope);
@@ -333,12 +344,23 @@
         };
         //获取冻存盒列表
         function _queryPlanBoxes() {
+            vm.strBoxIds = "";
             setTimeout(function () {
                 vm.dtInstance.rerender();
             },100)
 
         }
 
+        //创建任务
+        function _fnCreateTask() {
+            BioBankBlockUi.blockUiStart();
+            PlanService.createTask(vm.planId,vm.strBoxIds).success(function (data) {
+                BioBankBlockUi.blockUiStop();
+                toastr.success("创建任务成功!");
+                vm.strBoxIds = "";
+                vm.taskInstance.rerender();
+            })
+        }
         //查看
         function _fnTaskDescModal(taskId) {
             modalInstance = $uibModal.open({

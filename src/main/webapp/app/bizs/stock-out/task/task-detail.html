@@ -29,11 +29,19 @@
             </div>
             <div class="form-group col-md-2">
                 <label>出库日期</label>
-                <input type="text" class="form-control">
+                <div class="input-group">
+                    <input  type="text" class="form-control" name="startTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.task.startTime" is-open="vm.datePickerOpenStatus.startTime"
+                            ng-disabled="vm.applyFlag" required  />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('startTime')"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                </div>
             </div>
             <div class="form-group col-md-2">
                 <label>出库负责人1</label>
-                <input type="text" class="form-control">
+                <selectize options='vm.recorderOptions' config="vm.recorderConfig"
+                           ng-model="vm.task.recordId" ng-disabled="vm.applyFlag"></selectize>
+                <input type="hidden" ng-model="vm.task.recordId" required>
             </div>
             <div class="form-group col-md-2">
                 <label>出库负责人2</label>
@@ -97,7 +105,7 @@
                     <div class="clear-both"></div>
                 </div>
                 <div class="panel-body tube">
-                    {{vm.sampleCode}}
+                    <input type="text" focus-me="focusInput" ng-model="vm.sampleCode">
                     <hot-table hot-id="sampleDetailsTable" settings="vm.sampleDetailsTableSettings"></hot-table>
                 </div>
             </div>

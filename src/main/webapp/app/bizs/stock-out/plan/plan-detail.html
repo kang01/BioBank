@@ -30,64 +30,69 @@
                 <p>当前库存能够满足符合要求的样本{{vm.plan.countOfStockOutSample}}只</p>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="row m0">
-                    <div class="">
-                        <div class="pull-left">
-                            <h4>申请出库的样本</h4>
-                        </div>
-                        <div class="pull-right">
-                            <button class="btn btn-default" ng-click="vm.createTask()">创建任务</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-2 " ng-show="vm.plan.stockOutRequirement.length">
-                            <label class="checkbox" style="margin-left: 15px">
-                                <input type="checkbox" ng-model="vm.select_all" ng-click="vm.selectDemandAll()"> 全选
-                            </label>
-                        </div>
-                        <div class="col-md-12" style="height: 200px;overflow: auto;border: 1px solid #ccc;">
-                            <div class="col-md-4" ng-repeat="item in vm.plan.stockOutRequirement track by $index">
-                                <label class="checkbox">
-                                    <input type="checkbox" ng-model="vm.demand[item.id]" ng-click="vm.selectDemandOne()"> {{item.requirementName}}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance" class=" table table-striped table-bordered">
-                            <!--<tfoot>-->
-                            <!--<tr>-->
-                                <!--<th>项目点</th>-->
-                                <!--<th>项目编号</th>-->
-                                <!--<th>转运日期</th>-->
-                                <!--<th>接收人</th>-->
-                                <!--<th>接收日期</th>-->
-                                <!--<th>满意度</th>-->
-                                <!--<th>状态</th>-->
-                                <!--<th style="width: 100px"></th>-->
-                            <!--</tr>-->
-                            <!--</tfoot>-->
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <table datatable="" dt-options="vm.tubeOptions" dt-columns="vm.tubeColumns" dt-instance="vm.tubeInstance" class="table table-striped table-bordered"></table>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <table datatable="" dt-options="vm.taskOptions" dt-columns="vm.taskColumns" dt-instance="vm.taskInstance" class="table table-striped table-bordered"></table>
+        <div class="row m0">
+          <div class="col-md-12">
+              <div class="panel panel-default">
+                  <div class="panel-heading">
+                      <div class="row">
+                          <div class="col-md-12">
+                              <div class="pull-left">
+                                  <h4>申请出库的样本</h4>
+                              </div>
+                              <div class="pull-right">
+                                  <button class="btn btn-default" ng-click="vm.createTask()" ng-disabled="!vm.strBoxIds">创建任务</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="panel-body">
+                      <div class="row">
+                          <div class="col-md-12">
+                              <div class="col-md-2 " ng-show="vm.plan.stockOutRequirement.length">
+                                  <label class="checkbox" style="margin-left: 15px">
+                                      <input type="checkbox" ng-model="vm.select_all" ng-click="vm.selectDemandAll()"> 全选
+                                  </label>
+                              </div>
+                              <div class="col-md-12" style="height: 200px;overflow: auto;border: 1px solid #ccc;">
+                                  <div class="col-md-4" ng-repeat="item in vm.plan.stockOutRequirement track by $index">
+                                      <label class="checkbox">
+                                          <input type="checkbox" ng-model="vm.demand[item.id]" ng-click="vm.selectDemandOne()"> {{item.requirementName}}
+                                      </label>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row" style="height: 440px">
+                          <div class="col-md-6">
+                              <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance" class=" table table-striped table-bordered">
+                                  <!--<tfoot>-->
+                                  <!--<tr>-->
+                                  <!--<th>项目点</th>-->
+                                  <!--<th>项目编号</th>-->
+                                  <!--<th>转运日期</th>-->
+                                  <!--<th>接收人</th>-->
+                                  <!--<th>接收日期</th>-->
+                                  <!--<th>满意度</th>-->
+                                  <!--<th>状态</th>-->
+                                  <!--<th style="width: 100px"></th>-->
+                                  <!--</tr>-->
+                                  <!--</tfoot>-->
+                              </table>
+                          </div>
+                          <div class="col-md-6">
+                              <table datatable="" dt-options="vm.tubeOptions" dt-columns="vm.tubeColumns" dt-instance="vm.tubeInstance" class="table table-striped table-bordered"></table>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-12">
+                              <table datatable="" dt-options="vm.taskOptions" dt-columns="vm.taskColumns" dt-instance="vm.taskInstance" class="table table-striped table-bordered"></table>
 
-                    </div>
-                </div>
-            </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
         </div>
+
     </div>
 </div>

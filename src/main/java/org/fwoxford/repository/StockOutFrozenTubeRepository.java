@@ -21,4 +21,7 @@ public interface StockOutFrozenTubeRepository extends JpaRepository<StockOutFroz
     void deleteByTask(Long id);
 
     void deleteByIdIn(List<Long> tubeIds);
+
+    @Query("select count(t) from StockOutFrozenTube t where t.stockOutFrozenBox.stockOutTask.id=?1")
+    Long countStockOutTaskId(Long id);
 }

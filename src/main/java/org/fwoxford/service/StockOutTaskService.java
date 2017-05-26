@@ -1,6 +1,8 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutTaskDTO;
+import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutTaskForPlanDataTableEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -42,4 +44,6 @@ public interface StockOutTaskService {
     void delete(Long id);
 
     StockOutTaskDTO save(Long planId, List<Long> boxIds);
+
+    Page<StockOutTaskForPlanDataTableEntity> findAllByPlan(Long id, Pageable pageRequest);
 }

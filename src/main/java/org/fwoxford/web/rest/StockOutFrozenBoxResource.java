@@ -3,7 +3,6 @@ package org.fwoxford.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.service.StockOutFrozenBoxService;
-import org.fwoxford.service.dto.response.StockOutFrozenBoxForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -153,8 +152,10 @@ public class StockOutFrozenBoxResource {
         List<Column> columns = input.getColumns();
         input.getOrder().forEach(o -> {
             Column col = columns.get(o.getColumn());
-            Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
-            orders.add(order);
+            if(col.getName()!=null&&col.getName()!=""){
+                Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
+                orders.add(order);
+            }
         });
         Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
         orders.add(order);

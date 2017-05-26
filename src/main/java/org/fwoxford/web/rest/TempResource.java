@@ -861,34 +861,6 @@ public class TempResource {
     }
 
     /**
-     * 根据申请ID查询申请详情（包含需求）
-     * @param id
-     * @return
-     * @throws URISyntaxException
-     */
-    @GetMapping("/stock-out-plans/apply/{id}")
-    @Timed
-    public ResponseEntity<StockOutApplyForPlanDetail> getStockOutApplyDetail(@PathVariable Long id) throws URISyntaxException {
-        StockOutApplyForPlanDetail result = new StockOutApplyForPlanDetail();
-        result.setId(id);
-        result.setApplyNumber(BankUtil.getUniqueID());
-        result.setCountOfSample(1000L);
-        result.setCountOfStockOutSample(1000L);
-        result.setStartTime(LocalDate.parse("2017-05-05"));
-        result.setEndTime(LocalDate.parse("2017-06-05"));
-        result.setPurposeOfSample("实验");
-        result.setDelegateName("实验室");
-        List<StockOutRequirementForPlan> requirementForPlans = new ArrayList<StockOutRequirementForPlan>();
-        for(int i= 0;i<10;i++){
-            StockOutRequirementForPlan stockOutRequirementForPlan = new StockOutRequirementForPlan();
-            stockOutRequirementForPlan.setId(1L+i);
-            stockOutRequirementForPlan.setRequirementName(i+10+"支 男性 65岁 血浆样本");
-            requirementForPlans.add(stockOutRequirementForPlan);
-        }
-        result.setRequirements(requirementForPlans);
-        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
-    }
-    /**
      * 根据需求查询核对通过的不在任务内的冻存盒（带分页）
      * @param input
      * @param ids
@@ -896,11 +868,11 @@ public class TempResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-frozen-boxes/requirement/{ids}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input,@PathVariable List<Long> ids) {
-        List<StockOutFrozenBoxForDataTableEntity> stockOutApplyList =  new ArrayList<StockOutFrozenBoxForDataTableEntity>();
+    public DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input,@PathVariable List<Long> ids) {
+        List<StockOutFrozenBoxForTaskDataTableEntity> stockOutApplyList =  new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
 
         for (int i = 0; i < input.getLength(); ++i){
-            StockOutFrozenBoxForDataTableEntity rowData = new StockOutFrozenBoxForDataTableEntity();
+            StockOutFrozenBoxForTaskDataTableEntity rowData = new StockOutFrozenBoxForTaskDataTableEntity();
             rowData.setId(0L + i + input.getStart());
             rowData.setCountOfSample(20L);
             rowData.setFrozenBoxCode("98765432"+i);
@@ -909,7 +881,7 @@ public class TempResource {
             stockOutApplyList.add(rowData);
         }
 
-        DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = new DataTablesOutput<StockOutFrozenBoxForDataTableEntity>();
+        DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> result = new DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity>();
         result.setDraw(input.getDraw());
         result.setError("");
         result.setData(stockOutApplyList);

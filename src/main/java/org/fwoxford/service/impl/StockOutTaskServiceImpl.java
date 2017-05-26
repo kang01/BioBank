@@ -5,6 +5,7 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutTaskService;
 import org.fwoxford.service.dto.StockOutTaskDTO;
+import org.fwoxford.service.dto.response.StockOutTaskForPlanDataTableEntity;
 import org.fwoxford.service.mapper.StockOutTaskMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -41,7 +42,11 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     @Autowired
     private StockOutFrozenTubeRepository stockOutFrozenTubeRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private final StockOutTaskMapper stockOutTaskMapper;
+
 
     public StockOutTaskServiceImpl(StockOutTaskRepository stockOutTaskRepository, StockOutPlanRepository stockOutPlanRepository, FrozenBoxRepository frozenBoxRepository, StockOutFrozenBoxRepository stockOutFrozenBoxRepository, StockOutBoxPositionRepository stockOutBoxPositionRepository, StockOutTaskMapper stockOutTaskMapper) {
         this.stockOutTaskRepository = stockOutTaskRepository;
@@ -175,6 +180,37 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
 
         StockOutTaskDTO result = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
         return result;
+    }
+
+    @Override
+    public Page<StockOutTaskForPlanDataTableEntity> findAllByPlan(Long id, Pageable pageable) {
+        Page<StockOutTask> result = stockOutTaskRepository.findAllByStockOutPlanId(id, pageable);
+
+        return result.map(o -> {
+            StockOutTaskForPlanDataTableEntity rowData = new StockOutTaskForPlanDataTableEntity();
+            rowData.setId(o.getId());
+            rowData.setStatus(o.getStatus());
+            rowData.setStockOutTaskCode(o.getStockOutTaskCode());
+            rowData.setMemo(o.getMemo());
+            rowData.setCountOfFrozenBox(1L);
+            rowData.setCreateDate(o.getCreatedDate().toLocalDate());
+            rowData.setStockOutDate(o.getStockOutDate());
+            ArrayList<String> operators = new ArrayList<>();
+            if(o.getStockOutHeadId1()!=null){
+                User user = userRepository.findOne(o.getStockOutHeadId1());
+                operators.add(user!=null?user.getLastName()+user.getFirstName():null);
+            }
+            if(o.getStockOutHeadId2()!=null){
+                User user = userRepository.findOne(o.getStockOutHeadId2());
+                operators.add(user!=null?user.getLastName()+user.getFirstName():null);
+            }
+            rowData.setOperators(String.join(".", operators));
+            Long count = stockOutFrozenTubeRepository.countStockOutTaskId(o.getId());
+            Long countOfBox = stockOutFrozenBoxRepository.countByStockOutTaskId(o.getId());
+            rowData.setCountOfSample(count);
+            rowData.setCountOfFrozenBox(countOfBox);
+            return rowData;
+        });
     }
 
 }

@@ -1,7 +1,10 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.service.StockOutTaskService;
+import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutTaskForPlanDataTableEntity;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -11,15 +14,23 @@ import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.datatables.mapping.Column;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -158,5 +169,69 @@ public class StockOutTaskResource {
         stockOutTaskService.delete(id);
 
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+
+    /**
+     * 获取出库任务列表
+     * @param input
+     * @param id
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-tasks/plan/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutTaskForPlanDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input, @PathVariable Long id) {
+        List<Sort.Order> orders = new ArrayList<>();
+        List<Column> columns = input.getColumns();
+        input.getOrder().forEach(o -> {
+            Column col = columns.get(o.getColumn());
+            if(col.getName()!=null&&col.getName()!=""){
+                Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
+                orders.add(order);
+            }
+        });
+        Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
+        orders.add(order);
+        Sort sort = new Sort(orders);
+        PageRequest pageRequest = new PageRequest(input.getStart() / input.getLength(), input.getLength(), sort);
+
+
+        Page<StockOutTaskForPlanDataTableEntity> entities = stockOutTaskService.findAllByPlan(id, pageRequest);
+        List<StockOutTaskForPlanDataTableEntity> stockOutApplyList =  entities == null ?
+            new ArrayList<StockOutTaskForPlanDataTableEntity>() : entities.getContent();
+
+        DataTablesOutput<StockOutTaskForPlanDataTableEntity> result = new DataTablesOutput<StockOutTaskForPlanDataTableEntity>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(stockOutApplyList);
+        result.setRecordsFiltered(stockOutApplyList.size());
+        result.setRecordsTotal(entities.getTotalElements());
+        return result;
+
+//
+//
+//        List<StockOutTaskForPlanDataTableEntity> stockOutApplyList =  new ArrayList<StockOutTaskForPlanDataTableEntity>();
+//
+//        for (int i = 0; i < input.getLength(); ++i){
+//            StockOutTaskForPlanDataTableEntity rowData = new StockOutTaskForPlanDataTableEntity();
+//            rowData.setId(0L + i + input.getStart());
+//            rowData.setCountOfSample(20L);
+//            rowData.setStatus("1501");
+//            rowData.setStockOutTaskCode(BankUtil.getUniqueID());
+//            rowData.setMemo("");
+//            rowData.setCountOfFrozenBox(1L);
+//            rowData.setCreateDate(LocalDate.now());
+//            rowData.setStockOutDate(LocalDate.now());
+//            rowData.setOperators("小张，小王");
+//            stockOutApplyList.add(rowData);
+//        }
+
+//        DataTablesOutput<StockOutTaskForPlanDataTableEntity> result = new DataTablesOutput<StockOutTaskForPlanDataTableEntity>();
+//        result.setDraw(input.getDraw());
+//        result.setError("");
+//        result.setData(stockOutApplyList);
+//        result.setRecordsFiltered(stockOutApplyList.size());
+//        result.setRecordsTotal(stockOutApplyList.size() * 10);
+//        return result;
     }
 }

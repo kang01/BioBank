@@ -99,7 +99,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
 
     private String toPositionString(StockOutBoxPosition pos){
-
+        if(pos ==null){
+            return null;
+        }
         ArrayList<String> positions = new ArrayList<>();
         if (pos.getEquipmentCode() != null || pos.getEquipmentCode().length() > 0){
             positions.add(pos.getEquipmentCode());

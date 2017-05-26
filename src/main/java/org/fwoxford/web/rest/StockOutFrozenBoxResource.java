@@ -3,6 +3,7 @@ package org.fwoxford.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.service.StockOutFrozenBoxService;
+import org.fwoxford.service.dto.response.StockOutFrozenBoxForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -155,7 +156,8 @@ public class StockOutFrozenBoxResource {
             Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
             orders.add(order);
         });
-
+        Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
+        orders.add(order);
         Sort sort = new Sort(orders);
         PageRequest pageRequest = new PageRequest(input.getStart() / input.getLength(), input.getLength(), sort);
 
@@ -165,6 +167,36 @@ public class StockOutFrozenBoxResource {
             new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>() : entities.getContent();
 
         DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> result = new DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(stockOutApplyList);
+        result.setRecordsFiltered(stockOutApplyList.size());
+        result.setRecordsTotal(entities.getTotalElements());
+        return result;
+    }
+
+    /**
+     * 根据需求查询核对通过的不在任务内的冻存盒（带分页）
+     * @param input
+     * @param ids
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-frozen-boxes/requirement/{ids}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input, @PathVariable List<Long> ids) {
+        List<StockOutFrozenBoxForDataTableEntity> stockOutApplyList =  new ArrayList<StockOutFrozenBoxForDataTableEntity>();
+
+        for (int i = 0; i < input.getLength(); ++i){
+            StockOutFrozenBoxForDataTableEntity rowData = new StockOutFrozenBoxForDataTableEntity();
+            rowData.setId(0L + i + input.getStart());
+            rowData.setCountOfSample(20L);
+            rowData.setFrozenBoxCode("98765432"+i);
+            rowData.setPosition("F3-71.S01");
+            rowData.setSampleTypeName("血浆");
+            stockOutApplyList.add(rowData);
+        }
+
+        DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = new DataTablesOutput<StockOutFrozenBoxForDataTableEntity>();
         result.setDraw(input.getDraw());
         result.setError("");
         result.setData(stockOutApplyList);

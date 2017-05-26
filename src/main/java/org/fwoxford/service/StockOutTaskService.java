@@ -1,7 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutTaskDTO;
-import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutTaskForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutTaskForPlanDataTableEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,4 +46,6 @@ public interface StockOutTaskService {
     StockOutTaskDTO save(Long planId, List<Long> boxIds);
 
     Page<StockOutTaskForPlanDataTableEntity> findAllByPlan(Long id, Pageable pageRequest);
+
+    Page<StockOutTaskForDataTableEntity> getDataTableStockOutTask(Pageable pageRequest);
 }

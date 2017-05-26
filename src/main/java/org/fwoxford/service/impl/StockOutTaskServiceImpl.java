@@ -107,16 +107,13 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         StockOutTask stockOutTask = stockOutTaskRepository.findOne(id);
 
         if (stockOutTask != null){
-//            //查询出库盒位置
-//            List<Long> posIds = stockOutFrozenBoxRepository.findAllBoxPositionByTask(stockOutTask.getId());
+            //根据出库盒ID查询出库样本ID
+            List<Long> tubeIds = stockOutFrozenTubeRepository.findByTask(stockOutTask.getId());
+
+            stockOutFrozenTubeRepository.deleteByIdIn(tubeIds);
             //删除出库盒
             stockOutFrozenBoxRepository.deleteByStockOutTaskId(stockOutTask.getId());
-            //删除出库盒位置
-//            if(posIds.size()>0){
-//                stockOutBoxPositionRepository.deleteByIds(posIds);
-//            }
-            //根据出库盒ID查询出库样本ID
-            stockOutFrozenTubeRepository.deleteByTask(stockOutTask.getId());
+
         }
 
         stockOutTaskRepository.delete(id);

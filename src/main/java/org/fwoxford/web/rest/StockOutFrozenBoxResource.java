@@ -188,8 +188,10 @@ public class StockOutFrozenBoxResource {
         List<Column> columns = input.getColumns();
         input.getOrder().forEach(o -> {
             Column col = columns.get(o.getColumn());
-            Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
-            orders.add(order);
+            if(col.getName()!=null&&col.getName()!=""){
+                Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
+                orders.add(order);
+            }
         });
         Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
         orders.add(order);

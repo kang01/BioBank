@@ -420,6 +420,6 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             throw new BankServiceException("计划不存在！");
         }
 
-        return this.getStockOutDetailAndRequirement(stockOutPlan.getId());
+        return this.getStockOutDetailAndRequirement(stockOutPlan.getStockOutApply().getId());
     }
 }

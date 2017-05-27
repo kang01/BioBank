@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.FrozenTubeService;
+import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.FrozenTubeDTO;
@@ -34,7 +35,7 @@ public class FrozenTubeResource {
     private final Logger log = LoggerFactory.getLogger(FrozenTubeResource.class);
 
     private static final String ENTITY_NAME = "frozenTube";
-        
+
     private final FrozenTubeService frozenTubeService;
 
     public FrozenTubeResource(FrozenTubeService frozenTubeService) {
@@ -127,5 +128,17 @@ public class FrozenTubeResource {
         frozenTubeService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
+    /**
+     * GET  /frozen-tubes/:id : get the "id" frozenTube.
+     * 根据冻存盒code取冻存管，以及冻存管的出库标识
+     * @param frozenBoxCode
+     * @return the ResponseEntity with status 200 (OK) and with body the frozenTubeDTO, or with status 404 (Not Found)
+     */
+    @GetMapping("/frozen-tubes/frozenBox/{frozenBoxCode}")
+    @Timed
+    public ResponseEntity<List<FrozenTubeResponse>> getFrozenTubeByFrozenBoxCode(@PathVariable String frozenBoxCode) {
+        log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
+        List<FrozenTubeResponse> frozenTubeList = frozenTubeService.getFrozenTubeByFrozenBoxCode(frozenBoxCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(frozenTubeList));
+    }
 }

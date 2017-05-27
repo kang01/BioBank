@@ -32,7 +32,7 @@ public class FrozenTubeResponse {
      */
     private FrozenTubeType frozenTubeType;
     /**
-     * 样本类型编码
+     * 样本类型
      */
     private SampleType sampleType;
     /**
@@ -62,6 +62,10 @@ public class FrozenTubeResponse {
     private String frozenBoxCode;
 
     private Long frozenBoxId;
+    /**
+     * 是否出库样本标识：1：是
+     */
+    private Integer stockOutFlag;
 
     private SampleClassification sampleClassification;
 
@@ -151,6 +155,14 @@ public class FrozenTubeResponse {
 
     public void setFrozenBoxId(Long frozenBoxId) {
         this.frozenBoxId = frozenBoxId;
+    }
+
+    public Integer getStockOutFlag() {
+        return stockOutFlag;
+    }
+
+    public void setStockOutFlag(Integer stockOutFlag) {
+        this.stockOutFlag = stockOutFlag;
     }
 
     public SampleClassification getSampleClassification() {

@@ -1,26 +1,54 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
-    <h3 class="modal-title" id="modal-title">装盒操作</h3>
+    <h3 class="modal-title" id="modal-title">
+        <span ng-if="vm.allInFlag">装盒操作</span>
+        <span ng-if="!vm.allInFlag">提示</span>
+    </h3>
 </div>
 <div class="modal-body" id="modal-body">
-    <div class="row m0">
-        <form class="form-inline">
-            <div class="form-group">
-                <label>临时盒编码</label>
-                <input type="text" class="form-control" >
-            </div>
-            <button type="button" class="btn btn-default">添加新盒</button>
-        </form>
-    </div>
-    <div class="row m0">
-        <div class="col-md-4">
-            <table datatable="" dt-options="vm.tempBoxOptions" dt-columns="vm.tempBoxColumns" dt-instance="vm.tempBoxInstance" class=" table table-striped table-bordered"></table>
+    <div class="row m0" ng-if="!vm.allInFlag">
+        <div class="col-md-12">
+            <p>有未扫码的样本，是否继续装盒？</p>
         </div>
-        <div class="col-md-8"></div>
     </div>
+    <div class="" ng-if="vm.allInFlag">
+        <div class="row m0">
+            <div class="pull-left">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label>临时盒编码</label>
+                        <input type="text" class="form-control" >
+                    </div>
+                    <button type="button" class="btn btn-default">添加新盒</button>
+                </form>
+            </div>
+            <div class="pull-right">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label>预装位置</label>
+                        <input type="text" class="form-control" >
+                    </div>
+                    <button type="button" class="btn btn-default">装盒</button>
+                    <button type="button" class="btn btn-default">复原</button>
+                </form>
+            </div>
+
+        </div>
+        <div class="row m0">
+            <div class="col-md-4 pl-0 pr-0">
+                <table datatable="" dt-options="vm.tempBoxOptions" dt-columns="vm.tempBoxColumns" dt-instance="vm.tempBoxInstance" class=" table table-striped table-bordered"></table>
+            </div>
+            <div class="col-md-8 pr-0">
+                <table datatable="" dt-options="vm.sampleOptions" dt-columns="vm.sampleColumns" dt-instance="vm.sampleInstance" class=" table table-striped table-bordered"></table>
+            </div>
+        </div>
+    </div>
+
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()" >确定</button>
-    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-if="vm.allInFlag">确定</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()" ng-if="vm.allInFlag">取消</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.yes()" ng-if="!vm.allInFlag">是</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()" ng-if="!vm.allInFlag">否</button>
 </div>
 

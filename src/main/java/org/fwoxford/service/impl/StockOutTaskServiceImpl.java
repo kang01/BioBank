@@ -73,7 +73,17 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     @Override
     public StockOutTaskDTO save(StockOutTaskDTO stockOutTaskDTO) {
         log.debug("Request to save StockOutTask : {}", stockOutTaskDTO);
-        StockOutTask stockOutTask = stockOutTaskMapper.stockOutTaskDTOToStockOutTask(stockOutTaskDTO);
+        StockOutTask stockOutTask = new StockOutTask();
+        if(stockOutTaskDTO.getId()!=null){
+            stockOutTask = stockOutTaskRepository.findOne(stockOutTaskDTO.getId());
+            stockOutTask.stockOutDate(stockOutTaskDTO.getStockOutDate())
+                .stockOutHeadId1(stockOutTaskDTO.getStockOutHeadId1())
+                .stockOutHeadId2(stockOutTaskDTO.getStockOutHeadId2())
+                .memo(stockOutTaskDTO.getMemo());
+        }else{
+           stockOutTask = stockOutTaskMapper.stockOutTaskDTOToStockOutTask(stockOutTaskDTO);
+        }
+
         stockOutTask = stockOutTaskRepository.save(stockOutTask);
         StockOutTaskDTO result = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
         return result;

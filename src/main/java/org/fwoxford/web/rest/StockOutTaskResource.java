@@ -6,6 +6,7 @@ import org.fwoxford.service.StockOutTaskService;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutTaskForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutTaskForPlanDataTableEntity;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -88,7 +89,7 @@ public class StockOutTaskResource {
     public ResponseEntity<StockOutTaskDTO> updateStockOutTask(@Valid @RequestBody StockOutTaskDTO stockOutTaskDTO) throws URISyntaxException {
         log.debug("REST request to update StockOutTask : {}", stockOutTaskDTO);
         if (stockOutTaskDTO.getId() == null) {
-            return createStockOutTask(stockOutTaskDTO);
+            throw new BankServiceException("任务ID不能为空！");
         }
         StockOutTaskDTO result = stockOutTaskService.save(stockOutTaskDTO);
         return ResponseEntity.ok()

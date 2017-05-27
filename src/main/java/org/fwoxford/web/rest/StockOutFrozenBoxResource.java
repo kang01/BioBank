@@ -210,6 +210,12 @@ public class StockOutFrozenBoxResource {
         return result;
     }
 
+    /**
+     * 根据任务查询需要出库的冻存盒列表
+     * @param taskId
+     * @return
+     * @throws URISyntaxException
+     */
     @GetMapping("/stock-out-frozen-boxes/task/{taskId}")
     @Timed
     public ResponseEntity<List<StockOutFrozenBoxForTaskDataTableEntity>> getAllStockOutFrozenBoxesByTask(@PathVariable Long taskId)

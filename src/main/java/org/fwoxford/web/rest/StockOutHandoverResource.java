@@ -34,7 +34,7 @@ public class StockOutHandoverResource {
     private final Logger log = LoggerFactory.getLogger(StockOutHandoverResource.class);
 
     private static final String ENTITY_NAME = "stockOutHandover";
-        
+
     private final StockOutHandoverService stockOutHandoverService;
 
     public StockOutHandoverResource(StockOutHandoverService stockOutHandoverService) {
@@ -128,4 +128,19 @@ public class StockOutHandoverResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * 根据任务创建交接单
+     * @param taskId
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-out-handovers/{taskId}")
+    @Timed
+    public ResponseEntity<StockOutHandoverDTO> createStockOutHandover(@PathVariable Long taskId) throws URISyntaxException {
+        log.debug("REST request to save StockOutHandover : {}", taskId);
+        StockOutHandoverDTO result = stockOutHandoverService.saveByTask(taskId);
+        return ResponseEntity.created(new URI("/api/stock-out-handovers/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 }

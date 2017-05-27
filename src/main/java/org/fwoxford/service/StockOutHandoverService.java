@@ -20,7 +20,7 @@ public interface StockOutHandoverService {
 
     /**
      *  Get all the stockOutHandovers.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,6 @@ public interface StockOutHandoverService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    StockOutHandoverDTO saveByTask(Long taskId);
 }

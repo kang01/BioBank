@@ -138,7 +138,11 @@ public final class Constants {
      * 出库冻存管状态：1801：待出库
      */
     public static final String STOCK_OUT_FROZEN_TUBE_NEW = "1801";
-
+    /**
+     * 出库交接状态：2101：进行中，2102：已交接
+     */
+    public static final String STOCK_OUT_HANDOVER_PENDING = "2101";
+    public static final String STOCK_OUT_HANDOVER_COMPLETED = "2102";
     private Constants() {
     }
 }

@@ -1,20 +1,22 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
+import org.fwoxford.domain.StockOutTask;
+import org.fwoxford.repository.StockOutTaskRepository;
 import org.fwoxford.service.StockOutHandoverService;
 import org.fwoxford.domain.StockOutHandover;
 import org.fwoxford.repository.StockOutHandoverRepository;
 import org.fwoxford.service.dto.StockOutHandoverDTO;
 import org.fwoxford.service.mapper.StockOutHandoverMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockOutHandover.
@@ -24,10 +26,13 @@ import java.util.stream.Collectors;
 public class StockOutHandoverServiceImpl implements StockOutHandoverService{
 
     private final Logger log = LoggerFactory.getLogger(StockOutHandoverServiceImpl.class);
-    
+
     private final StockOutHandoverRepository stockOutHandoverRepository;
 
     private final StockOutHandoverMapper stockOutHandoverMapper;
+
+    @Autowired
+    private StockOutTaskRepository stockOutTaskRepository;
 
     public StockOutHandoverServiceImpl(StockOutHandoverRepository stockOutHandoverRepository, StockOutHandoverMapper stockOutHandoverMapper) {
         this.stockOutHandoverRepository = stockOutHandoverRepository;
@@ -51,7 +56,7 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
 
     /**
      *  Get all the stockOutHandovers.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +92,26 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     public void delete(Long id) {
         log.debug("Request to delete StockOutHandover : {}", id);
         stockOutHandoverRepository.delete(id);
+    }
+
+    /**
+     * 根据任务创建交接单
+     * @param taskId
+     * @return
+     */
+    @Override
+    public StockOutHandoverDTO saveByTask(Long taskId) {
+        StockOutHandover stockOutHandover = new StockOutHandover();
+        StockOutTask stockOutTask =  stockOutTaskRepository.findOne(taskId);
+        if(stockOutTask ==null){
+            throw new BankServiceException("任务不存在！");
+        }
+        Long count = stockOutHandoverRepository.countByStockOutTaskId(taskId);
+        if(count.intValue()>0){
+            throw new BankServiceException("该任务已有交接单，不能重复创建！");
+        }
+        stockOutHandover.handoverCode(BankUtil.getUniqueID()).stockOutTask(stockOutTask).status(Constants.STOCK_OUT_HANDOVER_PENDING);
+        stockOutHandoverRepository.save(stockOutHandover);
+        return stockOutHandoverMapper.stockOutHandoverToStockOutHandoverDTO(stockOutHandover);
     }
 }

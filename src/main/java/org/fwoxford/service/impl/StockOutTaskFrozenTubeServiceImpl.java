@@ -1,12 +1,18 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
+import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.repository.FrozenTubeRepository;
 import org.fwoxford.service.StockOutTaskFrozenTubeService;
 import org.fwoxford.domain.StockOutTaskFrozenTube;
 import org.fwoxford.repository.StockOutTaskFrozenTubeRepository;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.StockOutTaskFrozenTubeDTO;
+import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.mapper.StockOutTaskFrozenTubeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +30,13 @@ import java.util.stream.Collectors;
 public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTubeService{
 
     private final Logger log = LoggerFactory.getLogger(StockOutTaskFrozenTubeServiceImpl.class);
-    
+
     private final StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
 
     private final StockOutTaskFrozenTubeMapper stockOutTaskFrozenTubeMapper;
+
+    @Autowired
+    private FrozenTubeRepository frozenTubeRepository;
 
     public StockOutTaskFrozenTubeServiceImpl(StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository, StockOutTaskFrozenTubeMapper stockOutTaskFrozenTubeMapper) {
         this.stockOutTaskFrozenTubeRepository = stockOutTaskFrozenTubeRepository;
@@ -51,7 +60,7 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
 
     /**
      *  Get all the stockOutTaskFrozenTubes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +96,47 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
     public void delete(Long id) {
         log.debug("Request to delete StockOutTaskFrozenTube : {}", id);
         stockOutTaskFrozenTubeRepository.delete(id);
+    }
+
+    @Override
+    public List<FrozenTubeResponse> abnormalStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS) {
+        for(FrozenTubeResponse tube :frozenTubeDTOS){
+            if(tube.getId() == null){
+                continue;
+            }
+            FrozenTube frozenTube = frozenTubeRepository.findOne(tube.getId());
+            if(frozenTube == null){
+                continue;
+            }
+            frozenTube.setStatus(Constants.FROZEN_TUBE_ABNORMAL);
+            frozenTube.setMemo(tube.getMemo());
+            frozenTubeRepository.save(frozenTube);
+        }
+        return frozenTubeDTOS;
+    }
+
+    @Override
+    public List<FrozenTubeResponse> repealStockOutTaskFrozenTube( List<FrozenTubeResponse> frozenTubeDTOS) {
+        //需求样本撤销
+        //任务出库样本
+        //计划出库样本
+        //冻存管与出库盒的关系
+        return null;
+    }
+
+    @Override
+    public List<FrozenTubeResponse> noteStockOutTaskFrozenTube( List<FrozenTubeResponse> frozenTubeDTOS) {
+        for(FrozenTubeResponse tube :frozenTubeDTOS){
+            if(tube.getId() == null){
+                continue;
+            }
+            FrozenTube frozenTube = frozenTubeRepository.findOne(tube.getId());
+            if(frozenTube == null){
+                continue;
+            }
+            frozenTube.setMemo(tube.getMemo());
+            frozenTubeRepository.save(frozenTube);
+        }
+        return frozenTubeDTOS;
     }
 }

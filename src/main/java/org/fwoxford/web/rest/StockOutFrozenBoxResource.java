@@ -236,4 +236,19 @@ public class StockOutFrozenBoxResource {
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, taskId.toString()))
             .body(result);
     }
+
+    /**
+     * 取当前任务的临时盒
+     * @param taskId
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-frozen-boxes/temp-box/task/{taskId}")
+    @Timed
+    public ResponseEntity<List<StockOutFrozenBoxForTaskDataTableEntity>> getAllStockOutTempFrozenBoxesByTask(@PathVariable Long taskId)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of StockOutFrozenBoxes");
+        List<StockOutFrozenBoxForTaskDataTableEntity> list = stockOutFrozenBoxService.getAllTempStockOutFrozenBoxesByTask(taskId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
 }

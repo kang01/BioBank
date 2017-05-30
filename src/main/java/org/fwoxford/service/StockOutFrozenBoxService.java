@@ -57,4 +57,6 @@ public interface StockOutFrozenBoxService {
     List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId);
 
     List<FrozenBoxForSaveBatchDTO> createFrozenBoxForStockOut(List<FrozenBoxForSaveBatchDTO> frozenBoxDTO, Long taskId, String boxCode);
+
+    List<StockOutFrozenBoxForTaskDataTableEntity> getAllTempStockOutFrozenBoxesByTask(Long taskId);
 }

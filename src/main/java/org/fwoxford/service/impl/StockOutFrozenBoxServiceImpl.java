@@ -129,7 +129,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             return null;
         }
         ArrayList<String> positions = new ArrayList<>();
-        if (pos.getEquipmentCode() != null || pos.getEquipmentCode().length() > 0){
+        if (pos.getEquipmentCode() != null && pos.getEquipmentCode().length() > 0){
             positions.add(pos.getEquipmentCode());
         }
 
@@ -202,7 +202,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             return null;
         }
         ArrayList<String> positions = new ArrayList<>();
-        if (frozenBox.getEquipmentCode() != null || frozenBox.getEquipmentCode().length() > 0){
+        if (frozenBox.getEquipmentCode() != null && frozenBox.getEquipmentCode().length() > 0){
             positions.add(frozenBox.getEquipmentCode());
         }
 
@@ -318,6 +318,32 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
         }
         return frozenBoxDTO;
+    }
+
+    @Override
+    public List<StockOutFrozenBoxForTaskDataTableEntity> getAllTempStockOutFrozenBoxesByTask(Long taskId) {
+        List<StockOutFrozenBoxForTaskDataTableEntity> alist = new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
+        List<StockOutFrozenBox> boxes =  stockOutFrozenBoxRepository.findByStockOutTaskId(taskId);
+        for(StockOutFrozenBox s :boxes){
+            FrozenBox frozenBox = s.getFrozenBox();
+            StockOutFrozenBoxForTaskDataTableEntity box = new StockOutFrozenBoxForTaskDataTableEntity();
+            if(frozenBox ==null){continue;}
+            box.setId(frozenBox.getId());
+            box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            box.setSampleTypeName(frozenBox.getSampleTypeName());
+            String position = getPositionString(frozenBox);
+            box.setPosition(position);
+
+            Long count = stockOutBoxTubeRepository.findByFrozenBox(frozenBox.getId());
+
+            box.setCountOfSample(count);
+            String columns = frozenBox.getFrozenBoxTypeColumns() != null ? frozenBox.getFrozenBoxTypeColumns() : frozenBox.getFrozenBoxType().getFrozenBoxTypeColumns();
+            String rows = frozenBox.getFrozenBoxTypeRows() != null ? frozenBox.getFrozenBoxTypeRows() : frozenBox.getFrozenBoxType().getFrozenBoxTypeRows();
+            int allCounts =Integer.parseInt(columns) * Integer.parseInt(rows);
+            box.setCountOfSampleAll(Long.valueOf(allCounts));
+            alist.add(box);
+        }
+        return alist;
     }
 
     private FrozenBox frozenBoxOldToNew(FrozenBox frozenBoxOld) {

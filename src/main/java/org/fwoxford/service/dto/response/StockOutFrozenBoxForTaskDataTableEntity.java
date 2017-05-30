@@ -25,6 +25,8 @@ public class StockOutFrozenBoxForTaskDataTableEntity {
     @JsonView(DataTablesOutput.View.class)
     private String sampleTypeName;
 
+    private Long countOfSampleAll;
+
     public Long getId() {
         return id;
     }
@@ -63,5 +65,13 @@ public class StockOutFrozenBoxForTaskDataTableEntity {
 
     public void setSampleTypeName(String sampleTypeName) {
         this.sampleTypeName = sampleTypeName;
+    }
+
+    public Long getCountOfSampleAll() {
+        return countOfSampleAll;
+    }
+
+    public void setCountOfSampleAll(Long countOfSampleAll) {
+        this.countOfSampleAll = countOfSampleAll;
     }
 }

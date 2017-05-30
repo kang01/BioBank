@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity StockOutTaskFrozenTube.
+    -->
+    <changeSet id="20170527073600-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="stock_out_task_id"
+                                 baseTableName="stock_out_task_tube"
+                                 constraintName="stock_out_task_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock_out_task"/>
+
+        <addForeignKeyConstraint baseColumnNames="stock_out_plan_frozen_tube_id"
+                                 baseTableName="stock_out_task_tube"
+                                 constraintName="stock_out_task_tube_plan_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock_out_plan_tube"/>
+
+    </changeSet>
+</databaseChangeLog>

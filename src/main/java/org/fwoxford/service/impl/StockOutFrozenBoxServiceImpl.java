@@ -1,31 +1,21 @@
 package org.fwoxford.service.impl;
 
-import org.fwoxford.domain.FrozenBox;
-import org.fwoxford.domain.StockOutBoxPosition;
-import org.fwoxford.domain.StockOutReqFrozenTube;
-import org.fwoxford.repository.FrozenBoxRepository;
-import org.fwoxford.repository.StockOutFrozenTubeRepository;
-import org.fwoxford.repository.StockOutReqFrozenTubeRepository;
+import org.fwoxford.domain.*;
+import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutFrozenBoxService;
-import org.fwoxford.domain.StockOutFrozenBox;
-import org.fwoxford.repository.StockOutFrozenBoxRepository;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
-import org.fwoxford.service.dto.response.StockOutFrozenBoxForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.fwoxford.service.mapper.StockOutFrozenBoxMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockOutFrozenBox.
@@ -46,6 +36,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
     @Autowired
     private FrozenBoxRepository frozenBoxRepository;
+
+    @Autowired
+    private StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
+
+    @Autowired
+    private StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper
@@ -175,10 +171,8 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             dto.setSampleTypeName(frozenBox.getSampleTypeName());
             String position = getPositionString(frozenBox);
             dto.setPosition(position);
-
-            Long count = stockOutFrozenTubeRepository.countByFrozenBoxId(frozenBox.getId());
-
-            dto.setCountOfSample(count);
+            Long countOfSample = stockOutPlanFrozenTubeRepository.countByFrozenBoxId(frozenBox.getId());
+            dto.setCountOfSample(countOfSample);
 
             return dto;
         });
@@ -214,10 +208,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     @Override
     public List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId) {
         List<StockOutFrozenBoxForTaskDataTableEntity> alist = new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
-        List<StockOutFrozenBox> boxes = stockOutFrozenBoxRepository.findByStockOutTaskId(taskId);
-        for(StockOutFrozenBox s :boxes){
+        List<FrozenBox> boxes =  frozenBoxRepository.findByStockOutTaskId(taskId);
+        for(FrozenBox frozenBox :boxes){
             StockOutFrozenBoxForTaskDataTableEntity box = new StockOutFrozenBoxForTaskDataTableEntity();
-            FrozenBox frozenBox = s.getFrozenBox();
             if(frozenBox ==null){continue;}
             box.setId(frozenBox.getId());
             box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
@@ -225,7 +218,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             String position = getPositionString(frozenBox);
             box.setPosition(position);
 
-            Long count = stockOutFrozenTubeRepository.countByFrozenBox(s.getId());
+            Long count = stockOutTaskFrozenTubeRepository.countByFrozenBox(frozenBox.getId());
 
             box.setCountOfSample(count);
             alist.add(box);

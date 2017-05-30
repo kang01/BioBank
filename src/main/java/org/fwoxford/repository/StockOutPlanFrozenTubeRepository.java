@@ -13,4 +13,10 @@ import java.util.List;
 public interface StockOutPlanFrozenTubeRepository extends JpaRepository<StockOutPlanFrozenTube,Long> {
 
     List<StockOutPlanFrozenTube> findByStockOutPlanId(Long id);
+
+    @Query("select count(t) from StockOutPlanFrozenTube t where t.stockOutReqFrozenTube.frozenBox.id=?1 and t.status ='1501'")
+    Long countByFrozenBoxId(Long id);
+
+    @Query("select t from StockOutPlanFrozenTube t where t.stockOutPlan.id = ?1 and  t.stockOutReqFrozenTube.frozenBox.id=?2 and t.status ='1501'")
+    List<StockOutPlanFrozenTube> findByStockOutPlanIdAndFrozenBoxId(Long planId, Long frozenBoxId);
 }

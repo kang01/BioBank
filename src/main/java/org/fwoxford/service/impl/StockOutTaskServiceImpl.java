@@ -52,6 +52,10 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     @Autowired
     private StockOutHandoverRepository stockOutHandoverRepository;
 
+    @Autowired
+    private StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
+
+
     private final StockOutTaskMapper stockOutTaskMapper;
 
 
@@ -131,12 +135,7 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
 
         if (stockOutTask != null){
             //根据出库盒ID查询出库样本ID
-            List<Long> tubeIds = stockOutFrozenTubeRepository.findByTask(stockOutTask.getId());
-
-            stockOutFrozenTubeRepository.deleteByIdIn(tubeIds);
-            //删除出库盒
-            stockOutFrozenBoxRepository.deleteByStockOutTaskId(stockOutTask.getId());
-
+            stockOutTaskFrozenTubeRepository.deleteByStockOutTaskId(stockOutTask.getId());
         }
 
         stockOutTaskRepository.delete(id);
@@ -162,39 +161,21 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             .stockOutDate(LocalDate.now());
 
         stockOutTask = stockOutTaskRepository.save(stockOutTask);
-
-//        List<StockOutFrozenBox> boxes = new ArrayList<>();
         for(Long id : boxIds){
             FrozenBox box = frozenBoxRepository.findOne(id);
             if (box == null){
                 continue;
             }
-
-            StockOutFrozenBox stockOutFrozenBox = new StockOutFrozenBox();
-            stockOutFrozenBox.status(Constants.STOCK_OUT_FROZEN_BOX_NEW)
-                .stockOutTask(stockOutTask)
-                .frozenBox(box);
-            stockOutFrozenBoxRepository.save(stockOutFrozenBox);
-//            boxes.add(stockOutFrozenBox);
-            List<StockOutPlanFrozenTube> stockOutPlanFrozenTubes = stockOutPlanFrozenTubeRepository.findByStockOutPlanId(id);
-            //保存出库样本
-            List<StockOutFrozenTube> tubes = new ArrayList<StockOutFrozenTube>();
+            List<StockOutPlanFrozenTube> stockOutPlanFrozenTubes = stockOutPlanFrozenTubeRepository.findByStockOutPlanIdAndFrozenBoxId(planId,id);
+            //保存出库任务样本
+            List<StockOutTaskFrozenTube> tubes = new ArrayList<StockOutTaskFrozenTube>();
             for(StockOutPlanFrozenTube t: stockOutPlanFrozenTubes){
-                StockOutFrozenTube stockOutFrozenTube = new StockOutFrozenTube();
-                stockOutFrozenTube.status(Constants.STOCK_OUT_FROZEN_TUBE_NEW)
-                    .stockOutFrozenBox(stockOutFrozenBox)
-                    .frozenTube(t.getStockOutReqFrozenTube().getFrozenTube())
-                    .tubeColumns(t.getStockOutReqFrozenTube().getFrozenTube().getTubeColumns())
-                    .tubeRows(t.getStockOutReqFrozenTube().getFrozenTube().getTubeRows());
-                tubes.add(stockOutFrozenTube);
+                StockOutTaskFrozenTube tube = new StockOutTaskFrozenTube();
+                tube.status(Constants.STOCK_OUT_FROZEN_TUBE_NEW).stockOutTask(stockOutTask).stockOutPlanFrozenTube(t);
+                tubes.add(tube);
             }
-
-            stockOutFrozenTubeRepository.save(tubes);
+            stockOutTaskFrozenTubeRepository.save(tubes);
         }
-
-//        if (boxes.size() > 0){
-//            stockOutFrozenBoxRepository.save(boxes);
-//        }
 
         StockOutTaskDTO result = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
         return result;
@@ -223,8 +204,8 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
                 operators.add(user!=null?user.getLastName()+user.getFirstName():null);
             }
             rowData.setOperators(String.join(".", operators));
-            Long count = stockOutFrozenTubeRepository.countByStockOutTaskId(o.getId());
-            Long countOfBox = stockOutFrozenBoxRepository.countByStockOutTaskId(o.getId());
+            Long count = stockOutTaskFrozenTubeRepository.countByStockOutTaskId(o.getId());
+            Long countOfBox = stockOutTaskFrozenTubeRepository.countFrozenBoxByStockOutTaskId(o.getId());
             rowData.setCountOfSample(count);
             rowData.setCountOfFrozenBox(countOfBox);
             return rowData;
@@ -242,7 +223,7 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             rowData.setStockOutPlanCode(o.getStockOutPlan().getStockOutPlanCode());
             rowData.setStockOutDate(o.getStockOutDate());
             rowData.setPurposeOfSample(o.getStockOutPlan().getStockOutApply().getPurposeOfSample());
-            Long count = stockOutFrozenTubeRepository.countByStockOutTaskId(o.getId());
+            Long count = stockOutTaskFrozenTubeRepository.countByStockOutTaskId(o.getId());
             Long countOfhandOver = stockOutHandoverDetailsRepository.countByStockOutTaskId(o.getId());
             Long countTimes = stockOutHandoverRepository.countByStockOutTaskId(o.getId());
             rowData.setCountOfStockOutSample(count);//任务样本量

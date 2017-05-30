@@ -1,0 +1,24 @@
+{
+    "bioBankApp": {
+        "stockOutTaskFrozenTube" : {
+            "home": {
+                "title": "Stock Out Task Frozen Tubes",
+                "createLabel": "Create a new Stock Out Task Frozen Tube",
+                "createOrEditLabel": "Create or edit a Stock Out Task Frozen Tube"
+            },
+            "created": "A new Stock Out Task Frozen Tube is created with identifier {{ param }}",
+            "updated": "A Stock Out Task Frozen Tube is updated with identifier {{ param }}",
+            "deleted": "A Stock Out Task Frozen Tube is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock Out Task Frozen Tube {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock Out Task Frozen Tube"
+            },
+            "status": "Status",
+            "memo": "Memo",
+            "stockOutTask": "Stock Out Task",
+            "stockOutPlanFrozenTube": "Stock Out Plan Frozen Tube"
+        }
+    }
+}

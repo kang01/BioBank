@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.FrozenTubeService;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -136,9 +137,9 @@ public class FrozenTubeResource {
      */
     @GetMapping("/frozen-tubes/frozenBox/{frozenBoxCode}")
     @Timed
-    public ResponseEntity<List<FrozenTubeResponse>> getFrozenTubeByFrozenBoxCode(@PathVariable String frozenBoxCode) {
+    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByFrozenBoxCode(@PathVariable String frozenBoxCode) {
         log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
-        List<FrozenTubeResponse> frozenTubeList = frozenTubeService.getFrozenTubeByFrozenBoxCode(frozenBoxCode);
+        FrozenBoxAndFrozenTubeResponse frozenTubeList = frozenTubeService.getFrozenTubeByFrozenBoxCode(frozenBoxCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(frozenTubeList));
     }
 }

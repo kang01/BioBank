@@ -1,0 +1,35 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockOutTaskFrozenTube.detail.title">Stock Out Task Frozen Tube</span> {{vm.stockOutTaskFrozenTube.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockOutTaskFrozenTube.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockOutTaskFrozenTube.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutTaskFrozenTube.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockOutTaskFrozenTube.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutTaskFrozenTube.stockOutTask">Stock Out Task</span></dt>
+        <dd>
+            <a ui-sref="stock-out-task-detail({id:vm.stockOutTaskFrozenTube.stockOutTaskId})">{{vm.stockOutTaskFrozenTube.stockOutTaskId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutTaskFrozenTube.stockOutPlanFrozenTube">Stock Out Plan Frozen Tube</span></dt>
+        <dd>
+            <a ui-sref="stock-out-plan-frozen-tube-detail({id:vm.stockOutTaskFrozenTube.stockOutPlanFrozenTubeId})">{{vm.stockOutTaskFrozenTube.stockOutPlanFrozenTubeId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-out-task-frozen-tube-detail.edit({id:vm.stockOutTaskFrozenTube.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

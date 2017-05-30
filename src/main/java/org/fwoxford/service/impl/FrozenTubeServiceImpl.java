@@ -1,13 +1,18 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
+import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.StockOutFrozenTube;
-import org.fwoxford.repository.StockOutFrozenTubeRepository;
+import org.fwoxford.domain.StockOutTaskFrozenTube;
+import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.repository.StockOutTaskFrozenTubeRepository;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.repository.FrozenTubeRepository;
 import org.fwoxford.service.dto.FrozenTubeDTO;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
+import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.util.Assert;
 /**
  * Service Implementation for managing FrozenTube.
@@ -36,7 +39,13 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
     private final FrozenTubeMapper frozenTubeMapper;
 
     @Autowired
-    private StockOutFrozenTubeRepository stockOutFrozenTubeRepository;
+    private StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
+
+    @Autowired
+    private FrozenBoxRepository frozenBoxRepository;
+
+    @Autowired
+    private FrozenBoxMapper frozenBoxMapper;
 
     public FrozenTubeServiceImpl(FrozenTubeRepository frozenTubeRepository, FrozenTubeMapper frozenTubeMapper) {
         this.frozenTubeRepository = frozenTubeRepository;
@@ -136,22 +145,26 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
     }
 
     @Override
-    public List<FrozenTubeResponse> getFrozenTubeByFrozenBoxCode(String frozenBoxCode) {
+    public FrozenBoxAndFrozenTubeResponse getFrozenTubeByFrozenBoxCode(String frozenBoxCode) {
+        FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse = new FrozenBoxAndFrozenTubeResponse();
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+
         List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
         //根据冻存盒编码查询冻存管
         List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
         //根据冻存盒查询要出库的样本
-        List<StockOutFrozenTube> stockOutFrozenTubes = stockOutFrozenTubeRepository.findByFrozenBox(frozenBoxCode);
+        List<StockOutTaskFrozenTube> stockOutFrozenTubes = stockOutTaskFrozenTubeRepository.findByFrozenBox(frozenBoxCode);
         for(FrozenTube f:frozenTubes){
             FrozenTubeResponse frozenTubeResponse = frozenTubeMapper.frozenTubeToFrozenTubeResponses(f);
-            for(StockOutFrozenTube s :stockOutFrozenTubes){
-                if(s.getFrozenTube().getId().equals(f.getId())){
+            for(StockOutTaskFrozenTube s :stockOutFrozenTubes){
+                if(s.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube().getId().equals(f.getId())){
                     frozenTubeResponse.setStockOutFlag(Constants.YES);
                 }
             }
             frozenTubeResponses.add(frozenTubeResponse);
         }
+        frozenBoxAndFrozenTubeResponse = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox,frozenTubeResponses);
         //构造返回结果
-        return frozenTubeResponses;
+        return frozenBoxAndFrozenTubeResponse;
     }
 }

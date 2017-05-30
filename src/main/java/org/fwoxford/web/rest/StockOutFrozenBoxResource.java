@@ -3,6 +3,8 @@ package org.fwoxford.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.service.StockOutFrozenBoxService;
+import org.fwoxford.service.dto.FrozenBoxDTO;
+import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -50,7 +52,6 @@ public class StockOutFrozenBoxResource {
 
     /**
      * POST  /stock-out-frozen-boxes : Create a new stockOutFrozenBox.
-     *
      * @param stockOutFrozenBoxDTO the stockOutFrozenBoxDTO to create
      * @return the ResponseEntity with status 201 (Created) and with body the new stockOutFrozenBoxDTO, or with status 400 (Bad Request) if the stockOutFrozenBox has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
@@ -223,5 +224,16 @@ public class StockOutFrozenBoxResource {
         log.debug("REST request to get a page of StockOutFrozenBoxes");
         List<StockOutFrozenBoxForTaskDataTableEntity> list = stockOutFrozenBoxService.getAllStockOutFrozenBoxesByTask(taskId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
+
+
+    @PostMapping("/stock-out-frozen-boxes/task/{taskId}/box/{boxCode}")
+    @Timed
+    public ResponseEntity<List<FrozenBoxForSaveBatchDTO>> createFrozenBoxForStockOut(@Valid @RequestBody List<FrozenBoxForSaveBatchDTO> frozenBoxDTO,@PathVariable Long taskId,@PathVariable String boxCode) throws URISyntaxException {
+        log.debug("REST request to save FrozenBox : {}", frozenBoxDTO);
+        List<FrozenBoxForSaveBatchDTO> result = stockOutFrozenBoxService.createFrozenBoxForStockOut(frozenBoxDTO,taskId,boxCode);
+        return ResponseEntity.created(new URI("/api/stock-out-frozen-boxes/task/" + taskId))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, taskId.toString()))
+            .body(result);
     }
 }

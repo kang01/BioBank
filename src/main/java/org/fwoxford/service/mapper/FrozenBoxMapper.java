@@ -154,25 +154,25 @@ public interface FrozenBoxMapper {
         List<FrozenBoxDTO> frozenBoxDTOLists = new ArrayList<FrozenBoxDTO>();
         for(FrozenBoxDTO box:frozenBoxDTOList){
             box.setProjectId(tranship.getProject()!=null?tranship.getProject().getId(): null);
-            box.setProjectCode(tranship.getProjectCode()!=null?tranship.getProjectCode(): " ");
-            box.setProjectName(tranship.getProjectName()!=null?tranship.getProjectName(): " ");
+            box.setProjectCode(tranship.getProjectCode());
+            box.setProjectName(tranship.getProjectName());
             box.setProjectSiteId(tranship.getProjectSite() != null ? tranship.getProjectSite().getId() : null);
-            box.setProjectSiteCode(tranship.getProjectSiteCode()!=null?tranship.getProjectSiteCode(): " ");
-            box.setProjectSiteName(tranship.getProjectSiteName()!=null?tranship.getProjectSiteName(): " ");
+            box.setProjectSiteCode(tranship.getProjectSiteCode());
+            box.setProjectSiteName(tranship.getProjectSiteName());
 
-            box.setEquipmentCode(box.getEquipmentCode() != null ? box.getEquipmentCode() : " ");
-            box.setEquipmentId(box.getEquipmentId() != null ? box.getEquipmentId() : null);
+            box.setEquipmentCode(box.getEquipmentCode());
+            box.setEquipmentId(box.getEquipmentId());
 
-            box.setAreaCode(box.getAreaCode() != null ? box.getAreaCode() : " ");
-            box.setAreaId(box.getAreaId() != null ? box.getAreaId() : null);
+            box.setAreaCode(box.getAreaCode());
+            box.setAreaId(box.getAreaId());
 
-            box.setSupportRackId(box.getSupportRackId() != null ? box.getSupportRackId() :null);
-            box.setSupportRackCode(box.getSupportRackCode() !=null ? box.getSupportRackCode() : " ");
-            box.setRowsInShelf(box.getRowsInShelf() != null ? box.getRowsInShelf() : " ");
-            box.setColumnsInShelf(box.getColumnsInShelf() != null ? box.getColumnsInShelf() : " ");
+            box.setSupportRackId(box.getSupportRackId());
+            box.setSupportRackCode(box.getSupportRackCode());
+            box.setRowsInShelf(box.getRowsInShelf());
+            box.setColumnsInShelf(box.getColumnsInShelf());
 
 
-            box.setSampleNumber(box.getSampleNumber() != null ? box.getSampleNumber() : 0);
+            box.setSampleNumber(box.getSampleNumber());
             box.setDislocationNumber(box.getDislocationNumber() != null ? box.getDislocationNumber() : 0);
             box.setEmptyHoleNumber(box.getEmptyHoleNumber() != null ? box.getEmptyHoleNumber() : 0);
             box.setEmptyTubeNumber(box.getEmptyTubeNumber() != null ? box.getEmptyTubeNumber() : 0);

@@ -37,7 +37,7 @@ public final class Constants {
     public static final String TRANSHIPE_IN_STOCKED = "1003";
     public static final String TRANSHIPE_IN_INVALID = "1004";
     /**
-     * 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架
+     * 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架,2008:待出库
      */
     public static final  String FROZEN_BOX_NEW = "2001" ;
     public static final  String FROZEN_BOX_STOCKING = "2002" ;
@@ -46,6 +46,7 @@ public final class Constants {
     public static final  String FROZEN_BOX_INVALID = "2005" ;
     public static final String FROZEN_BOX_PUT_SHELVES = "2006";
     public static final String FROZEN_BOX_SPLITING = "2007";
+    public static final String FROZEN_BOX_STOCK_OUT_PENDING = "2008";
     /**
      * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常
      */
@@ -143,6 +144,12 @@ public final class Constants {
      */
     public static final String STOCK_OUT_HANDOVER_PENDING = "2101";
     public static final String STOCK_OUT_HANDOVER_COMPLETED = "2102";
+    /**
+     * 冻存盒与冻存管的关系 2202：待出库
+     */
+    public static final String FROZEN_BOX_TUBE_STOCKOUT_PENDING = "2202";
+
+
     private Constants() {
     }
 }

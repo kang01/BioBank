@@ -12,13 +12,11 @@ public class FrozenTubeForSaveBatchDTO {
     /**
      * 样本临时编码
      */
-    @NotNull
     @Size(max = 100)
     private String sampleTempCode;
     /**
      * 样本编码
      */
-    @NotNull
     @Size(max = 100)
     private String sampleCode;
     /**
@@ -42,7 +40,6 @@ public class FrozenTubeForSaveBatchDTO {
     /**
      * 状态：3001：正常，3002：空管，3003：空孔；3004：异常
      */
-    @NotNull
     @Size(max = 20)
     private String status;
     /**

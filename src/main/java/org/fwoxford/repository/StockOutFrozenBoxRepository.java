@@ -26,4 +26,6 @@ public interface StockOutFrozenBoxRepository extends JpaRepository<StockOutFroze
     Long countByStockOutTaskId(Long id);
 
     List<StockOutFrozenBox> findByStockOutTaskId(Long taskId);
+
+    StockOutFrozenBox findByFrozenBoxId(Long id);
 }

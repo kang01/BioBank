@@ -46,6 +46,8 @@
                 "userLoginHistory": "User Login History",
                 "stockOutApplyProject": "Stock Out Apply Project",
                 "stockOutTaskFrozenTube": "Stock Out Task Frozen Tube",
+                "boxAndTube": "Box And Tube",
+                "stockOutBoxTube": "Stock Out Box Tube",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
                 "transportrecord":"转运记录"
             },

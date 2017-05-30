@@ -1,0 +1,35 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.boxAndTube.detail.title">Box And Tube</span> {{vm.boxAndTube.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.boxAndTube.status">Status</span></dt>
+        <dd>
+            <span>{{vm.boxAndTube.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.boxAndTube.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.boxAndTube.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.boxAndTube.frozenBox">Frozen Box</span></dt>
+        <dd>
+            <a ui-sref="frozen-box-detail({id:vm.boxAndTube.frozenBoxId})">{{vm.boxAndTube.frozenBoxId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.boxAndTube.frozenTube">Frozen Tube</span></dt>
+        <dd>
+            <a ui-sref="frozen-tube-detail({id:vm.boxAndTube.frozenTubeId})">{{vm.boxAndTube.frozenTubeId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="box-and-tube-detail.edit({id:vm.boxAndTube.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

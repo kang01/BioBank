@@ -29,4 +29,7 @@ public interface StockOutTaskFrozenTubeRepository extends JpaRepository<StockOut
 
     @Query("select t from StockOutTaskFrozenTube t where t.stockOutPlanFrozenTube.stockOutReqFrozenTube.frozenBox.frozenBoxCode=?1")
     List<StockOutTaskFrozenTube> findByFrozenBox(String frozenBoxCode);
+
+    @Query("select t from StockOutTaskFrozenTube t where t.stockOutTask.id=?1 and t.stockOutPlanFrozenTube.stockOutReqFrozenTube.frozenTube.id=?2")
+    StockOutTaskFrozenTube findByStockOutTaskAndFrozenTube(Long taskId, Long id);
 }

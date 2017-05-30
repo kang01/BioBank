@@ -1,11 +1,15 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutFrozenBoxService;
+import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
+import org.fwoxford.service.dto.FrozenTubeForSaveBatchDTO;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.fwoxford.service.mapper.StockOutFrozenBoxMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +38,27 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     @Autowired
     private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
 
-    @Autowired
-    private FrozenBoxRepository frozenBoxRepository;
 
     @Autowired
     private StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
 
     @Autowired
     private StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository;
+
+    @Autowired
+    private StockOutTaskRepository stockOutTaskRepository;
+
+    @Autowired
+    private FrozenBoxRepository frozenBoxRepository;
+
+    @Autowired
+    private BoxAndTubeRepository boxAndTubeRepository;
+
+    @Autowired
+    private StockOutBoxTubeRepository stockOutBoxTubeRepository;
+
+    @Autowired
+    private FrozenTubeRepository frozenTubeRepository;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper
@@ -224,5 +241,109 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             alist.add(box);
         }
         return alist;
+    }
+
+    /**
+     * 临时盒的保存
+     * @param frozenBoxDTO
+     * @return
+     */
+    @Override
+    public List<FrozenBoxForSaveBatchDTO> createFrozenBoxForStockOut(List<FrozenBoxForSaveBatchDTO> frozenBoxDTO ,Long taskId ,String boxCode) {
+        StockOutTask stockOutTask = stockOutTaskRepository.findOne(taskId);
+        if(stockOutTask == null){
+            throw new BankServiceException("任务ID无效！");
+        }
+        FrozenBox frozenBoxOld = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(boxCode);
+        if(frozenBoxOld == null){
+            throw new BankServiceException("冻存盒不存在！",boxCode);
+        }
+
+        for(FrozenBoxForSaveBatchDTO box:frozenBoxDTO){
+            if(box.getFrozenBoxCode() == null){
+                throw new BankServiceException("冻存盒编码不能为空！");
+            }
+            //验证盒子编码是否存在
+
+            List<Object[]> obj = frozenBoxRepository.countByFrozenBoxCode(box.getFrozenBoxCode());
+            for(Object[] o:obj){
+                String frozenBoxId = o[0].toString();
+                if(box.getId()==null){
+                    throw new BankServiceException("冻存盒编码已存在！",box.getFrozenBoxCode());
+                }else if(box.getId()!=null&&!box.getId().toString().equals(frozenBoxId)){
+                    throw new BankServiceException("冻存盒编码已存在！",box.getFrozenBoxCode());
+                }
+            }
+            FrozenBox frozenBox = new FrozenBox();
+            if(box.getId()!=null){
+                frozenBox = frozenBoxRepository.findOne(box.getId())!=null?frozenBoxRepository.findOne(box.getId()):new FrozenBox();
+            }
+            if(frozenBox.getFrozenBoxCode() == null){
+                frozenBox = frozenBoxOldToNew(frozenBoxOld);
+            }
+            frozenBox.setFrozenBoxCode(box.getFrozenBoxCode());
+            frozenBox.setSampleNumber(box.getFrozenTubeDTOS().size());
+            frozenBoxRepository.save(frozenBox);
+            //保存出库盒
+            StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findByFrozenBoxId(frozenBox.getId());
+            if(stockOutFrozenBox == null){
+                stockOutFrozenBox = new StockOutFrozenBox();
+            }
+            stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_NEW);
+            stockOutFrozenBox.setFrozenBox(frozenBox);
+            stockOutFrozenBox.setStockOutTask(stockOutTask);
+            stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+            //保存冻存盒与管之间的关系 todo
+            BoxAndTube boxAndTube = new BoxAndTube();
+            boxAndTube.setFrozenBox(frozenBox);
+            boxAndTube.setStatus(Constants.FROZEN_BOX_TUBE_STOCKOUT_PENDING);
+
+            //保存出库盒与管之间的关系
+            for(FrozenTubeForSaveBatchDTO f: box.getFrozenTubeDTOS()){
+                //todo 判断是否已有出库任务
+                StockOutBoxTube stockOutBoxTube = new StockOutBoxTube();
+                stockOutBoxTube.setStatus(Constants.STOCK_OUT_FROZEN_TUBE_NEW);
+                stockOutBoxTube.setStockOutFrozenBox(stockOutFrozenBox);
+                StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutTaskAndFrozenTube(taskId,f.getId());
+                stockOutBoxTube.setStockOutTaskFrozenTube(stockOutTaskFrozenTube);
+                stockOutBoxTube.setFrozenTube(stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube());
+                boxAndTube.setFrozenTube(stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube());
+                FrozenTube frozenTube = stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube();
+                frozenTube.setFrozenBox(frozenBox);
+                frozenTube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+                frozenTubeRepository.save(frozenTube);
+                //                boxAndTubeRepository.save(boxAndTube);
+                stockOutBoxTubeRepository.save(stockOutBoxTube);
+            }
+
+        }
+        return frozenBoxDTO;
+    }
+
+    private FrozenBox frozenBoxOldToNew(FrozenBox frozenBoxOld) {
+        if(frozenBoxOld == null){
+            return null;
+        }
+        FrozenBox frozenBox = new FrozenBox();
+        frozenBox.setProject(frozenBoxOld.getProject());
+        frozenBox.setProjectCode(frozenBoxOld.getProjectCode());
+        frozenBox.setProjectName(frozenBoxOld.getProjectName());
+        frozenBox.setProjectSite(frozenBoxOld.getProjectSite());
+        frozenBox.setProjectSiteName(frozenBoxOld.getProjectSiteName());
+        frozenBox.setProjectSiteCode(frozenBoxOld.getProjectSiteCode());
+        frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
+        frozenBox.setDislocationNumber(0);
+        frozenBox.setEmptyHoleNumber(0);
+        frozenBox.setEmptyTubeNumber(0);
+        frozenBox.setSampleType(frozenBoxOld.getSampleType());
+        frozenBox.setSampleTypeCode(frozenBoxOld.getSampleTypeCode());
+        frozenBox.setSampleTypeName(frozenBoxOld.getSampleTypeName());
+        frozenBox.setFrozenBoxType(frozenBoxOld.getFrozenBoxType());
+        frozenBox.setFrozenBoxTypeRows(frozenBoxOld.getFrozenBoxTypeRows());
+        frozenBox.setFrozenBoxTypeColumns(frozenBoxOld.getFrozenBoxTypeColumns());
+        frozenBox.setFrozenBoxTypeCode(frozenBoxOld.getFrozenBoxTypeCode());
+        frozenBox.setIsRealData(frozenBoxOld.getIsRealData());
+        frozenBox.setIsSplit(Constants.NO);
+        return frozenBox;
     }
 }

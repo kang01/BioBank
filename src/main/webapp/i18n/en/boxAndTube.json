@@ -1,0 +1,24 @@
+{
+    "bioBankApp": {
+        "boxAndTube" : {
+            "home": {
+                "title": "Box And Tubes",
+                "createLabel": "Create a new Box And Tube",
+                "createOrEditLabel": "Create or edit a Box And Tube"
+            },
+            "created": "A new Box And Tube is created with identifier {{ param }}",
+            "updated": "A Box And Tube is updated with identifier {{ param }}",
+            "deleted": "A Box And Tube is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Box And Tube {{ id }}?"
+            },
+            "detail": {
+                "title": "Box And Tube"
+            },
+            "status": "Status",
+            "memo": "Memo",
+            "frozenBox": "Frozen Box",
+            "frozenTube": "Frozen Tube"
+        }
+    }
+}

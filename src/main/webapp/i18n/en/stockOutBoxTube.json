@@ -1,0 +1,25 @@
+{
+    "bioBankApp": {
+        "stockOutBoxTube" : {
+            "home": {
+                "title": "Stock Out Box Tubes",
+                "createLabel": "Create a new Stock Out Box Tube",
+                "createOrEditLabel": "Create or edit a Stock Out Box Tube"
+            },
+            "created": "A new Stock Out Box Tube is created with identifier {{ param }}",
+            "updated": "A Stock Out Box Tube is updated with identifier {{ param }}",
+            "deleted": "A Stock Out Box Tube is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock Out Box Tube {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock Out Box Tube"
+            },
+            "status": "Status",
+            "memo": "Memo",
+            "stockOutFrozenBox": "Stock Out Frozen Box",
+            "frozenTube": "Frozen Tube",
+            "stockOutTaskFrozenTube": "Stock Out Task Frozen Tube"
+        }
+    }
+}

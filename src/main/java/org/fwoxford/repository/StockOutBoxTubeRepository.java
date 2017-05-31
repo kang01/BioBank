@@ -2,6 +2,8 @@ package org.fwoxford.repository;
 
 import org.fwoxford.domain.StockOutBoxTube;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
@@ -18,4 +20,6 @@ public interface StockOutBoxTubeRepository extends JpaRepository<StockOutBoxTube
 
     @Query("select count(t) from StockOutBoxTube t where t.stockOutFrozenBox.id=?1 and t.status!='2203' ")
     Long countByStockOutFrozenBoxId(Long id);
+
+    Page<StockOutBoxTube> findByStockOutFrozenBoxIdIn(List<Long> ids, Pageable pageable);
 }

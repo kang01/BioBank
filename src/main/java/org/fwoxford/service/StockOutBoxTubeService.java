@@ -1,7 +1,9 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutBoxTubeDTO;
+import org.fwoxford.service.dto.response.StockOutFrozenTubeDataTableEntity;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 
@@ -20,7 +22,7 @@ public interface StockOutBoxTubeService {
 
     /**
      *  Get all the stockOutBoxTubes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +42,6 @@ public interface StockOutBoxTubeService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    Page<StockOutFrozenTubeDataTableEntity> getStockOutTubeByStockOutBoxIds(List<Long> ids, Pageable pageRequest);
 }

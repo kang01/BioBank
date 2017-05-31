@@ -48,9 +48,9 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     @Override
     public StockOutHandoverDTO save(StockOutHandoverDTO stockOutHandoverDTO) {
         log.debug("Request to save StockOutHandover : {}", stockOutHandoverDTO);
-        StockOutHandover stockOutHandover = stockOutHandoverMapper.stockOutHandoverDTOToStockOutHandover(stockOutHandoverDTO);
+        StockOutHandover stockOutHandover = stockOutHandoverMapper.stockOutHandOverDTOToStockOutHandOver(stockOutHandoverDTO);
         stockOutHandover = stockOutHandoverRepository.save(stockOutHandover);
-        StockOutHandoverDTO result = stockOutHandoverMapper.stockOutHandoverToStockOutHandoverDTO(stockOutHandover);
+        StockOutHandoverDTO result = stockOutHandoverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandover);
         return result;
     }
 
@@ -65,7 +65,7 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     public Page<StockOutHandoverDTO> findAll(Pageable pageable) {
         log.debug("Request to get all StockOutHandovers");
         Page<StockOutHandover> result = stockOutHandoverRepository.findAll(pageable);
-        return result.map(stockOutHandover -> stockOutHandoverMapper.stockOutHandoverToStockOutHandoverDTO(stockOutHandover));
+        return result.map(stockOutHandover -> stockOutHandoverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandover));
     }
 
     /**
@@ -79,7 +79,7 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     public StockOutHandoverDTO findOne(Long id) {
         log.debug("Request to get StockOutHandover : {}", id);
         StockOutHandover stockOutHandover = stockOutHandoverRepository.findOne(id);
-        StockOutHandoverDTO stockOutHandoverDTO = stockOutHandoverMapper.stockOutHandoverToStockOutHandoverDTO(stockOutHandover);
+        StockOutHandoverDTO stockOutHandoverDTO = stockOutHandoverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandover);
         return stockOutHandoverDTO;
     }
 
@@ -112,6 +112,6 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         }
         stockOutHandover.handoverCode(BankUtil.getUniqueID()).stockOutTask(stockOutTask).status(Constants.STOCK_OUT_HANDOVER_PENDING);
         stockOutHandoverRepository.save(stockOutHandover);
-        return stockOutHandoverMapper.stockOutHandoverToStockOutHandoverDTO(stockOutHandover);
+        return stockOutHandoverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandover);
     }
 }

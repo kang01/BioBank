@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <!--
-        Added the constraints for entity StockOutHandover.
+        Added the constraints for entity StockOutHandOver.
     -->
     <changeSet id="20170515045047-2" author="jhipster">
 
@@ -13,6 +13,18 @@
                                  constraintName="stock_out_handover_task_id"
                                  referencedColumnNames="id"
                                  referencedTableName="stock_out_task"/>
+
+        <addForeignKeyConstraint baseColumnNames="stock_out_apply_id"
+                                 baseTableName="stock_out_handover"
+                                 constraintName="stock_out_handover_apply_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock_out_apply"/>
+
+        <addForeignKeyConstraint baseColumnNames="stock_out_plan_id"
+                                 baseTableName="stock_out_handover"
+                                 constraintName="stock_out_handover_plan_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock_out_plan"/>
 
     </changeSet>
 </databaseChangeLog>

@@ -53,8 +53,14 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="stock_out_task_id" type="bigint" remarks="出库任务ID">
+            <column name="stock_out_apply_id" type="bigint" remarks="出库申请ID">
                 <constraints nullable="false" />
+            </column>
+            <column name="stock_out_plan_id" type="bigint" remarks="出库计划ID">
+                <constraints nullable="true" />
+            </column>
+            <column name="stock_out_task_id" type="bigint" remarks="出库任务ID">
+                <constraints nullable="true" />
             </column>
 
             <column name="created_by" type="nvarchar(50)" remarks="创建人">

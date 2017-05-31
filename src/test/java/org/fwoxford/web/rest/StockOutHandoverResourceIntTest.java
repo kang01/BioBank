@@ -4,6 +4,7 @@ import org.fwoxford.BioBankApp;
 
 import org.fwoxford.domain.StockOutHandover;
 import org.fwoxford.domain.StockOutTask;
+import org.fwoxford.domain.StockOutApply;
 import org.fwoxford.repository.StockOutHandoverRepository;
 import org.fwoxford.service.StockOutHandoverService;
 import org.fwoxford.service.dto.StockOutHandoverDTO;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Test class for the StockOutHandoverResource REST controller.
+ * Test class for the StockOutHandOverResource REST controller.
  *
  * @see StockOutHandoverResource
  */
@@ -68,13 +69,13 @@ public class StockOutHandoverResourceIntTest {
     private static final String UPDATED_MEMO = "BBBBBBBBBB";
 
     @Autowired
-    private StockOutHandoverRepository stockOutHandoverRepository;
+    private StockOutHandoverRepository stockOutHandOverRepository;
 
     @Autowired
-    private StockOutHandoverMapper stockOutHandoverMapper;
+    private StockOutHandoverMapper stockOutHandOverMapper;
 
     @Autowired
-    private StockOutHandoverService stockOutHandoverService;
+    private StockOutHandoverService stockOutHandOverService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -88,15 +89,15 @@ public class StockOutHandoverResourceIntTest {
     @Autowired
     private EntityManager em;
 
-    private MockMvc restStockOutHandoverMockMvc;
+    private MockMvc restStockOutHandOverMockMvc;
 
-    private StockOutHandover stockOutHandover;
+    private StockOutHandover stockOutHandOver;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        StockOutHandoverResource stockOutHandoverResource = new StockOutHandoverResource(stockOutHandoverService);
-        this.restStockOutHandoverMockMvc = MockMvcBuilders.standaloneSetup(stockOutHandoverResource)
+        StockOutHandoverResource stockOutHandOverResource = new StockOutHandoverResource(stockOutHandOverService);
+        this.restStockOutHandOverMockMvc = MockMvcBuilders.standaloneSetup(stockOutHandOverResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -109,7 +110,7 @@ public class StockOutHandoverResourceIntTest {
      * if they test an entity which requires the current entity.
      */
     public static StockOutHandover createEntity(EntityManager em) {
-        StockOutHandover stockOutHandover = new StockOutHandover()
+        StockOutHandover stockOutHandOver = new StockOutHandover()
                 .handoverCode(DEFAULT_HANDOVER_CODE)
                 .receiverName(DEFAULT_RECEIVER_NAME)
                 .receiverPhone(DEFAULT_RECEIVER_PHONE)
@@ -122,112 +123,117 @@ public class StockOutHandoverResourceIntTest {
         StockOutTask stockOutTask = StockOutTaskResourceIntTest.createEntity(em);
         em.persist(stockOutTask);
         em.flush();
-        stockOutHandover.setStockOutTask(stockOutTask);
-        return stockOutHandover;
+        stockOutHandOver.setStockOutTask(stockOutTask);
+        // Add required entity
+        StockOutApply stockOutApply = StockOutApplyResourceIntTest.createEntity(em);
+        em.persist(stockOutApply);
+        em.flush();
+        stockOutHandOver.setStockOutApply(stockOutApply);
+        return stockOutHandOver;
     }
 
     @Before
     public void initTest() {
-        stockOutHandover = createEntity(em);
+        stockOutHandOver = createEntity(em);
     }
 
     @Test
     @Transactional
-    public void createStockOutHandover() throws Exception {
-        int databaseSizeBeforeCreate = stockOutHandoverRepository.findAll().size();
+    public void createStockOutHandOver() throws Exception {
+        int databaseSizeBeforeCreate = stockOutHandOverRepository.findAll().size();
 
-        // Create the StockOutHandover
-        StockOutHandoverDTO stockOutHandoverDTO = stockOutHandoverMapper.stockOutHandoverToStockOutHandoverDTO(stockOutHandover);
+        // Create the StockOutHandOver
+        StockOutHandoverDTO stockOutHandOverDTO = stockOutHandOverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandOver);
 
-        restStockOutHandoverMockMvc.perform(post("/api/stock-out-handovers")
+        restStockOutHandOverMockMvc.perform(post("/api/stock-out-hand-overs")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stockOutHandoverDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(stockOutHandOverDTO)))
             .andExpect(status().isCreated());
 
-        // Validate the StockOutHandover in the database
-        List<StockOutHandover> stockOutHandoverList = stockOutHandoverRepository.findAll();
-        assertThat(stockOutHandoverList).hasSize(databaseSizeBeforeCreate + 1);
-        StockOutHandover testStockOutHandover = stockOutHandoverList.get(stockOutHandoverList.size() - 1);
-        assertThat(testStockOutHandover.getHandoverCode()).isEqualTo(DEFAULT_HANDOVER_CODE);
-        assertThat(testStockOutHandover.getReceiverName()).isEqualTo(DEFAULT_RECEIVER_NAME);
-        assertThat(testStockOutHandover.getReceiverPhone()).isEqualTo(DEFAULT_RECEIVER_PHONE);
-        assertThat(testStockOutHandover.getReceiverOrganization()).isEqualTo(DEFAULT_RECEIVER_ORGANIZATION);
-        assertThat(testStockOutHandover.getHandoverPersonId()).isEqualTo(DEFAULT_HANDOVER_PERSON_ID);
-        assertThat(testStockOutHandover.getHandoverTime()).isEqualTo(DEFAULT_HANDOVER_TIME);
-        assertThat(testStockOutHandover.getStatus()).isEqualTo(DEFAULT_STATUS);
-        assertThat(testStockOutHandover.getMemo()).isEqualTo(DEFAULT_MEMO);
+        // Validate the StockOutHandOver in the database
+        List<StockOutHandover> stockOutHandOverList = stockOutHandOverRepository.findAll();
+        assertThat(stockOutHandOverList).hasSize(databaseSizeBeforeCreate + 1);
+        StockOutHandover testStockOutHandOver = stockOutHandOverList.get(stockOutHandOverList.size() - 1);
+        assertThat(testStockOutHandOver.getHandoverCode()).isEqualTo(DEFAULT_HANDOVER_CODE);
+        assertThat(testStockOutHandOver.getReceiverName()).isEqualTo(DEFAULT_RECEIVER_NAME);
+        assertThat(testStockOutHandOver.getReceiverPhone()).isEqualTo(DEFAULT_RECEIVER_PHONE);
+        assertThat(testStockOutHandOver.getReceiverOrganization()).isEqualTo(DEFAULT_RECEIVER_ORGANIZATION);
+        assertThat(testStockOutHandOver.getHandoverPersonId()).isEqualTo(DEFAULT_HANDOVER_PERSON_ID);
+        assertThat(testStockOutHandOver.getHandoverTime()).isEqualTo(DEFAULT_HANDOVER_TIME);
+        assertThat(testStockOutHandOver.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testStockOutHandOver.getMemo()).isEqualTo(DEFAULT_MEMO);
     }
 
     @Test
     @Transactional
-    public void createStockOutHandoverWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = stockOutHandoverRepository.findAll().size();
+    public void createStockOutHandOverWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = stockOutHandOverRepository.findAll().size();
 
-        // Create the StockOutHandover with an existing ID
-        StockOutHandover existingStockOutHandover = new StockOutHandover();
-        existingStockOutHandover.setId(1L);
-        StockOutHandoverDTO existingStockOutHandoverDTO = stockOutHandoverMapper.stockOutHandoverToStockOutHandoverDTO(existingStockOutHandover);
+        // Create the StockOutHandOver with an existing ID
+        StockOutHandover existingStockOutHandOver = new StockOutHandover();
+        existingStockOutHandOver.setId(1L);
+        StockOutHandoverDTO existingStockOutHandOverDTO = stockOutHandOverMapper.stockOutHandOverToStockOutHandOverDTO(existingStockOutHandOver);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restStockOutHandoverMockMvc.perform(post("/api/stock-out-handovers")
+        restStockOutHandOverMockMvc.perform(post("/api/stock-out-hand-overs")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(existingStockOutHandoverDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(existingStockOutHandOverDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
-        List<StockOutHandover> stockOutHandoverList = stockOutHandoverRepository.findAll();
-        assertThat(stockOutHandoverList).hasSize(databaseSizeBeforeCreate);
+        List<StockOutHandover> stockOutHandOverList = stockOutHandOverRepository.findAll();
+        assertThat(stockOutHandOverList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
     @Transactional
     public void checkHandoverCodeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = stockOutHandoverRepository.findAll().size();
+        int databaseSizeBeforeTest = stockOutHandOverRepository.findAll().size();
         // set the field null
-        stockOutHandover.setHandoverCode(null);
+        stockOutHandOver.setHandoverCode(null);
 
-        // Create the StockOutHandover, which fails.
-        StockOutHandoverDTO stockOutHandoverDTO = stockOutHandoverMapper.stockOutHandoverToStockOutHandoverDTO(stockOutHandover);
+        // Create the StockOutHandOver, which fails.
+        StockOutHandoverDTO stockOutHandOverDTO = stockOutHandOverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandOver);
 
-        restStockOutHandoverMockMvc.perform(post("/api/stock-out-handovers")
+        restStockOutHandOverMockMvc.perform(post("/api/stock-out-hand-overs")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stockOutHandoverDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(stockOutHandOverDTO)))
             .andExpect(status().isBadRequest());
 
-        List<StockOutHandover> stockOutHandoverList = stockOutHandoverRepository.findAll();
-        assertThat(stockOutHandoverList).hasSize(databaseSizeBeforeTest);
+        List<StockOutHandover> stockOutHandOverList = stockOutHandOverRepository.findAll();
+        assertThat(stockOutHandOverList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
     @Transactional
     public void checkStatusIsRequired() throws Exception {
-        int databaseSizeBeforeTest = stockOutHandoverRepository.findAll().size();
+        int databaseSizeBeforeTest = stockOutHandOverRepository.findAll().size();
         // set the field null
-        stockOutHandover.setStatus(null);
+        stockOutHandOver.setStatus(null);
 
-        // Create the StockOutHandover, which fails.
-        StockOutHandoverDTO stockOutHandoverDTO = stockOutHandoverMapper.stockOutHandoverToStockOutHandoverDTO(stockOutHandover);
+        // Create the StockOutHandOver, which fails.
+        StockOutHandoverDTO stockOutHandOverDTO = stockOutHandOverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandOver);
 
-        restStockOutHandoverMockMvc.perform(post("/api/stock-out-handovers")
+        restStockOutHandOverMockMvc.perform(post("/api/stock-out-hand-overs")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stockOutHandoverDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(stockOutHandOverDTO)))
             .andExpect(status().isBadRequest());
 
-        List<StockOutHandover> stockOutHandoverList = stockOutHandoverRepository.findAll();
-        assertThat(stockOutHandoverList).hasSize(databaseSizeBeforeTest);
+        List<StockOutHandover> stockOutHandOverList = stockOutHandOverRepository.findAll();
+        assertThat(stockOutHandOverList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
     @Transactional
-    public void getAllStockOutHandovers() throws Exception {
+    public void getAllStockOutHandOvers() throws Exception {
         // Initialize the database
-        stockOutHandoverRepository.saveAndFlush(stockOutHandover);
+        stockOutHandOverRepository.saveAndFlush(stockOutHandOver);
 
-        // Get all the stockOutHandoverList
-        restStockOutHandoverMockMvc.perform(get("/api/stock-out-handovers?sort=id,desc"))
+        // Get all the stockOutHandOverList
+        restStockOutHandOverMockMvc.perform(get("/api/stock-out-hand-overs?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(stockOutHandover.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(stockOutHandOver.getId().intValue())))
             .andExpect(jsonPath("$.[*].handoverCode").value(hasItem(DEFAULT_HANDOVER_CODE.toString())))
             .andExpect(jsonPath("$.[*].receiverName").value(hasItem(DEFAULT_RECEIVER_NAME.toString())))
             .andExpect(jsonPath("$.[*].receiverPhone").value(hasItem(DEFAULT_RECEIVER_PHONE.toString())))
@@ -240,15 +246,15 @@ public class StockOutHandoverResourceIntTest {
 
     @Test
     @Transactional
-    public void getStockOutHandover() throws Exception {
+    public void getStockOutHandOver() throws Exception {
         // Initialize the database
-        stockOutHandoverRepository.saveAndFlush(stockOutHandover);
+        stockOutHandOverRepository.saveAndFlush(stockOutHandOver);
 
-        // Get the stockOutHandover
-        restStockOutHandoverMockMvc.perform(get("/api/stock-out-handovers/{id}", stockOutHandover.getId()))
+        // Get the stockOutHandOver
+        restStockOutHandOverMockMvc.perform(get("/api/stock-out-hand-overs/{id}", stockOutHandOver.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(stockOutHandover.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(stockOutHandOver.getId().intValue()))
             .andExpect(jsonPath("$.handoverCode").value(DEFAULT_HANDOVER_CODE.toString()))
             .andExpect(jsonPath("$.receiverName").value(DEFAULT_RECEIVER_NAME.toString()))
             .andExpect(jsonPath("$.receiverPhone").value(DEFAULT_RECEIVER_PHONE.toString()))
@@ -261,22 +267,22 @@ public class StockOutHandoverResourceIntTest {
 
     @Test
     @Transactional
-    public void getNonExistingStockOutHandover() throws Exception {
-        // Get the stockOutHandover
-        restStockOutHandoverMockMvc.perform(get("/api/stock-out-handovers/{id}", Long.MAX_VALUE))
+    public void getNonExistingStockOutHandOver() throws Exception {
+        // Get the stockOutHandOver
+        restStockOutHandOverMockMvc.perform(get("/api/stock-out-hand-overs/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
 
     @Test
     @Transactional
-    public void updateStockOutHandover() throws Exception {
+    public void updateStockOutHandOver() throws Exception {
         // Initialize the database
-        stockOutHandoverRepository.saveAndFlush(stockOutHandover);
-        int databaseSizeBeforeUpdate = stockOutHandoverRepository.findAll().size();
+        stockOutHandOverRepository.saveAndFlush(stockOutHandOver);
+        int databaseSizeBeforeUpdate = stockOutHandOverRepository.findAll().size();
 
-        // Update the stockOutHandover
-        StockOutHandover updatedStockOutHandover = stockOutHandoverRepository.findOne(stockOutHandover.getId());
-        updatedStockOutHandover
+        // Update the stockOutHandOver
+        StockOutHandover updatedStockOutHandOver = stockOutHandOverRepository.findOne(stockOutHandOver.getId());
+        updatedStockOutHandOver
                 .handoverCode(UPDATED_HANDOVER_CODE)
                 .receiverName(UPDATED_RECEIVER_NAME)
                 .receiverPhone(UPDATED_RECEIVER_PHONE)
@@ -285,61 +291,61 @@ public class StockOutHandoverResourceIntTest {
                 .handoverTime(UPDATED_HANDOVER_TIME)
                 .status(UPDATED_STATUS)
                 .memo(UPDATED_MEMO);
-        StockOutHandoverDTO stockOutHandoverDTO = stockOutHandoverMapper.stockOutHandoverToStockOutHandoverDTO(updatedStockOutHandover);
+        StockOutHandoverDTO stockOutHandOverDTO = stockOutHandOverMapper.stockOutHandOverToStockOutHandOverDTO(updatedStockOutHandOver);
 
-        restStockOutHandoverMockMvc.perform(put("/api/stock-out-handovers")
+        restStockOutHandOverMockMvc.perform(put("/api/stock-out-hand-overs")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stockOutHandoverDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(stockOutHandOverDTO)))
             .andExpect(status().isOk());
 
-        // Validate the StockOutHandover in the database
-        List<StockOutHandover> stockOutHandoverList = stockOutHandoverRepository.findAll();
-        assertThat(stockOutHandoverList).hasSize(databaseSizeBeforeUpdate);
-        StockOutHandover testStockOutHandover = stockOutHandoverList.get(stockOutHandoverList.size() - 1);
-        assertThat(testStockOutHandover.getHandoverCode()).isEqualTo(UPDATED_HANDOVER_CODE);
-        assertThat(testStockOutHandover.getReceiverName()).isEqualTo(UPDATED_RECEIVER_NAME);
-        assertThat(testStockOutHandover.getReceiverPhone()).isEqualTo(UPDATED_RECEIVER_PHONE);
-        assertThat(testStockOutHandover.getReceiverOrganization()).isEqualTo(UPDATED_RECEIVER_ORGANIZATION);
-        assertThat(testStockOutHandover.getHandoverPersonId()).isEqualTo(UPDATED_HANDOVER_PERSON_ID);
-        assertThat(testStockOutHandover.getHandoverTime()).isEqualTo(UPDATED_HANDOVER_TIME);
-        assertThat(testStockOutHandover.getStatus()).isEqualTo(UPDATED_STATUS);
-        assertThat(testStockOutHandover.getMemo()).isEqualTo(UPDATED_MEMO);
+        // Validate the StockOutHandOver in the database
+        List<StockOutHandover> stockOutHandOverList = stockOutHandOverRepository.findAll();
+        assertThat(stockOutHandOverList).hasSize(databaseSizeBeforeUpdate);
+        StockOutHandover testStockOutHandOver = stockOutHandOverList.get(stockOutHandOverList.size() - 1);
+        assertThat(testStockOutHandOver.getHandoverCode()).isEqualTo(UPDATED_HANDOVER_CODE);
+        assertThat(testStockOutHandOver.getReceiverName()).isEqualTo(UPDATED_RECEIVER_NAME);
+        assertThat(testStockOutHandOver.getReceiverPhone()).isEqualTo(UPDATED_RECEIVER_PHONE);
+        assertThat(testStockOutHandOver.getReceiverOrganization()).isEqualTo(UPDATED_RECEIVER_ORGANIZATION);
+        assertThat(testStockOutHandOver.getHandoverPersonId()).isEqualTo(UPDATED_HANDOVER_PERSON_ID);
+        assertThat(testStockOutHandOver.getHandoverTime()).isEqualTo(UPDATED_HANDOVER_TIME);
+        assertThat(testStockOutHandOver.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testStockOutHandOver.getMemo()).isEqualTo(UPDATED_MEMO);
     }
 
     @Test
     @Transactional
-    public void updateNonExistingStockOutHandover() throws Exception {
-        int databaseSizeBeforeUpdate = stockOutHandoverRepository.findAll().size();
+    public void updateNonExistingStockOutHandOver() throws Exception {
+        int databaseSizeBeforeUpdate = stockOutHandOverRepository.findAll().size();
 
-        // Create the StockOutHandover
-        StockOutHandoverDTO stockOutHandoverDTO = stockOutHandoverMapper.stockOutHandoverToStockOutHandoverDTO(stockOutHandover);
+        // Create the StockOutHandOver
+        StockOutHandoverDTO stockOutHandOverDTO = stockOutHandOverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandOver);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
-        restStockOutHandoverMockMvc.perform(put("/api/stock-out-handovers")
+        restStockOutHandOverMockMvc.perform(put("/api/stock-out-hand-overs")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stockOutHandoverDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(stockOutHandOverDTO)))
             .andExpect(status().isCreated());
 
-        // Validate the StockOutHandover in the database
-        List<StockOutHandover> stockOutHandoverList = stockOutHandoverRepository.findAll();
-        assertThat(stockOutHandoverList).hasSize(databaseSizeBeforeUpdate + 1);
+        // Validate the StockOutHandOver in the database
+        List<StockOutHandover> stockOutHandOverList = stockOutHandOverRepository.findAll();
+        assertThat(stockOutHandOverList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test
     @Transactional
-    public void deleteStockOutHandover() throws Exception {
+    public void deleteStockOutHandOver() throws Exception {
         // Initialize the database
-        stockOutHandoverRepository.saveAndFlush(stockOutHandover);
-        int databaseSizeBeforeDelete = stockOutHandoverRepository.findAll().size();
+        stockOutHandOverRepository.saveAndFlush(stockOutHandOver);
+        int databaseSizeBeforeDelete = stockOutHandOverRepository.findAll().size();
 
-        // Get the stockOutHandover
-        restStockOutHandoverMockMvc.perform(delete("/api/stock-out-handovers/{id}", stockOutHandover.getId())
+        // Get the stockOutHandOver
+        restStockOutHandOverMockMvc.perform(delete("/api/stock-out-hand-overs/{id}", stockOutHandOver.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<StockOutHandover> stockOutHandoverList = stockOutHandoverRepository.findAll();
-        assertThat(stockOutHandoverList).hasSize(databaseSizeBeforeDelete - 1);
+        List<StockOutHandover> stockOutHandOverList = stockOutHandOverRepository.findAll();
+        assertThat(stockOutHandOverList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
     @Test

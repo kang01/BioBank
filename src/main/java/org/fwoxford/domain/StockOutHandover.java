@@ -24,6 +24,7 @@ public class StockOutHandover extends AbstractAuditingEntity implements Serializ
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
 //    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
+
     @NotNull
     @Size(max = 100)
     @Column(name = "handover_code", length = 100, nullable = false)
@@ -56,9 +57,15 @@ public class StockOutHandover extends AbstractAuditingEntity implements Serializ
     @Column(name = "memo", length = 1024)
     private String memo;
 
+    @ManyToOne
+    private StockOutTask stockOutTask;
+
     @ManyToOne(optional = false)
     @NotNull
-    private StockOutTask stockOutTask;
+    private StockOutApply stockOutApply;
+
+    @ManyToOne
+    private StockOutPlan stockOutPlan;
 
     public Long getId() {
         return id;
@@ -185,6 +192,32 @@ public class StockOutHandover extends AbstractAuditingEntity implements Serializ
         this.stockOutTask = stockOutTask;
     }
 
+    public StockOutApply getStockOutApply() {
+        return stockOutApply;
+    }
+
+    public StockOutHandover stockOutApply(StockOutApply stockOutApply) {
+        this.stockOutApply = stockOutApply;
+        return this;
+    }
+
+    public void setStockOutApply(StockOutApply stockOutApply) {
+        this.stockOutApply = stockOutApply;
+    }
+
+    public StockOutPlan getStockOutPlan() {
+        return stockOutPlan;
+    }
+
+    public StockOutHandover stockOutPlan(StockOutPlan stockOutPlan) {
+        this.stockOutPlan = stockOutPlan;
+        return this;
+    }
+
+    public void setStockOutPlan(StockOutPlan stockOutPlan) {
+        this.stockOutPlan = stockOutPlan;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -193,11 +226,11 @@ public class StockOutHandover extends AbstractAuditingEntity implements Serializ
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        StockOutHandover stockOutHandover = (StockOutHandover) o;
-        if (stockOutHandover.id == null || id == null) {
+        StockOutHandover StockOutHandover = (StockOutHandover) o;
+        if (StockOutHandover.id == null || id == null) {
             return false;
         }
-        return Objects.equals(id, stockOutHandover.id);
+        return Objects.equals(id, StockOutHandover.id);
     }
 
     @Override

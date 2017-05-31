@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.Objects;
 
 /**
- * A DTO for the StockOutHandover entity.
+ * A DTO for the StockOutHandOver entity.
  */
 public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -39,8 +39,10 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
     private String memo;
 
     private Long stockOutTaskId;
-    private Long stockOutPlanId;
+
     private Long stockOutApplyId;
+
+    private Long stockOutPlanId;
 
     public Long getId() {
         return id;
@@ -114,20 +116,20 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
         this.stockOutTaskId = stockOutTaskId;
     }
 
-    public Long getStockOutPlanId() {
-        return stockOutPlanId;
-    }
-
-    public void setStockOutPlanId(Long stockOutPlanId) {
-        this.stockOutPlanId = stockOutPlanId;
-    }
-
     public Long getStockOutApplyId() {
         return stockOutApplyId;
     }
 
     public void setStockOutApplyId(Long stockOutApplyId) {
         this.stockOutApplyId = stockOutApplyId;
+    }
+
+    public Long getStockOutPlanId() {
+        return stockOutPlanId;
+    }
+
+    public void setStockOutPlanId(Long stockOutPlanId) {
+        this.stockOutPlanId = stockOutPlanId;
     }
 
     @Override
@@ -139,9 +141,9 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
             return false;
         }
 
-        StockOutHandoverDTO stockOutHandoverDTO = (StockOutHandoverDTO) o;
+        StockOutHandoverDTO stockOutHandOverDTO = (StockOutHandoverDTO) o;
 
-        if ( ! Objects.equals(id, stockOutHandoverDTO.id)) { return false; }
+        if ( ! Objects.equals(id, stockOutHandOverDTO.id)) { return false; }
 
         return true;
     }
@@ -153,19 +155,16 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
 
     @Override
     public String toString() {
-        return "StockOutHandoverDTO{" +
+        return "StockOutHandOverDTO{" +
             "id=" + id +
-            ", handoverCode='" + handoverCode + '\'' +
-            ", receiverName='" + receiverName + '\'' +
-            ", receiverPhone='" + receiverPhone + '\'' +
-            ", receiverOrganization='" + receiverOrganization + '\'' +
-            ", handoverPersonId=" + handoverPersonId +
-            ", handoverTime=" + handoverTime +
-            ", status='" + status + '\'' +
-            ", memo='" + memo + '\'' +
-            ", stockOutTaskId=" + stockOutTaskId +
-            ", stockOutPlanId=" + stockOutPlanId +
-            ", stockOutApplyId=" + stockOutApplyId +
+            ", handoverCode='" + handoverCode + "'" +
+            ", receiverName='" + receiverName + "'" +
+            ", receiverPhone='" + receiverPhone + "'" +
+            ", receiverOrganization='" + receiverOrganization + "'" +
+            ", handoverPersonId='" + handoverPersonId + "'" +
+            ", handoverTime='" + handoverTime + "'" +
+            ", status='" + status + "'" +
+            ", memo='" + memo + "'" +
             '}';
     }
 }

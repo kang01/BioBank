@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -226,12 +227,18 @@ public class StockOutFrozenBoxResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
     }
 
-
-    @PostMapping("/stock-out-frozen-boxes/task/{taskId}/box/{boxCode}")
+    /**
+     * 创建临时盒
+     * @param frozenBoxDTO
+     * @param taskId
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-out-frozen-boxes/task/{taskId}")
     @Timed
-    public ResponseEntity<List<FrozenBoxForSaveBatchDTO>> createFrozenBoxForStockOut(@Valid @RequestBody List<FrozenBoxForSaveBatchDTO> frozenBoxDTO,@PathVariable Long taskId,@PathVariable String boxCode) throws URISyntaxException {
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> createFrozenBoxForStockOut(@Valid @RequestBody List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTO, @PathVariable Long taskId) throws URISyntaxException {
         log.debug("REST request to save FrozenBox : {}", frozenBoxDTO);
-        List<FrozenBoxForSaveBatchDTO> result = stockOutFrozenBoxService.createFrozenBoxForStockOut(frozenBoxDTO,taskId,boxCode);
+        List<FrozenBoxAndFrozenTubeResponse> result = stockOutFrozenBoxService.createFrozenBoxForStockOut(frozenBoxDTO,taskId);
         return ResponseEntity.created(new URI("/api/stock-out-frozen-boxes/task/" + taskId))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, taskId.toString()))
             .body(result);

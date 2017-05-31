@@ -48,6 +48,7 @@
                 "stockOutTaskFrozenTube": "Stock Out Task Frozen Tube",
                 "boxAndTube": "Box And Tube",
                 "stockOutBoxTube": "Stock Out Box Tube",
+                "stockOutHandOver": "Stock Out Hand Over",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
                 "transportrecord":"转运记录"
             },

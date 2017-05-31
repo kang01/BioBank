@@ -67,11 +67,11 @@
             </column>
 
             <column name="sample_type_code" type="nvarchar(100)" remarks="样本类型编码">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="sample_type_name" type="nvarchar(255)" remarks="样本类型名称 ">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="sample_number" type="integer" remarks="样本数量">
@@ -79,7 +79,7 @@
             </column>
 
             <column name="is_split" type="integer" remarks="是否分装：1：是，0：否">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="memo" type="nvarchar(1024)" remarks="备注">
@@ -91,15 +91,15 @@
             </column>
 
             <column name="empty_tube_number" type="integer" remarks="空管数">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="empty_hole_number" type="integer" remarks="空孔数">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="dislocation_number" type="integer" remarks="错位数">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="rows_in_shelf" type="nvarchar(20)" remarks="所在架子的行数">
@@ -111,7 +111,7 @@
             </column>
 
             <column name="is_real_data" type="integer" remarks="是否已导入样本数据：1：是，0：否">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="frozen_box_type_id" type="bigint" remarks="冻存盒类型ID">
@@ -119,7 +119,7 @@
             </column>
 
             <column name="sample_type_id" type="bigint" remarks="样本类型ID">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="sample_classification_id" type="bigint" remarks="样本分类ID">

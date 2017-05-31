@@ -100,14 +100,12 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     /**
      * 样本类型编码
      */
-    @NotNull
     @Size(max = 100)
     @Column(name = "sample_type_code", length = 100, nullable = false)
     private String sampleTypeCode;
     /**
      * 样本类型名称
      */
-    @NotNull
     @Size(max = 255)
     @Column(name = "sample_type_name", length = 255, nullable = false)
     private String sampleTypeName;
@@ -121,7 +119,6 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
      * 是否分装：1：是，0：否
      */
     @Column(name = "is_split", nullable = false)
-    @NotNull
     private Integer isSplit;
     /**
      * 所在架子行数
@@ -151,32 +148,28 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     /**
      * 空管数
      */
-    @NotNull
     @Column(name = "empty_tube_number", nullable = false)
     private Integer emptyTubeNumber;
     /**
      * 空孔数
      */
-    @NotNull
     @Column(name = "empty_hole_number", nullable = false)
     private Integer emptyHoleNumber;
     /**
      * 错位数
      */
-    @NotNull
     @Column(name = "dislocation_number", nullable = false)
     private Integer dislocationNumber;
     /**
      * 是否已导入样本数据：1：是，0：否
      */
-    @NotNull
     @Column(name = "is_real_data",  nullable = false)
     private Integer isRealData;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     private FrozenBoxType frozenBoxType;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     private SampleType sampleType;
 
     @ManyToOne

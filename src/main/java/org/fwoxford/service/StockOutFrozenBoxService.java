@@ -2,9 +2,9 @@ package org.fwoxford.service;
 
 import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 
@@ -56,7 +56,7 @@ public interface StockOutFrozenBoxService {
 
     List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId);
 
-    List<FrozenBoxForSaveBatchDTO> createFrozenBoxForStockOut(List<FrozenBoxForSaveBatchDTO> frozenBoxDTO, Long taskId, String boxCode);
+    List<FrozenBoxAndFrozenTubeResponse> createFrozenBoxForStockOut(List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTO, Long taskId);
 
     List<StockOutFrozenBoxForTaskDataTableEntity> getAllTempStockOutFrozenBoxesByTask(Long taskId);
 }

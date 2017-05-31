@@ -7,6 +7,8 @@ import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
 import org.fwoxford.service.dto.FrozenTubeForSaveBatchDTO;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.fwoxford.service.mapper.StockOutFrozenBoxMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -59,6 +61,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
     @Autowired
     private FrozenTubeRepository frozenTubeRepository;
+
+    @Autowired
+    private FrozenBoxTypeRepository frozenBoxTypeRepository;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper
@@ -249,17 +254,13 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
      * @return
      */
     @Override
-    public List<FrozenBoxForSaveBatchDTO> createFrozenBoxForStockOut(List<FrozenBoxForSaveBatchDTO> frozenBoxDTO ,Long taskId ,String boxCode) {
+    public List<FrozenBoxAndFrozenTubeResponse> createFrozenBoxForStockOut(List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTO, Long taskId) {
         StockOutTask stockOutTask = stockOutTaskRepository.findOne(taskId);
         if(stockOutTask == null){
             throw new BankServiceException("任务ID无效！");
         }
-        FrozenBox frozenBoxOld = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(boxCode);
-        if(frozenBoxOld == null){
-            throw new BankServiceException("冻存盒不存在！",boxCode);
-        }
-
-        for(FrozenBoxForSaveBatchDTO box:frozenBoxDTO){
+        List<FrozenBoxType> boxTypes = frozenBoxTypeRepository.findAllFrozenBoxTypes();
+        for(FrozenBoxAndFrozenTubeResponse box:frozenBoxDTO){
             if(box.getFrozenBoxCode() == null){
                 throw new BankServiceException("冻存盒编码不能为空！");
             }
@@ -278,11 +279,21 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             if(box.getId()!=null){
                 frozenBox = frozenBoxRepository.findOne(box.getId())!=null?frozenBoxRepository.findOne(box.getId()):new FrozenBox();
             }
-            if(frozenBox.getFrozenBoxCode() == null){
-                frozenBox = frozenBoxOldToNew(frozenBoxOld);
+            if (box.getFrozenBoxType() != null) {
+                int boxTypeIndex = boxTypes.indexOf(box.getFrozenBoxType());
+                if (boxTypeIndex >= 0) {
+                    FrozenBoxType boxType = boxTypes.get(boxTypeIndex);
+                    frozenBox.setFrozenBoxType(boxType);
+                    frozenBox.setFrozenBoxTypeCode(boxType.getFrozenBoxTypeCode());
+                    frozenBox.setFrozenBoxTypeColumns(boxType.getFrozenBoxTypeColumns());
+                    frozenBox.setFrozenBoxTypeRows(boxType.getFrozenBoxTypeRows());
+                }else {
+                    throw new BankServiceException("冻存盒类型不能为空！",box.toString());
+                }
             }
             frozenBox.setFrozenBoxCode(box.getFrozenBoxCode());
             frozenBox.setSampleNumber(box.getFrozenTubeDTOS().size());
+            frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
             frozenBoxRepository.save(frozenBox);
             //保存出库盒
             StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findByFrozenBoxId(frozenBox.getId());
@@ -299,7 +310,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             boxAndTube.setStatus(Constants.FROZEN_BOX_TUBE_STOCKOUT_PENDING);
 
             //保存出库盒与管之间的关系
-            for(FrozenTubeForSaveBatchDTO f: box.getFrozenTubeDTOS()){
+            for(FrozenTubeResponse f: box.getFrozenTubeDTOS()){
                 //todo 判断是否已有出库任务
                 StockOutBoxTube stockOutBoxTube = new StockOutBoxTube();
                 stockOutBoxTube.setStatus(Constants.STOCK_OUT_FROZEN_TUBE_NEW);

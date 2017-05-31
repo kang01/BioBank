@@ -14,7 +14,6 @@ public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Seriali
 
     private Long id;
 
-    @NotNull
     @Size(max = 20)
     private String status;
 

@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.fwoxford.domain.StockOutFrozenBox;
 import org.fwoxford.domain.StockOutTask;
 import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
@@ -293,6 +294,22 @@ public class StockOutFrozenBoxResource {
         StockOutTaskDTO result = stockOutFrozenBoxService.stockOut(stockOutFrozenBoxPoisition,taskId,frozenBoxIds);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, taskId.toString()))
+            .body(result);
+    }
+
+    /**
+     * 冻存盒单个批注
+     * @param stockOutFrozenBoxDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-frozen-boxes/note")
+    @Timed
+    public ResponseEntity<StockOutFrozenBoxDTO> stockOutNote(@Valid @RequestBody StockOutFrozenBoxDTO stockOutFrozenBoxDTO) throws URISyntaxException {
+        log.debug("REST request to update StockOutFrozenBox : {}", stockOutFrozenBoxDTO);
+        StockOutFrozenBoxDTO result = stockOutFrozenBoxService.stockOutNote(stockOutFrozenBoxDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 }

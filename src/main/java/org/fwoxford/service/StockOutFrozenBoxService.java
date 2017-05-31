@@ -1,6 +1,5 @@
 package org.fwoxford.service;
 
-import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
 import org.fwoxford.service.dto.StockOutTaskDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
@@ -66,4 +65,6 @@ public interface StockOutFrozenBoxService {
     List<StockOutFrozenBoxDataTableEntity> getStockOutFrozenBoxesByTask(Long taskId);
 
     StockOutTaskDTO stockOut(StockOutFrozenBoxPoisition stockOutFrozenBoxPoisition, Long taskId, List<Long> frozenBoxIds);
+
+    StockOutFrozenBoxDTO stockOutNote(StockOutFrozenBoxDTO stockOutFrozenBoxDTO);
 }

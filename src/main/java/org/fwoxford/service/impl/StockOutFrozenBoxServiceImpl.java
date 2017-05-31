@@ -392,7 +392,8 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             box.setId(f.getId());
             box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             box.setSampleTypeName(frozenBox.getSampleTypeName());
-            String position = getPositionString(frozenBox);
+//            String position = getPositionString(frozenBox);
+            String position = toPositionString(f.getStockOutBoxPosition());
             box.setPosition(position);
             Long count = stockOutBoxTubeRepository.countByStockOutFrozenBoxId(f.getId());
             box.setCountOfSample(count);
@@ -468,5 +469,16 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutFrozenBoxRepository.save(stockOutFrozenBox);
         }
         return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
+    }
+
+    @Override
+    public StockOutFrozenBoxDTO stockOutNote(StockOutFrozenBoxDTO stockOutFrozenBoxDTO) {
+        if(stockOutFrozenBoxDTO == null || stockOutFrozenBoxDTO.getId() == null ){
+            throw new BankServiceException("出库盒ID不能为空！");
+        }
+        StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findOne(stockOutFrozenBoxDTO.getId());
+        stockOutFrozenBox.setMemo(stockOutFrozenBoxDTO.getMemo());
+        stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+        return stockOutFrozenBoxDTO;
     }
 }

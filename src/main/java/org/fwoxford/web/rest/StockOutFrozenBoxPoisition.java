@@ -9,8 +9,6 @@ public class StockOutFrozenBoxPoisition {
 
     private Long areaId;
 
-    private Long supportRackId;
-
     private String password1;
 
     private String password2;
@@ -29,14 +27,6 @@ public class StockOutFrozenBoxPoisition {
 
     public void setAreaId(Long areaId) {
         this.areaId = areaId;
-    }
-
-    public Long getSupportRackId() {
-        return supportRackId;
-    }
-
-    public void setSupportRackId(Long supportRackId) {
-        this.supportRackId = supportRackId;
     }
 
     public String getPassword1() {

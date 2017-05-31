@@ -7,6 +7,7 @@ import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
+import org.fwoxford.service.dto.response.StockOutFrozenBoxDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
@@ -71,6 +72,8 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     @Autowired
     private FrozenBoxMapper frozenBoxMapper;
 
+    @Autowired
+    private StockOutHandoverRepository stockOutHandoverRepository;
 
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
@@ -352,6 +355,30 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
             List<FrozenTubeResponse> frozenTubeResponse = frozenTubeMapper.frozenTubeToFrozenTubeResponse(frozenTubes);
             FrozenBoxAndFrozenTubeResponse box = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox,frozenTubeResponse);
+            alist.add(box);
+        }
+        return alist;
+    }
+
+    @Override
+    public List<StockOutFrozenBoxDataTableEntity> getStockOutFrozenBoxesByTask(Long taskId) {
+        List<StockOutFrozenBoxDataTableEntity> alist = new ArrayList<StockOutFrozenBoxDataTableEntity>();
+        List<StockOutFrozenBox> boxes =  stockOutFrozenBoxRepository.findByStockOutTaskId(taskId);
+        for(StockOutFrozenBox f :boxes){
+            FrozenBox frozenBox = f.getFrozenBox();
+            StockOutFrozenBoxDataTableEntity box = new StockOutFrozenBoxDataTableEntity();
+            if(frozenBox ==null){continue;}
+            box.setId(f.getId());
+            box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            box.setSampleTypeName(frozenBox.getSampleTypeName());
+            String position = getPositionString(frozenBox);
+            box.setPosition(position);
+            Long count = stockOutBoxTubeRepository.countByStockOutFrozenBoxId(f.getId());
+            box.setCountOfSample(count);
+            box.setMemo(f.getMemo());
+            box.setStauts(f.getStatus());
+            StockOutHandover stockOutHandover = stockOutHandoverRepository.findByStockOutTaskId(taskId);
+            box.setStockOutHandoverTime(stockOutHandover!=null?stockOutHandover.getHandoverTime():null);
             alist.add(box);
         }
         return alist;

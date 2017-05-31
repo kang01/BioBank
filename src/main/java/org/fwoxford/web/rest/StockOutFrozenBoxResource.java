@@ -6,6 +6,7 @@ import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.StockOutFrozenBoxDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -256,6 +257,22 @@ public class StockOutFrozenBoxResource {
         throws URISyntaxException {
         log.debug("REST request to get a page of StockOutFrozenBoxes");
         List<FrozenBoxAndFrozenTubeResponse> list = stockOutFrozenBoxService.getAllTempStockOutFrozenBoxesByTask(taskId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
+
+
+    /**
+     * 根据任务查询需要出库的冻存盒列表（根据出库冻存管统计出来的）
+     * @param taskId
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-frozen-boxes/task-box/{taskId}")
+    @Timed
+    public ResponseEntity<List<StockOutFrozenBoxDataTableEntity>> getStockOutFrozenBoxesByTask(@PathVariable Long taskId)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of StockOutFrozenBoxes");
+        List<StockOutFrozenBoxDataTableEntity> list = stockOutFrozenBoxService.getStockOutFrozenBoxesByTask(taskId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
     }
 }

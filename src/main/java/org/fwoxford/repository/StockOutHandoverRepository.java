@@ -13,4 +13,6 @@ import java.util.List;
 public interface StockOutHandoverRepository extends JpaRepository<StockOutHandover,Long> {
 
     Long countByStockOutTaskId(Long id);
+
+    StockOutHandover findByStockOutTaskId(Long taskId);
 }

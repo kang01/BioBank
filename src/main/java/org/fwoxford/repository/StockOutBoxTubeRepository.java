@@ -12,7 +12,10 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StockOutBoxTubeRepository extends JpaRepository<StockOutBoxTube,Long> {
     @Query("select count(t) from StockOutBoxTube t where t.stockOutFrozenBox.frozenBox.id=?1 ")
-    Long findByFrozenBox(Long id);
+    Long countByFrozenBox(Long id);
 
     StockOutBoxTube findByFrozenTubeId(Long id);
+
+    @Query("select count(t) from StockOutBoxTube t where t.stockOutFrozenBox.id=?1 and t.status!='2203' ")
+    Long countByStockOutFrozenBoxId(Long id);
 }

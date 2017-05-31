@@ -693,3 +693,7 @@ tr.shown td .details-control {
 .htReadOnly {
     background-color: darkgray !important;
 }
+
+.no-padding .dataTables_wrapper{
+    padding: 0;
+}

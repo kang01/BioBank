@@ -12,10 +12,32 @@
     function TakeOverService($http) {
         var service = {
             //获取交接列表
-            queryTakeOverList:_queryTakeOverList
+            queryTakeOverList:_queryTakeOverList,
+            queryWaitingTakeOverFrozenBoxesList: _queryWaitingTakeOverFrozenBoxesList,
+            saveTakeoverInfo: _saveTakeoverInfo,
+
+            getTakeoverInfo: _getTakeoverInfo,
         };
         function _queryTakeOverList(data,oSettings) {
             return $http.post('/api/temp/res/stock-out-handovers',JSON.stringify(data))
+        }
+        function _queryWaitingTakeOverFrozenBoxesList(applyId, data,oSettings) {
+            return $http.post('/api/temp/res/stock-out-frozen-boxes/apply/'+applyId+'/waiting-handover',JSON.stringify(data))
+        }
+
+        function _saveTakeoverInfo(dto){
+            var url = '/api/temp/stock-out-handovers';
+            if (dto.id){
+                return $http.put(url, dto);
+            } else {
+                return $http.post(url, dto);
+            }
+        }
+
+        function _getTakeoverInfo(id){
+            return $http.get('api/temp/stock-out-handovers/'+id).then(function(res){
+                return res.data;
+            });
         }
         return service;
     }

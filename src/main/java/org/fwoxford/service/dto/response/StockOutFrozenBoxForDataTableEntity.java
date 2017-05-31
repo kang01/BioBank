@@ -36,6 +36,11 @@ public class StockOutFrozenBoxForDataTableEntity {
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private String planCode;
+    @JsonView(DataTablesOutput.View.class)
+    private Long taskId;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private String taskCode;
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private Long delegateId;
@@ -151,5 +156,21 @@ public class StockOutFrozenBoxForDataTableEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getTaskCode() {
+        return taskCode;
+    }
+
+    public void setTaskCode(String taskCode) {
+        this.taskCode = taskCode;
     }
 }

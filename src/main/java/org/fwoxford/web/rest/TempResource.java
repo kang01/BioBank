@@ -1100,12 +1100,48 @@ public class TempResource {
         return result;
     }
     /**
-     * 查询待交接冻存盒
+     * 查询已交接冻存盒
      * @param input
      * @return
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-frozen-boxes/handover/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageHandoverStockOutFrozenBoxes(@PathVariable Long id, @RequestBody DataTablesInput input) {
+        List<StockOutFrozenBoxForDataTableEntity> dataList =  new ArrayList<>();
+
+        for (int i = 0; i < input.getLength(); ++i){
+            StockOutFrozenBoxForDataTableEntity rowData = new StockOutFrozenBoxForDataTableEntity();
+            rowData.setId(0L + i + input.getStart());
+
+            rowData.setFrozenBoxCode(BankUtil.getUniqueID());
+            rowData.setApplyId(1L);
+            rowData.setApplyCode(BankUtil.getUniqueID());
+            rowData.setPlanId(1L);
+            rowData.setPlanCode(BankUtil.getUniqueID());
+            rowData.setCountOfSample(100L);
+            rowData.setStatus("1101");
+            rowData.setDelegateId(1L);
+            rowData.setDelegate("王东东");
+            rowData.setMemo("实验");
+            dataList.add(rowData);
+        }
+
+        DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = new DataTablesOutput<>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(dataList);
+        result.setRecordsFiltered(dataList.size());
+        result.setRecordsTotal(dataList.size() * 10);
+        return result;
+    }
+
+    /**
+     * 查询待交接冻存盒
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-frozen-boxes/apply/{id}/waiting-handover", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageStockOutFrozenBoxes(@PathVariable Long id, @RequestBody DataTablesInput input) {
         List<StockOutFrozenBoxForDataTableEntity> dataList =  new ArrayList<>();
 
@@ -1118,6 +1154,8 @@ public class TempResource {
             rowData.setApplyCode(BankUtil.getUniqueID());
             rowData.setPlanId(1L);
             rowData.setPlanCode(BankUtil.getUniqueID());
+            rowData.setTaskId(1L);
+            rowData.setTaskCode(BankUtil.getUniqueID());
             rowData.setCountOfSample(100L);
             rowData.setStatus("1101");
             rowData.setDelegateId(1L);

@@ -28,6 +28,7 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
     private String receiverOrganization;
 
     private Long handoverPersonId;
+    private String handoverPersonName;
 
     private LocalDate handoverTime;
 
@@ -132,6 +133,14 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
         this.stockOutPlanId = stockOutPlanId;
     }
 
+    public String getHandoverPersonName() {
+        return handoverPersonName;
+    }
+
+    public void setHandoverPersonName(String handoverPersonName) {
+        this.handoverPersonName = handoverPersonName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -155,16 +164,20 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
 
     @Override
     public String toString() {
-        return "StockOutHandOverDTO{" +
+        return "StockOutHandoverDTO{" +
             "id=" + id +
-            ", handoverCode='" + handoverCode + "'" +
-            ", receiverName='" + receiverName + "'" +
-            ", receiverPhone='" + receiverPhone + "'" +
-            ", receiverOrganization='" + receiverOrganization + "'" +
-            ", handoverPersonId='" + handoverPersonId + "'" +
-            ", handoverTime='" + handoverTime + "'" +
-            ", status='" + status + "'" +
-            ", memo='" + memo + "'" +
+            ", handoverCode='" + handoverCode + '\'' +
+            ", receiverName='" + receiverName + '\'' +
+            ", receiverPhone='" + receiverPhone + '\'' +
+            ", receiverOrganization='" + receiverOrganization + '\'' +
+            ", handoverPersonId=" + handoverPersonId +
+            ", handoverPersonName='" + handoverPersonName + '\'' +
+            ", handoverTime=" + handoverTime +
+            ", status='" + status + '\'' +
+            ", memo='" + memo + '\'' +
+            ", stockOutTaskId=" + stockOutTaskId +
+            ", stockOutApplyId=" + stockOutApplyId +
+            ", stockOutPlanId=" + stockOutPlanId +
             '}';
     }
 }

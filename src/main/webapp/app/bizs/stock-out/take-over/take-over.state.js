@@ -14,7 +14,7 @@
         $stateProvider
             .state('take-over-list', {
                 parent: 'bizs',
-                url: '/take-over?page&sort',
+                url: '/take-over-list?page&sort',
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN']
                 },
@@ -69,6 +69,29 @@
                     }]
                 }
             })
+            .state('take-over-edit', {
+                parent: 'bizs',
+                url: '/take-over-list/{id}/edit',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN']
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/stock-out/take-over/take-over-detail.html',
+                        controller: 'TakeOverDetailController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        return $translate.refresh();
+                    }],
+                    entity: ['$stateParams', 'TakeOverService', function($stateParams, TakeOverService) {
+                        var id = $stateParams.id;
+                        return TakeOverService.getTakeoverInfo(id);
+                    }]
+                }
+            })
             .state('take-over-view', {
                 parent: 'bizs',
                 url: '/take-over-list/{id}/view',
@@ -87,7 +110,8 @@
                         return $translate.refresh();
                     }],
                     entity: ['$stateParams', 'TakeOverService', function($stateParams, TakeOverService) {
-                        return {id: $stateParams.id};
+                        var id = $stateParams.id;
+                        return TakeOverService.getTakeoverInfo(id);
                     }]
                 }
             })

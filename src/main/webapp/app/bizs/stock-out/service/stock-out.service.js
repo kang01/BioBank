@@ -6,17 +6,23 @@
 
     angular
         .module('bioBankApp')
-        .factory('StockInService', StockInService);
+        .factory('StockOutService', StockOutService);
 
-    StockInService.$inject = ['$http'];
-    function StockInService($http) {
+    StockOutService.$inject = ['$http'];
+    function StockOutService($http) {
         var service = {
             //获取委托方
             queryDelegates:_queryDelegates,
             //获取申请列表
             queryRequirementList:_queryRequirementList,
             //附加列表
-            copyRequirementList:_copyRequirementList
+            copyRequirementList:_copyRequirementList,
+
+            getApplications: _getApplications,
+            getPlans: _getPlans,
+            getTasks: _getTasks,
+
+
         };
         function _queryDelegates() {
             return $http.get('/api/delegates/all')
@@ -26,6 +32,16 @@
         }
         function _copyRequirementList(id) {
             return $http.get('api/temp/stock-out-applies/parentApply/'+id)
+        }
+
+        function _getApplications(){
+            return $http.get('api/stock-out-applies')
+        }
+        function _getPlans(applyId){
+            return $http.get('api/stock-out-plans/apply/'+applyId)
+        }
+        function _getTasks(planId){
+            return $http.get('api/stock-out-tasks/plan/'+planId)
         }
         return service;
     }

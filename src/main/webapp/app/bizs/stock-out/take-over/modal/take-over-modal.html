@@ -3,7 +3,56 @@
     <h3 class="modal-title" id="modal-title">样本交接</h3>
 </div>
 <div class="modal-body" id="modal-body">
-    样本交接
+    <form name="takeoverForm" class="form-horizontal">
+    <div class="row">
+        <div class="col-md-12">
+            <p>接收方 {{vm.stockOutTakeOver.receiverOrganization}} {{vm.stockOutTakeOver.receiverName}}, 在 {{vm.stockOutTakeOver.handoverTime}} 取走样本 {{vm.countOfSamples}} 只, 详情见交接明细。</p>
+            <p>接收人 {{vm.stockOutTakeOver.receiverName}}, 交付人 {{vm.stockOutTakeOver.handoverPersonName}}</p>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label><input type="checkbox" ng-model="vm.isCheck1"> 已将样本交接单送达接收方</label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" ng-model="vm.isCheck2"> 接收方已经核对过样本交接单</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">交付人</label>
+                <div class="col-sm-10">
+                    <input type="email" class="form-control" ng-model="vm.handoverPersonName" ng-disabled="true">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">密码</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" ng-model="vm.handoverPersonPassword">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">交付日期</label>
+                <div class="col-sm-10">
+                    <div class="input-group">
+                        <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.handoverTime" is-open="vm.datePickerOpenStatus.handoverTime"
+                                required/>
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="vm.openCalendar('handoverTime')"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12"></div>
+    </div>
+    </form>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="vm.ok()" >确定</button>

@@ -125,9 +125,14 @@
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-default btn-xs" ui-sref="take-over-view({id:'+ full.id +'})">' +
+            if (full.status != '1002'){
+                return '<a type="button" class="btn btn-default btn-xs" ui-sref="take-over-edit({id:'+ full.id +'})">' +
+                    '   <i class="fa fa-pencil"></i>' +
+                    '</a>&nbsp;'
+            }
+            return '<a type="button" class="btn btn-default btn-xs" ui-sref="take-over-view({id:'+ full.id +'})">' +
                 '   <i class="fa fa-eye"></i>' +
-                '</button>&nbsp;'
+                '</a>&nbsp;'
         }
     }
 })();

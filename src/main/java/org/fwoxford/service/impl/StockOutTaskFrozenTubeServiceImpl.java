@@ -1,11 +1,9 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
-import org.fwoxford.domain.FrozenTube;
-import org.fwoxford.repository.FrozenTubeRepository;
+import org.fwoxford.domain.*;
+import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutTaskFrozenTubeService;
-import org.fwoxford.domain.StockOutTaskFrozenTube;
-import org.fwoxford.repository.StockOutTaskFrozenTubeRepository;
 import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.StockOutTaskFrozenTubeDTO;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
@@ -37,6 +35,15 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
 
     @Autowired
     private FrozenTubeRepository frozenTubeRepository;
+
+    @Autowired
+    private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
+
+    @Autowired
+    private StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository;
+
+    @Autowired
+    private StockOutBoxTubeRepository stockOutBoxTubeRepository;
 
     public StockOutTaskFrozenTubeServiceImpl(StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository, StockOutTaskFrozenTubeMapper stockOutTaskFrozenTubeMapper) {
         this.stockOutTaskFrozenTubeRepository = stockOutTaskFrozenTubeRepository;
@@ -117,11 +124,39 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
 
     @Override
     public List<FrozenTubeResponse> repealStockOutTaskFrozenTube( List<FrozenTubeResponse> frozenTubeDTOS) {
-        //需求样本撤销
-        //任务出库样本
-        //计划出库样本
-        //冻存管与出库盒的关系
-        return null;
+        for(FrozenTubeResponse tube :frozenTubeDTOS){
+            if(tube.getId() == null){
+                continue;
+            }
+            //需求样本撤销
+            StockOutReqFrozenTube stockOutReqFrozenTube = stockOutReqFrozenTubeRepository.findByFrozenTubeId(tube.getId());
+            stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
+            stockOutReqFrozenTube.setMemo(tube.getMemo());
+            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
+
+            //计划出库样本
+            StockOutPlanFrozenTube stockOutPlanFrozenTube = stockOutPlanFrozenTubeRepository.findByStockOutReqFrozenTubeId(stockOutReqFrozenTube.getId());
+            stockOutPlanFrozenTube.setStatus(Constants.STOCK_OUT_PLAN_TUBE_CANCEL);
+            stockOutPlanFrozenTube.setMemo(tube.getMemo());
+            stockOutPlanFrozenTubeRepository.save(stockOutPlanFrozenTube);
+            //任务出库样本
+            StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutPlanFrozenTubeId(stockOutPlanFrozenTube.getId());
+            stockOutTaskFrozenTube.setStatus(Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+            stockOutTaskFrozenTube.setMemo(tube.getMemo());
+            stockOutTaskFrozenTubeRepository.save(stockOutTaskFrozenTube);
+            //冻存管与出库盒的关系
+            StockOutBoxTube stockOutBoxTube = stockOutBoxTubeRepository.findByFrozenTubeId(tube.getId());
+            stockOutBoxTube.setStatus(Constants.FROZEN_BOX_TUBE_STOCKOUT_CANCEL);
+            stockOutBoxTube.setMemo(tube.getMemo());
+            stockOutBoxTubeRepository.save(stockOutBoxTube);
+            FrozenTube frozenTube = frozenTubeRepository.findOne(tube.getId());
+            if(frozenTube == null){
+                continue;
+            }
+            frozenTube.setMemo(tube.getMemo());
+            frozenTubeRepository.save(frozenTube);
+        }
+        return frozenTubeDTOS;
     }
 
     @Override

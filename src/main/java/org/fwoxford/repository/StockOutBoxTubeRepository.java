@@ -13,4 +13,6 @@ import java.util.List;
 public interface StockOutBoxTubeRepository extends JpaRepository<StockOutBoxTube,Long> {
     @Query("select count(t) from StockOutBoxTube t where t.stockOutFrozenBox.frozenBox.id=?1 ")
     Long findByFrozenBox(Long id);
+
+    StockOutBoxTube findByFrozenTubeId(Long id);
 }

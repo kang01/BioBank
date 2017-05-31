@@ -27,4 +27,6 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
 
     @Query("SELECT s FROM StockOutReqFrozenTube s WHERE s.stockOutRequirement.stockOutApply.id = ?1 AND s.frozenBox.id =?2")
     List<StockOutReqFrozenTube> findAllByStockOutApplyIdAndFrozenBoxId(Long applyId, Long frozenBoxId);
+
+    StockOutReqFrozenTube findByFrozenTubeId(Long id);
 }

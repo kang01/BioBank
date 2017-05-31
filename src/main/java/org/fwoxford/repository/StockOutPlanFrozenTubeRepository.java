@@ -19,4 +19,6 @@ public interface StockOutPlanFrozenTubeRepository extends JpaRepository<StockOut
 
     @Query("select t from StockOutPlanFrozenTube t where t.stockOutPlan.id = ?1 and  t.stockOutReqFrozenTube.frozenBox.id=?2 and t.status ='1501'")
     List<StockOutPlanFrozenTube> findByStockOutPlanIdAndFrozenBoxId(Long planId, Long frozenBoxId);
+
+    StockOutPlanFrozenTube findByStockOutReqFrozenTubeId(Long id);
 }

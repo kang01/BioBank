@@ -58,5 +58,5 @@ public interface StockOutFrozenBoxService {
 
     List<FrozenBoxAndFrozenTubeResponse> createFrozenBoxForStockOut(List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTO, Long taskId);
 
-    List<StockOutFrozenBoxForTaskDataTableEntity> getAllTempStockOutFrozenBoxesByTask(Long taskId);
+    List<FrozenBoxAndFrozenTubeResponse> getAllTempStockOutFrozenBoxesByTask(Long taskId);
 }

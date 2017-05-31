@@ -252,10 +252,10 @@ public class StockOutFrozenBoxResource {
      */
     @GetMapping("/stock-out-frozen-boxes/temp-box/task/{taskId}")
     @Timed
-    public ResponseEntity<List<StockOutFrozenBoxForTaskDataTableEntity>> getAllStockOutTempFrozenBoxesByTask(@PathVariable Long taskId)
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> getAllStockOutTempFrozenBoxesByTask(@PathVariable Long taskId)
         throws URISyntaxException {
         log.debug("REST request to get a page of StockOutFrozenBoxes");
-        List<StockOutFrozenBoxForTaskDataTableEntity> list = stockOutFrozenBoxService.getAllTempStockOutFrozenBoxesByTask(taskId);
+        List<FrozenBoxAndFrozenTubeResponse> list = stockOutFrozenBoxService.getAllTempStockOutFrozenBoxesByTask(taskId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
     }
 }

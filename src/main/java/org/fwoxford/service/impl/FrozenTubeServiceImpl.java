@@ -2,7 +2,6 @@ package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenBox;
-import org.fwoxford.domain.StockOutFrozenTube;
 import org.fwoxford.domain.StockOutTaskFrozenTube;
 import org.fwoxford.repository.FrozenBoxRepository;
 import org.fwoxford.repository.StockOutTaskFrozenTubeRepository;

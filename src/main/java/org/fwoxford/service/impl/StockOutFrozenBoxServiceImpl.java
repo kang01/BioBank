@@ -4,12 +4,12 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutFrozenBoxService;
-import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
-import org.fwoxford.service.dto.FrozenTubeForSaveBatchDTO;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
+import org.fwoxford.service.mapper.FrozenBoxMapper;
+import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.StockOutFrozenBoxMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
@@ -64,6 +64,14 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
     @Autowired
     private FrozenBoxTypeRepository frozenBoxTypeRepository;
+
+    @Autowired
+    private FrozenTubeMapper frozenTubeMapper;
+
+    @Autowired
+    private FrozenBoxMapper frozenBoxMapper;
+
+
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper
@@ -332,55 +340,18 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     }
 
     @Override
-    public List<StockOutFrozenBoxForTaskDataTableEntity> getAllTempStockOutFrozenBoxesByTask(Long taskId) {
-        List<StockOutFrozenBoxForTaskDataTableEntity> alist = new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
+    public List<FrozenBoxAndFrozenTubeResponse> getAllTempStockOutFrozenBoxesByTask(Long taskId) {
+        List<FrozenBoxAndFrozenTubeResponse> alist = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
         List<StockOutFrozenBox> boxes =  stockOutFrozenBoxRepository.findByStockOutTaskId(taskId);
         for(StockOutFrozenBox s :boxes){
             FrozenBox frozenBox = s.getFrozenBox();
-            StockOutFrozenBoxForTaskDataTableEntity box = new StockOutFrozenBoxForTaskDataTableEntity();
             if(frozenBox ==null){continue;}
-            box.setId(frozenBox.getId());
-            box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-            box.setSampleTypeName(frozenBox.getSampleTypeName());
-            String position = getPositionString(frozenBox);
-            box.setPosition(position);
-
-            Long count = stockOutBoxTubeRepository.findByFrozenBox(frozenBox.getId());
-
-            box.setCountOfSample(count);
-            String columns = frozenBox.getFrozenBoxTypeColumns() != null ? frozenBox.getFrozenBoxTypeColumns() : frozenBox.getFrozenBoxType().getFrozenBoxTypeColumns();
-            String rows = frozenBox.getFrozenBoxTypeRows() != null ? frozenBox.getFrozenBoxTypeRows() : frozenBox.getFrozenBoxType().getFrozenBoxTypeRows();
-            int allCounts =Integer.parseInt(columns) * Integer.parseInt(rows);
-            box.setCountOfSampleAll(Long.valueOf(allCounts));
+            //根据冻存盒编码查询冻存管
+            List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
+            List<FrozenTubeResponse> frozenTubeResponse = frozenTubeMapper.frozenTubeToFrozenTubeResponse(frozenTubes);
+            FrozenBoxAndFrozenTubeResponse box = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox,frozenTubeResponse);
             alist.add(box);
         }
         return alist;
-    }
-
-    private FrozenBox frozenBoxOldToNew(FrozenBox frozenBoxOld) {
-        if(frozenBoxOld == null){
-            return null;
-        }
-        FrozenBox frozenBox = new FrozenBox();
-        frozenBox.setProject(frozenBoxOld.getProject());
-        frozenBox.setProjectCode(frozenBoxOld.getProjectCode());
-        frozenBox.setProjectName(frozenBoxOld.getProjectName());
-        frozenBox.setProjectSite(frozenBoxOld.getProjectSite());
-        frozenBox.setProjectSiteName(frozenBoxOld.getProjectSiteName());
-        frozenBox.setProjectSiteCode(frozenBoxOld.getProjectSiteCode());
-        frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
-        frozenBox.setDislocationNumber(0);
-        frozenBox.setEmptyHoleNumber(0);
-        frozenBox.setEmptyTubeNumber(0);
-        frozenBox.setSampleType(frozenBoxOld.getSampleType());
-        frozenBox.setSampleTypeCode(frozenBoxOld.getSampleTypeCode());
-        frozenBox.setSampleTypeName(frozenBoxOld.getSampleTypeName());
-        frozenBox.setFrozenBoxType(frozenBoxOld.getFrozenBoxType());
-        frozenBox.setFrozenBoxTypeRows(frozenBoxOld.getFrozenBoxTypeRows());
-        frozenBox.setFrozenBoxTypeColumns(frozenBoxOld.getFrozenBoxTypeColumns());
-        frozenBox.setFrozenBoxTypeCode(frozenBoxOld.getFrozenBoxTypeCode());
-        frozenBox.setIsRealData(frozenBoxOld.getIsRealData());
-        frozenBox.setIsSplit(Constants.NO);
-        return frozenBox;
     }
 }

@@ -422,4 +422,10 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
         return this.getStockOutDetailAndRequirement(stockOutPlan.getStockOutApply().getId());
     }
+
+    @Override
+    public List<StockOutApplyDTO> getAllStockOutApplies() {
+        List<StockOutApply> stockOutApplies = stockOutApplyRepository.findAll();
+        return stockOutApplyMapper.stockOutAppliesToStockOutApplyDTOs(stockOutApplies);
+    }
 }

@@ -183,4 +183,13 @@ public class StockOutPlanResource {
         DataTablesOutput<StockOutPlansForDataTableEntity> result =  stockOutPlanService.findAllStockOutPlan(input);
         return result;
     }
+
+
+    @GetMapping("/stock-out-plans/apply/{id}")
+    @Timed
+    public ResponseEntity<List<StockOutPlanDTO>> getAllStockOutPlansByApplyId(@PathVariable Long id)
+        throws URISyntaxException {
+        List<StockOutPlanDTO> stockOutPlanDTOS = stockOutPlanService.getAllStockOutPlansByApplyId(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutPlanDTOS));
+    }
 }

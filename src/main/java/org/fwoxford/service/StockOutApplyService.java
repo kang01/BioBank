@@ -68,4 +68,6 @@ public interface StockOutApplyService {
     void revertStockOutRequirementCheck(Long id);
 
     StockOutApplyDetail getStockOutDetailAndRequirementByPlanId(Long id);
+
+    List<StockOutApplyDTO> getAllStockOutApplies();
 }

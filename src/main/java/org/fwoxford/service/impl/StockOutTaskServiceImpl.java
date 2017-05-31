@@ -232,4 +232,14 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             return rowData;
         });
     }
+
+    @Override
+    public List<StockOutTaskDTO> getAllStockOutTasksByPlanId(Long id) {
+        StockOutPlan stockOutPlan = stockOutPlanRepository.findOne(id);
+        if(stockOutPlan == null){
+            throw new BankServiceException("计划不存在！");
+        }
+        List<StockOutTask> stockOutTasks = stockOutTaskRepository.findByStockOutPlanId(id);
+        return stockOutTaskMapper.stockOutTasksToStockOutTaskDTOs(stockOutTasks);
+    }
 }

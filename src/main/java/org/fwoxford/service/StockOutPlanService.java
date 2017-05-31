@@ -49,4 +49,5 @@ public interface StockOutPlanService {
 
     DataTablesOutput<StockOutPlansForDataTableEntity> findAllStockOutPlan(DataTablesInput input);
 
+    List<StockOutPlanDTO> getAllStockOutPlansByApplyId(Long id);
 }

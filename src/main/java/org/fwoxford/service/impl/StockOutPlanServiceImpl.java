@@ -166,4 +166,14 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
     public DataTablesOutput<StockOutPlansForDataTableEntity> findAllStockOutPlan(DataTablesInput input) {
         return stockOutPlanRepositories.findAll(input);
     }
+
+    @Override
+    public List<StockOutPlanDTO> getAllStockOutPlansByApplyId(Long id) {
+        StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
+        if(stockOutApply == null){
+            throw new BankServiceException("申请不存在！");
+        }
+        List<StockOutPlan> stockOutPlans = stockOutPlanRepository.findAllByStockOutApplyId(id);
+        return stockOutPlanMapper.stockOutPlansToStockOutPlanDTOs(stockOutPlans);
+    }
 }

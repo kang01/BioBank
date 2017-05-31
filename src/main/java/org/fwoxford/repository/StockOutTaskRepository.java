@@ -15,4 +15,6 @@ import java.util.List;
 public interface StockOutTaskRepository extends JpaRepository<StockOutTask,Long> {
 
     Page<StockOutTask> findAllByStockOutPlanId(Long id, Pageable pageable);
+
+    List<StockOutTask> findByStockOutPlanId(Long id);
 }

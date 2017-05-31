@@ -94,18 +94,16 @@ public class StockOutApplyResource {
     /**
      * GET  /stock-out-applies : get all the stockOutApplies.
      *
-     * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of stockOutApplies in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/stock-out-applies")
     @Timed
-    public ResponseEntity<List<StockOutApplyDTO>> getAllStockOutApplies(@ApiParam Pageable pageable)
+    public ResponseEntity<List<StockOutApplyDTO>> getAllStockOutApplies()
         throws URISyntaxException {
         log.debug("REST request to get a page of StockOutApplies");
-        Page<StockOutApplyDTO> page = stockOutApplyService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/stock-out-applies");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        List<StockOutApplyDTO> stockOutApplyDTOS = stockOutApplyService.getAllStockOutApplies();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutApplyDTOS));
     }
 
 //    /**

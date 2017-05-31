@@ -2,10 +2,14 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.fwoxford.domain.StockOutFrozenBox;
+import org.fwoxford.domain.StockOutTask;
 import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
+import org.fwoxford.service.dto.StockOutTaskDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.StockOutFrozenBoxDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -257,5 +261,55 @@ public class StockOutFrozenBoxResource {
         log.debug("REST request to get a page of StockOutFrozenBoxes");
         List<FrozenBoxAndFrozenTubeResponse> list = stockOutFrozenBoxService.getAllTempStockOutFrozenBoxesByTask(taskId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
+
+
+    /**
+     * 根据任务查询需要出库的冻存盒列表（根据出库冻存管统计出来的）
+     * @param taskId
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-frozen-boxes/task-box/{taskId}")
+    @Timed
+    public ResponseEntity<List<StockOutFrozenBoxDataTableEntity>> getStockOutFrozenBoxesByTask(@PathVariable Long taskId)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of StockOutFrozenBoxes");
+        List<StockOutFrozenBoxDataTableEntity> list = stockOutFrozenBoxService.getStockOutFrozenBoxesByTask(taskId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
+
+    /**
+     * 样本出库
+     * @param stockOutFrozenBoxPoisition
+     * @param taskId
+     * @param frozenBoxIds
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-frozen-boxes/task/{taskId}/frozen-boxes/{frozenBoxIds}")
+    @Timed
+    public ResponseEntity<StockOutTaskDTO> stockOut(@Valid @RequestBody StockOutFrozenBoxPoisition stockOutFrozenBoxPoisition, @PathVariable Long taskId, @PathVariable List<Long> frozenBoxIds) throws URISyntaxException {
+        log.debug("REST request to update StockOutFrozenBox : {}", taskId);
+        StockOutTaskDTO result = stockOutFrozenBoxService.stockOut(stockOutFrozenBoxPoisition,taskId,frozenBoxIds);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, taskId.toString()))
+            .body(result);
+    }
+
+    /**
+     * 冻存盒单个批注
+     * @param stockOutFrozenBoxDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-frozen-boxes/note")
+    @Timed
+    public ResponseEntity<StockOutFrozenBoxDTO> stockOutNote(@Valid @RequestBody StockOutFrozenBoxDTO stockOutFrozenBoxDTO) throws URISyntaxException {
+        log.debug("REST request to update StockOutFrozenBox : {}", stockOutFrozenBoxDTO);
+        StockOutFrozenBoxDTO result = stockOutFrozenBoxService.stockOutNote(stockOutFrozenBoxDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 }

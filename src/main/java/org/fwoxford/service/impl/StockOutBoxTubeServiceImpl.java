@@ -1,20 +1,28 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
+import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.domain.StockOutFrozenBox;
+import org.fwoxford.repository.StockOutFrozenBoxRepository;
 import org.fwoxford.service.StockOutBoxTubeService;
 import org.fwoxford.domain.StockOutBoxTube;
 import org.fwoxford.repository.StockOutBoxTubeRepository;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.StockOutBoxTubeDTO;
+import org.fwoxford.service.dto.response.StockOutFrozenTubeDataTableEntity;
 import org.fwoxford.service.mapper.StockOutBoxTubeMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockOutBoxTube.
@@ -24,10 +32,13 @@ import java.util.stream.Collectors;
 public class StockOutBoxTubeServiceImpl implements StockOutBoxTubeService{
 
     private final Logger log = LoggerFactory.getLogger(StockOutBoxTubeServiceImpl.class);
-    
+
     private final StockOutBoxTubeRepository stockOutBoxTubeRepository;
 
     private final StockOutBoxTubeMapper stockOutBoxTubeMapper;
+
+    @Autowired
+    private StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
 
     public StockOutBoxTubeServiceImpl(StockOutBoxTubeRepository stockOutBoxTubeRepository, StockOutBoxTubeMapper stockOutBoxTubeMapper) {
         this.stockOutBoxTubeRepository = stockOutBoxTubeRepository;
@@ -51,7 +62,7 @@ public class StockOutBoxTubeServiceImpl implements StockOutBoxTubeService{
 
     /**
      *  Get all the stockOutBoxTubes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +98,28 @@ public class StockOutBoxTubeServiceImpl implements StockOutBoxTubeService{
     public void delete(Long id) {
         log.debug("Request to delete StockOutBoxTube : {}", id);
         stockOutBoxTubeRepository.delete(id);
+    }
+
+    @Override
+    public Page<StockOutFrozenTubeDataTableEntity> getStockOutTubeByStockOutBoxIds(List<Long> ids, Pageable pageable) {
+        Page<StockOutBoxTube> result = stockOutBoxTubeRepository.findByStockOutFrozenBoxIdIn(ids, pageable);
+
+        return result.map(frozenTube -> {
+            StockOutFrozenTubeDataTableEntity dto = new StockOutFrozenTubeDataTableEntity();
+            FrozenTube tube = frozenTube.getFrozenTube();
+            if(tube == null){
+                throw new BankServiceException("");
+            }
+            dto.setId(tube.getId());
+            dto.setSampleCode(tube.getSampleCode());
+            dto.setSampleTypeName(tube.getSampleTypeName());
+            dto.setSex(Constants.SEX_MAP.get(tube.getGender())!=null?(String)Constants.SEX_MAP.get(tube.getGender()):null);
+            dto.setAge(tube.getAge());
+            dto.setBloodLipid(tube.isIsBloodLipid());
+            dto.setDiseaseTypeId(tube.getDiseaseType());
+            dto.setHemolysis(tube.isIsHemolysis());
+            dto.setFrozenBoxCode(tube.getFrozenBoxCode());
+            return dto;
+        });
     }
 }

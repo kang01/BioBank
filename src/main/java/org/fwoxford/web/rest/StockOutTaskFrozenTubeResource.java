@@ -137,7 +137,7 @@ public class StockOutTaskFrozenTubeResource {
      * @return
      * @throws URISyntaxException
      */
-    @PutMapping("/stock-out-task-frozen-tubes/abnormal/{frozenTubeIds}")
+    @PutMapping("/stock-out-task-frozen-tubes/abnormal")
     @Timed
     public ResponseEntity<List<FrozenTubeResponse>> abnormalStockOutTaskFrozenTube(@Valid @RequestBody List<FrozenTubeResponse> frozenTubeDTOS) throws URISyntaxException {
         log.debug("REST request to abnormal StockOutTaskFrozenTube : {}", frozenTubeDTOS);
@@ -152,7 +152,7 @@ public class StockOutTaskFrozenTubeResource {
      * @return
      * @throws URISyntaxException
      */
-    @PutMapping("/stock-out-task-frozen-tubes/repeal/{frozenTubeIds}")
+    @PutMapping("/stock-out-task-frozen-tubes/repeal")
     @Timed
     public ResponseEntity<List<FrozenTubeResponse>> repealStockOutTaskFrozenTube(@Valid @RequestBody List<FrozenTubeResponse> frozenTubeDTOS) throws URISyntaxException {
         log.debug("REST request to repeal StockOutTaskFrozenTube : {}", frozenTubeDTOS);

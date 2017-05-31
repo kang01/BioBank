@@ -120,9 +120,10 @@ public final class Constants {
     public static final String STOCK_OUT_PLAN_PENDING = "1401";
     public static final String STOCK_OUT_PLAN_COMPLETED = "1402";
     /**
-     * 出库计划样本状态：1501：新建
+     * 出库计划样本状态：1501：新建,1502：撤销出库
      */
     public static final String STOCK_OUT_PLAN_TUBE_PENDING = "1501";
+    public static final String STOCK_OUT_PLAN_TUBE_CANCEL = "1502";
     /**
      * 出库任务状态：1601：待出库，1602：进行中，1603：已出库，1604：异常出库，1605：已作废
      */
@@ -132,23 +133,26 @@ public final class Constants {
     public static final String STOCK_OUT_TASK_ABNORMAL = "1604";
     public static final String STOCK_OUT_TASK_INVALID = "1605";
     /**
-     * 出库冻存盒状态：1701：待出库
+     * 出库冻存盒状态：1701：待出库；1702：已出库
      */
     public static final String STOCK_OUT_FROZEN_BOX_NEW = "1701";
+    public static final String STOCK_OUT_FROZEN_BOX_COMPLETED = "1702";
     /**
-     * 出库冻存管状态：1801：待出库
+     * 出库冻存管状态：1801：待出库,1802:撤销出库
      */
     public static final String STOCK_OUT_FROZEN_TUBE_NEW = "1801";
+    public static final String STOCK_OUT_FROZEN_TUBE_CANCEL = "1802";
+
     /**
      * 出库交接状态：2101：进行中，2102：已交接
      */
     public static final String STOCK_OUT_HANDOVER_PENDING = "2101";
     public static final String STOCK_OUT_HANDOVER_COMPLETED = "2102";
     /**
-     * 冻存盒与冻存管的关系 2202：待出库
+     * 冻存盒与冻存管的关系 2202：待出库;2203:取消出库
      */
     public static final String FROZEN_BOX_TUBE_STOCKOUT_PENDING = "2202";
-
+    public static final String FROZEN_BOX_TUBE_STOCKOUT_CANCEL = "2203";
 
     private Constants() {
     }

@@ -232,4 +232,12 @@ public class StockOutTaskResource {
         result.setRecordsTotal(entities.getTotalElements());
         return result;
     }
+
+    @GetMapping("/stock-out-tasks/plan/{id}")
+    @Timed
+    public ResponseEntity<List<StockOutTaskDTO>> getAllStockOutTasksByPlanId(@PathVariable Long id)
+        throws URISyntaxException {
+        List<StockOutTaskDTO> stockOutTaskDTOS = stockOutTaskService.getAllStockOutTasksByPlanId(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutTaskDTOS));
+    }
 }

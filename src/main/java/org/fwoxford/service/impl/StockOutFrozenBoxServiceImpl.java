@@ -4,7 +4,9 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutFrozenBoxService;
+import org.fwoxford.service.UserService;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
+import org.fwoxford.service.dto.StockOutTaskDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxDataTableEntity;
@@ -12,6 +14,8 @@ import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.StockOutFrozenBoxMapper;
+import org.fwoxford.service.mapper.StockOutTaskMapper;
+import org.fwoxford.web.rest.StockOutFrozenBoxPoisition;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +79,23 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     @Autowired
     private StockOutHandoverRepository stockOutHandoverRepository;
 
+    @Autowired
+    private StockOutBoxPositionRepository stockOutBoxPositionRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private EquipmentRepository equipmentRepository;
+
+    @Autowired
+    private AreaRepository areaRepository;
+
+    @Autowired
+    private StockOutTaskMapper stockOutTaskMapper;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper
@@ -382,5 +403,70 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             alist.add(box);
         }
         return alist;
+    }
+
+    @Override
+    public StockOutTaskDTO stockOut(StockOutFrozenBoxPoisition stockOutFrozenBoxPoisition, Long taskId, List<Long> frozenBoxIds) {
+        StockOutTask stockOutTask = stockOutTaskRepository.findOne(taskId);
+        if(stockOutTask == null){
+            throw new BankServiceException("出库任务不存在！");
+        }
+        //验证负责人密码
+
+        Long loginId1 = stockOutTask.getStockOutHeadId1();
+        Long loginId2 = stockOutTask.getStockOutHeadId2();
+        if(loginId1 == null || loginId2 == null){
+            throw new BankServiceException("出库负责人不能为空！");
+        }
+        User user1 = userRepository.findOne(loginId1);
+        User user2 = userRepository.findOne(loginId2);
+        String loginName1 = user1.getLogin();
+        String loginName2 =  user2.getLogin();
+        String password1 = stockOutFrozenBoxPoisition.getPassword1();
+        String password2 = stockOutFrozenBoxPoisition.getPassword2();
+        Long equipmentId = stockOutFrozenBoxPoisition.getEquipmentId();
+        Long areaId = stockOutFrozenBoxPoisition.getAreaId();
+
+        Equipment equipment = new Equipment();
+        if(equipmentId != null){
+            equipment = equipmentRepository.findOne(equipmentId);
+        }
+
+        Area area = new Area();
+        if(areaId != null){
+            area = areaRepository.findOne(areaId);
+        }
+        if(password1 == null || password2 == null){
+            throw new BankServiceException("出库负责人密码不能为空！");
+        }
+        if(loginName1!=null&&password1!=null){
+            userService.isCorrectUser(loginName1,password1);
+        }
+        if(loginName2!=null&&password2!=null){
+            userService.isCorrectUser(loginName2,password2);
+        }
+
+        for(Long id:frozenBoxIds){
+            //保存冻存盒位置
+            StockOutBoxPosition stockOutBoxPosition = new StockOutBoxPosition();
+            StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findOne(id);
+            if(stockOutFrozenBox == null){
+                continue;
+            }
+            FrozenBox frozenBox = stockOutFrozenBox.getFrozenBox();
+            stockOutBoxPosition.setFrozenBox(frozenBox);
+
+            stockOutBoxPosition.setEquipment(equipment);
+            stockOutBoxPosition.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
+            stockOutBoxPosition.setArea(area);
+            stockOutBoxPosition.setAreaCode(area!=null?area.getAreaCode():null);
+            stockOutBoxPosition.setStatus(Constants.VALID);
+            stockOutBoxPositionRepository.save(stockOutBoxPosition);
+            //保存出库冻存盒
+            stockOutFrozenBox.setStockOutBoxPosition(stockOutBoxPosition);
+            stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_COMPLETED);
+            stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+        }
+        return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
     }
 }

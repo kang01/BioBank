@@ -2,9 +2,11 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.fwoxford.domain.StockOutTask;
 import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
+import org.fwoxford.service.dto.StockOutTaskDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
@@ -274,5 +276,23 @@ public class StockOutFrozenBoxResource {
         log.debug("REST request to get a page of StockOutFrozenBoxes");
         List<StockOutFrozenBoxDataTableEntity> list = stockOutFrozenBoxService.getStockOutFrozenBoxesByTask(taskId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
+    }
+
+    /**
+     * 样本出库
+     * @param stockOutFrozenBoxPoisition
+     * @param taskId
+     * @param frozenBoxIds
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-frozen-boxes/task/{taskId}/frozen-boxes/{frozenBoxIds}")
+    @Timed
+    public ResponseEntity<StockOutTaskDTO> stockOut(@Valid @RequestBody StockOutFrozenBoxPoisition stockOutFrozenBoxPoisition, @PathVariable Long taskId, @PathVariable List<Long> frozenBoxIds) throws URISyntaxException {
+        log.debug("REST request to update StockOutFrozenBox : {}", taskId);
+        StockOutTaskDTO result = stockOutFrozenBoxService.stockOut(stockOutFrozenBoxPoisition,taskId,frozenBoxIds);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, taskId.toString()))
+            .body(result);
     }
 }

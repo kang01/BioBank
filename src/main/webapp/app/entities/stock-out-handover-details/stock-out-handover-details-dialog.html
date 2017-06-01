@@ -55,14 +55,14 @@
             </p>
         </div>
         <div class="form-group">
-            <label data-translate="bioBankApp.stockOutHandoverDetails.stockOutFrozenTube" for="field_stockOutFrozenTube">Stock Out Frozen Tube</label>
-            <select class="form-control" id="field_stockOutFrozenTube" name="stockOutFrozenTube" ng-model="vm.stockOutHandoverDetails.stockOutFrozenTubeId" ng-options="stockOutFrozenTube.id as stockOutFrozenTube.id for stockOutFrozenTube in vm.stockoutfrozentubes"             required>
+            <label data-translate="bioBankApp.stockOutHandoverDetails.stockOutBoxTube" for="field_stockOutBoxTube">Stock Out Box Tube</label>
+            <select class="form-control" id="field_stockOutBoxTube" name="stockOutBoxTube" ng-model="vm.stockOutHandoverDetails.stockOutBoxTubeId" ng-options="stockOutBoxTube.id as stockOutBoxTube.id for stockOutBoxTube in vm.stockoutboxtubes"             required>
                 <option value=""></option>
             </select>
         </div>
-        <div ng-show="editForm.stockOutFrozenTube.$invalid">
+        <div ng-show="editForm.stockOutBoxTube.$invalid">
             <p class="help-block"
-                ng-show="editForm.stockOutFrozenTube.$error.required" data-translate="entity.validation.required">
+                ng-show="editForm.stockOutBoxTube.$error.required" data-translate="entity.validation.required">
                 This field is required.
             </p>
         </div>

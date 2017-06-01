@@ -23,7 +23,7 @@ public class StockOutHandoverDetailsDTO extends AbstractAuditingDTO implements S
 
     private Long stockOutHandoverId;
 
-    private Long stockOutFrozenTubeId;
+    private Long stockOutBoxTubeId;
 
     public Long getId() {
         return id;
@@ -55,12 +55,12 @@ public class StockOutHandoverDetailsDTO extends AbstractAuditingDTO implements S
         this.stockOutHandoverId = stockOutHandoverId;
     }
 
-    public Long getStockOutFrozenTubeId() {
-        return stockOutFrozenTubeId;
+    public Long getStockOutBoxTubeId() {
+        return stockOutBoxTubeId;
     }
 
-    public void setStockOutFrozenTubeId(Long stockOutFrozenTubeId) {
-        this.stockOutFrozenTubeId = stockOutFrozenTubeId;
+    public void setStockOutBoxTubeId(Long stockOutBoxTubeId) {
+        this.stockOutBoxTubeId = stockOutBoxTubeId;
     }
 
     @Override

@@ -32,8 +32,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -311,5 +313,38 @@ public class StockOutFrozenBoxResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+    /**
+     * 打印取盒单
+     * @param taskId
+     * @return
+     * @throws URISyntaxException
+     */
+    @RequestMapping(value = "/stock-out-frozen-boxes/task/{taskId}/print",method = RequestMethod.GET,
+        produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    @Timed
+    public ResponseEntity printStockOutFrozenBox(@PathVariable Long taskId) throws URISyntaxException {
+
+        try {
+            ByteArrayOutputStream result = stockOutFrozenBoxService.printStockOutFrozenBox(taskId);
+            byte[] fileInByte = result.toByteArray();
+            final HttpHeaders headers = new HttpHeaders();
+            String fileReportName = "取盒弹.xlsx";
+            headers.setContentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.set("Content-disposition", "attachment; filename="+ URLEncoder.encode(fileReportName, "UTF-8"));
+
+//            File dir = new File(".");
+//            OutputStream ofs = null;
+//            ofs = new FileOutputStream(dir.getCanonicalPath() + "/" + result.hashCode() + ".xlsx");
+//            result.writeTo(ofs);
+//
+//            ofs.close();
+
+            return new ResponseEntity(fileInByte, headers, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

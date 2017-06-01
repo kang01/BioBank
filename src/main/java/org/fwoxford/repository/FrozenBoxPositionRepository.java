@@ -12,7 +12,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface FrozenBoxPositionRepository extends JpaRepository<FrozenBoxPosition,Long> {
 
-    FrozenBoxPosition findOneByFrozenBoxIdAndStatus(Long id, String frozenBoxStauts);
+    FrozenBoxPosition findOneByFrozenBoxIdAndStatus(Long id, String status);
 
-    List<FrozenBoxPosition> findByFrozenBoxIdAndStatus(Long id, String frozenBoxStauts);
+    List<FrozenBoxPosition> findByFrozenBoxIdAndStatus(Long id, String status);
 }

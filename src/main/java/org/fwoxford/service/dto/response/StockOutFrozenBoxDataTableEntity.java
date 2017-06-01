@@ -6,16 +6,16 @@ import java.time.LocalDate;
  * Created by gengluying on 2017/5/31.
  */
 public class StockOutFrozenBoxDataTableEntity extends StockOutFrozenBoxForTaskDataTableEntity{
-    private String stauts;
+    private String status;
     private String memo;
     private LocalDate stockOutHandoverTime;
 
-    public String getStauts() {
-        return stauts;
+    public String getStatus() {
+        return status;
     }
 
-    public void setStauts(String stauts) {
-        this.stauts = stauts;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getMemo() {

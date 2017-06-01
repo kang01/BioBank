@@ -39,7 +39,7 @@ public class StockOutHandoverDetails extends AbstractAuditingEntity implements S
 
     @ManyToOne(optional = false)
     @NotNull
-    private StockOutFrozenTube stockOutFrozenTube;
+    private StockOutBoxTube stockOutBoxTube;
 
     public Long getId() {
         return id;
@@ -88,17 +88,17 @@ public class StockOutHandoverDetails extends AbstractAuditingEntity implements S
         this.stockOutHandover = stockOutHandover;
     }
 
-    public StockOutFrozenTube getStockOutFrozenTube() {
-        return stockOutFrozenTube;
+    public StockOutBoxTube getStockOutBoxTube() {
+        return stockOutBoxTube;
     }
 
-    public StockOutHandoverDetails stockOutFrozenTube(StockOutFrozenTube stockOutFrozenTube) {
-        this.stockOutFrozenTube = stockOutFrozenTube;
+    public StockOutHandoverDetails stockOutBoxTube(StockOutBoxTube stockOutBoxTube) {
+        this.stockOutBoxTube = stockOutBoxTube;
         return this;
     }
 
-    public void setStockOutFrozenTube(StockOutFrozenTube stockOutFrozenTube) {
-        this.stockOutFrozenTube = stockOutFrozenTube;
+    public void setStockOutBoxTube(StockOutBoxTube stockOutBoxTube) {
+        this.stockOutBoxTube = stockOutBoxTube;
     }
 
     @Override

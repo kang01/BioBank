@@ -1,7 +1,11 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.fwoxford.domain.StockOutHandover;
 import org.fwoxford.service.StockOutHandoverService;
+import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutHandoverDataTableEntity;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.StockOutHandoverDTO;
@@ -10,15 +14,22 @@ import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.datatables.mapping.Column;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -142,5 +153,38 @@ public class StockOutHandoverResource {
         return ResponseEntity.created(new URI("/api/stock-out-handovers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-handovers", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutHandoverDataTableEntity> getPageStockOutHandOver(@RequestBody DataTablesInput input) {
+        List<Sort.Order> orders = new ArrayList<>();
+        List<Column> columns = input.getColumns();
+        input.getOrder().forEach(o -> {
+            Column col = columns.get(o.getColumn());
+            if(col.getName()!=null&&col.getName()!=""){
+                Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
+                orders.add(order);
+            }
+        });
+        Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
+        orders.add(order);
+        Sort sort = new Sort(orders);
+        PageRequest pageRequest = new PageRequest(input.getStart() / input.getLength(), input.getLength(), sort);
+
+
+        Page<StockOutHandoverDataTableEntity> entities = stockOutHandoverService.getPageStockOutHandOver(pageRequest);
+        List<StockOutHandoverDataTableEntity> stockOutHandOverList =  entities == null ?
+            new ArrayList<StockOutHandoverDataTableEntity>() : entities.getContent();
+
+        DataTablesOutput<StockOutHandoverDataTableEntity> result = new DataTablesOutput<StockOutHandoverDataTableEntity>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(stockOutHandOverList);
+        result.setRecordsFiltered(stockOutHandOverList.size());
+        result.setRecordsTotal(entities.getTotalElements());
+        return result;
     }
 }

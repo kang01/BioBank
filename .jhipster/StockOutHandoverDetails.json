@@ -11,8 +11,8 @@
             "otherEntityField": "id"
         },
         {
-            "relationshipName": "stockOutFrozenTube",
-            "otherEntityName": "stockOutFrozenTube",
+            "relationshipName": "stockOutBoxTube",
+            "otherEntityName": "stockOutBoxTube",
             "relationshipType": "many-to-one",
             "relationshipValidateRules": [
                 "required"

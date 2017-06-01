@@ -8,6 +8,8 @@ import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity
 import org.fwoxford.web.rest.StockOutFrozenBoxPoisition;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 /**
@@ -67,4 +69,6 @@ public interface StockOutFrozenBoxService {
     StockOutTaskDTO stockOut(StockOutFrozenBoxPoisition stockOutFrozenBoxPoisition, Long taskId, List<Long> frozenBoxIds);
 
     StockOutFrozenBoxDTO stockOutNote(StockOutFrozenBoxDTO stockOutFrozenBoxDTO);
+
+    ByteArrayOutputStream printStockOutFrozenBox(Long taskId);
 }

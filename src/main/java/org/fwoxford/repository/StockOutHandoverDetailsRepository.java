@@ -12,4 +12,6 @@ import java.util.List;
 public interface StockOutHandoverDetailsRepository extends JpaRepository<StockOutHandoverDetails,Long> {
     @Query("select count(t) from StockOutHandoverDetails t where t.stockOutHandover.stockOutTask.id=?1")
     Long countByStockOutTaskId(Long id);
+
+    Long countByStockOutHandoverId(Long id);
 }

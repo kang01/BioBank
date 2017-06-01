@@ -14,11 +14,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="stock_out_handover"/>
 
-        <addForeignKeyConstraint baseColumnNames="stock_out_frozen_tube_id"
+        <addForeignKeyConstraint baseColumnNames="stock_out_box_tube_id"
                                  baseTableName="stock_out_handover_details"
                                  constraintName="stock_out_handover_tube_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="stock_out_tube"/>
+                                 referencedTableName="stock_out_box_tube"/>
 
     </changeSet>
 </databaseChangeLog>

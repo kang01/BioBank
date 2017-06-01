@@ -92,6 +92,7 @@ public class StockOutApplyResource {
     }
 
     /**
+     * 获取所有的未交接的申请
      * GET  /stock-out-applies : get all the stockOutApplies.
      *
      * @return the ResponseEntity with status 200 (OK) and the list of stockOutApplies in body

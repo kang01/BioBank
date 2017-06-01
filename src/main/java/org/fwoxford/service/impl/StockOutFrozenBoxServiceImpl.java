@@ -3,14 +3,12 @@ package org.fwoxford.service.impl;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
+import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.service.UserService;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
 import org.fwoxford.service.dto.StockOutTaskDTO;
-import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
-import org.fwoxford.service.dto.response.FrozenTubeResponse;
-import org.fwoxford.service.dto.response.StockOutFrozenBoxDataTableEntity;
-import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
+import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.StockOutFrozenBoxMapper;
@@ -25,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,6 +95,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
     @Autowired
     private StockOutTaskMapper stockOutTaskMapper;
+
+    @Autowired
+    private ReportExportingService reportExportingService;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper
@@ -398,7 +400,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             Long count = stockOutBoxTubeRepository.countByStockOutFrozenBoxId(f.getId());
             box.setCountOfSample(count);
             box.setMemo(f.getMemo());
-            box.setStauts(f.getStatus());
+            box.setStatus(f.getStatus());
             StockOutHandover stockOutHandover = stockOutHandoverRepository.findByStockOutTaskId(taskId);
             box.setStockOutHandoverTime(stockOutHandover!=null?stockOutHandover.getHandoverTime():null);
             alist.add(box);
@@ -467,6 +469,8 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutFrozenBox.setStockOutBoxPosition(stockOutBoxPosition);
             stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_COMPLETED);
             stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+            //保存出库盒与冻存管的关系
+            stockOutBoxTubeRepository.updateByStockOutFrozenBox(id);
         }
         return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
     }
@@ -480,5 +484,33 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         stockOutFrozenBox.setMemo(stockOutFrozenBoxDTO.getMemo());
         stockOutFrozenBoxRepository.save(stockOutFrozenBox);
         return stockOutFrozenBoxDTO;
+    }
+
+    @Override
+    public ByteArrayOutputStream printStockOutFrozenBox(Long taskId) {
+        List<StockOutTakeBoxReportDTO> takeBoxDTOs =   createStockOutTakeBoxReportDTO(taskId);
+        ByteArrayOutputStream outputStream = reportExportingService.makeStockOutTakeBoxReport(takeBoxDTOs);
+        return outputStream;
+    }
+
+    private List<StockOutTakeBoxReportDTO> createStockOutTakeBoxReportDTO(Long taskId) {
+        List<StockOutTakeBoxReportDTO> stockOutTakeBoxReportDTOS = new ArrayList<StockOutTakeBoxReportDTO>();
+        List<StockOutFrozenBox> boxes =  stockOutFrozenBoxRepository.findByStockOutTaskId(taskId);
+        for(StockOutFrozenBox s :boxes){
+            FrozenBox frozenBox = s.getFrozenBox();
+            if(frozenBox == null){
+                continue;
+            }
+            StockOutTakeBoxReportDTO stockOutTakeBoxReportDTO = new StockOutTakeBoxReportDTO();
+            stockOutTakeBoxReportDTO.setId(frozenBox.getId());
+            stockOutTakeBoxReportDTO.setAreaCode(frozenBox.getAreaCode());
+            stockOutTakeBoxReportDTO.setEquipmentCode(frozenBox.getEquipmentCode());
+            stockOutTakeBoxReportDTO.setShelfCode(frozenBox.getSupportRackCode());
+            stockOutTakeBoxReportDTO.setBoxCode(frozenBox.getFrozenBoxCode());
+            stockOutTakeBoxReportDTO.setShelfLocation(frozenBox.getColumnsInShelf()+frozenBox.getRowsInShelf());
+            stockOutTakeBoxReportDTOS.add(stockOutTakeBoxReportDTO);
+        }
+
+        return stockOutTakeBoxReportDTOS;
     }
 }

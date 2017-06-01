@@ -22,4 +22,12 @@ public interface StockOutBoxTubeRepository extends JpaRepository<StockOutBoxTube
     Long countByStockOutFrozenBoxId(Long id);
 
     Page<StockOutBoxTube> findByStockOutFrozenBoxIdIn(List<Long> ids, Pageable pageable);
+
+    @Modifying
+    @Query("update StockOutBoxTube t set t.status = '2204' where t.stockOutFrozenBox.id=?1")
+    void updateByStockOutFrozenBox(Long id);
+
+    @Query("select t from StockOutBoxTube t where t.stockOutFrozenBox.stockOutTask.id=?1 and t.status='2204' ")
+    List<StockOutBoxTube> findByStockOutTaskId(Long taskId);
+
 }

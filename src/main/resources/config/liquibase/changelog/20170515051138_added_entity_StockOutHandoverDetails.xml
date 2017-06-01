@@ -34,7 +34,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="stock_out_frozen_tube_id" type="bigint" remarks="交接样本ID">
+            <column name="stock_out_box_tube_id" type="bigint" remarks="出库盒与冻存管关系ID">
                 <constraints nullable="false" />
             </column>
 

@@ -1,12 +1,11 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
-import org.fwoxford.domain.StockOutTask;
-import org.fwoxford.repository.StockOutTaskRepository;
+import org.fwoxford.domain.*;
+import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutHandoverService;
-import org.fwoxford.domain.StockOutHandover;
-import org.fwoxford.repository.StockOutHandoverRepository;
 import org.fwoxford.service.dto.StockOutHandoverDTO;
+import org.fwoxford.service.dto.response.StockOutHandoverDataTableEntity;
 import org.fwoxford.service.mapper.StockOutHandoverMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -14,9 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Service Implementation for managing StockOutHandover.
@@ -33,6 +35,15 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
 
     @Autowired
     private StockOutTaskRepository stockOutTaskRepository;
+
+    @Autowired
+    private StockOutBoxTubeRepository stockOutBoxTubeRepository;
+
+    @Autowired
+    private StockOutHandoverDetailsRepository stockOutHandoverDetailsRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public StockOutHandoverServiceImpl(StockOutHandoverRepository stockOutHandoverRepository, StockOutHandoverMapper stockOutHandoverMapper) {
         this.stockOutHandoverRepository = stockOutHandoverRepository;
@@ -110,8 +121,44 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         if(count.intValue()>0){
             throw new BankServiceException("该任务已有交接单，不能重复创建！");
         }
-        stockOutHandover.handoverCode(BankUtil.getUniqueID()).stockOutTask(stockOutTask).status(Constants.STOCK_OUT_HANDOVER_PENDING);
+        stockOutHandover.handoverCode(BankUtil.getUniqueID())
+            .stockOutTask(stockOutTask)
+            .stockOutApply(stockOutTask.getStockOutPlan().getStockOutApply())
+            .stockOutPlan(stockOutTask.getStockOutPlan())
+            .status(Constants.STOCK_OUT_HANDOVER_PENDING);
         stockOutHandoverRepository.save(stockOutHandover);
+        //保存交接详情
+        List<StockOutBoxTube> stockOutBoxTubeList = stockOutBoxTubeRepository.findByStockOutTaskId(taskId);
+        for(StockOutBoxTube b:stockOutBoxTubeList){
+            StockOutHandoverDetails stockOutHandoverDetails = new StockOutHandoverDetails();
+            stockOutHandoverDetails.status(Constants.STOCK_OUT_HANDOVER_PENDING).stockOutBoxTube(b).stockOutHandover(stockOutHandover);
+            stockOutHandoverDetailsRepository.save(stockOutHandoverDetails);
+        }
         return stockOutHandoverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandover);
+    }
+
+    @Override
+    public Page<StockOutHandoverDataTableEntity> getPageStockOutHandOver(Pageable pageable) {
+        Page<StockOutHandover> result = stockOutHandoverRepository.findAll(pageable);
+
+        return result.map(handover -> {
+            StockOutHandoverDataTableEntity dto = new StockOutHandoverDataTableEntity();
+            dto.setId(handover.getId());
+            dto.setStatus(handover.getStatus());
+            dto.setHandoverCode(handover.getHandoverCode());
+            Long personId = handover.getHandoverPersonId();
+            if(personId!=null){
+                User user = userRepository.findOne(personId);
+                dto.setHandoverPerson(user!=null?user.getLastName()+user.getFirstName():null);
+            }
+
+            dto.setHandoverTime(handover.getHandoverTime());
+            dto.setStockOutTaskCode(handover.getStockOutTask()!=null?handover.getStockOutTask().getStockOutTaskCode():null);
+            dto.setPurposeOfSample(handover.getStockOutApply()!=null?handover.getStockOutApply().getPurposeOfSample():null);
+
+            Long count= stockOutHandoverDetailsRepository.countByStockOutHandoverId(handover.getId());
+            dto.setCountOfSample(count);
+            return dto;
+        });
     }
 }

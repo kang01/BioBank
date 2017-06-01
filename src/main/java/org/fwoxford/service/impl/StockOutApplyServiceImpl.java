@@ -425,7 +425,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     @Override
     public List<StockOutApplyDTO> getAllStockOutApplies() {
-        List<StockOutApply> stockOutApplies = stockOutApplyRepository.findAll();
+        List<StockOutApply> stockOutApplies = stockOutApplyRepository.findAllNotHandOverApply();
         return stockOutApplyMapper.stockOutAppliesToStockOutApplyDTOs(stockOutApplies);
     }
 }

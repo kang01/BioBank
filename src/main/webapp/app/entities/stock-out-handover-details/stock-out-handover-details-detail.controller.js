@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('StockOutHandoverDetailsDetailController', StockOutHandoverDetailsDetailController);
 
-    StockOutHandoverDetailsDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'StockOutHandoverDetails', 'StockOutHandover', 'StockOutFrozenTube'];
+    StockOutHandoverDetailsDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'StockOutHandoverDetails', 'StockOutHandover', 'StockOutBoxTube'];
 
-    function StockOutHandoverDetailsDetailController($scope, $rootScope, $stateParams, previousState, entity, StockOutHandoverDetails, StockOutHandover, StockOutFrozenTube) {
+    function StockOutHandoverDetailsDetailController($scope, $rootScope, $stateParams, previousState, entity, StockOutHandoverDetails, StockOutHandover, StockOutBoxTube) {
         var vm = this;
 
         vm.stockOutHandoverDetails = entity;

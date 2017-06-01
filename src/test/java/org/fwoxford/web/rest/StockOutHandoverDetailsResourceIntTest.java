@@ -4,7 +4,7 @@ import org.fwoxford.BioBankApp;
 
 import org.fwoxford.domain.StockOutHandoverDetails;
 import org.fwoxford.domain.StockOutHandover;
-import org.fwoxford.domain.StockOutFrozenTube;
+import org.fwoxford.domain.StockOutBoxTube;
 import org.fwoxford.repository.StockOutHandoverDetailsRepository;
 import org.fwoxford.service.StockOutHandoverDetailsService;
 import org.fwoxford.service.dto.StockOutHandoverDetailsDTO;
@@ -99,10 +99,10 @@ public class StockOutHandoverDetailsResourceIntTest {
         em.flush();
         stockOutHandoverDetails.setStockOutHandover(stockOutHandover);
         // Add required entity
-        StockOutFrozenTube stockOutFrozenTube = StockOutFrozenTubeResourceIntTest.createEntity(em);
-        em.persist(stockOutFrozenTube);
+        StockOutBoxTube stockOutBoxTube = StockOutBoxTubeResourceIntTest.createEntity(em);
+        em.persist(stockOutBoxTube);
         em.flush();
-        stockOutHandoverDetails.setStockOutFrozenTube(stockOutFrozenTube);
+        stockOutHandoverDetails.setStockOutBoxTube(stockOutBoxTube);
         return stockOutHandoverDetails;
     }
 

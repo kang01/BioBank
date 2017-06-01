@@ -5,16 +5,16 @@
         .module('bioBankApp')
         .controller('StockOutHandoverDetailsDialogController', StockOutHandoverDetailsDialogController);
 
-    StockOutHandoverDetailsDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'StockOutHandoverDetails', 'StockOutHandover', 'StockOutFrozenTube'];
+    StockOutHandoverDetailsDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'StockOutHandoverDetails', 'StockOutHandover', 'StockOutBoxTube'];
 
-    function StockOutHandoverDetailsDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, StockOutHandoverDetails, StockOutHandover, StockOutFrozenTube) {
+    function StockOutHandoverDetailsDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, StockOutHandoverDetails, StockOutHandover, StockOutBoxTube) {
         var vm = this;
 
         vm.stockOutHandoverDetails = entity;
         vm.clear = clear;
         vm.save = save;
         vm.stockouthandovers = StockOutHandover.query();
-        vm.stockoutfrozentubes = StockOutFrozenTube.query();
+        vm.stockoutboxtubes = StockOutBoxTube.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

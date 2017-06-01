@@ -4,7 +4,7 @@ describe('Controller Tests', function() {
 
     describe('StockOutHandoverDetails Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockStockOutHandoverDetails, MockStockOutHandover, MockStockOutFrozenTube;
+        var MockEntity, MockPreviousState, MockStockOutHandoverDetails, MockStockOutHandover, MockStockOutBoxTube;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -14,7 +14,7 @@ describe('Controller Tests', function() {
             MockPreviousState = jasmine.createSpy('MockPreviousState');
             MockStockOutHandoverDetails = jasmine.createSpy('MockStockOutHandoverDetails');
             MockStockOutHandover = jasmine.createSpy('MockStockOutHandover');
-            MockStockOutFrozenTube = jasmine.createSpy('MockStockOutFrozenTube');
+            MockStockOutBoxTube = jasmine.createSpy('MockStockOutBoxTube');
             
 
             var locals = {
@@ -24,7 +24,7 @@ describe('Controller Tests', function() {
                 'previousState': MockPreviousState,
                 'StockOutHandoverDetails': MockStockOutHandoverDetails,
                 'StockOutHandover': MockStockOutHandover,
-                'StockOutFrozenTube': MockStockOutFrozenTube
+                'StockOutBoxTube': MockStockOutBoxTube
             };
             createController = function() {
                 $injector.get('$controller')("StockOutHandoverDetailsDetailController", locals);

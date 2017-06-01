@@ -223,5 +223,14 @@ public class StockOutHandoverResource {
         }
         return ResponseEntity.badRequest().build();
     }
+    @PutMapping("/stock-out-handovers/stockOutBox/{ids}/complete")
+    @Timed
+    public ResponseEntity<StockOutHandoverDTO> completeStockOutHandover(@PathVariable List<Long> ids,@Valid @RequestBody StockOutHandoverDTO stockOutHandoverDTO) throws URISyntaxException {
+        log.debug("REST request to update StockOutHandover : {}", stockOutHandoverDTO);
+        StockOutHandoverDTO result = stockOutHandoverService.completeStockOutHandover(ids,stockOutHandoverDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockOutHandoverDTO.getId().toString()))
+            .body(result);
+    }
 
 }

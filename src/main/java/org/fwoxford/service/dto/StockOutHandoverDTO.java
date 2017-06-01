@@ -43,6 +43,8 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
 
     private Long stockOutPlanId;
 
+    private String password;
+
     public Long getId() {
         return id;
     }
@@ -137,6 +139,14 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
 
     public void setHandoverPersonName(String handoverPersonName) {
         this.handoverPersonName = handoverPersonName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

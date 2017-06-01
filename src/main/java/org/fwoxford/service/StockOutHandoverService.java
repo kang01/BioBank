@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 /**
  * Service Interface for managing StockOutHandover.
@@ -48,4 +49,6 @@ public interface StockOutHandoverService {
     Page<StockOutHandoverForDataTableEntity> getPageStockOutHandOver(Pageable pageRequest);
 
     ByteArrayOutputStream printStockOutHandover(Long id);
+
+    StockOutHandoverDTO completeStockOutHandover(List<Long> ids, StockOutHandoverDTO stockOutHandoverDTO);
 }

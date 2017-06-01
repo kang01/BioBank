@@ -231,7 +231,7 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
 
         sample.setId(s.getId());
         sample.setProjectCode(frozenTube.getProjectCode());
-        sample.setAge(frozenTube.getAge().toString());
+        sample.setAge(frozenTube.getAge()!=null?frozenTube.getAge().toString():null);
         sample.setBoxCode(frozenTube.getFrozenBoxCode());
         sample.setDiseaseType(frozenTube.getDiseaseType());
         sample.setLocation(frozenTube.getTubeRows()+frozenTube.getTubeColumns());
@@ -239,5 +239,36 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         sample.setSampleType(frozenTube.getSampleTypeName());
         sample.setSex(Constants.SEX_MAP.get(frozenTube.getGender())!=null?Constants.SEX_MAP.get(frozenTube.getGender()).toString():null);
         return sample;
+    }
+    @Override
+    public StockOutHandoverDTO completeStockOutHandover(List<Long> ids, StockOutHandoverDTO stockOutHandoverDTO) {
+        Long handOverId = stockOutHandoverDTO.getId();
+        if(handOverId == null){
+            throw new BankServiceException("交接ID不能为空！");
+        }
+        StockOutHandover stockOutHandover = stockOutHandoverRepository.findOne(handOverId);
+        if(stockOutHandover == null){
+            throw new BankServiceException("未查询到交接单！");
+        }
+        //验证交付人用户密码
+        Long handoverPersonId = stockOutHandoverDTO.getHandoverPersonId();
+        String password = stockOutHandoverDTO.getPassword();
+        stockOutHandover.setHandoverPersonId(handoverPersonId);
+        stockOutHandover.setHandoverTime(stockOutHandoverDTO.getHandoverTime());
+        stockOutHandover.setStatus(Constants.STOCK_OUT_HANDOVER_COMPLETED);
+        stockOutHandoverRepository.save(stockOutHandover);
+        for(Long id : ids){
+            //查询要出库的样本
+            List<StockOutBoxTube> stockOutBoxTubes = stockOutBoxTubeRepository.findByStockOutFrozenBoxId(id);
+            for(StockOutBoxTube b :stockOutBoxTubes){
+                //保存交接详情
+                StockOutHandoverDetails stockOutHandoverDetails = new StockOutHandoverDetails();
+                stockOutHandoverDetails.status(Constants.STOCK_OUT_HANDOVER_COMPLETED)
+                    .stockOutBoxTube(b)
+                    .stockOutHandover(stockOutHandover);
+                stockOutHandoverDetailsRepository.save(stockOutHandoverDetails);
+            }
+        }
+        return stockOutHandoverDTO;
     }
 }

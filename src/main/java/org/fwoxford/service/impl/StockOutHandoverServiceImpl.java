@@ -59,6 +59,10 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     public StockOutHandoverDTO save(StockOutHandoverDTO stockOutHandoverDTO) {
         log.debug("Request to save StockOutHandover : {}", stockOutHandoverDTO);
         StockOutHandover stockOutHandover = stockOutHandoverMapper.stockOutHandOverDTOToStockOutHandOver(stockOutHandoverDTO);
+        if(stockOutHandoverDTO.getId()==null){
+            stockOutHandover.setHandoverCode(BankUtil.getUniqueID());
+            stockOutHandover.setStatus(Constants.STOCK_OUT_HANDOVER_PENDING);
+        }
         stockOutHandover = stockOutHandoverRepository.save(stockOutHandover);
         StockOutHandoverDTO result = stockOutHandoverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandover);
         return result;

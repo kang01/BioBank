@@ -14,7 +14,6 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
 
     private Long id;
 
-    @NotNull
     @Size(max = 100)
     private String handoverCode;
 
@@ -32,7 +31,6 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
 
     private LocalDate handoverTime;
 
-    @NotNull
     @Size(max = 20)
     private String status;
 

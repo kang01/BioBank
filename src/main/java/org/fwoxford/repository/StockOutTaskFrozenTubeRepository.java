@@ -27,11 +27,17 @@ public interface StockOutTaskFrozenTubeRepository extends JpaRepository<StockOut
         "GROUP BY c.FROZEN_BOX_ID ",nativeQuery = true)
     Long countFrozenBoxByStockOutTaskId(Long id);
 
-    @Query("select t from StockOutTaskFrozenTube t where t.stockOutPlanFrozenTube.stockOutReqFrozenTube.frozenBox.frozenBoxCode=?1")
-    List<StockOutTaskFrozenTube> findByFrozenBox(String frozenBoxCode);
+    @Query("select t from StockOutTaskFrozenTube t where t.stockOutPlanFrozenTube.stockOutReqFrozenTube.frozenBox.frozenBoxCode=?1 and t.stockOutTask.id = ?2")
+    List<StockOutTaskFrozenTube> findByFrozenBox(String frozenBoxCode,Long id);
 
     @Query("select t from StockOutTaskFrozenTube t where t.stockOutTask.id=?1 and t.stockOutPlanFrozenTube.stockOutReqFrozenTube.frozenTube.id=?2")
     StockOutTaskFrozenTube findByStockOutTaskAndFrozenTube(Long taskId, Long id);
 
     StockOutTaskFrozenTube findByStockOutPlanFrozenTubeId(Long id);
+
+    @Query("select count(t) from StockOutTaskFrozenTube t " +
+//        " left join StockOutBoxTube t on t.stockOutTaskFrozenTube.id = t.id" +
+        " where t.stockOutPlanFrozenTube.stockOutReqFrozenTube.frozenBox.id=?1 " +
+        " and t.stockOutTask.id = ?2 ")
+    Long countByFrozenBoxAndTask(Long id, Long taskId);
 }

@@ -10,7 +10,9 @@ import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
 import org.fwoxford.service.dto.StockOutTaskDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutFrozenBoxForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
@@ -330,7 +332,7 @@ public class StockOutFrozenBoxResource {
             ByteArrayOutputStream result = stockOutFrozenBoxService.printStockOutFrozenBox(taskId);
             byte[] fileInByte = result.toByteArray();
             final HttpHeaders headers = new HttpHeaders();
-            String fileReportName = "取盒弹.xlsx";
+            String fileReportName = "取盒单.xlsx";
             headers.setContentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
             headers.set("Content-disposition", "attachment; filename="+ URLEncoder.encode(fileReportName, "UTF-8"));
 
@@ -346,5 +348,54 @@ public class StockOutFrozenBoxResource {
             e.printStackTrace();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+
+    /**
+     * 查询已交接冻存盒
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-frozen-boxes/handover/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageHandoverStockOutFrozenBoxes(@PathVariable Long id, @RequestBody DataTablesInput input) {
+        List<Sort.Order> orders = new ArrayList<>();
+        List<Column> columns = input.getColumns();
+        input.getOrder().forEach(o -> {
+            Column col = columns.get(o.getColumn());
+            if(col.getName()!=null&&col.getName()!=""){
+                Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
+                orders.add(order);
+            }
+        });
+        Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
+        orders.add(order);
+        Sort sort = new Sort(orders);
+        PageRequest pageRequest = new PageRequest(input.getStart() / input.getLength(), input.getLength(), sort);
+
+
+        Page<StockOutFrozenBoxForDataTableEntity> entities = stockOutFrozenBoxService.getPageHandoverStockOutFrozenBoxes(id, pageRequest);
+        List<StockOutFrozenBoxForDataTableEntity> stockOutApplyList =  entities == null ?
+            new ArrayList<StockOutFrozenBoxForDataTableEntity>() : entities.getContent();
+
+        DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = new DataTablesOutput<StockOutFrozenBoxForDataTableEntity>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(stockOutApplyList);
+        result.setRecordsFiltered(stockOutApplyList.size());
+        result.setRecordsTotal(entities.getTotalElements());
+        return result;
+    }
+
+    /**
+     * 查询待交接冻存盒
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-frozen-boxes/apply/{id}/waiting-handover", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageStockOutFrozenBoxes(@PathVariable Long id, @RequestBody DataTablesInput input) {
+        DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = stockOutFrozenBoxService.getPageWaitingHandOverStockOutFrozenBoxes(id,input);
+        return result;
     }
 }

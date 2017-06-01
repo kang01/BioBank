@@ -1368,8 +1368,7 @@ public class TempResource {
      * @return
      */
     @JsonView(DataTablesOutput.View.class)
-    @RequestMapping(value = "/res/stock-out-tasks", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<StockOutTaskForDataTableEntity> getDataTableStockOutTask(@RequestBody DataTablesInput input) {
+    @RequestMapping(value = "/res/stock-out-tasks", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE}) public DataTablesOutput<StockOutTaskForDataTableEntity> getDataTableStockOutTask(@RequestBody DataTablesInput input) {
         List<StockOutTaskForDataTableEntity> dataList =  new ArrayList<>();
 
         for (int i = 0; i < input.getLength(); ++i){

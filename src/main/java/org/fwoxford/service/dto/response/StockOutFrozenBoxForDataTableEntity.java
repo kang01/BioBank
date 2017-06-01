@@ -1,57 +1,96 @@
 package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
  * Created by gengluying on 2017/5/23.
  */
+@Entity
+@Table(name = "view_stock_out_handover_box")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockOutFrozenBoxForDataTableEntity {
+    @Id
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private Long id;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="frozen_box_code")
     private String frozenBoxCode;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="position")
     private String position;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="count_of_sample")
     private Long countOfSample;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="sample_type_name")
     private String sampleTypeName;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="apply_id")
     private Long applyId;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="apply_code")
     private String applyCode;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="plan_id")
     private Long planId;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="plan_code")
     private String planCode;
+
+    @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="task_id")
     private Long taskId;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="task_code")
     private String taskCode;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="delegate_id")
     private Long delegateId;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="delegate")
     private String delegate;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="memo")
     private String memo;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="status")
     private String status;
 
     public Long getId() {

@@ -2,10 +2,8 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.fwoxford.domain.StockOutHandover;
 import org.fwoxford.service.StockOutHandoverService;
-import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
-import org.fwoxford.service.dto.response.StockOutHandoverDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutHandoverForDataTableEntity;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.StockOutHandoverDTO;
@@ -30,10 +28,8 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing StockOutHandover.
@@ -155,11 +151,15 @@ public class StockOutHandoverResource {
             .body(result);
     }
 
-
+    /**
+     * 获取出库交接列表
+     * @param input
+     * @return
+     */
 
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-handovers", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<StockOutHandoverDataTableEntity> getPageStockOutHandOver(@RequestBody DataTablesInput input) {
+    public DataTablesOutput<StockOutHandoverForDataTableEntity> getPageStockOutHandOver(@RequestBody DataTablesInput input) {
         List<Sort.Order> orders = new ArrayList<>();
         List<Column> columns = input.getColumns();
         input.getOrder().forEach(o -> {
@@ -175,11 +175,11 @@ public class StockOutHandoverResource {
         PageRequest pageRequest = new PageRequest(input.getStart() / input.getLength(), input.getLength(), sort);
 
 
-        Page<StockOutHandoverDataTableEntity> entities = stockOutHandoverService.getPageStockOutHandOver(pageRequest);
-        List<StockOutHandoverDataTableEntity> stockOutHandOverList =  entities == null ?
-            new ArrayList<StockOutHandoverDataTableEntity>() : entities.getContent();
+        Page<StockOutHandoverForDataTableEntity> entities = stockOutHandoverService.getPageStockOutHandOver(pageRequest);
+        List<StockOutHandoverForDataTableEntity> stockOutHandOverList =  entities == null ?
+            new ArrayList<StockOutHandoverForDataTableEntity>() : entities.getContent();
 
-        DataTablesOutput<StockOutHandoverDataTableEntity> result = new DataTablesOutput<StockOutHandoverDataTableEntity>();
+        DataTablesOutput<StockOutHandoverForDataTableEntity> result = new DataTablesOutput<StockOutHandoverForDataTableEntity>();
         result.setDraw(input.getDraw());
         result.setError("");
         result.setData(stockOutHandOverList);

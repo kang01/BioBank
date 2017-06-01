@@ -133,12 +133,13 @@ public final class Constants {
     public static final String STOCK_OUT_TASK_ABNORMAL = "1604";
     public static final String STOCK_OUT_TASK_INVALID = "1605";
     /**
-     * 出库冻存盒状态：1701：待出库；1702：已出库
+     * 出库冻存盒状态：1701：待出库；1702：已出库；1703：已交接
      */
     public static final String STOCK_OUT_FROZEN_BOX_NEW = "1701";
     public static final String STOCK_OUT_FROZEN_BOX_COMPLETED = "1702";
+    public static final String STOCK_OUT_FROZEN_BOX_HANDOVER = "1703";
     /**
-     * 出库冻存管状态：1801：待出库,1802:撤销出库
+     * 出库任务冻存管状态：1801：待出库,1802:撤销出库
      */
     public static final String STOCK_OUT_FROZEN_TUBE_NEW = "1801";
     public static final String STOCK_OUT_FROZEN_TUBE_CANCEL = "1802";
@@ -154,6 +155,7 @@ public final class Constants {
     public static final String FROZEN_BOX_TUBE_STOCKOUT_PENDING = "2202";
     public static final String FROZEN_BOX_TUBE_STOCKOUT_CANCEL = "2203";
     public static final String FROZEN_BOX_TUBE_STOCKOUT_COMPLETED= "2204";
+    public static final String FROZEN_BOX_TUBE_STOCKOUT_HANDOVER= "2205";
     private Constants() {
     }
 }

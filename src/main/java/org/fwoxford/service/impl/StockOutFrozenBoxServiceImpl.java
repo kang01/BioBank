@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -56,9 +58,6 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
     @Autowired
     private FrozenBoxRepository frozenBoxRepository;
-
-    @Autowired
-    private BoxAndTubeRepository boxAndTubeRepository;
 
     @Autowired
     private StockOutBoxTubeRepository stockOutBoxTubeRepository;
@@ -98,6 +97,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
     @Autowired
     private ReportExportingService reportExportingService;
+
+    @Autowired
+    private StockOutApplyRepository stockOutApplyRepository;
+
+    @Autowired
+    private StockOutHandoverFrozenBoxRepositries stockOutHandoverFrozenBoxRepositries;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper
@@ -227,7 +232,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             dto.setSampleTypeName(frozenBox.getSampleTypeName());
             String position = getPositionString(frozenBox);
             dto.setPosition(position);
-            Long countOfSample = stockOutPlanFrozenTubeRepository.countByFrozenBoxId(frozenBox.getId());
+            Long countOfSample = stockOutPlanFrozenTubeRepository.countByFrozenBoxIdAndRequirement(ids,frozenBox.getId());
             dto.setCountOfSample(countOfSample);
 
             return dto;
@@ -274,7 +279,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             String position = getPositionString(frozenBox);
             box.setPosition(position);
 
-            Long count = stockOutTaskFrozenTubeRepository.countByFrozenBox(frozenBox.getId());
+            Long count = stockOutTaskFrozenTubeRepository.countByFrozenBoxAndTask(frozenBox.getId(),taskId);
 
             box.setCountOfSample(count);
             alist.add(box);
@@ -347,7 +352,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             for(FrozenTubeResponse f: box.getFrozenTubeDTOS()){
                 //todo 判断是否已有出库任务
                 StockOutBoxTube stockOutBoxTube = new StockOutBoxTube();
-                stockOutBoxTube.setStatus(Constants.STOCK_OUT_FROZEN_TUBE_NEW);
+                stockOutBoxTube.setStatus(Constants.FROZEN_BOX_TUBE_STOCKOUT_PENDING);
                 stockOutBoxTube.setStockOutFrozenBox(stockOutFrozenBox);
                 StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutTaskAndFrozenTube(taskId,f.getId());
                 stockOutBoxTube.setStockOutTaskFrozenTube(stockOutTaskFrozenTube);
@@ -471,6 +476,8 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutFrozenBoxRepository.save(stockOutFrozenBox);
             //保存出库盒与冻存管的关系
             stockOutBoxTubeRepository.updateByStockOutFrozenBox(id);
+            //出库计划样本
+            //出库任务样本
         }
         return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
     }
@@ -512,5 +519,72 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         }
 
         return stockOutTakeBoxReportDTOS;
+    }
+
+    /**
+     * 查询待交接冻存盒
+     * @param id 申请ID
+     * @param input
+     * @return
+     */
+
+    @Override
+    public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageWaitingHandOverStockOutFrozenBoxes(Long id, DataTablesInput input) {
+        StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
+        if(stockOutApply == null){
+            throw new BankServiceException("未查询到申请单");
+        }
+        input.setLength(-1);
+        input.getColumns().forEach(column -> {
+            if(column.getData().equals("applyId")){
+                column.setSearchValue(column.getSearch().getValue()+"+");
+            }
+            if(column.getData().equals("planId")){
+                column.setSearchValue(column.getSearch().getValue()+"+");
+            }
+            if(column.getData().equals("taskId")){
+                column.setSearchValue(column.getSearch().getValue()+"+");
+            }
+        });
+        DataTablesOutput<StockOutFrozenBoxForDataTableEntity> output = stockOutHandoverFrozenBoxRepositries.findAll(input);
+        return output;
+    }
+
+    /**
+     * 查询已交接冻存盒
+     * @param id
+     * @param pageRequest
+     * @return
+     */
+    @Override
+    public Page<StockOutFrozenBoxForDataTableEntity> getPageHandoverStockOutFrozenBoxes(Long id, Pageable pageRequest) {
+        StockOutHandover stockOutHandover = stockOutHandoverRepository.findOne(id);
+        if(stockOutHandover == null){
+            throw new BankServiceException("未查询到交接单");
+        }
+        Page<StockOutFrozenBox> result = stockOutFrozenBoxRepository.findBoxesByHandOverAndStatus(id,Constants.STOCK_OUT_FROZEN_BOX_HANDOVER, pageRequest);
+        return result.map(stockOutFrozenBox -> {
+            StockOutFrozenBoxForDataTableEntity dto = new StockOutFrozenBoxForDataTableEntity();
+            dto.setId(stockOutFrozenBox.getId());
+            dto.setFrozenBoxCode(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode());
+            dto.setSampleTypeName(stockOutFrozenBox.getFrozenBox().getSampleTypeName());
+            dto.setStatus(stockOutFrozenBox.getStatus());
+            dto.setApplyId(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getId():null);
+            dto.setApplyCode(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getApplyCode():null);
+            dto.setPlanId(stockOutHandover.getStockOutPlan()!=null?stockOutHandover.getStockOutPlan().getId():null);
+            dto.setPlanCode(stockOutHandover.getStockOutPlan()!=null?stockOutHandover.getStockOutPlan().getStockOutPlanCode():null);
+            dto.setTaskId(stockOutHandover.getStockOutTask()!=null?stockOutHandover.getStockOutTask().getId():null);
+            dto.setTaskCode(stockOutHandover.getStockOutTask()!=null?stockOutHandover.getStockOutTask().getStockOutTaskCode():null);
+            dto.setStatus(stockOutFrozenBox.getStatus());
+            dto.setDelegateId(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getDelegate().getId():null);
+            dto.setDelegate(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getApplyPersonName():null);
+            dto.setMemo(stockOutFrozenBox.getMemo());
+            String position = toPositionString(stockOutFrozenBox.getStockOutBoxPosition());
+            dto.setPosition(position);
+            Long count = stockOutFrozenTubeRepository.countByFrozenBox(stockOutFrozenBox.getId());
+            dto.setCountOfSample(count);
+
+            return dto;
+        });
     }
 }

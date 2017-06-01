@@ -5,7 +5,7 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutHandoverService;
 import org.fwoxford.service.dto.StockOutHandoverDTO;
-import org.fwoxford.service.dto.response.StockOutHandoverDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutHandoverForDataTableEntity;
 import org.fwoxford.service.mapper.StockOutHandoverMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -138,24 +137,23 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     }
 
     @Override
-    public Page<StockOutHandoverDataTableEntity> getPageStockOutHandOver(Pageable pageable) {
+    public Page<StockOutHandoverForDataTableEntity> getPageStockOutHandOver(Pageable pageable) {
         Page<StockOutHandover> result = stockOutHandoverRepository.findAll(pageable);
 
         return result.map(handover -> {
-            StockOutHandoverDataTableEntity dto = new StockOutHandoverDataTableEntity();
+            StockOutHandoverForDataTableEntity dto = new StockOutHandoverForDataTableEntity();
             dto.setId(handover.getId());
             dto.setStatus(handover.getStatus());
             dto.setHandoverCode(handover.getHandoverCode());
+            dto.setUsage(handover.getStockOutApply()!=null?handover.getStockOutApply().getPurposeOfSample():null);
+            dto.setApplyCode(handover.getStockOutApply()!=null?handover.getStockOutApply().getApplyCode():null);
             Long personId = handover.getHandoverPersonId();
             if(personId!=null){
                 User user = userRepository.findOne(personId);
-                dto.setHandoverPerson(user!=null?user.getLastName()+user.getFirstName():null);
+                dto.setDeliverName(user!=null?user.getLastName()+user.getFirstName():null);
             }
-
-            dto.setHandoverTime(handover.getHandoverTime());
-            dto.setStockOutTaskCode(handover.getStockOutTask()!=null?handover.getStockOutTask().getStockOutTaskCode():null);
-            dto.setPurposeOfSample(handover.getStockOutApply()!=null?handover.getStockOutApply().getPurposeOfSample():null);
-
+            dto.setReceiver(handover.getReceiverName());
+            dto.setReceiveDate(handover.getHandoverTime());
             Long count= stockOutHandoverDetailsRepository.countByStockOutHandoverId(handover.getId());
             dto.setCountOfSample(count);
             return dto;

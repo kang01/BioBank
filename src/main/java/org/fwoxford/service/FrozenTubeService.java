@@ -62,5 +62,5 @@ public interface FrozenTubeService {
      */
     List<FrozenTube> saveBatch(List<FrozenTubeDTO> frozenTubeDTOList);
 
-    FrozenBoxAndFrozenTubeResponse getFrozenTubeByFrozenBoxCode(String frozenBoxCode);
+    FrozenBoxAndFrozenTubeResponse getFrozenTubeByFrozenBoxCode(String frozenBoxCode,Long id);
 }

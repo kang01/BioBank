@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutApply.
+    -->
+    <changeSet id="20170508000000-2" author="jhipster">
+
+        <createView viewName="view_stock_out_handover_box">
+            select
+            t.id,t.status,t.memo,
+            box.frozen_box_code,box.sample_type_name,
+            task.id as task_id,task.stock_out_task_code as task_code,
+            plan.id as plan_id,plan.stock_out_plan_code as plan_code,
+            ap.id as apply_id,ap.apply_code as apply_code,
+            ap.delegate_id,ap.apply_person_name as delegate,
+            (select count(tube.id)from stock_out_box_tube tube where tube.STOCK_OUT_FROZEN_BOX_ID = t.id and tube.status!='2203') as count_of_sample,
+            (pos.EQUIPMENT_CODE||'.'||pos.AREA_CODE||'.'||pos.SUPPORT_RACK_CODE || '.'||pos.ROWS_IN_SHELF ||'.'||pos.COLUMNS_IN_SHELF) as position
+            from stock_out_box t
+            left join stock_out_box_position pos on t.stock_out_box_position_id = pos.id
+            left join frozen_box box on t.frozen_box_id = box.id
+            left join stock_out_task task on t.stock_out_task_id = task.id
+            left join stock_out_plan plan on task.stock_out_plan_id = plan.id
+            left join stock_out_apply ap on plan.stock_out_apply_id = ap.id
+            where t.status='1702'
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

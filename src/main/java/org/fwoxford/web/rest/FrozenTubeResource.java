@@ -135,11 +135,11 @@ public class FrozenTubeResource {
      * @param frozenBoxCode
      * @return the ResponseEntity with status 200 (OK) and with body the frozenTubeDTO, or with status 404 (Not Found)
      */
-    @GetMapping("/frozen-tubes/frozenBox/{frozenBoxCode}")
+    @GetMapping("/frozen-tubes/frozenBox/{frozenBoxCode}/task/{id}")
     @Timed
-    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByFrozenBoxCode(@PathVariable String frozenBoxCode) {
+    public ResponseEntity<FrozenBoxAndFrozenTubeResponse> getFrozenTubeByFrozenBoxCode(@PathVariable String frozenBoxCode,@PathVariable Long id) {
         log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
-        FrozenBoxAndFrozenTubeResponse frozenTubeList = frozenTubeService.getFrozenTubeByFrozenBoxCode(frozenBoxCode);
+        FrozenBoxAndFrozenTubeResponse frozenTubeList = frozenTubeService.getFrozenTubeByFrozenBoxCode(frozenBoxCode,id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(frozenTubeList));
     }
 }

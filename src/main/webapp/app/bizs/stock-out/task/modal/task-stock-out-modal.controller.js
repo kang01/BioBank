@@ -7,18 +7,121 @@
 
     angular
         .module('bioBankApp')
-        .controller('PlanTaskDescModalController', PlanTaskDescModalController);
+        .controller('TaskStockOutModalController', TaskStockOutModalController);
 
-    PlanTaskDescModalController.$inject = ['$uibModalInstance','$uibModal','items'];
+    TaskStockOutModalController.$inject = ['$uibModalInstance','$uibModal','items','TaskService','DTOptionsBuilder','DTColumnBuilder','toastr','EquipmentService','AreasByEquipmentIdService','BioBankBlockUi'];
 
-    function PlanTaskDescModalController($uibModalInstance,$uibModal,items) {
+    function TaskStockOutModalController($uibModalInstance,$uibModal,items,TaskService,DTOptionsBuilder,DTColumnBuilder,toastr,EquipmentService,AreasByEquipmentIdService,BioBankBlockUi) {
         var vm = this;
+        vm.dtInstance = {};
+        vm.stockOut = {};
+        var frozenBoxIds = items.frozenBoxIds;
+        var taskId = items.taskId;
+
+
+        //设备
+        EquipmentService.query({},onEquipmentSuccess, onError);
+        function onEquipmentSuccess(data) {
+            vm.frozenBoxPlaceOptions = data;
+        }
+        vm.frozenBoxPlaceConfig = {
+            valueField:'id',
+            labelField:'equipmentCode',
+            maxItems: 1,
+            onChange:function (value) {
+                AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+            }
+        };
+        //区域
+        function onAreaSuccess(data) {
+            vm.frozenBoxAreaOptions = data;
+            vm.stockOut.areaId = vm.frozenBoxAreaOptions[0].id;
+        }
+        vm.frozenBoxAreaConfig = {
+            valueField:'id',
+            labelField:'areaCode',
+            maxItems: 1,
+            onChange:function (value) {
+                vm.stockOut.areaId = value
+            }
+        };
+        //样本列表
+        vm.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('processing',true)
+            .withOption('serverSide',true)
+            .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
+                var data = {};
+                for(var i=0; aoData && i<aoData.length; ++i){
+                    var oData = aoData[i];
+                    data[oData.name] = oData.value;
+                }
+                var jqDt = this;
+                if(frozenBoxIds){
+                    TaskService.queryOutputDes(frozenBoxIds,data).then(function (res){
+                        var json = res.data;
+                        var error = json.error || json.sError;
+                        if ( error ) {
+                            jqDt._fnLog( oSettings, 0, error );
+                        }
+                        oSettings.json = json;
+                        fnCallback( json );
+                    }).catch(function(res){
+                        // console.log(res);
+                        //
+                        var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+
+                        if ( $.inArray( true, ret ) === -1 ) {
+                            if ( error == "parsererror" ) {
+                                jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+                            }
+                            else if ( res.readyState === 4 ) {
+                                jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
+                            }
+                        }
+                        jqDt._fnProcessingDisplay( oSettings, false );
+                    });
+                }else{
+                    var array = {
+                        draw : 1,
+                        recordsTotal : 100,
+                        recordsFiltered : 10,
+                        data: [ ],
+                        error : ""
+                    }
+                    fnCallback( array );
+
+                }
+
+            })
+            .withPaginationType('full_numbers');
+        vm.dtColumns = [
+            DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码'),
+            DTColumnBuilder.newColumn('sex').withTitle('性别'),
+            DTColumnBuilder.newColumn('age').withTitle('年龄'),
+            DTColumnBuilder.newColumn('diseaseTypeId').withTitle('标签'),
+            DTColumnBuilder.newColumn('id').notVisible()
+        ];
+
+
+
+
         vm.ok = function () {
+            TaskService.saveOutput(taskId,frozenBoxIds,vm.stockOut).success(function (data) {
+                toastr.success("出库成功!");
+            });
             $uibModalInstance.close();
         };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
+
+
+        function onError(error) {
+            BioBankBlockUi.blockUiStop();
+            toastr.error(error.data.message);
+        }
 
 
     }

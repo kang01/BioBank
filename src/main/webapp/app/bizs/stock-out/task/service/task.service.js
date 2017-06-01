@@ -36,7 +36,9 @@
             //出库
             saveOutput:_fnSaveOutput,
             //出库列表
-            queryOutputList:_queryOutputList
+            queryOutputList:_queryOutputList,
+            //出库详情页
+            queryOutputDes:_queryOutputDes
         };
         function _queryTaskList(data,oSettings) {
             return $http.post('api/res/stock-out-tasks',JSON.stringify(data))
@@ -71,11 +73,14 @@
         function _fnOutputNote(param) {
             return $http.put('api/stock-out-frozen-boxes/note',param)
         }
-        function _fnSaveOutput(taskId,frozenBoxIds) {
-            return $http.put('api/stock-out-frozen-boxes/task/'+taskId+'/frozen-boxes/'+frozenBoxIds)
+        function _fnSaveOutput(taskId,frozenBoxIds,param) {
+            return $http.put('api/stock-out-frozen-boxes/task/'+taskId+'/frozen-boxes/'+frozenBoxIds,param)
         }
         function _queryOutputList(taskId) {
             return $http.get('/api/stock-out-frozen-boxes/task-box/'+taskId)
+        }
+        function _queryOutputDes(frozenBoxIds,data) {
+            return $http.post('/api/res/stock-out-box-tubes/stockOutBox/'+frozenBoxIds,JSON.stringify(data))
         }
         return service;
     }

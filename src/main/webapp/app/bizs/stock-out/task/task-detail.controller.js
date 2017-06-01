@@ -15,6 +15,7 @@
         var vm = this;
         var modalInstance;
         vm.boxInstance = {};
+        vm.stockOutSampleInstance = {};
         vm.task = {};
 
         vm.datePickerOpenStatus = {};
@@ -25,6 +26,8 @@
         }
         //保存任务
         vm.saveTask = _fnSaveTask;
+        //打印取盒单
+        vm.printBox = _fnPrintBox;
 
         function _fnInitTask() {
             //编辑
@@ -49,6 +52,12 @@
                 vm.boxOptions.withOption('data', data);
                 vm.boxInstance.rerender();
             })
+            //获取已出库列表
+            TaskService.queryOutputList(vm.taskId).success(function (data) {
+                vm.stockOutSampleOptions.withOption('data', data);
+                vm.stockOutSampleInstance.rerender();
+            })
+
 
         }
         _fnInitTask();
@@ -77,6 +86,9 @@
                 toastr.error("保存任务失败!");
                 BioBankBlockUi.blockUiStop();
             })
+        }
+        function _fnPrintBox() {
+            window.open ('/api/stock-out-frozen-boxes/task/' + vm.taskId +'/print');
         }
         //冻存盒列表
         vm.boxOptions = DTOptionsBuilder.newOptions()
@@ -193,7 +205,7 @@
         vm.repealModal = _fnRepealModal;
         //异常
         vm.abnormal = _fnAbnormal;
-        //未出库样本、已出库样本批注
+        //1未出库样本、2已出库样本批注
         vm.commentModal = _fnCommentModal;
         //装盒
         vm.boxInModal = _fnBoxInModal;
@@ -375,9 +387,8 @@
             });
         }
 
-
         //1：未出库样本批注、2：已出库样本批注
-        function _fnCommentModal(status) {
+        function _fnCommentModal(status,tempBoxId) {
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/task/modal/comment-modal.html',
@@ -394,14 +405,28 @@
             });
 
             modalInstance.result.then(function (memo) {
-                for(var i = 0; i < vm.aRemarkArray.length; i++){
-                    if(vm.aRemarkArray[i].sampleCode){
-                        vm.aRemarkArray[i].memo = memo;
+                if(status == 1){
+                    for(var i = 0; i < vm.aRemarkArray.length; i++){
+                        if(vm.aRemarkArray[i].sampleCode){
+                            vm.aRemarkArray[i].memo = memo;
+                        }
                     }
+                    TaskService.fnNote(vm.aRemarkArray).success(function (data) {
+
+                    });
+                    vm.aRemarkArray = [];
+                    var tableCtrl = _getSampleDetailsTableCtrl();
+                    tableCtrl.loadData(vm.tubes);
+                }else{
+                    var obj  = {};
+                    obj.id = tempBoxId;
+                    obj.memo = memo;
+                    TaskService.outputNote(obj).success(function (data) {
+                        toastr.success("批注成功!")
+                        _fnInitTask();
+                    });
                 }
-                vm.aRemarkArray = [];
-                var tableCtrl = _getSampleDetailsTableCtrl();
-                tableCtrl.loadData(vm.tubes);
+
             });
         }
         //异常
@@ -443,31 +468,80 @@
             });
         }
 
-        //出库
-        function _fnTaskStockOutModal() {
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-out/task/modal/box-in-modal.html',
-                controller: 'TaskBoxInModalController',
-                controllerAs: 'vm',
-                size: 'lg',
-                resolve: {
-                    items: function () {
-                        return {}
-                    }
-                }
-            });
 
-            modalInstance.result.then(function (data) {
-
-            });
-        }
 
         // 获取待出库列表的控制实体
         function _getSampleDetailsTableCtrl() {
             vm.sampleDetailsTableCtrl = hotRegisterer.getInstance('sampleDetailsTable');
             return vm.sampleDetailsTableCtrl;
         }
+
+
+        //已出库列表
+        vm.stockOutSampleOptions = DTOptionsBuilder.newOptions()
+            .withPaginationType('full_numbers')
+            .withOption('info', false)
+            .withOption('paging', false)
+            .withOption('sorting', false)
+            .withScroller()
+            .withOption('scrollY', 398)
+            .withOption('createdRow', createdRow)
+        vm.stockOutSampleColumns = [
+            DTColumnBuilder.newColumn('id').notVisible(),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码'),
+            DTColumnBuilder.newColumn('status').withTitle('状态'),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
+            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置'),
+            DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('出库交接时间'),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('盒内样本量'),
+            DTColumnBuilder.newColumn('memo').withTitle('备注'),
+            DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml),
+        ];
+        function createdRow(row, data, dataIndex) {
+            var status = '';
+            switch (data.status){
+                case '1701': status = '待出库';break;
+                case '1702': status = '已出库';break;
+                case '1703': status = '已交接';break;
+            }
+            $('td:eq(1)', row).html(status);
+            $compile(angular.element(row).contents())($scope);
+        }
+        function actionsHtml(data, type, full, meta) {
+            return '<button type="button" class="btn btn-warning btn-sm" ng-if="'+full.status+'== 1701" ng-click="vm.taskStockOutModal('+ full.id +')">' +
+                '   <i class="fa fa-edit"></i>' +
+                '</button>&nbsp;'+
+            '<button type="button" class="btn btn-warning btn-sm" ng-if="'+full.status+'== 1702" ng-click="vm.commentModal(2,'+ full.id +')">' +
+                '批注' +
+                '</button>&nbsp;'
+        }
+
+        //出库详情
+        function _fnTaskStockOutModal(frozenBoxIds) {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/task/modal/task-stock-out-modal.html',
+                controller: 'TaskStockOutModalController',
+                controllerAs: 'vm',
+                size: '90',
+                resolve: {
+                    items: function () {
+                        return {
+                            frozenBoxIds:frozenBoxIds,
+                            taskId:vm.taskId
+                        }
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (data) {
+                _fnInitTask();
+            });
+        }
+
+
+
+
         function onError(error) {
             BioBankBlockUi.blockUiStop();
             toastr.error(error.data.message);

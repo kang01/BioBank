@@ -14,4 +14,9 @@ public interface StockOutHandoverDetailsRepository extends JpaRepository<StockOu
     Long countByStockOutTaskId(Long id);
 
     Long countByStockOutHandoverId(Long id);
+
+    List<StockOutHandoverDetails> findByStockOutHandoverId(Long id);
+
+    @Query("select count(t) from StockOutHandoverDetails t where t.stockOutHandover.id=?1 group by t.stockOutBoxTube.stockOutFrozenBox.id")
+    Integer countFrozenBoxByStockOutHandoverId(Long id);
 }

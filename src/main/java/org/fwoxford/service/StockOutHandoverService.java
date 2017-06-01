@@ -5,6 +5,8 @@ import org.fwoxford.service.dto.response.StockOutHandoverForDataTableEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * Service Interface for managing StockOutHandover.
  */
@@ -44,4 +46,6 @@ public interface StockOutHandoverService {
     StockOutHandoverDTO saveByTask(Long taskId);
 
     Page<StockOutHandoverForDataTableEntity> getPageStockOutHandOver(Pageable pageRequest);
+
+    ByteArrayOutputStream printStockOutHandover(Long id);
 }

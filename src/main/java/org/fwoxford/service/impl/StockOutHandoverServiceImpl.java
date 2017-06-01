@@ -3,9 +3,12 @@ package org.fwoxford.service.impl;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
+import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutHandoverService;
 import org.fwoxford.service.dto.StockOutHandoverDTO;
 import org.fwoxford.service.dto.response.StockOutHandoverForDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutHandoverReportDTO;
+import org.fwoxford.service.dto.response.StockOutHandoverSampleReportDTO;
 import org.fwoxford.service.mapper.StockOutHandoverMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -17,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,6 +48,10 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ReportExportingService reportExportingService;
+
 
     public StockOutHandoverServiceImpl(StockOutHandoverRepository stockOutHandoverRepository, StockOutHandoverMapper stockOutHandoverMapper) {
         this.stockOutHandoverRepository = stockOutHandoverRepository;
@@ -162,5 +171,73 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
             dto.setCountOfSample(count);
             return dto;
         });
+    }
+
+    /**
+     * 打印交接单
+     * @param id
+     * @return
+     */
+    @Override
+    public ByteArrayOutputStream printStockOutHandover(Long id) {
+        StockOutHandoverReportDTO handoverDTO = createStockOutHandOverReportDTO(id);
+        ByteArrayOutputStream outputStream = reportExportingService.makeStockOutHandoverReport(handoverDTO);
+        return outputStream;
+    }
+
+    private StockOutHandoverReportDTO createStockOutHandOverReportDTO(Long id) {
+        StockOutHandoverReportDTO handoverDTO = new StockOutHandoverReportDTO();
+        StockOutHandover stockOutHandover = stockOutHandoverRepository.findOne(id);
+        handoverDTO.setId(stockOutHandover.getId());
+
+        handoverDTO.setHandoverDate(stockOutHandover.getHandoverTime()!=null?stockOutHandover.getHandoverTime().toString():null);
+        handoverDTO.setHandOverNumber(stockOutHandover.getHandoverCode());
+        handoverDTO.setMemo(stockOutHandover.getMemo());
+        handoverDTO.setApplicationNumber(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getApplyCode():null);
+        handoverDTO.setPlanNumber(stockOutHandover.getStockOutPlan()!=null?stockOutHandover.getStockOutPlan().getStockOutPlanCode():null);
+        handoverDTO.setReceiverCompany(stockOutHandover.getReceiverOrganization());
+        handoverDTO.setReceiverContact(stockOutHandover.getReceiverPhone());
+        handoverDTO.setTaskNumber(stockOutHandover.getStockOutTask()!=null?stockOutHandover.getStockOutTask().getStockOutTaskCode():null);
+
+        if(stockOutHandover.getHandoverPersonId() != null){
+            User user = userRepository.findOne(stockOutHandover.getHandoverPersonId());
+            handoverDTO.setDeliver(user!=null?user.getLastName()+user.getFirstName():null);
+        }
+        handoverDTO.setDeliverDate(stockOutHandover.getHandoverTime()!=null?stockOutHandover.getHandoverTime().toString():null);
+        handoverDTO.setReceiveDate(stockOutHandover.getHandoverTime()!=null?stockOutHandover.getHandoverTime().toString():null);
+        handoverDTO.setReceiver(stockOutHandover.getReceiverName());
+
+        Integer countOfBox = stockOutHandoverDetailsRepository.countFrozenBoxByStockOutHandoverId(id);
+        List<StockOutHandoverSampleReportDTO> stockOutHandoverSampleReportDTOS = new ArrayList<StockOutHandoverSampleReportDTO>();
+        List<StockOutHandoverDetails> stockOutHandoverDetails = stockOutHandoverDetailsRepository.findByStockOutHandoverId(id);
+
+        for(StockOutHandoverDetails s : stockOutHandoverDetails){
+            StockOutHandoverSampleReportDTO sample = new StockOutHandoverSampleReportDTO();
+            sample = createStockOutHandOverSampleReportDTO(s);
+            stockOutHandoverSampleReportDTOS.add(sample);
+        }
+        handoverDTO.setCountOfBox(countOfBox);
+        handoverDTO.setSamples(stockOutHandoverSampleReportDTOS);
+        handoverDTO.setCountOfSample(stockOutHandoverSampleReportDTOS.size());
+        return handoverDTO;
+    }
+
+    private StockOutHandoverSampleReportDTO createStockOutHandOverSampleReportDTO(StockOutHandoverDetails s) {
+        if(s==null || s.getStockOutBoxTube() == null || s.getStockOutBoxTube().getFrozenTube()==null){
+            return null;
+        }
+        StockOutHandoverSampleReportDTO sample = new StockOutHandoverSampleReportDTO();
+        FrozenTube frozenTube = s.getStockOutBoxTube().getFrozenTube();
+
+        sample.setId(s.getId());
+        sample.setProjectCode(frozenTube.getProjectCode());
+        sample.setAge(frozenTube.getAge().toString());
+        sample.setBoxCode(frozenTube.getFrozenBoxCode());
+        sample.setDiseaseType(frozenTube.getDiseaseType());
+        sample.setLocation(frozenTube.getTubeRows()+frozenTube.getTubeColumns());
+        sample.setSampleCode(frozenTube.getSampleCode());
+        sample.setSampleType(frozenTube.getSampleTypeName());
+        sample.setSex(Constants.SEX_MAP.get(frozenTube.getGender())!=null?Constants.SEX_MAP.get(frozenTube.getGender()).toString():null);
+        return sample;
     }
 }

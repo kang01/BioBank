@@ -20,7 +20,23 @@
             //保存计划
             saveTaskBox:_saveTask,
             //获取管子
-            queryTubes:_queryTubes
+            queryTubes:_queryTubes,
+            //获取临时盒子
+            queryTempBoxes:_queryTempBoxes,
+            //保存装盒后的盒子
+            saveTempBoxes:_saveTempBoxes,
+            //异常
+            abnormal:_fnAbnormal,
+            //撤销申请
+            repeal:_fnRepeal,
+            //批注
+            fnNote:_fnNote,
+            //已出库批注
+            outputNote:_fnOutputNote,
+            //出库
+            saveOutput:_fnSaveOutput,
+            //出库列表
+            queryOutputList:_queryOutputList
         };
         function _queryTaskList(data,oSettings) {
             return $http.post('api/res/stock-out-tasks',JSON.stringify(data))
@@ -36,6 +52,30 @@
         }
         function _queryTubes(frozenBoxCode) {
             return $http.get('api/frozen-tubes/frozenBox/'+frozenBoxCode)
+        }
+        function _queryTempBoxes(taskId) {
+            return $http.get('api/stock-out-frozen-boxes/temp-box/task/'+taskId)
+        }
+        function _saveTempBoxes(taskId,param) {
+            return $http.post('api/stock-out-frozen-boxes/task/'+taskId,param)
+        }
+        function _fnAbnormal(param) {
+            return $http.put('api/stock-out-task-frozen-tubes/abnormal',param)
+        }
+        function _fnRepeal(param) {
+            return $http.put('api/stock-out-task-frozen-tubes/repeal',param)
+        }
+        function _fnNote(param) {
+            return $http.put('api/stock-out-task-frozen-tubes/note',param)
+        }
+        function _fnOutputNote(param) {
+            return $http.put('api/stock-out-frozen-boxes/note',param)
+        }
+        function _fnSaveOutput(taskId,frozenBoxIds) {
+            return $http.put('api/stock-out-frozen-boxes/task/'+taskId+'/frozen-boxes/'+frozenBoxIds)
+        }
+        function _queryOutputList(taskId) {
+            return $http.get('/api/stock-out-frozen-boxes/task-box/'+taskId)
         }
         return service;
     }

@@ -6,7 +6,7 @@
     <form>
         <div class="form-group">
             <label>批注</label>
-            <textarea ng-if="vm.status == 1" class="form-control resize-none" ></textarea>
+            <textarea ng-if="vm.status == 1" class="form-control resize-none" rows="3" ng-model="vm.memo"></textarea>
             <textarea ng-if="vm.status == 2" class="form-control resize-none" ></textarea>
         </div>
     </form>

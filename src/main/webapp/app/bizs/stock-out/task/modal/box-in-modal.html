@@ -13,22 +13,46 @@
     </div>
     <div class="" ng-if="vm.allInFlag">
         <div class="row m0">
-            <div class="pull-left">
-                <form class="form-inline">
-                    <div class="form-group">
-                        <label>临时盒编码</label>
-                        <input type="text" class="form-control" >
+            <div class="pull-left col-md-6">
+                <form class="form-horizontal">
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label class="col-md-5 control-label pr-5 pl-5">
+                                <span class="required-field"></span>
+                                临时盒编码
+                            </label>
+                            <div class="col-md-7 pl-5">
+                                <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="row">
+                                <label  class="col-md-3 control-label pr-5 pl-0">
+                                    <span class="required-field"></span>
+                                    盒类型
+                                </label>
+                                <div class="col-md-7 pl-5">
+                                    <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
+                                               ng-model="vm.box.frozenBoxType.id"></selectize>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-default" ng-click="vm.addNewBox()">添加新盒</button>
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-default">添加新盒</button>
+
+
                 </form>
             </div>
             <div class="pull-right">
                 <form class="form-inline">
                     <div class="form-group">
                         <label>预装位置</label>
-                        <input type="text" class="form-control" >
+                        <input type="text" class="form-control" ng-model="vm.pos">
                     </div>
-                    <button type="button" class="btn btn-default">装盒</button>
+                    <button type="button" class="btn btn-default" ng-click="vm.boxIn()">装盒</button>
                     <button type="button" class="btn btn-default">复原</button>
                 </form>
             </div>

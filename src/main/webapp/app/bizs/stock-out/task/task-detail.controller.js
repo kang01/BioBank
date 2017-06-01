@@ -18,12 +18,12 @@
         vm.task = {};
 
         vm.datePickerOpenStatus = {};
-        vm.openCalendar = openCalendar; //时间
+        vm.openCalendar = openCalendar;
 
         function openCalendar(date) {
             vm.datePickerOpenStatus[date] = true;
         }
-
+        //保存任务
         vm.saveTask = _fnSaveTask;
 
         function _fnInitTask() {
@@ -112,32 +112,35 @@
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
             TaskService.queryTubes(data.frozenBoxCode).success(function (data) {
-                vm.frozenTubeList = data;
-                _reloadTubesForTable(vm.frozenTubeList)
+                // vm.frozenTubeList = data;
+                var box = data;
+                _reloadTubesForTable(box)
             }).error(function (data) {
 
             })
         }
         //加载管子表控件
-        function _reloadTubesForTable(frozenTubeList){
+        function _reloadTubesForTable(box){
             var tableCtrl = _getSampleDetailsTableCtrl();
             var settings = {};
             var tubesInTable = [];
             var colHeaders = [];
             var rowHeaders = [];
-            for (var i=0; i < 10; ++i){
+            var row = +box.frozenBoxType.frozenBoxTypeRows;
+            var col = +box.frozenBoxType.frozenBoxTypeColumns;
+            for (var i=0; i < row; ++i){
                 var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
                 if(i > 7){
                     pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1)
                 }
                 var tubes = [];
                 rowHeaders.push(pos.tubeRows);
-                for (var j=0; j <10; ++j){
+                for (var j = 0; j < col; ++j){
                     pos.tubeColumns = j + 1 + "";
                     // if (colHeaders.length < settings.minCols){
                     colHeaders.push(pos.tubeColumns);
                     // }
-                    var tubeInBox = _.filter(frozenTubeList, pos)[0];
+                    var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
                     var tube = _createTubeForTableCell(tubeInBox, i, j + 1, pos);
                     tubes.push(tube);
                 }
@@ -186,8 +189,10 @@
 
         //扫码取样
         vm.scanCode = _fnScanCode;
-        //异常、撤销
-        vm.abnormalModal = _fnAbnormalModal;
+        //撤销
+        vm.repealModal = _fnRepealModal;
+        //异常
+        vm.abnormal = _fnAbnormal;
         //未出库样本、已出库样本批注
         vm.commentModal = _fnCommentModal;
         //装盒
@@ -197,6 +202,8 @@
         //待出库样本(管子)
         _initSampleDetailsTable();
         function _initSampleDetailsTable() {
+            var remarkArray;//批注
+            vm.aRemarkArray = [];
             vm.sampleDetailsTableSettings = {
                 // 点击表格外部时，表格内选项仍然能够选中
                 outsideClickDeselectsCache: false,
@@ -236,10 +243,13 @@
                 editor: false,
                 comments: true,
                 onAfterSelectionEnd:function (row, col, row2, col2) {
-                    // console.log(this.getData(row,col))
-                    console.log(this.getSelected());
+                    var td = this;
+                    remarkArray = this.getData(row,col,row2,col2);
+                    var selectTubeArray = this.getSelected();
+                    $(".tube-selected").remove();
+                    _fnRemarkSelectData(td,remarkArray,selectTubeArray)
                     if(window.event && window.event.ctrlKey){
-                        
+
                     }
                 },
                 // 单元格的渲染函数
@@ -260,7 +270,10 @@
                         td.style.backgroundColor = tube.sampleType.backColor;
                     }
                 }
-
+                //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
+                if(tube.status){
+                    changeSampleStatus(tube.status,td)
+                }
                 var code = tube.sampleCode && tube.sampleCode != " " ? tube.sampleCode : tube.sampleTempCode;
                 $(td).html("");
                 var $div = $("<div/>").html(code).css({
@@ -278,6 +291,28 @@
                     $(txt).appendTo($div)
                 }
             }
+            //备注 选择单元格数据
+            function _fnRemarkSelectData(td,remarkArray,selectTubeArray) {
+                var txt = '<div class="tube-selected" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;"></div>';
+                for(var m = 0; m < remarkArray.length; m++){
+                    for (var n = 0; n < remarkArray[m].length; n++){
+                        vm.aRemarkArray.push(remarkArray[m][n])
+                    }
+                }
+                for(var i = selectTubeArray[0];i <= selectTubeArray[2]; i++){
+                    for(var j = selectTubeArray[1];  j <= selectTubeArray[3];j++)
+                        $(td.getCell(i,j)).append(txt);
+                }
+            }
+            //修改样本状态正常、空管、空孔、异常
+            function changeSampleStatus(sampleStatus,td) {
+                //异常
+                if(sampleStatus == 3004){
+                    td.style.backgroundColor = 'red';
+                    td.style.border = '3px solid red;margin:-3px';
+                }
+            }
+
         }
         //扫码取样
         //装盒的样本
@@ -319,8 +354,8 @@
 
             }
         }
-        //1：异常、2：撤销
-        function _fnAbnormalModal(status) {
+        //撤销
+        function _fnRepealModal(status) {
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/task/modal/abnormal-recall-modal.html',
@@ -330,16 +365,16 @@
                 resolve: {
                     items: function () {
                         return {
-                            status:status
                         }
                     }
                 }
             });
 
-            modalInstance.result.then(function (data) {
+            modalInstance.result.then(function (repealReason) {
 
             });
         }
+
 
         //1：未出库样本批注、2：已出库样本批注
         function _fnCommentModal(status) {
@@ -358,11 +393,31 @@
                 }
             });
 
-            modalInstance.result.then(function (data) {
-
+            modalInstance.result.then(function (memo) {
+                for(var i = 0; i < vm.aRemarkArray.length; i++){
+                    if(vm.aRemarkArray[i].sampleCode){
+                        vm.aRemarkArray[i].memo = memo;
+                    }
+                }
+                vm.aRemarkArray = [];
+                var tableCtrl = _getSampleDetailsTableCtrl();
+                tableCtrl.loadData(vm.tubes);
             });
         }
+        //异常
+        function _fnAbnormal() {
+            for(var i = 0; i < vm.aRemarkArray.length; i++){
+                if(vm.aRemarkArray[i].sampleCode){
+                    vm.aRemarkArray[i].status = "3004";
+                }
+            }
+            TaskService.abnormal(vm.aRemarkArray).success(function (data) {
 
+            });
+            vm.aRemarkArray = [];
+            var tableCtrl = _getSampleDetailsTableCtrl();
+            tableCtrl.loadData(vm.tubes);
+        }
         //装盒
         function _fnBoxInModal() {
 
@@ -376,7 +431,8 @@
                     items: function () {
                         return {
                             allInFlag:vm.allInFlag,
-                            boxInTubes:boxInTubes
+                            boxInTubes:boxInTubes,
+                            taskId:vm.taskId
                         }
                     }
                 }

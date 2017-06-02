@@ -118,8 +118,8 @@
         function createdRow(row, data, dataIndex) {
             var status = '';
             switch (data.status){
-                case '1001': status = '进行中';break;
-                case '1002': status = '已交接';break;
+                case '2101': status = '进行中';break;
+                case '2102': status = '已交接';break;
             }
             $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);

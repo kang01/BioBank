@@ -80,7 +80,9 @@
             BioBankBlockUi.blockUiStart();
             TaskService.saveTaskBox(vm.task).success(function (data) {
                 BioBankBlockUi.blockUiStop();
-                toastr.success("保存任务成功!");
+                if(!stockOutFlag){
+                    toastr.success("保存任务成功!");
+                }
             }).error(function (data) {
                 toastr.error("保存任务失败!");
                 BioBankBlockUi.blockUiStop();
@@ -614,16 +616,18 @@
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-warning btn-sm" ng-if="'+full.status+'== 1701" ng-click="vm.taskStockOutModal('+ full.id +')">' +
+            return '<button type="button" ng-disabled="!vm.task.stockOutHeadId1 || !vm.task.stockOutHeadId2" class="btn btn-warning btn-sm" ng-if="'+full.status+'== 1701" ng-click="vm.taskStockOutModal('+ full.id +')">' +
                 '出库' +
                 '</button> &nbsp;'+
             '<button type="button" class="btn btn-warning btn-sm"  ng-click="vm.commentModal(2,'+ full.id +')">' +
                 '批注' +
                 '</button>'
         }
-
+        var stockOutFlag = false;
         //出库
         function _fnTaskStockOutModal(frozenBoxIds) {
+            stockOutFlag = true;
+            _fnSaveTask();
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/task/modal/task-stock-out-modal.html',

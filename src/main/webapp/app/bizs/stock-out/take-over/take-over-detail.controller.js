@@ -32,13 +32,21 @@
             memo: '',
             stockOutTaskId: 0,
             stockOutPlanId: 0,
-            stockOutApplyId: 0,
+            stockOutApplyId: 0
         };
         vm.application = null;
-
+        var handoverStatus = MasterData.takeOverStatus;
         if (entity){
             vm.dto = entity;
-            vm.dto.handoverTime = new Date(entity.handoverTime)
+            vm.dto.handoverTime = new Date(entity.handoverTime);
+            for(var i = 0; i < handoverStatus.length; i++){
+                if(entity.status == handoverStatus[i].id){
+                    vm.statusName = handoverStatus[i].name;
+                }
+            }
+            if(entity.status ){
+
+            }
         }
 
         _initTakeoverEditors();

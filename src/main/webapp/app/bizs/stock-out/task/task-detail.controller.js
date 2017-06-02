@@ -157,6 +157,7 @@
         function _fnLoadTubes() {
             TaskService.queryTubes(boxCode,vm.taskId).success(function (data) {
                 var box = data;
+                vm.frozenTubeDTOS = box.frozenTubeDTOS;
                 _reloadTubesForTable(box)
             }).error(function (data) {
 
@@ -341,7 +342,7 @@
                 }
                 //已扫码样本
                 if(tube.scanCodeFlag){
-                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;color:rgba(0,128,0,0.3);padding-left: 33%;font-size:42px"><i class="fa fa-check"></i></div>'
+                    var txt = '<div style="position: absolute;top:12px;left:0;bottom:0;right:0;color:rgba(0,128,0,0.3);text-align:center;font-size:42px">'+tube.orderIndex+'</div>'
                     $(txt).appendTo($div)
                 }
             }
@@ -368,10 +369,11 @@
             }
 
         }
-        //扫码取样
+
         //装盒的样本
         var boxInTubes = [];
         vm.sampleCode = "1494946117831-A3";
+        //扫码取样
         function _fnScanCode(e){
             var tableCtrl = _getSampleDetailsTableCtrl();
             var keycode = window.event ? e.keyCode : e.which;
@@ -386,8 +388,10 @@
                     var col = scanCodeTubes[0].colNO;
                     //扫码标识
                     vm.tubes[row][col-1].scanCodeFlag = true;
+
                     //装盒样本
                     var len = _.filter(boxInTubes,{sampleTempCode:vm.tubes[row][col-1].sampleTempCode}).length;
+                    vm.tubes[row][col-1].orderIndex = boxInTubes.length+1;
                     if(len){
                         return
                     }else{
@@ -400,7 +404,7 @@
                         vm.allInFlag = true;
                     }
 
-
+                    console.log(JSON.stringify(boxInTubes))
                     tableCtrl.loadData(vm.tubes);
                 }else{
                     toastr.error("编码错误，请重新扫码!")
@@ -526,8 +530,6 @@
             });
         }
 
-
-
         // 获取待出库列表的控制实体
         function _getSampleDetailsTableCtrl() {
             vm.sampleDetailsTableCtrl = hotRegisterer.getInstance('sampleDetailsTable');
@@ -623,8 +625,9 @@
                 '批注' +
                 '</button>'
         }
-        var stockOutFlag = false;
+
         //出库
+        var stockOutFlag = false;
         function _fnTaskStockOutModal(frozenBoxIds) {
             stockOutFlag = true;
             _fnSaveTask();

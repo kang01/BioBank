@@ -135,7 +135,7 @@
         function rowClickHandler(tr,data) {
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
-            TaskService.queryTubes(data.frozenBoxCode).success(function (data) {
+            TaskService.queryTubes(data.frozenBoxCode,vm.taskId).success(function (data) {
                 // vm.frozenTubeList = data;
                 var box = data;
                 _reloadTubesForTable(box)

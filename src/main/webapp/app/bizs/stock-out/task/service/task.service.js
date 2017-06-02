@@ -52,8 +52,8 @@
         function _saveTask(param) {
             return $http.put('api/stock-out-tasks/',param)
         }
-        function _queryTubes(frozenBoxCode) {
-            return $http.get('api/frozen-tubes/frozenBox/'+frozenBoxCode)
+        function _queryTubes(frozenBoxCode,taskId) {
+            return $http.get('api/frozen-tubes/frozenBox/'+frozenBoxCode+'/task/'+taskId)
         }
         function _queryTempBoxes(taskId) {
             return $http.get('api/stock-out-frozen-boxes/temp-box/task/'+taskId)

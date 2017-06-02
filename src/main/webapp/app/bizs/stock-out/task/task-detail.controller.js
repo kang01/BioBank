@@ -119,7 +119,6 @@
             DTColumnBuilder.newColumn('countOfSample').withTitle('出库样本量')
         ];
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
-            // $('td:first', nRow).html(iDisplayIndex+1);
             $('td', nRow).unbind('click');
             $(nRow).bind('click', function() {
                 var tr = this;
@@ -329,7 +328,7 @@
         //扫码取样
         //装盒的样本
         var boxInTubes = [];
-        vm.sampleCode = "1494946117831-G5";
+        vm.sampleCode = "1494946117831-A3";
         function _fnScanCode(e){
             var tableCtrl = _getSampleDetailsTableCtrl();
             var keycode = window.event ? e.keyCode : e.which;
@@ -562,13 +561,13 @@
         function actionsHtml(data, type, full, meta) {
             return '<button type="button" class="btn btn-warning btn-sm" ng-if="'+full.status+'== 1701" ng-click="vm.taskStockOutModal('+ full.id +')">' +
                 '出库' +
-                '</button>'+
-            '<button type="button" class="btn btn-warning btn-sm" ng-if="'+full.status+'== 1702" ng-click="vm.commentModal(2,'+ full.id +')">' +
+                '</button> &nbsp;'+
+            '<button type="button" class="btn btn-warning btn-sm"  ng-click="vm.commentModal(2,'+ full.id +')">' +
                 '批注' +
-                '</button>&nbsp;'
+                '</button>'
         }
 
-        //出库详情
+        //出库
         function _fnTaskStockOutModal(frozenBoxIds) {
             modalInstance = $uibModal.open({
                 animation: true,

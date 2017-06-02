@@ -42,11 +42,10 @@
             TaskService.queryTempBoxes(taskId).success(function (data) {
                 for(var i = 0; i < data.length; i++){
                     data[i].sampleCount = null;
-                    // var box = data[i];
-                    // _reloadTubesForTable(box);
-
+                    boxList.push(data[i])
                 }
-                vm.tempBoxOptions.withOption('data', data);
+
+                vm.tempBoxOptions.withOption('data', boxList);
             });
 
             //盒子类型
@@ -73,7 +72,10 @@
         _init();
         //添加新盒
         function _fnAddNewBox(){
-            _reloadTubesForTable(angular.copy(vm.box));
+            // _reloadTubesForTable(angular.copy(vm.box));
+            boxList.push(angular.copy(vm.box))
+            console.log(JSON.stringify(vm.box))
+            // vm.tempBoxInstance.DataTable.draw();
             vm.tempBoxOptions.withOption('data', boxList);
             vm.tempBoxInstance.rerender();
 
@@ -175,10 +177,14 @@
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
             selectBox = data;
+            if(selectBox.frozenTubeDTOS.length){
+                var len = selectBox.frozenTubeDTOS.length-1;
+                _.orderBy(selectBox.frozenTubeDTOS, ['tubeRows'], ['esc']);
+                vm.pos = selectBox.frozenTubeDTOS[len].tubeRows + (+selectBox.frozenTubeDTOS[len].tubeColumns+1);
+            }else{
+                vm.pos = "A1";
+            }
 
-            // var tubeList =  _.filter(selectBox.frozenTubeDTOS,{sampleTempCode:""});
-            _.orderBy(selectBox.frozenTubeDTOS, ['tubeRows'], ['esc']);
-            vm.pos = selectBox.frozenTubeDTOS[selectBox.frozenTubeDTOS.length-1].tubeRows + selectBox.frozenTubeDTOS[selectBox.frozenTubeDTOS.length-1].tubeColumns;
             _FnPreassemble(vm.selectedTubes);
         }
         vm.posInit = function () {
@@ -277,6 +283,18 @@
                 return true;
             }
         }
+        //装盒
+        var tempBoxList = [];
+        function _fnBoxIn() {
+            for(var i = 0; i < vm.selectedTubes.length;i++){
+                selectBox.frozenTubeDTOS.push(vm.selectedTubes[i])
+            }
+            tempBoxList.push(selectBox);
+            console.log(JSON.stringify(tempBoxList))
+        }
+
+
+
         vm.sampleOptions = DTOptionsBuilder.newOptions()
             .withOption('info', false)
             .withOption('paging', false)
@@ -335,14 +353,7 @@
             }
             vm.sampleOptions.withOption('data', boxInTubes);
         },500);
-        //装盒
-        var tempBoxList = [];
-        function _fnBoxIn() {
-            for(var i = 0; i < vm.selectedTubes.length;i++){
-                selectBox.frozenTubeDTOS.push(vm.selectedTubes[i])
-            }
-            tempBoxList.push(selectBox);
-        }
+
 
         vm.yes = function () {
             vm.allInFlag = true;

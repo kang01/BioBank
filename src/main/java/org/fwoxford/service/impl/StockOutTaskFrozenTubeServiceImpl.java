@@ -131,28 +131,23 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
             }
             //需求样本撤销
             StockOutReqFrozenTube stockOutReqFrozenTube = stockOutReqFrozenTubeRepository.findByFrozenTubeId(tube.getId());
-            if(stockOutReqFrozenTube == null){
-                throw new BankServiceException("未查询到需要撤销的样本");
+            if(stockOutReqFrozenTube != null){
+                stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
+                stockOutReqFrozenTube.setRepealReason(tube.getRepealReason());
+                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
+                //计划出库样本
+                StockOutPlanFrozenTube stockOutPlanFrozenTube = stockOutPlanFrozenTubeRepository.findByStockOutReqFrozenTubeId(stockOutReqFrozenTube.getId());
+                if(stockOutPlanFrozenTube != null){
+                    stockOutPlanFrozenTube.setStatus(Constants.STOCK_OUT_PLAN_TUBE_CANCEL);
+                    stockOutPlanFrozenTubeRepository.save(stockOutPlanFrozenTube);
+                    //任务出库样本
+                    StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutPlanFrozenTubeId(stockOutPlanFrozenTube.getId());
+                    if(stockOutTaskFrozenTube != null){
+                        stockOutTaskFrozenTube.setStatus(Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+                        stockOutTaskFrozenTubeRepository.save(stockOutTaskFrozenTube);
+                    }
+                }
             }
-            stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
-            stockOutReqFrozenTube.setRepealReason(tube.getRepealReason());
-            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
-
-            //计划出库样本
-            StockOutPlanFrozenTube stockOutPlanFrozenTube = stockOutPlanFrozenTubeRepository.findByStockOutReqFrozenTubeId(stockOutReqFrozenTube.getId());
-            if(stockOutPlanFrozenTube == null){
-                throw new BankServiceException("未查询到计划出库样本");
-            }
-            stockOutPlanFrozenTube.setStatus(Constants.STOCK_OUT_PLAN_TUBE_CANCEL);
-            stockOutPlanFrozenTubeRepository.save(stockOutPlanFrozenTube);
-            //任务出库样本
-            StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutPlanFrozenTubeId(stockOutPlanFrozenTube.getId());
-            if(stockOutTaskFrozenTube == null){
-                throw new BankServiceException("未查询到任务出库样本");
-            }
-            stockOutTaskFrozenTube.setStatus(Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
-            stockOutTaskFrozenTubeRepository.save(stockOutTaskFrozenTube);
-
         }
         return frozenTubeDTOS;
     }

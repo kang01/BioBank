@@ -121,8 +121,10 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " where e.STOCK_OUT_TASK_ID = ?1 " ,nativeQuery = true)
     List<FrozenBox> findByStockOutTaskId(Long taskId);
 
-    @Query( "select  DISTINCT e.stockOutPlanFrozenTube.stockOutReqFrozenTube.frozenBox from StockOutTaskFrozenTube e " +
+    @Query( "select  DISTINCT a from FrozenBox a" +
+        " inner join StockOutReqFrozenTube c on c.frozenBox.id = a.id" +
+        " inner join StockOutPlanFrozenTube b on b.stockOutReqFrozenTube.id =c.id" +
+        " inner join StockOutTaskFrozenTube e on e.stockOutPlanFrozenTube.id =b.id" +
         " where e.stockOutTask.id = ?1 ")
     Page<FrozenBox> findAllByTask(Long taskId, Pageable pageable);
-
 }

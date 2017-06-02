@@ -139,15 +139,15 @@ public class StockOutHandoverResource {
 
     /**
      * 根据任务创建交接单
-     * @param taskId
+     * @param id
      * @return
      * @throws URISyntaxException
      */
     @PostMapping("/stock-out-handovers/task/{id}")
     @Timed
-    public ResponseEntity<StockOutHandoverDTO> createStockOutHandover(@PathVariable Long taskId) throws URISyntaxException {
-        log.debug("REST request to save StockOutHandover : {}", taskId);
-        StockOutHandoverDTO result = stockOutHandoverService.saveByTask(taskId);
+    public ResponseEntity<StockOutHandoverDTO> createStockOutHandover(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to save StockOutHandover : {}", id);
+        StockOutHandoverDTO result = stockOutHandoverService.saveByTask(id);
         return ResponseEntity.created(new URI("/api/stock-out-handovers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

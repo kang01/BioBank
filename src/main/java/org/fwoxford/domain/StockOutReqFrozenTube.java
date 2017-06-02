@@ -46,6 +46,9 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     @Column(name = "importing_sample_id")
     private Long importingSampleId;
 
+    @Column(name = "repeal_reason")
+    private String repealReason;
+
     @ManyToOne(optional = false)
     @NotNull
     private FrozenBox frozenBox;
@@ -120,6 +123,19 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
 
     public Long getImportingSampleId() {
         return importingSampleId;
+    }
+
+    public String getRepealReason() {
+        return repealReason;
+    }
+
+    public StockOutReqFrozenTube repealReason(String repealReason) {
+        this.repealReason = repealReason;
+        return this;
+    }
+
+    public void setRepealReason(String repealReason) {
+        this.repealReason = repealReason;
     }
 
     public StockOutReqFrozenTube importingSampleId(Long importingSampleId) {
@@ -199,6 +215,7 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
             ", tubeRows='" + tubeRows + "'" +
             ", tubeColumns='" + tubeColumns + "'" +
             ", importingSampleId='" + importingSampleId + "'" +
+            ", repealReason='" + repealReason + "'" +
             '}';
     }
 }

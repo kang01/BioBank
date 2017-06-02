@@ -62,6 +62,10 @@
             </column>
             <column name="last_modified_by" type="nvarchar(50)" remarks="修改人"/>
             <column name="last_modified_date" type="timestamp" remarks="修改时间"/>
+
+            <column name="repeal_reason" type="nvarchar(1024)" remarks="撤销原因">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
 

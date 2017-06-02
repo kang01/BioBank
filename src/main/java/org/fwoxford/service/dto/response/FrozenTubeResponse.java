@@ -67,6 +67,11 @@ public class FrozenTubeResponse {
      */
     private Integer stockOutFlag;
 
+    /**
+     * 撤销原因
+     */
+    private String repealReason;
+
     private SampleClassification sampleClassification;
 
     public Long getId() {
@@ -163,6 +168,14 @@ public class FrozenTubeResponse {
 
     public void setStockOutFlag(Integer stockOutFlag) {
         this.stockOutFlag = stockOutFlag;
+    }
+
+    public String getRepealReason() {
+        return repealReason;
+    }
+
+    public void setRepealReason(String repealReason) {
+        this.repealReason = repealReason;
     }
 
     public SampleClassification getSampleClassification() {

@@ -31,6 +31,8 @@ public class StockOutReqFrozenTubeDTO extends AbstractAuditingDTO implements Ser
 
     private Long importingSampleId;
 
+    private String repealReason;
+
     private Long frozenBoxId;
 
     private Long frozenTubeId;
@@ -78,6 +80,14 @@ public class StockOutReqFrozenTubeDTO extends AbstractAuditingDTO implements Ser
 
     public void setImportingSampleId(Long importingSampleId) {
         this.importingSampleId = importingSampleId;
+    }
+
+    public String getRepealReason() {
+        return repealReason;
+    }
+
+    public void setRepealReason(String repealReason) {
+        this.repealReason = repealReason;
     }
 
     public Long getFrozenBoxId() {

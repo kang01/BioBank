@@ -132,23 +132,19 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         if(stockOutTask ==null){
             throw new BankServiceException("任务不存在！");
         }
-        Long count = stockOutHandoverRepository.countByStockOutTaskId(taskId);
-        if(count.intValue()>0){
-            throw new BankServiceException("该任务已有交接单，不能重复创建！");
-        }
         stockOutHandover.handoverCode(BankUtil.getUniqueID())
             .stockOutTask(stockOutTask)
             .stockOutApply(stockOutTask.getStockOutPlan().getStockOutApply())
             .stockOutPlan(stockOutTask.getStockOutPlan())
             .status(Constants.STOCK_OUT_HANDOVER_PENDING);
         stockOutHandoverRepository.save(stockOutHandover);
-        //保存交接详情
-        List<StockOutBoxTube> stockOutBoxTubeList = stockOutBoxTubeRepository.findByStockOutTaskId(taskId);
-        for(StockOutBoxTube b:stockOutBoxTubeList){
-            StockOutHandoverDetails stockOutHandoverDetails = new StockOutHandoverDetails();
-            stockOutHandoverDetails.status(Constants.STOCK_OUT_HANDOVER_PENDING).stockOutBoxTube(b).stockOutHandover(stockOutHandover);
-            stockOutHandoverDetailsRepository.save(stockOutHandoverDetails);
-        }
+//        //保存交接详情
+//        List<StockOutBoxTube> stockOutBoxTubeList = stockOutBoxTubeRepository.findByStockOutTaskId(taskId);
+//        for(StockOutBoxTube b:stockOutBoxTubeList){
+//            StockOutHandoverDetails stockOutHandoverDetails = new StockOutHandoverDetails();
+//            stockOutHandoverDetails.status(Constants.STOCK_OUT_HANDOVER_PENDING).stockOutBoxTube(b).stockOutHandover(stockOutHandover);
+//            stockOutHandoverDetailsRepository.save(stockOutHandoverDetails);
+//        }
         return stockOutHandoverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandover);
     }
 

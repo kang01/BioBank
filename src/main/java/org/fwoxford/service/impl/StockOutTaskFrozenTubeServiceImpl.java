@@ -8,6 +8,7 @@ import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.StockOutTaskFrozenTubeDTO;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.mapper.StockOutTaskFrozenTubeMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,31 +131,28 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
             }
             //需求样本撤销
             StockOutReqFrozenTube stockOutReqFrozenTube = stockOutReqFrozenTubeRepository.findByFrozenTubeId(tube.getId());
+            if(stockOutReqFrozenTube == null){
+                throw new BankServiceException("未查询到需要撤销的样本");
+            }
             stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
-            stockOutReqFrozenTube.setMemo(tube.getMemo());
+            stockOutReqFrozenTube.setRepealReason(tube.getRepealReason());
             stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
 
             //计划出库样本
             StockOutPlanFrozenTube stockOutPlanFrozenTube = stockOutPlanFrozenTubeRepository.findByStockOutReqFrozenTubeId(stockOutReqFrozenTube.getId());
+            if(stockOutPlanFrozenTube == null){
+                throw new BankServiceException("未查询到计划出库样本");
+            }
             stockOutPlanFrozenTube.setStatus(Constants.STOCK_OUT_PLAN_TUBE_CANCEL);
-            stockOutPlanFrozenTube.setMemo(tube.getMemo());
             stockOutPlanFrozenTubeRepository.save(stockOutPlanFrozenTube);
             //任务出库样本
             StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutPlanFrozenTubeId(stockOutPlanFrozenTube.getId());
-            stockOutTaskFrozenTube.setStatus(Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
-            stockOutTaskFrozenTube.setMemo(tube.getMemo());
-            stockOutTaskFrozenTubeRepository.save(stockOutTaskFrozenTube);
-            //冻存管与出库盒的关系
-            StockOutBoxTube stockOutBoxTube = stockOutBoxTubeRepository.findByFrozenTubeId(tube.getId());
-            stockOutBoxTube.setStatus(Constants.FROZEN_BOX_TUBE_STOCKOUT_CANCEL);
-            stockOutBoxTube.setMemo(tube.getMemo());
-            stockOutBoxTubeRepository.save(stockOutBoxTube);
-            FrozenTube frozenTube = frozenTubeRepository.findOne(tube.getId());
-            if(frozenTube == null){
-                continue;
+            if(stockOutTaskFrozenTube == null){
+                throw new BankServiceException("未查询到任务出库样本");
             }
-            frozenTube.setMemo(tube.getMemo());
-            frozenTubeRepository.save(frozenTube);
+            stockOutTaskFrozenTube.setStatus(Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+            stockOutTaskFrozenTubeRepository.save(stockOutTaskFrozenTube);
+
         }
         return frozenTubeDTOS;
     }

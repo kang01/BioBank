@@ -197,7 +197,7 @@ public class StockOutHandoverResource {
      * @return
      * @throws URISyntaxException
      */
-    @RequestMapping(value = "/stock-out-handovers/{id}/print",method = RequestMethod.GET,
+    @RequestMapping(value = "/stock-out-handovers/print/{id}",method = RequestMethod.GET,
         produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     @Timed
     public ResponseEntity printStockOutHandover(@PathVariable Long id) throws URISyntaxException {
@@ -223,6 +223,14 @@ public class StockOutHandoverResource {
         }
         return ResponseEntity.badRequest().build();
     }
+
+    /**
+     * 样本交接保存
+     * @param ids
+     * @param stockOutHandoverDTO
+     * @return
+     * @throws URISyntaxException
+     */
     @PutMapping("/stock-out-handovers/stockOutBox/{ids}/complete")
     @Timed
     public ResponseEntity<StockOutHandoverDTO> completeStockOutHandover(@PathVariable List<Long> ids,@Valid @RequestBody StockOutHandoverDTO stockOutHandoverDTO) throws URISyntaxException {

@@ -536,14 +536,10 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         }
         input.setLength(-1);
         input.getColumns().forEach(column -> {
-            if(column.getData().equals("applyId")){
-                column.setSearchValue(column.getSearch().getValue()+"+");
-            }
-            if(column.getData().equals("planId")){
-                column.setSearchValue(column.getSearch().getValue()+"+");
-            }
-            if(column.getData().equals("taskId")){
-                column.setSearchValue(column.getSearch().getValue()+"+");
+            if(column.getData().equals("applyId") || column.getData().equals("planId") || column.getData().equals("taskId")){
+                if(!column.getSearch().getValue().equals(null)&&!column.getSearch().getValue().equals("")){
+                    column.setSearchValue(column.getSearch().getValue()+"+");
+                }
             }
         });
         DataTablesOutput<StockOutFrozenBoxForDataTableEntity> output = stockOutHandoverFrozenBoxRepositries.findAll(input);

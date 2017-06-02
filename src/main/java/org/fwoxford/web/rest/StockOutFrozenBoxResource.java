@@ -394,10 +394,12 @@ public class StockOutFrozenBoxResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-frozen-boxes/apply/{id}/waiting-handover", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public List<StockOutFrozenBoxForDataTableEntity> getPageStockOutFrozenBoxes(@PathVariable Long id, @RequestBody DataTablesInput input) {
+    public ResponseEntity<List<StockOutFrozenBoxForDataTableEntity>> getPageStockOutFrozenBoxes(@PathVariable Long id, @RequestBody DataTablesInput input) {
         DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = stockOutFrozenBoxService.getPageWaitingHandOverStockOutFrozenBoxes(id,input);
         List<StockOutFrozenBoxForDataTableEntity> stockOutFrozenBoxes =  result == null ?
             new ArrayList<StockOutFrozenBoxForDataTableEntity>() : result.getData();
-        return stockOutFrozenBoxes;
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockOutFrozenBoxes.toString()))
+            .body(stockOutFrozenBoxes);
     }
 }

@@ -158,7 +158,7 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
             for(StockOutTaskFrozenTube s :stockOutFrozenTubes){
                 if(s.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube().getId().equals(f.getId())){
                     if(s.getStatus().equals(Constants.STOCK_OUT_FROZEN_TUBE_CANCEL)){
-                        frozenTubeResponse.setStockOutFlag(Constants.NO);
+                        frozenTubeResponse.setStockOutFlag(Constants.TUBE_CANCEL);
                         frozenTubeResponse.setRepealReason(s.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getRepealReason());
                     }else{
                         frozenTubeResponse.setStockOutFlag(Constants.YES);

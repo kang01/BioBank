@@ -202,18 +202,18 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     @Transactional(readOnly = true)
     public Page<StockOutFrozenBoxForTaskDataTableEntity> findAllByTask(Long taskId, Pageable pageable) {
         log.debug("Request to get all StockOutFrozenBoxes");
-        Page<StockOutFrozenBox> result = stockOutFrozenBoxRepository.findAllByTask(taskId, pageable);
-        return result.map(stockOutFrozenBox -> {
+        Page<FrozenBox> result = frozenBoxRepository.findAllByTask(taskId, pageable);
+        return result.map(box -> {
             StockOutFrozenBoxForTaskDataTableEntity dto = new StockOutFrozenBoxForTaskDataTableEntity();
-            dto.setId(stockOutFrozenBox.getId());
-            dto.setFrozenBoxCode(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode());
-            dto.setSampleTypeName(stockOutFrozenBox.getFrozenBox().getSampleTypeName());
+            dto.setId(box.getId());
+            dto.setFrozenBoxCode(box.getFrozenBoxCode());
+            dto.setSampleTypeName(box.getSampleTypeName());
 
 //            String position = toPositionString(stockOutFrozenBox.getStockOutBoxPosition());
-            String position = getPositionString(stockOutFrozenBox.getFrozenBox());
+            String position = getPositionString(box);
             dto.setPosition(position);
 
-            Long count = stockOutFrozenTubeRepository.countByFrozenBox(stockOutFrozenBox.getId());
+            Long count = stockOutTaskFrozenTubeRepository.countByFrozenBoxAndTask(box.getId(),taskId);
 
             dto.setCountOfSample(count);
 
@@ -476,7 +476,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutFrozenBoxRepository.save(stockOutFrozenBox);
             //保存出库盒与冻存管的关系
             stockOutBoxTubeRepository.updateByStockOutFrozenBox(id);
-            //出库计划样本
+            //出库计划样本 todo
             //出库任务样本
         }
         return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);

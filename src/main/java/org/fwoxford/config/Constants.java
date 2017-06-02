@@ -156,6 +156,11 @@ public final class Constants {
     public static final String FROZEN_BOX_TUBE_STOCKOUT_CANCEL = "2203";
     public static final String FROZEN_BOX_TUBE_STOCKOUT_COMPLETED= "2204";
     public static final String FROZEN_BOX_TUBE_STOCKOUT_HANDOVER= "2205";
+    /**
+     * 撤销出库标识
+     */
+    public static final Integer TUBE_CANCEL = 2;
+
     private Constants() {
     }
 }

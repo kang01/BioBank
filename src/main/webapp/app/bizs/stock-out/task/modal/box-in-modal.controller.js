@@ -36,6 +36,7 @@
         vm.addNewBox = _fnAddNewBox;
         //装盒
         vm.boxIn = _fnBoxIn;
+        vm.recover = _fnRecover;
 
         function _init() {
             //临时盒子
@@ -44,7 +45,6 @@
                     data[i].sampleCount = null;
                     boxList.push(data[i])
                 }
-
                 vm.tempBoxOptions.withOption('data', boxList);
             });
 
@@ -80,6 +80,11 @@
             vm.tempBoxInstance.rerender();
 
         }
+        //复原
+        function _fnRecover() {
+            _init();
+        }
+
         //加载管子表控件
         function _reloadTubesForTable(box){
             var row = box.frozenBoxType.frozenBoxTypeRows;
@@ -199,13 +204,29 @@
         vm.selectAll = false;
         // 处理盒子选中状态
         vm.toggleAll = function (selectAll, selectedItems) {
-            selectedItems = vm.selected;
-            selectAll = vm.selectAll;
-            for (var id in selectedItems) {
-                if (selectedItems.hasOwnProperty(id)) {
-                    selectedItems[id] = selectAll;
+
+            vm.selectedTubes = [];
+            _.each(boxInTubes, function(b){
+                b.pos = null;
+                if(vm.selectAll){
+                    b.checkedFlag = true;
+                }else{
+                    b.checkedFlag = false;
                 }
-            }
+
+                if (b.checkedFlag){
+                    vm.selectedTubes.push(b);
+                }
+            });
+            _FnPreassemble(vm.selectedTubes);
+            vm.sampleInstance.DataTable.draw();
+            // selectedItems = vm.selected;
+            // selectAll = vm.selectAll;
+            // for (var id in selectedItems) {
+            //     if (selectedItems.hasOwnProperty(id)) {
+            //         selectedItems[id] = selectAll;
+            //     }
+            // }
         };
         vm.selectedTubes = [];
         vm.toggleOne = function (selectedItems,tubeId) {

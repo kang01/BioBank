@@ -10,10 +10,10 @@
         .controller('TakeOverDetailController', TakeOverDetailController);
 
     TakeOverDetailController.$inject = ['$scope','$state','$stateParams','$uibModal','$compile','DTOptionsBuilder','DTColumnBuilder','toastr',
-        'TakeOverService','SampleUserService','StockOutService','entity'];
+        'TakeOverService','SampleUserService','StockOutService','entity','MasterData'];
 
     function TakeOverDetailController($scope,$state,$stateParams,$uibModal,$compile,DTOptionsBuilder,DTColumnBuilder,toastr,
-                                      TakeOverService,SampleUserService,StockOutService,entity) {
+                                      TakeOverService,SampleUserService,StockOutService,entity,MasterData) {
         var vm = this;
         var modalInstance;
         //样本交接Modal
@@ -27,8 +27,8 @@
             receiverOrganization: '',
             handoverPersonId: '',
             handoverPersonName: '',
-            handoverTime: '',
-            status: '',
+            handoverTime: new Date(),
+            status: '2101',
             memo: '',
             stockOutTaskId: 0,
             stockOutPlanId: 0,
@@ -38,6 +38,7 @@
 
         if (entity){
             vm.dto = entity;
+            vm.dto.handoverTime = new Date(entity.handoverTime)
         }
 
         _initTakeoverEditors();
@@ -45,14 +46,14 @@
 
 
         function _initTakeoverEditors(){
-
-            SampleUserService.query({},onReceiverSuccess, onError)//接收人
+            //接收人
+            SampleUserService.query({},onReceiverSuccess, onError)
             function onReceiverSuccess(data) {
                 vm.loginOptions = data;
             }
             //交付人
             vm.loginConfig = {
-                valueField:'login',
+                valueField:'id',
                 labelField:'userName',
                 maxItems: 1
             };
@@ -136,7 +137,7 @@
             vm.datePickerOpenStatus = {};
             vm.openCalendar = function (date) {
                 vm.datePickerOpenStatus[date] = true;
-            }
+            };
 
             vm.canBePrint = function(){
                 if (vm.dto.handoverTime && vm.dto.handoverPersonId && vm.dto.receiverName && vm.dto.receiverPhone && vm.dto.receiverOrganization && vm.dto.stockOutApplyId){

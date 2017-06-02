@@ -12,123 +12,73 @@
             </div>
         </div>
     </div>
-    <form name="handoverForm" class="form-horizontal" novalidate>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="col-md-6">交接时间
-                        <span class="required-field"></span>
-                    </label>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.dto.handoverTime" is-open="vm.datePickerOpenStatus.handoverTime"
-                                    required/>
-                            <span class="input-group-btn">
+    <form name="handoverForm" class="" novalidate>
+        <div class="row m0">
+            <div class="form-group col-md-2">
+                <label>
+                    交接时间
+                    <span class="required-field"></span>
+                </label>
+                <div class="input-group">
+                    <input  type="text" class="form-control" name="handoverTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.dto.handoverTime" is-open="vm.datePickerOpenStatus.handoverTime"
+                            required/>
+                    <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="vm.openCalendar('handoverTime')"><i class="glyphicon glyphicon-calendar"></i></button>
                             </span>
-                        </div>
-                    </div>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="col-md-6">交付人
-                        <span class="required-field"></span>
-                    </label>
-                    <div class="col-md-6">
-                        <selectize options='vm.loginOptions' config="vm.loginConfig"
-                                   ng-model="vm.dto.handoverPersonId"></selectize>
-                    </div>
-                </div>
+            <div class="form-group col-md-2">
+                <label>交付人<span class="required-field"></span></label>
+                <selectize options='vm.loginOptions' config="vm.loginConfig"
+                           ng-model="vm.dto.handoverPersonId"></selectize>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="col-md-6">接收人
-                        <span class="required-field"></span>
-                    </label>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" ng-model="vm.dto.receiverName"/>
-                    </div>
-                </div>
+            <div class="form-group col-md-2">
+                <label>接收人</label>
+                <input type="text" class="form-control" ng-model="vm.dto.receiverName"/>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="col-md-6">联系电话
-                        <span class="required-field"></span>
-                    </label>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" ng-model="vm.dto.receiverPhone"/>
-                    </div>
-                </div>
+            <div class="form-group col-md-2">
+                <label>联系电话</label>
+                <input type="text" class="form-control" ng-model="vm.dto.receiverPhone"/>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="col-md-3">所属机构
-                        <span class="required-field"></span>
-                    </label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" ng-model="vm.dto.receiverOrganization"/>
-                    </div>
-                </div>
+            <div class="form-group col-md-2">
+                <label>所属机构</label>
+                <input type="text" class="form-control" ng-model="vm.dto.receiverOrganization"/>
+            </div>
+            <div class="form-group col-md-2">
+                <label>状态</label>
+                <!--<selectize options='vm.statusOptions' config="vm.statusConfig"-->
+                           <!--ng-model="vm.dto.status" ng-disabled="true"></selectize>-->
+                <input class="form-control" type="text" ng-model="vm.dto.status" ng-disabled="true" required>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="col-md-6">出库申请
-                        <span class="required-field"></span>
-                    </label>
-                    <div class="col-md-6">
-                        <selectize options='vm.applicationOptions' config="vm.applicationOptionsConfig"
-                                   ng-model="vm.dto.stockOutApplyId"></selectize>
-                    </div>
-                </div>
+
+        <div class="row m0">
+            <div class="form-group col-md-2">
+                <label>
+                    出库申请
+                    <span class="required-field"></span>
+                </label>
+                <selectize options='vm.applicationOptions' config="vm.applicationOptionsConfig"
+                           ng-model="vm.dto.stockOutApplyId"></selectize>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="col-md-6">出库计划
-                        <!--<span class="required-field"></span>-->
-                    </label>
-                    <div class="col-md-6">
-                        <selectize options='vm.planOptions' config="vm.planOptionsConfig"
-                                   ng-model="vm.dto.stockOutPlanId"></selectize>
-                    </div>
-                </div>
+            <div class="form-group col-md-2">
+                <label>出库计划<span class="required-field"></span></label>
+                <selectize options='vm.planOptions' config="vm.planOptionsConfig"
+                           ng-model="vm.dto.stockOutPlanId"></selectize>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="col-md-6">出库任务
-                        <!--<span class="required-field"></span>-->
-                    </label>
-                    <div class="col-md-6">
-                        <selectize options='vm.taskOptions' config="vm.taskOptionsConfig"
-                                   ng-model="vm.dto.stockOutTaskId"></selectize>
-                    </div>
-                </div>
+            <div class="form-group col-md-2">
+                <label>出库任务</label>
+                <selectize options='vm.taskOptions' config="vm.taskOptionsConfig"
+                           ng-model="vm.dto.stockOutTaskId"></selectize>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="col-md-6">状态
-                        <!--<span class="required-field"></span>-->
-                    </label>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" disabled="disabled" ng-model="vm.dto.status"/>
-                    </div>
-                </div>
+            <div class="form-group col-md-6">
+                <label>备注</label>
+                <input type="text" class="form-control" ng-model="vm.dto.memo"/>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label class="col-md-1">备注
-                        <!--<span class="required-field"></span>-->
-                    </label>
-                    <div class="col-md-7">
-                        <input type="text" class="form-control" ng-model="vm.dto.memo"/>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+
+
     </form>
     <div class="panel panel-default">
         <div class="panel-heading">

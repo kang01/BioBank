@@ -26,6 +26,8 @@
         }
         //保存任务
         vm.saveTask = _fnSaveTask;
+        //样本交接
+        vm.takeOver = _fnTakeOver;
         //打印取盒单
         vm.printBox = _fnPrintBox;
         //扫码取样
@@ -63,17 +65,40 @@
             TaskService.queryTaskBox(vm.taskId).success(function (data) {
                 vm.boxOptions.withOption('data', data);
                 vm.boxInstance.rerender();
-            })
+            });
+            _fnQueryStockOutList();
+        }
+        function _fnQueryStockOutList() {
             //获取已出库列表
             TaskService.queryOutputList(vm.taskId).success(function (data) {
                 vm.stockOutSampleOptions.withOption('data', data);
                 vm.stockOutSampleInstance.rerender();
             })
-
-
         }
         _fnInitTask();
-
+        function _fnSaveTask() {
+            BioBankBlockUi.blockUiStart();
+            TaskService.saveTaskBox(vm.task).success(function (data) {
+                BioBankBlockUi.blockUiStop();
+                toastr.success("保存任务成功!");
+            }).error(function (data) {
+                toastr.error("保存任务失败!");
+                BioBankBlockUi.blockUiStop();
+            })
+        }
+        function _fnPrintBox() {
+            window.open ('/api/stock-out-frozen-boxes/task/' + vm.taskId +'/print');
+        }
+        function _fnTakeOver() {
+            BioBankBlockUi.blockUiStart();
+            TaskService.takeOver(vm.taskId).success(function (data) {
+                BioBankBlockUi.blockUiStop();
+                toastr.success("创建交接单成功!");
+            }).error(function (data) {
+                toastr.error("创建交接单失败!");
+                BioBankBlockUi.blockUiStop();
+            })
+        }
         vm.personConfig = {
             valueField: 'id',
             labelField: 'userName',
@@ -89,19 +114,7 @@
 
         };
 
-        function _fnSaveTask() {
-            BioBankBlockUi.blockUiStart();
-            TaskService.saveTaskBox(vm.task).success(function (data) {
-                BioBankBlockUi.blockUiStop();
-                toastr.success("保存任务成功!");
-            }).error(function (data) {
-                toastr.error("保存任务失败!");
-                BioBankBlockUi.blockUiStop();
-            })
-        }
-        function _fnPrintBox() {
-            window.open ('/api/stock-out-frozen-boxes/task/' + vm.taskId +'/print');
-        }
+
         //冻存盒列表
         vm.boxOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
@@ -131,11 +144,16 @@
             }
             return nRow;
         }
+        var boxCode;
         function rowClickHandler(tr,data) {
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
-            TaskService.queryTubes(data.frozenBoxCode,vm.taskId).success(function (data) {
-                // vm.frozenTubeList = data;
+            boxCode = data.frozenBoxCode;
+            _fnLoadTubes();
+        }
+        //加载管子
+        function _fnLoadTubes() {
+            TaskService.queryTubes(boxCode,vm.taskId).success(function (data) {
                 var box = data;
                 _reloadTubesForTable(box)
             }).error(function (data) {
@@ -194,6 +212,7 @@
                 scanCodeFlag:"",
                 tubeRows: pos.tubeRows,
                 tubeColumns: pos.tubeColumns,
+                repealReason:null,
                 rowNO: rowNO,
                 colNO: colNO
             };
@@ -206,6 +225,7 @@
                 tube.stockOutFlag = tubeInBox.stockOutFlag;
                 tube.status = tubeInBox.status;
                 tube.memo = tubeInBox.memo;
+                tube.repealReason = tubeInBox.repealReason;
             }
             return tube;
         }
@@ -215,6 +235,7 @@
         function _initSampleDetailsTable() {
             var remarkArray;//批注
             vm.aRemarkArray = [];
+            var domArray = [];
             vm.sampleDetailsTableSettings = {
                 // 点击表格外部时，表格内选项仍然能够选中
                 outsideClickDeselectsCache: false,
@@ -257,9 +278,15 @@
                     var td = this;
                     remarkArray = this.getData(row,col,row2,col2);
                     var selectTubeArray = this.getSelected();
-                    $(".tube-selected").remove();
-                    _fnRemarkSelectData(td,remarkArray,selectTubeArray)
+
+
                     if(window.event && window.event.ctrlKey){
+                        _fnRemarkSelectData(td,remarkArray,selectTubeArray)
+                    }else{
+                        $(".tube-selected").remove();
+                        vm.aRemarkArray = [];
+                        _fnRemarkSelectData(td,remarkArray,selectTubeArray)
+
 
                     }
                 },
@@ -270,8 +297,17 @@
             function _customRenderer(hotInstance, td, row, col, prop, value, cellProperties) {
                 var tube= value||{};
                 td.style.position = "relative";
+                var txt = "";
                 if(tube.memo && tube.memo != " "){
-                    cellProperties.comment = tube.memo;
+                    txt = tube.memo;
+
+                }
+                if(tube.repealReason && tube.repealReason != " "){
+                    txt = tube.repealReason + tube.memo;
+                }
+                if(txt){
+                    cellProperties.comment = txt;
+
                 }
                 //样本类型
                 if(tube.sampleClassification){
@@ -292,8 +328,13 @@
                     'word-wrap': 'break-word'
                 }).appendTo(td);
                 //待出库样本
-                if(tube.stockOutFlag){
+                if(tube.stockOutFlag && tube.stockOutFlag == 1){
                     var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px solid green;"></div>';
+                    $(txt).appendTo($div)
+                }
+                //申请撤销的样本标识
+                if(tube.stockOutFlag && tube.stockOutFlag == 2){
+                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;color:rgba(216,0,0,0.3);padding-left: 33%;font-size:42px"><i class="fa fa-close"></i></div>'
                     $(txt).appendTo($div)
                 }
                 //已扫码样本
@@ -304,7 +345,7 @@
             }
             //备注 选择单元格数据
             function _fnRemarkSelectData(td,remarkArray,selectTubeArray) {
-                var txt = '<div class="tube-selected" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;"></div>';
+                var txt = '<div class="tube-selected" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.3)"></div>';
                 for(var m = 0; m < remarkArray.length; m++){
                     for (var n = 0; n < remarkArray[m].length; n++){
                         vm.aRemarkArray.push(remarkArray[m][n])
@@ -382,7 +423,21 @@
             });
 
             modalInstance.result.then(function (repealReason) {
+                var repealList = []
+                for(var i = 0; i < vm.aRemarkArray.length; i++){
+                    if(vm.aRemarkArray[i].stockOutFlag){
+                        vm.aRemarkArray[i].repealReason = repealReason;
+                        repealList.push(vm.aRemarkArray[i])
+                    }
+                }
 
+                TaskService.repeal(repealList).success(function (data) {
+                    toastr.success("申请撤销样本成功!");
+                    _fnLoadTubes();
+                });
+                vm.aRemarkArray = [];
+                var tableCtrl = _getSampleDetailsTableCtrl();
+                tableCtrl.loadData(vm.tubes);
             });
         }
 
@@ -586,7 +641,7 @@
             });
 
             modalInstance.result.then(function (data) {
-                _fnInitTask();
+                _fnQueryStockOutList();
             });
         }
 

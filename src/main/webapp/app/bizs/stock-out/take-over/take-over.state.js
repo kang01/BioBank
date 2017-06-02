@@ -66,7 +66,12 @@
                 resolve: {
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                         return $translate.refresh();
-                    }]
+                    }],
+                    entity: function () {
+                        return {
+
+                        };
+                    }
                 }
             })
             .state('take-over-edit', {

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,8 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     @Autowired
     private ReportExportingService reportExportingService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public StockOutHandoverServiceImpl(StockOutHandoverRepository stockOutHandoverRepository, StockOutHandoverMapper stockOutHandoverMapper) {
         this.stockOutHandoverRepository = stockOutHandoverRepository;
@@ -253,6 +256,13 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         //验证交付人用户密码
         Long handoverPersonId = stockOutHandoverDTO.getHandoverPersonId();
         String password = stockOutHandoverDTO.getPassword();
+        User user = userRepository.findOne(handoverPersonId);
+        if(user == null){
+            throw new BankServiceException("交付人不存在！");
+        }
+        if(!passwordEncoder.matches(password,user.getPassword())){
+            throw new BankServiceException("用户名与密码不一致！");
+        }
         stockOutHandover.setHandoverPersonId(handoverPersonId);
         stockOutHandover.setHandoverTime(stockOutHandoverDTO.getHandoverTime());
         stockOutHandover.setStatus(Constants.STOCK_OUT_HANDOVER_COMPLETED);

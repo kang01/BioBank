@@ -358,7 +358,7 @@ public class StockOutFrozenBoxResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-frozen-boxes/handover/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public List<StockOutFrozenBoxForDataTableEntity> getPageHandoverStockOutFrozenBoxes(@PathVariable Long id, @RequestBody DataTablesInput input) {
+    public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageHandoverStockOutFrozenBoxes(@PathVariable Long id, @RequestBody DataTablesInput input) {
         List<Sort.Order> orders = new ArrayList<>();
         List<Column> columns = input.getColumns();
         input.getOrder().forEach(o -> {
@@ -384,7 +384,7 @@ public class StockOutFrozenBoxResource {
         result.setData(stockOutApplyList);
         result.setRecordsFiltered(stockOutApplyList.size());
         result.setRecordsTotal(entities.getTotalElements());
-        return stockOutApplyList;
+        return result;
     }
 
     /**
@@ -394,12 +394,8 @@ public class StockOutFrozenBoxResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-frozen-boxes/apply/{id}/waiting-handover", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<StockOutFrozenBoxForDataTableEntity>> getPageStockOutFrozenBoxes(@PathVariable Long id, @RequestBody DataTablesInput input) {
+    public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageStockOutFrozenBoxes(@PathVariable Long id, @RequestBody DataTablesInput input) {
         DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = stockOutFrozenBoxService.getPageWaitingHandOverStockOutFrozenBoxes(id,input);
-        List<StockOutFrozenBoxForDataTableEntity> stockOutFrozenBoxes =  result == null ?
-            new ArrayList<StockOutFrozenBoxForDataTableEntity>() : result.getData();
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockOutFrozenBoxes.toString()))
-            .body(stockOutFrozenBoxes);
+        return result;
     }
 }

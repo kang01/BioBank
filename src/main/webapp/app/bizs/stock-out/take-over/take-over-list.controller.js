@@ -125,7 +125,7 @@
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            if (full.status != '1002'){
+            if (full.status != '2102'){
                 return '<a type="button" class="btn btn-default btn-xs" ui-sref="take-over-edit({id:'+ full.id +'})">' +
                     '   <i class="fa fa-pencil"></i>' +
                     '</a>&nbsp;'

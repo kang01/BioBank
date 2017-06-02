@@ -16,6 +16,8 @@
             queryWaitingTakeOverFrozenBoxesList: _queryWaitingTakeOverFrozenBoxesList,
             saveTakeoverInfo: _saveTakeoverInfo,
             getTakeoverInfo: _getTakeoverInfo,
+            //样本交接保存
+            saveTakeOverComplete:_saveTakeOverComplete
         };
         function _queryTakeOverList(data,oSettings) {
             return $http.post('/api/res/stock-out-handovers',JSON.stringify(data))
@@ -37,6 +39,9 @@
             return $http.get('api/stock-out-handovers/'+id).then(function(res){
                 return res.data;
             });
+        }
+        function _saveTakeOverComplete(ids,param) {
+            return $http.put('/api/stock-out-handovers/stockOutBox/'+ids+'/complete',param)
         }
         return service;
     }

@@ -28,6 +28,18 @@
         vm.saveTask = _fnSaveTask;
         //打印取盒单
         vm.printBox = _fnPrintBox;
+        //扫码取样
+        vm.scanCode = _fnScanCode;
+        //撤销
+        vm.repealModal = _fnRepealModal;
+        //异常
+        vm.abnormal = _fnAbnormal;
+        //1未出库样本、2已出库样本批注
+        vm.commentModal = _fnCommentModal;
+        //装盒
+        vm.boxInModal = _fnBoxInModal;
+        //出库
+        vm.taskStockOutModal = _fnTaskStockOutModal;
 
         function _fnInitTask() {
             //编辑
@@ -199,18 +211,6 @@
             return tube;
         }
 
-        //扫码取样
-        vm.scanCode = _fnScanCode;
-        //撤销
-        vm.repealModal = _fnRepealModal;
-        //异常
-        vm.abnormal = _fnAbnormal;
-        //1未出库样本、2已出库样本批注
-        vm.commentModal = _fnCommentModal;
-        //装盒
-        vm.boxInModal = _fnBoxInModal;
-        //出库
-        vm.taskStockOutModal = _fnTaskStockOutModal;
         //待出库样本(管子)
         _initSampleDetailsTable();
         function _initSampleDetailsTable() {
@@ -329,7 +329,7 @@
         //扫码取样
         //装盒的样本
         var boxInTubes = [];
-        vm.sampleCode = "1494946117831-A3";
+        vm.sampleCode = "1494946117831-G5";
         function _fnScanCode(e){
             var tableCtrl = _getSampleDetailsTableCtrl();
             var keycode = window.event ? e.keyCode : e.which;
@@ -464,7 +464,9 @@
             });
 
             modalInstance.result.then(function (data) {
-
+                _fnInitTask();
+                var tableCtrl = _getSampleDetailsTableCtrl();
+                tableCtrl.loadData([[]]);
             });
         }
 
@@ -476,7 +478,45 @@
             return vm.sampleDetailsTableCtrl;
         }
 
+        vm.selected = {};
+        vm.selectAll = false;
+        // 处理盒子选中状态
+        vm.toggleAll = function (selectAll, selectedItems) {
+            selectedItems = vm.selected;
+            selectAll = vm.selectAll;
+            var arrayId = [];
+            for (var id in selectedItems) {
+                arrayId.push(id)
+                if (selectedItems.hasOwnProperty(id)) {
+                    selectedItems[id] = selectAll;
+                }
+            }
+            vm.strBoxIds = _.join(arrayId,",");
+            if(!selectAll){
+                vm.strBoxIds = "";
+            }
+        };
 
+        vm.toggleOne = function (selectedItems) {
+            // console.log(JSON.stringify(selectedItems))
+            var arrayId = [];
+            for (var id in selectedItems) {
+                if(selectedItems[id]){
+                    arrayId.push(id)
+                }
+            }
+            vm.strBoxIds = _.join(arrayId,",");
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(!selectedItems[id]) {
+                        vm.selectAll = false;
+                        return;
+                    }
+                }
+            }
+            vm.selectAll = true;
+
+        };
         //已出库列表
         vm.stockOutSampleOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
@@ -486,7 +526,12 @@
             .withScroller()
             .withOption('scrollY', 398)
             .withOption('createdRow', createdRow)
+            .withOption('headerCallback', function(header) {
+                $compile(angular.element(header).contents())($scope);
+            });
+        var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.stockOutSampleColumns = [
+            DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('id').notVisible(),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
@@ -497,6 +542,13 @@
             DTColumnBuilder.newColumn('memo').withTitle('备注'),
             DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml),
         ];
+        function _fnRowSelectorRender(data, type, full, meta) {
+            vm.selected[full.id] = false;
+            vm.selectAll = false;
+            var html = '';
+            html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
+            return html;
+        }
         function createdRow(row, data, dataIndex) {
             var status = '';
             switch (data.status){
@@ -504,13 +556,13 @@
                 case '1702': status = '已出库';break;
                 case '1703': status = '已交接';break;
             }
-            $('td:eq(1)', row).html(status);
+            $('td:eq(2)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
             return '<button type="button" class="btn btn-warning btn-sm" ng-if="'+full.status+'== 1701" ng-click="vm.taskStockOutModal('+ full.id +')">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;'+
+                '出库' +
+                '</button>'+
             '<button type="button" class="btn btn-warning btn-sm" ng-if="'+full.status+'== 1702" ng-click="vm.commentModal(2,'+ full.id +')">' +
                 '批注' +
                 '</button>&nbsp;'
@@ -527,7 +579,7 @@
                 resolve: {
                     items: function () {
                         return {
-                            frozenBoxIds:frozenBoxIds,
+                            frozenBoxIds:frozenBoxIds || vm.strBoxIds,
                             taskId:vm.taskId
                         }
                     }

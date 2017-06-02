@@ -39,7 +39,7 @@
 
                         </div>
                         <div class="col-md-2">
-                            <button type="button" class="btn btn-default" ng-click="vm.addNewBox()">添加新盒</button>
+                            <button type="button" class="btn btn-default" ng-click="vm.addNewBox()" ng-disabled="!vm.box.frozenBoxCode">添加新盒</button>
                         </div>
                     </div>
 
@@ -50,7 +50,7 @@
                 <form class="form-inline">
                     <div class="form-group">
                         <label>预装位置</label>
-                        <input type="text" class="form-control" ng-model="vm.pos">
+                        <input type="text" class="form-control" ng-model="vm.pos" ng-blur="vm.posInit()">
                     </div>
                     <button type="button" class="btn btn-default" ng-click="vm.boxIn()">装盒</button>
                     <button type="button" class="btn btn-default">复原</button>

@@ -15,18 +15,17 @@
             queryTakeOverList:_queryTakeOverList,
             queryWaitingTakeOverFrozenBoxesList: _queryWaitingTakeOverFrozenBoxesList,
             saveTakeoverInfo: _saveTakeoverInfo,
-
             getTakeoverInfo: _getTakeoverInfo,
         };
         function _queryTakeOverList(data,oSettings) {
-            return $http.post('/api/temp/res/stock-out-handovers',JSON.stringify(data))
+            return $http.post('/api/res/stock-out-handovers',JSON.stringify(data))
         }
         function _queryWaitingTakeOverFrozenBoxesList(applyId, data,oSettings) {
-            return $http.post('/api/temp/res/stock-out-frozen-boxes/apply/'+applyId+'/waiting-handover',JSON.stringify(data))
+            return $http.post('/api/res/stock-out-frozen-boxes/apply/'+applyId+'/waiting-handover',JSON.stringify(data))
         }
 
         function _saveTakeoverInfo(dto){
-            var url = '/api/temp/stock-out-handovers';
+            var url = '/api/stock-out-handovers';
             if (dto.id){
                 return $http.put(url, dto);
             } else {
@@ -35,7 +34,7 @@
         }
 
         function _getTakeoverInfo(id){
-            return $http.get('api/temp/stock-out-handovers/'+id).then(function(res){
+            return $http.get('api/stock-out-handovers/'+id).then(function(res){
                 return res.data;
             });
         }

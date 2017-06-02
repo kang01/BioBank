@@ -26,6 +26,8 @@
         }
         //保存任务
         vm.saveTask = _fnSaveTask;
+        //样本交接
+        vm.takeOver = _fnTakeOver;
         //打印取盒单
         vm.printBox = _fnPrintBox;
         //扫码取样
@@ -63,17 +65,40 @@
             TaskService.queryTaskBox(vm.taskId).success(function (data) {
                 vm.boxOptions.withOption('data', data);
                 vm.boxInstance.rerender();
-            })
+            });
+            _fnQueryStockOutList();
+        }
+        function _fnQueryStockOutList() {
             //获取已出库列表
             TaskService.queryOutputList(vm.taskId).success(function (data) {
                 vm.stockOutSampleOptions.withOption('data', data);
                 vm.stockOutSampleInstance.rerender();
             })
-
-
         }
         _fnInitTask();
-
+        function _fnSaveTask() {
+            BioBankBlockUi.blockUiStart();
+            TaskService.saveTaskBox(vm.task).success(function (data) {
+                BioBankBlockUi.blockUiStop();
+                toastr.success("保存任务成功!");
+            }).error(function (data) {
+                toastr.error("保存任务失败!");
+                BioBankBlockUi.blockUiStop();
+            })
+        }
+        function _fnPrintBox() {
+            window.open ('/api/stock-out-frozen-boxes/task/' + vm.taskId +'/print');
+        }
+        function _fnTakeOver() {
+            BioBankBlockUi.blockUiStart();
+            TaskService.takeOver(vm.taskId).success(function (data) {
+                BioBankBlockUi.blockUiStop();
+                toastr.success("创建交接单成功!");
+            }).error(function (data) {
+                toastr.error("创建交接单失败!");
+                BioBankBlockUi.blockUiStop();
+            })
+        }
         vm.personConfig = {
             valueField: 'id',
             labelField: 'userName',
@@ -89,19 +114,7 @@
 
         };
 
-        function _fnSaveTask() {
-            BioBankBlockUi.blockUiStart();
-            TaskService.saveTaskBox(vm.task).success(function (data) {
-                BioBankBlockUi.blockUiStop();
-                toastr.success("保存任务成功!");
-            }).error(function (data) {
-                toastr.error("保存任务失败!");
-                BioBankBlockUi.blockUiStop();
-            })
-        }
-        function _fnPrintBox() {
-            window.open ('/api/stock-out-frozen-boxes/task/' + vm.taskId +'/print');
-        }
+
         //冻存盒列表
         vm.boxOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
@@ -628,7 +641,7 @@
             });
 
             modalInstance.result.then(function (data) {
-                _fnInitTask();
+                _fnQueryStockOutList();
             });
         }
 

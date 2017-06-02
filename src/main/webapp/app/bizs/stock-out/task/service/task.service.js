@@ -38,7 +38,9 @@
             //出库列表
             queryOutputList:_queryOutputList,
             //出库详情页
-            queryOutputDes:_queryOutputDes
+            queryOutputDes:_queryOutputDes,
+            //样本交接
+            takeOver:_takeOver
         };
         function _queryTaskList(data,oSettings) {
             return $http.post('api/res/stock-out-tasks',JSON.stringify(data))
@@ -81,6 +83,9 @@
         }
         function _queryOutputDes(frozenBoxIds,data) {
             return $http.post('/api/res/stock-out-box-tubes/stockOutBox/'+frozenBoxIds,JSON.stringify(data))
+        }
+        function _takeOver(taskId) {
+            return $http.post('/api/stock-out-handovers/task/'+taskId)
         }
         return service;
     }

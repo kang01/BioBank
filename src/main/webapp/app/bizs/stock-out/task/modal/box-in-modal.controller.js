@@ -319,7 +319,7 @@
         var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.sampleColumns = [
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSampleSelectorRender),
-            DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),
+            DTColumnBuilder.newColumn('sampleTempCode').withTitle('样本编码'),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
             DTColumnBuilder.newColumn('pos').withTitle('预装位置'),
             DTColumnBuilder.newColumn('sampleCode').withTitle('标签'),

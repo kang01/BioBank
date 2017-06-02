@@ -34,6 +34,13 @@
                     name:"不祥"
                 }
             ];
+            //需求状态
+            var _requirementStatus = [
+                {id:"1101",name:"进行中"},
+                {id:"1102",name:"待批准"},
+                {id:"1103",name:"已批准"},
+                {id:"1104",name:"已作废"}
+            ];
             //任务状态
             var _taskStatus = [
                 {id:"1601",name:"待出库"},
@@ -42,10 +49,17 @@
                 {id:"1604",name:"异常出库"},
                 {id:"1605",name:"已作废"}
             ];
+            //交接状态
+            var _takeOverStatus = [
+                {id:"2101",name:"进行中"},
+                {id:"2102",name:"已交接"}
+            ]
             var masterData = {
                 sexDict :_sexDict,
                 diseaseType :_diseaseType,
-                taskStatus :_taskStatus
+                requirementStatus :_requirementStatus,
+                taskStatus :_taskStatus,
+                takeOverStatus :_takeOverStatus
             };
             return masterData;
         })

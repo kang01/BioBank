@@ -11,6 +11,6 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface StockOutApplyRepository extends JpaRepository<StockOutApply,Long> {
-    @Query("select t from StockOutApply t left join StockOutHandover h on t.id = h.stockOutApply.id where  h.stockOutApply.id is null")
+    @Query("select t from StockOutApply t left join StockOutHandover h on t.id = h.stockOutApply.id where  h.stockOutApply.id is null or h.status = '2101'")
     List<StockOutApply> findAllNotHandOverApply();
 }

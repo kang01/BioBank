@@ -53,13 +53,36 @@
             var _takeOverStatus = [
                 {id:"2101",name:"进行中"},
                 {id:"2102",name:"已交接"}
-            ]
+            ];
+            // 出库冻存盒状态
+            var _stockOutTaskBoxStatus = [
+                {id:"1701",name:"待出库"},
+                {id:"1702",name:"已出库"},
+                {id:"1703",name:"已交接"},
+            ];
+
+            var allStatus = null
+            function _getStatus(statusCode){
+                if (!allStatus){
+                    allStatus = _.union(
+                        _requirementStatus,
+                        _taskStatus,
+                        _takeOverStatus,
+                        _stockOutTaskBoxStatus
+                    );
+                }
+
+                return (_.find(allStatus, {id:statusCode})||{}).name;
+            }
+
             var masterData = {
                 sexDict :_sexDict,
                 diseaseType :_diseaseType,
                 requirementStatus :_requirementStatus,
                 taskStatus :_taskStatus,
-                takeOverStatus :_takeOverStatus
+                takeOverStatus :_takeOverStatus,
+                stockOutTaskBoxStatus: _stockOutTaskBoxStatus,
+                getStatus: _getStatus,
             };
             return masterData;
         })

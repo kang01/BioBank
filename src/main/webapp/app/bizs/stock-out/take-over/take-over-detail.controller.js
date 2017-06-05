@@ -36,6 +36,7 @@
         };
         vm.application = null;
         var handoverStatus = MasterData.takeOverStatus;
+
         if (entity){
             vm.dto = entity;
             vm.dto.handoverTime = new Date(entity.handoverTime);
@@ -44,26 +45,74 @@
                     vm.statusName = handoverStatus[i].name;
                 }
             }
-            if(entity.status ){
-
+            if(entity.stockOutApplyId){
+                _fnGetPlans(entity.stockOutApplyId)
+            }
+            if(entity.stockOutPlanId){
+                _fnGetTasks(entity.stockOutPlanId)
             }
         }
 
         _initTakeoverEditors();
         _initFrozenBoxTable();
-
+        //出库计划
+        function _fnGetPlans(value) {
+            if (value){
+                vm.application = _.find(vm.applicationOptions, {id:value});
+                StockOutService.getPlans(value).then(function (res){
+                        vm.planOptions = res.data;
+                        vm.dto.stockOutPlanId = vm.planOptions[0].id;
+                        // vm.taskOptions.length = 0;
+                        if(vm.dto.stockOutPlanId){
+                            _fnGetTasks(vm.dto.stockOutPlanId)
+                        }
+                    }, onError
+                );
+                vm.stockOutApplyCode = (_.find(vm.applicationOptions, {id:value})||{}).applyCode;
+                if (vm.dtInstance && vm.dtInstance.rerender){
+                    vm.dtInstance.rerender();
+                }
+            } else {
+                vm.planOptions.length = 0;
+                vm.taskOptions.length = 0;
+                vm.stockOutApplyCode = "";
+                vm.stockOutPlanCode = "";
+                vm.stockOutTaskCode = "";
+                vm.dtInstance.DataTable.clear().draw();
+            }
+        }
+        //出库任务
+        function _fnGetTasks(value) {
+            if (value){
+                StockOutService.getTasks(value).then(function (res){
+                        vm.taskOptions = res.data;
+                        vm.dto.stockOutTaskId = vm.taskOptions[0].id;
+                        $scope.$apply();
+                    }, onError
+                );
+                vm.stockOutPlanCode = (_.find(vm.planOptions, {id:value})||{}).stockOutPlanCode;
+            } else {
+                vm.taskOptions.length = 0;
+                vm.stockOutPlanCode = "";
+                vm.stockOutTaskCode = "";
+            }
+        }
 
         function _initTakeoverEditors(){
             //接收人
             SampleUserService.query({},onReceiverSuccess, onError)
             function onReceiverSuccess(data) {
                 vm.loginOptions = data;
+                vm.dto.handoverPersonName = _.filter(vm.loginOptions,{id:+entity.handoverPersonId})[0].userName;
             }
             //交付人
             vm.loginConfig = {
                 valueField:'id',
                 labelField:'userName',
-                maxItems: 1
+                maxItems: 1,
+                onChange:function (value) {
+                    vm.dto.handoverPersonName = _.filter(vm.loginOptions,{id:+value})[0].userName;
+                }
             };
 
 
@@ -83,25 +132,7 @@
                 onChange:function (value) {
                     vm.dto.stockOutPlanId = null;
                     vm.dto.stockOutTaskId = null;
-                    if (value){
-                        vm.application = _.find(vm.applicationOptions, {id:value});
-                        StockOutService.getPlans(value).then(function (data){
-                                vm.planOptions = data;
-                                vm.taskOptions.length = 0;
-                            }, onError
-                        );
-                        vm.stockOutApplyCode = (_.find(vm.applicationOptions, {id:value})||{}).applyCode;
-                        if (vm.dtInstance && vm.dtInstance.rerender){
-                            vm.dtInstance.rerender();
-                        }
-                    } else {
-                        vm.planOptions.length = 0;
-                        vm.taskOptions.length = 0;
-                        vm.stockOutApplyCode = "";
-                        vm.stockOutPlanCode = "";
-                        vm.stockOutTaskCode = "";
-                        vm.dtInstance.DataTable.clear().draw();
-                    }
+                    _fnGetPlans(value);
 
                 }
             };
@@ -113,17 +144,8 @@
                 maxItems: 1,
                 onChange:function (value) {
                     vm.dto.stockOutTaskId = null;
-                    if (value){
-                        StockOutService.getTasks(value).then(function (data){
-                                vm.taskOptions = data;
-                            }, onError
-                        );
-                        vm.stockOutPlanCode = (_.find(vm.planOptions, {id:value})||{}).stockOutPlanCode;
-                    } else {
-                        vm.taskOptions.length = 0;
-                        vm.stockOutPlanCode = "";
-                        vm.stockOutTaskCode = "";
-                    }
+                    _fnGetTasks(value)
+
                 }
             };
 
@@ -165,7 +187,6 @@
             vm.save = function (){
                 TakeOverService.saveTakeoverInfo(vm.dto).then(function(res){
                     toastr.success("交接信息以保存!");
-                    vm.dto = res.data;
                 }, onError);
             };
 
@@ -175,7 +196,8 @@
 
 
         }
-
+        var boxIds=[];
+        var boxIdsStr;
         function _initFrozenBoxTable(){
 
             vm.dtInstance = {};
@@ -184,20 +206,29 @@
 
             // 全选或取消全选冻存盒
             vm.toggleAll = function (selectAll, selectedItems) {
+                boxIds = [];
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
                         selectedItems[id] = selectAll;
+                        if(selectedItems[id]){
+                            boxIds.push(id)
+                            boxIdsStr = boxIds.join(",")
+                        }
                     }
                 }
             };
 
             // 更新全选选项
             vm.toggleOne = function (selectedItems) {
+                boxIds = [];
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
                         if(!selectedItems[id]) {
                             vm.selectAllBox = false;
                             return;
+                        }else{
+                            boxIds.push(id)
+                            boxIdsStr = boxIds.join(",")
                         }
                     }
                 }
@@ -213,6 +244,7 @@
                 .withOption('headerCallback', _fnCreatedHeader)
                 .withOption('createdRow', _fnCreatedRow)
                 .withFnServerData(_fnServerData)
+                .withOption('order',[[1,'asc']])
             ;
             vm.dtColumns = [
                 DTColumnBuilder.newColumn('').withTitle(titleHtml).withOption("width", "30").notSortable().renderWith(_fnActionsSelectHtml),
@@ -244,8 +276,9 @@
             function _fnCreatedRow(row, data, dataIndex) {
                 var status = '';
                 switch (data.status){
-                    case '1001': status = '进行中';break;
-                    case '1002': status = '已交接';break;
+                    case '1701': status = '待出库';break;
+                    case '1702': status = '已出库';break;
+                    case '1703': status = '已交接';break;
                 }
 
                 var samplQty = ' / 100';
@@ -339,16 +372,18 @@
 
 
         function _fnTakeOverModal(){
-            var table = vm.dtInstance.DataTable;
-            var boxes = [];
-
-            table.data().each( function (d) {
-                for (var i in vm.selected){
-                    if (vm.selected[i]){
-                        boxes.push(angular.clone(d));
-                    }
-                }
-            });
+            // var table = vm.dtInstance.DataTable;
+            // var boxes = [];
+            // console.log(table.data());
+            // table.data().each( function (d) {
+            //     console.log(d)
+            //     for (var i in vm.selected){
+            //         if (vm.selected[i]){
+            //             boxes.push(angular.copy(d));
+            //         }
+            //     }
+            // });
+            // console.log(JSON.stringify(boxes))
 
             modalInstance = $uibModal.open({
                 animation: true,
@@ -357,12 +392,16 @@
                 controllerAs:'vm',
                 size:'lg',
                 resolve: {
-                    stockOutTakeOver: vm.dto,
-                    stockOutApplication: vm.application,
-                    stockOutBoxes: boxes
+                    items:{
+                        stockOutTakeOver: angular.copy(vm.dto),
+                        stockOutApplication: vm.application,
+                        stockOutBoxes: null,
+                        boxIdsStr:boxIdsStr
+                    }
+
                 }
             });
-
+            //
             modalInstance.result.then(function (data) {
                 $state.go("take-over-list");
             });

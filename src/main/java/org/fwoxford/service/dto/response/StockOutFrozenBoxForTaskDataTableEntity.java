@@ -24,6 +24,15 @@ public class StockOutFrozenBoxForTaskDataTableEntity {
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private String sampleTypeName;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private String status;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private String memo;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private String sampleClassificationName;
 
     public Long getId() {
         return id;
@@ -63,5 +72,29 @@ public class StockOutFrozenBoxForTaskDataTableEntity {
 
     public void setSampleTypeName(String sampleTypeName) {
         this.sampleTypeName = sampleTypeName;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
     }
 }

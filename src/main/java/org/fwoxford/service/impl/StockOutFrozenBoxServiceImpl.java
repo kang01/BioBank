@@ -210,7 +210,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             dto.setSampleTypeName(box.getSampleTypeName());
             String position = getPositionString(box);
             dto.setPosition(position);
-            Long count = stockOutTaskFrozenTubeRepository.countByFrozenBoxAndTask(box.getId(),taskId);
+            Long count = stockOutTaskFrozenTubeRepository.countSampleByFrozenBoxAndTask(box.getId(),taskId);
             dto.setCountOfSample(count);
 
             return dto;
@@ -276,6 +276,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             box.setId(frozenBox.getId());
             box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             box.setSampleTypeName(frozenBox.getSampleTypeName());
+            box.setMemo(frozenBox.getMemo());
+            box.setSampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null);
+            box.setStatus(frozenBox.getStatus());
             String position = getPositionString(frozenBox);
             box.setPosition(position);
             box.setCountOfSample(count);
@@ -478,9 +481,14 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutFrozenBoxRepository.save(stockOutFrozenBox);
             //保存出库盒与冻存管的关系
             stockOutBoxTubeRepository.updateByStockOutFrozenBox(id);
-            //出库计划样本 todo
+            //出库计划样本
+
+//            List<Long> stockOutPlanTubeIds = stockOutBoxTubeRepository.findPlanFrozenTubeByStockOutFrozenBoxId(id);
             //出库任务样本
-        }
+//            List<Long> stockOutTaskTubeIds = stockOutBoxTubeRepository.findTaskFrozenTubeByStockOutFrozenBoxId(id);
+        } //如果任务下的待出库样本都出库了则任务是已完成的状态
+        //如果任务下需要出库的样本有异常，则为异常出库
+        //如果计划出库的样本都出库了，则计划的状态为已完成
         return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
     }
 

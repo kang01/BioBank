@@ -9,15 +9,20 @@
         .module('bioBankApp')
         .controller('TaskListController', TaskListController);
 
-    TaskListController.$inject = ['$scope','$compile','$state','DTOptionsBuilder','DTColumnBuilder','TaskService'];
+    TaskListController.$inject = ['$scope','$compile','$state','DTOptionsBuilder','DTColumnBuilder','TaskService','MasterData'];
 
-    function TaskListController($scope,$compile,$state,DTOptionsBuilder,DTColumnBuilder,TaskService) {
+    function TaskListController($scope,$compile,$state,DTOptionsBuilder,DTColumnBuilder,TaskService,MasterData) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.add = _fnAdd;
         function _fnAdd() {
             $state.go('task-new');
         }
+
+        var columnValues = _.map(MasterData.taskStatus, function(t){
+            return { value:t.id,label:t.name };
+        });
+
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('processing',true)
             .withOption('serverSide',true)
@@ -89,13 +94,7 @@
                     type: 'select',
                     bRegex: true,
                     width:50,
-                    values: [
-                        {value:'1601',label:"待出库"},
-                        {value:"1602",label:"进行中"},
-                        {value:"1603",label:"已出库"},
-                        {value:"1604",label:"异常出库"},
-                        {value:"1605",label:"已作废"}
-                    ]
+                    values: columnValues
                 }]
             });
 
@@ -112,21 +111,20 @@
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         function createdRow(row, data, dataIndex) {
-            var status = '';
-            switch (data.status){
-                case '1601': status = '待出库';break;
-                case '1602': status = '进行中';break;
-                case '1603': status = '已出库';break;
-                case '1604': status = '异常出库';break;
-                case '1605': status = '已作废';break;
-            }
+            var status = MasterData.getStatus(data.status);
             $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-warning" ui-sref="task-edit({taskId:'+ full.id +'})">' +
+            var html =
+                '<button type="button" class="btn btn-xs" ui-sref="task-view({taskId:'+ full.id +'})">' +
+                '   <i class="fa fa-eye"></i>' +
+                '</button>&nbsp;';
+            html +=
+                '<button type="button" class="btn btn-xs" ui-sref="task-edit({taskId:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;'
+                '</button>&nbsp;';
+            return html;
         }
     }
 })();

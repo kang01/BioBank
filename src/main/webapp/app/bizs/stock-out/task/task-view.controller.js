@@ -9,17 +9,29 @@
         .module('bioBankApp')
         .controller('TaskViewController', TaskViewController);
 
-    TaskViewController.$inject = ['$scope','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','toastr',
+    TaskViewController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','toastr',
         'TaskService','SampleUserService','MasterData','BioBankBlockUi','SampleService','entity'];
 
-    function TaskViewController($scope,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,toastr,
+    function TaskViewController($scope, $state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,toastr,
                                 TaskService,SampleUserService,MasterData,BioBankBlockUi,SampleService,entity) {
         var vm = this;
         var modalInstance;
         vm.task = entity;
 
+        vm.takeOver = _fnTakeOver;
+        function _fnTakeOver() {
+            BioBankBlockUi.blockUiStart();
+            TaskService.takeOver(vm.taskId).success(function (data) {
+                BioBankBlockUi.blockUiStop();
+                toastr.success("创建交接单成功!");
+                $state.go('take-over-edit', {id: data});
+            }).error(function (data) {
+                toastr.error("创建交接单失败!");
+                BioBankBlockUi.blockUiStop();
+            })
+        };
+
         //已出库列表
-        vm.taskStockOutModal = _fnTaskStockOutModal;
         vm.stockOutSampleInstance = {};
         vm.stockOutSampleOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
@@ -27,7 +39,7 @@
             .withOption('paging', false)
             .withOption('sorting', false)
             .withScroller()
-            .withOption('scrollY', 398)
+            .withOption('scrollY', 250)
             .withOption('createdRow', createdRow)
             .withOption('headerCallback', function(header) {
                 $compile(angular.element(header).contents())($scope);
@@ -36,13 +48,13 @@
         vm.stockOutSampleColumns = [
             // DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('id').notVisible(),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码'),
-            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').withOption("width", "120"),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "60"),
             DTColumnBuilder.newColumn('position').withTitle('冻存盒位置'),
             DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('出库交接时间'),
-            DTColumnBuilder.newColumn('countOfSample').withTitle('盒内样本量'),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "60"),
             DTColumnBuilder.newColumn('memo').withTitle('备注'),
-            DTColumnBuilder.newColumn('status').withTitle('状态'),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
             // DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml),
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
@@ -58,56 +70,6 @@
             $compile(angular.element(row).contents())($scope);
         }
 
-
-
-
-        function actionsHtml(data, type, full, meta) {
-            return '<button type="button" ng-disabled="!vm.task.stockOutHeadId1 || !vm.task.stockOutHeadId2" class="btn btn-warning btn-sm" ng-if="'+full.status+'== 1701" ng-click="vm.taskStockOutModal('+ full.id +')">' +
-                '出库' +
-                '</button> &nbsp;'+
-            '<button type="button" class="btn btn-warning btn-sm"  ng-click="vm.commentModal(2,'+ full.id +')">' +
-                '批注' +
-                '</button>'
-        }
-        //出库
-        function _fnTaskStockOutModal(frozenBoxIds) {
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-out/task/modal/task-stock-out-modal.html',
-                controller: 'TaskStockOutModalController',
-                controllerAs: 'vm',
-                size: '90',
-                resolve: {
-                    items: function () {
-                        return {
-                            frozenBoxIds:frozenBoxIds || vm.strBoxIds,
-                            taskId:vm.taskId
-                        }
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (data) {
-                _fnQueryStockOutList();
-            });
-        }
-
-        function _fnQueryStockOutList() {
-            //获取已出库列表
-            TaskService.queryOutputList(vm.taskId).success(function (data) {
-                vm.stockOutSampleOptions.withOption('data', data);
-                vm.stockOutSampleInstance.rerender();
-            })
-        }
-        function onError(error) {
-            BioBankBlockUi.blockUiStop();
-            toastr.error(error.data.message);
-        }
-
-
-
-
-
         //未出库冻存盒列表
         vm.boxOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
@@ -115,16 +77,16 @@
             .withOption('paging', false)
             .withOption('sorting', false)
             .withScroller()
-            .withOption('scrollY', 398)
+            .withOption('scrollY', 250)
             .withOption('rowCallback', rowCallback);
         vm.boxColumns = [
             DTColumnBuilder.newColumn('id').notVisible(),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码'),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
-            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "50"),
-            DTColumnBuilder.newColumn('sampleClassificationName').withTitle('样本分类').withOption("width", "50"),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "120"),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "120"),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleClassificationName').withTitle('样本分类').withOption("width", "60"),
             DTColumnBuilder.newColumn('position').withTitle('冻存盒位置'),
-            DTColumnBuilder.newColumn('countOfSample').withTitle('出库样本量').withOption("width", "50"),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "60"),
             DTColumnBuilder.newColumn('memo').withTitle('备注'),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
         ];
@@ -133,5 +95,16 @@
             $compile(angular.element(nRow).contents())($scope);
         }
 
+        //获取未出库冻存盒列表
+        TaskService.queryTaskBox(vm.taskId).success(function (data) {
+            vm.boxOptions.withOption('data', data);
+            vm.boxInstance.rerender();
+        });
+
+        //获取已出库冻存盒列表
+        TaskService.queryOutputList(vm.taskId).success(function (data) {
+            vm.stockOutSampleOptions.withOption('data', data);
+            vm.stockOutSampleInstance.rerender();
+        })
     }
 })();

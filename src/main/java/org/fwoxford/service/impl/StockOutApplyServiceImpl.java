@@ -145,6 +145,27 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     @Override
     public DataTablesOutput<StockOutApplyForDataTableEntity> findStockOutApply(DataTablesInput input) {
         DataTablesOutput<StockOutApplyForDataTableEntity> output = stockOutApplyRepositries.findAll(input);
+        List<StockOutApplyForDataTableEntity> alist = new ArrayList<StockOutApplyForDataTableEntity>();
+        output.getData().forEach(apply ->{
+            StockOutApplyForDataTableEntity applyData = new StockOutApplyForDataTableEntity();
+            Long CountOfextLevel = stockOutApplyRepository.countByParentApplyId(apply.getId());
+            if(CountOfextLevel.intValue()>0){
+                applyData.setLevelNo(Constants.LEVEL_ONE);
+            }else{
+                applyData.setLevelNo(apply.getLevelNo());
+            }
+            applyData.setId(apply.getId());
+            applyData.setSampleTypes(apply.getSampleTypes());
+            applyData.setPurposeOfSample(apply.getPurposeOfSample());
+            applyData.setStatus(apply.getStatus());
+            applyData.setDelegateName(apply.getDelegateName());
+            applyData.setApplyCode(apply.getApplyCode());
+            applyData.setApplyPersonName(apply.getApplyPersonName());
+            applyData.setApplyTime(apply.getApplyTime());
+            applyData.setCountOfSample(apply.getCountOfSample());
+            alist.add(applyData);
+        });
+        output.setData(alist);
         return output;
     }
 
@@ -246,11 +267,11 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
        res.setProjectIds(projectIds);
        if(nameBuffer.length()>0){
            String names = nameBuffer.substring(0,nameBuffer.length()-1);
-           res.setProjcetNames(names);
+           res.setProjectNames(names);
        }
         if(codeBuffer.length()>0){
             String codes = codeBuffer.substring(0,codeBuffer.length()-1);
-            res.setProjcetCodes(codes);
+            res.setProjectCodes(codes);
         }
         if(stockOutApply.getRecordId()!=null){
             User user = userRepository.findOne(stockOutApply.getRecordId());
@@ -304,6 +325,8 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         stockOutApplyDTO.setApplyCode(BankUtil.getUniqueID());
         stockOutApplyDTO.setParentApplyId(parentApplyId);
         stockOutApplyDTO.setStatus(Constants.STOCK_OUT_PENDING);
+        stockOutApplyDTO.setApproverId(null);
+        stockOutApplyDTO.setApproveTime(null);
         StockOutApply stockOutApplyChild = stockOutApplyMapper.stockOutApplyDTOToStockOutApply(stockOutApplyDTO);
         stockOutApplyRepository.save(stockOutApplyChild);
         stockOutApplyDTO.setId(stockOutApplyChild.getId());

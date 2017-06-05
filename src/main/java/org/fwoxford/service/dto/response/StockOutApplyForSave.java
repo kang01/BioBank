@@ -73,11 +73,11 @@ public class StockOutApplyForSave {
     /**
      * 授权的项目编码
      */
-    private String projcetCodes;
+    private String projectCodes;
     /**
      * 授权的项目名称
      */
-    private String projcetNames;
+    private String projectNames;
 
     public Long getId() {
         return id;
@@ -199,20 +199,20 @@ public class StockOutApplyForSave {
         this.recorder = recorder;
     }
 
-    public String getProjcetCodes() {
-        return projcetCodes;
+    public String getProjectCodes() {
+        return projectCodes;
     }
 
-    public void setProjcetCodes(String projcetCodes) {
-        this.projcetCodes = projcetCodes;
+    public void setProjectCodes(String projectCodes) {
+        this.projectCodes = projectCodes;
     }
 
-    public String getProjcetNames() {
-        return projcetNames;
+    public String getProjectNames() {
+        return projectNames;
     }
 
-    public void setProjcetNames(String projcetNames) {
-        this.projcetNames = projcetNames;
+    public void setProjectNames(String projectNames) {
+        this.projectNames = projectNames;
     }
 
     @Override

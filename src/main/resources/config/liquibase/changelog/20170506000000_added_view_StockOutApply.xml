@@ -9,8 +9,8 @@
     <changeSet id="20170506000000-2" author="jhipster">
 
         <createView viewName="view_stock_out_apply">
-            select ap.id,ap.purpose_of_sample,
-            (case when ap.start_time !=null then (ap.start_time||'至'||ap.end_time) else null end )  as apply_time,ap.apply_person_name,ap.apply_code,ap.status,
+            select ap.id,ap.purpose_of_sample,0 as level_no,
+            (case when ap.start_time is not null then (TO_CHAR(ap.start_time,'yyyy-MM-dd')||'至'||TO_CHAR(ap.end_time,'yyyy-MM-dd')) else null end )  as apply_time,ap.apply_person_name,ap.apply_code,ap.status,
             (select d.delegate_name from delegate d where d.id = ap.delegate_id) as delegate_name,
             (select LISTAGG(TO_CHAR(sample),',') WITHIN GROUP (ORDER BY sample) from
             (select distinct s.sample_type_name as sample

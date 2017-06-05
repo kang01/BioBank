@@ -1,6 +1,7 @@
 package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.models.auth.In;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -66,7 +67,6 @@ public class StockOutApplyForDataTableEntity {
     /**
      * 样本类型字符串，如：血浆，血清，
      */
-    @NotNull
     @JsonView(DataTablesOutput.View.class)
     @Column(name = "sample_types")
     private String sampleTypes;
@@ -80,10 +80,15 @@ public class StockOutApplyForDataTableEntity {
     /**
      * 样本需求量
      */
-    @NotNull
     @JsonView(DataTablesOutput.View.class)
     @Column(name = "count_of_sample")
     private Long countOfSample;
+
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "level_no")
+    private Integer levelNo;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -175,5 +180,13 @@ public class StockOutApplyForDataTableEntity {
 
     public void setCountOfSample(Long countOfSample) {
         this.countOfSample = countOfSample;
+    }
+
+    public Integer getLevelNo() {
+        return levelNo;
+    }
+
+    public void setLevelNo(Integer levelNo) {
+        this.levelNo = levelNo;
     }
 }

@@ -160,6 +160,11 @@ public final class Constants {
      * 撤销出库标识
      */
     public static final Integer TUBE_CANCEL = 2;
+    /**
+     * 级别1，级别1
+     */
+    public static final Integer LEVEL_ONE = 1;
+    public static final Integer LEVEL_TWO = 2;
 
     private Constants() {
     }

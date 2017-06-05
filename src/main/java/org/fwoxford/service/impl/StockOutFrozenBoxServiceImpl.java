@@ -484,13 +484,22 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             //保存出库盒与冻存管的关系
             stockOutBoxTubeRepository.updateByStockOutFrozenBox(id);
             //出库计划样本
-
 //            List<Long> stockOutPlanTubeIds = stockOutBoxTubeRepository.findPlanFrozenTubeByStockOutFrozenBoxId(id);
             //出库任务样本
 //            List<Long> stockOutTaskTubeIds = stockOutBoxTubeRepository.findTaskFrozenTubeByStockOutFrozenBoxId(id);
-        } //如果任务下的待出库样本都出库了则任务是已完成的状态
+        }
+        //任务样本量
+        Long countOfTaskTube = stockOutTaskFrozenTubeRepository.countByStockOutTaskId(taskId);
+
+        //计划样本量
+        Long planId = stockOutTask.getStockOutPlan().getId();
+        Long countOfPlanTube = stockOutPlanFrozenTubeRepository.countByStockOutPlanId(planId);
+        //异常样本量
+
+        //如果任务下的待出库样本都出库了则任务是已完成的状态
         //如果任务下需要出库的样本有异常，则为异常出库
-        //如果计划出库的样本都出库了，则计划的状态为已完成
+        //如果计划出库的样本都出库了，则计划的状态为已完成，排除已撤销的
+
         return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
     }
 

@@ -36,6 +36,9 @@ public class StockOutFrozenBoxForTaskDataTableEntity {
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private String projectName;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private String projectCode;
 
     public Long getId() {
         return id;
@@ -107,5 +110,13 @@ public class StockOutFrozenBoxForTaskDataTableEntity {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
     }
 }

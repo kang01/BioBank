@@ -234,10 +234,28 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         //获取授权的项目
         List<StockOutApplyProject> stockOutApplyProjects = stockOutApplyProjectRepository.findByStockOutApplyId(id);
         List<Long> projectIds = new ArrayList<Long>();
+        StringBuffer nameBuffer = new StringBuffer();
+        StringBuffer codeBuffer = new StringBuffer();
        for(StockOutApplyProject s :stockOutApplyProjects){
            projectIds.add(s.getProject().getId());
+           nameBuffer.append(s.getProject().getProjectName());
+           nameBuffer.append(",");
+           codeBuffer.append(s.getProject().getProjectCode());
+           codeBuffer.append(",");
        }
        res.setProjectIds(projectIds);
+       if(nameBuffer.length()>0){
+           String names = nameBuffer.substring(0,nameBuffer.length()-1);
+           res.setProjcetNames(names);
+       }
+        if(codeBuffer.length()>0){
+            String codes = codeBuffer.substring(0,codeBuffer.length()-1);
+            res.setProjcetCodes(codes);
+        }
+        if(stockOutApply.getRecordId()!=null){
+            User user = userRepository.findOne(stockOutApply.getRecordId());
+            res.setRecorder(user!=null?user.getLastName()+user.getFirstName():null);
+        }
        //获取申请的需求
         List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<StockOutRequirementForApplyTable>();
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(id);

@@ -120,6 +120,14 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         StockOutTask stockOutTask = stockOutTaskRepository.findOne(id);
         StockOutTaskDTO stockOutTaskDTO = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
         stockOutTaskDTO.setStockOutPlanCode(stockOutTask.getStockOutPlan()!=null?stockOutTask.getStockOutPlan().getStockOutPlanCode():null);
+        if(stockOutTask.getStockOutHeadId1() != null){
+            User user1 = userRepository.findOne(stockOutTask.getStockOutHeadId1());
+            stockOutTaskDTO.setStockOutHeader1(user1!=null?user1.getLastName()+user1.getFirstName():null);
+        }
+        if(stockOutTask.getStockOutHeadId2() != null){
+            User user2 = userRepository.findOne(stockOutTask.getStockOutHeadId2());
+            stockOutTaskDTO.setStockOutHeader2(user2!=null?user2.getLastName()+user2.getFirstName():null);
+        }
         return stockOutTaskDTO;
     }
 

@@ -280,6 +280,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             box.setSampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null);
             box.setStatus(frozenBox.getStatus());
             box.setProjectName(frozenBox.getProjectName());
+            box.setProjectCode(frozenBox.getProjectCode());
             String position = getPositionString(frozenBox);
             box.setPosition(position);
             box.setCountOfSample(count);

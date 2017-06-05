@@ -50,6 +50,10 @@ public class StockOutApplyForSave {
      */
     private Long recordId;
     /**
+     * 记录人姓名
+     */
+    private String recorder;
+    /**
      * 开始时间
      */
     private LocalDate startTime;
@@ -66,6 +70,14 @@ public class StockOutApplyForSave {
      * 授权的项目
      */
     private List<Long> projectIds;
+    /**
+     * 授权的项目编码
+     */
+    private String projcetCodes;
+    /**
+     * 授权的项目名称
+     */
+    private String projcetNames;
 
     public Long getId() {
         return id;
@@ -177,6 +189,30 @@ public class StockOutApplyForSave {
 
     public void setProjectIds(List<Long> projectIds) {
         this.projectIds = projectIds;
+    }
+
+    public String getRecorder() {
+        return recorder;
+    }
+
+    public void setRecorder(String recorder) {
+        this.recorder = recorder;
+    }
+
+    public String getProjcetCodes() {
+        return projcetCodes;
+    }
+
+    public void setProjcetCodes(String projcetCodes) {
+        this.projcetCodes = projcetCodes;
+    }
+
+    public String getProjcetNames() {
+        return projcetNames;
+    }
+
+    public void setProjcetNames(String projcetNames) {
+        this.projcetNames = projcetNames;
     }
 
     @Override

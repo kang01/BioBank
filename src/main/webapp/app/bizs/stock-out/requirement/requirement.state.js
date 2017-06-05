@@ -104,15 +104,15 @@
             })
             .state('requirement-additionApply', {
                 parent: 'bizs',
-                url: '/requirement-list/{applyId}/edit/{addApplyFlag}',
+                url: '/requirement-list/{applyId}/additionApply',
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: 'stockOut.new.title'
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'app/bizs/stock-out/requirement/requirement-detail.html',
-                        controller: 'RequirementDetailController',
+                        templateUrl: 'app/bizs/stock-out/requirement/requirement-additionApply.html',
+                        controller: 'RequirementAdditionApplyController',
                         controllerAs: 'vm'
                     }
                 },

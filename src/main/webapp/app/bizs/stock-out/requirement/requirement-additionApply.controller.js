@@ -9,174 +9,56 @@
         .module('bioBankApp')
         .controller('RequirementAdditionApplyController', RequirementAdditionApplyController)
 
-    RequirementAdditionApplyController.$inject = ['$scope','$stateParams','$state','$compile','entity','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService'];
-    function RequirementAdditionApplyController($scope,$stateParams,$state,$compile,entity,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService) {
+    RequirementAdditionApplyController.$inject = ['$scope','$stateParams','$state','$compile','entity','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService','MasterData'];
+    function RequirementAdditionApplyController($scope,$stateParams,$state,$compile,entity,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService,MasterData) {
         var vm = this;
         var modalInstance;
         vm.dtInstance = {};
         vm.requirement = entity;
-        //判断是否需求保存
-        vm.sampleflag = false;
-
         //批准
         vm.approvalModal = _fnApprovalModal;
         //样本库存详情
         vm.sampleDescModal = _fnSampleDescModal;
-        //保存申请
-        vm.saveRequirement = _fnSaveRequirement;
-        //附加功能
-        vm.additionApply = _fnAdditionApply;
         //打印申请
         vm.printRequirement = _fnPrintRequirement;
 
-        vm.datePickerOpenStatus = {};
-        vm.openCalendar = openCalendar; //时间
-
-        function openCalendar (date) {
-            vm.datePickerOpenStatus[date] = true;
-        }
         if($stateParams.applyId){
             vm.requirement.id = $stateParams.applyId;
-        }
-        if($stateParams.applyCode){
-            vm.requirement.applyCode = $stateParams.applyCode;
-        }
-        //列表附加
-        if($stateParams.addApplyFlag == 1){
-            vm.additionApply();
         }
         //初始化数据
         function _initData() {
             _requirementInfo();
-
-            _fuQueryDelegates();
-
         }
         _initData();
         function _requirementInfo() {
             if(vm.requirement.startTime){
-                vm.requirement.startTime = new Date(vm.requirement.startTime)
+                vm.requirement.startTime = moment(vm.requirement.startTime).format("YYYY-MM-DD")
             }
             if(vm.requirement.endTime){
-                vm.requirement.endTime = new Date(vm.requirement.endTime)
+                vm.requirement.endTime = moment(vm.requirement.endTime).format("YYYY-MM-DD")
             }
             if(vm.requirement.recordTime){
-                vm.requirement.recordTime = new Date(vm.requirement.recordTime)
+                vm.requirement.recordTime = moment(vm.requirement.recordTime).format("YYYY-MM-DD")
             }
             if(vm.requirement.projectIds){
                 vm.projectIds = _.join(vm.requirement.projectIds, ',');
             }
             if(vm.requirement.status){
-                vm.status = vm.requirement.status
+                var requirementStatus =  MasterData.requirementStatus;
+                for(var i = 0; i < requirementStatus.length; i++){
+                    if(vm.requirement.status == requirementStatus[i].id){
+                        vm.status = requirementStatus[i].name;
+                    }
+                }
+
             }
+            vm.requirement.stockOutRequirement = [];
             setTimeout(function () {
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 vm.isApproval();
             },100)
         }
-        //委托方查询
-        function _fuQueryDelegates() {
-            RequirementService.queryDelegates().success(function (data) {
-                vm.delegatesOptions = data;
-                if(!vm.requirement.delegateId){
-                    vm.requirement.delegateId = vm.delegatesOptions[0].id;
-                }
-            })
-        }
-        vm.delegatesConfig = {
-            valueField:'id',
-            labelField:'delegateName',
-            maxItems: 1,
-            onChange:function (value) {
-            }
-        };
-        //委托人
-        SampleUserService.query({},onRecorderSuccess, onError);
-        function onRecorderSuccess(data) {
-            vm.recorderOptions = data;
-        }
-        vm.recorderConfig = {
-            valueField:'id',
-            labelField:'userName',
-            maxItems: 1
 
-        };
-        //状态
-        vm.statusOptions = [
-            {id:"1101",name:"进行中"},
-            {id:"1102",name:"待批准"},
-            {id:"1103",name:"已批准"},
-            {id:"1104",name:"已作废"}
-        ];
-        vm.statusConfig = {
-            valueField:'id',
-            labelField:'name',
-            maxItems: 1,
-            onChange:function (value) {
-            }
-        };
-        if(!vm.status){
-            vm.status = vm.statusOptions[0].id;
-        }
-        //获取项目
-        ProjectService.query({},onProjectSuccess, onError);
-        function onProjectSuccess(data) {
-            vm.projectOptions = data;
-        }
-        var selector = null;
-        vm.projectConfig = {
-            valueField:'id',
-            labelField:'projectName',
-            onInitialize: function(){
-                selector = arguments[0];
-            },
-            onFocus: function(){
-                _fnIsApproval();
-                // console.log('onFocus', vm.isVerifyFlag);
-                // 有需求已经进行过核对
-                if(vm.isVerifyFlag){
-                    // 先组织本次的修改操作,拒绝响应Focus时间。
-                    selector.disable();
-                    // 弹窗询问
-                    var result = _fnIsChangeProjectModal();
-                    result.then(function () {
-                        // 复原已核对需求
-                        RequirementService.sampleRevert(vm.requirement.id).success(function (data) {
-                            // 重新加载需求列表
-                            _loadRequirement(function(){
-                                // 开启授权项目选择框
-                                selector.enable();
-                            });
-                        })
-                    }, function () {
-                        // 开启授权项目选择框, 继续接受编辑
-                        selector.enable();
-                    });
-                }
-            },
-            onChange:function(value){
-                vm.projectIds = _.join(value, ',');
-                $scope.$apply();
-            }
-        };
-
-        //附加
-        vm.applyFlag = false;
-        function _fnAdditionApply() {
-            RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
-                vm.status = data.status;
-                vm.requirement.id = data.id;
-            });
-            vm.applyFlag = true;
-            vm.requirement.stockOutRequirement = [];
-            setTimeout(function () {
-                vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
-                vm.dtInstance.rerender();
-                vm.sampleRequirement.requirementName = "";
-            },500);
-
-
-        }
         //打印申请
         function _fnPrintRequirement() {
             window.open ('/api/stock-out-applies/print/' + vm.requirement.id);
@@ -186,8 +68,8 @@
         vm.sampleRequirementListCheck = _fnSampleRequirementCheckList;
         //添加样本需求
         vm.addSampleModal = function (sampleRequirement) {
-            vm.sampleflag = true;
-            _fnSaveRequirement();
+            // vm.sampleflag = true;
+            // _fnSaveRequirement();
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-sample-edit-modal.html',
@@ -209,19 +91,16 @@
                 _loadRequirement();
             });
         };
-        function _fnSaveRequirement() {
-            delete vm.requirement.stockOutRequirement;
-            BioBankBlockUi.blockUiStart();
-            RequirementService.saveRequirementInfo(vm.requirement).success(function (data) {
-                BioBankBlockUi.blockUiStop();
-                if(!vm.sampleflag){
-                    toastr.success("保存申请记录成功！");
-                }
-            }).error(function (data) {
-                BioBankBlockUi.blockUiStop();
-                toastr.error("保存申请记录失败！");
-            })
-        }
+        // function _fnSaveRequirement() {
+        //     delete vm.requirement.stockOutRequirement;
+        //     BioBankBlockUi.blockUiStart();
+        //     RequirementService.saveRequirementInfo(vm.requirement).success(function (data) {
+        //         BioBankBlockUi.blockUiStop();
+        //     }).error(function (data) {
+        //         BioBankBlockUi.blockUiStop();
+        //         toastr.error("保存申请记录失败！");
+        //     })
+        // }
         //批量核对
         function _fnSampleRequirementCheckList() {
             var sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
@@ -233,12 +112,12 @@
         }
         function _loadRequirement(success, error) {
             RequirementService.queryRequirementDesc(vm.requirement.id).then(function (data) {
-                vm.requirement = data;
-                vm.requirement.startTime = new Date(data.startTime);
-                vm.requirement.endTime = new Date(data.endTime);
-                vm.requirement.recordTime = new Date(data.recordTime);
+                // vm.requirement = data;
+                // vm.requirement.startTime = moment(data.startTime);
+                // vm.requirement.endTime = new Date(data.endTime);
+                // vm.requirement.recordTime = new Date(data.recordTime);
                 // vm.requirement.recordId = data.recordId;
-                // vm.requirement.recordId = data.applyPersonName;
+                vm.requirement.stockOutRequirement = data.stockOutRequirement;
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 vm.dtInstance.rerender();
                 vm.isApproval();
@@ -380,7 +259,7 @@
         //判断是否都已核对 1201：待核对，1202：库存不够，1203：库存满足
         vm.requirementApplyFlag = false;
         function _fnIsApproval() {
-            if(vm.requirement.stockOutRequirement){
+            if(vm.requirement.stockOutRequirement.length){
                 var len =  _.filter(vm.requirement.stockOutRequirement,{status:'1201'}).length;
                 if(len){
                     // 不能批准

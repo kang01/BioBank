@@ -60,7 +60,8 @@
             })
             .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow)
-            .withOption('rowCallback', rowCallback)
+            // .withOption('rowCallback', rowCallback)
+            .withOption('order',[['1','asc']])
             .withColumnFilter({
                 aoColumns: [
                     {
@@ -129,17 +130,20 @@
                 case '1104': status = '已作废';break;
             }
             $('td:eq(8)', row).html(status);
+
+            $('td', row).unbind('click');
+            $('td:first',row).css("cursor","pointer");
+            $('td:first',row).bind('click',function () {
+                // $scope.$apply(function () {
+                // })
+                // var tr = $(this).closest("tr");
+                extraClickHandler(row);
+            });
             $compile(angular.element(row).contents())($scope);
         }
         //展开
         function rowCallback(nRow, oData)  {
-            $('td', nRow).unbind('click');
-            $('td:first',nRow).css("cursor","pointer");
-            $('td:first', nRow).bind('click',function () {
-                $scope.$apply(function () {
-                    extraClickHandler(nRow);
-                })
-            });
+
         }
         function extraClickHandler(tr) {
             var row =  vm.dtInstance.DataTable.row(tr);
@@ -150,19 +154,17 @@
             }
             else {
                 // Open this row
-                RequirementService.copyRequirementList(row.data().id).then(function (data) {
-                    // console.log(JSON.stringify(data.data))
-                    row.child(format(data.data)).show();
+                RequirementService.copyRequirementList(row.data().id).then(function (res) {
+                    row.child(format(res.data)).show();
                     $(tr).addClass('shown');
                 });
 
             }
         }
-        function format ( items ) {
+        function format (items) {
             var html =  $('<table class="table" style="width: 100%"><tbody></tbody></table>');
             for(var i = 0; i < items.length; i++){
                 var tr = $("<tr />").html(
-
                     "<td style='display: none'>"+items[i].id+"</td>"+
                     "<td style='width: 2%'> </td>"+
                     "<td style='width: 13%'>"+items[i].applyCode+"</td>"+
@@ -172,9 +174,12 @@
                     "<td style='width: 17%'>"+items[i].purposeOfSample+"</td>"+
                     "<td style='width: 10%'>"+items[i].countOfSample+"</td>"+
                     "<td style='width: 12%'>"+items[i].sampleTypes+"</td>"+
-                    "<td style='width: 10%'>"+statusShow(items[i].status)  +"</td>"+
-                    "<td ><button  class='btn btn-warning addApplyId'><i class='fa fa-edit'></i></button></td>"
+                    "<td style='width: 10%'>"+statusShow(items[i].status)  +"</td>"
+
                     );
+                if(items[i].status == '1101'){
+                    $(tr).append("<td ><button  class='btn btn-warning addApplyId btn-xs'><i class='fa fa-edit'></i></button></td>")
+                }
                 $(".addApplyId", tr).click(function(){
                    var applyId = $(tr)[0].childNodes[0].innerText;
                     $state.go('requirement-edit',{applyId:applyId});
@@ -182,7 +187,6 @@
                 html.append(tr);
 
             }
-
             return html;
         }
         function statusShow(staus) {
@@ -197,9 +201,9 @@
 
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-warning" ui-sref="requirement-edit({applyId:'+ full.id +'})">' +
+            return '<button type="button" class="btn btn-warning btn-xs" ui-sref="requirement-edit({applyId:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;'+ '<button ng-if="'+full.status+'== 1103" type="button" class="btn btn-warning" ui-sref="requirement-edit({applyId:'+ full.id +',addApplyFlag:1})">' +
+                '</button>&nbsp;'+ '<button ng-if="'+full.status+'== 1103" type="button" class="btn btn-warning btn-xs" ui-sref="requirement-edit({applyId:'+ full.id +',addApplyFlag:1})">' +
                 '附加' +
                 '</button>&nbsp;';
         }
@@ -208,8 +212,8 @@
         }
 
 
-        setTimeout(function () {
-            vm.dtInstance.rerender();
-        },500)
+        // setTimeout(function () {
+        //     vm.dtInstance.rerender();
+        // },500)
     }
 })();

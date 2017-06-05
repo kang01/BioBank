@@ -166,17 +166,12 @@
         //附加
         vm.applyFlag = false;
         function _fnAdditionApply() {
+
             RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
                 vm.status = data.status;
                 vm.requirement.id = data.id;
+                $state.go("requirement-additionApply",{applyId:vm.requirement.id})
             });
-            vm.applyFlag = true;
-            vm.requirement.stockOutRequirement = [];
-            setTimeout(function () {
-                vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
-                vm.dtInstance.rerender();
-                vm.sampleRequirement.requirementName = "";
-            },500);
 
 
         }

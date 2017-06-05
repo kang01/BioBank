@@ -5,7 +5,7 @@
                 <h2 class="m0">添加出库交接</h2>
             </div>
             <div class="pull-right">
-                <button class="btn btn-primary" ng-click="" ng-disabled="!vm.canBePrint()">打印交接单</button>
+                <button class="btn btn-primary" ng-click="vm.takeOverPrint()" ng-disabled="!vm.canBePrint()">打印交接单</button>
                 <button class="btn btn-primary" ng-click="vm.takeOverModal()" ng-disabled="!vm.canBeTakeOver()">样本交接</button>
                 <button class="btn btn-primary" ng-click="vm.save()">保存</button>
                 <button class="btn btn-default" ui-sref="take-over-list">关闭</button>

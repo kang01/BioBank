@@ -649,6 +649,7 @@
 
             modalInstance.result.then(function (data) {
                 _fnQueryStockOutList();
+                stockOutFlag = false;
             });
         }
 

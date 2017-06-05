@@ -208,13 +208,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             dto.setId(box.getId());
             dto.setFrozenBoxCode(box.getFrozenBoxCode());
             dto.setSampleTypeName(box.getSampleTypeName());
-
-//            String position = toPositionString(stockOutFrozenBox.getStockOutBoxPosition());
             String position = getPositionString(box);
             dto.setPosition(position);
-
-            Long count = stockOutTaskFrozenTubeRepository.countByFrozenBoxAndTask(box.getId(),taskId);
-
+            Long count = stockOutTaskFrozenTubeRepository.countSampleByFrozenBoxAndTask(box.getId(),taskId);
             dto.setCountOfSample(count);
 
             return dto;
@@ -273,14 +269,19 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         for(FrozenBox frozenBox :boxes){
             StockOutFrozenBoxForTaskDataTableEntity box = new StockOutFrozenBoxForTaskDataTableEntity();
             if(frozenBox ==null){continue;}
+            Long count = stockOutTaskFrozenTubeRepository.countByFrozenBoxAndTask(frozenBox.getId(),taskId);
+            if(count.intValue()==0){
+                continue;
+            }
             box.setId(frozenBox.getId());
             box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             box.setSampleTypeName(frozenBox.getSampleTypeName());
+            box.setMemo(frozenBox.getMemo());
+            box.setSampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null);
+            box.setStatus(frozenBox.getStatus());
+            box.setProjectName(frozenBox.getProjectName());
             String position = getPositionString(frozenBox);
             box.setPosition(position);
-
-            Long count = stockOutTaskFrozenTubeRepository.countByFrozenBoxAndTask(frozenBox.getId(),taskId);
-
             box.setCountOfSample(count);
             alist.add(box);
         }
@@ -350,11 +351,16 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
             //保存出库盒与管之间的关系
             for(FrozenTubeResponse f: box.getFrozenTubeDTOS()){
-                //todo 判断是否已有出库任务
-                StockOutBoxTube stockOutBoxTube = new StockOutBoxTube();
+                StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutTaskAndFrozenTube(taskId,f.getId());
+                if(stockOutTaskFrozenTube == null){
+                    continue;
+                }
+                StockOutBoxTube  stockOutBoxTube = stockOutBoxTubeRepository.findByStockOutTaskFrozenTubeId(stockOutTaskFrozenTube.getId());
+                if(stockOutBoxTube == null){
+                    stockOutBoxTube = new StockOutBoxTube();
+                }
                 stockOutBoxTube.setStatus(Constants.FROZEN_BOX_TUBE_STOCKOUT_PENDING);
                 stockOutBoxTube.setStockOutFrozenBox(stockOutFrozenBox);
-                StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutTaskAndFrozenTube(taskId,f.getId());
                 stockOutBoxTube.setStockOutTaskFrozenTube(stockOutTaskFrozenTube);
                 stockOutBoxTube.setFrozenTube(stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube());
                 boxAndTube.setFrozenTube(stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube());
@@ -375,7 +381,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     @Override
     public List<FrozenBoxAndFrozenTubeResponse> getAllTempStockOutFrozenBoxesByTask(Long taskId) {
         List<FrozenBoxAndFrozenTubeResponse> alist = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
-        List<StockOutFrozenBox> boxes =  stockOutFrozenBoxRepository.findByStockOutTaskId(taskId);
+        List<StockOutFrozenBox> boxes =  stockOutFrozenBoxRepository.findByStockOutTaskIdAndStatus(taskId,Constants.STOCK_OUT_FROZEN_BOX_NEW);
         for(StockOutFrozenBox s :boxes){
             FrozenBox frozenBox = s.getFrozenBox();
             if(frozenBox ==null){continue;}
@@ -476,9 +482,14 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutFrozenBoxRepository.save(stockOutFrozenBox);
             //保存出库盒与冻存管的关系
             stockOutBoxTubeRepository.updateByStockOutFrozenBox(id);
-            //出库计划样本 todo
+            //出库计划样本
+
+//            List<Long> stockOutPlanTubeIds = stockOutBoxTubeRepository.findPlanFrozenTubeByStockOutFrozenBoxId(id);
             //出库任务样本
-        }
+//            List<Long> stockOutTaskTubeIds = stockOutBoxTubeRepository.findTaskFrozenTubeByStockOutFrozenBoxId(id);
+        } //如果任务下的待出库样本都出库了则任务是已完成的状态
+        //如果任务下需要出库的样本有异常，则为异常出库
+        //如果计划出库的样本都出库了，则计划的状态为已完成
         return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
     }
 
@@ -493,6 +504,11 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         return stockOutFrozenBoxDTO;
     }
 
+    /**
+     * 打印取盒单
+     * @param taskId
+     * @return
+     */
     @Override
     public ByteArrayOutputStream printStockOutFrozenBox(Long taskId) {
         List<StockOutTakeBoxReportDTO> takeBoxDTOs =   createStockOutTakeBoxReportDTO(taskId);
@@ -502,12 +518,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
     private List<StockOutTakeBoxReportDTO> createStockOutTakeBoxReportDTO(Long taskId) {
         List<StockOutTakeBoxReportDTO> stockOutTakeBoxReportDTOS = new ArrayList<StockOutTakeBoxReportDTO>();
-        List<StockOutFrozenBox> boxes =  stockOutFrozenBoxRepository.findByStockOutTaskId(taskId);
-        for(StockOutFrozenBox s :boxes){
-            FrozenBox frozenBox = s.getFrozenBox();
-            if(frozenBox == null){
-                continue;
-            }
+        //从任务出库样本中找到要出库的冻存盒
+        List<FrozenBox> boxes =  frozenBoxRepository.findByStockOutTaskId(taskId);
+        for(FrozenBox frozenBox :boxes){
             StockOutTakeBoxReportDTO stockOutTakeBoxReportDTO = new StockOutTakeBoxReportDTO();
             stockOutTakeBoxReportDTO.setId(frozenBox.getId());
             stockOutTakeBoxReportDTO.setAreaCode(frozenBox.getAreaCode());

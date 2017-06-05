@@ -88,5 +88,30 @@
                     }]
                 }
             })
+            .state('task-view', {
+                parent: 'bizs',
+                url: '/task-list/{taskId}/view',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN']
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/stock-out/task/task-view.html',
+                        controller: 'TaskViewController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        return $translate.refresh();
+                    }],
+                    entity: ['$stateParams', 'TaskService', function($stateParams, TaskService) {
+                        var id = $stateParams.taskId;
+                        return TaskService.queryTaskDesc(id).then(function (res){
+                            return res.data;
+                        });
+                    }]
+                }
+            })
     }
 })();

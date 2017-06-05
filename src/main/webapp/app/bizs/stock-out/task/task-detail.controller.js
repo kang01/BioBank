@@ -592,12 +592,12 @@
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('id').notVisible(),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码'),
-            DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
             DTColumnBuilder.newColumn('position').withTitle('冻存盒位置'),
             DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('出库交接时间'),
             DTColumnBuilder.newColumn('countOfSample').withTitle('盒内样本量'),
             DTColumnBuilder.newColumn('memo').withTitle('备注'),
+            DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml),
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
@@ -614,7 +614,7 @@
                 case '1702': status = '已出库';break;
                 case '1703': status = '已交接';break;
             }
-            $('td:eq(2)', row).html(status);
+            $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

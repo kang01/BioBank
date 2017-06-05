@@ -502,12 +502,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
     private List<StockOutTakeBoxReportDTO> createStockOutTakeBoxReportDTO(Long taskId) {
         List<StockOutTakeBoxReportDTO> stockOutTakeBoxReportDTOS = new ArrayList<StockOutTakeBoxReportDTO>();
-        List<StockOutFrozenBox> boxes =  stockOutFrozenBoxRepository.findByStockOutTaskId(taskId);
-        for(StockOutFrozenBox s :boxes){
-            FrozenBox frozenBox = s.getFrozenBox();
-            if(frozenBox == null){
-                continue;
-            }
+        //从任务出库样本中找到要出库的冻存盒
+        List<FrozenBox> boxes =  frozenBoxRepository.findByStockOutTaskId(taskId);
+        for(FrozenBox frozenBox :boxes){
             StockOutTakeBoxReportDTO stockOutTakeBoxReportDTO = new StockOutTakeBoxReportDTO();
             stockOutTakeBoxReportDTO.setId(frozenBox.getId());
             stockOutTakeBoxReportDTO.setAreaCode(frozenBox.getAreaCode());

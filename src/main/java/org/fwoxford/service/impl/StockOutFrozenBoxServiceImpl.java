@@ -208,13 +208,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             dto.setId(box.getId());
             dto.setFrozenBoxCode(box.getFrozenBoxCode());
             dto.setSampleTypeName(box.getSampleTypeName());
-
-//            String position = toPositionString(stockOutFrozenBox.getStockOutBoxPosition());
             String position = getPositionString(box);
             dto.setPosition(position);
-
             Long count = stockOutTaskFrozenTubeRepository.countByFrozenBoxAndTask(box.getId(),taskId);
-
             dto.setCountOfSample(count);
 
             return dto;
@@ -273,14 +269,15 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         for(FrozenBox frozenBox :boxes){
             StockOutFrozenBoxForTaskDataTableEntity box = new StockOutFrozenBoxForTaskDataTableEntity();
             if(frozenBox ==null){continue;}
+            Long count = stockOutTaskFrozenTubeRepository.countByFrozenBoxAndTask(frozenBox.getId(),taskId);
+            if(count.intValue()==0){
+                continue;
+            }
             box.setId(frozenBox.getId());
             box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             box.setSampleTypeName(frozenBox.getSampleTypeName());
             String position = getPositionString(frozenBox);
             box.setPosition(position);
-
-            Long count = stockOutTaskFrozenTubeRepository.countByFrozenBoxAndTask(frozenBox.getId(),taskId);
-
             box.setCountOfSample(count);
             alist.add(box);
         }
@@ -493,6 +490,11 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         return stockOutFrozenBoxDTO;
     }
 
+    /**
+     * 打印取盒单
+     * @param taskId
+     * @return
+     */
     @Override
     public ByteArrayOutputStream printStockOutFrozenBox(Long taskId) {
         List<StockOutTakeBoxReportDTO> takeBoxDTOs =   createStockOutTakeBoxReportDTO(taskId);

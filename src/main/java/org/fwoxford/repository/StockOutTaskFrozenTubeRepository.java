@@ -35,9 +35,19 @@ public interface StockOutTaskFrozenTubeRepository extends JpaRepository<StockOut
 
     StockOutTaskFrozenTube findByStockOutPlanFrozenTubeId(Long id);
 
-    @Query("select count(t) from StockOutTaskFrozenTube t " +
-//        " left join StockOutBoxTube t on t.stockOutTaskFrozenTube.id = t.id" +
-        " where t.stockOutPlanFrozenTube.stockOutReqFrozenTube.frozenBox.id=?1 " +
-        " and t.stockOutTask.id = ?2 ")
+//    @Query("select count(t) from StockOutTaskFrozenTube t " +
+//        " where t.stockOutPlanFrozenTube.stockOutReqFrozenTube.frozenBox.id=?1 " +
+//        " and t.stockOutTask.id = ?2")
+//    Long countByFrozenBoxAndTask(Long id, Long taskId);
+
+    /**
+     * 查询待装盒的冻存盒列表的出库样本量
+     * @param id
+     * @param taskId
+     * @return
+     */
+        @Query("select count(t) from StockOutTaskFrozenTube t " +
+        " where t.stockOutPlanFrozenTube.stockOutReqFrozenTube.frozenTube.frozenBox.id=?1 " +
+        " and t.stockOutTask.id = ?2")
     Long countByFrozenBoxAndTask(Long id, Long taskId);
 }

@@ -31,4 +31,6 @@ public interface StockOutBoxTubeRepository extends JpaRepository<StockOutBoxTube
     List<StockOutBoxTube> findByStockOutTaskId(Long taskId);
 
     List<StockOutBoxTube> findByStockOutFrozenBoxId(Long id);
+
+    StockOutBoxTube findByStockOutTaskFrozenTubeId(Long id);
 }

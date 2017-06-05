@@ -347,11 +347,16 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
             //保存出库盒与管之间的关系
             for(FrozenTubeResponse f: box.getFrozenTubeDTOS()){
-                //todo 判断是否已有出库任务
-                StockOutBoxTube stockOutBoxTube = new StockOutBoxTube();
+                StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutTaskAndFrozenTube(taskId,f.getId());
+                if(stockOutTaskFrozenTube == null){
+                    continue;
+                }
+                StockOutBoxTube  stockOutBoxTube = stockOutBoxTubeRepository.findByStockOutTaskFrozenTubeId(stockOutTaskFrozenTube.getId());
+                if(stockOutBoxTube == null){
+                    stockOutBoxTube = new StockOutBoxTube();
+                }
                 stockOutBoxTube.setStatus(Constants.FROZEN_BOX_TUBE_STOCKOUT_PENDING);
                 stockOutBoxTube.setStockOutFrozenBox(stockOutFrozenBox);
-                StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutTaskAndFrozenTube(taskId,f.getId());
                 stockOutBoxTube.setStockOutTaskFrozenTube(stockOutTaskFrozenTube);
                 stockOutBoxTube.setFrozenTube(stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube());
                 boxAndTube.setFrozenTube(stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube());
@@ -372,7 +377,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     @Override
     public List<FrozenBoxAndFrozenTubeResponse> getAllTempStockOutFrozenBoxesByTask(Long taskId) {
         List<FrozenBoxAndFrozenTubeResponse> alist = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
-        List<StockOutFrozenBox> boxes =  stockOutFrozenBoxRepository.findByStockOutTaskId(taskId);
+        List<StockOutFrozenBox> boxes =  stockOutFrozenBoxRepository.findByStockOutTaskIdAndStatus(taskId,Constants.STOCK_OUT_FROZEN_BOX_NEW);
         for(StockOutFrozenBox s :boxes){
             FrozenBox frozenBox = s.getFrozenBox();
             if(frozenBox ==null){continue;}

@@ -183,7 +183,9 @@
             vm.canBeTakeOver = function(){
                 return vm.canBePrint();
             };
-
+            vm.takeOverPrint = function () {
+                window.open ('/api/stock-out-handovers/print/' + vm.dto.id);
+            };
             vm.save = function (){
                 TakeOverService.saveTakeoverInfo(vm.dto).then(function(res){
                     toastr.success("交接信息以保存!");

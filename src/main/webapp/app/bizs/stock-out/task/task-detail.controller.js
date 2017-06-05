@@ -372,7 +372,7 @@
 
         //装盒的样本
         var boxInTubes = [];
-        vm.sampleCode = "1494946117831-A3";
+        vm.sampleCode = "1494946117831-G2";
         //扫码取样
         function _fnScanCode(e){
             var tableCtrl = _getSampleDetailsTableCtrl();
@@ -403,8 +403,6 @@
                     }else{
                         vm.allInFlag = true;
                     }
-
-                    console.log(JSON.stringify(boxInTubes))
                     tableCtrl.loadData(vm.tubes);
                 }else{
                     toastr.error("编码错误，请重新扫码!")

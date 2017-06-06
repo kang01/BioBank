@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import oracle.jdbc.driver.Const;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -103,6 +104,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
     @Autowired
     private StockOutHandoverFrozenBoxRepositries stockOutHandoverFrozenBoxRepositries;
+
+    @Autowired
+    StockOutPlanRepository stockOutPlanRepository;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper
@@ -482,19 +486,36 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_COMPLETED);
             stockOutFrozenBoxRepository.save(stockOutFrozenBox);
             //保存出库盒与冻存管的关系
-            stockOutBoxTubeRepository.updateByStockOutFrozenBox(id);
-            //出库计划样本
-//            List<Long> stockOutPlanTubeIds = stockOutBoxTubeRepository.findPlanFrozenTubeByStockOutFrozenBoxId(id);
-            //出库任务样本
-//            List<Long> stockOutTaskTubeIds = stockOutBoxTubeRepository.findTaskFrozenTubeByStockOutFrozenBoxId(id);
+            stockOutBoxTubeRepository.updateByStockOutFrozenBox(id); //样本使用次数加1
+            List<StockOutBoxTube> stockOutBoxTubes = stockOutBoxTubeRepository.findByStockOutFrozenBoxId(id);
+            for(StockOutBoxTube s:stockOutBoxTubes){
+                FrozenTube frozenTube = s.getFrozenTube();
+                frozenTube.setSampleUsedTimes(frozenTube.getSampleUsedTimes()+1);
+                frozenTubeRepository.save(frozenTube);
+            }
+            List<Long> planTubes = stockOutBoxTubeRepository.findPlanFrozenTubeByStockOutFrozenBoxId(id);
+            List<Long> taskTubes = stockOutBoxTubeRepository.findTaskFrozenTubeByStockOutFrozenBoxId(id);
+            stockOutTaskFrozenTubeRepository.updateByStockOutFrozenTubeIds(taskTubes);
+            stockOutPlanFrozenTubeRepository.updateByStockOutFrozenTubeIds(planTubes);
         }
-        //任务样本量
-        Long countOfTaskTube = stockOutTaskFrozenTubeRepository.countByStockOutTaskId(taskId);
 
-        //计划样本量
         Long planId = stockOutTask.getStockOutPlan().getId();
-        Long countOfPlanTube = stockOutPlanFrozenTubeRepository.countByStockOutPlanId(planId);
-        //异常样本量
+        //任务未出库样本量
+        Long countOfTaskTube = stockOutTaskFrozenTubeRepository.countByStockOutTaskIdAndStatusNot(taskId,Constants.STOCK_OUT_FROZEN_TUBE_COMPLETED);
+        //计划未出库样本量
+        Long countOfPlanTube = stockOutPlanFrozenTubeRepository.countByStockOutPlanIdAndStatusNot(planId,Constants.STOCK_OUT_PLAN_TUBE_COMPLETED); //异常出库样本量
+        Long abNormalTube = stockOutBoxTubeRepository.countAbnormalTubeByStockOutTaskId(taskId);
+        if(abNormalTube.intValue()==0){
+            stockOutTask.setStatus(Constants.STOCK_OUT_TASK_ABNORMAL);
+        }else if(countOfTaskTube.intValue()==0){
+            stockOutTask.setStatus(Constants.STOCK_OUT_TASK_COMPLETED);
+        }
+        stockOutTaskRepository.save(stockOutTask);
+        if(countOfPlanTube.intValue()==0){
+            StockOutPlan stockOutPlan = stockOutTask.getStockOutPlan();
+            stockOutPlan.setStatus(Constants.STOCK_OUT_PLAN_COMPLETED);
+            stockOutPlanRepository.save(stockOutPlan);
+        }
 
         //如果任务下的待出库样本都出库了则任务是已完成的状态
         //如果任务下需要出库的样本有异常，则为异常出库

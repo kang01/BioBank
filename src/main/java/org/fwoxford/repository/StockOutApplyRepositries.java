@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface StockOutApplyRepositries extends DataTablesRepository<StockOutApplyForDataTableEntity,Long> {
     @Query(value = " select ap.id,ap.purpose_of_sample,0 as level_no,\n" +
-        "            (case when ap.start_time !=null then (ap.start_time||'至'||ap.end_time) else null end )  as apply_time,ap.apply_person_name,ap.apply_code,ap.status,\n" +
+        "            (case when ap.start_time is not null then (TO_CHAR(ap.start_time,'yyyy-MM-dd')||'至'||TO_CHAR(ap.end_time,'yyyy-MM-dd')) else null end )  as apply_time,ap.apply_person_name,ap.apply_code,ap.status,\n" +
         "            (select d.delegate_name from delegate d where d.id = ap.delegate_id) as delegate_name,\n" +
         "            (select LISTAGG(TO_CHAR(sample),',') WITHIN GROUP (ORDER BY sample) from\n" +
         "            (select distinct s.sample_type_name as sample\n" +

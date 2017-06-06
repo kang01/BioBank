@@ -140,13 +140,14 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     public void delete(Long id) {
         log.debug("Request to delete StockOutTask : {}", id);
         StockOutTask stockOutTask = stockOutTaskRepository.findOne(id);
-
         if (stockOutTask != null){
+            if(!stockOutTask.getStatus().equals(Constants.STOCK_OUT_TASK_NEW)){
+                throw new BankServiceException("任务已经开始，不能删除");
+            }
             //根据出库盒ID查询出库样本ID
             stockOutTaskFrozenTubeRepository.deleteByStockOutTaskId(stockOutTask.getId());
+            stockOutTaskRepository.delete(id);
         }
-
-        stockOutTaskRepository.delete(id);
     }
 
     /**

@@ -29,4 +29,6 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     List<StockOutReqFrozenTube> findAllByStockOutApplyIdAndFrozenBoxId(Long applyId, Long frozenBoxId);
 
     StockOutReqFrozenTube findByFrozenTubeId(Long id);
+
+    List<StockOutReqFrozenTube> findAllByStockOutRequirementIdInAndFrozenBoxId( List<Long> requirementIds, Long frozenBoxId);
 }

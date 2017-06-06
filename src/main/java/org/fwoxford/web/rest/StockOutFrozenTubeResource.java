@@ -139,8 +139,21 @@ public class StockOutFrozenTubeResource {
      */
     @GetMapping("/stock-out-frozen-tubes/apply/{applyId}/frozenBox/{frozenBoxId}")
     @Timed
-    public ResponseEntity<List<StockOutFrozenTubeForPlan>> getStockOutFrozenTubeForPlanByApplyAndBox(@PathVariable Long applyId, @PathVariable Long frozenBoxId) throws URISyntaxException {
+    public ResponseEntity<List<StockOutFrozenTubeForPlan>> getStockOutFrozenTubeForPlanByApplyAndBox(@PathVariable Long applyId,@PathVariable Long frozenBoxId) throws URISyntaxException {
         List<StockOutFrozenTubeForPlan> result = stockOutFrozenTubeService.getStockOutFrozenTubeForPlanByApplyAndBox(applyId,frozenBoxId);
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+    /**
+     * 根据出库需求ID以及冻存盒ID查询出库的样本
+     * @param requirementIds
+     * @param frozenBoxId
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-frozen-tubes/requirements/{requirementIds}/frozenBox/{frozenBoxId}")
+    @Timed
+    public ResponseEntity<List<StockOutFrozenTubeForPlan>> getStockOutFrozenTubeForPlanByRequirementAndBox(@PathVariable List<Long> requirementIds,@PathVariable Long frozenBoxId) throws URISyntaxException {
+        List<StockOutFrozenTubeForPlan> result = stockOutFrozenTubeService.getStockOutFrozenTubeForPlanByRequirementAndBox(requirementIds,frozenBoxId);
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 }

@@ -122,4 +122,27 @@ public class StockOutFrozenTubeServiceImpl implements StockOutFrozenTubeService{
         }
         return  result;
     }
+
+    @Override
+    public List<StockOutFrozenTubeForPlan> getStockOutFrozenTubeForPlanByRequirementAndBox( List<Long> requirementIds, Long frozenBoxId) {
+        List<StockOutReqFrozenTube> stockOutReqFrozenTube = stockOutReqFrozenTubeRepository.findAllByStockOutRequirementIdInAndFrozenBoxId(requirementIds,frozenBoxId);
+        List<StockOutFrozenTubeForPlan> result = new ArrayList<StockOutFrozenTubeForPlan>();
+        for(StockOutReqFrozenTube s :stockOutReqFrozenTube){
+            StockOutFrozenTubeForPlan tube = new StockOutFrozenTubeForPlan();
+            FrozenTube tubeS = s.getFrozenTube();
+            if(tubeS == null){
+                continue;
+            }
+            tube.setId(tubeS.getId());
+            tube.setSampleTypeName(tubeS.getSampleTypeName());
+            tube.setStatus(tubeS.getStatus());
+            tube.setAge(tubeS.getAge());
+            tube.setSex(Constants.SEX_MAP.get(tubeS.getGender())!=null?(String)Constants.SEX_MAP.get(tubeS.getGender()):null);
+            tube.setSampleUsedTimes(Long.valueOf(tubeS.getSampleUsedTimes()!=null?tubeS.getSampleUsedTimes():0));
+            tube.setSampleCode(tubeS.getSampleCode());
+            tube.setMemo(tubeS.getMemo());
+            result.add(tube);
+        }
+        return  result;
+    }
 }

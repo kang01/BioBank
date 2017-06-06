@@ -358,6 +358,11 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         if(stockOutApply == null){
             throw new BankServiceException("未查询到出库申请！");
         }
+        //判断是否有未核对的需求
+        Long countOfUnCheckRequirement = stockOutRequirementRepository.countByStockOutApplyIdAndStatus(id,Constants.STOCK_OUT_REQUIREMENT_CKECKING);
+        if(countOfUnCheckRequirement.intValue()>0){
+            throw new BankServiceException("该申请下含有未核对的申请，不能批准！");
+        }
         Long approveId = stockOutApplyForApprove.getApproverId();
         String password = stockOutApplyForApprove.getPassword();
         User user = userRepository.findOne(approveId);

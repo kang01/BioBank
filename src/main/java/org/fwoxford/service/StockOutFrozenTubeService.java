@@ -43,4 +43,6 @@ public interface StockOutFrozenTubeService {
     void delete(Long id);
 
     List<StockOutFrozenTubeForPlan> getStockOutFrozenTubeForPlanByApplyAndBox(Long applyId, Long frozenBoxId);
+
+    List<StockOutFrozenTubeForPlan> getStockOutFrozenTubeForPlanByRequirementAndBox( List<Long> requirementIds, Long frozenBoxId);
 }

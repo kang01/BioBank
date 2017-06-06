@@ -262,6 +262,10 @@
 
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
+            .withOption('info', false)
+            .withOption('paging', false)
+            .withOption('sorting', false)
+            .withOption('searching', false)
             .withOption('createdRow', createdRow);
 
         vm.dtColumns = [
@@ -274,7 +278,7 @@
             DTColumnBuilder.newColumn('diseaseTypeId').withTitle('疾病'),
             DTColumnBuilder.newColumn('samples').withTitle('指定样本编码').withClass('text-ellipsis'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "150").notSortable().renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {
             var status = '';

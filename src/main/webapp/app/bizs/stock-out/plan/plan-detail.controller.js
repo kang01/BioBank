@@ -34,35 +34,17 @@
             PlanService.queryPlanSampleInfo(vm.planId).success(function (data) {
                 vm.plan = data;
                 applyId = data.id;
+                angular.forEach(vm.plan.stockOutRequirement, function (data, index) {
+                    vm.checked.push(data.id);
+                    vm.demand[data.id] = true;
+                    vm.sampleIds = vm.checked.join(",");
+                    _queryPlanBoxes()
+                })
+                vm.select_all = true;
             }).then(function () {
 
             })
         }
-
-
-        // vm.applyNumberOptions = [];
-        // vm.applyNumberConfig = {
-        //     create: false,
-        //     valueField:'id',
-        //     labelField:'applyNumber',
-        //     maxItems: 1,
-        //     searchField: ['applyNumber'],
-        //     onChange:function (value) {
-        //         //根据申请单号查找计划信息及样本需求
-        //         PlanService.queryPlanSampleInfo(value).success(function (data) {
-        //             vm.plan = data;
-        //         })
-        //     },
-        //     load: function(query, callback) {
-        //         //查询申请单号
-        //         if (query) {
-        //             PlanService.queryApplyNumInfo(query).success(function (data) {
-        //                 callback(data);
-        //             });
-        //         }
-        //     }
-        // };
-
 
         _initStockOutBoxesTable();
         function _initStockOutBoxesTable() {
@@ -107,7 +89,17 @@
 
             };
             //盒子列表
+            var boxId;
             vm.dtOptions = DTOptionsBuilder.newOptions()
+                .withDOM("<'row mt-0 mb-10'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
+                .withButtons([
+                    {
+                        text: '创建任务',
+                        className: 'btn btn-default',
+                        key: '1',
+                        action: _fnCreateTask
+                    }
+                ])
                 .withOption('processing',true)
                 .withOption('serverSide',true)
                 .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
@@ -119,6 +111,7 @@
                     var jqDt = this;
                     if(vm.sampleIds){
                         PlanService.queryPlanBoxes(vm.sampleIds,data).then(function (res){
+
                             vm.selectAll = false;
                             vm.selected = {};
                             var json = res.data;
@@ -127,6 +120,9 @@
                                 jqDt._fnLog( oSettings, 0, error );
                             }
                             oSettings.json = json;
+                            boxId = res.data.data[0].id
+                            console.log();
+                            _loadTubes(boxId);
                             fnCallback( json );
                         }).catch(function(res){
                             // console.log(res);
@@ -157,6 +153,7 @@
 
                 })
                 .withPaginationType('full_numbers')
+                .withOption('order', [[1,'asc']])
                 .withOption('rowCallback', rowCallback)
                 .withOption('createdRow', function(row, data, dataIndex) {
                     // Recompiling so we can bind Angular directive to the DT
@@ -175,10 +172,10 @@
 
             vm.dtColumns = [
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码'),
-                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
+                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "80"),
+                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "70"),
                 DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
-                DTColumnBuilder.newColumn('countOfSample').withTitle('出库样本数量'),
+                DTColumnBuilder.newColumn('countOfSample').withTitle('出库样本数量').withOption("width", "80"),
                 DTColumnBuilder.newColumn('id').notVisible()
             ];
 
@@ -190,27 +187,42 @@
                 return html;
             }
             function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
+
                 $('td', nRow).unbind('click');
                 $(nRow).bind('click', function() {
                     var tr = this;
-                    $scope.$apply(function () {
+                    // $scope.$apply(function () {
                         rowClickHandler(tr,oData);
-                    })
+                    // })
                 });
+                if(boxId == oData.id){
+                    $(nRow).addClass('rowLight');
+                }
                 return nRow;
             }
             function rowClickHandler(tr,oData) {
                 $(tr).closest('table').find('.rowLight').removeClass("rowLight");
                 $(tr).addClass('rowLight');
-                PlanService.queryPlanTubes(applyId,oData.id).success(function (data) {
-                    vm.tubeOptions.withOption('data', data);
-                    vm.tubeInstance.rerender();
-                })
+                _loadTubes(oData.id)
             }
+            function _loadTubes(boxId) {
+                if(vm.sampleIds){
+                    PlanService.queryPlanTubes(vm.sampleIds,boxId).success(function (data) {
+                        vm.tubeOptions.withOption('data', data);
+                        vm.tubeInstance.rerender();
+                    })
+                }
 
+            }
             //管子列表
             vm.tubeOptions = DTOptionsBuilder.newOptions()
                 .withPaginationType('full_numbers')
+                .withOption('info', false)
+                .withOption('paging', false)
+                .withOption('sorting', false)
+                .withOption('searching', false)
+                .withScroller()
+                .withOption('scrollY', 370)
                 .withOption('createdRow', function(row, data, dataIndex) {
                     var status = '';
                     switch (data.status){
@@ -223,12 +235,13 @@
                     $compile(angular.element(row).contents())($scope);
                 });
             vm.tubeColumns = [
-                DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),
-                DTColumnBuilder.newColumn('status').withTitle('状态'),
-                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
-                DTColumnBuilder.newColumn('sex').withTitle('性别'),
-                DTColumnBuilder.newColumn('age').withTitle('年龄'),
-                DTColumnBuilder.newColumn('sampleUsedTimes').withTitle('使用次数'),
+                DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "100"),
+                DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
+                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "60"),
+                DTColumnBuilder.newColumn('sampleClassificationName').withTitle('样本分类').withOption("width", "60"),
+                // DTColumnBuilder.newColumn('sex').withTitle('性别'),
+                // DTColumnBuilder.newColumn('age').withTitle('年龄'),
+                // DTColumnBuilder.newColumn('sampleUsedTimes').withTitle('使用次数'),
                 DTColumnBuilder.newColumn('memo').withTitle('批注'),
                 DTColumnBuilder.newColumn('id').notVisible()
             ];
@@ -302,7 +315,7 @@
         }
         function actionsHtml(data, type, full, meta) {
             return  '<a  ng-click="vm.taskDescModal('+full.id+')">查看</a>&nbsp;' +
-                    '<a ng-click="vm.taskDelModal('+full.id+')">删除</a>&nbsp;'
+                    '<a ng-if="'+full.status+'==1601" ng-click="vm.taskDelModal('+full.id+')">删除</a>&nbsp;'
         }
         //样本需求
         vm.demand = [];
@@ -355,14 +368,19 @@
 
         //创建任务
         function _fnCreateTask() {
-            BioBankBlockUi.blockUiStart();
-            PlanService.createTask(vm.planId,vm.strBoxIds).success(function (data) {
-                BioBankBlockUi.blockUiStop();
-                toastr.success("创建任务成功!");
-                _queryPlanBoxes();
-                vm.strBoxIds = "";
-                vm.taskInstance.rerender();
-            })
+            if(vm.strBoxIds){
+                BioBankBlockUi.blockUiStart();
+                PlanService.createTask(vm.planId,vm.strBoxIds).success(function (data) {
+                    BioBankBlockUi.blockUiStop();
+                    toastr.success("创建任务成功!");
+                    _queryPlanBoxes();
+                    vm.strBoxIds = "";
+                    vm.taskInstance.rerender();
+                })
+            }else{
+                toastr.warning("请选择申请出库的冻存盒!");
+            }
+
         }
         //查看
         function _fnTaskDescModal(taskId) {

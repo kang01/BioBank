@@ -33,6 +33,12 @@
 
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withPaginationType('full_numbers')
+            .withOption('info', false)
+            .withOption('paging', false)
+            .withOption('sorting', false)
+            .withOption('searching', false)
+            .withScroller()
+            .withOption('scrollY', 302)
             .withOption('createdRow', createdRow);
 
         vm.dtColumns = [

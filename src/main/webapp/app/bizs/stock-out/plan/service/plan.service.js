@@ -48,8 +48,8 @@
         function _queryPlanBoxes(sampleIds,data) {
             return $http.post('api/res/stock-out-frozen-boxes/requirement/'+sampleIds,JSON.stringify(data))
         }
-        function _queryPlanTubes(applyId,frozenBoxId) {
-            return $http.get('api/stock-out-frozen-tubes/apply/'+applyId+'/frozenBox/'+frozenBoxId)
+        function _queryPlanTubes(requirementIds,frozenBoxId) {
+            return $http.get('api/stock-out-frozen-tubes/requirements/'+requirementIds+'/frozenBox/'+frozenBoxId)
         }
         function _savePlan(applyId,param) {
             return $http.post('api/stock-out-plans/'+applyId,param)

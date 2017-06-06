@@ -17,36 +17,39 @@
         <form class="form-inline">
             <div class="row m0">
                 <div class="col-md-12">
-                    <div class="form-group">
-                        <label class="">委托方</label>
-                        <p class="form-control-static">{{vm.requirement.delegateName}}</p>
-                    </div>
-                    <div class="form-group">
-                        <label class="">委托人</label>
-                        <p class="form-control-static">{{vm.requirement.applyPersonName}}</p>
-                    </div>
-                    <div class="form-group">
-                        <label class="">开始时间</label>
-                        <p class="form-control-static">{{vm.requirement.startTime}}</p>
-                    </div>
-                    <div class="form-group">
-                        <label class="">结束时间</label>
-                        <p class="form-control-static">{{vm.requirement.endTime}}</p>
-                    </div>
-                    <div class="form-group">
-                        <label class="">记录人</label>
-                        <p class="form-control-static">{{vm.requirement.recorder}}</p>
-                    </div>
-                    <div class="form-group">
-                        <label class="">记录时间</label>
-                        <p class="form-control-static">{{vm.requirement.recordTime}}</p>
-                    </div>
-                    <div class="form-group">
-                        <label class="">状态</label>
-                        <p class="form-control-static">{{vm.status}}</p>
-                    </div>
-
+                    <p>{{vm.requirement.delegateName}}--{{vm.requirement.applyPersonName}}，申请在 {{vm.requirement.startTime}} 到 {{vm.requirement.endTime}}时候出库。记录人{{vm.requirement.recorder}}，记录时间{{vm.requirement.recordTime}}，申请状态{{vm.status}}</p>
                 </div>
+                <!--<div class="col-md-12">-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="">委托方</label>-->
+                        <!--<p class="form-control-static">{{vm.requirement.delegateName}}</p>-->
+                    <!--</div>-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="">委托人</label>-->
+                        <!--<p class="form-control-static">{{vm.requirement.applyPersonName}}</p>-->
+                    <!--</div>-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="">开始时间</label>-->
+                        <!--<p class="form-control-static">{{vm.requirement.startTime}}</p>-->
+                    <!--</div>-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="">结束时间</label>-->
+                        <!--<p class="form-control-static">{{vm.requirement.endTime}}</p>-->
+                    <!--</div>-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="">记录人</label>-->
+                        <!--<p class="form-control-static">{{vm.requirement.recorder}}</p>-->
+                    <!--</div>-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="">记录时间</label>-->
+                        <!--<p class="form-control-static">{{vm.requirement.recordTime}}</p>-->
+                    <!--</div>-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="">状态</label>-->
+                        <!--<p class="form-control-static">{{vm.status}}</p>-->
+                    <!--</div>-->
+
+                <!--</div>-->
                 <div class="col-md-12" ng-if="vm.requirement.projectNames">
                     <div class="form-group">
                         <label class="">授权的项目</label>

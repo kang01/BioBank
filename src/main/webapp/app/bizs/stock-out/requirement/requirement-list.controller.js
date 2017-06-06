@@ -201,15 +201,19 @@
 
         }
         function actionsHtml(data, type, full, meta) {
-            return '<a ng-if="'+full.status+'!= 1103" type="button" class="btn btn-default btn-xs" ui-sref="requirement-edit({applyId:'+ full.id +'})">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</a>&nbsp;'+
-                '<a ng-if="'+full.status+'== 1103" type="button" class="btn btn-default btn-xs" ui-sref="requirement-view({applyId:'+ full.id +',viewFlag:1})">' +
+            if(full.status != '1103'){
+                return '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-edit({applyId:'+ full.id +'})">' +
+                    '<i class="fa fa-edit"></i>' +
+                    '</a>'
+            }else{
+                return '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-view({applyId:'+ full.id +',viewFlag:1})">' +
                 '<i class="fa fa-eye"></i>' +
                 '</a>&nbsp;'+
-                '<a ng-if="'+full.status+'== 1103" type="button" class="btn btn-default btn-xs" ui-sref="requirement-additionApply({applyId:'+ full.id +'})">' +
+                '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-additionApply({applyId:'+ full.id +'})">' +
                 '附加' +
-                '</a>&nbsp;'
+                '</a>'
+            }
+
         }
         function extraHtml(data, type, full, meta) {
             var html = '';

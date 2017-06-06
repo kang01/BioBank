@@ -12,10 +12,13 @@
     AbnormalRecallModalController.$inject = ['$uibModalInstance','$uibModal','items'];
 
     function AbnormalRecallModalController($uibModalInstance,$uibModal,items) {
+
         var vm = this;
+        //1.撤销 2.异常
+        vm.status = items.status;
 
         vm.ok = function () {
-            $uibModalInstance.close(vm.repealReason);
+            $uibModalInstance.close(vm.reason);
         };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

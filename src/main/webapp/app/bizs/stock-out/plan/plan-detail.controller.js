@@ -101,6 +101,7 @@
                     }
                 ])
                 .withOption('processing',true)
+                .withOption('height','500')
                 .withOption('serverSide',true)
                 .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                     var data = {};

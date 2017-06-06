@@ -322,7 +322,7 @@
                 }
                 //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
                 if(tube.status){
-                    changeSampleStatus(tube.status,td)
+                    // changeSampleStatus(tube.status,td)
                 }
                 var code = tube.sampleCode && tube.sampleCode != " " ? tube.sampleCode : tube.sampleTempCode;
                 $(td).html("");
@@ -343,6 +343,10 @@
                 //已扫码样本
                 if(tube.scanCodeFlag){
                     var txt = '<div style="position: absolute;top:12px;left:0;bottom:0;right:0;color:rgba(0,128,0,0.3);text-align:center;font-size:42px">'+tube.orderIndex+'</div>'
+                    $(txt).appendTo($div)
+                }
+                if(tube.status == '3004'){
+                    var txt = '<div style="position: absolute;bottom:2px;right:2px;width:10px;height:10px;border-radius:50%;background-color: red;"></div>'
                     $(txt).appendTo($div)
                 }
             }
@@ -411,7 +415,7 @@
             }
         }
         //撤销
-        function _fnRepealModal(status) {
+        function _fnRepealModal() {
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/task/modal/abnormal-recall-modal.html',
@@ -421,13 +425,14 @@
                 resolve: {
                     items: function () {
                         return {
+                            status:1
                         }
                     }
                 }
             });
 
             modalInstance.result.then(function (repealReason) {
-                var repealList = []
+                var repealList = [];
                 for(var i = 0; i < vm.aRemarkArray.length; i++){
                     if(vm.aRemarkArray[i].stockOutFlag){
                         vm.aRemarkArray[i].repealReason = repealReason;
@@ -463,10 +468,11 @@
             });
 
             modalInstance.result.then(function (memo) {
+                // 1：未出库样本批注、2：已出库样本批注
                 if(status == 1){
                     for(var i = 0; i < vm.aRemarkArray.length; i++){
                         if(vm.aRemarkArray[i].sampleCode){
-                            vm.aRemarkArray[i].memo = memo;
+                            vm.aRemarkArray[i].memo = vm.aRemarkArray[i].memo + memo;
                         }
                     }
                     TaskService.fnNote(vm.aRemarkArray).success(function (data) {
@@ -489,17 +495,47 @@
         }
         //异常
         function _fnAbnormal() {
-            for(var i = 0; i < vm.aRemarkArray.length; i++){
-                if(vm.aRemarkArray[i].sampleCode){
-                    vm.aRemarkArray[i].status = "3004";
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/task/modal/abnormal-recall-modal.html',
+                controller: 'AbnormalRecallModalController',
+                controllerAs: 'vm',
+                size: 'lg',
+                resolve: {
+                    items: function () {
+                        return {
+                            status:2
+                        }
+                    }
                 }
-            }
-            TaskService.abnormal(vm.aRemarkArray).success(function (data) {
-
             });
-            vm.aRemarkArray = [];
-            var tableCtrl = _getSampleDetailsTableCtrl();
-            tableCtrl.loadData(vm.tubes);
+
+            modalInstance.result.then(function (abnormalReason) {
+                for(var i = 0; i < vm.aRemarkArray.length; i++){
+                    if(vm.aRemarkArray[i].sampleCode){
+                        vm.aRemarkArray[i].memo = vm.aRemarkArray[i].memo + abnormalReason;
+                        vm.aRemarkArray[i].status = "3004";
+                    }
+                }
+                TaskService.abnormal(vm.aRemarkArray).success(function (data) {
+                });
+                vm.aRemarkArray = [];
+                var tableCtrl = _getSampleDetailsTableCtrl();
+                tableCtrl.loadData(vm.tubes);
+            });
+
+
+            // for(var i = 0; i < vm.aRemarkArray.length; i++){
+            //     if(vm.aRemarkArray[i].sampleCode){
+            //         vm.aRemarkArray[i].status = "3004";
+            //     }
+            // }
+            // TaskService.abnormal(vm.aRemarkArray).success(function (data) {
+            //
+            // });
+            // vm.aRemarkArray = [];
+            // var tableCtrl = _getSampleDetailsTableCtrl();
+            // tableCtrl.loadData(vm.tubes);
         }
         //装盒
         function _fnBoxInModal() {

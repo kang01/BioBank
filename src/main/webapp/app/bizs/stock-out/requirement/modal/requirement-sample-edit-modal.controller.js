@@ -24,11 +24,11 @@
                 isBloodLipid:false,
                 memo:null,
                 sampleClassificationId:null,
-                age:"30;70"
+                age:"0;0"
             };
         }
 
-        if(!vm.sampleRequirement.age){
+        if(vm.sampleRequirement.age == "0;0"){
             vm.isAge = false;
         }else{
             vm.isAge = true;

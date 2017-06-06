@@ -84,6 +84,7 @@
         function _fnRecover() {
             boxList = [];
             vm.selectAll = false;
+            vm.pos = "";
             //临时盒子
             TaskService.queryTempBoxes(taskId).success(function (data) {
                 for(var i = 0; i < data.length; i++){
@@ -98,8 +99,9 @@
                 boxInTubes[i].checkedFlag = false;
                 boxInTubes[i].sampleTypeName = boxInTubes[i].sampleType.sampleTypeName;
             }
-            vm.sampleOptions.withOption('data', boxInTubes);
-            vm.sampleInstance.rerender();
+            boxInTubesCopy = [];
+            boxInTubesCopy = angular.copy(boxInTubes);
+            _fnLoadTube();
         }
 
 
@@ -264,8 +266,12 @@
         //装盒
         var tempBoxList = [];
         function _fnBoxIn() {
+
             for(var i = 0; i < vm.selectedTubes.length;i++){
-                selectBox.frozenTubeDTOS.push(vm.selectedTubes[i])
+                var index = _.indexOf(selectBox.frozenTubeDTOS, vm.selectedTubes[i]);
+                if(index == '-1'){
+                    selectBox.frozenTubeDTOS.push(vm.selectedTubes[i])
+                }
             }
             tempBoxList.push(selectBox);
         }
@@ -322,14 +328,17 @@
                 '</div>'
         }
 
-        setTimeout(function () {
-            for(var i = 0; i < boxInTubesCopy.length; i++){
-                boxInTubesCopy[i].pos = "";
-                boxInTubesCopy[i].checkedFlag = false;
-                boxInTubesCopy[i].sampleTypeName = boxInTubesCopy[i].sampleType.sampleTypeName;
-            }
-            vm.sampleOptions.withOption('data', boxInTubesCopy);
-        },500);
+        function _fnLoadTube() {
+            setTimeout(function () {
+                for(var i = 0; i < boxInTubesCopy.length; i++){
+                    boxInTubesCopy[i].pos = "";
+                    boxInTubesCopy[i].checkedFlag = false;
+                    boxInTubesCopy[i].sampleTypeName = boxInTubesCopy[i].sampleType.sampleTypeName;
+                }
+                vm.sampleOptions.withOption('data', boxInTubesCopy);
+            },500);
+        }
+        _fnLoadTube();
         //向上排序
         var operateTubes = [];
         vm.sampleUp = function (oIndex) {

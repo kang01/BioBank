@@ -11,7 +11,7 @@
             <input type="text" class="form-control" ng-model="vm.sampleRequirement.requirementName">
         </div>
         <div class="form-group col-md-2">
-            <label >样本量</label>
+            <label >样本量<span class="required-field"></span></label>
             <input type="text" class="form-control" ng-model="vm.sampleRequirement.countOfSample">
         </div>
         <div class="form-group col-md-4 self-upload">
@@ -79,6 +79,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.saveSampleRequirement(vm.file)" ng-disabled="!vm.sampleRequirement.requirementName">确定</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.saveSampleRequirement(vm.file)" ng-disabled="!vm.sampleRequirement.requirementName || !vm.sampleRequirement.countOfSample">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>

@@ -549,7 +549,7 @@ td .details-control {
     height: 10px;
     background: url('../images/details_open.png') no-repeat center center;
     cursor: pointer;
-    margin-left: 6px;
+    margin-left: 30%;
 }
 tr.shown td .details-control {
     background: url('../images/details_close.png') no-repeat center center;

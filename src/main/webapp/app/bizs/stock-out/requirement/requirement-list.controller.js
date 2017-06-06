@@ -133,12 +133,12 @@
 
             $('td', row).unbind('click');
             $('td:first',row).css("cursor","pointer");
-            $('td:first',row).bind('click',function () {
-                // $scope.$apply(function () {
-                // })
-                // var tr = $(this).closest("tr");
-                extraClickHandler(row);
-            });
+            if(data.levelNo == 1){
+                $('td:first',row).bind('click',function () {
+                    extraClickHandler(row);
+                });
+            }
+
             $compile(angular.element(row).contents())($scope);
         }
         //展开
@@ -208,7 +208,11 @@
                 '</button>&nbsp;';
         }
         function extraHtml(data, type, full, meta) {
-            return '<div class="details-control"></div>'
+            var html = '';
+            if(full.levelNo == 1){
+                html = '<div class="details-control"></div>'
+            }
+            return html;
         }
 
 

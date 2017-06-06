@@ -356,35 +356,39 @@
             }
         };
         function _fnTransposition(currentTube,preTube) {
+            if(vm.pos){
+                var middleTube = {
+                    tubeRows: currentTube.tubeRows,
+                    tubeColumns:currentTube.tubeColumns,
+                    pos:currentTube.pos,
+                    orderIndex:currentTube.orderIndex
+                };
+                currentTube.tubeRows = preTube.tubeRows;
+                currentTube.tubeColumns = preTube.tubeColumns;
+                currentTube.pos = preTube.pos;
+                currentTube.orderIndex = preTube.orderIndex;
 
-            var middleTube = {
-                tubeRows: currentTube.tubeRows,
-                tubeColumns:currentTube.tubeColumns,
-                pos:currentTube.pos,
-                orderIndex:currentTube.orderIndex
-            };
-            currentTube.tubeRows = preTube.tubeRows;
-            currentTube.tubeColumns = preTube.tubeColumns;
-            currentTube.pos = preTube.pos;
-            currentTube.orderIndex = preTube.orderIndex;
+                preTube.tubeRows = middleTube.tubeRows;
+                preTube.tubeColumns = middleTube.tubeColumns;
+                preTube.pos = middleTube.pos;
+                preTube.orderIndex = middleTube.orderIndex;
 
-            preTube.tubeRows = middleTube.tubeRows;
-            preTube.tubeColumns = middleTube.tubeColumns;
-            preTube.pos = middleTube.pos;
-            preTube.orderIndex = middleTube.orderIndex;
-
-
-
-            for(var i = 0; i < boxInTubesCopy.length; i++){
-                for(var j = 0; j < operateTubes.length; j++){
-                    if(operateTubes[j].id == boxInTubesCopy[i].id){
-                        boxInTubesCopy[i] = operateTubes[j];
+                for(var i = 0; i < boxInTubesCopy.length; i++){
+                    for(var j = 0; j < operateTubes.length; j++){
+                        if(operateTubes[j].id == boxInTubesCopy[i].id){
+                            boxInTubesCopy[i] = operateTubes[j];
+                        }
                     }
                 }
+                boxInTubesCopy = _.orderBy(boxInTubesCopy,['orderIndex'],['esc']);
+                vm.sampleOptions.withOption('data', boxInTubesCopy);
+                vm.sampleInstance.rerender();
             }
-            boxInTubesCopy = _.orderBy(boxInTubesCopy,['orderIndex'],['esc']);
-            vm.sampleOptions.withOption('data', boxInTubesCopy);
-            vm.sampleInstance.rerender();
+
+
+
+
+
         }
 
         vm.yes = function () {

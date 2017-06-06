@@ -8,6 +8,7 @@ public class StockOutFrozenTubeForPlan {
     private String sampleCode;
     private String status;
     private String SampleTypeName;
+    private String SampleClassificationName;
     private String sex;
     private Integer age;
     private Long sampleUsedTimes;
@@ -43,6 +44,14 @@ public class StockOutFrozenTubeForPlan {
 
     public void setSampleTypeName(String sampleTypeName) {
         SampleTypeName = sampleTypeName;
+    }
+
+    public String getSampleClassificationName() {
+        return SampleClassificationName;
+    }
+
+    public void setSampleClassificationName(String sampleClassificationName) {
+        SampleClassificationName = sampleClassificationName;
     }
 
     public String getSex() {

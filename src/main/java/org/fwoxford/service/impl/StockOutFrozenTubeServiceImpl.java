@@ -139,6 +139,7 @@ public class StockOutFrozenTubeServiceImpl implements StockOutFrozenTubeService{
             tube.setAge(tubeS.getAge());
             tube.setSex(Constants.SEX_MAP.get(tubeS.getGender())!=null?(String)Constants.SEX_MAP.get(tubeS.getGender()):null);
             tube.setSampleUsedTimes(Long.valueOf(tubeS.getSampleUsedTimes()!=null?tubeS.getSampleUsedTimes():0));
+            tube.setSampleClassificationName(tubeS.getSampleClassification()!=null?tubeS.getSampleClassification().getSampleClassificationName():null);
             tube.setSampleCode(tubeS.getSampleCode());
             tube.setMemo(tubeS.getMemo());
             result.add(tube);

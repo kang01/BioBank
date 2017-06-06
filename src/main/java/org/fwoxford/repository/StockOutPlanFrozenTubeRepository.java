@@ -25,5 +25,9 @@ public interface StockOutPlanFrozenTubeRepository extends JpaRepository<StockOut
     @Query("select count(t) from StockOutPlanFrozenTube t where t.stockOutReqFrozenTube.stockOutRequirement.id in ?1 and t.stockOutReqFrozenTube.frozenBox.id=?2 and t.status ='1501'")
     Long countByFrozenBoxIdAndRequirement(List<Long> ids, Long id);
 
-    Long countByStockOutPlanId(Long planId);
+    @Modifying
+    @Query("update StockOutPlanFrozenTube t set t.status = '1503' where t.id in ?1")
+    void updateByStockOutFrozenTubeIds(List<Long> planTubes);
+
+    Long countByStockOutPlanIdAndStatusNot(Long planId, String status);
 }

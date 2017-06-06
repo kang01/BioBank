@@ -82,7 +82,8 @@
         }
         //复原
         function _fnRecover() {
-            boxList = []
+            boxList = [];
+            vm.selectAll = false;
             //临时盒子
             TaskService.queryTempBoxes(taskId).success(function (data) {
                 for(var i = 0; i < data.length; i++){
@@ -92,7 +93,12 @@
                 vm.tempBoxOptions.withOption('data', boxList);
                 vm.tempBoxInstance.rerender();
             });
-            vm.sampleOptions.withOption('data', boxInTubesCopy);
+            for(var i = 0; i < boxInTubes.length; i++){
+                boxInTubes[i].pos = "";
+                boxInTubes[i].checkedFlag = false;
+                boxInTubes[i].sampleTypeName = boxInTubes[i].sampleType.sampleTypeName;
+            }
+            vm.sampleOptions.withOption('data', boxInTubes);
             vm.sampleInstance.rerender();
         }
 
@@ -326,7 +332,6 @@
         },500);
         //向上排序
         var operateTubes = [];
-
         vm.sampleUp = function (oIndex) {
             operateTubes = [];
             operateTubes = _.filter(boxInTubesCopy,{checkedFlag:true});
@@ -343,7 +348,7 @@
             operateTubes = [];
             operateTubes = _.filter(boxInTubesCopy,{checkedFlag:true});
 
-            if(operateTubes > 1){
+            if(operateTubes.length > 1){
                 var index = _.findIndex(operateTubes,{orderIndex:oIndex});
                 var currentTube =  operateTubes[index];
                 var preTube =  operateTubes[index+1];
@@ -378,7 +383,6 @@
                 }
             }
             boxInTubesCopy = _.orderBy(boxInTubesCopy,['orderIndex'],['esc']);
-            console.log(JSON.stringify(boxInTubesCopy))
             vm.sampleOptions.withOption('data', boxInTubesCopy);
             vm.sampleInstance.rerender();
         }

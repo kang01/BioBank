@@ -25,6 +25,10 @@
         if($stateParams.applyId){
             vm.requirement.id = $stateParams.applyId;
         }
+        var viewFlag;
+        if($stateParams.viewFlag){
+            viewFlag = $stateParams.viewFlag;
+        }
         //初始化数据
         function _initData() {
             _requirementInfo();
@@ -52,11 +56,18 @@
                 }
 
             }
-            vm.requirement.stockOutRequirement = [];
-            setTimeout(function () {
-                vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
-                vm.isApproval();
-            },100)
+            if(viewFlag != "1"){
+                vm.requirement.stockOutRequirement = [];
+                setTimeout(function () {
+                    vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
+                    vm.isApproval();
+                },100)
+            }else{
+                setTimeout(function () {
+                    vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
+                },100)
+            }
+
         }
 
         //打印申请
@@ -155,8 +166,11 @@
             DTColumnBuilder.newColumn('diseaseTypeId').withTitle('疾病'),
             DTColumnBuilder.newColumn('samples').withTitle('指定样本编码').withClass('text-ellipsis'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
+
         ];
+        if(!viewFlag){
+            vm.dtColumns.push(DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml))
+        }
         function createdRow(row, data, dataIndex) {
             var status = '';
             var diseaseType = '';

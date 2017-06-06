@@ -125,5 +125,28 @@
                     }]
                 }
             })
+            .state('requirement-view', {
+                parent: 'bizs',
+                url: '/requirement-list/{applyId}/view/{viewFlag}',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
+                    pageTitle: 'stockOut.new.title'
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/stock-out/requirement/requirement-view.html',
+                        controller: 'RequirementAdditionApplyController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        return $translate.refresh();
+                    }],
+                    entity: ['$stateParams', 'RequirementService', function($stateParams, RequirementService) {
+                        return RequirementService.queryRequirementDesc($stateParams.applyId);
+                    }]
+                }
+            })
     }
 })();

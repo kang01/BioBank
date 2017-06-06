@@ -49,11 +49,12 @@
             RequirementService.approveSampleRequirement(vm.requirement.id,vm.approve).success(function (data) {
                 BioBankBlockUi.blockUiStop();
                 toastr.success("批准成功!");
+                $uibModalInstance.close();
             }).error(function (data) {
                 BioBankBlockUi.blockUiStop();
                 toastr.error("批准失败!");
             });
-            $uibModalInstance.close();
+
         };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

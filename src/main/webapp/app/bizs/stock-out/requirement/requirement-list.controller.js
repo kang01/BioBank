@@ -178,7 +178,7 @@
 
                     );
                 if(items[i].status == '1101'){
-                    $(tr).append("<td ><button  class='btn btn-warning addApplyId btn-xs'><i class='fa fa-edit'></i></button></td>")
+                    $(tr).append("<td ><button  class='btn btn-xs addApplyId btn-xs'><i class='fa fa-edit'></i></button></td>")
                 }
                 $(".addApplyId", tr).click(function(){
                    var applyId = $(tr)[0].childNodes[0].innerText;
@@ -201,11 +201,19 @@
 
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-warning btn-xs" ui-sref="requirement-edit({applyId:'+ full.id +'})">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;'+ '<button ng-if="'+full.status+'== 1103" type="button" class="btn btn-warning btn-xs" ui-sref="requirement-edit({applyId:'+ full.id +',addApplyFlag:1})">' +
-                '附加' +
-                '</button>&nbsp;';
+            if(full.status == '1103'){
+                return '<button type="button" class="btn btn-xs" ui-sref="take-over-view({id:'+ full.id +'})">' +
+                    '   <i class="fa fa-eye"></i>' +
+                    '</button>&nbsp;'+
+                    '<button type="button" class="btn btn-xs" ui-sref="requirement-edit({applyId:'+ full.id +',addApplyFlag:1})">' +
+                    '附加' +
+                    '</button>&nbsp;';
+            }else{
+                return '<button type="button" class="btn btn-xs" ui-sref="requirement-edit({applyId:'+ full.id +'})">' +
+                    '   <i class="fa fa-edit"></i>' +
+                    '</button>&nbsp;'
+            }
+
         }
         function extraHtml(data, type, full, meta) {
             var html = '';

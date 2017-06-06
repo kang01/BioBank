@@ -209,7 +209,7 @@
             vm.dtInstance.reloadData();
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-warning" ui-sref="transport-record-edit({id:'+ full.id +'})">' +
+            return '<button type="button" class="btn btn-xs" ui-sref="transport-record-edit({id:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;'
         }

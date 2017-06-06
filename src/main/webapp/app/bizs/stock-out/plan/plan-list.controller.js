@@ -119,7 +119,7 @@
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-warning" ui-sref="plan-edit({planId:'+ full.id +'})">' +
+            return '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;'
         }

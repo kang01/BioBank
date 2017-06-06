@@ -114,15 +114,27 @@
 
                             vm.selectAll = false;
                             vm.selected = {};
-                            var json = res.data;
-                            var error = json.error || json.sError;
-                            if ( error ) {
-                                jqDt._fnLog( oSettings, 0, error );
+                            var json;
+                            if(res.data.data.length){
+                                json = res.data;
+                                var error = json.error || json.sError;
+                                if ( error ) {
+                                    jqDt._fnLog( oSettings, 0, error );
+                                }
+                                oSettings.json = json;
+                                boxId = res.data.data[0].id
+                                _loadTubes(boxId);
+                            }else{
+                                var array = {
+                                    draw : 1,
+                                    recordsTotal : 100,
+                                    recordsFiltered : 10,
+                                    data: [ ],
+                                    error : ""
+                                };
+                                json = array;
                             }
-                            oSettings.json = json;
-                            boxId = res.data.data[0].id
-                            console.log();
-                            _loadTubes(boxId);
+
                             fnCallback( json );
                         }).catch(function(res){
                             // console.log(res);

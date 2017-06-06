@@ -110,8 +110,9 @@
         vm.ok = function () {
             TaskService.saveOutput(taskId,frozenBoxIds,vm.stockOut).success(function (data) {
                 toastr.success("出库成功!");
+                $uibModalInstance.close();
             });
-            $uibModalInstance.close();
+
         };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

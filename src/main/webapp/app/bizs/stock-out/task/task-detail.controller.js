@@ -127,14 +127,14 @@
             .withOption('paging', false)
             .withOption('sorting', false)
             .withScroller()
-            .withOption('scrollY', 398)
+            .withOption('scrollY', 371)
             .withOption('rowCallback', rowCallback);
         vm.boxColumns = [
             DTColumnBuilder.newColumn('id').notVisible(),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码'),
-            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "50"),
-            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置'),
-            DTColumnBuilder.newColumn('countOfSample').withTitle('出库样本量')
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "50"),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('类型').withOption("width", "80"),
+            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "200"),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('数量').withOption("width", "50")
         ];
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
             $('td', nRow).unbind('click');
@@ -619,7 +619,7 @@
             .withOption('paging', false)
             .withOption('sorting', false)
             .withScroller()
-            .withOption('scrollY', 398)
+            .withOption('scrollY', 300)
             .withOption('createdRow', createdRow)
             .withOption('headerCallback', function(header) {
                 $compile(angular.element(header).contents())($scope);

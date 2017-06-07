@@ -414,8 +414,19 @@
 
  table.dataTable tbody th,
  table.dataTable tbody td{
-    padding: 4px 18px;
+    padding: 4px 8px;
      vertical-align: middle;
+}
+table.dataTable thead th, table.dataTable thead td {
+    padding: 10px 8px;
+    /*border-bottom: 1px solid #111;*/
+}
+table.dataTable tfoot th, table.dataTable tfoot td {
+    padding: 10px 8px 6px 8px;
+    border: 1px solid #ddd;
+}
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+    border-bottom: 0px solid #111;
 }
 /*.transport-record-new .three-col{*/
     /*width: 33%;*/
@@ -696,4 +707,8 @@ tr.shown td .details-control {
 
 .no-padding .dataTables_wrapper{
     padding: 0;
+}
+
+.panel-heading {
+    padding: 3px 15px;
 }

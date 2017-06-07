@@ -39,7 +39,11 @@
 
         if (entity){
             vm.dto = entity;
-            vm.dto.handoverTime = new Date(entity.handoverTime);
+            if(entity.handoverTime){
+                vm.dto.handoverTime = new Date(entity.handoverTime);
+            }else{
+                vm.dto.handoverTime = new Date();
+            }
             for(var i = 0; i < handoverStatus.length; i++){
                 if(entity.status == handoverStatus[i].id){
                     vm.statusName = handoverStatus[i].name;

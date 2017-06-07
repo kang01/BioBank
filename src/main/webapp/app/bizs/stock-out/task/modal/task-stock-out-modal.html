@@ -1,43 +1,52 @@
-<div class="modal-header">
-    <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
-    <h3 class="modal-title" id="modal-title">样本出库</h3>
-</div>
-<div class="modal-body" id="modal-body">
-    <div class="row m-0 form-horizontal">
-        <div class="col-md-3 form-group">
-            <label  class="col-sm-4 control-label">冻存设备</label>
-            <div class="col-sm-8">
-                <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig" style="width: 100%"
-                           ng-model="vm.stockOut.equipmentId"></selectize>
-                <input type="hidden" ng-model="vm.stockOut.equipmentId" required>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <label  class="col-sm-4 control-label">冻存区</label>
-            <div class="col-sm-8">
-                <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig" style="width: 100%"
-                           ng-model="vm.stockOut.areaId"></selectize>
-                <input type="hidden" ng-model="vm.stockOut.areaId" required>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <label  class="col-sm-4 control-label">负责人1密钥</label>
-            <div class="col-sm-8">
-                <input type="password" class="form-control"  ng-model="vm.stockOut.password1">
-            </div>
-        </div>
-        <div class="col-md-3">
-            <label  class="col-sm-4 control-label">负责人2密钥</label>
-            <div class="col-sm-8">
-                <input type="password" class="form-control" ng-model="vm.stockOut.password2">
-            </div>
-        </div>
+<form class="stockOutForm" novalidate>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
+        <h3 class="modal-title" id="modal-title">样本出库</h3>
     </div>
-    <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance" class=" table table-striped table-bordered">
-    </table>
-</div>
-<div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()" >确定</button>
-    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
-</div>
-
+    <div class="modal-body" id="modal-body">
+        <div class="row m0 form-horizontal">
+            <div class="col-md-3 form-group">
+                <label  class="col-sm-4 control-label">冻存设备
+                    <span class="required-field"></span>
+                </label>
+                <div class="col-sm-8">
+                    <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig" style="width: 100%"
+                               ng-model="vm.stockOut.equipmentId"></selectize>
+                    <input type="hidden" ng-model="vm.stockOut.equipmentId" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label  class="col-sm-4 control-label">冻存区
+                    <span class="required-field"></span>
+                </label>
+                <div class="col-sm-8">
+                    <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig" style="width: 100%"
+                               ng-model="vm.stockOut.areaId"></selectize>
+                    <input type="hidden" ng-model="vm.stockOut.areaId" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label  class="col-sm-4 control-label">负责人1密钥
+                    <span class="required-field"></span>
+                </label>
+                <div class="col-sm-8">
+                    <input type="password" class="form-control"  ng-model="vm.stockOut.password1" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label  class="col-sm-4 control-label">负责人2密钥
+                    <span class="required-field"></span>
+                </label>
+                <div class="col-sm-8">
+                    <input type="password" class="form-control" ng-model="vm.stockOut.password2" required>
+                </div>
+            </div>
+        </div>
+        <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance" class=" table table-striped table-bordered">
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="stockOutForm.$invalid">确定</button>
+        <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+    </div>
+</form>

@@ -10,7 +10,7 @@
                 <button class="btn btn-primary" ng-click="vm.additionApply()" ng-if="vm.requirement.status == '1103'">附加申请</button>
                 <div class="pull-left" ng-if="vm.requirement.status != '1103'">
 
-                    <button class="btn btn-primary" ng-click="vm.printRequirement()">打印出库申请</button>
+                    <button class="btn btn-primary" ng-click="vm.printRequirement()" ng-disabled="!vm.requirementApplyFlag || applyForm.$invalid">打印出库申请</button>
                     <button class="btn btn-primary" ng-click="vm.approvalModal()" ng-disabled="!vm.requirementApplyFlag || applyForm.$invalid">批准</button>
                     <!--<button class="btn btn-primary" ng-click="vm.sampleDescModal()">样本库存详情</button>-->
 

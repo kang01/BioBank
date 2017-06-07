@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TakeOverModalController', TakeOverModalController);
 
-    TakeOverModalController.$inject = ['$uibModalInstance','$uibModal','items','TakeOverService','toastr'];
+    TakeOverModalController.$inject = ['$uibModalInstance','$uibModal','items','TakeOverService','toastr','SampleUserService'];
 
-    function TakeOverModalController($uibModalInstance,$uibModal,items,TakeOverService,toastr) {
+    function TakeOverModalController($uibModalInstance,$uibModal,items,TakeOverService,toastr,SampleUserService) {
         var vm = this;
         vm.takeOver = {};
         vm.datePickerOpenStatus = {};
@@ -27,7 +27,21 @@
         vm.takeOver.id = items.stockOutTakeOver.id;
         vm.takeOver.handoverTime = new Date();
 
-
+        //交付人
+        SampleUserService.query({},onReceiverSuccess, onError);
+        function onReceiverSuccess(data) {
+            vm.loginOptions = data;
+        }
+        //交付人
+        vm.loginConfig = {
+            valueField:'id',
+            labelField:'userName',
+            maxItems: 1,
+            onChange:function (value) {
+                vm.takeOver.handoverPersonId = value;
+                // vm.dto.handoverPersonName = _.filter(vm.loginOptions,{id:+value})[0].userName;
+            }
+        };
         // _.each(stockOutBoxes, function(b){
         //     vm.countOfSamples += b.countOfSample;
         // });
@@ -46,6 +60,10 @@
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
+
+        function onError(error) {
+            toastr.error(error.message);
+        }
 
 
     }

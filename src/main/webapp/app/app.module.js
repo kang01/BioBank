@@ -33,10 +33,34 @@
         ])
         .run(run);
 
-    run.$inject = ['stateHandler', 'translationHandler'];
+    run.$inject = ['stateHandler', 'translationHandler','Auth'];
 
-    function run(stateHandler, translationHandler) {
+    function run(stateHandler, translationHandler,Auth) {
         stateHandler.initialize();
         translationHandler.initialize();
+
+
+        // window.onbeforeunload = function (e) {
+        //
+        //     var message = '';
+        //     e = e || window.event;
+        //
+        //     if (e) {
+        //         e.returnValue = message;
+        //         Auth.logout();
+        //     }
+        //
+        //     return message;
+        // };
+
+        // $(window).bind('beforeunload', function(eventObject) {
+        //     var returnValue = undefined;
+        //     returnValue = "Do you really want to close?";
+        //     eventObject.returnValue = returnValue;
+        //
+        //     Auth.logout();
+        //
+        //     return returnValue;
+        // });
     }
 })();

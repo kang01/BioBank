@@ -72,8 +72,9 @@
             //获取已出库列表
             TaskService.queryOutputList(vm.taskId).success(function (data) {
                 vm.stockOutBoxList = data;
+                //1702已出库
                 vm.stockOutLen = _.filter(vm.stockOutBoxList,{status:"1702"}).length;
-                console.log(vm.stockOutLen);
+
                 vm.stockOutSampleOptions.withOption('data', vm.stockOutBoxList);
                 vm.stockOutSampleInstance.rerender();
             })
@@ -94,13 +95,14 @@
         function _fnPrintBox() {
             window.open ('/api/stock-out-frozen-boxes/task/' + vm.taskId +'/print');
         }
+        //样本交接
         function _fnTakeOver() {
             var obj = {
-                applyId:"",
+                applyId:vm.task.stockOutApplyId,
                 planId:vm.task.stockOutPlanId,
                 taskId:vm.task.id
             };
-            $state.go('take-over-edit',{obj:obj});
+            $state.go('take-over-new',obj);
             // BioBankBlockUi.blockUiStart();
             // TaskService.takeOver(vm.taskId).success(function (data) {
             //     BioBankBlockUi.blockUiStop();

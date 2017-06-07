@@ -10,15 +10,17 @@
         .controller('TakeOverDetailController', TakeOverDetailController);
 
     TakeOverDetailController.$inject = ['$scope','$state','$stateParams','$uibModal','$compile','DTOptionsBuilder','DTColumnBuilder','toastr',
-        'TakeOverService','SampleUserService','StockOutService','entity','MasterData','takeOverParams'];
+        'TakeOverService','SampleUserService','StockOutService','entity','MasterData'];
 
     function TakeOverDetailController($scope,$state,$stateParams,$uibModal,$compile,DTOptionsBuilder,DTColumnBuilder,toastr,
-                                      TakeOverService,SampleUserService,StockOutService,entity,MasterData,takeOverParams) {
+                                      TakeOverService,SampleUserService,StockOutService,entity,MasterData) {
         var vm = this;
         var modalInstance;
         //样本交接Modal
         vm.takeOverModal = _fnTakeOverModal;
-        console.log(JSON.stringify(takeOverParams))
+        var applyId = $stateParams.applyId;
+        var planId = $stateParams.planId;
+        var taskId = $stateParams.taskId;
         vm.dto = {
             id: null,
             handoverCode: '',
@@ -103,7 +105,7 @@
         }
 
         function _initTakeoverEditors(){
-            //接收人
+            //交付人
             SampleUserService.query({},onReceiverSuccess, onError)
             function onReceiverSuccess(data) {
                 vm.loginOptions = data;
@@ -126,7 +128,13 @@
             vm.applicationOptions = [];
             StockOutService.getApplications().then(function(res){
                 vm.applicationOptions = res.data;
-
+                if(applyId){
+                    vm.dto.stockOutApplyId = applyId;
+                    _fnGetPlans(applyId)
+                }
+                if(planId){
+                    _fnGetTasks(planId)
+                }
                 if (vm.dto.stockOutApplyId){
                     vm.application = _.find(vm.applicationOptions, {id:vm.dto.stockOutApplyId});
                 }
@@ -194,7 +202,10 @@
             };
             vm.save = function (){
                 TakeOverService.saveTakeoverInfo(vm.dto).then(function(res){
-                    toastr.success("交接信息以保存!");
+                    if(!takeOverFlag){
+                        toastr.success("交接信息以保存!");
+                    }
+
                 }, onError);
             };
 
@@ -378,7 +389,7 @@
 
         }
 
-
+        var takeOverFlag = false;
         function _fnTakeOverModal(){
             // var table = vm.dtInstance.DataTable;
             // var boxes = [];
@@ -392,7 +403,8 @@
             //     }
             // });
             // console.log(JSON.stringify(boxes))
-
+            takeOverFlag = true;
+            vm.save();
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/take-over/modal/take-over-modal.html',
@@ -411,7 +423,10 @@
             });
             //
             modalInstance.result.then(function (data) {
+                takeOverFlag = false;
                 $state.go("take-over-list");
+            },function (data) {
+                takeOverFlag = false;
             });
         }
 

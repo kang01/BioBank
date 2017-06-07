@@ -53,6 +53,11 @@
             .state('take-over-new', {
                 parent: 'bizs',
                 url: '/take-over-list/new',
+                params:{
+                    applyId:null,
+                    planId:null,
+                    taskId:null
+                },
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN']
                 },
@@ -88,13 +93,6 @@
                     }
                 },
                 resolve: {
-                    takeOverParams: ['$stateParams', function ($stateParams) {
-                        return {
-                            applyId:$stateParams.applyId,
-                            planId:$stateParams.planId,
-                            taskId:$stateParams.taskId
-                        };
-                    }],
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                         return $translate.refresh();
                     }],

@@ -39,7 +39,7 @@
                     vm.demand[data.id] = true;
                     vm.sampleIds = vm.checked.join(",");
                     _queryPlanBoxes()
-                })
+                });
                 vm.select_all = true;
             }).then(function () {
 
@@ -375,6 +375,8 @@
             vm.strBoxIds = "";
             setTimeout(function () {
                 vm.dtInstance.rerender();
+                vm.tubeOptions.withOption('data', []);
+                vm.tubeInstance.rerender();
             },100)
 
         }
@@ -391,7 +393,7 @@
                     vm.taskInstance.rerender();
                 })
             }else{
-                toastr.warning("请选择申请出库的冻存盒!");
+                toastr.warning("请勾选申请出库的冻存盒!");
             }
 
         }

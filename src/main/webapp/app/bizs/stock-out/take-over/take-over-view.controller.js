@@ -9,10 +9,18 @@
         .module('bioBankApp')
         .controller('TakeOverViewController', TakeOverViewController);
 
-    TakeOverViewController.$inject = ['$scope','$uibModal'];
+    TakeOverViewController.$inject = ['$scope','$uibModal','entity'];
 
-    function TakeOverViewController($scope,$uibModal) {
+    function TakeOverViewController($scope,$uibModal,entity) {
         var vm = this;
+
+        vm.stockOutTakeOver = entity;
+
+
+
+        vm.takeOverPrint = function () {
+            window.open ('/api/stock-out-handovers/print/' + vm.dto.id);
+        };
         var modalInstance;
         //样本交接
         vm.takeOverModal = _fnTakeOverModal;

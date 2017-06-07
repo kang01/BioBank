@@ -23,7 +23,9 @@
             <div class="form-group">
                 <label class="col-sm-4 control-label">交付人</label>
                 <div class="col-sm-8">
-                    <input type="email" class="form-control" ng-model="vm.takeOver.handoverPersonName" ng-disabled="true">
+                    <!--<input type="email" class="form-control" ng-model="vm.takeOver.handoverPersonName" ng-disabled="true">-->
+                    <selectize options='vm.loginOptions' config="vm.loginConfig"
+                               ng-model="vm.takeOver.handoverPersonId"></selectize>
                 </div>
             </div>
         </div>

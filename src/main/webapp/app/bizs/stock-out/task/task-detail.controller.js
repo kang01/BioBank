@@ -249,7 +249,6 @@
         function _initSampleDetailsTable() {
             var remarkArray;//批注
             vm.aRemarkArray = [];
-            var domArray = [];
             vm.sampleDetailsTableSettings = {
                 // 点击表格外部时，表格内选项仍然能够选中
                 outsideClickDeselectsCache: false,
@@ -291,15 +290,15 @@
                 onAfterSelectionEnd:function (row, col, row2, col2) {
                     var td = this;
                     remarkArray = this.getData(row,col,row2,col2);
-                    var selectTubeArray = this.getSelected();
+                    vm.selectTubeArray = this.getSelected();
 
 
                     if(window.event && window.event.ctrlKey){
-                        _fnRemarkSelectData(td,remarkArray,selectTubeArray)
+                        _fnRemarkSelectData(td,remarkArray,vm.selectTubeArray)
                     }else{
                         $(".tube-selected").remove();
                         vm.aRemarkArray = [];
-                        _fnRemarkSelectData(td,remarkArray,selectTubeArray)
+                        _fnRemarkSelectData(td,remarkArray,vm.selectTubeArray)
 
 
                     }
@@ -373,7 +372,9 @@
                     for(var j = selectTubeArray[1];  j <= selectTubeArray[3];j++)
                         $(td.getCell(i,j)).append(txt);
                 }
+                console.log(JSON.stringify(vm.aRemarkArray.length))
             }
+            console.log(JSON.stringify(vm.aRemarkArray.length))
             //修改样本状态正常、空管、空孔、异常
             function changeSampleStatus(sampleStatus,td) {
                 //异常
@@ -397,10 +398,10 @@
                 var stockOutTubes = _.filter(vm.tubeList,{stockOutFlag:1});
 
                 //获取扫码取得样本
-                var scanCodeTubes = _.filter(stockOutTubes,{sampleTempCode:vm.sampleCode});
-                if(scanCodeTubes.length){
-                    var row = scanCodeTubes[0].rowNO;
-                    var col = scanCodeTubes[0].colNO;
+                vm.scanCodeTubes = _.filter(stockOutTubes,{sampleTempCode:vm.sampleCode});
+                if(vm.scanCodeTubes.length){
+                    var row = vm.scanCodeTubes[0].rowNO;
+                    var col = vm.scanCodeTubes[0].colNO;
                     //扫码标识
                     vm.tubes[row][col-1].scanCodeFlag = true;
 

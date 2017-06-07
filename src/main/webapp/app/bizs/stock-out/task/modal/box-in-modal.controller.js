@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskBoxInModalController', TaskBoxInModalController);
 
-    TaskBoxInModalController.$inject = ['$scope','$compile','$uibModalInstance','$uibModal','toastr','items','DTOptionsBuilder','DTColumnBuilder','TaskService','FrozenBoxTypesService','BioBankBlockUi'];
+    TaskBoxInModalController.$inject = ['$scope','$compile','$uibModalInstance','$uibModal','toastr','items','DTOptionsBuilder','DTColumnBuilder','TaskService','FrozenBoxTypesService','BioBankBlockUi','BoxCodeIsRepeatService'];
 
-    function TaskBoxInModalController($scope,$compile,$uibModalInstance,$uibModal,toastr,items,DTOptionsBuilder,DTColumnBuilder,TaskService,FrozenBoxTypesService,BioBankBlockUi) {
+    function TaskBoxInModalController($scope,$compile,$uibModalInstance,$uibModal,toastr,items,DTOptionsBuilder,DTColumnBuilder,TaskService,FrozenBoxTypesService,BioBankBlockUi,BoxCodeIsRepeatService) {
         var vm = this;
         vm.tempBoxInstance = {};
         vm.sampleInstance = {};
@@ -74,10 +74,25 @@
         _init();
         //添加新盒
         function _fnAddNewBox(){
-            boxList.push(angular.copy(vm.box))
-            // vm.tempBoxInstance.DataTable.draw();
-            vm.tempBoxOptions.withOption('data', boxList);
-            vm.tempBoxInstance.rerender();
+            var len = _.filter(boxList,{frozenBoxCode:vm.box.frozenBoxCode}).length;
+            if(len == 0){
+                boxList.push(angular.copy(vm.box));
+                vm.tempBoxOptions.withOption('data', boxList);
+                vm.tempBoxInstance.rerender();
+            }else{
+                toastr.error("冻存盒编码已存在!");
+            }
+            // BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
+            //     vm.isRepeat = data;
+            //     if (vm.isRepeat){
+            //         toastr.error("冻存盒编码已存在!");
+            //         vm.box.frozenBoxCode = "";
+            //         return;
+            //     }
+            //
+            //
+            // });
+
 
         }
         //复原

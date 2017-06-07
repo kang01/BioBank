@@ -11,7 +11,7 @@
                 <!--<button class="btn btn-primary" ng-click="vm.abnormalModal()">异常或撤销申请</button>-->
                 <!--<button class="btn btn-primary" ng-click="vm.commentModal()">批注</button>-->
                 <!--<button class="btn btn-primary" ng-click="vm.boxInModal()">装盒</button>-->
-                <button class="btn btn-primary" ng-click="vm.takeOver()">样本交接</button>
+                <button class="btn btn-primary" ng-click="vm.takeOver()" ng-disabled="!vm.stockOutLen">样本交接</button>
                 <button class="btn btn-primary" ng-click="vm.saveTask()">保存任务</button>
                 <button class="btn btn-default" ui-sref="task-list">关闭</button>
             </div>
@@ -114,12 +114,12 @@
                         <h4>已出库样本</h4>
                     </div>
                     <div class="pull-right">
-                        <button class="btn btn-default" ng-click="vm.taskStockOutModal()" ng-disabled="!vm.task.stockOutHeadId1 || !vm.task.stockOutHeadId2">批量出库</button>
+                        <button class="btn btn-default" ng-click="vm.taskStockOutModal()" ng-disabled="!vm.task.stockOutHeadId1 || !vm.task.stockOutHeadId2 || !vm.stockOutBoxList.length">批量出库</button>
                     </div>
                     <div class="clear-both"></div>
 
                 </div>
-                <div class="panel-body">
+                <div class="panel-body p-0">
                     <table datatable="" dt-options="vm.stockOutSampleOptions" dt-columns="vm.stockOutSampleColumns" dt-instance="vm.stockOutSampleInstance" class=" table table-striped table-bordered"></table>
                 </div>
             </div>

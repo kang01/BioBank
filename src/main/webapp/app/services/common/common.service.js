@@ -58,7 +58,7 @@
             var _stockOutTaskBoxStatus = [
                 {id:"1701",name:"待出库"},
                 {id:"1702",name:"已出库"},
-                {id:"1703",name:"已交接"},
+                {id:"1703",name:"已交接"}
             ];
 
             var allStatus = null

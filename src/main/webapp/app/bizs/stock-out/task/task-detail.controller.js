@@ -71,7 +71,10 @@
         function _fnQueryStockOutList() {
             //获取已出库列表
             TaskService.queryOutputList(vm.taskId).success(function (data) {
-                vm.stockOutSampleOptions.withOption('data', data);
+                vm.stockOutBoxList = data;
+                vm.stockOutLen = _.filter(vm.stockOutBoxList,{status:"1702"}).length;
+                console.log(vm.stockOutLen);
+                vm.stockOutSampleOptions.withOption('data', vm.stockOutBoxList);
                 vm.stockOutSampleInstance.rerender();
             })
         }
@@ -92,14 +95,14 @@
             window.open ('/api/stock-out-frozen-boxes/task/' + vm.taskId +'/print');
         }
         function _fnTakeOver() {
-            BioBankBlockUi.blockUiStart();
-            TaskService.takeOver(vm.taskId).success(function (data) {
-                BioBankBlockUi.blockUiStop();
-                toastr.success("创建交接单成功!");
-            }).error(function (data) {
-                toastr.error("创建交接单失败!");
-                BioBankBlockUi.blockUiStop();
-            })
+            // BioBankBlockUi.blockUiStart();
+            // TaskService.takeOver(vm.taskId).success(function (data) {
+            //     BioBankBlockUi.blockUiStop();
+            //     toastr.success("创建交接单成功!");
+            // }).error(function (data) {
+            //     toastr.error("创建交接单失败!");
+            //     BioBankBlockUi.blockUiStop();
+            // })
         }
         vm.personConfig = {
             valueField: 'id',

@@ -43,7 +43,8 @@
     "angular-toastr": "^2.1.1",
     "ion.rangeSlider": "ionrangeslider#^2.1.7",
     "moment": "^2.18.1",
-    "angular-moment": "^1.0.1"
+    "angular-moment": "^1.0.1",
+    "copycss": "*"
   },
   "devDependencies": {
     "angular-mocks": "1.5.8"

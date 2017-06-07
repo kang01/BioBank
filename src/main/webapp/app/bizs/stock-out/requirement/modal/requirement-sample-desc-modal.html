@@ -3,7 +3,7 @@
     <h3 class="modal-title" id="modal-title">样本库存详情</h3>
 </div>
 <div class="modal-body p-5" id="modal-body">
-    <div class="row m0">
+    <div class="row m-0">
         <div class="col-md-10">
             <p>
                 <span ng-if="vm.requirementDesc.countOfSample">样本量:{{vm.requirementDesc.countOfSample}}&nbsp;&nbsp;</span>
@@ -22,7 +22,7 @@
             <button class="btn btn-primary" ng-click="vm.printRequirementDesc()">打印</button>
         </div>
     </div>
-    <div class="row m0">
+    <div class="row m-0">
         <div class="col-md-12">
             <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance" class=" table table-striped table-bordered">
             </table>

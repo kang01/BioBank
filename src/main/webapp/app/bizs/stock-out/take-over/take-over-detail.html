@@ -1,8 +1,8 @@
 <div>
-    <div class="row m0">
+    <div class="row m-0">
         <div class="col-md-12 pb-10">
             <div class="pull-left ">
-                <h2 class="m0">添加出库交接</h2>
+                <h2 class="m-0">添加出库交接</h2>
             </div>
             <div class="pull-right">
                 <button class="btn btn-primary" ng-click="vm.takeOverPrint()" ng-disabled="!vm.canBePrint()">打印交接单</button>
@@ -13,7 +13,7 @@
         </div>
     </div>
     <form name="handoverForm" class="" novalidate>
-        <div class="row m0">
+        <div class="row m-0">
             <div class="form-group col-md-2">
                 <label>
                     交接时间
@@ -52,7 +52,7 @@
             </div>
         </div>
 
-        <div class="row m0">
+        <div class="row m-0">
             <div class="form-group col-md-2">
                 <label>
                     出库申请
@@ -77,7 +77,7 @@
             </div>
         </div>
     </form>
-    <div class="row m0">
+    <div class="row m-0">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -89,14 +89,14 @@
                             <div class="pull-right form-inline">
                                 <div class="form-group">
                                     <label>冻存位置</label>
-                                    <input type="text" class="form-control" ng-model="vm.filterPos">
+                                    <input type="text" class="form-control input-sm" ng-model="vm.filterPos">
                                 </div>
                                 <div class="form-group">
                                     <label>盒子编码</label>
-                                    <input type="text" class="form-control" ng-model="vm.filterBoxCode">
+                                    <input type="text" class="form-control input-sm" ng-model="vm.filterBoxCode">
                                 </div>
-                                <button type="button" class="btn btn-default" ng-click="vm.searchBox(vm.filterPos, vm.filterBoxCode)">搜索</button>
-                                <button type="button" class="btn btn-default" ng-click="vm.searchBox('', '')">所有</button>
+                                <button type="button" class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.searchBox(vm.filterPos, vm.filterBoxCode)">搜索</button>
+                                <button type="button" class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.searchBox('', '')">所有</button>
                                 <!--<div ng-if="vm.requirement.status == '1103'">-->
                                 <!--<button class="btn btn-primary" ng-click="vm.addApplyRequirement()">添加</button>-->
                                 <!--</div>-->

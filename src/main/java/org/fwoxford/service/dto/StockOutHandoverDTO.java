@@ -1,9 +1,13 @@
 package org.fwoxford.service.dto;
 
+import org.fwoxford.service.dto.response.StockOutHandoverReportDTO;
+import org.fwoxford.service.dto.response.StockOutHandoverSampleReportDTO;
+
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -50,6 +54,10 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
     private String stockOutPlanCode;
 
     private String password;
+
+    private List<StockOutHandoverSampleReportDTO> handoverFrozenTubes;
+
+    private Integer countOfSample;
 
     public Long getId() {
         return id;
@@ -177,6 +185,22 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
 
     public void setStockOutPlanCode(String stockOutPlanCode) {
         this.stockOutPlanCode = stockOutPlanCode;
+    }
+
+    public List<StockOutHandoverSampleReportDTO> getHandoverFrozenTubes() {
+        return handoverFrozenTubes;
+    }
+
+    public void setHandoverFrozenTubes(List<StockOutHandoverSampleReportDTO> handoverFrozenTubes) {
+        this.handoverFrozenTubes = handoverFrozenTubes;
+    }
+
+    public Integer getCountOfSample() {
+        return countOfSample;
+    }
+
+    public void setCountOfSample(Integer countOfSample) {
+        this.countOfSample = countOfSample;
     }
 
     @Override

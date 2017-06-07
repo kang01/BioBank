@@ -1,8 +1,10 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
+import org.fwoxford.config.SecurityConfiguration;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
+import org.fwoxford.security.SecurityUtils;
 import org.fwoxford.service.StockOutTaskService;
 import org.fwoxford.service.dto.StockOutTaskDTO;
 import org.fwoxford.service.dto.response.StockOutTaskForDataTableEntity;
@@ -15,12 +17,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -56,6 +62,8 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     @Autowired
     private StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
 
+    @Autowired
+    private UserLoginHistoryRepository userLoginHistoryRepository;
 
     private final StockOutTaskMapper stockOutTaskMapper;
 
@@ -264,15 +272,61 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             throw new BankServiceException("任务ID不能为空！");
         }
         StockOutTask stockOutTask = stockOutTaskRepository.findOne(id);
-        if(stockOutTask.getStatus().equals(Constants.STOCK_OUT_TASK_PENDING)){
-            stockOutTask.setTaskEndTime(ZonedDateTime.now());
-            stockOutTask.setUsedTime(stockOutTask.getUsedTime()+5);
-        }else{
-            stockOutTask.setTaskStartTime(ZonedDateTime.now());
+
+        String login = SecurityUtils.getCurrentUserLogin();
+        User user = userRepository.findByLogin(login);
+        //获取访问历史数据
+        UserLoginHistory userLoginHistory = userLoginHistoryRepository.findByBusinessId(id);
+        ZonedDateTime time = ZonedDateTime.now();
+        if(userLoginHistory==null){//访问历史为空---首次开始任务
+            userLoginHistory = new UserLoginHistory();
+            stockOutTask.setTaskStartTime(time);
             stockOutTask.setUsedTime(0);
             stockOutTask.setStatus(Constants.STOCK_OUT_TASK_PENDING);
+
+            //记录访问历史
+            userLoginHistory.setStatus(Constants.VALID);
+            userLoginHistory.setBusinessName("TASK BEGIN");
+            ZonedDateTime invalidDate = time.plusMinutes(20);
+            userLoginHistory.setInvalidDate(invalidDate);
+            userLoginHistory.setLoginUserId(user.getId());
+        }else{
+            //验证是否为同一个用户
+            if(userLoginHistory.getLoginUserId().equals(user.getId()) || userLoginHistory.getLoginUserId() == user.getId() ){
+                //同一个用户--失效时间改为当前时间+20
+                ZonedDateTime invalidDate = time.plusMinutes(20);
+                userLoginHistory.setInvalidDate(invalidDate);
+
+            }else{
+                //验证是否失效
+                if(userLoginHistory.getInvalidDate().isBefore(time)){
+                    return null;
+                }else{
+                    userLoginHistory.setLoginUserId(user.getId());
+                    ZonedDateTime invalidDate = time.plusMinutes(20);
+                    userLoginHistory.setInvalidDate(invalidDate);
+                }
+            }
+            ZonedDateTime lastTime = stockOutTask.getTaskEndTime();
+            if(lastTime == null){
+                lastTime = stockOutTask.getTaskStartTime();
+            }
+            Date date = Date.from(time.toInstant());
+            Long nowTime = date.getTime();
+            Long lastDate = Date.from(lastTime.toInstant()).getTime();
+            Long b = nowTime-lastDate;
+//            BigDecimal diffTime = bigDecimal.divide(BigDecimal.valueOf(60 * 1000),2, BigDecimal.ROUND_HALF_UP);
+            Integer diffTime = (int) (nowTime-lastDate)/(60 * 1000);
+            if(diffTime<=1){
+                return null;
+            }else if(diffTime<=5 && diffTime>1){
+                stockOutTask.setUsedTime(stockOutTask.getUsedTime()+diffTime);
+            }
         }
+        stockOutTask.setTaskEndTime(time);
+        userLoginHistory.setBusinessId(id);
         stockOutTaskRepository.save(stockOutTask);
+        userLoginHistoryRepository.save(userLoginHistory);
         return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
     }
 }

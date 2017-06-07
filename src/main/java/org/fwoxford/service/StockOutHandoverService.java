@@ -51,4 +51,6 @@ public interface StockOutHandoverService {
     ByteArrayOutputStream printStockOutHandover(Long id);
 
     StockOutHandoverDTO completeStockOutHandover(List<Long> ids, StockOutHandoverDTO stockOutHandoverDTO);
+
+    StockOutHandoverDTO getStockOutHandoverDetail(Long id);
 }

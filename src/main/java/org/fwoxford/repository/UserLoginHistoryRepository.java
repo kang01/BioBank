@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface UserLoginHistoryRepository extends JpaRepository<UserLoginHistory,Long> {
 
+    UserLoginHistory findByBusinessId(Long id);
 }

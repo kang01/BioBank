@@ -34,6 +34,10 @@ public class UserLoginHistory extends AbstractAuditingEntity implements Serializ
     private Long loginUserId;
 
     @NotNull
+    @Column(name = "business_id", nullable = false)
+    private Long businessId;
+
+    @NotNull
     @Size(max = 255)
     @Column(name = "business_name", length = 255, nullable = false)
     private String businessName;
@@ -83,6 +87,19 @@ public class UserLoginHistory extends AbstractAuditingEntity implements Serializ
 
     public void setLoginUserId(Long loginUserId) {
         this.loginUserId = loginUserId;
+    }
+
+    public Long getBusinessId() {
+        return businessId;
+    }
+
+    public UserLoginHistory businessId(Long businessId) {
+        this.businessId = businessId;
+        return this;
+    }
+
+    public void setBusinessId(Long businessId) {
+        this.businessId = businessId;
     }
 
     public String getBusinessName() {
@@ -163,6 +180,7 @@ public class UserLoginHistory extends AbstractAuditingEntity implements Serializ
             "id=" + id +
             ", userToken='" + userToken + "'" +
             ", loginUserId='" + loginUserId + "'" +
+            ", businessId='" + businessId + "'" +
             ", businessName='" + businessName + "'" +
             ", invalidDate='" + invalidDate + "'" +
             ", status='" + status + "'" +

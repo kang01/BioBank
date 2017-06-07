@@ -240,5 +240,11 @@ public class StockOutHandoverResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockOutHandoverDTO.getId().toString()))
             .body(result);
     }
-
+    @GetMapping("/stock-out-handovers/{id}/details")
+    @Timed
+    public ResponseEntity<StockOutHandoverDTO> getStockOutHandoverDetail(@PathVariable Long id) {
+        log.debug("REST request to get StockOutHandover : {}", id);
+        StockOutHandoverDTO stockOutHandoverDTO = stockOutHandoverService.getStockOutHandoverDetail(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutHandoverDTO));
+    }
 }

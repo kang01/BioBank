@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -32,6 +33,12 @@ public class StockOutTask extends AbstractAuditingEntity implements Serializable
     private Long stockOutHeadId2;
 
     @NotNull
+    @Column(name = "task_start_time")
+    private ZonedDateTime taskStartTime;
+
+    @Column(name = "task_end_time")
+    private ZonedDateTime taskEndTime;
+
     @Column(name = "stock_out_date", nullable = false)
     private LocalDate stockOutDate;
 
@@ -89,6 +96,31 @@ public class StockOutTask extends AbstractAuditingEntity implements Serializable
 
     public void setStockOutHeadId2(Long stockOutHeadId2) {
         this.stockOutHeadId2 = stockOutHeadId2;
+    }
+
+    public ZonedDateTime getTaskStartTime() {
+        return taskStartTime;
+    }
+
+    public StockOutTask taskStartTime(ZonedDateTime taskStartTime) {
+        this.taskStartTime = taskStartTime;
+        return this;
+    }
+
+    public void setTaskStartTime(ZonedDateTime taskStartTime) {
+        this.taskStartTime = taskStartTime;
+    }
+
+    public ZonedDateTime getTaskEndTime() {
+        return taskEndTime;
+    }
+
+    public StockOutTask taskEndTime(ZonedDateTime taskEndTime) {
+        this.taskEndTime = taskEndTime;
+        return this;
+    }
+    public void setTaskEndTime(ZonedDateTime taskEndTime) {
+        this.taskEndTime = taskEndTime;
     }
 
     public LocalDate getStockOutDate() {
@@ -196,6 +228,8 @@ public class StockOutTask extends AbstractAuditingEntity implements Serializable
             ", stockOutHeadId1='" + stockOutHeadId1 + "'" +
             ", stockOutHeadId2='" + stockOutHeadId2 + "'" +
             ", stockOutDate='" + stockOutDate + "'" +
+            ", taskStartTime='" + taskStartTime + "'" +
+            ", taskEndTime='" + taskEndTime + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             ", stockOutTaskCode='" + stockOutTaskCode + "'" +

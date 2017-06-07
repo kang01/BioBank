@@ -50,4 +50,6 @@ public interface StockOutTaskService {
     Page<StockOutTaskForDataTableEntity> getDataTableStockOutTask(Pageable pageRequest);
 
     List<StockOutTaskDTO> getAllStockOutTasksByPlanId(Long id);
+
+    StockOutTaskDTO startStockOutTask(Long id);
 }

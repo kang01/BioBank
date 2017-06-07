@@ -43,6 +43,12 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
 
     private Long stockOutPlanId;
 
+    private String stockOutTaskCode;
+
+    private String stockOutApplyCode;
+
+    private String stockOutPlanCode;
+
     private String password;
 
     public Long getId() {
@@ -149,6 +155,30 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
         this.password = password;
     }
 
+    public String getStockOutTaskCode() {
+        return stockOutTaskCode;
+    }
+
+    public void setStockOutTaskCode(String stockOutTaskCode) {
+        this.stockOutTaskCode = stockOutTaskCode;
+    }
+
+    public String getStockOutApplyCode() {
+        return stockOutApplyCode;
+    }
+
+    public void setStockOutApplyCode(String stockOutApplyCode) {
+        this.stockOutApplyCode = stockOutApplyCode;
+    }
+
+    public String getStockOutPlanCode() {
+        return stockOutPlanCode;
+    }
+
+    public void setStockOutPlanCode(String stockOutPlanCode) {
+        this.stockOutPlanCode = stockOutPlanCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -186,6 +216,9 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
             ", stockOutTaskId=" + stockOutTaskId +
             ", stockOutApplyId=" + stockOutApplyId +
             ", stockOutPlanId=" + stockOutPlanId +
+            ", stockOutTaskCode=" + stockOutTaskCode +
+            ", stockOutApplyCode=" + stockOutApplyCode +
+            ", stockOutPlanCode=" + stockOutPlanCode +
             '}';
     }
 }

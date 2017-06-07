@@ -320,6 +320,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         if(stockOutApply == null){
             throw new BankServiceException("未查询到可以附加的申请！");
         }
+        if(stockOutApply.getParentApplyId()!=null){
+            throw new BankServiceException("该申请不可以继续附加申请！");
+        }
         StockOutApplyDTO stockOutApplyDTO = stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
         stockOutApplyDTO.setId(null);
         stockOutApplyDTO.setApplyCode(BankUtil.getUniqueID());
@@ -357,6 +360,16 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
         if(stockOutApply == null){
             throw new BankServiceException("未查询到出库申请！");
+        }
+        if(stockOutApply.getDelegate()==null||stockOutApply.getApplyPersonName()==null||
+            stockOutApply.getStartTime()==null||stockOutApply.getEndTime()==null||stockOutApply.getRecordId()==null||
+            stockOutApply.getRecordTime()==null){
+            throw new BankServiceException("申请信息不完整！");
+        }
+        //判断是否有需求
+        Long countOfRequirement = stockOutRequirementRepository.countByStockOutApplyId(id);
+        if(countOfRequirement.intValue()==0){
+            throw new BankServiceException("未查询到该申请下的需求，不能批准！");
         }
         //判断是否有未核对的需求
         Long countOfUnCheckRequirement = stockOutRequirementRepository.countByStockOutApplyIdAndStatus(id,Constants.STOCK_OUT_REQUIREMENT_CKECKING);

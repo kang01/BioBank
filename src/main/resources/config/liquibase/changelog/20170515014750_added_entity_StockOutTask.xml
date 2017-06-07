@@ -67,4 +67,15 @@
         </createTable>
 
     </changeSet>
+
+    <changeSet id="20170515014750-2" author="jhipster">
+        <addColumn tableName="stock_out_task">
+            <column name="task_start_time" type="timestamp" remarks="出库任务开始时间">
+                <constraints nullable="true" />
+            </column>
+            <column name="task_end_time" type="timestamp" remarks="出库任务结束时间">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

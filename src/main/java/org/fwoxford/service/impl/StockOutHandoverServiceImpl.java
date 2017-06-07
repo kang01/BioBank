@@ -106,6 +106,13 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         log.debug("Request to get StockOutHandover : {}", id);
         StockOutHandover stockOutHandover = stockOutHandoverRepository.findOne(id);
         StockOutHandoverDTO stockOutHandoverDTO = stockOutHandoverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandover);
+        if(stockOutHandover.getHandoverPersonId()!=null){
+            User user = userRepository.findOne(stockOutHandover.getHandoverPersonId());
+            stockOutHandoverDTO.setHandoverPersonName(user!=null?user.getLastName()+user.getFirstName():null);
+        }
+        stockOutHandoverDTO.setStockOutApplyCode(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getApplyCode():null);
+        stockOutHandoverDTO.setStockOutTaskCode(stockOutHandover.getStockOutTask()!=null?stockOutHandover.getStockOutTask().getStockOutTaskCode():null);
+        stockOutHandoverDTO.setStockOutPlanCode(stockOutHandover.getStockOutPlan()!=null?stockOutHandover.getStockOutPlan().getStockOutPlanCode():null);
         return stockOutHandoverDTO;
     }
 

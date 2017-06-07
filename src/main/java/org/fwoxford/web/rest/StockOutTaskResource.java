@@ -233,11 +233,33 @@ public class StockOutTaskResource {
         return result;
     }
 
+    /**
+     * 根据计划ID查询任务
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
     @GetMapping("/stock-out-tasks/plan/{id}")
     @Timed
     public ResponseEntity<List<StockOutTaskDTO>> getAllStockOutTasksByPlanId(@PathVariable Long id)
         throws URISyntaxException {
         List<StockOutTaskDTO> stockOutTaskDTOS = stockOutTaskService.getAllStockOutTasksByPlanId(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutTaskDTOS));
+    }
+
+    /**
+     * 任务开始
+     * @param stockOutTaskDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-tasks/{id}/begin")
+    @Timed
+    public ResponseEntity<StockOutTaskDTO> startStockOutTask(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to begin StockOutTask : {}", id);
+        StockOutTaskDTO result = stockOutTaskService.startStockOutTask(id);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, id.toString()))
+            .body(result);
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,6 +119,9 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     public StockOutTaskDTO findOne(Long id) {
         log.debug("Request to get StockOutTask : {}", id);
         StockOutTask stockOutTask = stockOutTaskRepository.findOne(id);
+        if(stockOutTask==null){
+            throw new BankServiceException("任务查询失败！");
+        }
         StockOutTaskDTO stockOutTaskDTO = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
         stockOutTaskDTO.setStockOutPlanCode(stockOutTask.getStockOutPlan()!=null?stockOutTask.getStockOutPlan().getStockOutPlanCode():null);
         if(stockOutTask.getStockOutHeadId1() != null){
@@ -128,6 +132,8 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             User user2 = userRepository.findOne(stockOutTask.getStockOutHeadId2());
             stockOutTaskDTO.setStockOutHeader2(user2!=null?user2.getLastName()+user2.getFirstName():null);
         }
+        stockOutTaskDTO.setStockOutApplyId(stockOutTask.getStockOutPlan().getStockOutApply().getId());
+        stockOutTaskDTO.setStockOutApplyCode(stockOutTask.getStockOutPlan().getStockOutApply().getApplyCode());
         return stockOutTaskDTO;
     }
 
@@ -250,5 +256,23 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         }
         List<StockOutTask> stockOutTasks = stockOutTaskRepository.findByStockOutPlanId(id);
         return stockOutTaskMapper.stockOutTasksToStockOutTaskDTOs(stockOutTasks);
+    }
+
+    @Override
+    public synchronized StockOutTaskDTO startStockOutTask(Long id) {
+        if(id==null){
+            throw new BankServiceException("任务ID不能为空！");
+        }
+        StockOutTask stockOutTask = stockOutTaskRepository.findOne(id);
+        if(stockOutTask.getStatus().equals(Constants.STOCK_OUT_TASK_PENDING)){
+            stockOutTask.setTaskEndTime(ZonedDateTime.now());
+            stockOutTask.setUsedTime(stockOutTask.getUsedTime()+5);
+        }else{
+            stockOutTask.setTaskStartTime(ZonedDateTime.now());
+            stockOutTask.setUsedTime(0);
+            stockOutTask.setStatus(Constants.STOCK_OUT_TASK_PENDING);
+        }
+        stockOutTaskRepository.save(stockOutTask);
+        return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
     }
 }

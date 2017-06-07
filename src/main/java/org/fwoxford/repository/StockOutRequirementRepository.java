@@ -21,4 +21,6 @@ public interface StockOutRequirementRepository extends JpaRepository<StockOutReq
     List<StockOutRequirement> findByIdInAndStatusNot(List<Long> ids, String status);
 
     Long countByStockOutApplyIdAndStatus(Long id, String stockOutRequirementCkecking);
+
+    Long countByStockOutApplyId(Long id);
 }

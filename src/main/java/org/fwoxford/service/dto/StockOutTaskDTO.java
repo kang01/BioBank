@@ -43,6 +43,11 @@ public class StockOutTaskDTO extends AbstractAuditingDTO implements Serializable
 
     private String stockOutHeader2;
 
+
+    private Long stockOutApplyId;
+
+    private String stockOutApplyCode;
+
     public Long getId() {
         return id;
     }
@@ -132,6 +137,22 @@ public class StockOutTaskDTO extends AbstractAuditingDTO implements Serializable
         this.stockOutHeader2 = stockOutHeader2;
     }
 
+    public Long getStockOutApplyId() {
+        return stockOutApplyId;
+    }
+
+    public void setStockOutApplyId(Long stockOutApplyId) {
+        this.stockOutApplyId = stockOutApplyId;
+    }
+
+    public String getStockOutApplyCode() {
+        return stockOutApplyCode;
+    }
+
+    public void setStockOutApplyCode(String stockOutApplyCode) {
+        this.stockOutApplyCode = stockOutApplyCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -167,6 +188,7 @@ public class StockOutTaskDTO extends AbstractAuditingDTO implements Serializable
             ", stockOutPlanCode='" + stockOutPlanCode + "'" +
             ", stockOutHeader2='" + stockOutHeader2 + "'" +
             ", stockOutHeader1='" + stockOutHeader1 + "'" +
+            ", stockOutApplyCode='" + stockOutApplyCode + "'" +
             '}';
     }
 }

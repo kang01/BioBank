@@ -230,7 +230,7 @@
             return statusVal
 
         }
-
+        vm.additionApply = _fnAdditionApply;
         function actionsHtml(data, type, full, meta) {
             if (full.status != '1103') {
                 return '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-edit({applyId:' + full.id + '})">' +
@@ -240,13 +240,21 @@
                 return '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-view({applyId:' + full.id + ',viewFlag:1})">' +
                     '<i class="fa fa-eye"></i>' +
                     '</a>&nbsp;' +
-                    '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-additionApply({applyId:' + full.id + '})">' +
+                    '<a  type="button" class="btn btn-default btn-xs" ng-click="vm.additionApply(' + full.id + ')">' +
                     '附加' +
                     '</a>'
             }
 
-        }
 
+
+        }
+        function _fnAdditionApply(requirementId) {
+
+            RequirementService.addApplyRequirement(requirementId).success(function (data) {
+                vm.status = data.status;
+                $state.go("requirement-additionApply",{applyId:data.id})
+            });
+        }
         function extraHtml(data, type, full, meta) {
             var html = '';
             if (full.levelNo == 1) {

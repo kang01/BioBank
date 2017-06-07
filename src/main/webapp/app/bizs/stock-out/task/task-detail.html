@@ -73,7 +73,7 @@
                         <h4>冻存盒列表</h4>
                     </div>
                     <div class="pull-right">
-                        <button class="btn btn-default" ng-click="vm.printBox()">打印取盒单</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.printBox()">打印取盒单</button>
                     </div>
                     <div class="clear-both"></div>
 
@@ -91,15 +91,15 @@
                         <h4>待出库样本</h4>
                     </div>
                     <div class="pull-right">
-                                <button class="btn btn-default" ng-click="focusInput=true" ng-disabled="!vm.frozenTubeDTOS.length">扫码取样</button>
-                                <button class="btn btn-default" ng-click="vm.boxInModal()" >装盒</button>
-                                <button class="btn btn-default" ng-click="vm.abnormal()" >异常</button>
-                                <button class="btn btn-default" ng-click="vm.repealModal()" >撤销申请</button>
-                                <button class="btn btn-default" ng-click="vm.commentModal(1)" >批注</button>
+                                <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="focusInput=true" ng-disabled="!vm.frozenTubeDTOS.length">扫码取样</button>
+                                <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.boxInModal()" >装盒</button>
+                                <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()" >异常</button>
+                                <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealModal()" >撤销申请</button>
+                                <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.commentModal(1)" >批注</button>
                             </div>
                     <div class="clear-both"></div>
                 </div>
-                <div class="panel-body tube" style="padding: 0">
+                <div class="panel-body tube p-0">
                     <input type="text" focus-me="focusInput" ng-model="vm.sampleCode" ng-keyup="vm.scanCode($event)">
                     <hot-table hot-id="sampleDetailsTable" settings="vm.sampleDetailsTableSettings"></hot-table>
                 </div>
@@ -114,12 +114,12 @@
                         <h4>已出库样本</h4>
                     </div>
                     <div class="pull-right">
-                        <button class="btn btn-default" ng-click="vm.taskStockOutModal()" ng-disabled="!vm.task.stockOutHeadId1 || !vm.task.stockOutHeadId2">批量出库</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.taskStockOutModal()" ng-disabled="!vm.task.stockOutHeadId1 || !vm.task.stockOutHeadId2">批量出库</button>
                     </div>
                     <div class="clear-both"></div>
 
                 </div>
-                <div class="panel-body">
+                <div class="panel-body p-0">
                     <table datatable="" dt-options="vm.stockOutSampleOptions" dt-columns="vm.stockOutSampleColumns" dt-instance="vm.stockOutSampleInstance" class=" table table-striped table-bordered"></table>
                 </div>
             </div>

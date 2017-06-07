@@ -124,7 +124,7 @@
             .withOption('paging', false)
             .withOption('sorting', false)
             .withScroller()
-            .withOption('scrollY', 398)
+            .withOption('scrollY', 371)
             .withOption('rowCallback', rowCallback);
         vm.boxColumns = [
             DTColumnBuilder.newColumn('id').notVisible(),
@@ -616,7 +616,7 @@
             .withOption('paging', false)
             .withOption('sorting', false)
             .withScroller()
-            .withOption('scrollY', 398)
+            .withOption('scrollY', 300)
             .withOption('createdRow', createdRow)
             .withOption('headerCallback', function(header) {
                 $compile(angular.element(header).contents())($scope);

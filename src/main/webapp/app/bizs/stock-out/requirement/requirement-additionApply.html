@@ -78,7 +78,7 @@
                                 <!--</div>-->
                                 <div>
                                     <button class="btn btn-primary" ng-click="vm.addSampleModal()">添加</button>
-                                    <button class="btn btn-primary" ng-click="vm.sampleRequirementListCheck()">核对库存</button>
+                                    <button class="btn btn-primary" ng-click="vm.sampleRequirementListCheck()" ng-disabled="!vm.sampleRequirementIds">核对库存</button>
                                 </div>
 
                             </div>

@@ -17,6 +17,8 @@
         vm.requirement = entity;
         //批准
         vm.approvalModal = _fnApprovalModal;
+        //附加功能
+        vm.additionApply = _fnAdditionApply;
         //样本库存详情
         vm.sampleDescModal = _fnSampleDescModal;
         //打印申请
@@ -69,7 +71,16 @@
             }
 
         }
+        //附加
+        vm.applyFlag = false;
+        function _fnAdditionApply() {
 
+            RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
+                vm.status = data.status;
+                vm.requirement.id = data.id;
+                $state.go("requirement-additionApply",{applyId:vm.requirement.id})
+            });
+        }
         //打印申请
         function _fnPrintRequirement() {
             window.open ('/api/stock-out-applies/print/' + vm.requirement.id);
@@ -79,8 +90,6 @@
         vm.sampleRequirementListCheck = _fnSampleRequirementCheckList;
         //添加样本需求
         vm.addSampleModal = function (sampleRequirement) {
-            // vm.sampleflag = true;
-            // _fnSaveRequirement();
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-sample-edit-modal.html',
@@ -114,8 +123,8 @@
         // }
         //批量核对
         function _fnSampleRequirementCheckList() {
-            var sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
-            RequirementService.checkSampleRequirementList(sampleRequirementIds).success(function (data) {
+            vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
+            RequirementService.checkSampleRequirementList(vm.sampleRequirementIds).success(function (data) {
                 vm.requirementApplyFlag = true;
                 _loadRequirement();
             }).error(function (data) {

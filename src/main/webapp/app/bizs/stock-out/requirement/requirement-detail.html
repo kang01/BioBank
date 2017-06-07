@@ -116,7 +116,7 @@
                                 <!--</div>-->
                                 <div ng-if="vm.status != '1103'">
                                     <button class="btn btn-primary" ng-click="vm.addSampleModal()" ng-disabled="!vm.projectIds || !vm.requirement.delegateId">添加</button>
-                                    <button class="btn btn-primary" ng-click="vm.sampleRequirementListCheck()">核对库存</button>
+                                    <button class="btn btn-primary" ng-click="vm.sampleRequirementListCheck()" ng-disabled="!vm.sampleRequirementIds">核对库存</button>
                                 </div>
 
                             </div>

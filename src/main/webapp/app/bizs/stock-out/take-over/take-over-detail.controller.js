@@ -10,15 +10,15 @@
         .controller('TakeOverDetailController', TakeOverDetailController);
 
     TakeOverDetailController.$inject = ['$scope','$state','$stateParams','$uibModal','$compile','DTOptionsBuilder','DTColumnBuilder','toastr',
-        'TakeOverService','SampleUserService','StockOutService','entity','MasterData'];
+        'TakeOverService','SampleUserService','StockOutService','entity','MasterData','takeOverParams'];
 
     function TakeOverDetailController($scope,$state,$stateParams,$uibModal,$compile,DTOptionsBuilder,DTColumnBuilder,toastr,
-                                      TakeOverService,SampleUserService,StockOutService,entity,MasterData) {
+                                      TakeOverService,SampleUserService,StockOutService,entity,MasterData,takeOverParams) {
         var vm = this;
         var modalInstance;
         //样本交接Modal
         vm.takeOverModal = _fnTakeOverModal;
-
+        console.log(JSON.stringify(takeOverParams))
         vm.dto = {
             id: null,
             handoverCode: '',
@@ -107,7 +107,9 @@
             SampleUserService.query({},onReceiverSuccess, onError)
             function onReceiverSuccess(data) {
                 vm.loginOptions = data;
-                vm.dto.handoverPersonName = _.filter(vm.loginOptions,{id:+entity.handoverPersonId})[0].userName;
+                if(entity.handoverPersonId){
+                    vm.dto.handoverPersonName = _.filter(vm.loginOptions,{id:+entity.handoverPersonId})[0].userName;
+                }
             }
             //交付人
             vm.loginConfig = {

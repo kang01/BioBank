@@ -88,6 +88,13 @@
                     }
                 },
                 resolve: {
+                    takeOverParams: ['$stateParams', function ($stateParams) {
+                        return {
+                            applyId:$stateParams.applyId,
+                            planId:$stateParams.planId,
+                            taskId:$stateParams.taskId
+                        };
+                    }],
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                         return $translate.refresh();
                     }],

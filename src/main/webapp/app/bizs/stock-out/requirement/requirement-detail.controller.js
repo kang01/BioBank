@@ -72,6 +72,7 @@
             if(vm.requirement.status){
                 vm.status = vm.requirement.status
             }
+            vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
             setTimeout(function () {
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 vm.isApproval();
@@ -172,8 +173,6 @@
                 vm.requirement.id = data.id;
                 $state.go("requirement-additionApply",{applyId:vm.requirement.id})
             });
-
-
         }
         //打印申请
         function _fnPrintRequirement() {
@@ -205,6 +204,8 @@
 
             modalInstance.result.then(function (data) {
                 _loadRequirement();
+            }, function () {
+                vm.sampleflag = false;
             });
         };
         function _fnSaveRequirement() {
@@ -222,8 +223,8 @@
         }
         //批量核对
         function _fnSampleRequirementCheckList() {
-            var sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
-            RequirementService.checkSampleRequirementList(sampleRequirementIds).success(function (data) {
+            vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
+            RequirementService.checkSampleRequirementList(vm.sampleRequirementIds).success(function (data) {
                 vm.requirementApplyFlag = true;
                 _loadRequirement();
             }).error(function (data) {
@@ -382,7 +383,7 @@
         //判断是否都已核对 1201：待核对，1202：库存不够，1203：库存满足
         vm.requirementApplyFlag = false;
         function _fnIsApproval() {
-            if(vm.requirement.stockOutRequirement){
+            if(vm.requirement.stockOutRequirement.length){
                 var len =  _.filter(vm.requirement.stockOutRequirement,{status:'1201'}).length;
                 if(len){
                     // 不能批准
@@ -404,6 +405,8 @@
 
         //批准
         function _fnApprovalModal() {
+            vm.sampleflag = true;
+            _fnSaveRequirement();
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-approval-modal.html',
@@ -421,6 +424,8 @@
 
             modalInstance.result.then(function (data) {
                 $state.go("requirement-list")
+            }, function () {
+                vm.sampleflag = false;
             });
         }
         vm.planSave = function () {

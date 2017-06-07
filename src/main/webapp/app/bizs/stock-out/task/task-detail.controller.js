@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskDetailController', TaskDetailController);
 
-    TaskDetailController.$inject = ['$scope','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService'];
+    TaskDetailController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService'];
 
-    function TaskDetailController($scope,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService) {
+    function TaskDetailController($scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService) {
         var vm = this;
         var modalInstance;
         vm.boxInstance = {};
@@ -95,6 +95,12 @@
             window.open ('/api/stock-out-frozen-boxes/task/' + vm.taskId +'/print');
         }
         function _fnTakeOver() {
+            var obj = {
+                applyId:"",
+                planId:vm.task.stockOutPlanId,
+                taskId:vm.task.id
+            };
+            $state.go('take-over-edit',{obj:obj});
             // BioBankBlockUi.blockUiStart();
             // TaskService.takeOver(vm.taskId).success(function (data) {
             //     BioBankBlockUi.blockUiStop();
@@ -627,7 +633,6 @@
         var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.stockOutSampleColumns = [
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
-            DTColumnBuilder.newColumn('id').notVisible(),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码'),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
             DTColumnBuilder.newColumn('position').withTitle('冻存盒位置'),
@@ -636,6 +641,7 @@
             DTColumnBuilder.newColumn('memo').withTitle('备注'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml),
+            DTColumnBuilder.newColumn('id').notVisible(),
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
             vm.selected[full.id] = false;
@@ -655,12 +661,20 @@
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" ng-disabled="!vm.task.stockOutHeadId1 || !vm.task.stockOutHeadId2" class="btn btn-warning btn-sm" ng-if="'+full.status+'== 1701" ng-click="vm.taskStockOutModal('+ full.id +')">' +
-                '出库' +
-                '</button> &nbsp;'+
-            '<button type="button" class="btn btn-warning btn-sm"  ng-click="vm.commentModal(2,'+ full.id +')">' +
-                '批注' +
-                '</button>'
+            if(full.status == '1701'){
+                return '<button type="button" ng-disabled="!vm.task.stockOutHeadId1 || !vm.task.stockOutHeadId2" class="btn btn-default btn-xs" ng-if="'+full.status+'== 1701" ng-click="vm.taskStockOutModal('+ full.id +')">' +
+                    '出库' +
+                    '</button> &nbsp;'+
+                    '<button type="button" class="btn btn-default btn-xs"  ng-click="vm.commentModal(2,'+ full.id +')">' +
+                    '批注' +
+                    '</button>'
+            }else{
+                return '<button type="button" class="btn btn-default btn-xs"  ng-click="vm.commentModal(2,'+ full.id +')">' +
+                    '批注' +
+                    '</button>'
+            }
+
+
         }
 
         //出库

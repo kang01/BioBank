@@ -472,8 +472,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             if(stockOutFrozenBox == null){
                 continue;
             }
-            FrozenBox frozenBox = stockOutFrozenBox.getFrozenBox();
-            stockOutBoxPosition.setFrozenBox(frozenBox);
+            stockOutBoxPosition.setStockOutFrozenBox(stockOutFrozenBox);
 
             stockOutBoxPosition.setEquipment(equipment);
             stockOutBoxPosition.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);

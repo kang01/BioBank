@@ -59,7 +59,7 @@ public class StockOutBoxPosition extends AbstractAuditingEntity implements Seria
 
     @ManyToOne(optional = false)
     @NotNull
-    private FrozenBox frozenBox;
+    private StockOutFrozenBox stockOutFrozenBox;
 
     public Long getId() {
         return id;
@@ -199,17 +199,16 @@ public class StockOutBoxPosition extends AbstractAuditingEntity implements Seria
         this.supportRack = supportRack;
     }
 
-    public FrozenBox getFrozenBox() {
-        return frozenBox;
+    public StockOutFrozenBox getStockOutFrozenBox() {
+        return stockOutFrozenBox;
     }
 
-    public StockOutBoxPosition frozenBox(FrozenBox frozenBox) {
-        this.frozenBox = frozenBox;
+    public StockOutBoxPosition supportRack(StockOutFrozenBox stockOutFrozenBox) {
+        this.stockOutFrozenBox = stockOutFrozenBox;
         return this;
     }
-
-    public void setFrozenBox(FrozenBox frozenBox) {
-        this.frozenBox = frozenBox;
+    public void setStockOutFrozenBox(StockOutFrozenBox stockOutFrozenBox) {
+        this.stockOutFrozenBox = stockOutFrozenBox;
     }
 
     @Override

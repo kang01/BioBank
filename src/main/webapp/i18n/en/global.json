@@ -49,6 +49,10 @@
                 "boxAndTube": "Box And Tube",
                 "stockOutBoxTube": "Stock Out Box Tube",
                 "stockOutHandOver": "Stock Out Hand Over",
+                "transhipTube": "Tranship Tube",
+                "transhipBoxPosition": "Tranship Box Position",
+                "stockInTube": "Stock In Tube",
+                "stockInBoxPosition": "Stock In Box Position",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

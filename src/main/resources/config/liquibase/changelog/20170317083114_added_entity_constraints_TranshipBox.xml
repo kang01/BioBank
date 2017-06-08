@@ -20,5 +20,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="frozen_box"/>
 
+        <addForeignKeyConstraint baseColumnNames="tranship_box_position_id"
+                                 baseTableName="tranship_box"
+                                 constraintName="tranship_box_tranship_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tranship_box_pos"/>
+
     </changeSet>
 </databaseChangeLog>

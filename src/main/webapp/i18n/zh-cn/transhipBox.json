@@ -24,7 +24,8 @@
             "memo": "Memo",
             "status": "Status",
             "tranship": "Tranship",
-            "frozenBox": "Frozen Box"
+            "frozenBox": "Frozen Box",
+            "transhipBoxPosition": "Tranship Box Position"
         }
     }
 }

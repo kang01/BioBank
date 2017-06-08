@@ -82,8 +82,13 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
      * 冻存盒
      */
     @ManyToOne(optional = false)
-    @JoinColumn(name = "frozen_box_id")
     private FrozenBox frozenBox;
+
+    /**
+     * 转运盒位置ID
+     */
+    @ManyToOne(optional = false)
+    private TranshipBoxPosition transhipBoxPosition;
 
     public Long getId() {
         return id;
@@ -221,6 +226,18 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
 
     public void setFrozenBox(FrozenBox frozenBox) {
         this.frozenBox = frozenBox;
+    }
+
+    public TranshipBoxPosition getTranshipBoxPosition() {
+        return transhipBoxPosition;
+    }
+
+    public TranshipBox transhipBoxPosition(TranshipBoxPosition transhipBoxPosition) {
+        this.transhipBoxPosition = transhipBoxPosition;
+        return this;
+    }
+    public void setTranshipBoxPosition(TranshipBoxPosition transhipBoxPosition) {
+        this.transhipBoxPosition = transhipBoxPosition;
     }
 
     @Override

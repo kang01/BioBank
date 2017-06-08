@@ -415,15 +415,15 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 throw new BankServiceException("冻存管不存在",tube.toString());
             }
             if(tube.getFrozenBoxCode()!=null&&tube.getFrozenBoxCode().equals(frozenTube.getFrozenBox().getFrozenBoxCode())
-                &&tube.getTubeRows().equals(frozenTube.getTubeRows())
-                &&tube.getTubeColumns().equals(frozenTube.getTubeColumns())){
+                &&tube.getRowsInTube().equals(frozenTube.getTubeRows())
+                &&tube.getColumnsInTube().equals(frozenTube.getTubeColumns())){
                 continue;
             }
             //更改管子的位置信息
             frozenTube.setFrozenBox(frozenBoxNew);
             frozenTube.setFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
-            frozenTube.setTubeColumns(tube.getTubeColumns());
-            frozenTube.setTubeRows(tube.getTubeRows());
+            frozenTube.setTubeColumns(tube.getRowsInTube());
+            frozenTube.setTubeRows(tube.getColumnsInTube());
             frozenTubeRepository.save(frozenTube);
             tube.setId(frozenTube.getId());
             stockInTubeDTOList.add(tube);

@@ -1,0 +1,47 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockInTube.detail.title">Stock In Tube</span> {{vm.stockInTube.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockInTube.rowsInTube">Rows In Tube</span></dt>
+        <dd>
+            <span>{{vm.stockInTube.rowsInTube}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInTube.columnsInTube">Columns In Tube</span></dt>
+        <dd>
+            <span>{{vm.stockInTube.columnsInTube}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInTube.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockInTube.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInTube.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockInTube.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInTube.frozenBoxCode">Frozen Box Code</span></dt>
+        <dd>
+            <span>{{vm.stockInTube.frozenBoxCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInTube.stockInBox">Stock In Box</span></dt>
+        <dd>
+            <a ui-sref="stock-in-box-detail({id:vm.stockInTube.stockInBoxId})">{{vm.stockInTube.stockInBoxId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInTube.frozenTube">Frozen Tube</span></dt>
+        <dd>
+            <a ui-sref="frozen-tube-detail({id:vm.stockInTube.frozenTubeId})">{{vm.stockInTube.frozenTubeId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-in-tube-detail.edit({id:vm.stockInTube.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

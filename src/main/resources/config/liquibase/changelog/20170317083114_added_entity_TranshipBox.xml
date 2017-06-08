@@ -55,10 +55,6 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="tranship_box_position_id" type="bigint" remarks="转运盒位置ID">
-                <constraints nullable="false" />
-            </column>
-
             <column name="memo" type="nvarchar(1024)" remarks="备注">
                 <constraints nullable="true" />
             </column>

@@ -132,7 +132,6 @@ public class TranshipBoxResourceIntTest {
         TranshipBoxPosition transhipBoxPosition = TranshipBoxPositionResourceIntTest.createEntity(em);
         em.persist(transhipBoxPosition);
         em.flush();
-        transhipBox.setTranshipBoxPosition(transhipBoxPosition);
         return transhipBox;
     }
 

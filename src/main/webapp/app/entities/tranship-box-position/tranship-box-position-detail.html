@@ -1,0 +1,63 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.transhipBoxPosition.detail.title">Tranship Box Position</span> {{vm.transhipBoxPosition.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.transhipBoxPosition.status">Status</span></dt>
+        <dd>
+            <span>{{vm.transhipBoxPosition.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBoxPosition.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.transhipBoxPosition.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBoxPosition.equipmentCode">Equipment Code</span></dt>
+        <dd>
+            <span>{{vm.transhipBoxPosition.equipmentCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBoxPosition.areaCode">Area Code</span></dt>
+        <dd>
+            <span>{{vm.transhipBoxPosition.areaCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBoxPosition.supportRackCode">Support Rack Code</span></dt>
+        <dd>
+            <span>{{vm.transhipBoxPosition.supportRackCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBoxPosition.rowsInShelf">Rows In Shelf</span></dt>
+        <dd>
+            <span>{{vm.transhipBoxPosition.rowsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBoxPosition.columnsInShelf">Columns In Shelf</span></dt>
+        <dd>
+            <span>{{vm.transhipBoxPosition.columnsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBoxPosition.equipment">Equipment</span></dt>
+        <dd>
+            <a ui-sref="equipment-detail({id:vm.transhipBoxPosition.equipmentId})">{{vm.transhipBoxPosition.equipmentId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBoxPosition.area">Area</span></dt>
+        <dd>
+            <a ui-sref="area-detail({id:vm.transhipBoxPosition.areaId})">{{vm.transhipBoxPosition.areaId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBoxPosition.supportRack">Support Rack</span></dt>
+        <dd>
+            <a ui-sref="support-rack-detail({id:vm.transhipBoxPosition.supportRackId})">{{vm.transhipBoxPosition.supportRackId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipBoxPosition.transhipBox">Tranship Box</span></dt>
+        <dd>
+            <a ui-sref="tranship-box-detail({id:vm.transhipBoxPosition.transhipBoxId})">{{vm.transhipBoxPosition.transhipBoxId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="tranship-box-position-detail.edit({id:vm.transhipBoxPosition.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

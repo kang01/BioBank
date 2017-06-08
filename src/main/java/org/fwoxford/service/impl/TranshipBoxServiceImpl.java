@@ -3,10 +3,7 @@ package org.fwoxford.service.impl;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
-import org.fwoxford.service.FrozenBoxTypeService;
-import org.fwoxford.service.ProjectSampleClassService;
-import org.fwoxford.service.SampleTypeService;
-import org.fwoxford.service.TranshipBoxService;
+import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
@@ -69,6 +66,15 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
     @Autowired
     private ProjectSampleClassService projectSampleClassService;
+
+    @Autowired
+    private TranshipBoxPositionService transhipBoxPositionService;
+
+    @Autowired
+    private TranshipTubeService transhipTubeService;
+
+    @Autowired
+    private TranshipTubeRepository transhipTubeRepository;
 
     public TranshipBoxServiceImpl(TranshipBoxRepository transhipBoxRepository,
                                   FrozenBoxRepository frozenBoxRepository,
@@ -280,6 +286,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             if(box.getSampleType().getIsMixed().equals(Constants.YES)&&box.getSampleClassification()!=null){
                 throw new BankServiceException("混合型样本的冻存盒，样本分类应该为空！");
             }
+            if(box.getSampleType().getIsMixed().equals(Constants.YES)&&box.getIsSplit().equals(Constants.NO)){
+                throw new BankServiceException("混合型样本的冻存盒，必须分装！");
+            }
             int countOfSampleClass = projectSampleClassRepository.countByProjectIdAndSampleTypeId(box.getProject()!=null?box.getProject().getId():null,boxDTO.getSampleTypeId());
             if(countOfSampleClass>0&&box.getSampleType().getIsMixed().equals(Constants.NO)&&box.getSampleClassification()==null){
                 throw new BankServiceException("该项目下已经配置样本分类，样本分类不能为空！");
@@ -343,6 +352,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                    }
                }
            }
+           List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
             for(FrozenTubeForSaveBatchDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
                 FrozenTube tube = frozenTubeMapper.frozenTubeForSaveBatchDTOToFrozenTube(tubeDTO);
                 tube = (FrozenTube) EntityUtil.avoidFieldValueNull(tube);
@@ -414,6 +424,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 }
 
                 tube = frozenTubeRepository.save(tube);
+                frozenTubeList.add(tube);
             }
 
             TranshipBox transhipBox = transhipBoxRepository.findByTranshipIdAndFrozenBoxId(transhipId, box.getId());
@@ -432,6 +443,12 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             transhipBox.setTranship(tranship);
 
             transhipBoxRepository.save(transhipBox);
+
+            //转运盒位置--如果冻存盒位置发生变更，则insert一条，否则不保存
+            TranshipBoxPosition transhipBoxPosition = transhipBoxPositionService.saveTranshipBoxPosition(transhipBox);
+
+            //转运冻存管--如果冻存管的位置或者状态发生变更，则insert，否则不保存
+            List<TranshipTubeDTO> transhipTubeDTOS = transhipTubeService.saveTranshipTube(transhipBox,frozenTubeList);
 
             result.getFrozenBoxDTOList().add(frozenBoxMapper.frozenBoxToFrozenBoxDTO(box));
         }
@@ -454,32 +471,26 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         List<FrozenTube> frozenTube = new ArrayList<FrozenTube>();
         List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
 
-        if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_NEW)){
-            frozenTube = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
-            frozenTubeResponses = frozenTubeMapper.frozenTubeToFrozenTubeResponse(frozenTube);
-        }else{
-            //如果冻存管已经转运至入库，则需要查询入库管子
-            List<StockInTubes> stockInTubes = stockInTubesRepository.findByTranshipCodeAndFrozenBoxCode(transhipBox.getTranship().getTranshipCode(),frozenBoxCode);
-            for(StockInTubes inTube:stockInTubes){
-                FrozenTubeResponse tubeResponse = new FrozenTubeResponse();
-                FrozenTube tube = inTube.getFrozenTube();
-                tubeResponse.setId(tube.getId());
-                tubeResponse.setFrozenTubeType(tube.getFrozenTubeType());
-                tubeResponse.setMemo(tube.getMemo());
-                tubeResponse.setSampleCode(tube.getSampleCode());
-                tubeResponse.setSampleTempCode(tube.getSampleTempCode());
-                tubeResponse.setSampleType(tube.getSampleType());
-                tubeResponse.setSampleClassification(tube.getSampleClassification());
-                tubeResponse.setStatus(tube.getStatus());
-                tubeResponse.setTubeColumns(inTube.getColumnsInTube());
-                tubeResponse.setTubeRows(inTube.getRowsInTube());
-                tubeResponse.setFrozenBoxCode(inTube.getFrozenBoxPosition().getFrozenBox().getFrozenBoxCode());
-                tubeResponse.setFrozenBoxId(inTube.getFrozenBoxPosition().getFrozenBox().getId());
-                frozenTubeResponses.add(tubeResponse);
-            }
+        //查询转运冻存管
+        List<TranshipTube> transhipTubeList = transhipTubeRepository.findByTranshipBoxIdLast(transhipBox.getId());
+        for(TranshipTube inTube : transhipTubeList){
+            FrozenTubeResponse tubeResponse = new FrozenTubeResponse();
+            FrozenTube tube = inTube.getFrozenTube();
+            tubeResponse.setId(tube.getId());
+            tubeResponse.setFrozenTubeType(tube.getFrozenTubeType());
+            tubeResponse.setMemo(tube.getMemo());
+            tubeResponse.setSampleCode(tube.getSampleCode());
+            tubeResponse.setSampleTempCode(tube.getSampleTempCode());
+            tubeResponse.setSampleType(tube.getSampleType());
+            tubeResponse.setSampleClassification(tube.getSampleClassification());
+            tubeResponse.setStatus(tube.getStatus());
+            tubeResponse.setTubeColumns(inTube.getColumnsInTube());
+            tubeResponse.setTubeRows(inTube.getRowsInTube());
+            tubeResponse.setFrozenBoxCode(tube.getFrozenBoxCode());
+            tubeResponse.setFrozenBoxId(tube.getFrozenBox().getId());
+            frozenTubeResponses.add(tubeResponse);
         }
         res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox, frozenTubeResponses);
-
         return res;
     }
 

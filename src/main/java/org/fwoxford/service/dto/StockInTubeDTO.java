@@ -29,6 +29,10 @@ public class StockInTubeDTO extends AbstractAuditingDTO implements Serializable 
     @Size(max = 1024)
     private String memo;
 
+    @NotNull
+    @Size(max = 100)
+    private String frozenBoxCode;
+
     private Long stockInBoxId;
 
     private Long frozenTubeId;
@@ -67,6 +71,13 @@ public class StockInTubeDTO extends AbstractAuditingDTO implements Serializable 
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+    public String getFrozenBoxCode() {
+        return frozenBoxCode;
+    }
+
+    public void setFrozenBoxCode(String frozenBoxCode) {
+        this.frozenBoxCode = frozenBoxCode;
     }
 
     public Long getStockInBoxId() {
@@ -114,6 +125,7 @@ public class StockInTubeDTO extends AbstractAuditingDTO implements Serializable 
             ", columnsInTube='" + columnsInTube + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
+            ", frozenBoxCode='" + frozenBoxCode + "'" +
             '}';
     }
 }

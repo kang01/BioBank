@@ -37,5 +37,6 @@
                                  constraintName="fk_stock_box_frozen_box_id"
                                  referencedColumnNames="id"
                                  referencedTableName="frozen_box"/>
+
     </changeSet>
 </databaseChangeLog>

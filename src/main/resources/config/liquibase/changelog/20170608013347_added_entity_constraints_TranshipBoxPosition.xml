@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity TranshipBoxPosition.
+    -->
+    <changeSet id="20170608013347-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="equipment_id"
+                                 baseTableName="tranship_box_pos"
+                                 constraintName="tranship_box_p_equipment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="equipment"/>
+
+        <addForeignKeyConstraint baseColumnNames="area_id"
+                                 baseTableName="tranship_box_pos"
+                                 constraintName="tranship_box_p_area_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="area"/>
+
+        <addForeignKeyConstraint baseColumnNames="support_rack_id"
+                                 baseTableName="tranship_box_pos"
+                                 constraintName="tranship_box_p_support_rack_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="support_rack"/>
+
+        <addForeignKeyConstraint baseColumnNames="tranship_box_id"
+                                 baseTableName="tranship_box_pos"
+                                 constraintName="tranship_box_p_tranship_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tranship_box"/>
+
+    </changeSet>
+</databaseChangeLog>

@@ -15,7 +15,6 @@ public interface StockOutBoxPositionMapper {
     @Mapping(source = "equipment.id", target = "equipmentId")
     @Mapping(source = "area.id", target = "areaId")
     @Mapping(source = "supportRack.id", target = "supportRackId")
-    @Mapping(source = "frozenBox.id", target = "frozenBoxId")
     StockOutBoxPositionDTO stockOutBoxPositionToStockOutBoxPositionDTO(StockOutBoxPosition stockOutBoxPosition);
 
     List<StockOutBoxPositionDTO> stockOutBoxPositionsToStockOutBoxPositionDTOs(List<StockOutBoxPosition> stockOutBoxPositions);
@@ -23,7 +22,6 @@ public interface StockOutBoxPositionMapper {
     @Mapping(source = "equipmentId", target = "equipment")
     @Mapping(source = "areaId", target = "area")
     @Mapping(source = "supportRackId", target = "supportRack")
-    @Mapping(source = "frozenBoxId", target = "frozenBox")
     StockOutBoxPosition stockOutBoxPositionDTOToStockOutBoxPosition(StockOutBoxPositionDTO stockOutBoxPositionDTO);
 
     List<StockOutBoxPosition> stockOutBoxPositionDTOsToStockOutBoxPositions(List<StockOutBoxPositionDTO> stockOutBoxPositionDTOs);

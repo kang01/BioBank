@@ -34,7 +34,7 @@ public class StockInTubesResource {
     private final Logger log = LoggerFactory.getLogger(StockInTubesResource.class);
 
     private static final String ENTITY_NAME = "stockInTubes";
-        
+
     private final StockInTubesService stockInTubesService;
 
     public StockInTubesResource(StockInTubesService stockInTubesService) {
@@ -48,7 +48,7 @@ public class StockInTubesResource {
      * @return the ResponseEntity with status 201 (Created) and with body the new stockInTubesDTO, or with status 400 (Bad Request) if the stockInTubes has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PostMapping("/stock-in-tubes")
+    @PostMapping("/stock-in-tube")
     @Timed
     public ResponseEntity<StockInTubesDTO> createStockInTubes(@Valid @RequestBody StockInTubesDTO stockInTubesDTO) throws URISyntaxException {
         log.debug("REST request to save StockInTubes : {}", stockInTubesDTO);
@@ -70,7 +70,7 @@ public class StockInTubesResource {
      * or with status 500 (Internal Server Error) if the stockInTubesDTO couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PutMapping("/stock-in-tubes")
+    @PutMapping("/stock-in-tube")
     @Timed
     public ResponseEntity<StockInTubesDTO> updateStockInTubes(@Valid @RequestBody StockInTubesDTO stockInTubesDTO) throws URISyntaxException {
         log.debug("REST request to update StockInTubes : {}", stockInTubesDTO);
@@ -90,7 +90,7 @@ public class StockInTubesResource {
      * @return the ResponseEntity with status 200 (OK) and the list of stockInTubes in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @GetMapping("/stock-in-tubes")
+    @GetMapping("/stock-in-tube")
     @Timed
     public ResponseEntity<List<StockInTubesDTO>> getAllStockInTubes(@ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -106,7 +106,7 @@ public class StockInTubesResource {
      * @param id the id of the stockInTubesDTO to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the stockInTubesDTO, or with status 404 (Not Found)
      */
-    @GetMapping("/stock-in-tubes/{id}")
+    @GetMapping("/stock-in-tube/{id}")
     @Timed
     public ResponseEntity<StockInTubesDTO> getStockInTubes(@PathVariable Long id) {
         log.debug("REST request to get StockInTubes : {}", id);
@@ -120,7 +120,7 @@ public class StockInTubesResource {
      * @param id the id of the stockInTubesDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
-    @DeleteMapping("/stock-in-tubes/{id}")
+    @DeleteMapping("/stock-in-tube/{id}")
     @Timed
     public ResponseEntity<Void> deleteStockInTubes(@PathVariable Long id) {
         log.debug("REST request to delete StockInTubes : {}", id);

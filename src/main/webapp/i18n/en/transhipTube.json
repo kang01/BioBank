@@ -1,0 +1,26 @@
+{
+    "bioBankApp": {
+        "transhipTube" : {
+            "home": {
+                "title": "Tranship Tubes",
+                "createLabel": "Create a new Tranship Tube",
+                "createOrEditLabel": "Create or edit a Tranship Tube"
+            },
+            "created": "A new Tranship Tube is created with identifier {{ param }}",
+            "updated": "A Tranship Tube is updated with identifier {{ param }}",
+            "deleted": "A Tranship Tube is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Tranship Tube {{ id }}?"
+            },
+            "detail": {
+                "title": "Tranship Tube"
+            },
+            "status": "Status",
+            "memo": "Memo",
+            "columnsInTube": "Columns In Tube",
+            "rowsInTube": "Rows In Tube",
+            "transhipBox": "Tranship Box",
+            "frozenTube": "Frozen Tube"
+        }
+    }
+}

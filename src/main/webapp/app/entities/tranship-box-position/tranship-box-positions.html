@@ -1,0 +1,88 @@
+<div>
+    <h2 data-translate="bioBankApp.transhipBoxPosition.home.title">Tranship Box Positions</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="tranship-box-position.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.transhipBoxPosition.home.createLabel">
+                        Create new Tranship Box Position
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.transhipBoxPosition.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.transhipBoxPosition.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentCode"><span data-translate="bioBankApp.transhipBoxPosition.equipmentCode">Equipment Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="areaCode"><span data-translate="bioBankApp.transhipBoxPosition.areaCode">Area Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="supportRackCode"><span data-translate="bioBankApp.transhipBoxPosition.supportRackCode">Support Rack Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="rowsInShelf"><span data-translate="bioBankApp.transhipBoxPosition.rowsInShelf">Rows In Shelf</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="columnsInShelf"><span data-translate="bioBankApp.transhipBoxPosition.columnsInShelf">Columns In Shelf</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentId"><span data-translate="bioBankApp.transhipBoxPosition.equipment">Equipment</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="areaId"><span data-translate="bioBankApp.transhipBoxPosition.area">Area</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="supportRackId"><span data-translate="bioBankApp.transhipBoxPosition.supportRack">Support Rack</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="transhipBoxId"><span data-translate="bioBankApp.transhipBoxPosition.transhipBox">Tranship Box</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="transhipBoxPosition in vm.transhipBoxPositions track by transhipBoxPosition.id">
+                    <td><a ui-sref="tranship-box-position-detail({id:transhipBoxPosition.id})">{{transhipBoxPosition.id}}</a></td>
+                    <td>{{transhipBoxPosition.status}}</td>
+                    <td>{{transhipBoxPosition.memo}}</td>
+                    <td>{{transhipBoxPosition.equipmentCode}}</td>
+                    <td>{{transhipBoxPosition.areaCode}}</td>
+                    <td>{{transhipBoxPosition.supportRackCode}}</td>
+                    <td>{{transhipBoxPosition.rowsInShelf}}</td>
+                    <td>{{transhipBoxPosition.columnsInShelf}}</td>
+                    <td>
+                        <a ui-sref="equipment-detail({id:transhipBoxPosition.equipmentId})">{{transhipBoxPosition.equipmentId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="area-detail({id:transhipBoxPosition.areaId})">{{transhipBoxPosition.areaId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="support-rack-detail({id:transhipBoxPosition.supportRackId})">{{transhipBoxPosition.supportRackId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="tranship-box-detail({id:transhipBoxPosition.transhipBoxId})">{{transhipBoxPosition.transhipBoxId}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="tranship-box-position-detail({id:transhipBoxPosition.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="tranship-box-position.edit({id:transhipBoxPosition.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="tranship-box-position.delete({id:transhipBoxPosition.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

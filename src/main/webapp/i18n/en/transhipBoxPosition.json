@@ -1,0 +1,31 @@
+{
+    "bioBankApp": {
+        "transhipBoxPosition" : {
+            "home": {
+                "title": "Tranship Box Positions",
+                "createLabel": "Create a new Tranship Box Position",
+                "createOrEditLabel": "Create or edit a Tranship Box Position"
+            },
+            "created": "A new Tranship Box Position is created with identifier {{ param }}",
+            "updated": "A Tranship Box Position is updated with identifier {{ param }}",
+            "deleted": "A Tranship Box Position is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Tranship Box Position {{ id }}?"
+            },
+            "detail": {
+                "title": "Tranship Box Position"
+            },
+            "status": "Status",
+            "memo": "Memo",
+            "equipmentCode": "Equipment Code",
+            "areaCode": "Area Code",
+            "supportRackCode": "Support Rack Code",
+            "rowsInShelf": "Rows In Shelf",
+            "columnsInShelf": "Columns In Shelf",
+            "equipment": "Equipment",
+            "area": "Area",
+            "supportRack": "Support Rack",
+            "transhipBox": "Tranship Box"
+        }
+    }
+}

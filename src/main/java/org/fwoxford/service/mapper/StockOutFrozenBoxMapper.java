@@ -13,14 +13,12 @@ import java.util.List;
 public interface StockOutFrozenBoxMapper {
 
     @Mapping(source = "frozenBox.id", target = "frozenBoxId")
-    @Mapping(source = "stockOutBoxPosition.id", target = "stockOutBoxPositionId")
     @Mapping(source = "stockOutTask.id", target = "stockOutTaskId")
     StockOutFrozenBoxDTO stockOutFrozenBoxToStockOutFrozenBoxDTO(StockOutFrozenBox stockOutFrozenBox);
 
     List<StockOutFrozenBoxDTO> stockOutFrozenBoxesToStockOutFrozenBoxDTOs(List<StockOutFrozenBox> stockOutFrozenBoxes);
 
     @Mapping(source = "frozenBoxId", target = "frozenBox")
-    @Mapping(source = "stockOutBoxPositionId", target = "stockOutBoxPosition")
     @Mapping(source = "stockOutTaskId", target = "stockOutTask")
     StockOutFrozenBox stockOutFrozenBoxDTOToStockOutFrozenBox(StockOutFrozenBoxDTO stockOutFrozenBoxDTO);
 
@@ -33,15 +31,6 @@ public interface StockOutFrozenBoxMapper {
         FrozenBox frozenBox = new FrozenBox();
         frozenBox.setId(id);
         return frozenBox;
-    }
-
-    default StockOutBoxPosition stockOutBoxPositionFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        StockOutBoxPosition stockOutBoxPosition = new StockOutBoxPosition();
-        stockOutBoxPosition.setId(id);
-        return stockOutBoxPosition;
     }
 
     default StockOutTask stockOutTaskFromId(Long id) {

@@ -4,6 +4,7 @@ import org.fwoxford.BioBankApp;
 
 import org.fwoxford.domain.StockOutBoxPosition;
 import org.fwoxford.domain.FrozenBox;
+import org.fwoxford.domain.StockOutFrozenBox;
 import org.fwoxford.repository.StockOutBoxPositionRepository;
 import org.fwoxford.service.StockOutBoxPositionService;
 import org.fwoxford.service.dto.StockOutBoxPositionDTO;
@@ -113,10 +114,10 @@ public class StockOutBoxPositionResourceIntTest {
                 .status(DEFAULT_STATUS)
                 .memo(DEFAULT_MEMO);
         // Add required entity
-        FrozenBox frozenBox = FrozenBoxResourceIntTest.createEntity(em);
-        em.persist(frozenBox);
+        StockOutFrozenBox stockOutFrozenBox = StockOutFrozenBoxResourceIntTest.createEntity(em);
+        em.persist(stockOutFrozenBox);
         em.flush();
-        stockOutBoxPosition.setFrozenBox(frozenBox);
+        stockOutBoxPosition.setStockOutFrozenBox(stockOutFrozenBox);
         return stockOutBoxPosition;
     }
 

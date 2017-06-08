@@ -1,0 +1,63 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockInBoxPosition.detail.title">Stock In Box Position</span> {{vm.stockInBoxPosition.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockInBoxPosition.equipmentCode">Equipment Code</span></dt>
+        <dd>
+            <span>{{vm.stockInBoxPosition.equipmentCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInBoxPosition.areaCode">Area Code</span></dt>
+        <dd>
+            <span>{{vm.stockInBoxPosition.areaCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInBoxPosition.supportRackCode">Support Rack Code</span></dt>
+        <dd>
+            <span>{{vm.stockInBoxPosition.supportRackCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInBoxPosition.rowsInShelf">Rows In Shelf</span></dt>
+        <dd>
+            <span>{{vm.stockInBoxPosition.rowsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInBoxPosition.columnsInShelf">Columns In Shelf</span></dt>
+        <dd>
+            <span>{{vm.stockInBoxPosition.columnsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInBoxPosition.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockInBoxPosition.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInBoxPosition.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockInBoxPosition.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInBoxPosition.equipment">Equipment</span></dt>
+        <dd>
+            <a ui-sref="equipment-detail({id:vm.stockInBoxPosition.equipmentId})">{{vm.stockInBoxPosition.equipmentId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInBoxPosition.area">Area</span></dt>
+        <dd>
+            <a ui-sref="area-detail({id:vm.stockInBoxPosition.areaId})">{{vm.stockInBoxPosition.areaId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInBoxPosition.supportRack">Support Rack</span></dt>
+        <dd>
+            <a ui-sref="support-rack-detail({id:vm.stockInBoxPosition.supportRackId})">{{vm.stockInBoxPosition.supportRackId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInBoxPosition.stockInBox">Stock In Box</span></dt>
+        <dd>
+            <a ui-sref="stock-in-box-detail({id:vm.stockInBoxPosition.stockInBoxId})">{{vm.stockInBoxPosition.stockInBoxId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-in-box-position-detail.edit({id:vm.stockInBoxPosition.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

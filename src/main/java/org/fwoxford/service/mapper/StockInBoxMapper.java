@@ -64,7 +64,6 @@ public interface StockInBoxMapper {
         supportRack.setId(id);
         return supportRack;
     }
-
     default Area areaFromId(Long id) {
         if (id == null) {
             return null;

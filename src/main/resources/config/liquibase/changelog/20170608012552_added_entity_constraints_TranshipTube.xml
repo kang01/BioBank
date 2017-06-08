@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity TranshipTube.
+    -->
+    <changeSet id="20170608012552-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="tranship_box_id"
+                                 baseTableName="tranship_tube"
+                                 constraintName="tranship_tube_tranship_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tranship_box"/>
+
+        <addForeignKeyConstraint baseColumnNames="frozen_tube_id"
+                                 baseTableName="tranship_tube"
+                                 constraintName="tranship_tube_frozen_tube_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_tube"/>
+
+    </changeSet>
+</databaseChangeLog>

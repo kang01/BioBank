@@ -14,14 +14,12 @@ public interface TranshipBoxMapper {
 
     @Mapping(source = "tranship.id", target = "transhipId")
     @Mapping(source = "frozenBox.id", target = "frozenBoxId")
-    @Mapping(source = "transhipBoxPosition.id", target = "transhipBoxPositionId")
     TranshipBoxDTO transhipBoxToTranshipBoxDTO(TranshipBox transhipBox);
 
     List<TranshipBoxDTO> transhipBoxesToTranshipBoxDTOs(List<TranshipBox> transhipBoxes);
 
     @Mapping(source = "transhipId", target = "tranship")
     @Mapping(source = "frozenBoxId", target = "frozenBox")
-    @Mapping(source = "transhipBoxPositionId", target = "transhipBoxPosition")
     TranshipBox transhipBoxDTOToTranshipBox(TranshipBoxDTO transhipBoxDTO);
 
     List<TranshipBox> transhipBoxDTOsToTranshipBoxes(List<TranshipBoxDTO> transhipBoxDTOs);
@@ -66,14 +64,4 @@ public interface TranshipBoxMapper {
 
         return transhipBox;
     }
-
-    default TranshipBoxPosition transhipBoxPositionFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        TranshipBoxPosition transhipBoxPosition = new TranshipBoxPosition();
-        transhipBoxPosition.setId(id);
-        return transhipBoxPosition;
-    }
-
 }

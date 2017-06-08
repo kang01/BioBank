@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity StockInBoxPosition.
+    -->
+    <changeSet id="20170608022411-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="equipment_id"
+                                 baseTableName="stock_in_box_pos"
+                                 constraintName="stock_in_box_p_equipment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="equipment"/>
+
+        <addForeignKeyConstraint baseColumnNames="area_id"
+                                 baseTableName="stock_in_box_pos"
+                                 constraintName="stock_in_box_p_area_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="area"/>
+
+        <addForeignKeyConstraint baseColumnNames="support_rack_id"
+                                 baseTableName="stock_in_box_pos"
+                                 constraintName="stock_in_box_p_support_rack_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="support_rack"/>
+
+        <addForeignKeyConstraint baseColumnNames="stock_in_box_id"
+                                 baseTableName="stock_in_box_pos"
+                                 constraintName="stock_in_box_p_stock_in_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock_in_box"/>
+
+    </changeSet>
+</databaseChangeLog>

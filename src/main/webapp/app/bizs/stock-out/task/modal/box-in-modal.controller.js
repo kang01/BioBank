@@ -145,9 +145,9 @@
             $('td', nRow).unbind('click');
             $(nRow).bind('click', function() {
                 var tr = this;
-                $scope.$apply(function () {
+                // $scope.$apply(function () {
                     rowClickHandler(tr,oData);
-                })
+                // })
             });
             return nRow;
         }
@@ -281,14 +281,17 @@
         //装盒
         var tempBoxList = [];
         function _fnBoxIn() {
-
+            vm.selectAll = false;
             for(var i = 0; i < vm.selectedTubes.length;i++){
                 var index = _.indexOf(selectBox.frozenTubeDTOS, vm.selectedTubes[i]);
                 if(index == '-1'){
-                    selectBox.frozenTubeDTOS.push(vm.selectedTubes[i])
+                    selectBox.frozenTubeDTOS.push(vm.selectedTubes[i]);
+                    _.pull(boxInTubesCopy, vm.selectedTubes[i]);
                 }
             }
+            vm.selectedTubes = [];
             tempBoxList.push(selectBox);
+            vm.tempBoxInstance.DataTable.draw();
         }
 
 

@@ -101,7 +101,8 @@
                     }
                 ])
                 .withOption('processing',true)
-                .withOption('height','500')
+                .withScroller()
+                .withOption('scrollY', 280)
                 .withOption('serverSide',true)
                 .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                     var data = {};

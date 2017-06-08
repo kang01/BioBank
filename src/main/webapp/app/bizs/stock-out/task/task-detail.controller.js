@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskDetailController', TaskDetailController);
 
-    TaskDetailController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService'];
+    TaskDetailController.$inject = ['$rootScope','$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService'];
 
-    function TaskDetailController($scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService) {
+    function TaskDetailController($rootScope,$scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService) {
         var vm = this;
         var modalInstance;
         vm.boxInstance = {};
@@ -24,6 +24,8 @@
         function openCalendar(date) {
             vm.datePickerOpenStatus[date] = true;
         }
+
+
         //保存任务
         vm.saveTask = _fnSaveTask;
         //样本交接
@@ -80,6 +82,23 @@
             })
         }
         _fnInitTask();
+        //开始任务计时器
+        var taskTimer;
+        function startTimer() {
+             taskTimer = setInterval(function(){
+                TaskService.taskTimer(vm.taskId).then(function (data) {
+                });
+            },50000);
+        }
+        startTimer();
+
+        $rootScope.$on('$stateChangeStart',function(event,toState,toParams,fromState,fromParams){
+            window.clearInterval(taskTimer)
+        });
+        vm.close = function () {
+            $state.go('task-list');
+        };
+        //保存任务
         function _fnSaveTask() {
             BioBankBlockUi.blockUiStart();
             TaskService.saveTaskBox(vm.task).success(function (data) {

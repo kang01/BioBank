@@ -417,7 +417,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             box.setCountOfSample(count);
             box.setMemo(f.getMemo());
             box.setStatus(f.getStatus());
-            StockOutHandover stockOutHandover = stockOutHandoverRepository.findByStockOutTaskId(taskId);
+            StockOutHandover stockOutHandover = stockOutHandoverRepository.findByStockOutTaskIdAndstockOutBoxId(taskId,f.getId());
             box.setStockOutHandoverTime(stockOutHandover!=null?stockOutHandover.getHandoverTime():null);
             alist.add(box);
         }

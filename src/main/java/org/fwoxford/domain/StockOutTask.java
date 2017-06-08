@@ -32,7 +32,6 @@ public class StockOutTask extends AbstractAuditingEntity implements Serializable
     @Column(name = "stock_out_head_id_2")
     private Long stockOutHeadId2;
 
-    @NotNull
     @Column(name = "task_start_time")
     private ZonedDateTime taskStartTime;
 

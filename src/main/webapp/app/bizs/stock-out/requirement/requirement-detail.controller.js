@@ -238,6 +238,7 @@
                 vm.requirement.recordTime = new Date(data.recordTime);
                 // vm.requirement.recordId = data.recordId;
                 // vm.requirement.recordId = data.applyPersonName;
+                vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 vm.dtInstance.rerender();
                 vm.isApproval();

@@ -74,24 +74,24 @@
         _init();
         //添加新盒
         function _fnAddNewBox(){
-            var len = _.filter(boxList,{frozenBoxCode:vm.box.frozenBoxCode}).length;
-            if(len == 0){
-                boxList.push(angular.copy(vm.box));
-                vm.tempBoxOptions.withOption('data', boxList);
-                vm.tempBoxInstance.rerender();
-            }else{
-                toastr.error("冻存盒编码已存在!");
-            }
-            // BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
-            //     vm.isRepeat = data;
-            //     if (vm.isRepeat){
-            //         toastr.error("冻存盒编码已存在!");
-            //         vm.box.frozenBoxCode = "";
-            //         return;
-            //     }
-            //
-            //
-            // });
+
+            BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
+                vm.isRepeat = data;
+                if (vm.isRepeat){
+                    toastr.error("冻存盒编码已存在!");
+                    vm.box.frozenBoxCode = "";
+                    return;
+                }
+                var len = _.filter(boxList,{frozenBoxCode:vm.box.frozenBoxCode}).length;
+                if(len == 0){
+                    boxList.push(angular.copy(vm.box));
+                    vm.tempBoxOptions.withOption('data', boxList);
+                    vm.tempBoxInstance.rerender();
+                }else{
+                    toastr.error("冻存盒编码已存在!");
+                }
+
+            });
 
 
         }
@@ -111,7 +111,7 @@
             });
             for(var i = 0; i < boxInTubes.length; i++){
                 boxInTubes[i].pos = "";
-                boxInTubes[i].checkedFlag = false;
+                boxInTubes[i].checkedFlag = true;
                 boxInTubes[i].sampleTypeName = boxInTubes[i].sampleType.sampleTypeName;
             }
             boxInTubesCopy = [];
@@ -145,9 +145,9 @@
             $('td', nRow).unbind('click');
             $(nRow).bind('click', function() {
                 var tr = this;
-                $scope.$apply(function () {
+                // $scope.$apply(function () {
                     rowClickHandler(tr,oData);
-                })
+                // })
             });
             return nRow;
         }
@@ -165,6 +165,7 @@
             }
 
             _FnPreassemble(vm.selectedTubes);
+            $scope.$apply();
         }
         vm.posInit = function () {
             if(vm.pos){
@@ -281,14 +282,17 @@
         //装盒
         var tempBoxList = [];
         function _fnBoxIn() {
-
+            vm.selectAll = false;
             for(var i = 0; i < vm.selectedTubes.length;i++){
                 var index = _.indexOf(selectBox.frozenTubeDTOS, vm.selectedTubes[i]);
                 if(index == '-1'){
-                    selectBox.frozenTubeDTOS.push(vm.selectedTubes[i])
+                    selectBox.frozenTubeDTOS.push(vm.selectedTubes[i]);
+                    _.pull(boxInTubesCopy, vm.selectedTubes[i]);
                 }
             }
+            vm.selectedTubes = [];
             tempBoxList.push(selectBox);
+            vm.tempBoxInstance.DataTable.draw();
         }
 
 
@@ -344,13 +348,16 @@
         }
 
         function _fnLoadTube() {
+            vm.selectedTubes = [];
             setTimeout(function () {
                 for(var i = 0; i < boxInTubesCopy.length; i++){
                     boxInTubesCopy[i].pos = "";
-                    boxInTubesCopy[i].checkedFlag = false;
+                    boxInTubesCopy[i].checkedFlag = true;
                     boxInTubesCopy[i].sampleTypeName = boxInTubesCopy[i].sampleType.sampleTypeName;
+                    vm.selectedTubes.push(boxInTubesCopy[i])
                 }
                 vm.sampleOptions.withOption('data', boxInTubesCopy);
+                vm.selectAll = true;
             },500);
         }
         _fnLoadTube();
@@ -404,7 +411,7 @@
                         }
                     }
                 }
-                boxInTubesCopy = _.orderBy(boxInTubesCopy,['orderIndex'],['esc']);
+                boxInTubesCopy = _.orderBy(boxInTubesCopy,['orderIndex'],['asc']);
                 vm.sampleOptions.withOption('data', boxInTubesCopy);
                 vm.sampleInstance.rerender();
             }

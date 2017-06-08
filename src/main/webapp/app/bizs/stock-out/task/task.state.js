@@ -107,9 +107,7 @@
                     }],
                     entity: ['$stateParams', 'TaskService', function($stateParams, TaskService) {
                         var id = $stateParams.taskId;
-                        return TaskService.queryTaskDesc(id).then(function (res){
-                            return res.data;
-                        });
+                        return TaskService.queryTaskDesc(id)
                     }]
                 }
             })

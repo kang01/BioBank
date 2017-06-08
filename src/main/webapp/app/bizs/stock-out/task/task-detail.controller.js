@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskDetailController', TaskDetailController);
 
-    TaskDetailController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService'];
+    TaskDetailController.$inject = ['$rootScope','$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService'];
 
-    function TaskDetailController($scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService) {
+    function TaskDetailController($rootScope,$scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService) {
         var vm = this;
         var modalInstance;
         vm.boxInstance = {};
@@ -24,6 +24,8 @@
         function openCalendar(date) {
             vm.datePickerOpenStatus[date] = true;
         }
+
+
         //保存任务
         vm.saveTask = _fnSaveTask;
         //样本交接
@@ -80,6 +82,23 @@
             })
         }
         _fnInitTask();
+        //开始任务计时器
+        var taskTimer;
+        function startTimer() {
+             taskTimer = setInterval(function(){
+                TaskService.taskTimer(vm.taskId).then(function (data) {
+                });
+            },50000);
+        }
+        startTimer();
+
+        $rootScope.$on('$stateChangeStart',function(event,toState,toParams,fromState,fromParams){
+            window.clearInterval(taskTimer)
+        });
+        vm.close = function () {
+            $state.go('task-list');
+        };
+        //保存任务
         function _fnSaveTask() {
             BioBankBlockUi.blockUiStart();
             TaskService.saveTaskBox(vm.task).success(function (data) {
@@ -112,10 +131,21 @@
             //     BioBankBlockUi.blockUiStop();
             // })
         }
-        vm.personConfig = {
+        vm.personConfig1 = {
             valueField: 'id',
             labelField: 'userName',
-            maxItems: 1
+            maxItems: 1,
+            onChange:function (value) {
+                vm.task.stockOutHeader1 = _.filter(vm.personOptions,{id:value})[0].userName;
+            }
+        };
+        vm.personConfig2 = {
+            valueField: 'id',
+            labelField: 'userName',
+            maxItems: 1,
+            onChange:function (value) {
+                vm.task.stockOutHeader2 = _.filter(vm.personOptions,{id:value})[0].userName;
+            }
 
         };
         //出库状态
@@ -695,7 +725,9 @@
                     items: function () {
                         return {
                             frozenBoxIds:frozenBoxIds || vm.strBoxIds,
-                            taskId:vm.taskId
+                            taskId:vm.taskId,
+                            stockOutHeadName1:vm.task.stockOutHeader1,
+                            stockOutHeadName2:vm.task.stockOutHeader2
                         }
                     }
                 }

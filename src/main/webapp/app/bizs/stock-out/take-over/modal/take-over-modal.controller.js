@@ -50,7 +50,8 @@
 
 
         vm.ok = function () {
-            console.log(JSON.stringify(vm.takeOver));
+            // console.log(JSON.stringify(vm.takeOver));
+            delete vm.takeOver.handoverPersonName;
             TakeOverService.saveTakeOverComplete(boxIdsStr,vm.takeOver).success(function (data) {
                 toastr.success("交接成功!");
                 $uibModalInstance.close();

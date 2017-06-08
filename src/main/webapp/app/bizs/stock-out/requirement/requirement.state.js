@@ -74,7 +74,8 @@
                             delegateId:null,
                             recordTime:new Date(),
                             startTime:new Date(),
-                            endTime:new Date()
+                            endTime:new Date(),
+                            stockOutRequirement:[]
                         };
                     }
                 }

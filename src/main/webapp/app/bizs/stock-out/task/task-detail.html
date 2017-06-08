@@ -15,7 +15,7 @@
                 <!--<button class="btn btn-primary" ng-click="vm.boxInModal()">装盒</button>-->
                 <button class="btn btn-primary" ng-click="vm.takeOver()" ng-disabled="!vm.stockOutLen">样本交接</button>
                 <button class="btn btn-primary" ng-click="vm.saveTask()">保存任务</button>
-                <button class="btn btn-default" ui-sref="task-list">关闭</button>
+                <button class="btn btn-default" ng-click="vm.close()">关闭</button>
             </div>
         </div>
     </div>
@@ -43,13 +43,13 @@
             </div>
             <div class="form-group col-md-2">
                 <label>出库负责人1<span class="required-field"></span></label>
-                <selectize options='vm.personOptions' config="vm.personConfig"
+                <selectize options='vm.personOptions' config="vm.personConfig1"
                            ng-model="vm.task.stockOutHeadId1"></selectize>
                 <input type="hidden" ng-model="vm.task.stockOutHeadId1" required>
             </div>
             <div class="form-group col-md-2">
                 <label>出库负责人2<span class="required-field"></span></label>
-                <selectize options='vm.personOptions' config="vm.personConfig"
+                <selectize options='vm.personOptions' config="vm.personConfig2"
                            ng-model="vm.task.stockOutHeadId2"></selectize>
                 <input type="hidden" ng-model="vm.task.stockOutHeadId2" required>
             </div>
@@ -124,7 +124,7 @@
                     <div class="pull-right">
 
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.taskStockOutModal()"
-                                ng-disabled="!vm.task.stockOutHeadId1 || !vm.task.stockOutHeadId2">批量出库
+                                ng-disabled="!vm.task.stockOutHeadId1 || !vm.task.stockOutHeadId2 || !vm.strBoxIds">批量出库
                         </button>
                     </div>
                     <div class="clear-both"></div>

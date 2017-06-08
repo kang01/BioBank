@@ -40,7 +40,9 @@
             //出库详情页
             queryOutputDes:_queryOutputDes,
             //样本交接
-            takeOver:_takeOver
+            takeOver:_takeOver,
+            //开始任务计时器
+            taskTimer:_fnTaskTimer
         };
         function _queryTaskList(data,oSettings) {
             return $http.post('api/res/stock-out-tasks',JSON.stringify(data))
@@ -86,6 +88,9 @@
         }
         function _takeOver(taskId) {
             return $http.post('/api/stock-out-handovers/task/'+taskId)
+        }
+        function _fnTaskTimer(taskId) {
+            return $http.put('/api/stock-out-tasks/'+taskId+'/begin')
         }
         return service;
     }

@@ -17,6 +17,8 @@
         vm.stockOut = {};
         var frozenBoxIds = items.frozenBoxIds;
         var taskId = items.taskId;
+        vm.stockOutHeadName1 = items.stockOutHeadName1;
+        vm.stockOutHeadName2 = items.stockOutHeadName2;
 
 
         //设备

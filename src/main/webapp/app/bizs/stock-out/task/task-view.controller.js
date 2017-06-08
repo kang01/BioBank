@@ -16,19 +16,27 @@
                                 TaskService,SampleUserService,MasterData,BioBankBlockUi,SampleService,entity) {
         var vm = this;
         var modalInstance;
-        vm.task = entity;
+        vm.task = entity.data;
+
+        vm.status  = MasterData.getStatus(vm.task.status);
 
         vm.takeOver = _fnTakeOver;
         function _fnTakeOver() {
-            BioBankBlockUi.blockUiStart();
-            TaskService.takeOver(vm.taskId).success(function (data) {
-                BioBankBlockUi.blockUiStop();
-                toastr.success("创建交接单成功!");
-                $state.go('take-over-edit', {id: data});
-            }).error(function (data) {
-                toastr.error("创建交接单失败!");
-                BioBankBlockUi.blockUiStop();
-            })
+            var obj = {
+                applyId:vm.task.stockOutApplyId,
+                planId:vm.task.stockOutPlanId,
+                taskId:vm.task.id
+            };
+            $state.go('take-over-new',obj);
+            // BioBankBlockUi.blockUiStart();
+            // TaskService.takeOver(vm.taskId).success(function (data) {
+            //     BioBankBlockUi.blockUiStop();
+            //     toastr.success("创建交接单成功!");
+            //     $state.go('take-over-edit', {id: data});
+            // }).error(function (data) {
+            //     toastr.error("创建交接单失败!");
+            //     BioBankBlockUi.blockUiStop();
+            // })
         };
 
         //已出库列表

@@ -1,4 +1,4 @@
-<form class="stockOutForm" novalidate>
+<form name="stockOutForm" novalidate>
     <div class="modal-header">
         <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
         <h3 class="modal-title" id="modal-title">样本出库</h3>
@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <label  class="col-sm-4 control-label">负责人1密钥
+                <label  class="col-sm-4 control-label">{{vm.stockOutHeadName1}}密钥
                     <span class="required-field"></span>
                 </label>
                 <div class="col-sm-8">
@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <label  class="col-sm-4 control-label">负责人2密钥
+                <label  class="col-sm-4 control-label">{{vm.stockOutHeadName2}}密钥
                     <span class="required-field"></span>
                 </label>
                 <div class="col-sm-8">

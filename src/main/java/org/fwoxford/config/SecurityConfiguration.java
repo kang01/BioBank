@@ -41,15 +41,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
 
+    private final SingleSessionCheckFilter singleSessionCheckFilter;
+
     public SecurityConfiguration(AuthenticationManagerBuilder authenticationManagerBuilder, UserDetailsService userDetailsService,
-        JHipsterProperties jHipsterProperties, RememberMeServices rememberMeServices,
-        CorsFilter corsFilter) {
+                                 JHipsterProperties jHipsterProperties, RememberMeServices rememberMeServices,
+                                 CorsFilter corsFilter, SingleSessionCheckFilter singleSessionCheckFilter) {
 
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userDetailsService = userDetailsService;
         this.jHipsterProperties = jHipsterProperties;
         this.rememberMeServices = rememberMeServices;
         this.corsFilter = corsFilter;
+        this.singleSessionCheckFilter = singleSessionCheckFilter;
     }
 
     @PostConstruct
@@ -87,6 +90,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -146,6 +151,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/swagger-resources/configuration/ui").permitAll()
             .antMatchers("/swagger-ui/index.html").hasAuthority(AuthoritiesConstants.ADMIN);
 
+        // 添加一个Filter用来检查一个用户是否拥有多个Session
+        http.addFilterAfter(singleSessionCheckFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

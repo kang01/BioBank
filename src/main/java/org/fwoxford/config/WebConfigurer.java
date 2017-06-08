@@ -8,6 +8,8 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.servlet.InstrumentedFilter;
 import com.codahale.metrics.servlets.MetricsServlet;
 
+import org.fwoxford.config.listeners.SessionEventListener;
+import org.fwoxford.security.SingleSessionCheckFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,10 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         if (env.acceptsProfiles(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
             initCachingHttpHeadersFilter(servletContext, disps);
         }
+
+        // 添加一个Listener监听Session的状态。
+        servletContext.addListener(SessionEventListener.class);
+
         log.info("Web application fully configured");
     }
 
@@ -169,8 +175,17 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         return new CorsFilter(source);
     }
 
+    @Bean
+    public SingleSessionCheckFilter singleSessionCheckFilter() {
+        return new SingleSessionCheckFilter();
+    }
+
     @Autowired(required = false)
     public void setMetricRegistry(MetricRegistry metricRegistry) {
         this.metricRegistry = metricRegistry;
     }
+
+
+
+
 }

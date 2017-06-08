@@ -101,12 +101,12 @@ public class PersistentTokenRememberMeServices extends
         log.debug("Creating new persistent login for user {}", login);
         PersistentToken token = userRepository.findOneByLogin(login).map(u -> {
 //            PersistentToken t = new PersistentToken();
-            PersistentToken oldToken =  persistentTokenRepository.findOneByUser(u);
-            if(oldToken != null){
-//                this.loginFail(request, response);
-//                throw new UsernameNotFoundException("User " + login + " was not found in the database");
-//                persistentTokenRepository.delete(oldToken);
-            }
+//            PersistentToken oldToken =  persistentTokenRepository.findOneByUser(u);
+//            if(oldToken != null){
+////                this.loginFail(request, response);
+////                throw new UsernameNotFoundException("User " + login + " was not found in the database");
+////                persistentTokenRepository.delete(oldToken);
+//            }
             PersistentToken t = new PersistentToken();
             t.setSeries(RandomUtil.generateSeriesData());
             t.setUser(u);

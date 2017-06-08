@@ -38,6 +38,9 @@
 .mt-40 {
     margin-top: 40px !important;
 }
+.mt-45 {
+    margin-top: 45px !important;
+}
 .mt-50 {
     margin-top: 50px !important;
 }
@@ -173,6 +176,9 @@
 }
 .pt-40 {
     padding-top: 40px !important;
+}
+.pt-45 {
+    padding-top: 45px !important;
 }
 .pt-50 {
     padding-top: 50px !important;

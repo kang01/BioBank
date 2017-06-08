@@ -20,6 +20,7 @@
         }
 
         vm.dtOptions = DTOptionsBuilder.newOptions()
+            .withDOM("<'row mt-0 mb-10'<'col-xs-6' > <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
             .withOption('processing',true)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {

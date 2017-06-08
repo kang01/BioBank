@@ -30,6 +30,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="business_id" type="bigint" remarks="业务ID">
+                <constraints nullable="false" />
+            </column>
+
             <column name="business_name" type="nvarchar(255)" remarks="业务名称">
                 <constraints nullable="false" />
             </column>
@@ -58,13 +62,5 @@
         </createTable>
         <dropDefaultValue tableName="user_login_history" columnName="invalid_date" columnDataType="datetime"/>
 
-    </changeSet>
-
-    <changeSet id="20170515060608-2" author="jhipster">
-        <addColumn tableName="user_login_history">
-            <column name="business_id" type="bigint" remarks="业务ID">
-                <constraints nullable="false" />
-            </column>
-        </addColumn>
     </changeSet>
 </databaseChangeLog>

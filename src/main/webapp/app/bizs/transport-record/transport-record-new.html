@@ -295,7 +295,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="checkbox-inline">
-                                <input type="checkbox" ng-model="vm.box.isSplit" ng-disabled="!vm.box" ng-true-value="1" ng-false-value="0">是否分装
+                                <input type="checkbox" ng-model="vm.box.isSplit" ng-disabled="!vm.box || vm.isMixedFlag" ng-true-value="1" ng-false-value="0" >是否分装
                             </label>
                         </div>
                     </div>

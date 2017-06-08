@@ -131,10 +131,21 @@
             //     BioBankBlockUi.blockUiStop();
             // })
         }
-        vm.personConfig = {
+        vm.personConfig1 = {
             valueField: 'id',
             labelField: 'userName',
-            maxItems: 1
+            maxItems: 1,
+            onChange:function (value) {
+                vm.task.stockOutHeader1 = _.filter(vm.personOptions,{id:value})[0].userName;
+            }
+        };
+        vm.personConfig2 = {
+            valueField: 'id',
+            labelField: 'userName',
+            maxItems: 1,
+            onChange:function (value) {
+                vm.task.stockOutHeader2 = _.filter(vm.personOptions,{id:value})[0].userName;
+            }
 
         };
         //出库状态
@@ -714,7 +725,9 @@
                     items: function () {
                         return {
                             frozenBoxIds:frozenBoxIds || vm.strBoxIds,
-                            taskId:vm.taskId
+                            taskId:vm.taskId,
+                            stockOutHeadName1:vm.task.stockOutHeader1,
+                            stockOutHeadName2:vm.task.stockOutHeader2
                         }
                     }
                 }

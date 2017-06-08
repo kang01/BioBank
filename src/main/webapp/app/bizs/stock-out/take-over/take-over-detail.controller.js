@@ -66,14 +66,15 @@
             if (value){
                 vm.application = _.find(vm.applicationOptions, {id:value});
                 StockOutService.getPlans(value).then(function (res){
-                        vm.planOptions = res.data;
+                    vm.planOptions = res.data;
+                    if(vm.planOptions.length){
                         vm.dto.stockOutPlanId = vm.planOptions[0].id;
-                        // vm.taskOptions.length = 0;
-                        if(vm.dto.stockOutPlanId){
-                            _fnGetTasks(vm.dto.stockOutPlanId)
-                        }
-                    }, onError
-                );
+                    }
+                    // vm.taskOptions.length = 0;
+                    if(vm.dto.stockOutPlanId){
+                        _fnGetTasks(vm.dto.stockOutPlanId)
+                    }
+                }, onError);
                 vm.stockOutApplyCode = (_.find(vm.applicationOptions, {id:value})||{}).applyCode;
                 if (vm.dtInstance && vm.dtInstance.rerender){
                     vm.dtInstance.rerender();
@@ -92,8 +93,10 @@
             if (value){
                 StockOutService.getTasks(value).then(function (res){
                         vm.taskOptions = res.data;
-                        vm.dto.stockOutTaskId = vm.taskOptions[0].id;
-                        $scope.$apply();
+                        if(vm.taskOptions.length){
+                            vm.dto.stockOutTaskId = vm.taskOptions[0].id;
+                        }
+                        // $scope.$apply();
                     }, onError
                 );
                 vm.stockOutPlanCode = (_.find(vm.planOptions, {id:value})||{}).stockOutPlanCode;

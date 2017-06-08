@@ -16,7 +16,9 @@
                                 TaskService,SampleUserService,MasterData,BioBankBlockUi,SampleService,entity) {
         var vm = this;
         var modalInstance;
-        vm.task = entity;
+        vm.task = entity.data;
+
+        vm.status  = MasterData.getStatus(vm.task.status);
 
         vm.takeOver = _fnTakeOver;
         function _fnTakeOver() {

@@ -15,7 +15,7 @@
             //获取申请列表
             queryRequirementList:_queryRequirementList,
             //附加列表
-            copyRequirementList:_copyRequirementList,
+            queryCopyRequirementList:_queryCopyRequirementList,
             //根据ID获取详情
             queryRequirementDesc:_queryRequirementDesc,
             //获取委托方
@@ -61,7 +61,7 @@
         function _queryRequirementList(data,oSettings) {
             return $http.post('api/res/stock-out-applies',JSON.stringify(data))
         }
-        function _copyRequirementList(id) {
+        function _queryCopyRequirementList(id) {
             return $http.get('api/stock-out-applies/parentApply/'+id)
         }
         function _queryRequirementDesc(id) {

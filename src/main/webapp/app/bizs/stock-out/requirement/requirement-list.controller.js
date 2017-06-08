@@ -7,12 +7,14 @@
 
     angular
         .module('bioBankApp')
-        .controller('requirementListController', requirementListController);
+        .controller('requirementListController', requirementListController)
+        .controller('ConfirmModalController', ConfirmModalController);
 
-    requirementListController.$inject = ['$scope', '$compile', '$state', 'toastr', 'DTOptionsBuilder', 'DTColumnBuilder', 'RequirementService'];
-
-    function requirementListController($scope, $compile, $state, toastr, DTOptionsBuilder, DTColumnBuilder, RequirementService) {
+    requirementListController.$inject = ['$scope', '$compile', '$state', 'toastr', 'DTOptionsBuilder', 'DTColumnBuilder', 'RequirementService','$uibModal'];
+    ConfirmModalController.$inject = ['$uibModalInstance'];
+    function requirementListController($scope, $compile, $state, toastr, DTOptionsBuilder, DTColumnBuilder, RequirementService,$uibModal) {
         var vm = this;
+        var modalInstance;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dtInstance = {};
         vm.add = _fnAdd;
@@ -155,7 +157,23 @@
         function rowCallback(nRow, oData) {
 
         }
+        function actionsHtml(data, type, full, meta) {
+            if (full.status != '1103') {
+                return '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-edit({applyId:' + full.id + '})">' +
+                    '<i class="fa fa-edit"></i>' +
+                    '</a>'
+            } else {
+                return '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-view({applyId:' + full.id + ',viewFlag:1})">' +
+                    '<i class="fa fa-eye"></i>' +
+                    '</a>&nbsp;' +
+                    '<a  type="button" class="btn btn-default btn-xs" ng-click="vm.additionApply(' + full.id + ')">' +
+                    '附加' +
+                    '</a>'
+            }
 
+
+
+        }
         function extraClickHandler(tr) {
             var row = vm.dtInstance.DataTable.row(tr);
             if (row.child.isShown()) {
@@ -165,7 +183,7 @@
             }
             else {
                 // Open this row
-                RequirementService.copyRequirementList(row.data().id).then(function (res) {
+                RequirementService.queryCopyRequirementList(row.data().id).then(function (res) {
                     row.child(format(tr, res.data)).show();
                     var child = row.child();
                     $("td:eq(0)", child).addClass('p-0');
@@ -179,27 +197,28 @@
             var html = $('<table class="table table-operate dataTable mt-0" style="width: 100%"><tbody></tbody></table>');
             for (var i = 0; i < items.length; i++) {
                 var tr = $("<tr />").html(
-                    "<td style='width: 2%'> </td>" +
-                    "<td style='width: 13%'>" + (items[i].applyCode||' ') + "</td>" +
-                    "<td style='width: 17%'>" + (items[i].delegateName||' ') + "</td>" +
-                    "<td style='width: 10%'>" + (items[i].applyPersonName||' ') + "</td>" +
-                    "<td style='width: 13%'>" + (items[i].applyTime||' ') + "</td>" +
-                    "<td style='width: 17%'>" + (items[i].purposeOfSample||' ') + "</td>" +
-                    "<td style='width: 10%'>" + (items[i].countOfSample||' ') + "</td>" +
-                    "<td style='width: 12%'>" + (items[i].sampleTypes||' ') + "</td>" +
-                    "<td style='width: 10%'>" + statusShow(items[i].status) + "</td>"
+                    "<td> </td>" +
+                    "<td>" + (items[i].applyCode||' ') + "</td>" +
+                    "<td>" + (items[i].delegateName||' ') + "</td>" +
+                    "<td>" + (items[i].applyPersonName||' ') + "</td>" +
+                    "<td>" + (items[i].applyTime||' ') + "</td>" +
+                    "<td>" + (items[i].purposeOfSample||' ') + "</td>" +
+                    "<td>" + (items[i].countOfSample||' ') + "</td>" +
+                    "<td>" + (items[i].sampleTypes||' ') + "</td>" +
+                    "<td>" + statusShow(items[i].status) + "</td>"
                 );
                 if (items[i].status == '1101') {
                     $(tr).append("<td ><button  class='addApplyId btn  btn-default btn-xs'><i class='fa fa-edit'></i></button></td>")
                 } else if (items[i].status == '1103') {
                     $(tr).append("<td ><button  class='viewApplyId btn btn-default btn-xs'><i class='fa fa-eye'></i></button></td>")
                 }
+                var applyId = items[i].id;
                 $(".addApplyId", tr).click(function () {
-                    var applyId = $(tr)[0].childNodes[0].innerText;
-                    $state.go('requirement-edit', {applyId: applyId});
+                    $state.go('requirement-additionApply', {applyId: applyId,viewFlag:1});
                 });
+
                 $(".viewApplyId", tr).click(function () {
-                    var applyId = $(tr)[0].childNodes[0].innerText;
+
                     $state.go('requirement-view', {applyId: applyId});
                 });
                 $("td", tr).each(function (index, td){
@@ -232,41 +251,39 @@
 
         }
         vm.additionApply = _fnAdditionApply;
-        function actionsHtml(data, type, full, meta) {
-            if (full.status != '1103') {
-                return '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-edit({applyId:' + full.id + '})">' +
-                    '<i class="fa fa-edit"></i>' +
-                    '</a>'
-            } else {
-                return '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-view({applyId:' + full.id + ',viewFlag:1})">' +
-                    '<i class="fa fa-eye"></i>' +
-                    '</a>&nbsp;' +
-                    '<a  type="button" class="btn btn-default btn-xs" ng-click="vm.additionApply(' + full.id + ')">' +
-                    '附加' +
-                    '</a>'
-            }
 
-
-
-        }
         function _fnAdditionApply(requirementId) {
-
-            RequirementService.addApplyRequirement(requirementId).success(function (data) {
-                vm.status = data.status;
-                $state.go("requirement-additionApply",{applyId:data.id})
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-confirm-modal.html',
+                controller: 'ConfirmModalController',
+                controllerAs:'vm'
             });
+
+            modalInstance.result.then(function (data) {
+                RequirementService.addApplyRequirement(requirementId).success(function (data) {
+                    vm.status = data.status;
+                    $state.go("requirement-additionApply",{applyId:data.id})
+                });
+            });
+
         }
         function extraHtml(data, type, full, meta) {
             var html = '';
+            //有下一级
             if (full.levelNo == 1) {
                 html = '<div class="details-control"></div>'
             }
             return html;
         }
-
-
-        // setTimeout(function () {
-        //     vm.dtInstance.rerender();
-        // },500)
+    }
+    function ConfirmModalController($uibModalInstance) {
+        var vm = this;
+        vm.ok = function () {
+            $uibModalInstance.close(true);
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     }
 })();

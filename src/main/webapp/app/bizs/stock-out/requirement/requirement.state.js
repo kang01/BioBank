@@ -105,7 +105,7 @@
             })
             .state('requirement-additionApply', {
                 parent: 'bizs',
-                url: '/requirement-list/{applyId}/additionApply',
+                url: '/requirement-list/{applyId}/additionApply/{viewFlag}',
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: 'stockOut.new.title'

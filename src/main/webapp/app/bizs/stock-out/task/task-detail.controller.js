@@ -453,6 +453,7 @@
                 }else{
                     toastr.error("编码错误，请重新扫码!")
                 }
+                vm.boxInTubes = boxInTubes;
 
             }
         }
@@ -632,7 +633,6 @@
         };
 
         vm.toggleOne = function (selectedItems) {
-            // console.log(JSON.stringify(selectedItems))
             var arrayId = [];
             for (var id in selectedItems) {
                 if(selectedItems[id]){

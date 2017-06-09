@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('RequirementSampleDescModalController', RequirementSampleDescModalController);
 
-    RequirementSampleDescModalController.$inject = ['$scope','$uibModalInstance','$compile','$uibModal','items','DTOptionsBuilder','DTColumnBuilder','RequirementService'];
+    RequirementSampleDescModalController.$inject = ['$scope','$uibModalInstance','$compile','$uibModal','items','DTOptionsBuilder','DTColumnBuilder','RequirementService','BioBankDataTable'];
 
-    function RequirementSampleDescModalController($scope,$uibModalInstance,$compile,$uibModal,items,DTOptionsBuilder,DTColumnBuilder,RequirementService) {
+    function RequirementSampleDescModalController($scope,$uibModalInstance,$compile,$uibModal,items,DTOptionsBuilder,DTColumnBuilder,RequirementService,BioBankDataTable) {
         var vm = this;
         var sampleRequirementId = items.sampleRequirementId;
         //打印详情
@@ -31,14 +31,7 @@
         }
         _initSampleRequirementDesc();
 
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withPaginationType('full_numbers')
-            .withOption('info', false)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withOption('searching', false)
-            .withScroller()
-            .withOption('scrollY', 302)
+        vm.dtOptions = BioBankDataTable.buildDTOption("BASIC",302)
             .withOption('createdRow', createdRow);
 
         vm.dtColumns = [

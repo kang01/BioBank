@@ -14,8 +14,9 @@ public interface TranshipTubeRepository extends JpaRepository<TranshipTube,Long>
 
     Long countByColumnsInTubeAndRowsInTubeAndStatusAndTranshipBoxIdAndFrozenTubeId(String tubeColumns, String tubeRows, String status, Long transhipBoxId, Long frozenTubeId);
 
-    @Query(value = " select t.* from tranship_tube t"
-        + " where rowid in (select row_id from (select b.frozen_tube_id,max(rowid) row_id from tranship_tube b group by b.frozen_tube_id ))"
-        + " and t.tranship_box_id = ?1 " , nativeQuery = true)
+    @Query(value = " select * from (" +
+        "   select row_number() over(partition by frozen_tube_id order by CREATED_DATE desc) rn, a.* from  tranship_tube a where tranship_box_id = ?1 " +
+        ") where rn = 1 " , nativeQuery = true)
+
     List<TranshipTube> findByTranshipBoxIdLast(Long id);
 }

@@ -245,4 +245,23 @@ public interface FrozenBoxMapper {
         sampleClassification.setId(id);
         return sampleClassification;
     }
+
+    default FrozenBoxAndFrozenTubeResponse forzenBoxDTOAndTubeToResponse(FrozenBoxDTO frozenBox, List<FrozenTubeResponse> frozenTube){
+        if(frozenBox == null){
+            return null;
+        }
+        FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
+        res.setFrozenTubeDTOS(frozenTube);
+        res.setId(frozenBox.getId());
+        res.setStatus(frozenBox.getStatus());
+        res.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        res.setIsSplit(frozenBox.getIsSplit());
+        res.setMemo(frozenBox.getMemo());
+        res.setEquipmentId(frozenBox.getEquipmentId());
+        res.setAreaId(frozenBox.getAreaId());
+        res.setSupportRackId(frozenBox.getSupportRackId());
+        res.setColumnsInShelf(frozenBox.getColumnsInShelf());
+        res.setRowsInShelf(frozenBox.getRowsInShelf());
+        return res;
+    }
 }

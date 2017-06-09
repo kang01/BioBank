@@ -11,8 +11,9 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface TranshipBoxPositionRepository extends JpaRepository<TranshipBoxPosition,Long> {
-    @Query(value = "select * from (select rownum  num, a.*  from  tranship_box_pos a where a.tranship_box_id = ?1 )\n" +
-        "          where num = (select count(1)  from  tranship_box_pos where tranship_box_id = 1  )",nativeQuery = true)
+
+    @Query(value = "select * from tranship_box_pos a where a.tranship_box_id = ?1 order by CREATED_DATE desc " +
+        " FETCH FIRST 1 ROWS ONLY  " , nativeQuery = true)
     TranshipBoxPosition findByTranshipBoxIdLast(Long id);
 
     Long countByTranshipBoxIdAndEquipmentCodeAndAreaCodeAndSupportRackCodeAndRowsInShelfAndColumnsInShelf(Long TranshipBoxIid, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf);

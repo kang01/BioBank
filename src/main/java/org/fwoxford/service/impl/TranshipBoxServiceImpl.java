@@ -58,14 +58,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
     @Autowired
     private ProjectSampleClassRepository projectSampleClassRepository;
 
-    @Autowired
-    private StockInTubesRepository stockInTubesRepository;
 
     @Autowired
     private SampleClassificationRepository sampleClassificationRepository;
 
-    @Autowired
-    private ProjectSampleClassService projectSampleClassService;
 
     @Autowired
     private TranshipBoxPositionService transhipBoxPositionService;
@@ -75,6 +71,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
     @Autowired
     private TranshipTubeRepository transhipTubeRepository;
+
+    @Autowired
+    private TranshipBoxPositionRepository transhipBoxPositionRepository;
 
     public TranshipBoxServiceImpl(TranshipBoxRepository transhipBoxRepository,
                                   FrozenBoxRepository frozenBoxRepository,
@@ -467,6 +466,19 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         if(transhipBox == null){
             throw new BankServiceException("未查询到该冻存盒的转运记录！",frozenBoxCode);
         }
+        //查询转运盒的位置
+        TranshipBoxPosition transhipBoxPosition = transhipBoxPositionRepository.findByTranshipBoxIdLast(transhipBox.getId());
+        FrozenBoxDTO frozenBoxDTO  = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);;
+        if(transhipBoxPosition != null){
+            frozenBoxDTO.setEquipmentId(transhipBoxPosition.getEquipment()!=null?transhipBoxPosition.getEquipment().getId():null);
+            frozenBoxDTO.setEquipmentCode(transhipBoxPosition.getEquipmentCode());
+            frozenBoxDTO.setAreaId(transhipBoxPosition.getArea()!=null?transhipBoxPosition.getArea().getId():null);
+            frozenBoxDTO.setAreaCode(transhipBoxPosition.getAreaCode());
+            frozenBoxDTO.setSupportRackId(transhipBoxPosition.getSupportRack()!=null?transhipBoxPosition.getSupportRack().getId():null);
+            frozenBoxDTO.setSupportRackCode(transhipBoxPosition.getSupportRackCode());
+            frozenBoxDTO.setRowsInShelf(transhipBoxPosition.getRowsInShelf());
+            frozenBoxDTO.setColumnsInShelf(transhipBoxPosition.getColumnsInShelf());
+        }
         //查询冻存管列表信息
         List<FrozenTube> frozenTube = new ArrayList<FrozenTube>();
         List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
@@ -490,7 +502,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             tubeResponse.setFrozenBoxId(tube.getFrozenBox().getId());
             frozenTubeResponses.add(tubeResponse);
         }
-        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox, frozenTubeResponses);
+        res = frozenBoxMapper.forzenBoxDTOAndTubeToResponse(frozenBoxDTO, frozenTubeResponses);
+        res.setFrozenBoxType(frozenBox.getFrozenBoxType());
+        res.setSampleType(frozenBox.getSampleType());
+        res.setSampleClassification(frozenBox.getSampleClassification());
         return res;
     }
 

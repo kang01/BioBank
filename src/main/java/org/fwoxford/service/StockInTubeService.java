@@ -1,5 +1,6 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.StockInBox;
 import org.fwoxford.service.dto.StockInTubeDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public interface StockInTubeService {
 
     /**
      *  Get all the stockInTubes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +41,6 @@ public interface StockInTubeService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    void saveStockInTube(StockInBox stockInBox);
 }

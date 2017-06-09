@@ -1,5 +1,9 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
+import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.domain.StockInBox;
+import org.fwoxford.repository.FrozenTubeRepository;
 import org.fwoxford.service.StockInTubeService;
 import org.fwoxford.domain.StockInTube;
 import org.fwoxford.repository.StockInTubeRepository;
@@ -7,6 +11,7 @@ import org.fwoxford.service.dto.StockInTubeDTO;
 import org.fwoxford.service.mapper.StockInTubeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +29,13 @@ import java.util.stream.Collectors;
 public class StockInTubeServiceImpl implements StockInTubeService{
 
     private final Logger log = LoggerFactory.getLogger(StockInTubeServiceImpl.class);
-    
+
     private final StockInTubeRepository stockInTubeRepository;
 
     private final StockInTubeMapper stockInTubeMapper;
+
+    @Autowired
+    private FrozenTubeRepository frozenTubeRepository;
 
     public StockInTubeServiceImpl(StockInTubeRepository stockInTubeRepository, StockInTubeMapper stockInTubeMapper) {
         this.stockInTubeRepository = stockInTubeRepository;
@@ -51,7 +59,7 @@ public class StockInTubeServiceImpl implements StockInTubeService{
 
     /**
      *  Get all the stockInTubes.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +95,16 @@ public class StockInTubeServiceImpl implements StockInTubeService{
     public void delete(Long id) {
         log.debug("Request to delete StockInTube : {}", id);
         stockInTubeRepository.delete(id);
+    }
+
+    @Override
+    public void saveStockInTube(StockInBox stockInBox) {
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(stockInBox.getFrozenBoxCode());
+        for(FrozenTube tube :frozenTubeList){
+            StockInTube stockInTube = new StockInTube();
+            stockInTube.status(Constants.STOCK_IN_TUBE_PENDING).memo(tube.getMemo()).frozenTube(tube).columnsInTube(tube.getTubeColumns()).rowsInTube(tube.getTubeRows())
+                .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox);
+            stockInTubeRepository.save(stockInTube);
+        }
     }
 }

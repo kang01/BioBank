@@ -4,10 +4,7 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.security.SecurityUtils;
-import org.fwoxford.service.StockInBoxService;
-import org.fwoxford.service.StockInService;
-import org.fwoxford.service.TranshipService;
-import org.fwoxford.service.UserService;
+import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInForDataTable;
@@ -87,6 +84,9 @@ public class StockInServiceImpl implements StockInService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private StockInTubeService stockInTubeService;
 
     public StockInServiceImpl(StockInRepository stockInRepository,
                               StockInMapper stockInMapper,
@@ -225,6 +225,8 @@ public class StockInServiceImpl implements StockInService {
             //保存入库盒子
             StockInBox stockInBox = createStockInBox(box,stockIn);
             stockInBoxRepository.save(stockInBox);
+            //保存入库管子
+            stockInTubeService.saveStockInTube(stockInBox);
         }
         return stockInForDataDetail;
     }

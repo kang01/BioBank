@@ -233,15 +233,15 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         //更改盒子状态
         //如果在盒子内还有剩余的管子，状态还是待入库
         List<FrozenTube> tubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(boxCode);
-        FrozenBoxPosition frozenBoxPosition = frozenBoxPositionRepository.findOneByFrozenBoxIdAndStatus(frozenBox.getId(),Constants.FROZEN_BOX_SPLITING);
+//        FrozenBoxPosition frozenBoxPosition = frozenBoxPositionRepository.findOneByFrozenBoxIdAndStatus(frozenBox.getId(),Constants.FROZEN_BOX_SPLITING);
         StockInBox frozenBoxForSplit = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,boxCode);
         if(tubeList.size()==0){
             frozenBox.setStatus(Constants.FROZEN_BOX_SPLITED);
             frozenBoxForSplit.setStatus(Constants.FROZEN_BOX_SPLITED);
-            if(frozenBoxPosition!=null){
-                frozenBoxPosition.setStatus(Constants.FROZEN_BOX_SPLITED);
-                frozenBoxPositionRepository.save(frozenBoxPosition);
-            }
+//            if(frozenBoxPosition!=null){
+//                frozenBoxPosition.setStatus(Constants.FROZEN_BOX_SPLITED);
+//                frozenBoxPositionRepository.save(frozenBoxPosition);
+//            }
         }
         frozenBoxForSplit.setCountOfSample(tubeList.size());
         frozenBox.setSampleNumber(tubeList.size());

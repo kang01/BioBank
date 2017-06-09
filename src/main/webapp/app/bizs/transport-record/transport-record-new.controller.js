@@ -693,10 +693,11 @@
                     // tube.sampleTypeCode = tubeInBox.sampleTypeCode;
                     tube.status = tubeInBox.status;
                     tube.memo = tubeInBox.memo;
+                    if(tubeInBox.sampleClassification){
+                        tube.sampleClassificationId = tubeInBox.sampleClassification.id;
+                    }
                 }
-                if(tubeInBox.sampleClassification){
-                    tube.sampleClassificationId = tubeInBox.sampleClassification.id;
-                }
+
                 return tube;
             }
             // 重新加载管子表控件

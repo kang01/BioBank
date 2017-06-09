@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.TranshipBox;
 import org.fwoxford.service.TranshipTubeService;
@@ -98,23 +99,32 @@ public class TranshipTubeServiceImpl implements TranshipTubeService{
             return null;
         }
         List<TranshipTubeDTO> transhipTubeDTOS = new ArrayList<TranshipTubeDTO>();
-        for(FrozenTube frozenTube : frozenTubeList){
-            if(frozenTube.getId() == null){
+        List<TranshipTube> transhipTubes = transhipTubeRepository.findByTranshipBoxIdLast(transhipBox.getId());
+
+        for (FrozenTube frozenTube : frozenTubeList) {
+            for(TranshipTube f:transhipTubes) {
+                if (f.getFrozenTube().getId().equals(frozenTube.getId())) {
+                    continue;
+                } else {
+                    f.setStatus(Constants.INVALID);
+                }
+            }
+        }
+        for (FrozenTube frozenTube : frozenTubeList) {
+            if (frozenTube.getId() == null) {
                 return null;
             }
             Long count = transhipTubeRepository.countByColumnsInTubeAndRowsInTubeAndStatusAndTranshipBoxIdAndFrozenTubeId(
-                frozenTube.getTubeColumns(),frozenTube.getTubeRows(),frozenTube.getStatus(),transhipBox.getId(),frozenTube.getId()
+                frozenTube.getTubeColumns(), frozenTube.getTubeRows(), frozenTube.getStatus(), transhipBox.getId(), frozenTube.getId()
             );
-
-            if(count.intValue()==0){
+            if (count.intValue() == 0) {
                 TranshipTube transhipTube = new TranshipTube();
                 transhipTube.status(frozenTube.getStatus()).memo(frozenTube.getMemo())
                     .rowsInTube(frozenTube.getTubeRows()).frozenTube(frozenTube).columnsInTube(frozenTube.getTubeColumns())
                     .transhipBox(transhipBox);
-                transhipTubeRepository.save(transhipTube);
                 transhipTubeDTOS.add(transhipTubeMapper.transhipTubeToTranshipTubeDTO(transhipTube));
+                transhipTubeRepository.save(transhipTube);
             }
-
         }
         return transhipTubeDTOS;
     }

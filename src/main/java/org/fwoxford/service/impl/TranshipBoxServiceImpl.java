@@ -531,6 +531,13 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         transhipBoxRepository.save(transhipBox);
         frozenBox.setStatus(Constants.INVALID);
         frozenBoxRepository.save(frozenBox);
+        TranshipBoxPosition transhipBoxPosition = new TranshipBoxPosition();
+        transhipBoxPosition.transhipBox(transhipBox).memo(transhipBox.getMemo()).status(Constants.INVALID)
+            .equipment(transhipBox.getFrozenBox().getEquipment()).equipmentCode(transhipBox.getEquipmentCode())
+            .area(transhipBox.getFrozenBox().getArea()).areaCode(transhipBox.getAreaCode())
+            .supportRack(transhipBox.getFrozenBox().getSupportRack()).supportRackCode(transhipBox.getSupportRackCode())
+            .rowsInShelf(transhipBox.getRowsInShelf()).columnsInShelf(transhipBox.getColumnsInShelf());
+        transhipBoxPositionRepository.save(transhipBoxPosition);
     }
 
     @Override

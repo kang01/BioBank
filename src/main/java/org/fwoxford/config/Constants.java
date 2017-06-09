@@ -166,6 +166,10 @@ public final class Constants {
      */
     public static final Integer LEVEL_ONE = 1;
     public static final Integer LEVEL_TWO = 2;
+    /**
+     * 入库管子状态:2301:进行中
+     */
+    public static final String STOCK_IN_TUBE_PENDING = "2301";
 
     private Constants() {
     }

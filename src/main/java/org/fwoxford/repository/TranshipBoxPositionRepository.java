@@ -12,7 +12,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface TranshipBoxPositionRepository extends JpaRepository<TranshipBoxPosition,Long> {
 
-    @Query(value = "select * from tranship_box_pos a where a.tranship_box_id = ?1 order by CREATED_DATE desc " +
+    @Query(value = "select * from tranship_box_pos a where a.tranship_box_id = ?1 and a.status != '0000' order by CREATED_DATE desc " +
         " FETCH FIRST 1 ROWS ONLY  " , nativeQuery = true)
     TranshipBoxPosition findByTranshipBoxIdLast(Long id);
 

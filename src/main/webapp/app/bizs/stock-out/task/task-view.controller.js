@@ -9,10 +9,10 @@
         .module('bioBankApp')
         .controller('TaskViewController', TaskViewController);
 
-    TaskViewController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','toastr',
+    TaskViewController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','toastr','BioBankDataTable',
         'TaskService','SampleUserService','MasterData','BioBankBlockUi','SampleService','entity'];
 
-    function TaskViewController($scope, $state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,toastr,
+    function TaskViewController($scope, $state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,toastr,BioBankDataTable,
                                 TaskService,SampleUserService,MasterData,BioBankBlockUi,SampleService,entity) {
         var vm = this;
         var modalInstance;
@@ -41,13 +41,7 @@
 
         //已出库列表
         vm.stockOutSampleInstance = {};
-        vm.stockOutSampleOptions = DTOptionsBuilder.newOptions()
-            .withPaginationType('full_numbers')
-            .withOption('info', false)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withScroller()
-            .withOption('scrollY', 250)
+        vm.stockOutSampleOptions = BioBankDataTable.buildDTOption("BASIC", 250, null)
             .withOption('createdRow', createdRow)
             .withOption('headerCallback', function(header) {
                 $compile(angular.element(header).contents())($scope);
@@ -79,13 +73,7 @@
         }
 
         //未出库冻存盒列表
-        vm.boxOptions = DTOptionsBuilder.newOptions()
-            .withPaginationType('full_numbers')
-            .withOption('info', false)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withScroller()
-            .withOption('scrollY', 250)
+        vm.boxOptions = BioBankDataTable.buildDTOption("BASIC", 250, null)
             .withOption('rowCallback', rowCallback);
         vm.boxColumns = [
             DTColumnBuilder.newColumn('id').notVisible(),

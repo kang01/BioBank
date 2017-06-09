@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskDetailController', TaskDetailController);
 
-    TaskDetailController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService'];
+    TaskDetailController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService','BioBankDataTable'];
 
-    function TaskDetailController($scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService) {
+    function TaskDetailController($scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService,BioBankDataTable) {
         var vm = this;
         var modalInstance;
         vm.boxInstance = {};
@@ -160,13 +160,7 @@
 
 
         //冻存盒列表
-        vm.boxOptions = DTOptionsBuilder.newOptions()
-            .withPaginationType('full_numbers')
-            .withOption('info', false)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withScroller()
-            .withOption('scrollY', 371)
+        vm.boxOptions = BioBankDataTable.buildDTOption("BASIC,SEARCHING", 371)
             .withOption('rowCallback', rowCallback);
         vm.boxColumns = [
             DTColumnBuilder.newColumn('id').notVisible(),
@@ -661,13 +655,7 @@
 
         };
         //已出库列表
-        vm.stockOutSampleOptions = DTOptionsBuilder.newOptions()
-            .withPaginationType('full_numbers')
-            .withOption('info', false)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withScroller()
-            .withOption('scrollY', 300)
+        vm.stockOutSampleOptions = BioBankDataTable.buildDTOption("BASIC", 300)
             .withOption('createdRow', createdRow)
             .withOption('headerCallback', function(header) {
                 $compile(angular.element(header).contents())($scope);

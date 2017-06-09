@@ -34,8 +34,8 @@
                         case "NO-PAGING":
                             options.withOption('paging', false);
                             break;
-                        case "NO-SEARCHING":
-                            options.withOption('searching', false);
+                        case "SEARCHING":
+                            options.withOption('searching', true);
                             break;
                         case "BASIC":
                             options.withOption('info', false)

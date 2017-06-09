@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskListController', TaskListController);
 
-    TaskListController.$inject = ['$scope','$compile','$state','DTOptionsBuilder','DTColumnBuilder','TaskService','MasterData'];
+    TaskListController.$inject = ['$scope','$compile','$state','DTOptionsBuilder','DTColumnBuilder','TaskService','MasterData','BioBankDataTable'];
 
-    function TaskListController($scope,$compile,$state,DTOptionsBuilder,DTColumnBuilder,TaskService,MasterData) {
+    function TaskListController($scope,$compile,$state,DTOptionsBuilder,DTColumnBuilder,TaskService,MasterData,BioBankDataTable) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.add = _fnAdd;
@@ -23,9 +23,7 @@
             return { value:t.id,label:t.name };
         });
 
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withDOM("<'row mt-0 mb-10'<'col-xs-6' > <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
-            .withOption('processing',true)
+        vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};
@@ -59,7 +57,6 @@
                     jqDt._fnProcessingDisplay( oSettings, false );
                 });
             })
-            .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow)
             .withColumnFilter({
                 aoColumns: [{

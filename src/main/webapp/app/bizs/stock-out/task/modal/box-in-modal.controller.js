@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskBoxInModalController', TaskBoxInModalController);
 
-    TaskBoxInModalController.$inject = ['$scope','$compile','$uibModalInstance','$uibModal','toastr','items','DTOptionsBuilder','DTColumnBuilder','TaskService','FrozenBoxTypesService','BioBankBlockUi','BoxCodeIsRepeatService'];
+    TaskBoxInModalController.$inject = ['$scope','$compile','$uibModalInstance','$uibModal','toastr','items','DTOptionsBuilder','DTColumnBuilder','TaskService','FrozenBoxTypesService','BioBankBlockUi','BoxCodeIsRepeatService','BioBankDataTable'];
 
-    function TaskBoxInModalController($scope,$compile,$uibModalInstance,$uibModal,toastr,items,DTOptionsBuilder,DTColumnBuilder,TaskService,FrozenBoxTypesService,BioBankBlockUi,BoxCodeIsRepeatService) {
+    function TaskBoxInModalController($scope,$compile,$uibModalInstance,$uibModal,toastr,items,DTOptionsBuilder,DTColumnBuilder,TaskService,FrozenBoxTypesService,BioBankBlockUi,BoxCodeIsRepeatService,BioBankDataTable) {
         var vm = this;
         vm.tempBoxInstance = {};
         vm.sampleInstance = {};
@@ -121,13 +121,7 @@
 
 
         //临时盒子
-        vm.tempBoxOptions = DTOptionsBuilder.newOptions()
-            .withOption('info', false)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withOption('searching', false)
-            .withScroller()
-            .withOption('scrollY', 298)
+        vm.tempBoxOptions = BioBankDataTable.buildDTOption("BASIC", 298)
             .withOption('rowCallback', rowCallback)
             .withOption('createdRow', createdRow)
         vm.tempBoxColumns = [
@@ -305,13 +299,7 @@
 
 
 
-        vm.sampleOptions = DTOptionsBuilder.newOptions()
-            .withOption('info', false)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withOption('searching', false)
-            .withScroller()
-            .withOption('scrollY', 298)
+        vm.sampleOptions = BioBankDataTable.buildDTOption("BASIC", 298)
             .withOption('createdRow', function(row, data, dataIndex) {
                 if (data.pos){
                     $('td:eq(3)', row).html(data.pos.tubeRows+data.pos.tubeColumns);

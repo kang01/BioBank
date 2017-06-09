@@ -15,18 +15,10 @@
         var vm = this;
 
         vm.stockOutTakeOver = entity.data;
-        setTimeout(function () {
-            vm.stockOutSampleOptions.withOption('data',entity.data.handoverFrozenTubes);
-
-        },500);
-        // TakeOverService.queryTakeOverView(vm.stockOutTakeOver.id).success(function (data) {
-        //    console.log(JSON.stringify(data))
-        //     vm.stockOutTakeOver = data;
-        //     vm.stockOutSampleOptions.withOption('data',data.handoverFrozenTubes);
-        // });
 
         //已交接样本
         vm.stockOutSampleOptions = DTOptionsBuilder.newOptions()
+            .withOption('data',vm.stockOutTakeOver.handoverFrozenTubes)
             .withPaginationType('full_numbers')
             // .withOption('info', false)
             // .withOption('paging', false)

@@ -1,6 +1,8 @@
 package org.fwoxford.repository;
 
 import org.fwoxford.domain.StockOutHandoverDetails;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
@@ -19,4 +21,6 @@ public interface StockOutHandoverDetailsRepository extends JpaRepository<StockOu
 
     @Query("select count(t) from StockOutHandoverDetails t where t.stockOutHandover.id=?1 group by t.stockOutBoxTube.stockOutFrozenBox.id")
     Integer countFrozenBoxByStockOutHandoverId(Long id);
+
+    Page<StockOutHandoverDetails> findPageByStockOutHandoverId(Long id, Pageable pageable);
 }

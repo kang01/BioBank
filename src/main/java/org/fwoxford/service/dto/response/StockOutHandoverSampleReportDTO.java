@@ -1,17 +1,38 @@
 package org.fwoxford.service.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by zhuyu on 2017/5/16.
  */
 public class StockOutHandoverSampleReportDTO {
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     Long id;
     Long no;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     String boxCode;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     String location;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     String sampleCode;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     String sampleType;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     String sex;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     String age;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     String diseaseType;
 
     public Long getId() {

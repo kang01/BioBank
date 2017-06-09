@@ -52,7 +52,8 @@
                 vm.taskId = $stateParams.taskId;
                 TaskService.queryTaskDesc(vm.taskId).success(function (data) {
                     vm.task = data;
-                    vm.task.stockOutDate = new Date(data.stockOutDate)
+                    vm.task.stockOutDate = new Date(data.stockOutDate);
+                    vm.usedTime = data.usedTime;
                     taskId = data.id;
                 }).then(function () {
 
@@ -86,13 +87,14 @@
         var taskTimer;
         function startTimer() {
              taskTimer = setInterval(function(){
-                TaskService.taskTimer(vm.taskId).then(function (data) {
+                TaskService.taskTimer(vm.taskId).then(function (res) {
+                    vm.usedTime = res.data.usedTime;
                 });
-            },50000);
+            },90000);
         }
         startTimer();
 
-        $rootScope.$on('$stateChangeStart',function(event,toState,toParams,fromState,fromParams){
+        $scope.$on('$destroy',function(event,toState,toParams,fromState,fromParams){
             window.clearInterval(taskTimer)
         });
         vm.close = function () {

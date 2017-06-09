@@ -21,24 +21,31 @@
         }])
         .factory('BioBankDataTable',['DTOptionsBuilder','DTColumnBuilder','$timeout',function (DTOptionsBuilder, DTColumnBuilder,$timeout) {
             var service = {};
-            service.buildDTOption = function (type, scrollY, pageLength) {
+            service.buildDTOption = function (type, scrollY, pageLength, dom) {
                 var options = DTOptionsBuilder.newOptions()
                     .withOption('processing',true);
 
-                switch (type){
-                    case "NORMALLY":
-                        options.withPaginationType('full_numbers');
-                        break;
-                    case "NO-PAGING":
-                        options.withOption('paging', false);
-                        break;
-                    case "BASIC":
-                        options.withOption('info', false)
-                            .withOption('paging', false)
-                            .withOption('sorting', false)
-                            .withOption('searching', false);
-                        break;
-                }
+                var types = type.split(',');
+                _.each(types, function(t){
+                    switch (t){
+                        case "NORMALLY":
+                            options.withPaginationType('full_numbers');
+                            break;
+                        case "NO-PAGING":
+                            options.withOption('paging', false);
+                            break;
+                        case "NO-SEARCHING":
+                            options.withOption('searching', false);
+                            break;
+                        case "BASIC":
+                            options.withOption('info', false)
+                                .withOption('paging', false)
+                                .withOption('sorting', false)
+                                .withOption('searching', false);
+                            break;
+                    }
+                });
+
 
                 if (scrollY){
                     options.withScroller()
@@ -47,6 +54,10 @@
                 if (pageLength){
                     options.withOption('lengthChange', false)
                         .withOption('pageLength', +pageLength);
+                }
+
+                if (dom){
+                    options.withDOM(dom);
                 }
 
                 return options;

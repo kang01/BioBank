@@ -6,15 +6,17 @@
                 <h2 class="m-0">添加出库申请<small>（批准操作，委托方、委托人、开始时间、结束时间、记录人、记录时间为必填项）</small></h2>
             </div>
             <div class="pull-right">
+                
+                <button class="btn btn-primary" ng-click="vm.planSave()" ng-if="vm.requirement.status == '1103'">出库计划</button>
+
                 <button class="btn btn-primary" ng-click="vm.planSave()" ng-if="vm.requirement.status == '1103'">创建出库计划</button>
+
                 <button class="btn btn-primary" ng-click="vm.additionApply()" ng-if="vm.requirement.status == '1103'">附加申请</button>
                 <div class="pull-left" ng-if="vm.requirement.status != '1103'">
-
                     <button class="btn btn-primary" ng-click="vm.printRequirement()" ng-disabled="!vm.requirementApplyFlag || applyForm.$invalid">打印出库申请</button>
                     <button class="btn btn-primary" ng-click="vm.approvalModal()" ng-disabled="!vm.requirementApplyFlag || applyForm.$invalid">批准</button>
-                    <!--<button class="btn btn-primary" ng-click="vm.sampleDescModal()">样本库存详情</button>-->
-
                     <button class="btn btn-primary" ng-click="vm.saveRequirement()" ng-disabled="vm.requirementPrintFlag">保存申请</button>
+                    <button class="btn btn-primary ml-5" ng-click="vm.cancellation()">作废</button>
                 </div>
                 <div class="pull-right ml-5">
                     <button class="btn btn-default" ui-sref="requirement-list">关闭</button>

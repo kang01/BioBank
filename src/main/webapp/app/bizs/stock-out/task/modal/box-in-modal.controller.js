@@ -127,7 +127,7 @@
             .withOption('sorting', false)
             .withOption('searching', false)
             .withScroller()
-            .withOption('scrollY', 398)
+            .withOption('scrollY', 298)
             .withOption('rowCallback', rowCallback)
             .withOption('createdRow', createdRow)
         vm.tempBoxColumns = [
@@ -311,7 +311,7 @@
             .withOption('sorting', false)
             .withOption('searching', false)
             .withScroller()
-            .withOption('scrollY', 398)
+            .withOption('scrollY', 298)
             .withOption('createdRow', function(row, data, dataIndex) {
                 if (data.pos){
                     $('td:eq(3)', row).html(data.pos.tubeRows+data.pos.tubeColumns);

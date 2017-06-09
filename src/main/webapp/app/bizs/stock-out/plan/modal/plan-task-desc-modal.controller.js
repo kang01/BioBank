@@ -9,14 +9,13 @@
         .module('bioBankApp')
         .controller('PlanTaskDescModalController', PlanTaskDescModalController);
 
-    PlanTaskDescModalController.$inject = ['$uibModalInstance','$uibModal','items','DTColumnBuilder','DTOptionsBuilder','PlanService'];
+    PlanTaskDescModalController.$inject = ['$uibModalInstance','$uibModal','items','DTColumnBuilder','DTOptionsBuilder','PlanService','BioBankDataTable'];
 
-    function PlanTaskDescModalController($uibModalInstance,$uibModal,items,DTColumnBuilder,DTOptionsBuilder,PlanService) {
+    function PlanTaskDescModalController($uibModalInstance,$uibModal,items,DTColumnBuilder,DTOptionsBuilder,PlanService,BioBankDataTable) {
         var vm = this;
         var taskId = items.taskId;
         //盒子列表
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withOption('processing',true)
+        vm.dtOptions =  BioBankDataTable.buildDTOption("NORMALLY", 250, 8)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};
@@ -51,10 +50,7 @@
                         }
                         jqDt._fnProcessingDisplay( oSettings, false );
                     });
-
-
-            })
-            .withPaginationType('full_numbers')
+            });
 
         vm.dtColumns = [
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码'),

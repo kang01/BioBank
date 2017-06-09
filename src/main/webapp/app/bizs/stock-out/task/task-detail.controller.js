@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskDetailController', TaskDetailController);
 
-    TaskDetailController.$inject = ['$rootScope','$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService'];
+    TaskDetailController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService'];
 
-    function TaskDetailController($rootScope,$scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService) {
+    function TaskDetailController($scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService) {
         var vm = this;
         var modalInstance;
         vm.boxInstance = {};
@@ -77,7 +77,6 @@
                 vm.stockOutBoxList = data;
                 //1702已出库
                 vm.stockOutLen = _.filter(vm.stockOutBoxList,{status:"1702"}).length;
-
                 vm.stockOutSampleOptions.withOption('data', vm.stockOutBoxList);
                 vm.stockOutSampleInstance.rerender();
             })
@@ -419,48 +418,66 @@
         }
 
         //装盒的样本
-        var boxInTubes = [];
-        // vm.sampleCode = "1494946117831-G2";
+        vm.boxInTubes = [];
+        vm.sampleCode = "1494946117831-G2";
+        var scanCodeTimer;
+        vm.scanClick = function () {
+            $("#focusTextarea").focus();
+            vm.flagStatus = true;
+            window.clearInterval(scanCodeTimer);
+            scanCodeTimer = setInterval(function(){
+                _fnScanCode();
+            },500);
+        };
+        vm.scanCodeBlur = function () {
+            vm.flagStatus = false;
+            window.clearInterval(scanCodeTimer)
+        };
         //扫码取样
-        function _fnScanCode(e){
-            var tableCtrl = _getSampleDetailsTableCtrl();
-            var keycode = window.event ? e.keyCode : e.which;
-            if(keycode==13){
-                vm.sampleCode = vm.sampleCode.toUpperCase();
-                //获取待出库样本
-                var stockOutTubes = _.filter(vm.tubeList,{stockOutFlag:1});
-
-                //获取扫码取得样本
-                vm.scanCodeTubes = _.filter(stockOutTubes,{sampleTempCode:vm.sampleCode});
-                if(vm.scanCodeTubes.length){
-                    var row = vm.scanCodeTubes[0].rowNO;
-                    var col = vm.scanCodeTubes[0].colNO;
-                    //扫码标识
-                    vm.tubes[row][col-1].scanCodeFlag = true;
-
-                    //装盒样本
-                    var len = _.filter(boxInTubes,{sampleTempCode:vm.tubes[row][col-1].sampleTempCode}).length;
-
-                    if(len){
-                        return
-                    }else{
-                        vm.tubes[row][col-1].orderIndex = boxInTubes.length+1;
-                        boxInTubes.push(vm.tubes[row][col-1]);
-                    }
-                    //判断是否都全部扫码
-                    if(boxInTubes.length != stockOutTubes.length){
-                        vm.allInFlag = false;
-                    }else{
-                        vm.allInFlag = true;
-                    }
-                    tableCtrl.loadData(vm.tubes);
-                }else{
-                    toastr.error("编码错误，请重新扫码!")
-                }
-                vm.boxInTubes = boxInTubes;
-                vm.sampleCode = ""
-
+        function _fnScanCode(){
+            if (!vm.sampleCode) {
+                return
             }
+            var tableCtrl = _getSampleDetailsTableCtrl();
+            var sampleCode = vm.sampleCode.toUpperCase();
+            vm.sampleCode = "";
+            //获取待出库样本
+            var stockOutTubes = _.filter(vm.tubeList,{stockOutFlag:1});
+
+            //获取扫码取得样本
+            var scanCodeTubes = _.filter(stockOutTubes,{sampleCode: sampleCode});
+            if (!scanCodeTubes.length){
+                scanCodeTubes = _.filter(stockOutTubes,{sampleTempCode: sampleCode});
+            }
+
+            if(!scanCodeTubes.length) {
+                setTimeout(function(){
+                    toastr.error("编码错误，请重新扫码!");
+                },100);
+                return
+            }
+            var row = scanCodeTubes[0].rowNO;
+            var col = scanCodeTubes[0].colNO;
+            var boxInTubes = vm.boxInTubes || [];
+            //装盒样本
+            var len = _.filter(boxInTubes,{id: scanCodeTubes[0].id}).length;
+
+            // 样本是否已经扫码
+            if(len){
+                setTimeout(function(){
+                    toastr.error("扫码重复!");
+                },100);
+                return
+            }
+            scanCodeTubes[0].orderIndex = boxInTubes.length + 1;
+            vm.tubes[row][col-1].orderIndex = boxInTubes.length + 1;
+            boxInTubes.push(scanCodeTubes[0]);
+            //判断是否都全部扫码
+            vm.allInFlag = boxInTubes.length == stockOutTubes.length;
+            //扫码标识
+            vm.tubes[row][col-1].scanCodeFlag = true;
+            tableCtrl.loadData(vm.tubes);
+            vm.boxInTubes = boxInTubes;
         }
         //撤销
         function _fnRepealModal() {
@@ -484,7 +501,7 @@
                 for(var i = 0; i < vm.aRemarkArray.length; i++){
                     if(vm.aRemarkArray[i].stockOutFlag){
                         vm.aRemarkArray[i].repealReason = repealReason;
-                        repealList.push(vm.aRemarkArray[i])
+                        repealList.push(vm.aRemarkArray[i]);
                     }
                 }
 
@@ -534,7 +551,7 @@
                     obj.id = tempBoxId;
                     obj.memo = memo;
                     TaskService.outputNote(obj).success(function (data) {
-                        toastr.success("批注成功!")
+                        toastr.success("批注成功!");
                         _fnInitTask();
                     });
                 }
@@ -571,19 +588,6 @@
                 var tableCtrl = _getSampleDetailsTableCtrl();
                 tableCtrl.loadData(vm.tubes);
             });
-
-
-            // for(var i = 0; i < vm.aRemarkArray.length; i++){
-            //     if(vm.aRemarkArray[i].sampleCode){
-            //         vm.aRemarkArray[i].status = "3004";
-            //     }
-            // }
-            // TaskService.abnormal(vm.aRemarkArray).success(function (data) {
-            //
-            // });
-            // vm.aRemarkArray = [];
-            // var tableCtrl = _getSampleDetailsTableCtrl();
-            // tableCtrl.loadData(vm.tubes);
         }
         //装盒
         function _fnBoxInModal() {
@@ -598,7 +602,7 @@
                     items: function () {
                         return {
                             allInFlag:vm.allInFlag,
-                            boxInTubes:boxInTubes,
+                            boxInTubes:vm.boxInTubes,
                             taskId:vm.taskId
                         }
                     }
@@ -737,16 +741,11 @@
                     }
                 }
             });
-
             modalInstance.result.then(function (data) {
                 _fnQueryStockOutList();
                 stockOutFlag = false;
             });
         }
-
-
-
-
         function onError(error) {
             BioBankBlockUi.blockUiStop();
             toastr.error(error.data.message);

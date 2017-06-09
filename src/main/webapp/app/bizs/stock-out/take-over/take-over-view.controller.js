@@ -14,18 +14,67 @@
     function TakeOverViewController($scope,$compile,$uibModal,entity,TakeOverService,DTOptionsBuilder,DTColumnBuilder) {
         var vm = this;
 
-        vm.stockOutTakeOver = entity.data;
+        vm.stockOutTakeOver = entity;
 
         //已交接样本
+        // vm.stockOutSampleOptions = DTOptionsBuilder.newOptions()
+        //     .withOption('data',vm.stockOutTakeOver.handoverFrozenTubes)
+        //     .withPaginationType('full_numbers')
+        //
+        // var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
+        // vm.stockOutSampleColumns = [
+        //     DTColumnBuilder.newColumn('id').withTitle('No'),
+        //     DTColumnBuilder.newColumn('boxCode').withTitle('临时盒编码'),
+        //     DTColumnBuilder.newColumn('location').withTitle('冻存盒位置'),
+        //     DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),
+        //     DTColumnBuilder.newColumn('sampleType').withTitle('类型'),
+        //     DTColumnBuilder.newColumn('sex').withTitle('性别'),
+        //     DTColumnBuilder.newColumn('age').withTitle('年龄'),
+        //     DTColumnBuilder.newColumn('diseaseType').withTitle('疾病'),
+        //     DTColumnBuilder.newColumn('projectCode').withTitle('项目编码')
+        // ];
+
+
         vm.stockOutSampleOptions = DTOptionsBuilder.newOptions()
-            .withOption('data',vm.stockOutTakeOver.handoverFrozenTubes)
+            .withDOM("<'row mt-0 mb-10'<'col-xs-6' > <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
+            .withOption('processing',true)
+            .withOption('serverSide',true)
+            .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
+                var data = {};
+                for(var i=0; aoData && i<aoData.length; ++i){
+                    var oData = aoData[i];
+                    data[oData.name] = oData.value;
+                }
+                var jqDt = this;
+                TakeOverService.queryTakeOverView(vm.stockOutTakeOver.id,data).then(function (res){
+                    var json = res.data;
+                    var error = json.error || json.sError;
+                    if ( error ) {
+                        jqDt._fnLog( oSettings, 0, error );
+                    }
+                    oSettings.json = json;
+                    fnCallback( json );
+                }).catch(function(res){
+                    console.log(res);
+
+                    var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+
+                    if ( $.inArray( true, ret ) === -1 ) {
+                        if ( error == "parsererror" ) {
+                            jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+                        }
+                        else if ( res.readyState === 4 ) {
+                            jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
+                        }
+                    }
+
+                    jqDt._fnProcessingDisplay( oSettings, false );
+                });
+            })
             .withPaginationType('full_numbers')
-            // .withOption('info', false)
-            // .withOption('paging', false)
-            // .withOption('sorting', false)
-            // .withScroller()
-            // .withOption('scrollY', 300)
-        var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
+            .withOption('createdRow', createdRow);
+
+
         vm.stockOutSampleColumns = [
             DTColumnBuilder.newColumn('id').withTitle('No'),
             DTColumnBuilder.newColumn('boxCode').withTitle('临时盒编码'),
@@ -37,6 +86,18 @@
             DTColumnBuilder.newColumn('diseaseType').withTitle('疾病'),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码')
         ];
+        function createdRow(row, data, dataIndex) {
+            var planStatus = '';
+            switch (data.status){
+                case '1401': planStatus = '进行中';break;
+                case '1402': planStatus = '已完成';break;
+                case '1403': planStatus = '已作废';break;
+            }
+            $('td:eq(6)', row).html(planStatus);
+            $compile(angular.element(row).contents())($scope);
+        }
+
+
 
         vm.takeOverPrint = function () {
             window.open ('/api/stock-out-handovers/print/' + vm.stockOutTakeOver.id);

@@ -17,7 +17,7 @@
         var vm = this;
         var modalInstance;
         vm.task = entity.data;
-
+        vm.usedTime = vm.task.usedTime;
         vm.status  = MasterData.getStatus(vm.task.status);
 
         vm.takeOver = _fnTakeOver;

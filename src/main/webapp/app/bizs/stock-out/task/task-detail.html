@@ -1,5 +1,5 @@
 <div style="position: fixed;top:-30px;">
-    <textarea type="text" rows="1" focus-me="focusInput" ng-model="vm.sampleCode" ng-keyup="vm.scanCode($event)"></textarea>
+    <textarea  type="text" rows="1"  ng-model="vm.sampleCode" id="focusTextarea" ng-blur="vm.scanCodeBlur()"></textarea>
 </div>
 <div>
     <div class="row m-0">
@@ -10,7 +10,7 @@
                 </h2>
             </div>
             <div class="pull-right">
-                <span>累计用时: {{vm.usedTime}} 分钟</span>
+                <span>累计用时: {{vm.usedTime}} 分钟</span>&nbsp;
                 <button class="btn btn-primary" ng-click="vm.takeOver()" ng-disabled="!vm.stockOutLen">样本交接</button>
                 <button class="btn btn-primary" ng-click="vm.saveTask()">保存任务</button>
                 <button class="btn btn-default" ng-click="vm.close()">关闭</button>
@@ -94,10 +94,10 @@
                         <h4>待出库样本</h4>
                     </div>
                     <div class="pull-right">
-                        <input type="text"  ng-model="vm.sampleCode"
-                               ng-keyup="vm.scanCode($event)">
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="focusInput=true"
-                                ng-disabled="!vm.frozenTubeDTOS.length">扫码取样
+                        <input type="text"  ng-model="vm.sampleCode">
+                        <!--ng-click="focusInput=true"-->
+                        <button class="mt-5 mb-5 btn btn-default btn-sm"  ng-click="vm.scanClick()"
+                                ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus" uib-btn-checkbox ng-disabled="!vm.frozenTubeDTOS.length">扫码取样
                         </button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.boxInModal()" ng-disabled="!vm.boxInTubes.length">装盒</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()">异常</button>

@@ -121,7 +121,7 @@
                     }],
                     entity: ['$stateParams', 'TakeOverService', function($stateParams, TakeOverService) {
                         var id = $stateParams.id;
-                        return TakeOverService.queryTakeOverView(id);
+                        return TakeOverService.getTakeoverInfo(id);
                     }]
                 }
             })

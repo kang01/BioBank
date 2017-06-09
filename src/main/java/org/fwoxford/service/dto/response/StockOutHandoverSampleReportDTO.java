@@ -114,6 +114,7 @@ public class StockOutHandoverSampleReportDTO {
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
     }
-
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     String projectCode;
 }

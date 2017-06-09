@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TakeOverViewController', TakeOverViewController);
 
-    TakeOverViewController.$inject = ['$scope','$compile','$uibModal','entity','TakeOverService','DTOptionsBuilder','DTColumnBuilder'];
+    TakeOverViewController.$inject = ['$scope','$compile','$uibModal','entity','TakeOverService','DTOptionsBuilder','DTColumnBuilder','BioBankDataTable'];
 
-    function TakeOverViewController($scope,$compile,$uibModal,entity,TakeOverService,DTOptionsBuilder,DTColumnBuilder) {
+    function TakeOverViewController($scope,$compile,$uibModal,entity,TakeOverService,DTOptionsBuilder,DTColumnBuilder,BioBankDataTable) {
         var vm = this;
 
         vm.stockOutTakeOver = entity.data;
@@ -26,24 +26,18 @@
         // });
 
         //已交接样本
-        vm.stockOutSampleOptions = DTOptionsBuilder.newOptions()
-            .withPaginationType('full_numbers')
-            // .withOption('info', false)
-            // .withOption('paging', false)
-            // .withOption('sorting', false)
-            // .withScroller()
-            // .withOption('scrollY', 300)
+        vm.stockOutSampleOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10);
         var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.stockOutSampleColumns = [
-            DTColumnBuilder.newColumn('id').withTitle('No'),
-            DTColumnBuilder.newColumn('boxCode').withTitle('临时盒编码'),
-            DTColumnBuilder.newColumn('location').withTitle('冻存盒位置'),
-            DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),
-            DTColumnBuilder.newColumn('sampleType').withTitle('类型'),
-            DTColumnBuilder.newColumn('sex').withTitle('性别'),
-            DTColumnBuilder.newColumn('age').withTitle('年龄'),
-            DTColumnBuilder.newColumn('diseaseType').withTitle('疾病'),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码')
+            DTColumnBuilder.newColumn('id').withTitle('No').withOption('width', '30'),
+            DTColumnBuilder.newColumn('boxCode').withTitle('临时盒编码').withOption('width', '120'),
+            DTColumnBuilder.newColumn('location').withTitle('盒内位置').withOption('width', '80'),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption('width', '120'),
+            DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption('width', '120'),
+            DTColumnBuilder.newColumn('sampleType').withTitle('类型').withOption('width', '80'),
+            DTColumnBuilder.newColumn('sex').withTitle('性别').withOption('width', '30'),
+            DTColumnBuilder.newColumn('age').withTitle('年龄').withOption('width', '30'),
+            DTColumnBuilder.newColumn('diseaseType').withTitle('疾病').withOption('width', 'auto'),
         ];
 
         vm.takeOverPrint = function () {

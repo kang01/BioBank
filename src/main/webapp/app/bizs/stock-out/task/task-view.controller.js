@@ -58,10 +58,10 @@
             DTColumnBuilder.newColumn('id').notVisible(),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').withOption("width", "120"),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置'),
-            DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('出库交接时间'),
+            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "240"),
+            DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('交接时间').withOption("width", "80"),
             DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "60"),
-            DTColumnBuilder.newColumn('memo').withTitle('备注'),
+            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
             // DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml),
         ];
@@ -93,13 +93,13 @@
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "120"),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "60"),
             DTColumnBuilder.newColumn('sampleClassificationName').withTitle('样本分类').withOption("width", "60"),
-            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置'),
+            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "240"),
             DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "60"),
-            DTColumnBuilder.newColumn('memo').withTitle('备注'),
+            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
         ];
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
-            $('td:eq(8)', nRow).html(MasterData.getStatus(oData.status));
+            $('td:eq(7)', nRow).html(MasterData.getStatus(oData.status));
             $compile(angular.element(nRow).contents())($scope);
         }
 

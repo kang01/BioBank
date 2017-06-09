@@ -50,9 +50,9 @@
                 <form class="form-inline">
                     <div class="form-group">
                         <label>预装位置</label>
-                        <input type="text" class="form-control" ng-model="vm.pos" ng-blur="vm.posInit()">
+                        <input type="text" class="form-control" ng-model="vm.pos" ng-blur="vm.posBlur()">
                     </div>
-                    <button type="button" class="btn btn-default" ng-click="vm.boxIn()" ng-disabled="!vm.selectedTubes.length">装盒</button>
+                    <button type="button" class="btn btn-default" ng-click="vm.boxIn()" ng-disabled="!vm.selectedTubes.length || !vm.pos">装盒</button>
                     <button type="button" class="btn btn-default" ng-click="vm.recover()">复原</button>
                 </form>
             </div>

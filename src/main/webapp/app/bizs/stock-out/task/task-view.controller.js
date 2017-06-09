@@ -99,18 +99,18 @@
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
         ];
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
-            $('td:eq(8)', nRow).html(MasterData.getStatus(aData.status));
+            $('td:eq(8)', nRow).html(MasterData.getStatus(oData.status));
             $compile(angular.element(nRow).contents())($scope);
         }
 
         //获取未出库冻存盒列表
-        TaskService.queryTaskBox(vm.taskId).success(function (data) {
+        TaskService.queryTaskBox(vm.task.id).success(function (data) {
             vm.boxOptions.withOption('data', data);
-            vm.boxInstance.rerender();
+            // vm.boxInstance.rerender();
         });
 
         //获取已出库冻存盒列表
-        TaskService.queryOutputList(vm.taskId).success(function (data) {
+        TaskService.queryOutputList(vm.task.id).success(function (data) {
             vm.stockOutSampleOptions.withOption('data', data);
             vm.stockOutSampleInstance.rerender();
         })

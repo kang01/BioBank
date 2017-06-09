@@ -65,6 +65,7 @@
                     vm.isApproval();
                 },100)
             }else{
+                vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
                 setTimeout(function () {
                     vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 },100)
@@ -138,6 +139,7 @@
                 // vm.requirement.recordTime = new Date(data.recordTime);
                 // vm.requirement.recordId = data.recordId;
                 vm.requirement.stockOutRequirement = data.stockOutRequirement;
+                vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 vm.dtInstance.rerender();
                 vm.isApproval();

@@ -424,6 +424,7 @@
             var tableCtrl = _getSampleDetailsTableCtrl();
             var keycode = window.event ? e.keyCode : e.which;
             if(keycode==13){
+                vm.sampleCode = vm.sampleCode.toUpperCase();
                 //获取待出库样本
                 var stockOutTubes = _.filter(vm.tubeList,{stockOutFlag:1});
 
@@ -453,6 +454,8 @@
                 }else{
                     toastr.error("编码错误，请重新扫码!")
                 }
+                vm.boxInTubes = boxInTubes;
+                vm.sampleCode = ""
 
             }
         }
@@ -632,7 +635,6 @@
         };
 
         vm.toggleOne = function (selectedItems) {
-            // console.log(JSON.stringify(selectedItems))
             var arrayId = [];
             for (var id in selectedItems) {
                 if(selectedItems[id]){

@@ -151,15 +151,15 @@
             });
             return nRow;
         }
-        var selectBox;
+        // var selectBox;
         function rowClickHandler(tr,data) {
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
-            selectBox = data;
-            if(selectBox.frozenTubeDTOS.length){
-                var len = selectBox.frozenTubeDTOS.length-1;
-                _.orderBy(selectBox.frozenTubeDTOS, ['tubeRows'], ['esc']);
-                vm.pos = selectBox.frozenTubeDTOS[len].tubeRows + (+selectBox.frozenTubeDTOS[len].tubeColumns+1);
+            vm.selectBox = data;
+            if(vm.selectBox.frozenTubeDTOS.length){
+                var len = vm.selectBox.frozenTubeDTOS.length-1;
+                _.orderBy(vm.selectBox.frozenTubeDTOS, ['tubeRows'], ['esc']);
+                vm.pos = vm.selectBox.frozenTubeDTOS[len].tubeRows + (+vm.selectBox.frozenTubeDTOS[len].tubeColumns+1);
             }else{
                 vm.pos = "A1";
             }
@@ -167,7 +167,8 @@
             _FnPreassemble(vm.selectedTubes);
             $scope.$apply();
         }
-        vm.posInit = function () {
+        //位置鼠标移除事件
+        vm.posBlur = function () {
             if(vm.pos){
                _FnPreassemble(vm.selectedTubes);
             }
@@ -193,7 +194,9 @@
                     vm.selectedTubes.push(b);
                 }
             });
-            _FnPreassemble(vm.selectedTubes);
+            if(vm.pos){
+                _FnPreassemble(vm.selectedTubes);
+            }
             vm.sampleInstance.DataTable.draw();
             // selectedItems = vm.selected;
             // selectAll = vm.selectAll;
@@ -222,8 +225,11 @@
                 vm.sampleInstance.DataTable.draw();
                 return;
             }
-            //预装位置
-            _FnPreassemble(vm.selectedTubes);
+            if(vm.pos){
+                //预装位置
+                _FnPreassemble(vm.selectedTubes);
+            }
+
             vm.sampleInstance.DataTable.draw();
 
         };
@@ -233,8 +239,8 @@
             var startRow =  startPos.charAt(0);
             var startCol =  +startPos.substring(1);
             var pos={tubeRows:startRow,tubeColumns:startCol};
-            var countOfCols = +selectBox.frozenBoxType.frozenBoxTypeRows;
-            var countOfRows = +selectBox.frozenBoxType.frozenBoxTypeColumns;
+            var countOfCols = +vm.selectBox.frozenBoxType.frozenBoxTypeRows;
+            var countOfRows = +vm.selectBox.frozenBoxType.frozenBoxTypeColumns;
             var countOfSelect = selectedTubes.length;
             for(var i = 0; i < countOfSelect; i++){
                 // 检查盒内位置是否已经有管子
@@ -284,15 +290,17 @@
         function _fnBoxIn() {
             vm.selectAll = false;
             for(var i = 0; i < vm.selectedTubes.length;i++){
-                var index = _.indexOf(selectBox.frozenTubeDTOS, vm.selectedTubes[i]);
+                var index = _.indexOf(vm.selectBox.frozenTubeDTOS, vm.selectedTubes[i]);
                 if(index == '-1'){
-                    selectBox.frozenTubeDTOS.push(vm.selectedTubes[i]);
+                    vm.selectBox.frozenTubeDTOS.push(vm.selectedTubes[i]);
                     _.pull(boxInTubesCopy, vm.selectedTubes[i]);
                 }
             }
             vm.selectedTubes = [];
-            tempBoxList.push(selectBox);
+            tempBoxList.push(vm.selectBox);
             vm.tempBoxInstance.DataTable.draw();
+            vm.selectBox = {};
+            vm.pos = "";
         }
 
 

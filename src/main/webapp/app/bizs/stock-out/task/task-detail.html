@@ -96,12 +96,12 @@
                         <h4>待出库样本</h4>
                     </div>
                     <div class="pull-right">
-                        <input type="text" focus-me="focusInput" ng-model="vm.sampleCode"
+                        <input type="text"  ng-model="vm.sampleCode"
                                ng-keyup="vm.scanCode($event)">
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="focusInput=true"
                                 ng-disabled="!vm.frozenTubeDTOS.length">扫码取样
                         </button>
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.boxInModal()" ng-disabled="!vm.scanCodeTubes.length">装盒</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.boxInModal()" ng-disabled="!vm.boxInTubes.length">装盒</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()">异常</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealModal()">撤销申请</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.commentModal(1)">批注</button>

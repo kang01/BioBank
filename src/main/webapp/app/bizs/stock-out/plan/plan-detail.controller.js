@@ -125,13 +125,13 @@
                                     jqDt._fnLog( oSettings, 0, error );
                                 }
                                 oSettings.json = json;
-                                boxId = res.data.data[0].id
+                                boxId = res.data.data[0].id;
                                 _loadTubes(boxId);
                             }else{
                                 var array = {
                                     draw : 1,
-                                    recordsTotal : 100,
-                                    recordsFiltered : 10,
+                                    recordsTotal : 0,
+                                    recordsFiltered : 0,
                                     data: [ ],
                                     error : ""
                                 };
@@ -157,8 +157,8 @@
                     }else{
                         var array = {
                             draw : 1,
-                            recordsTotal : 100,
-                            recordsFiltered : 10,
+                            recordsTotal : 0,
+                            recordsFiltered : 0,
                             data: [ ],
                             error : ""
                         }

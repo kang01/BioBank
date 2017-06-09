@@ -192,6 +192,8 @@
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
             boxCode = data.frozenBoxCode;
+            var tableCtrl = _getSampleDetailsTableCtrl();
+            tableCtrl.loadData([[]]);
             _fnLoadTubes();
         }
         //加载管子
@@ -402,9 +404,7 @@
                     for(var j = selectTubeArray[1];  j <= selectTubeArray[3];j++)
                         $(td.getCell(i,j)).append(txt);
                 }
-                console.log(JSON.stringify(vm.aRemarkArray.length))
             }
-            console.log(JSON.stringify(vm.aRemarkArray.length))
             //修改样本状态正常、空管、空孔、异常
             function changeSampleStatus(sampleStatus,td) {
                 //异常
@@ -418,7 +418,7 @@
 
         //装盒的样本
         var boxInTubes = [];
-        vm.sampleCode = "1494946117831-G2";
+        // vm.sampleCode = "1494946117831-G2";
         //扫码取样
         function _fnScanCode(e){
             var tableCtrl = _getSampleDetailsTableCtrl();
@@ -438,10 +438,11 @@
 
                     //装盒样本
                     var len = _.filter(boxInTubes,{sampleTempCode:vm.tubes[row][col-1].sampleTempCode}).length;
-                    vm.tubes[row][col-1].orderIndex = boxInTubes.length+1;
+
                     if(len){
                         return
                     }else{
+                        vm.tubes[row][col-1].orderIndex = boxInTubes.length+1;
                         boxInTubes.push(vm.tubes[row][col-1]);
                     }
                     //判断是否都全部扫码

@@ -95,14 +95,15 @@
                 .withButtons([
                     {
                         text: '创建任务',
-                        className: 'btn btn-default',
+                        className: 'btn btn-default btn-sm ml-10',
                         key: '1',
                         action: _fnCreateTask
                     }
                 ])
                 .withOption('processing',true)
                 .withScroller()
-                .withOption('scrollY', 280)
+                .withDisplayLength(5)
+                .withOption('scrollY', 150)
                 .withOption('serverSide',true)
                 .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                     var data = {};
@@ -236,7 +237,7 @@
                 .withOption('sorting', false)
                 .withOption('searching', false)
                 .withScroller()
-                .withOption('scrollY', 330)
+                .withOption('scrollY', 247)
                 .withOption('createdRow', function(row, data, dataIndex) {
                     var status = '';
                     switch (data.status){

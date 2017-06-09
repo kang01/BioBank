@@ -19,6 +19,52 @@
             };
             return factory;
         }])
+        .factory('BioBankDataTable',['DTOptionsBuilder','DTColumnBuilder','$timeout',function (DTOptionsBuilder, DTColumnBuilder,$timeout) {
+            var service = {};
+            service.buildDTOption = function (type, scrollY, pageLength, dom) {
+                var options = DTOptionsBuilder.newOptions()
+                    .withOption('processing',true);
+
+                var types = type.split(',');
+                _.each(types, function(t){
+                    switch (t){
+                        case "NORMALLY":
+                            options.withPaginationType('full_numbers');
+                            break;
+                        case "NO-PAGING":
+                            options.withOption('paging', false);
+                            break;
+                        case "NO-SEARCHING":
+                            options.withOption('searching', false);
+                            break;
+                        case "BASIC":
+                            options.withOption('info', false)
+                                .withOption('paging', false)
+                                .withOption('sorting', false)
+                                .withOption('searching', false);
+                            break;
+                    }
+                });
+
+
+                if (scrollY){
+                    options.withScroller()
+                        .withOption('scrollY', +scrollY);
+                }
+                if (pageLength){
+                    options.withOption('lengthChange', false)
+                        .withOption('pageLength', +pageLength);
+                }
+
+                if (dom){
+                    options.withDOM(dom);
+                }
+
+                return options;
+            };
+
+            return service;
+        }])
         .factory('MasterData',function () {
             var _sexDict= [{type:'M',name:'男'},{type:'F',name:'女'},{type:'null',name:'不详'}];
             //疾病类型
@@ -60,6 +106,26 @@
                 {id:"1702",name:"已出库"},
                 {id:"1703",name:"已交接"}
             ];
+            // 冻存盒状态
+            var _frozenBoxStatus = [
+                //2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架,2008:待出库
+                {id:"2001",name:"新建"},
+                {id:"2002",name:"待入库"},
+                {id:"2003",name:"已分装"},
+                {id:"2004",name:"已入库"},
+                {id:"2005",name:"已作废"},
+                {id:"2006",name:"已上架"},
+                // {id:"2007",name:"已上架"},
+                {id:"2008",name:"待出库"},
+            ];
+            // 冻存管状态
+            var _frozenTubeStatus = [
+                //冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常
+                {id:"3001",name:"正常"},
+                {id:"3002",name:"空管"},
+                {id:"3003",name:"空孔"},
+                {id:"3004",name:"异常"},
+            ];
 
             var allStatus = null
             function _getStatus(statusCode){
@@ -68,11 +134,13 @@
                         _requirementStatus,
                         _taskStatus,
                         _takeOverStatus,
-                        _stockOutTaskBoxStatus
+                        _stockOutTaskBoxStatus,
+                        _frozenBoxStatus,
+                        _frozenTubeStatus
                     );
                 }
 
-                return (_.find(allStatus, {id:statusCode})||{}).name;
+                return (_.find(allStatus, {id:statusCode+""})||{}).name;
             }
 
             var masterData = {
@@ -82,6 +150,8 @@
                 taskStatus :_taskStatus,
                 takeOverStatus :_takeOverStatus,
                 stockOutTaskBoxStatus: _stockOutTaskBoxStatus,
+                frozenBoxStatus: _frozenBoxStatus,
+                frozenTubeStatus: _frozenTubeStatus,
                 getStatus: _getStatus,
             };
             return masterData;

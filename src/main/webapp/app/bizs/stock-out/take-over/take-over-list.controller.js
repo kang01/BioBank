@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TakeOverListController', TakeOverListController);
 
-    TakeOverListController.$inject = ['$scope','$compile','$state','DTOptionsBuilder','DTColumnBuilder','TakeOverService'];
+    TakeOverListController.$inject = ['$scope','$compile','$state','DTOptionsBuilder','DTColumnBuilder','TakeOverService','BioBankDataTable'];
 
-    function TakeOverListController($scope,$compile,$state,DTOptionsBuilder,DTColumnBuilder,TakeOverService) {
+    function TakeOverListController($scope,$compile,$state,DTOptionsBuilder,DTColumnBuilder,TakeOverService,BioBankDataTable) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.add = _fnAdd;
@@ -19,43 +19,14 @@
             $state.go('take-over-new');
         }
 
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withDOM("<'row mt-0 mb-10'<'col-xs-6' > <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
-            .withOption('processing',true)
+        // vm.dtOptions = DTOptionsBuilder.newOptions()
+        //     .withDOM("<'row mt-0 mb-10'<'col-xs-6' > <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
+        //     .withOption('processing',true)
+        //     .withPaginationType('full_numbers')
+        //     .withOption('serverSide',true)
+        vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
             .withOption('serverSide',true)
-            .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
-                var data = {};
-                for(var i=0; aoData && i<aoData.length; ++i){
-                    var oData = aoData[i];
-                    data[oData.name] = oData.value;
-                }
-                var jqDt = this;
-                TakeOverService.queryTakeOverList(data, oSettings).then(function (res){
-                    var json = res.data;
-                    var error = json.error || json.sError;
-                    if ( error ) {
-                        jqDt._fnLog( oSettings, 0, error );
-                    }
-                    oSettings.json = json;
-                    fnCallback( json );
-                }, function(res){
-                    console.log(res);
-
-                    var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
-
-                    if ( $.inArray( true, ret ) === -1 ) {
-                        if ( error == "parsererror" ) {
-                            jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
-                        }
-                        else if ( res.readyState === 4 ) {
-                            jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
-                        }
-                    }
-
-                    jqDt._fnProcessingDisplay( oSettings, false );
-                });
-            })
-            .withPaginationType('full_numbers')
+            .withFnServerData(fnServerData)
             .withOption('createdRow', createdRow)
             .withColumnFilter({
                 aoColumns: [{
@@ -116,6 +87,39 @@
             DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
         ];
+
+        function fnServerData ( sSource, aoData, fnCallback, oSettings ) {
+            var data = {};
+            for(var i=0; aoData && i<aoData.length; ++i){
+                var oData = aoData[i];
+                data[oData.name] = oData.value;
+            }
+            var jqDt = this;
+            TakeOverService.queryTakeOverList(data, oSettings).then(function (res){
+                var json = res.data;
+                var error = json.error || json.sError;
+                if ( error ) {
+                    jqDt._fnLog( oSettings, 0, error );
+                }
+                oSettings.json = json;
+                fnCallback( json );
+            }, function(res){
+                console.log(res);
+
+                var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+
+                if ( $.inArray( true, ret ) === -1 ) {
+                    if ( error == "parsererror" ) {
+                        jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+                    }
+                    else if ( res.readyState === 4 ) {
+                        jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
+                    }
+                }
+
+                jqDt._fnProcessingDisplay( oSettings, false );
+            });
+        }
         function createdRow(row, data, dataIndex) {
             var status = '';
             switch (data.status){

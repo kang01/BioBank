@@ -9,8 +9,8 @@
         .module('bioBankApp')
         .controller('RequirementAdditionApplyController', RequirementAdditionApplyController)
 
-    RequirementAdditionApplyController.$inject = ['$scope','$stateParams','$state','$compile','entity','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService','MasterData'];
-    function RequirementAdditionApplyController($scope,$stateParams,$state,$compile,entity,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService,MasterData) {
+    RequirementAdditionApplyController.$inject = ['$scope','$stateParams','$state','$compile','entity','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService','MasterData','BioBankDataTable'];
+    function RequirementAdditionApplyController($scope,$stateParams,$state,$compile,entity,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService,MasterData,BioBankDataTable) {
         var vm = this;
         var modalInstance;
         vm.dtInstance = {};
@@ -163,8 +163,7 @@
         //判断是否都是核对完的列表
         vm.isApproval = _fnIsApproval;
 
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withPaginationType('full_numbers')
+        vm.dtOptions = BioBankDataTable.buildDTOption("BASIC")
             .withOption('createdRow', createdRow);
 
         vm.dtColumns = [

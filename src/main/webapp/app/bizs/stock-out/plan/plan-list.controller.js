@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('PlanListController', PlanListController);
 
-    PlanListController.$inject = ['$scope','$compile','$state','DTOptionsBuilder','DTColumnBuilder','PlanService'];
+    PlanListController.$inject = ['$scope','$compile','$state','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankDataTable'];
 
-    function PlanListController($scope,$compile,$state,DTOptionsBuilder,DTColumnBuilder,PlanService) {
+    function PlanListController($scope,$compile,$state,DTOptionsBuilder,DTColumnBuilder,PlanService,BioBankDataTable) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.add = _fnAdd;
@@ -19,9 +19,7 @@
             $state.go('plan-new');
         }
 
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withDOM("<'row mt-0 mb-10'<'col-xs-6' > <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
-            .withOption('processing',true)
+        vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};
@@ -55,7 +53,6 @@
                     jqDt._fnProcessingDisplay( oSettings, false );
                 });
             })
-            .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow)
             .withColumnFilter({
                 aoColumns: [{

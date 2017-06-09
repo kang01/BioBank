@@ -10,9 +10,9 @@
         .controller('requirementListController', requirementListController)
         .controller('ConfirmModalController', ConfirmModalController);
 
-    requirementListController.$inject = ['$scope', '$compile', '$state', 'toastr', 'DTOptionsBuilder', 'DTColumnBuilder', 'RequirementService','$uibModal'];
+    requirementListController.$inject = ['$scope', '$compile', '$state', 'toastr', 'DTOptionsBuilder', 'DTColumnBuilder', 'RequirementService','$uibModal','BioBankDataTable'];
     ConfirmModalController.$inject = ['$uibModalInstance'];
-    function requirementListController($scope, $compile, $state, toastr, DTOptionsBuilder, DTColumnBuilder, RequirementService,$uibModal) {
+    function requirementListController($scope, $compile, $state, toastr, DTOptionsBuilder, DTColumnBuilder, RequirementService,$uibModal,BioBankDataTable) {
         var vm = this;
         var modalInstance;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
@@ -25,9 +25,8 @@
 
         }
 
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withDOM("<'row mt-0 mb-10'<'col-xs-6' > <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
-            .withOption('processing', true)
+        vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
+            .withOption('order', [['1', 'asc']])
             .withOption('serverSide', true)
             .withFnServerData(function (sSource, aoData, fnCallback, oSettings) {
                 var data = {};
@@ -61,10 +60,7 @@
                     jqDt._fnProcessingDisplay(oSettings, false);
                 });
             })
-            .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow)
-            // .withOption('rowCallback', rowCallback)
-            .withOption('order', [['1', 'asc']])
             .withColumnFilter({
                 aoColumns: [
                     null,

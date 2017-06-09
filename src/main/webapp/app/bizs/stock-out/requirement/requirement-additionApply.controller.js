@@ -175,7 +175,7 @@
             DTColumnBuilder.newColumn('sex').withTitle('性别'),
             DTColumnBuilder.newColumn('diseaseTypeId').withTitle('疾病'),
             DTColumnBuilder.newColumn('samples').withTitle('指定样本编码').withClass('text-ellipsis'),
-            DTColumnBuilder.newColumn('status').withTitle('状态'),
+            DTColumnBuilder.newColumn('status').withTitle('状态')
 
         ];
         if(!viewFlag){

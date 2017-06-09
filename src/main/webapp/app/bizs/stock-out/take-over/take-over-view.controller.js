@@ -17,8 +17,7 @@
         vm.stockOutTakeOver = entity;
 
         //已交接样本
-        vm.stockOutSampleOptions = DTOptionsBuilder.newOptions()
-            .withDOM("<'row mt-0 mb-10'<'col-xs-6' > <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
+        vm.stockOutSampleOptions = BioBankDataTable.buildDTOption("NORMALLY", 0,10)
             .withOption('processing',true)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {

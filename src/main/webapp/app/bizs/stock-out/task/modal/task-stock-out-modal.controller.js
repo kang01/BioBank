@@ -51,6 +51,9 @@
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('processing',true)
             .withOption('serverSide',true)
+            .withDisplayLength(8)
+            .withScroller()
+            .withOption('scrollY', 248)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};
                 for(var i=0; aoData && i<aoData.length; ++i){

@@ -138,7 +138,7 @@
             labelField: 'userName',
             maxItems: 1,
             onChange:function (value) {
-                vm.task.stockOutHeader1 = _.filter(vm.personOptions,{id:value})[0].userName;
+                vm.task.stockOutHeader1 = _.filter(vm.personOptions,{id:+value})[0].userName;
             }
         };
         vm.personConfig2 = {
@@ -146,7 +146,7 @@
             labelField: 'userName',
             maxItems: 1,
             onChange:function (value) {
-                vm.task.stockOutHeader2 = _.filter(vm.personOptions,{id:value})[0].userName;
+                vm.task.stockOutHeader2 = _.filter(vm.personOptions,{id:+value})[0].userName;
             }
 
         };
@@ -671,14 +671,14 @@
         var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.stockOutSampleColumns = [
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码'),
-            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
-            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置'),
-            DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('出库交接时间'),
-            DTColumnBuilder.newColumn('countOfSample').withTitle('盒内样本量'),
-            DTColumnBuilder.newColumn('memo').withTitle('备注'),
-            DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').withOption("width", "100"),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "80"),
+            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "220"),
+            DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('交接时间').withOption("width", "80"),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "50"),
+            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
+            DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml).withOption("width", "80"),
             DTColumnBuilder.newColumn('id').notVisible(),
         ];
         function _fnRowSelectorRender(data, type, full, meta) {

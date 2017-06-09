@@ -102,7 +102,6 @@
                 ])
                 .withOption('processing',true)
                 .withScroller()
-                .withDisplayLength(5)
                 .withOption('scrollY', 150)
                 .withOption('serverSide',true)
                 .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {

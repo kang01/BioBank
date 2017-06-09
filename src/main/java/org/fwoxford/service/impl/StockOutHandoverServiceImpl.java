@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -307,5 +308,14 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         stockOutHandoverDTO.setHandoverFrozenTubes(stockOutHandoverSampleReportDTOS);
         stockOutHandoverDTO.setCountOfSample(stockOutHandoverSampleReportDTOS.size());
         return stockOutHandoverDTO;
+    }
+
+    @Override
+    public Page<StockOutHandoverSampleReportDTO> getStockOutHandoverSamples(Long id, Pageable pageable) {
+        Page<StockOutHandoverDetails> result = stockOutHandoverDetailsRepository.findPageByStockOutHandoverId(id, pageable);
+        return result.map(sample -> {
+            StockOutHandoverSampleReportDTO dto = createStockOutHandOverSampleReportDTO(sample);
+            return dto;
+        });
     }
 }

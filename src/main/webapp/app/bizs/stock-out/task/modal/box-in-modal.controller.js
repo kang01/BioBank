@@ -434,6 +434,7 @@
             vm.allInFlag = true;
         };
         vm.ok = function () {
+            vm.boxIn();
             var tempBoxListCopy = angular.copy(tempBoxList)
             for(var i =0; i < tempBoxListCopy.length; i++){
                 delete tempBoxListCopy[i].sampleCount;

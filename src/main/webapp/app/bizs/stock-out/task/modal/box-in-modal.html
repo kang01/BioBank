@@ -67,7 +67,7 @@
 
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-if="vm.allInFlag">确定</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-if="vm.allInFlag" ng-disabled="!vm.selectedTubes.length || !vm.pos">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()" ng-if="vm.allInFlag">取消</button>
     <button class="btn btn-primary" type="button" ng-click="vm.yes()" ng-if="!vm.allInFlag">是</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()" ng-if="!vm.allInFlag">否</button>

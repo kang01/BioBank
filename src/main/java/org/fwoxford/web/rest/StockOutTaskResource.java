@@ -249,7 +249,6 @@ public class StockOutTaskResource {
 
     /**
      * 任务开始
-     * @param stockOutTaskDTO
      * @return
      * @throws URISyntaxException
      */

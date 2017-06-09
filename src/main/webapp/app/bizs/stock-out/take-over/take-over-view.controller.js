@@ -15,18 +15,10 @@
         var vm = this;
 
         vm.stockOutTakeOver = entity.data;
-        setTimeout(function () {
-            vm.stockOutSampleOptions.withOption('data',entity.data.handoverFrozenTubes);
-
-        },500);
-        // TakeOverService.queryTakeOverView(vm.stockOutTakeOver.id).success(function (data) {
-        //    console.log(JSON.stringify(data))
-        //     vm.stockOutTakeOver = data;
-        //     vm.stockOutSampleOptions.withOption('data',data.handoverFrozenTubes);
-        // });
 
         //已交接样本
-        vm.stockOutSampleOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10);
+        vm.stockOutSampleOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
+            .withOption('data',vm.stockOutTakeOver.handoverFrozenTubes);
         var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.stockOutSampleColumns = [
             DTColumnBuilder.newColumn('id').withTitle('No').withOption('width', '30'),

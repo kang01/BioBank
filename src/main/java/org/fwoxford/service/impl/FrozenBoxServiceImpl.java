@@ -611,7 +611,6 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
         for(FrozenBox f :frozenBoxList){
             StockInBoxForIncomplete stockInBoxForIncomplete = new StockInBoxForIncomplete();
-            stockInBoxForIncomplete.setCountOfSample(f.getSampleNumber());
             stockInBoxForIncomplete.setFrozenBoxId(f.getId());
             stockInBoxForIncomplete.setFrozenBoxCode(f.getFrozenBoxCode());
             stockInBoxForIncomplete.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(f.getFrozenBoxType()));
@@ -627,6 +626,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 inTubeForBox.setTubeRows(t.getTubeRows());
                 stockInTubeForBoxes.add(inTubeForBox);
             }
+            stockInBoxForIncomplete.setCountOfSample(stockInTubeForBoxes.size());
             stockInBoxForIncomplete.setStockInFrozenTubeList(stockInTubeForBoxes);
             stockInBoxForIncompleteList.add(stockInBoxForIncomplete);
         }

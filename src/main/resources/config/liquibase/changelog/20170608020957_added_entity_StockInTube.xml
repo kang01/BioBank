@@ -22,11 +22,11 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="rows_in_tube" type="nvarchar(20)" remarks="所在盒子行号">
+            <column name="tube_rows" type="nvarchar(20)" remarks="所在盒子行号">
                 <constraints nullable="false" />
             </column>
 
-            <column name="columns_in_tube" type="nvarchar(20)" remarks="所在盒子列号">
+            <column name="tube_columns" type="nvarchar(20)" remarks="所在盒子列号">
                 <constraints nullable="false" />
             </column>
 

@@ -16,11 +16,11 @@ public class StockInTubeDTO extends AbstractAuditingDTO implements Serializable 
 
     @NotNull
     @Size(max = 20)
-    private String rowsInTube;
+    private String tubeRows;
 
     @NotNull
     @Size(max = 20)
-    private String columnsInTube;
+    private String tubeColumns;
 
     @NotNull
     @Size(max = 20)
@@ -44,20 +44,23 @@ public class StockInTubeDTO extends AbstractAuditingDTO implements Serializable 
     public void setId(Long id) {
         this.id = id;
     }
-    public String getRowsInTube() {
-        return rowsInTube;
+
+    public String getTubeRows() {
+        return tubeRows;
     }
 
-    public void setRowsInTube(String rowsInTube) {
-        this.rowsInTube = rowsInTube;
-    }
-    public String getColumnsInTube() {
-        return columnsInTube;
+    public void setTubeRows(String tubeRows) {
+        this.tubeRows = tubeRows;
     }
 
-    public void setColumnsInTube(String columnsInTube) {
-        this.columnsInTube = columnsInTube;
+    public String getTubeColumns() {
+        return tubeColumns;
     }
+
+    public void setTubeColumns(String tubeColumns) {
+        this.tubeColumns = tubeColumns;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -121,8 +124,8 @@ public class StockInTubeDTO extends AbstractAuditingDTO implements Serializable 
     public String toString() {
         return "StockInTubeDTO{" +
             "id=" + id +
-            ", rowsInTube='" + rowsInTube + "'" +
-            ", columnsInTube='" + columnsInTube + "'" +
+            ", tubeRows='" + tubeRows + "'" +
+            ", tubeColumns='" + tubeColumns + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             ", frozenBoxCode='" + frozenBoxCode + "'" +

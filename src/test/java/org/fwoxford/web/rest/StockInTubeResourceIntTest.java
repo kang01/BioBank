@@ -100,8 +100,8 @@ public class StockInTubeResourceIntTest {
      */
     public static StockInTube createEntity(EntityManager em) {
         StockInTube stockInTube = new StockInTube()
-                .rowsInTube(DEFAULT_ROWS_IN_TUBE)
-                .columnsInTube(DEFAULT_COLUMNS_IN_TUBE)
+                .tubeRows(DEFAULT_ROWS_IN_TUBE)
+                .tubeColumns(DEFAULT_COLUMNS_IN_TUBE)
                 .status(DEFAULT_STATUS)
                 .memo(DEFAULT_MEMO)
                 .frozenBoxCode(DEFAULT_FROZEN_BOX_CODE);
@@ -140,8 +140,8 @@ public class StockInTubeResourceIntTest {
         List<StockInTube> stockInTubeList = stockInTubeRepository.findAll();
         assertThat(stockInTubeList).hasSize(databaseSizeBeforeCreate + 1);
         StockInTube testStockInTube = stockInTubeList.get(stockInTubeList.size() - 1);
-        assertThat(testStockInTube.getRowsInTube()).isEqualTo(DEFAULT_ROWS_IN_TUBE);
-        assertThat(testStockInTube.getColumnsInTube()).isEqualTo(DEFAULT_COLUMNS_IN_TUBE);
+        assertThat(testStockInTube.getTubeRows()).isEqualTo(DEFAULT_ROWS_IN_TUBE);
+        assertThat(testStockInTube.getTubeColumns()).isEqualTo(DEFAULT_COLUMNS_IN_TUBE);
         assertThat(testStockInTube.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testStockInTube.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testStockInTube.getFrozenBoxCode()).isEqualTo(DEFAULT_FROZEN_BOX_CODE);
@@ -173,7 +173,7 @@ public class StockInTubeResourceIntTest {
     public void checkRowsInTubeIsRequired() throws Exception {
         int databaseSizeBeforeTest = stockInTubeRepository.findAll().size();
         // set the field null
-        stockInTube.setRowsInTube(null);
+        stockInTube.setTubeRows(null);
 
         // Create the StockInTube, which fails.
         StockInTubeDTO stockInTubeDTO = stockInTubeMapper.stockInTubeToStockInTubeDTO(stockInTube);
@@ -192,7 +192,7 @@ public class StockInTubeResourceIntTest {
     public void checkColumnsInTubeIsRequired() throws Exception {
         int databaseSizeBeforeTest = stockInTubeRepository.findAll().size();
         // set the field null
-        stockInTube.setColumnsInTube(null);
+        stockInTube.setTubeColumns(null);
 
         // Create the StockInTube, which fails.
         StockInTubeDTO stockInTubeDTO = stockInTubeMapper.stockInTubeToStockInTubeDTO(stockInTube);
@@ -298,8 +298,8 @@ public class StockInTubeResourceIntTest {
         // Update the stockInTube
         StockInTube updatedStockInTube = stockInTubeRepository.findOne(stockInTube.getId());
         updatedStockInTube
-                .rowsInTube(UPDATED_ROWS_IN_TUBE)
-                .columnsInTube(UPDATED_COLUMNS_IN_TUBE)
+                .tubeRows(UPDATED_ROWS_IN_TUBE)
+                .tubeColumns(UPDATED_COLUMNS_IN_TUBE)
                 .status(UPDATED_STATUS)
                 .memo(UPDATED_MEMO)
                 .frozenBoxCode(UPDATED_FROZEN_BOX_CODE);
@@ -314,8 +314,8 @@ public class StockInTubeResourceIntTest {
         List<StockInTube> stockInTubeList = stockInTubeRepository.findAll();
         assertThat(stockInTubeList).hasSize(databaseSizeBeforeUpdate);
         StockInTube testStockInTube = stockInTubeList.get(stockInTubeList.size() - 1);
-        assertThat(testStockInTube.getRowsInTube()).isEqualTo(UPDATED_ROWS_IN_TUBE);
-        assertThat(testStockInTube.getColumnsInTube()).isEqualTo(UPDATED_COLUMNS_IN_TUBE);
+        assertThat(testStockInTube.getTubeRows()).isEqualTo(UPDATED_ROWS_IN_TUBE);
+        assertThat(testStockInTube.getTubeColumns()).isEqualTo(UPDATED_COLUMNS_IN_TUBE);
         assertThat(testStockInTube.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testStockInTube.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testStockInTube.getFrozenBoxCode()).isEqualTo(UPDATED_FROZEN_BOX_CODE);

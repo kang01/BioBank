@@ -3,15 +3,11 @@ package org.fwoxford.service.impl;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
-import org.fwoxford.security.SecurityUtils;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
-import org.fwoxford.service.dto.response.StockInBoxForDataTable;
-import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenBoxPositionMapper;
-import org.fwoxford.service.mapper.SampleTypeMapper;
 import org.fwoxford.service.mapper.StockInMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -21,20 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.*;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Service Implementation for managing StockIn.
@@ -87,6 +74,9 @@ public class StockInServiceImpl implements StockInService {
 
     @Autowired
     private StockInTubeService stockInTubeService;
+
+    @Autowired
+    private StockInBoxPositionRepository stockInBoxPositionRepository;
 
     public StockInServiceImpl(StockInRepository stockInRepository,
                               StockInMapper stockInMapper,
@@ -225,8 +215,17 @@ public class StockInServiceImpl implements StockInService {
             //保存入库盒子
             StockInBox stockInBox = createStockInBox(box,stockIn);
             stockInBoxRepository.save(stockInBox);
-            //保存入库管子
-            stockInTubeService.saveStockInTube(stockInBox);
+//            //保存入库盒子位置-----暂时不存
+//            StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
+//            stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_PENDING).memo(stockInBox.getMemo())
+//                .equipment(box.getEquipment()).equipmentCode(box.getEquipmentCode())
+//                .area(box.getArea()).areaCode(box.getAreaCode())
+//                .supportRack(box.getSupportRack()).supportRackCode(box.getSupportRackCode())
+//                .columnsInShelf(box.getColumnsInShelf()).rowsInShelf(box.getRowsInShelf())
+//                .stockInBox(stockInBox);
+//            stockInBoxPositionRepository.save(stockInBoxPosition);
+//            //保存入库管子
+//            stockInTubeService.saveStockInTube(stockInBox);
         }
         return stockInForDataDetail;
     }
@@ -371,6 +370,17 @@ public class StockInServiceImpl implements StockInService {
                 frozenBoxPos.setStatus(Constants.FROZEN_BOX_STOCKED);
                 frozenBoxPos = frozenBoxPositionRepository.save(frozenBoxPos);
                 TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBox.getFrozenBoxCode());
+                //保存入库盒子位置
+                StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
+                stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_PENDING).memo(box.getMemo())
+                    .equipment(box.getEquipment()).equipmentCode(box.getEquipmentCode())
+                    .area(box.getArea()).areaCode(box.getAreaCode())
+                    .supportRack(box.getSupportRack()).supportRackCode(box.getSupportRackCode())
+                    .columnsInShelf(box.getColumnsInShelf()).rowsInShelf(box.getRowsInShelf())
+                    .stockInBox(box);
+                stockInBoxPositionRepository.save(stockInBoxPosition);
+                //保存入库管子
+                stockInTubeService.saveStockInTube(box);
                 //保存冻存管历史
                 List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
                 for(FrozenTube tube : frozenTubes){

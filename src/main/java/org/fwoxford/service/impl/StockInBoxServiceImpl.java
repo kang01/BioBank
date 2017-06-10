@@ -4,6 +4,7 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockInBoxService;
+import org.fwoxford.service.StockInTubeService;
 import org.fwoxford.service.dto.FrozenBoxPositionDTO;
 import org.fwoxford.service.dto.StockInBoxDTO;
 import org.fwoxford.service.dto.StockInTubeDTO;
@@ -81,6 +82,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
     @Autowired
     private SampleClassificationRepository sampleClassificationRepository;
+
+    @Autowired
+    private StockInTubeService stockInTubeService;
 
     public StockInBoxServiceImpl(StockInBoxRepository stockInBoxRepository, StockInBoxMapper stockInBoxMapper,
                                  StockInBoxRepositries stockInBoxRepositries,StockInRepository stockInRepository) {
@@ -161,6 +165,22 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
         input.addColumn("stockInCode", true, true, stockInCode);
         DataTablesOutput<StockInBoxForDataTableEntity> output =stockInBoxRepositries.findAll(input);
+        List<StockInBoxForDataTableEntity> alist = new ArrayList<StockInBoxForDataTableEntity>();
+        output.getData().forEach(stockInBoxForDataTableEntity -> {
+            StockInBoxForDataTableEntity stockInBox = new StockInBoxForDataTableEntity();
+            Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(stockInBoxForDataTableEntity.getFrozenBoxCode());
+            stockInBox.setCountOfSample(countOfSample.intValue());
+            stockInBox.setStatus(stockInBoxForDataTableEntity.getStatus());
+            stockInBox.setId(stockInBoxForDataTableEntity.getId());
+            stockInBox.setFrozenBoxCode(stockInBoxForDataTableEntity.getFrozenBoxCode());
+            stockInBox.setIsSplit(stockInBoxForDataTableEntity.getIsSplit());
+            stockInBox.setPosition(stockInBoxForDataTableEntity.getPosition());
+            stockInBox.setSampleClassificationName(stockInBoxForDataTableEntity.getSampleClassificationName());
+            stockInBox.setSampleTypeName(stockInBoxForDataTableEntity.getSampleTypeName());
+            stockInBox.setStockInCode(stockInBoxForDataTableEntity.getStockInCode());
+            alist.add(stockInBox);
+        });
+        output.setData(alist);
         return output;
     }
 
@@ -233,15 +253,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         //更改盒子状态
         //如果在盒子内还有剩余的管子，状态还是待入库
         List<FrozenTube> tubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(boxCode);
-//        FrozenBoxPosition frozenBoxPosition = frozenBoxPositionRepository.findOneByFrozenBoxIdAndStatus(frozenBox.getId(),Constants.FROZEN_BOX_SPLITING);
         StockInBox frozenBoxForSplit = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,boxCode);
         if(tubeList.size()==0){
             frozenBox.setStatus(Constants.FROZEN_BOX_SPLITED);
             frozenBoxForSplit.setStatus(Constants.FROZEN_BOX_SPLITED);
-//            if(frozenBoxPosition!=null){
-//                frozenBoxPosition.setStatus(Constants.FROZEN_BOX_SPLITED);
-//                frozenBoxPositionRepository.save(frozenBoxPosition);
-//            }
         }
         frozenBoxForSplit.setCountOfSample(tubeList.size());
         frozenBox.setSampleNumber(tubeList.size());
@@ -379,7 +394,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
 
         stockInBoxForDataSplit.setFrozenBoxId(frozenBoxNew.getId());
-        TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBoxNew.getFrozenBoxCode());
+//        TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBoxNew.getFrozenBoxCode());
 
         //新增入库盒子
         StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
@@ -400,10 +415,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setStatus(Constants.FROZEN_BOX_STOCKING);
         stockInBox.setCountOfSample(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
         stockInBoxRepository.save(stockInBox);
-
         stockInBoxForDataSplit.setFrozenBoxId(stockInBox.getId());
-
-        //查询原管子的位置存历史
         List<StockInTubeDTO> stockInTubeDTOS = stockInBoxForDataSplit.getStockInFrozenTubeList();
         List<StockInTubeDTO> stockInTubeDTOList = new ArrayList<>();
         for(StockInTubeDTO tube : stockInTubeDTOS){
@@ -415,15 +427,21 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 throw new BankServiceException("冻存管不存在",tube.toString());
             }
             if(tube.getFrozenBoxCode()!=null&&tube.getFrozenBoxCode().equals(frozenTube.getFrozenBox().getFrozenBoxCode())
-                &&tube.getRowsInTube().equals(frozenTube.getTubeRows())
-                &&tube.getColumnsInTube().equals(frozenTube.getTubeColumns())){
+                &&tube.getTubeRows().equals(frozenTube.getTubeRows())
+                &&tube.getTubeColumns().equals(frozenTube.getTubeColumns())){
                 continue;
             }
             //更改管子的位置信息
             frozenTube.setFrozenBox(frozenBoxNew);
             frozenTube.setFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
-            frozenTube.setTubeColumns(tube.getRowsInTube());
-            frozenTube.setTubeRows(tube.getColumnsInTube());
+            frozenTube.setTubeColumns(tube.getTubeRows());
+            frozenTube.setTubeRows(tube.getTubeColumns());
+            //如果管子的样本信息为99，更改管子的样本类型为分装后冻存盒的样本类型
+            if(frozenTube.getSampleType()!=null&&frozenTube.getSampleType().getIsMixed().equals(Constants.YES)){
+                frozenTube.setSampleType(frozenBoxNew.getSampleType());
+                frozenTube.setSampleTypeCode(frozenBoxNew.getSampleTypeCode());
+                frozenTube.setSampleTypeName(frozenBoxNew.getSampleTypeName());
+            }
             frozenTubeRepository.save(frozenTube);
             tube.setId(frozenTube.getId());
             stockInTubeDTOList.add(tube);

@@ -102,7 +102,7 @@ public class StockInTubeServiceImpl implements StockInTubeService{
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(stockInBox.getFrozenBoxCode());
         for(FrozenTube tube :frozenTubeList){
             StockInTube stockInTube = new StockInTube();
-            stockInTube.status(Constants.STOCK_IN_TUBE_PENDING).memo(tube.getMemo()).frozenTube(tube).columnsInTube(tube.getTubeColumns()).rowsInTube(tube.getTubeRows())
+            stockInTube.status(Constants.STOCK_IN_TUBE_PENDING).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
                 .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox);
             stockInTubeRepository.save(stockInTube);
         }

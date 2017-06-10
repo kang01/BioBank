@@ -26,13 +26,13 @@ public class StockInTube extends AbstractAuditingEntity implements Serializable 
 
     @NotNull
     @Size(max = 20)
-    @Column(name = "rows_in_tube", length = 20, nullable = false)
-    private String rowsInTube;
+    @Column(name = "tube_rows", length = 20, nullable = false)
+    private String tubeRows;
 
     @NotNull
     @Size(max = 20)
-    @Column(name = "columns_in_tube", length = 20, nullable = false)
-    private String columnsInTube;
+    @Column(name = "tube_columns", length = 20, nullable = false)
+    private String tubeColumns;
 
     @NotNull
     @Size(max = 20)
@@ -64,30 +64,27 @@ public class StockInTube extends AbstractAuditingEntity implements Serializable 
         this.id = id;
     }
 
-    public String getRowsInTube() {
-        return rowsInTube;
+    public String getTubeRows() {
+        return tubeRows;
     }
-
-    public StockInTube rowsInTube(String rowsInTube) {
-        this.rowsInTube = rowsInTube;
+    public StockInTube tubeRows(String tubeRows) {
+        this.tubeRows = tubeRows;
         return this;
     }
-
-    public void setRowsInTube(String rowsInTube) {
-        this.rowsInTube = rowsInTube;
+    public void setTubeRows(String tubeRows) {
+        this.tubeRows = tubeRows;
     }
 
-    public String getColumnsInTube() {
-        return columnsInTube;
+    public String getTubeColumns() {
+        return tubeColumns;
     }
 
-    public StockInTube columnsInTube(String columnsInTube) {
-        this.columnsInTube = columnsInTube;
+    public StockInTube tubeColumns(String tubeColumns) {
+        this.tubeColumns = tubeColumns;
         return this;
     }
-
-    public void setColumnsInTube(String columnsInTube) {
-        this.columnsInTube = columnsInTube;
+    public void setTubeColumns(String tubeColumns) {
+        this.tubeColumns = tubeColumns;
     }
 
     public String getStatus() {
@@ -179,8 +176,8 @@ public class StockInTube extends AbstractAuditingEntity implements Serializable 
     public String toString() {
         return "StockInTube{" +
             "id=" + id +
-            ", rowsInTube='" + rowsInTube + "'" +
-            ", columnsInTube='" + columnsInTube + "'" +
+            ", tubeRows='" + tubeRows + "'" +
+            ", tubeColumns='" + tubeColumns + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             ", frozenBoxCode='" + frozenBoxCode + "'" +

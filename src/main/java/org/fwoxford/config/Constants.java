@@ -170,6 +170,10 @@ public final class Constants {
      * 入库管子状态:2301:进行中
      */
     public static final String STOCK_IN_TUBE_PENDING = "2301";
+    /**
+     * 入库管子状态:2401:进行中
+     */
+    public static final String STOCK_IN_BOX_POSITION_PENDING = "2401";
 
     private Constants() {
     }

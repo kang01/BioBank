@@ -22,6 +22,9 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000'")
     List<FrozenTube> findFrozenTubeListByBoxCode(String frozenBoxCode);
 
+    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000'")
+    Long countFrozenTubeListByBoxCode(String frozenBoxCode);
+
     List<FrozenTube> findFrozenTubeListByFrozenBoxCodeAndStatus(String frozenBoxCode, String status);
 
     @Query(value = "select t.frozen_box_code as frozenBoxCode,count(t.frozen_box_code) as sampleNumber \n" +

@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.service.StockOutHandoverService;
 import org.fwoxford.service.dto.response.StockOutHandoverForDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutHandoverSampleReportDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.StockOutHandoverDTO;
@@ -240,11 +241,49 @@ public class StockOutHandoverResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockOutHandoverDTO.getId().toString()))
             .body(result);
     }
+
     @GetMapping("/stock-out-handovers/{id}/details")
     @Timed
     public ResponseEntity<StockOutHandoverDTO> getStockOutHandoverDetail(@PathVariable Long id) {
         log.debug("REST request to get StockOutHandover : {}", id);
         StockOutHandoverDTO stockOutHandoverDTO = stockOutHandoverService.getStockOutHandoverDetail(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutHandoverDTO));
+    }
+
+    /**
+     * 分页查询交接样本详情
+     * @param input
+     * @param id
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-handovers/{id}/samples", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutHandoverSampleReportDTO> getPageStockOutHandoverSample(@RequestBody DataTablesInput input, @PathVariable Long id) {
+        List<Sort.Order> orders = new ArrayList<>();
+        List<Column> columns = input.getColumns();
+        input.getOrder().forEach(o -> {
+            Column col = columns.get(o.getColumn());
+            if(col.getName()!=null&&col.getName()!=""){
+                Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
+                orders.add(order);
+            }
+        });
+        Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
+        orders.add(order);
+        Sort sort = new Sort(orders);
+        PageRequest pageRequest = new PageRequest(input.getStart() / input.getLength(), input.getLength(), sort);
+
+
+        Page<StockOutHandoverSampleReportDTO> entities = stockOutHandoverService.getStockOutHandoverSamples(id, pageRequest);
+        List<StockOutHandoverSampleReportDTO> stockOutApplyList =  entities == null ?
+            new ArrayList<StockOutHandoverSampleReportDTO>() : entities.getContent();
+
+        DataTablesOutput<StockOutHandoverSampleReportDTO> result = new DataTablesOutput<StockOutHandoverSampleReportDTO>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(stockOutApplyList);
+        result.setRecordsFiltered(stockOutApplyList.size());
+        result.setRecordsTotal(entities.getTotalElements());
+        return result;
     }
 }

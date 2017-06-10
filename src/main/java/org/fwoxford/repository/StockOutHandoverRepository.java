@@ -15,4 +15,8 @@ public interface StockOutHandoverRepository extends JpaRepository<StockOutHandov
     Long countByStockOutTaskId(Long id);
 
     StockOutHandover findByStockOutTaskId(Long taskId);
+
+    @Query("select DISTINCT t.stockOutHandover from StockOutHandoverDetails t " +
+        "where t.stockOutHandover.stockOutTask.id = ?1 and t.stockOutBoxTube.stockOutFrozenBox.id = ?2")
+    StockOutHandover findByStockOutTaskIdAndstockOutBoxId(Long taskId, Long id);
 }

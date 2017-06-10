@@ -17,7 +17,9 @@
             saveTakeoverInfo: _saveTakeoverInfo,
             getTakeoverInfo: _getTakeoverInfo,
             //样本交接保存
-            saveTakeOverComplete:_saveTakeOverComplete
+            saveTakeOverComplete:_saveTakeOverComplete,
+            //交接浏览
+            queryTakeOverView:_queryTakeOverView
         };
         function _queryTakeOverList(data,oSettings) {
             return $http.post('/api/res/stock-out-handovers',JSON.stringify(data))
@@ -42,6 +44,9 @@
         }
         function _saveTakeOverComplete(ids,param) {
             return $http.put('/api/stock-out-handovers/stockOutBox/'+ids+'/complete',param)
+        }
+        function _queryTakeOverView(takeOverId,data) {
+            return $http.post('/api/res/stock-out-handovers/'+takeOverId+'/samples',JSON.stringify(data))
         }
         return service;
     }

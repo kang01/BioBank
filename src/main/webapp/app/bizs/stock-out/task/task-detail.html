@@ -1,5 +1,5 @@
 <div style="position: fixed;top:-30px;">
-    <input type="text" focus-me="focusInput" ng-model="vm.sampleCode" ng-keyup="vm.scanCode($event)">
+    <textarea  type="text" rows="1"  ng-model="vm.sampleCode" id="focusTextarea" ng-blur="vm.scanCodeBlur()"></textarea>
 </div>
 <div>
     <div class="row m-0">
@@ -10,12 +10,10 @@
                 </h2>
             </div>
             <div class="pull-right">
-                <!--<button class="btn btn-primary" ng-click="vm.abnormalModal()">异常或撤销申请</button>-->
-                <!--<button class="btn btn-primary" ng-click="vm.commentModal()">批注</button>-->
-                <!--<button class="btn btn-primary" ng-click="vm.boxInModal()">装盒</button>-->
+                <span>累计用时: {{vm.usedTime}} 分钟</span>&nbsp;
                 <button class="btn btn-primary" ng-click="vm.takeOver()" ng-disabled="!vm.stockOutLen">样本交接</button>
                 <button class="btn btn-primary" ng-click="vm.saveTask()">保存任务</button>
-                <button class="btn btn-default" ui-sref="task-list">关闭</button>
+                <button class="btn btn-default" ng-click="vm.close()">关闭</button>
             </div>
         </div>
     </div>
@@ -43,13 +41,13 @@
             </div>
             <div class="form-group col-md-2">
                 <label>出库负责人1<span class="required-field"></span></label>
-                <selectize options='vm.personOptions' config="vm.personConfig"
+                <selectize options='vm.personOptions' config="vm.personConfig1"
                            ng-model="vm.task.stockOutHeadId1"></selectize>
                 <input type="hidden" ng-model="vm.task.stockOutHeadId1" required>
             </div>
             <div class="form-group col-md-2">
                 <label>出库负责人2<span class="required-field"></span></label>
-                <selectize options='vm.personOptions' config="vm.personConfig"
+                <selectize options='vm.personOptions' config="vm.personConfig2"
                            ng-model="vm.task.stockOutHeadId2"></selectize>
                 <input type="hidden" ng-model="vm.task.stockOutHeadId2" required>
             </div>
@@ -96,12 +94,12 @@
                         <h4>待出库样本</h4>
                     </div>
                     <div class="pull-right">
-                        <input type="text" focus-me="focusInput" ng-model="vm.sampleCode"
-                               ng-keyup="vm.scanCode($event)">
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="focusInput=true"
-                                ng-disabled="!vm.frozenTubeDTOS.length">扫码取样
+                        <input type="text"  ng-model="vm.sampleCode">
+                        <!--ng-click="focusInput=true"-->
+                        <button class="mt-5 mb-5 btn btn-default btn-sm"  ng-click="vm.scanClick()"
+                                ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus" uib-btn-checkbox ng-disabled="!vm.frozenTubeDTOS.length">扫码取样
                         </button>
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.boxInModal()" ng-disabled="!vm.scanCodeTubes.length">装盒</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.boxInModal()" ng-disabled="!vm.boxInTubes.length">装盒</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()">异常</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealModal()">撤销申请</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.commentModal(1)">批注</button>
@@ -124,7 +122,7 @@
                     <div class="pull-right">
 
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.taskStockOutModal()"
-                                ng-disabled="!vm.task.stockOutHeadId1 || !vm.task.stockOutHeadId2">批量出库
+                                ng-disabled="!vm.task.stockOutHeadId1 || !vm.task.stockOutHeadId2 || !vm.strBoxIds">批量出库
                         </button>
                     </div>
                     <div class="clear-both"></div>

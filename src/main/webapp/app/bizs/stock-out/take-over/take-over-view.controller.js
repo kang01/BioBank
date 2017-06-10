@@ -9,42 +9,80 @@
         .module('bioBankApp')
         .controller('TakeOverViewController', TakeOverViewController);
 
-    TakeOverViewController.$inject = ['$scope','$uibModal','entity'];
+    TakeOverViewController.$inject = ['$scope','$compile','$uibModal','entity','TakeOverService','DTOptionsBuilder','DTColumnBuilder','BioBankDataTable'];
 
-    function TakeOverViewController($scope,$uibModal,entity) {
+    function TakeOverViewController($scope,$compile,$uibModal,entity,TakeOverService,DTOptionsBuilder,DTColumnBuilder,BioBankDataTable) {
         var vm = this;
 
         vm.stockOutTakeOver = entity;
 
+        //已交接样本
+        vm.stockOutSampleOptions = BioBankDataTable.buildDTOption("NORMALLY", 0,10)
+            .withOption('processing',true)
+            .withOption('serverSide',true)
+            .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
+                var data = {};
+                for(var i=0; aoData && i<aoData.length; ++i){
+                    var oData = aoData[i];
+                    data[oData.name] = oData.value;
+                }
+                var jqDt = this;
+                TakeOverService.queryTakeOverView(vm.stockOutTakeOver.id,data).then(function (res){
+                    var json = res.data;
+                    var error = json.error || json.sError;
+                    if ( error ) {
+                        jqDt._fnLog( oSettings, 0, error );
+                    }
+                    oSettings.json = json;
+                    fnCallback( json );
+                }).catch(function(res){
+                    console.log(res);
+
+                    var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+
+                    if ( $.inArray( true, ret ) === -1 ) {
+                        if ( error == "parsererror" ) {
+                            jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+                        }
+                        else if ( res.readyState === 4 ) {
+                            jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
+                        }
+                    }
+
+                    jqDt._fnProcessingDisplay( oSettings, false );
+                });
+            })
+            .withPaginationType('full_numbers')
+            .withOption('createdRow', createdRow);
+
+        vm.stockOutSampleColumns = [
+            DTColumnBuilder.newColumn('id').withTitle('No').withOption('width', '30'),
+            DTColumnBuilder.newColumn('boxCode').withTitle('临时盒编码').withOption('width', '120'),
+            DTColumnBuilder.newColumn('location').withTitle('盒内位置').withOption('width', '80'),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption('width', '120'),
+            DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption('width', '120'),
+            DTColumnBuilder.newColumn('sampleType').withTitle('类型').withOption('width', '80'),
+            DTColumnBuilder.newColumn('sex').withTitle('性别').withOption('width', '30'),
+            DTColumnBuilder.newColumn('age').withTitle('年龄').withOption('width', '30'),
+            DTColumnBuilder.newColumn('diseaseType').withTitle('疾病').withOption('width', 'auto'),
+        ];
+        function createdRow(row, data, dataIndex) {
+            var planStatus = '';
+            switch (data.status){
+                case '1401': planStatus = '进行中';break;
+                case '1402': planStatus = '已完成';break;
+                case '1403': planStatus = '已作废';break;
+            }
+            $('td:eq(6)', row).html(planStatus);
+            $compile(angular.element(row).contents())($scope);
+        }
+
 
 
         vm.takeOverPrint = function () {
-            window.open ('/api/stock-out-handovers/print/' + vm.dto.id);
+            window.open ('/api/stock-out-handovers/print/' + vm.stockOutTakeOver.id);
         };
-        var modalInstance;
-        //样本交接
-        vm.takeOverModal = _fnTakeOverModal;
 
-
-        function _fnTakeOverModal(){
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-out/take-over/modal/take-over-modal.html',
-                controller: 'TakeOverModalController',
-                controllerAs:'vm',
-                size:'lg',
-                resolve: {
-                    items: function () {
-                        return {
-                        }
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (data) {
-
-            });
-        }
 
     }
 })();

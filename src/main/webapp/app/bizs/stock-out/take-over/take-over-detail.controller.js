@@ -9,10 +9,10 @@
         .module('bioBankApp')
         .controller('TakeOverDetailController', TakeOverDetailController);
 
-    TakeOverDetailController.$inject = ['$scope','$state','$stateParams','$uibModal','$compile','DTOptionsBuilder','DTColumnBuilder','toastr',
+    TakeOverDetailController.$inject = ['$scope','$state','$stateParams','$uibModal','$compile','DTOptionsBuilder','DTColumnBuilder','toastr','BioBankDataTable',
         'TakeOverService','SampleUserService','StockOutService','entity','MasterData'];
 
-    function TakeOverDetailController($scope,$state,$stateParams,$uibModal,$compile,DTOptionsBuilder,DTColumnBuilder,toastr,
+    function TakeOverDetailController($scope,$state,$stateParams,$uibModal,$compile,DTOptionsBuilder,DTColumnBuilder,toastr,BioBankDataTable,
                                       TakeOverService,SampleUserService,StockOutService,entity,MasterData) {
         var vm = this;
         var modalInstance;
@@ -66,14 +66,15 @@
             if (value){
                 vm.application = _.find(vm.applicationOptions, {id:value});
                 StockOutService.getPlans(value).then(function (res){
-                        vm.planOptions = res.data;
+                    vm.planOptions = res.data;
+                    if(vm.planOptions.length){
                         vm.dto.stockOutPlanId = vm.planOptions[0].id;
-                        // vm.taskOptions.length = 0;
-                        if(vm.dto.stockOutPlanId){
-                            _fnGetTasks(vm.dto.stockOutPlanId)
-                        }
-                    }, onError
-                );
+                    }
+                    // vm.taskOptions.length = 0;
+                    if(vm.dto.stockOutPlanId){
+                        _fnGetTasks(vm.dto.stockOutPlanId)
+                    }
+                }, onError);
                 vm.stockOutApplyCode = (_.find(vm.applicationOptions, {id:value})||{}).applyCode;
                 if (vm.dtInstance && vm.dtInstance.rerender){
                     vm.dtInstance.rerender();
@@ -92,8 +93,10 @@
             if (value){
                 StockOutService.getTasks(value).then(function (res){
                         vm.taskOptions = res.data;
-                        vm.dto.stockOutTaskId = vm.taskOptions[0].id;
-                        $scope.$apply();
+                        if(vm.taskOptions.length){
+                            vm.dto.stockOutTaskId = vm.taskOptions[0].id;
+                        }
+                        // $scope.$apply();
                     }, onError
                 );
                 vm.stockOutPlanCode = (_.find(vm.planOptions, {id:value})||{}).stockOutPlanCode;
@@ -256,26 +259,24 @@
 
             var titleHtml = '<input type="checkbox" ng-model="vm.selectAllBox" ng-click="vm.toggleAll(vm.selectAllBox, vm.selected)">';
 
-            vm.dtOptions = DTOptionsBuilder.newOptions()
-                .withDOM("t").withOption('scrollY', 280)
-                .withOption('processing',true)
+            vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10,  "tr<'row'<'col-sm-5'i><'col-sm-7'p>>")
+                .withOption('order',[[1,'asc']])
                 .withOption('serverSide',true)
                 .withOption('headerCallback', _fnCreatedHeader)
                 .withOption('createdRow', _fnCreatedRow)
                 .withFnServerData(_fnServerData)
-                .withOption('order',[[1,'asc']])
             ;
             vm.dtColumns = [
                 DTColumnBuilder.newColumn('').withTitle(titleHtml).withOption("width", "30").notSortable().renderWith(_fnActionsSelectHtml),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码'),
-                DTColumnBuilder.newColumn('status').withTitle('状态'),
-                DTColumnBuilder.newColumn('position').withTitle('暂存区'),
-                DTColumnBuilder.newColumn('applyCode').withTitle('出库申请'),
-                DTColumnBuilder.newColumn('planCode').withTitle('出库计划'),
-                DTColumnBuilder.newColumn('countOfSample').withTitle('样本量'),
-                DTColumnBuilder.newColumn('memo').withTitle('备注'),
+                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').withOption("width", 120),
+                DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", 50),
+                DTColumnBuilder.newColumn('position').withTitle('暂存区').withOption("width", 120),
+                DTColumnBuilder.newColumn('applyCode').withTitle('出库申请').withOption("width", 120),
+                DTColumnBuilder.newColumn('planCode').withTitle('出库计划').withOption("width", 120),
+                DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", 50),
+                DTColumnBuilder.newColumn('delegate').withTitle('委托方').withOption("width", 240),
+                DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
                 // DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "30").notSortable().renderWith(_fnActionsHtml)
-                DTColumnBuilder.newColumn('delegate').withTitle('委托方'),
 
                 DTColumnBuilder.newColumn('taskCode').notVisible(),
                 DTColumnBuilder.newColumn('applyId').notVisible(),
@@ -293,17 +294,11 @@
                 }
             }
             function _fnCreatedRow(row, data, dataIndex) {
-                var status = '';
-                switch (data.status){
-                    case '1701': status = '待出库';break;
-                    case '1702': status = '已出库';break;
-                    case '1703': status = '已交接';break;
-                }
-
+                var status = MasterData.getStatus(data.status);
                 var samplQty = ' / 100';
                 samplQty = (data.countOfSample || 0) + samplQty;
                 $('td:eq(2)', row).html(status);
-                $('td:eq(7)', row).html(samplQty);
+                $('td:eq(6)', row).html(samplQty);
                 $compile(angular.element(row).contents())($scope);
             }
             function _fnActionsHtml(data, type, full, meta) {
@@ -378,9 +373,9 @@
                 var table = vm.dtInstance.DataTable;
                 table
                     .column(1)
-                    .search(boxCode)
+                    .search(boxCode||'')
                     .column(3)
-                    .search(pos)
+                    .search(pos||'')
                     .draw();
 
                 vm.filterPos = pos;

@@ -10,10 +10,10 @@
         .controller('RequirementDetailController', RequirementDetailController)
         .controller('RequirementSampleDelModalController', RequirementSampleDelModalController)
         .controller('RequirementApplyProjectModalController', RequirementApplyProjectModalController);
-    RequirementDetailController.$inject = ['$scope','$stateParams','$state','$compile','entity','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService'];
+    RequirementDetailController.$inject = ['$scope','$stateParams','$state','$compile','entity','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService','BioBankDataTable'];
     RequirementSampleDelModalController.$inject = ['$uibModalInstance'];
     RequirementApplyProjectModalController.$inject = ['$uibModalInstance'];
-    function RequirementDetailController($scope,$stateParams,$state,$compile,entity,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService) {
+    function RequirementDetailController($scope,$stateParams,$state,$compile,entity,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService,BioBankDataTable) {
         var vm = this;
         var modalInstance;
         vm.dtInstance = {};
@@ -238,6 +238,7 @@
                 vm.requirement.recordTime = new Date(data.recordTime);
                 // vm.requirement.recordId = data.recordId;
                 // vm.requirement.recordId = data.applyPersonName;
+                vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 vm.dtInstance.rerender();
                 vm.isApproval();
@@ -261,12 +262,7 @@
         //判断是否都是核对完的列表
         vm.isApproval = _fnIsApproval;
 
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withPaginationType('full_numbers')
-            .withOption('info', false)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withOption('searching', false)
+        vm.dtOptions = BioBankDataTable.buildDTOption("BASIC")
             .withOption('createdRow', createdRow);
 
         vm.dtColumns = [

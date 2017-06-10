@@ -300,7 +300,7 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             }else{
                 //验证是否失效
                 if(userLoginHistory.getInvalidDate().isBefore(time)){
-                    return null;
+                    return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
                 }else{
                     userLoginHistory.setLoginUserId(user.getId());
                     ZonedDateTime invalidDate = time.plusMinutes(20);
@@ -314,13 +314,13 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             Date date = Date.from(time.toInstant());
             Long nowTime = date.getTime();
             Long lastDate = Date.from(lastTime.toInstant()).getTime();
-            Long b = nowTime-lastDate;
+            Long diffTime = nowTime-lastDate;
 //            BigDecimal diffTime = bigDecimal.divide(BigDecimal.valueOf(60 * 1000),2, BigDecimal.ROUND_HALF_UP);
-            Integer diffTime = (int) (nowTime-lastDate)/(60 * 1000);
-            if(diffTime<=1){
-                return null;
-            }else if(diffTime<=5 && diffTime>1){
-                stockOutTask.setUsedTime(stockOutTask.getUsedTime()+diffTime);
+//            Integer diffTime = (nowTime-lastDate)/(60 * 1000);
+            if(diffTime<=60000){
+                return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
+            }else if(diffTime<=300000){
+                stockOutTask.setUsedTime(stockOutTask.getUsedTime()+(int)(diffTime/60000));
             }
         }
         stockOutTask.setTaskEndTime(time);

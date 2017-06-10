@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskBoxInModalController', TaskBoxInModalController);
 
-    TaskBoxInModalController.$inject = ['$scope','$compile','$uibModalInstance','$uibModal','toastr','items','DTOptionsBuilder','DTColumnBuilder','TaskService','FrozenBoxTypesService','BioBankBlockUi','BoxCodeIsRepeatService'];
+    TaskBoxInModalController.$inject = ['$scope','$compile','$uibModalInstance','$uibModal','toastr','items','DTOptionsBuilder','DTColumnBuilder','TaskService','FrozenBoxTypesService','BioBankBlockUi','BoxCodeIsRepeatService','BioBankDataTable'];
 
-    function TaskBoxInModalController($scope,$compile,$uibModalInstance,$uibModal,toastr,items,DTOptionsBuilder,DTColumnBuilder,TaskService,FrozenBoxTypesService,BioBankBlockUi,BoxCodeIsRepeatService) {
+    function TaskBoxInModalController($scope,$compile,$uibModalInstance,$uibModal,toastr,items,DTOptionsBuilder,DTColumnBuilder,TaskService,FrozenBoxTypesService,BioBankBlockUi,BoxCodeIsRepeatService,BioBankDataTable) {
         var vm = this;
         vm.tempBoxInstance = {};
         vm.sampleInstance = {};
@@ -74,24 +74,24 @@
         _init();
         //添加新盒
         function _fnAddNewBox(){
-            var len = _.filter(boxList,{frozenBoxCode:vm.box.frozenBoxCode}).length;
-            if(len == 0){
-                boxList.push(angular.copy(vm.box));
-                vm.tempBoxOptions.withOption('data', boxList);
-                vm.tempBoxInstance.rerender();
-            }else{
-                toastr.error("冻存盒编码已存在!");
-            }
-            // BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
-            //     vm.isRepeat = data;
-            //     if (vm.isRepeat){
-            //         toastr.error("冻存盒编码已存在!");
-            //         vm.box.frozenBoxCode = "";
-            //         return;
-            //     }
-            //
-            //
-            // });
+
+            BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
+                vm.isRepeat = data;
+                if (vm.isRepeat){
+                    toastr.error("冻存盒编码已存在!");
+                    vm.box.frozenBoxCode = "";
+                    return;
+                }
+                var len = _.filter(boxList,{frozenBoxCode:vm.box.frozenBoxCode}).length;
+                if(len == 0){
+                    boxList.push(angular.copy(vm.box));
+                    vm.tempBoxOptions.withOption('data', boxList);
+                    vm.tempBoxInstance.rerender();
+                }else{
+                    toastr.error("冻存盒编码已存在!");
+                }
+
+            });
 
 
         }
@@ -111,7 +111,7 @@
             });
             for(var i = 0; i < boxInTubes.length; i++){
                 boxInTubes[i].pos = "";
-                boxInTubes[i].checkedFlag = false;
+                boxInTubes[i].checkedFlag = true;
                 boxInTubes[i].sampleTypeName = boxInTubes[i].sampleType.sampleTypeName;
             }
             boxInTubesCopy = [];
@@ -121,13 +121,7 @@
 
 
         //临时盒子
-        vm.tempBoxOptions = DTOptionsBuilder.newOptions()
-            .withOption('info', false)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withOption('searching', false)
-            .withScroller()
-            .withOption('scrollY', 398)
+        vm.tempBoxOptions = BioBankDataTable.buildDTOption("BASIC", 298)
             .withOption('rowCallback', rowCallback)
             .withOption('createdRow', createdRow)
         vm.tempBoxColumns = [
@@ -145,28 +139,30 @@
             $('td', nRow).unbind('click');
             $(nRow).bind('click', function() {
                 var tr = this;
-                $scope.$apply(function () {
+                // $scope.$apply(function () {
                     rowClickHandler(tr,oData);
-                })
+                // })
             });
             return nRow;
         }
-        var selectBox;
+        // var selectBox;
         function rowClickHandler(tr,data) {
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
-            selectBox = data;
-            if(selectBox.frozenTubeDTOS.length){
-                var len = selectBox.frozenTubeDTOS.length-1;
-                _.orderBy(selectBox.frozenTubeDTOS, ['tubeRows'], ['esc']);
-                vm.pos = selectBox.frozenTubeDTOS[len].tubeRows + (+selectBox.frozenTubeDTOS[len].tubeColumns+1);
+            vm.selectBox = data;
+            if(vm.selectBox.frozenTubeDTOS.length){
+                var len = vm.selectBox.frozenTubeDTOS.length-1;
+                _.orderBy(vm.selectBox.frozenTubeDTOS, ['tubeRows'], ['esc']);
+                vm.pos = vm.selectBox.frozenTubeDTOS[len].tubeRows + (+vm.selectBox.frozenTubeDTOS[len].tubeColumns+1);
             }else{
                 vm.pos = "A1";
             }
 
             _FnPreassemble(vm.selectedTubes);
+            $scope.$apply();
         }
-        vm.posInit = function () {
+        //位置鼠标移除事件
+        vm.posBlur = function () {
             if(vm.pos){
                _FnPreassemble(vm.selectedTubes);
             }
@@ -192,7 +188,9 @@
                     vm.selectedTubes.push(b);
                 }
             });
-            _FnPreassemble(vm.selectedTubes);
+            if(vm.pos){
+                _FnPreassemble(vm.selectedTubes);
+            }
             vm.sampleInstance.DataTable.draw();
             // selectedItems = vm.selected;
             // selectAll = vm.selectAll;
@@ -221,8 +219,11 @@
                 vm.sampleInstance.DataTable.draw();
                 return;
             }
-            //预装位置
-            _FnPreassemble(vm.selectedTubes);
+            if(vm.pos){
+                //预装位置
+                _FnPreassemble(vm.selectedTubes);
+            }
+
             vm.sampleInstance.DataTable.draw();
 
         };
@@ -232,8 +233,8 @@
             var startRow =  startPos.charAt(0);
             var startCol =  +startPos.substring(1);
             var pos={tubeRows:startRow,tubeColumns:startCol};
-            var countOfCols = +selectBox.frozenBoxType.frozenBoxTypeRows;
-            var countOfRows = +selectBox.frozenBoxType.frozenBoxTypeColumns;
+            var countOfCols = +vm.selectBox.frozenBoxType.frozenBoxTypeRows;
+            var countOfRows = +vm.selectBox.frozenBoxType.frozenBoxTypeColumns;
             var countOfSelect = selectedTubes.length;
             for(var i = 0; i < countOfSelect; i++){
                 // 检查盒内位置是否已经有管子
@@ -281,25 +282,24 @@
         //装盒
         var tempBoxList = [];
         function _fnBoxIn() {
-
+            vm.selectAll = false;
             for(var i = 0; i < vm.selectedTubes.length;i++){
-                var index = _.indexOf(selectBox.frozenTubeDTOS, vm.selectedTubes[i]);
+                var index = _.indexOf(vm.selectBox.frozenTubeDTOS, vm.selectedTubes[i]);
                 if(index == '-1'){
-                    selectBox.frozenTubeDTOS.push(vm.selectedTubes[i])
+                    vm.selectBox.frozenTubeDTOS.push(vm.selectedTubes[i]);
+                    _.pull(boxInTubesCopy, vm.selectedTubes[i]);
                 }
             }
-            tempBoxList.push(selectBox);
+            vm.selectedTubes = [];
+            tempBoxList.push(vm.selectBox);
+            vm.tempBoxInstance.DataTable.draw();
+            vm.selectBox = {};
+            vm.pos = "";
         }
 
 
 
-        vm.sampleOptions = DTOptionsBuilder.newOptions()
-            .withOption('info', false)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withOption('searching', false)
-            .withScroller()
-            .withOption('scrollY', 398)
+        vm.sampleOptions = BioBankDataTable.buildDTOption("BASIC", 298)
             .withOption('createdRow', function(row, data, dataIndex) {
                 if (data.pos){
                     $('td:eq(3)', row).html(data.pos.tubeRows+data.pos.tubeColumns);
@@ -344,13 +344,16 @@
         }
 
         function _fnLoadTube() {
+            vm.selectedTubes = [];
             setTimeout(function () {
                 for(var i = 0; i < boxInTubesCopy.length; i++){
                     boxInTubesCopy[i].pos = "";
-                    boxInTubesCopy[i].checkedFlag = false;
+                    boxInTubesCopy[i].checkedFlag = true;
                     boxInTubesCopy[i].sampleTypeName = boxInTubesCopy[i].sampleType.sampleTypeName;
+                    vm.selectedTubes.push(boxInTubesCopy[i])
                 }
                 vm.sampleOptions.withOption('data', boxInTubesCopy);
+                vm.selectAll = true;
             },500);
         }
         _fnLoadTube();
@@ -404,7 +407,7 @@
                         }
                     }
                 }
-                boxInTubesCopy = _.orderBy(boxInTubesCopy,['orderIndex'],['esc']);
+                boxInTubesCopy = _.orderBy(boxInTubesCopy,['orderIndex'],['asc']);
                 vm.sampleOptions.withOption('data', boxInTubesCopy);
                 vm.sampleInstance.rerender();
             }
@@ -419,6 +422,7 @@
             vm.allInFlag = true;
         };
         vm.ok = function () {
+            vm.boxIn();
             var tempBoxListCopy = angular.copy(tempBoxList)
             for(var i =0; i < tempBoxListCopy.length; i++){
                 delete tempBoxListCopy[i].sampleCount;

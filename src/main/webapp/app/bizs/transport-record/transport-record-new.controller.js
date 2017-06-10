@@ -295,15 +295,19 @@
             //获取样本类型
             function _fnQuerySampleType() {
                 SampleTypeService.querySampleType().success(function (data) {
-                    vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['esc']);
+                    vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['asc']);
                 });
             }
             //不同项目下的样本分类
+            //样本分类为混合类型时，要分装
+            vm.isMixedFlag = false;
             function _fnQueryProjectSampleClass(projectId,sampleTypeId,isMixed) {
                 SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                     vm.projectSampleTypeOptions = data;
                     //是否混合类型
                     if(isMixed == 1){
+                        vm.box.isSplit = 1;
+                        vm.isMixedFlag = true;
                         //类型下有无分类
                         if(data.length){
                             for(var k = 0; k < data.length; k++){

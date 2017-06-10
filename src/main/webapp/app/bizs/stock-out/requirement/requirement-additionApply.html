@@ -5,7 +5,7 @@
                 <h2 class="m-0">附加出库申请</h2>
             </div>
             <div class="pull-right">
-                <button class="btn btn-primary" ng-click="vm.planSave()" ng-if="vm.requirement.status == '1103'">出库计划</button>
+                <button class="btn btn-primary" ng-click="vm.planSave()" ng-if="vm.requirement.status == '1103'">创建出库计划</button>
                 <button class="btn btn-primary" ng-click="vm.printRequirement()" ng-disabled="!vm.requirementApplyFlag">打印出库申请</button>
                 <button class="btn btn-primary" ng-click="vm.approvalModal()" ng-disabled="!vm.requirementApplyFlag">批准</button>
                 <button class="btn btn-default" ui-sref="requirement-list">关闭</button>
@@ -86,13 +86,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel-body p-0">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance" class=" table table-striped table-bordered" style="table-layout: fixed;">
-                            </table>
-                        </div>
-                    </div>
+                <div class="panel-body no-padding">
+                    <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance" class=" table table-striped table-bordered" style="table-layout: fixed;">
+                    </table>
                 </div>
             </div>
         </div>

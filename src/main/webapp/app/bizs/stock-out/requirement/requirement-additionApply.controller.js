@@ -9,8 +9,8 @@
         .module('bioBankApp')
         .controller('RequirementAdditionApplyController', RequirementAdditionApplyController)
 
-    RequirementAdditionApplyController.$inject = ['$scope','$stateParams','$state','$compile','entity','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService','MasterData'];
-    function RequirementAdditionApplyController($scope,$stateParams,$state,$compile,entity,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService,MasterData) {
+    RequirementAdditionApplyController.$inject = ['$scope','$stateParams','$state','$compile','entity','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService','MasterData','BioBankDataTable'];
+    function RequirementAdditionApplyController($scope,$stateParams,$state,$compile,entity,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService,MasterData,BioBankDataTable) {
         var vm = this;
         var modalInstance;
         vm.dtInstance = {};
@@ -65,6 +65,7 @@
                     vm.isApproval();
                 },100)
             }else{
+                vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
                 setTimeout(function () {
                     vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 },100)
@@ -138,6 +139,7 @@
                 // vm.requirement.recordTime = new Date(data.recordTime);
                 // vm.requirement.recordId = data.recordId;
                 vm.requirement.stockOutRequirement = data.stockOutRequirement;
+                vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 vm.dtInstance.rerender();
                 vm.isApproval();
@@ -161,8 +163,7 @@
         //判断是否都是核对完的列表
         vm.isApproval = _fnIsApproval;
 
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withPaginationType('full_numbers')
+        vm.dtOptions = BioBankDataTable.buildDTOption("BASIC")
             .withOption('createdRow', createdRow);
 
         vm.dtColumns = [
@@ -174,7 +175,7 @@
             DTColumnBuilder.newColumn('sex').withTitle('性别'),
             DTColumnBuilder.newColumn('diseaseTypeId').withTitle('疾病'),
             DTColumnBuilder.newColumn('samples').withTitle('指定样本编码').withClass('text-ellipsis'),
-            DTColumnBuilder.newColumn('status').withTitle('状态'),
+            DTColumnBuilder.newColumn('status').withTitle('状态')
 
         ];
         if(!viewFlag){

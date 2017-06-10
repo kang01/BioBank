@@ -9,14 +9,16 @@
         .module('bioBankApp')
         .controller('TaskStockOutModalController', TaskStockOutModalController);
 
-    TaskStockOutModalController.$inject = ['$uibModalInstance','$uibModal','items','TaskService','DTOptionsBuilder','DTColumnBuilder','toastr','EquipmentService','AreasByEquipmentIdService','BioBankBlockUi'];
+    TaskStockOutModalController.$inject = ['$uibModalInstance','$uibModal','items','TaskService','DTOptionsBuilder','DTColumnBuilder','toastr','EquipmentService','AreasByEquipmentIdService','BioBankBlockUi','BioBankDataTable'];
 
-    function TaskStockOutModalController($uibModalInstance,$uibModal,items,TaskService,DTOptionsBuilder,DTColumnBuilder,toastr,EquipmentService,AreasByEquipmentIdService,BioBankBlockUi) {
+    function TaskStockOutModalController($uibModalInstance,$uibModal,items,TaskService,DTOptionsBuilder,DTColumnBuilder,toastr,EquipmentService,AreasByEquipmentIdService,BioBankBlockUi,BioBankDataTable) {
         var vm = this;
         vm.dtInstance = {};
         vm.stockOut = {};
         var frozenBoxIds = items.frozenBoxIds;
         var taskId = items.taskId;
+        vm.stockOutHeadName1 = items.stockOutHeadName1;
+        vm.stockOutHeadName2 = items.stockOutHeadName2;
 
 
         //设备
@@ -46,8 +48,7 @@
             }
         };
         //样本列表
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withOption('processing',true)
+        vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", 248, 8)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};
@@ -92,8 +93,7 @@
 
                 }
 
-            })
-            .withPaginationType('full_numbers');
+            });
         vm.dtColumns = [
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),

@@ -5,6 +5,7 @@
                 <h2 class="m-0">出库任务详情</h2>
             </div>
             <div class="pull-right">
+                <span>累计用时: {{vm.usedTime}} 分钟</span>&nbsp;
                 <button class="btn btn-primary" ng-click="vm.takeOver()">样本交接</button>
                 <button class="btn btn-default" ui-sref="task-list">关闭</button>
             </div>
@@ -19,11 +20,11 @@
         <div class="col-md-1">出库日期：</div>
         <div class="col-md-1">{{vm.task.stockOutDate}}</div>
         <div class="col-md-1">负责人：</div>
-        <div class="col-md-1">{{vm.task.stockOutHead1}}</div>
+        <div class="col-md-1">{{vm.task.stockOutHeader1}}</div>
         <div class="col-md-1">负责人：</div>
-        <div class="col-md-1">{{vm.task.stockOutHead2}}</div>
+        <div class="col-md-1">{{vm.task.stockOutHeader2}}</div>
         <div class="col-md-1">状态：</div>
-        <div class="col-md-1">{{vm.task.status}}</div>
+        <div class="col-md-1">{{vm.status}}</div>
 
     </div>
     <div class="row pb-15">

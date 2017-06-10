@@ -2,7 +2,9 @@ package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutHandoverDTO;
 import org.fwoxford.service.dto.response.StockOutHandoverForDataTableEntity;
+import org.fwoxford.service.dto.response.StockOutHandoverSampleReportDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.io.ByteArrayOutputStream;
@@ -53,4 +55,6 @@ public interface StockOutHandoverService {
     StockOutHandoverDTO completeStockOutHandover(List<Long> ids, StockOutHandoverDTO stockOutHandoverDTO);
 
     StockOutHandoverDTO getStockOutHandoverDetail(Long id);
+
+    Page<StockOutHandoverSampleReportDTO> getStockOutHandoverSamples(Long id, Pageable pageable);
 }

@@ -10,9 +10,9 @@
         .controller('PlanDetailController', PlanDetailController)
         .controller('PlanDelModalController', PlanDelModalController)
 
-    PlanDetailController.$inject = ['$scope','$compile','$stateParams','toastr','$uibModal','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankBlockUi'];
+    PlanDetailController.$inject = ['$scope','$compile','$stateParams','toastr','$uibModal','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankBlockUi','BioBankDataTable'];
     PlanDelModalController.$inject = ['$uibModalInstance'];
-    function PlanDetailController($scope,$compile,$stateParams,toastr,$uibModal,DTOptionsBuilder,DTColumnBuilder,PlanService,BioBankBlockUi) {
+    function PlanDetailController($scope,$compile,$stateParams,toastr,$uibModal,DTOptionsBuilder,DTColumnBuilder,PlanService,BioBankBlockUi,BioBankDataTable) {
         var vm = this;
         var modalInstance;
         vm.dtInstance = {};
@@ -90,18 +90,16 @@
             };
             //盒子列表
             var boxId;
-            vm.dtOptions = DTOptionsBuilder.newOptions()
-                .withDOM("<'row mt-0 mb-10'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
+            vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", 170, 5,  "<'row mt-0 mb-10'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
                 .withButtons([
                     {
                         text: '创建任务',
-                        className: 'btn btn-default',
+                        className: 'btn btn-default btn-sm ml-10',
                         key: '1',
                         action: _fnCreateTask
                     }
                 ])
-                .withOption('processing',true)
-                .withOption('height','500')
+                .withOption('order', [[1,'asc']])
                 .withOption('serverSide',true)
                 .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                     var data = {};
@@ -123,13 +121,13 @@
                                     jqDt._fnLog( oSettings, 0, error );
                                 }
                                 oSettings.json = json;
-                                boxId = res.data.data[0].id
+                                boxId = res.data.data[0].id;
                                 _loadTubes(boxId);
                             }else{
                                 var array = {
                                     draw : 1,
-                                    recordsTotal : 100,
-                                    recordsFiltered : 10,
+                                    recordsTotal : 0,
+                                    recordsFiltered : 0,
                                     data: [ ],
                                     error : ""
                                 };
@@ -155,8 +153,8 @@
                     }else{
                         var array = {
                             draw : 1,
-                            recordsTotal : 100,
-                            recordsFiltered : 10,
+                            recordsTotal : 0,
+                            recordsFiltered : 0,
                             data: [ ],
                             error : ""
                         }
@@ -165,8 +163,6 @@
                     }
 
                 })
-                .withPaginationType('full_numbers')
-                .withOption('order', [[1,'asc']])
                 .withOption('rowCallback', rowCallback)
                 .withOption('createdRow', function(row, data, dataIndex) {
                     // Recompiling so we can bind Angular directive to the DT
@@ -228,14 +224,7 @@
 
             }
             //管子列表
-            vm.tubeOptions = DTOptionsBuilder.newOptions()
-                .withPaginationType('full_numbers')
-                .withOption('info', false)
-                .withOption('paging', false)
-                .withOption('sorting', false)
-                .withOption('searching', false)
-                .withScroller()
-                .withOption('scrollY', 370)
+            vm.tubeOptions = BioBankDataTable.buildDTOption("BASIC", 247)
                 .withOption('createdRow', function(row, data, dataIndex) {
                     var status = '';
                     switch (data.status){
@@ -261,8 +250,7 @@
         }
 
         //任务列表
-        vm.taskOptions = DTOptionsBuilder.newOptions()
-            .withOption('processing',true)
+        vm.taskOptions = BioBankDataTable.buildDTOption("NORMALLY", 170, 5)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};
@@ -297,7 +285,6 @@
                         jqDt._fnProcessingDisplay( oSettings, false );
                     });
             })
-            .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow);
 
 

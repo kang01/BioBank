@@ -796,24 +796,24 @@
             }
             var obox = angular.copy(vm.obox);
 
-            if(!vm.boxList.length){
+            // if(!vm.boxList.length){
                 vm.boxList.push(obox);
-            }else{
-                for(var i = 0; i < vm.boxList.length; i++){
-                    if(obox.sampleType.id == vm.boxList[i].sampleType.id){
-                        if(vm.boxList.length > 1){
-                            vm.boxList[1].stockInFrozenTubeList = obox.stockInFrozenTubeList;
-
-                        }else{
-                            vm.boxList[0].stockInFrozenTubeList = obox.stockInFrozenTubeList;
-                        }
-                        break;
-                    }else{
-                        vm.boxList.push(obox);
-                        break;
-                    }
-                }
-            }
+            // }else{
+            //     for(var i = 0; i < vm.boxList.length; i++){
+            //         if(obox.sampleClassification.id == vm.boxList[i].sampleClassification.id){
+            //             if(vm.boxList.length > 1){
+            //                 vm.boxList[1].stockInFrozenTubeList = obox.stockInFrozenTubeList;
+            //
+            //             }else{
+            //                 vm.boxList[0].stockInFrozenTubeList = obox.stockInFrozenTubeList;
+            //             }
+            //             break;
+            //         }else{
+            //             vm.boxList.push(obox);
+            //             break;
+            //         }
+            //     }
+            // }
         };
         //保存分装结果
         var saveBoxList = [];
@@ -831,19 +831,6 @@
                     objBox.sampleClassificationId = vm.boxList[i].sampleClassification.sampleClassificationId || vm.boxList[i].sampleClassification.id;
                 }
                 saveBoxList.push(objBox);
-
-
-                // vm.boxList[i].sampleTypeId =  vm.boxList[i].sampleType.id;
-                // vm.boxList[i].frozenBoxTypeId =  vm.boxList[i].frozenBoxType.id;
-                // delete vm.boxList[i].sampleType;
-                // delete vm.boxList[i].frozenBoxType;
-                // delete vm.boxList[i].sampleClassification;
-                // delete vm.boxList[i].addTubeCount;
-                // delete vm.boxList[i].copyBoxCode;
-                // delete vm.boxList[i].countOfSample;
-                // delete vm.boxList[i].backColor;
-                // delete vm.boxList[i].sampleTypeName;
-                // delete vm.boxList[i].sampleTypeId;
             }
             // console.log(JSON.stringify(saveBoxList))
             BioBankBlockUi.blockUiStart();

@@ -443,8 +443,6 @@
                         size: 'sm',
                         controller: 'BoxInstanceCtrl',
                         controllerAs: 'ctrl'
-
-
                     });
                     modalInstance.result.then(function (flag) {
                         $(tr).closest('table').find('.rowLight').removeClass("rowLight");
@@ -1102,6 +1100,8 @@
                 if(isMixed == 1){
                     vm.box.isSplit = 1;
                     vm.isMixedFlag = true;
+                }else{
+                    vm.isMixedFlag = false;
                 }
                 SampleTypeService.queryProjectSampleClasses(vm.transportRecord.projectId,vm.box.sampleTypeId).success(function (data1) {
                     vm.projectSampleTypeOptions = data1;

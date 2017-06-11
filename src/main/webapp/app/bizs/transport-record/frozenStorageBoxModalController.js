@@ -227,6 +227,7 @@
             }
             //是混合类型
             if(box.isMixed == 1){
+                box.isSplit = 1;
                 delete box.sampleClassificationId;
             }
             return box;

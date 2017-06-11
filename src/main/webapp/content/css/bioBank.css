@@ -493,7 +493,8 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     float: left;
     list-style: none;
     margin-right: 12px;
-    margin-top: 4px;
+    margin-top: 6px;
+    margin-bottom: 10px;
 }
 .split-box .box-feature{
     width: 80px;

@@ -497,7 +497,7 @@
                 vm.selectCell = $(this.getData(row,col,row2,col2));
                 for(var i = 0; i < vm.selectCell.length; i++ ){
                     for (var j = 0; j < vm.selectCell[i].length; j++){
-                        if(vm.selectCell[i][j]){
+                        if(vm.selectCell[i][j].sampleCode || vm.selectCell[i][j].sampleTempCode){
                             selectList.push(vm.selectCell[i][j])
                         }
                     }

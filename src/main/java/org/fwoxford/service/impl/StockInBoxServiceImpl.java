@@ -434,8 +434,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             //更改管子的位置信息
             frozenTube.setFrozenBox(frozenBoxNew);
             frozenTube.setFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
-            frozenTube.setTubeColumns(tube.getTubeRows());
-            frozenTube.setTubeRows(tube.getTubeColumns());
+            frozenTube.setTubeColumns(tube.getTubeColumns());
+            frozenTube.setTubeRows(tube.getTubeRows());
             //如果管子的样本信息为99，更改管子的样本类型为分装后冻存盒的样本类型
             if(frozenTube.getSampleType()!=null&&frozenTube.getSampleType().getIsMixed().equals(Constants.YES)){
                 frozenTube.setSampleType(frozenBoxNew.getSampleType());

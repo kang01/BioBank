@@ -7,17 +7,21 @@
 
     angular
         .module('bioBankApp')
-        .controller('TakeOverDetailController', TakeOverDetailController);
+        .controller('TakeOverDetailController', TakeOverDetailController)
+        .controller('TakeOverCancellationModalController', TakeOverCancellationModalController);
 
     TakeOverDetailController.$inject = ['$scope','$state','$stateParams','$uibModal','$compile','DTOptionsBuilder','DTColumnBuilder','toastr','BioBankDataTable',
         'TakeOverService','SampleUserService','StockOutService','entity','MasterData'];
-
+    TakeOverCancellationModalController.$inject = ['$uibModalInstance'];
     function TakeOverDetailController($scope,$state,$stateParams,$uibModal,$compile,DTOptionsBuilder,DTColumnBuilder,toastr,BioBankDataTable,
                                       TakeOverService,SampleUserService,StockOutService,entity,MasterData) {
         var vm = this;
         var modalInstance;
         //样本交接Modal
         vm.takeOverModal = _fnTakeOverModal;
+        //作废
+        vm.cancellation = _fnCancellation;
+
         var applyId = $stateParams.applyId;
         var planId = $stateParams.planId;
         var taskId = $stateParams.taskId;
@@ -420,8 +424,30 @@
             });
         }
 
+        function _fnCancellation() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/take-over/modal/take-over-cancellation-modal.html',
+                controller: 'TakeOverCancellationModalController',
+                controllerAs:'vm',
+                size:'lg'
+            });
+            modalInstance.result.then(function (data) {
+
+            });
+        }
+
         function onError(error) {
             toastr.error(error.message);
         }
+    }
+    function TakeOverCancellationModalController($uibModalInstance) {
+        var vm = this;
+        vm.ok = function () {
+            $uibModalInstance.close(true);
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     }
 })();

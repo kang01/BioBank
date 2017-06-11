@@ -9,10 +9,12 @@
         .module('bioBankApp')
         .controller('RequirementDetailController', RequirementDetailController)
         .controller('RequirementSampleDelModalController', RequirementSampleDelModalController)
-        .controller('RequirementApplyProjectModalController', RequirementApplyProjectModalController);
+        .controller('RequirementApplyProjectModalController', RequirementApplyProjectModalController)
+        .controller('RequirementCancellationModalController', RequirementCancellationModalController);
     RequirementDetailController.$inject = ['$scope','$stateParams','$state','$compile','entity','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService','BioBankDataTable'];
     RequirementSampleDelModalController.$inject = ['$uibModalInstance'];
     RequirementApplyProjectModalController.$inject = ['$uibModalInstance'];
+    RequirementCancellationModalController.$inject = ['$uibModalInstance'];
     function RequirementDetailController($scope,$stateParams,$state,$compile,entity,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService,BioBankDataTable) {
         var vm = this;
         var modalInstance;
@@ -31,6 +33,8 @@
         vm.additionApply = _fnAdditionApply;
         //打印申请
         vm.printRequirement = _fnPrintRequirement;
+        //作废
+        vm.cancellation = _fnCancellation;
 
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
@@ -177,6 +181,23 @@
         //打印申请
         function _fnPrintRequirement() {
             window.open ('/api/stock-out-applies/print/' + vm.requirement.id);
+        }
+        //作废
+        function _fnCancellation() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-cancellation-modal.html',
+                controller: 'RequirementCancellationModalController',
+                controllerAs:'vm',
+                size:'lg'
+
+            });
+
+            modalInstance.result.then(function (data) {
+
+            }, function () {
+
+            });
         }
         //---------------------------样本需求--------------------------
         //批量核对
@@ -492,6 +513,15 @@
         };
         vm.cancel = function () {
             // $uibModalInstance.close(false);
+            $uibModalInstance.dismiss('cancel');
+        };
+    }
+    function RequirementCancellationModalController($uibModalInstance) {
+        var vm = this;
+        vm.ok = function () {
+            $uibModalInstance.close(true);
+        };
+        vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
     }

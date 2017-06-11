@@ -816,15 +816,16 @@
                 labelField:'sampleTypeName',
                 maxItems: 1,
                 onChange:function (value) {
-                    // var sampleTypeName;
-                    // if(vm.sampleTypeOptions.length){
-                    //     sampleTypeName =  _.filter(vm.sampleTypeOptions,{'id':+value})[0].sampleTypeName;
-                    // }
                     var isMixed = _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed;
                     vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value,isMixed);
                     if(isMixed == 1){
+                        vm.box.isSplit = 1;
+                        vm.isMixedFlag = true;
                         vm.sampleClassFlag = true;
+                        delete vm.box.sampleClassificationId
                     }else{
+                        vm.box.isSplit = 0;
+                        vm.isMixedFlag = false;
                         vm.sampleClassFlag = false;
                     }
                 }
@@ -945,6 +946,7 @@
                     obox.frozenBoxDTOList = [];
                     obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
                 }
+
                 TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
                 function onSaveBoxSuccess(res) {
                     if(!vm.saveStockInFlag && !vm.saveRecordFlag){
@@ -1090,14 +1092,17 @@
                     }
                 });
             }
+            var isMixed;
             vm.onFrozenSuccess = onFrozenSuccess;
             function onFrozenSuccess(data) {
-                // console.log(JSON.stringify(data))
                 vm.box = data;
                 vm.box.frozenBoxTypeId = vm.box.frozenBoxType.id;
                 vm.box.sampleTypeId = vm.box.sampleType.id;
-                var isMixed = vm.box.sampleType.isMixed;
-                // _fnloadProjectSampleClass(vm.transportRecord.projectId,vm.box.sampleTypeId);
+                isMixed = vm.box.sampleType.isMixed;
+                if(isMixed == 1){
+                    vm.box.isSplit = 1;
+                    vm.isMixedFlag = true;
+                }
                 SampleTypeService.queryProjectSampleClasses(vm.transportRecord.projectId,vm.box.sampleTypeId).success(function (data1) {
                     vm.projectSampleTypeOptions = data1;
                     if(vm.box.sampleClassification){

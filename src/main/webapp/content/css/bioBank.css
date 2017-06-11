@@ -395,10 +395,10 @@
     border-top: 10px solid #0000FF;
     border-left: 10px solid transparent;
 }
-.pipe-table .htCommentCell:after{
-    border-top: 10px solid #0000FF;
-    border-left: 10px solid transparent;
-}
+/*.pipe-table .htCommentCell:after{*/
+    /*border-top: 10px solid #0000FF;*/
+    /*border-left: 10px solid transparent;*/
+/*}*/
 .transport-record-index h2{
     margin-top:2px;
 }

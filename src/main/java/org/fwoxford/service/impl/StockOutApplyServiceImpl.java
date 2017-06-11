@@ -345,7 +345,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
                 stockOutApplyProjectList.add(stockOutApplyProject);
             }
         }
-        stockOutApplyProjectRepository.save(stockOutApplyProjects);
+        stockOutApplyProjectRepository.save(stockOutApplyProjectList);
         return stockOutApplyDTO;
     }
 

@@ -7,7 +7,7 @@
             <div class="pull-right">
                 <button class="btn btn-primary" ng-if="vm.dto.status == '2102'" ng-click="vm.takeOverPrint()" ng-disabled="!vm.canBePrint()">打印交接单</button>
                 <button class="btn btn-primary" ng-click="vm.takeOverModal()" ng-disabled="!vm.canBeTakeOver()">样本交接</button>
-                <button class="btn btn-primary" ng-click="vm.save()">保存</button>
+                <button class="btn btn-primary" ng-click="vm.save()" ng-disabled="!vm.dto.stockOutApplyId || !vm.dto.handoverTime">保存</button>
                 <button class="btn btn-default" ui-sref="take-over-list">关闭</button>
             </div>
         </div>

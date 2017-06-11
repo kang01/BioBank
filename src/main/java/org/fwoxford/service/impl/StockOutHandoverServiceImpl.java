@@ -57,6 +57,9 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
+
     public StockOutHandoverServiceImpl(StockOutHandoverRepository stockOutHandoverRepository, StockOutHandoverMapper stockOutHandoverMapper) {
         this.stockOutHandoverRepository = stockOutHandoverRepository;
         this.stockOutHandoverMapper = stockOutHandoverMapper;
@@ -276,6 +279,12 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         for(Long id : ids){
             //查询要出库的样本
             List<StockOutBoxTube> stockOutBoxTubes = stockOutBoxTubeRepository.findByStockOutFrozenBoxId(id);
+            //出库冻存盒的状态置为已交接
+            StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findOne(id);
+            if(stockOutFrozenBox != null){
+                stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_HANDOVER);
+                stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+            }
             for(StockOutBoxTube b :stockOutBoxTubes){
                 //保存交接详情
                 StockOutHandoverDetails stockOutHandoverDetails = new StockOutHandoverDetails();

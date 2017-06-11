@@ -46,11 +46,12 @@
             }else{
                 vm.dto.handoverTime = new Date();
             }
-            for(var i = 0; i < handoverStatus.length; i++){
-                if(entity.status == handoverStatus[i].id){
-                    vm.statusName = handoverStatus[i].name;
-                }
-            }
+            vm.statusName = MasterData.getStatus(entity.status);
+            // for(var i = 0; i < handoverStatus.length; i++){
+            //     if(entity.status == handoverStatus[i].id){
+            //         vm.statusName = handoverStatus[i].name;
+            //     }
+            // }
             if(entity.stockOutApplyId){
                 _fnGetPlans(entity.stockOutApplyId)
             }
@@ -131,6 +132,9 @@
             vm.applicationOptions = [];
             StockOutService.getApplications().then(function(res){
                 vm.applicationOptions = res.data;
+                if(!vm.dto.stockOutApplyId){
+                    vm.dto.stockOutApplyId = vm.applicationOptions[0].id;
+                }
                 if(applyId){
                     vm.dto.stockOutApplyId = applyId;
                     _fnGetPlans(applyId)
@@ -205,6 +209,9 @@
             };
             vm.save = function (){
                 TakeOverService.saveTakeoverInfo(vm.dto).then(function(res){
+                    vm.dto = res.data;
+                    vm.dto.handoverTime = new Date(res.data.handoverTime);
+                    vm.statusName = MasterData.getStatus(res.data.status);
                     if(!takeOverFlag){
                         toastr.success("交接信息以保存!");
                     }
@@ -386,18 +393,6 @@
 
         var takeOverFlag = false;
         function _fnTakeOverModal(){
-            // var table = vm.dtInstance.DataTable;
-            // var boxes = [];
-            // console.log(table.data());
-            // table.data().each( function (d) {
-            //     console.log(d)
-            //     for (var i in vm.selected){
-            //         if (vm.selected[i]){
-            //             boxes.push(angular.copy(d));
-            //         }
-            //     }
-            // });
-            // console.log(JSON.stringify(boxes))
             takeOverFlag = true;
             vm.save();
             modalInstance = $uibModal.open({

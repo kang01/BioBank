@@ -194,7 +194,6 @@ public interface FrozenBoxMapper {
         }
         return stockInBoxForDataTables;
     }
-    //todo 需要检查这个方法在哪里用过
     default StockInBoxForDataTable frozenBoxToStockInBoxForDataTable(FrozenBox box){
         StockInBoxForDataTable stockInBoxForDataTable = new StockInBoxForDataTable();
         if(box == null){
@@ -204,13 +203,36 @@ public interface FrozenBoxMapper {
         stockInBoxForDataTable.setCountOfSample(box.getSampleNumber());
         stockInBoxForDataTable.setId(box.getId());
         stockInBoxForDataTable.setFrozenBoxCode(box.getFrozenBoxCode());
-        stockInBoxForDataTable.setPosition(box.getEquipmentCode()+"."+box.getAreaCode()+"."+box.getSupportRackCode()+"."+box.getColumnsInShelf()+box.getRowsInShelf());
+        String position = toPositionString(box);
+        stockInBoxForDataTable.setPosition(position);
         stockInBoxForDataTable.setSampleTypeName(box.getSampleTypeName());
         stockInBoxForDataTable.setSampleClassificationName(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationName():null);
         stockInBoxForDataTable.setStatus(box.getStatus());
         return stockInBoxForDataTable;
     }
+    default  String toPositionString(FrozenBox pos){
+        if(pos ==null){
+            return null;
+        }
+        ArrayList<String> positions = new ArrayList<>();
+        if (pos.getEquipmentCode() != null && pos.getEquipmentCode().length() > 0){
+            positions.add(pos.getEquipmentCode());
+        }
 
+        if (pos.getAreaCode() != null && pos.getAreaCode().length() > 0) {
+            positions.add(pos.getAreaCode());
+        }
+
+        if (pos.getSupportRackCode() != null && pos.getSupportRackCode().length() > 0){
+            positions.add(pos.getSupportRackCode());
+        }
+
+        if (pos.getRowsInShelf() != null && pos.getRowsInShelf().length() > 0 && pos.getColumnsInShelf() != null && pos.getColumnsInShelf().length() > 0){
+            positions.add(pos.getColumnsInShelf()+pos.getRowsInShelf());
+        }
+
+        return String.join(".", positions);
+    }
     default FrozenBox frozenBoxForSaveBatchDTOToFrozenBox(FrozenBoxForSaveBatchDTO frozenBoxDTO){
         if ( frozenBoxDTO == null ) {
             return null;

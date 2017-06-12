@@ -11,7 +11,6 @@ import org.fwoxford.service.dto.StockInTubeDTO;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxForSplit;
-import org.fwoxford.service.dto.response.StockInBoxSplit;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -20,8 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -435,6 +432,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 frozenTube.setSampleTypeCode(frozenBoxNew.getSampleTypeCode());
                 frozenTube.setSampleTypeName(frozenBoxNew.getSampleTypeName());
             }
+            frozenTube.setSampleClassification(frozenBoxNew.getSampleClassification());
             frozenTubeRepository.save(frozenTube);
             tube.setId(frozenTube.getId());
             stockInTubeDTOList.add(tube);
@@ -572,14 +570,19 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(stockInBox == null){
             throw new BankServiceException("未查询到该盒子的待入库信息！",boxCode);
         }
-        frozenBox.setEquipmentCode(null);
-        frozenBox.setEquipment(null);
-        frozenBox.setArea(null);
-        frozenBox.setAreaCode(null);
-        frozenBox.setSupportRack(null);
-        frozenBox.setSupportRackCode(null);
-        frozenBox.setColumnsInShelf(null);
-        frozenBox.setRowsInShelf(null);
+        //取撤消前的位置
+        StockInBoxPosition stockInBoxPos = stockInBoxPositionRepository.findByStockInBoxIdLast(stockInBox.getId());
+        if(stockInBoxPos == null){
+            throw new BankServiceException("未查询到该盒子的位置历史！",boxCode);
+        }
+        frozenBox.setEquipmentCode(stockInBoxPos.getEquipmentCode());
+        frozenBox.setEquipment(stockInBoxPos.getEquipment());
+        frozenBox.setArea(stockInBoxPos.getArea());
+        frozenBox.setAreaCode(stockInBoxPos.getAreaCode());
+        frozenBox.setSupportRack(stockInBoxPos.getSupportRack());
+        frozenBox.setSupportRackCode(stockInBoxPos.getSupportRackCode());
+        frozenBox.setColumnsInShelf(stockInBoxPos.getColumnsInShelf());
+        frozenBox.setRowsInShelf(stockInBoxPos.getRowsInShelf());
         frozenBox.setStatus(Constants.FROZEN_BOX_STOCKING);
         frozenBoxRepository.save(frozenBox);
 

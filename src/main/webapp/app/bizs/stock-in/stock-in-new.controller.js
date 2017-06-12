@@ -897,6 +897,7 @@
                             projectId:vm.entity.projectId,
                             box :box || {stockInFrozenTubeList:[]},
                             incompleteBoxes: vm.incompleteBoxesList,
+                            isMixed:vm.box.sampleType.isMixed,
                             sampleTypeId:vm.box.sampleType.id,
                             sampleTypeClassId:vm.sampleTypeClassId || vm.box.sampleClassificationId,
                             frozenBoxTypeId:vm.box.frozenBoxType.id
@@ -940,7 +941,7 @@
                         }
                         for(var i = 0; i < vm.incompleteBoxesList.length; i++){
                             if(vm.incompleteBoxesList[i].sampleTypeId == data.sampleTypeId){
-                                if(vm.incompleteBoxesList[i].boxList.length < 2){
+                                if(vm.incompleteBoxesList[i].boxList.length < 2 ){
                                     vm.incompleteBoxesList[i].boxList.push(data);
                                     vm.boxList.push(data);
                                 }

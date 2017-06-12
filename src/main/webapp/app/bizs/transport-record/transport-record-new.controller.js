@@ -482,7 +482,7 @@
                         //备注
                         $(".temp").remove();
                         aRemarkArray = [];
-                        _fnRemarkSelectData(td,remarkArray,selectTubeArray)
+                        _fnRemarkSelectData(td,remarkArray,selectTubeArray);
 
 
                     }
@@ -585,7 +585,7 @@
                 $(td).html("");
                 var $div = $("<div/>").html(code).css({
                     'line-height': '20px',
-                    'word-wrap': 'break-word',
+                    'word-wrap': 'break-word'
                 }).appendTo(td);
                 $div = $("<div id='microtubesStatus'/>").html(tube.status).hide().appendTo(td);
             }

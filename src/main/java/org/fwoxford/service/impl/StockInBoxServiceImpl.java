@@ -452,6 +452,12 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     public StockInBoxDetail movedStockIn(String stockInCode, String boxCode, FrozenBoxPositionDTO boxPositionDTO) {
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
         FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(boxCode);
+        StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
+        stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_PENDING).memo(frozenBox.getMemo())
+            .equipment(frozenBox.getEquipment()).equipmentCode(frozenBox.getEquipmentCode())
+            .area(frozenBox.getArea()).areaCode(frozenBox.getAreaCode())
+            .supportRack(frozenBox.getSupportRack()).supportRackCode(frozenBox.getSupportRackCode())
+            .columnsInShelf(frozenBox.getColumnsInShelf()).rowsInShelf(frozenBox.getRowsInShelf());
         if(frozenBox == null){
             throw new BankServiceException("冻存盒不存在！",boxCode);
         }
@@ -502,13 +508,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxRepository.save(stockInBox);
 
         //保存上架位置
-        StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
-        stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_PENDING).memo(stockInBox.getMemo())
-            .equipment(stockInBox.getEquipment()).equipmentCode(stockInBox.getEquipmentCode())
-            .area(stockInBox.getArea()).areaCode(stockInBox.getAreaCode())
-            .supportRack(stockInBox.getSupportRack()).supportRackCode(stockInBox.getSupportRackCode())
-            .columnsInShelf(stockInBox.getColumnsInShelf()).rowsInShelf(stockInBox.getRowsInShelf())
-            .stockInBox(stockInBox);
+        stockInBoxPosition.stockInBox(stockInBox);
         stockInBoxPositionRepository.save(stockInBoxPosition);
 
         stockInBoxDetail = createStockInBoxDetail(frozenBox,stockInCode);

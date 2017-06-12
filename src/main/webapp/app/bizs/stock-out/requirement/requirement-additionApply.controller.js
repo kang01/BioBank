@@ -58,6 +58,7 @@
                 }
 
             }
+            //1：附加申请
             if(viewFlag != "1"){
                 vm.requirement.stockOutRequirement = [];
                 setTimeout(function () {

@@ -369,18 +369,22 @@
                     'word-wrap': 'break-word'
                 }).appendTo(td);
                 //待出库样本
-                if(tube.stockOutFlag && tube.stockOutFlag == 1){
-                    var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px solid green;"></div>';
+                if(tube.stockOutFlag && tube.stockOutFlag == 1 && !tube.orderIndex){
+                    var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px solid green;font-size:40px;color:rgba(0,128,0,0.3);text-align: center;">' +
+                        '<i class="fa fa-question"></i>' +
+                        '</div>';
                     $(txt).appendTo($div)
                 }
                 //申请撤销的样本标识
                 if(tube.stockOutFlag && tube.stockOutFlag == 2){
+                    $(".fa-question",td).remove();
                     var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;color:rgba(216,0,0,0.3);padding-left: 33%;font-size:42px"><i class="fa fa-close"></i></div>'
                     $(txt).appendTo($div)
                 }
                 //已扫码样本
                 if(tube.scanCodeFlag){
-                    var txt = '<div style="position: absolute;top:12px;left:0;bottom:0;right:0;color:rgba(0,128,0,0.3);text-align:center;font-size:42px">'+tube.orderIndex+'</div>'
+                    $(".fa-question",td).remove();
+                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;border:1px solid green;padding-top:10px;color:rgba(0,128,0,0.3);text-align:center;font-size:42px">'+tube.orderIndex+'</div>'
                     $(txt).appendTo($div)
                 }
                 if(tube.status == '3004'){

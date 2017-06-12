@@ -193,7 +193,7 @@
             var html = $('<table class="table table-operate dataTable mt-0" style="width: 100%"><tbody></tbody></table>');
             for (var i = 0; i < items.length; i++) {
                 var tr = $("<tr />").html(
-                    "<td> </td>" +
+                    "<td data-id="+ (items[i].id ||' ') +"> </td>" +
                     "<td>" + (items[i].applyCode||' ') + "</td>" +
                     "<td>" + (items[i].delegateName||' ') + "</td>" +
                     "<td>" + (items[i].applyPersonName||' ') + "</td>" +
@@ -208,18 +208,18 @@
                 } else if (items[i].status == '1103') {
                     $(tr).append("<td ><button  class='viewApplyId btn btn-default btn-xs'><i class='fa fa-eye'></i></button></td>")
                 }
-                var applyId = items[i].id;
+
 
                 $(".addApplyId", tr).click(function () {
-
-                    console.log($(tr))
-                    // console.log($(tr)[0].childNodes[0].innerText)
+                    var tr = $(this).closest('tr');
+                    var applyId = tr.find('td:eq(0)').data('id');
                     $state.go('requirement-additionApply', {applyId: applyId,viewFlag:1});
                 });
 
                 $(".viewApplyId", tr).click(function () {
-                    console.log($(tr)[0].childNodes[0].innerText)
-                    $state.go('requirement-view', {applyId: applyId});
+                    var tr = $(this).closest('tr');
+                    var applyId = tr.find('td:eq(0)').data('id');
+                    $state.go('requirement-view', {applyId: applyId,viewFlag:1});
                 });
                 $("td", tr).each(function (index, td){
                     var sourceTd = $('td', parentRow).eq(index);

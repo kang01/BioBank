@@ -139,9 +139,9 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         Long samplyClassificationId = stockOutRequirement.getSampleClassification()!=null?stockOutRequirement.getSampleClassification().getId():null;
         Integer ageMin = stockOutRequirement.getAgeMin();
         Integer ageMax = stockOutRequirement.getAgeMax();
-        String diseaseType = !stockOutRequirement.getDiseaseType().equals("null")?stockOutRequirement.getDiseaseType():null;
+        String diseaseType =stockOutRequirement.getDiseaseType();
         Long frozenTubeTypeId = stockOutRequirement.getFrozenTubeType()!=null?stockOutRequirement.getFrozenTubeType().getId():null;
-        String sex = !stockOutRequirement.getSex().equals("null")?stockOutRequirement.getSex():null;
+        String sex = stockOutRequirement.getSex();
         Boolean isBloodLipid = stockOutRequirement.isIsBloodLipid();
         Boolean isHemolysis = stockOutRequirement.isIsHemolysis();
 

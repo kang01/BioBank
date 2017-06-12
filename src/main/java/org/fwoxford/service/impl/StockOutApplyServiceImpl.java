@@ -431,15 +431,15 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         for(StockOutRequirement requirement : stockOutRequirementList){
             StockOutRequirementReportDTO stockOutRequirementReportDTO = new StockOutRequirementReportDTO();
             //获取指定样本
-            List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(requirement.getId());
+            int count = stockOutReqFrozenTubeRepository.countByStockOutRequirementId(requirement.getId());
             stockOutRequirementReportDTO.setId(requirement.getId());
             stockOutRequirementReportDTO.setCountOfSample(requirement.getCountOfSample());
             stockOutRequirementReportDTO.setRequirementName(requirement.getRequirementName());
             stockOutRequirementReportDTO.setMemo(requirement.getMemo());
-            stockOutRequirementReportDTO.setCountOfStockOutSample(stockOutRequiredSamples.size());
+            stockOutRequirementReportDTO.setCountOfStockOutSample(count);
             requirements.add(stockOutRequirementReportDTO);
             countOfSample += requirement.getCountOfSample();
-            countOfStockOutSample += stockOutRequiredSamples.size();
+            countOfStockOutSample +=count;
         }
         applyDTO.setId(id);
         applyDTO.setCountOfSample(countOfSample);

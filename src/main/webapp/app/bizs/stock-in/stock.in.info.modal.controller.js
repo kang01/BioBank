@@ -25,7 +25,8 @@
             maxItems: 1
 
         };
-        SampleUserService.query({},onReceiverSuccess, onError)//接收人
+        //接收人
+        SampleUserService.query({},onReceiverSuccess, onError);
         function onReceiverSuccess(data) {
             vm.loginOptions = data;
         }

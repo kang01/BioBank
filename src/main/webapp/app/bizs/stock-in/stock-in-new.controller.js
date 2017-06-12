@@ -849,7 +849,7 @@
                 $(".box-selected").removeClass("box-selected");
             }).error(function (data) {
                 BioBankBlockUi.blockUiStop();
-                toastr.error(data.message)
+                toastr.error(data.message);
             })
         };
         //复原

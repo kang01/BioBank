@@ -6,7 +6,7 @@
 
     angular
         .module('bioBankApp')
-        .controller('BoxPutAwayModalController', BoxPutAwayModalController)
+        .controller('BoxPutAwayModalController', BoxPutAwayModalController);
 
     BoxPutAwayModalController.$inject = ['hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','AlertService','$q','$timeout','items',
         'frozenBoxByCodeService', 'FrozenPosService','AreasByEquipmentIdService','EquipmentService','SupportRackType','StockInBoxService'];
@@ -165,7 +165,7 @@
                     for(var i = 0; i < countOfCols; ++i){
                         var col = {
                             data: 0,
-                            title: String.fromCharCode(charCode + i),
+                            title: String.fromCharCode(charCode + i)
                             // readOnly: true,
                         };
                         columns.push(col);
@@ -197,7 +197,7 @@
                                         frozenBoxCode: "",
                                         columnsInShelf: String.fromCharCode(charCode + i),
                                         rowsInShelf: j + 1 + "",
-                                        isEmpty: true,
+                                        isEmpty: true
                                     };
                                     if (!emptyPos){
                                         emptyPos = {row:j,col:i};

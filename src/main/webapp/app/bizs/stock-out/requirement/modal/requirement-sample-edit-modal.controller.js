@@ -28,10 +28,13 @@
             };
         }
 
-        if(vm.sampleRequirement.age == "0;0"){
+        if(vm.sampleRequirement.age == "0;0" || !vm.sampleRequirement.age){
             vm.isAge = false;
         }else{
             vm.isAge = true;
+        }
+        if(vm.sampleRequirement.sampleTypeId){
+            _fuQuerySampleClass(projectIds,vm.sampleRequirement.sampleTypeId);
         }
         _fnIsUseAge();
         _fnQuerySampleType();

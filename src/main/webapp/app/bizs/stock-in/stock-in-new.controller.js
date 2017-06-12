@@ -388,7 +388,12 @@
             StockInBoxByCodeService.get({code:code},onFrozenSuccess,onError);
             function onFrozenSuccess(data) {
                 vm.box =  data;
-                vm.splittingBox = true;
+                if(!vm.box.frozenTubeDTOS.length){
+                    vm.splittingBox = false;
+                }else{
+                    vm.splittingBox = true;
+                }
+
                 //获取样本分类
                 _fnQueryProjectSampleClass(vm.entity.projectId,vm.box.sampleType.id,vm.box.sampleType.isMixed);
                 var settings = {
@@ -832,7 +837,6 @@
                 }
                 saveBoxList.push(objBox);
             }
-            // console.log(JSON.stringify(saveBoxList))
             BioBankBlockUi.blockUiStart();
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
                 BioBankBlockUi.blockUiStop();

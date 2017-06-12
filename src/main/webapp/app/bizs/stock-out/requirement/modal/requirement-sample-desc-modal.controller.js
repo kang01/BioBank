@@ -22,7 +22,8 @@
         function _initSampleRequirementDesc() {
             RequirementService.descSampleRequirement(sampleRequirementId).success(function (data) {
                 vm.requirementDesc = data;
-
+                //正常的样本
+                vm.len = _.filter(vm.requirementDesc.frozenTubeList,{status:'3001'}).length;
                 setTimeout(function () {
                     vm.dtOptions.withOption('data', vm.requirementDesc.frozenTubeList);
                 },500)

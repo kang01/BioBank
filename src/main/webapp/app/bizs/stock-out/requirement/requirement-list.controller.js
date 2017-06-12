@@ -20,7 +20,7 @@
         vm.add = _fnAdd;
         function _fnAdd() {
             RequirementService.saveRequirementEmpty().success(function (data) {
-                $state.go('requirement-new', {applyId: data.id, applyCode: data.applyCode});
+                $state.go('requirement-edit', {applyId: data.id, applyCode: data.applyCode});
             })
 
         }
@@ -209,12 +209,16 @@
                     $(tr).append("<td ><button  class='viewApplyId btn btn-default btn-xs'><i class='fa fa-eye'></i></button></td>")
                 }
                 var applyId = items[i].id;
+
                 $(".addApplyId", tr).click(function () {
+
+                    console.log($(tr))
+                    // console.log($(tr)[0].childNodes[0].innerText)
                     $state.go('requirement-additionApply', {applyId: applyId,viewFlag:1});
                 });
 
                 $(".viewApplyId", tr).click(function () {
-
+                    console.log($(tr)[0].childNodes[0].innerText)
                     $state.go('requirement-view', {applyId: applyId});
                 });
                 $("td", tr).each(function (index, td){

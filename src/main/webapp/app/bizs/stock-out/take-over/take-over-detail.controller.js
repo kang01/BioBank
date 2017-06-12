@@ -218,6 +218,29 @@
                     vm.statusName = MasterData.getStatus(res.data.status);
                     if(!takeOverFlag){
                         toastr.success("交接信息以保存!");
+                    }else{
+                        modalInstance = $uibModal.open({
+                            animation: true,
+                            templateUrl: 'app/bizs/stock-out/take-over/modal/take-over-modal.html',
+                            controller: 'TakeOverModalController',
+                            controllerAs:'vm',
+                            size:'lg',
+                            resolve: {
+                                items:{
+                                    stockOutTakeOver: angular.copy(vm.dto),
+                                    stockOutApplication: vm.application,
+                                    stockOutBoxes: null,
+                                    boxIdsStr:boxIdsStr
+                                }
+
+                            }
+                        });
+                        modalInstance.result.then(function (data) {
+                            takeOverFlag = false;
+                            $state.go("take-over-list");
+                        },function (data) {
+                            takeOverFlag = false;
+                        });
                     }
 
                 }, onError);
@@ -399,29 +422,7 @@
         function _fnTakeOverModal(){
             takeOverFlag = true;
             vm.save();
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-out/take-over/modal/take-over-modal.html',
-                controller: 'TakeOverModalController',
-                controllerAs:'vm',
-                size:'lg',
-                resolve: {
-                    items:{
-                        stockOutTakeOver: angular.copy(vm.dto),
-                        stockOutApplication: vm.application,
-                        stockOutBoxes: null,
-                        boxIdsStr:boxIdsStr
-                    }
 
-                }
-            });
-            //
-            modalInstance.result.then(function (data) {
-                takeOverFlag = false;
-                $state.go("take-over-list");
-            },function (data) {
-                takeOverFlag = false;
-            });
         }
 
         function _fnCancellation() {

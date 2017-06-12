@@ -64,11 +64,20 @@
             if(vm.requirement.startTime){
                 vm.requirement.startTime = new Date(vm.requirement.startTime)
             }
+            if(!vm.requirement.startTime){
+                vm.requirement.startTime = new Date()
+            }
             if(vm.requirement.endTime){
                 vm.requirement.endTime = new Date(vm.requirement.endTime)
             }
+            if(!vm.requirement.endTime){
+                vm.requirement.endTime = new Date()
+            }
             if(vm.requirement.recordTime){
                 vm.requirement.recordTime = new Date(vm.requirement.recordTime)
+            }
+            if(!vm.requirement.recordTime){
+                vm.requirement.recordTime = new Date()
             }
             if(vm.requirement.projectIds){
                 vm.projectIds = _.join(vm.requirement.projectIds, ',');

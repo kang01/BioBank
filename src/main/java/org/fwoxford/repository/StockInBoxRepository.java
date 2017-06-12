@@ -1,6 +1,8 @@
 package org.fwoxford.repository;
 
 import org.fwoxford.domain.StockInBox;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +25,6 @@ public interface StockInBoxRepository extends JpaRepository<StockInBox,Long> {
     @Modifying
     @Query("update StockInBox t set t.status=?3 where t.stockInCode=?1 and t.frozenBoxCode=?2")
     void updateByStockCodeAndFrozenBoxCode(String stockInCode, String boxCode, String status);
+
+    Page<StockInBox> findStockInBoxPageByStockInCode(String stockInCode, Pageable pageable);
 }

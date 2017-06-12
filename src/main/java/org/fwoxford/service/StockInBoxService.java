@@ -7,6 +7,7 @@ import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxForSplit;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -51,7 +52,6 @@ public interface StockInBoxService {
 
     List<StockInBoxDTO> saveBatch(List<StockInBoxDTO> stockInBoxDTOS);
 
-    DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(DataTablesInput input, String stockInCode);
 
     StockInBoxDetail getStockInBoxDetail(String stockInCode, String boxCode);
 
@@ -62,4 +62,6 @@ public interface StockInBoxService {
     List<StockInBoxForDataTable> findFrozenBoxListByBoxCodeStr(List<String> frozenBoxCodeStr);
 
     StockInBoxDetail movedDownStockIn(String stockInCode, String boxCode);
+
+    Page<StockInBoxForDataTableEntity> getPageStockInBoxes(String stockInCode, Pageable pageable);
 }

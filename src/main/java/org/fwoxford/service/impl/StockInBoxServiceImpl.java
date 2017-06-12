@@ -14,6 +14,7 @@ import org.fwoxford.service.dto.response.StockInBoxForSplit;
 import org.fwoxford.service.dto.response.StockInBoxSplit;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,30 +157,24 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
 
     @Override
-    public DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(DataTablesInput input, String stockInCode) {
-        StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
-        if(stockIn == null){
-            throw new BankServiceException("入库记录不存在！",stockInCode);
-        }
-        input.addColumn("stockInCode", true, true, stockInCode);
-        DataTablesOutput<StockInBoxForDataTableEntity> output =stockInBoxRepositries.findAll(input);
-        List<StockInBoxForDataTableEntity> alist = new ArrayList<StockInBoxForDataTableEntity>();
-        output.getData().forEach(stockInBoxForDataTableEntity -> {
+    public Page<StockInBoxForDataTableEntity> getPageStockInBoxes(String stockInCode, Pageable pageable) {
+        Page<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxPageByStockInCode(stockInCode,pageable);
+
+        return stockInBoxes.map(e -> {
             StockInBoxForDataTableEntity stockInBox = new StockInBoxForDataTableEntity();
-            Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(stockInBoxForDataTableEntity.getFrozenBoxCode());
+            Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(e.getFrozenBoxCode());
             stockInBox.setCountOfSample(countOfSample.intValue());
-            stockInBox.setStatus(stockInBoxForDataTableEntity.getStatus());
-            stockInBox.setId(stockInBoxForDataTableEntity.getId());
-            stockInBox.setFrozenBoxCode(stockInBoxForDataTableEntity.getFrozenBoxCode());
-            stockInBox.setIsSplit(stockInBoxForDataTableEntity.getIsSplit());
-            stockInBox.setPosition(stockInBoxForDataTableEntity.getPosition());
-            stockInBox.setSampleClassificationName(stockInBoxForDataTableEntity.getSampleClassificationName());
-            stockInBox.setSampleTypeName(stockInBoxForDataTableEntity.getSampleTypeName());
-            stockInBox.setStockInCode(stockInBoxForDataTableEntity.getStockInCode());
-            alist.add(stockInBox);
+            stockInBox.setStatus(e.getStatus());
+            stockInBox.setId(e.getId());
+            stockInBox.setFrozenBoxCode(e.getFrozenBoxCode());
+            stockInBox.setIsSplit(e.getFrozenBox().getIsSplit());
+            FrozenBox frozenBox = frozenBoxRepository.findOne(e.getId());
+            stockInBox.setPosition(BankUtil.getPositionString(frozenBox));
+            stockInBox.setSampleClassificationName(e.getFrozenBox().getSampleClassification()!=null?e.getFrozenBox().getSampleClassification().getSampleClassificationName():null);
+            stockInBox.setSampleTypeName(e.getFrozenBox().getSampleTypeName());
+            stockInBox.setStockInCode(e.getStockInCode());
+            return stockInBox;
         });
-        output.setData(alist);
-        return output;
     }
 
     @Override

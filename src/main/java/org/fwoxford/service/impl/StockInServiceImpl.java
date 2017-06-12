@@ -372,7 +372,7 @@ public class StockInServiceImpl implements StockInService {
                 TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBox.getFrozenBoxCode());
                 //保存入库盒子位置
                 StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
-                stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_PENDING).memo(box.getMemo())
+                stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_COMPLETE).memo(box.getMemo())
                     .equipment(box.getEquipment()).equipmentCode(box.getEquipmentCode())
                     .area(box.getArea()).areaCode(box.getAreaCode())
                     .supportRack(box.getSupportRack()).supportRackCode(box.getSupportRackCode())

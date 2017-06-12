@@ -162,11 +162,21 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
         stockOutPlanRepository.delete(id);
     }
 
+    /**
+     * 查询出库计划列表
+     * @param input
+     * @return
+     */
     @Override
     public DataTablesOutput<StockOutPlansForDataTableEntity> findAllStockOutPlan(DataTablesInput input) {
         return stockOutPlanRepositories.findAll(input);
     }
 
+    /**
+     * 根据申请ID查询出库计划
+     * @param id
+     * @return
+     */
     @Override
     public List<StockOutPlanDTO> getAllStockOutPlansByApplyId(Long id) {
         StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);

@@ -37,7 +37,7 @@ public class StockOutBoxPositionDTO extends AbstractAuditingDTO implements Seria
 
     private Long supportRackId;
 
-    private Long stockOutFrozenBoxId;
+    private Long frozenBoxId;
 
     public Long getId() {
         return id;
@@ -120,12 +120,12 @@ public class StockOutBoxPositionDTO extends AbstractAuditingDTO implements Seria
         this.supportRackId = supportRackId;
     }
 
-    public Long getStockOutFrozenBoxId() {
-        return stockOutFrozenBoxId;
+    public Long getFrozenBoxId() {
+        return frozenBoxId;
     }
 
-    public void setStockOutFrozenBoxId(Long stockOutFrozenBoxId) {
-        this.stockOutFrozenBoxId = stockOutFrozenBoxId;
+    public void setFrozenBoxId(Long frozenBoxId) {
+        this.frozenBoxId = frozenBoxId;
     }
 
     @Override

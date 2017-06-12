@@ -26,11 +26,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="support_rack"/>
 
-        <addForeignKeyConstraint baseColumnNames="stock_out_frozen_box_id"
+        <addForeignKeyConstraint baseColumnNames="frozen_box_id"
                                  baseTableName="stock_out_box_position"
                                  constraintName="stock_out_box_frozen_box_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="stock_out_box"/>
+                                 referencedTableName="frozen_box"/>
 
     </changeSet>
 </databaseChangeLog>

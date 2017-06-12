@@ -61,7 +61,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="stock_out_frozen_box_id" type="bigint" remarks="出库冻存盒ID">
+            <column name="frozen_box_id" type="bigint" remarks="冻存盒ID">
                 <constraints nullable="false" />
             </column>
 

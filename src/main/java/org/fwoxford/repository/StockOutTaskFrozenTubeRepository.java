@@ -62,4 +62,6 @@ public interface StockOutTaskFrozenTubeRepository extends JpaRepository<StockOut
     void updateByStockOutFrozenTubeIds(List<Long> taskTubes);
 
     Long countByStockOutTaskIdAndStatusNot(Long taskId, String status);
+
+    Long countByStockOutTaskIdAndStatusNotIn(Long taskId, List<String> taskStatus);
 }

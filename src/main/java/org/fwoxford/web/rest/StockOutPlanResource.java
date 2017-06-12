@@ -184,6 +184,12 @@ public class StockOutPlanResource {
         return result;
     }
 
+    /**
+     * 根据申请ID查询出库计划
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
 
     @GetMapping("/stock-out-plans/apply/{id}")
     @Timed

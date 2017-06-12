@@ -82,6 +82,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     @Autowired
     private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
 
+    @Autowired
+    private StockOutHandoverDetailsRepository stockOutHandoverDetailsRepository;
+
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
         this.stockOutApplyMapper = stockOutApplyMapper;
@@ -484,7 +487,19 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     @Override
     public List<StockOutApplyDTO> getAllStockOutApplies() {
-        List<StockOutApply> stockOutApplies = stockOutApplyRepository.findAllNotHandOverApply();
-        return stockOutApplyMapper.stockOutAppliesToStockOutApplyDTOs(stockOutApplies);
+        List<StockOutApply> stockOutApplies = stockOutApplyRepository.findAll();
+        List<StockOutApply> stockOutAppliesNotHandover = new ArrayList<StockOutApply>();
+        for(StockOutApply s :stockOutApplies){
+            //判断这次申请下的样本是否全部已经交接完
+            //查询这个申请的样本量
+            Long count = stockOutReqFrozenTubeRepository.countByApply(s.getId());
+            //查询这次申请已经交接的样本量
+            Long countOfhasHandedSample = stockOutHandoverDetailsRepository.countByStockOutApply(s.getId());
+
+            if(count.intValue()>countOfhasHandedSample.intValue()){
+                stockOutAppliesNotHandover.add(s);
+            }
+        }
+        return stockOutApplyMapper.stockOutAppliesToStockOutApplyDTOs(stockOutAppliesNotHandover);
     }
 }

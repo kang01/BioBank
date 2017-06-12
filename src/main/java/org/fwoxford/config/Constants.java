@@ -47,6 +47,7 @@ public final class Constants {
     public static final String FROZEN_BOX_PUT_SHELVES = "2006";
     public static final String FROZEN_BOX_SPLITING = "2007";
     public static final String FROZEN_BOX_STOCK_OUT_PENDING = "2008";
+    public static final String FROZEN_BOX_STOCK_OUT_COMPLETED = "2009";
     /**
      * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常
      */
@@ -171,9 +172,11 @@ public final class Constants {
      */
     public static final String STOCK_IN_TUBE_PENDING = "2301";
     /**
-     * 入库管子状态:2401:进行中
+     * 入库管子状态:2401:已上架，2402：已入库,2403:已撤销
      */
     public static final String STOCK_IN_BOX_POSITION_PENDING = "2401";
+    public static final String STOCK_IN_BOX_POSITION_COMPLETE = "2402";
+    public static final String STOCK_IN_BOX_POSITION_CANCEL = "2403";
 
     private Constants() {
     }

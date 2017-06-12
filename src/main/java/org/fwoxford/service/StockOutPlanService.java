@@ -47,7 +47,17 @@ public interface StockOutPlanService {
      */
     void delete(Long id);
 
+    /**
+     * 查询出库计划列表
+     * @param input
+     * @return
+     */
     DataTablesOutput<StockOutPlansForDataTableEntity> findAllStockOutPlan(DataTablesInput input);
 
+    /**
+     * 根据申请ID查询出库计划
+     * @param id
+     * @return
+     */
     List<StockOutPlanDTO> getAllStockOutPlansByApplyId(Long id);
 }

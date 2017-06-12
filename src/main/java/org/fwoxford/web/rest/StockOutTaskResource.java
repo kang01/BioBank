@@ -77,7 +77,7 @@ public class StockOutTaskResource {
 
     /**
      * PUT  /stock-out-tasks : Updates an existing stockOutTask.
-     *
+     * 任务修改保存
      * @param stockOutTaskDTO the stockOutTaskDTO to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated stockOutTaskDTO,
      * or with status 400 (Bad Request) if the stockOutTaskDTO is not valid,

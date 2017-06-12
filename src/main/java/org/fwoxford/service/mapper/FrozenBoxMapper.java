@@ -9,6 +9,7 @@ import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.mapstruct.*;
 
 import java.util.ArrayList;
@@ -203,36 +204,14 @@ public interface FrozenBoxMapper {
         stockInBoxForDataTable.setCountOfSample(box.getSampleNumber());
         stockInBoxForDataTable.setId(box.getId());
         stockInBoxForDataTable.setFrozenBoxCode(box.getFrozenBoxCode());
-        String position = toPositionString(box);
+        String position = BankUtil.getPositionString(box);
         stockInBoxForDataTable.setPosition(position);
         stockInBoxForDataTable.setSampleTypeName(box.getSampleTypeName());
         stockInBoxForDataTable.setSampleClassificationName(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationName():null);
         stockInBoxForDataTable.setStatus(box.getStatus());
         return stockInBoxForDataTable;
     }
-    default  String toPositionString(FrozenBox pos){
-        if(pos ==null){
-            return null;
-        }
-        ArrayList<String> positions = new ArrayList<>();
-        if (pos.getEquipmentCode() != null && pos.getEquipmentCode().length() > 0){
-            positions.add(pos.getEquipmentCode());
-        }
 
-        if (pos.getAreaCode() != null && pos.getAreaCode().length() > 0) {
-            positions.add(pos.getAreaCode());
-        }
-
-        if (pos.getSupportRackCode() != null && pos.getSupportRackCode().length() > 0){
-            positions.add(pos.getSupportRackCode());
-        }
-
-        if (pos.getRowsInShelf() != null && pos.getRowsInShelf().length() > 0 && pos.getColumnsInShelf() != null && pos.getColumnsInShelf().length() > 0){
-            positions.add(pos.getColumnsInShelf()+pos.getRowsInShelf());
-        }
-
-        return String.join(".", positions);
-    }
     default FrozenBox frozenBoxForSaveBatchDTOToFrozenBox(FrozenBoxForSaveBatchDTO frozenBoxDTO){
         if ( frozenBoxDTO == null ) {
             return null;

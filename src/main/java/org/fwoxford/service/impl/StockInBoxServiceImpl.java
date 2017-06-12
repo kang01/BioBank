@@ -74,11 +74,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
     @Autowired
     private FrozenBoxPositionMapper frozenBoxPositionMapper;
-    @Autowired
-    private StockInTubesRepository stockInTubesRepository;
 
     @Autowired
-    private TranshipBoxRepository transhipBoxRepository;
+    private StockInBoxPositionRepository stockInBoxPositionRepository;
 
     @Autowired
     private SampleClassificationRepository sampleClassificationRepository;
@@ -509,6 +507,17 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setRowsInShelf(frozenBox.getRowsInShelf());
         stockInBox.setStatus(Constants.FROZEN_BOX_PUT_SHELVES);
         stockInBoxRepository.save(stockInBox);
+
+        //保存上架位置
+        StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
+        stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_PENDING).memo(stockInBox.getMemo())
+            .equipment(stockInBox.getEquipment()).equipmentCode(stockInBox.getEquipmentCode())
+            .area(stockInBox.getArea()).areaCode(stockInBox.getAreaCode())
+            .supportRack(stockInBox.getSupportRack()).supportRackCode(stockInBox.getSupportRackCode())
+            .columnsInShelf(stockInBox.getColumnsInShelf()).rowsInShelf(stockInBox.getRowsInShelf())
+            .stockInBox(stockInBox);
+        stockInBoxPositionRepository.save(stockInBoxPosition);
+
         stockInBoxDetail = createStockInBoxDetail(frozenBox,stockInCode);
         return stockInBoxDetail;
     }
@@ -591,33 +600,38 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setStatus(Constants.FROZEN_BOX_STOCKING);
         stockInBoxRepository.save(stockInBox);
         //增加冻存盒位置记录
-        List<FrozenBoxPosition> frozenBoxPositionOld =  frozenBoxPositionRepository.findByFrozenBoxIdAndStatus(frozenBox.getId(),Constants.FROZEN_BOX_STOCKING);
-        if(frozenBoxPositionOld.size() == 0){
+        List<StockInBoxPosition> stockInBoxPositions =  stockInBoxPositionRepository.findByStockInBoxIdAndStatus(stockInBox.getId(),Constants.STOCK_IN_BOX_POSITION_PENDING);
+        if(stockInBoxPositions.size() == 0){
             throw new BankServiceException("未查询到该冻存盒的待入库记录！",frozenBox.toString());
         }
-        FrozenBoxPosition frozenBoxPos = new FrozenBoxPosition();
-        frozenBoxPos = frozenBoxPositionMapper.frozenBoxToFrozenBoxPosition(frozenBoxPos,frozenBox);
-        frozenBoxPos.setStatus(Constants.FROZEN_BOX_STOCKING);
-        frozenBoxPos = frozenBoxPositionRepository.save(frozenBoxPos);
-        TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        //保存上架位置
+        StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
+        stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_CANCEL).memo(stockInBox.getMemo())
+            .equipment(stockInBox.getEquipment()).equipmentCode(stockInBox.getEquipmentCode())
+            .area(stockInBox.getArea()).areaCode(stockInBox.getAreaCode())
+            .supportRack(stockInBox.getSupportRack()).supportRackCode(stockInBox.getSupportRackCode())
+            .columnsInShelf(stockInBox.getColumnsInShelf()).rowsInShelf(stockInBox.getRowsInShelf())
+            .stockInBox(stockInBox);
+        stockInBoxPositionRepository.save(stockInBoxPosition);
+//        TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBox.getFrozenBoxCode());
         //保存冻存管历史
-        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(boxCode);
-        for(FrozenTube tube : frozenTubes){
-            //保存入库与冻存管的关系
-            StockInTubes stockInTubes = new StockInTubes();
-            stockInTubes.setMemo(tube.getMemo());
-            stockInTubes.setStatus(Constants.FROZEN_BOX_STOCKING);
-            stockInTubes.setColumnsInTube(tube.getTubeColumns());
-            stockInTubes.setRowsInTube(tube.getTubeRows());
-            stockInTubes.setFrozenBoxPosition(frozenBoxPos);
-            stockInTubes.setFrozenTube(tube);
-            stockInTubes.setFrozenTubeCode(tube.getFrozenTubeCode());
-            stockInTubes.setSampleCode(tube.getSampleCode());
-            stockInTubes.setStockInBox(stockInBox);
-            stockInTubes.setTranshipBox(transhipBox);
-            stockInTubes.setSampleTempCode(tube.getSampleTempCode());
-            stockInTubesRepository.save(stockInTubes);
-        }
+//        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(boxCode);
+//        for(FrozenTube tube : frozenTubes){
+//            //保存入库与冻存管的关系
+//            StockInTubes stockInTubes = new StockInTubes();
+//            stockInTubes.setMemo(tube.getMemo());
+//            stockInTubes.setStatus(Constants.FROZEN_BOX_STOCKING);
+//            stockInTubes.setColumnsInTube(tube.getTubeColumns());
+//            stockInTubes.setRowsInTube(tube.getTubeRows());
+//            stockInTubes.setFrozenBoxPosition(frozenBoxPos);
+//            stockInTubes.setFrozenTube(tube);
+//            stockInTubes.setFrozenTubeCode(tube.getFrozenTubeCode());
+//            stockInTubes.setSampleCode(tube.getSampleCode());
+//            stockInTubes.setStockInBox(stockInBox);
+//            stockInTubes.setTranshipBox(transhipBox);
+//            stockInTubes.setSampleTempCode(tube.getSampleTempCode());
+//            stockInTubesRepository.save(stockInTubes);
+//        }
 
         stockInBoxDetail = createStockInBoxDetail(frozenBox,stockInCode);
 

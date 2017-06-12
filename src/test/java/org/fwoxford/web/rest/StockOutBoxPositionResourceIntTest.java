@@ -114,10 +114,10 @@ public class StockOutBoxPositionResourceIntTest {
                 .status(DEFAULT_STATUS)
                 .memo(DEFAULT_MEMO);
         // Add required entity
-        StockOutFrozenBox stockOutFrozenBox = StockOutFrozenBoxResourceIntTest.createEntity(em);
-        em.persist(stockOutFrozenBox);
+        FrozenBox frozenBox = FrozenBoxResourceIntTest.createEntity(em);
+        em.persist(frozenBox);
         em.flush();
-        stockOutBoxPosition.setStockOutFrozenBox(stockOutFrozenBox);
+        stockOutBoxPosition.frozenBox(frozenBox);
         return stockOutBoxPosition;
     }
 

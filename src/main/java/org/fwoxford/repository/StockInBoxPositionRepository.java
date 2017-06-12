@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StockInBoxPositionRepository extends JpaRepository<StockInBoxPosition,Long> {
 
+    List<StockInBoxPosition> findByStockInBoxIdAndStatus(Long stockInBoxId, String status);
 }

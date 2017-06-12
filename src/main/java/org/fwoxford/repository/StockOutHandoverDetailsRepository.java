@@ -23,4 +23,7 @@ public interface StockOutHandoverDetailsRepository extends JpaRepository<StockOu
     Integer countFrozenBoxByStockOutHandoverId(Long id);
 
     Page<StockOutHandoverDetails> findPageByStockOutHandoverId(Long id, Pageable pageable);
+
+    @Query("select count(t) from StockOutHandoverDetails t where t.stockOutHandover.stockOutApply.id=?1")
+    Long countByStockOutApply(Long id);
 }

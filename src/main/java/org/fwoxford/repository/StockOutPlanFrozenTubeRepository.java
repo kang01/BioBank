@@ -30,4 +30,6 @@ public interface StockOutPlanFrozenTubeRepository extends JpaRepository<StockOut
     void updateByStockOutFrozenTubeIds(List<Long> planTubes);
 
     Long countByStockOutPlanIdAndStatusNot(Long planId, String status);
+
+    Long countByStockOutPlanIdAndStatusNotIn(Long planId, List<String> planStatus);
 }

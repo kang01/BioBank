@@ -88,6 +88,11 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         log.debug("Request to save StockOutTask : {}", stockOutTaskDTO);
         StockOutTask stockOutTask = new StockOutTask();
         if(stockOutTaskDTO.getId()!=null){
+
+            if(stockOutTaskDTO.getStockOutHeadId1()!=null&&stockOutTaskDTO.getStockOutHeadId2()!=null
+                &&stockOutTaskDTO.getStockOutHeadId1().equals(stockOutTaskDTO.getStockOutHeadId2())){
+                throw new BankServiceException("出库负责人不能为同一人！");
+            }
             stockOutTask = stockOutTaskRepository.findOne(stockOutTaskDTO.getId());
             stockOutTask.stockOutDate(stockOutTaskDTO.getStockOutDate())
                 .stockOutHeadId1(stockOutTaskDTO.getStockOutHeadId1())

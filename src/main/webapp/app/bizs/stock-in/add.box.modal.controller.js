@@ -33,10 +33,6 @@
             _fnQuerySampleType();
         };
         initData();
-        //无样本分类，不是混合类型，盒子只能手动创建1个
-        if(vm.isMixed == "0" && !sampleTypeClassId){
-
-        }
         //获取样本类型
         function _fnQuerySampleType() {
             SampleTypeService.querySampleType().success(function (data) {
@@ -57,35 +53,9 @@
         function _fnQueryProjectSampleClasses(projectId,sampleTypeId) {
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.sampleTypeClassOptions = _.orderBy(data, ['sampleClassificationId'], ['asc']);
-                if(sampleTypeClassId){
-                    for(var i = 0; i < boxes.length; i++){
-                        for(var j = 0; j < vm.sampleTypeClassOptions.length; j++){
-                            if(boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId){
-                                _.pullAt(vm.sampleTypeClassOptions,j);
-                            }
-                        }
-                    }
-                    //样本类型下的样本分类为空时，样本类型也应该不存在
-                    if(!vm.sampleTypeClassOptions.length){
-                        for(var m = 0; m < vm.sampleTypeOptions.length; m++){
-                            if(sampleTypeId == vm.sampleTypeOptions[m].id){
-                                _.pullAt(vm.sampleTypeOptions,m);
-
-
-                            }
-                        }
-                        if(vm.sampleTypeOptions.length){
-                            vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
-                            _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
-                        }
-                    }
-                }
-
-
                 if(vm.sampleTypeClassOptions.length){
                     vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
                     vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
-                    sampleTypeClassId = vm.box.sampleClassificationId;
                 }
                 if(countFlag){
                     //创建第一个新盒子，空管子
@@ -109,7 +79,7 @@
         function onError(error) {
             AlertService.error(error.data.message);
         }
-
+        vm.sampleFlag = true;
         function _createBox() {
             if(vm.createBoxflag){
                 vm.box = {
@@ -141,21 +111,90 @@
                     vm.box.frozenBoxTypeId = frozenBoxTypeId;
                     vm.box.frozenBoxType = _.filter(vm.frozenBoxTypeOptions,{'id':+vm.box.frozenBoxTypeId})[0];
                 }
-                //样本类型为混合型时，同时有样本分类
-                if(vm.isMixed == "1"){
+                // //样本类型为混合型时，同时有样本分类
+                // if(vm.isMixed == "1"){
+                //     vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                //     vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
+                // }else{
+                //     vm.box.sampleTypeId = sampleTypeId;
+                //     vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
+                // }
+                // //有无样本分类
+                // if(sampleTypeClassId){
+                //     vm.box.sampleClassificationId = sampleTypeClassId;
+                //     vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{'sampleClassificationId':+vm.box.sampleClassificationId})[0];
+                // }else{
+                //     vm.box.sampleClassificationId = "";
+                //     vm.box.sampleClassification = "";
+                // }
+                //不是混合、无样本分类
+                if(vm.isMixed != "1" && !sampleTypeClassId){
+                    if(boxes.length){
+                        vm.sampleFlag = false;
+                    }
+                }
+                //是混合、无分类
+                if(vm.isMixed == "1" && !sampleTypeClassId){
+                    for(var i = 0; i < boxes.length; i++){
+                        for(var j = 0; j < vm.sampleTypeOptions.length; j++){
+                            if(boxes[i].sampleTypeId == vm.sampleTypeOptions[j].id){
+                                _.pullAt(vm.sampleTypeOptions,j);
+                            }
+                        }
+                    }
+                    if(vm.sampleTypeOptions.length){
+                        vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                        vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
+                    }
+
+                }
+                // 是混合、有分类
+                if(vm.isMixed == "1" && sampleTypeClassId){
+                    for(var i = 0; i < boxes.length; i++){
+                        for(var j = 0; j < vm.sampleTypeClassOptions.length; j++){
+                            if(boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId){
+                                _.pullAt(vm.sampleTypeClassOptions,j);
+                            }
+                        }
+                    }
+
                     vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                     vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
-                }else{
+                    //样本类型下的样本分类为空时，样本类型也应该不存在
+                    if(!vm.sampleTypeClassOptions.length){
+                        for(var k = 0; k < vm.sampleTypeOptions.length; k++){
+                            if(vm.box.sampleTypeId == vm.sampleTypeOptions[k].id){
+                                _.pullAt(vm.sampleTypeOptions,k);
+                            }
+                        }
+
+                        if(vm.sampleTypeOptions.length){
+                            vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                            vm.box.sampleType = vm.sampleTypeOptions[0];
+                            _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
+                        }
+                    }else{
+                        vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                        vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                        sampleTypeClassId = vm.box.sampleClassificationId;
+                    }
+                }
+                //不是混合类型、有分类
+                if(vm.isMixed != "1" && sampleTypeClassId){
+                    for(var i = 0; i < boxes.length; i++){
+                        for(var j = 0; j < vm.sampleTypeClassOptions.length; j++){
+                            if(boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId){
+                                _.pullAt(vm.sampleTypeClassOptions,j);
+                            }
+                        }
+                    }
                     vm.box.sampleTypeId = sampleTypeId;
                     vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
-                }
-                //有无样本分类
-                if(sampleTypeClassId){
-                    vm.box.sampleClassificationId = sampleTypeClassId;
-                    vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{'sampleClassificationId':+vm.box.sampleClassificationId})[0];
-                }else{
-                    vm.box.sampleClassificationId = "";
-                    vm.box.sampleClassification = "";
+                    if(vm.sampleTypeClassOptions.length){
+                        vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                        vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                        sampleTypeClassId = vm.box.sampleClassificationId;
+                    }
                 }
                 vm.boxTypeConfig = {
                     valueField:'id',
@@ -221,7 +260,6 @@
                     vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
                 }
                 vm.box.countOfSample = vm.box.stockInFrozenTubeList.length;
-                // console.log(JSON.stringify(vm.box));
                 $uibModalInstance.close(vm.box);
             });
         };

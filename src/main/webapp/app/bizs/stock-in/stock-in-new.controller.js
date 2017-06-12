@@ -647,7 +647,6 @@
                         boxList:boxList
                     })
                 }
-
             }
 
             vm.incompleteBoxesList  = _.orderBy(vm.incompleteBoxesList, ['sampleTypeId'], ['esc']);

@@ -407,13 +407,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 frozenTubeDetail.setSampleTypeName(tube.getSampleTypeName());
                 frozenTubeDetail.setSampleUsedTimes(tube.getSampleUsedTimes());
                 frozenTubeDetail.setSex(tube.getGender());
-                try {
-                    if(tube.getDob()!=null){
-                        frozenTubeDetail.setAge(BankUtil.getAge(tube.getDob()));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                frozenTubeDetail.setAge(tube.getAge());
             }
             frozenTubes.add(frozenTubeDetail);
         }
@@ -564,8 +558,6 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         report.setRequirementName(stockOutRequirement.getRequirementName());
         //todo
         report.setDiseaseType(stockOutRequirement.getDiseaseType());
-        //todo
-        report.setErrorSamples(null);
         report.setTubeType(stockOutRequirement.getFrozenTubeType()!=null?stockOutRequirement.getFrozenTubeType().getFrozenTubeTypeName():null);
         report.setSampleType(stockOutRequirement.getSampleType()!=null?stockOutRequirement.getSampleType().getSampleTypeName():null);
         if(stockOutRequirement.getAgeMin() != null)
@@ -587,7 +579,6 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             StockOutSampleCheckResultDTO frozenTubeDetail = new StockOutSampleCheckResultDTO();
             FrozenTube tube = sample.getFrozenTube();
             frozenTubeDetail.setId(tube.getId());
-            //todo
             frozenTubeDetail.setDiseaseType(tube.getDiseaseType());
             frozenTubeDetail.setStatus(tube.getStatus());
             frozenTubeDetail.setProjectCode(tube.getProjectCode());
@@ -596,15 +587,10 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             frozenTubeDetail.setSampleType(tube.getSampleTypeName());
             frozenTubeDetail.setTimes(Long.valueOf(tube.getSampleUsedTimes()!=null?tube.getSampleUsedTimes():0));
             frozenTubeDetail.setSex(tube.getGender());
-            //todo
-            frozenTubeDetail.setStatus(tube.getStatus());
-            try {
-                if(tube.getDob()!=null){
-                    frozenTubeDetail.setAge("");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Object statusObj = Constants.FROZEN_TUBE_MAP.get(tube.getStatus());
+            String status = statusObj!=null?statusObj.toString():null;
+            frozenTubeDetail.setStatus(status);
+            frozenTubeDetail.setAge(tube.getAge()!=null?tube.getAge().toString():null);
             frozenTubes.add(frozenTubeDetail);
         }
         report.setCheckResults(frozenTubes);

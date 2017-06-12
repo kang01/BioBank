@@ -178,7 +178,15 @@ public final class Constants {
     public static final String STOCK_IN_BOX_POSITION_PENDING = "2401";
     public static final String STOCK_IN_BOX_POSITION_COMPLETE = "2402";
     public static final String STOCK_IN_BOX_POSITION_CANCEL = "2403";
-
+    /**
+     * 3001：正常，3002：空管，3003：空孔；3004：异常
+     */
+    public static final Map FROZEN_TUBE_MAP = new HashMap(){{
+            put("3001","正常");
+            put("3002","空管");
+            put("3003","空孔");
+            put("3004","异常");
+        }};
     private Constants() {
     }
 }

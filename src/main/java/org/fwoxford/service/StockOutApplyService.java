@@ -69,5 +69,16 @@ public interface StockOutApplyService {
 
     StockOutApplyDetail getStockOutDetailAndRequirementByPlanId(Long id);
 
+    /**
+     * 获取全部未交接的申请
+     * @return
+     */
     List<StockOutApplyDTO> getAllStockOutApplies();
+
+    /**
+     * 作废计划
+     * @param id
+     * @return
+     */
+    StockOutApplyDTO invalidStockOutDetail(Long id);
 }

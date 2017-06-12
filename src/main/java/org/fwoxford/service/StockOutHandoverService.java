@@ -57,4 +57,11 @@ public interface StockOutHandoverService {
     StockOutHandoverDTO getStockOutHandoverDetail(Long id);
 
     Page<StockOutHandoverSampleReportDTO> getStockOutHandoverSamples(Long id, Pageable pageable);
+
+    /**
+     * 作废交接
+     * @param id
+     * @return
+     */
+    StockOutHandoverDTO invalidStockOutHandover(Long id);
 }

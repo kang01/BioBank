@@ -502,4 +502,28 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         }
         return stockOutApplyMapper.stockOutAppliesToStockOutApplyDTOs(stockOutAppliesNotHandover);
     }
+
+    /**
+     * 作废申请
+     * @param id
+     * @return
+     */
+    @Override
+    public StockOutApplyDTO invalidStockOutDetail(Long id) {
+        StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
+        if(stockOutApply == null){
+            throw new BankServiceException("未查询到需要作废的申请！");
+        }
+        if(stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVED)){
+            throw new BankServiceException("该申请已经批准，不能作废！");
+        }
+        //判断申请下是否有需求
+        Long count = stockOutRequirementRepository.countByStockOutApplyId(id);
+        if(count.intValue()>0){
+            throw new BankServiceException("该申请已创建了需求，不能作废！");
+        }
+        stockOutApply.setStatus(Constants.STOCK_OUT_INVALID);
+        stockOutApplyRepository.save(stockOutApply);
+        return stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
+    }
 }

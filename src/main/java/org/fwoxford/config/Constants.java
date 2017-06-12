@@ -62,7 +62,7 @@ public final class Constants {
     public static final Integer YES = 1;
     public static final List<String> LOGIN_NOT_STOCK_LIST = new ArrayList<String>(){{add("system");add("admin");add("user");add("anonymoususer");}};
     /**
-     * 出库状态：1101：进行中，1102：待批准，1103：已批准，1104：已作废
+     * 出库状态：1101：进行中，1102：待批准，1103：已批准，1104：已拒绝批准，1105：已作废
      */
     public static final String STOCK_OUT_PENDING = "1101";
     public static final String STOCK_OUT_PENDING_APPROVAL = "1102";
@@ -147,10 +147,11 @@ public final class Constants {
     public static final String STOCK_OUT_FROZEN_TUBE_CANCEL = "1802";
     public static final String STOCK_OUT_FROZEN_TUBE_COMPLETED = "1803";
     /**
-     * 出库交接状态：2101：进行中，2102：已交接
+     * 出库交接状态：2101：进行中，2102：已交接,2103：已作废
      */
     public static final String STOCK_OUT_HANDOVER_PENDING = "2101";
     public static final String STOCK_OUT_HANDOVER_COMPLETED = "2102";
+    public static final String STOCK_OUT_HANDOVER_INVALID = "2103";
     /**
      * 冻存盒与冻存管的关系 2202：待出库;2203:取消出库，2204：已出库
      */

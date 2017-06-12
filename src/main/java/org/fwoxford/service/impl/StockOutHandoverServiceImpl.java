@@ -329,4 +329,20 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
             return dto;
         });
     }
+
+    /**
+     * 作废交接
+     * @param id
+     * @return
+     */
+    @Override
+    public StockOutHandoverDTO invalidStockOutHandover(Long id) {
+        StockOutHandover stockOutHandover = stockOutHandoverRepository.findOne(id);
+        if(stockOutHandover == null){
+            throw new BankServiceException("未查询到需求作废的交接数据！");
+        }
+        stockOutHandover.setStatus(Constants.STOCK_OUT_HANDOVER_INVALID);
+        stockOutHandoverRepository.save(stockOutHandover);
+        return stockOutHandoverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandover);
+    }
 }

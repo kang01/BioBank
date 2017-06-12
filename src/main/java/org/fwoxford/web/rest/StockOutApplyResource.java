@@ -276,4 +276,19 @@ public class StockOutApplyResource {
         StockOutApplyDetail result = stockOutApplyService.getStockOutDetailAndRequirementByPlanId(id);
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
+
+    /**
+     * 作废申请
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-applies/{id}/invalid")
+    @Timed
+    public ResponseEntity<StockOutApplyDTO> invalidStockOutDetail(@PathVariable Long id ) throws URISyntaxException {
+
+        StockOutApplyDTO result = stockOutApplyService.invalidStockOutDetail(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
 }

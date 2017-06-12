@@ -286,4 +286,18 @@ public class StockOutHandoverResource {
         result.setRecordsTotal(entities.getTotalElements());
         return result;
     }
+
+    /**
+     * 作废交接
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-out-handovers/{id}/invalid")
+    @Timed
+    public ResponseEntity<StockOutHandoverDTO> invalidStockOutHandover(@PathVariable Long id ) throws URISyntaxException {
+
+        StockOutHandoverDTO result = stockOutHandoverService.invalidStockOutHandover(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
 }

@@ -187,8 +187,9 @@
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
             boxCode = data.frozenBoxCode;
-            var tableCtrl = _getSampleDetailsTableCtrl();
-            tableCtrl.loadData([[]]);
+            // var tableCtrl = _getSampleDetailsTableCtrl();
+            // tableCtrl.loadData([[]]);
+            vm.boxInTubes = [];
             _fnLoadTubes();
         }
         //加载管子

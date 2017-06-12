@@ -13,10 +13,10 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
-    @Query(value = "select t.* from frozen_box t left join tranship_box p on t.id=p.frozen_box_id where p.tranship_id=?1 and t.status!='0000'",nativeQuery = true)
+    @Query(value = "select t.* from frozen_box t left join tranship_box p on t.id=p.frozen_box_id where p.tranship_id=?1 and t.status!='0000' and t.status!='2005'",nativeQuery = true)
     List<FrozenBox> findAllFrozenBoxByTranshipId(Long transhipId);
 
-    @Query("select box from FrozenBox box where box.frozenBoxCode = ?1 and box.status!='0000'")
+    @Query("select box from FrozenBox box where box.frozenBoxCode = ?1 and box.status!='0000' and box.status!='2005'" )
     FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode);
 
     @Query(value = "select * from frozen_box box where box.equipment_id = ?1" +

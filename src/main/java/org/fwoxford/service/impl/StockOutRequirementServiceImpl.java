@@ -505,7 +505,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("frozenTubeType").toString());
                 keyCount++;
             }
-            if(s.getSex()!=null){//  性别，权重系数1
+            if(s.getSex()!=null && s.getSex()!="null"){//  性别，权重系数1
                 keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("sex").toString());
                 keyCount++;
             }
@@ -513,15 +513,15 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("ages").toString());
                 keyCount++;
             }
-            if(s.getDiseaseType()!=null){//  疾病类型，权重系数5
+            if(s.getDiseaseType()!=null && s.getDiseaseType() !="null"){//  疾病类型，权重系数5
                 keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("diseaseType").toString());
                 keyCount++;
             }
-            if(s.isIsHemolysis()!=null){//  溶血，权重系数5
+            if(s.isIsHemolysis()!=false){//  溶血，权重系数5
                 keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("isHemolysis").toString());
                 keyCount++;
             }
-            if(s.isIsBloodLipid()!=null){//  脂质血，权重系数5
+            if(s.isIsBloodLipid()!=false){//  脂质血，权重系数5
                 keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("isBloodLipid").toString());
                 keyCount++;
             }

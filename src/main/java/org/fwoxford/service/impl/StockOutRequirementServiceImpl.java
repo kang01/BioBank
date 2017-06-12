@@ -174,8 +174,8 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         requirement.setRequirementCode(BankUtil.getUniqueID());
         requirement.setApplyCode(stockOutApply.getApplyCode());
         requirement.setCountOfSample(stockOutRequirement.getCountOfSample());
-        requirement.setDiseaseType(stockOutRequirement.getDiseaseTypeId());
-        requirement.setSex(stockOutRequirement.getSex());
+        requirement.setDiseaseType(!stockOutRequirement.getDiseaseTypeId().equals("null")?stockOutRequirement.getDiseaseTypeId():null);
+        requirement.setSex(!stockOutRequirement.getSex().equals("null")?stockOutRequirement.getSex():null);
         requirement.setMemo(stockOutRequirement.getMemo());
         requirement.setIsBloodLipid(stockOutRequirement.getIsBloodLipid());
         requirement.setIsHemolysis(stockOutRequirement.getIsHemolysis());

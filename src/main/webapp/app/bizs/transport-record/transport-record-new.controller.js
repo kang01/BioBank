@@ -52,7 +52,6 @@
             if($stateParams.transhipCode){
                 vm.transportRecord.transhipCode = $stateParams.transhipCode;
             }
-
             // 设置默认值
             if(vm.transportRecord.transhipDate){
                 vm.transportRecord.transhipDate = new Date(entity.transhipDate);
@@ -65,21 +64,16 @@
                 vm.transportRecord.receiveDate = new Date();
             }
             vm.transportRecord.transhipBatch = +vm.transportRecord.transhipBatch;
-            // if(vm.transportRecord.transhipBatch == null || vm.transportRecord.transhipBatch == " "){
-            //     vm.transportRecord.transhipBatch = 1;
-            // }else{
-            //     vm.transportRecord.transhipBatch = +vm.transportRecord.transhipBatch
-            // }
-            // if(!vm.transportRecord.sampleSatisfaction){
-            //     vm.transportRecord.sampleSatisfaction = 8
-            // }
             _fnQuerySampleType();
             if(vm.transportRecord.projectId){
                 ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError)
             }
-            FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);//盒子类型
-            ProjectService.query({},onProjectSuccess, onError)//项目
-            SampleUserService.query({},onReceiverSuccess, onError)//接收人
+            //盒子类型
+            FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
+            //项目
+            ProjectService.query({},onProjectSuccess, onError);
+            //接收人
+            SampleUserService.query({},onReceiverSuccess, onError);
 
             vm.projectConfig = {
                 valueField:'id',
@@ -173,16 +167,6 @@
             vm.saveRecord = saveRecord;
             //入库
             vm.stockIn = function () {
-                // if(vm.transportRecord.trackNumber){
-                //     TrackNumberService.getTrackNum(vm.transportRecord.transhipCode,vm.transportRecord.trackNumber).then(function (data) {
-                //         if(data){
-                //             toastr.warning("运单号不能重复！");
-                //             vm.transportRecord.trackNumber = "";
-                //             return;
-                //         }
-                //
-                //     })
-                // }
                 modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'app/bizs/transport-record/stock-in-affirm-modal.html',
@@ -245,11 +229,8 @@
                                 importBoxFlag = false;
                             });
                         }
-
                         vm.saveRecordFlag = false;
                         BioBankBlockUi.blockUiStop();
-
-
                         if(vm.saveStockInFlag){
                             TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
                                 BioBankBlockUi.blockUiStop();
@@ -266,8 +247,6 @@
                         }
                     }
                 });
-
-
             }
 
             function openCalendar (date) {
@@ -278,12 +257,6 @@
             function onFrozenBoxTypeSuccess(data) {
                 vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['esc'])
             }
-
-            //样本类型
-            // function onSampleTypeSuccess(data) {
-            //     vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeCode'], ['esc']);
-            // }
-
             //项目编码
             function onProjectSuccess(data)  {
                 vm.projectOptions = data;
@@ -304,7 +277,7 @@
             function _fnQueryProjectSampleClass(projectId,sampleTypeId,isMixed) {
                 SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                     vm.projectSampleTypeOptions = data;
-                    //是否混合类型
+                    //是否混合类型 1：是混合类型
                     if(isMixed == 1){
                         vm.box.isSplit = 1;
                         vm.isMixedFlag = true;
@@ -325,6 +298,7 @@
                                     }
                                 }
                             }
+
                         }else{
                             //混合型无分类
                             for (var i = 0; i < vm.frozenTubeArray.length; i++) {
@@ -527,8 +501,6 @@
                         if(tubeStatus == 3004){
                             vm.frozenTubeArray[row][col].status = 3001;
                         }
-                        // vm.settings.multiSelect =  false;
-                        // console.log(vm.settings);
                         hotRegisterer.getInstance('my-handsontable').render();
                     }
                 },
@@ -691,7 +663,7 @@
                     tube.id = tubeInBox.id;
                     tube.sampleCode = tubeInBox.sampleCode;
                     tube.sampleTempCode = tubeInBox.sampleTempCode;
-                    tube.sampleTypeId = tubeInBox.sampleType.id;
+                    tube.sampleTypeId = box.sampleTypeId;
                     // tube.sampleTypeCode = tubeInBox.sampleTypeCode;
                     tube.status = tubeInBox.status;
                     tube.memo = tubeInBox.memo;
@@ -762,13 +734,11 @@
                 if (!vm.box){
                     return null;
                 }
-
                 var box = angular.copy(vm.box)||{};
                 delete box.frozenBoxType;
                 delete box.sampleClassification;
                 delete box.sampleType;
                 var tubes = hotRegisterer.getInstance('my-handsontable').getData();
-
                 box.frozenTubeDTOS = [];
 
                 for(var i=0; i<tubes.length; ++i){
@@ -808,6 +778,7 @@
                     hotRegisterer.getInstance('my-handsontable').render();
                 }
             };
+            //样本类型
             vm.sampleClassFlag = false;
             vm.sampleTypeConfig = {
                 valueField:'id',
@@ -854,22 +825,7 @@
                 // }
                 // AreasByEquipmentIdService.query({id:vm.transportRecord.tempEquipmentId},onAreaHoldSuccess, onError);
             }
-            //暂存区
-            // vm.TempEquipmentFlag = false;
-            // vm.frozenBoxPlaceConfigTemp = {
-            //     valueField:'id',
-            //     labelField:'equipmentCode',
-            //     maxItems: 1,
-            //     onChange:function (value) {
-            //         vm.TempEquipmentFlag = true;
-            //         AreasByEquipmentIdService.query({id:value},onAreaHoldSuccess, onError);
-            //     }
-            // };
-            // vm.frozenBoxAreaConfigTemp = {
-            //     valueField:'id',
-            //     labelField:'areaCode',
-            //     maxItems: 1
-            // };
+            //盒子位置
             vm.frozenBoxPlaceConfig = {
                 valueField:'id',
                 labelField:'equipmentCode',
@@ -883,13 +839,6 @@
                     // }
                 }
             };
-            // //暂存区域
-            // function onAreaHoldSuccess(data) {
-            //     vm.frozenBoxHoldAreaOptions = data;
-            //     if(!vm.transportRecord.tempAreaId || vm.TempEquipmentFlag){
-            //         vm.transportRecord.tempAreaId = vm.frozenBoxHoldAreaOptions[0].id;
-            //     }
-            // }
             //区域
             function onAreaSuccess(data) {
                 vm.frozenBoxAreaOptions = data;
@@ -944,7 +893,6 @@
                     obox.frozenBoxDTOList = [];
                     obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
                 }
-
                 TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
                 function onSaveBoxSuccess(res) {
                     if(!vm.saveStockInFlag && !vm.saveRecordFlag){
@@ -960,6 +908,7 @@
 
                 }
             }
+            //盒子位置
             vm.splitPlace = function () {
                 if(vm.boxRowCol){
                     vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
@@ -1123,7 +1072,6 @@
                     // initFrozenTube(vm.box.frozenBoxType.frozenBoxTypeRows,vm.box.frozenBoxType.frozenBoxTypeColumns);
                     _reloadTubesForTable(vm.box);
                     vm.boxStr = JSON.stringify(vm.createBoxDataFromTubesTable());
-                    // console.log(JSON.stringify(vm.createBoxDataFromTubesTable()))
                 })
 
                 //统计样本数

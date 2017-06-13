@@ -10,7 +10,7 @@
                 </button>
                 <button type="button" class="btn btn-primary" ng-click="vm.stockIn()"
                         ng-disabled="!vm.boxLength || !vm.transportRecord.receiver || !vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate || !vm.transportRecord.trackNumber"
-                        ng-show="vm.transportRecord.transhipState == '1001'">入库
+                        ng-show="vm.transportRecord.transhipState == '1001'">开始入库
                 </button>
                 <button type="button" class="btn btn-primary" ng-click="vm.saveRecord()"
                         ng-disabled="!vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId"

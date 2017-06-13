@@ -57,10 +57,10 @@
             //     }
             // }
             if(entity.stockOutApplyId){
-                _fnGetPlans(entity.stockOutApplyId)
+                _fnGetPlans(entity.stockOutApplyId);
             }
             if(entity.stockOutPlanId){
-                _fnGetTasks(entity.stockOutPlanId)
+                _fnGetTasks(entity.stockOutPlanId);
             }
         }
 
@@ -77,7 +77,7 @@
                     }
                     // vm.taskOptions.length = 0;
                     if(vm.dto.stockOutPlanId){
-                        _fnGetTasks(vm.dto.stockOutPlanId)
+                        _fnGetTasks(vm.dto.stockOutPlanId);
                     }
                 }, onError);
                 vm.stockOutApplyCode = (_.find(vm.applicationOptions, {id:value})||{}).applyCode;
@@ -114,7 +114,7 @@
 
         function _initTakeoverEditors(){
             //交付人
-            SampleUserService.query({},onReceiverSuccess, onError)
+            SampleUserService.query({},onReceiverSuccess, onError);
             function onReceiverSuccess(data) {
                 vm.loginOptions = data;
                 if(entity.handoverPersonId){
@@ -144,7 +144,7 @@
                     _fnGetPlans(applyId)
                 }
                 if(planId){
-                    _fnGetTasks(planId)
+                    _fnGetTasks(planId);
                 }
                 if (vm.dto.stockOutApplyId){
                     vm.application = _.find(vm.applicationOptions, {id:vm.dto.stockOutApplyId});
@@ -169,7 +169,7 @@
                 maxItems: 1,
                 onChange:function (value) {
                     vm.dto.stockOutTaskId = null;
-                    _fnGetTasks(value)
+                    _fnGetTasks(value);
 
                 }
             };
@@ -267,8 +267,8 @@
                     if (selectedItems.hasOwnProperty(id)) {
                         selectedItems[id] = selectAll;
                         if(selectedItems[id]){
-                            boxIds.push(id)
-                            boxIdsStr = boxIds.join(",")
+                            boxIds.push(id);
+                            boxIdsStr = boxIds.join(",");
                         }
                     }
                 }
@@ -283,8 +283,8 @@
                             vm.selectAllBox = false;
                             return;
                         }else{
-                            boxIds.push(id)
-                            boxIdsStr = boxIds.join(",")
+                            boxIds.push(id);
+                            boxIdsStr = boxIds.join(",");
                         }
                     }
                 }
@@ -315,7 +315,7 @@
                 DTColumnBuilder.newColumn('taskCode').notVisible(),
                 DTColumnBuilder.newColumn('applyId').notVisible(),
                 DTColumnBuilder.newColumn('planId').notVisible(),
-                DTColumnBuilder.newColumn('taskId').notVisible(),
+                DTColumnBuilder.newColumn('taskId').notVisible()
 
             ];
 

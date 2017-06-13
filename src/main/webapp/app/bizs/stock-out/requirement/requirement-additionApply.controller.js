@@ -7,7 +7,7 @@
 
     angular
         .module('bioBankApp')
-        .controller('RequirementAdditionApplyController', RequirementAdditionApplyController)
+        .controller('RequirementAdditionApplyController', RequirementAdditionApplyController);
 
     RequirementAdditionApplyController.$inject = ['$scope','$stateParams','$state','$compile','entity','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService','MasterData','BioBankDataTable'];
     function RequirementAdditionApplyController($scope,$stateParams,$state,$compile,entity,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService,MasterData,BioBankDataTable) {
@@ -80,7 +80,7 @@
             RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
                 vm.status = data.status;
                 vm.requirement.id = data.id;
-                $state.go("requirement-additionApply",{applyId:vm.requirement.id})
+                $state.go("requirement-additionApply",{applyId:vm.requirement.id});
             });
         }
         //打印申请
@@ -196,10 +196,10 @@
                 case 3: diseaseType = '不详';break;
             }
             if(data.isBloodLipid){
-                diseaseType += "脂质血　"
+                diseaseType += "脂质血　";
             }
             if(data.isHemolysis){
-                diseaseType += "溶血　"
+                diseaseType += "溶血　";
             }
             $('td:eq(5)', row).html(diseaseType);
             $('td:eq(7)', row).html(status);

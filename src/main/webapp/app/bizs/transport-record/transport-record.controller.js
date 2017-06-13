@@ -15,17 +15,13 @@
 
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.currentAccount = null;
-        // vm.loadAll = loadAll;
         vm.users = [];
         vm.page = 1;
         vm.totalItems = null;
-        // vm.clear = clear;
         vm.links = null;
-        // vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
-        // vm.transition = transition;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
 
@@ -35,44 +31,15 @@
         vm.edit = edit;
         vm.add = add;
 
-        // vm.loadAll();
-
-
-        // function loadAll () {
-        //     TransportRecordService.query({}, onSuccess, onError);
-        // }
-
-        // function onSuccess(data, headers) {
-            // vm.links = ParseLinks.parse(headers('link'));
-            // vm.totalItems = headers('X-Total-Count');
-            // vm.queryCount = vm.totalItems;
-            // vm.page = pagingParams.page;
-            // vm.transportRecordList = data;
-        // }
         function add() {
-            TranshipNewEmptyService.save({},onTranshipNewEmptyService,onError)
+            TranshipNewEmptyService.save({},onTranshipNewEmptyService,onError);
         }
         function onTranshipNewEmptyService(data) {
-            console.log(data.id);
-            // vm.transhipId = data.id;
-            // vm.transhipCode = data.transhipCode;
             $state.go('transport-record-new',{transhipId : data.id,transhipCode : data.transhipCode});
         }
         function onError(error) {
             AlertService.error(error.data.message);
         }
-
-        // vm.dtInstanceCallback = function(instance){
-        //     vm.dtInstance = instance;
-        // };
-
-        // vm.searchSomething = function(){
-        //     var table = vm.dtInstance.DataTable;
-        //     table
-        //         .column( 0 )
-        //         .search( "hello" )
-        //         .draw();
-        // };
 
         vm.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('processing',true)
@@ -197,13 +164,7 @@
             $('td:eq(6)', row).html(transhipState);
             $compile(angular.element(row).contents())($scope);
         }
-        // function headerCallback(header) {
-        //     if (!vm.headerCompiled) {
-        //         // Use this headerCompiled field to only compile header once
-        //         vm.headerCompiled = true;
-        //         $compile(angular.element(header).contents())($scope);
-        //     }
-        // }
+
         function edit(person) {
             vm.message = 'You are trying to edit the row: ' + JSON.stringify(person);
             vm.dtInstance.reloadData();

@@ -54,7 +54,7 @@
                 vm.frozenBoxes = res.data;
                 _.forEach(vm.frozenBoxes, function(box){
                     vm.selectedBox[box.frozenBoxCode] = false;
-                })
+                });
             }, onError);
             $q.all([promiseForShelfType, promiseForEquipment, promiseForFrozenBox]).then(function(data){
             });

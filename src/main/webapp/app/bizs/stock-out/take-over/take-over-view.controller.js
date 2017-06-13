@@ -64,7 +64,7 @@
             DTColumnBuilder.newColumn('sampleType').withTitle('类型').withOption('width', '80'),
             DTColumnBuilder.newColumn('sex').withTitle('性别').withOption('width', '30'),
             DTColumnBuilder.newColumn('age').withTitle('年龄').withOption('width', '30'),
-            DTColumnBuilder.newColumn('diseaseType').withTitle('疾病').withOption('width', 'auto'),
+            DTColumnBuilder.newColumn('diseaseType').withTitle('疾病').withOption('width', 'auto')
         ];
         function createdRow(row, data, dataIndex) {
             var planStatus = '';

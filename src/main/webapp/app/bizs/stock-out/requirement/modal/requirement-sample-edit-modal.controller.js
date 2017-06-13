@@ -94,7 +94,7 @@
         function _fuQueryFrozenTubeType() {
             RequirementService.queryFrozenTubeType().success(function (data) {
                 vm.frozenTubeTypeOptions = data;
-                vm.frozenTubeTypeOptions.unshift({id:"null",frozenTubeTypeName:"全部"})
+                vm.frozenTubeTypeOptions.unshift({id:"null",frozenTubeTypeName:"全部"});
                 if(!vm.sampleRequirement.frozenTubeTypeId){
                     vm.sampleRequirement.frozenTubeTypeId = vm.frozenTubeTypeOptions[0].id;
                 }

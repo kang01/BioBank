@@ -45,7 +45,7 @@
             TaskService.queryTempBoxes(taskId).success(function (data) {
                 for(var i = 0; i < data.length; i++){
                     data[i].sampleCount = null;
-                    boxList.push(data[i])
+                    boxList.push(data[i]);
                 }
                 vm.tempBoxOptions.withOption('data', boxList);
             });
@@ -104,7 +104,7 @@
             TaskService.queryTempBoxes(taskId).success(function (data) {
                 for(var i = 0; i < data.length; i++){
                     data[i].sampleCount = null;
-                    boxList.push(data[i])
+                    boxList.push(data[i]);
                 }
                 vm.tempBoxOptions.withOption('data', boxList);
                 vm.tempBoxInstance.rerender();
@@ -123,13 +123,13 @@
         //临时盒子
         vm.tempBoxOptions = BioBankDataTable.buildDTOption("BASIC", 298)
             .withOption('rowCallback', rowCallback)
-            .withOption('createdRow', createdRow)
+            .withOption('createdRow', createdRow);
         vm.tempBoxColumns = [
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码'),
             DTColumnBuilder.newColumn('sampleCount').withTitle('盒内样本数')
         ];
         function createdRow(row, data, dataIndex) {
-            var sampleCount =  data.frozenBoxType.frozenBoxTypeRows * data.frozenBoxType.frozenBoxTypeColumns
+            var sampleCount =  data.frozenBoxType.frozenBoxTypeRows * data.frozenBoxType.frozenBoxTypeColumns;
             var sampleOutCount = data.frozenTubeDTOS.length - (_.filter(data.frozenTubeDTOS,{sampleTempCode:""}).length);
             var str = sampleOutCount+"/"+sampleCount;
             $('td:eq(1)', row).html(str);
@@ -166,7 +166,7 @@
             if(vm.pos){
                _FnPreassemble(vm.selectedTubes);
             }
-        }
+        };
 
 
         //待装盒样本
@@ -350,7 +350,7 @@
                     boxInTubesCopy[i].pos = "";
                     boxInTubesCopy[i].checkedFlag = true;
                     boxInTubesCopy[i].sampleTypeName = boxInTubesCopy[i].sampleType.sampleTypeName;
-                    vm.selectedTubes.push(boxInTubesCopy[i])
+                    vm.selectedTubes.push(boxInTubesCopy[i]);
                 }
                 vm.sampleOptions.withOption('data', boxInTubesCopy);
                 vm.selectAll = true;
@@ -423,7 +423,7 @@
         };
         vm.ok = function () {
             vm.boxIn();
-            var tempBoxListCopy = angular.copy(tempBoxList)
+            var tempBoxListCopy = angular.copy(tempBoxList);
             for(var i =0; i < tempBoxListCopy.length; i++){
                 delete tempBoxListCopy[i].sampleCount;
                 delete tempBoxListCopy[i].sampleOutCount

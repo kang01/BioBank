@@ -40,8 +40,6 @@
             if(!$scope.$$phase) {
                 $scope.$apply();
             }
-
-
         }
 
         function _initTransportRecordPage(){
@@ -83,7 +81,7 @@
                     for(var i = 0; i < vm.projectOptions.length;i++){
                         if(value == vm.projectOptions[i].id){
                             vm.transportRecord.projectCode = vm.projectOptions[i].projectCode;
-                            vm.transportRecord.projectName = vm.projectOptions[i].projectName
+                            vm.transportRecord.projectName = vm.projectOptions[i].projectName;
                         }
                     }
                     vm.transportRecord.projectSiteId = "";
@@ -98,8 +96,8 @@
                 onChange:function (value) {
                     for(var i = 0; i < vm.projectSitesOptions.length;i++){
                         if(value == vm.projectSitesOptions[i].id){
-                            vm.transportRecord.projectSiteCode = vm.projectSitesOptions[i].projectSiteCode
-                            vm.transportRecord.projectSiteName = vm.projectSitesOptions[i].projectSiteName
+                            vm.transportRecord.projectSiteCode = vm.projectSitesOptions[i].projectSiteCode;
+                            vm.transportRecord.projectSiteName = vm.projectSitesOptions[i].projectSiteName;
                         }
                     }
                 }
@@ -195,7 +193,7 @@
             var importBoxFlag = false;
             function importFrozenStorageBox() {
                 importBoxFlag = true;
-                saveRecord()
+                saveRecord();
 
             }
             //保存记录
@@ -263,7 +261,7 @@
                 if(!vm.transportRecord.projectId){
                     vm.transportRecord.projectId = data[0].id;
                 }
-                ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError)
+                ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError);
             }
             //获取样本类型
             function _fnQuerySampleType() {
@@ -294,7 +292,7 @@
                                 }
                                 for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
                                     if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber){
-                                        vm.box.frozenTubeDTOS[m].sampleClassification.id = data[k].sampleClassificationId
+                                        vm.box.frozenTubeDTOS[m].sampleClassification.id = data[k].sampleClassificationId;
                                     }
                                 }
                             }
@@ -312,14 +310,11 @@
 
                     }else{
                         //无分类时取第一个
-                        // if(!vm.box.sampleClassificationId){
-                            if(vm.projectSampleTypeOptions.length){
-                                vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
-                                vm.box.sampleClassification = vm.projectSampleTypeOptions[0];
-                            }
-                        // }else{
-                        //     vm.box.sampleClassificationId = vm.box.sampleClassificationId
-                        // }
+
+                        if(vm.projectSampleTypeOptions.length){
+                            vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                            vm.box.sampleClassification = vm.projectSampleTypeOptions[0];
+                        }
                         for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                             for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
                                 if(vm.box.sampleClassification){
@@ -390,7 +385,7 @@
             }
             function loadBox() {
                 if(vm.transportRecord.transhipCode){
-                    TranshipBoxByCodeService.query({code:vm.transportRecord.transhipCode},onBoxSuccess,onError)
+                    TranshipBoxByCodeService.query({code:vm.transportRecord.transhipCode},onBoxSuccess,onError);
                 }
                 function onBoxSuccess(data) {
                     vm.arrayBox =  _.orderBy(data, ['frozenBoxCode'], ['esc']);
@@ -512,14 +507,6 @@
                     } else{
                         return{row:1,col:-selectedCol}
                     }
-                    // var hotMoves = hotRegisterer.getInstance('my-handsontable');
-                    // var selectedRow = hotMoves.getSelected()[0];
-                    // if (selectedRow + 1 < hotMoves.countRows()) {
-                    //     return {row: 1, col: 0}
-                    // }
-                    // else {
-                    //     return {row: -selectedRow, col: 1}
-                    // }
                 },
                 afterChange:function (change,source) {
                     if(source == 'edit'){
@@ -544,7 +531,6 @@
                             }
                         }
 
-                        // hotRegisterer.getInstance('my-handsontable').render()
                         return;
                     }
                 },
@@ -609,8 +595,6 @@
                 }
                 //异常
                 if(sampleStatus == 3004){
-                    // var dom = '<div class="abnormal" style="position:absolute;top:0;bottom:0;left:0;right:0;border:3px solid red;"></div>';
-                    // $(td).append(dom);
                     td.style.backgroundColor = 'red';
                     td.style.border = '3px solid red;margin:-3px';
                 }
@@ -645,8 +629,6 @@
                     sampleCode: "",
                     sampleTempCode: "",
                     sampleTypeId: box.sampleType.id,
-                    // sampleTypeCode: box.sampleType.sampleTypeCode,
-                    // sampleClassificationId: box.sampleClassification.id,
                     frozenBoxId: box.frozenBoxType.id,
                     frozenBoxCode: box.frozenBoxCode,
                     status: "",
@@ -657,7 +639,7 @@
                     colNO: colNO
                 };
                 if(box.sampleClassificationId){
-                    tube.sampleClassificationId = box.sampleClassificationId
+                    tube.sampleClassificationId = box.sampleClassificationId;
                 }
                 if (tubeInBox){
                     tube.id = tubeInBox.id;
@@ -791,7 +773,7 @@
                         vm.box.isSplit = 1;
                         vm.isMixedFlag = true;
                         vm.sampleClassFlag = true;
-                        delete vm.box.sampleClassificationId
+                        delete vm.box.sampleClassificationId;
                     }else{
                         vm.box.isSplit = 0;
                         vm.isMixedFlag = false;
@@ -811,19 +793,15 @@
                         }
                     }
                     for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
-                        vm.box.frozenTubeDTOS[m].sampleClassification.id = vm.box.sampleClassificationId
+                        vm.box.frozenTubeDTOS[m].sampleClassification.id = vm.box.sampleClassificationId;
                     }
-                    hotRegisterer.getInstance('my-handsontable').render()
+                    hotRegisterer.getInstance('my-handsontable').render();
                 }
             };
 
             //设备
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = data;
-                // if(!vm.transportRecord.tempEquipmentId){
-                //     vm.transportRecord.tempEquipmentId = vm.frozenBoxPlaceOptions[0].id;
-                // }
-                // AreasByEquipmentIdService.query({id:vm.transportRecord.tempEquipmentId},onAreaHoldSuccess, onError);
             }
             //盒子位置
             vm.frozenBoxPlaceConfig = {
@@ -832,11 +810,6 @@
                 maxItems: 1,
                 onChange:function (value) {
                     AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
-                    // for(var i = 0; i < vm.frozenBoxPlaceOptions.length; i++){
-                    //     if(value == vm.frozenBoxPlaceOptions[i].id){
-                    //         vm.box.equipmentCode = vm.frozenBoxPlaceOptions[i].equipmentCode
-                    //     }
-                    // }
                 }
             };
             //区域
@@ -857,7 +830,7 @@
                 onChange:function (value) {
                     for(var i = 0; i < vm.frozenBoxAreaOptions.length; i++){
                         if(value == vm.frozenBoxAreaOptions[i].id){
-                            vm.box.areaCode = vm.frozenBoxAreaOptions[i].areaCode
+                            vm.box.areaCode = vm.frozenBoxAreaOptions[i].areaCode;
                         }
                     }
                     SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError)
@@ -875,7 +848,7 @@
                 onChange:function (value) {
                     for(var i = 0; i < vm.frozenBoxShelfOptions.length; i++){
                         if(value == vm.frozenBoxShelfOptions[i].id){
-                            vm.box.supportRackCode = vm.frozenBoxShelfOptions[i].areaCode
+                            vm.box.supportRackCode = vm.frozenBoxShelfOptions[i].areaCode;
                         }
                     }
                 }
@@ -921,7 +894,7 @@
                 var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;"></div>';
                 for(var m = 0; m < remarkArray.length; m++){
                     for (var n = 0; n < remarkArray[m].length; n++){
-                        aRemarkArray.push(remarkArray[m][n])
+                        aRemarkArray.push(remarkArray[m][n]);
                     }
                 }
                 for(var i = selectTubeArray[0];i <= selectTubeArray[2]; i++){
@@ -934,7 +907,6 @@
             vm.editStatus = function () {
                 var settings = {
                     editor: vm.flagStatus ? false : 'tube'
-                    // multiSelect: !vm.flagStatus
                 };
                 hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
             };
@@ -1027,7 +999,7 @@
                 });
                 modalInstance.result.then(function (flage) {
                     if (flage){
-                        FrozenBoxDelService.delete({code:vm.box.frozenBoxCode},onDelBoxSuccess,onError)
+                        FrozenBoxDelService.delete({code:vm.box.frozenBoxCode},onDelBoxSuccess,onError);
                     }
                     function onDelBoxSuccess() {
                         toastr.success("删除成功!");

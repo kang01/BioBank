@@ -19,7 +19,7 @@
             vm.datePickerOpenStatus[date] = true;
         };
         vm.stockOutTakeOver = items.stockOutTakeOver;
-        vm.stockOutTakeOver.handoverTime = moment(items.stockOutTakeOver.handoverTime).format("YYYY-MM-DD")
+        vm.stockOutTakeOver.handoverTime = moment(items.stockOutTakeOver.handoverTime).format("YYYY-MM-DD");
         vm.countOfSamples = 0;
         var boxIdsStr = items.boxIdsStr;
         vm.takeOver.handoverPersonName = items.stockOutTakeOver.handoverPersonName;

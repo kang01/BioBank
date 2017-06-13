@@ -14,7 +14,7 @@
     function FrozenPosService ($resource, $http, $q) {
         var service = {
             getIncompleteShelves: _getIncompleteShelves,
-            getFrozenBoxesByPosition: _getFrozenBoxesByPosition,
+            getFrozenBoxesByPosition: _getFrozenBoxesByPosition
         };
 
         function _getIncompleteShelves(equipmentCode, areaCode){

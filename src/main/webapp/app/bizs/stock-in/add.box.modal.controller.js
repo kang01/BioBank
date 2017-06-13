@@ -14,7 +14,6 @@
         var vm = this;
         vm.createBoxflag = false;
         var boxes = items.incompleteBoxes;
-        // console.log(JSON.stringify(boxes));
         vm.box = {};
         var projectId = items.projectId;
         //是否混合类型 1：是
@@ -146,8 +145,8 @@
                     }else{
 
                         if(vm.sampleTypeClassOptions.length){
-                            vm.box.sampleClassificationId = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0].sampleClassificationId
-                            vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0]
+                            vm.box.sampleClassificationId = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0].sampleClassificationId;
+                            vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0];
                         }
                     }
 
@@ -221,8 +220,8 @@
 
                 }else{
                     if(vm.sampleTypeClassOptions.length){
-                        vm.box.sampleClassificationId = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0].sampleClassificationId
-                        vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0]
+                        vm.box.sampleClassificationId = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0].sampleClassificationId;
+                        vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0];
                     }
 
 

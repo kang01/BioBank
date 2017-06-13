@@ -43,7 +43,7 @@
             onChange:function (value) {
                 vm.frozenBox.sampleTypeId = value;
                 vm.isMixed = _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed;
-                _fnQueryProjectSampleClass(vm.items.projectId,value,vm.isMixed)
+                _fnQueryProjectSampleClass(vm.items.projectId,value,vm.isMixed);
 
             }
         };
@@ -66,7 +66,7 @@
                 for(var i = 0; i < vm.frozenBoxTypeOptions.length; i++){
                     if(vm.frozenBoxTypeOptions[i].id == value){
                         vm.frozenBox.frozenBoxTypeRows = vm.frozenBoxTypeOptions[i].frozenBoxTypeRows;
-                        vm.frozenBox.frozenBoxTypeColumns = vm.frozenBoxTypeOptions[i].frozenBoxTypeColumns
+                        vm.frozenBox.frozenBoxTypeColumns = vm.frozenBoxTypeOptions[i].frozenBoxTypeColumns;
                     }
                 }
                 _fnInitBoxInfo();
@@ -106,7 +106,6 @@
             persist:false,
             onChange: function(value){
                 clearTimeout(changeTableTimer);
-                // console.log('onChange', arguments);
                 changeTableTimer = setTimeout(function () {
                     vm.obox.frozenBoxDTOList = [];
                     if(value.length){
@@ -117,53 +116,12 @@
                         $scope.$apply();
                     }
                 },500);
-            },
-            // onOptionAdd: function(value, data){
-            //     console.log('onOptionAdd', arguments);
-            // },
-            // onOptionRemove: function(value){
-            //     console.log('onOptionRemove', arguments);
-            // },
-            // onItemAdd: function(value, $item){
-            //     console.log('onItemAdd', arguments);
-            //     var box = _.find(vm.frozenBoxDTOList, function(dto) {
-            //         return dto.frozenBoxCode == value
-            //     });
-            //     if (!box){
-            //         vm.frozenBoxDTOList.push(_fnCreateTempBox(value));
-            //
-            //         // setTimeout(function(){
-            //         //     $scope.$apply();
-            //         // },1000);
-            //     }
-            // },
-            // onItemRemove: function(value){
-            //     console.log('onItemRemove', arguments);
-            //     _.remove(vm.obox.frozenBoxDTOList, function(dto){
-            //         return dto.frozenBoxCode == value
-            //     });
-            //     $scope.$apply();
-            // }
+            }
         };
-
-        // function importSample() {
-        //     var modalInstance = $uibModal.open({
-        //         animation: true,
-        //         templateUrl: 'stackedModal.html',
-        //         size: 'sm',
-        //         controller: 'ModalInstanceCtrl',
-        //         controllerAs: 'ctrl'
-        //     });
-        //     modalInstance.result.then(function (flag) {
-        //
-        //     }, function () {
-        //     });
-        // }
         this.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
         this.ok = function () {
-            // console.log(JSON.stringify(vm.obox))
             blockUI.start("正在保存冻存盒中……");
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
 
@@ -221,7 +179,7 @@
                             }
                         }
                     }
-                    box.frozenTubeDTOS.push(tubeList[j][k])
+                    box.frozenTubeDTOS.push(tubeList[j][k]);
 
                 }
             }

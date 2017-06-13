@@ -71,7 +71,7 @@
                     width:50,
                     values: [
                         {value:'1001',label:"进行中"},
-                        {value:"1002",label:"已交接"},
+                        {value:"1002",label:"已交接"}
                     ]
                 }]
             });

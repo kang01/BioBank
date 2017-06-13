@@ -62,10 +62,10 @@
                 case 3: diseaseType = '不详';break;
             }
             if(data.isBloodLipid){
-                diseaseType += "脂质血　"
+                diseaseType += "脂质血　";
             }
             if(data.isHemolysis){
-                diseaseType += "溶血　"
+                diseaseType += "溶血　";
             }
             $('td:eq(1)', row).html(sampleState);
             $('td:eq(6)', row).html(diseaseType);

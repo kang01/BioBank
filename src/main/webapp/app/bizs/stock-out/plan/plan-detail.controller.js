@@ -8,7 +8,7 @@
     angular
         .module('bioBankApp')
         .controller('PlanDetailController', PlanDetailController)
-        .controller('PlanDelModalController', PlanDelModalController)
+        .controller('PlanDelModalController', PlanDelModalController);
 
     PlanDetailController.$inject = ['$scope','$compile','$stateParams','toastr','$uibModal','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankBlockUi','BioBankDataTable'];
     PlanDelModalController.$inject = ['$uibModalInstance'];
@@ -38,7 +38,7 @@
                     vm.checked.push(data.id);
                     vm.demand[data.id] = true;
                     vm.sampleIds = vm.checked.join(",");
-                    _queryPlanBoxes()
+                    _queryPlanBoxes();
                 });
                 vm.select_all = true;
             }).then(function () {
@@ -56,7 +56,7 @@
                 selectAll = vm.selectAll;
                 var arrayId = [];
                 for (var id in selectedItems) {
-                    arrayId.push(id)
+                    arrayId.push(id);
                     if (selectedItems.hasOwnProperty(id)) {
                         selectedItems[id] = selectAll;
                     }
@@ -72,7 +72,7 @@
                 var arrayId = [];
                 for (var id in selectedItems) {
                     if(selectedItems[id]){
-                        arrayId.push(id)
+                        arrayId.push(id);
                     }
                 }
                 vm.strBoxIds = _.join(arrayId,",");
@@ -212,7 +212,7 @@
             function rowClickHandler(tr,oData) {
                 $(tr).closest('table').find('.rowLight').removeClass("rowLight");
                 $(tr).addClass('rowLight');
-                _loadTubes(oData.id)
+                _loadTubes(oData.id);
             }
             function _loadTubes(boxId) {
                 if(vm.sampleIds){
@@ -336,7 +336,7 @@
                 vm.demand = [];
             }
             vm.sampleIds = vm.checked.join(",");
-            _queryPlanBoxes()
+            _queryPlanBoxes();
         };
         vm.selectDemandOne = function () {
             angular.forEach(vm.demand , function (data, id) {
@@ -345,7 +345,7 @@
                     vm.checked.push(id);
                 } else if (!data && index !== -1){
                     vm.checked.splice(index, 1);
-                };
+                }
             });
             if (vm.plan.stockOutRequirement.length === vm.checked.length) {
                 vm.select_all = true;

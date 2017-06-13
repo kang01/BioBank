@@ -322,11 +322,11 @@
 
 
                     if(window.event && window.event.ctrlKey){
-                        _fnRemarkSelectData(td,remarkArray,vm.selectTubeArray)
+                        _fnRemarkSelectData(td,remarkArray,vm.selectTubeArray);
                     }else{
                         $(".tube-selected").remove();
                         vm.aRemarkArray = [];
-                        _fnRemarkSelectData(td,remarkArray,vm.selectTubeArray)
+                        _fnRemarkSelectData(td,remarkArray,vm.selectTubeArray);
 
 
                     }
@@ -373,23 +373,23 @@
                     var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px solid green;font-size:40px;color:rgba(0,128,0,0.3);text-align: center;">' +
                         '<i class="fa fa-question"></i>' +
                         '</div>';
-                    $(txt).appendTo($div)
+                    $(txt).appendTo($div);
                 }
                 //申请撤销的样本标识
                 if(tube.stockOutFlag && tube.stockOutFlag == 2){
                     $(".fa-question",td).remove();
-                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;color:rgba(216,0,0,0.3);padding-left: 33%;font-size:42px"><i class="fa fa-close"></i></div>'
-                    $(txt).appendTo($div)
+                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;color:rgba(216,0,0,0.3);padding-left: 33%;font-size:42px"><i class="fa fa-close"></i></div>';
+                    $(txt).appendTo($div);
                 }
                 //已扫码样本
                 if(tube.scanCodeFlag){
                     $(".fa-question",td).remove();
-                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;border:1px solid green;padding-top:10px;color:rgba(0,128,0,0.3);text-align:center;font-size:42px">'+tube.orderIndex+'</div>'
-                    $(txt).appendTo($div)
+                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;border:1px solid green;padding-top:10px;color:rgba(0,128,0,0.3);text-align:center;font-size:42px">'+tube.orderIndex+'</div>';
+                    $(txt).appendTo($div);
                 }
                 if(tube.status == '3004'){
-                    var txt = '<div style="position: absolute;bottom:2px;right:2px;width:10px;height:10px;border-radius:50%;background-color: red;"></div>'
-                    $(txt).appendTo($div)
+                    var txt = '<div style="position: absolute;bottom:2px;right:2px;width:10px;height:10px;border-radius:50%;background-color: red;"></div>';
+                    $(txt).appendTo($div);
                 }
             }
             //备注 选择单元格数据
@@ -397,7 +397,7 @@
                 var txt = '<div class="tube-selected" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.3)"></div>';
                 for(var m = 0; m < remarkArray.length; m++){
                     for (var n = 0; n < remarkArray[m].length; n++){
-                        vm.aRemarkArray.push(remarkArray[m][n])
+                        vm.aRemarkArray.push(remarkArray[m][n]);
                     }
                 }
                 for(var i = selectTubeArray[0];i <= selectTubeArray[2]; i++){
@@ -629,7 +629,7 @@
             selectAll = vm.selectAll;
             var arrayId = [];
             for (var id in selectedItems) {
-                arrayId.push(id)
+                arrayId.push(id);
                 if (selectedItems.hasOwnProperty(id)) {
                     selectedItems[id] = selectAll;
                 }
@@ -644,7 +644,7 @@
             var arrayId = [];
             for (var id in selectedItems) {
                 if(selectedItems[id]){
-                    arrayId.push(id)
+                    arrayId.push(id);
                 }
             }
             vm.strBoxIds = _.join(arrayId,",");
@@ -676,7 +676,7 @@
             DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
             DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml).withOption("width", "80"),
-            DTColumnBuilder.newColumn('id').notVisible(),
+            DTColumnBuilder.newColumn('id').notVisible()
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
             vm.selected[full.id] = false;

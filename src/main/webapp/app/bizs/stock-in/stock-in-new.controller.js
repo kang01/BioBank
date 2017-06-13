@@ -210,10 +210,6 @@
         function _fnActionPutInShelfButton(e, dt, node, config){
             _putInShelf();
         }
-        // function _fnFrozenBoxCodeRender(data, type, full, meta) {
-        //     return '<a ng-click="vm.splitIt('+ full.frozenBoxCode +')">'+full.frozenBoxCode+'</a>';
-        // }
-
         function _createColumnFilters(){
             var filters = {
                 aoColumns: [
@@ -265,7 +261,7 @@
                 DTColumnBuilder.newColumn('isSplit').withOption("width", "100").withTitle('是否分装'),
                 DTColumnBuilder.newColumn('status').withOption("width", "80").withTitle('状态'),
                 DTColumnBuilder.newColumn("").withOption("width", "120").withTitle('操作').notSortable().renderWith(_fnActionButtonsRender),
-                DTColumnBuilder.newColumn('id').notVisible(),
+                DTColumnBuilder.newColumn('id').notVisible()
                 // DTColumnBuilder.newColumn('sampleType').notVisible(),
                 // DTColumnBuilder.newColumn('frozenBoxRows').notVisible(),
                 // DTColumnBuilder.newColumn('frozenBoxColumns').notVisible()
@@ -298,7 +294,7 @@
                     boxIds.push(id);
                     table.data().each( function (d) {
                         if (id == d.frozenBoxCode){
-                            boxes.push(d)
+                            boxes.push(d);
                         }
                     });
                 }
@@ -503,7 +499,7 @@
                 for(var i = 0; i < vm.selectCell.length; i++ ){
                     for (var j = 0; j < vm.selectCell[i].length; j++){
                         if(vm.selectCell[i][j].sampleCode || vm.selectCell[i][j].sampleTempCode){
-                            selectList.push(vm.selectCell[i][j])
+                            selectList.push(vm.selectCell[i][j]);
                         }
                     }
                 }
@@ -519,14 +515,6 @@
             },
             cells: function (row, col, prop) {
                 var cellProperties = {};
-
-                // if (hot2.getDataAtRowProp(row, prop) === 'Nissan') {
-                //     cellProperties.editor = false;
-                // } else {
-                //     cellProperties.editor = 'text';
-                // }
-                //
-                // return cellProperties;
             }
         };
         // 创建一个对象用于管子Table的控件
@@ -544,7 +532,7 @@
                 tubeColumns: pos.tubeColumns
             };
             if(box.sampleClassification){
-                tube.sampleClassificationId = box.sampleClassification.sampleClassificationId
+                tube.sampleClassificationId = box.sampleClassification.sampleClassificationId;
             }
             if (tubeInBox){
                 tube.id = tubeInBox.id;
@@ -575,14 +563,14 @@
                         for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                             for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
                                 if(data[k].columnsNumber == j+1){
-                                    vm.frozenTubeArray[i][j].sampleClassificationId = data[k].sampleClassificationId
+                                    vm.frozenTubeArray[i][j].sampleClassificationId = data[k].sampleClassificationId;
                                     vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
                                 }
                             }
                         }
                         for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
                             if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber){
-                                vm.box.frozenTubeDTOS[m].sampleClassification.id = data[k].sampleClassificationId
+                                vm.box.frozenTubeDTOS[m].sampleClassification.id = data[k].sampleClassificationId;
                             }
                         }
                     }
@@ -607,13 +595,13 @@
                     }
                 }
 
-                hotRegisterer.getInstance('my-handsontable').render()
+                hotRegisterer.getInstance('my-handsontable').render();
             });
         }
         //取未装满的盒子
         function _fnIncompleteBox() {
             vm.incompleteBoxesList = [];
-            IncompleteBoxService.query({frozenBoxCode:vm.box.frozenBoxCode,stockInCode:vm.entity.stockInCode},onIncompleteBoxesSuccess,onError)
+            IncompleteBoxService.query({frozenBoxCode:vm.box.frozenBoxCode,stockInCode:vm.entity.stockInCode},onIncompleteBoxesSuccess,onError);
         }
 
         function onIncompleteBoxesSuccess(data) {
@@ -714,7 +702,7 @@
                         frozenBoxCode:'',
                         selectTubeCode:vm.obox.frozenBoxCode
                     };
-                    vm.obox.stockInFrozenTubeList.push(tempTubeArray[i][j])
+                    vm.obox.stockInFrozenTubeList.push(tempTubeArray[i][j]);
                 }
             }
             //把已有管子放进去
@@ -743,7 +731,7 @@
             var selectCount = selectList.length;
             //分装到哪个盒子中的数量
             if( selectCount <= surplusCount){
-                vm.obox.addTubeCount  += selectCount
+                vm.obox.addTubeCount  += selectCount;
             }else{
                 if(surplusCount != 0){
                     vm.obox.addTubeCount  = surplusCount;
@@ -783,7 +771,7 @@
             var deleteIndexList = [];
             for(var i = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
                 if(!vm.obox.stockInFrozenTubeList[i].frozenBoxCode){
-                    deleteIndexList.push(i)
+                    deleteIndexList.push(i);
                 }
             }
             _.pullAt(vm.obox.stockInFrozenTubeList, deleteIndexList);
@@ -935,7 +923,7 @@
                         if(data.sampleClassification){
                             data.backColor = data.sampleClassification.backColor;
                             data.sampleClassificationName = data.sampleClassification.sampleClassificationName;
-                            data.sampleClassificationId = data.sampleClassification.sampleClassificationId
+                            data.sampleClassificationId = data.sampleClassification.sampleClassificationId;
                             for(var i = 0; i < vm.incompleteBoxesList.length; i++){
                                 if(vm.incompleteBoxesList[i].sampleTypeId == data.sampleClassificationId){
                                     if(vm.incompleteBoxesList[i].boxList.length < 2 ){

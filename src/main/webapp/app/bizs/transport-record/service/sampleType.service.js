@@ -16,8 +16,6 @@
           queryProjectSampleClasses:_queryProjectSampleClasses
         };
         function _querySampleType() {
-
-            // return $http.get('api/project-sample-classes/projectId/'+projectId)
             return $http.get('api/sample-types/all')
         }
         function _queryProjectSampleClasses(projectId,sampleTypeId) {
@@ -25,21 +23,4 @@
         }
         return service;
     }
-    // function SampleTypeService ($resource) {
-    //     var service = $resource('api/sample-types/all', {}, {
-    //         'query': {method: 'GET', isArray: true},
-    //         'get': {
-    //             method: 'GET',
-    //             transformResponse: function (data) {
-    //                 data = angular.fromJson(data);
-    //                 return data;
-    //             }
-    //         },
-    //         'save': { method:'POST' },
-    //         'update': { method:'PUT' },
-    //         'delete':{ method:'DELETE'}
-    //     });
-    //
-    //     return service;
-    // }
 })();

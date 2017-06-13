@@ -62,22 +62,22 @@
         _initData();
         function _requirementInfo() {
             if(vm.requirement.startTime){
-                vm.requirement.startTime = new Date(vm.requirement.startTime)
+                vm.requirement.startTime = new Date(vm.requirement.startTime);
             }
             if(!vm.requirement.startTime){
-                vm.requirement.startTime = new Date()
+                vm.requirement.startTime = new Date();
             }
             if(vm.requirement.endTime){
-                vm.requirement.endTime = new Date(vm.requirement.endTime)
+                vm.requirement.endTime = new Date(vm.requirement.endTime);
             }
             if(!vm.requirement.endTime){
-                vm.requirement.endTime = new Date()
+                vm.requirement.endTime = new Date();
             }
             if(vm.requirement.recordTime){
-                vm.requirement.recordTime = new Date(vm.requirement.recordTime)
+                vm.requirement.recordTime = new Date(vm.requirement.recordTime);
             }
             if(!vm.requirement.recordTime){
-                vm.requirement.recordTime = new Date()
+                vm.requirement.recordTime = new Date();
             }
             if(vm.requirement.projectIds){
                 vm.projectIds = _.join(vm.requirement.projectIds, ',');
@@ -202,8 +202,12 @@
 
             });
 
-            modalInstance.result.then(function (data) {
-
+            modalInstance.result.then(function (reason) {
+                var invalid = {};
+                invalid.invalidReason = reason;
+                RequirementService.invalidPlan(vm.requirement.id,invalid).success(function (data) {
+                    toastr.success("作废成功!");
+                })
             }, function () {
 
             });
@@ -321,10 +325,10 @@
                 case 3: diseaseType = '不详';break;
             }
             if(data.isBloodLipid){
-                diseaseType += "脂质血　"
+                diseaseType += "脂质血　";
             }
             if(data.isHemolysis){
-                diseaseType += "溶血　"
+                diseaseType += "溶血　";
             }
             $('td:eq(5)', row).html(diseaseType);
             $('td:eq(7)', row).html(status);

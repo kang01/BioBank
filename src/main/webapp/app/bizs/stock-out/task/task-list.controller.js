@@ -87,7 +87,7 @@
                 }, {
                     type: 'text',
                     bRegex: false,
-                    width:50,
+                    width:50
                 }, {
                     type: 'select',
                     bRegex: true,

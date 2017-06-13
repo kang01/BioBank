@@ -204,9 +204,9 @@
                     "<td>" + statusShow(items[i].status) + "</td>"
                 );
                 if (items[i].status == '1101') {
-                    $(tr).append("<td ><button  class='addApplyId btn  btn-default btn-xs'><i class='fa fa-edit'></i></button></td>")
+                    $(tr).append("<td ><button  class='addApplyId btn  btn-default btn-xs'><i class='fa fa-edit'></i></button></td>");
                 } else if (items[i].status == '1103') {
-                    $(tr).append("<td ><button  class='viewApplyId btn btn-default btn-xs'><i class='fa fa-eye'></i></button></td>")
+                    $(tr).append("<td ><button  class='viewApplyId btn btn-default btn-xs'><i class='fa fa-eye'></i></button></td>");
                 }
 
 
@@ -247,7 +247,7 @@
                     statusVal = '已作废';
                     break;
             }
-            return statusVal
+            return statusVal;
 
         }
         vm.additionApply = _fnAdditionApply;
@@ -263,7 +263,7 @@
             modalInstance.result.then(function (data) {
                 RequirementService.addApplyRequirement(requirementId).success(function (data) {
                     vm.status = data.status;
-                    $state.go("requirement-additionApply",{applyId:data.id})
+                    $state.go("requirement-additionApply",{applyId:data.id});
                 });
             });
 

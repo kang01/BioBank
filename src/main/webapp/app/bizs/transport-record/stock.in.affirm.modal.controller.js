@@ -6,7 +6,7 @@
 
     angular
         .module('bioBankApp')
-        .controller('StockInAffirmModalController', StockInAffirmModalController)
+        .controller('StockInAffirmModalController', StockInAffirmModalController);
 
     StockInAffirmModalController.$inject = ['$uibModalInstance','$uibModal','items','SampleUserService','toastr'];
 

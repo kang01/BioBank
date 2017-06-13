@@ -13,6 +13,7 @@ import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxForSplit;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,7 +159,49 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     public DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(String stockInCode, DataTablesInput input) {
         input.addColumn("stockInCode",true, true, stockInCode+"+");
         DataTablesOutput<StockInBoxForDataTableEntity> output = stockInBoxRepositries.findAll(input);
+        List<StockInBoxForDataTableEntity> alist = new ArrayList<StockInBoxForDataTableEntity>();
+        output.getData().forEach(s->{
+            StockInBox stockInBox = stockInBoxRepository.findOne(s.getId());
+            String position = toStockInBoxPosition(stockInBox);
+            StockInBoxForDataTableEntity entity = new StockInBoxForDataTableEntity();
+            entity.setId(s.getId());
+            entity.setStockInCode(s.getStockInCode());
+            entity.setFrozenBoxCode(s.getFrozenBoxCode());
+            entity.setSampleTypeName(s.getSampleTypeName());
+            entity.setSampleClassificationName(s.getSampleClassificationName());
+            entity.setPosition(position);
+            entity.setCountOfSample(s.getCountOfSample());
+            entity.setIsSplit(s.getIsSplit());
+            entity.setStatus(s.getStatus());
+            alist.add(entity);
+        });
+        output.setData(alist);
         return output;
+    }
+    private String toStockInBoxPosition(StockInBox stockInBox) {
+        String position = "";
+
+        if(stockInBox == null){
+            return null;
+        }
+        ArrayList<String> positions = new ArrayList<>();
+        if (stockInBox.getEquipmentCode() != null && stockInBox.getEquipmentCode().length() > 0){
+            positions.add(stockInBox.getEquipmentCode());
+        }
+
+        if (stockInBox.getAreaCode() != null && stockInBox.getAreaCode().length() > 0) {
+            positions.add(stockInBox.getAreaCode());
+        }
+
+        if (stockInBox.getSupportRackCode() != null && stockInBox.getSupportRackCode().length() > 0){
+            positions.add(stockInBox.getSupportRackCode());
+        }
+
+        if (stockInBox.getRowsInShelf() != null && stockInBox.getRowsInShelf().length() > 0 && stockInBox.getColumnsInShelf() != null && stockInBox.getColumnsInShelf().length() > 0){
+            positions.add(stockInBox.getColumnsInShelf()+stockInBox.getRowsInShelf());
+        }
+
+        return String.join(".", positions);
     }
 
     @Override

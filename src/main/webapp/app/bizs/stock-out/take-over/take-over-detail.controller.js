@@ -51,11 +51,6 @@
                 vm.dto.handoverTime = new Date();
             }
             vm.statusName = MasterData.getStatus(entity.status);
-            // for(var i = 0; i < handoverStatus.length; i++){
-            //     if(entity.status == handoverStatus[i].id){
-            //         vm.statusName = handoverStatus[i].name;
-            //     }
-            // }
             if(entity.stockOutApplyId){
                 _fnGetPlans(entity.stockOutApplyId);
             }
@@ -433,8 +428,13 @@
                 controllerAs:'vm',
                 size:'lg'
             });
-            modalInstance.result.then(function (data) {
-
+            modalInstance.result.then(function (reason) {
+                var invalid = {};
+                invalid.invalidReason = reason;
+                TakeOverService.invalidTakeOver(vm.dto.id,invalid).success(function (data) {
+                   toastr.success("作废成功!");
+                    $state.go("take-over-list");
+                });
             });
         }
 

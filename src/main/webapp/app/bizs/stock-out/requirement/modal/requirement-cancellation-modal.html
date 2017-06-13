@@ -5,12 +5,12 @@
 <div class="modal-body" id="modal-body">
     <form>
         <div class="form-group">
-            <label>废除原因</label>
+            <label>作废原因</label>
             <textarea class="form-control resize-none" rows="3" ng-model="vm.reason"></textarea>
         </div>
     </form>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()" >确定</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="!vm.reason">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>

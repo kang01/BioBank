@@ -28,7 +28,9 @@
         vm.allInFlag = items.allInFlag;
         //扫码取样过的管子
         var boxInTubes = items.boxInTubes;
+        vm.selectedTubesLen = boxInTubes.length;
         var boxInTubesCopy = angular.copy(boxInTubes);
+        vm.boxCopyLen = boxInTubesCopy.length;
         var taskId = items.taskId;
         //临时盒list
         var boxList = [];
@@ -290,6 +292,7 @@
                     _.pull(boxInTubesCopy, vm.selectedTubes[i]);
                 }
             }
+            vm.boxCopyLen = boxInTubesCopy.length;
             vm.selectedTubes = [];
             tempBoxList.push(vm.selectBox);
             vm.tempBoxInstance.DataTable.draw();
@@ -422,7 +425,10 @@
             vm.allInFlag = true;
         };
         vm.ok = function () {
-            vm.boxIn();
+            if(vm.selectedTubes.length && vm.pos){
+                vm.boxIn();
+
+            }
             var tempBoxListCopy = angular.copy(tempBoxList);
             for(var i =0; i < tempBoxListCopy.length; i++){
                 delete tempBoxListCopy[i].sampleCount;

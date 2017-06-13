@@ -89,7 +89,7 @@
                     bSmart: true,
                     iFilterLength:3
                 }, {
-                    type: 'Datepicker',
+                    type: 'text',
                     bRegex: true,
                     bSmart: true
                 }, {
@@ -97,7 +97,7 @@
                     bRegex: true,
                     bSmart: true
                 }, {
-                    type: 'Datepicker',
+                    type: 'text',
                     bRegex: true,
                     bSmart: true
                 }, {

@@ -94,12 +94,12 @@
                     name:"不祥"
                 }
             ];
-            //需求状态
+            //申请状态
             var _requirementStatus = [
                 {id:"1101",name:"进行中"},
                 {id:"1102",name:"待批准"},
                 {id:"1103",name:"已批准"},
-                {id:"1104",name:"已作废"}
+                {id:"1105",name:"已作废"}
             ];
             //任务状态
             var _taskStatus = [
@@ -138,10 +138,10 @@
                 {id:"3001",name:"正常"},
                 {id:"3002",name:"空管"},
                 {id:"3003",name:"空孔"},
-                {id:"3004",name:"异常"},
+                {id:"3004",name:"异常"}
             ];
 
-            var allStatus = null
+            var allStatus = null;
             function _getStatus(statusCode){
                 if (!allStatus){
                     allStatus = _.union(

@@ -63,5 +63,5 @@ public interface StockInBoxService {
 
     StockInBoxDetail movedDownStockIn(String stockInCode, String boxCode);
 
-    Page<StockInBoxForDataTableEntity> getPageStockInBoxes(String stockInCode, Pageable pageable);
+    DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(DataTablesInput input);
 }

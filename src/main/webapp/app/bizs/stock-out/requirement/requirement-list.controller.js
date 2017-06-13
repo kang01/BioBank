@@ -101,7 +101,7 @@
                             {value: '1101', label: "进行中"},
                             {value: "1102", label: "待批准"},
                             {value: "1103", label: "已批准"},
-                            {value: "1104", label: "已作废"}
+                            {value: "1105", label: "已作废"}
                         ]
                     }]
             });
@@ -132,7 +132,7 @@
                 case '1103':
                     status = '已批准';
                     break;
-                case '1104':
+                case '1105':
                     status = '已作废';
                     break;
             }
@@ -154,6 +154,9 @@
 
         }
         function actionsHtml(data, type, full, meta) {
+            if(full.status == '1105'){
+                return '';
+            }
             if (full.status != '1103') {
                 return '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-edit({applyId:' + full.id + '})">' +
                     '<i class="fa fa-edit"></i>' +
@@ -243,7 +246,7 @@
                 case '1103':
                     statusVal = '已批准';
                     break;
-                case '1104':
+                case '1105':
                     statusVal = '已作废';
                     break;
             }

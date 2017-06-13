@@ -147,31 +147,7 @@ public class StockInBoxResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-in-boxes/stock-in/{stockInCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(@RequestBody DataTablesInput input, @PathVariable String stockInCode) {
-        List<Sort.Order> orders = new ArrayList<>();
-        List<Column> columns = input.getColumns();
-        input.getOrder().forEach(o -> {
-            Column col = columns.get(o.getColumn());
-            if(col.getName()!=null&&col.getName()!=""){
-                Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
-                orders.add(order);
-            }
-        });
-        Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
-        orders.add(order);
-        Sort sort = new Sort(orders);
-        PageRequest pageRequest = new PageRequest(input.getStart() / input.getLength(), input.getLength(), sort);
-
-
-        Page<StockInBoxForDataTableEntity> entities = stockInBoxService.getPageStockInBoxes(stockInCode, pageRequest);
-        List<StockInBoxForDataTableEntity> alist =  entities == null ?
-            new ArrayList<StockInBoxForDataTableEntity>() : entities.getContent();
-
-        DataTablesOutput<StockInBoxForDataTableEntity> result = new DataTablesOutput<StockInBoxForDataTableEntity>();
-        result.setDraw(input.getDraw());
-        result.setError("");
-        result.setData(alist);
-        result.setRecordsFiltered(alist.size());
-        result.setRecordsTotal(entities.getTotalElements());
+        DataTablesOutput<StockInBoxForDataTableEntity> result = stockInBoxService.getPageStockInBoxes(input);
         return result;
     }
 

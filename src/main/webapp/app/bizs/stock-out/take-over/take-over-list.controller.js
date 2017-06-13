@@ -70,8 +70,9 @@
                     bRegex: true,
                     width:50,
                     values: [
-                        {value:'1001',label:"进行中"},
-                        {value:"1002",label:"已交接"}
+                        {value:'2101',label:"进行中"},
+                        {value:"2102",label:"已交接"},
+                        {value:"2103",label:"已作废"}
                     ]
                 }]
             });
@@ -125,11 +126,15 @@
             switch (data.status){
                 case '2101': status = '进行中';break;
                 case '2102': status = '已交接';break;
+                case '2103': status = '已作废';break;
             }
             $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
+            if(full.status == '2103'){
+                return "";
+            }
             if (full.status != '2102'){
                 return '<a type="button" class="btn btn-default btn-xs" ui-sref="take-over-edit({id:'+ full.id +'})">' +
                     '   <i class="fa fa-pencil"></i>' +

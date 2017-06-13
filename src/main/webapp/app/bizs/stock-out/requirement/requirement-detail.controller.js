@@ -11,11 +11,11 @@
         .controller('RequirementSampleDelModalController', RequirementSampleDelModalController)
         .controller('RequirementApplyProjectModalController', RequirementApplyProjectModalController)
         .controller('RequirementCancellationModalController', RequirementCancellationModalController);
-    RequirementDetailController.$inject = ['$scope','$stateParams','$state','$compile','entity','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService','BioBankDataTable'];
+    RequirementDetailController.$inject = ['$scope','$stateParams','$state','$compile','entity','MasterData','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService','BioBankDataTable'];
     RequirementSampleDelModalController.$inject = ['$uibModalInstance'];
     RequirementApplyProjectModalController.$inject = ['$uibModalInstance'];
     RequirementCancellationModalController.$inject = ['$uibModalInstance'];
-    function RequirementDetailController($scope,$stateParams,$state,$compile,entity,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService,BioBankDataTable) {
+    function RequirementDetailController($scope,$stateParams,$state,$compile,entity,MasterData,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService,BioBankDataTable) {
         var vm = this;
         var modalInstance;
         vm.dtInstance = {};
@@ -119,12 +119,7 @@
 
         };
         //状态
-        vm.statusOptions = [
-            {id:"1101",name:"进行中"},
-            {id:"1102",name:"待批准"},
-            {id:"1103",name:"已批准"},
-            {id:"1104",name:"已作废"}
-        ];
+        vm.statusOptions = MasterData.requirementStatus;
         vm.statusConfig = {
             valueField:'id',
             labelField:'name',
@@ -207,6 +202,7 @@
                 invalid.invalidReason = reason;
                 RequirementService.invalidPlan(vm.requirement.id,invalid).success(function (data) {
                     toastr.success("作废成功!");
+                    $state.go("requirement-list")
                 })
             }, function () {
 
@@ -532,7 +528,7 @@
     function RequirementCancellationModalController($uibModalInstance) {
         var vm = this;
         vm.ok = function () {
-            $uibModalInstance.close(true);
+            $uibModalInstance.close(vm.reason);
         };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

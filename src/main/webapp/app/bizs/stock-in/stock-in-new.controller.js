@@ -458,6 +458,7 @@
             td.innerHTML = htm;
         };
         var operateColor;
+        var selectedTubesArray = [];
         function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
 
             operateColor = td.style.backgroundColor;
@@ -491,18 +492,36 @@
             wordWrap:true,
             colWidths: 90,
             editor: false,
-            outsideClickDeselects:false,
+            outsideClickDeselects:true,
+            multiSelect: true,
             comments: true,
             onAfterSelectionEnd:function (row, col, row2, col2) {
-                selectList = [];
-                vm.selectCell = $(this.getData(row,col,row2,col2));
-                for(var i = 0; i < vm.selectCell.length; i++ ){
-                    for (var j = 0; j < vm.selectCell[i].length; j++){
-                        if(vm.selectCell[i][j].sampleCode || vm.selectCell[i][j].sampleTempCode){
-                            selectList.push(vm.selectCell[i][j]);
-                        }
-                    }
+                var cell = this;
+
+                // vm.selectCell = $(this.getData(row,col,row2,col2));
+                selectedTubesArray = this.getData(row,col,row2,col2);
+                var selectTubeArrayIndex = this.getSelected();
+                if(window.event && window.event.ctrlKey){
+                    _fnSelectTubesData(cell,selectedTubesArray,selectTubeArrayIndex)
+                }else{
+                    //备注
+                    $(".temp").remove();
+                    selectList = [];
+                    _fnSelectTubesData(cell,selectedTubesArray,selectTubeArrayIndex);
+
+
                 }
+
+
+
+
+                // for(var i = 0; i < vm.selectCell.length; i++ ){
+                //     for (var j = 0; j < vm.selectCell[i].length; j++){
+                //         if(vm.selectCell[i][j].sampleCode || vm.selectCell[i][j].sampleTempCode){
+                //             selectList.push(vm.selectCell[i][j]);
+                //         }
+                //     }
+                // }
             },
             enterMoves:function () {
                 var hotMoves = hotRegisterer.getInstance('my-handsontable');
@@ -517,6 +536,22 @@
                 var cellProperties = {};
             }
         };
+        //选择单元格数据
+        function _fnSelectTubesData(td,selectedTubesArray,selectTubeArrayIndex) {
+            var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.2)"></div>';
+            for(var m = 0; m < selectedTubesArray.length; m++){
+                for (var n = 0; n < selectedTubesArray[m].length; n++){
+                    if(selectedTubesArray[m][n].sampleCode || selectedTubesArray[m][n].sampleTempCode) {
+                        selectList.push(selectedTubesArray[m][n]);
+                    }
+
+                }
+            }
+            for(var i = selectTubeArrayIndex[0];i <= selectTubeArrayIndex[2]; i++){
+                for(var j = selectTubeArrayIndex[1];  j <= selectTubeArrayIndex[3];j++)
+                    $(td.getCell(i,j)).append(txt);
+            }
+        }
         // 创建一个对象用于管子Table的控件
         function _createTubeForTableCell(tubeInBox, box, pos){
             var tube = {
@@ -898,7 +933,7 @@
 
             modalInstance.result.then(function (data) {
                 if(data){
-                    selectList = [];
+                    // selectList = [];
                     //添加分装后的冻存盒，没有添加新的，有的话再添加相同的盒子，相同的最多添加2个
                     var index;
                     if(data.sampleClassificationId){

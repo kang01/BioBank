@@ -165,6 +165,8 @@
                         if(vm.sampleTypeOptions.length){
                             vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                             vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
+                        }else{
+                            vm.sampleFlag = false;
                         }
                     }else{
                         if(vm.sampleTypeOptions.length){

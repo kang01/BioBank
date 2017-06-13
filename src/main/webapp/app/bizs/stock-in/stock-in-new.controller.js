@@ -689,7 +689,9 @@
         vm.sampleBoxSelect = function (item,$event) {
             tubeList = [];
             vm.frozenBoxCode = item.frozenBoxCode;
-            vm.sampleTypeClassId = item.sampleClassification.id;
+            if(item.sampleClassification){
+                vm.sampleTypeClassId = item.sampleClassification.id;
+            }
             if(vm.frozenBoxCode ){
                 tubeList = item.stockInFrozenTubeList
             }

@@ -541,7 +541,7 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     outline:2px solid red !important;
 }
 .import-box-modal-body .import-box-input .selectize-input{
-    height: 368px;
+    height: 352px;
 }
 .transport-record-new .pipe-body .pipe-operate{
     width: 8%;
@@ -591,7 +591,9 @@ tr.shown td .details-control {
 .requirement-age .irs-slider{
     top:13px
 }
-
+.w-1200{
+    width: 1200px;
+}
 /*1440*/
 @media (min-width:1400px) {
     .transport-record-new .pipe-body .pipe-body-bottom .box-remark .col-sm-10 {

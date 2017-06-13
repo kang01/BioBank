@@ -211,7 +211,7 @@
                                 templateUrl: 'app/bizs/transport-record/frozen-storage-box-modal.html',
                                 controller: 'FrozenStorageBoxModalController',
                                 controllerAs:'vm',
-                                size:'lg',
+                                size:'lg w-1200',
                                 resolve: {
                                     items: function () {
                                         return {

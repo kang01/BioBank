@@ -246,12 +246,12 @@
                                    ng-model="vm.box.sampleTypeId" ng-disabled="!vm.box"></selectize>
                     </div>
                 </div>
-                <div class="form-group pl-5" ng-hide="vm.sampleClassFlag">
+                <div class="form-group pl-5" ng-hide="vm.sampleClassFlag|| !vm.projectSampleTypeOptions.length">
                     <label class="control-label">
                         <span class="required-field"></span>
                         样本分类
                     </label>
-                    <div class="input-group" style="width:90px;">
+                    <div class="input-group" style="width:90px;" >
                         <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
                                    ng-model="vm.box.sampleClassificationId"
                                    ng-disabled="!vm.box || vm.sampleClassFlag"></selectize>
@@ -297,8 +297,11 @@
                             <span>{{vm.abnormalCount}}</span></li>
                         <li></li>
                         <li>
-                            <input type="checkbox" ng-model="vm.box.isSplit" ng-disabled="!vm.box || vm.isMixedFlag"
-                                   ng-true-value="1" ng-false-value="0">是否分装
+                            <label class="checkbox">
+                                <input type="checkbox" ng-model="vm.box.isSplit" ng-disabled="!vm.box || vm.isMixedFlag"
+                                       ng-true-value="1" ng-false-value="0">是否分装
+                            </label>
+
                         </li>
                         <li></li>
                         <li></li>

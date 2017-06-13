@@ -4,7 +4,7 @@
 </div>
 <div class="modal-body import-box-modal-body" id="modal-body">
     <div class="row form-horizontal">
-        <div class="form-group col-sm-3">
+        <div class="form-group col-sm-2">
             <div class="row">
                 <label  class="col-sm-5 control-label pr-5">
                     样本类型
@@ -16,7 +16,7 @@
             </div>
 
         </div>
-        <div class="form-group col-sm-3" ng-hide="vm.sampleTypeFlag">
+        <div class="form-group col-sm-2" ng-hide="vm.sampleTypeFlag || !vm.projectSampleTypeOptions.length">
             <div class="row">
                 <label  class="col-sm-5 control-label pr-5">
                     样本分类
@@ -28,7 +28,7 @@
             </div>
 
         </div>
-        <div class="form-group col-sm-3">
+        <div class="form-group col-sm-2">
             <div class="row">
                 <label  class="col-sm-5 control-label pr-5">
                     盒类型
@@ -40,7 +40,7 @@
             </div>
 
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-3">
             <div class="row">
                 <label  class="col-sm-4 control-label pr-5">暂存位置</label>
                 <div class="col-sm-8 storage-location">
@@ -55,6 +55,9 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-2 pull-right text-right">
+            <button class="btn btn-default" ng-click="vm.importSample()">导入样本数据</button>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-2 import-box-input">
@@ -65,9 +68,9 @@
         </div>
         <div class="col-md-10">
 
-            <div class="pull-right">
-                <button class="btn btn-default" ng-click="vm.importSample()">导入样本数据</button>
-            </div>
+            <!--<div class="pull-right">-->
+                <!--<button class="btn btn-default" ng-click="vm.importSample()">导入样本数据</button>-->
+            <!--</div>-->
 
             <table datatable="ng" dt-options="vm.dtOptions" dt-columns="vm.dtColumns"  class="row-border hover">
                 <thead>

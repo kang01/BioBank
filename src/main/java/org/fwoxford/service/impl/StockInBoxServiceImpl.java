@@ -13,7 +13,6 @@ import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxForSplit;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
-import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,7 +155,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
 
     @Override
-    public DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(DataTablesInput input) {
+    public DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(String stockInCode, DataTablesInput input) {
+        input.addColumn("stockInCode",true, true, stockInCode+"+");
         DataTablesOutput<StockInBoxForDataTableEntity> output = stockInBoxRepositries.findAll(input);
         return output;
     }

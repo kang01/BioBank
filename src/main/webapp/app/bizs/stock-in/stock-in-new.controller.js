@@ -689,6 +689,7 @@
         vm.sampleBoxSelect = function (item,$event) {
             tubeList = [];
             vm.frozenBoxCode = item.frozenBoxCode;
+            vm.sampleTypeClassId = item.sampleClassification.id;
             if(vm.frozenBoxCode ){
                 tubeList = item.stockInFrozenTubeList
             }
@@ -931,36 +932,48 @@
                         //无样本分类情况
                         if(data.sampleClassification){
                             data.backColor = data.sampleClassification.backColor;
-                            data.sampleTypeName = data.sampleClassification.sampleClassificationName;
-                            data.sampleTypeId = data.sampleClassification.sampleClassificationId
+                            data.sampleClassificationName = data.sampleClassification.sampleClassificationName;
+                            data.sampleClassificationId = data.sampleClassification.sampleClassificationId
+                            for(var i = 0; i < vm.incompleteBoxesList.length; i++){
+                                if(vm.incompleteBoxesList[i].sampleTypeId == data.sampleClassificationId){
+                                    if(vm.incompleteBoxesList[i].boxList.length < 2 ){
+                                        vm.incompleteBoxesList[i].boxList.push(data);
+                                        vm.boxList.push(data);
+                                    }
+
+                                }
+                            }
                         }else{
                             data.backColor = data.sampleType.backColor;
                             data.sampleTypeName = data.sampleType.sampleTypeName;
                             data.sampleTypeId = data.sampleType.id;
-                        }
-                        for(var i = 0; i < vm.incompleteBoxesList.length; i++){
-                            if(vm.incompleteBoxesList[i].sampleTypeId == data.sampleTypeId){
-                                if(vm.incompleteBoxesList[i].boxList.length < 2 ){
-                                    vm.incompleteBoxesList[i].boxList.push(data);
-                                    vm.boxList.push(data);
-                                }
+                            for(var i = 0; i < vm.incompleteBoxesList.length; i++){
+                                if(vm.incompleteBoxesList[i].sampleTypeId == data.sampleTypeId){
+                                    if(vm.incompleteBoxesList[i].boxList.length < 2 ){
+                                        vm.incompleteBoxesList[i].boxList.push(data);
+                                        vm.boxList.push(data);
+                                    }
 
+                                }
                             }
                         }
+
                         tubeList = [];
                         vm.frozenBoxCode = "";
                         $(".box-selected").removeClass("box-selected");
                     }
                 }else{
-                    //复原被分装的剩余管子数
-                    for(var k = 0; k < selectList.length; k++){
-                        vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = selectList[k];
-                    }
-                    // $timeout(function(){
-                    hotRegisterer.getInstance('my-handsontable').render();
-                    // },500);
+
                 }
 
+            },function (data) {
+                //复原被分装的剩余管子数
+                for(var k = 0; k < selectList.length; k++){
+                    vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = selectList[k];
+                }
+                // $timeout(function(){
+                hotRegisterer.getInstance('my-handsontable').render();
+                // },500);
             });
         };
         function openCalendar (date) {

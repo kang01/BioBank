@@ -37,7 +37,7 @@ public final class Constants {
     public static final String TRANSHIPE_IN_STOCKED = "1003";
     public static final String TRANSHIPE_IN_INVALID = "1004";
     /**
-     * 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架,2008:待出库
+     * 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库
      */
     public static final  String FROZEN_BOX_NEW = "2001" ;
     public static final  String FROZEN_BOX_STOCKING = "2002" ;
@@ -173,7 +173,7 @@ public final class Constants {
      */
     public static final String STOCK_IN_TUBE_PENDING = "2301";
     /**
-     * 入库管子状态:2401:已上架，2402：已入库,2403:已撤销
+     * 入库盒子状态:2401:已上架，2402：已入库,2403:已撤销
      */
     public static final String STOCK_IN_BOX_POSITION_PENDING = "2401";
     public static final String STOCK_IN_BOX_POSITION_COMPLETE = "2402";

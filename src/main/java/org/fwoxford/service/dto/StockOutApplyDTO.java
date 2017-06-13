@@ -61,6 +61,8 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
      */
     private Long delegateId;
 
+    private String invalidReason;
+
     public Long getId() {
         return id;
     }
@@ -169,6 +171,14 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
         this.delegateId = delegateId;
     }
 
+    public String getInvalidReason() {
+        return invalidReason;
+    }
+
+    public void setInvalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -207,6 +217,7 @@ public class StockOutApplyDTO extends AbstractAuditingDTO implements Serializabl
             ", applyPersonName='" + applyPersonName + "'" +
             ", applyCode='" + applyCode + "'" +
             ", applyDate='" + applyDate + "'" +
+            ", invalidReason='" + invalidReason + "'" +
             '}';
     }
 }

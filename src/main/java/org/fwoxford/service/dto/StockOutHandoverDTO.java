@@ -35,6 +35,8 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
 
     private LocalDate handoverTime;
 
+    private String invalidReason;
+
     @Size(max = 20)
     private String status;
 
@@ -103,6 +105,14 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
     }
     public LocalDate getHandoverTime() {
         return handoverTime;
+    }
+
+    public String getInvalidReason() {
+        return invalidReason;
+    }
+
+    public void setInvalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
     }
 
     public void setHandoverTime(LocalDate handoverTime) {
@@ -235,6 +245,7 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
             ", handoverPersonId=" + handoverPersonId +
             ", handoverPersonName='" + handoverPersonName + '\'' +
             ", handoverTime=" + handoverTime +
+            ", invalidReason=" + invalidReason +
             ", status='" + status + '\'' +
             ", memo='" + memo + '\'' +
             ", stockOutTaskId=" + stockOutTaskId +

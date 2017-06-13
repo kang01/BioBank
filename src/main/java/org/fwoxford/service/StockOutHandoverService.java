@@ -4,7 +4,6 @@ import org.fwoxford.service.dto.StockOutHandoverDTO;
 import org.fwoxford.service.dto.response.StockOutHandoverForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutHandoverSampleReportDTO;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.io.ByteArrayOutputStream;
@@ -61,7 +60,8 @@ public interface StockOutHandoverService {
     /**
      * 作废交接
      * @param id
+     * @param stockOutHandoverDTO
      * @return
      */
-    StockOutHandoverDTO invalidStockOutHandover(Long id);
+    StockOutHandoverDTO invalidStockOutHandover(Long id, StockOutHandoverDTO stockOutHandoverDTO);
 }

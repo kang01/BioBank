@@ -1,6 +1,5 @@
 package org.fwoxford.service.impl;
 
-import io.swagger.models.auth.In;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -26,9 +25,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Service Implementation for managing StockOutApply.
@@ -506,10 +503,11 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     /**
      * 作废申请
      * @param id
+     * @param stockOutApplyDTO
      * @return
      */
     @Override
-    public StockOutApplyDTO invalidStockOutDetail(Long id) {
+    public StockOutApplyDTO invalidStockOutDetail(Long id, StockOutApplyDTO stockOutApplyDTO) {
         StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
         if(stockOutApply == null){
             throw new BankServiceException("未查询到需要作废的申请！");
@@ -523,6 +521,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             throw new BankServiceException("该申请已创建了需求，不能作废！");
         }
         stockOutApply.setStatus(Constants.STOCK_OUT_INVALID);
+        stockOutApply.setInvalidReason(stockOutApplyDTO.getInvalidReason());
         stockOutApplyRepository.save(stockOutApply);
         return stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
     }

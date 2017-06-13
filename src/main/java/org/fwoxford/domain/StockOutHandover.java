@@ -48,6 +48,10 @@ public class StockOutHandover extends AbstractAuditingEntity implements Serializ
     @Column(name = "handover_time")
     private LocalDate handoverTime;
 
+    @Size(max = 1024)
+    @Column(name = "invalid_reason", length = 1024)
+    private String invalidReason;
+
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
@@ -153,6 +157,19 @@ public class StockOutHandover extends AbstractAuditingEntity implements Serializ
         this.handoverTime = handoverTime;
     }
 
+    public String getInvalidReason() {
+        return invalidReason;
+    }
+
+    public StockOutHandover invalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
+        return this;
+    }
+
+    public void setInvalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -248,6 +265,7 @@ public class StockOutHandover extends AbstractAuditingEntity implements Serializ
             ", receiverOrganization='" + receiverOrganization + "'" +
             ", handoverPersonId='" + handoverPersonId + "'" +
             ", handoverTime='" + handoverTime + "'" +
+            ", invalidReason='" + invalidReason + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             '}';

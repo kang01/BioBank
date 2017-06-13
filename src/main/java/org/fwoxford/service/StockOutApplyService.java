@@ -78,7 +78,8 @@ public interface StockOutApplyService {
     /**
      * 作废计划
      * @param id
+     * @param stockOutApplyDTO
      * @return
      */
-    StockOutApplyDTO invalidStockOutDetail(Long id);
+    StockOutApplyDTO invalidStockOutDetail(Long id, StockOutApplyDTO stockOutApplyDTO);
 }

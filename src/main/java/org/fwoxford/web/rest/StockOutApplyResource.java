@@ -285,9 +285,9 @@ public class StockOutApplyResource {
      */
     @PutMapping("/stock-out-applies/{id}/invalid")
     @Timed
-    public ResponseEntity<StockOutApplyDTO> invalidStockOutDetail(@PathVariable Long id ) throws URISyntaxException {
+    public ResponseEntity<StockOutApplyDTO> invalidStockOutDetail(@PathVariable Long id,@RequestBody StockOutApplyDTO stockOutApplyDTO ) throws URISyntaxException {
 
-        StockOutApplyDTO result = stockOutApplyService.invalidStockOutDetail(id);
+        StockOutApplyDTO result = stockOutApplyService.invalidStockOutDetail(id,stockOutApplyDTO);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

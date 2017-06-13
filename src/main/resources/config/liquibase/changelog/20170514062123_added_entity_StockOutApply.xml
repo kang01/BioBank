@@ -54,6 +54,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="invalid_reason" type="nvarchar(1024)" remarks="作废原因">
+                <constraints nullable="true" />
+            </column>
+
             <column name="status" type="nvarchar(20)" remarks="状态">
                 <constraints nullable="false" />
             </column>

@@ -295,9 +295,9 @@ public class StockOutHandoverResource {
      */
     @PutMapping("/stock-out-handovers/{id}/invalid")
     @Timed
-    public ResponseEntity<StockOutHandoverDTO> invalidStockOutHandover(@PathVariable Long id ) throws URISyntaxException {
+    public ResponseEntity<StockOutHandoverDTO> invalidStockOutHandover(@PathVariable Long id , @RequestBody StockOutHandoverDTO stockOutHandoverDTO) throws URISyntaxException {
 
-        StockOutHandoverDTO result = stockOutHandoverService.invalidStockOutHandover(id);
+        StockOutHandoverDTO result = stockOutHandoverService.invalidStockOutHandover(id,stockOutHandoverDTO);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

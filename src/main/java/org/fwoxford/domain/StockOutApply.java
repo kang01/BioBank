@@ -50,6 +50,10 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
     @Column(name = "approve_time")
     private LocalDate approveTime;
 
+    @Size(max = 1024)
+    @Column(name = "invalid_reason", length = 1024)
+    private String invalidReason;
+
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
@@ -186,6 +190,19 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
         this.approveTime = approveTime;
     }
 
+    public String getInvalidReason() {
+        return invalidReason;
+    }
+
+    public StockOutApply invalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
+        return this;
+    }
+
+    public void setInvalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -296,6 +313,7 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
             ", parentApplyId='" + parentApplyId + "'" +
             ", approverId='" + approverId + "'" +
             ", approveTime='" + approveTime + "'" +
+            ", invalidReason='" + invalidReason + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             ", applyPersonName='" + applyPersonName + "'" +

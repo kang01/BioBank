@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -333,15 +332,17 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     /**
      * 作废交接
      * @param id
+     * @param stockOutHandoverDTO
      * @return
      */
     @Override
-    public StockOutHandoverDTO invalidStockOutHandover(Long id) {
+    public StockOutHandoverDTO invalidStockOutHandover(Long id, StockOutHandoverDTO stockOutHandoverDTO) {
         StockOutHandover stockOutHandover = stockOutHandoverRepository.findOne(id);
         if(stockOutHandover == null){
             throw new BankServiceException("未查询到需求作废的交接数据！");
         }
         stockOutHandover.setStatus(Constants.STOCK_OUT_HANDOVER_INVALID);
+        stockOutHandover.setInvalidReason(stockOutHandoverDTO.getInvalidReason());
         stockOutHandoverRepository.save(stockOutHandover);
         return stockOutHandoverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandover);
     }

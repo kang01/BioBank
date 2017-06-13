@@ -31,7 +31,7 @@
                             </label>
                             <div class="col-sm-8">
                                 <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                           ng-model="vm.box.sampleTypeId" ng-disabled="vm.isMixed != 1"></selectize>
+                                           ng-model="vm.box.sampleTypeId" ng-disabled="vm.isMixed != 1 || vm.fullBoxFlag"></selectize>
                                 <input type="hidden" class="form-control"  ng-model="vm.box.sampleTypeId"  required>
                             </div>
                         </div>
@@ -43,7 +43,7 @@
                             </label>
                             <div class="col-sm-8">
                                 <selectize options='vm.sampleTypeClassOptions' config="vm.sampleTypeClassConfig"
-                                           ng-model="vm.box.sampleClassificationId" ng-disabled="!vm.box.sampleClassificationId"></selectize>
+                                           ng-model="vm.box.sampleClassificationId" ng-disabled="!vm.box.sampleClassificationId || vm.fullBoxFlag"></selectize>
                                 <!--<input type="hidden" class="form-control"  ng-model="vm.box.sampleClassificationId"  required>-->
 
                             </div>

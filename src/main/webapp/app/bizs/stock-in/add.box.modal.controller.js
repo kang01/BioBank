@@ -39,6 +39,7 @@
                 vm.sampleTypeOptions = _.orderBy(data, ['id'], ['asc']);
                 //去除混合类型
                 vm.sampleTypeOptions.pop();
+
                 if(vm.isMixed == "1"){
                     vm.box.sampleType = vm.sampleTypeOptions[0];
                     vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
@@ -50,6 +51,7 @@
                 _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
             });
         }
+        vm.fullBoxFlag = false;
         function _fnQueryProjectSampleClasses(projectId,sampleTypeId) {
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.sampleTypeClassOptions = _.orderBy(data, ['sampleClassificationId'], ['asc']);
@@ -57,13 +59,16 @@
                     vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
                     vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
                 }
+
                 if(countFlag){
                     //创建第一个新盒子，空管子
                     if(!items.box.stockInFrozenTubeList.length){
                         vm.createBoxflag = true;
                         _createBox();
+                    }else{
+                        vm.fullBoxFlag = true;
                     }
-                    countFlag = false;
+                    // countFlag = false;
                 }
 
             });
@@ -80,13 +85,18 @@
             AlertService.error(error.data.message);
         }
         vm.sampleFlag = true;
+        //是否手动创建盒子
+
         function _createBox() {
             if(vm.createBoxflag){
-                vm.box = {
-                    frozenBoxCode:'',
-                    memo:'',
-                    stockInFrozenTubeList:[]
-                };
+                vm.box.frozenBoxCode="";
+                vm.box.memo = "";
+                vm.box.stockInFrozenTubeList = "";
+                // vm.box = {
+                //     frozenBoxCode:'',
+                //     memo:'',
+                //     stockInFrozenTubeList:[]
+                // };
                 if(items.box.stockInFrozenTubeList.length){
                     var rows = +items.box.sampleType.frozenBoxTypeRows;
                     var cols = +items.box.sampleType.frozenBoxTypeColumns;
@@ -111,6 +121,111 @@
                     vm.box.frozenBoxTypeId = frozenBoxTypeId;
                     vm.box.frozenBoxType = _.filter(vm.frozenBoxTypeOptions,{'id':+vm.box.frozenBoxTypeId})[0];
                 }
+
+
+
+                //不是混合类型、有分类
+                if(vm.isMixed != "1" && sampleTypeClassId){
+                    if(!vm.fullBoxFlag){
+                        for(var i = 0; i < boxes.length; i++){
+                            for(var j = 0; j < vm.sampleTypeClassOptions.length; j++){
+                                if(boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId){
+                                    _.pullAt(vm.sampleTypeClassOptions,j);
+                                }
+                            }
+                        }
+                        vm.box.sampleTypeId = sampleTypeId;
+                        vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
+                        if(vm.sampleTypeClassOptions.length){
+                            vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                            vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                            sampleTypeClassId = vm.box.sampleClassificationId;
+                        }
+                    }else{
+                        if(vm.sampleTypeClassOptions.length){
+                            vm.box.sampleClassificationId = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0].sampleClassificationId
+                            vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0]
+                        }
+                    }
+
+                }
+                //是混合、无分类
+                if(vm.isMixed == "1" && !sampleTypeClassId){
+                    if(!vm.fullBoxFlag){
+                        for(var i = 0; i < boxes.length; i++){
+                            for(var j = 0; j < vm.sampleTypeOptions.length; j++){
+                                if(boxes[i].sampleTypeId == vm.sampleTypeOptions[j].id){
+                                    _.pullAt(vm.sampleTypeOptions,j);
+                                }
+                            }
+                        }
+                        if(vm.sampleTypeOptions.length){
+                            vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                            vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
+                        }
+                    }else{
+                        if(vm.sampleTypeOptions.length){
+                            vm.box.sampleTypeId = _.filter(vm.sampleTypeOptions,{id:items.box.sampleTypeId})[0].id;
+                            vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+items.box.sampleTypeId})[0];
+                        }
+                    }
+
+
+                }
+
+                if(!vm.fullBoxFlag){
+                    // 是混合、有分类
+                    if(vm.isMixed == "1" && sampleTypeClassId){
+                        for(var i = 0; i < boxes.length; i++){
+                            for(var j = 0; j < vm.sampleTypeClassOptions.length; j++){
+                                if(boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId){
+                                    _.pullAt(vm.sampleTypeClassOptions,j);
+                                }
+                            }
+                        }
+
+                        vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                        vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
+                        countFlag = true;
+                        //样本类型下的样本分类为空时，样本类型也应该不存在
+                        if(!vm.sampleTypeClassOptions.length){
+
+                            for(var k = 0; k < vm.sampleTypeOptions.length; k++){
+                                if(vm.box.sampleTypeId == vm.sampleTypeOptions[k].id){
+                                    _.pullAt(vm.sampleTypeOptions,k);
+                                }
+                            }
+
+                            if(vm.sampleTypeOptions.length){
+                                vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                                vm.box.sampleType = vm.sampleTypeOptions[0];
+                                _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
+                            }
+                        }else{
+                            vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                            vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                            sampleTypeClassId = vm.box.sampleClassificationId;
+                        }
+                    }
+                    //不是混合、无样本分类
+                    if(vm.isMixed != "1" && !sampleTypeClassId){
+                        if(boxes.length){
+                            vm.sampleFlag = false;
+                        }
+                    }
+
+                }else{
+                    if(vm.sampleTypeClassOptions.length){
+                        vm.box.sampleClassificationId = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0].sampleClassificationId
+                        vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0]
+                    }
+
+
+                }
+
+
+
+
                 // //样本类型为混合型时，同时有样本分类
                 // if(vm.isMixed == "1"){
                 //     vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
@@ -127,115 +242,48 @@
                 //     vm.box.sampleClassificationId = "";
                 //     vm.box.sampleClassification = "";
                 // }
-                //不是混合、无样本分类
-                if(vm.isMixed != "1" && !sampleTypeClassId){
-                    if(boxes.length){
-                        vm.sampleFlag = false;
-                    }
-                }
-                //是混合、无分类
-                if(vm.isMixed == "1" && !sampleTypeClassId){
-                    for(var i = 0; i < boxes.length; i++){
-                        for(var j = 0; j < vm.sampleTypeOptions.length; j++){
-                            if(boxes[i].sampleTypeId == vm.sampleTypeOptions[j].id){
-                                _.pullAt(vm.sampleTypeOptions,j);
-                            }
-                        }
-                    }
-                    if(vm.sampleTypeOptions.length){
-                        vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
-                        vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
-                    }
 
-                }
-                // 是混合、有分类
-                if(vm.isMixed == "1" && sampleTypeClassId){
-                    for(var i = 0; i < boxes.length; i++){
-                        for(var j = 0; j < vm.sampleTypeClassOptions.length; j++){
-                            if(boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId){
-                                _.pullAt(vm.sampleTypeClassOptions,j);
-                            }
-                        }
-                    }
 
-                    vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
-                    vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
-                    //样本类型下的样本分类为空时，样本类型也应该不存在
-                    if(!vm.sampleTypeClassOptions.length){
-                        for(var k = 0; k < vm.sampleTypeOptions.length; k++){
-                            if(vm.box.sampleTypeId == vm.sampleTypeOptions[k].id){
-                                _.pullAt(vm.sampleTypeOptions,k);
-                            }
-                        }
 
-                        if(vm.sampleTypeOptions.length){
-                            vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
-                            vm.box.sampleType = vm.sampleTypeOptions[0];
-                            _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
-                        }
-                    }else{
-                        vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
-                        vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
-                        sampleTypeClassId = vm.box.sampleClassificationId;
-                    }
-                }
-                //不是混合类型、有分类
-                if(vm.isMixed != "1" && sampleTypeClassId){
-                    for(var i = 0; i < boxes.length; i++){
-                        for(var j = 0; j < vm.sampleTypeClassOptions.length; j++){
-                            if(boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId){
-                                _.pullAt(vm.sampleTypeClassOptions,j);
-                            }
-                        }
-                    }
-                    vm.box.sampleTypeId = sampleTypeId;
-                    vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
-                    if(vm.sampleTypeClassOptions.length){
-                        vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
-                        vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
-                        sampleTypeClassId = vm.box.sampleClassificationId;
-                    }
-                }
-                vm.boxTypeConfig = {
-                    valueField:'id',
-                    labelField:'frozenBoxTypeName',
-                    maxItems: 1,
-                    onChange:function(value){
-                        vm.box.frozenBoxType = _.filter(vm.frozenBoxTypeOptions,{'id':+value})[0];
-                        vm.box.frozenBoxTypeId = value;
-                    }
-                };
-                vm.sampleTypeConfig = {
-                    valueField:'id',
-                    labelField:'sampleTypeName',
-                    maxItems: 1,
-                    onChange:function (value) {
-                        vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+value})[0];
-                        vm.box.sampleTypeId = value;
-                        // if(sampleTypeClassId){
-                            _fnQueryProjectSampleClasses(projectId,value);
-                        // }
 
-                    }
-                };
-                //样本分类
-                vm.sampleTypeClassConfig = {
-                    valueField:'sampleClassificationId',
-                    labelField:'sampleClassificationName',
-                    maxItems: 1,
-                    onChange:function (value) {
-                        vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{'sampleClassificationId':+value})[0];
-                        vm.box.sampleClassificationId = value;
-                    }
-                };
-
-                vm.isBoxCodeRepeat = function () {
-                    vm.isRepeat = false;
-                };
-                // console.log(JSON.stringify(vm.box))
             }
         }
+        vm.boxTypeConfig = {
+            valueField:'id',
+            labelField:'frozenBoxTypeName',
+            maxItems: 1,
+            onChange:function(value){
+                vm.box.frozenBoxType = _.filter(vm.frozenBoxTypeOptions,{'id':+value})[0];
+                vm.box.frozenBoxTypeId = value;
+            }
+        };
+        vm.sampleTypeConfig = {
+            valueField:'id',
+            labelField:'sampleTypeName',
+            maxItems: 1,
+            onChange:function (value) {
+                vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+value})[0];
+                vm.box.sampleTypeId = value;
+                countFlag = false;
+                _fnQueryProjectSampleClasses(projectId,value);
 
+
+            }
+        };
+        //样本分类
+        vm.sampleTypeClassConfig = {
+            valueField:'sampleClassificationId',
+            labelField:'sampleClassificationName',
+            maxItems: 1,
+            onChange:function (value) {
+                vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{'sampleClassificationId':+value})[0];
+                vm.box.sampleClassificationId = value;
+            }
+        };
+
+        vm.isBoxCodeRepeat = function () {
+            vm.isRepeat = false;
+        };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
@@ -266,6 +314,7 @@
 
         vm.yes = function () {
             vm.createBoxflag = true;
+            // _fnQuerySampleType();
             _createBox();
         };
         vm.no = function () {

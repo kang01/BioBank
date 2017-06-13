@@ -9,11 +9,11 @@
         .controller('StockInNewController', StockInNewController)
         .controller('RescindPutAwayModalController', RescindPutAwayModalController);
 
-    StockInNewController.$inject = ['$timeout','BioBankBlockUi','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal',
+    StockInNewController.$inject = ['$timeout','BioBankBlockUi','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
         'entity','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','StockInSaveService',
         'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService'];
     RescindPutAwayModalController.$inject = ['$uibModalInstance'];
-    function StockInNewController($timeout,BioBankBlockUi,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,
+    function StockInNewController($timeout,BioBankBlockUi,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
                                   entity,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,StockInSaveService,
                                   SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService) {
         var vm = this;
@@ -58,16 +58,9 @@
                 vm.selectAll = true;
             };
 
-            var ajaxUrl = 'api/temp/res/stock-in-boxes/stock-in/' + vm.entity.stockInCode;
-            vm.dtInstanceCallback = function(instance){
-                vm.dtInstance = instance;
-            };
+            vm.dtInstance = {};
 
-            vm.dtOptions = DTOptionsBuilder.fromSource({"url": ajaxUrl,"dataSrc": "data"})
-            // 设置Table的DOM布局
-                .withDOM("<'row'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
-                // 设置表格每页显示的行数
-                .withDisplayLength(6)
+            vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 6, "<'row'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>", $scope)
                 // 设置Tool button
                 .withButtons([
                     {
@@ -77,22 +70,8 @@
                         action: _fnActionPutInShelfButton
                     }
                 ])
-                // 执行Header内容的Compile
-                .withOption('headerCallback', function(header) {
-                    if (!vm.headerCompiled) {
-                        // Use this headerCompiled field to only compile header once
-                        vm.headerCompiled = true;
-                        $compile(angular.element(header).contents())($scope);
-                    }
-                })
-                // 将数据加载的请求方法从GET改为POST
-                .withOption('sServerMethod','POST')
-                // 显示正在处理的字样
-                .withOption('processing',true)
                 // 数据从服务器加载
                 .withOption('serverSide',true)
-                // 分页类型
-                .withPaginationType('full_numbers')
                 // 设置默认排序
                 .withOption('order', [[1, 'asc' ]])
                 // 指定数据加载方法
@@ -221,7 +200,7 @@
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {
                         type: 'select',
-                        bRegex: true,
+                        // bRegex: true,
                         bSmart: true,
                         values: [
                             {value:0,label:"否"},
@@ -230,7 +209,7 @@
                     },
                     {
                         type: 'select',
-                        bRegex: true,
+                        // bRegex: true,
                         bSmart: true,
                         values: [
                             {value:'2001',label:"新建"},
@@ -323,7 +302,7 @@
                 }
             });
             modalInstance.result.then(function (data) {
-                vm.headerCompiled = false;
+                vm.dtOptions.isHeaderCompiled = false;
                 vm.dtInstance.rerender();
             });
         }
@@ -336,7 +315,7 @@
             });
             modalInstance.result.then(function (data) {
                 RescindPutAwayService.rescindPutAway(vm.entity.stockInCode,boxCode).then(function (data) {
-                    vm.headerCompiled = false;
+                    vm.dtOptions.isHeaderCompiled = false;
                     vm.dtInstance.rerender();
                 })
             });
@@ -831,7 +810,7 @@
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
                 BioBankBlockUi.blockUiStop();
                 toastr.success("分装成功!");
-                vm.headerCompiled = false;
+                vm.dtOptions.isHeaderCompiled = false;
                 vm.dtInstance.rerender();
                 _splitABox(vm.box.frozenBoxCode);
                 vm.boxList = [];

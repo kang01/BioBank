@@ -19,9 +19,9 @@
             };
             return factory;
         }])
-        .factory('BioBankDataTable',['DTOptionsBuilder','DTColumnBuilder','$timeout',function (DTOptionsBuilder, DTColumnBuilder,$timeout) {
+        .factory('BioBankDataTable',['DTOptionsBuilder','DTColumnBuilder','$timeout','$compile',function (DTOptionsBuilder, DTColumnBuilder,$timeout,$compile) {
             var service = {};
-            service.buildDTOption = function (type, scrollY, pageLength, dom) {
+            service.buildDTOption = function (type, scrollY, pageLength, dom, scope) {
                 var options = DTOptionsBuilder.newOptions()
                     .withOption('processing',true);
 
@@ -59,6 +59,20 @@
                 if (dom){
                     options.withDOM(dom);
                 }
+
+                if (scope){
+                    // 执行Header内容的Compile
+                    options.isHeaderCompiled = false;
+                    options.withOption('headerCallback', function(header) {
+                        if (!options.isHeaderCompiled) {
+                            // Use this headerCompiled field to only compile header once
+                            options.isHeaderCompiled = true;
+                            $compile(angular.element(header).contents())(scope);
+                        }
+                    });
+                }
+
+
 
                 return options;
             };

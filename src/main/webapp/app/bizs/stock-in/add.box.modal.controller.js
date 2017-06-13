@@ -140,8 +140,11 @@
                             vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
                             vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
                             sampleTypeClassId = vm.box.sampleClassificationId;
+                        }else{
+                            vm.sampleFlag = false;
                         }
                     }else{
+
                         if(vm.sampleTypeClassOptions.length){
                             vm.box.sampleClassificationId = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0].sampleClassificationId
                             vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0]
@@ -162,6 +165,8 @@
                         if(vm.sampleTypeOptions.length){
                             vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                             vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
+                        }else{
+                            vm.sampleFlag = false;
                         }
                     }else{
                         if(vm.sampleTypeOptions.length){
@@ -314,11 +319,10 @@
 
         vm.yes = function () {
             vm.createBoxflag = true;
-            // _fnQuerySampleType();
             _createBox();
         };
         vm.no = function () {
-            $uibModalInstance.close();
+            $uibModalInstance.dismiss('cancel');
         };
 
     }

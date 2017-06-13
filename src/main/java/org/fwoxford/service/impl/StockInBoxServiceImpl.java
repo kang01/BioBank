@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -154,24 +156,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
 
     @Override
-    public Page<StockInBoxForDataTableEntity> getPageStockInBoxes(String stockInCode, Pageable pageable) {
-        Page<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxPageByStockInCode(stockInCode,pageable);
-
-        return stockInBoxes.map(e -> {
-            StockInBoxForDataTableEntity stockInBox = new StockInBoxForDataTableEntity();
-            Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(e.getFrozenBoxCode());
-            stockInBox.setCountOfSample(countOfSample.intValue());
-            stockInBox.setStatus(e.getStatus());
-            stockInBox.setId(e.getId());
-            stockInBox.setFrozenBoxCode(e.getFrozenBoxCode());
-            stockInBox.setIsSplit(e.getFrozenBox().getIsSplit());
-            FrozenBox frozenBox = frozenBoxRepository.findOne(e.getId());
-            stockInBox.setPosition(BankUtil.getPositionString(frozenBox));
-            stockInBox.setSampleClassificationName(e.getFrozenBox().getSampleClassification()!=null?e.getFrozenBox().getSampleClassification().getSampleClassificationName():null);
-            stockInBox.setSampleTypeName(e.getFrozenBox().getSampleTypeName());
-            stockInBox.setStockInCode(e.getStockInCode());
-            return stockInBox;
-        });
+    public DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(DataTablesInput input) {
+        DataTablesOutput<StockInBoxForDataTableEntity> output = stockInBoxRepositries.findAll(input);
+        return output;
     }
 
     @Override

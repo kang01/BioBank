@@ -696,7 +696,10 @@
                         if(box.sampleType.isMixed == "1"){
                             for (var l = 0; l < vm.projectSampleTypeOptions.length; l++) {
                                 if (vm.projectSampleTypeOptions[l].columnsNumber == pos.tubeColumns) {
-                                    tube.sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
+                                    if(!tube.sampleClassificationId){
+                                        tube.sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
+                                    }
+
                                 }
                             }
                         }

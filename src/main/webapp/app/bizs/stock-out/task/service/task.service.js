@@ -45,7 +45,7 @@
             taskTimer:_fnTaskTimer
         };
         function _queryTaskList(data,oSettings) {
-            return $http.post('api/res/stock-out-tasks',JSON.stringify(data));
+            return $http.post('api/res/stock-out-tasks',angular.toJson(data));
         }
         function _queryTaskDesc(taskId) {
             return $http.get('api/stock-out-tasks/'+taskId);
@@ -84,7 +84,7 @@
             return $http.get('/api/stock-out-frozen-boxes/task-box/'+taskId);
         }
         function _queryOutputDes(frozenBoxIds,data) {
-            return $http.post('/api/res/stock-out-box-tubes/stockOutBox/'+frozenBoxIds,JSON.stringify(data));
+            return $http.post('/api/res/stock-out-box-tubes/stockOutBox/'+frozenBoxIds,angular.toJson(data));
         }
         function _takeOver(taskId) {
             return $http.post('/api/stock-out-handovers/task/'+taskId);

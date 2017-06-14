@@ -44,7 +44,7 @@
             labelField:'areaCode',
             maxItems: 1,
             onChange:function (value) {
-                vm.stockOut.areaId = value
+                vm.stockOut.areaId = value;
             }
         };
         //样本列表
@@ -66,13 +66,14 @@
                         }
                         oSettings.json = json;
                         fnCallback( json );
-                    }).catch(function(res){
+                    }, function(res){
+                        var error = res.data;
                         // console.log(res);
                         //
                         var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
 
                         if ( $.inArray( true, ret ) === -1 ) {
-                            if ( error == "parsererror" ) {
+                            if ( error === "parsererror" ) {
                                 jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
                             }
                             else if ( res.readyState === 4 ) {
@@ -88,7 +89,7 @@
                         recordsFiltered : 10,
                         data: [ ],
                         error : ""
-                    }
+                    };
                     fnCallback( array );
 
                 }

@@ -92,7 +92,7 @@
                     }, onError);
                     for(var i = 0; i < vm.equipmentsOptions.length; i++){
                         if(value == vm.equipmentsOptions[i].id){
-                            vm.equipmentCode = vm.equipmentsOptions[i].equipmentCode
+                            vm.equipmentCode = vm.equipmentsOptions[i].equipmentCode;
                         }
                     }
                 }
@@ -106,7 +106,7 @@
                 onChange:function (value) {
                     for(var i = 0; i < vm.areasOptions.length; i++){
                         if(value == vm.areasOptions[i].id){
-                            vm.areaCode = vm.areasOptions[i].areaCode
+                            vm.areaCode = vm.areasOptions[i].areaCode;
                         }
                     }
                     FrozenPosService.getIncompleteShelves(vm.equipmentCode, vm.areaCode).then(function(res){

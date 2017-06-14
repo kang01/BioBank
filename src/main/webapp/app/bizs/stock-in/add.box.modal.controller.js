@@ -44,7 +44,7 @@
                     vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                 }else{
                     vm.box.sampleTypeId = sampleTypeId;
-                    vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id': + vm.box.sampleTypeId})[0]
+                    vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id': + vm.box.sampleTypeId})[0];
                 }
 
                 _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);

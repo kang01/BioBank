@@ -101,6 +101,6 @@
                         return StockInService.get({id : $stateParams.id}).$promise;
                     }]
                 }
-            })
+            });
     }
 })();

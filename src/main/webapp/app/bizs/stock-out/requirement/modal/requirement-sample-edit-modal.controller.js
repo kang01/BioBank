@@ -62,7 +62,7 @@
                         vm.sampleRequirement.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
                     }
                 }
-            })
+            });
         }
         //获取样本类型
         function _fnQuerySampleType() {
@@ -98,7 +98,7 @@
                 if(!vm.sampleRequirement.frozenTubeTypeId){
                     vm.sampleRequirement.frozenTubeTypeId = vm.frozenTubeTypeOptions[0].id;
                 }
-            })
+            });
         }
         vm.frozenTubeTypeConfig = {
             valueField:'id',
@@ -129,7 +129,7 @@
                 vm.sampleRequirement.age = "0;0";
             }else{
                 if(vm.sampleRequirement.age == "0;0"){
-                    vm.sampleRequirement.age = "30;70"
+                    vm.sampleRequirement.age = "30;70";
                 }
 
             }
@@ -158,7 +158,7 @@
                     $uibModalInstance.close();
                 }).error(function (data) {
                     BioBankBlockUi.blockUiStop();
-                })
+                });
             }else{
                 vm.sampleflag = true;
                 _fnSaveRequirement();
@@ -183,7 +183,7 @@
                 }).error(function (data) {
                     BioBankBlockUi.blockUiStop();
                     toastr.success(data.message);
-                })
+                });
 
             }else{
                 var sampleRequirement = angular.copy(vm.sampleRequirement);
@@ -197,7 +197,7 @@
                     $uibModalInstance.close();
                 }).error(function (data) {
                     BioBankBlockUi.blockUiStop();
-                })
+                });
             }
         }
 

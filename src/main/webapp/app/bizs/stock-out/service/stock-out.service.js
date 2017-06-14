@@ -25,23 +25,23 @@
 
         };
         function _queryDelegates() {
-            return $http.get('/api/delegates/all')
+            return $http.get('/api/delegates/all');
         }
         function _queryRequirementList(data,oSettings) {
-            return $http.post('api/temp/res/stock-out-applies',JSON.stringify(data))
+            return $http.post('api/temp/res/stock-out-applies',JSON.stringify(data));
         }
         function _copyRequirementList(id) {
-            return $http.get('api/temp/stock-out-applies/parentApply/'+id)
+            return $http.get('api/temp/stock-out-applies/parentApply/'+id);
         }
 
         function _getApplications(){
-            return $http.get('api/stock-out-applies')
+            return $http.get('api/stock-out-applies');
         }
         function _getPlans(applyId){
-            return $http.get('api/stock-out-plans/apply/'+applyId)
+            return $http.get('api/stock-out-plans/apply/'+applyId);
         }
         function _getTasks(planId){
-            return $http.get('api/stock-out-tasks/plan/'+planId)
+            return $http.get('api/stock-out-tasks/plan/'+planId);
         }
         return service;
     }

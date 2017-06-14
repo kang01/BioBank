@@ -101,6 +101,6 @@
         TaskService.queryOutputList(vm.task.id).success(function (data) {
             vm.stockOutSampleOptions.withOption('data', data);
             vm.stockOutSampleInstance.rerender();
-        })
+        });
     }
 })();

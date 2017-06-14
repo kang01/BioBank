@@ -38,13 +38,13 @@
         _initData();
         function _requirementInfo() {
             if(vm.requirement.startTime){
-                vm.requirement.startTime = moment(vm.requirement.startTime).format("YYYY-MM-DD")
+                vm.requirement.startTime = moment(vm.requirement.startTime).format("YYYY-MM-DD");
             }
             if(vm.requirement.endTime){
-                vm.requirement.endTime = moment(vm.requirement.endTime).format("YYYY-MM-DD")
+                vm.requirement.endTime = moment(vm.requirement.endTime).format("YYYY-MM-DD");
             }
             if(vm.requirement.recordTime){
-                vm.requirement.recordTime = moment(vm.requirement.recordTime).format("YYYY-MM-DD")
+                vm.requirement.recordTime = moment(vm.requirement.recordTime).format("YYYY-MM-DD");
             }
             if(vm.requirement.projectIds){
                 vm.projectIds = _.join(vm.requirement.projectIds, ',');
@@ -64,12 +64,12 @@
                 setTimeout(function () {
                     vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                     vm.isApproval();
-                },100)
+                },100);
             }else{
                 vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
                 setTimeout(function () {
                     vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
-                },100)
+                },100);
             }
 
         }
@@ -104,7 +104,7 @@
                             projectIds:vm.projectIds,
                             requirementId:vm.requirement.id,
                             sampleRequirement:sampleRequirement || ""
-                        }
+                        };
                     }
                 }
             });
@@ -130,7 +130,7 @@
                 vm.requirementApplyFlag = true;
                 _loadRequirement();
             }).error(function (data) {
-            })
+            });
         }
         function _loadRequirement(success, error) {
             RequirementService.queryRequirementDesc(vm.requirement.id).then(function (data) {
@@ -180,7 +180,7 @@
 
         ];
         if(!viewFlag){
-            vm.dtColumns.push(DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml))
+            vm.dtColumns.push(DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml));
         }
         function createdRow(row, data, dataIndex) {
             var status = '';
@@ -212,7 +212,7 @@
                 '<a ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;'+
                 '<a ng-click="vm.sampleRequirementDel('+full.id+')">删除</a>&nbsp;'+
                 '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementDescModel('+full.id+')">详情</a>'+
-                '</div>'
+                '</div>';
         }
         //编辑
         function _fnSampleRequirementEdit(sampleRequirementId) {
@@ -224,21 +224,21 @@
                 //     _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
                 // }
             }).error(function (data) {
-            })
+            });
         }
         //核对
         function _fnSampleRequirementCheck(sampleRequirementId) {
             RequirementService.checkSampleRequirement(sampleRequirementId).success(function (data) {
                 _loadRequirement();
             }).error(function (data) {
-            })
+            });
         }
         //复原
         function _fnSampleRequirementRevert(sampleRequirementId) {
             RequirementService.revertSampleRequirement(sampleRequirementId).success(function (data) {
                 _loadRequirement();
             }).error(function (data) {
-            })
+            });
         }
         //删除
         function _fnSampleRequirementDel(sampleRequirementId) {
@@ -255,7 +255,7 @@
                     _loadRequirement();
                 }).error(function (data) {
                     toastr.error(data.message);
-                })
+                });
             });
 
         }
@@ -271,7 +271,7 @@
                     items: function () {
                         return {
                             sampleRequirementId:sampleRequirementId
-                        }
+                        };
                     }
                 }
             });
@@ -298,7 +298,7 @@
                     vm.isVerifyFlag = true;
                 }else{
                     // 可以修改授权项目
-                    vm.isVerifyFlag = false
+                    vm.isVerifyFlag = false;
                 }
             }
         }
@@ -316,13 +316,13 @@
                     items: function () {
                         return {
                             requirement:vm.requirement
-                        }
+                        };
                     }
                 }
             });
 
             modalInstance.result.then(function (data) {
-                $state.go("requirement-list")
+                $state.go("requirement-list");
             });
         }
         vm.planSave = function () {
@@ -332,7 +332,7 @@
                 $state.go('plan-edit',{planId:planId});
             }).then(function (data) {
                 toastr.error(data.message);
-            })
+            });
 
 
         };
@@ -348,7 +348,7 @@
                     items: function () {
                         return {
 
-                        }
+                        };
                     }
                 }
             });

@@ -15,6 +15,6 @@
             closeButton:true,
             progressBar:true,
             timeOut:1500
-        })
+        });
     }
 })();

@@ -91,7 +91,7 @@
         function _fnActionButtonsRender(data, type, full, meta) {
             return '<button type="button" class="btn btn-xs" ui-sref="stock-in-edit({id:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;'
+                '</button>&nbsp;';
         }
 
         function _createColumnFilters(){

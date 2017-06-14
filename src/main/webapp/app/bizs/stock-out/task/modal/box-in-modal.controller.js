@@ -85,7 +85,7 @@
                     return;
                 }
                 var len = _.filter(boxList,{frozenBoxCode:vm.box.frozenBoxCode}).length;
-                if(len == 0){
+                if(len === 0){
                     boxList.push(angular.copy(vm.box));
                     vm.tempBoxOptions.withOption('data', boxList);
                     vm.tempBoxInstance.rerender();
@@ -343,7 +343,7 @@
                 '<button type="button" ng-click="vm.sampleDown('+ full.orderIndex +')" class="btn btn-warning btn-xs" >' +
                 '   <i class="fa fa-long-arrow-down"></i>' +
                 '</button>&nbsp;'+
-                '</div>'
+                '</div>';
         }
 
         function _fnLoadTube() {
@@ -370,7 +370,7 @@
                 var index = _.findIndex(operateTubes,{orderIndex:oIndex});
                 var currentTube =  operateTubes[index];
                 var preTube =  operateTubes[index-1];
-                _fnTransposition(currentTube,preTube)
+                _fnTransposition(currentTube,preTube);
             }
         };
         //向下排序
@@ -382,7 +382,7 @@
                 var index = _.findIndex(operateTubes,{orderIndex:oIndex});
                 var currentTube =  operateTubes[index];
                 var preTube =  operateTubes[index+1];
-                _fnTransposition(currentTube,preTube)
+                _fnTransposition(currentTube,preTube);
             }
         };
         function _fnTransposition(currentTube,preTube) {
@@ -432,7 +432,7 @@
             var tempBoxListCopy = angular.copy(tempBoxList);
             for(var i =0; i < tempBoxListCopy.length; i++){
                 delete tempBoxListCopy[i].sampleCount;
-                delete tempBoxListCopy[i].sampleOutCount
+                delete tempBoxListCopy[i].sampleOutCount;
             }
             TaskService.saveTempBoxes(taskId,tempBoxListCopy).success(function (data) {
                 toastr.success("保存成功!");

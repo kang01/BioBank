@@ -124,6 +124,6 @@
                         return TransportRecordService.get({id : $stateParams.id}).$promise;
                     }]
                 }
-            })
+            });
     }
 })();

@@ -64,7 +64,7 @@
             vm.transportRecord.transhipBatch = +vm.transportRecord.transhipBatch;
             _fnQuerySampleType();
             if(vm.transportRecord.projectId){
-                ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError)
+                ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError);
             }
             //盒子类型
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
@@ -156,7 +156,7 @@
                 }).error(function () {
                     BioBankBlockUi.blockUiStop();
                     toastr.error("作废功能报错！");
-                })
+                });
             };
             //为提示框的判断
             vm.saveStockInFlag = false;
@@ -177,7 +177,7 @@
                                 box:vm.box || {},
                                 receiver:vm.transportRecord.receiver,
                                 receiveDate: vm.transportRecord.receiveDate
-                            }
+                            };
                         }
                     }
                 });
@@ -217,7 +217,7 @@
                                             projectId :vm.transportRecord.projectId,
                                             frozenBoxTypeOptions:vm.frozenBoxTypeOptions,
                                             sampleTypeOptions:vm.sampleTypeOptions
-                                        }
+                                        };
                                     }
                                 }
 
@@ -238,7 +238,7 @@
                             }).error(function (data) {
                                 BioBankBlockUi.blockUiStop();
                                 toastr.error(data.message+"入库失败！");
-                            })
+                            });
                         }
                         if(!vm.saveStockInFlag && !importBoxFlag){
                             toastr.success("保存转运记录成功");
@@ -253,7 +253,7 @@
 
             //盒子类型
             function onFrozenBoxTypeSuccess(data) {
-                vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['esc'])
+                vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['esc']);
             }
             //项目编码
             function onProjectSuccess(data)  {
@@ -331,7 +331,7 @@
                         }
                     }
 
-                    hotRegisterer.getInstance('my-handsontable').render()
+                    hotRegisterer.getInstance('my-handsontable').render();
                 });
             }
             // 项目点
@@ -372,7 +372,7 @@
                     var tr = this;
                     $scope.$apply(function () {
                         someClickHandler(tr,oData);
-                    })
+                    });
                 });
                 if (vm.box && vm.box.frozenBoxCode == oData.frozenBoxCode){
                     $(nRow).addClass('rowLight');
@@ -470,7 +470,7 @@
                         domArray.push(vm.frozenTubeArray[row][col]);
 
                         //备注
-                        _fnRemarkSelectData(td,remarkArray,selectTubeArray)
+                        _fnRemarkSelectData(td,remarkArray,selectTubeArray);
                     }else{
                         domArray = [];
                         domArray.push(vm.frozenTubeArray[row][col]);
@@ -503,9 +503,9 @@
                     var hotMoves = hotRegisterer.getInstance('my-handsontable');
                     var selectedCol = hotMoves.getSelected()[1];
                     if(selectedCol + 1 < hotMoves.countCols()){
-                        return{row:0,col:1}
+                        return{row:0,col:1};
                     } else{
-                        return{row:1,col:-selectedCol}
+                        return{row:1,col:-selectedCol};
                     }
                 },
                 afterChange:function (change,source) {
@@ -564,7 +564,7 @@
 
                 //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
                 if(tube.status){
-                    changeSampleStatus(tube.status,row,col,td,cellProperties)
+                    changeSampleStatus(tube.status,row,col,td,cellProperties);
                 }
 
                 var code = tube.sampleCode && tube.sampleCode != " " ? tube.sampleCode : tube.sampleTempCode;
@@ -591,7 +591,7 @@
                 if(sampleStatus == 3003){
                     td.style.background = '';
                     td.style.backgroundColor = '#ffffff';
-                    td.style.color = '#ffffff'
+                    td.style.color = '#ffffff';
                 }
                 //异常
                 if(sampleStatus == 3004){
@@ -678,7 +678,7 @@
                 for (var i=0; i<settings.minRows; ++i){
                     var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
                     if(i > 7){
-                        pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1)
+                        pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1);
                     }
                     var tubes = [];
                     rowHeaders.push(pos.tubeRows);
@@ -834,7 +834,7 @@
                             vm.box.areaCode = vm.frozenBoxAreaOptions[i].areaCode;
                         }
                     }
-                    SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError)
+                    SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
 
                 }
             };
@@ -951,7 +951,7 @@
                             items: function () {
                                 return {
                                     remarkArray :aRemarkArray
-                                }
+                                };
                             }
                         }
 
@@ -1039,7 +1039,7 @@
                         AreasByEquipmentIdService.query({id:vm.box.equipmentId},onAreaSuccess, onError);
                     }
                     if(vm.box.areaId){
-                        SupportacksByAreaIdService.query({id:vm.box.areaId},onShelfSuccess, onError)
+                        SupportacksByAreaIdService.query({id:vm.box.areaId},onShelfSuccess, onError);
                     }
                     vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
                     // initFrozenTube(vm.box.frozenBoxType.frozenBoxTypeRows,vm.box.frozenBoxType.frozenBoxTypeColumns);

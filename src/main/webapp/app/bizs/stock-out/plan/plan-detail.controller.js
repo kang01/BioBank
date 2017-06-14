@@ -43,7 +43,7 @@
                 vm.select_all = true;
             }).then(function () {
 
-            })
+            });
         }
 
         _initStockOutBoxesTable();
@@ -157,7 +157,7 @@
                             recordsFiltered : 0,
                             data: [ ],
                             error : ""
-                        }
+                        };
                         fnCallback( array );
 
                     }
@@ -219,7 +219,7 @@
                     PlanService.queryPlanTubes(vm.sampleIds,boxId).success(function (data) {
                         vm.tubeOptions.withOption('data', data);
                         vm.tubeInstance.rerender();
-                    })
+                    });
                 }
 
             }
@@ -315,7 +315,7 @@
         }
         function actionsHtml(data, type, full, meta) {
             return  '<a  ng-click="vm.taskDescModal('+full.id+')">查看</a>&nbsp;' +
-                    '<a ng-if="'+full.status+'==1601" ng-click="vm.taskDelModal('+full.id+')">删除</a>&nbsp;'
+                    '<a ng-if="'+full.status+'==1601" ng-click="vm.taskDelModal('+full.id+')">删除</a>&nbsp;';
         }
         //样本需求
         vm.demand = [];
@@ -329,7 +329,7 @@
                 angular.forEach(vm.plan.stockOutRequirement, function (data, index) {
                     vm.checked.push(data.id);
                     vm.demand[data.id] = true;
-                })
+                });
             }else {
                 vm.select_one = false;
                 vm.checked = [];
@@ -355,7 +355,7 @@
 
             // console.log(JSON.stringify(vm.checked))
             vm.sampleIds = vm.checked.join(",");
-            _queryPlanBoxes()
+            _queryPlanBoxes();
         };
         //获取冻存盒列表
         function _queryPlanBoxes() {
@@ -364,7 +364,7 @@
                 vm.dtInstance.rerender();
                 vm.tubeOptions.withOption('data', []);
                 vm.tubeInstance.rerender();
-            },100)
+            },100);
 
         }
 
@@ -378,7 +378,7 @@
                     _queryPlanBoxes();
                     vm.strBoxIds = "";
                     vm.taskInstance.rerender();
-                })
+                });
             }else{
                 toastr.warning("请勾选申请出库的冻存盒!");
             }
@@ -396,7 +396,7 @@
                     items: function () {
                         return {
                             taskId:taskId
-                        }
+                        };
                     }
                 }
             });

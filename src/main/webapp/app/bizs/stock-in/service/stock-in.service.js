@@ -34,7 +34,7 @@
                     'Content-Type': 'application/json'
                 },
                 data: JSON.stringify(data)
-            }
+            };
 
             return $http(req);
         };

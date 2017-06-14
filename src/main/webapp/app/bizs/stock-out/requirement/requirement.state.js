@@ -148,6 +148,6 @@
                         return RequirementService.queryRequirementDesc($stateParams.applyId);
                     }]
                 }
-            })
+            });
     }
 })();

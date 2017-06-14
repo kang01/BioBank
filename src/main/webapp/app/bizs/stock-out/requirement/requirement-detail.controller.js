@@ -83,13 +83,13 @@
                 vm.projectIds = _.join(vm.requirement.projectIds, ',');
             }
             if(vm.requirement.status){
-                vm.status = vm.requirement.status
+                vm.status = vm.requirement.status;
             }
             vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
             setTimeout(function () {
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                 vm.isApproval();
-            },100)
+            },100);
         }
         //委托方查询
         function _fuQueryDelegates() {
@@ -98,7 +98,7 @@
                 if(!vm.requirement.delegateId){
                     vm.requirement.delegateId = vm.delegatesOptions[0].id;
                 }
-            })
+            });
         }
         vm.delegatesConfig = {
             valueField:'id',
@@ -159,7 +159,7 @@
                                 // 开启授权项目选择框
                                 selector.enable();
                             });
-                        })
+                        });
                     }, function () {
                         // 开启授权项目选择框, 继续接受编辑
                         selector.enable();
@@ -179,7 +179,7 @@
             RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
                 vm.status = data.status;
                 vm.requirement.id = data.id;
-                $state.go("requirement-additionApply",{applyId:vm.requirement.id})
+                $state.go("requirement-additionApply",{applyId:vm.requirement.id});
             });
         }
         //打印申请
@@ -202,8 +202,8 @@
                 invalid.invalidReason = reason;
                 RequirementService.invalidPlan(vm.requirement.id,invalid).success(function (data) {
                     toastr.success("作废成功!");
-                    $state.go("requirement-list")
-                })
+                    $state.go("requirement-list");
+                });
             }, function () {
 
             });
@@ -227,7 +227,7 @@
                             projectIds:vm.projectIds,
                             requirementId:vm.requirement.id,
                             sampleRequirement:sampleRequirement || ""
-                        }
+                        };
                     }
                 }
             });
@@ -249,7 +249,7 @@
             }).error(function (data) {
                 BioBankBlockUi.blockUiStop();
                 toastr.error("保存申请记录失败！");
-            })
+            });
         }
         //批量核对
         function _fnSampleRequirementCheckList() {
@@ -258,7 +258,7 @@
                 vm.requirementApplyFlag = true;
                 _loadRequirement();
             }).error(function (data) {
-            })
+            });
         }
         function _loadRequirement(success, error) {
             RequirementService.queryRequirementDesc(vm.requirement.id).then(function (data) {
@@ -337,7 +337,7 @@
                     '<a ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;'+
                     '<a ng-click="vm.sampleRequirementDel('+full.id+')">删除</a>&nbsp;'+
                     '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementDescModel('+full.id+')">详情</a>'+
-                    '</div>'
+                    '</div>';
         }
         //编辑
         function _fnSampleRequirementEdit(sampleRequirementId) {
@@ -349,21 +349,21 @@
                 //     _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
                 // }
             }).error(function (data) {
-            })
+            });
         }
         //核对
         function _fnSampleRequirementCheck(sampleRequirementId) {
             RequirementService.checkSampleRequirement(sampleRequirementId).success(function (data) {
                 _loadRequirement();
             }).error(function (data) {
-            })
+            });
         }
         //复原
         function _fnSampleRequirementRevert(sampleRequirementId) {
             RequirementService.revertSampleRequirement(sampleRequirementId).success(function (data) {
                 _loadRequirement();
             }).error(function (data) {
-            })
+            });
         }
         //删除
         function _fnSampleRequirementDel(sampleRequirementId) {
@@ -380,7 +380,7 @@
                     _loadRequirement();
                 }).error(function (data) {
                     toastr.error(data.message);
-                })
+                });
             });
 
         }
@@ -396,7 +396,7 @@
                     items: function () {
                         return {
                             sampleRequirementId:sampleRequirementId
-                        }
+                        };
                     }
                 }
             });
@@ -423,7 +423,7 @@
                     vm.isVerifyFlag = true;
                 }else{
                     // 可以修改授权项目
-                    vm.isVerifyFlag = false
+                    vm.isVerifyFlag = false;
                 }
             }
         }
@@ -443,13 +443,13 @@
                     items: function () {
                         return {
                             requirement:vm.requirement
-                        }
+                        };
                     }
                 }
             });
 
             modalInstance.result.then(function (data) {
-                $state.go("requirement-list")
+                $state.go("requirement-list");
             }, function () {
                 vm.sampleflag = false;
             });
@@ -461,7 +461,7 @@
                 $state.go('plan-edit',{planId:planId});
             }).then(function (data) {
                 toastr.error(data.message);
-            })
+            });
 
 
         };
@@ -477,7 +477,7 @@
                     items: function () {
                         return {
 
-                        }
+                        };
                     }
                 }
             });

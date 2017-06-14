@@ -1,39 +1,71 @@
 package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
  * Created by zhuyu on 2017/5/16.
  */
+@Entity
+@Table(name = "view_stock_out_handover_tube")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockOutHandoverSampleReportDTO {
+    @Id
     @NotNull
     @JsonView(DataTablesOutput.View.class)
-    Long id;
-    Long no;
+    private Long id;
+
+    private Long no;
     @NotNull
     @JsonView(DataTablesOutput.View.class)
-    String boxCode;
+    @Column(name = "frozen_box_code")
+    private String boxCode;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
-    String location;
+    @Column(name = "location")
+    private String location;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
-    String sampleCode;
+    @Column(name = "sample_code")
+    private String sampleCode;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
-    String sampleType;
+    @Column(name = "sample_type_name")
+    private String sampleType;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
-    String sex;
+    @Column(name = "gender")
+    private String sex;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
-    String age;
+    @Column(name = "age")
+    private String age;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
-    String diseaseType;
+    @Column(name = "disease_type")
+    private String diseaseType;
+
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "project_code")
+    private String projectCode;
+
+    @Column(name = "stock_out_handover_id")
+    private Long stockOutHandoverId;
 
     public Long getId() {
         return id;
@@ -114,7 +146,12 @@ public class StockOutHandoverSampleReportDTO {
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
     }
-    @NotNull
-    @JsonView(DataTablesOutput.View.class)
-    String projectCode;
+
+    public Long getStockOutHandoverId() {
+        return stockOutHandoverId;
+    }
+
+    public void setStockOutHandoverId(Long stockOutHandoverId) {
+        this.stockOutHandoverId = stockOutHandoverId;
+    }
 }

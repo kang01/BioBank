@@ -99,6 +99,7 @@
     <include file="classpath:config/liquibase/changelog/20170512000000_added_view_StockOutTask.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170513000000_added_view_StockOutTaskTubeByBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170514000000_added_view_StockOutHandover.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170515000000_added_view_StockOutHandoverSamples.xml" relativeToChangelogFile="false"/>
 
     <include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

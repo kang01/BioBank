@@ -64,6 +64,9 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     @Autowired
     private StockOutHandoverRepositries stockOutHandoverRepositries;
 
+    @Autowired
+    private StockOutHandoverSampleRepositries stockOutHandoverSampleRepositries;
+
     public StockOutHandoverServiceImpl(StockOutHandoverRepository stockOutHandoverRepository, StockOutHandoverMapper stockOutHandoverMapper) {
         this.stockOutHandoverRepository = stockOutHandoverRepository;
         this.stockOutHandoverMapper = stockOutHandoverMapper;
@@ -355,5 +358,11 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     @Override
     public DataTablesOutput<StockOutHandoverForDataTableEntity> getPageDataStockOutHandOver(DataTablesInput input) {
         return stockOutHandoverRepositries.findAll(input);
+    }
+
+    @Override
+    public DataTablesOutput<StockOutHandoverSampleReportDTO> getPageStockOutHandoverSample(Long id, DataTablesInput input) {
+        input.addColumn("stockOutHandoverId",true,true,id+"+");
+        return stockOutHandoverSampleRepositries.findAll(input);
     }
 }

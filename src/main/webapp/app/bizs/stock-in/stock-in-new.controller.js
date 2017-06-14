@@ -73,7 +73,7 @@
                 // 数据从服务器加载
                 .withOption('serverSide',true)
                 // 设置默认排序
-                .withOption('order', [[1, 'asc' ]])
+                .withOption('order', [[7, 'asc' ], [1, 'asc' ]])
                 // 指定数据加载方法
                 .withFnServerData(_fnServerData)
                 // 每行的渲染

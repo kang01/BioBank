@@ -66,8 +66,12 @@
                     options.withOption('headerCallback', function(header) {
                         if (!options.isHeaderCompiled) {
                             // Use this headerCompiled field to only compile header once
-                            options.isHeaderCompiled = true;
-                            $compile(angular.element(header).contents())(scope);
+                            // options.isHeaderCompiled = true;
+                            var theader = angular.element(header);
+                            // 检查DOM是否已经$compile过了
+                            if (theader.find(".ng-scope").length == 0){
+                                $compile(theader.contents())(scope);
+                            }
                         }
                     });
                 }

@@ -40,7 +40,7 @@
                 },
                 'info': '第 _PAGE_ 页 / 总 _PAGES_ 页',
                 'infoEmpty': '没有数据',
-                'infoFiltered': '(过滤后总行数 _MAX_ 条)'
+                'infoFiltered': '(过滤后总行数 _TOTAL_ 条)'
             };
             DTDefaultOptions.setLanguage(tableLang);
         }

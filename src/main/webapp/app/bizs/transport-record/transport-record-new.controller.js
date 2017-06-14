@@ -682,7 +682,7 @@
                     }
                     var tubes = [];
                     rowHeaders.push(pos.tubeRows);
-                    for (var j=0; j<settings.minCols; ++j){
+                    for (var j = 0; j < settings.minCols; ++j){
                         pos.tubeColumns = j + 1 + "";
                         if (colHeaders.length < settings.minCols){
                             colHeaders.push(pos.tubeColumns);
@@ -729,11 +729,12 @@
                         var tube = angular.copy(rowTubes[j]);
                         delete tube.rowNO;
                         delete tube.colNO;
-                        if (tube.id
-                            || (tube.sampleCode && tube.sampleCode.length > 1)
-                            || (tube.sampleTempCode && tube.sampleTempCode.length > 1)){
-                            box.frozenTubeDTOS.push(tube)
-                        }
+                        box.frozenTubeDTOS.push(tube);
+                        // if (tube.id
+                        //     || (tube.sampleCode && tube.sampleCode.length > 1)
+                        //     || (tube.sampleTempCode && tube.sampleTempCode.length > 1)){
+                        //
+                        // }
                     }
                 }
 
@@ -1044,7 +1045,7 @@
                     // initFrozenTube(vm.box.frozenBoxType.frozenBoxTypeRows,vm.box.frozenBoxType.frozenBoxTypeColumns);
                     _reloadTubesForTable(vm.box);
                     vm.boxStr = JSON.stringify(vm.createBoxDataFromTubesTable());
-                })
+                });
 
                 //统计样本数
                 _sampleCount(vm.box.frozenTubeDTOS);

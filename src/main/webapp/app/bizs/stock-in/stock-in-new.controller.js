@@ -136,17 +136,24 @@
             var isSplit = data.isSplit || 0;
             // var sampleType = data.sampleType && data.sampleType.sampleTypeName || '';
             // 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库
-            // status = MasterData.getStatus(data.status);
-            switch (data.status){
-                case '2001': status = '新建'; break;
-                case '2002': isSplit ? status = '待分装' : status = '待入库'; break;
-                case '2003': status = '已分装'; break;
-                case '2004': status = '已入库'; break;
-                case '2005': status = '已作废'; break;
-                case '2006': status = '已上架'; break;
-                case '2008': status = '待出库'; break;
-                case '2009': status = '已出库'; break;
+            status = MasterData.getFrozenBoxStatus(data.status);
+            if(data.status == '2002'){
+                if(isSplit){
+                    status = "待分装";
+                }else{
+                    status = "待入库"
+                }
             }
+            // switch (data.status){
+            //     case '2001': status = '新建'; break;
+            //     case '2002': isSplit ? status = '待分装' : status = '待入库'; break;
+            //     case '2003': status = '已分装'; break;
+            //     case '2004': status = '已入库'; break;
+            //     case '2005': status = '已作废'; break;
+            //     case '2006': status = '已上架'; break;
+            //     case '2008': status = '待出库'; break;
+            //     case '2009': status = '已出库'; break;
+            // }
             // $('td:eq(2)', row).html(sampleType);
             $('td:eq(6)', row).html(isSplit ? '需要分装' : '');
             $('td:eq(7)', row).html(status);

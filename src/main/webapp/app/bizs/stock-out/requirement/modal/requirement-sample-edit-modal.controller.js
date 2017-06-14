@@ -128,7 +128,10 @@
             if(!vm.isAge){
                 vm.sampleRequirement.age = "0;0";
             }else{
-                vm.sampleRequirement.age = "30;70"
+                if(vm.sampleRequirement.age == "0;0"){
+                    vm.sampleRequirement.age = "30;70"
+                }
+
             }
         }
 

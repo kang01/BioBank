@@ -600,8 +600,8 @@
                     <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
                     <diffChangeLogFile>src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
                     <driver>oracle.jdbc.OracleDriver</driver>
-                    <!--<url>jdbc:oracle:thin:@101.201.69.125:1521:xe</url>-->
                     <url>jdbc:oracle:thin:@10.24.10.56:1521:xe</url>
+                    <!--<url>jdbc:oracle:thin:@101.201.69.125:1521:xe</url>-->
                     <defaultSchemaName></defaultSchemaName>
                     <username>biobank1</username>
                     <password>root123</password>

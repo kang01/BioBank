@@ -160,7 +160,9 @@
 
                 return (_.find(allStatus, {id:statusCode+""})||{}).name;
             }
-
+            function _getFrozenBoxStatus(statusCode) {
+                return (_.find(_frozenBoxStatus,{value:statusCode+""})|| {}).label;
+            }
             var masterData = {
                 sexDict :_sexDict,
                 diseaseType :_diseaseType,
@@ -171,12 +173,13 @@
                 frozenBoxStatus: _frozenBoxStatus,
                 frozenTubeStatus: _frozenTubeStatus,
                 getStatus: _getStatus,
+                getFrozenBoxStatus: _getFrozenBoxStatus
             };
             return masterData;
         })
         .factory('SampleService', function () {
             var factory = {};
-            //改变管子样本类型 1:分类
+            //改变管子样本类型 1:分类 2:类型
             factory.changeSampleType = function (sampleId,td,sampleTypeOptions,status) {
                 if(status == 1){
                     for(var i = 0; i < sampleTypeOptions.length; i++){
@@ -189,7 +192,8 @@
                         if(sampleId == sampleTypeOptions[i].id){
                             td.style.backgroundColor = sampleTypeOptions[i].backColor;
                         }
-                    }                }
+                    }
+                }
 
             };
             return factory;

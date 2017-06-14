@@ -24,10 +24,10 @@
             invalidTakeOver:_invalidTakeOver
         };
         function _queryTakeOverList(data,oSettings) {
-            return $http.post('/api/res/stock-out-handovers',JSON.stringify(data))
+            return $http.post('/api/res/stock-out-handovers',JSON.stringify(data));
         }
         function _queryWaitingTakeOverFrozenBoxesList(applyId, data,oSettings) {
-            return $http.post('/api/res/stock-out-frozen-boxes/apply/'+applyId+'/waiting-handover',JSON.stringify(data))
+            return $http.post('/api/res/stock-out-frozen-boxes/apply/'+applyId+'/waiting-handover',JSON.stringify(data));
         }
 
         function _saveTakeoverInfo(dto){
@@ -45,13 +45,13 @@
             });
         }
         function _saveTakeOverComplete(ids,param) {
-            return $http.put('/api/stock-out-handovers/stockOutBox/'+ids+'/complete',param)
+            return $http.put('/api/stock-out-handovers/stockOutBox/'+ids+'/complete',param);
         }
         function _queryTakeOverView(takeOverId,data) {
-            return $http.post('/api/res/stock-out-handovers/'+takeOverId+'/samples',JSON.stringify(data))
+            return $http.post('/api/res/stock-out-handovers/'+takeOverId+'/samples',JSON.stringify(data));
         }
         function _invalidTakeOver(takeOverId,param) {
-            return $http.put('/api/stock-out-handovers/'+takeOverId+'/invalid',param)
+            return $http.put('/api/stock-out-handovers/'+takeOverId+'/invalid',param);
         }
         return service;
     }

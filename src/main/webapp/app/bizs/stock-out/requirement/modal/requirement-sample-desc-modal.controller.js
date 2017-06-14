@@ -26,9 +26,9 @@
                 vm.len = _.filter(vm.requirementDesc.frozenTubeList,{status:'3001'}).length;
                 setTimeout(function () {
                     vm.dtOptions.withOption('data', vm.requirementDesc.frozenTubeList);
-                },500)
+                },500);
             }).error(function (data) {
-            })
+            });
         }
         _initSampleRequirementDesc();
 

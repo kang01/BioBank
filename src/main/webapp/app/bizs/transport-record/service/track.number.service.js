@@ -23,9 +23,9 @@
                 }).error(function (data,status,headers,config) {
                     defer.reject(data);
                 });
-                return defer.promise
+                return defer.promise;
             }
-        }
+        };
     }
 
 })();

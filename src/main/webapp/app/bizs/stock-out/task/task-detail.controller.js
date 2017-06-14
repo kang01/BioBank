@@ -57,7 +57,7 @@
                     taskId = data.id;
                 }).then(function () {
 
-                })
+                });
             }
             //出库负责人
             SampleUserService.query({}, onPersonSuccess, onError);
@@ -79,7 +79,7 @@
                 vm.stockOutLen = _.filter(vm.stockOutBoxList,{status:"1702"}).length;
                 vm.stockOutSampleOptions.withOption('data', vm.stockOutBoxList);
                 vm.stockOutSampleInstance.rerender();
-            })
+            });
         }
         _fnInitTask();
         //开始任务计时器
@@ -94,7 +94,7 @@
         startTimer();
 
         $scope.$on('$destroy',function(event,toState,toParams,fromState,fromParams){
-            window.clearInterval(taskTimer)
+            window.clearInterval(taskTimer);
         });
         vm.close = function () {
             $state.go('task-list');
@@ -110,7 +110,7 @@
             }).error(function (data) {
                 toastr.error("保存任务失败!");
                 BioBankBlockUi.blockUiStop();
-            })
+            });
         }
         function _fnPrintBox() {
             window.open ('/api/stock-out-frozen-boxes/task/' + vm.taskId +'/print');
@@ -175,7 +175,7 @@
                 var tr = this;
                 $scope.$apply(function () {
                     rowClickHandler(tr,oData);
-                })
+                });
             });
             if (vm.box && vm.box.frozenBoxCode == oData.frozenBoxCode){
                 $(nRow).addClass('rowLight');
@@ -197,10 +197,10 @@
             TaskService.queryTubes(boxCode,vm.taskId).success(function (data) {
                 var box = data;
                 vm.frozenTubeDTOS = box.frozenTubeDTOS;
-                _reloadTubesForTable(box)
+                _reloadTubesForTable(box);
             }).error(function (data) {
 
-            })
+            });
         }
         //加载管子表控件
         function _reloadTubesForTable(box){
@@ -214,7 +214,7 @@
             for (var i=0; i < row; ++i){
                 var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
                 if(i > 7){
-                    pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1)
+                    pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1);
                 }
                 var tubes = [];
                 rowHeaders.push(pos.tubeRows);
@@ -430,12 +430,12 @@
         };
         vm.scanCodeBlur = function () {
             vm.flagStatus = false;
-            window.clearInterval(scanCodeTimer)
+            window.clearInterval(scanCodeTimer);
         };
         //扫码取样
         function _fnScanCode(){
             if (!vm.sampleCode) {
-                return
+                return;
             }
             var tableCtrl = _getSampleDetailsTableCtrl();
             var sampleCode = vm.sampleCode.toUpperCase();
@@ -453,7 +453,7 @@
                 setTimeout(function(){
                     toastr.error("编码错误，请重新扫码!");
                 },100);
-                return
+                return;
             }
             var row = scanCodeTubes[0].rowNO;
             var col = scanCodeTubes[0].colNO;
@@ -466,7 +466,7 @@
                 setTimeout(function(){
                     toastr.error("扫码重复!");
                 },100);
-                return
+                return;
             }
             scanCodeTubes[0].orderIndex = boxInTubes.length + 1;
             vm.tubes[row][col-1].orderIndex = boxInTubes.length + 1;
@@ -490,7 +490,7 @@
                     items: function () {
                         return {
                             status:1
-                        }
+                        };
                     }
                 }
             });
@@ -526,7 +526,7 @@
                     items: function () {
                         return {
                             status:status
-                        }
+                        };
                     }
                 }
             });
@@ -569,7 +569,7 @@
                     items: function () {
                         return {
                             status:2
-                        }
+                        };
                     }
                 }
             });
@@ -603,7 +603,7 @@
                             allInFlag:vm.allInFlag,
                             boxInTubes:vm.boxInTubes,
                             taskId:vm.taskId
-                        }
+                        };
                     }
                 }
             });
@@ -702,11 +702,11 @@
                     '</button> &nbsp;'+
                     '<button type="button" class="btn btn-default btn-xs"  ng-click="vm.commentModal(2,'+ full.id +')">' +
                     '批注' +
-                    '</button>'
+                    '</button>';
             }else{
                 return '<button type="button" class="btn btn-default btn-xs"  ng-click="vm.commentModal(2,'+ full.id +')">' +
                     '批注' +
-                    '</button>'
+                    '</button>';
             }
 
 
@@ -730,7 +730,7 @@
                             taskId:vm.taskId,
                             stockOutHeadName1:vm.task.stockOutHeader1,
                             stockOutHeadName2:vm.task.stockOutHeader2
-                        }
+                        };
                     }
                 }
             });

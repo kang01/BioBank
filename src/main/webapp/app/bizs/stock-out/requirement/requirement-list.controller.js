@@ -21,7 +21,7 @@
         function _fnAdd() {
             RequirementService.saveRequirementEmpty().success(function (data) {
                 $state.go('requirement-edit', {applyId: data.id, applyCode: data.applyCode});
-            })
+            });
 
         }
 
@@ -160,14 +160,14 @@
             if (full.status != '1103') {
                 return '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-edit({applyId:' + full.id + '})">' +
                     '<i class="fa fa-edit"></i>' +
-                    '</a>'
+                    '</a>';
             } else {
                 return '<a  type="button" class="btn btn-default btn-xs" ui-sref="requirement-view({applyId:' + full.id + ',viewFlag:1})">' +
                     '<i class="fa fa-eye"></i>' +
                     '</a>&nbsp;' +
                     '<a  type="button" class="btn btn-default btn-xs" ng-click="vm.additionApply(' + full.id + ')">' +
                     '附加' +
-                    '</a>'
+                    '</a>';
             }
 
 
@@ -275,7 +275,7 @@
             var html = '';
             //有下一级
             if (full.levelNo == 1) {
-                html = '<div class="details-control"></div>'
+                html = '<div class="details-control"></div>';
             }
             return html;
         }

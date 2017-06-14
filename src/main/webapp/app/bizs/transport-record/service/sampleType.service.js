@@ -16,10 +16,10 @@
           queryProjectSampleClasses:_queryProjectSampleClasses
         };
         function _querySampleType() {
-            return $http.get('api/sample-types/all')
+            return $http.get('api/sample-types/all');
         }
         function _queryProjectSampleClasses(projectId,sampleTypeId) {
-            return $http.get('api/project-sample-classes/projectId/'+projectId+'/sampleTypeId/'+sampleTypeId)
+            return $http.get('api/project-sample-classes/projectId/'+projectId+'/sampleTypeId/'+sampleTypeId);
         }
         return service;
     }

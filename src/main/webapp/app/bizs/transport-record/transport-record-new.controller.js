@@ -64,7 +64,7 @@
             vm.transportRecord.transhipBatch = +vm.transportRecord.transhipBatch;
             _fnQuerySampleType();
             if(vm.transportRecord.projectId){
-                ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError)
+                ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError);
             }
             //盒子类型
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
@@ -156,7 +156,7 @@
                 }).error(function () {
                     BioBankBlockUi.blockUiStop();
                     toastr.error("作废功能报错！");
-                })
+                });
             };
             //为提示框的判断
             vm.saveStockInFlag = false;
@@ -177,7 +177,7 @@
                                 box:vm.box || {},
                                 receiver:vm.transportRecord.receiver,
                                 receiveDate: vm.transportRecord.receiveDate
-                            }
+                            };
                         }
                     }
                 });
@@ -217,7 +217,7 @@
                                             projectId :vm.transportRecord.projectId,
                                             frozenBoxTypeOptions:vm.frozenBoxTypeOptions,
                                             sampleTypeOptions:vm.sampleTypeOptions
-                                        }
+                                        };
                                     }
                                 }
 
@@ -238,7 +238,7 @@
                             }).error(function (data) {
                                 BioBankBlockUi.blockUiStop();
                                 toastr.error(data.message+"入库失败！");
-                            })
+                            });
                         }
                         if(!vm.saveStockInFlag && !importBoxFlag){
                             toastr.success("保存转运记录成功");
@@ -253,7 +253,7 @@
 
             //盒子类型
             function onFrozenBoxTypeSuccess(data) {
-                vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['esc'])
+                vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['esc']);
             }
             //项目编码
             function onProjectSuccess(data)  {
@@ -331,7 +331,7 @@
                         }
                     }
 
-                    hotRegisterer.getInstance('my-handsontable').render()
+                    hotRegisterer.getInstance('my-handsontable').render();
                 });
             }
             // 项目点
@@ -372,7 +372,7 @@
                     var tr = this;
                     $scope.$apply(function () {
                         someClickHandler(tr,oData);
-                    })
+                    });
                 });
                 if (vm.box && vm.box.frozenBoxCode == oData.frozenBoxCode){
                     $(nRow).addClass('rowLight');
@@ -462,7 +462,7 @@
                     vm.remarkFlag = true;
                     var td = this;
                     remarkArray = this.getData(row,col,row2,col2);
-                    var selectTubeArray = this.getSelected();
+                    var selectTubeArrayIndex = this.getSelected();
 
                     if(window.event && window.event.ctrlKey){
                         //换位
@@ -470,14 +470,14 @@
                         domArray.push(vm.frozenTubeArray[row][col]);
 
                         //备注
-                        _fnRemarkSelectData(td,remarkArray,selectTubeArray)
+                        _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex);
                     }else{
                         domArray = [];
                         domArray.push(vm.frozenTubeArray[row][col]);
                         //备注
                         $(".temp").remove();
                         aRemarkArray = [];
-                        _fnRemarkSelectData(td,remarkArray,selectTubeArray);
+                        _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex);
 
 
                     }
@@ -503,9 +503,9 @@
                     var hotMoves = hotRegisterer.getInstance('my-handsontable');
                     var selectedCol = hotMoves.getSelected()[1];
                     if(selectedCol + 1 < hotMoves.countCols()){
-                        return{row:0,col:1}
+                        return{row:0,col:1};
                     } else{
-                        return{row:1,col:-selectedCol}
+                        return{row:1,col:-selectedCol};
                     }
                 },
                 afterChange:function (change,source) {
@@ -564,7 +564,7 @@
 
                 //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
                 if(tube.status){
-                    changeSampleStatus(tube.status,row,col,td,cellProperties)
+                    changeSampleStatus(tube.status,row,col,td,cellProperties);
                 }
 
                 var code = tube.sampleCode && tube.sampleCode != " " ? tube.sampleCode : tube.sampleTempCode;
@@ -591,7 +591,7 @@
                 if(sampleStatus == 3003){
                     td.style.background = '';
                     td.style.backgroundColor = '#ffffff';
-                    td.style.color = '#ffffff'
+                    td.style.color = '#ffffff';
                 }
                 //异常
                 if(sampleStatus == 3004){
@@ -678,21 +678,33 @@
                 for (var i=0; i<settings.minRows; ++i){
                     var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
                     if(i > 7){
-                        pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1)
+                        pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1);
                     }
                     var tubes = [];
                     rowHeaders.push(pos.tubeRows);
-                    for (var j=0; j<settings.minCols; ++j){
+                    for (var j = 0; j < settings.minCols; ++j){
                         pos.tubeColumns = j + 1 + "";
                         if (colHeaders.length < settings.minCols){
                             colHeaders.push(pos.tubeColumns);
                         }
+
+
+
                         var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
                         var tube = _createTubeForTableCell(tubeInBox, box, i, j + 1, pos);
+                        //混合类型
+                        if(box.sampleType.isMixed == "1"){
+                            for (var l = 0; l < vm.projectSampleTypeOptions.length; l++) {
+                                if (vm.projectSampleTypeOptions[l].columnsNumber == pos.tubeColumns) {
+                                    tube.sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
+                                }
+                            }
+                        }
                         tubes.push(tube);
                     }
                     tubesInTable.push(tubes);
                 }
+
                 vm.frozenTubeArray = tubesInTable;
 
                 settings.rowHeaders = rowHeaders;
@@ -729,10 +741,11 @@
                         var tube = angular.copy(rowTubes[j]);
                         delete tube.rowNO;
                         delete tube.colNO;
+
                         if (tube.id
                             || (tube.sampleCode && tube.sampleCode.length > 1)
                             || (tube.sampleTempCode && tube.sampleTempCode.length > 1)){
-                            box.frozenTubeDTOS.push(tube)
+                            box.frozenTubeDTOS.push(tube);
                         }
                     }
                 }
@@ -833,7 +846,7 @@
                             vm.box.areaCode = vm.frozenBoxAreaOptions[i].areaCode;
                         }
                     }
-                    SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError)
+                    SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
 
                 }
             };
@@ -890,16 +903,37 @@
             };
             var aRemarkArray = [];
             //备注 选择单元格数据
-            function _fnRemarkSelectData(td,remarkArray,selectTubeArray) {
-                var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;"></div>';
+            function _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex) {
+                var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.2)"></div>';
                 for(var m = 0; m < remarkArray.length; m++){
                     for (var n = 0; n < remarkArray[m].length; n++){
-                        aRemarkArray.push(remarkArray[m][n]);
+                        if ((remarkArray[m][n].sampleCode && remarkArray[m][n].sampleCode.length > 1)
+                            || (remarkArray[m][n].sampleTempCode && remarkArray[m][n].sampleTempCode.length > 1)){
+                            aRemarkArray.push(remarkArray[m][n]);
+                        }
                     }
                 }
-                for(var i = selectTubeArray[0];i <= selectTubeArray[2]; i++){
-                    for(var j = selectTubeArray[1];  j <= selectTubeArray[3];j++)
-                        $(td.getCell(i,j)).append(txt);
+                var start1,end1,start2,end2;
+                if(selectTubeArrayIndex[0] > selectTubeArrayIndex[2]){
+                    start1 = selectTubeArrayIndex[2];
+                    end1 = selectTubeArrayIndex[0];
+                }else{
+                    start1 = selectTubeArrayIndex[0];
+                    end1 = selectTubeArrayIndex[2];
+                }
+                if(selectTubeArrayIndex[1] > selectTubeArrayIndex[3]){
+                    start2 = selectTubeArrayIndex[3];
+                    end2 = selectTubeArrayIndex[1];
+                }else{
+                    start2 = selectTubeArrayIndex[1];
+                    end2 = selectTubeArrayIndex[3];
+                }
+                for(var i = start1;i <= end1; i++){
+                    for(var j = start2;  j <= end2;j++)
+                        if($(td.getCell(i,j))[0].childElementCount !=3){
+                            $(td.getCell(i,j)).append(txt);
+                        }
+
                 }
             }
             //修改样本状态
@@ -950,7 +984,7 @@
                             items: function () {
                                 return {
                                     remarkArray :aRemarkArray
-                                }
+                                };
                             }
                         }
 
@@ -1038,13 +1072,13 @@
                         AreasByEquipmentIdService.query({id:vm.box.equipmentId},onAreaSuccess, onError);
                     }
                     if(vm.box.areaId){
-                        SupportacksByAreaIdService.query({id:vm.box.areaId},onShelfSuccess, onError)
+                        SupportacksByAreaIdService.query({id:vm.box.areaId},onShelfSuccess, onError);
                     }
                     vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
                     // initFrozenTube(vm.box.frozenBoxType.frozenBoxTypeRows,vm.box.frozenBoxType.frozenBoxTypeColumns);
                     _reloadTubesForTable(vm.box);
                     vm.boxStr = JSON.stringify(vm.createBoxDataFromTubesTable());
-                })
+                });
 
                 //统计样本数
                 _sampleCount(vm.box.frozenTubeDTOS);

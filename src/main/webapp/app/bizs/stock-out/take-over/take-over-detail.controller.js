@@ -136,7 +136,7 @@
                 }
                 if(applyId){
                     vm.dto.stockOutApplyId = applyId;
-                    _fnGetPlans(applyId)
+                    _fnGetPlans(applyId);
                 }
                 if(planId){
                     _fnGetTasks(planId);
@@ -333,7 +333,7 @@
             function _fnActionsHtml(data, type, full, meta) {
                 return '<button type="button" class="btn btn-default btn-xs" ui-sref="take-over-view({id:'+ full.id +'})">' +
                     '   <i class="fa fa-eye"></i>' +
-                    '</button>&nbsp;'
+                    '</button>&nbsp;';
             }
             function _fnActionsSelectHtml(data, type, full, meta) {
                 vm.selected[full.id] = false;

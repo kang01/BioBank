@@ -87,6 +87,6 @@
                         return $translate.refresh();
                     }]
                 }
-            })
+            });
     }
 })();

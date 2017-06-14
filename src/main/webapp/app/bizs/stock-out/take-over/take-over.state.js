@@ -124,6 +124,6 @@
                         return TakeOverService.getTakeoverInfo(id);
                     }]
                 }
-            })
+            });
     }
 })();

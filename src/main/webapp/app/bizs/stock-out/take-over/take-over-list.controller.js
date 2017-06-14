@@ -138,11 +138,11 @@
             if (full.status != '2102'){
                 return '<a type="button" class="btn btn-default btn-xs" ui-sref="take-over-edit({id:'+ full.id +'})">' +
                     '   <i class="fa fa-pencil"></i>' +
-                    '</a>&nbsp;'
+                    '</a>&nbsp;';
             }
             return '<a type="button" class="btn btn-default btn-xs" ui-sref="take-over-view({id:'+ full.id +'})">' +
                 '   <i class="fa fa-eye"></i>' +
-                '</a>&nbsp;'
+                '</a>&nbsp;';
         }
     }
 })();

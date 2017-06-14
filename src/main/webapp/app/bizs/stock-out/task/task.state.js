@@ -107,9 +107,9 @@
                     }],
                     entity: ['$stateParams', 'TaskService', function($stateParams, TaskService) {
                         var id = $stateParams.taskId;
-                        return TaskService.queryTaskDesc(id)
+                        return TaskService.queryTaskDesc(id);
                     }]
                 }
-            })
+            });
     }
 })();

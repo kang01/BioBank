@@ -58,13 +58,13 @@
             invalidPlan:_invalidPlan
         };
         function _queryDemo(data,oSettings) {
-            return $http.post('api/res/tranships',JSON.stringify(data))
+            return $http.post('api/res/tranships',JSON.stringify(data));
         }
         function _queryRequirementList(data,oSettings) {
-            return $http.post('api/res/stock-out-applies',JSON.stringify(data))
+            return $http.post('api/res/stock-out-applies',JSON.stringify(data));
         }
         function _queryCopyRequirementList(id) {
-            return $http.get('api/stock-out-applies/parentApply/'+id)
+            return $http.get('api/stock-out-applies/parentApply/'+id);
         }
         function _queryRequirementDesc(id) {
             return $http.get('api/stock-out-applies/'+id).then(function(res){
@@ -72,19 +72,19 @@
             });
         }
         function _queryDelegates() {
-            return $http.get('api/delegates/all')
+            return $http.get('api/delegates/all');
         }
         function _queryFrozenTubeType() {
-            return $http.get('api/frozen-tube-types/all')
+            return $http.get('api/frozen-tube-types/all');
         }
         function _queryRequirementSampleClasses(projectIds,sampleTypeId) {
-            return $http.get('api/project-sample-classes/projectIds/'+projectIds+'/sampleTypeId/'+sampleTypeId)
+            return $http.get('api/project-sample-classes/projectIds/'+projectIds+'/sampleTypeId/'+sampleTypeId);
         }
         function _saveRequirementEmpty() {
-            return $http.post('api/stock-out-applies/new-empty')
+            return $http.post('api/stock-out-applies/new-empty');
         }
         function _saveRequirementInfo(param) {
-            return $http.put('api/stock-out-applies/update-object',param)
+            return $http.put('api/stock-out-applies/update-object',param);
         }
         function _saveSampleRequirementOfUpload(applyId,file) {
             var req = {
@@ -98,43 +98,43 @@
             return $http(req);
         }
         function _saveSampleRequirement(applyId,param) {
-            return $http.post('api/stock-out-requirements/stockOutApply/'+applyId,param)
+            return $http.post('api/stock-out-requirements/stockOutApply/'+applyId,param);
         }
         function _saveEditSampleRequirement(applyId,param) {
-            return $http.put('api/stock-out-requirements/stockOutApply/'+applyId,param)
+            return $http.put('api/stock-out-requirements/stockOutApply/'+applyId,param);
         }
         function _querySampleRequirement(id) {
-            return $http.get('api/stock-out-requirements/'+id)
+            return $http.get('api/stock-out-requirements/'+id);
         }
         function _checkSampleRequirement(id) {
-            return $http.post('api/stock-out-requirements/'+id+'/check')
+            return $http.post('api/stock-out-requirements/'+id+'/check');
         }
         function _checkSampleRequirementList(ids) {
-            return $http.post('api/stock-out-requirements/check/'+ids)
+            return $http.post('api/stock-out-requirements/check/'+ids);
         }
         function _delSampleRequirement(id) {
-            return $http.delete('api/stock-out-requirements/'+id)
+            return $http.delete('api/stock-out-requirements/'+id);
         }
         function _descSampleRequirement(id) {
-            return $http.get('api/stock-out-requirements/getCheckDetail/'+id)
+            return $http.get('api/stock-out-requirements/getCheckDetail/'+id);
         }
         function _revertSampleRequirement(id) {
-            return $http.put('api/stock-out-requirements/revert/'+id)
+            return $http.put('api/stock-out-requirements/revert/'+id);
         }
         function _approveSampleRequirement(applyId,param) {
-            return $http.put('api/stock-out-applies/approve/'+applyId,param)
+            return $http.put('api/stock-out-applies/approve/'+applyId,param);
         }
         function _addApplyRequirement(applyId) {
-            return $http.post('api/stock-out-applies/additionalApply/'+applyId)
+            return $http.post('api/stock-out-applies/additionalApply/'+applyId);
         }
         function _sampleRevert(applyId) {
-            return $http.put('/api/stock-out-applies/revert/'+applyId)
+            return $http.put('/api/stock-out-applies/revert/'+applyId);
         }
         function _savePlan(applyId) {
-            return $http.post('/api/stock-out-plans/'+applyId)
+            return $http.post('/api/stock-out-plans/'+applyId);
         }
         function _invalidPlan(applyId,param) {
-            return $http.put('/api/stock-out-applies/'+applyId+'/invalid',param)
+            return $http.put('/api/stock-out-applies/'+applyId+'/invalid',param);
         }
 
         return service;

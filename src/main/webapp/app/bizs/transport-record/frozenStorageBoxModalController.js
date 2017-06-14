@@ -31,7 +31,7 @@
 
         if(vm.sampleTypeOptions.length){
             vm.frozenBox.sampleTypeId = vm.sampleTypeOptions[0].id;
-            _fnQueryProjectSampleClass(vm.items.projectId,vm.frozenBox.sampleTypeId)
+            _fnQueryProjectSampleClass(vm.items.projectId,vm.frozenBox.sampleTypeId);
         }
         //设备
         EquipmentService.query({},onEquipmentTempSuccess, onError);
@@ -215,7 +215,7 @@
             toastr.error(data.data.message);
             $timeout(function () {
                 blockUI.stop();
-            },1000)
+            },1000);
 
         }
 

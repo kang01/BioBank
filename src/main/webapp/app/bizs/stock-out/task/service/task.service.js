@@ -45,52 +45,52 @@
             taskTimer:_fnTaskTimer
         };
         function _queryTaskList(data,oSettings) {
-            return $http.post('api/res/stock-out-tasks',JSON.stringify(data))
+            return $http.post('api/res/stock-out-tasks',JSON.stringify(data));
         }
         function _queryTaskDesc(taskId) {
-            return $http.get('api/stock-out-tasks/'+taskId)
+            return $http.get('api/stock-out-tasks/'+taskId);
         }
         function _queryTaskBox(taskId) {
-            return $http.get('api/stock-out-frozen-boxes/task/'+taskId)
+            return $http.get('api/stock-out-frozen-boxes/task/'+taskId);
         }
         function _saveTask(param) {
-            return $http.put('api/stock-out-tasks/',param)
+            return $http.put('api/stock-out-tasks/',param);
         }
         function _queryTubes(frozenBoxCode,taskId) {
-            return $http.get('api/frozen-tubes/frozenBox/'+frozenBoxCode+'/task/'+taskId)
+            return $http.get('api/frozen-tubes/frozenBox/'+frozenBoxCode+'/task/'+taskId);
         }
         function _queryTempBoxes(taskId) {
-            return $http.get('api/stock-out-frozen-boxes/temp-box/task/'+taskId)
+            return $http.get('api/stock-out-frozen-boxes/temp-box/task/'+taskId);
         }
         function _saveTempBoxes(taskId,param) {
-            return $http.post('api/stock-out-frozen-boxes/task/'+taskId,param)
+            return $http.post('api/stock-out-frozen-boxes/task/'+taskId,param);
         }
         function _fnAbnormal(param) {
-            return $http.put('api/stock-out-task-frozen-tubes/abnormal',param)
+            return $http.put('api/stock-out-task-frozen-tubes/abnormal',param);
         }
         function _fnRepeal(param) {
-            return $http.put('api/stock-out-task-frozen-tubes/repeal',param)
+            return $http.put('api/stock-out-task-frozen-tubes/repeal',param);
         }
         function _fnNote(param) {
-            return $http.put('api/stock-out-task-frozen-tubes/note',param)
+            return $http.put('api/stock-out-task-frozen-tubes/note',param);
         }
         function _fnOutputNote(param) {
-            return $http.put('api/stock-out-frozen-boxes/note',param)
+            return $http.put('api/stock-out-frozen-boxes/note',param);
         }
         function _fnSaveOutput(taskId,frozenBoxIds,param) {
-            return $http.put('api/stock-out-frozen-boxes/task/'+taskId+'/frozen-boxes/'+frozenBoxIds,param)
+            return $http.put('api/stock-out-frozen-boxes/task/'+taskId+'/frozen-boxes/'+frozenBoxIds,param);
         }
         function _queryOutputList(taskId) {
-            return $http.get('/api/stock-out-frozen-boxes/task-box/'+taskId)
+            return $http.get('/api/stock-out-frozen-boxes/task-box/'+taskId);
         }
         function _queryOutputDes(frozenBoxIds,data) {
-            return $http.post('/api/res/stock-out-box-tubes/stockOutBox/'+frozenBoxIds,JSON.stringify(data))
+            return $http.post('/api/res/stock-out-box-tubes/stockOutBox/'+frozenBoxIds,JSON.stringify(data));
         }
         function _takeOver(taskId) {
-            return $http.post('/api/stock-out-handovers/task/'+taskId)
+            return $http.post('/api/stock-out-handovers/task/'+taskId);
         }
         function _fnTaskTimer(taskId) {
-            return $http.put('/api/stock-out-tasks/'+taskId+'/begin')
+            return $http.put('/api/stock-out-tasks/'+taskId+'/begin');
         }
         return service;
     }

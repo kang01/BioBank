@@ -15,7 +15,7 @@
             rescindPutAway: _rescindPutAway
         };
         function _rescindPutAway(stockInCode,boxCode) {
-            return $http.put('api/stock-in-boxes/stock-in/'+stockInCode+'/box/'+boxCode+'/moveDown')
+            return $http.put('api/stock-in-boxes/stock-in/'+stockInCode+'/box/'+boxCode+'/moveDown');
         }
         return service;
     }

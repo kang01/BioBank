@@ -35,39 +35,39 @@
             delTask:_delTask
         };
         function _queryPlanList(data,oSettings) {
-            return $http.post('api/res/stock-out-plans',JSON.stringify(data))
+            return $http.post('api/res/stock-out-plans',JSON.stringify(data));
         }
         function _queryApplyNumInfo(applyNumber) {
 
-            return $http.get('api/temp/stock-out-plans/applyNumber/'+applyNumber)
+            return $http.get('api/temp/stock-out-plans/applyNumber/'+applyNumber);
 
         }
         function _queryPlanSampleInfo(planId) {
-            return $http.get('api/stock-out-applies/plan/'+planId)
+            return $http.get('api/stock-out-applies/plan/'+planId);
         }
         function _queryPlanBoxes(sampleIds,data) {
-            return $http.post('api/res/stock-out-frozen-boxes/requirement/'+sampleIds,JSON.stringify(data))
+            return $http.post('api/res/stock-out-frozen-boxes/requirement/'+sampleIds,JSON.stringify(data));
         }
         function _queryPlanTubes(requirementIds,frozenBoxId) {
-            return $http.get('api/stock-out-frozen-tubes/requirements/'+requirementIds+'/frozenBox/'+frozenBoxId)
+            return $http.get('api/stock-out-frozen-tubes/requirements/'+requirementIds+'/frozenBox/'+frozenBoxId);
         }
         function _savePlan(applyId,param) {
-            return $http.post('api/stock-out-plans/'+applyId,param)
+            return $http.post('api/stock-out-plans/'+applyId,param);
         }
         function _editPlan(applyId,param) {
-            return $http.put('api/stock-out-plans/'+applyId,param)
+            return $http.put('api/stock-out-plans/'+applyId,param);
         }
         function _createTask(planId,boxIds) {
-            return $http.post('api/stock-out-tasks/plan/'+planId+'/frozenBox/'+boxIds)
+            return $http.post('api/stock-out-tasks/plan/'+planId+'/frozenBox/'+boxIds);;
         }
         function _queryTaskList(planId,data) {
-            return $http.post('api/res/stock-out-tasks/plan/'+planId,JSON.stringify(data))
+            return $http.post('api/res/stock-out-tasks/plan/'+planId,JSON.stringify(data));
         }
         function _queryTaskBoxesDes(taskId,data) {
-            return $http.post('api/res/stock-out-frozen-boxes/task/'+taskId,JSON.stringify(data))
+            return $http.post('api/res/stock-out-frozen-boxes/task/'+taskId,JSON.stringify(data));
         }
         function _delTask(taskId) {
-            return $http.delete('api/stock-out-tasks/'+taskId)
+            return $http.delete('api/stock-out-tasks/'+taskId);
         }
         return service;
     }

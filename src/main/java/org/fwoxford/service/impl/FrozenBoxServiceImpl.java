@@ -1,30 +1,23 @@
 package org.fwoxford.service.impl;
 
-import oracle.jdbc.driver.Const;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
-import org.fwoxford.service.dto.SampleTypeDTO;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.core.support.ExampleMatcherAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -591,10 +584,10 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             frozenBoxList = frozenBoxRepository.findIncompleteFrozenBox(frozenBoxCode, frozenBox.getProject().getId(),stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
         }else if(sampleClassificationIdStr.size()>0&&sampleType.getIsMixed().equals(Constants.YES)){//有分类--是混合类型
             //该项目下该类型下所有样本分类的不分类型的未装满的冻存盒
-            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationId(frozenBoxCode, frozenBox.getProject().getId(), sampleClassificationIdStr, stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
+            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationId(frozenBoxCode, frozenBox.getProject().getId(), sampleClassificationIdStr, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
         }else{//无分类--不是混合类型，有分类--不是混合类型
             //该项目下该类型的所有未满冻存盒
-            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeId(frozenBoxCode, frozenBox.getProject().getId(),sampleType.getId(),stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
+            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeId(frozenBoxCode, frozenBox.getProject().getId(),sampleType.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
         }
         if (frozenBoxList.size() == 0) {
             if(sampleClassificationIdStr.size()==0&&sampleType.getIsMixed().equals(Constants.YES)){//无分类--是混合类型
@@ -602,10 +595,10 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 frozenBoxList = frozenBoxRepository.findIncompleteFrozenBox(frozenBoxCode, frozenBox.getProject().getId(),stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
             }else if(sampleClassificationIdStr.size()>0&&sampleType.getIsMixed().equals(Constants.YES)){//有分类--是混合类型
                 //该项目下该类型下所有样本分类的不分类型的未装满的冻存盒
-                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationId(frozenBoxCode, frozenBox.getProject().getId(), sampleClassificationIdStr, stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationId(frozenBoxCode, frozenBox.getProject().getId(), sampleClassificationIdStr, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
             }else{//无分类--不是混合类型，有分类--不是混合类型
                 //该项目下该类型的所有未满冻存盒
-                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeId(frozenBoxCode, frozenBox.getProject().getId(),sampleType.getId(),stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeId(frozenBoxCode, frozenBox.getProject().getId(),sampleType.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
             }
         }
 

@@ -99,6 +99,7 @@
                         <button class="mt-5 mb-5 btn btn-default btn-sm"  ng-click="vm.scanClick()"
                                 ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus" uib-btn-checkbox ng-disabled="!vm.frozenTubeDTOS.length">扫码取样
                         </button>
+                        <!--ng-disabled="!vm.boxInTubes.length"-->
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.boxInModal()" ng-disabled="!vm.boxInTubes.length">装盒</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()">异常</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealModal()">撤销申请</button>

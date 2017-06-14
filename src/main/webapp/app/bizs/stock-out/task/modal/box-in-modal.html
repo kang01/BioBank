@@ -13,63 +13,87 @@
         </div>
     </div>
     <div class="" ng-if="vm.allInFlag">
-        <div class="row">
-            <div class="col-md-8">
-                <form class="form-inline">
-                    <div class="form-group">
-                        <label class="control-label">
-                            <span class="required-field"></span>
-                            临时盒编码
-                        </label>
-                        <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode">
-                    </div>
-                    <div class="form-group ">
-                        <label class=" control-label">
-                            <span class="required-field"></span>
-                            盒类型
-                        </label>
-                        <div class="input-group">
-                        <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"  style="width: 100px"
-                                   ng-model="vm.box.frozenBoxType.id"></selectize>
+        <div ng-if="vm.boxInFullFlag">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>是否整盒出库？</h4>
+                </div>
+            </div>
+        </div>
+        <div ng-if="!vm.boxInFullFlag">
+            <div class="row">
+                <div class="col-md-8">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label class="control-label">
+                                <span class="required-field"></span>
+                                临时盒编码
+                            </label>
+                            <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode">
                         </div>
-                    </div>
-                    <button type="button" class="btn btn-default" ng-click="vm.addNewBox()"
-                            ng-disabled="!vm.box.frozenBoxCode">添加新盒
-                    </button>
+                        <div class="form-group ">
+                            <label class=" control-label">
+                                <span class="required-field"></span>
+                                盒类型
+                            </label>
+                            <div class="input-group">
+                                <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"  style="width: 100px"
+                                           ng-model="vm.box.frozenBoxType.id"></selectize>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-default" ng-click="vm.addNewBox()"
+                                ng-disabled="!vm.box.frozenBoxCode">添加新盒
+                        </button>
 
-                </form>
+                    </form>
+                </div>
+                <div class="col-md-4 text-right">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label>预装位置</label>
+                            <input type="text" class="form-control" ng-model="vm.pos" ng-blur="vm.posBlur()">
+                        </div>
+                        <button type="button" class="btn btn-default" ng-click="vm.boxIn()"
+                                ng-disabled="!vm.selectedTubes.length || !vm.pos">装盒
+                        </button>
+                        <button type="button" class="btn btn-default" ng-click="vm.recover()">复原</button>
+                    </form>
+                </div>
             </div>
-            <div class="col-md-4 text-right">
-                <form class="form-inline">
-                    <div class="form-group">
-                        <label>预装位置</label>
-                        <input type="text" class="form-control" ng-model="vm.pos" ng-blur="vm.posBlur()">
-                    </div>
-                    <button type="button" class="btn btn-default" ng-click="vm.boxIn()"
-                            ng-disabled="!vm.selectedTubes.length || !vm.pos">装盒
-                    </button>
-                    <button type="button" class="btn btn-default" ng-click="vm.recover()">复原</button>
-                </form>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <table datatable="" dt-options="vm.tempBoxOptions" dt-columns="vm.tempBoxColumns"
+                           dt-instance="vm.tempBoxInstance" class=" table table-striped table-bordered"></table>
+                </div>
+                <div class="col-md-8">
+                    <table datatable="" dt-options="vm.sampleOptions" dt-columns="vm.sampleColumns"
+                           dt-instance="vm.sampleInstance" class=" table table-striped table-bordered"></table>
+                </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-4">
-                <table datatable="" dt-options="vm.tempBoxOptions" dt-columns="vm.tempBoxColumns"
-                       dt-instance="vm.tempBoxInstance" class=" table table-striped table-bordered"></table>
-            </div>
-            <div class="col-md-8">
-                <table datatable="" dt-options="vm.sampleOptions" dt-columns="vm.sampleColumns"
-                       dt-instance="vm.sampleInstance" class=" table table-striped table-bordered"></table>
-            </div>
-        </div>
     </div>
 
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-if="vm.allInFlag" ng-disabled="vm.selectedTubesLen == vm.boxCopyLen">确定</button>
-    <button class="btn btn-warning" type="button" ng-click="vm.cancel()" ng-if="vm.allInFlag">取消</button>
-    <button class="btn btn-primary" type="button" ng-click="vm.yes()" ng-if="!vm.allInFlag">是</button>
-    <button class="btn btn-warning" type="button" ng-click="vm.cancel()" ng-if="!vm.allInFlag">否</button>
+    <div ng-if="!vm.allInFlag">
+        <button class="btn btn-primary" type="button" ng-click="vm.yes()">是</button>
+        <button class="btn btn-warning" type="button" ng-click="vm.cancel()">否</button>
+    </div>
+    <div ng-if="vm.allInFlag">
+        <div ng-if="vm.boxInFullFlag">
+            <button class="btn btn-primary" type="button" ng-click="vm.stockOutBox()">确定</button>
+            <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+        </div>
+        <div ng-if="!vm.boxInFullFlag">
+            <button class="btn btn-primary" type="button" ng-click="vm.ok()"  ng-disabled="vm.selectedTubesLen == vm.boxCopyLen">确定</button>
+            <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+        </div>
+
+    </div>
+
+
 </div>
 

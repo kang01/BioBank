@@ -83,6 +83,10 @@
                     type: 'text',
                     width:50,
                     iFilterLength:3
+                },{
+                    type: 'text',
+                    width:50,
+                    iFilterLength:3
                 }, {
                     type: 'text',
                     bRegex: true,
@@ -130,6 +134,7 @@
             });
 
         vm.dtColumns = [
+            DTColumnBuilder.newColumn('trackNumber').withTitle('运单号'),
             DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点'),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编号'),
             DTColumnBuilder.newColumn('transhipDate').withTitle('转运日期'),
@@ -160,8 +165,8 @@
                 case 9: sampleSatisfaction = '较满意';break;
                 case 10: sampleSatisfaction = '非常满意';break;
             }
-            $('td:eq(5)', row).html(sampleSatisfaction);
-            $('td:eq(6)', row).html(transhipState);
+            $('td:eq(6)', row).html(sampleSatisfaction);
+            $('td:eq(7)', row).html(transhipState);
             $compile(angular.element(row).contents())($scope);
         }
 

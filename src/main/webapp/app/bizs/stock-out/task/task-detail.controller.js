@@ -164,10 +164,10 @@
             .withOption('rowCallback', rowCallback);
         vm.boxColumns = [
             DTColumnBuilder.newColumn('id').notVisible(),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "50"),
-            DTColumnBuilder.newColumn('sampleTypeName').withTitle('类型').withOption("width", "80"),
-            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "200"),
-            DTColumnBuilder.newColumn('countOfSample').withTitle('数量').withOption("width", "50")
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "50").notSortable(),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('类型').withOption("width", "80").notSortable(),
+            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "200").notSortable(),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('数量').withOption("width", "50").notSortable()
         ];
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
             $('td', nRow).unbind('click');
@@ -187,21 +187,21 @@
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
             boxCode = data.frozenBoxCode;
-            // var tableCtrl = _getSampleDetailsTableCtrl();
-            // tableCtrl.loadData([[]]);
             vm.boxInTubes = [];
             _fnLoadTubes();
         }
         //加载管子
+        var frozenBox;
         function _fnLoadTubes() {
             TaskService.queryTubes(boxCode,vm.taskId).success(function (data) {
-                var box = data;
-                vm.frozenTubeDTOS = box.frozenTubeDTOS;
-                _reloadTubesForTable(box);
+                frozenBox = data;
+                vm.frozenTubeDTOS = frozenBox.frozenTubeDTOS;
+                _reloadTubesForTable(frozenBox);
             }).error(function (data) {
 
             });
         }
+        var needScanTubesLen;
         //加载管子表控件
         function _reloadTubesForTable(box){
             var tableCtrl = _getSampleDetailsTableCtrl();
@@ -236,7 +236,14 @@
                     }
                 }
             }
-
+            //是否满盒出库
+            var needScanTubesLen = _.filter(vm.tubeList,{stockOutFlag:1}).length;
+            if(needScanTubesLen == vm.tubeList.length){
+                vm.boxInFullFlag = true;
+                vm.boxInTubes = vm.tubeList;
+            }else{
+                vm.boxInFullFlag = false;
+            }
             settings.rowHeaders = rowHeaders;
             settings.colHeaders = colHeaders;
             tableCtrl.updateSettings(settings);
@@ -393,16 +400,33 @@
                 }
             }
             //备注 选择单元格数据
-            function _fnRemarkSelectData(td,remarkArray,selectTubeArray) {
+            function _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex) {
                 var txt = '<div class="tube-selected" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.3)"></div>';
                 for(var m = 0; m < remarkArray.length; m++){
                     for (var n = 0; n < remarkArray[m].length; n++){
                         vm.aRemarkArray.push(remarkArray[m][n]);
                     }
                 }
-                for(var i = selectTubeArray[0];i <= selectTubeArray[2]; i++){
-                    for(var j = selectTubeArray[1];  j <= selectTubeArray[3];j++)
+                var start1,end1,start2,end2;
+                if(selectTubeArrayIndex[0] > selectTubeArrayIndex[2]){
+                    start1 = selectTubeArrayIndex[2];
+                    end1 = selectTubeArrayIndex[0];
+                }else{
+                    start1 = selectTubeArrayIndex[0];
+                    end1 = selectTubeArrayIndex[2];
+                }
+                if(selectTubeArrayIndex[1] > selectTubeArrayIndex[3]){
+                    start2 = selectTubeArrayIndex[3];
+                    end2 = selectTubeArrayIndex[1];
+                }else{
+                    start2 = selectTubeArrayIndex[1];
+                    end2 = selectTubeArrayIndex[3];
+                }
+                for(var i = start1;i <= end1; i++){
+                    for(var j = start2;  j <= end2;j++)
+                        if($(td.getCell(i,j))[0].childElementCount !=3){
                         $(td.getCell(i,j)).append(txt);
+                    }
                 }
             }
             //修改样本状态正常、空管、空孔、异常
@@ -590,7 +614,6 @@
         }
         //装盒
         function _fnBoxInModal() {
-
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/task/modal/box-in-modal.html',
@@ -602,7 +625,9 @@
                         return {
                             allInFlag:vm.allInFlag,
                             boxInTubes:vm.boxInTubes,
-                            taskId:vm.taskId
+                            taskId:vm.taskId,
+                            boxInFullFlag:vm.boxInFullFlag,
+                            frozenBox:frozenBox
                         };
                     }
                 }
@@ -668,14 +693,14 @@
         var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.stockOutSampleColumns = [
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').withOption("width", "100"),
-            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "80"),
-            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "220"),
-            DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('交接时间').withOption("width", "80"),
-            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "50"),
-            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
-            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
-            DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml).withOption("width", "80"),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').withOption("width", "100").notSortable(),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "80").notSortable(),
+            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "220").notSortable(),
+            DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('交接时间').withOption("width", "80").notSortable(),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "50").notSortable(),
+            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto").notSortable(),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50").notSortable(),
+            DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml).withOption("width", "80").notSortable(),
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         function _fnRowSelectorRender(data, type, full, meta) {

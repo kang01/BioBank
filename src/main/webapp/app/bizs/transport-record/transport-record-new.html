@@ -262,23 +262,29 @@
                         <span class="required-field"></span>
                         存储位置
                     </label>
-                    <label class="control-label">
-                        <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig" class="pull-left"
+                    <div class="input-group">
+                        <div class="pull-left">
+                        <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig"
                                    style="width:85px"
                                    ng-model="vm.box.equipmentId" ng-disabled="!vm.box"></selectize>
                         <input type="hidden" ng-model="vm.box.equipmentId" required>
+                        </div>
+                        <div class="pull-left pl-5">
                         <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig"
-                                   class="pull-left pl-5" style="width:85px"
+                                    style="width:85px"
                                    ng-model="vm.box.areaId" ng-disabled="!vm.box"></selectize>
                         <input type="hidden" ng-model="vm.box.areaId" required>
-                        <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig"
-                                   class="pull-left pl-5" style="width:85px"
-                                   ng-model="vm.box.supportRackId" ng-disabled="!vm.box"></selectize>
+                        </div>
                         <div class="pull-left pl-5">
-                            <input type="text" class="form-control" maxlength="2" ng-model="vm.boxRowCol"
+                        <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig"
+                                    style="width:85px"
+                                   ng-model="vm.box.supportRackId" ng-disabled="!vm.box"></selectize>
+                        </div>
+                        <div class="pull-left pl-5">
+                            <input type="text" class="form-control" maxlength="3" ng-model="vm.boxRowCol"
                                    ng-blur="vm.splitPlace()" ng-disabled="!vm.box" style="width:50px">
                         </div>
-                    </label>
+                    </div>
                 </div>
             </div>
             <div class="row">

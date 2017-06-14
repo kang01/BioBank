@@ -212,7 +212,7 @@
                     vm.dto.handoverTime = new Date(res.data.handoverTime);
                     vm.statusName = MasterData.getStatus(res.data.status);
                     if(!takeOverFlag){
-                        toastr.success("交接信息以保存!");
+                        toastr.success("交接信息已保存成功!");
                     }else{
                         modalInstance = $uibModal.open({
                             animation: true,

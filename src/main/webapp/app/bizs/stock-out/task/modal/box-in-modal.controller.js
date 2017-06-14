@@ -32,6 +32,9 @@
         var boxInTubesCopy = angular.copy(boxInTubes);
         vm.boxCopyLen = boxInTubesCopy.length;
         var taskId = items.taskId;
+        //是否整盒出库
+        vm.boxInFullFlag = items.boxInFullFlag;
+        var frozenBox = items.frozenBox;
         //临时盒list
         var boxList = [];
 
@@ -41,6 +44,8 @@
         vm.boxIn = _fnBoxIn;
         //复原
         vm.recover = _fnRecover;
+        //整盒出库
+        vm.stockOutBox = _fnStockOutBox;
 
         function _init() {
             //临时盒子
@@ -120,7 +125,13 @@
             boxInTubesCopy = angular.copy(boxInTubes);
             _fnLoadTube();
         }
-
+        //整盒出库
+        function _fnStockOutBox() {
+            TaskService.saveTempBoxes(taskId,frozenBox).success(function (data) {
+                toastr.success("保存成功!");
+                $uibModalInstance.close();
+            });
+        }
 
         //临时盒子
         vm.tempBoxOptions = BioBankDataTable.buildDTOption("BASIC", 298)
@@ -427,7 +438,6 @@
         vm.ok = function () {
             if(vm.selectedTubes.length && vm.pos){
                 vm.boxIn();
-
             }
             var tempBoxListCopy = angular.copy(tempBoxList);
             for(var i =0; i < tempBoxListCopy.length; i++){

@@ -869,7 +869,13 @@
                     }
                 }
             };
-
+            //盒子位置
+            vm.splitPlace = function () {
+                if(vm.boxRowCol){
+                    vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
+                    vm.box.rowsInShelf = vm.boxRowCol.substring(1);
+                }
+            };
             vm.saveBox = saveBox;//保存盒子
             function saveBox(callback){
                 BioBankBlockUi.blockUiStart();
@@ -897,13 +903,7 @@
 
                 }
             }
-            //盒子位置
-            vm.splitPlace = function () {
-                if(vm.boxRowCol){
-                    vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
-                    vm.box.rowsInShelf = vm.boxRowCol.substring(1);
-                }
-            };
+
             var aRemarkArray = [];
             //备注 选择单元格数据
             function _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex) {

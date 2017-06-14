@@ -184,7 +184,7 @@
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "80"),
                 DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "70"),
                 DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
-                DTColumnBuilder.newColumn('countOfSample').withTitle('出库样本数量').withOption("width", "80"),
+                DTColumnBuilder.newColumn('countOfSample').withTitle('出库样本数量').withOption("width", "80").notSortable(),
                 DTColumnBuilder.newColumn('id').notVisible()
             ];
 
@@ -291,7 +291,7 @@
         vm.taskColumns = [
             DTColumnBuilder.newColumn('stockOutTaskCode').withTitle('任务编码'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn('countOfFrozenBox').withTitle('冻存盒数'),
+            DTColumnBuilder.newColumn('countOfFrozenBox').withTitle('冻存盒数').notSortable(),
             DTColumnBuilder.newColumn('countOfSample').withTitle('样本数'),
             DTColumnBuilder.newColumn('createDate').withTitle('创建日期'),
             DTColumnBuilder.newColumn('stockOutDate').withTitle('出库日期'),

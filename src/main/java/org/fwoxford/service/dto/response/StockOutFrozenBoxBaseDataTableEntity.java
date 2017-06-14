@@ -1,21 +1,22 @@
 package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * Created by gengluying on 2017/5/23.
  */
-@Entity
-public class StockOutFrozenBoxForTaskDataTableEntity {
+@MappedSuperclass
+@Audited
+public abstract  class StockOutFrozenBoxBaseDataTableEntity implements Serializable {
 
     @Id
     @NotNull
@@ -66,6 +67,10 @@ public class StockOutFrozenBoxForTaskDataTableEntity {
     @JsonView(DataTablesOutput.View.class)
     @Column(name ="project_code")
     private String projectCode;
+
+    public StockOutFrozenBoxBaseDataTableEntity() {
+        super();
+    }
 
     public Long getId() {
         return id;

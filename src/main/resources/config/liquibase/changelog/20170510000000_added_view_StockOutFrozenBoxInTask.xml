@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutFrozenBoxForTaskDetailDataTableEntity.
+    -->
+    <changeSet id="20170510000000-2" author="jhipster">
+        <createView viewName="view_frozen_box_for_task">
+            select DISTINCT a.frozen_box_code,a.id,a.sample_type_name,a.status,a.memo,a.project_code,a.project_name,0 as count_of_sample,
+            (a.equipment_code||'.'||a.area_code||'.'||a.support_rack_code ||'.'||a.columns_in_shelf || a.rows_in_shelf) as position,
+            sc.sample_classification_name,e.stock_out_task_id from frozen_box a
+            left join sample_class sc on a.sample_classification_id = sc.id
+            left join stock_out_req_frozen_tube c on c.frozen_box_id = a.id
+            left join stock_out_plan_tube b on b.stock_out_req_frozen_tube_id =c.id
+            left join stock_out_task_tube e on e.stock_out_plan_frozen_tube_id =b.id
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

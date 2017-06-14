@@ -353,7 +353,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
     @Override
     public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipment(DataTablesInput input, String equipmentCode) {
-        input.addColumn("equipmentCode", true, true, equipmentCode);
+        input.addColumn("equipmentCode", true, true, equipmentCode+"+");
         DataTablesOutput<FrozenBox> output = frozenBoxRepositories.findAll(input);
         List<FrozenBox> frozenBoxes = output.getData();
         List<StockInBoxDetail> res = new ArrayList<StockInBoxDetail>();
@@ -395,8 +395,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
     @Override
     public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipmentAndArea(DataTablesInput input, String equipmentCode, String areaCode) {
-        input.addColumn("equipmentCode", true, true, equipmentCode);
-        input.addColumn("areaCode", true, true, areaCode);
+        input.addColumn("equipmentCode", true, true, equipmentCode+"+");
+        input.addColumn("areaCode", true, true, areaCode+"+");
         DataTablesOutput<FrozenBox> output = frozenBoxRepositories.findAll(input);
         List<FrozenBox> frozenBoxes = output.getData();
         List<StockInBoxDetail> res = new ArrayList<StockInBoxDetail>();

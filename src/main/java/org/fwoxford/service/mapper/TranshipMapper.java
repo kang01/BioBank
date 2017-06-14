@@ -75,6 +75,7 @@ public interface TranshipMapper {
         res.setReceiver( tranship.getReceiver() );
         res.setReceiveDate( tranship.getReceiveDate() );
         res.setSampleSatisfaction( tranship.getSampleSatisfaction() );
+        res.setTrackNumber( tranship.getTrackNumber() );
         return res;
     }
 

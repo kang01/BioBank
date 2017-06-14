@@ -5,6 +5,9 @@ import org.fwoxford.service.dto.response.StockOutTaskForDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutTaskForPlanDataTableEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import java.util.List;
 
 /**
@@ -52,4 +55,8 @@ public interface StockOutTaskService {
     List<StockOutTaskDTO> getAllStockOutTasksByPlanId(Long id);
 
     StockOutTaskDTO startStockOutTask(Long id);
+
+    DataTablesOutput<StockOutTaskForPlanDataTableEntity> getPageStockOutTaskByPlan(Long id, DataTablesInput input);
+
+    DataTablesOutput<StockOutTaskForDataTableEntity> getPageStockOutTask(DataTablesInput input);
 }

@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -58,6 +60,9 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
 
     @Autowired
     private StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
+
+    @Autowired
+    private StockOutHandoverRepositries stockOutHandoverRepositries;
 
     public StockOutHandoverServiceImpl(StockOutHandoverRepository stockOutHandoverRepository, StockOutHandoverMapper stockOutHandoverMapper) {
         this.stockOutHandoverRepository = stockOutHandoverRepository;
@@ -345,5 +350,10 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         stockOutHandover.setInvalidReason(stockOutHandoverDTO.getInvalidReason());
         stockOutHandoverRepository.save(stockOutHandover);
         return stockOutHandoverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandover);
+    }
+
+    @Override
+    public DataTablesOutput<StockOutHandoverForDataTableEntity> getPageDataStockOutHandOver(DataTablesInput input) {
+        return stockOutHandoverRepositries.findAll(input);
     }
 }

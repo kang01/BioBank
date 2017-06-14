@@ -2,13 +2,12 @@ package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenTube;
-import org.fwoxford.domain.StockOutFrozenBox;
-import org.fwoxford.repository.StockOutFrozenBoxRepository;
+import org.fwoxford.repository.StockOutTaskTubeByBoxRepositories;
 import org.fwoxford.service.StockOutBoxTubeService;
 import org.fwoxford.domain.StockOutBoxTube;
 import org.fwoxford.repository.StockOutBoxTubeRepository;
-import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.StockOutBoxTubeDTO;
+import org.fwoxford.service.dto.response.FrozenBoxForStockOutDataTableEntity;
 import org.fwoxford.service.dto.response.StockOutFrozenTubeDataTableEntity;
 import org.fwoxford.service.mapper.StockOutBoxTubeMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -16,11 +15,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +43,7 @@ public class StockOutBoxTubeServiceImpl implements StockOutBoxTubeService{
     private final StockOutBoxTubeMapper stockOutBoxTubeMapper;
 
     @Autowired
-    private StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
+    private StockOutTaskTubeByBoxRepositories stockOutTaskTubeByBoxRepositories;
 
     public StockOutBoxTubeServiceImpl(StockOutBoxTubeRepository stockOutBoxTubeRepository, StockOutBoxTubeMapper stockOutBoxTubeMapper) {
         this.stockOutBoxTubeRepository = stockOutBoxTubeRepository;
@@ -121,5 +126,25 @@ public class StockOutBoxTubeServiceImpl implements StockOutBoxTubeService{
             dto.setFrozenBoxCode(tube.getFrozenBoxCode());
             return dto;
         });
+    }
+
+    @Override
+    public DataTablesOutput<StockOutFrozenTubeDataTableEntity> getPageStockOutTubeByStockOutBoxIds(List<Long> ids, DataTablesInput input) {
+        Specification<StockOutFrozenTubeDataTableEntity> specification = new Specification<StockOutFrozenTubeDataTableEntity>() {
+            @Override
+            public Predicate toPredicate(Root<StockOutFrozenTubeDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                List<Predicate> predicate = new ArrayList<>();
+                CriteriaBuilder.In<Long> in  = cb.in(root.get("stockOutFrozenBoxId"));
+                for(Long id :ids){
+                    in.value(id);
+                }
+                predicate.add(in);
+                Predicate[] pre = new Predicate[predicate.size()];
+                query.where(predicate.toArray(pre));
+                return query.getRestriction();
+            }
+        };
+        DataTablesOutput<StockOutFrozenTubeDataTableEntity> output = stockOutTaskTubeByBoxRepositories.findAll(input,specification);
+        return output;
     }
 }

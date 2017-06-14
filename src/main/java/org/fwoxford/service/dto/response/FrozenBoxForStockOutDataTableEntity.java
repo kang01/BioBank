@@ -5,18 +5,17 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * Created by gengluying on 2017/5/23.
  */
 @Entity
-public class StockOutFrozenBoxForTaskDataTableEntity {
-
+@Table(name = "view_frozen_box_for_stock_out")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+public class FrozenBoxForStockOutDataTableEntity  extends StockOutFrozenBoxBaseDataTableEntity implements Serializable {
     @Id
     @NotNull
     @JsonView(DataTablesOutput.View.class)
@@ -66,6 +65,12 @@ public class StockOutFrozenBoxForTaskDataTableEntity {
     @JsonView(DataTablesOutput.View.class)
     @Column(name ="project_code")
     private String projectCode;
+
+    @Column(name ="stock_out_requirement_id")
+    private Long stockOutRequirementId;
+
+    @Column(name ="stock_out_plan_frozen_tube_id")
+    private Long stockOutPlanFrozenTubeId;
 
     public Long getId() {
         return id;
@@ -147,4 +152,19 @@ public class StockOutFrozenBoxForTaskDataTableEntity {
         this.projectCode = projectCode;
     }
 
+    public Long getStockOutRequirementId() {
+        return stockOutRequirementId;
+    }
+
+    public void setStockOutRequirementId(Long stockOutRequirementId) {
+        this.stockOutRequirementId = stockOutRequirementId;
+    }
+
+    public Long getStockOutPlanFrozenTubeId() {
+        return stockOutPlanFrozenTubeId;
+    }
+
+    public void setStockOutPlanFrozenTubeId(Long stockOutPlanFrozenTubeId) {
+        this.stockOutPlanFrozenTubeId = stockOutPlanFrozenTubeId;
+    }
 }

@@ -8,10 +8,7 @@ import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
 import org.fwoxford.service.dto.StockOutTaskDTO;
-import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
-import org.fwoxford.service.dto.response.StockOutFrozenBoxDataTableEntity;
-import org.fwoxford.service.dto.response.StockOutFrozenBoxForDataTableEntity;
-import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
+import org.fwoxford.service.dto.response.*;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -153,33 +150,9 @@ public class StockOutFrozenBoxResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-frozen-boxes/task/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> getPageStockOutBoxForTask(@RequestBody DataTablesInput input, @PathVariable Long id) {
+    public DataTablesOutput<StockOutFrozenBoxForTaskDetailDataTableEntity> getPageStockOutBoxForTask(@RequestBody DataTablesInput input, @PathVariable Long id) {
 
-        List<Sort.Order> orders = new ArrayList<>();
-        List<Column> columns = input.getColumns();
-        input.getOrder().forEach(o -> {
-            Column col = columns.get(o.getColumn());
-            if(col.getName()!=null&&col.getName()!=""){
-                Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
-                orders.add(order);
-            }
-        });
-        Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
-        orders.add(order);
-        Sort sort = new Sort(orders);
-        PageRequest pageRequest = new PageRequest(input.getStart() / input.getLength(), input.getLength(), sort);
-
-
-        Page<StockOutFrozenBoxForTaskDataTableEntity> entities = stockOutFrozenBoxService.findAllByTask(id, pageRequest);
-        List<StockOutFrozenBoxForTaskDataTableEntity> stockOutApplyList =  entities == null ?
-            new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>() : entities.getContent();
-
-        DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> result = new DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity>();
-        result.setDraw(input.getDraw());
-        result.setError("");
-        result.setData(stockOutApplyList);
-        result.setRecordsFiltered(stockOutApplyList.size());
-        result.setRecordsTotal(entities.getTotalElements());
+        DataTablesOutput<StockOutFrozenBoxForTaskDetailDataTableEntity> result = stockOutFrozenBoxService.getPageByTask(id, input);
         return result;
     }
 
@@ -191,33 +164,10 @@ public class StockOutFrozenBoxResource {
      */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-frozen-boxes/requirement/{ids}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
-    public DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input, @PathVariable List<Long> ids) {
-        List<Sort.Order> orders = new ArrayList<>();
-        List<Column> columns = input.getColumns();
-        input.getOrder().forEach(o -> {
-            Column col = columns.get(o.getColumn());
-            if(col.getName()!=null&&col.getName()!=""){
-                Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
-                orders.add(order);
-            }
-        });
-        Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
-        orders.add(order);
-        Sort sort = new Sort(orders);
-        PageRequest pageRequest = new PageRequest(input.getStart() / input.getLength(), input.getLength(), sort);
+    public DataTablesOutput<FrozenBoxForStockOutDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input, @PathVariable List<Long> ids) {
 
-
-        Page<StockOutFrozenBoxForTaskDataTableEntity> entities = stockOutFrozenBoxService.findAllByrequirementIds(ids, pageRequest);
-        List<StockOutFrozenBoxForTaskDataTableEntity> stockOutApplyList =  entities == null ?
-            new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>() : entities.getContent();
-
-        DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity> result = new DataTablesOutput<StockOutFrozenBoxForTaskDataTableEntity>();
-        result.setDraw(input.getDraw());
-        result.setError("");
-        result.setData(stockOutApplyList);
-        result.setRecordsFiltered(stockOutApplyList.size());
-        result.setRecordsTotal(entities.getTotalElements());
-        return result;
+        DataTablesOutput<FrozenBoxForStockOutDataTableEntity> output =  stockOutFrozenBoxService.getPageByRequirementIds(ids, input);
+        return output;
     }
 
     /**

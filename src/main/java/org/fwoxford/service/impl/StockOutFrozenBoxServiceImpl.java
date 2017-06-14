@@ -1,6 +1,5 @@
 package org.fwoxford.service.impl;
 
-import oracle.jdbc.driver.Const;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -24,9 +23,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +48,6 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     private final StockOutFrozenTubeRepository stockOutFrozenTubeRepository;
 
     private final StockOutFrozenBoxMapper stockOutFrozenBoxMapper;
-
-    @Autowired
-    private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
-
 
     @Autowired
     private StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
@@ -108,6 +108,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
     @Autowired
     StockOutPlanRepository stockOutPlanRepository;
+
+    @Autowired
+    StockOutFrozenBoxForWaitingRepositries stockOutFrozenBoxForWaitingRepositries;
+
+    @Autowired
+    StockOutFrozenBoxInTaskRepositries stockOutFrozenBoxInTaskRepositries;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper
@@ -609,5 +615,74 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
             return dto;
         });
+    }
+
+    /**
+     * 分页查询根据需求查询x需要出库的冻存盒
+     * @param ids
+     * @param input
+     * @return
+     */
+    @Override
+    public DataTablesOutput<FrozenBoxForStockOutDataTableEntity> getPageByRequirementIds(List<Long> ids, DataTablesInput input) {
+        Specification<FrozenBoxForStockOutDataTableEntity> specification = new Specification<FrozenBoxForStockOutDataTableEntity>() {
+            @Override
+            public Predicate toPredicate(Root<FrozenBoxForStockOutDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                List<Predicate> predicate = new ArrayList<>();
+                CriteriaBuilder.In<Long> in  = cb.in(root.get("stockOutRequirementId"));
+                for(Long id :ids){
+                    in.value(id);
+                }
+                predicate.add(in);
+                Predicate[] pre = new Predicate[predicate.size()];
+                query.where(predicate.toArray(pre));
+                return query.getRestriction();
+            }
+        };
+        DataTablesOutput<FrozenBoxForStockOutDataTableEntity> output = stockOutFrozenBoxForWaitingRepositries.findAll(input,specification);
+        List<FrozenBoxForStockOutDataTableEntity> alist = new ArrayList<FrozenBoxForStockOutDataTableEntity>();
+        output.getData().forEach(s->{
+            FrozenBoxForStockOutDataTableEntity dto = new FrozenBoxForStockOutDataTableEntity();
+            dto.setId(s.getId());
+            dto.setFrozenBoxCode(s.getFrozenBoxCode());
+            dto.setSampleTypeName(s.getSampleTypeName());
+            FrozenBox frozenBox = frozenBoxRepository.findOne(s.getId());
+            String position =  BankUtil.getPositionString(frozenBox);
+            dto.setPosition(position);
+            Long countOfSample = stockOutPlanFrozenTubeRepository.countByFrozenBoxIdAndRequirement(ids,frozenBox.getId());
+            dto.setCountOfSample(countOfSample);
+            alist.add(dto);
+        });
+        output.setData(alist);
+
+        return output;
+    }
+
+    /**
+     * 分页查询某个计划的出库任务
+     * @param id
+     * @param input
+     * @return
+     */
+    @Override
+    public DataTablesOutput<StockOutFrozenBoxForTaskDetailDataTableEntity> getPageByTask(Long id, DataTablesInput input) {
+        input.addColumn("stockOutTaskId", true, true, id+"+");
+        DataTablesOutput<StockOutFrozenBoxForTaskDetailDataTableEntity> output = stockOutFrozenBoxInTaskRepositries.findAll(input);
+        List<StockOutFrozenBoxForTaskDetailDataTableEntity> alist = new ArrayList<StockOutFrozenBoxForTaskDetailDataTableEntity>();
+        output.getData().forEach(s->{
+            StockOutFrozenBoxForTaskDetailDataTableEntity dto = new StockOutFrozenBoxForTaskDetailDataTableEntity();
+            dto.setId(s.getId());
+            dto.setFrozenBoxCode(s.getFrozenBoxCode());
+            dto.setSampleTypeName(s.getSampleTypeName());
+            FrozenBox frozenBox = frozenBoxRepository.findOne(s.getId());
+            String position =  BankUtil.getPositionString(frozenBox);
+            dto.setPosition(position);
+            Long countOfSample = stockOutTaskFrozenTubeRepository.countSampleByFrozenBoxAndTask(s.getId(),id);
+            dto.setCountOfSample(countOfSample);
+            alist.add(dto);
+        });
+        output.setData(alist);
+
+        return output;
     }
 }

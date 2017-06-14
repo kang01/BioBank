@@ -1,44 +1,72 @@
 package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 /**
  * Created by gengluying on 2017/5/23.
  */
+@Entity
+@Table(name = "view_stock_out_handover")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockOutHandoverForDataTableEntity {
+    @Id
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private Long id;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "handover_code")
     private String handoverCode;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "apply_code")
     private String applyCode;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "count_of_sample")
     private Long countOfSample;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "purpose_of_sample")
     private String usage;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name= "handover_time")
     private LocalDate receiveDate;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name= "receiver_name")
     private String receiver;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name= "deliver_name")
     private String deliverName;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name= "status")
     private String status;
+
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name= "memo")
     private String memo;
 
     public Long getId() {

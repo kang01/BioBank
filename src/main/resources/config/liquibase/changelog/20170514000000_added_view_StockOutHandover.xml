@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutApply.
+    -->
+    <changeSet id="20170514000000-2" author="jhipster">
+
+        <createView viewName="view_stock_out_handover">
+            SELECT t.id,t.handover_code,p.apply_code,
+            (SELECT COUNT(td.id) FROM stock_out_handover_details td WHERE td.STOCK_OUT_HANDOVER_ID = t.id) as count_of_sample,
+            p.purpose_of_sample ,t.handover_time,
+            t.receiver_name,
+            (u.last_name||u.first_name) as deliver_name,
+            t.status,t.memo
+            FROM stock_out_handover t
+            LEFT OUTER JOIN stock_out_apply p ON t.stock_out_apply_id = p.id
+            LEFT OUTER JOIN jhi_user u ON t.HANDOVER_PERSON_ID = u.id
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

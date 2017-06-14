@@ -73,6 +73,9 @@ public class TranshipResponse {
     @JsonView(DataTablesOutput.View.class)
     private String transhipCode;
 
+    @JsonView(DataTablesOutput.View.class)
+    private String trackNumber;
+
     public Long getId() {
         return id;
     }
@@ -145,6 +148,14 @@ public class TranshipResponse {
         this.transhipCode = transhipCode;
     }
 
+    public String getTrackNumber() {
+        return trackNumber;
+    }
+
+    public void setTrackNumber(String trackNumber) {
+        this.trackNumber = trackNumber;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -177,6 +188,7 @@ public class TranshipResponse {
             ", receiver='" + receiver + "'" +
             ", receiveDate='" + receiveDate + "'" +
             ", sampleSatisfaction='" + sampleSatisfaction + "'" +
+            ", trackNumber='" + sampleSatisfaction + "'" +
             '}';
     }
 

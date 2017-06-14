@@ -146,31 +146,7 @@ public class StockOutBoxTubeResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-box-tubes/stockOutBox/{ids}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutFrozenTubeDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input, @PathVariable List<Long> ids) {
-        List<Sort.Order> orders = new ArrayList<>();
-        List<Column> columns = input.getColumns();
-        input.getOrder().forEach(o -> {
-            Column col = columns.get(o.getColumn());
-            if(col.getName()!=null&&col.getName()!=""){
-                Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
-                orders.add(order);
-            }
-        });
-        Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
-        orders.add(order);
-        Sort sort = new Sort(orders);
-        PageRequest pageRequest = new PageRequest(input.getStart() / input.getLength(), input.getLength(), sort);
-
-
-        Page<StockOutFrozenTubeDataTableEntity> entities =stockOutBoxTubeService.getStockOutTubeByStockOutBoxIds(ids, pageRequest);
-        List<StockOutFrozenTubeDataTableEntity> stockOutApplyList =  entities == null ?
-            new ArrayList<StockOutFrozenTubeDataTableEntity>() : entities.getContent();
-
-        DataTablesOutput<StockOutFrozenTubeDataTableEntity> result = new DataTablesOutput<StockOutFrozenTubeDataTableEntity>();
-        result.setDraw(input.getDraw());
-        result.setError("");
-        result.setData(stockOutApplyList);
-        result.setRecordsFiltered(stockOutApplyList.size());
-        result.setRecordsTotal(entities.getTotalElements());
+        DataTablesOutput<StockOutFrozenTubeDataTableEntity> result =stockOutBoxTubeService.getPageStockOutTubeByStockOutBoxIds(ids, input);
         return result;
     }
 }

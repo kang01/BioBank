@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -64,6 +66,12 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
 
     @Autowired
     private UserLoginHistoryRepository userLoginHistoryRepository;
+
+    @Autowired
+    private StockOutTaskRepositories stockOutTaskRepositories;
+
+    @Autowired
+    private StockOutTaskByPlanRepositories stockOutTaskByPlanRepositories;
 
     private final StockOutTaskMapper stockOutTaskMapper;
 
@@ -333,5 +341,33 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         stockOutTaskRepository.save(stockOutTask);
         userLoginHistoryRepository.save(userLoginHistory);
         return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
+    }
+
+    @Override
+    public DataTablesOutput<StockOutTaskForPlanDataTableEntity> getPageStockOutTaskByPlan(Long id, DataTablesInput input) {
+        input.addColumn("stockOutPlanId",true,true,id+"+");
+        DataTablesOutput<StockOutTaskForPlanDataTableEntity> output =stockOutTaskByPlanRepositories.findAll(input);
+        List<StockOutTaskForPlanDataTableEntity> alist = new ArrayList<StockOutTaskForPlanDataTableEntity>();
+        output.getData().forEach(o->{
+            StockOutTaskForPlanDataTableEntity rowData = new StockOutTaskForPlanDataTableEntity();
+            rowData.setId(o.getId());
+            rowData.setStatus(o.getStatus());
+            rowData.setStockOutTaskCode(o.getStockOutTaskCode());
+            rowData.setMemo(o.getMemo());
+            rowData.setCreateDate(o.getCreateDate());
+            rowData.setStockOutDate(o.getStockOutDate());
+            Long countOfBox = stockOutTaskFrozenTubeRepository.countFrozenBoxByStockOutTaskId(o.getId());
+            rowData.setCountOfSample(o.getCountOfSample());
+            rowData.setCountOfFrozenBox(countOfBox);
+            alist.add(rowData);
+        });
+        output.setData(alist);
+        return output;
+    }
+
+    @Override
+    public DataTablesOutput<StockOutTaskForDataTableEntity> getPageStockOutTask(DataTablesInput input) {
+        DataTablesOutput<StockOutTaskForDataTableEntity> output =stockOutTaskRepositories.findAll(input);
+        return output;
     }
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutFrozenBoxForTaskDetailDataTableEntity.
+    -->
+    <changeSet id="20170511000000-2" author="jhipster">
+        <createView viewName="view_stock_out_task_by_plan">
+            SELECT t.id,t.stock_out_task_code,
+            0 as count_of_frozen_box ,
+            (SELECT count(tb.id) FROM stock_out_task_tube tb where tb.stock_out_task_id = t.id and tb.status !='1802') as count_of_sample ,
+            t.created_date , t.stock_out_date,t.status,t.memo,t.stock_out_plan_id,t.stock_out_head_id_1,t.stock_out_head_id_2,
+            (u1.last_name||u1.first_name||'.'|| u2.last_name||u2.first_name)  operators
+            FROM stock_out_task t
+            LEFT OUTER JOIN jhi_user u1 ON t.STOCK_OUT_HEAD_ID_1 = u1.id
+            LEFT OUTER JOIN jhi_user u2 ON t.STOCK_OUT_HEAD_ID_2 = u2.id
+        </createView>
+    </changeSet>
+</databaseChangeLog>

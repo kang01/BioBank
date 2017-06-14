@@ -5,6 +5,9 @@ import org.fwoxford.service.dto.response.StockOutFrozenTubeDataTableEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import java.util.List;
 
 /**
@@ -44,4 +47,6 @@ public interface StockOutBoxTubeService {
     void delete(Long id);
 
     Page<StockOutFrozenTubeDataTableEntity> getStockOutTubeByStockOutBoxIds(List<Long> ids, Pageable pageRequest);
+
+    DataTablesOutput<StockOutFrozenTubeDataTableEntity> getPageStockOutTubeByStockOutBoxIds(List<Long> ids, DataTablesInput input);
 }

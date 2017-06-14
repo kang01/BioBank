@@ -2,13 +2,9 @@ package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
 import org.fwoxford.service.dto.StockOutTaskDTO;
-import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
-import org.fwoxford.service.dto.response.StockOutFrozenBoxDataTableEntity;
-import org.fwoxford.service.dto.response.StockOutFrozenBoxForDataTableEntity;
-import org.fwoxford.service.dto.response.StockOutFrozenBoxForTaskDataTableEntity;
+import org.fwoxford.service.dto.response.*;
 import org.fwoxford.web.rest.StockOutFrozenBoxPoisition;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -79,4 +75,8 @@ public interface StockOutFrozenBoxService {
     Page<StockOutFrozenBoxForDataTableEntity> getPageHandoverStockOutFrozenBoxes(Long id, Pageable pageRequest);
 
     DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageWaitingHandOverStockOutFrozenBoxes(Long id, DataTablesInput input);
+
+    DataTablesOutput<FrozenBoxForStockOutDataTableEntity> getPageByRequirementIds(List<Long> ids, DataTablesInput input);
+
+    DataTablesOutput<StockOutFrozenBoxForTaskDetailDataTableEntity> getPageByTask(Long id, DataTablesInput input);
 }

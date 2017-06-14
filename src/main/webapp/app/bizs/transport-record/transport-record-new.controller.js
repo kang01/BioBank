@@ -462,7 +462,7 @@
                     vm.remarkFlag = true;
                     var td = this;
                     remarkArray = this.getData(row,col,row2,col2);
-                    var selectTubeArray = this.getSelected();
+                    var selectTubeArrayIndex = this.getSelected();
 
                     if(window.event && window.event.ctrlKey){
                         //换位
@@ -470,14 +470,14 @@
                         domArray.push(vm.frozenTubeArray[row][col]);
 
                         //备注
-                        _fnRemarkSelectData(td,remarkArray,selectTubeArray)
+                        _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex)
                     }else{
                         domArray = [];
                         domArray.push(vm.frozenTubeArray[row][col]);
                         //备注
                         $(".temp").remove();
                         aRemarkArray = [];
-                        _fnRemarkSelectData(td,remarkArray,selectTubeArray);
+                        _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex);
 
 
                     }
@@ -687,12 +687,24 @@
                         if (colHeaders.length < settings.minCols){
                             colHeaders.push(pos.tubeColumns);
                         }
+
+
+
                         var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
                         var tube = _createTubeForTableCell(tubeInBox, box, i, j + 1, pos);
+                        //混合类型
+                        if(box.sampleType.isMixed == "1"){
+                            for (var l = 0; l < vm.projectSampleTypeOptions.length; l++) {
+                                if (vm.projectSampleTypeOptions[l].columnsNumber == pos.tubeColumns) {
+                                    tube.sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
+                                }
+                            }
+                        }
                         tubes.push(tube);
                     }
                     tubesInTable.push(tubes);
                 }
+
                 vm.frozenTubeArray = tubesInTable;
 
                 settings.rowHeaders = rowHeaders;
@@ -729,12 +741,12 @@
                         var tube = angular.copy(rowTubes[j]);
                         delete tube.rowNO;
                         delete tube.colNO;
-                        box.frozenTubeDTOS.push(tube);
-                        // if (tube.id
-                        //     || (tube.sampleCode && tube.sampleCode.length > 1)
-                        //     || (tube.sampleTempCode && tube.sampleTempCode.length > 1)){
-                        //
-                        // }
+
+                        if (tube.id
+                            || (tube.sampleCode && tube.sampleCode.length > 1)
+                            || (tube.sampleTempCode && tube.sampleTempCode.length > 1)){
+                            box.frozenTubeDTOS.push(tube);
+                        }
                     }
                 }
 
@@ -891,16 +903,37 @@
             };
             var aRemarkArray = [];
             //备注 选择单元格数据
-            function _fnRemarkSelectData(td,remarkArray,selectTubeArray) {
-                var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;"></div>';
+            function _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex) {
+                var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.2)"></div>';
                 for(var m = 0; m < remarkArray.length; m++){
                     for (var n = 0; n < remarkArray[m].length; n++){
-                        aRemarkArray.push(remarkArray[m][n]);
+                        if ((remarkArray[m][n].sampleCode && remarkArray[m][n].sampleCode.length > 1)
+                            || (remarkArray[m][n].sampleTempCode && remarkArray[m][n].sampleTempCode.length > 1)){
+                            aRemarkArray.push(remarkArray[m][n]);
+                        }
                     }
                 }
-                for(var i = selectTubeArray[0];i <= selectTubeArray[2]; i++){
-                    for(var j = selectTubeArray[1];  j <= selectTubeArray[3];j++)
-                        $(td.getCell(i,j)).append(txt);
+                var start1,end1,start2,end2;
+                if(selectTubeArrayIndex[0] > selectTubeArrayIndex[2]){
+                    start1 = selectTubeArrayIndex[2];
+                    end1 = selectTubeArrayIndex[0];
+                }else{
+                    start1 = selectTubeArrayIndex[0];
+                    end1 = selectTubeArrayIndex[2];
+                }
+                if(selectTubeArrayIndex[1] > selectTubeArrayIndex[3]){
+                    start2 = selectTubeArrayIndex[3];
+                    end2 = selectTubeArrayIndex[1];
+                }else{
+                    start2 = selectTubeArrayIndex[1];
+                    end2 = selectTubeArrayIndex[3];
+                }
+                for(var i = start1;i <= end1; i++){
+                    for(var j = start2;  j <= end2;j++)
+                        if($(td.getCell(i,j))[0].childElementCount !=3){
+                            $(td.getCell(i,j)).append(txt);
+                        }
+
                 }
             }
             //修改样本状态

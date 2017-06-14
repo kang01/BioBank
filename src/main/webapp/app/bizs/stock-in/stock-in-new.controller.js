@@ -521,7 +521,7 @@
         };
         //选择单元格数据
         function _fnSelectTubesData(td,selectedTubesArray,selectTubeArrayIndex) {
-            var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.2)"></div>';
+            var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.2);"></div>';
             for(var m = 0; m < selectedTubesArray.length; m++){
                 for (var n = 0; n < selectedTubesArray[m].length; n++){
                     if(selectedTubesArray[m][n].sampleCode || selectedTubesArray[m][n].sampleTempCode) {
@@ -546,8 +546,11 @@
                 end2 = selectTubeArrayIndex[3];
             }
             for(var i = start1;i <= end1; i++){
-                for(var j = start2;  j <= end2;j++)
-                    $(td.getCell(i,j)).append(txt);
+                for(var j = start2;  j <= end2;j++) {
+                    if($(td.getCell(i,j))[0].childElementCount !=3){
+                        $(td.getCell(i,j)).append(txt);
+                    }
+                }
             }
         }
         // 创建一个对象用于管子Table的控件

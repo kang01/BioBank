@@ -950,19 +950,38 @@
             //换位
             vm.exchangeFlag = false;
             vm.exchange = function () {
+                // toastr.success("两个空冻存盒不能被交换!");
+
                 if(vm.exchangeFlag && domArray.length == 2){
+                    if((!domArray[0].sampleCode && !domArray[1].sampleCode)
+                    ||(!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)){
+                        toastr.error("两个空冻存盒不能被交换!");
+                        return;
+                    }
                     var row = getTubeRowIndex(domArray[0].tubeRows);
                     var col = getTubeColumnIndex(domArray[0].tubeColumns);
                     var row1 = getTubeRowIndex(domArray[1].tubeRows);
                     var col1 = getTubeColumnIndex(domArray[1].tubeColumns);
+                    if(row > 8 ){
+                        vm.frozenTubeArray[row-1][col] = domArray[1];
+                        vm.frozenTubeArray[row-1][col].tubeRows = getTubeRows(row);
+                        vm.frozenTubeArray[row-1][col].tubeColumns = getTubeColumns(col);
 
-                    vm.frozenTubeArray[row][col] = domArray[1];
-                    vm.frozenTubeArray[row][col].tubeRows = getTubeRows(row);
-                    vm.frozenTubeArray[row][col].tubeColumns = getTubeColumns(col);
+                    }else{
+                        vm.frozenTubeArray[row][col] = domArray[1];
+                        vm.frozenTubeArray[row][col].tubeRows = getTubeRows(row);
+                        vm.frozenTubeArray[row][col].tubeColumns = getTubeColumns(col);
+                    }
+                    if(row1 > 8){
+                        vm.frozenTubeArray[row1-1][col1] = domArray[0];
+                        vm.frozenTubeArray[row1-1][col1].tubeRows = getTubeRows(row1);
+                        vm.frozenTubeArray[row1-1][col1].tubeColumns = getTubeColumns(col1);
+                    }else{
+                        vm.frozenTubeArray[row1][col1] = domArray[0];
+                        vm.frozenTubeArray[row1][col1].tubeRows = getTubeRows(row1);
+                        vm.frozenTubeArray[row1][col1].tubeColumns = getTubeColumns(col1);
+                    }
 
-                    vm.frozenTubeArray[row1][col1] = domArray[0];
-                    vm.frozenTubeArray[row1][col1].tubeRows = getTubeRows(row1);
-                    vm.frozenTubeArray[row1][col1].tubeColumns = getTubeColumns(col1);
 
                     domArray = [];
                     vm.exchangeFlag = false;

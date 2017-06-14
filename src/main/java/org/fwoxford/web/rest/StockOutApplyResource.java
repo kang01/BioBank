@@ -128,6 +128,11 @@ public class StockOutApplyResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-applies", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutApplyForDataTableEntity> getPageStockOutApply(@RequestBody DataTablesInput input) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         return stockOutApplyService.findStockOutApply(input);
     }
 

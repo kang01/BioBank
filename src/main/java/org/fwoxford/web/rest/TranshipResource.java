@@ -168,6 +168,11 @@ public class TranshipResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/tranships", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<TranshipResponse> getPageTranship(@RequestBody DataTablesInput input) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         DataTablesOutput<Tranship> transhipsTablesOutput = transhipService.findAllTranship(input);
         List<Tranship> tranships =  transhipsTablesOutput.getData();
         List<User> userList = userService.findAll();

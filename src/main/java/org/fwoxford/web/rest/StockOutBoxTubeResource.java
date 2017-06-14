@@ -146,6 +146,11 @@ public class StockOutBoxTubeResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-box-tubes/stockOutBox/{ids}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutFrozenTubeDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input, @PathVariable List<Long> ids) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         DataTablesOutput<StockOutFrozenTubeDataTableEntity> result =stockOutBoxTubeService.getPageStockOutTubeByStockOutBoxIds(ids, input);
         return result;
     }

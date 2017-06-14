@@ -163,6 +163,11 @@ public class StockOutHandoverResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-handovers", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutHandoverForDataTableEntity> getPageStockOutHandOver(@RequestBody DataTablesInput input) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         DataTablesOutput<StockOutHandoverForDataTableEntity> result = stockOutHandoverService.getPageDataStockOutHandOver(input);
         return result;
     }
@@ -235,6 +240,11 @@ public class StockOutHandoverResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-handovers/{id}/samples", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutHandoverSampleReportDTO> getPageStockOutHandoverSample(@RequestBody DataTablesInput input, @PathVariable Long id) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         DataTablesOutput<StockOutHandoverSampleReportDTO> result =  stockOutHandoverService.getPageStockOutHandoverSample(id, input);
         return result;
     }

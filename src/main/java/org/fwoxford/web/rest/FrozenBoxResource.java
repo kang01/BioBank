@@ -203,6 +203,11 @@ public class FrozenBoxResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/frozen-boxes/pos/{equipmentCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipment(@RequestBody DataTablesInput input,@PathVariable String equipmentCode) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         return frozenBoxService.getPageFrozenBoxByEquipment(input,equipmentCode);
     }
 
@@ -216,6 +221,11 @@ public class FrozenBoxResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/frozen-boxes/pos/{equipmentCode}/{areaCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipmentAndArea(@RequestBody DataTablesInput input,@PathVariable String equipmentCode,@PathVariable String areaCode) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         return frozenBoxService.getPageFrozenBoxByEquipmentAndArea(input,equipmentCode,areaCode);
     }
 

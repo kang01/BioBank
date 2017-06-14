@@ -547,8 +547,23 @@
 
                 }
             }
-            for(var i = selectTubeArrayIndex[0];i <= selectTubeArrayIndex[2]; i++){
-                for(var j = selectTubeArrayIndex[1];  j <= selectTubeArrayIndex[3];j++)
+            var start1,end1,start2,end2;
+            if(selectTubeArrayIndex[0] > selectTubeArrayIndex[2]){
+                start1 = selectTubeArrayIndex[2];
+                end1 = selectTubeArrayIndex[0];
+            }else{
+                start1 = selectTubeArrayIndex[0];
+                end1 = selectTubeArrayIndex[2];
+            }
+            if(selectTubeArrayIndex[1] > selectTubeArrayIndex[3]){
+                start2 = selectTubeArrayIndex[3];
+                end2 = selectTubeArrayIndex[1];
+            }else{
+                start2 = selectTubeArrayIndex[1];
+                end2 = selectTubeArrayIndex[3];
+            }
+            for(var i = start1;i <= end1; i++){
+                for(var j = start2;  j <= end2;j++)
                     $(td.getCell(i,j)).append(txt);
             }
         }

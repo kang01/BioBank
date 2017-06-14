@@ -235,31 +235,7 @@ public class StockOutHandoverResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-handovers/{id}/samples", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutHandoverSampleReportDTO> getPageStockOutHandoverSample(@RequestBody DataTablesInput input, @PathVariable Long id) {
-        List<Sort.Order> orders = new ArrayList<>();
-        List<Column> columns = input.getColumns();
-        input.getOrder().forEach(o -> {
-            Column col = columns.get(o.getColumn());
-            if(col.getName()!=null&&col.getName()!=""){
-                Sort.Order order = new Sort.Order(Sort.Direction.fromString(o.getDir()), col.getName());
-                orders.add(order);
-            }
-        });
-        Sort.Order order = new Sort.Order(Sort.Direction.fromString("desc"), "id");
-        orders.add(order);
-        Sort sort = new Sort(orders);
-        PageRequest pageRequest = new PageRequest(input.getStart() / input.getLength(), input.getLength(), sort);
-
-
-        Page<StockOutHandoverSampleReportDTO> entities = stockOutHandoverService.getStockOutHandoverSamples(id, pageRequest);
-        List<StockOutHandoverSampleReportDTO> stockOutApplyList =  entities == null ?
-            new ArrayList<StockOutHandoverSampleReportDTO>() : entities.getContent();
-
-        DataTablesOutput<StockOutHandoverSampleReportDTO> result = new DataTablesOutput<StockOutHandoverSampleReportDTO>();
-        result.setDraw(input.getDraw());
-        result.setError("");
-        result.setData(stockOutApplyList);
-        result.setRecordsFiltered(stockOutApplyList.size());
-        result.setRecordsTotal(entities.getTotalElements());
+        DataTablesOutput<StockOutHandoverSampleReportDTO> result =  stockOutHandoverService.getPageStockOutHandoverSample(id, input);
         return result;
     }
 

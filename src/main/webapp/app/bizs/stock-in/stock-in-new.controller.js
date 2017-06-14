@@ -11,11 +11,11 @@
 
     StockInNewController.$inject = ['$timeout','BioBankBlockUi','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
         'entity','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','StockInSaveService',
-        'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService'];
+        'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService','MasterData'];
     RescindPutAwayModalController.$inject = ['$uibModalInstance'];
     function StockInNewController($timeout,BioBankBlockUi,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
                                   entity,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,StockInSaveService,
-                                  SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService) {
+                                  SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService,MasterData) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
@@ -135,7 +135,8 @@
             var status = '';
             var isSplit = data.isSplit || 0;
             // var sampleType = data.sampleType && data.sampleType.sampleTypeName || '';
-            // 2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废
+            // 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库
+            // status = MasterData.getStatus(data.status);
             switch (data.status){
                 case '2001': status = '新建'; break;
                 case '2002': isSplit ? status = '待分装' : status = '待入库'; break;
@@ -143,6 +144,8 @@
                 case '2004': status = '已入库'; break;
                 case '2005': status = '已作废'; break;
                 case '2006': status = '已上架'; break;
+                case '2008': status = '待出库'; break;
+                case '2009': status = '已出库'; break;
             }
             // $('td:eq(2)', row).html(sampleType);
             $('td:eq(6)', row).html(isSplit ? '需要分装' : '');
@@ -211,14 +214,8 @@
                         type: 'select',
                         // bRegex: true,
                         bSmart: true,
-                        values: [
-                            {value:'2001',label:"新建"},
-                            {value:'2002',label:"待分装"},
-                            {value:'2003',label:"已分装"},
-                            {value:"2004",label:"已入库"},
-                            {value:"2005",label:"已作废"},
-                            {value:"2006",label:"已上架"}
-                        ]
+                        values: MasterData.frozenBoxStatus
+
                     },
                     null
                 ]

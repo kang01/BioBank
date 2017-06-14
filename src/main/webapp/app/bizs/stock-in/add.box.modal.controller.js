@@ -193,7 +193,6 @@
                         countFlag = true;
                         //样本类型下的样本分类为空时，样本类型也应该不存在
                         if(!vm.sampleTypeClassOptions.length){
-
                             for(var k = 0; k < vm.sampleTypeOptions.length; k++){
                                 if(vm.box.sampleTypeId == vm.sampleTypeOptions[k].id){
                                     _.pullAt(vm.sampleTypeOptions,k);
@@ -204,6 +203,8 @@
                                 vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                                 vm.box.sampleType = vm.sampleTypeOptions[0];
                                 _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
+                            }else{
+                                vm.sampleFlag = false;
                             }
                         }else{
                             vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;

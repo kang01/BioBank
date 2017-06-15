@@ -302,15 +302,9 @@
                     // 可以批准
                     vm.requirementApplyFlag = true;
                 }
-                if(len != vm.requirement.stockOutRequirement.length){
-                    // 不能修改授权项目
-                    vm.isVerifyFlag = true;
-                }else{
-                    // 可以修改授权项目
-                    vm.isVerifyFlag = false;
-                }
             }
         }
+        _fnIsApproval();
         //---------------------------弹出框--------------------------
 
         //批准

@@ -409,7 +409,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     private StockOutApplyReportDTO createApplyReportDTO(Long id) {
         StockOutApplyReportDTO applyDTO = new StockOutApplyReportDTO();
         StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
-        if(stockOutApply.getStatus()!=Constants.STOCK_OUT_APPROVED){
+        if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVED)){
             stockOutApply.setStatus(Constants.STOCK_OUT_PENDING_APPROVAL);
             stockOutApply.setApplyDate(LocalDate.now());
             stockOutApplyRepository.save(stockOutApply);

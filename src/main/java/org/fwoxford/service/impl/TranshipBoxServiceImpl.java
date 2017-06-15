@@ -367,6 +367,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                         tube.getSampleType().setSampleTypeName(tube.getSampleTypeName());
                     }
                 }
+                if((tube.getSampleTempCode().equals(" ")||tube.getSampleTempCode().equals(null))
+                        &&(tube.getSampleCode().equals(" ")||tube.getSampleCode().equals(null))){
+                    throw new BankServiceException("冻存管编码为空，不能保存！");
+                }
 
                 //验证项目下该样本类型是否有样本分类，如果已经配置了样本分类，则样本分类ID不能为空，（99的除外）
 //                int countOfSampleClassForTube = projectSampleClassRepository.countByProjectIdAndSampleTypeId(box.getProject()!=null?box.getProject().getId():null,tube.getSampleType().getId());

@@ -205,7 +205,7 @@ public class StockOutFrozenBoxResource {
     public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> createFrozenBoxForStockOut(@Valid @RequestBody List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTO, @PathVariable Long taskId) throws URISyntaxException {
         log.debug("REST request to save FrozenBox : {}", frozenBoxDTO);
         List<FrozenBoxAndFrozenTubeResponse> result = stockOutFrozenBoxService.createFrozenBoxForStockOut(frozenBoxDTO,taskId);
-        return ResponseEntity.created(new URI("/api/stock-out-frozen-boxes/task/" + taskId))
+        return ResponseEntity.created(new URI("/api/stock-out-frozen-boxes/" + taskId))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, taskId.toString()))
             .body(result);
     }

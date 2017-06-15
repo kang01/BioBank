@@ -118,9 +118,9 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
     @Query(value = "select DISTINCT a.* from frozen_box a\n" +
         " left join stock_out_req_frozen_tube c on c.frozen_box_id = a.id\n" +
-        " left join stock_out_plan_tube b on b.STOCK_OUT_REQ_FROZEN_TUBE_ID =c.id \n" +
-        " left join stock_out_task_tube e on e.STOCK_OUT_PLAN_FROZEN_TUBE_ID =b.id\n" +
-        " where e.STOCK_OUT_TASK_ID = ?1 " ,nativeQuery = true)
+        " left join stock_out_plan_tube b on b.stock_out_req_frozen_tube_id =c.id \n" +
+        " left join stock_out_task_tube e on e.stock_out_plan_frozen_tube_id =b.id\n" +
+        " where e.stock_out_task_id = ?1 " ,nativeQuery = true)
     List<FrozenBox> findByStockOutTaskId(Long taskId);
 
     @Query( "select  DISTINCT a from FrozenBox a" +

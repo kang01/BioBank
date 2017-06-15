@@ -676,11 +676,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 dto.setPosition(position);
                 dto.setCountOfSample(countOfSample);
                 alist.add(dto);
+            }else{
+                long filterRecord = output.getRecordsFiltered()-1;
+                output.setRecordsFiltered(filterRecord);
             }
         });
-        output.setRecordsFiltered(boxCodes.size());
         output.setData(alist);
-
         return output;
     }
 

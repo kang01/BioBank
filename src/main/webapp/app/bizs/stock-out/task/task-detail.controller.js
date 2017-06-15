@@ -53,7 +53,13 @@
                 TaskService.queryTaskDesc(vm.taskId).success(function (data) {
                     vm.task = data;
                     vm.task.stockOutDate = new Date(data.stockOutDate);
-                    vm.usedTime = data.usedTime;
+                    vm.usedTime = data.usedTime/60;
+                    if(vm.usedTime < 1){
+                        vm.usedTime = "小于1小时"
+                    }else{
+                        vm.usedTime = vm.usedTime + "小时"
+                    }
+
                     taskId = data.id;
                 }).then(function () {
 

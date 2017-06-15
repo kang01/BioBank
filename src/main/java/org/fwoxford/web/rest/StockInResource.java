@@ -176,6 +176,11 @@ public class StockInResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-in", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockInForDataTableEntity> getPageStockIn(@RequestBody DataTablesInput input) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         return stockInService.findStockIn(input);
     }
 

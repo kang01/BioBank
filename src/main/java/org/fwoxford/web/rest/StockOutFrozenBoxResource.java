@@ -151,7 +151,11 @@ public class StockOutFrozenBoxResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-frozen-boxes/task/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutFrozenBoxForTaskDetailDataTableEntity> getPageStockOutBoxForTask(@RequestBody DataTablesInput input, @PathVariable Long id) {
-
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         DataTablesOutput<StockOutFrozenBoxForTaskDetailDataTableEntity> result = stockOutFrozenBoxService.getPageByTask(id, input);
         return result;
     }
@@ -165,7 +169,11 @@ public class StockOutFrozenBoxResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-frozen-boxes/requirement/{ids}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<FrozenBoxForStockOutDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input, @PathVariable List<Long> ids) {
-
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         DataTablesOutput<FrozenBoxForStockOutDataTableEntity> output =  stockOutFrozenBoxService.getPageByRequirementIds(ids, input);
         return output;
     }
@@ -345,6 +353,11 @@ public class StockOutFrozenBoxResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-frozen-boxes/apply/{id}/waiting-handover", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutFrozenBoxForDataTableEntity> getPageStockOutFrozenBoxes(@PathVariable Long id, @RequestBody DataTablesInput input) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = stockOutFrozenBoxService.getPageWaitingHandOverStockOutFrozenBoxes(id,input);
         return result;
     }

@@ -169,6 +169,11 @@ public class StockOutTaskResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-tasks/plan/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutTaskForPlanDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input, @PathVariable Long id) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         DataTablesOutput<StockOutTaskForPlanDataTableEntity> result = stockOutTaskService.getPageStockOutTaskByPlan(id, input);
         return result;
     }
@@ -181,6 +186,11 @@ public class StockOutTaskResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-tasks", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutTaskForDataTableEntity> getDataTableStockOutTask(@RequestBody DataTablesInput input) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         DataTablesOutput<StockOutTaskForDataTableEntity> result = stockOutTaskService.getPageStockOutTask(input);
         return result;
     }

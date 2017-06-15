@@ -180,6 +180,11 @@ public class StockOutPlanResource {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/stock-out-plans", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<StockOutPlansForDataTableEntity> getPageStockOutPlan(@RequestBody DataTablesInput input) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
         DataTablesOutput<StockOutPlansForDataTableEntity> result =  stockOutPlanService.findAllStockOutPlan(input);
         return result;
     }

@@ -46,6 +46,7 @@
         vm.recover = _fnRecover;
         //整盒出库
         vm.stockOutBox = _fnStockOutBox;
+        vm.cancelStockOutBox = _fnCancelStockOutBox;
 
         function _init() {
             //临时盒子
@@ -127,10 +128,16 @@
         }
         //整盒出库
         function _fnStockOutBox() {
-            TaskService.saveTempBoxes(taskId,frozenBox).success(function (data) {
+            var boxList = [];
+            boxList.push(frozenBox);
+            TaskService.saveTempBoxes(taskId,boxList).success(function (data) {
                 toastr.success("保存成功!");
                 $uibModalInstance.close();
             });
+        }
+
+        function _fnCancelStockOutBox() {
+            vm.boxInFullFlag = false;
         }
 
         //临时盒子

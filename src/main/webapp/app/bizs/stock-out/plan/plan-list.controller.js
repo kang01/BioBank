@@ -69,10 +69,6 @@
                     bSmart: true,
                     iFilterLength:3
                 }, {
-                    type: 'Datepicker',
-                    bRegex: true,
-                    bSmart: true
-                }, {
                     type: 'text',
                     bRegex: true,
                     bSmart: true
@@ -92,7 +88,7 @@
                         {value:"1402",label:"已完成"},
                         {value:"1403",label:"已作废"}
                     ]
-                }]
+                },null]
             });
 
         vm.dtColumns = [
@@ -103,7 +99,7 @@
             DTColumnBuilder.newColumn('countOfStockOutPlanSample').withTitle('计划样本量'),
             DTColumnBuilder.newColumn('countOfStockOutTask').withTitle('出库任务量'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         function createdRow(row, data, dataIndex) {

@@ -86,7 +86,7 @@
             DTColumnBuilder.newColumn('receiver').withTitle('接收方'),
             DTColumnBuilder.newColumn('deliverName').withTitle('交付人'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
 
         function fnServerData ( sSource, aoData, fnCallback, oSettings ) {

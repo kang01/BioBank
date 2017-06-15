@@ -67,13 +67,19 @@
             DTColumnBuilder.newColumn('diseaseType').withTitle('疾病').withOption('width', 'auto')
         ];
         function createdRow(row, data, dataIndex) {
-            var planStatus = '';
-            switch (data.status){
-                case '1401': planStatus = '进行中';break;
-                case '1402': planStatus = '已完成';break;
-                case '1403': planStatus = '已作废';break;
+            var sex = '';
+            switch (data.sex){
+                case 'M': sex = '男';break;
+                case 'F': sex = '女';break;
+                case 'null': sex = '不详';break;
             }
-            $('td:eq(6)', row).html(planStatus);
+            // var planStatus = '';
+            // switch (data.status){
+            //     case '1401': planStatus = '进行中';break;
+            //     case '1402': planStatus = '已完成';break;
+            //     case '1403': planStatus = '已作废';break;
+            // }
+            $('td:eq(6)', row).html(sex);
             $compile(angular.element(row).contents())($scope);
         }
 

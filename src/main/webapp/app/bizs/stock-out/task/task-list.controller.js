@@ -105,7 +105,7 @@
             DTColumnBuilder.newColumn('countOfHandOverSample').withTitle('已交接样本'),
             DTColumnBuilder.newColumn('handOverTimes').withTitle('交接次数'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         function createdRow(row, data, dataIndex) {

@@ -53,7 +53,7 @@
                 TaskService.queryTaskDesc(vm.taskId).success(function (data) {
                     vm.task = data;
                     vm.task.stockOutDate = new Date(data.stockOutDate);
-                    vm.usedTime = data.usedTime/60;
+                    vm.usedTime = (data.usedTime/60).toFixed(1);
                     if(vm.usedTime < 1){
                         vm.usedTime = "小于1小时"
                     }else{
@@ -97,7 +97,7 @@
         function startTimer() {
              taskTimer = setInterval(function(){
                 TaskService.taskTimer(vm.taskId).then(function (res) {
-                    vm.usedTime = res.data.usedTime/60;
+                    vm.usedTime = (res.data.usedTime/60).toFixed(1);
                     if(vm.usedTime < 1){
                         vm.usedTime = "小于1小时"
                     }else{
@@ -194,6 +194,7 @@
             });
             if (vm.box && vm.box.frozenBoxCode == oData.frozenBoxCode){
                 $(nRow).addClass('rowLight');
+                _fnLoadTubes();
             }
             return nRow;
         }
@@ -252,7 +253,7 @@
                 }
             }
             //是否满盒出库
-            var needScanTubesLen = _.filter(vm.tubeList,{stockOutFlag:1}).length;
+            needScanTubesLen = _.filter(vm.tubeList,{stockOutFlag:1}).length;
             if(needScanTubesLen == vm.tubeList.length){
                 vm.boxInFullFlag = true;
                 vm.boxInTubes = vm.tubeList;

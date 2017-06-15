@@ -22,6 +22,14 @@
         function _initSampleRequirementDesc() {
             RequirementService.descSampleRequirement(sampleRequirementId).success(function (data) {
                 vm.requirementDesc = data;
+                if(vm.requirementDesc.sex == "M"){
+                    vm.requirementDesc.sex = "男";
+                } else if(vm.requirementDesc.sex == "F"){
+                    vm.requirementDesc.sex = "女";
+                }else{
+                    vm.requirementDesc.sex = "不详";
+                }
+
                 //正常的样本
                 vm.len = _.filter(vm.requirementDesc.frozenTubeList,{status:'3001'}).length;
                 setTimeout(function () {
@@ -50,6 +58,12 @@
         function createdRow(row, data, dataIndex) {
             var sampleState = '';
             var diseaseType = '';
+            var sex = '';
+            switch (data.sex){
+                case 'M': sex = '男';break;
+                case 'F': sex = '女';break;
+                case 'null': sex = '不详';break;
+            }
             switch (data.status){
                 case '3001': sampleState = '正常';break;
                 case '3002': sampleState = '空管';break;
@@ -68,6 +82,7 @@
                 diseaseType += "溶血　";
             }
             $('td:eq(1)', row).html(sampleState);
+            $('td:eq(3)', row).html(sex);
             $('td:eq(6)', row).html(diseaseType);
             $compile(angular.element(row).contents())($scope);
         }

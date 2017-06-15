@@ -142,7 +142,7 @@
             DTColumnBuilder.newColumn('receiveDate').withTitle('接收日期'),
             DTColumnBuilder.newColumn('sampleSatisfaction').withTitle('满意度'),
             DTColumnBuilder.newColumn('transhipState').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {
             var transhipState = '';

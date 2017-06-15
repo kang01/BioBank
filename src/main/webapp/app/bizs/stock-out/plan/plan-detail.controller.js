@@ -180,7 +180,7 @@
             var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
 
             vm.dtColumns = [
-                DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
+                DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "80"),
                 DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "70"),
                 DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
@@ -298,7 +298,7 @@
             DTColumnBuilder.newColumn('operators').withTitle('操作员'),
             DTColumnBuilder.newColumn('memo').withTitle('备注'),
             DTColumnBuilder.newColumn('id').notVisible(),
-            DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
 
         function createdRow(row, data, dataIndex) {

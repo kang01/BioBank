@@ -132,7 +132,7 @@
                 DTColumnBuilder.newColumn('countOfSample').withTitle('样本数量'),
                 DTColumnBuilder.newColumn('countOfBox').withTitle('冻存盒数量'),
                 DTColumnBuilder.newColumn('status').withTitle('状态'),
-                DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(_fnActionButtonsRender)
+                DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(_fnActionButtonsRender)
             ];
 
             return columns;

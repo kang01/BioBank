@@ -235,7 +235,7 @@
 
             var columns = [
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
-                DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
+                DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
                 DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
                 DTColumnBuilder.newColumn('sampleClassificationName').withOption("width", "80").withTitle('样本分类'),
@@ -243,7 +243,7 @@
                 DTColumnBuilder.newColumn('countOfSample').withOption("width", "90").withTitle('样本量'),
                 DTColumnBuilder.newColumn('isSplit').withOption("width", "100").withTitle('是否分装'),
                 DTColumnBuilder.newColumn('status').withOption("width", "80").withTitle('状态'),
-                DTColumnBuilder.newColumn("").withOption("width", "120").withTitle('操作').notSortable().renderWith(_fnActionButtonsRender),
+                DTColumnBuilder.newColumn("").withOption("width", "120").withTitle('操作').withOption('searchable',false).notSortable().renderWith(_fnActionButtonsRender),
                 DTColumnBuilder.newColumn('id').notVisible()
                 // DTColumnBuilder.newColumn('sampleType').notVisible(),
                 // DTColumnBuilder.newColumn('frozenBoxRows').notVisible(),

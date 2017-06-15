@@ -8,18 +8,26 @@
         .module('bioBankApp')
         .directive('focusMe',  focusMe);
 
-    focusMe.$inject  =  [];
+    focusMe.$inject  =  ['$timeout'];
 
-    function  focusMe()  {
+    function  focusMe($timeout)  {
+        // return {
+        //     scope: { trigger: '=focusMe' },
+        //     link: function(scope, element) {
+        //         scope.$watch('trigger', function(value) {
+        //             if(value === true) {
+        //                 element[0].focus();
+        //                 scope.trigger = false;
+        //             }
+        //         });
+        //     }
+        // };
         return {
-            scope: { trigger: '=focusMe' },
-            link: function(scope, element) {
-                scope.$watch('trigger', function(value) {
-                    if(value === true) {
-                        element[0].focus();
-                        scope.trigger = false;
-                    }
-                });
+            restrict: 'AC',
+            link: function(_scope, _element) {
+                $timeout(function(){
+                    _element[0].focus();
+                }, 0);
             }
         };
     }

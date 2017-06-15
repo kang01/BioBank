@@ -8,12 +8,13 @@
         .module('bioBankApp')
         .controller('microtubesRemarkModalController', microtubesRemarkModalController);
 
-    microtubesRemarkModalController.$inject = ['$uibModalInstance','$uibModal','items'];
+    microtubesRemarkModalController.$inject = ['$scope','$uibModalInstance','$uibModal','items'];
 
-    function microtubesRemarkModalController($uibModalInstance,$uibModal,items) {
+    function microtubesRemarkModalController($scope,$uibModalInstance,$uibModal,items) {
         var vm = this;
         vm.items = items;
-
+        $("#tubeContent").focus();
+        // $scope.$apply();
         this.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };

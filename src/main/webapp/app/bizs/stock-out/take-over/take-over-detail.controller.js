@@ -302,8 +302,8 @@
                 DTColumnBuilder.newColumn('position').withTitle('暂存区').withOption("width", 120),
                 DTColumnBuilder.newColumn('applyCode').withTitle('出库申请').withOption("width", 120),
                 DTColumnBuilder.newColumn('planCode').withTitle('出库计划').withOption("width", 120),
-                DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", 50),
-                DTColumnBuilder.newColumn('delegate').withTitle('委托方').withOption("width", 240),
+                DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", 100),
+                DTColumnBuilder.newColumn('delegate').withTitle('委托方').withOption("width", 250),
                 DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
                 // DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "30").notSortable().renderWith(_fnActionsHtml)
 

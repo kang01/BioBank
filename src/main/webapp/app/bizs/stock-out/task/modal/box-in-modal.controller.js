@@ -148,10 +148,11 @@
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码'),
             DTColumnBuilder.newColumn('sampleCount').withTitle('盒内样本数')
         ];
+        var sampleTotalCount;
         function createdRow(row, data, dataIndex) {
-            var sampleCount =  data.frozenBoxType.frozenBoxTypeRows * data.frozenBoxType.frozenBoxTypeColumns;
+            sampleTotalCount =  data.frozenBoxType.frozenBoxTypeRows * data.frozenBoxType.frozenBoxTypeColumns;
             var sampleOutCount = data.frozenTubeDTOS.length - (_.filter(data.frozenTubeDTOS,{sampleTempCode:""}).length);
-            var str = sampleOutCount+"/"+sampleCount;
+            var str = sampleOutCount+"/"+sampleTotalCount;
             $('td:eq(1)', row).html(str);
             $compile(angular.element(row).contents())($scope);
         }
@@ -170,6 +171,11 @@
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
             vm.selectBox = data;
+            if(vm.selectBox.frozenTubeDTOS.length >= sampleTotalCount){
+                vm.pos = "";
+                $scope.$apply();
+                return
+            }
             if(vm.selectBox.frozenTubeDTOS.length){
                 var len = vm.selectBox.frozenTubeDTOS.length-1;
                 _.orderBy(vm.selectBox.frozenTubeDTOS, ['tubeRows'], ['esc']);
@@ -185,6 +191,8 @@
         vm.posBlur = function () {
             if(vm.pos){
                _FnPreassemble(vm.selectedTubes);
+            }else{
+                _FnPreassemble(vm.selectedTubes);
             }
         };
 

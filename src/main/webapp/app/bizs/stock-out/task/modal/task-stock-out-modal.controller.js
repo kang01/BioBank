@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskStockOutModalController', TaskStockOutModalController);
 
-    TaskStockOutModalController.$inject = ['$uibModalInstance','$uibModal','items','TaskService','DTOptionsBuilder','DTColumnBuilder','toastr','EquipmentService','AreasByEquipmentIdService','BioBankBlockUi','BioBankDataTable'];
+    TaskStockOutModalController.$inject = ['$scope','$compile','$uibModalInstance','$uibModal','items','TaskService','DTOptionsBuilder','DTColumnBuilder','toastr','EquipmentService','AreasByEquipmentIdService','BioBankBlockUi','BioBankDataTable'];
 
-    function TaskStockOutModalController($uibModalInstance,$uibModal,items,TaskService,DTOptionsBuilder,DTColumnBuilder,toastr,EquipmentService,AreasByEquipmentIdService,BioBankBlockUi,BioBankDataTable) {
+    function TaskStockOutModalController($scope,$compile,$uibModalInstance,$uibModal,items,TaskService,DTOptionsBuilder,DTColumnBuilder,toastr,EquipmentService,AreasByEquipmentIdService,BioBankBlockUi,BioBankDataTable) {
         var vm = this;
         vm.dtInstance = {};
         vm.stockOut = {};
@@ -94,7 +94,8 @@
 
                 }
 
-            });
+            })
+            .withOption('createdRow', createdRow);
         vm.dtColumns = [
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
@@ -104,7 +105,16 @@
             DTColumnBuilder.newColumn('diseaseTypeId').withTitle('标签'),
             DTColumnBuilder.newColumn('id').notVisible()
         ];
-
+        function createdRow(row, data, dataIndex) {
+            var sex = '';
+            switch (data.sex){
+                case 'M': sex = '男';break;
+                case 'F': sex = '女';break;
+                case 'null': sex = '不详';break;
+            }
+            $('td:eq(3)', row).html(sex);
+            $compile(angular.element(row).contents())($scope);
+        }
 
 
 

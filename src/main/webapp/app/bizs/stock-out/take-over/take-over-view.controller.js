@@ -56,7 +56,7 @@
             .withOption('createdRow', createdRow);
 
         vm.stockOutSampleColumns = [
-            DTColumnBuilder.newColumn('id').withTitle('No').withOption('width', '30'),
+            // DTColumnBuilder.newColumn('id').withTitle('No').withOption('width', '30'),
             DTColumnBuilder.newColumn('boxCode').withTitle('临时盒编码').withOption('width', '120'),
             DTColumnBuilder.newColumn('location').withTitle('盒内位置').withOption('width', '80'),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption('width', '120'),
@@ -79,7 +79,7 @@
             //     case '1402': planStatus = '已完成';break;
             //     case '1403': planStatus = '已作废';break;
             // }
-            $('td:eq(6)', row).html(sex);
+            $('td:eq(5)', row).html(sex);
             $compile(angular.element(row).contents())($scope);
         }
 

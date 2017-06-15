@@ -70,12 +70,16 @@
             function onPersonSuccess(data) {
                 vm.personOptions = data;
             }
+
+            _fnQueryTaskBoxes();
+            _fnQueryStockOutList();
+        }
+        function _fnQueryTaskBoxes() {
             //获取冻存盒列表
             TaskService.queryTaskBox(vm.taskId).success(function (data) {
                 vm.boxOptions.withOption('data', data);
                 vm.boxInstance.rerender();
             });
-            _fnQueryStockOutList();
         }
         function _fnQueryStockOutList() {
             //获取已出库列表
@@ -93,7 +97,7 @@
         function startTimer() {
              taskTimer = setInterval(function(){
                 TaskService.taskTimer(vm.taskId).then(function (res) {
-                    vm.usedTime = res.data.usedTime;
+                    vm.usedTime = res.data.usedTime/60;
                     if(vm.usedTime < 1){
                         vm.usedTime = "小于1小时"
                     }else{
@@ -513,6 +517,7 @@
             tableCtrl.loadData(vm.tubes);
             vm.boxInTubes = boxInTubes;
         }
+        vm.box = {};
         //撤销
         function _fnRepealModal() {
             modalInstance = $uibModal.open({
@@ -538,10 +543,11 @@
                         repealList.push(vm.aRemarkArray[i]);
                     }
                 }
-
                 TaskService.repeal(repealList).success(function (data) {
                     toastr.success("申请撤销样本成功!");
+                    _fnQueryTaskBoxes();
                     _fnLoadTubes();
+                    vm.box.frozenBoxCode =boxCode;
                 });
                 vm.aRemarkArray = [];
                 var tableCtrl = _getSampleDetailsTableCtrl();

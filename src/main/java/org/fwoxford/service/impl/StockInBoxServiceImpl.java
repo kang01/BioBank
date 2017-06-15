@@ -578,7 +578,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
         stockInBoxDetail.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
         stockInBoxDetail.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
-        stockInBoxDetail.setSupportRackId(frozenBox.getArea()!=null?frozenBox.getSupportRack().getId():null);
+        stockInBoxDetail.setSupportRackId(frozenBox.getSupportRack()!=null?frozenBox.getSupportRack().getId():null);
         stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
         stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
         stockInBoxDetail.setFrozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns());

@@ -203,6 +203,8 @@
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
             boxCode = data.frozenBoxCode;
+            vm.sampleCode = boxCode+"-";
+            vm.sampleCodeCopy = angular.copy(vm.sampleCode);
             vm.boxInTubes = [];
             _fnLoadTubes();
         }
@@ -244,12 +246,13 @@
                     tubes.push(tube);
                 }
                 tubesInTable.push(tubes);
-                vm.tubes = tubesInTable;
-                vm.tubeList = [];
-                for(var m = 0; m < tubesInTable.length;m++){
-                    for(var n = 0; n < tubesInTable[m].length;n++){
-                        vm.tubeList.push(tubesInTable[m][n]);
-                    }
+
+            }
+            vm.tubes = tubesInTable;
+            vm.tubeList = [];
+            for(var m = 0; m < tubesInTable.length;m++){
+                for(var n = 0; n < tubesInTable[m].length;n++){
+                    vm.tubeList.push(tubesInTable[m][n]);
                 }
             }
             //是否满盒出库
@@ -377,7 +380,7 @@
                 if(tube.sampleClassification){
                     td.style.backgroundColor = tube.sampleClassification.backColor;
                 }else{
-                    if(vm.sampleType){
+                    if(tube.sampleType){
                         td.style.backgroundColor = tube.sampleType.backColor;
                     }
                 }
@@ -458,7 +461,7 @@
 
         //装盒的样本
         vm.boxInTubes = [];
-        vm.sampleCode = "1494946117831-G2";
+
         var scanCodeTimer;
         vm.scanClick = function () {
             $("#focusTextarea").focus();
@@ -725,7 +728,9 @@
             vm.selected[full.id] = false;
             vm.selectAll = false;
             var html = '';
-            html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
+            if(full.status == '1701'){
+                html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
+            }
             return html;
         }
         function createdRow(row, data, dataIndex) {

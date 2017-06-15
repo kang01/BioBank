@@ -225,7 +225,8 @@
                                     stockOutTakeOver: angular.copy(vm.dto),
                                     stockOutApplication: vm.application,
                                     stockOutBoxes: null,
-                                    boxIdsStr:boxIdsStr
+                                    boxIdsStr:boxIdsStr,
+                                    countOfSample:vm.countOfSample
                                 }
 
                             }
@@ -258,6 +259,7 @@
             // 全选或取消全选冻存盒
             vm.toggleAll = function (selectAll, selectedItems) {
                 boxIds = [];
+                vm.countOfSample = 0;
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
                         selectedItems[id] = selectAll;
@@ -267,19 +269,43 @@
                         }
                     }
                 }
-            };
+                if(boxIds.length){
+                    for(var i = 0; i <boxIds.length; i++){
+                        for(var j = 0; j < vm.takeOverBox.length; j++){
+                            if(boxIds[i] == vm.takeOverBox[j].id){
+                                vm.countOfSample += vm.takeOverBox[j].countOfSample
+                            }
+                        }
 
+                    }
+
+                }
+            };
+            vm.countOfSample = 0;
             // 更新全选选项
             vm.toggleOne = function (selectedItems) {
                 boxIds = [];
+
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
                         if(!selectedItems[id]) {
                             vm.selectAllBox = false;
                             return;
                         }else{
+                            vm.countOfSample = 0;
                             boxIds.push(id);
                             boxIdsStr = boxIds.join(",");
+                            if(boxIds.length){
+                                for(var i = 0; i <boxIds.length; i++){
+                                    for(var j = 0; j < vm.takeOverBox.length; j++){
+                                        if(boxIds[i] == vm.takeOverBox[j].id){
+                                            vm.countOfSample += vm.takeOverBox[j].countOfSample
+                                        }
+                                    }
+
+                                }
+                            }
+
                         }
                     }
                 }
@@ -316,11 +342,12 @@
 
             var headerCompiled = false;
             function _fnCreatedHeader(header){
-                if (!headerCompiled) {
-                    // Use this headerCompiled field to only compile header once
-                    headerCompiled = true;
-                    $compile(angular.element(header).contents())($scope);
-                }
+                // if (!headerCompiled) {
+                //     // Use this headerCompiled field to only compile header once
+                //     headerCompiled = true;
+                //
+                // }
+                $compile(angular.element(header).contents())($scope);
             }
             function _fnCreatedRow(row, data, dataIndex) {
                 var status = MasterData.getStatus(data.status);
@@ -355,6 +382,7 @@
                         "data": []
                     };
                     oSettings.json = data;
+
                     fnCallback(data);
                     return;
                 }
@@ -374,6 +402,7 @@
                 var jqDt = this;
                 TakeOverService.queryWaitingTakeOverFrozenBoxesList(vm.dto.stockOutApplyId, data, oSettings).then(function (res){
                     var json = res.data;
+                    vm.takeOverBox = res.data.data;
                     var error = json.error || json.sError;
                     if ( error ) {
                         jqDt._fnLog( oSettings, 0, error );

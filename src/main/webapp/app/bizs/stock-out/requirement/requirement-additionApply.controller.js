@@ -148,6 +148,7 @@
         }
         function _loadRequirement(success, error) {
             RequirementService.queryRequirementDesc(vm.requirement.id).then(function (data) {
+                vm.requirement = data;
                 vm.requirement.stockOutRequirement = data.stockOutRequirement;
                 vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
@@ -189,7 +190,7 @@
 
         ];
         if(vm.viewFlag != "1"){
-            vm.dtColumns.push(DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml));
+            vm.dtColumns.push(DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "150").notSortable().renderWith(actionsHtml));
         }
         function createdRow(row, data, dataIndex) {
             var status = '';

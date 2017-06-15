@@ -27,9 +27,8 @@
         if($stateParams.applyId){
             vm.requirement.id = $stateParams.applyId;
         }
-        var viewFlag;
         if($stateParams.viewFlag){
-            viewFlag = $stateParams.viewFlag;
+            vm.viewFlag = $stateParams.viewFlag;
         }
         //初始化数据
         function _initData() {
@@ -53,19 +52,21 @@
                 var requirementStatus =  MasterData.requirementStatus;
                 for(var i = 0; i < requirementStatus.length; i++){
                     if(vm.requirement.status == requirementStatus[i].id){
-                        vm.status = requirementStatus[i].name;
+                        vm.statusName = requirementStatus[i].name;
                     }
                 }
 
             }
-            //1：附加申请
-            if(viewFlag != "1"){
+            //附加申请 2：附加编辑 1：附加浏览 3.附加
+            if(vm.viewFlag == '3'){
                 vm.requirement.stockOutRequirement = [];
                 setTimeout(function () {
                     vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
                     vm.isApproval();
                 },100);
-            }else{
+            }
+            //附加编辑
+            if(vm.viewFlag != "3"){
                 vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
                 setTimeout(function () {
                     vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
@@ -76,12 +77,25 @@
         //附加
         vm.applyFlag = false;
         function _fnAdditionApply() {
-
-            RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
-                vm.status = data.status;
-                vm.requirement.id = data.id;
-                $state.go("requirement-additionApply",{applyId:vm.requirement.id});
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-confirm-modal.html',
+                controller: 'ConfirmModalController',
+                controllerAs:'vm'
             });
+
+            modalInstance.result.then(function (data) {
+                RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
+                    vm.status = data.status;
+                    vm.requirement.id = data.id;
+                    $state.go("requirement-additionApply",{applyId:data.id,viewFlag:3});
+                });
+            });
+            // RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
+            //     vm.status = data.status;
+            //     vm.requirement.id = data.id;
+            //     $state.go("requirement-additionApply",{applyId:vm.requirement.id});
+            // });
         }
         //打印申请
         function _fnPrintRequirement() {
@@ -134,11 +148,6 @@
         }
         function _loadRequirement(success, error) {
             RequirementService.queryRequirementDesc(vm.requirement.id).then(function (data) {
-                // vm.requirement = data;
-                // vm.requirement.startTime = moment(data.startTime);
-                // vm.requirement.endTime = new Date(data.endTime);
-                // vm.requirement.recordTime = new Date(data.recordTime);
-                // vm.requirement.recordId = data.recordId;
                 vm.requirement.stockOutRequirement = data.stockOutRequirement;
                 vm.sampleRequirementIds = _.join(_.map(vm.requirement.stockOutRequirement,'id'),',');
                 vm.dtOptions.withOption('data', vm.requirement.stockOutRequirement);
@@ -179,7 +188,7 @@
             DTColumnBuilder.newColumn('status').withTitle('状态')
 
         ];
-        if(!viewFlag){
+        if(vm.viewFlag != "1"){
             vm.dtColumns.push(DTColumnBuilder.newColumn("").withTitle('操作').notSortable().renderWith(actionsHtml));
         }
         function createdRow(row, data, dataIndex) {
@@ -206,7 +215,7 @@
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<div ng-if="vm.status != 1103">'+
+            return '<div ng-if="vm.requirement.status != 1103">'+
                 '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementRevert('+full.id+')">复原</a>&nbsp;' +
                 '<a ng-if="'+full.status+'== 1201 || '+full.status+'== 1202" ng-click="vm.sampleRequirementCheck('+full.id+')">核对</a>&nbsp;' +
                 '<a ng-click="vm.sampleRequirementEdit('+full.id+')">修改</a>&nbsp;'+

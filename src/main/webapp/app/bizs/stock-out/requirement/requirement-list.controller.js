@@ -216,13 +216,13 @@
                 $(".addApplyId", tr).click(function () {
                     var tr = $(this).closest('tr');
                     var applyId = tr.find('td:eq(0)').data('id');
-                    $state.go('requirement-additionApply', {applyId: applyId,viewFlag:1});
+                    $state.go('requirement-additionApply', {applyId: applyId,viewFlag:2});
                 });
 
                 $(".viewApplyId", tr).click(function () {
                     var tr = $(this).closest('tr');
                     var applyId = tr.find('td:eq(0)').data('id');
-                    $state.go('requirement-view', {applyId: applyId,viewFlag:1});
+                    $state.go('requirement-view', {applyId: applyId,viewFlag:4});
                 });
                 $("td", tr).each(function (index, td){
                     var sourceTd = $('td', parentRow).eq(index);
@@ -266,7 +266,7 @@
             modalInstance.result.then(function (data) {
                 RequirementService.addApplyRequirement(requirementId).success(function (data) {
                     vm.status = data.status;
-                    $state.go("requirement-additionApply",{applyId:data.id});
+                    $state.go("requirement-additionApply",{applyId:data.id,viewFlag:3});
                 });
             });
 

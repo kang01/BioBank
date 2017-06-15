@@ -175,12 +175,25 @@
         //附加
         vm.applyFlag = false;
         function _fnAdditionApply() {
-
-            RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
-                vm.status = data.status;
-                vm.requirement.id = data.id;
-                $state.go("requirement-additionApply",{applyId:vm.requirement.id});
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-confirm-modal.html',
+                controller: 'ConfirmModalController',
+                controllerAs:'vm'
             });
+
+            modalInstance.result.then(function (data) {
+                RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
+                    vm.status = data.status;
+                    vm.requirement.id = data.id;
+                    $state.go("requirement-additionApply",{applyId:data.id,viewFlag:3});
+                });
+            });
+            // RequirementService.addApplyRequirement(vm.requirement.id).success(function (data) {
+            //     vm.status = data.status;
+            //     vm.requirement.id = data.id;
+            //     $state.go("requirement-additionApply",{'applyId':vm.requirement.id,'viewFlag':3});
+            // });
         }
         //打印申请
         function _fnPrintRequirement() {

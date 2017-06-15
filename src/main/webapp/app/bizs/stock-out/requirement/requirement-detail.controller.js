@@ -203,6 +203,8 @@
                 RequirementService.invalidPlan(vm.requirement.id,invalid).success(function (data) {
                     toastr.success("作废成功!");
                     $state.go("requirement-list");
+                }).error(function (res) {
+                    toastr.error(res.message);
                 });
             }, function () {
 

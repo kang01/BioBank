@@ -94,6 +94,11 @@
              taskTimer = setInterval(function(){
                 TaskService.taskTimer(vm.taskId).then(function (res) {
                     vm.usedTime = res.data.usedTime;
+                    if(vm.usedTime < 1){
+                        vm.usedTime = "小于1小时"
+                    }else{
+                        vm.usedTime = vm.usedTime + "小时"
+                    }
                 });
             },90000);
         }

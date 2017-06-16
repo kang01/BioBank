@@ -82,6 +82,10 @@ public class StockOutApplyForSave {
      * 撤销样本量
      */
     private Long countOfRepealSample;
+    /**
+     * 已交接样本量
+     */
+    private Long countOfHandoverSample;
 
     public Long getId() {
         return id;
@@ -225,6 +229,14 @@ public class StockOutApplyForSave {
 
     public void setCountOfRepealSample(Long countOfRepealSample) {
         this.countOfRepealSample = countOfRepealSample;
+    }
+
+    public Long getCountOfHandoverSample() {
+        return countOfHandoverSample;
+    }
+
+    public void setCountOfHandoverSample(Long countOfHandoverSample) {
+        this.countOfHandoverSample = countOfHandoverSample;
     }
 
     @Override

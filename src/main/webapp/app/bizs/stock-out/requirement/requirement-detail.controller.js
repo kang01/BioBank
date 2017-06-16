@@ -197,7 +197,15 @@
         }
         //打印申请
         function _fnPrintRequirement() {
+
             window.open ('/api/stock-out-applies/print/' + vm.requirement.id);
+            setTimeout(function () {
+                RequirementService.queryRequirementDesc(vm.requirement.id).then(function (data) {
+                    vm.requirement = data;
+                    _initData();
+                });
+            },100);
+
         }
         //作废
         function _fnCancellation() {

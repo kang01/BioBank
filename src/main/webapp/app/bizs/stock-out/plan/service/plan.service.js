@@ -43,7 +43,8 @@
 
         }
         function _queryPlanSampleInfo(planId) {
-            return $http.get('api/stock-out-applies/plan/'+planId);
+            // return $http.get('api/stock-out-applies/plan/'+planId);
+            return $http.get('api/stock-out-applies/requirements/plan/'+planId);
         }
         function _queryPlanBoxes(sampleIds,data) {
             return $http.post('api/res/stock-out-frozen-boxes/requirement/'+sampleIds,JSON.stringify(data));

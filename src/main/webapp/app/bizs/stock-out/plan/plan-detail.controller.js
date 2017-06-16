@@ -68,8 +68,9 @@
                     vm.strBoxIds = "";
                 }
             };
-
+            var clickFlag = false;
             vm.toggleOne = function (selectedItems) {
+                clickFlag = true;
                 // console.log(JSON.stringify(selectedItems))
                 var arrayId = [];
                 for (var id in selectedItems) {
@@ -198,13 +199,13 @@
                 return html;
             }
             function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
-
                 $('td', nRow).unbind('click');
                 $(nRow).bind('click', function() {
                     var tr = this;
-                    // $scope.$apply(function () {
+                    if(!clickFlag){
                         rowClickHandler(tr,oData);
-                    // })
+                    }
+                    clickFlag = false;
                 });
                 if(boxId == oData.id){
                     $(nRow).addClass('rowLight');

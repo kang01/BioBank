@@ -255,6 +255,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         stockOutRequirementRepository.save(requirement);
 
         List<StockOutRequiredSample> stockOutRequiredSamples = new ArrayList<StockOutRequiredSample>();
+        List<StockOutRequiredSample> stockOutRequiredSamplesList = new ArrayList<StockOutRequiredSample>();
         Map<String,String> map = new HashMap<>();
         try {
             InputStream stream = file.getInputStream(); HashSet<String[]> hashSet =  reportExportingService.readRequiredSamplesFromExcelFile(stream);
@@ -271,6 +272,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 }
                 map.put(code,type);
                 stockOutRequiredSamples.add(stockOutRequiredSample);
+                stockOutRequiredSamplesList.add(stockOutRequiredSample);
                 if(stockOutRequiredSamples.size()>=1000){
                     stockOutRequiredSampleRepository.save(stockOutRequiredSamples);
                     stockOutRequiredSamples.clear();
@@ -284,15 +286,15 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             stockOutRequiredSamples.clear();
         }
 
-        requirement.setCountOfSample(stockOutRequiredSamples.size());
-        stockOutRequirement.setCountOfSample(stockOutRequiredSamples.size());
+        requirement.setCountOfSample(stockOutRequiredSamplesList.size());
+        stockOutRequirement.setCountOfSample(stockOutRequiredSamplesList.size());
         stockOutRequirementRepository.save(requirement);
         stockOutRequirementForApply.setId(requirement.getId());
         stockOutRequirementForApply.setCountOfSample(requirement.getCountOfSample());
         stockOutRequirementForApply.setRequirementName(requirement.getRequirementName());
         stockOutRequirementForApply.setMemo(requirement.getMemo());
         stockOutRequirementForApply.setStatus(requirement.getStatus());
-         stockOutRequirementForApply.setSamples(file.getOriginalFilename());
+        stockOutRequirementForApply.setSamples(file.getOriginalFilename());
         return stockOutRequirementForApply;
     }
     @Override

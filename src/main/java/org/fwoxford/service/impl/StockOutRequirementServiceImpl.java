@@ -430,6 +430,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             throw new BankServiceException("未查询到样本需求！");
         }
         stockOutRequirement.setStatus(Constants.STOCK_OUT_REQUIREMENT_CKECKING);
+        stockOutRequirement.setCountOfSampleReal(0);
         stockOutRequirementRepository.save(stockOutRequirement);
         //删除核对通过的样本
         stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);

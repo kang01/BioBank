@@ -1,6 +1,8 @@
 package org.fwoxford.service.dto;
 
 
+import io.swagger.models.auth.In;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -19,6 +21,8 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
     private String requirementName;
 
     private Integer countOfSample;
+
+    private Integer countOfSampleReal;
 
     private String sex;
 
@@ -80,6 +84,14 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
     }
     public String getSex() {
         return sex;
+    }
+
+    public Integer getCountOfSampleReal() {
+        return countOfSampleReal;
+    }
+
+    public void setCountOfSampleReal(Integer countOfSampleReal) {
+        this.countOfSampleReal = countOfSampleReal;
     }
 
     public void setSex(String sex) {
@@ -217,6 +229,7 @@ public class StockOutRequirementDTO extends AbstractAuditingDTO implements Seria
             "id=" + id +
             ", requirementName='" + requirementName + "'" +
             ", countOfSample='" + countOfSample + "'" +
+            ", countOfSampleReal='" + countOfSampleReal + "'" +
             ", sex='" + sex + "'" +
             ", ageMin='" + ageMin + "'" +
             ", ageMax='" + ageMax + "'" +

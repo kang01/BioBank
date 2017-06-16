@@ -42,6 +42,9 @@ public class StockOutRequirement extends AbstractAuditingEntity implements Seria
     @Column(name = "count_of_sample")
     private Integer countOfSample;
 
+    @Column(name = "count_of_sample_real")
+    private Integer countOfSampleReal;
+
     @Column(name = "sex")
     private String sex;
 
@@ -143,6 +146,19 @@ public class StockOutRequirement extends AbstractAuditingEntity implements Seria
 
     public void setCountOfSample(Integer countOfSample) {
         this.countOfSample = countOfSample;
+    }
+
+    public Integer getCountOfSampleReal() {
+        return countOfSampleReal;
+    }
+
+    public StockOutRequirement countOfSampleReal(Integer countOfSampleReal) {
+        this.countOfSampleReal = countOfSampleReal;
+        return this;
+    }
+
+    public void setCountOfSampleReal(Integer countOfSampleReal) {
+        this.countOfSampleReal = countOfSampleReal;
     }
 
     public String getSex() {
@@ -340,6 +356,7 @@ public class StockOutRequirement extends AbstractAuditingEntity implements Seria
             ", requirementCode='" + requirementCode + "'" +
             ", requirementName='" + requirementName + "'" +
             ", countOfSample='" + countOfSample + "'" +
+            ", countOfSampleReal='" + countOfSampleReal + "'" +
             ", sex='" + sex + "'" +
             ", ageMin='" + ageMin + "'" +
             ", ageMax='" + ageMax + "'" +

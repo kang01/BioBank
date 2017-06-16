@@ -416,6 +416,13 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         stockOutApply.setApproveTime(date);
         stockOutApply.setStatus(Constants.STOCK_OUT_APPROVED);
         stockOutApplyRepository.save(stockOutApply);
+
+        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyIdAndStatus(id,Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT);
+
+        for(StockOutRequirement s :stockOutRequirementList){
+            stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(s.getId());
+        }
+
         return stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
     }
 
@@ -453,16 +460,15 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(id);
         for(StockOutRequirement requirement : stockOutRequirementList){
             StockOutRequirementReportDTO stockOutRequirementReportDTO = new StockOutRequirementReportDTO();
-            //获取指定样本
-            int count = stockOutReqFrozenTubeRepository.countByStockOutRequirementId(requirement.getId());
+//            int count = stockOutReqFrozenTubeRepository.countByStockOutRequirementId(requirement.getId());
             stockOutRequirementReportDTO.setId(requirement.getId());
             stockOutRequirementReportDTO.setCountOfSample(requirement.getCountOfSample());
             stockOutRequirementReportDTO.setRequirementName(requirement.getRequirementName());
             stockOutRequirementReportDTO.setMemo(requirement.getMemo());
-            stockOutRequirementReportDTO.setCountOfStockOutSample(count);
+            stockOutRequirementReportDTO.setCountOfStockOutSample(requirement.getCountOfSampleReal());
             requirements.add(stockOutRequirementReportDTO);
             countOfSample += requirement.getCountOfSample();
-            countOfStockOutSample +=count;
+            countOfStockOutSample +=requirement.getCountOfSampleReal();
         }
         applyDTO.setId(id);
         applyDTO.setCountOfSample(countOfSample);
@@ -550,5 +556,94 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         stockOutApply.setInvalidReason(stockOutApplyDTO.getInvalidReason());
         stockOutApplyRepository.save(stockOutApply);
         return stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
+    }
+
+    /**
+     * 根据计划ID查询申请详情和样本满足的需求列表
+     * @param id
+     * @return
+     */
+    @Override
+    public StockOutApplyDetail getApplyAndRequirementByPlanId(Long id) {
+
+        StockOutPlan stockOutPlan = stockOutPlanRepository.findOne(id);
+        if(stockOutPlan == null){
+            throw new BankServiceException("计划不存在！");
+        }
+        StockOutApplyDetail res = new StockOutApplyDetail();
+        StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
+        res.setId(id);
+        res.setRecordId(stockOutApply.getRecordId());
+        res.setRecordTime(stockOutApply.getRecordTime());
+        res.setDelegateId(stockOutApply.getDelegate()!=null?stockOutApply.getDelegate().getId():null);
+        res.setDelegateName(stockOutApply.getDelegate()!=null?stockOutApply.getDelegate().getDelegateName():null);
+        res.setApplyCode(stockOutApply.getApplyCode());
+        res.setApplyPersonName(stockOutApply.getApplyPersonName());
+        res.setEndTime(stockOutApply.getEndTime());
+        res.setStartTime(stockOutApply.getStartTime());
+        res.setPurposeOfSample(stockOutApply.getPurposeOfSample());
+        res.setStatus(stockOutApply.getStatus());
+        //获取授权的项目
+        List<StockOutApplyProject> stockOutApplyProjects = stockOutApplyProjectRepository.findByStockOutApplyId(id);
+        List<Long> projectIds = new ArrayList<Long>();
+        StringBuffer nameBuffer = new StringBuffer();
+        StringBuffer codeBuffer = new StringBuffer();
+        for(StockOutApplyProject s :stockOutApplyProjects){
+            projectIds.add(s.getProject().getId());
+            nameBuffer.append(s.getProject().getProjectName());
+            nameBuffer.append(",");
+            codeBuffer.append(s.getProject().getProjectCode());
+            codeBuffer.append(",");
+        }
+        res.setProjectIds(projectIds);
+        if(nameBuffer.length()>0){
+            String names = nameBuffer.substring(0,nameBuffer.length()-1);
+            res.setProjectNames(names);
+        }
+        if(codeBuffer.length()>0){
+            String codes = codeBuffer.substring(0,codeBuffer.length()-1);
+            res.setProjectCodes(codes);
+        }
+        if(stockOutApply.getRecordId()!=null){
+            User user = userRepository.findOne(stockOutApply.getRecordId());
+            res.setRecorder(user!=null?user.getLastName()+user.getFirstName():null);
+        }
+        //获取申请的需求
+        List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<StockOutRequirementForApplyTable>();
+        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyIdAndStatus(id,Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS);
+        Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByApply(id);
+        int countOfSampleAll=0;
+        for(StockOutRequirement requirement : stockOutRequirementList){
+            StockOutRequirementForApplyTable stockOutRequirementForApplyTable = new StockOutRequirementForApplyTable();
+            stockOutRequirementForApplyTable.setId(requirement.getId());
+            stockOutRequirementForApplyTable.setStatus(requirement.getStatus());
+            stockOutRequirementForApplyTable.setCountOfSample(requirement.getCountOfSample());
+            stockOutRequirementForApplyTable.setRequirementName(requirement.getRequirementName());
+
+            Long countOfRepealSample = stockOutTaskFrozenTubeRepository.countByStockOutRequirementIdAndStatus(requirement.getId(),Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+            stockOutRequirementForApplyTable.setCountOfRepealSample(countOfRepealSample);
+            if(requirement.getImportingFileId()!=null){
+                StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(requirement.getImportingFileId());
+                stockOutRequirementForApplyTable.setSamples(stockOutFiles!=null?stockOutFiles.getFileName():null);
+            }else {
+                stockOutRequirementForApplyTable.setDiseaseTypeId(requirement.getDiseaseType());
+                stockOutRequirementForApplyTable.setIsBloodLipid(requirement.isIsBloodLipid());
+                stockOutRequirementForApplyTable.setIsHemolysis(requirement.isIsHemolysis());
+                stockOutRequirementForApplyTable.setFrozenTubeTypeName(requirement.getFrozenTubeType()!=null?requirement.getFrozenTubeType().getFrozenTubeTypeName():null);
+                stockOutRequirementForApplyTable.setSampleTypeName(requirement.getSampleType()!=null?requirement.getSampleType().getSampleTypeName():null);
+                stockOutRequirementForApplyTable.setSex(Constants.SEX_MAP.get(requirement.getSex())!=null?Constants.SEX_MAP.get(requirement.getSex()).toString():null);
+                stockOutRequirementForApplyTable.setAge(requirement.getAgeMin()+"-"+requirement.getAgeMax()+"岁");
+            }
+            stockOutRequirementForApplyTables.add(stockOutRequirementForApplyTable);
+            countOfSampleAll +=requirement.getCountOfSample();
+        }
+        res.setStockOutRequirement(stockOutRequirementForApplyTables);
+        res.setCountOfStockOutSample(countOfStockOutSample);
+        res.setCountOfSample(Long.valueOf(countOfSampleAll));
+        Long countOfRepealSample = stockOutTaskFrozenTubeRepository.countByStockOutApplyIdAndStatus(id,Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+        res.setCountOfRepealSample(countOfRepealSample);
+        Long countOfHandoverSample = stockOutHandoverDetailsRepository.countByStockOutApply(id);
+        res.setCountOfHandoverSample(countOfHandoverSample);
+        return res;
     }
 }

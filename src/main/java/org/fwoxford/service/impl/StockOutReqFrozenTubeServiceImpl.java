@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -110,6 +111,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         }
         List<Long> projectIds = stockOutApplyProjectRepository.findProjectByStockRequirementId(stockOutRequirement.getId());
         String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
+        int i = 0;
         for(StockOutRequiredSample s :stockOutRequiredSamples){
             StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
             String appointedSampleCode = s.getSampleCode();
@@ -128,7 +130,9 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             stockOutReqFrozenTube.setTubeColumns(frozenTube!=null?frozenTube.getTubeColumns():null);
             stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
             stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
+            i++;
         }
+        stockOutRequirement.setCountOfSampleReal(i);
         return status;
     }
 
@@ -174,6 +178,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
         }
         int i = 0;
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = new ArrayList<StockOutReqFrozenTube>();
         for(FrozenTube frozenTube :frozenTubes){
             StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
             stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE);
@@ -185,9 +190,11 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
             if(i<countOfSample){
                 stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
+                stockOutReqFrozenTubes.add(stockOutReqFrozenTube);
             }
             i++;
         }
+        stockOutRequirement.setCountOfSampleReal(stockOutReqFrozenTubes.size());
         return status;
     }
 }

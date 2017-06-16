@@ -82,4 +82,11 @@ public interface StockOutApplyService {
      * @return
      */
     StockOutApplyDTO invalidStockOutDetail(Long id, StockOutApplyDTO stockOutApplyDTO);
+
+    /**
+     * 根据计划ID查询申请详情和样本满足的需求列表
+     * @param id
+     * @return
+     */
+    StockOutApplyDetail getApplyAndRequirementByPlanId(Long id);
 }

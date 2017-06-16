@@ -283,6 +283,19 @@ public class StockOutApplyResource {
     }
 
     /**
+     * 根据计划ID查询申请详情和样本满足的需求列表
+     * @param id
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/stock-out-applies/requirements/plan/{id}")
+    @Timed
+    public ResponseEntity<StockOutApplyDetail> getApplyAndRequirementByPlanId(@PathVariable Long id) throws URISyntaxException {
+        StockOutApplyDetail result = stockOutApplyService.getApplyAndRequirementByPlanId(id);
+        return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
+
+    /**
      * 作废申请
      * @param id
      * @return

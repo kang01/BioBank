@@ -78,6 +78,14 @@ public class StockOutApplyForSave {
      * 授权的项目名称
      */
     private String projectNames;
+    /**
+     * 撤销样本量
+     */
+    private Long countOfRepealSample;
+    /**
+     * 已交接样本量
+     */
+    private Long countOfHandoverSample;
 
     public Long getId() {
         return id;
@@ -213,6 +221,22 @@ public class StockOutApplyForSave {
 
     public void setProjectNames(String projectNames) {
         this.projectNames = projectNames;
+    }
+
+    public Long getCountOfRepealSample() {
+        return countOfRepealSample;
+    }
+
+    public void setCountOfRepealSample(Long countOfRepealSample) {
+        this.countOfRepealSample = countOfRepealSample;
+    }
+
+    public Long getCountOfHandoverSample() {
+        return countOfHandoverSample;
+    }
+
+    public void setCountOfHandoverSample(Long countOfHandoverSample) {
+        this.countOfHandoverSample = countOfHandoverSample;
     }
 
     @Override

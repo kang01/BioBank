@@ -56,6 +56,10 @@ public class StockOutRequirementForApplyTable {
      * 指定的样本名称
      */
     private String samples;
+    /**
+     * 撤销样本量
+     */
+    private Long countOfRepealSample;
 
     public Long getId() {
         return id;
@@ -150,5 +154,13 @@ public class StockOutRequirementForApplyTable {
 
     public void setSamples(String samples) {
         this.samples = samples;
+    }
+
+    public Long getCountOfRepealSample() {
+        return countOfRepealSample;
+    }
+
+    public void setCountOfRepealSample(Long countOfRepealSample) {
+        this.countOfRepealSample = countOfRepealSample;
     }
 }

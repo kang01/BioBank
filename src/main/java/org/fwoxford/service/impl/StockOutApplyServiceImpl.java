@@ -86,6 +86,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     @Autowired
     private StockOutApplyProjectService stockOutApplyProjectService;
 
+    @Autowired
+    private StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
+
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
         this.stockOutApplyMapper = stockOutApplyMapper;
@@ -304,6 +307,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             stockOutRequirementForApplyTable.setStatus(requirement.getStatus());
             stockOutRequirementForApplyTable.setCountOfSample(requirement.getCountOfSample());
             stockOutRequirementForApplyTable.setRequirementName(requirement.getRequirementName());
+
+            Long countOfRepealSample = stockOutTaskFrozenTubeRepository.countByStockOutRequirementIdAndStatus(requirement.getId(),Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+            stockOutRequirementForApplyTable.setCountOfRepealSample(countOfRepealSample);
             if(requirement.getImportingFileId()!=null){
                 StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(requirement.getImportingFileId());
                 stockOutRequirementForApplyTable.setSamples(stockOutFiles!=null?stockOutFiles.getFileName():null);
@@ -322,6 +328,10 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         res.setStockOutRequirement(stockOutRequirementForApplyTables);
         res.setCountOfStockOutSample(countOfStockOutSample);
         res.setCountOfSample(Long.valueOf(countOfSampleAll));
+        Long countOfRepealSample = stockOutTaskFrozenTubeRepository.countByStockOutApplyIdAndStatus(id,Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+        res.setCountOfRepealSample(countOfRepealSample);
+        Long countOfHandoverSample = stockOutHandoverDetailsRepository.countByStockOutApply(id);
+        res.setCountOfHandoverSample(countOfHandoverSample);
         return res;
     }
 

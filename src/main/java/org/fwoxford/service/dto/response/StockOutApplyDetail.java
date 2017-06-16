@@ -7,6 +7,7 @@ import java.util.List;
  * Created by gengluying on 2017/5/15.
  */
 public class StockOutApplyDetail extends StockOutApplyForSave{
+
     /**
      * 样本需求
      */

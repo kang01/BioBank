@@ -397,7 +397,7 @@
                 //待出库样本
                 if(tube.stockOutFlag && tube.stockOutFlag == 1 && !tube.orderIndex){
                     var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px solid green;font-size:40px;color:rgba(0,128,0,0.3);text-align: center;">' +
-                        '<i class="fa fa-question"></i>' +
+                        // '<i class="fa fa-question"></i>' +
                         '</div>';
                     $(txt).appendTo($div);
                 }
@@ -410,7 +410,7 @@
                 //已扫码样本
                 if(tube.scanCodeFlag){
                     $(".fa-question",td).remove();
-                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;border:1px solid green;padding-top:10px;color:rgba(0,128,0,0.3);text-align:center;font-size:42px">'+tube.orderIndex+'</div>';
+                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;border:1px solid green;padding-top:10px;color:rgba(0,128,0,0.6);text-align:center;font-size:42px">'+tube.orderIndex+'</div>';
                     $(txt).appendTo($div);
                 }
                 if(tube.status == '3004'){

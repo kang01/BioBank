@@ -8,6 +8,7 @@
                 <button class="btn btn-primary" ng-click="vm.planSave()" ng-if="vm.requirement.status == '1103'">创建出库计划</button>
                 <button class="btn btn-primary" ng-click="vm.printRequirement()" ng-disabled="!vm.requirementApplyFlag">打印出库申请</button>
                 <button class="btn btn-primary" ng-click="vm.approvalModal()" ng-disabled="!vm.requirementApplyFlag">批准</button>
+                <button class="btn btn-primary" ng-click="vm.cancellation()" >作废</button>
                 <button class="btn btn-default" ui-sref="requirement-list">关闭</button>
             </div>
         </div>

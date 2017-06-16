@@ -17,7 +17,12 @@
         var vm = this;
         var modalInstance;
         vm.task = entity.data;
-        vm.usedTime = vm.task.usedTime;
+        vm.usedTime = (vm.task.usedTime/60).toFixed(1);
+        if(vm.usedTime < 1){
+            vm.usedTime = "小于1小时"
+        }else{
+            vm.usedTime = vm.usedTime + "小时"
+        }
         vm.status  = MasterData.getStatus(vm.task.status);
 
         vm.takeOver = _fnTakeOver;
@@ -37,7 +42,7 @@
             //     toastr.error("创建交接单失败!");
             //     BioBankBlockUi.blockUiStop();
             // })
-        };
+        }
 
         //已出库列表
         vm.stockOutSampleInstance = {};

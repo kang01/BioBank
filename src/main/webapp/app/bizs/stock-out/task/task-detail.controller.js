@@ -194,7 +194,7 @@
             });
             if (vm.box && vm.box.frozenBoxCode == oData.frozenBoxCode){
                 $(nRow).addClass('rowLight');
-                _fnLoadTubes();
+                // _fnLoadTubes();
             }
             return nRow;
         }
@@ -220,6 +220,8 @@
             });
         }
         var needScanTubesLen;
+
+        vm.tubeList = [];
         //加载管子表控件
         function _reloadTubesForTable(box){
             var tableCtrl = _getSampleDetailsTableCtrl();
@@ -248,13 +250,20 @@
                 tubesInTable.push(tubes);
 
             }
-            vm.tubes = tubesInTable;
-            vm.tubeList = [];
             for(var m = 0; m < tubesInTable.length;m++){
                 for(var n = 0; n < tubesInTable[m].length;n++){
+                    for(var k = 0; k < vm.boxInTubes.length; k++){
+                        if(vm.boxInTubes[k].id == tubesInTable[m][n].id){
+                            tubesInTable[m][n].scanCodeFlag = true;
+                            tubesInTable[m][n].orderIndex = vm.boxInTubes[k].orderIndex;
+                        }
+                    }
                     vm.tubeList.push(tubesInTable[m][n]);
                 }
             }
+            vm.tubes = tubesInTable;
+
+
             //是否满盒出库
             needScanTubesLen = _.filter(vm.tubeList,{stockOutFlag:1}).length;
             if(needScanTubesLen == vm.tubeList.length){
@@ -268,6 +277,7 @@
             tableCtrl.updateSettings(settings);
             tableCtrl.loadData(tubesInTable);
         }
+
         // 创建一个对象用于管子Table的控件
         function _createTubeForTableCell(tubeInBox, rowNO, colNO, pos){
             var tube = {
@@ -295,6 +305,29 @@
                 tube.memo = tubeInBox.memo;
                 tube.repealReason = tubeInBox.repealReason;
             }
+            var orderIndex = 0;
+            if(vm.boxInTubes.length){
+                var indexFlag = false;
+                for(var i = 0; i < vm.boxInTubes.length; i++){
+                    //撤销
+                    if(tube.stockOutFlag == "2"){
+                        if(vm.boxInTubes[i].id == tube.id){
+                            orderIndex = vm.boxInTubes[i].orderIndex;
+                            _.pullAt(vm.boxInTubes,i);
+                            indexFlag = true;
+                        }
+                    }
+                }
+
+            }
+            if(orderIndex){
+                for(var j = 0; j < vm.boxInTubes.length; j++){
+                    if(vm.boxInTubes[j].orderIndex > orderIndex){
+                        vm.boxInTubes[j].orderIndex = vm.boxInTubes[j].orderIndex - 1;
+                    }
+                }
+            }
+
             return tube;
         }
 
@@ -635,6 +668,8 @@
         }
         //装盒
         function _fnBoxInModal() {
+            stockOutFlag = true;
+            _fnSaveTask();
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/task/modal/box-in-modal.html',

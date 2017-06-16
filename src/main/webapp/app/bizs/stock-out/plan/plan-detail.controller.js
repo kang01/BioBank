@@ -10,9 +10,9 @@
         .controller('PlanDetailController', PlanDetailController)
         .controller('PlanDelModalController', PlanDelModalController);
 
-    PlanDetailController.$inject = ['$scope','$compile','$stateParams','toastr','$uibModal','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankBlockUi','BioBankDataTable'];
+    PlanDetailController.$inject = ['$scope','$compile','$state','$stateParams','toastr','$uibModal','DTOptionsBuilder','DTColumnBuilder','PlanService','BioBankBlockUi','BioBankDataTable'];
     PlanDelModalController.$inject = ['$uibModalInstance'];
-    function PlanDetailController($scope,$compile,$stateParams,toastr,$uibModal,DTOptionsBuilder,DTColumnBuilder,PlanService,BioBankBlockUi,BioBankDataTable) {
+    function PlanDetailController($scope,$compile,$state,$stateParams,toastr,$uibModal,DTOptionsBuilder,DTColumnBuilder,PlanService,BioBankBlockUi,BioBankDataTable) {
         var vm = this;
         var modalInstance;
         vm.dtInstance = {};
@@ -25,6 +25,8 @@
         vm.taskDescModal = _fnTaskDescModal;
         //删除任务
         vm.taskDelModal = _fnTaskDelModal;
+        //开始任务
+        vm.startTask = _fnStartTask;
         //创建任务
         vm.createTask = _fnCreateTask;
 
@@ -314,8 +316,9 @@
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return  '<a  ng-click="vm.taskDescModal('+full.id+')">查看</a>&nbsp;' +
-                    '<a ng-if="'+full.status+'==1601" ng-click="vm.taskDelModal('+full.id+')">删除</a>&nbsp;';
+            return  '<button  class="btn btn-xs" ng-click="vm.taskDescModal('+full.id+')"><i class="fa fa-eye"></i></button>&nbsp;' +
+                    '<button class="btn btn-xs" ng-if="'+full.status+'==1601" ng-click="vm.taskDelModal('+full.id+')"><i class="fa  fa-trash-o"></i></button>&nbsp;'+
+                    '<button class="btn btn-xs" ng-click="vm.startTask('+full.id+')"><i class="fa fa-play"></i></button>'
         }
         //样本需求
         vm.demand = [];
@@ -424,6 +427,10 @@
                 });
             });
 
+        }
+        //开始任务
+        function _fnStartTask(id) {
+            $state.go('task-edit',{taskId:id});
         }
 
     }

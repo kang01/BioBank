@@ -23,6 +23,8 @@
         vm.sampleDescModal = _fnSampleDescModal;
         //打印申请
         vm.printRequirement = _fnPrintRequirement;
+        //作废
+        vm.cancellation = _fnCancellation;
 
         if($stateParams.applyId){
             vm.requirement.id = $stateParams.applyId;
@@ -100,6 +102,30 @@
         //打印申请
         function _fnPrintRequirement() {
             window.open ('/api/stock-out-applies/print/' + vm.requirement.id);
+        }
+        //作废
+        function _fnCancellation() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-cancellation-modal.html',
+                controller: 'RequirementCancellationModalController',
+                controllerAs:'vm',
+                size:'lg'
+
+            });
+
+            modalInstance.result.then(function (reason) {
+                var invalid = {};
+                invalid.invalidReason = reason;
+                RequirementService.invalidPlan(vm.requirement.id,invalid).success(function (data) {
+                    toastr.success("作废成功!");
+                    $state.go("requirement-list");
+                }).error(function (res) {
+                    toastr.error(res.message);
+                });
+            }, function () {
+
+            });
         }
         //---------------------------样本需求--------------------------
         //批量核对

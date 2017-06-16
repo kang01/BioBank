@@ -310,6 +310,7 @@
         //装盒
         var tempBoxList = [];
         function _fnBoxIn() {
+            tempBoxList = [];
             vm.selectAll = false;
             for(var i = 0; i < vm.selectedTubes.length;i++){
                 var index = _.indexOf(vm.selectBox.frozenTubeDTOS, vm.selectedTubes[i]);

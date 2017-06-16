@@ -1,5 +1,7 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.domain.Project;
+import org.fwoxford.domain.StockOutApply;
 import org.fwoxford.service.StockOutApplyProjectService;
 import org.fwoxford.domain.StockOutApplyProject;
 import org.fwoxford.repository.StockOutApplyProjectRepository;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 public class StockOutApplyProjectServiceImpl implements StockOutApplyProjectService{
 
     private final Logger log = LoggerFactory.getLogger(StockOutApplyProjectServiceImpl.class);
-    
+
     private final StockOutApplyProjectRepository stockOutApplyProjectRepository;
 
     private final StockOutApplyProjectMapper stockOutApplyProjectMapper;
@@ -51,7 +53,7 @@ public class StockOutApplyProjectServiceImpl implements StockOutApplyProjectServ
 
     /**
      *  Get all the stockOutApplyProjects.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +89,24 @@ public class StockOutApplyProjectServiceImpl implements StockOutApplyProjectServ
     public void delete(Long id) {
         log.debug("Request to delete StockOutApplyProject : {}", id);
         stockOutApplyProjectRepository.delete(id);
+    }
+
+    @Override
+    public Boolean checkOriginalProjectChanged(Long id, List<Long> projectIds) {
+        Boolean flag = false;
+        if(id == null || projectIds.size()==0){
+            return true;
+        }
+        List<Project> oldProjects = stockOutApplyProjectRepository.findProjectByStockOutApplyId(id);
+
+        if(oldProjects.size() != projectIds.size()){
+            return true;
+        }
+        for(Project s : oldProjects){
+            if(!projectIds.contains(s.getId())){
+                return true;
+            }
+        }
+        return flag;
     }
 }

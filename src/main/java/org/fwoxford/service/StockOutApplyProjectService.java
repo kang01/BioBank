@@ -1,5 +1,6 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.StockOutApply;
 import org.fwoxford.service.dto.StockOutApplyProjectDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public interface StockOutApplyProjectService {
 
     /**
      *  Get all the stockOutApplyProjects.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +41,6 @@ public interface StockOutApplyProjectService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    Boolean checkOriginalProjectChanged(Long id, List<Long> projectIds);
 }

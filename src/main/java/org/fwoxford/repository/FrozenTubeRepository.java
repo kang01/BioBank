@@ -44,8 +44,10 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " left join sample_type st on t.sample_type_id = st.id " +
         " where b.status = '2004' and t.sample_code = ?1 or t.sample_temp_code =?1 " +
         " and st.sample_type_code=?2 and t.status !='0000'" +
-        " and t.id not in (select f.frozen_tube_id from stock_out_req_frozen_tube f where f.stock_out_requirement_id =?3 and f.status='1301')" ,nativeQuery = true)
-    FrozenTube findBySampleCodeAndSampleTypeCode(String appointedSampleCode, String appointedSampleType,Long id);
+        " and t.id not in (select f.frozen_tube_id from stock_out_req_frozen_tube f where f.stock_out_requirement_id =?3 and f.status='1301')" +
+        " and t.project_id in ?4"
+        ,nativeQuery = true)
+    FrozenTube findBySampleCodeAndSampleTypeCode(String appointedSampleCode, String appointedSampleType, Long id, List<Long> projectIds);
 
     @Query("select t from FrozenTube t\n" +
         "  left join t.frozenBox \n"
@@ -64,23 +66,4 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     )
     List<FrozenTube> findByRequirement(Long sampleTypeId, Long samplyClassificationId, Long frozenTubeTypeId,
                                        String diseaseType, String sex, Boolean isBloodLipid, Boolean isHemolysis, Integer ageMin, Integer ageMax);
-    @Query(value = "select * from frozen_tube t\n" +
-        " left join frozen_box b on t.frozen_box_id = b.id\n" +
-        " where b.status = '2004' and t.status!='0000'\n" +
-        " and t.id not in (select f.frozen_tube_id from stock_out_req_frozen_tube f where f.stock_out_requirement_id =?1 and f.status='1301')" ,nativeQuery = true)
-    List<FrozenTube> findByRequirementId(Long id);
-    @Query("select t from FrozenTube t\n" +
-        "  left join t.frozenBox \n"
-        + " left join StockOutReqFrozenTube f on t.id = f.frozenTube.id and f.status='1301' \n"
-        + " where  t.frozenBox is not null and t.frozenBox.status = '2004' and t.status!='0000'\n"
-        + " and f.frozenTube.id is null \n"
-        + " and (?1 is null or t.sampleType.id = ?1)\n"
-        + " and (?2 is null or t.sampleClassification.id = ?2)\n"
-        + " and (?3 is null or t.frozenTubeType.id = ?3)\n"
-        + " and (?4 is null or t.diseaseType  = ?4)\n"
-        + " and (?5 is null or t.gender = ?5)\n"
-        + " and (?6 is null or ?6 is false or t.isBloodLipid  = ?6)\n"
-        + " and (?7 is null or ?7 is false or t.isHemolysis  = ?7)\n"
-    )
-    List<FrozenTube> findByRequiremented(Long sampleTypeId, Long samplyClassificationId, Long frozenTubeTypeId, String diseaseType, String sex, Boolean isBloodLipid, Boolean isHemolysis);
 }

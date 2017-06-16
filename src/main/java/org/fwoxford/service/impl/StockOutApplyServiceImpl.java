@@ -4,6 +4,7 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.ReportExportingService;
+import org.fwoxford.service.StockOutApplyProjectService;
 import org.fwoxford.service.StockOutApplyService;
 import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.service.dto.StockOutApplyDTO;
@@ -81,6 +82,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     @Autowired
     private StockOutHandoverDetailsRepository stockOutHandoverDetailsRepository;
+
+    @Autowired
+    private StockOutApplyProjectService stockOutApplyProjectService;
 
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
@@ -205,23 +209,35 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         stockOutApply.setPurposeOfSample(stockOutApplyForSave.getPurposeOfSample());
         stockOutApplyRepository.save(stockOutApply);
         List<Long> projectIds = stockOutApplyForSave.getProjectIds();
-        stockOutApplyProjectRepository.deleteByStockOutApplyId(stockOutApply.getId());
-        List<StockOutApplyProject> stockOutApplyProjects = new ArrayList<StockOutApplyProject>();
-        if(projectIds!=null)
-        for(Long projectId :projectIds){
-            if( projectId !=null){
-                StockOutApplyProject stockOutApplyProject = new StockOutApplyProject();
-                stockOutApplyProject.setStatus(Constants.VALID);
-                Project project = projectRepository.findOne(projectId);
-                if(project == null){
-                    throw new BankServiceException("项目不存在！",projectId.toString());
+
+        //需要比对申请的授权项目是否有变更---若有变更，则申请下的需求需要重新核对
+        Boolean flag = stockOutApplyProjectService.checkOriginalProjectChanged(id,projectIds);
+        if(flag){
+            stockOutApplyProjectRepository.deleteByStockOutApplyId(stockOutApply.getId());
+            List<StockOutApplyProject> stockOutApplyProjects = new ArrayList<StockOutApplyProject>();
+            if(projectIds!=null)
+                for(Long projectId :projectIds){
+                    if( projectId !=null){
+                        StockOutApplyProject stockOutApplyProject = new StockOutApplyProject();
+                        stockOutApplyProject.setStatus(Constants.VALID);
+                        Project project = projectRepository.findOne(projectId);
+                        if(project == null){
+                            throw new BankServiceException("项目不存在！",projectId.toString());
+                        }
+                        stockOutApplyProject.setProject(project);
+                        stockOutApplyProject.setStockOutApply(stockOutApply);
+                        stockOutApplyProjects.add(stockOutApplyProject);
+                    }
                 }
-                stockOutApplyProject.setProject(project);
-                stockOutApplyProject.setStockOutApply(stockOutApply);
-                stockOutApplyProjects.add(stockOutApplyProject);
+            stockOutApplyProjectRepository.save(stockOutApplyProjects);
+
+            List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(stockOutApply.getId());
+            for(StockOutRequirement requirement:stockOutRequirementList){
+                requirement.setStatus(Constants.STOCK_OUT_REQUIREMENT_CKECKING);
+                stockOutRequirementRepository.save(requirement);
+                stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(requirement.getId());
             }
         }
-        stockOutApplyProjectRepository.save(stockOutApplyProjects);
         return stockOutApplyForSave;
     }
 

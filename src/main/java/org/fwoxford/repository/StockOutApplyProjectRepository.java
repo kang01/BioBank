@@ -1,5 +1,6 @@
 package org.fwoxford.repository;
 
+import org.fwoxford.domain.Project;
 import org.fwoxford.domain.StockOutApplyProject;
 
 import org.springframework.data.jpa.repository.*;
@@ -26,4 +27,10 @@ public interface StockOutApplyProjectRepository extends JpaRepository<StockOutAp
         " left join stock_out_requirement r on r.stock_out_apply_id = a.id " +
         " where r.id =?1 " ,nativeQuery = true)
     Long countByStockRequirementId(Long id);
+
+    @Query("select t.project from StockOutApplyProject t where t.stockOutApply.id = ?1")
+    List<Project> findProjectByStockOutApplyId(Long id);
+
+    @Query("select t.project.id from StockOutApplyProject t left join StockOutRequirement r on t.stockOutApply.id = r.stockOutApply.id where r.id = ?1")
+    List<Long> findProjectByStockRequirementId(Long id);
 }

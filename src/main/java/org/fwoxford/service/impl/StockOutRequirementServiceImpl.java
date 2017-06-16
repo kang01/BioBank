@@ -349,10 +349,10 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(id);
         if(stockOutRequiredSamples.size()>0){
             //核对导入指定样本
-            status = stockOutReqFrozenTubeService.checkStockOutSampleByAppointedSample(stockOutRequiredSamples);
+            status = stockOutReqFrozenTubeService.checkStockOutSampleByAppointedSample(stockOutRequiredSamples,stockOutRequirement);
         }else{
             //核对录入部分需求
-            status = stockOutReqFrozenTubeService.checkStockOutSampleByRequirement(id);
+            status = stockOutReqFrozenTubeService.checkStockOutSampleByRequirement(stockOutRequirement);
         }
         stockOutRequirement.setStatus(status);
         stockOutRequirementRepository.save(stockOutRequirement);
@@ -513,11 +513,11 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("diseaseType").toString());
                 keyCount++;
             }
-            if(s.isIsHemolysis()!=false){//  溶血，权重系数5
+            if(s.isIsHemolysis() != null && s.isIsHemolysis()!=false){//  溶血，权重系数5
                 keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("isHemolysis").toString());
                 keyCount++;
             }
-            if(s.isIsBloodLipid()!=false){//  脂质血，权重系数5
+            if(s.isIsBloodLipid() != null && s.isIsBloodLipid()!=false){//  脂质血，权重系数5
                 keySum +=Integer.parseInt(Constants.KEY_NUMBER_MAP.get("isBloodLipid").toString());
                 keyCount++;
             }

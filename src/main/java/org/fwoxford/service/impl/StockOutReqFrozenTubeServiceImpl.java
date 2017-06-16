@@ -1,30 +1,25 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
-import org.fwoxford.domain.FrozenTube;
-import org.fwoxford.domain.StockOutRequiredSample;
-import org.fwoxford.domain.StockOutRequirement;
+import org.fwoxford.domain.*;
 import org.fwoxford.repository.FrozenTubeRepository;
+import org.fwoxford.repository.StockOutApplyProjectRepository;
 import org.fwoxford.repository.StockOutRequirementRepository;
 import org.fwoxford.service.StockOutReqFrozenTubeService;
-import org.fwoxford.domain.StockOutReqFrozenTube;
 import org.fwoxford.repository.StockOutReqFrozenTubeRepository;
 import org.fwoxford.service.dto.StockOutReqFrozenTubeDTO;
 import org.fwoxford.service.mapper.StockOutReqFrozenTubeMapper;
-import org.fwoxford.web.rest.util.BankUtil;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockOutReqFrozenTube.
@@ -44,6 +39,9 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
 
     @Autowired
     private FrozenTubeRepository frozenTubeRepository;
+
+    @Autowired
+    private StockOutApplyProjectRepository stockOutApplyProjectRepository;
 
     public StockOutReqFrozenTubeServiceImpl(StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository, StockOutReqFrozenTubeMapper stockOutReqFrozenTubeMapper) {
         this.stockOutReqFrozenTubeRepository = stockOutReqFrozenTubeRepository;
@@ -106,16 +104,20 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
     }
 
     @Override
-    public String checkStockOutSampleByAppointedSample(List<StockOutRequiredSample> stockOutRequiredSamples) {
-
+    public String checkStockOutSampleByAppointedSample(List<StockOutRequiredSample> stockOutRequiredSamples, StockOutRequirement stockOutRequirement) {
+        if(stockOutRequirement == null){
+            throw new BankServiceException("需求不能为空！");
+        }
+        List<Long> projectIds = stockOutApplyProjectRepository.findProjectByStockRequirementId(stockOutRequirement.getId());
         String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
         for(StockOutRequiredSample s :stockOutRequiredSamples){
             StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
             String appointedSampleCode = s.getSampleCode();
             String appointedSampleType = s.getSampleType();
-            FrozenTube frozenTube = frozenTubeRepository.findBySampleCodeAndSampleTypeCode(appointedSampleCode,appointedSampleType,s.getStockOutRequirement().getId());
+            FrozenTube frozenTube = frozenTubeRepository.findBySampleCodeAndSampleTypeCode(appointedSampleCode,appointedSampleType,s.getStockOutRequirement().getId(),projectIds);
             if(frozenTube == null){
                 status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
+                continue;
             }
             stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE);
             stockOutReqFrozenTube.setStockOutRequirement(s.getStockOutRequirement());
@@ -130,10 +132,19 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         return status;
     }
 
+    /**
+     * 核对需求样本
+     * @param stockOutRequirement
+     * @return
+     */
     @Override
-    public String checkStockOutSampleByRequirement(Long id) {
+    public String checkStockOutSampleByRequirement(StockOutRequirement stockOutRequirement) {
         String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
-        StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
+        if(stockOutRequirement == null){
+            throw new BankServiceException("未查询到需求！");
+        }
+        List<Long> projectIds = stockOutApplyProjectRepository.findProjectByStockRequirementId(stockOutRequirement.getId());
+
         Integer countOfSample = stockOutRequirement.getCountOfSample();
         Long sampleTypeId = stockOutRequirement.getSampleType()!=null?stockOutRequirement.getSampleType().getId():null;
         Long samplyClassificationId = stockOutRequirement.getSampleClassification()!=null?stockOutRequirement.getSampleClassification().getId():null;
@@ -150,6 +161,15 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
 
         List<FrozenTube> frozenTubes = frozenTubeRepository.findByRequirement(sampleTypeId,samplyClassificationId,
             frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis,ageMin,ageMax);
+        if(projectIds != null && projectIds.size() > 0){
+            Iterator<FrozenTube> it = frozenTubes.iterator();
+            while(it.hasNext()){
+                FrozenTube f = it.next();
+                if(f.getProject() == null ||!projectIds.contains(f.getProject().getId())){
+                    it.remove();
+                }
+            }
+        }
         if(frozenTubes.size()<countOfSample){
             status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
         }

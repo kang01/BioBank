@@ -189,6 +189,17 @@
         }
         //位置鼠标移除事件
         vm.posBlur = function () {
+            var startPos = vm.pos;
+            var startRow =  startPos.charAt(0);
+            var startCol =  +startPos.substring(1);
+            var row = startRow.charCodeAt(0) - 65;
+            console.log(row);
+            if(row == 40){
+                return;
+            }
+            if(row >42){
+                return;
+            }
             if(vm.pos){
                _FnPreassemble(vm.selectedTubes);
             }else{

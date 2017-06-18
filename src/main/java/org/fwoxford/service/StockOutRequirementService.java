@@ -2,9 +2,12 @@ package org.fwoxford.service;
 
 import org.fwoxford.service.dto.StockOutRequirementDTO;
 import org.fwoxford.service.dto.response.StockOutRequirementForApply;
+import org.fwoxford.service.dto.response.StockOutRequirementFrozenTubeDetail;
 import org.fwoxford.service.dto.response.StockOutRequirementSampleDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,4 +65,6 @@ public interface StockOutRequirementService {
     void batchCheckStockOutRequirement(List<Long> ids);
 
     ByteArrayOutputStream printStockOutRequirementDetailReport(Long id);
+
+    DataTablesOutput<StockOutRequirementFrozenTubeDetail> getCheckDetailByRequirement(Long id, DataTablesInput input);
 }

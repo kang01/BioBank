@@ -1,9 +1,11 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonView;
 import net.sf.json.JSONObject;
 import org.fwoxford.service.StockOutRequirementService;
 import org.fwoxford.service.dto.response.StockOutRequirementForApply;
+import org.fwoxford.service.dto.response.StockOutRequirementFrozenTubeDetail;
 import org.fwoxford.service.dto.response.StockOutRequirementSampleDetail;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.HeaderUtil;
@@ -15,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -302,4 +306,16 @@ public class StockOutRequirementResource {
         }
         return ResponseEntity.badRequest().build();
     }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-requirements/getCheckDetail/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutRequirementFrozenTubeDetail> getPageStockIn(@RequestBody DataTablesInput input, @PathVariable Long id) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
+        return stockOutRequirementService.getCheckDetailByRequirement(id,input);
+    }
+
 }

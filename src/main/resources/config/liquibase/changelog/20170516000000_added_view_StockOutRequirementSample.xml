@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutApply.
+    -->
+    <changeSet id="20170514000000-2" author="jhipster">
+
+        <createView viewName="view_requirement_sample">
+            SELECT tube.id as id,tube.sample_code,tube.status,tube.sample_type_name,tube.gender as sex,tube.age,
+            tube.project_code,tube.disease_type as disease_type_id , tube.is_hemolysis,tube.is_blood_lipid,
+            tube.sample_used_times,tube.memo,req.stock_out_requirement_id
+            FROM stock_out_req_frozen_tube req LEFT JOIN frozen_tube tube ON req.frozen_tube_id = tube.id
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

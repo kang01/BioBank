@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -73,6 +75,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
     @Autowired
     private StockOutFilesRepository stockOutFilesRepository;
+
+    @Autowired
+    private StockOutRequirementSampleRepositories stockOutRequirementSampleRepositories;
 
     public StockOutRequirementServiceImpl(StockOutRequirementRepository stockOutRequirementRepository, StockOutRequirementMapper stockOutRequirementMapper) {
         this.stockOutRequirementRepository = stockOutRequirementRepository;
@@ -600,4 +605,15 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         return report;
     }
 
+    /**
+     * 核对需求样本详情
+     * @param id
+     * @param input
+     * @return
+     */
+    @Override
+    public DataTablesOutput<StockOutRequirementFrozenTubeDetail> getCheckDetailByRequirement(Long id, DataTablesInput input) {
+        input.addColumn("stockOutRequirementId",true,true,id+"+");
+        return stockOutRequirementSampleRepositories.findAll(input);
+    }
 }

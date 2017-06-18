@@ -1,13 +1,13 @@
 package org.fwoxford.service.dto.response;
 
-import io.swagger.models.auth.In;
-
 import java.util.List;
 
 /**
  * Created by gengluying on 2017/5/18.
  */
+
 public class StockOutRequirementSampleDetail {
+
 
     private Long id;
     private Integer countOfSample;

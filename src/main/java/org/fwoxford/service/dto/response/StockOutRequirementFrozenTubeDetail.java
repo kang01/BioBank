@@ -1,20 +1,84 @@
 package org.fwoxford.service.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by gengluying on 2017/5/18.
  */
+@Entity
+@Table(name = "view_requirement_sample")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockOutRequirementFrozenTubeDetail {
+    @Id
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private Long id;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "sample_code")
     private String sampleCode;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "status")
     private String status;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "sample_type_name")
     private String sampleTypeName;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "sex")
     private String sex;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "age")
     private Integer age;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "project_code")
     private String projectCode;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "disease_type_id")
     private String diseaseTypeId;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "is_hemolysis")
     private Boolean isHemolysis;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "is_blood_lipid")
     private Boolean isBloodLipid;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "sample_used_times")
     private Integer sampleUsedTimes;
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "memo")
     private String memo;
+
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "stock_out_requirement_id")
+    private Long stockOutRequirementId;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getSampleCode() {
         return sampleCode;
@@ -102,5 +166,13 @@ public class StockOutRequirementFrozenTubeDetail {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public Long getStockOutRequirementId() {
+        return stockOutRequirementId;
+    }
+
+    public void setStockOutRequirementId(Long stockOutRequirementId) {
+        this.stockOutRequirementId = stockOutRequirementId;
     }
 }

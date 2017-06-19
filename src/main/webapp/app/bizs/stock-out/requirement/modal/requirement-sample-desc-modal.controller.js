@@ -22,26 +22,29 @@
         function _initSampleRequirementDesc() {
             RequirementService.descSampleRequirement(sampleRequirementId).success(function (data) {
                 vm.requirementDesc = data;
-                if(vm.requirementDesc.sex == "M"){
-                    vm.requirementDesc.sex = "男";
-                } else if(vm.requirementDesc.sex == "F"){
-                    vm.requirementDesc.sex = "女";
-                }else{
-                    vm.requirementDesc.sex = "不详";
-                }
-
-                //正常的样本
-                vm.len = _.filter(vm.requirementDesc.frozenTubeList,{status:'3001'}).length;
-                setTimeout(function () {
-                    vm.dtOptions.withOption('data', vm.requirementDesc.frozenTubeList);
-                },500);
             }).error(function (data) {
             });
+            // RequirementService.descSampleList(sampleRequirementId).success(function (data) {
+                // if(vm.requirementDesc.sex == "M"){
+                //     vm.requirementDesc.sex = "男";
+                // } else if(vm.requirementDesc.sex == "F"){
+                //     vm.requirementDesc.sex = "女";
+                // }else{
+                //     vm.requirementDesc.sex = "不详";
+                // }
+                // //正常的样本
+                // vm.len = _.filter(vm.requirementDesc.frozenTubeList,{status:'3001'}).length;
+                // setTimeout(function () {
+                //     vm.dtOptions.withOption('data', vm.requirementDesc.frozenTubeList);
+                // },500);
+            // })
         }
         _initSampleRequirementDesc();
 
-        vm.dtOptions = BioBankDataTable.buildDTOption("BASIC",302)
-            .withOption('createdRow', createdRow);
+        vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY")
+            .withOption('createdRow', createdRow)
+            .withOption('serverSide',true)
+            .withFnServerData(_fnServerData);
 
         vm.dtColumns = [
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),
@@ -86,7 +89,39 @@
             $('td:eq(6)', row).html(diseaseType);
             $compile(angular.element(row).contents())($scope);
         }
+        function _fnServerData( sSource, aoData, fnCallback, oSettings ) {
+            var data = {};
+            for(var i=0; aoData && i<aoData.length; ++i){
+                var oData = aoData[i];
+                data[oData.name] = oData.value;
+            }
+            var jqDt = this;
+            RequirementService.descSampleList(sampleRequirementId, data, oSettings).then(function (res){
+                var json = res.data;
+                vm.len = _.filter(res.data.data,{status:'3001'}).length;
+                var error = json.error || json.sError;
+                if ( error ) {
+                    jqDt._fnLog( oSettings, 0, error );
+                }
+                oSettings.json = json;
+                fnCallback( json );
+            }, function(res){
+                console.log(res);
 
+                var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+
+                if ( $.inArray( true, ret ) === -1 ) {
+                    if ( error == "parsererror" ) {
+                        jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+                    }
+                    else if ( res.readyState === 4 ) {
+                        jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
+                    }
+                }
+
+                jqDt._fnProcessingDisplay( oSettings, false );
+            });
+        }
         vm.ok = function () {
             $uibModalInstance.close();
         };

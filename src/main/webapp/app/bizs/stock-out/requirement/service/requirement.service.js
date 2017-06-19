@@ -44,6 +44,8 @@
             delSampleRequirement:_delSampleRequirement,
             //详情
             descSampleRequirement:_descSampleRequirement,
+            //详情列表
+            descSampleList:_descSampleList,
             //复原
             revertSampleRequirement:_revertSampleRequirement,
             //批准
@@ -56,6 +58,7 @@
             savePlan:_savePlan,
             //作废
             invalidPlan:_invalidPlan
+
         };
         function _queryDemo(data,oSettings) {
             return $http.post('api/res/tranships',JSON.stringify(data));
@@ -117,6 +120,10 @@
         }
         function _descSampleRequirement(id) {
             return $http.get('api/stock-out-requirements/getCheckDetail/'+id);
+        }
+        function _descSampleList(id,data) {
+            // return $http.get('api/res/stock-out-requirements/getCheckDetail/'+id);
+            return $http.post('api/res/stock-out-requirements/getCheckDetail/'+id,angular.toJson(data));
         }
         function _revertSampleRequirement(id) {
             return $http.put('api/stock-out-requirements/revert/'+id);

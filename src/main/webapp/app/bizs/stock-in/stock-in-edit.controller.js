@@ -6,14 +6,14 @@
 
     angular
         .module('bioBankApp')
-        .controller('StockInNewController', StockInNewController)
+        .controller('StockInEditController', StockInEditController)
         .controller('RescindPutAwayModalController', RescindPutAwayModalController);
 
-    StockInNewController.$inject = ['$timeout','BioBankBlockUi','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
+    StockInEditController.$inject = ['$timeout','BioBankBlockUi','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
         'entity','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','StockInSaveService',
         'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService','MasterData'];
     RescindPutAwayModalController.$inject = ['$uibModalInstance'];
-    function StockInNewController($timeout,BioBankBlockUi,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
+    function StockInEditController($timeout,BioBankBlockUi,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
                                   entity,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,StockInSaveService,
                                   SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService,MasterData) {
         var vm = this;
@@ -897,7 +897,14 @@
                 templateUrl: 'app/bizs/stock-in/stock-in-close-splittingBox-modal.html',
                 controller: 'CloseSplittingBoxController',
                 controllerAs:'vm',
-                size:'sm'
+                size:'sm',
+                resolve: {
+                    items: function () {
+                        return {
+                            status :2
+                        };
+                    }
+                }
             });
             modalInstance.result.then(function (flag) {
                 if(flag && vm.boxList.length) {

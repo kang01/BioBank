@@ -10,27 +10,42 @@
         <div style="clear: both"></div>
     </div>
 
-    <div class="row ml-0 mr-0">
-        <div class="col-md-1 text-right"><strong>入库单编号</strong></div>
-        <div class="col-md-1">{{vm.entity.stockInCode}}</div>
-        <div class="col-md-1 text-right"><strong>转运编号</strong></div>
-        <div class="col-md-1">{{vm.entity.transhipCode}}</div>
-        <div class="col-md-1 text-right"><strong>项目编号</strong></div>
-        <div class="col-md-1">{{vm.entity.projectCode}}</div>
-        <div class="col-md-1 text-right"><strong>项目点</strong></div>
-        <div class="col-md-1">{{vm.entity.projectSiteCode}}</div>
+    <div class="row form-horizontal">
+        <!--<div class="col-md-1 text-right"><strong>入库单编号</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.stockInCode}}</div>-->
+        <div class="col-md-3">
+            <div class="form-group ">
+                <label class="col-md-4 control-label text-left">
+                    <span class="required-field"></span>
+                    项目编码
+                </label>
+                <div class="col-md-8">
+                    <selectize options='vm.projectOptions' config="vm.projectConfig"
+                               ng-model="vm.entity.projectId" ng-disabled="vm.boxLength"></selectize>
+                    <!--<input type="text" class="form-control"  ng-model="vm.transportRecord.projectSiteCode">-->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group three-col project-sites">
+                <label class="col-md-4 control-label text-left">
+                    <span class="required-field"></span>
+                    项目点</label>
+                <div class="col-md-8">
+                    <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
+                               ng-model="vm.entity.projectSiteId"></selectize>
+                    <!--<input type="text" class="form-control"  ng-model="vm.transportRecord.projectCode">-->
+                </div>
+            </div>
 
-        <div class="col-md-1 text-right"><strong>接收日期</strong></div>
-        <div class="col-md-1">{{vm.entity.receiveDate}}</div>
-        <div class="col-md-1 text-right"><strong>接收人</strong></div>
-        <div class="col-md-1">{{vm.entity.receiver}}</div>
-        <div class="col-md-12"></div>
+        </div>
+
     </div>
 
 
 
 
-    <div class="row ml-0 mr-0">
+    <div class="row">
         <div class="col-md-12">
             <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"
                    class=" table table-striped table-bordered">
@@ -50,49 +65,88 @@
             </table>
         </div>
     </div>
-    <!--ng-if="vm.showSplittingPanel()"-->
-    <div ng-if="vm.isShowSplittingPanel()">
-        <div class="row split-box ml-0 mr-0">
-            <div class="col-md-9">
-                <div class="col-md-5">
-                    <h4>待分装样本盒{{vm.box.frozenBoxCode}}</h4>
+    <div class="row" ng-if="vm.splittingBox">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h4>冻存盒信息</h4>
+                        </div>
+                        <div class="col-md-10  text-right mt-5">
+                            <button type="button" class="btn btn-default btn-sm"
+                                    ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus"
+                                    uib-btn-checkbox ng-click="vm.editStatus()" ng-disabled="!vm.box">状态编辑
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.exchange()"
+                                    ng-disabled="!vm.box || vm.flagStatus">样本换位
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.tubeRemark()"
+                                    ng-disabled="!vm.box || vm.flagStatus">样本批注
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.saveBox()" ng-disabled="!vm.box">
+                                保　　存
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.delBox()" ng-disabled="!vm.box">
+                                删除盒子
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm" ng-click=" vm.closeBox()" >
+                                关　　闭
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="col-md-7 text-right mb-10">
-                    <button type="button" class="btn btn-default" ng-click="vm.closeBox()">关闭</button>
-                    <button type="button" class="btn btn-default" ng-click="vm.splitBox()">分装</button>
-                    <button type="button" class="btn btn-default" ng-click="vm.recover()">复原</button>
-                    <button type="button" class="btn btn-primary" ng-click="vm.saveBox()">保存分装结果</button>
-                </div>
-                <div class="clear-both"></div>
-                <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"></hot-table>
-            </div>
-            <div class="col-md-3 pl-0 pr-0">
-                <h4>
-                    分装后样本盒
-                </h4>
-                <div >
-                    <ul>
-                        <li ng-repeat="item in vm.incompleteBoxesList"  >
-                            <div ng-repeat="item1 in item.boxList track by $index">
-                                <div class="box-feature current" ng-style="{backgroundColor:item1.backColor}"  ng-click="vm.sampleBoxSelect(item1,$event)">
-                                    {{item1.countOfSample}}/{{item1.frozenBoxType.frozenBoxTypeColumns*item1.frozenBoxType.frozenBoxTypeRows}}
-                                    <span ng-if="item1.addTubeCount">+{{item1.addTubeCount}}</span>
+                <div class="panel-body p-0">
+                    <div class="row">
+                        <div class="col-md-2 pr-0 pl-20">
+                            <form>
+                                <div class="form-group">
+                                    <label>冻存盒号</label>
+                                    <input type="text" class="form-control">
                                 </div>
-                                <div class="" ng-if="$index == 0">{{item1.sampleTypeName}}&nbsp;</div>
-                                <div ng-class="{'second-box': $index == 1}">{{item1.copyBoxCode}}</div>
+                                <div class="form-group">
+                                    <label>盒类型</label>
+                                    <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
+                                               ng-model="vm.box.frozenBoxTypeId" ></selectize>
+                                </div>
+                                <div class="form-group">
+                                    <label>样本类型</label>
+                                    <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                                               ng-model="vm.box.sampleTypeId" ></selectize>
+                                </div>
+                                <div class="form-group">
+                                    <label>样本分类</label>
+                                    <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
+                                               ng-model="vm.box.sampleClassificationId"
+                                    ></selectize>
+                                </div>
+                                <div class="form-group">
+                                    <label>备注</label>
+                                    <textarea  class="form-control resize-none" rows="9"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-10 pl-0">
+                            <div class="col-md-12 pipe-table mt-5">
+
+                                <span class="">图例说明：</span><span><img src="content/images/legend-for-tube-status.svg"
+                                                                      height="30px"/></span>
+
+
                             </div>
-                            <div class="box-feature box-feature-copy" style="background-color: #fff;" ng-if="item.boxList.length == 2"></div>
-                        </li>
-                        <li>
-                            <div class="box-feature" style="line-height: 96px;padding-top:0;border:2px dotted #aaa;" ng-click="vm.addBoxModal()">
-                                <i class="fa fa-plus" style="font-size:30px;"></i>
+                            <div class="col-md-12 pr-0">
+                                <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"
+                                           style="width: 100%; padding: 0;margin: 0;"></hot-table>
                             </div>
-                        </li>
-                        <li class="clear-both"></li>
-                    </ul>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+
     </div>
 </div>
 

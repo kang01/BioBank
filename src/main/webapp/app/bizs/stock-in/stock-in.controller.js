@@ -12,7 +12,7 @@
 
     function StockInController($scope, $compile, Principal, StockInService, ParseLinks, AlertService, $state, pagingParams, paginationConstants, JhiLanguageService,DTOptionsBuilder,DTColumnBuilder) {
         var vm = this;
-
+        vm.addRecord = _fnAddRecord;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         // vm.transition = transition;
 
@@ -139,6 +139,10 @@
         }
         function onError(error) {
             AlertService.error(error.data.message);
+        }
+
+        function _fnAddRecord() {
+            $state.go("stock-in-new")
         }
 
 

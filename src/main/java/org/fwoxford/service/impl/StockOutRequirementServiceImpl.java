@@ -373,11 +373,12 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         if(stockOutRequirement == null){
             throw new BankServiceException("未查询到样本需求！");
         }
-        List<StockOutReqFrozenTube> stockOutRequiredSamples = stockOutReqFrozenTubeRepository.findByStockOutRequirementId(id);
+//        List<StockOutReqFrozenTube> stockOutRequiredSamples = stockOutReqFrozenTubeRepository.findByStockOutRequirementId(id);
+        int countOfStockOutSample = stockOutReqFrozenTubeRepository.countByStockOutRequirementId(id);
 
         details.setId(id);
         details.setSex(stockOutRequirement.getSex());
-        details.setCountOfStockOutSample(stockOutRequiredSamples.size());
+        details.setCountOfStockOutSample(countOfStockOutSample);
         details.setCountOfSample(stockOutRequirement.getCountOfSample());
         details.setMemo(stockOutRequirement.getMemo());
         if(stockOutRequirement.getAgeMin() != null)
@@ -399,26 +400,26 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         details.setTubeType(stockOutRequirement.getFrozenTubeType()!=null?stockOutRequirement.getFrozenTubeType().getFrozenTubeTypeName():null);
         details.setSampleType(stockOutRequirement.getSampleType()!=null?stockOutRequirement.getSampleType().getSampleTypeName():null);
         //获取样本详情
-        List<StockOutRequirementFrozenTubeDetail> frozenTubes = new ArrayList<StockOutRequirementFrozenTubeDetail>();
-        for(StockOutReqFrozenTube sample:stockOutRequiredSamples){
-            StockOutRequirementFrozenTubeDetail frozenTubeDetail = new StockOutRequirementFrozenTubeDetail();
-            FrozenTube tube = sample.getFrozenTube();
-            if(tube!=null){
-                frozenTubeDetail.setStatus(tube.getStatus());
-                frozenTubeDetail.setProjectCode(tube.getProjectCode());
-                frozenTubeDetail.setIsBloodLipid(tube.isIsBloodLipid());
-                frozenTubeDetail.setIsHemolysis(tube.isIsHemolysis());
-                frozenTubeDetail.setDiseaseTypeId(tube.getDiseaseType());
-                frozenTubeDetail.setMemo(tube.getMemo());
-                frozenTubeDetail.setSampleCode(tube.getSampleCode());
-                frozenTubeDetail.setSampleTypeName(tube.getSampleTypeName());
-                frozenTubeDetail.setSampleUsedTimes(tube.getSampleUsedTimes());
-                frozenTubeDetail.setSex(tube.getGender());
-                frozenTubeDetail.setAge(tube.getAge());
-            }
-            frozenTubes.add(frozenTubeDetail);
-        }
-        details.setFrozenTubeList(frozenTubes);
+//        List<StockOutRequirementFrozenTubeDetail> frozenTubes = new ArrayList<StockOutRequirementFrozenTubeDetail>();
+//        for(StockOutReqFrozenTube sample:stockOutRequiredSamples){
+//            StockOutRequirementFrozenTubeDetail frozenTubeDetail = new StockOutRequirementFrozenTubeDetail();
+//            FrozenTube tube = sample.getFrozenTube();
+//            if(tube!=null){
+//                frozenTubeDetail.setStatus(tube.getStatus());
+//                frozenTubeDetail.setProjectCode(tube.getProjectCode());
+//                frozenTubeDetail.setIsBloodLipid(tube.isIsBloodLipid());
+//                frozenTubeDetail.setIsHemolysis(tube.isIsHemolysis());
+//                frozenTubeDetail.setDiseaseTypeId(tube.getDiseaseType());
+//                frozenTubeDetail.setMemo(tube.getMemo());
+//                frozenTubeDetail.setSampleCode(tube.getSampleCode());
+//                frozenTubeDetail.setSampleTypeName(tube.getSampleTypeName());
+//                frozenTubeDetail.setSampleUsedTimes(tube.getSampleUsedTimes());
+//                frozenTubeDetail.setSex(tube.getGender());
+//                frozenTubeDetail.setAge(tube.getAge());
+//            }
+//            frozenTubes.add(frozenTubeDetail);
+//        }
+//        details.setFrozenTubeList(frozenTubes);
         return details;
     }
 

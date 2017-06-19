@@ -37,6 +37,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="count_of_sample_real" type="integer" remarks="满足需求样本量">
+                <constraints nullable="true" />
+            </column>
+
             <column name="sex" type="nvarchar(255)" remarks="性别">
                 <constraints nullable="true" />
             </column>
@@ -102,13 +106,4 @@
 
     </changeSet>
 
-    <changeSet id="20170514063802-2" author="jhipster">
-        <addColumn tableName="stock_out_requirement">
-            <column name="count_of_sample_real" type="integer" remarks="满足需求样本量">
-                <constraints nullable="true" />
-            </column>
-        </addColumn>
-
-
-</changeSet>
 </databaseChangeLog>

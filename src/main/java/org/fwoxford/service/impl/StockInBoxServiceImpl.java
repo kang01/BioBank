@@ -685,24 +685,26 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             throw new BankServiceException("入库记录不存在！");
         }
         //保存冻存盒信息
-        if(frozenBoxDTO.getId() != null){
-            //编辑保存
-        }
         frozenBoxDTO.setIsSplit(Constants.NO);
         //更改冻存盒的项目
         frozenBoxDTO = createFrozenBoxByStockInProject(frozenBoxDTO,stockIn);
         //冻存盒类型
         frozenBoxDTO = createFrozenBoxByFrozenBoxType(frozenBoxDTO);
         //冻存盒样本类型
-        frozenBoxDTO = createFrozenBoxBySampleType(frozenBoxDTO);
-        //冻存盒样本分类
-        frozenBoxDTO = createFrozenBoxBySampleClass(frozenBoxDTO);
+        SampleType entity = sampleTypeRepository.findOne(frozenBoxDTO.getSampleTypeId());
+        if(frozenBoxDTO.getSampleTypeId() == null){
+            throw new BankServiceException("冻存盒样本类型不能为空！");
+        }
+        frozenBoxDTO = createFrozenBoxBySampleType(frozenBoxDTO,entity);
+        //冻存盒样本分类验证
+        frozenBoxDTO = createFrozenBoxBySampleClass(frozenBoxDTO,entity);
         //冻存盒位置验证
         frozenBoxDTO = createFrozenBoxByPosition(frozenBoxDTO);
         frozenBoxDTO.setStatus(Constants.FROZEN_BOX_STOCKING);
         frozenBoxDTO.setSampleNumber(frozenBoxDTO.getFrozenTubeDTOS().size());
         FrozenBox frozenBox = frozenBoxMapper.frozenBoxDTOToFrozenBox(frozenBoxDTO);
         frozenBox = frozenBoxRepository.save(frozenBox);
+        frozenBoxDTO.setId(frozenBox.getId());
         //保存入库冻存盒信息
         StockInBox stockInBox = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBox.getFrozenBoxCode());
         if(stockInBox == null){
@@ -711,13 +713,21 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxRepository.save(stockInBox);
         //保存冻存管信息
         for(FrozenTubeDTO tubeDTO:frozenBoxDTO.getFrozenTubeDTOS()){
+            //取原冻存管的患者信息
             tubeDTO = createFrozenTubeByOldFrozenTube(tubeDTO);
-
             tubeDTO.setFrozenBoxId(frozenBox.getId());
             tubeDTO.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-
             FrozenTube frozenTube = new FrozenTube();
-            //样本类型
+
+            //样本类型---如果冻存盒不是混合的，则需要验证冻存管的样本类型和样本分类是否与冻存盒是一致的，反之，则不验证
+            if(entity.getIsMixed().equals(Constants.NO)){
+                if(tubeDTO.getSampleTypeId() == null){
+                    throw new BankServiceException("冻存管样本类型不能为空！");
+                }
+                if(entity.getId() != tubeDTO.getSampleTypeId()){
+                    throw new BankServiceException("样本类型与冻存盒的样本类型不符！");
+                }
+            }
             tubeDTO = createFrozenTubeBySampleType(tubeDTO);
             //冻存管类型
             tubeDTO = createFrozenTubeTypeInit(tubeDTO);
@@ -725,8 +735,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             //项目编码
             tubeDTO.setProjectId(frozenBoxDTO.getProjectId());
             tubeDTO.setProjectCode(frozenBoxDTO.getProjectCode());
-
-
             frozenTube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
             frozenTubeRepository.save(frozenTube);
         }
@@ -849,18 +857,22 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return flag;
     }
 
-    public FrozenBoxDTO createFrozenBoxBySampleClass(FrozenBoxDTO frozenBoxDTO) {
+    public FrozenBoxDTO createFrozenBoxBySampleClass(FrozenBoxDTO frozenBoxDTO, SampleType entity) {
+        //验证项目下该样本类型是否有样本分类，如果已经配置了样本分类，则样本分类ID不能为空，（99的,98的除外）
+        if(entity.getIsMixed().equals(Constants.YES)&&frozenBoxDTO.getSampleClassificationId()!=null){
+            throw new BankServiceException("混合型样本的冻存盒，样本分类应该为空！");
+        }
+        int countOfSampleClass = projectSampleClassRepository.countByProjectIdAndSampleTypeId(frozenBoxDTO.getProjectId(),frozenBoxDTO.getSampleTypeId());
+        if(countOfSampleClass>0&&entity.getIsMixed().equals(Constants.NO)&&frozenBoxDTO.getSampleClassificationId()==null){
+            throw new BankServiceException("该项目下已经配置样本分类，样本分类不能为空！");
+        }
         return frozenBoxDTO;
     }
 
-    public FrozenBoxDTO createFrozenBoxBySampleType(FrozenBoxDTO frozenBoxDTO) {
+    public FrozenBoxDTO createFrozenBoxBySampleType(FrozenBoxDTO frozenBoxDTO, SampleType entity) {
         if(frozenBoxDTO == null){
             return  frozenBoxDTO;
         }
-        if(frozenBoxDTO.getSampleTypeId() == null){
-            throw new BankServiceException("冻存盒样本类型不能为空！");
-        }
-        SampleType entity = sampleTypeRepository.findOne(frozenBoxDTO.getSampleTypeId() );
         if(entity == null){
             throw new BankServiceException("冻存盒样本类型不存在！");
         }

@@ -9,6 +9,7 @@ import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxForSplit;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -243,6 +244,25 @@ public class StockInBoxResource {
         FrozenBoxDTO result = stockInBoxService.createBoxByStockIn(frozenBoxDTO,stockInCode);
         return ResponseEntity.created(new URI("/api/stock-in-boxes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+    /**
+     * 编辑保存入库盒
+     * @param frozenBoxDTO
+     * @param stockInCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-in-boxes/stockInCode/{stockInCode}")
+    @Timed
+    public ResponseEntity<FrozenBoxDTO> updateBoxByStockIn(@Valid @RequestBody FrozenBoxDTO frozenBoxDTO,@PathVariable String stockInCode) throws URISyntaxException {
+        log.debug("REST request to save StockInBox : {}", frozenBoxDTO);
+        if(frozenBoxDTO.getId() == null){
+            throw new BankServiceException("冻存盒ID不能为空！");
+        }
+        FrozenBoxDTO result = stockInBoxService.createBoxByStockIn(frozenBoxDTO,stockInCode);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 }

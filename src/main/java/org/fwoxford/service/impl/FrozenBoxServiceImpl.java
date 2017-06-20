@@ -639,15 +639,21 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
 
         if(frozenBox == null || (!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&& !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED))){
-            return frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
+            return new FrozenBoxDTO();
         }
 
         //查询冻存管列表信息
-        List<FrozenTube> frozenTube = new ArrayList<>();
+        List<FrozenTube> frozenTubeList = new ArrayList<>();
         if(!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
-            frozenTube = frozenTubeService.findFrozenTubeListByBoxCode(frozenBoxCode);
+            frozenTubeList = frozenTubeService.findFrozenTubeListByBoxCode(frozenBoxCode);
         }
-        List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapping.frozenTubesToFrozenTubeDTOs(frozenTube);
+        String columns = frozenBox.getFrozenBoxTypeColumns()!=null?frozenBox.getFrozenBoxTypeColumns():new String("0");
+        String rows = frozenBox.getFrozenBoxTypeRows()!=null?frozenBox.getFrozenBoxTypeRows():new String("0");
+        int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
+        if(frozenTubeList.size() == allCounts){
+            throw new BankServiceException("冻存盒已满！");
+        }
+        List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapping.frozenTubesToFrozenTubeDTOs(frozenTubeList);
 
         FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
 

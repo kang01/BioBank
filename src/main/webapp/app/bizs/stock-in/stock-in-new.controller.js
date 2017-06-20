@@ -378,9 +378,16 @@
             _initBoxInfo();
             vm.splittingBox = true;
         }
+        //冻存盒搜索
         vm.frozenBoxForStockIn =_fnFrozenBoxForStockIn;
         function _fnFrozenBoxForStockIn() {
-
+            StockInInputService.queryStockInBox(vm.box.frozenBoxCode).success(function (data) {
+                console.log(JSON.stringify(data));
+                if(data.frozenBoxCode){
+                    vm.box = data;
+                    _reloadTubesForTable(vm.box)
+                }
+            });
         }
         function _initBoxInfo() {
             //盒子类型 17:10*10 18:8*8
@@ -409,7 +416,8 @@
             };
             //样本类型
             SampleTypeService.querySampleType().success(function (data) {
-                vm.sampleTypeOptions = data;
+                vm.sampleTypeOptions = _.orderBy(data,['id','ase']);
+                _.pullAt(vm.sampleTypeOptions,4);
                 vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                 vm.box.sampleType = vm.sampleTypeOptions[0];
                 vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId}).isMixed;
@@ -620,14 +628,17 @@
                                             resolve: {
                                                 items: function () {
                                                     return {
-                                                        status :1
+                                                        status :1,
+                                                        tubes:data
                                                     };
                                                 }
                                             }
 
                                         });
-                                        modalInstance.result.then(function () {
-                                            hotRegisterer.getInstance('my-handsontable').render();
+                                        modalInstance.result.then(function (tube) {
+                                            var tableCtrl = _getTableCtrl();
+                                            // oldTube.
+                                            tableCtrl.render();
                                         });
                                     }
 
@@ -656,7 +667,11 @@
                 }
 
             };
-
+            // 获取上架位置列表的控制实体
+            function _getTableCtrl(){
+                vm.TableCtrl = hotRegisterer.getInstance('my-handsontable');
+                return vm.TableCtrl;
+            }
             //渲染管子表格
             function myCustomRenderer(hotInstance, td, row, col, prop, value, cellProperties) {
                 var tube= value||{};

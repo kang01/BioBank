@@ -82,12 +82,12 @@
                             <button type="button" class="btn btn-default btn-sm" ng-click="vm.tubeRemark()"
                                     ng-disabled="!vm.box || vm.flagStatus">样本批注
                             </button>
-                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.saveBox()" ng-disabled="!vm.box">
+                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.saveBox()" ng-disabled="!vm.box.frozenBoxCode">
                                 保　　存
                             </button>
-                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.delBox()" ng-disabled="!vm.box">
-                                删除盒子
-                            </button>
+                            <!--<button type="button" class="btn btn-default btn-sm" ng-click="vm.delBox()" ng-disabled="!vm.box">-->
+                                <!--删除盒子-->
+                            <!--</button>-->
                             <button type="button" class="btn btn-default btn-sm" ng-click=" vm.closeBox()" >
                                 关　　闭
                             </button>

@@ -34,23 +34,20 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     /**
      * 冻存管编码
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "frozen_tube_code", length = 100, nullable = false)
+    @Column(name = "frozen_tube_code", length = 100)
     private String frozenTubeCode;
     /**
      * 样本临时编码
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "sample_temp_code", length = 100, nullable = false)
+    @Column(name = "sample_temp_code", length = 100)
     private String sampleTempCode;
     /**
      * 样本编码
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "sample_code", length = 100, nullable = false)
+    @Column(name = "sample_code", length = 100)
     private String sampleCode;
     /**
      * 冻存管类型编码

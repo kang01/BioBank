@@ -78,6 +78,12 @@ public class StockInServiceImpl implements StockInService {
     @Autowired
     private StockInBoxPositionRepository stockInBoxPositionRepository;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private ProjectSiteRepository projectSiteRepository;
+
     public StockInServiceImpl(StockInRepository stockInRepository,
                               StockInMapper stockInMapper,
                               StockInRepositries stockInRepositries) {
@@ -267,7 +273,7 @@ public class StockInServiceImpl implements StockInService {
         return dataTablesInput;
     }
 
-    private StockInBox createStockInBox(FrozenBox box, StockIn stockIn) {
+    public StockInBox createStockInBox(FrozenBox box, StockIn stockIn) {
         StockInBox inBox = new StockInBox();
         inBox.setEquipmentCode(box.getEquipmentCode());
         inBox.setEquipment(box.getEquipment());
@@ -280,7 +286,7 @@ public class StockInServiceImpl implements StockInService {
         inBox.setFrozenBoxCode(box.getFrozenBoxCode());
         inBox.setStockIn(stockIn);
         inBox.setStockInCode(stockIn.getStockInCode());
-        inBox.setCountOfSample(box.getSampleNumber());
+        inBox.setCountOfSample(box.getSampleNumber()!=null?box.getSampleNumber():0);
         inBox.setMemo(box.getMemo());
         inBox.setStatus(box.getStatus());
         inBox.setFrozenBox(box);
@@ -427,5 +433,62 @@ public class StockInServiceImpl implements StockInService {
         }
         StockIn stockIn = stockInRepository.findStockInByTranshipId(tranship.getId());
         return stockInMapper.stockInToStockInDetail(stockIn);
+    }
+    /**
+     * 新增入库
+     * @param stockInDTO
+     * @return
+     */
+    @Override
+    public StockInDTO createStockIn(StockInDTO stockInDTO) {
+        log.debug("Request to save StockIn : {}", stockInDTO);
+        if(stockInDTO.getProjectId() == null){
+            throw new BankServiceException("项目ID不能为空！");
+        }
+        StockIn stockIn = stockInMapper.stockInDTOToStockIn(stockInDTO);
+        stockIn.setStatus(Constants.STOCK_IN_PENDING);
+        stockIn.setStockInType(Constants.STORANGE_IN_TYPE_1ST);
+        stockIn.setCountOfSample(0);
+        Project project = projectRepository.findOne(stockInDTO.getProjectId());
+        if(project == null){
+            throw new BankServiceException("项目不存在！");
+        }
+        if(stockInDTO.getProjectSiteId() != null){
+            ProjectSite projectSite = projectSiteRepository.findOne(stockInDTO.getProjectSiteId());
+            if(projectSite == null){
+                throw new BankServiceException("项目点不存在！");
+            }
+            stockIn.setProjectSiteCode(projectSite.getProjectSiteCode());
+        }
+        stockIn.setProjectCode(project.getProjectCode());
+        stockIn.setStockInCode(BankUtil.getUniqueID());
+        stockInRepository.save(stockIn);
+        StockInDTO result = stockInMapper.stockInToStockInDTO(stockIn);
+        return result;
+    }
+    /**
+     * 编辑入库
+     * @param stockInDTO
+     * @return
+     */
+    @Override
+    public StockInForDataDetail updateStockIns(StockInForDataDetail stockInDTO) {
+        log.debug("Request to save StockIn : {}", stockInDTO);
+        if(stockInDTO.getId()==null){
+            throw new BankServiceException("入库ID不能为空！",stockInDTO.toString());
+        }
+        StockIn stockInOld = stockInRepository.findOne(stockInDTO.getId());
+        Long countOfBox = stockInBoxRepository.countByStockInCode(stockInOld.getStockInCode());
+        if(countOfBox.intValue()>0){
+            if(stockInDTO.getProjectId() != stockInOld.getProject().getId()){
+                throw new BankServiceException("该入库单下已经有冻存盒记录，不能修改项目！",stockInDTO.toString());
+            }
+        }
+        stockInOld.setProject(stockInMapper.projectFromId(stockInDTO.getProjectId()));
+        stockInOld.setProjectCode(stockInDTO.getProjectCode());
+        stockInOld.setProjectSiteCode(stockInDTO.getProjectSiteCode());
+        stockInOld.setProjectSite(stockInMapper.projectSiteFromId(stockInDTO.getProjectId()));
+        stockInOld = stockInRepository.save(stockInOld);
+        return stockInMapper.stockInToStockInDetail(stockInOld);
     }
 }

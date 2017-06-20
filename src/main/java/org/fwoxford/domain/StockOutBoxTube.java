@@ -26,6 +26,16 @@ public class StockOutBoxTube extends AbstractAuditingEntity implements Serializa
 
     @NotNull
     @Size(max = 20)
+    @Column(name = "tube_rows", length = 20, nullable = false)
+    private String tubeRows;
+
+    @NotNull
+    @Size(max = 20)
+    @Column(name = "tube_columns", length = 20, nullable = false)
+    private String tubeColumns;
+
+    @NotNull
+    @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
@@ -51,6 +61,28 @@ public class StockOutBoxTube extends AbstractAuditingEntity implements Serializa
 
     public void setId(Long id) {
         this.id = id;
+    }
+    public String getTubeRows() {
+        return tubeRows;
+    }
+    public StockOutBoxTube tubeRows(String tubeRows) {
+        this.tubeRows = tubeRows;
+        return this;
+    }
+    public void setTubeRows(String tubeRows) {
+        this.tubeRows = tubeRows;
+    }
+
+    public String getTubeColumns() {
+        return tubeColumns;
+    }
+
+    public StockOutBoxTube tubeColumns(String tubeColumns) {
+        this.tubeColumns = tubeColumns;
+        return this;
+    }
+    public void setTubeColumns(String tubeColumns) {
+        this.tubeColumns = tubeColumns;
     }
 
     public String getStatus() {
@@ -142,6 +174,8 @@ public class StockOutBoxTube extends AbstractAuditingEntity implements Serializa
     public String toString() {
         return "StockOutBoxTube{" +
             "id=" + id +
+            ", tubeRows='" + tubeRows + "'" +
+            ", tubeColumns='" + tubeColumns + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             '}';

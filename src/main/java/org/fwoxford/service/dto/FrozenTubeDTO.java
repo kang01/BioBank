@@ -23,19 +23,16 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 冻存管编码
      */
-    @NotNull
     @Size(max = 100)
     private String frozenTubeCode;
     /**
      * 样本临时编码
      */
-    @NotNull
     @Size(max = 100)
     private String sampleTempCode;
     /**
      * 样本编码
      */
-    @NotNull
     @Size(max = 100)
     private String sampleCode;
     /**
@@ -112,7 +109,6 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 冻存盒编码
      */
-    @NotNull
     @Size(max = 100)
     private String frozenBoxCode;
     /**

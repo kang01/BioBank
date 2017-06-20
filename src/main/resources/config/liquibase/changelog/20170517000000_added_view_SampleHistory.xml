@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutApply.
+    -->
+    <changeSet id="20170517000000-2" author="jhipster">
+
+        <createView viewName="view_sample_history">
+            select * from
+            (
+            select tranship.frozen_tube_id as id,
+            tube.project_code,
+            tran.id as tranship_id,
+            tran.tranship_code,
+            null as stock_in_id,
+            null as stock_in_code,
+            null as stock_out_task_id,
+            null as stock_out_task_code,
+            null as handover_id,
+            null as handover_code,
+            tube.sample_code,
+            101 as type,
+            tranship.status,box.frozen_box_code,tranship.rows_in_tube as tube_rows,tranship.columns_in_tube as tube_columns
+            ,tran.tranship_date as operate_time
+            from tranship_tube tranship
+            left join  frozen_tube tube on tranship.frozen_tube_id = tube.id
+            left join tranship_box tbox on tranship.tranship_box_id = tbox.id
+            left join  tranship tran on tbox.tranship_id = tran.id
+            left join frozen_box box on tbox.frozen_box_id = box.id
+
+            UNION
+            select stockIn.frozen_tube_id as id,
+            tube.project_code,
+            null as tranship_id,
+            null as tranship_code,
+            s.id as stock_in_id,
+            s.stock_in_code,
+            null as stock_out_task_id,
+            null as stock_out_task_code,
+            null as handover_id,
+            null as handover_code,
+            tube.sample_code,
+            102 as type,
+            stockIn.status,box.frozen_box_code,stockIn.tube_rows,stockIn.tube_columns
+            ,s.stock_in_date as operate_time
+            from stock_in_tube stockIn
+            left join frozen_tube tube on stockIn.frozen_tube_id = tube.id
+            left join stock_in_box sbox on stockIn.stock_in_box_id = sbox.id
+            left join  stock_in s on sbox.stock_in_id = s.id
+            left join frozen_box box on sbox.frozen_box_id = box.id
+
+            UNION
+            select  stockOut.frozen_tube_id as id,
+            tube.project_code,
+            null as tranship_id,
+            null as tranship_code,
+            null as stock_in_id,
+            null as stock_in_code,
+            task.id as stock_out_task_id,
+            task.stock_out_task_code,
+            null as handover_id,
+            null as handover_code,
+            tube.sample_code,
+            103 as type,
+            stockOut.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns
+            ,task.stock_out_date as operate_time
+            from stock_out_box_tube stockOut
+            left join  frozen_tube tube on stockOut.frozen_tube_id = tube.id
+            left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id
+            left join frozen_box box on soutbox.frozen_box_id = box.id
+            left join  stock_out_task task on soutbox.stock_out_task_id = task.id
+
+            UNION
+            select  stockOut.frozen_tube_id as id,
+            tube.project_code,
+            null as tranship_id,
+            null as tranship_code,
+            null as stock_in_id,
+            null as stock_in_code,
+            null as stock_out_task_id,
+            null as stock_out_task_code,
+            handover.id as handover_id,
+            handover.handover_code,
+            tube.sample_code,
+            104 as type,
+            hand.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns
+            ,handover.handover_time  as operate_time
+            from stock_out_handover_details hand
+            left join stock_out_box_tube stockOut on hand.stock_out_box_tube_id = stockOut.id
+            left join  frozen_tube tube on stockOut.frozen_tube_id = tube.id
+            left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id
+            left join frozen_box box on soutbox.frozen_box_id = box.id
+            left join  stock_out_handover handover on hand.stock_out_handover_id = handover.id
+            )
+            ORDER BY operate_time desc ,type desc;
+
+
+
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

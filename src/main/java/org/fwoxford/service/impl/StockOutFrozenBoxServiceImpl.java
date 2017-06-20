@@ -341,7 +341,10 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 stockOutBoxTube.setStatus(Constants.FROZEN_BOX_TUBE_STOCKOUT_PENDING);
                 stockOutBoxTube.setStockOutFrozenBox(stockOutFrozenBox);
                 stockOutBoxTube.setStockOutTaskFrozenTube(stockOutTaskFrozenTube);
-                stockOutBoxTube.setFrozenTube(stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube());
+                FrozenTube tube = stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube();
+                stockOutBoxTube.setFrozenTube(tube);
+                stockOutBoxTube.setTubeRows(f.getTubeRows());
+                stockOutBoxTube.setTubeColumns(f.getTubeColumns());
                 stockOutBoxTubeRepository.save(stockOutBoxTube);
             }
 

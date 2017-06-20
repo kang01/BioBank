@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.domain.StockInBoxForDataTableEntity;
 import org.fwoxford.service.StockInBoxService;
 import org.fwoxford.service.dto.*;
+import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxForSplit;
@@ -226,5 +227,22 @@ public class StockInBoxResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInBoxDetail.getFrozenBoxId().toString()))
             .body(stockInBoxDetail);
+    }
+
+    /**
+     * 创建入库盒
+     * @param frozenBoxDTO
+     * @param stockInCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-in-boxes/stockInCode/{stockInCode}")
+    @Timed
+    public ResponseEntity<FrozenBoxDTO> createBoxByStockIn(@Valid @RequestBody FrozenBoxDTO frozenBoxDTO,@PathVariable String stockInCode) throws URISyntaxException {
+        log.debug("REST request to save StockInBox : {}", frozenBoxDTO);
+        FrozenBoxDTO result = stockInBoxService.createBoxByStockIn(frozenBoxDTO,stockInCode);
+        return ResponseEntity.created(new URI("/api/stock-in-boxes/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 }

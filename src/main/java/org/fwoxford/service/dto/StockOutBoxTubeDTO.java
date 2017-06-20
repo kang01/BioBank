@@ -16,6 +16,14 @@ public class StockOutBoxTubeDTO extends AbstractAuditingDTO implements Serializa
 
     @NotNull
     @Size(max = 20)
+    private String tubeRows;
+
+    @NotNull
+    @Size(max = 20)
+    private String tubeColumns;
+
+    @NotNull
+    @Size(max = 20)
     private String status;
 
     @Size(max = 1024)
@@ -34,6 +42,23 @@ public class StockOutBoxTubeDTO extends AbstractAuditingDTO implements Serializa
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getTubeRows() {
+        return tubeRows;
+    }
+
+    public void setTubeRows(String tubeRows) {
+        this.tubeRows = tubeRows;
+    }
+
+    public String getTubeColumns() {
+        return tubeColumns;
+    }
+
+    public void setTubeColumns(String tubeColumns) {
+        this.tubeColumns = tubeColumns;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -98,6 +123,8 @@ public class StockOutBoxTubeDTO extends AbstractAuditingDTO implements Serializa
     public String toString() {
         return "StockOutBoxTubeDTO{" +
             "id=" + id +
+            ", tubeRows='" + tubeRows + "'" +
+            ", tubeColumns='" + tubeColumns + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             '}';

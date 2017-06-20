@@ -8,9 +8,7 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.StockIn;
 import org.fwoxford.domain.StockInBox;
 import org.fwoxford.domain.StockInForDataTableEntity;
-import org.fwoxford.domain.User;
 import org.fwoxford.repository.StockInBoxRepository;
-import org.fwoxford.security.SecurityUtils;
 import org.fwoxford.service.StockInService;
 import org.fwoxford.service.UserService;
 import org.fwoxford.service.dto.StockInCompleteDTO;
@@ -78,12 +76,27 @@ public class StockInResource {
         if (stockInDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new stockIn cannot already have an ID")).body(null);
         }
-        StockInDTO result = stockInService.save(stockInDTO);
+        StockInDTO result = stockInService.createStockIn(stockInDTO);
         return ResponseEntity.created(new URI("/api/stock-ins/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
+    /**
+     * 编辑入库
+     * @param stockInDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-ins")
+    @Timed
+    public ResponseEntity<StockInForDataDetail> updateStockIns(@Valid @RequestBody StockInForDataDetail stockInDTO) throws URISyntaxException {
+        log.debug("REST request to update StockIn : {}", stockInDTO);
+        StockInForDataDetail result = stockInService.updateStockIns(stockInDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInDTO.getId().toString()))
+            .body(result);
+    }
     /**
      * PUT  /stock-ins : Updates an existing stockIn.
      *

@@ -4,16 +4,14 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockInBoxService;
+import org.fwoxford.service.StockInService;
 import org.fwoxford.service.StockInTubeService;
-import org.fwoxford.service.dto.FrozenBoxPositionDTO;
-import org.fwoxford.service.dto.StockInBoxDTO;
-import org.fwoxford.service.dto.StockInTubeDTO;
+import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxForSplit;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
-import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +19,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,11 +68,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     private FrozenBoxTypeRepository frozenBoxTypeRepository;
     @Autowired
     private FrozenBoxMapper frozenBoxMapper;
-    @Autowired
-    private FrozenBoxPositionRepository frozenBoxPositionRepository;
-
-    @Autowired
-    private FrozenBoxPositionMapper frozenBoxPositionMapper;
 
     @Autowired
     private StockInBoxPositionRepository stockInBoxPositionRepository;
@@ -87,7 +76,16 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     private SampleClassificationRepository sampleClassificationRepository;
 
     @Autowired
-    private StockInTubeService stockInTubeService;
+    private StockInService stockInService;
+
+    @Autowired
+    private FrozenTubeMapper frozenTubeMapper;
+
+    @Autowired
+    private StockInMapper stockInMapper;
+
+    @Autowired
+    private FrozenTubeTypeRepository frozenTubeTypeRepository;
 
     public StockInBoxServiceImpl(StockInBoxRepository stockInBoxRepository, StockInBoxMapper stockInBoxMapper,
                                  StockInBoxRepositries stockInBoxRepositries,StockInRepository stockInRepository) {
@@ -183,7 +181,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         output.setData(alist);
         return output;
     }
-    private String toStockInBoxPosition(StockInBox stockInBox) {
+
+
+
+    public String toStockInBoxPosition(StockInBox stockInBox) {
         String position = "";
 
         if(stockInBox == null){
@@ -290,7 +291,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
       return stockInBoxForDataSplitList;
     }
 
-    private StockInBoxForSplit splitedStockInSave(StockInBoxForSplit stockInBoxForDataSplit, List<SampleType> sampleTypes, List<Equipment> equipments, List<Area> areas, List<SupportRack> supportRacks, FrozenBox frozenBox, String stockInCode, List<FrozenBoxType> frozenBoxTypeList,List<SampleClassification> sampleClassifications) {
+    public StockInBoxForSplit splitedStockInSave(StockInBoxForSplit stockInBoxForDataSplit, List<SampleType> sampleTypes, List<Equipment> equipments, List<Area> areas, List<SupportRack> supportRacks, FrozenBox frozenBox, String stockInCode, List<FrozenBoxType> frozenBoxTypeList,List<SampleClassification> sampleClassifications) {
         if(stockInBoxForDataSplit.getFrozenBoxTypeId()==null){
             throw new BankServiceException("冻存盒类型不能为空！",stockInBoxForDataSplit.getFrozenBoxCode());
         }
@@ -564,7 +565,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return stockInBoxs;
     }
 
-    private StockInBoxDetail createStockInBoxDetail(FrozenBox frozenBox,String stockInCode) {
+    public StockInBoxDetail createStockInBoxDetail(FrozenBox frozenBox,String stockInCode) {
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
         stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
         stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
@@ -670,4 +671,205 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         return stockInBoxDetail;
     }
+
+    /**
+     * 创建入库盒
+     * @param frozenBoxDTO
+     * @param stockInCode
+     * @return
+     */
+    @Override
+    public FrozenBoxDTO createBoxByStockIn(FrozenBoxDTO frozenBoxDTO, String stockInCode) {
+        StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
+        if(stockIn == null){
+            throw new BankServiceException("入库记录不存在！");
+        }
+        //保存冻存盒信息
+        if(frozenBoxDTO.getId() != null){
+            //编辑保存
+        }
+        frozenBoxDTO.setIsSplit(Constants.NO);
+        //更改冻存盒的项目
+        frozenBoxDTO = createFrozenBoxByStockInProject(frozenBoxDTO,stockIn);
+        //冻存盒类型
+        frozenBoxDTO = createFrozenBoxByFrozenBoxType(frozenBoxDTO);
+        //冻存盒样本类型
+        frozenBoxDTO = createFrozenBoxBySampleType(frozenBoxDTO);
+        //冻存盒样本分类
+        frozenBoxDTO = createFrozenBoxBySampleClass(frozenBoxDTO);
+        //冻存盒位置验证
+        frozenBoxDTO = createFrozenBoxByPosition(frozenBoxDTO);
+        frozenBoxDTO.setStatus(Constants.FROZEN_BOX_STOCKING);
+        frozenBoxDTO.setSampleNumber(frozenBoxDTO.getFrozenTubeDTOS().size());
+        FrozenBox frozenBox = frozenBoxMapper.frozenBoxDTOToFrozenBox(frozenBoxDTO);
+        frozenBox = frozenBoxRepository.save(frozenBox);
+        //保存入库冻存盒信息
+        StockInBox stockInBox = stockInService.createStockInBox(frozenBox,stockIn);
+        stockInBoxRepository.save(stockInBox);
+        //保存冻存管信息
+        for(FrozenTubeDTO tubeDTO:frozenBoxDTO.getFrozenTubeDTOS()){
+
+            tubeDTO.setFrozenBoxId(frozenBox.getId());
+            tubeDTO.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+
+            FrozenTube frozenTube = new FrozenTube();
+            //样本类型
+            tubeDTO = createFrozenTubeBySampleType(tubeDTO);
+            //冻存管类型
+            tubeDTO = createFrozenTubeTypeInit(tubeDTO);
+            tubeDTO.setSampleUsedTimes(tubeDTO.getSampleUsedTimes()!=null?tubeDTO.getSampleUsedTimes():null);
+            //项目编码
+            tubeDTO.setProjectId(frozenBoxDTO.getProjectId());
+            tubeDTO.setProjectCode(frozenBoxDTO.getProjectCode());
+
+
+            frozenTube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
+            frozenTubeRepository.save(frozenTube);
+        }
+        return frozenBoxDTO;
+    }
+
+    private FrozenTubeDTO createFrozenTubeBySampleType(FrozenTubeDTO tubeDTO) {
+        if(tubeDTO == null){
+            return  tubeDTO;
+        }
+        if(tubeDTO.getSampleTypeId() == null){
+            throw new BankServiceException("冻存管样本类型不能为空！");
+        }
+        SampleType entity = sampleTypeRepository.findOne(tubeDTO.getSampleTypeId() );
+        if(entity == null){
+            throw new BankServiceException("冻存管样本类型不存在！");
+        }
+        tubeDTO.setSampleTypeCode(entity.getSampleTypeCode());
+        tubeDTO.setSampleTypeName(entity.getSampleTypeName());
+        return tubeDTO;
+    }
+
+    private FrozenTubeDTO createFrozenTubeTypeInit(FrozenTubeDTO tubeDTO) {
+        //如果冻存管类型未选择，默认第一条
+        if(tubeDTO == null){
+            return tubeDTO;
+        }
+        FrozenTubeType frozenTubeType = new FrozenTubeType();
+        if(tubeDTO.getFrozenTubeTypeId() ==null){
+            frozenTubeType = frozenTubeTypeRepository.findTopOne();
+        }else {
+            frozenTubeType = frozenTubeTypeRepository.findOne(tubeDTO.getFrozenTubeTypeId());
+        }
+        if(frozenTubeType ==null){
+            throw new BankServiceException("冻存管类型不存在！");
+        }
+        tubeDTO.setFrozenTubeTypeId(frozenTubeType.getId());
+        tubeDTO.setFrozenTubeTypeCode(frozenTubeType.getFrozenTubeTypeCode());
+        tubeDTO.setFrozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName());
+        tubeDTO.setFrozenTubeVolumnsUnit(frozenTubeType.getFrozenTubeVolumnUnit());
+        tubeDTO.setFrozenTubeVolumns(frozenTubeType.getFrozenTubeVolumn());
+        tubeDTO.setSampleUsedTimesMost(frozenTubeType.getSampleUsedTimesMost());
+        return tubeDTO;
+    }
+
+    private FrozenBoxDTO createFrozenBoxByPosition(FrozenBoxDTO frozenBoxDTO) {
+        if(frozenBoxDTO == null){
+            return  frozenBoxDTO;
+        }
+        if(frozenBoxDTO.getEquipmentId()!=null){
+            Equipment equipment = equipmentRepository.findOne(frozenBoxDTO.getEquipmentId());
+            if(equipment==null){
+                throw new BankServiceException("设备不存在！");
+            }
+            frozenBoxDTO.setEquipmentCode(equipment.getEquipmentCode());
+        }
+        if(frozenBoxDTO.getAreaId()!=null){
+            Area area = areaRepository.findOne(frozenBoxDTO.getAreaId());
+            if(area==null){
+                throw new BankServiceException("区域不存在！");
+            }
+            frozenBoxDTO.setAreaCode(area.getAreaCode());
+        }
+        if(frozenBoxDTO.getSupportRackId()!=null){
+            SupportRack supportRack = supportRackRepository.findOne(frozenBoxDTO.getSupportRackId());
+            if(supportRack==null){
+                throw new BankServiceException("冻存架不存在！");
+            }
+            frozenBoxDTO.setSupportRackCode(supportRack.getSupportRackCode());
+        }
+        Boolean flag = checkPositionValid(frozenBoxDTO);
+        if(flag){
+            throw new BankServiceException("此位置已存放冻存盒，请更换其他位置！",frozenBoxDTO.toString());
+        }
+        return frozenBoxDTO;
+    }
+
+    /**
+     * 根据冻存盒位置找到冻存盒，查询出冻存盒的状态，如果不为空且不是已出库，已分装，已作废的状态，表示位置被占用！
+     * @param frozenBoxDTO
+     * @return 已占用：true。未被占用：false
+     */
+    private Boolean checkPositionValid(FrozenBoxDTO frozenBoxDTO) {
+        Boolean flag = false;
+        if(frozenBoxDTO.getColumnsInShelf()!=null && frozenBoxDTO.getRowsInShelf()!=null){
+            FrozenBox frozenBoxOld = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf
+                (frozenBoxDTO.getEquipmentCode(),frozenBoxDTO.getAreaCode(),frozenBoxDTO.getSupportRackCode(),frozenBoxDTO.getColumnsInShelf(),frozenBoxDTO.getRowsInShelf());
+            if(frozenBoxOld!=null && frozenBoxOld.getId()!=frozenBoxDTO.getId()
+                && !frozenBoxOld.getStatus().equals(Constants.FROZEN_BOX_INVALID)
+                && !frozenBoxOld.getStatus().equals(Constants.FROZEN_BOX_SPLITED)
+                && !frozenBoxOld.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
+               flag = true;
+            }
+        }
+
+        return flag;
+    }
+
+    public FrozenBoxDTO createFrozenBoxBySampleClass(FrozenBoxDTO frozenBoxDTO) {
+        return frozenBoxDTO;
+    }
+
+    public FrozenBoxDTO createFrozenBoxBySampleType(FrozenBoxDTO frozenBoxDTO) {
+        if(frozenBoxDTO == null){
+            return  frozenBoxDTO;
+        }
+        if(frozenBoxDTO.getSampleTypeId() == null){
+            throw new BankServiceException("冻存盒样本类型不能为空！");
+        }
+        SampleType entity = sampleTypeRepository.findOne(frozenBoxDTO.getSampleTypeId() );
+        if(entity == null){
+            throw new BankServiceException("冻存盒样本类型不存在！");
+        }
+        frozenBoxDTO.setSampleTypeCode(entity.getSampleTypeCode());
+        frozenBoxDTO.setSampleTypeName(entity.getSampleTypeName());
+        return frozenBoxDTO;
+    }
+
+    public FrozenBoxDTO createFrozenBoxByFrozenBoxType(FrozenBoxDTO frozenBoxDTO) {
+        if(frozenBoxDTO == null){
+            return  frozenBoxDTO;
+        }
+        if(frozenBoxDTO.getFrozenBoxTypeId() == null){
+            throw new BankServiceException("冻存盒类型不能为空！");
+        }
+        FrozenBoxType boxType = frozenBoxTypeRepository.findOne(frozenBoxDTO.getFrozenBoxTypeId());
+        if(boxType == null){
+            throw new BankServiceException("冻存盒类型不存在！");
+        }
+        frozenBoxDTO.setFrozenBoxTypeCode(boxType.getFrozenBoxTypeCode());
+        frozenBoxDTO.setFrozenBoxTypeColumns(boxType.getFrozenBoxTypeColumns());
+        frozenBoxDTO.setFrozenBoxTypeRows(boxType.getFrozenBoxTypeRows());
+        return frozenBoxDTO;
+    }
+
+    public FrozenBoxDTO createFrozenBoxByStockInProject(FrozenBoxDTO frozenBoxDTO, StockIn stockIn) {
+        if(frozenBoxDTO == null || stockIn ==null){
+            return  frozenBoxDTO;
+        }
+        frozenBoxDTO.setProjectId(stockIn.getProject()!=null?stockIn.getProject().getId():null);
+        frozenBoxDTO.setProjectName(stockIn.getProject()!=null?stockIn.getProject().getProjectName():null);
+        frozenBoxDTO.setProjectCode(stockIn.getProject()!=null?stockIn.getProject().getProjectCode():null);
+
+        frozenBoxDTO.setProjectSiteId(stockIn.getProjectSite()!=null?stockIn.getProjectSite().getId():null);
+        frozenBoxDTO.setProjectSiteName(stockIn.getProjectSite()!=null?stockIn.getProjectSite().getProjectSiteName():null);
+        frozenBoxDTO.setProjectSiteCode(stockIn.getProjectSite()!=null?stockIn.getProjectSite().getProjectSiteCode():null);
+        return  frozenBoxDTO;
+    }
+
 }

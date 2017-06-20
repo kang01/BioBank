@@ -102,15 +102,17 @@ public interface StockInMapper {
         stockInDetail.setId( stockIn.getId() );
         stockInDetail.setProjectId(stockIn.getProject().getId());
         stockInDetail.setProjectCode( stockIn.getProjectCode() );
+        stockInDetail.setProjectSiteId(stockIn.getProjectSite()!=null?stockIn.getProjectSite().getId():null);
         stockInDetail.setProjectSiteCode( stockIn.getProjectSiteCode() );
         stockInDetail.setStoreKeeper1( stockIn.getStoreKeeper1() );
         stockInDetail.setStoreKeeper2( stockIn.getStoreKeeper2() );
         stockInDetail.setStockInDate( stockIn.getStockInDate() );
         stockInDetail.setStatus( stockIn.getStatus() );
-        stockInDetail.setTranshipCode(stockIn.getTranship().getTranshipCode());
+        stockInDetail.setTranshipCode(stockIn.getTranship()!=null?stockIn.getTranship().getTranshipCode():null);
         stockInDetail.setReceiveDate(stockIn.getReceiveDate());
         stockInDetail.setStockInCode(stockIn.getStockInCode());
         stockInDetail.setReceiver(stockIn.getReceiveName());
+        stockInDetail.setMemo(stockIn.getMemo());
         return stockInDetail;
     }
 }

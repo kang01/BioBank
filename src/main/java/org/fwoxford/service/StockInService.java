@@ -1,6 +1,8 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.StockIn;
+import org.fwoxford.domain.StockInBox;
 import org.fwoxford.domain.StockInForDataTableEntity;
 import org.fwoxford.service.dto.StockInCompleteDTO;
 import org.fwoxford.service.dto.StockInDTO;
@@ -74,4 +76,20 @@ public interface StockInService {
     StockInForDataDetail getStockInById(Long id);
 
     StockInForDataDetail getStockInByTranshipCode(String transhipCode);
+
+    /**
+     * 新增入库
+     * @param stockInDTO
+     * @return
+     */
+    StockInDTO createStockIn(StockInDTO stockInDTO);
+
+    /**
+     * 编辑入库
+     * @param stockInDTO
+     * @return
+     */
+    StockInForDataDetail updateStockIns(StockInForDataDetail stockInDTO);
+
+    StockInBox createStockInBox(FrozenBox frozenBox, StockIn stockIn);
 }

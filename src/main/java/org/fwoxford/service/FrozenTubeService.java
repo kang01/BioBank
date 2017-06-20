@@ -3,6 +3,7 @@ package org.fwoxford.service;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -63,4 +64,11 @@ public interface FrozenTubeService {
     List<FrozenTube> saveBatch(List<FrozenTubeDTO> frozenTubeDTOList);
 
     FrozenBoxAndFrozenTubeResponse getFrozenTubeByFrozenBoxCode(String frozenBoxCode,Long id);
+
+    /**
+     * 根据样本编码查询样本的信息
+     * @param sampleCode
+     * @return
+     */
+    List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode);
 }

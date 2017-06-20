@@ -704,10 +704,14 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         FrozenBox frozenBox = frozenBoxMapper.frozenBoxDTOToFrozenBox(frozenBoxDTO);
         frozenBox = frozenBoxRepository.save(frozenBox);
         //保存入库冻存盒信息
-        StockInBox stockInBox = stockInService.createStockInBox(frozenBox,stockIn);
+        StockInBox stockInBox = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBox.getFrozenBoxCode());
+        if(stockInBox == null){
+            stockInBox = stockInService.createStockInBox(frozenBox,stockIn);
+        }
         stockInBoxRepository.save(stockInBox);
         //保存冻存管信息
         for(FrozenTubeDTO tubeDTO:frozenBoxDTO.getFrozenTubeDTOS()){
+            tubeDTO = createFrozenTubeByOldFrozenTube(tubeDTO);
 
             tubeDTO.setFrozenBoxId(frozenBox.getId());
             tubeDTO.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
@@ -729,7 +733,31 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return frozenBoxDTO;
     }
 
-    private FrozenTubeDTO createFrozenTubeBySampleType(FrozenTubeDTO tubeDTO) {
+    public FrozenTubeDTO createFrozenTubeByOldFrozenTube(FrozenTubeDTO tubeDTO) {
+        if(tubeDTO.getId() == null){
+            return tubeDTO;
+        }
+
+        FrozenTube frozenTube = frozenTubeRepository.findOne(tubeDTO.getId());
+        if(frozenTube == null){
+            throw new BankServiceException("冻存管不存在！");
+        }
+        tubeDTO.setSampleUsedTimes(frozenTube.getSampleUsedTimes());
+        tubeDTO.setPatientId(frozenTube.getPatientId());
+        tubeDTO.setAge(frozenTube.getAge());
+        tubeDTO.setDiseaseType(frozenTube.getDiseaseType());
+        tubeDTO.setDob(frozenTube.getDob());
+        tubeDTO.setErrorType(frozenTube.getErrorType());
+        tubeDTO.setGender(frozenTube.getGender());
+        tubeDTO.setIsBloodLipid(frozenTube.isIsBloodLipid());
+        tubeDTO.setIsHemolysis(frozenTube.isIsHemolysis());
+        tubeDTO.setSampleTempCode(frozenTube.getSampleTempCode());
+        tubeDTO.setVisitDate(frozenTube.getVisitDate());
+        tubeDTO.setVisitType(frozenTube.getVisitType());
+        return tubeDTO;
+    }
+
+    public FrozenTubeDTO createFrozenTubeBySampleType(FrozenTubeDTO tubeDTO) {
         if(tubeDTO == null){
             return  tubeDTO;
         }
@@ -745,7 +773,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return tubeDTO;
     }
 
-    private FrozenTubeDTO createFrozenTubeTypeInit(FrozenTubeDTO tubeDTO) {
+    public FrozenTubeDTO createFrozenTubeTypeInit(FrozenTubeDTO tubeDTO) {
         //如果冻存管类型未选择，默认第一条
         if(tubeDTO == null){
             return tubeDTO;
@@ -768,7 +796,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return tubeDTO;
     }
 
-    private FrozenBoxDTO createFrozenBoxByPosition(FrozenBoxDTO frozenBoxDTO) {
+    public FrozenBoxDTO createFrozenBoxByPosition(FrozenBoxDTO frozenBoxDTO) {
         if(frozenBoxDTO == null){
             return  frozenBoxDTO;
         }
@@ -805,7 +833,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
      * @param frozenBoxDTO
      * @return 已占用：true。未被占用：false
      */
-    private Boolean checkPositionValid(FrozenBoxDTO frozenBoxDTO) {
+    public Boolean checkPositionValid(FrozenBoxDTO frozenBoxDTO) {
         Boolean flag = false;
         if(frozenBoxDTO.getColumnsInShelf()!=null && frozenBoxDTO.getRowsInShelf()!=null){
             FrozenBox frozenBoxOld = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf

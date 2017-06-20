@@ -3,4 +3,5 @@ A;血浆;black;rgb(240,224,255);0;;0001;system;system
 W;白细胞;black;rgb(255,255,255);0;;0001;system;system
 F;血清;black;rgb(255,179,179);0;;0001;system;system
 E;尿;black;rgb(255,255,179);0;;0001;system;system
-S_TYPE_00011;99;black;rgb(169,241,253);1;;0001;system;system
+99;99;black;rgb(169,241,253);1;;0001;system;system
+98;98;black;rgb(169,241,253);1;;0001;system;system

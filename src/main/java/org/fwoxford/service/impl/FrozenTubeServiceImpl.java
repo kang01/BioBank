@@ -1,6 +1,5 @@
 package org.fwoxford.service.impl;
 
-import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.StockOutTaskFrozenTube;
@@ -11,7 +10,6 @@ import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.repository.FrozenTubeRepository;
 import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
-import org.fwoxford.service.dto.response.FrozenTubeHistory;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
@@ -26,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.util.Assert;
 /**
@@ -179,14 +176,14 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
     }
 
     @Override
-    public List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode) {
-        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCode(sampleCode);
+    public List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode) {
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCode(sampleCode,projectCode);
 
-        List<Object[]> frozenTubeHistoryList =  frozenTubeRepository.findFrozenTubeHistoryListBySample(sampleCode);
+        List<Object[]> frozenTubeHistoryList =  frozenTubeRepository.findFrozenTubeHistoryListBySampleAndProjectCode(sampleCode,projectCode);
         if(frozenTubeHistoryList.size()>0){
             Object[] object = frozenTubeHistoryList.get(0);
             Object status = object[12];
-            if(status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED)){
+            if(status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) || status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
                 return frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubeList);
             }else {
                 throw new BankServiceException("冻存管编码已经在库存内，请输入新的冻存管编码！");

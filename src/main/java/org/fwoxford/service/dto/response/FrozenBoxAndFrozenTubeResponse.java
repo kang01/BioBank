@@ -24,7 +24,6 @@ public class FrozenBoxAndFrozenTubeResponse {
     /**
      * 是否分装（1：是；0：否）
      */
-    @NotNull
     private Integer isSplit;
     /**
      * 备注
@@ -34,7 +33,6 @@ public class FrozenBoxAndFrozenTubeResponse {
     /**
      * 状态：（2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废）
      */
-    @NotNull
     @Size(max = 20)
     private String status;
     /**

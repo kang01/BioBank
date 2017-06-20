@@ -6,6 +6,7 @@ import org.fwoxford.repository.*;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -167,6 +168,10 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
         //查询冻存盒信息
         FrozenBox frozenBox = this.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+
+        if(frozenBox == null){
+            throw new BankServiceException("冻存盒不存在！");
+        }
 
         //查询冻存管列表信息
         List<FrozenTube> frozenTube = frozenTubeService.findFrozenTubeListByBoxCode(frozenBoxCode);
@@ -625,5 +630,35 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }
 
         return stockInBoxForIncompleteList;
+    }
+
+    @Override
+    public FrozenBoxDTO getBoxAndTubeByForzenBoxCode(String frozenBoxCode) {
+
+        //查询冻存盒信息
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+
+        if(frozenBox == null || (!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&& !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED))){
+            return new FrozenBoxDTO();
+        }
+
+        //查询冻存管列表信息
+        List<FrozenTube> frozenTubeList = new ArrayList<>();
+        if(!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
+            frozenTubeList = frozenTubeService.findFrozenTubeListByBoxCode(frozenBoxCode);
+        }
+        String columns = frozenBox.getFrozenBoxTypeColumns()!=null?frozenBox.getFrozenBoxTypeColumns():new String("0");
+        String rows = frozenBox.getFrozenBoxTypeRows()!=null?frozenBox.getFrozenBoxTypeRows():new String("0");
+        int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
+        if(frozenTubeList.size() == allCounts){
+            throw new BankServiceException("冻存盒已满！");
+        }
+        List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapping.frozenTubesToFrozenTubeDTOs(frozenTubeList);
+
+        FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
+
+        frozenBoxDTO.setFrozenTubeDTOS(frozenTubeDTOS);
+
+        return frozenBoxDTO;
     }
 }

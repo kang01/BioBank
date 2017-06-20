@@ -23,19 +23,16 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 冻存盒类型编码
      */
-    @NotNull
     @Size(max = 100)
     private String frozenBoxTypeCode;
     /**
      * 冻存盒行数
      */
-    @NotNull
     @Size(max = 20)
     private String frozenBoxTypeRows;
     /**
      * 冻存盒列数
      */
-    @NotNull
     @Size(max = 20)
     private String frozenBoxTypeColumns;
     /**
@@ -61,53 +58,44 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 设备编码
      */
-    @NotNull
     @Size(max = 100)
     private String equipmentCode;
     /**
      * 区域编码
      */
-    @NotNull
     @Size(max = 100)
     private String areaCode;
     /**
      * 冻存架编码
      */
-    @NotNull
     @Size(max = 100)
     private String supportRackCode;
     /**
      * 样本类型编码
      */
-    @NotNull
     @Size(max = 100)
     private String sampleTypeCode;
     /**
      * 样本类型名称
      */
-    @NotNull
     @Size(max = 255)
     private String sampleTypeName;
     /**
      * 样本数量
      */
-    @NotNull
     private Integer sampleNumber;
     /**
      * 是否分装：1：是，0：否
      */
-    @NotNull
     private Integer isSplit;
     /**
      * 所在架子行数
      */
-    @NotNull
     @Size(max = 20)
     private String rowsInShelf;
     /**
      * 所在架子列数
      */
-    @NotNull
     @Size(max = 20)
     private String columnsInShelf;
     /**
@@ -118,29 +106,24 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废
      */
-    @NotNull
     @Size(max = 20)
     private String status;
     /**
      * 空管数
      */
-    @NotNull
     private Integer emptyTubeNumber;
     /**
      * 空孔数
      */
-    @NotNull
     private Integer emptyHoleNumber;
     /**
      * 错位数
      */
-    @NotNull
     @Max(value = 100)
     private Integer dislocationNumber;
     /**
      * 是否已导入样本数据：1：是，0：否
      */
-    @NotNull
     private Integer isRealData;
     /**
      * 冻存盒类型ID

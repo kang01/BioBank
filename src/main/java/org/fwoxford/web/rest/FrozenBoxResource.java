@@ -289,4 +289,17 @@ public class FrozenBoxResource {
         List<StockInBoxForIncomplete> boxes =  frozenBoxService.getIncompleteFrozenBoxeList(frozenBoxCode,stockInCode);
         return boxes;
     }
+
+    /**
+     * 冻存盒直接入库，取原冻存盒的信息
+     * @param frozenBoxCode
+     * @return
+     */
+    @GetMapping("/frozen-boxes/boxCode/{frozenBoxCode}/forStockIn")
+    @Timed
+    public ResponseEntity<FrozenBoxDTO> getBoxAndTubeByForzenBoxCode(@PathVariable String frozenBoxCode) {
+        log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
+        FrozenBoxDTO res = frozenBoxService.getBoxAndTubeByForzenBoxCode(frozenBoxCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
 }

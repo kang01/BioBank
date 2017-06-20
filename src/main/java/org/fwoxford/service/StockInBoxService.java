@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.domain.StockInBoxForDataTableEntity;
+import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenBoxPositionDTO;
 import org.fwoxford.service.dto.StockInBoxDTO;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
@@ -63,4 +64,11 @@ public interface StockInBoxService {
     StockInBoxDetail movedDownStockIn(String stockInCode, String boxCode);
 
     DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(String stockInCode, DataTablesInput input);
+    /**
+     * 创建入库盒
+     * @param frozenBoxDTO
+     * @param stockInCode
+     * @return
+     */
+    FrozenBoxDTO createBoxByStockIn(FrozenBoxDTO frozenBoxDTO, String stockInCode);
 }

@@ -13,6 +13,7 @@ import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.util.Assert;
 /**
  * Service Implementation for managing FrozenTube.
@@ -171,5 +173,23 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
         frozenBoxAndFrozenTubeResponse = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox,frozenTubeResponses);
         //构造返回结果
         return frozenBoxAndFrozenTubeResponse;
+    }
+
+    @Override
+    public List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode) {
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCode(sampleCode,projectCode);
+
+        List<Object[]> frozenTubeHistoryList =  frozenTubeRepository.findFrozenTubeHistoryListBySampleAndProjectCode(sampleCode,projectCode);
+        if(frozenTubeHistoryList.size()>0){
+            Object[] object = frozenTubeHistoryList.get(0);
+            Object status = object[12];
+            if(status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) || status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
+                return frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubeList);
+            }else {
+                throw new BankServiceException("冻存管编码已经在库存内，请输入新的冻存管编码！");
+            }
+        }
+
+        return frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubeList);
     }
 }

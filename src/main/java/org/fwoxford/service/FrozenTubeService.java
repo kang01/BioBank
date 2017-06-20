@@ -63,4 +63,13 @@ public interface FrozenTubeService {
     List<FrozenTube> saveBatch(List<FrozenTubeDTO> frozenTubeDTOList);
 
     FrozenBoxAndFrozenTubeResponse getFrozenTubeByFrozenBoxCode(String frozenBoxCode,Long id);
+
+    /**
+     * 根据样本编码查询样本的信息
+     *
+     * @param code
+     * @param sampleCode
+     * @return
+     */
+    List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode);
 }

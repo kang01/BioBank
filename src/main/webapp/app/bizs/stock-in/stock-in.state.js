@@ -87,8 +87,8 @@
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'app/bizs/stock-in/stock-in-new.html',
-                        controller: 'StockInNewController',
+                        templateUrl: 'app/bizs/stock-in/stock-in-edit.html',
+                        controller: 'StockInEditController',
                         controllerAs: 'vm'
                     }
                 },

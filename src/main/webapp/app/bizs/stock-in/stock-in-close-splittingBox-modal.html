@@ -1,9 +1,13 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
-    <h3 class="modal-title" id="modal-title">关闭分装</h3>
+    <h3 class="modal-title" id="modal-title">
+        <span ng-if="vm.status == 2">关闭分装</span>
+        <span ng-if="vm.status == 1">关闭冻存盒</span>
+    </h3>
 </div>
 <div class="modal-body" id="modal-body">
-    <p>关闭分装功能，确定保存分装数据？</p>
+    <p ng-if="vm.status == 2">关闭分装功能，确定保存分装数据？</p>
+    <p ng-if="vm.status == 1">关闭冻存盒操作，确定保存数据？</p>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="vm.ok()">保存</button>

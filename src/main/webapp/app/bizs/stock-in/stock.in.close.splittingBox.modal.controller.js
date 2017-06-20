@@ -8,10 +8,11 @@
         .module('bioBankApp')
         .controller('CloseSplittingBoxController', CloseSplittingBoxController);
 
-    CloseSplittingBoxController.$inject = ['$uibModalInstance'];
+    CloseSplittingBoxController.$inject = ['$uibModalInstance','items'];
 
-    function CloseSplittingBoxController($uibModalInstance) {
+    function CloseSplittingBoxController($uibModalInstance,items) {
         var vm = this;
+        vm.status = items.status;
 
         vm.cancel = function () {
             $uibModalInstance.close(false);

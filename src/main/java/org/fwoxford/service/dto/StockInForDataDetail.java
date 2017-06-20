@@ -26,6 +26,10 @@ public class StockInForDataDetail {
      */
     private String projectCode;
     /**
+     * 项目ID
+     */
+    private Long projectSiteId;
+    /**
      * 项目点编码
      */
     private String projectSiteCode;
@@ -62,12 +66,15 @@ public class StockInForDataDetail {
      */
     private String stockInCode;
 
+    private String memo;
+
     @Override
     public String toString() {
         return "StockInForDataDetail{" +
             "id=" + id +
             ", projectId='" + projectId + '\'' +
             ", projectCode='" + projectCode + '\'' +
+            ", projectSiteId='" + projectSiteId + '\'' +
             ", projectSiteCode='" + projectSiteCode + '\'' +
             ", receiveDate=" + receiveDate +
             ", receiver='" + receiver + '\'' +
@@ -77,6 +84,7 @@ public class StockInForDataDetail {
             ", storeKeeper2='" + storeKeeper2 + '\'' +
             ", transhipCode='" + transhipCode + '\'' +
             ", stockInCode='" + stockInCode + '\'' +
+            ", memo='" + memo + '\'' +
             '}';
     }
 
@@ -102,6 +110,14 @@ public class StockInForDataDetail {
 
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
+    }
+
+    public Long getProjectSiteId() {
+        return projectSiteId;
+    }
+
+    public void setProjectSiteId(Long projectSiteId) {
+        this.projectSiteId = projectSiteId;
     }
 
     public String getProjectSiteCode() {
@@ -174,5 +190,13 @@ public class StockInForDataDetail {
 
     public void setStockInCode(String stockInCode) {
         this.stockInCode = stockInCode;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 }

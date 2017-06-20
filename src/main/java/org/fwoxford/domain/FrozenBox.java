@@ -148,22 +148,22 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     /**
      * 空管数
      */
-    @Column(name = "empty_tube_number", nullable = false)
+    @Column(name = "empty_tube_number")
     private Integer emptyTubeNumber;
     /**
      * 空孔数
      */
-    @Column(name = "empty_hole_number", nullable = false)
+    @Column(name = "empty_hole_number")
     private Integer emptyHoleNumber;
     /**
      * 错位数
      */
-    @Column(name = "dislocation_number", nullable = false)
+    @Column(name = "dislocation_number")
     private Integer dislocationNumber;
     /**
      * 是否已导入样本数据：1：是，0：否
      */
-    @Column(name = "is_real_data",  nullable = false)
+    @Column(name = "is_real_data")
     private Integer isRealData;
 
     @ManyToOne

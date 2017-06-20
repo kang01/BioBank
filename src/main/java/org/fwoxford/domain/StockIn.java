@@ -41,9 +41,8 @@ public class StockIn extends AbstractAuditingEntity implements Serializable {
     /**
      * 项目点编码
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "project_site_code", length = 100, nullable = false)
+    @Column(name = "project_site_code", length = 100)
     private String projectSiteCode;
     /**
      * 接收日期
@@ -148,8 +147,7 @@ public class StockIn extends AbstractAuditingEntity implements Serializable {
     /**
      * 项目点
      */
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     private ProjectSite projectSite;
 
     public Long getId() {

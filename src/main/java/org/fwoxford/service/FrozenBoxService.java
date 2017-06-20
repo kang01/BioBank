@@ -122,4 +122,6 @@ public interface FrozenBoxService {
     List<StockInBoxForChangingPosition> getIncompleteFrozenBoxesByStockIn(String projectCode, String sampleTypeCode, String stockInCode);
 
     List<StockInBoxForIncomplete> getIncompleteFrozenBoxeList(String frozenBoxCode, String stockInCode);
+
+    FrozenBoxDTO getBoxAndTubeByForzenBoxCode(String frozenBoxCode);
 }

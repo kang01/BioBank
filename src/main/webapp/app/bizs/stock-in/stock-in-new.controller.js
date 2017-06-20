@@ -1,21 +1,21 @@
 /**
- * Created by zhuyu on 2017/3/14.
+ * Created by gaokangkang on 2017/6/19.
  */
 (function() {
     'use strict';
 
     angular
         .module('bioBankApp')
-        .controller('StockInNewController', StockInNewController)
-        .controller('RescindPutAwayModalController', RescindPutAwayModalController);
+        .controller('StockInNewController', StockInNewController);
+        // .controller('RescindPutAwayModalController', RescindPutAwayModalController);
 
     StockInNewController.$inject = ['$timeout','BioBankBlockUi','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
-        'entity','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','StockInSaveService',
-        'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService','MasterData'];
-    RescindPutAwayModalController.$inject = ['$uibModalInstance'];
+        'entity','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','ProjectService','ProjectSitesByProjectIdService',
+        'SampleTypeService','SampleService','FrozenBoxTypesService','RescindPutAwayService','MasterData'];
+    // RescindPutAwayModalController.$inject = ['$uibModalInstance'];
     function StockInNewController($timeout,BioBankBlockUi,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
-                                  entity,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,StockInSaveService,
-                                  SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService,MasterData) {
+                                   entity,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,ProjectService,ProjectSitesByProjectIdService,
+                                   SampleTypeService,SampleService,FrozenBoxTypesService,RescindPutAwayService,MasterData) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
@@ -27,8 +27,45 @@
         vm.dtInstance = {};
         var modalInstance;
 
+        _initStockInInfo();
+        function _initStockInInfo() {
+            //项目
+            ProjectService.query({},onProjectSuccess, onError);
+            function onProjectSuccess(data) {
+                vm.projectOptions = data;
+                if(!vm.entity.projectId){
+                    vm.entity.projectId = data[0].id;
+                }
+                ProjectSitesByProjectIdService.query({id:vm.entity.projectId},onProjectSitesSuccess,onError);
+            }
+            //项目
+            vm.projectConfig = {
+                valueField:'id',
+                labelField:'projectName',
+                maxItems: 1,
+                onChange:function(value){
+                    vm.entity.projectSiteId = "";
+                    ProjectSitesByProjectIdService.query({id:value},onProjectSitesSuccess,onError);
+                }
+            };
+            //项目点
+            vm.projectSitesConfig = {
+                valueField:'id',
+                labelField:'projectSiteName',
+                maxItems: 1,
+                onChange:function (value) {
+                }
+            };
 
-
+            function onProjectSitesSuccess(data) {
+                vm.projectSitesOptions = data;
+                if(!vm.entity.projectSiteId){
+                    if(data.length){
+                        vm.entity.projectSiteId = data[0].id;
+                    }
+                }
+            }
+        }
         _initStockInBoxesTable();
 
         function _initStockInBoxesTable(){
@@ -61,13 +98,19 @@
             vm.dtInstance = {};
 
             vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 6, "<'row'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>", $scope)
-                // 设置Tool button
+            // 设置Tool button
                 .withButtons([
                     {
                         text: '<i class="fa fa-sign-in"></i> 批量上架',
-                        className: 'btn btn-default',
+                        className: 'btn btn-default mr-5',
                         key: '1',
                         action: _fnActionPutInShelfButton
+                    },
+                    {
+                        text: '<i class="fa fa-plus"></i> 添加冻存盒',
+                        className: 'btn btn-default',
+                        key: '1',
+                        action: _fnActionAddBoxButton
                     }
                 ])
                 // 数据从服务器加载
@@ -165,7 +208,7 @@
             if (full.status == "2002"){
                 if (full.isSplit){
                     buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
-                       '   <i class="fa fa-sitemap"></i> 分装' +
+                        '   <i class="fa fa-sitemap"></i> 分装' +
                         '</button>';
                 } else {
                     buttonHtml += '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf(\''+ full.frozenBoxCode +'\')">' +
@@ -325,365 +368,629 @@
             });
 
         }
+        //添加冻存盒
+        vm.box = {
+            frozenBoxType:{},
+            sampleType:{}
+        };
+        function _fnActionAddBoxButton() {
+            _initBoxInfo();
+            vm.splittingBox = true;
+        }
+        function _initBoxInfo() {
+            //盒子类型 17:10*10 18:8*8
+            FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
+            function onFrozenBoxTypeSuccess(data) {
+                vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['asc']);
+                vm.box.frozenBoxTypeId = vm.frozenBoxTypeOptions[0].id;
+                vm.box.frozenBoxType = vm.frozenBoxTypeOptions[0];
+            }
+            vm.boxTypeConfig = {
+                valueField:'id',
+                labelField:'frozenBoxTypeName',
+                maxItems: 1,
+                onChange:function(value){
+                    var boxType = _.filter(vm.frozenBoxTypeOptions, {id:+value})[0];
+                    if (!boxType) {
+                        return;
+                    }
+                    vm.box.frozenBoxTypeId = value;
+                    vm.box.frozenBoxType = boxType;
+                    var box = vm.box;
+                    _fnQueryProjectSampleClass(vm.entity.projectId,vm.box.sampleTypeId,vm.isMixed);
+                    vm.reloadTubesForTable(box);
+                    hotRegisterer.getInstance('my-handsontable').render();
+                }
+            };
+            //样本类型
+            SampleTypeService.querySampleType().success(function (data) {
+                vm.sampleTypeOptions = data;
+                vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId}).isMixed;
+                setTimeout(function () {
+                    _fnQueryProjectSampleClass(vm.entity.projectId,vm.box.sampleTypeId,vm.isMixed);
+                },500);
+            });
+            vm.sampleTypeConfig = {
+                valueField:'id',
+                labelField:'sampleTypeName',
+                maxItems: 1,
+                onChange:function (value) {
+                    vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
+                    _fnQueryProjectSampleClass(vm.entity.projectId,value,vm.isMixed);
+                    // if(isMixed == 1){
+                    //     vm.box.isSplit = 1;
+                    //     vm.isMixedFlag = true;
+                    //     vm.sampleClassFlag = true;
+                    //     delete vm.box.sampleClassificationId;
+                    // }else{
+                    //     vm.box.isSplit = 0;
+                    //     vm.isMixedFlag = false;
+                    //     vm.sampleClassFlag = false;
+                    // }
+                    // _fnQueryProjectSampleClass(vm.entity.projectId,value);
+                }
+            };
+            //样本分类
+            function _fnQueryProjectSampleClass(projectId,sampleTypeId,isMixed) {
+                SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
+                    vm.projectSampleTypeOptions = data;
+                    //是否混合类型 1：是混合类型
+                    if(isMixed == 1){
+                        vm.box.isSplit = 1;
+                        vm.isMixedFlag = true;
+                        //类型下有无分类
+                        if(data.length){
+                            for(var k = 0; k < data.length; k++){
+                                for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                                    for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                                        if(data[k].columnsNumber == j+1){
+                                            vm.frozenTubeArray[i][j].sampleClassificationId = data[k].sampleClassificationId;
+                                            vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                                        }
+                                    }
+                                }
+                                for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
+                                    if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber){
+                                        vm.box.frozenTubeDTOS[m].sampleClassification.id = data[k].sampleClassificationId;
+                                    }
+                                }
+                            }
+
+                        }else{
+                            //混合型无分类
+                            for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                                for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                                    vm.frozenTubeArray[i][j].sampleClassificationId = "";
+                                    vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                                }
+
+                            }
+                        }
+
+                    }else{
+                        //无分类时取第一个
+
+                        if(vm.projectSampleTypeOptions.length){
+                            vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                            vm.box.sampleClassification = vm.projectSampleTypeOptions[0];
+                        }
+                        for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                            for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                                if(vm.box.sampleClassification){
+                                    vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
+                                }
+                                vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                            }
+                        }
+                        // for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
+                        //     if(vm.box.sampleClassification){
+                        //         vm.box.frozenTubeDTOS[m].sampleClassification.id = vm.box.sampleClassificationId;
+                        //     }
+                        //     vm.box.frozenTubeDTOS[m].sampleType.id = vm.box.sampleTypeId;
+                        // }
+                    }
+
+                    hotRegisterer.getInstance('my-handsontable').render();
+                });
+            }
+            vm.projectSampleTypeConfig = {
+                valueField:'sampleClassificationId',
+                labelField:'sampleClassificationName',
+                maxItems: 1,
+                onChange:function (value) {
+                    vm.box.sampleClassificationId = value;
+                    for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                        for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                            vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
+                        }
+                    }
+                    hotRegisterer.getInstance('my-handsontable').render();
+                }
+            };
+            _initFrozenBoxPanel();
+            setTimeout(function () {
+                vm.reloadTubesForTable(vm.box)
+            },500)
+
+        }
+        //初始化冻存管
+        function _initFrozenBoxPanel(){
+            vm.frozenTubeArray = [];//初始管子数据二位数组
+            var remarkArray;//批注
+            var domArray = [];//单元格操作的数据
+            var operateColor;//单元格颜色
+
+            initFrozenTube(10,10);
+
+            vm.settings = {
+                colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
+                rowHeaders : ['A','B','C','D','E','F','G','H','J','K'],
+                data:vm.frozenTubeArray,
+                renderer: myCustomRenderer,
+                minRows: 10,
+                minCols: 10,
+                fillHandle:false,
+                stretchH: 'all',
+                autoWrapCol:true,
+                wordWrap:true,
+                colWidths: 80,
+                rowHeaderWidth: 30,
+                editor: 'tube',
+                multiSelect: true,
+                comments: true,
+                onAfterSelectionEnd:function (row, col, row2, col2) {
+                    vm.remarkFlag = true;
+                    var td = this;
+                    remarkArray = this.getData(row,col,row2,col2);
+                    var selectTubeArrayIndex = this.getSelected();
+
+                    if(window.event && window.event.ctrlKey){
+                        //换位
+                        vm.exchangeFlag = true;
+                        domArray.push(vm.frozenTubeArray[row][col]);
+
+                        //备注
+                        _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex);
+                    }else{
+                        domArray = [];
+                        domArray.push(vm.frozenTubeArray[row][col]);
+                        //备注
+                        $(".temp").remove();
+                        aRemarkArray = [];
+                        _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex);
 
 
+                    }
+                    //管子
+                    if(vm.flagStatus){
+                        var tubeStatus = $(this.getCell(row, col)).find("#microtubesStatus").text();
+                        if(tubeStatus == 3001){
+                            vm.frozenTubeArray[row][col].status = 3002;
+                        }
+                        if(tubeStatus == 3002){
+                            vm.frozenTubeArray[row][col].status = 3003;
+                        }
+                        if(tubeStatus == 3003){
+                            vm.frozenTubeArray[row][col].status = 3004;
+                        }
+                        if(tubeStatus == 3004){
+                            vm.frozenTubeArray[row][col].status = 3001;
+                        }
+                        hotRegisterer.getInstance('my-handsontable').render();
+                    }
+                },
+                enterMoves:function () {
+                    var hotMoves = hotRegisterer.getInstance('my-handsontable');
+                    var selectedCol = hotMoves.getSelected()[1];
+                    if(selectedCol + 1 < hotMoves.countCols()){
+                        return{row:0,col:1};
+                    } else{
+                        return{row:1,col:-selectedCol};
+                    }
+                },
+                afterChange:function (change,source) {
+                    if(source == 'edit'){
+                        for (var i=0; i<change.length; ++i){
+                            var item = change[i];
+                            var row = item[0];
+                            var col = item[1];
+                            var oldTube = item[2];
+                            var newTube = item[3];
+                            if (oldTube.id
+                                || (oldTube.sampleCode && oldTube.sampleCode.length > 1)
+                                || (oldTube.sampleTempCode && oldTube.sampleTempCode.length > 1)){
 
-        //入库完成
-        vm.saveStockIn = function () {
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-in/stock-in-info-modal.html',
-                controller: 'StockInInfoModalController',
-                controllerAs:'vm',
-                resolve: {
-                    items: function () {
-                        return {
-                            id: vm.entity.id,
-                            stockInCode: vm.entity.stockInCode,
-                            stockInDate: vm.entity.stockInDate,
-                            storeKeeper1: vm.entity.storeKeeper1,
-                            storeKeeper2: vm.entity.storeKeeper2
-                        };
+                                // When delete a tube.
+                                if (newTube === ""){
+                                    newTube = angular.copy(oldTube);
+                                    newTube.id = null;
+                                    newTube.sampleCode = "";
+                                    newTube.sampleTempCode = "";
+                                    hotRegisterer.getInstance('my-handsontable').setDataAtCell(row, col, newTube);
+                                }
+                            }
+                        }
+
+                        return;
+                    }
+                },
+                beforeKeyDown:function (event) {
+                    if(vm.flagStatus){
+                        if(event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 40){
+                            Handsontable.Dom.stopImmediatePropagation(event);
+                        }
+                    }
+
+                }
+
+            };
+
+            //渲染管子表格
+            function myCustomRenderer(hotInstance, td, row, col, prop, value, cellProperties) {
+                var tube= value||{};
+                td.style.position = 'relative';
+
+                if(tube.memo && tube.memo != " "){
+                    cellProperties.comment = tube.memo;
+                }
+                //样本类型
+                if(tube.sampleClassificationId){
+                    SampleService.changeSampleType(tube.sampleClassificationId,td,vm.projectSampleTypeOptions,1);
+                }else{
+                    if(vm.sampleTypeOptions){
+                        SampleService.changeSampleType(tube.sampleTypeId,td,vm.sampleTypeOptions,2);
                     }
                 }
-            });
-            modalInstance.result.then(function (data) {
-                $state.go('stock-in');
-            });
-        };
-        vm.isShowSplittingPanel = function(){
-            return vm.splittingBox && true;
-        };
 
-
-        vm.frozenTubeArray = [];//初始管子的单元格
-        vm.incompleteBoxesList = []; //分装后的样本类型盒子，未装满样本的盒子
-        var tempTubeArray = [];//选中未满样本盒子的临时数据，需要操作管子
-        var selectList = [];//选择单元格的管子数据
-        var size = 10;
-        var htm;
-        //根据盒子编码取管子
-        function _fnTubeByBoxCode(code) {
-            StockInBoxByCodeService.get({code:code},onFrozenSuccess,onError);
-            function onFrozenSuccess(data) {
-                vm.box =  data;
-                if(!vm.box.frozenTubeDTOS.length){
-                    vm.splittingBox = false;
-                }else{
-                    vm.splittingBox = true;
+                //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
+                if(tube.status){
+                    changeSampleStatus(tube.status,row,col,td,cellProperties);
                 }
 
-                //获取样本分类
-                _fnQueryProjectSampleClass(vm.entity.projectId,vm.box.sampleType.id,vm.box.sampleType.isMixed);
-                var settings = {
-                    minCols: +vm.box.frozenBoxType.frozenBoxTypeColumns,
-                    minRows: +vm.box.frozenBoxType.frozenBoxTypeRows
+                var code = tube.sampleCode && tube.sampleCode != " " ? tube.sampleCode : tube.sampleTempCode;
+                $(td).html("");
+                var $div = $("<div/>").html(code).css({
+                    'line-height': '20px',
+                    'word-wrap': 'break-word'
+                }).appendTo(td);
+                $div = $("<div id='microtubesStatus'/>").html(tube.status).hide().appendTo(td);
+            }
+
+            //修改样本状态正常、空管、空孔、异常
+            function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
+
+                operateColor = td.style.backgroundColor;
+                //正常
+                if(sampleStatus == 3001){
+                }
+                //空管
+                if(sampleStatus == 3002){
+                    td.style.background = 'linear-gradient(to right,'+operateColor+',50%,black';
+                }
+                //空孔
+                if(sampleStatus == 3003){
+                    td.style.background = '';
+                    td.style.backgroundColor = '#ffffff';
+                    td.style.color = '#ffffff';
+                }
+                //异常
+                if(sampleStatus == 3004){
+                    td.style.backgroundColor = 'red';
+                    td.style.border = '3px solid red;margin:-3px';
+                }
+            }
+
+
+            function initFrozenTube(row,col) {
+                for(var i = 0; i < row; i++){
+                    vm.frozenTubeArray[i] = [];
+                    for(var j = 0;j < col; j++){
+                        vm.frozenTubeArray[i][j] = "";
+                    }
+                }
+            }
+            function getTubeRows(row) {
+                return String.fromCharCode(row + 65);
+            }
+            function getTubeColumns(col) {
+                return col + 1;
+            }
+            function getTubeRowIndex(row) {
+                return row.charCodeAt(0) -65;
+            }
+            function getTubeColumnIndex(col) {
+                return +col -1;
+            }
+
+            // 创建一个对象用于管子Table的控件
+            function _createTubeForTableCell(tubeInBox, box, rowNO, colNO, pos){
+                var tube = {
+                    id: null,
+                    sampleCode: "",
+                    sampleTempCode: "",
+                    sampleTypeId: box.sampleType.id,
+                    frozenBoxId: box.frozenBoxType.id,
+                    frozenBoxCode: box.frozenBoxCode,
+                    status: "",
+                    memo: "",
+                    tubeRows: pos.tubeRows,
+                    tubeColumns: pos.tubeColumns,
+                    rowNO: rowNO,
+                    colNO: colNO
                 };
+                if(box.sampleClassificationId){
+                    tube.sampleClassificationId = box.sampleClassificationId;
+                }
+                if (tubeInBox){
+                    tube.id = tubeInBox.id;
+                    tube.sampleCode = tubeInBox.sampleCode;
+                    tube.sampleTempCode = tubeInBox.sampleTempCode;
+                    tube.sampleTypeId = box.sampleTypeId;
+                    // tube.sampleTypeCode = tubeInBox.sampleTypeCode;
+                    tube.status = tubeInBox.status;
+                    tube.memo = tubeInBox.memo;
+                    if(tubeInBox.sampleClassification){
+                        tube.sampleClassificationId = tubeInBox.sampleClassification.id;
+                    }
+                }
+
+                return tube;
+            }
+            // 重新加载管子表控件
+            function _reloadTubesForTable(box){
+                var tableCtrl = hotRegisterer.getInstance('my-handsontable');
+                var tableWidth = $(tableCtrl.container).width();
+                var settings = {
+                    minCols: +box.frozenBoxType.frozenBoxTypeColumns,
+                    minRows: +box.frozenBoxType.frozenBoxTypeRows
+                };
+
+                var rowHeaderWidth = 30;
+                // 架子定位列表每列的宽度
+                var colWidth = (tableWidth - rowHeaderWidth) / settings.minCols;
+
+                // colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
+                // rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
+
                 var tubesInTable = [];
                 var colHeaders = [];
                 var rowHeaders = [];
-                for(var i = 0; i < settings.minRows; i++){
+                for (var i=0; i<settings.minRows; ++i){
                     var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
                     if(i > 7){
                         pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1);
                     }
-                    rowHeaders.push(pos.tubeRows);
                     var tubes = [];
-                    for(var j = 0; j < settings.minCols;j++){
+                    rowHeaders.push(pos.tubeRows);
+                    for (var j = 0; j < settings.minCols; ++j){
                         pos.tubeColumns = j + 1 + "";
                         if (colHeaders.length < settings.minCols){
                             colHeaders.push(pos.tubeColumns);
                         }
-                        var tubeInBox = _.filter(vm.box.frozenTubeDTOS, pos)[0];
-                        var tube = _createTubeForTableCell(tubeInBox, vm.box, pos);
+
+
+
+                        var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
+                        var tube = _createTubeForTableCell(tubeInBox, box, i, j + 1, pos);
+                        //混合类型
+                        if(box.sampleType.isMixed == "1"){
+                            for (var l = 0; l < vm.projectSampleTypeOptions.length; l++) {
+                                if (vm.projectSampleTypeOptions[l].columnsNumber == pos.tubeColumns) {
+                                    if(!tube.sampleClassificationId){
+                                        tube.sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
+                                    }
+
+                                }
+                            }
+                        }
                         tubes.push(tube);
                     }
                     tubesInTable.push(tubes);
                 }
+
                 vm.frozenTubeArray = tubesInTable;
+
                 settings.rowHeaders = rowHeaders;
                 settings.colHeaders = colHeaders;
-                setTimeout(function () {
-                    hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
-                    hotRegisterer.getInstance('my-handsontable').loadData(tubesInTable);
-                    hotRegisterer.getInstance('my-handsontable').render();
-                },500);
-                //取未满盒子
-                _fnIncompleteBox();
+                settings.colWidths = colWidth;
+                settings.manualColumnResize = colWidth;
+                tableCtrl.updateSettings(settings);
+                tableCtrl.loadData(tubesInTable);
+                var tubeList = [];
+                for(var m = 0; m < tubesInTable.length;m++){
+                    for(var n = 0; n < tubesInTable[m].length;n++){
+                        tubeList.push(tubesInTable[m][n]);
+                    }
+                }
+
+                // _sampleCount(tubeList);
+
+            }
+            vm.reloadTubesForTable = _reloadTubesForTable;
+            vm.createBoxDataFromTubesTable = _createBoxDataFromTubesTable;
+            function _createBoxDataFromTubesTable(){
+                if (!vm.box){
+                    return null;
+                }
+                var box = angular.copy(vm.box)||{};
+                delete box.frozenBoxType;
+                delete box.sampleClassification;
+                delete box.sampleType;
+                var tubes = hotRegisterer.getInstance('my-handsontable').getData();
+                box.frozenTubeDTOS = [];
+
+                for(var i=0; i<tubes.length; ++i){
+                    var rowTubes = tubes[i];
+                    for (var j=0; j<rowTubes.length; ++j){
+                        var tube = angular.copy(rowTubes[j]);
+                        delete tube.rowNO;
+                        delete tube.colNO;
+
+                        if (tube.id
+                            || (tube.sampleCode && tube.sampleCode.length > 1)
+                            || (tube.sampleTempCode && tube.sampleTempCode.length > 1)){
+                            box.frozenTubeDTOS.push(tube);
+                        }
+                    }
+                }
+
+                return box;
             }
 
-        }
-        var customRenderer = function (hotInstance, td, row, col, prop, value, cellProperties) {
-            if(value){
-                if(value.memo && value.memo != " "){
-                    cellProperties.comment = value.memo;
+
+            var aRemarkArray = [];
+            //备注 选择单元格数据
+            function _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex) {
+                var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.2)"></div>';
+                for(var m = 0; m < remarkArray.length; m++){
+                    for (var n = 0; n < remarkArray[m].length; n++){
+                        if ((remarkArray[m][n].sampleCode && remarkArray[m][n].sampleCode.length > 1)
+                            || (remarkArray[m][n].sampleTempCode && remarkArray[m][n].sampleTempCode.length > 1)){
+                            aRemarkArray.push(remarkArray[m][n]);
+                        }
+                    }
                 }
-                //样本类型
-                if(value.sampleClassificationId){
-                    SampleService.changeSampleType(value.sampleClassificationId,td,vm.projectSampleTypeOptions,1);
+                var start1,end1,start2,end2;
+                if(selectTubeArrayIndex[0] > selectTubeArrayIndex[2]){
+                    start1 = selectTubeArrayIndex[2];
+                    end1 = selectTubeArrayIndex[0];
                 }else{
-                    if(vm.sampleTypeOptions){
-                        SampleService.changeSampleType(value.sampleTypeId,td,vm.sampleTypeOptions,2);
-                    }
+                    start1 = selectTubeArrayIndex[0];
+                    end1 = selectTubeArrayIndex[2];
                 }
-                //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
-                if(value.status){
-                    changeSampleStatus(value.status,row,col,td,cellProperties);
-                }
-                htm = "<div ng-if='value.sampleCode' style='line-height: 20px'>"+value.sampleCode+"</div>"+
-                    "<div ng-if='value.sampleTmpCode && !value.sampleCode' style='line-height: 20px'>"+value.sampleTempCode+"</div>";
-            }else {
-                htm = "";
-            }
-            td.style.position = 'relative';
-
-
-            td.innerHTML = htm;
-        };
-        var operateColor;
-        var selectedTubesArray = [];
-        function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
-
-            operateColor = td.style.backgroundColor;
-            //正常
-            if(sampleStatus == 3001){
-            }
-            //空管
-            if(sampleStatus == 3002){
-                td.style.background = 'linear-gradient(to right,'+operateColor+',50%,black';
-            }
-            //空孔
-            if(sampleStatus == 3003){
-                td.style.background = '';
-                td.style.backgroundColor = '#ffffff';
-                td.style.color = '#ffffff';
-            }
-            //异常
-            if(sampleStatus == 3004){
-                td.style.backgroundColor = 'red';
-                td.style.border = '3px solid red;margin:-3px';
-            }
-        }
-        vm.settings ={
-            colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
-            rowHeaders : ['A','B','C','D','E','F','G','H','J','K'],
-            minRows: 10,
-            minCols: 10,
-            renderer:customRenderer,
-            fillHandle:false,
-            stretchH: 'all',
-            wordWrap:true,
-            colWidths: 90,
-            editor: false,
-            outsideClickDeselects:true,
-            multiSelect: true,
-            comments: true,
-            onAfterSelectionEnd:function (row, col, row2, col2) {
-                var cell = this;
-
-                // vm.selectCell = $(this.getData(row,col,row2,col2));
-                selectedTubesArray = this.getData(row,col,row2,col2);
-                var selectTubeArrayIndex = this.getSelected();
-                if(window.event && window.event.ctrlKey){
-                    _fnSelectTubesData(cell,selectedTubesArray,selectTubeArrayIndex);
+                if(selectTubeArrayIndex[1] > selectTubeArrayIndex[3]){
+                    start2 = selectTubeArrayIndex[3];
+                    end2 = selectTubeArrayIndex[1];
                 }else{
-                    //备注
-                    $(".temp").remove();
-                    selectList = [];
-                    _fnSelectTubesData(cell,selectedTubesArray,selectTubeArrayIndex);
-
-
+                    start2 = selectTubeArrayIndex[1];
+                    end2 = selectTubeArrayIndex[3];
                 }
-
-
-
-
-                // for(var i = 0; i < vm.selectCell.length; i++ ){
-                //     for (var j = 0; j < vm.selectCell[i].length; j++){
-                //         if(vm.selectCell[i][j].sampleCode || vm.selectCell[i][j].sampleTempCode){
-                //             selectList.push(vm.selectCell[i][j]);
-                //         }
-                //     }
-                // }
-            },
-            enterMoves:function () {
-                var hotMoves = hotRegisterer.getInstance('my-handsontable');
-                var selectedCol = hotMoves.getSelected()[1];
-                if(selectedCol + 1 < hotMoves.countCols()){
-                    return{row:0,col:1};
-                } else{
-                    return{row:1,col:-selectedCol};
-                }
-            },
-            cells: function (row, col, prop) {
-                var cellProperties = {};
-            }
-        };
-        //选择单元格数据
-        function _fnSelectTubesData(td,selectedTubesArray,selectTubeArrayIndex) {
-            var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.2);"></div>';
-            for(var m = 0; m < selectedTubesArray.length; m++){
-                for (var n = 0; n < selectedTubesArray[m].length; n++){
-                    if(selectedTubesArray[m][n].sampleCode || selectedTubesArray[m][n].sampleTempCode) {
-                        selectList.push(selectedTubesArray[m][n]);
-                    }
+                for(var i = start1;i <= end1; i++){
+                    for(var j = start2;  j <= end2;j++)
+                        if($(td.getCell(i,j))[0].childElementCount !=3){
+                            $(td.getCell(i,j)).append(txt);
+                        }
 
                 }
             }
-            var start1,end1,start2,end2;
-            if(selectTubeArrayIndex[0] > selectTubeArrayIndex[2]){
-                start1 = selectTubeArrayIndex[2];
-                end1 = selectTubeArrayIndex[0];
-            }else{
-                start1 = selectTubeArrayIndex[0];
-                end1 = selectTubeArrayIndex[2];
-            }
-            if(selectTubeArrayIndex[1] > selectTubeArrayIndex[3]){
-                start2 = selectTubeArrayIndex[3];
-                end2 = selectTubeArrayIndex[1];
-            }else{
-                start2 = selectTubeArrayIndex[1];
-                end2 = selectTubeArrayIndex[3];
-            }
-            for(var i = start1;i <= end1; i++){
-                for(var j = start2;  j <= end2;j++) {
-                    if($(td.getCell(i,j))[0].childElementCount !=3){
-                        $(td.getCell(i,j)).append(txt);
-                    }
-                }
-            }
-        }
-        // 创建一个对象用于管子Table的控件
-        function _createTubeForTableCell(tubeInBox, box, pos){
-            var tube = {
-                id: null,
-                sampleCode: "",
-                sampleTempCode: "",
-                sampleTypeId: box.sampleType.id,
-                frozenBoxId: box.id,
-                frozenBoxCode: box.frozenBoxCode,
-                status: "",
-                memo: "",
-                tubeRows: pos.tubeRows,
-                tubeColumns: pos.tubeColumns
+            //修改样本状态
+            vm.flagStatus = false;
+            vm.editStatus = function () {
+                var settings = {
+                    editor: vm.flagStatus ? false : 'tube'
+                };
+                hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
             };
-            if(box.sampleClassification){
-                tube.sampleClassificationId = box.sampleClassification.sampleClassificationId;
-            }
-            if (tubeInBox){
-                tube.id = tubeInBox.id;
-                tube.sampleCode = tubeInBox.sampleCode;
-                tube.sampleTempCode = tubeInBox.sampleTempCode;
-                tube.sampleTypeId = tubeInBox.sampleType.id;
-                tube.status = tubeInBox.status;
-                tube.memo = tubeInBox.memo;
-                if(tubeInBox.sampleClassification){
-                    tube.sampleClassificationId = tubeInBox.sampleClassification.sampleClassificationId;
-                }
-            }
+            //换位
+            vm.exchangeFlag = false;
+            vm.exchange = function () {
+                // toastr.success("两个空冻存盒不能被交换!");
 
-            return tube;
-        }
-        //获取样本类型
-        function _fnQuerySampleType() {
-            SampleTypeService.querySampleType().success(function (data) {
-                vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['esc']);
-            });
-        }
-        //不同项目下的样本分类
-        function _fnQueryProjectSampleClass(projectId,sampleTypeId,isMixed) {
-            SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
-                vm.projectSampleTypeOptions = data;
-                if(isMixed == 1){
-                    for(var k = 0; k < data.length; k++){
-                        for (var i = 0; i < vm.frozenTubeArray.length; i++) {
-                            for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                                if(data[k].columnsNumber == j+1){
-                                    vm.frozenTubeArray[i][j].sampleClassificationId = data[k].sampleClassificationId;
-                                    vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
-                                }
-                            }
-                        }
-                        for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
-                            if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber){
-                                vm.box.frozenTubeDTOS[m].sampleClassification.id = data[k].sampleClassificationId;
-                            }
-                        }
+                if(vm.exchangeFlag && domArray.length == 2){
+                    if((!domArray[0].sampleCode && !domArray[1].sampleCode)
+                        ||(!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)){
+                        toastr.error("两个空冻存盒不能被交换!");
+                        return;
                     }
+                    var row = getTubeRowIndex(domArray[0].tubeRows);
+                    var col = getTubeColumnIndex(domArray[0].tubeColumns);
+                    var row1 = getTubeRowIndex(domArray[1].tubeRows);
+                    var col1 = getTubeColumnIndex(domArray[1].tubeColumns);
+                    if(row > 8 ){
+                        vm.frozenTubeArray[row-1][col] = domArray[1];
+                        vm.frozenTubeArray[row-1][col].tubeRows = getTubeRows(row);
+                        vm.frozenTubeArray[row-1][col].tubeColumns = getTubeColumns(col);
 
-                    vm.box.sampleClassificationId = "";
-                }else{
-                    if(vm.box.sampleClassification){
-                        vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
-                    }
-                    for (var i = 0; i < vm.frozenTubeArray.length; i++) {
-                        for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                            if(vm.box.sampleClassification){
-                                vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassification.id;
-                            }
-                            vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
-                        }
-                    }
-                    for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
-                        if(vm.box.sampleClassification){
-                            vm.box.frozenTubeDTOS[m].sampleClassification.id = vm.box.sampleClassification.id;
-                        }
-                    }
-                }
-
-                hotRegisterer.getInstance('my-handsontable').render();
-            });
-        }
-        //取未装满的盒子
-        function _fnIncompleteBox() {
-            vm.incompleteBoxesList = [];
-            IncompleteBoxService.query({frozenBoxCode:vm.box.frozenBoxCode,stockInCode:vm.entity.stockInCode},onIncompleteBoxesSuccess,onError);
-        }
-
-        function onIncompleteBoxesSuccess(data) {
-
-            for(var i = 0; i < data.length; i++){
-                var boxList = [];
-                //盒子编码太长时，用星号代替
-                    if(data[i].frozenBoxCode.length > 10){
-                        data[i].copyBoxCode = _fnReplaceBoxCode(data[i].frozenBoxCode);
                     }else{
-                        data[i].copyBoxCode = data[i].frozenBoxCode;
+                        vm.frozenTubeArray[row][col] = domArray[1];
+                        vm.frozenTubeArray[row][col].tubeRows = getTubeRows(row);
+                        vm.frozenTubeArray[row][col].tubeColumns = getTubeColumns(col);
                     }
-                data[i].addTubeCount = 0;
-                if(data[i].sampleClassification){
-                    data[i].backColor = data[i].sampleClassification.backColor;
-                    data[i].sampleTypeName = data[i].sampleClassification.sampleClassificationName;
-                    vm.sampleTypeClassId = data[i].sampleClassification.sampleClassificationId || data[i].sampleClassification.id;
-                }else{
-                    data[i].backColor = data[i].sampleType.backColor;
-                    data[i].sampleTypeName = data[i].sampleType.sampleTypeName;
-                }
-                boxList.push(data[i]);
-                if(data[i].sampleClassification){
-                    vm.incompleteBoxesList.push({
-                        sampleTypeId:data[i].sampleClassification.id || data[i].sampleClassification.sampleClassificationId,
-                        boxList:boxList
-                    });
-                }else{
-                    vm.incompleteBoxesList.push({
-                        sampleTypeId:data[i].sampleTypeId || data[i].sampleType.id,
-                        boxList:boxList
-                    });
-                }
-            }
+                    if(row1 > 8){
+                        vm.frozenTubeArray[row1-1][col1] = domArray[0];
+                        vm.frozenTubeArray[row1-1][col1].tubeRows = getTubeRows(row1);
+                        vm.frozenTubeArray[row1-1][col1].tubeColumns = getTubeColumns(col1);
+                    }else{
+                        vm.frozenTubeArray[row1][col1] = domArray[0];
+                        vm.frozenTubeArray[row1][col1].tubeRows = getTubeRows(row1);
+                        vm.frozenTubeArray[row1][col1].tubeColumns = getTubeColumns(col1);
+                    }
 
-            vm.incompleteBoxesList  = _.orderBy(vm.incompleteBoxesList, ['sampleTypeId'], ['esc']);
+
+                    domArray = [];
+                    vm.exchangeFlag = false;
+
+                }else{
+                    toastr.error("只能选择两个进行交换！",{},'center');
+                    domArray = [];
+                }
+                hotRegisterer.getInstance('my-handsontable').render();
+            };
+            //批注
+            vm.remarkFlag = false;
+            vm.tubeRemark = function () {
+                if(aRemarkArray.length > 0){
+                    modalInstance = $uibModal.open({
+                        animation: true,
+                        templateUrl: 'app/bizs/transport-record/microtubes-remark-modal.html',
+                        controller: 'microtubesRemarkModalController',
+                        backdrop:'static',
+                        controllerAs: 'vm',
+                        resolve: {
+                            items: function () {
+                                return {
+                                    remarkArray :aRemarkArray
+                                };
+                            }
+                        }
+
+                    });
+                    modalInstance.result.then(function (memo) {
+                        for(var i = 0; i < aRemarkArray.length; i++){
+
+                            if(aRemarkArray[i].sampleCode){
+                                aRemarkArray[i].memo = memo;
+                            }
+                        }
+
+                        aRemarkArray = [];
+                        hotRegisterer.getInstance('my-handsontable').render();
+                    });
+                }
+            };
+            //删除盒子
+            vm.delBox = _fnDelBox;
+            //删除盒子
+            function _fnDelBox() {
+                modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/bizs/transport-record/frozen-box-delete-modal.html',
+                    controller: 'FrozenBoxDeleteController',
+                    backdrop:'static',
+                    controllerAs: 'vm'
+
+                });
+                modalInstance.result.then(function (flage) {
+                    if (flage){
+                        FrozenBoxDelService.delete({code:vm.box.frozenBoxCode},onDelBoxSuccess,onError);
+                    }
+                    function onDelBoxSuccess() {
+                        toastr.success("删除成功!");
+                        vm.loadBox();
+                        vm.box = null;
+                        vm.boxStr = null;
+                        initFrozenTube(10,10);
+                        hotRegisterer.getInstance('my-handsontable').render();
+                    }
+                });
+            }
         }
 
         function onError(error) {
             toastr.error(error.data.message);
         }
-        //盒子编码太长时，用星号代替
-        function _fnReplaceBoxCode(code) {
-            code = "***"+code.substring(code.length-10);
-            return code;
-        }
+
         //初始管子数
         function initFrozenTube(row,col) {
             for(var i = 0; i < +row; i++){
@@ -704,191 +1011,7 @@
         function getTubeColumnIndex(col) {
             return +col -1;
         }
-        vm.boxList = [];
-        vm.obox = {
-            stockInFrozenTubeList:[]
-        };
-        var tubeList = [];
-        //选中要分装样本盒
-        vm.sampleBoxSelect = function (item,$event) {
-            tubeList = [];
-            vm.frozenBoxCode = item.frozenBoxCode;
-            if(item.sampleClassification){
-                vm.sampleTypeClassId = item.sampleClassification.id;
-            }
-            if(vm.frozenBoxCode ){
-                tubeList = item.stockInFrozenTubeList;
-            }
-            vm.obox = angular.copy(item);
-            $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
-            $($event.target).addClass("box-selected");
-        };
-        //分装操作
-        vm.splitBox = function () {
-            var rowCount = +vm.box.frozenBoxType.frozenBoxTypeRows;
-            var colCount = +vm.box.frozenBoxType.frozenBoxTypeColumns;
-            vm.obox.stockInFrozenTubeList = [];
-            //初始100个管子或者80个管子
-            for(var i = 0; i < rowCount; i++){
-                tempTubeArray[i] = [];
-                for(var j = 0;j < colCount; j++){
-                    tempTubeArray[i][j] = {
-                        tubeColumns: j+1,
-                        tubeRows: String.fromCharCode(i+65),
-                        frozenBoxCode:'',
-                        selectTubeCode:vm.obox.frozenBoxCode
-                    };
-                    vm.obox.stockInFrozenTubeList.push(tempTubeArray[i][j]);
-                }
-            }
-            //把已有管子放进去
-            for(var m =0 ; m < vm.obox.stockInFrozenTubeList.length; m++){
-                for(var n = 0; n < tubeList.length;n++){
-                    var tube = tubeList[n];
-                    if(vm.obox.stockInFrozenTubeList[m].tubeRows == tube.tubeRows && vm.obox.stockInFrozenTubeList[m].tubeColumns == +tube.tubeColumns){
-                        vm.obox.stockInFrozenTubeList[m] = tube;
-                    }
-                }
-            }
-            if(!selectList.length || !vm.frozenBoxCode ){
-                modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'app/bizs/stock-in/stock-in-splittingBox-message-modal.html',
-                    controller: 'SplittingBoxMessageController',
-                    controllerAs:'vm'
-                });
-                return;
-            }
-            //总管子数
-            var tubeCount = colCount*rowCount;
-            //剩余管子数
-            var surplusCount =  tubeCount - vm.obox.countOfSample;
-            //选中的被分装的管子数
-            var selectCount = selectList.length;
-            //分装到哪个盒子中的数量
-            if( selectCount <= surplusCount){
-                vm.obox.addTubeCount  += selectCount;
-            }else{
-                if(surplusCount != 0){
-                    vm.obox.addTubeCount  = surplusCount;
-                }
-            }
-            for(var i = 0; i < vm.incompleteBoxesList.length; i++){
-                var incompleteBoxes = vm.incompleteBoxesList[i];
-                for(var j = 0; j < incompleteBoxes.boxList.length;j++ ){
-                    if(vm.obox.frozenBoxCode == incompleteBoxes.boxList[j].frozenBoxCode){
-                        incompleteBoxes.boxList[j].addTubeCount = vm.obox.addTubeCount;
-                    }
-                }
-            }
-            //清空被分装的盒子数
-            for(var k = 0; k < selectList.length; k++){
-                vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";
-            }
-            hotRegisterer.getInstance('my-handsontable').render();
-            //分装数据
-            for(var i = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
-                if(!vm.obox.stockInFrozenTubeList[i].frozenBoxCode){
-                    // 当盒子中管子剩余数为0时，自动添加第二个盒子
-                    if(surplusCount){
-                        if(selectList.length){
-                            vm.obox.stockInFrozenTubeList[i].frozenBoxCode = vm.obox.stockInFrozenTubeList[i].selectTubeCode;
-                            vm.obox.stockInFrozenTubeList[i].id = selectList[0].id;
-                            delete vm.obox.stockInFrozenTubeList[i].selectTubeCode;
-                            selectList.splice(0,1);
-                        }else{
-                            break;
-                        }
-                    }
 
-                }
-            }
-            //删除空管子
-            var deleteIndexList = [];
-            for(var i = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
-                if(!vm.obox.stockInFrozenTubeList[i].frozenBoxCode){
-                    deleteIndexList.push(i);
-                }
-            }
-            _.pullAt(vm.obox.stockInFrozenTubeList, deleteIndexList);
-            vm.obox.countOfSample = vm.obox.stockInFrozenTubeList.length;
-            tubeList = angular.copy(vm.obox.stockInFrozenTubeList);
-            if(vm.obox.countOfSample == tubeCount && selectList.length){
-                var frozenBox = {};
-                frozenBox.frozenBoxTypeId= vm.obox.frozenBoxType.id;
-                frozenBox.sampleTypeId= vm.obox.sampleType.id;
-                frozenBox.sampleType= vm.obox.sampleType;
-                if(vm.obox.sampleClassification || vm.obox.sampleClassificationId){
-                    frozenBox.sampleClassificationId = vm.obox.sampleClassificationId || vm.obox.sampleClassification.id;
-                }
-                frozenBox.stockInFrozenTubeList= selectList;
-
-                vm.addBoxModal(frozenBox);
-            }
-            var obox = angular.copy(vm.obox);
-
-            // if(!vm.boxList.length){
-                vm.boxList.push(obox);
-            // }else{
-            //     for(var i = 0; i < vm.boxList.length; i++){
-            //         if(obox.sampleClassification.id == vm.boxList[i].sampleClassification.id){
-            //             if(vm.boxList.length > 1){
-            //                 vm.boxList[1].stockInFrozenTubeList = obox.stockInFrozenTubeList;
-            //
-            //             }else{
-            //                 vm.boxList[0].stockInFrozenTubeList = obox.stockInFrozenTubeList;
-            //             }
-            //             break;
-            //         }else{
-            //             vm.boxList.push(obox);
-            //             break;
-            //         }
-            //     }
-            // }
-        };
-        //保存分装结果
-        var saveBoxList = [];
-        vm.saveBox = function () {
-            saveBoxList = [];
-            for(var i = 0; i < vm.boxList.length; i++){
-                var objBox = {};
-                objBox.frozenBoxId = vm.boxList[i].frozenBoxId;
-                objBox.frozenBoxCode = vm.boxList[i].frozenBoxCode;
-                objBox.sampleTypeId = vm.boxList[i].sampleTypeId || vm.boxList[i].sampleType.id;
-                objBox.frozenBoxTypeId = vm.boxList[i].frozenBoxTypeId || vm.boxList[i].frozenBoxType.id;
-                objBox.memo = vm.boxList[i].memo;
-                objBox.stockInFrozenTubeList = vm.boxList[i].stockInFrozenTubeList;
-                if(vm.boxList[i].sampleClassification){
-                    objBox.sampleClassificationId = vm.boxList[i].sampleClassification.sampleClassificationId || vm.boxList[i].sampleClassification.id;
-                }
-                saveBoxList.push(objBox);
-            }
-            BioBankBlockUi.blockUiStart();
-            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
-                BioBankBlockUi.blockUiStop();
-                toastr.success("分装成功!");
-                vm.dtOptions.isHeaderCompiled = false;
-                vm.dtInstance.rerender();
-                _splitABox(vm.box.frozenBoxCode);
-                vm.boxList = [];
-                vm.frozenBoxCode = "";
-                $(".box-selected").removeClass("box-selected");
-            }).error(function (data) {
-                BioBankBlockUi.blockUiStop();
-                toastr.error(data.message);
-            });
-        };
-        //复原
-        vm.recover = function () {
-            _fnTubeByBoxCode(vm.box.frozenBoxCode);
-            vm.boxList = [];
-            tubeList = [];
-            selectList = [];
-            saveBoxList = [];
-            vm.frozenBoxCode = "";
-
-            $(".box-selected").removeClass("box-selected");
-        };
         //关闭
         vm.closeBox = function () {
 
@@ -897,122 +1020,31 @@
                 templateUrl: 'app/bizs/stock-in/stock-in-close-splittingBox-modal.html',
                 controller: 'CloseSplittingBoxController',
                 controllerAs:'vm',
-                size:'sm'
-            });
-            modalInstance.result.then(function (flag) {
-                if(flag && vm.boxList.length) {
-
-                    SplitedBoxService.saveSplit(vm.stockInCode, vm.box.frozenBoxCode, vm.boxList).then(function (data) {
-                        toastr.success("分装成功!");
-                    });
-                }
-                vm.splittingBox = false;
-            });
-        };
-        //添加分装样本盒
-        vm.addBoxModal = function (box) {
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-in/add-box-modal.html',
-                controller: 'AddBoxModalController',
-                controllerAs:'vm',
-                size:'lg',
+                size:'sm',
                 resolve: {
                     items: function () {
                         return {
-                            projectId:vm.entity.projectId,
-                            box :box || {stockInFrozenTubeList:[]},
-                            incompleteBoxes: vm.incompleteBoxesList,
-                            isMixed:vm.box.sampleType.isMixed,
-                            sampleTypeId:vm.box.sampleType.id,
-                            sampleTypeClassId:vm.sampleTypeClassId || vm.box.sampleClassificationId,
-                            frozenBoxTypeId:vm.box.frozenBoxType.id
+                            status :1
                         };
                     }
                 }
             });
-
-            modalInstance.result.then(function (data) {
-                if(data){
-                    // selectList = [];
-                    //添加分装后的冻存盒，没有添加新的，有的话再添加相同的盒子，相同的最多添加2个
-                    var index;
-                    if(data.sampleClassificationId){
-                        index = _.findIndex(vm.incompleteBoxesList,{sampleTypeId:+data.sampleClassificationId});
-                    }else{
-                        index = _.findIndex(vm.incompleteBoxesList,{sampleTypeId:data.sampleTypeId});
-                    }
-                    if(index == -1){
-                        var boxTempList  = [];
-                        boxTempList.push(data);
-                        onIncompleteBoxesSuccess(boxTempList);
-                    }else{
-                        //盒子编码太长时，用星号代替
-                        if(data.frozenBoxCode.length > 10){
-                            data.copyBoxCode = _fnReplaceBoxCode(data.frozenBoxCode);
-                        }else{
-                            data.copyBoxCode = data.frozenBoxCode;
-                        }
-                        data.addTubeCount = data.countOfSample;
-                        data.countOfSample = 0;
-                        //无样本分类情况
-                        if(data.sampleClassification){
-                            data.backColor = data.sampleClassification.backColor;
-                            data.sampleClassificationName = data.sampleClassification.sampleClassificationName;
-                            data.sampleClassificationId = data.sampleClassification.sampleClassificationId;
-                            for(var i = 0; i < vm.incompleteBoxesList.length; i++){
-                                if(vm.incompleteBoxesList[i].sampleTypeId == data.sampleClassificationId){
-                                    if(vm.incompleteBoxesList[i].boxList.length < 2 ){
-                                        vm.incompleteBoxesList[i].boxList.push(data);
-                                        vm.boxList.push(data);
-                                    }
-
-                                }
-                            }
-                        }else{
-                            data.backColor = data.sampleType.backColor;
-                            data.sampleTypeName = data.sampleType.sampleTypeName;
-                            data.sampleTypeId = data.sampleType.id;
-                            for(var i = 0; i < vm.incompleteBoxesList.length; i++){
-                                if(vm.incompleteBoxesList[i].sampleTypeId == data.sampleTypeId){
-                                    if(vm.incompleteBoxesList[i].boxList.length < 2 ){
-                                        vm.incompleteBoxesList[i].boxList.push(data);
-                                        vm.boxList.push(data);
-                                    }
-
-                                }
-                            }
-                        }
-
-                        tubeList = [];
-                        vm.frozenBoxCode = "";
-                        $(".box-selected").removeClass("box-selected");
-                    }
-                }else{
-
-                }
-
-            },function (data) {
-                //复原被分装的剩余管子数
-                for(var k = 0; k < selectList.length; k++){
-                    vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = selectList[k];
-                }
-                // $timeout(function(){
-                hotRegisterer.getInstance('my-handsontable').render();
-                // },500);
+            modalInstance.result.then(function (flag) {
+                vm.splittingBox = false;
             });
         };
+
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }
     }
-    function RescindPutAwayModalController($uibModalInstance) {
-        var vm = this;
-        vm.ok = function () {
-            $uibModalInstance.close(true);
-        };
-        vm.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-    }
+    // function RescindPutAwayModalController($uibModalInstance) {
+    //     var vm = this;
+    //     vm.ok = function () {
+    //         $uibModalInstance.close(true);
+    //     };
+    //     vm.cancel = function () {
+    //         $uibModalInstance.dismiss('cancel');
+    //     };
+    // }
 })();

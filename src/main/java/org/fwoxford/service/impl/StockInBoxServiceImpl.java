@@ -704,9 +704,14 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(stockInBox == null){
             stockInBox = stockInService.createStockInBox(frozenBox,stockIn);
         }
-        stockInBoxRepository.save(stockInBox);
+
+        int countOfStockInTube = 0;
         //保存冻存管信息
         for(FrozenTubeDTO tubeDTO:frozenBoxDTO.getFrozenTubeDTOS()){
+            String status = getFrozenTubeStatus(tubeDTO);
+            if(status.equals(status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) || status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED))){
+                countOfStockInTube ++;
+            }
             //取原冻存管的患者信息
             tubeDTO = createFrozenTubeByOldFrozenTube(tubeDTO);
             tubeDTO.setFrozenBoxId(frozenBox.getId());
@@ -732,7 +737,22 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenTube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
             frozenTubeRepository.save(frozenTube);
         }
+        stockInBox.setCountOfSample(countOfStockInTube);
+        stockInBoxRepository.save(stockInBox);
         return frozenBoxDTO;
+    }
+
+    private String getFrozenTubeStatus(FrozenTubeDTO tubeDTO) {
+        String status = "";
+        List<Object[]> frozenTubeHistoryList =  frozenTubeRepository.findFrozenTubeHistoryListBySampleAndProjectCode(tubeDTO.getSampleCode(),tubeDTO.getProjectCode());
+        if(frozenTubeHistoryList.size()>0){
+            Object[] object = frozenTubeHistoryList.get(0);
+            Object obj = object[12];
+            if(obj !=null){
+                status = obj.toString();
+            }
+        }
+        return status;
     }
 
     public FrozenTubeDTO createFrozenTubeByOldFrozenTube(FrozenTubeDTO tubeDTO) {

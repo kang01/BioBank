@@ -1,9 +1,9 @@
 <div class="stock-in-new">
     <div class="">
-        <h3 class="pull-left">新增入库记录</h3>
+        <h3 class="pull-left">新增入库记录<small>&nbsp;{{vm.entity.stockInCode}}</small></h3>
         <div class="form-group pull-right mr-10">
             <div class="text-right">
-                <button type="button" class="btn btn-primary" ng-click="vm.saveStockIn()" ng-show="vm.entity.status == '7001'">入库完成</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.stockInSave()">保存</button>
                 <button type="button" class="btn" ui-sref="stock-in">关闭</button>
             </div>
         </div>
@@ -29,7 +29,6 @@
         <div class="col-md-3">
             <div class="form-group three-col project-sites">
                 <label class="col-md-4 control-label text-left">
-                    <span class="required-field"></span>
                     项目点</label>
                 <div class="col-md-8">
                     <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
@@ -57,7 +56,6 @@
                     <th>样本分类</th>
                     <th>冻存位置</th>
                     <th>样本数量</th>
-                    <th>是否分装</th>
                     <th>状态</th>
                     <th style="width: 110px"></th>
                 </tr>
@@ -103,7 +101,7 @@
                             <form>
                                 <div class="form-group">
                                     <label>冻存盒号</label>
-                                    <input type="text" class="form-control">
+                                    <input type="text" class="form-control"  ng-model="vm.box.frozenBoxCode" ng-blur="vm.frozenBoxForStockIn()">
                                 </div>
                                 <div class="form-group">
                                     <label>盒类型</label>
@@ -149,4 +147,3 @@
 
     </div>
 </div>
-

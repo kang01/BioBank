@@ -72,9 +72,33 @@
                         return $translate.refresh();
                     }],
                     entity: function () {
-                        return {
-                        };
+                        return {};
                     }
+
+                }
+            })
+            .state('stock-in-add-box-edit', {
+                parent: 'bizs',
+                url: '/stock-in/{id}/edit',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
+                    pageTitle: 'stockIn.new.title'
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/stock-in/stock-in-new.html',
+                        controller: 'StockInNewController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        $translatePartialLoader.addPart('sotck-in-record');
+                        return $translate.refresh();
+                    }],
+                    entity: ['$stateParams', 'StockInService', function($stateParams, StockInService) {
+                        return StockInService.get({id : $stateParams.id}).$promise;
+                    }]
 
                 }
             })

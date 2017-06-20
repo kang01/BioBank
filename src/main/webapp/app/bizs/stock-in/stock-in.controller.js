@@ -89,9 +89,15 @@
             $compile(angular.element(row).contents())($scope);
         }
         function _fnActionButtonsRender(data, type, full, meta) {
-            return '<button type="button" class="btn btn-xs" ui-sref="stock-in-edit({id:'+ full.id +'})">' +
+            if(full.transhipCode){
+                return '<button type="button" class="btn btn-xs" ui-sref="stock-in-edit({id:'+ full.id +'})">' +
+                    '   <i class="fa fa-edit"></i>' +
+                    '</button>&nbsp;';
+            }
+            return '<button type="button" class="btn btn-xs" ui-sref="stock-in-add-box-edit({id:'+ full.id +'})">' +
                 '   <i class="fa fa-edit"></i>' +
                 '</button>&nbsp;';
+
         }
 
         function _createColumnFilters(){

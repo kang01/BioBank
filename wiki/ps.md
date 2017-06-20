@@ -90,3 +90,18 @@ public DataTablesOutput<TranshipResponse> getPageTranship(@RequestBody DataTable
 
 
 ### 诡异问题集锦 -- gao kangkang
+
+
+### 工程打包 & 部署
+0. 准备测试数据库
+1. 修改 pom.xml 和 application-dev.yml 中的数据库连接。
+2. mvnw 启动工程构建数据库
+3. mvnw -DskipTests package 打包工程
+4. scp上传到10.24.209.11服务器
+5. 找到正在运行的BBIS  
+ps -aux | grep "biob"
+6. 结束进程  
+kill 23173  
+7. 启动新的BBIS  
+nohup java -jar ~/biobank/bbis-0.0.1/bio-bank-0.0.1-SNAPSHOT.war >~/biobank/bbis-0.0.1/log.file 2>&1 &
+

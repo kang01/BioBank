@@ -231,6 +231,19 @@ public class StockInBoxResource {
     }
 
     /**
+     * 根据冻存盒编码查询入库冻存盒
+     * @param frozenBoxCode
+     * @return
+     */
+    @GetMapping("/stock-in-boxes/boxCode/{frozenBoxCode}")
+    @Timed
+    public ResponseEntity<FrozenBoxDTO> getBoxAndTubeByForzenBoxCode(@PathVariable String frozenBoxCode) {
+        log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
+        FrozenBoxDTO res = stockInBoxService.getFrozenBoxAndTubeByForzenBoxCode(frozenBoxCode);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
      * 创建入库盒
      * @param frozenBoxDTO
      * @param stockInCode

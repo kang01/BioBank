@@ -5,7 +5,6 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockInBoxService;
 import org.fwoxford.service.StockInService;
-import org.fwoxford.service.StockInTubeService;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
 import org.fwoxford.service.dto.response.StockInBoxForDataTable;
@@ -21,8 +20,6 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,9 +77,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
     @Autowired
     private FrozenTubeMapper frozenTubeMapper;
-
-    @Autowired
-    private StockInMapper stockInMapper;
 
     @Autowired
     private FrozenTubeTypeRepository frozenTubeTypeRepository;
@@ -911,5 +905,31 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBoxDTO.setProjectSiteCode(stockIn.getProjectSite()!=null?stockIn.getProjectSite().getProjectSiteCode():null);
         return  frozenBoxDTO;
     }
+    /**
+     * 根据冻存盒编码查询入库冻存盒
+     * @param frozenBoxCode
+     * @return
+     */
+    @Override
+    public FrozenBoxDTO getFrozenBoxAndTubeByForzenBoxCode(String frozenBoxCode) {
+        //查询冻存盒信息
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+        if(frozenBox == null){
+            throw new BankServiceException("冻存盒不存在！");
+        }
 
+        //查询冻存管列表信息
+        List<FrozenTube> frozenTubeList = new ArrayList<>();
+        if(!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
+            frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
+        }
+
+        List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubeList);
+
+        FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
+
+        frozenBoxDTO.setFrozenTubeDTOS(frozenTubeDTOS);
+
+        return frozenBoxDTO;
+    }
 }

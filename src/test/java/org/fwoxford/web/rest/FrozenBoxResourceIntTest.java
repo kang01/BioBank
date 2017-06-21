@@ -167,7 +167,6 @@ public class FrozenBoxResourceIntTest {
                 .supportRackCode(DEFAULT_SUPPORT_RACK_CODE)
                 .sampleTypeCode(DEFAULT_SAMPLE_TYPE_CODE)
                 .sampleTypeName(DEFAULT_SAMPLE_TYPE_NAME)
-                .sampleNumber(DEFAULT_SAMPLE_NUMBER)
                 .isSplit(DEFAULT_IS_SPLIT)
                 .memo(DEFAULT_MEMO)
                 .status(DEFAULT_STATUS)
@@ -252,7 +251,6 @@ public class FrozenBoxResourceIntTest {
         assertThat(testFrozenBox.getSupportRackCode()).isEqualTo(DEFAULT_SUPPORT_RACK_CODE);
         assertThat(testFrozenBox.getSampleTypeCode()).isEqualTo(DEFAULT_SAMPLE_TYPE_CODE);
         assertThat(testFrozenBox.getSampleTypeName()).isEqualTo(DEFAULT_SAMPLE_TYPE_NAME);
-        assertThat(testFrozenBox.getSampleNumber()).isEqualTo(DEFAULT_SAMPLE_NUMBER);
         assertThat(testFrozenBox.getIsSplit()).isEqualTo(DEFAULT_IS_SPLIT);
         assertThat(testFrozenBox.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testFrozenBox.getStatus()).isEqualTo(DEFAULT_STATUS);
@@ -532,25 +530,6 @@ public class FrozenBoxResourceIntTest {
 
     @Test
     @Transactional
-    public void checkSampleNumberIsRequired() throws Exception {
-        int databaseSizeBeforeTest = frozenBoxRepository.findAll().size();
-        // set the field null
-        frozenBox.setSampleNumber(null);
-
-        // Create the FrozenBox, which fails.
-        FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
-
-        restFrozenBoxMockMvc.perform(post("/api/frozen-boxes")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(frozenBoxDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAll();
-        assertThat(frozenBoxList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void checkIsSplitIsRequired() throws Exception {
         int databaseSizeBeforeTest = frozenBoxRepository.findAll().size();
         // set the field null
@@ -762,7 +741,6 @@ public class FrozenBoxResourceIntTest {
                 .supportRackCode(UPDATED_SUPPORT_RACK_CODE)
                 .sampleTypeCode(UPDATED_SAMPLE_TYPE_CODE)
                 .sampleTypeName(UPDATED_SAMPLE_TYPE_NAME)
-                .sampleNumber(UPDATED_SAMPLE_NUMBER)
                 .isSplit(UPDATED_IS_SPLIT)
                 .memo(UPDATED_MEMO)
                 .status(UPDATED_STATUS)
@@ -794,7 +772,6 @@ public class FrozenBoxResourceIntTest {
         assertThat(testFrozenBox.getSupportRackCode()).isEqualTo(UPDATED_SUPPORT_RACK_CODE);
         assertThat(testFrozenBox.getSampleTypeCode()).isEqualTo(UPDATED_SAMPLE_TYPE_CODE);
         assertThat(testFrozenBox.getSampleTypeName()).isEqualTo(UPDATED_SAMPLE_TYPE_NAME);
-        assertThat(testFrozenBox.getSampleNumber()).isEqualTo(UPDATED_SAMPLE_NUMBER);
         assertThat(testFrozenBox.getIsSplit()).isEqualTo(UPDATED_IS_SPLIT);
         assertThat(testFrozenBox.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testFrozenBox.getStatus()).isEqualTo(UPDATED_STATUS);

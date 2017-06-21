@@ -60,6 +60,14 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
     @Size(max = 20)
     @Column(name = "columns_in_shelf", length = 20)
     private String columnsInShelf;
+
+    /**
+     * 样本数量
+     */
+    @NotNull
+    @Column(name = "count_of_sample", nullable = false)
+    private Integer countOfSample;
+
     /**
      * 备注
      */
@@ -170,6 +178,19 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
         this.columnsInShelf = columnsInShelf;
     }
 
+    public Integer getCountOfSample() {
+        return countOfSample;
+    }
+
+    public TranshipBox countOfSample(Integer countOfSample) {
+        this.countOfSample = countOfSample;
+        return this;
+    }
+
+    public void setCountOfSample(Integer countOfSample) {
+        this.countOfSample = countOfSample;
+    }
+
     public String getMemo() {
         return memo;
     }
@@ -252,6 +273,7 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
             ", supportRackCode='" + supportRackCode + "'" +
             ", rowsInShelf='" + rowsInShelf + "'" +
             ", columnsInShelf='" + columnsInShelf + "'" +
+            ", countOfSample='" + countOfSample + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
             '}';

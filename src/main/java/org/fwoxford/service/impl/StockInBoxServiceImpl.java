@@ -3,6 +3,7 @@ package org.fwoxford.service.impl;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
+import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.StockInBoxService;
 import org.fwoxford.service.StockInService;
 import org.fwoxford.service.dto.*;
@@ -11,6 +12,7 @@ import org.fwoxford.service.dto.response.StockInBoxForDataTable;
 import org.fwoxford.service.dto.response.StockInBoxForSplit;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,6 +84,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
     @Autowired
     private FrozenTubeTypeRepository frozenTubeTypeRepository;
+
+    @Autowired
+    private FrozenBoxService frozenBoxService;
 
     public StockInBoxServiceImpl(StockInBoxRepository stockInBoxRepository, StockInBoxMapper stockInBoxMapper,
                                  StockInBoxRepositries stockInBoxRepositries,StockInRepository stockInRepository) {
@@ -279,7 +286,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBoxForSplit.setStatus(Constants.FROZEN_BOX_SPLITED);
         }
         frozenBoxForSplit.setCountOfSample(tubeList.size());
-        frozenBox.setSampleNumber(tubeList.size());
+//        frozenBox.setSampleNumber(tubeList.size());
         stockInBoxRepository.save(frozenBoxForSplit);
         frozenBoxRepository.save(frozenBox);
       return stockInBoxForDataSplitList;
@@ -408,7 +415,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         frozenBoxNew.setColumnsInShelf(stockInBoxForDataSplit.getColumnsInShelf());
         frozenBoxNew.setRowsInShelf(stockInBoxForDataSplit.getRowsInShelf());
-        frozenBoxNew.setSampleNumber(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
+//        frozenBoxNew.setSampleNumber(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
 
         frozenBoxNew.setMemo(stockInBoxForDataSplit.getMemo());
         frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
@@ -541,7 +548,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxPosition.stockInBox(stockInBox);
         stockInBoxPositionRepository.save(stockInBoxPosition);
 
-        stockInBoxDetail = createStockInBoxDetail(frozenBox,stockInCode);
+        stockInBoxDetail = frozenBoxService.createStockInBoxDetail(frozenBox,stockInCode);
         return stockInBoxDetail;
     }
 
@@ -555,34 +562,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         statusStr.add(Constants.FROZEN_BOX_STOCKED);
         statusStr.add(Constants.FROZEN_BOX_STOCKING);
         List<FrozenBox> frozenBoxes = frozenBoxRepository.findByFrozenBoxCodeInAndStatusIn(frozenBoxCodeStr,statusStr);
-        stockInBoxs = frozenBoxMapper.frozenBoxesToStockInBoxForDataTables(frozenBoxes);
+        stockInBoxs = frozenBoxService.frozenBoxesToStockInBoxForDataTables(frozenBoxes);
         return stockInBoxs;
     }
-
-    public StockInBoxDetail createStockInBoxDetail(FrozenBox frozenBox,String stockInCode) {
-        StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
-        stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
-        stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
-        stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-        stockInBoxDetail.setMemo(frozenBox.getMemo());
-        stockInBoxDetail.setStockInCode(stockInCode);
-        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
-        stockInBoxDetail.setCountOfSample(frozenTubes.size());
-        stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
-        stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
-        stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
-        stockInBoxDetail.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
-        stockInBoxDetail.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
-        stockInBoxDetail.setSupportRackId(frozenBox.getSupportRack()!=null?frozenBox.getSupportRack().getId():null);
-        stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
-        stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
-        stockInBoxDetail.setFrozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns());
-        stockInBoxDetail.setFrozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows());
-        stockInBoxDetail.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
-        stockInBoxDetail.setStatus(frozenBox.getStatus());
-        return stockInBoxDetail;
-    }
-
     /**
      * 撤销上架--输入入库单编码和盒子编码，返回保存后的盒子信息
      * @param stockInCode
@@ -661,7 +643,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 //            stockInTubesRepository.save(stockInTubes);
 //        }
 
-        stockInBoxDetail = createStockInBoxDetail(frozenBox,stockInCode);
+        stockInBoxDetail = frozenBoxService.createStockInBoxDetail(frozenBox,stockInCode);
 
         return stockInBoxDetail;
     }
@@ -678,6 +660,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(stockIn == null){
             throw new BankServiceException("入库记录不存在！");
         }
+
+        //验证冻存盒编码是否重复，验证库存中冻存盒是否在另一个入库单内已满，如果在另一个入库单内已满，不能在这次入库单中出现该冻存盒
+        Boolean flag = checkFrozenCode(frozenBoxDTO,stockInCode);
         //保存冻存盒信息
         frozenBoxDTO.setIsSplit(Constants.NO);
         //更改冻存盒的项目
@@ -695,7 +680,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         //冻存盒位置验证
         frozenBoxDTO = createFrozenBoxByPosition(frozenBoxDTO);
         frozenBoxDTO.setStatus(Constants.FROZEN_BOX_STOCKING);
-        frozenBoxDTO.setSampleNumber(frozenBoxDTO.getFrozenTubeDTOS().size());
+//        frozenBoxDTO.setSampleNumber(frozenBoxDTO.getFrozenTubeDTOS().size());
         FrozenBox frozenBox = frozenBoxMapper.frozenBoxDTOToFrozenBox(frozenBoxDTO);
         frozenBox = frozenBoxRepository.save(frozenBox);
         frozenBoxDTO.setId(frozenBox.getId());
@@ -708,8 +693,14 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         int countOfStockInTube = 0;
         //保存冻存管信息
         for(FrozenTubeDTO tubeDTO:frozenBoxDTO.getFrozenTubeDTOS()){
+            //项目编码
+            tubeDTO.setProjectId(frozenBoxDTO.getProjectId());
+            tubeDTO.setProjectCode(frozenBoxDTO.getProjectCode());
             String status = getFrozenTubeStatus(tubeDTO);
-            if(status.equals(status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) || status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED))){
+            if(!status.equals("") && !status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) && !status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
+                throw new BankServiceException("冻存管编码已经在库存内，不能保存该冻存管！",tubeDTO.getSampleCode());
+            }
+            if(status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) || status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)||status.equals("")){
                 countOfStockInTube ++;
             }
             //取原冻存管的患者信息
@@ -731,15 +722,44 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             //冻存管类型
             tubeDTO = createFrozenTubeTypeInit(tubeDTO);
             tubeDTO.setSampleUsedTimes(tubeDTO.getSampleUsedTimes()!=null?tubeDTO.getSampleUsedTimes():null);
-            //项目编码
-            tubeDTO.setProjectId(frozenBoxDTO.getProjectId());
-            tubeDTO.setProjectCode(frozenBoxDTO.getProjectCode());
+
             frozenTube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
             frozenTubeRepository.save(frozenTube);
         }
         stockInBox.setCountOfSample(countOfStockInTube);
         stockInBoxRepository.save(stockInBox);
         return frozenBoxDTO;
+    }
+
+    /**
+     * true:冻存盒编码不重复
+     * false:冻存盒编码重复，冻存盒已在另一个入库单中满盒入库
+     * @param frozenBoxDTO
+     * @param stockInCode
+     * @return
+     */
+    public Boolean checkFrozenCode(FrozenBoxDTO frozenBoxDTO, String stockInCode) {
+        if(frozenBoxDTO == null){
+            return false;
+        }
+        Boolean flag = true;
+        String frozenBoxCode = frozenBoxDTO.getFrozenBoxCode();
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
+        if(frozenBox !=null && frozenBox.getId()!=frozenBoxDTO.getId()
+            &&  !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
+            && !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED) ){
+            flag=false;
+            throw new BankServiceException("冻存盒编码已存在！");
+        }
+        String columns = frozenBox.getFrozenBoxTypeColumns()!=null?frozenBox.getFrozenBoxTypeColumns():new String("0");
+        String rows = frozenBox.getFrozenBoxTypeRows()!=null?frozenBox.getFrozenBoxTypeRows():new String("0");
+        int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
+        Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(frozenBoxCode);
+        if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED) && countOfSample.intValue()==allCounts){
+            flag=false;
+            throw new BankServiceException("冻存盒在另一个入库单中已满！");
+        }
+        return flag;
     }
 
     private String getFrozenTubeStatus(FrozenTubeDTO tubeDTO) {
@@ -891,7 +911,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             throw new BankServiceException("冻存盒样本类型不存在！");
         }
         frozenBoxDTO.setSampleTypeCode(entity.getSampleTypeCode());
-        frozenBoxDTO.setSampleTypeName(entity.getSampleTypeName());
+//        frozenBoxDTO.setSampleTypeName(entity.getSampleTypeName());
         return frozenBoxDTO;
     }
 

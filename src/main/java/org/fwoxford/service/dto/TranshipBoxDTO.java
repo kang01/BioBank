@@ -46,6 +46,10 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
     @Size(max = 20)
     private String columnsInShelf;
     /**
+     * 样本数量
+     */
+    private Integer countOfSample;
+    /**
      * 备注
      */
     @Size(max = 1024)
@@ -115,6 +119,15 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
     public void setColumnsInShelf(String columnsInShelf) {
         this.columnsInShelf = columnsInShelf;
     }
+
+    public Integer getCountOfSample() {
+        return countOfSample;
+    }
+
+    public void setCountOfSample(Integer countOfSample) {
+        this.countOfSample = countOfSample;
+    }
+
     public String getMemo() {
         return memo;
     }
@@ -185,6 +198,7 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
             ", supportRackCode='" + supportRackCode + "'" +
             ", rowsInShelf='" + rowsInShelf + "'" +
             ", columnsInShelf='" + columnsInShelf + "'" +
+            ", countOfSample='" + countOfSample + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
             '}';

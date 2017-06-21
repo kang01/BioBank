@@ -74,10 +74,6 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="sample_number" type="integer" remarks="样本数量">
-                <constraints nullable="false" />
-            </column>
-
             <column name="is_split" type="integer" remarks="是否分装：1：是，0：否">
                 <constraints nullable="true" />
             </column>

@@ -10,6 +10,7 @@ import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -505,8 +506,57 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             throw new BankServiceException("请传入有效的冻存盒编码！", frozenBoxCodeStr.toString());
         }
         List<FrozenBox> frozenBoxes = frozenBoxRepository.findByFrozenBoxCodeIn(frozenBoxCodeStr);
-        stockInBoxs = frozenBoxMapper.frozenBoxesToStockInBoxForDataTables(frozenBoxes);
+        stockInBoxs = frozenBoxesToStockInBoxForDataTables(frozenBoxes);
         return stockInBoxs;
+    }
+    public List<StockInBoxForDataTable> frozenBoxesToStockInBoxForDataTables(List<FrozenBox> frozenBoxes){
+        List<StockInBoxForDataTable> stockInBoxForDataTables = new ArrayList<>();
+        for(FrozenBox box:frozenBoxes){
+            StockInBoxForDataTable stockInBoxForDataTable = frozenBoxToStockInBoxForDataTable(box);
+            stockInBoxForDataTables.add(stockInBoxForDataTable);
+        }
+        return stockInBoxForDataTables;
+    }
+
+    public StockInBoxForDataTable frozenBoxToStockInBoxForDataTable(FrozenBox box){
+        StockInBoxForDataTable stockInBoxForDataTable = new StockInBoxForDataTable();
+        if(box == null){
+            return null;
+        }
+        stockInBoxForDataTable.setIsSplit(box.getIsSplit());
+        Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(box.getFrozenBoxCode());
+        stockInBoxForDataTable.setCountOfSample(countOfSample.intValue());
+        stockInBoxForDataTable.setId(box.getId());
+        stockInBoxForDataTable.setFrozenBoxCode(box.getFrozenBoxCode());
+        String position = BankUtil.getPositionString(box);
+        stockInBoxForDataTable.setPosition(position);
+        stockInBoxForDataTable.setSampleTypeName(box.getSampleTypeName());
+        stockInBoxForDataTable.setSampleClassificationName(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationName():null);
+        stockInBoxForDataTable.setStatus(box.getStatus());
+        return stockInBoxForDataTable;
+    }
+    public StockInBoxDetail createStockInBoxDetail(FrozenBox frozenBox,String stockInCode) {
+        StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
+        stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
+        stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
+        stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        stockInBoxDetail.setMemo(frozenBox.getMemo());
+        stockInBoxDetail.setStockInCode(stockInCode);
+        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
+        stockInBoxDetail.setCountOfSample(frozenTubes.size());
+        stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
+        stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
+        stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
+        stockInBoxDetail.setEquipmentId(frozenBox.getEquipment()!=null?frozenBox.getEquipment().getId():null);
+        stockInBoxDetail.setAreaId(frozenBox.getArea()!=null?frozenBox.getArea().getId():null);
+        stockInBoxDetail.setSupportRackId(frozenBox.getSupportRack()!=null?frozenBox.getSupportRack().getId():null);
+        stockInBoxDetail.setColumnsInShelf(frozenBox.getColumnsInShelf());
+        stockInBoxDetail.setRowsInShelf(frozenBox.getRowsInShelf());
+        stockInBoxDetail.setFrozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns());
+        stockInBoxDetail.setFrozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows());
+        stockInBoxDetail.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
+        stockInBoxDetail.setStatus(frozenBox.getStatus());
+        return stockInBoxDetail;
     }
 
     @Override

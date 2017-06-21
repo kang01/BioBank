@@ -129,6 +129,12 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     @Column(name = "error_type", length = 20)
     private String errorType;
     /**
+     * 状态
+     */
+    @Size(max = 20)
+    @Column(name = "frozen_tube_state", length = 20)
+    private String frozenTubeState;
+    /**
      * 状态：3001：正常，3002：空管，3003：空孔；3004：异常
      */
     @NotNull
@@ -436,6 +442,18 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
         this.errorType = errorType;
     }
 
+    public String getFrozenTubeState() {
+        return frozenTubeState;
+    }
+
+    public FrozenTube frozenTubeState(String frozenTubeState) {
+        this.frozenTubeState = frozenTubeState;
+        return this;
+    }
+    public void setFrozenTubeState(String frozenTubeState) {
+        this.frozenTubeState = frozenTubeState;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -667,6 +685,7 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
             ", tubeColumns='" + tubeColumns + "'" +
             ", memo='" + memo + "'" +
             ", errorType='" + errorType + "'" +
+            ", frozenTubeState='" + frozenTubeState + "'" +
             ", status='" + status + "'" +
             ", frozenBoxCode='" + frozenBoxCode + "'" +
             ", patientId='" + patientId + "'" +

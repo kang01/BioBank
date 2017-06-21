@@ -286,7 +286,8 @@ public class StockInServiceImpl implements StockInService {
         inBox.setFrozenBoxCode(box.getFrozenBoxCode());
         inBox.setStockIn(stockIn);
         inBox.setStockInCode(stockIn.getStockInCode());
-        inBox.setCountOfSample(box.getSampleNumber()!=null?box.getSampleNumber():0);
+        Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(box.getFrozenBoxCode());
+        inBox.setCountOfSample(countOfSample.intValue());
         inBox.setMemo(box.getMemo());
         inBox.setStatus(box.getStatus());
         inBox.setFrozenBox(box);

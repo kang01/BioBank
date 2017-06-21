@@ -124,4 +124,8 @@ public interface FrozenBoxService {
     List<StockInBoxForIncomplete> getIncompleteFrozenBoxeList(String frozenBoxCode, String stockInCode);
 
     FrozenBoxDTO getBoxAndTubeByForzenBoxCode(String frozenBoxCode);
+
+    StockInBoxDetail createStockInBoxDetail(FrozenBox frozenBox, String stockInCode);
+
+    List<StockInBoxForDataTable> frozenBoxesToStockInBoxForDataTables(List<FrozenBox> frozenBoxes);
 }

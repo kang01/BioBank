@@ -173,7 +173,7 @@ public interface FrozenBoxMapper {
             box.setColumnsInShelf(box.getColumnsInShelf());
 
 
-            box.setSampleNumber(box.getSampleNumber());
+//            box.setSampleNumber(box.getSampleNumber());
             box.setDislocationNumber(box.getDislocationNumber() != null ? box.getDislocationNumber() : 0);
             box.setEmptyHoleNumber(box.getEmptyHoleNumber() != null ? box.getEmptyHoleNumber() : 0);
             box.setEmptyTubeNumber(box.getEmptyTubeNumber() != null ? box.getEmptyTubeNumber() : 0);
@@ -185,31 +185,6 @@ public interface FrozenBoxMapper {
             frozenBoxDTOLists.add(box);
         }
         return frozenBoxDTOLists;
-    }
-
-    default List<StockInBoxForDataTable> frozenBoxesToStockInBoxForDataTables(List<FrozenBox> frozenBoxes){
-        List<StockInBoxForDataTable> stockInBoxForDataTables = new ArrayList<>();
-        for(FrozenBox box:frozenBoxes){
-            StockInBoxForDataTable stockInBoxForDataTable = frozenBoxToStockInBoxForDataTable(box);
-            stockInBoxForDataTables.add(stockInBoxForDataTable);
-        }
-        return stockInBoxForDataTables;
-    }
-    default StockInBoxForDataTable frozenBoxToStockInBoxForDataTable(FrozenBox box){
-        StockInBoxForDataTable stockInBoxForDataTable = new StockInBoxForDataTable();
-        if(box == null){
-            return null;
-        }
-        stockInBoxForDataTable.setIsSplit(box.getIsSplit());
-        stockInBoxForDataTable.setCountOfSample(box.getSampleNumber());
-        stockInBoxForDataTable.setId(box.getId());
-        stockInBoxForDataTable.setFrozenBoxCode(box.getFrozenBoxCode());
-        String position = BankUtil.getPositionString(box);
-        stockInBoxForDataTable.setPosition(position);
-        stockInBoxForDataTable.setSampleTypeName(box.getSampleTypeName());
-        stockInBoxForDataTable.setSampleClassificationName(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationName():null);
-        stockInBoxForDataTable.setStatus(box.getStatus());
-        return stockInBoxForDataTable;
     }
 
     default FrozenBox frozenBoxForSaveBatchDTOToFrozenBox(FrozenBoxForSaveBatchDTO frozenBoxDTO){
@@ -225,7 +200,7 @@ public interface FrozenBoxMapper {
         frozenBox.setSampleClassification(sampleClassificationFromId(frozenBoxDTO.getSampleClassificationId()));
         frozenBox.setId( frozenBoxDTO.getId() );
         frozenBox.setFrozenBoxCode( frozenBoxDTO.getFrozenBoxCode() );
-        frozenBox.setSampleNumber( frozenBoxDTO.getSampleNumber() );
+//        frozenBox.setSampleNumber( frozenBoxDTO.getSampleNumber() );
         frozenBox.setIsSplit( frozenBoxDTO.getIsSplit() );
         frozenBox.setMemo( frozenBoxDTO.getMemo() );
         frozenBox.setStatus( frozenBoxDTO.getStatus() );

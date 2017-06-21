@@ -147,6 +147,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="frozen_tube_state" type="nvarchar(20)" remarks="冻存管状态">
+                <constraints nullable="true" />
+            </column>
+
             <column name="status" type="nvarchar(20)" remarks="状态：3001：正常，3002：空管，3003：空孔；3004：异常">
                 <constraints nullable="false" />
             </column>

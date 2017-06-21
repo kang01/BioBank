@@ -54,11 +54,12 @@ public interface TranshipBoxMapper {
         transhipBox.setLastModifiedDate( box.getLastModifiedDate() );
         transhipBox.setId( box.getId() );
         transhipBox.setFrozenBoxCode( box.getFrozenBoxCode() );
-        transhipBox.setEquipmentCode( box.getEquipmentCode() == "" ?" ": box.getEquipmentCode());
-        transhipBox.setAreaCode( box.getAreaCode() == "" ?" ": box.getAreaCode());
-        transhipBox.setSupportRackCode( box.getSupportRackCode() == "" ?" ": box.getSupportRackCode() );
-        transhipBox.setRowsInShelf( box.getRowsInShelf() == "" ?" ": box.getRowsInShelf() );
-        transhipBox.setColumnsInShelf( box.getColumnsInShelf() == "" ?" ": box.getColumnsInShelf() );
+        transhipBox.setEquipmentCode( box.getEquipmentCode());
+        transhipBox.setAreaCode( box.getAreaCode());
+        transhipBox.setSupportRackCode( box.getSupportRackCode() );
+        transhipBox.setRowsInShelf( box.getRowsInShelf() );
+        transhipBox.setColumnsInShelf( box.getColumnsInShelf() );
+        transhipBox.setCountOfSample( box.getCountOfSample() );
         transhipBox.setMemo( box.getMemo() );
         transhipBox.setStatus( box.getStatus() );
 

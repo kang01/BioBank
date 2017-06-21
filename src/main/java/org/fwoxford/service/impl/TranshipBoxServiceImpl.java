@@ -215,7 +215,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
 
             FrozenBox box = frozenBoxMapper.frozenBoxForSaveBatchDTOToFrozenBox(boxDTO);
-            box = (FrozenBox) EntityUtil.avoidFieldValueNull(box);
             if (tranship.getProject() != null ) {
                 Project project = tranship.getProject();
                 box.setProject(project);
@@ -336,7 +335,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             if(countOfSampleAll>allCount){
                 throw new BankServiceException("冻存管的数量已经超过冻存盒的最大容量值！",box.toString());
             }
-            box.setSampleNumber(countOfSample);
             box.setStatus(Constants.FROZEN_BOX_NEW);
             box = frozenBoxRepository.save(box);
 
@@ -354,7 +352,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
            List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
             for(FrozenTubeForSaveBatchDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
                 FrozenTube tube = frozenTubeMapper.frozenTubeForSaveBatchDTOToFrozenTube(tubeDTO);
-                tube = (FrozenTube) EntityUtil.avoidFieldValueNull(tube);
+//                tube.setSampleCode(tubeDTO.getSampleTempCode());
                 if (tube.getSampleType() == null){
                     tube.setSampleType(box.getSampleType());
                 } else {
@@ -418,14 +416,20 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                         tube.setFrozenTubeType(tubeType);
                         tube.setFrozenTubeTypeCode(tubeType.getFrozenTubeTypeCode());
                         tube.setFrozenTubeTypeName(tubeType.getFrozenTubeTypeName());
+                        tube.setFrozenTubeVolumnsUnit(tubeType.getFrozenTubeVolumnUnit());
+                        tube.setFrozenTubeVolumns(tubeType.getFrozenTubeVolumn());
+                        tube.setSampleUsedTimesMost(tubeType.getSampleUsedTimesMost());
                     }
                 } else {
                     FrozenTubeType tubeType = tubeTypes.get(0);
                     tube.setFrozenTubeType(tubeType);
                     tube.setFrozenTubeTypeCode(tubeType.getFrozenTubeTypeCode());
                     tube.setFrozenTubeTypeName(tubeType.getFrozenTubeTypeName());
+                    tube.setFrozenTubeVolumnsUnit(tubeType.getFrozenTubeVolumnUnit());
+                    tube.setFrozenTubeVolumns(tubeType.getFrozenTubeVolumn());
+                    tube.setSampleUsedTimesMost(tubeType.getSampleUsedTimesMost());
                 }
-
+                tube.setSampleUsedTimes(0);
                 tube = frozenTubeRepository.save(tube);
                 frozenTubeList.add(tube);
             }
@@ -444,7 +448,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             transhipBox.setFrozenBoxCode(box.getFrozenBoxCode());
             transhipBox.setFrozenBox(box);
             transhipBox.setTranship(tranship);
-
+            transhipBox.setCountOfSample(countOfSample);
             transhipBoxRepository.save(transhipBox);
 
             //转运盒位置--如果冻存盒位置发生变更，则insert一条，否则不保存

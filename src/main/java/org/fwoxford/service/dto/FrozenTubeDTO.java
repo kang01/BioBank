@@ -101,6 +101,11 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 20)
     private String errorType;
     /**
+     * 状态
+     */
+    @Size(max = 20)
+    private String frozenTubeState;
+    /**
      * 状态：3001：正常，3002：空管，3003：空孔；3004：异常
      */
     @NotNull
@@ -286,6 +291,15 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     public void setErrorType(String errorType) {
         this.errorType = errorType;
     }
+
+    public String getFrozenTubeState() {
+        return frozenTubeState;
+    }
+
+    public void setFrozenTubeState(String frozenTubeState) {
+        this.frozenTubeState = frozenTubeState;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -442,6 +456,7 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
             ", tubeColumns='" + tubeColumns + "'" +
             ", memo='" + memo + "'" +
             ", errorType='" + errorType + "'" +
+            ", frozenTubeState ='"+ frozenTubeState + "'" +
             ", status='" + status + "'" +
             ", frozenBoxCode='" + frozenBoxCode + "'" +
             ", patientId='" + patientId + "'" +

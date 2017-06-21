@@ -80,10 +80,10 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
      */
     @Size(max = 255)
     private String sampleTypeName;
-    /**
-     * 样本数量
-     */
-    private Integer sampleNumber;
+//    /**
+//     * 样本数量
+//     */
+//    private Integer sampleNumber;
     /**
      * 是否分装：1：是，0：否
      */
@@ -261,16 +261,16 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
         return sampleTypeName;
     }
 
-    public void setSampleTypeName(String sampleTypeName) {
-        this.sampleTypeName = sampleTypeName;
-    }
-    public Integer getSampleNumber() {
-        return sampleNumber;
-    }
-
-    public void setSampleNumber(Integer sampleNumber) {
-        this.sampleNumber = sampleNumber;
-    }
+//    public void setSampleTypeName(String sampleTypeName) {
+//        this.sampleTypeName = sampleTypeName;
+//    }
+//    public Integer getSampleNumber() {
+//        return sampleNumber;
+//    }
+//
+//    public void setSampleNumber(Integer sampleNumber) {
+//        this.sampleNumber = sampleNumber;
+//    }
     public Integer getIsSplit() {
         return isSplit;
     }
@@ -455,7 +455,7 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
             ", supportRackCode='" + supportRackCode + "'" +
             ", sampleTypeCode='" + sampleTypeCode + "'" +
             ", sampleTypeName='" + sampleTypeName + "'" +
-            ", sampleNumber='" + sampleNumber + "'" +
+//            ", sampleNumber='" + sampleNumber + "'" +
             ", isSplit='" + isSplit + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +

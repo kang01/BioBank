@@ -307,7 +307,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             }
 
             frozenBox.setFrozenBoxCode(box.getFrozenBoxCode());
-            frozenBox.setSampleNumber(box.getFrozenTubeDTOS().size());
+//            frozenBox.setSampleNumber(box.getFrozenTubeDTOS().size());
             frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
             frozenBoxRepository.save(frozenBox);
             box.setId(frozenBox.getId());

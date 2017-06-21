@@ -46,6 +46,9 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="count_of_sample" type="integer" remarks="样本数量">
+                <constraints nullable="false" />
+            </column>
 
             <column name="tranship_id" type="bigint" remarks="转运ID">
                 <constraints nullable="false" />

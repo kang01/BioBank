@@ -284,9 +284,12 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             if(box.getSampleType().getIsMixed().equals(Constants.YES)&&box.getSampleClassification()!=null){
                 throw new BankServiceException("混合型样本的冻存盒，样本分类应该为空！");
             }
-            if(box.getSampleType().getIsMixed().equals(Constants.YES)&&box.getIsSplit().equals(Constants.NO)){
+
+            if(box.getSampleType().getIsMixed().equals(Constants.YES)
+                &&(box.getIsSplit().equals(null)||box.getIsSplit().equals(Constants.NO))){
                 throw new BankServiceException("混合型样本的冻存盒，必须分装！");
             }
+
             int countOfSampleClass = projectSampleClassRepository.countByProjectIdAndSampleTypeId(box.getProject()!=null?box.getProject().getId():null,boxDTO.getSampleTypeId());
             if(countOfSampleClass>0&&box.getSampleType().getIsMixed().equals(Constants.NO)&&box.getSampleClassification()==null){
                 throw new BankServiceException("该项目下已经配置样本分类，样本分类不能为空！");

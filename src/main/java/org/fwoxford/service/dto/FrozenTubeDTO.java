@@ -172,6 +172,28 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
      */
     private Long frozenBoxId;
 
+    /**
+     * 样本分类前景色
+     */
+    private String frontColorForClass;
+    /**
+     * 样本分类背景色
+     */
+    private String backColorForClass;
+    /**
+     * 样本类型是否混合
+     */
+    private Integer isMixed;
+
+    /**
+     * 样本类型前景色
+     */
+    private String frontColor;
+    /**
+     * 样本类型背景色
+     */
+    private String backColor;
+
     public Long getId() {
         return id;
     }
@@ -413,6 +435,62 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setFrozenBoxId(Long frozenBoxId) {
         this.frozenBoxId = frozenBoxId;
+    }
+
+    public Boolean getHemolysis() {
+        return isHemolysis;
+    }
+
+    public void setHemolysis(Boolean hemolysis) {
+        isHemolysis = hemolysis;
+    }
+
+    public Boolean getBloodLipid() {
+        return isBloodLipid;
+    }
+
+    public void setBloodLipid(Boolean bloodLipid) {
+        isBloodLipid = bloodLipid;
+    }
+
+    public String getFrontColorForClass() {
+        return frontColorForClass;
+    }
+
+    public void setFrontColorForClass(String frontColorForClass) {
+        this.frontColorForClass = frontColorForClass;
+    }
+
+    public String getBackColorForClass() {
+        return backColorForClass;
+    }
+
+    public void setBackColorForClass(String backColorForClass) {
+        this.backColorForClass = backColorForClass;
+    }
+
+    public Integer getIsMixed() {
+        return isMixed;
+    }
+
+    public void setIsMixed(Integer isMixed) {
+        this.isMixed = isMixed;
+    }
+
+    public String getFrontColor() {
+        return frontColor;
+    }
+
+    public void setFrontColor(String frontColor) {
+        this.frontColor = frontColor;
+    }
+
+    public String getBackColor() {
+        return backColor;
+    }
+
+    public void setBackColor(String backColor) {
+        this.backColor = backColor;
     }
 
     @Override

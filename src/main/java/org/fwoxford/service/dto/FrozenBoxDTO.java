@@ -165,6 +165,27 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
      * 冻存管列表
      */
     private List<FrozenTubeDTO> frozenTubeDTOS;
+    /**
+     * 样本分类前景色
+     */
+    private String frontColorForClass;
+    /**
+     * 样本分类背景色
+     */
+    private String backColorForClass;
+    /**
+     * 样本类型是否混合
+     */
+    private Integer isMixed;
+
+    /**
+     * 样本类型前景色
+     */
+    private String frontColor;
+    /**
+     * 样本类型背景色
+     */
+    private String backColor;
 
     public Long getId() {
         return id;
@@ -260,17 +281,6 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     public String getSampleTypeName() {
         return sampleTypeName;
     }
-
-//    public void setSampleTypeName(String sampleTypeName) {
-//        this.sampleTypeName = sampleTypeName;
-//    }
-//    public Integer getSampleNumber() {
-//        return sampleNumber;
-//    }
-//
-//    public void setSampleNumber(Integer sampleNumber) {
-//        this.sampleNumber = sampleNumber;
-//    }
     public Integer getIsSplit() {
         return isSplit;
     }
@@ -417,6 +427,50 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
         this.frozenTubeDTOS = frozenTubeDTOS;
     }
 
+    public void setSampleTypeName(String sampleTypeName) {
+        this.sampleTypeName = sampleTypeName;
+    }
+
+    public String getFrontColorForClass() {
+        return frontColorForClass;
+    }
+
+    public void setFrontColorForClass(String frontColorForClass) {
+        this.frontColorForClass = frontColorForClass;
+    }
+
+    public String getBackColorForClass() {
+        return backColorForClass;
+    }
+
+    public void setBackColorForClass(String backColorForClass) {
+        this.backColorForClass = backColorForClass;
+    }
+
+    public Integer getIsMixed() {
+        return isMixed;
+    }
+
+    public void setIsMixed(Integer isMixed) {
+        this.isMixed = isMixed;
+    }
+
+    public String getFrontColor() {
+        return frontColor;
+    }
+
+    public void setFrontColor(String frontColor) {
+        this.frontColor = frontColor;
+    }
+
+    public String getBackColor() {
+        return backColor;
+    }
+
+    public void setBackColor(String backColor) {
+        this.backColor = backColor;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -455,7 +509,6 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
             ", supportRackCode='" + supportRackCode + "'" +
             ", sampleTypeCode='" + sampleTypeCode + "'" +
             ", sampleTypeName='" + sampleTypeName + "'" +
-//            ", sampleNumber='" + sampleNumber + "'" +
             ", isSplit='" + isSplit + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +

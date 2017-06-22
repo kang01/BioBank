@@ -19,3 +19,14 @@ project_code;columns_number;project_id;sample_type_id;sample_classification_id;m
 0029;8;8;5;8;;0001;system;system
 0029;9;8;5;9;;0001;system;system
 0029;10;8;5;10;;0001;system;system
+
+0037;1;9;5;1;;0001;system;system
+0037;2;9;5;2;;0001;system;system
+0037;3;9;5;3;;0001;system;system
+0037;4;9;5;4;;0001;system;system
+0037;5;9;5;5;;0001;system;system
+0037;6;9;5;6;;0001;system;system
+0037;7;9;5;7;;0001;system;system
+0037;8;9;5;8;;0001;system;system
+0037;9;9;5;9;;0001;system;system
+0037;10;9;5;10;;0001;system;system

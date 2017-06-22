@@ -409,8 +409,9 @@ public class StockInServiceImpl implements StockInService {
             }
         }
         //修改转运
-        transhipRepository.updateTranshipStateById(stockIn.getTranship().getId(),Constants.TRANSHIPE_IN_STOCKED);
-
+        if(stockIn.getTranship()!=null){
+            transhipRepository.updateTranshipStateById(stockIn.getTranship().getId(),Constants.TRANSHIPE_IN_STOCKED);
+        }
         return stockInMapper.stockInToStockInDetail(stockIn);
     }
 

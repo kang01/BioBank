@@ -1,0 +1,55 @@
+package org.fwoxford.web.rest;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import net.sf.json.JSONObject;
+import net.sf.json.util.JSONUtils;
+import org.fwoxford.service.StockListService;
+import org.fwoxford.service.dto.response.FrozenPositionListAllDataTableEntity;
+import org.fwoxford.service.dto.response.FrozenPositionListSearchForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+
+/**
+ * REST controller for managing StockIn.
+ */
+@RestController
+@RequestMapping("/api")
+public class StockListResource {
+
+    private final Logger log = LoggerFactory.getLogger(StockListResource.class);
+
+    private static final String ENTITY_NAME = "stockList";
+
+    @Autowired
+    private StockListService stockListService;
+    /**
+     * 查询冻存位置清单
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-frozen-position", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<FrozenPositionListAllDataTableEntity> getPageStockFrozenPositionList(@RequestBody DataTablesInput input,
+                                                                                                 @RequestParam(value = "searchForm",required = false) String searchForm ) {
+        JSONObject jsonObject = JSONObject.fromObject(searchForm);
+        FrozenPositionListSearchForm search = (FrozenPositionListSearchForm) JSONObject.toBean(jsonObject, FrozenPositionListSearchForm.class);
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
+        return stockListService.getPageStockFrozenPositionList(input,search);
+    }
+
+
+}

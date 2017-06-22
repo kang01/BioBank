@@ -15,6 +15,8 @@
             queryTube:_queryTube,
             //获取冻存盒
             queryStockInBox:_queryStockInBox,
+            //编辑冻存盒
+            queryEditStockInBox:_queryEditStockInBox,
             //新增保存入库
             saveStockIn:_fnSaveStockIn,
             //编辑保存入库
@@ -33,10 +35,13 @@
             return $http.post('api/stock-ins',param);
         }
         function _fnSaveEditStockIn(param) {
-            return $http.get('api/stock-ins',param);
+            return $http.put('api/stock-ins',param);
         }
         function _queryStockInBox(frozenBoxCode) {
             return $http.get('api/frozen-boxes/boxCode/'+frozenBoxCode+'/forStockIn/');
+        }
+        function _queryEditStockInBox(frozenBoxCode) {
+            return $http.get('/api/stock-in-boxes/boxCode/'+frozenBoxCode);
         }
         function _fnSaveStockInBox(stockInCode,param) {
             return $http.post('/api/stock-in-boxes/stockInCode/'+stockInCode,param);

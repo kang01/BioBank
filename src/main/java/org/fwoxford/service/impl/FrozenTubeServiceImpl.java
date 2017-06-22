@@ -189,7 +189,16 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
                 throw new BankServiceException("冻存管编码已经在库存内，请输入新的冻存管编码！");
             }
         }
-
-        return frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubeList);
+        List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
+        for(FrozenTube f: frozenTubeList){
+            FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
+            frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
+            frozenTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
+            frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
+            frozenTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
+            frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
+            frozenTubeDTOS.add(frozenTubeDTO);
+        }
+        return frozenTubeDTOS;
     }
 }

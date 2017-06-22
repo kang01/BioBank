@@ -3,7 +3,8 @@
         <h3 class="pull-left">新增入库记录<small>&nbsp;{{vm.entity.stockInCode}}</small></h3>
         <div class="form-group pull-right mr-10">
             <div class="text-right">
-                <button type="button" class="btn btn-primary" ng-click="vm.stockInSave()">保存</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.stockInFinish()" ng-show="vm.entity.status != '7002'">入库完成</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.stockInSave()" ng-show="vm.entity.status != '7002'">保存</button>
                 <button type="button" class="btn" ui-sref="stock-in">关闭</button>
             </div>
         </div>
@@ -21,7 +22,7 @@
                 </label>
                 <div class="col-md-8">
                     <selectize options='vm.projectOptions' config="vm.projectConfig"
-                               ng-model="vm.entity.projectId" ng-disabled="vm.boxLength"></selectize>
+                               ng-model="vm.entity.projectId" ng-disabled="vm.entity.id"></selectize>
                     <!--<input type="text" class="form-control"  ng-model="vm.transportRecord.projectSiteCode">-->
                 </div>
             </div>
@@ -104,7 +105,7 @@
                                     <input type="text" class="form-control"  ng-model="vm.box.frozenBoxCode" ng-blur="vm.frozenBoxForStockIn()">
                                 </div>
                                 <div class="form-group">
-                                    <label>盒类型</label>
+                                    <label>盒类型</label>{{vm.box.frozenBoxTypeId}}
                                     <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
                                                ng-model="vm.box.frozenBoxTypeId" ></selectize>
                                 </div>

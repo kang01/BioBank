@@ -751,11 +751,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             flag=false;
             throw new BankServiceException("冻存盒编码已存在！");
         }
-        String columns = frozenBox.getFrozenBoxTypeColumns()!=null?frozenBox.getFrozenBoxTypeColumns():new String("0");
-        String rows = frozenBox.getFrozenBoxTypeRows()!=null?frozenBox.getFrozenBoxTypeRows():new String("0");
+        String columns = frozenBox != null && frozenBox.getFrozenBoxTypeColumns()!=null?frozenBox.getFrozenBoxTypeColumns():new String("0");
+        String rows = frozenBox != null &&  frozenBox.getFrozenBoxTypeRows()!=null?frozenBox.getFrozenBoxTypeRows():new String("0");
         int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
         Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(frozenBoxCode);
-        if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED) && countOfSample.intValue()==allCounts){
+        if(allCounts!=0&&frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED) && countOfSample.intValue()==allCounts){
             flag=false;
             throw new BankServiceException("冻存盒在另一个入库单中已满！");
         }

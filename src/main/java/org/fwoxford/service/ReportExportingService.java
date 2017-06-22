@@ -710,7 +710,12 @@ public class ReportExportingService {
                     emptyRowIndexos.add(i);
                     continue;
                 }
-                String sampleCode = cell.getStringCellValue();
+                String sampleCode = null;
+                if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                    sampleCode = (int)cell.getNumericCellValue() + "";
+                } else {
+                    sampleCode = cell.getStringCellValue();
+                }
                 cell = dataRow.getCell(sampleTypeColIndex);
                 String sampleType = cell.getStringCellValue();
                 if (sampleCode == null || sampleType == null || sampleCode.length() == 0 || sampleType.length() == 0){

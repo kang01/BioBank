@@ -135,7 +135,7 @@
             vm.dtColumns = _createColumns();
 
             // 分装按钮
-            vm.splitIt = _splitABox;
+            // vm.splitIt = _splitABox;
             // 上架按钮
             vm.putInShelf = _putInShelf;
             //撤销上架
@@ -213,15 +213,15 @@
             // console.log(vm.splitIt, vm.putInShelf);
             var buttonHtml = "";
             if (full.status == "2002"){
-                if (full.isSplit){
-                    buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
-                        '   <i class="fa fa-sitemap"></i> 分装' +
-                        '</button>';
-                } else {
+                // if (full.isSplit){
+                //     buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
+                //         '   <i class="fa fa-sitemap"></i> 分装' +
+                //         '</button>';
+                // } else {
                     buttonHtml += '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf(\''+ full.frozenBoxCode +'\')">' +
                         '   <i class="fa fa-sign-in"></i> 上架' +
                         '</button>';
-                }
+                // }
             }
             if(full.status == "2006"){
                 buttonHtml += '<button type="button" class="btn btn-xs btn-error" ng-click="vm.rescindInShelf(\''+ full.frozenBoxCode +'\')">' +
@@ -293,11 +293,11 @@
             return columns;
         }
 
-        function _splitABox(code){
-            _fnQuerySampleType();
-            _fnTubeByBoxCode(code);
-
-        }
+        // function _splitABox(code){
+        //     _fnQuerySampleType();
+        //     _fnTubeByBoxCode(code);
+        //
+        // }
         function _putInShelf(boxIds){
             var boxes = [];
             var table = vm.dtInstance.DataTable;

@@ -418,6 +418,9 @@
                 if(value.memo && value.memo != " "){
                     cellProperties.comment = value.memo;
                 }
+                if(value.sampleCode == null){
+                    value.sampleCode = "";
+                }
                 //样本类型
                 if(value.sampleClassificationId){
                     SampleService.changeSampleType(value.sampleClassificationId,td,vm.projectSampleTypeOptions,1);

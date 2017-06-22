@@ -46,7 +46,7 @@
                         };
                     }],
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                        $translatePartialLoader.addPart('sotck-in-record');
+                        $translatePartialLoader.addPart('stock-in-record');
                         return $translate.refresh();
                     }]
 
@@ -68,7 +68,7 @@
                 },
                 resolve: {
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                        $translatePartialLoader.addPart('sotck-in-record');
+                        $translatePartialLoader.addPart('stock-in-record');
                         return $translate.refresh();
                     }],
                     entity: function () {
@@ -79,7 +79,7 @@
             })
             .state('stock-in-add-box-edit', {
                 parent: 'bizs',
-                url: '/stock-in/{id}/edit',
+                url: '/stock-in-add-box/{id}/edit',
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: 'stockIn.new.title'
@@ -93,7 +93,7 @@
                 },
                 resolve: {
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                        $translatePartialLoader.addPart('sotck-in-record');
+                        $translatePartialLoader.addPart('stock-in-record');
                         return $translate.refresh();
                     }],
                     entity: ['$stateParams', 'StockInService', function($stateParams, StockInService) {
@@ -107,7 +107,7 @@
                 url: '/stock-in/{id}/edit',
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN'],
-                    pageTitle: 'stockIn.new.title'
+                    pageTitle: 'stockIn.edit.title'
                 },
                 views: {
                     'content@': {
@@ -118,7 +118,7 @@
                 },
                 resolve: {
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                        $translatePartialLoader.addPart('sotck-in-record');
+                        $translatePartialLoader.addPart('stock-in-record');
                         return $translate.refresh();
                     }],
                     entity: ['$stateParams', 'StockInService', function($stateParams, StockInService) {

@@ -705,6 +705,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }
             //取原冻存管的患者信息
             tubeDTO = createFrozenTubeByOldFrozenTube(tubeDTO);
+            if(tubeDTO.getId()==null){
+                tubeDTO.setSampleUsedTimes(tubeDTO.getSampleUsedTimes()!=null?tubeDTO.getSampleUsedTimes():0);
+            }
             tubeDTO.setFrozenBoxId(frozenBox.getId());
             tubeDTO.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             FrozenTube frozenTube = new FrozenTube();
@@ -721,8 +724,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             tubeDTO = createFrozenTubeBySampleType(tubeDTO);
             //冻存管类型
             tubeDTO = createFrozenTubeTypeInit(tubeDTO);
-            tubeDTO.setSampleUsedTimes(tubeDTO.getSampleUsedTimes()!=null?tubeDTO.getSampleUsedTimes():null);
-
             frozenTube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
             frozenTubeRepository.save(frozenTube);
         }

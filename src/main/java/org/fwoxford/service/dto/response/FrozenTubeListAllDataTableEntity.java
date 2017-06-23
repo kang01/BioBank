@@ -25,12 +25,24 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
     private Long id;
 
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="position")
+    private String position;
+
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name ="frozen_box_code")
+    private String frozenBoxCode;
+
+    @JsonView(DataTablesOutput.View.class)
     @Column(name ="sample_code")
     private String sampleCode;
 
     @JsonView(DataTablesOutput.View.class)
-    @Column(name ="position")
-    private String position;
+    @Column(name ="project_code")
+    private String projectCode;
+
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name ="project_name")
+    private String projectName;
 
     @JsonView(DataTablesOutput.View.class)
     @Column(name ="sample_type")
@@ -40,21 +52,13 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
     @Column(name ="sample_classification")
     private String sampleClassification;
 
+    @Column(name ="sex")
     @JsonView(DataTablesOutput.View.class)
-    @Column(name ="frozen_box_code")
-    private String frozenBoxCode;
+    private String sex;
 
+    @Column(name = "age")
     @JsonView(DataTablesOutput.View.class)
-    @Column(name ="status")
-    private String status;
-
-    @JsonView(DataTablesOutput.View.class)
-    @Column(name ="project_name")
-    private String projectName;
-
-    @JsonView(DataTablesOutput.View.class)
-    @Column(name ="project_code")
-    private String projectCode;
+    private Integer age;
 
     @Column(name = "disease_type")
     @JsonView(DataTablesOutput.View.class)
@@ -68,13 +72,16 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
     @JsonView(DataTablesOutput.View.class)
     private Boolean isBloodLipid;
 
-    @Column(name = "age")
-    @JsonView(DataTablesOutput.View.class)
-    private Integer age;
+    @Column(name = "sample_used_times")
+    private Long sampleUsedTimes;
 
-    @Column(name ="sex")
     @JsonView(DataTablesOutput.View.class)
-    private String sex;
+    @Column(name ="status")
+    private String status;
+
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name ="frozen_tube_state")
+    private String frozenTubeState;
 
     @Column(name ="equipment_code")
     private String equipmentCode;
@@ -91,6 +98,12 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
     @Column(name ="columns_in_shelf")
     private String columnsInShelf;
 
+    @Column(name = "tube_rows")
+    private String tubeRows;
+
+    @Column(name = "tube_columns")
+    private String tubeColumns;
+
     @Column(name ="equipment_id")
     private Long equipmentId;
 
@@ -106,12 +119,45 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
     @Column(name ="sample_classification_id")
     private Long sampleClassificationId;
 
-    @Column(name ="frozen_box_type_id")
-    private Long frozenBoxTypeId;
 
-    @Column(name ="sample_used_times")
-    private Long sampleUsedTimes;
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name ="position_in_box")
+    private String positionInBox;
 
+    public FrozenTubeListAllDataTableEntity() {
+    }
+
+    public FrozenTubeListAllDataTableEntity(Long id, String position, String frozenBoxCode, String sampleCode, String projectCode, String projectName, String sampleType, String sampleClassification, String sex, Integer age, String diseaseType, Boolean isHemolysis, Boolean isBloodLipid, Long sampleUsedTimes, String status, String frozenTubeState, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String tubeRows, String tubeColumns, Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId,String positionInBox) {
+        this.id = id;
+        this.position = position;
+        this.frozenBoxCode = frozenBoxCode;
+        this.sampleCode = sampleCode;
+        this.projectCode = projectCode;
+        this.projectName = projectName;
+        this.sampleType = sampleType;
+        this.sampleClassification = sampleClassification;
+        this.sex = sex;
+        this.age = age;
+        this.diseaseType = diseaseType;
+        this.isHemolysis = isHemolysis;
+        this.isBloodLipid = isBloodLipid;
+        this.sampleUsedTimes = sampleUsedTimes;
+        this.status = status;
+        this.frozenTubeState = frozenTubeState;
+        this.equipmentCode = equipmentCode;
+        this.areaCode = areaCode;
+        this.shelvesCode = shelvesCode;
+        this.rowsInShelf = rowsInShelf;
+        this.columnsInShelf = columnsInShelf;
+        this.tubeRows = tubeRows;
+        this.tubeColumns = tubeColumns;
+        this.equipmentId = equipmentId;
+        this.areaId = areaId;
+        this.shelvesId = shelvesId;
+        this.sampleTypeId = sampleTypeId;
+        this.sampleClassificationId = sampleClassificationId;
+        this.positionInBox = positionInBox;
+    }
 
     public Long getId() {
         return id;
@@ -119,6 +165,22 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getFrozenBoxCode() {
+        return frozenBoxCode;
+    }
+
+    public void setFrozenBoxCode(String frozenBoxCode) {
+        this.frozenBoxCode = frozenBoxCode;
     }
 
     public String getSampleCode() {
@@ -129,12 +191,20 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
         this.sampleCode = sampleCode;
     }
 
-    public String getPosition() {
-        return position;
+    public String getProjectCode() {
+        return projectCode;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
     public String getSampleType() {
@@ -153,36 +223,20 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
         this.sampleClassification = sampleClassification;
     }
 
-    public String getFrozenBoxCode() {
-        return frozenBoxCode;
+    public String getSex() {
+        return sex;
     }
 
-    public void setFrozenBoxCode(String frozenBoxCode) {
-        this.frozenBoxCode = frozenBoxCode;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
-    public String getStatus() {
-        return status;
+    public Integer getAge() {
+        return age;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public String getProjectCode() {
-        return projectCode;
-    }
-
-    public void setProjectCode(String projectCode) {
-        this.projectCode = projectCode;
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public String getDiseaseType() {
@@ -198,7 +252,7 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
     }
 
     public void setHemolysis(Boolean hemolysis) {
-        isHemolysis = hemolysis;
+        this.isHemolysis = hemolysis;
     }
 
     public Boolean getBloodLipid() {
@@ -206,23 +260,31 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
     }
 
     public void setBloodLipid(Boolean bloodLipid) {
-        isBloodLipid = bloodLipid;
+        this.isBloodLipid = bloodLipid;
     }
 
-    public Integer getAge() {
-        return age;
+    public Long getSampleUsedTimes() {
+        return sampleUsedTimes;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setSampleUsedTimes(Long sampleUsedTimes) {
+        this.sampleUsedTimes = sampleUsedTimes;
     }
 
-    public String getSex() {
-        return sex;
+    public String getStatus() {
+        return status;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getFrozenTubeState() {
+        return frozenTubeState;
+    }
+
+    public void setFrozenTubeState(String frozenTubeState) {
+        this.frozenTubeState = frozenTubeState;
     }
 
     public String getEquipmentCode() {
@@ -265,6 +327,22 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
         this.columnsInShelf = columnsInShelf;
     }
 
+    public String getTubeRows() {
+        return tubeRows;
+    }
+
+    public void setTubeRows(String tubeRows) {
+        this.tubeRows = tubeRows;
+    }
+
+    public String getTubeColumns() {
+        return tubeColumns;
+    }
+
+    public void setTubeColumns(String tubeColumns) {
+        this.tubeColumns = tubeColumns;
+    }
+
     public Long getEquipmentId() {
         return equipmentId;
     }
@@ -305,19 +383,11 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
         this.sampleClassificationId = sampleClassificationId;
     }
 
-    public Long getFrozenBoxTypeId() {
-        return frozenBoxTypeId;
+    public String getPositionInBox() {
+        return positionInBox;
     }
 
-    public void setFrozenBoxTypeId(Long frozenBoxTypeId) {
-        this.frozenBoxTypeId = frozenBoxTypeId;
-    }
-
-    public Long getSampleUsedTimes() {
-        return sampleUsedTimes;
-    }
-
-    public void setSampleUsedTimes(Long sampleUsedTimes) {
-        this.sampleUsedTimes = sampleUsedTimes;
+    public void setPositionInBox(String positionInBox) {
+        this.positionInBox = positionInBox;
     }
 }

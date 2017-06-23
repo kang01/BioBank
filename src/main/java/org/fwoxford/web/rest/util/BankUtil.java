@@ -121,7 +121,7 @@ public class BankUtil {
         return String.join(".", positions);
     }
 
-    public static  String getPositionString(String equipmentCode,String areaCode,String supportCode,String columnsInshelf,String rowsInshelf) {
+    public static  String getPositionString(String equipmentCode,String areaCode,String supportCode,String columnsInshelf,String rowsInshelf,String tubeRows,String tubeColumns) {
         String position = "";
         ArrayList<String> positions = new ArrayList<>();
         if (equipmentCode != null && equipmentCode.length() > 0){
@@ -138,6 +138,10 @@ public class BankUtil {
 
         if (rowsInshelf != null && rowsInshelf.length() > 0 && columnsInshelf != null && columnsInshelf.length() > 0){
             positions.add(columnsInshelf+rowsInshelf);
+        }
+
+        if (tubeRows != null && tubeRows.length() > 0 && tubeColumns != null && tubeColumns.length() > 0){
+            positions.add(tubeRows+tubeColumns);
         }
 
         return String.join(".", positions);

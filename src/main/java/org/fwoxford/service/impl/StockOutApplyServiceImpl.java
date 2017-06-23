@@ -571,7 +571,10 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             throw new BankServiceException("计划不存在！");
         }
         StockOutApplyDetail res = new StockOutApplyDetail();
-        StockOutApply stockOutApply = stockOutApplyRepository.findOne(id);
+        StockOutApply stockOutApply = stockOutApplyRepository.findOne(stockOutPlan.getStockOutApply().getId());
+        if(stockOutApply == null){
+            throw new BankServiceException("申请不存在！");
+        }
         res.setId(id);
         res.setRecordId(stockOutApply.getRecordId());
         res.setRecordTime(stockOutApply.getRecordTime());

@@ -81,7 +81,7 @@ public class StockListResource {
     public DataTablesOutput<FrozenTubeListAllDataTableEntity> getPageStockFrozenTubeList(@RequestBody DataTablesInput input,
                                                                                          @RequestParam(value = "searchForm",required = false) String searchForm ) {
         JSONObject jsonObject = JSONObject.fromObject(searchForm);
-        FrozenTubeListAllDataTableEntity search = (FrozenTubeListAllDataTableEntity) JSONObject.toBean(jsonObject, FrozenTubeListAllDataTableEntity.class);
+        FrozenTubeListSearchForm search = (FrozenTubeListSearchForm) JSONObject.toBean(jsonObject, FrozenTubeListSearchForm.class);
         input.getColumns().forEach(u->{
             if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
                 u.setSearchable(false);

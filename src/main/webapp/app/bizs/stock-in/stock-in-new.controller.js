@@ -405,11 +405,12 @@
             });
 
         }
+        vm.box = {};
         function _editBox(frozenBoxCode) {
             vm.splittingBox = true;
             _initBoxInfo();
             StockInInputService.queryEditStockInBox(frozenBoxCode).success(function (data) {
-                console.log(JSON.stringify(data));
+                // console.log(JSON.stringify(data));
                 if(data.frozenBoxCode){
                     vm.box = data;
                 }
@@ -435,7 +436,7 @@
         vm.frozenBoxForStockIn =_fnFrozenBoxForStockIn;
         function _fnFrozenBoxForStockIn() {
             StockInInputService.queryStockInBox(vm.box.frozenBoxCode).success(function (data) {
-                console.log(JSON.stringify(data));
+                // console.log(JSON.stringify(data));
                 if(data.frozenBoxCode){
                     vm.box = data;
                     _reloadTubesForTable(vm.box)
@@ -447,7 +448,9 @@
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
             function onFrozenBoxTypeSuccess(data) {
                 vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['asc']);
-                vm.box.frozenBoxTypeId = vm.frozenBoxTypeOptions[0].id;
+                if(vm.frozenBoxTypeOptions.length){
+                    vm.box.frozenBoxTypeId = vm.frozenBoxTypeOptions[0].id;
+                }
                 // vm.box.frozenBoxType = vm.frozenBoxTypeOptions[0];
                 vm.box.frozenBoxTypeRows = vm.frozenBoxTypeOptions[0].frozenBoxTypeRows;
                 vm.box.frozenBoxTypeColumns = vm.frozenBoxTypeOptions[0].frozenBoxTypeColumns;
@@ -476,7 +479,11 @@
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data,['id','ase']);
                 _.pullAt(vm.sampleTypeOptions,4);
-                vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                if(!vm.box.sampleTypeId){
+                    vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                    vm.box.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
+                }
+
                 // vm.box.sampleType = vm.sampleTypeOptions[0];
                 vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId}).isMixed;
                 setTimeout(function () {
@@ -511,22 +518,21 @@
                     if(isMixed == 1){
                         vm.box.isSplit = 1;
                         vm.isMixedFlag = true;
-                        //类型下有无分类
+
                         if(data.length){
+                            //类型下有分类
                             for(var k = 0; k < data.length; k++){
                                 for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                                     for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
                                         if(data[k].columnsNumber == j+1){
                                             vm.frozenTubeArray[i][j].sampleClassificationId = data[k].sampleClassificationId;
-                                            vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+
+                                                vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                                                vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
+
                                         }
                                     }
                                 }
-                                // for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
-                                //     if(vm.box.frozenTubeDTOS[m].tubeColumns == data[k].columnsNumber){
-                                //         vm.box.frozenTubeDTOS[m].sampleClassification.id = data[k].sampleClassificationId;
-                                //     }
-                                // }
                             }
 
                         }else{
@@ -534,7 +540,10 @@
                             for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                                 for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
                                     vm.frozenTubeArray[i][j].sampleClassificationId = "";
-                                    vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                                    // if(!vm.frozenTubeArray[i][j].sampleCode){
+                                        vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                                        vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
+                                    // }
                                 }
 
                             }
@@ -549,9 +558,13 @@
                         for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                             for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
                                 if(vm.box.sampleClassificationId){
-                                    vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
+                                    if(!vm.frozenTubeArray[i][j].sampleCode){
+                                        vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
+
+                                    }
                                 }
                                 vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                                vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
                             }
                         }
                         // vm.box.sampleType = _.find(vm.sampleTypeOptions,{id:+sampleTypeId});
@@ -675,7 +688,25 @@
                                 || (oldTube.sampleTempCode && oldTube.sampleTempCode.length > 1)){
                                 StockInInputService.queryTube(oldTube.sampleCode,vm.entity.projectCode).success(function (data) {
                                     console.log(JSON.stringify(oldTube));
-                                    console.log(JSON.stringify(data));
+
+                                    if(data.length == 1){
+                                        var tableCtrl = _getTableCtrl();
+                                        for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                                            for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                                if(vm.frozenTubeArray[i][j].sampleTypeId != data[0].sampleTypeId){
+                                                    return;
+                                                }
+                                                if(vm.frozenTubeArray[i][j].sampleCode == data[0].sampleCode){
+                                                   if(vm.frozenTubeArray[i][j].sampleTypeName == 98){
+                                                       vm.frozenTubeArray[i][j].sampleClassificationId =  data[0].sampleClassificationId;
+                                                    }
+                                                    vm.frozenTubeArray[i][j].status =  data[0].status;
+                                                    vm.frozenTubeArray[i][j].memo =  data[0].memo;
+                                                }
+                                            }
+                                        }
+                                        tableCtrl.loadData(vm.frozenTubeArray);
+                                    }
                                     if(data.length > 1){
                                         modalInstance = $uibModal.open({
                                             animation: true,
@@ -687,6 +718,7 @@
                                                 items: function () {
                                                     return {
                                                         status :1,
+                                                        oldTube:oldTube,
                                                         tubes:data
                                                     };
                                                 }
@@ -695,11 +727,47 @@
                                         });
                                         modalInstance.result.then(function (tube) {
                                             var tableCtrl = _getTableCtrl();
-                                            // oldTube.
-                                            tableCtrl.render();
+                                            for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                                                for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                                    if(vm.frozenTubeArray[i][j].sampleCode == tube.sampleCode){
+                                                        vm.frozenTubeArray[i][j].status = tube.status;
+                                                        vm.frozenTubeArray[i][j].memo = tube.memo;
+                                                        vm.frozenTubeArray[i][j].backColor = tube.backColor;
+
+                                                        if(tube.sampleClassificationId){
+                                                            vm.frozenTubeArray[i][j].sampleClassificationId = tube.sampleClassificationId;
+                                                        }else{
+                                                            vm.frozenTubeArray[i][j].sampleTypeId = tube.sampleTypeId;
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            tableCtrl.loadData(vm.frozenTubeArray);
+                                        },function (tube) {
+                                            // var tableCtrl = _getTableCtrl();
+                                            // for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                                            //     for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                            //         if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
+                                            //             vm.frozenTubeArray[i][j].sampleCode = "";
+                                            //         }
+                                            //     }
+                                            // }
+                                            // tableCtrl.loadData(vm.frozenTubeArray);
                                         });
                                     }
 
+                                }).error(function (data) {
+                                    var tableCtrl = _getTableCtrl();
+                                    toastr.error(data.message);
+                                    for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                                        for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                            if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
+                                                vm.frozenTubeArray[i][j].sampleCode = "";
+                                            }
+                                        }
+                                    }
+                                    tableCtrl.loadData(vm.frozenTubeArray);
                                 });
                                 // When delete a tube.
                                 if (newTube === ""){
@@ -814,7 +882,9 @@
                     id: null,
                     sampleCode: "",
                     sampleTempCode: "",
-                    sampleTypeId: box.sampleTypeId,
+                    sampleTypeId: "",
+                    sampleTypeName: "",
+                    sampleClassificationId:"",
                     frozenBoxId: box.frozenBoxTypeId,
                     frozenBoxCode: box.frozenBoxCode,
                     status: "3001",
@@ -826,20 +896,25 @@
                     projectId:vm.entity.projectId,
                     projectSiteId:vm.entity.projectSiteId
                 };
-                if(box.sampleClassificationId){
-                    tube.sampleClassificationId = box.sampleClassificationId;
-                }
+
                 if (tubeInBox){
                     tube.id = tubeInBox.id;
                     tube.sampleCode = tubeInBox.sampleCode;
                     tube.sampleTempCode = tubeInBox.sampleTempCode;
-                    tube.sampleTypeId = box.sampleTypeId;
                     // tube.sampleTypeCode = tubeInBox.sampleTypeCode;
                     tube.status = tubeInBox.status;
                     tube.memo = tubeInBox.memo;
                     if(tubeInBox.sampleClassificationId){
                         tube.sampleClassificationId = tubeInBox.sampleClassificationId;
                     }
+                    tube.sampleTypeId = tubeInBox.sampleTypeId;
+                    tube.sampleTypeName = tubeInBox.sampleTypeName;
+                }else{
+                    tube.sampleTypeId = box.sampleTypeId;
+                    tube.sampleTypeName = box.sampleTypeName;
+                    // if(box.sampleClassificationId){
+                        tube.sampleClassificationId = box.sampleClassificationId;
+                    // }
                 }
 
                 return tube;

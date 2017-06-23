@@ -406,11 +406,12 @@
 
         }
         vm.box = {};
+        vm.editFlag = false;
         function _editBox(frozenBoxCode) {
+            vm.editFlag = true;
             vm.splittingBox = true;
             _initBoxInfo();
             StockInInputService.queryEditStockInBox(frozenBoxCode).success(function (data) {
-                // console.log(JSON.stringify(data));
                 if(data.frozenBoxCode){
                     vm.box = data;
                 }
@@ -431,6 +432,7 @@
             vm.stockInSave();
             _initBoxInfo();
             vm.splittingBox = true;
+            vm.editFlag = false;
         }
         //冻存盒搜索
         vm.frozenBoxForStockIn =_fnFrozenBoxForStockIn;
@@ -732,17 +734,18 @@
                                                     if(vm.frozenTubeArray[i][j].sampleCode == tube.sampleCode){
                                                         vm.frozenTubeArray[i][j].status = tube.status;
                                                         vm.frozenTubeArray[i][j].memo = tube.memo;
-                                                        vm.frozenTubeArray[i][j].backColor = tube.backColor;
-
                                                         if(tube.sampleClassificationId){
                                                             vm.frozenTubeArray[i][j].sampleClassificationId = tube.sampleClassificationId;
+                                                            vm.frozenTubeArray[i][j].backColorForClass = tube.backColorForClass;
                                                         }else{
                                                             vm.frozenTubeArray[i][j].sampleTypeId = tube.sampleTypeId;
+                                                            vm.frozenTubeArray[i][j].backColor = tube.backColor;
 
                                                         }
                                                     }
                                                 }
                                             }
+                                            console.log(JSON.stringify(vm.frozenTubeArray));
                                             tableCtrl.loadData(vm.frozenTubeArray);
                                         },function (tube) {
                                             // var tableCtrl = _getTableCtrl();
@@ -806,14 +809,24 @@
                 if(tube.memo && tube.memo != " "){
                     cellProperties.comment = tube.memo;
                 }
-                //样本类型
-                if(tube.sampleClassificationId){
-                    SampleService.changeSampleType(tube.sampleClassificationId,td,vm.projectSampleTypeOptions,1);
+                if(tube.sampleTypeName == '98'){
+                    if(tube.backColorForClass){
+                        td.style.backgroundColor = tube.backColorForClass;
+                    }else{
+                        td.style.backgroundColor = tube.backColor;
+                    }
+
                 }else{
-                    if(vm.sampleTypeOptions){
-                        SampleService.changeSampleType(tube.sampleTypeId,td,vm.sampleTypeOptions,2);
+                    //样本类型
+                    if(tube.sampleClassificationId){
+                        SampleService.changeSampleType(tube.sampleClassificationId,td,vm.projectSampleTypeOptions,1);
+                    }else{
+                        if(vm.sampleTypeOptions){
+                            SampleService.changeSampleType(tube.sampleTypeId,td,vm.sampleTypeOptions,2);
+                        }
                     }
                 }
+
 
                 //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
                 if(tube.status){
@@ -906,15 +919,15 @@
                     tube.memo = tubeInBox.memo;
                     if(tubeInBox.sampleClassificationId){
                         tube.sampleClassificationId = tubeInBox.sampleClassificationId;
+                        tube.backColorForClass = tubeInBox.backColorForClass;
                     }
                     tube.sampleTypeId = tubeInBox.sampleTypeId;
                     tube.sampleTypeName = tubeInBox.sampleTypeName;
                 }else{
                     tube.sampleTypeId = box.sampleTypeId;
                     tube.sampleTypeName = box.sampleTypeName;
-                    // if(box.sampleClassificationId){
-                        tube.sampleClassificationId = box.sampleClassificationId;
-                    // }
+                    tube.sampleClassificationId = box.sampleClassificationId;
+
                 }
 
                 return tube;

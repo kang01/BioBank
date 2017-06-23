@@ -5,24 +5,24 @@
         <h3 class="modal-title" id="modal-title">新增样本</h3>
     </div>
     <div class="modal-body" id="modal-body">
+        <h4>请选择对应样本，注意样本类型及样本分类，与盒子是否一致!</h4>
         <div class="split-box">
-            <ul>
-                <li ng-repeat="item in vm.tubes track by $index">
-                    <div class="box-feature current" ng-style="{backgroundColor:item.backColor}"  ng-click="vm.sampleBoxSelect(item,$event)">
-                        {{item.sampleCode}}
-                    </div>
-                    <!--<div ng-repeat="item1 in item.boxList track by $index">-->
-                        <!--<div class="box-feature current" ng-style="{backgroundColor:item1.backColor}"  ng-click="vm.sampleBoxSelect(item1,$event)">-->
-                            <!--{{item1.countOfSample}}/{{item1.frozenBoxType.frozenBoxTypeColumns*item1.frozenBoxType.frozenBoxTypeRows}}-->
-                            <!--<span ng-if="item1.addTubeCount">+{{item1.addTubeCount}}</span>-->
-                        <!--</div>-->
-                        <!--<div class="" ng-if="$index == 0">{{item1.sampleTypeName}}&nbsp;</div>-->
-                        <!--<div ng-class="{'second-box': $index == 1}">{{item1.copyBoxCode}}</div>-->
-                    <!--</div>-->
-                    <!--<div class="box-feature box-feature-copy" style="background-color: #fff;" ng-if="item.boxList.length == 2"></div>-->
-                </li>
-                <div class="clear-both"></div>
-            </ul>
+            <table class="table table-bordered">
+                <thead>
+                    <th>样本编码</th>
+                    <th>盒子编码</th>
+                    <th>样本类型</th>
+                    <th>样本分类</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in vm.tubes track by $index" ng-click="vm.sampleBoxSelect(item,$event)">
+                        <td>{{item.sampleCode}}</td>
+                        <td>{{item.frozenBoxCode}}</td>
+                        <td>{{item.sampleTypeName}}</td>
+                        <td>{{item.sampleClassificationName}}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     <div class="modal-footer">

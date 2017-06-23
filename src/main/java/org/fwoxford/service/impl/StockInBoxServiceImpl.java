@@ -894,9 +894,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
     public FrozenBoxDTO createFrozenBoxBySampleClass(FrozenBoxDTO frozenBoxDTO, SampleType entity) {
         //验证项目下该样本类型是否有样本分类，如果已经配置了样本分类，则样本分类ID不能为空，（99的,98的除外）
-        if(entity.getIsMixed().equals(Constants.YES)&&frozenBoxDTO.getSampleClassificationId()!=null){
-            throw new BankServiceException("混合型样本的冻存盒，样本分类应该为空！");
-        }
+//        if(entity.getIsMixed().equals(Constants.YES)&&frozenBoxDTO.getSampleClassificationId()!=null){
+//            throw new BankServiceException("混合型样本的冻存盒，样本分类应该为空！");
+//        }
         int countOfSampleClass = projectSampleClassRepository.countByProjectIdAndSampleTypeId(frozenBoxDTO.getProjectId(),frozenBoxDTO.getSampleTypeId());
         if(countOfSampleClass>0&&entity.getIsMixed().equals(Constants.NO)&&frozenBoxDTO.getSampleClassificationId()==null){
             throw new BankServiceException("该项目下已经配置样本分类，样本分类不能为空！");

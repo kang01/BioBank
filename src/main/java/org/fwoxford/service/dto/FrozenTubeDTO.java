@@ -193,6 +193,10 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
      * 样本类型背景色
      */
     private String backColor;
+    /**
+     * 样本分类名称
+     */
+    private String sampleClassificationName;
 
     public Long getId() {
         return id;
@@ -491,6 +495,14 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setBackColor(String backColor) {
         this.backColor = backColor;
+    }
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
     }
 
     @Override

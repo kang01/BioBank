@@ -88,7 +88,7 @@
             <button class="btn btn-warning" type="button" ng-click="vm.cancelStockOutBox()">否</button>
         </div>
         <div ng-if="!vm.boxInFullFlag">
-            <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="(!vm.selectedTubes.length || !vm.pos) || vm.selectedTubesLen.length == vm.boxCopyLen">确定</button>
+            <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
             <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
         </div>
 

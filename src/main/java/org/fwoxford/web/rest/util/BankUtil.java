@@ -120,4 +120,26 @@ public class BankUtil {
 
         return String.join(".", positions);
     }
+
+    public static  String getPositionString(String equipmentCode,String areaCode,String supportCode,String columnsInshelf,String rowsInshelf) {
+        String position = "";
+        ArrayList<String> positions = new ArrayList<>();
+        if (equipmentCode != null && equipmentCode.length() > 0){
+            positions.add(equipmentCode);
+        }
+
+        if (areaCode != null && areaCode.length() > 0) {
+            positions.add(areaCode);
+        }
+
+        if (supportCode != null && supportCode.length() > 0){
+            positions.add(supportCode);
+        }
+
+        if (rowsInshelf != null && rowsInshelf.length() > 0 && columnsInshelf != null && columnsInshelf.length() > 0){
+            positions.add(columnsInshelf+rowsInshelf);
+        }
+
+        return String.join(".", positions);
+    }
 }

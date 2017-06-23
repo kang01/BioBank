@@ -1,7 +1,6 @@
 package org.fwoxford.service;
 
-import org.fwoxford.service.dto.response.FrozenPositionListAllDataTableEntity;
-import org.fwoxford.service.dto.response.FrozenPositionListSearchForm;
+import org.fwoxford.service.dto.response.*;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
@@ -10,4 +9,8 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
  */
 public interface StockListService {
     DataTablesOutput<FrozenPositionListAllDataTableEntity> getPageStockFrozenPositionList(DataTablesInput input, FrozenPositionListSearchForm searchForm);
+
+    DataTablesOutput<FrozenBoxListAllDataTableEntity> getPageStockFrozenBoxList(DataTablesInput input, FrozenBoxListSearchForm search);
+
+    DataTablesOutput<FrozenTubeListAllDataTableEntity> getPageStockFrozenTubeList(DataTablesInput input, FrozenTubeListAllDataTableEntity search);
 }

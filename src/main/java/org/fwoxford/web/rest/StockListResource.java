@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 import org.fwoxford.service.StockListService;
-import org.fwoxford.service.dto.response.FrozenPositionListAllDataTableEntity;
-import org.fwoxford.service.dto.response.FrozenPositionListSearchForm;
+import org.fwoxford.service.dto.response.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ public class StockListResource {
      * @return
      */
     @JsonView(DataTablesOutput.View.class)
-    @RequestMapping(value = "/res/stock-frozen-position", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(value = "/res/stock-list/frozen-position", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<FrozenPositionListAllDataTableEntity> getPageStockFrozenPositionList(@RequestBody DataTablesInput input,
                                                                                                  @RequestParam(value = "searchForm",required = false) String searchForm ) {
         JSONObject jsonObject = JSONObject.fromObject(searchForm);
@@ -51,5 +50,44 @@ public class StockListResource {
         return stockListService.getPageStockFrozenPositionList(input,search);
     }
 
+    /**
+     * 冻存盒清单
+     * @param input
+     * @param searchForm
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-list/frozen-box", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<FrozenBoxListAllDataTableEntity> getPageStockFrozenBoxList(@RequestBody DataTablesInput input,
+                                                                                       @RequestParam(value = "searchForm",required = false) String searchForm ) {
+        JSONObject jsonObject = JSONObject.fromObject(searchForm);
+        FrozenBoxListSearchForm search = (FrozenBoxListSearchForm) JSONObject.toBean(jsonObject, FrozenBoxListSearchForm.class);
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
+        return stockListService.getPageStockFrozenBoxList(input,search);
+    }
+
+    /**
+     * 样本清单
+     * @param input
+     * @param searchForm
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-list/frozen-tube", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<FrozenTubeListAllDataTableEntity> getPageStockFrozenTubeList(@RequestBody DataTablesInput input,
+                                                                                         @RequestParam(value = "searchForm",required = false) String searchForm ) {
+        JSONObject jsonObject = JSONObject.fromObject(searchForm);
+        FrozenTubeListAllDataTableEntity search = (FrozenTubeListAllDataTableEntity) JSONObject.toBean(jsonObject, FrozenTubeListAllDataTableEntity.class);
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
+        return stockListService.getPageStockFrozenTubeList(input,search);
+    }
 
 }

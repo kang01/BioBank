@@ -44,7 +44,8 @@
     "ion.rangeSlider": "ionrangeslider#^2.1.7",
     "moment": "^2.18.1",
     "angular-moment": "^1.0.1",
-    "copycss": "*"
+    "copycss": "*",
+    "angular-pageslide-directive": "^2.1.4"
   },
   "devDependencies": {
     "angular-mocks": "1.5.8"

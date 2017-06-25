@@ -32,7 +32,7 @@
             if(vm.entity.id){
                 StockInInputService.saveEditStockIn(vm.entity).success(function (data) {
                     vm.entity = data;
-                    if(!vm.splittingBox){
+                    if(!vm.saveStockInFlag){
                         toastr.success("保存入库信息成功!");
                     }
                 });
@@ -420,7 +420,7 @@
 
 
 
-
+        vm.saveStockInFlag = false;
         //添加冻存盒
         function _fnActionAddBoxButton() {
             if(vm.entity.status == '7002'){
@@ -429,10 +429,12 @@
             vm.box = {
                 frozenTubeDTOS:[]
             };
+            vm.saveStockInFlag = true;
             vm.stockInSave();
             _initBoxInfo();
             vm.splittingBox = true;
             vm.editFlag = false;
+
         }
         //冻存盒搜索
         vm.frozenBoxForStockIn =_fnFrozenBoxForStockIn;
@@ -1191,7 +1193,6 @@
                     vm.box.frozenTubeDTOS.push(tubeList[i]);
                 }
             }
-            console.log(JSON.stringify(vm.box));
             StockInInputService.saveStockInBox(vm.entity.stockInCode,vm.box).then(function (data) {
                 toastr.success("保存冻存盒成功！");
                 _initStockInBoxesTable();
@@ -1217,7 +1218,11 @@
                 }
             });
             modalInstance.result.then(function (flag) {
+                if(flag){
+                    _fnSaveBox();
+                }
                 vm.splittingBox = false;
+                vm.saveStockInFlag = false;
             });
         };
 

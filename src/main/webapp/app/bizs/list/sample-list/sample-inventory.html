@@ -1,0 +1,86 @@
+<div id="container1">
+    <div class="col-md-12">
+        <div class="pull-left">
+            <h2 style="margin: 0">冻存位置清单</h2>
+        </div>
+        <!--<div class="pull-right">-->
+        <!--<button type="button" class="btn btn-default" ng-click="vm.add()">添加</button>-->
+        <!--</div>-->
+    </div>
+    <p>Check to open: <input type="checkbox" ng-model="checked" ></p>
+    <pageslide ps-push='true' ps-open="checked" ps-container='container1' >
+        <div class="p-10">
+            <form>
+                <div class="form-group">
+                    <label>项目编码</label>
+                    <selectize options='vm.projectOptions' config="vm.projectConfig"
+                               ng-model="vm.dto.projectIds"></selectize>
+                </div>
+                <div class="form-group">
+                    <label>设备类型</label>
+                    <selectize options='vm.equipmentOptions' config="vm.equipmentConfig"
+                               ng-model="vm.dto.equipmentTypeId"></selectize>
+                </div>
+                <div class="form-group">
+                    <label>架子类型</label>
+                    <selectize options='vm.shelvesOptions' config="vm.shelvesConfig"
+                               ng-model="vm.dto.shelvesTypeId"></selectize>
+                </div>
+                <div class="form-group">
+                    <label>状态</label>
+                    <selectize options='vm.statusOptions' config="vm.statusConfig"
+                               ng-model="vm.dto.status"></selectize>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label>位置</label>
+                    </div>
+                    <div class="pull-left">
+                        <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig"
+                                   style="width:85px"
+                                   ng-model="vm.box.equipmentId"></selectize>
+                    </div>
+                    <div class="pull-left pl-5">
+                        <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig"
+                                   style="width:85px"
+                                   ng-model="vm.box.areaId" ></selectize>
+                    </div>
+                    <div class="pull-left pl-5">
+                        <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig"
+                                   style="width:85px"
+                                   ng-model="vm.box.supportRackId"></selectize>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label>空间条件</label>
+                    </div>
+                    <div class="pull-left">
+                        <selectize options='vm.spaceTypeOption' config="vm.spaceTypeConfig"
+                                   style="width:85px"
+                                   ng-model="vm.dto.spaceType"></selectize>
+                    </div>
+                    <div class="pull-left pl-5">
+                        <selectize options='vm.compareTypeOption' config="vm.compareTypeConfig"
+                                   style="width:85px"
+                                   ng-model="vm.dto.compareType"></selectize>
+                    </div>
+                    <div class="pull-left pl-5">
+                        <input type="text"  class="form-control" style="width:85px" ng-model="vm.dto.number">
+                    </div>
+                    <div class="clear-both"></div>
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn btn-default btn-primary">搜索</button>
+                </div>
+            </form>
+        </div>
+    </pageslide>
+    <div class="row">
+        <div class="col-md-12">
+            <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstanceCallback" class=" table table-striped table-bordered">
+            </table>
+        </div>
+    </div>
+</div>

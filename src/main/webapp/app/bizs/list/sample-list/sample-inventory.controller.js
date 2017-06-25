@@ -1,16 +1,16 @@
 /**
- * Created by gaokangkang on 2017/6/23.
+ * Created by gaokangkang on 2017/6/25.
  */
 (function() {
     'use strict';
 
     angular
         .module('bioBankApp')
-        .controller('EquipmentInventoryController', EquipmentInventoryController);
+        .controller('SampleInventoryController', SampleInventoryController);
 
-    EquipmentInventoryController.$inject = ['$scope','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
+    SampleInventoryController.$inject = ['$scope','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
 
-    function EquipmentInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
+    function SampleInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
@@ -194,17 +194,15 @@
 
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型'),
-            DTColumnBuilder.newColumn('equipmentCode').withTitle('设备'),
-            DTColumnBuilder.newColumn('areaCode').withTitle('区域'),
-            DTColumnBuilder.newColumn('shelvesCode').withTitle('架子'),
-            DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型'),
-            DTColumnBuilder.newColumn('countOfUsed').withTitle('已用'),
-            DTColumnBuilder.newColumn('countOfRest').withTitle('剩余'),
+            DTColumnBuilder.newColumn('position').withTitle('定位'),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码'),
+            DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
+            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型'),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类'),
+            DTColumnBuilder.newColumn('status').withTitle('标签'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
-            DTColumnBuilder.newColumn('id').notVisible()
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {
             var planStatus = '';

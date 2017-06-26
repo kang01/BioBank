@@ -415,6 +415,7 @@
                 if(data.frozenBoxCode){
                     vm.box = data;
                 }
+
             });
         }
 
@@ -481,8 +482,8 @@
             };
             //样本类型
             SampleTypeService.querySampleType().success(function (data) {
-                vm.sampleTypeOptions = _.orderBy(data,['id','ase']);
-                _.pullAt(vm.sampleTypeOptions,4);
+                vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
+                _.remove(vm.sampleTypeOptions,{sampleTypeName:"99"});
                 if(!vm.box.sampleTypeId){
                     vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                     vm.box.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
@@ -500,6 +501,7 @@
                 maxItems: 1,
                 onChange:function (value) {
                     vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
+                    vm.box.sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeName;
                     _fnQueryProjectSampleClass(vm.entity.projectId,value,vm.isMixed);
                     // if(isMixed == 1){
                     //     vm.box.isSplit = 1;
@@ -687,43 +689,72 @@
                             var col = item[1];
                             var oldTube = item[2];
                             var newTube = item[3];
+
+                            // var tubes = _.flatten(angular.copy(vm.frozenTubeArray));
+                            // for(var i = 0; i < tubes.length; i++){
+                            //     if(tubes[i].sampleCode == oldTube.sampleCode){
+                            //         var tableCtrl = _getTableCtrl();
+                            //         for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                            //             for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                            //                 if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
+                            //                     vm.frozenTubeArray[i][j].sampleCode = "";
+                            //                 }
+                            //             }
+                            //         }
+                            //         tableCtrl.loadData(vm.frozenTubeArray);
+                            //         toastr.error("样本编码不能重复!");
+                            //         return;
+                            //     }
+                            // }
+
+
                             if (oldTube.id
                                 || (oldTube.sampleCode && oldTube.sampleCode.length > 1)
                                 || (oldTube.sampleTempCode && oldTube.sampleTempCode.length > 1)){
                                 StockInInputService.queryTube(oldTube.sampleCode,vm.entity.projectCode).success(function (data) {
-                                    console.log(JSON.stringify(oldTube));
 
-                                    if(data.length == 1){
-                                        var tableCtrl = _getTableCtrl();
-                                        for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                                            for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                                                if(vm.frozenTubeArray[i][j].sampleTypeId != data[0].sampleTypeId){
-                                                    return;
-                                                }
-                                                if(vm.frozenTubeArray[i][j].sampleCode == data[0].sampleCode){
-                                                   if(vm.frozenTubeArray[i][j].sampleTypeName == 98){
-                                                       vm.frozenTubeArray[i][j].sampleClassificationId =  data[0].sampleClassificationId;
-                                                    }
-                                                    vm.frozenTubeArray[i][j].status =  data[0].status;
-                                                    vm.frozenTubeArray[i][j].memo =  data[0].memo;
-                                                }
-                                            }
-                                        }
-                                        tableCtrl.loadData(vm.frozenTubeArray);
-                                    }
-                                    if(data.length > 1){
+
+
+
+
+                                    // console.log(JSON.stringify(oldTube));
+
+                                    // if(data.length == 1){
+                                    //     var tableCtrl = _getTableCtrl();
+                                    //     for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                                    //         for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                    //             if(vm.frozenTubeArray[i][j].sampleTypeId != data[0].sampleTypeId){
+                                    //                 return;
+                                    //             }
+                                    //             if(vm.frozenTubeArray[i][j].sampleCode == data[0].sampleCode){
+                                    //                if(vm.frozenTubeArray[i][j].sampleTypeName == "98"){
+                                    //                    vm.frozenTubeArray[i][j].sampleClassificationId =  data[0].sampleClassificationId;
+                                    //                 }
+                                    //                 vm.frozenTubeArray[i][j].status =  data[0].status;
+                                    //                 vm.frozenTubeArray[i][j].memo =  data[0].memo;
+                                    //             }
+                                    //         }
+                                    //     }
+                                    //     tableCtrl.loadData(vm.frozenTubeArray);
+                                    // }
+                                    // if(data.length > 1){
                                         modalInstance = $uibModal.open({
                                             animation: true,
                                             templateUrl: 'app/bizs/stock-in/modal/stock-in-add-sample-modal.html',
                                             controller: 'StockInAddSampleModal',
                                             backdrop:'static',
                                             controllerAs: 'vm',
+                                            size:'lg',
                                             resolve: {
                                                 items: function () {
                                                     return {
                                                         status :1,
-                                                        oldTube:oldTube,
-                                                        tubes:data
+                                                        tubes:data,
+                                                        sampleCode:oldTube.sampleCode,
+                                                        projectSiteId:vm.entity.projectSiteId,
+                                                        projectId:vm.entity.projectId,
+                                                        sampleTypeId:vm.box.sampleTypeId,
+                                                        sampleTypeName:vm.box.sampleTypeName
                                                     };
                                                 }
                                             }
@@ -734,21 +765,23 @@
                                             for(var i = 0; i < vm.frozenTubeArray.length; i++){
                                                 for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
                                                     if(vm.frozenTubeArray[i][j].sampleCode == tube.sampleCode){
-                                                        vm.frozenTubeArray[i][j].status = tube.status;
-                                                        vm.frozenTubeArray[i][j].memo = tube.memo;
-                                                        if(tube.sampleClassificationId){
-                                                            vm.frozenTubeArray[i][j].sampleClassificationId = tube.sampleClassificationId;
-                                                            vm.frozenTubeArray[i][j].backColorForClass = tube.backColorForClass;
-                                                        }else{
-                                                            vm.frozenTubeArray[i][j].sampleTypeId = tube.sampleTypeId;
-                                                            vm.frozenTubeArray[i][j].backColor = tube.backColor;
-
-                                                        }
+                                                        vm.frozenTubeArray[i][j] = tube;
+                                                        // vm.frozenTubeArray[i][j].status = tube.status;
+                                                        // vm.frozenTubeArray[i][j].projectSiteId = tube.projectSiteId;
+                                                        // vm.frozenTubeArray[i][j].memo = tube.memo;
+                                                        // vm.frozenTubeArray[i][j].sampleTypeId = tube.sampleTypeId;
+                                                        // vm.frozenTubeArray[i][j].backColor = tube.backColor;
+                                                        // if(tube.sampleClassificationId){
+                                                        //     vm.frozenTubeArray[i][j].sampleClassificationId = tube.sampleClassificationId;
+                                                        //     vm.frozenTubeArray[i][j].backColorForClass = tube.backColorForClass;
+                                                        // }
                                                     }
                                                 }
                                             }
                                             console.log(JSON.stringify(vm.frozenTubeArray));
-                                            tableCtrl.loadData(vm.frozenTubeArray);
+                                            // tableCtrl.loadData(vm.frozenTubeArray);
+                                            hotRegisterer.getInstance('my-handsontable').rerender();
+                                            // console.log(JSON.stringify(vm.frozenTubeArray))
                                         },function (tube) {
                                             // var tableCtrl = _getTableCtrl();
                                             // for(var i = 0; i < vm.frozenTubeArray.length; i++){
@@ -760,7 +793,7 @@
                                             // }
                                             // tableCtrl.loadData(vm.frozenTubeArray);
                                         });
-                                    }
+                                    // }
 
                                 }).error(function (data) {
                                     var tableCtrl = _getTableCtrl();
@@ -798,7 +831,7 @@
                 }
 
             };
-            // 获取上架位置列表的控制实体
+            // 获取控制实体
             function _getTableCtrl(){
                 vm.TableCtrl = hotRegisterer.getInstance('my-handsontable');
                 return vm.TableCtrl;
@@ -1003,35 +1036,7 @@
 
             }
             vm.reloadTubesForTable = _reloadTubesForTable;
-            vm.createBoxDataFromTubesTable = _createBoxDataFromTubesTable;
-            function _createBoxDataFromTubesTable(){
-                if (!vm.box){
-                    return null;
-                }
-                var box = angular.copy(vm.box)||{};
-                delete box.frozenBoxType;
-                delete box.sampleClassification;
-                delete box.sampleType;
-                var tubes = hotRegisterer.getInstance('my-handsontable').getData();
-                box.frozenTubeDTOS = [];
 
-                for(var i=0; i<tubes.length; ++i){
-                    var rowTubes = tubes[i];
-                    for (var j=0; j<rowTubes.length; ++j){
-                        var tube = angular.copy(rowTubes[j]);
-                        delete tube.rowNO;
-                        delete tube.colNO;
-
-                        if (tube.id
-                            || (tube.sampleCode && tube.sampleCode.length > 1)
-                            || (tube.sampleTempCode && tube.sampleTempCode.length > 1)){
-                            box.frozenTubeDTOS.push(tube);
-                        }
-                    }
-                }
-
-                return box;
-            }
 
 
             var aRemarkArray = [];
@@ -1186,18 +1191,19 @@
         }
         //保存冻存盒
         function _fnSaveBox() {
-            vm.box.frozenTubeDTOS = [];
-            var tubeList = _.flatten(vm.frozenTubeArray);
-            for(var i = 0; i< tubeList.length; i++){
-                if(tubeList[i].sampleCode){
-                    vm.box.frozenTubeDTOS.push(tubeList[i]);
-                }
-            }
-            StockInInputService.saveStockInBox(vm.entity.stockInCode,vm.box).then(function (data) {
-                toastr.success("保存冻存盒成功！");
-                _initStockInBoxesTable();
-                vm.splittingBox = false;
-            })
+            console.log(JSON.stringify(vm.frozenTubeArray));
+            // vm.box.frozenTubeDTOS = [];
+            // var tubeList = _.flatten(vm.frozenTubeArray);
+            // for(var i = 0; i< tubeList.length; i++){
+            //     if(tubeList[i].sampleCode){
+            //         vm.box.frozenTubeDTOS.push(tubeList[i]);
+            //     }
+            // }
+            // StockInInputService.saveStockInBox(vm.entity.stockInCode,vm.box).then(function (data) {
+            //     toastr.success("保存冻存盒成功！");
+            //     _initStockInBoxesTable();
+            //     vm.splittingBox = false;
+            // })
         }
         vm.saveBox = _fnSaveBox;
         //关闭

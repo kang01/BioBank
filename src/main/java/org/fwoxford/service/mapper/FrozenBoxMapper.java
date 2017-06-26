@@ -200,8 +200,7 @@ public interface FrozenBoxMapper {
         frozenBox.setSampleClassification(sampleClassificationFromId(frozenBoxDTO.getSampleClassificationId()));
         frozenBox.setId( frozenBoxDTO.getId() );
         frozenBox.setFrozenBoxCode( frozenBoxDTO.getFrozenBoxCode() );
-//        frozenBox.setSampleNumber( frozenBoxDTO.getSampleNumber() );
-        frozenBox.setIsSplit( frozenBoxDTO.getIsSplit() );
+        frozenBox.setIsSplit( frozenBoxDTO.getIsSplit()!=null?frozenBoxDTO.getIsSplit():0 );
         frozenBox.setMemo( frozenBoxDTO.getMemo() );
         frozenBox.setStatus( frozenBoxDTO.getStatus() );
         frozenBox.setEmptyTubeNumber( frozenBoxDTO.getEmptyTubeNumber() );

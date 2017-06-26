@@ -59,7 +59,7 @@ public class EquipmentServiceImpl implements EquipmentService{
     @Transactional(readOnly = true)
     public Page<EquipmentDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Equipment");
-        Page<Equipment> result = equipmentRepository.findAll(pageable);
+        Page<Equipment> result = equipmentRepository.findAllUnFullEquipment(pageable);
         return result.map(equipment -> equipmentMapper.equipmentToEquipmentDTO(equipment));
     }
 

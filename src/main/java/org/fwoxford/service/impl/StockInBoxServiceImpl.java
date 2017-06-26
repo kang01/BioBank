@@ -18,12 +18,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.Column;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.mapping.Order;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Id;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -162,6 +169,21 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     @Override
     public DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(String stockInCode, DataTablesInput input) {
         input.addColumn("stockInCode",true, true, stockInCode+"+");
+        List<Column> columns = input.getColumns();
+        List<Order> orders = new ArrayList<Order>();
+
+        input.getOrder().forEach(order -> {
+            orders.add(order);
+            Column column = columns.get(order.getColumn());
+            Order o = new Order();
+            Column column1 = new Column();
+            if(column.getData()!=""&&column.getData().equals("status")){
+                o.setColumn(6);
+                o.setDir(order.getDir());
+                orders.add(o);
+            }
+        });
+        input.setOrder(orders);
         DataTablesOutput<StockInBoxForDataTableEntity> output = stockInBoxRepositries.findAll(input);
         List<StockInBoxForDataTableEntity> alist = new ArrayList<StockInBoxForDataTableEntity>();
         output.getData().forEach(s->{

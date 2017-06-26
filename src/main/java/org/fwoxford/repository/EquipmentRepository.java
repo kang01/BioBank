@@ -2,6 +2,8 @@ package org.fwoxford.repository;
 
 import org.fwoxford.domain.Equipment;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
@@ -16,4 +18,7 @@ public interface EquipmentRepository extends JpaRepository<Equipment,Long> {
 
     @Query("select t from Equipment t where t.status != '0000'")
     List<Equipment> findAllEquipments();
+
+    @Query("select t from Equipment t where t.status != '0000'")
+    Page<Equipment> findAllUnFullEquipment(Pageable pageable);
 }

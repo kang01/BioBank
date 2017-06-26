@@ -286,7 +286,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
 
             if(box.getSampleType().getIsMixed().equals(Constants.YES)
-                &&(box.getIsSplit().equals(null)||box.getIsSplit().equals(Constants.NO))){
+                &&(box.getIsSplit()==null||box.getIsSplit()!=null&&box.getIsSplit().equals(Constants.NO))){
                 throw new BankServiceException("混合型样本的冻存盒，必须分装！");
             }
 

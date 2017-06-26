@@ -13,8 +13,8 @@
         var service = {
             queryBoxList:_queryBoxList
         };
-        function _queryBoxList(data) {
-            return $http.post('api/res/stock-list/frozen-box',angular.toJson(data));
+        function _queryBoxList(data,searchForm) {
+            return $http.post('api/res/stock-list/frozen-box?searchForm='+searchForm,angular.toJson(data));
         }
 
         return service;

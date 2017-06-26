@@ -13,8 +13,8 @@
         var service = {
             querySampleList:_querySampleList
         };
-        function _querySampleList(data) {
-            return $http.post('api/res/stock-list/frozen-tube',angular.toJson(data));
+        function _querySampleList(data,searchForm) {
+            return $http.post('api/res/stock-list/frozen-tube?searchForm='+searchForm,angular.toJson(data));
         }
 
         return service;

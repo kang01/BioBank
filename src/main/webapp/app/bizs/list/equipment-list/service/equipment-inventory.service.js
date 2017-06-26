@@ -13,8 +13,8 @@
         var service = {
             queryEquipmentList:_queryEquipmentList
         };
-        function _queryEquipmentList(data) {
-            return $http.post('api/res/stock-list/frozen-position',angular.toJson(data));
+        function _queryEquipmentList(data,searchForm) {
+            return $http.post('api/res/stock-list/frozen-position?searchForm='+searchForm,angular.toJson(data));
         }
 
         return service;

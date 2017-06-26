@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('SampleInventoryController', SampleInventoryController);
 
-    SampleInventoryController.$inject = ['$scope','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
+    SampleInventoryController.$inject = ['$scope','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable'];
 
-    function SampleInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
+    function SampleInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
@@ -49,7 +49,9 @@
             vm.spaceTypeOption = [
                 {value:"1",label:"已用"},
                 {value:"2",label:"剩余"}
-            ]
+            ];
+            vm.dto.spaceType = "1";
+            vm.dto.compareType = "1";
         }
         _init();
         vm.projectConfig = {
@@ -71,18 +73,16 @@
         };
         function onAreaSuccess(data) {
             vm.frozenBoxAreaOptions = data;
-            vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
+            if(vm.frozenBoxAreaOptions.length){
+                vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
+                SupportacksByAreaIdService.query({id:vm.dto.areaId},onShelfSuccess, onError);
+            }
         }
         vm.frozenBoxAreaConfig = {
             valueField:'id',
             labelField:'areaCode',
             maxItems: 1,
             onChange:function (value) {
-                for(var i = 0; i < vm.frozenBoxAreaOptions.length; i++){
-                    if(value == vm.frozenBoxAreaOptions[i].id){
-                        vm.dto.areaCode = vm.frozenBoxAreaOptions[i].areaCode;
-                    }
-                }
                 SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
 
             }
@@ -90,17 +90,13 @@
         //架子
         function onShelfSuccess(data) {
             vm.frozenBoxShelfOptions = data;
+            vm.dto.supportRackId = vm.frozenBoxShelfOptions[0].id;
         }
         vm.frozenBoxShelfConfig = {
             valueField:'id',
             labelField:'supportRackCode',
             maxItems: 1,
             onChange:function (value) {
-                for(var i = 0; i < vm.frozenBoxShelfOptions.length; i++){
-                    if(value == vm.frozenBoxShelfOptions[i].id){
-                        vm.dto.supportRackCode = vm.frozenBoxShelfOptions[i].areaCode;
-                    }
-                }
             }
         };
         //设备类型
@@ -147,13 +143,18 @@
         }
 
 
+        vm.dtInstance = {};
+        vm.searchShow = _fnSearchShow;
+        function _fnSearchShow() {
+            vm.checked = true;
+        }
+        vm.search = _fnSearch;
+        function _fnSearch() {
+            vm.checked = false;
+            vm.dtInstance.rerender();
+        }
 
 
-
-        // $scope.checked = !$scope.checked;
-        // vm.toggle = function () {
-        //     $scope.checked = !$scope.checked
-        // };
 
 
 
@@ -166,7 +167,8 @@
                     data[oData.name] = oData.value;
                 }
                 var jqDt = this;
-                EquipmentInventoryService.queryEquipmentList(data).then(function (res){
+                var searchForm = angular.toJson(vm.dto);
+                SampleInventoryService.querySampleList(data,searchForm).then(function (res){
                     var json = res.data;
                     var error = json.error || json.sError;
                     if ( error ) {

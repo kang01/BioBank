@@ -52,6 +52,30 @@ public class ProjectSiteResourceIntTest {
     private static final String DEFAULT_STATUS = "AAAAAAAAAA";
     private static final String UPDATED_STATUS = "BBBBBBBBBB";
 
+    private static final String DEFAULT_DETAILED_LOCATION = "AAAAAAAAAA";
+    private static final String UPDATED_DETAILED_LOCATION = "BBBBBBBBBB";
+
+    private static final String DEFAULT_DEPARTMENT = "AAAAAAAAAA";
+    private static final String UPDATED_DEPARTMENT = "BBBBBBBBBB";
+
+    private static final String DEFAULT_DETAILED_ADDRESS = "AAAAAAAAAA";
+    private static final String UPDATED_DETAILED_ADDRESS = "BBBBBBBBBB";
+
+    private static final String DEFAULT_ZIP_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_ZIP_CODE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_USERNAME_1 = "AAAAAAAAAA";
+    private static final String UPDATED_USERNAME_1 = "BBBBBBBBBB";
+
+    private static final String DEFAULT_PHONE_NUMBER_1 = "AAAAAAAAAA";
+    private static final String UPDATED_PHONE_NUMBER_1 = "BBBBBBBBBB";
+
+    private static final String DEFAULT_USERNAME_2 = "AAAAAAAAAA";
+    private static final String UPDATED_USERNAME_2 = "BBBBBBBBBB";
+
+    private static final String DEFAULT_PHONE_NUMBER_2 = "AAAAAAAAAA";
+    private static final String UPDATED_PHONE_NUMBER_2 = "BBBBBBBBBB";
+
     @Autowired
     private ProjectSiteRepository projectSiteRepository;
 
@@ -98,7 +122,15 @@ public class ProjectSiteResourceIntTest {
                 .projectSiteCode(DEFAULT_PROJECT_SITE_CODE)
                 .projectSiteName(DEFAULT_PROJECT_SITE_NAME)
                 .memo(DEFAULT_MEMO)
-                .status(DEFAULT_STATUS);
+                .status(DEFAULT_STATUS)
+                .detailedLocation(DEFAULT_DETAILED_LOCATION)
+                .department(DEFAULT_DEPARTMENT)
+                .detailedAddress(DEFAULT_DETAILED_ADDRESS)
+                .zipCode(DEFAULT_ZIP_CODE)
+                .username1(DEFAULT_USERNAME_1)
+                .phoneNumber1(DEFAULT_PHONE_NUMBER_1)
+                .username2(DEFAULT_USERNAME_2)
+                .phoneNumber2(DEFAULT_PHONE_NUMBER_2);
         return projectSite;
     }
 
@@ -128,6 +160,14 @@ public class ProjectSiteResourceIntTest {
         assertThat(testProjectSite.getProjectSiteName()).isEqualTo(DEFAULT_PROJECT_SITE_NAME);
         assertThat(testProjectSite.getMemo()).isEqualTo(DEFAULT_MEMO);
         assertThat(testProjectSite.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testProjectSite.getDetailedLocation()).isEqualTo(DEFAULT_DETAILED_LOCATION);
+        assertThat(testProjectSite.getDepartment()).isEqualTo(DEFAULT_DEPARTMENT);
+        assertThat(testProjectSite.getDetailedAddress()).isEqualTo(DEFAULT_DETAILED_ADDRESS);
+        assertThat(testProjectSite.getZipCode()).isEqualTo(DEFAULT_ZIP_CODE);
+        assertThat(testProjectSite.getUsername1()).isEqualTo(DEFAULT_USERNAME_1);
+        assertThat(testProjectSite.getPhoneNumber1()).isEqualTo(DEFAULT_PHONE_NUMBER_1);
+        assertThat(testProjectSite.getUsername2()).isEqualTo(DEFAULT_USERNAME_2);
+        assertThat(testProjectSite.getPhoneNumber2()).isEqualTo(DEFAULT_PHONE_NUMBER_2);
     }
 
     @Test
@@ -222,7 +262,15 @@ public class ProjectSiteResourceIntTest {
             .andExpect(jsonPath("$.[*].projectSiteCode").value(hasItem(DEFAULT_PROJECT_SITE_CODE.toString())))
             .andExpect(jsonPath("$.[*].projectSiteName").value(hasItem(DEFAULT_PROJECT_SITE_NAME.toString())))
             .andExpect(jsonPath("$.[*].memo").value(hasItem(DEFAULT_MEMO.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].detailedLocation").value(hasItem(DEFAULT_DETAILED_LOCATION.toString())))
+            .andExpect(jsonPath("$.[*].department").value(hasItem(DEFAULT_DEPARTMENT.toString())))
+            .andExpect(jsonPath("$.[*].detailedAddress").value(hasItem(DEFAULT_DETAILED_ADDRESS.toString())))
+            .andExpect(jsonPath("$.[*].zipCode").value(hasItem(DEFAULT_ZIP_CODE.toString())))
+            .andExpect(jsonPath("$.[*].username1").value(hasItem(DEFAULT_USERNAME_1.toString())))
+            .andExpect(jsonPath("$.[*].phoneNumber1").value(hasItem(DEFAULT_PHONE_NUMBER_1.toString())))
+            .andExpect(jsonPath("$.[*].username2").value(hasItem(DEFAULT_USERNAME_2.toString())))
+            .andExpect(jsonPath("$.[*].phoneNumber2").value(hasItem(DEFAULT_PHONE_NUMBER_2.toString())));
     }
 
     @Test
@@ -239,7 +287,15 @@ public class ProjectSiteResourceIntTest {
             .andExpect(jsonPath("$.projectSiteCode").value(DEFAULT_PROJECT_SITE_CODE.toString()))
             .andExpect(jsonPath("$.projectSiteName").value(DEFAULT_PROJECT_SITE_NAME.toString()))
             .andExpect(jsonPath("$.memo").value(DEFAULT_MEMO.toString()))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
+            .andExpect(jsonPath("$.detailedLocation").value(DEFAULT_DETAILED_LOCATION.toString()))
+            .andExpect(jsonPath("$.department").value(DEFAULT_DEPARTMENT.toString()))
+            .andExpect(jsonPath("$.detailedAddress").value(DEFAULT_DETAILED_ADDRESS.toString()))
+            .andExpect(jsonPath("$.zipCode").value(DEFAULT_ZIP_CODE.toString()))
+            .andExpect(jsonPath("$.username1").value(DEFAULT_USERNAME_1.toString()))
+            .andExpect(jsonPath("$.phoneNumber1").value(DEFAULT_PHONE_NUMBER_1.toString()))
+            .andExpect(jsonPath("$.username2").value(DEFAULT_USERNAME_2.toString()))
+            .andExpect(jsonPath("$.phoneNumber2").value(DEFAULT_PHONE_NUMBER_2.toString()));
     }
 
     @Test
@@ -263,7 +319,15 @@ public class ProjectSiteResourceIntTest {
                 .projectSiteCode(UPDATED_PROJECT_SITE_CODE)
                 .projectSiteName(UPDATED_PROJECT_SITE_NAME)
                 .memo(UPDATED_MEMO)
-                .status(UPDATED_STATUS);
+                .status(UPDATED_STATUS)
+                .detailedLocation(UPDATED_DETAILED_LOCATION)
+                .department(UPDATED_DEPARTMENT)
+                .detailedAddress(UPDATED_DETAILED_ADDRESS)
+                .zipCode(UPDATED_ZIP_CODE)
+                .username1(UPDATED_USERNAME_1)
+                .phoneNumber1(UPDATED_PHONE_NUMBER_1)
+                .username2(UPDATED_USERNAME_2)
+                .phoneNumber2(UPDATED_PHONE_NUMBER_2);
         ProjectSiteDTO projectSiteDTO = projectSiteMapper.projectSiteToProjectSiteDTO(updatedProjectSite);
 
         restProjectSiteMockMvc.perform(put("/api/project-sites")
@@ -279,6 +343,14 @@ public class ProjectSiteResourceIntTest {
         assertThat(testProjectSite.getProjectSiteName()).isEqualTo(UPDATED_PROJECT_SITE_NAME);
         assertThat(testProjectSite.getMemo()).isEqualTo(UPDATED_MEMO);
         assertThat(testProjectSite.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testProjectSite.getDetailedLocation()).isEqualTo(UPDATED_DETAILED_LOCATION);
+        assertThat(testProjectSite.getDepartment()).isEqualTo(UPDATED_DEPARTMENT);
+        assertThat(testProjectSite.getDetailedAddress()).isEqualTo(UPDATED_DETAILED_ADDRESS);
+        assertThat(testProjectSite.getZipCode()).isEqualTo(UPDATED_ZIP_CODE);
+        assertThat(testProjectSite.getUsername1()).isEqualTo(UPDATED_USERNAME_1);
+        assertThat(testProjectSite.getPhoneNumber1()).isEqualTo(UPDATED_PHONE_NUMBER_1);
+        assertThat(testProjectSite.getUsername2()).isEqualTo(UPDATED_USERNAME_2);
+        assertThat(testProjectSite.getPhoneNumber2()).isEqualTo(UPDATED_PHONE_NUMBER_2);
     }
 
     @Test

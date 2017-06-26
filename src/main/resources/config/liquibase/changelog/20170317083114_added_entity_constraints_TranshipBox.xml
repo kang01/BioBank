@@ -14,6 +14,24 @@
                                  referencedColumnNames="id"
                                  referencedTableName="tranship"/>
 
+        <addForeignKeyConstraint baseColumnNames="equipment_id"
+                                 baseTableName="tranship_box"
+                                 constraintName="fk_tranship_box_equipment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="equipment"/>
+
+        <addForeignKeyConstraint baseColumnNames="support_rack_id"
+                                 baseTableName="tranship_box"
+                                 constraintName="fk_tranship_box_shelves_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="support_rack"/>
+
+        <addForeignKeyConstraint baseColumnNames="area_id"
+                                 baseTableName="tranship_box"
+                                 constraintName="fk_tranship_box_area_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="area"/>
+
         <addForeignKeyConstraint baseColumnNames="frozen_box_id"
                                  baseTableName="tranship_box"
                                  constraintName="fk_tranship_box_frozen_box_id"

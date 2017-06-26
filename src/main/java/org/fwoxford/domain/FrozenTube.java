@@ -31,6 +31,14 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     @Size(max = 100)
     @Column(name = "project_code", length = 100)
     private String projectCode;
+
+    /**
+     * 项目点编码
+     */
+    @Size(max = 100)
+    @Column(name = "project_site_code", length = 100)
+    private String projectSiteCode;
+
     /**
      * 冻存管编码
      */
@@ -95,6 +103,13 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Column(name = "frozen_tube_volumns", nullable = false)
     private Integer frozenTubeVolumns;
+
+    /**
+     * 样本容量值
+     */
+    @Column(name = "sample_volumns")
+    private Double sampleVolumns;
+
     /**
      * 冻存管容量值单位
      */
@@ -135,7 +150,7 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     @Column(name = "frozen_tube_state", length = 20)
     private String frozenTubeState;
     /**
-     * 状态：3001：正常，3002：空管，3003：空孔；3004：异常
+     * 状态：3001：正常，3002：空管，3003：空孔；3004：异常;3005：半管
      */
     @NotNull
     @Size(max = 20)
@@ -205,12 +220,16 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
      */
     @ManyToOne
     private SampleClassification sampleClassification;
-
     /**
      * 项目
      */
     @ManyToOne
     private Project project;
+    /**
+     * 项目
+     */
+    @ManyToOne
+    private ProjectSite projectSite;
     /**
      * 冻存盒
      */
@@ -236,6 +255,17 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
 
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
+    }
+
+    public String getProjectSiteCode() {
+        return projectSiteCode;
+    }
+    public FrozenTube projectSiteCode(String projectSiteCode) {
+        this.projectSiteCode = projectSiteCode;
+        return this;
+    }
+    public void setProjectSiteCode(String projectSiteCode) {
+        this.projectSiteCode = projectSiteCode;
     }
 
     public String getFrozenTubeCode() {
@@ -375,6 +405,17 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
 
     public void setFrozenTubeVolumns(Integer frozenTubeVolumns) {
         this.frozenTubeVolumns = frozenTubeVolumns;
+    }
+
+    public Double getSampleVolumns() {
+        return sampleVolumns;
+    }
+    public FrozenTube sampleVolumns(Double sampleVolumns){
+        this.sampleVolumns = sampleVolumns;
+        return this;
+    }
+    public void setSampleVolumns(Double sampleVolumns) {
+        this.sampleVolumns = sampleVolumns;
     }
 
     public String getFrozenTubeVolumnsUnit() {
@@ -632,6 +673,17 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
         this.project = project;
     }
 
+    public ProjectSite getProjectSite() {
+        return projectSite;
+    }
+    public FrozenTube projectSite(ProjectSite projectSite) {
+        this.projectSite = projectSite;
+        return this;
+    }
+    public void setProjectSite(ProjectSite projectSite) {
+        this.projectSite = projectSite;
+    }
+
     public FrozenBox getFrozenBox() {
         return frozenBox;
     }
@@ -670,6 +722,7 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
         return "FrozenTube{" +
             "id=" + id +
             ", projectCode='" + projectCode + "'" +
+            ", projectSiteCode='" + projectSiteCode + "'" +
             ", frozenTubeCode='" + frozenTubeCode + "'" +
             ", sampleTempCode='" + sampleTempCode + "'" +
             ", sampleCode='" + sampleCode + "'" +
@@ -681,6 +734,7 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
             ", sampleUsedTimes='" + sampleUsedTimes + "'" +
             ", frozenTubeVolumns='" + frozenTubeVolumns + "'" +
             ", frozenTubeVolumnsUnit='" + frozenTubeVolumnsUnit + "'" +
+            ", sampleVolumns='" + sampleVolumns + "'"+
             ", tubeRows='" + tubeRows + "'" +
             ", tubeColumns='" + tubeColumns + "'" +
             ", memo='" + memo + "'" +

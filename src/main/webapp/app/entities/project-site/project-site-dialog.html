@@ -73,6 +73,102 @@
                 </p>
             </div>
         </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.projectSite.detailedLocation" for="field_detailedLocation">Detailed Location</label>
+            <input type="text" class="form-control" name="detailedLocation" id="field_detailedLocation"
+                    ng-model="vm.projectSite.detailedLocation"
+                    ng-maxlength="1024"/>
+            <div ng-show="editForm.detailedLocation.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.detailedLocation.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
+                    This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.projectSite.department" for="field_department">Department</label>
+            <input type="text" class="form-control" name="department" id="field_department"
+                    ng-model="vm.projectSite.department"
+                    ng-maxlength="1024"/>
+            <div ng-show="editForm.department.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.department.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
+                    This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.projectSite.detailedAddress" for="field_detailedAddress">Detailed Address</label>
+            <input type="text" class="form-control" name="detailedAddress" id="field_detailedAddress"
+                    ng-model="vm.projectSite.detailedAddress"
+                    ng-maxlength="1024"/>
+            <div ng-show="editForm.detailedAddress.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.detailedAddress.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
+                    This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.projectSite.zipCode" for="field_zipCode">Zip Code</label>
+            <input type="text" class="form-control" name="zipCode" id="field_zipCode"
+                    ng-model="vm.projectSite.zipCode"
+                    ng-maxlength="20"/>
+            <div ng-show="editForm.zipCode.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.zipCode.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.projectSite.username1" for="field_username1">Username 1</label>
+            <input type="text" class="form-control" name="username1" id="field_username1"
+                    ng-model="vm.projectSite.username1"
+                    ng-maxlength="20"/>
+            <div ng-show="editForm.username1.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.username1.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.projectSite.phoneNumber1" for="field_phoneNumber1">Phone Number 1</label>
+            <input type="text" class="form-control" name="phoneNumber1" id="field_phoneNumber1"
+                    ng-model="vm.projectSite.phoneNumber1"
+                    ng-maxlength="20"/>
+            <div ng-show="editForm.phoneNumber1.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.phoneNumber1.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.projectSite.username2" for="field_username2">Username 2</label>
+            <input type="text" class="form-control" name="username2" id="field_username2"
+                    ng-model="vm.projectSite.username2"
+                    ng-maxlength="20"/>
+            <div ng-show="editForm.username2.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.username2.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.projectSite.phoneNumber2" for="field_phoneNumber2">Phone Number 2</label>
+            <input type="text" class="form-control" name="phoneNumber2" id="field_phoneNumber2"
+                    ng-model="vm.projectSite.phoneNumber2"
+                    ng-maxlength="20"/>
+            <div ng-show="editForm.phoneNumber2.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.phoneNumber2.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
 
     </div>
     <div class="modal-footer">

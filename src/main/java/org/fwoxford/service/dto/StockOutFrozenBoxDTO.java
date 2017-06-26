@@ -13,6 +13,31 @@ import java.util.Objects;
 public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
+    /**
+     * 设备编码
+     */
+    @Size(max = 100)
+    private String equipmentCode;
+    /**
+     * 区域编码
+     */
+    @Size(max = 100)
+    private String areaCode;
+    /**
+     * 冻存架编码
+     */
+    @Size(max = 100)
+    private String supportRackCode;
+    /**
+     * 所在冻存架行数
+     */
+    @Size(max = 20)
+    private String rowsInShelf;
+    /**
+     * 所在冻存架列数
+     */
+    @Size(max = 20)
+    private String columnsInShelf;
 
     @Size(max = 20)
     private String status;
@@ -22,7 +47,18 @@ public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Seriali
 
     private Long frozenBoxId;
 
-    private Long stockOutBoxPositionId;
+    /**
+     * 设备Id
+     */
+    private Long equipmentId;
+    /**
+     * 冻存架Id
+     */
+    private Long supportRackId;
+    /**
+     * 区域Id
+     */
+    private Long areaId;
 
     private Long stockOutTaskId;
 
@@ -33,6 +69,47 @@ public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Seriali
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getEquipmentCode() {
+        return equipmentCode;
+    }
+
+    public void setEquipmentCode(String equipmentCode) {
+        this.equipmentCode = equipmentCode;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    public String getSupportRackCode() {
+        return supportRackCode;
+    }
+
+    public void setSupportRackCode(String supportRackCode) {
+        this.supportRackCode = supportRackCode;
+    }
+
+    public String getRowsInShelf() {
+        return rowsInShelf;
+    }
+
+    public void setRowsInShelf(String rowsInShelf) {
+        this.rowsInShelf = rowsInShelf;
+    }
+
+    public String getColumnsInShelf() {
+        return columnsInShelf;
+    }
+
+    public void setColumnsInShelf(String columnsInShelf) {
+        this.columnsInShelf = columnsInShelf;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -40,6 +117,7 @@ public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Seriali
     public void setStatus(String status) {
         this.status = status;
     }
+
     public String getMemo() {
         return memo;
     }
@@ -56,12 +134,28 @@ public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Seriali
         this.frozenBoxId = frozenBoxId;
     }
 
-    public Long getStockOutBoxPositionId() {
-        return stockOutBoxPositionId;
+    public Long getEquipmentId() {
+        return equipmentId;
     }
 
-    public void setStockOutBoxPositionId(Long stockOutBoxPositionId) {
-        this.stockOutBoxPositionId = stockOutBoxPositionId;
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    public Long getSupportRackId() {
+        return supportRackId;
+    }
+
+    public void setSupportRackId(Long supportRackId) {
+        this.supportRackId = supportRackId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
     }
 
     public Long getStockOutTaskId() {
@@ -97,6 +191,11 @@ public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Seriali
     public String toString() {
         return "StockOutFrozenBoxDTO{" +
             "id=" + id +
+            ", equipmentCode='" + equipmentCode + "'" +
+            ", areaCode='" + areaCode + "'" +
+            ", supportRackCode='" + supportRackCode + "'" +
+            ", rowsInShelf='" + rowsInShelf + "'" +
+            ", columnsInShelf='" + columnsInShelf + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             '}';

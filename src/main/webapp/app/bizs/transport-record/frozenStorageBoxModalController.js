@@ -31,6 +31,7 @@
 
         if(vm.sampleTypeOptions.length){
             vm.frozenBox.sampleTypeId = vm.sampleTypeOptions[0].id;
+            vm.isMixed = _.filter(vm.sampleTypeOptions,{'id':+vm.frozenBox.sampleTypeId})[0].isMixed;
             _fnQueryProjectSampleClass(vm.items.projectId,vm.frozenBox.sampleTypeId);
         }
         //设备

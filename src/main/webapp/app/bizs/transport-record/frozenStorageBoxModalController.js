@@ -188,6 +188,8 @@
             if(box.isMixed == 1){
                 box.isSplit = 1;
                 delete box.sampleClassificationId;
+            }else{
+                box.isSplit = 0;
             }
             return box;
         }

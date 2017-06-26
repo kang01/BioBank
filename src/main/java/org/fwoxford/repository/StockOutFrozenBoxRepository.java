@@ -20,9 +20,6 @@ public interface StockOutFrozenBoxRepository extends JpaRepository<StockOutFroze
 
     void deleteByStockOutTaskId(Long taskId);
 
-    @Query("SELECT s.stockOutBoxPosition.id FROM StockOutFrozenBox s WHERE s.stockOutTask.id = ?1")
-    List<Long> findAllBoxPositionByTask(Long taskId);
-
     Long countByStockOutTaskId(Long id);
 
     List<StockOutFrozenBox> findByStockOutTaskId(Long taskId);

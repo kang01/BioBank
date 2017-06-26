@@ -24,6 +24,21 @@ public class StockOutFrozenBox extends AbstractAuditingEntity implements Seriali
 //    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    @Column(name = "equipment_code")
+    private String equipmentCode;
+
+    @Column(name = "area_code")
+    private String areaCode;
+
+    @Column(name = "support_rack_code")
+    private String supportRackCode;
+
+    @Column(name = "rows_in_shelf")
+    private String rowsInShelf;
+
+    @Column(name = "columns_in_shelf")
+    private String columnsInShelf;
+
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
@@ -38,7 +53,13 @@ public class StockOutFrozenBox extends AbstractAuditingEntity implements Seriali
     private FrozenBox frozenBox;
 
     @ManyToOne
-    private StockOutBoxPosition stockOutBoxPosition;
+    private Equipment equipment;
+
+    @ManyToOne
+    private Area area;
+
+    @ManyToOne
+    private SupportRack supportRack;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -50,6 +71,61 @@ public class StockOutFrozenBox extends AbstractAuditingEntity implements Seriali
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getEquipmentCode() {
+        return equipmentCode;
+    }
+    public StockOutFrozenBox equipmentCode(String equipmentCode) {
+        this.equipmentCode = equipmentCode;
+        return this;
+    }
+    public void setEquipmentCode(String equipmentCode) {
+        this.equipmentCode = equipmentCode;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+    public StockOutFrozenBox areaCode(String areaCode) {
+        this.areaCode = areaCode;
+        return this;
+    }
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    public String getSupportRackCode() {
+        return supportRackCode;
+    }
+    public StockOutFrozenBox supportRackCode(String supportRackCode) {
+        this.supportRackCode = supportRackCode;
+        return this;
+    }
+    public void setSupportRackCode(String supportRackCode) {
+        this.supportRackCode = supportRackCode;
+    }
+
+    public String getRowsInShelf() {
+        return rowsInShelf;
+    }
+    public StockOutFrozenBox rowsInShelf(String rowsInShelf) {
+        this.rowsInShelf = rowsInShelf;
+        return this;
+    }
+    public void setRowsInShelf(String rowsInShelf) {
+        this.rowsInShelf = rowsInShelf;
+    }
+
+    public String getColumnsInShelf() {
+        return columnsInShelf;
+    }
+    public StockOutFrozenBox columnsInShelf(String columnsInShelf) {
+        this.columnsInShelf = columnsInShelf;
+        return this;
+    }
+    public void setColumnsInShelf(String columnsInShelf) {
+        this.columnsInShelf = columnsInShelf;
     }
 
     public String getStatus() {
@@ -91,17 +167,37 @@ public class StockOutFrozenBox extends AbstractAuditingEntity implements Seriali
         this.frozenBox = frozenBox;
     }
 
-    public StockOutBoxPosition getStockOutBoxPosition() {
-        return stockOutBoxPosition;
+    public Equipment getEquipment() {
+        return equipment;
     }
-
-    public StockOutFrozenBox stockOutBoxPosition(StockOutBoxPosition stockOutBoxPosition) {
-        this.stockOutBoxPosition = stockOutBoxPosition;
+    public StockOutFrozenBox equipment(Equipment equipment) {
+        this.equipment = equipment;
         return this;
     }
+    public void setEquipment(Equipment equipment) {
+        this.equipment = equipment;
+    }
 
-    public void setStockOutBoxPosition(StockOutBoxPosition stockOutBoxPosition) {
-        this.stockOutBoxPosition = stockOutBoxPosition;
+    public Area getArea() {
+        return area;
+    }
+    public StockOutFrozenBox area(Area area) {
+        this.area = area;
+        return this;
+    }
+    public void setArea(Area area) {
+        this.area = area;
+    }
+
+    public SupportRack getSupportRack() {
+        return supportRack;
+    }
+    public StockOutFrozenBox supportRack(SupportRack supportRack) {
+        this.supportRack = supportRack;
+        return this;
+    }
+    public void setSupportRack(SupportRack supportRack) {
+        this.supportRack = supportRack;
     }
 
     public StockOutTask getStockOutTask() {
@@ -141,6 +237,11 @@ public class StockOutFrozenBox extends AbstractAuditingEntity implements Seriali
     public String toString() {
         return "StockOutFrozenBox{" +
             "id=" + id +
+            ", equipmentCode='" + equipmentCode + "'" +
+            ", areaCode='" + areaCode + "'" +
+            ", supportRackCode='" + supportRackCode + "'" +
+            ", rowsInShelf='" + rowsInShelf + "'" +
+            ", columnsInShelf='" + columnsInShelf + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             '}';

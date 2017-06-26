@@ -170,6 +170,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             applyData.setApplyPersonName(apply.getApplyPersonName());
             applyData.setApplyTime(apply.getApplyTime());
             applyData.setCountOfSample(apply.getCountOfSample());
+            applyData.setCountOfStockSample(apply.getCountOfStockSample());
             alist.add(applyData);
         });
         output.setData(alist);
@@ -575,7 +576,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         if(stockOutApply == null){
             throw new BankServiceException("申请不存在！");
         }
-        res.setId(id);
+        res.setId(stockOutApply.getId());
         res.setRecordId(stockOutApply.getRecordId());
         res.setRecordTime(stockOutApply.getRecordTime());
         res.setDelegateId(stockOutApply.getDelegate()!=null?stockOutApply.getDelegate().getId():null);
@@ -587,7 +588,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         res.setPurposeOfSample(stockOutApply.getPurposeOfSample());
         res.setStatus(stockOutApply.getStatus());
         //获取授权的项目
-        List<StockOutApplyProject> stockOutApplyProjects = stockOutApplyProjectRepository.findByStockOutApplyId(id);
+        List<StockOutApplyProject> stockOutApplyProjects = stockOutApplyProjectRepository.findByStockOutApplyId(stockOutApply.getId());
         List<Long> projectIds = new ArrayList<Long>();
         StringBuffer nameBuffer = new StringBuffer();
         StringBuffer codeBuffer = new StringBuffer();
@@ -613,8 +614,8 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         }
         //获取申请的需求
         List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<StockOutRequirementForApplyTable>();
-        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyIdAndStatus(id,Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS);
-        Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByApply(id);
+        List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyIdAndStatus(stockOutApply.getId(),Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS);
+        Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByApply(stockOutApply.getId());
         int countOfSampleAll=0;
         for(StockOutRequirement requirement : stockOutRequirementList){
             StockOutRequirementForApplyTable stockOutRequirementForApplyTable = new StockOutRequirementForApplyTable();
@@ -643,9 +644,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         res.setStockOutRequirement(stockOutRequirementForApplyTables);
         res.setCountOfStockOutSample(countOfStockOutSample);
         res.setCountOfSample(Long.valueOf(countOfSampleAll));
-        Long countOfRepealSample = stockOutTaskFrozenTubeRepository.countByStockOutApplyIdAndStatus(id,Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+        Long countOfRepealSample = stockOutTaskFrozenTubeRepository.countByStockOutApplyIdAndStatus(stockOutApply.getId(),Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
         res.setCountOfRepealSample(countOfRepealSample);
-        Long countOfHandoverSample = stockOutHandoverDetailsRepository.countByStockOutApply(id);
+        Long countOfHandoverSample = stockOutHandoverDetailsRepository.countByStockOutApply(stockOutApply.getId());
         res.setCountOfHandoverSample(countOfHandoverSample);
         return res;
     }

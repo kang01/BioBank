@@ -62,6 +62,9 @@ public interface TranshipBoxMapper {
         transhipBox.setCountOfSample( box.getCountOfSample() );
         transhipBox.setMemo( box.getMemo() );
         transhipBox.setStatus( box.getStatus() );
+        transhipBox.setEquipment( box.getEquipment() );
+        transhipBox.setArea( box.getArea() );
+        transhipBox.setSupportRack( box.getSupportRack() );
 
         return transhipBox;
     }

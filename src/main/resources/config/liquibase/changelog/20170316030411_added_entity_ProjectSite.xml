@@ -38,6 +38,38 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="detailed_location" type="nvarchar(1024)" remarks="详细地点">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="department" type="nvarchar(1024)" remarks="科室">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="detailed_address" type="nvarchar(1024)" remarks="详细地址">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="zip_code" type="nvarchar(20)" remarks="邮编">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="username_1" type="nvarchar(20)" remarks="姓名1">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="phone_number_1" type="nvarchar(20)" remarks="手机号码1">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="username_2" type="nvarchar(20)" remarks="姓名2">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="phone_number_2" type="nvarchar(20)" remarks="手机号码2">
+                <constraints nullable="true" />
+            </column>
+
             <column name="created_by" type="nvarchar(50)" remarks="创建人">
                 <constraints nullable="false"/>
             </column>

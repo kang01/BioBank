@@ -66,6 +66,19 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="equipment_id" type="bigint" remarks="设备ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="area_id" type="bigint" remarks="区域ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="support_rack_id" type="bigint" remarks="冻存架ID">
+                <constraints nullable="true" />
+            </column>
+
+
             <column name="created_by" type="nvarchar(50)" remarks="创建人">
                 <constraints nullable="false"/>
             </column>

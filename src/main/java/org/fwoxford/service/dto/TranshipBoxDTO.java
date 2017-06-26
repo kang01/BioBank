@@ -67,6 +67,18 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
      * 冻存盒id
      */
     private Long frozenBoxId;
+    /**
+     * 设备Id
+     */
+    private Long equipmentId;
+    /**
+     * 冻存架Id
+     */
+    private Long supportRackId;
+    /**
+     * 区域Id
+     */
+    private Long areaId;
 
     private List<FrozenTubeDTO> frozenTubeDTOList;
 
@@ -157,6 +169,30 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
 
     public void setFrozenBoxId(Long frozenBoxId) {
         this.frozenBoxId = frozenBoxId;
+    }
+
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    public Long getSupportRackId() {
+        return supportRackId;
+    }
+
+    public void setSupportRackId(Long supportRackId) {
+        this.supportRackId = supportRackId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
     }
 
     public List<FrozenTubeDTO> getFrozenTubeDTOList() {

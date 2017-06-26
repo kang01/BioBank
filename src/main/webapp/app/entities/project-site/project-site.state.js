@@ -128,6 +128,14 @@
                                 projectSiteName: null,
                                 memo: null,
                                 status: null,
+                                detailedLocation: null,
+                                department: null,
+                                detailedAddress: null,
+                                zipCode: null,
+                                username1: null,
+                                phoneNumber1: null,
+                                username2: null,
+                                phoneNumber2: null,
                                 id: null
                             };
                         }

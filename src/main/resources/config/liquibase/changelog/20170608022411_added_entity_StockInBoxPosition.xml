@@ -39,7 +39,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="columns_in_shelf" type="nvarchar(20)" remarks="所在架子烈数">
+            <column name="columns_in_shelf" type="nvarchar(20)" remarks="所在架子列数">
                 <constraints nullable="true" />
             </column>
 

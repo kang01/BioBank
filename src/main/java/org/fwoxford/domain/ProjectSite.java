@@ -26,36 +26,58 @@ public class ProjectSite extends AbstractAuditingEntity implements Serializable 
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
 //    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-    /**
-     * 项目点编码
-     */
+
     @NotNull
     @Size(max = 100)
     @Column(name = "project_site_code", length = 100, nullable = false)
     private String projectSiteCode;
-    /**
-     * 项目点名称
-     */
+
     @NotNull
     @Size(max = 255)
     @Column(name = "project_site_name", length = 255, nullable = false)
     private String projectSiteName;
-    /**
-     * 备注
-     */
+
     @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
-    /**
-     * 状态
-     */
+
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
     private String status;
-    /**
-     * 项目点
-     */
+
+    @Size(max = 1024)
+    @Column(name = "detailed_location", length = 1024)
+    private String detailedLocation;
+
+    @Size(max = 1024)
+    @Column(name = "department", length = 1024)
+    private String department;
+
+    @Size(max = 1024)
+    @Column(name = "detailed_address", length = 1024)
+    private String detailedAddress;
+
+    @Size(max = 20)
+    @Column(name = "zip_code", length = 20)
+    private String zipCode;
+
+    @Size(max = 20)
+    @Column(name = "username_1", length = 20)
+    private String username1;
+
+    @Size(max = 20)
+    @Column(name = "phone_number_1", length = 20)
+    private String phoneNumber1;
+
+    @Size(max = 20)
+    @Column(name = "username_2", length = 20)
+    private String username2;
+
+    @Size(max = 20)
+    @Column(name = "phone_number_2", length = 20)
+    private String phoneNumber2;
+
     @OneToMany(mappedBy = "projectSite")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -121,6 +143,110 @@ public class ProjectSite extends AbstractAuditingEntity implements Serializable 
         this.status = status;
     }
 
+    public String getDetailedLocation() {
+        return detailedLocation;
+    }
+
+    public ProjectSite detailedLocation(String detailedLocation) {
+        this.detailedLocation = detailedLocation;
+        return this;
+    }
+
+    public void setDetailedLocation(String detailedLocation) {
+        this.detailedLocation = detailedLocation;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public ProjectSite department(String department) {
+        this.department = department;
+        return this;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getDetailedAddress() {
+        return detailedAddress;
+    }
+
+    public ProjectSite detailedAddress(String detailedAddress) {
+        this.detailedAddress = detailedAddress;
+        return this;
+    }
+
+    public void setDetailedAddress(String detailedAddress) {
+        this.detailedAddress = detailedAddress;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public ProjectSite zipCode(String zipCode) {
+        this.zipCode = zipCode;
+        return this;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getUsername1() {
+        return username1;
+    }
+
+    public ProjectSite username1(String username1) {
+        this.username1 = username1;
+        return this;
+    }
+
+    public void setUsername1(String username1) {
+        this.username1 = username1;
+    }
+
+    public String getPhoneNumber1() {
+        return phoneNumber1;
+    }
+
+    public ProjectSite phoneNumber1(String phoneNumber1) {
+        this.phoneNumber1 = phoneNumber1;
+        return this;
+    }
+
+    public void setPhoneNumber1(String phoneNumber1) {
+        this.phoneNumber1 = phoneNumber1;
+    }
+
+    public String getUsername2() {
+        return username2;
+    }
+
+    public ProjectSite username2(String username2) {
+        this.username2 = username2;
+        return this;
+    }
+
+    public void setUsername2(String username2) {
+        this.username2 = username2;
+    }
+
+    public String getPhoneNumber2() {
+        return phoneNumber2;
+    }
+
+    public ProjectSite phoneNumber2(String phoneNumber2) {
+        this.phoneNumber2 = phoneNumber2;
+        return this;
+    }
+
+    public void setPhoneNumber2(String phoneNumber2) {
+        this.phoneNumber2 = phoneNumber2;
+    }
+
     public Set<ProjectRelate> getProjectRelates() {
         return projectRelates;
     }
@@ -174,6 +300,14 @@ public class ProjectSite extends AbstractAuditingEntity implements Serializable 
             ", projectSiteName='" + projectSiteName + "'" +
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
+            ", detailedLocation='" + detailedLocation + "'" +
+            ", department='" + department + "'" +
+            ", detailedAddress='" + detailedAddress + "'" +
+            ", zipCode='" + zipCode + "'" +
+            ", username1='" + username1 + "'" +
+            ", phoneNumber1='" + phoneNumber1 + "'" +
+            ", username2='" + username2 + "'" +
+            ", phoneNumber2='" + phoneNumber2 + "'" +
             '}';
     }
 }

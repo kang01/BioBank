@@ -452,6 +452,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             transhipBox.setFrozenBox(box);
             transhipBox.setTranship(tranship);
             transhipBox.setCountOfSample(countOfSample);
+            transhipBox.setEquipment( box.getEquipment() );
+            transhipBox.setArea( box.getArea() );
+            transhipBox.setSupportRack( box.getSupportRack() );
+
             transhipBoxRepository.save(transhipBox);
 
             //转运盒位置--如果冻存盒位置发生变更，则insert一条，否则不保存

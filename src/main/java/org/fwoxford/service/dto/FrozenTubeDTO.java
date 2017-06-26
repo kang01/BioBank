@@ -78,6 +78,8 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
      */
     @Size(max = 20)
     private String frozenTubeVolumnsUnit;
+
+    private Double sampleVolumns;
     /**
      * 行数
      */
@@ -106,7 +108,7 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 20)
     private String frozenTubeState;
     /**
-     * 状态：3001：正常，3002：空管，3003：空孔；3004：异常
+     * 状态：3001：正常，3002：空管，3003：空孔；3004：异常;3005:半管
      */
     @NotNull
     @Size(max = 20)
@@ -289,6 +291,15 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     public void setFrozenTubeVolumnsUnit(String frozenTubeVolumnsUnit) {
         this.frozenTubeVolumnsUnit = frozenTubeVolumnsUnit;
     }
+
+    public Double getSampleVolumns() {
+        return sampleVolumns;
+    }
+
+    public void setSampleVolumns(Double sampleVolumns) {
+        this.sampleVolumns = sampleVolumns;
+    }
+
     public String getTubeRows() {
         return tubeRows;
     }
@@ -542,6 +553,7 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
             ", sampleUsedTimes='" + sampleUsedTimes + "'" +
             ", frozenTubeVolumns='" + frozenTubeVolumns + "'" +
             ", frozenTubeVolumnsUnit='" + frozenTubeVolumnsUnit + "'" +
+            ", sampleVolumns='" + sampleVolumns + "'" +
             ", tubeRows='" + tubeRows + "'" +
             ", tubeColumns='" + tubeColumns + "'" +
             ", memo='" + memo + "'" +

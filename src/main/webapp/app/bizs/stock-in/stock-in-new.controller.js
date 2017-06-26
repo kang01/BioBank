@@ -414,6 +414,7 @@
             StockInInputService.queryEditStockInBox(frozenBoxCode).success(function (data) {
                 if(data.frozenBoxCode){
                     vm.box = data;
+
                 }
 
             });
@@ -503,17 +504,6 @@
                     vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
                     vm.box.sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeName;
                     _fnQueryProjectSampleClass(vm.entity.projectId,value,vm.isMixed);
-                    // if(isMixed == 1){
-                    //     vm.box.isSplit = 1;
-                    //     vm.isMixedFlag = true;
-                    //     vm.sampleClassFlag = true;
-                    //     delete vm.box.sampleClassificationId;
-                    // }else{
-                    //     vm.box.isSplit = 0;
-                    //     vm.isMixedFlag = false;
-                    //     vm.sampleClassFlag = false;
-                    // }
-                    // _fnQueryProjectSampleClass(vm.entity.projectId,value);
                 }
             };
             //样本分类
@@ -522,45 +512,42 @@
                     vm.projectSampleTypeOptions = data;
                     //是否混合类型 1：是混合类型
                     if(isMixed == 1){
-                        vm.box.isSplit = 1;
-                        vm.isMixedFlag = true;
-
-                        if(data.length){
-                            //类型下有分类
-                            for(var k = 0; k < data.length; k++){
-                                for (var i = 0; i < vm.frozenTubeArray.length; i++) {
-                                    for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                                        if(data[k].columnsNumber == j+1){
-                                            vm.frozenTubeArray[i][j].sampleClassificationId = data[k].sampleClassificationId;
-
-                                                vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
-                                                vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
-
-                                        }
-                                    }
-                                }
-                            }
-
-                        }else{
-                            //混合型无分类
+                        // if(data.length){
+                        //     //类型下有分类
+                        //     for(var k = 0; k < data.length; k++){
+                        //         for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                        //             for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                        //                 if(data[k].columnsNumber == j+1){
+                        //                     vm.frozenTubeArray[i][j].sampleClassificationId = data[k].sampleClassificationId;
+                        //                     vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                        //                     vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
+                        //
+                        //                 }
+                        //             }
+                        //         }
+                        //     }
+                        //
+                        // }else{
+                        //     //混合型无分类
                             for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                                 for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                                    vm.frozenTubeArray[i][j].sampleClassificationId = "";
-                                    // if(!vm.frozenTubeArray[i][j].sampleCode){
+                                    if(!vm.frozenTubeArray[i][j].sampleCode){
                                         vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
                                         vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
-                                    // }
+                                        vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).backColor;
+                                    }
                                 }
 
                             }
-                        }
+                        // }
 
                     }else{
-                        //无分类时取第一个
-                        if(vm.projectSampleTypeOptions.length){
-                            vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
-                            // vm.box.sampleClassification = vm.projectSampleTypeOptions[0];
+                        if(!vm.box.sampleClassificationId){
+                            if(vm.projectSampleTypeOptions.length){
+                                vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                            }
                         }
+
                         for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                             for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
                                 if(vm.box.sampleClassificationId){
@@ -571,6 +558,7 @@
                                 }
                                 vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
                                 vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
+                                vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).backColor;
                             }
                         }
                         // vm.box.sampleType = _.find(vm.sampleTypeOptions,{id:+sampleTypeId});
@@ -591,7 +579,7 @@
                 maxItems: 1,
                 onChange:function (value) {
                     vm.box.sampleClassificationId = value;
-                    vm.box.sampleClassification = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value});
+                    vm.box.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationName;
                     for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                         for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
                             vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
@@ -603,9 +591,10 @@
             _initFrozenBoxPanel();
             setTimeout(function () {
                 vm.reloadTubesForTable(vm.box)
-            },500)
+            },500);
 
         }
+
         //初始化冻存管
         function _initFrozenBoxPanel(){
             vm.frozenTubeArray = [];//初始管子数据二位数组
@@ -689,7 +678,8 @@
                             var col = item[1];
                             var oldTube = item[2];
                             var newTube = item[3];
-
+                            // console.log(JSON.stringify(oldTube));
+                            // console.log(JSON.stringify(newTube));
                             // var tubes = _.flatten(angular.copy(vm.frozenTubeArray));
                             // for(var i = 0; i < tubes.length; i++){
                             //     if(tubes[i].sampleCode == oldTube.sampleCode){
@@ -754,7 +744,9 @@
                                                         projectSiteId:vm.entity.projectSiteId,
                                                         projectId:vm.entity.projectId,
                                                         sampleTypeId:vm.box.sampleTypeId,
-                                                        sampleTypeName:vm.box.sampleTypeName
+                                                        sampleTypeName:vm.box.sampleTypeName,
+                                                        sampleClassificationId:vm.box.sampleClassificationId,
+                                                        sampleClassificationName:vm.box.sampleClassificationName
                                                     };
                                                 }
                                             }
@@ -765,35 +757,40 @@
                                             for(var i = 0; i < vm.frozenTubeArray.length; i++){
                                                 for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
                                                     if(vm.frozenTubeArray[i][j].sampleCode == tube.sampleCode){
-                                                        vm.frozenTubeArray[i][j] = tube;
-                                                        // vm.frozenTubeArray[i][j].status = tube.status;
-                                                        // vm.frozenTubeArray[i][j].projectSiteId = tube.projectSiteId;
-                                                        // vm.frozenTubeArray[i][j].memo = tube.memo;
-                                                        // vm.frozenTubeArray[i][j].sampleTypeId = tube.sampleTypeId;
-                                                        // vm.frozenTubeArray[i][j].backColor = tube.backColor;
-                                                        // if(tube.sampleClassificationId){
-                                                        //     vm.frozenTubeArray[i][j].sampleClassificationId = tube.sampleClassificationId;
-                                                        //     vm.frozenTubeArray[i][j].backColorForClass = tube.backColorForClass;
-                                                        // }
+                                                        // vm.frozenTubeArray[i][j] = tube;
+                                                        vm.frozenTubeArray[i][j].status = tube.status;
+                                                        vm.frozenTubeArray[i][j].projectSiteId = tube.projectSiteId;
+                                                        vm.frozenTubeArray[i][j].memo = tube.memo;
+                                                        vm.frozenTubeArray[i][j].sampleTypeId = tube.sampleTypeId;
+                                                        vm.frozenTubeArray[i][j].backColor = tube.backColor;
+                                                        if(tube.sampleClassificationId){
+                                                            vm.frozenTubeArray[i][j].sampleClassificationId = tube.sampleClassificationId;
+                                                            vm.frozenTubeArray[i][j].sampleClassificationName = tube.sampleClassificationName;
+                                                            vm.frozenTubeArray[i][j].backColorForClass = tube.backColorForClass;
+                                                        }
                                                     }
                                                 }
                                             }
-                                            console.log(JSON.stringify(vm.frozenTubeArray));
-                                            // tableCtrl.loadData(vm.frozenTubeArray);
-                                            hotRegisterer.getInstance('my-handsontable').rerender();
-                                            // console.log(JSON.stringify(vm.frozenTubeArray))
+                                            hotRegisterer.getInstance('my-handsontable').render();
                                         },function (tube) {
-                                            // var tableCtrl = _getTableCtrl();
-                                            // for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                                            //     for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                                            //         if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
-                                            //             vm.frozenTubeArray[i][j].sampleCode = "";
-                                            //         }
-                                            //     }
-                                            // }
-                                            // tableCtrl.loadData(vm.frozenTubeArray);
+                                            var tableCtrl = _getTableCtrl();
+                                            for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                                                for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                                    if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
+                                                        vm.frozenTubeArray[i][j].sampleCode = "";
+                                                        // vm.frozenTubeArray[i][j].status = "";
+                                                        // vm.frozenTubeArray[i][j].projectSiteId = "";
+                                                        // vm.frozenTubeArray[i][j].memo = "";
+                                                        // vm.frozenTubeArray[i][j].sampleTypeId = "";
+                                                        // vm.frozenTubeArray[i][j].backColor = "";
+                                                        // vm.frozenTubeArray[i][j].sampleClassificationId = "";
+                                                        // vm.frozenTubeArray[i][j].sampleClassificationName = "";
+                                                        // vm.frozenTubeArray[i][j].backColorForClass = "";
+                                                    }
+                                                }
+                                            }
+                                            tableCtrl.loadData(vm.frozenTubeArray);
                                         });
-                                    // }
 
                                 }).error(function (data) {
                                     var tableCtrl = _getTableCtrl();
@@ -844,7 +841,7 @@
                 if(tube.memo && tube.memo != " "){
                     cellProperties.comment = tube.memo;
                 }
-                if(tube.sampleTypeName == '98'){
+                if(vm.box.sampleTypeName == '98'){
                     if(tube.backColorForClass){
                         td.style.backgroundColor = tube.backColorForClass;
                     }else{
@@ -949,7 +946,6 @@
                     tube.id = tubeInBox.id;
                     tube.sampleCode = tubeInBox.sampleCode;
                     tube.sampleTempCode = tubeInBox.sampleTempCode;
-                    // tube.sampleTypeCode = tubeInBox.sampleTypeCode;
                     tube.status = tubeInBox.status;
                     tube.memo = tubeInBox.memo;
                     if(tubeInBox.sampleClassificationId){
@@ -958,6 +954,7 @@
                     }
                     tube.sampleTypeId = tubeInBox.sampleTypeId;
                     tube.sampleTypeName = tubeInBox.sampleTypeName;
+                    tube.backColor = tubeInBox.backColor;
                 }else{
                     tube.sampleTypeId = box.sampleTypeId;
                     tube.sampleTypeName = box.sampleTypeName;
@@ -1025,14 +1022,6 @@
                 settings.manualColumnResize = colWidth;
                 tableCtrl.updateSettings(settings);
                 tableCtrl.loadData(tubesInTable);
-                // var tubeList = [];
-                // for(var m = 0; m < tubesInTable.length;m++){
-                //     for(var n = 0; n < tubesInTable[m].length;n++){
-                //         tubeList.push(tubesInTable[m][n]);
-                //     }
-                // }
-
-                // _sampleCount(tubeList);
 
             }
             vm.reloadTubesForTable = _reloadTubesForTable;
@@ -1191,19 +1180,19 @@
         }
         //保存冻存盒
         function _fnSaveBox() {
-            console.log(JSON.stringify(vm.frozenTubeArray));
-            // vm.box.frozenTubeDTOS = [];
-            // var tubeList = _.flatten(vm.frozenTubeArray);
-            // for(var i = 0; i< tubeList.length; i++){
-            //     if(tubeList[i].sampleCode){
-            //         vm.box.frozenTubeDTOS.push(tubeList[i]);
-            //     }
-            // }
-            // StockInInputService.saveStockInBox(vm.entity.stockInCode,vm.box).then(function (data) {
-            //     toastr.success("保存冻存盒成功！");
-            //     _initStockInBoxesTable();
-            //     vm.splittingBox = false;
-            // })
+            // console.log(JSON.stringify(vm.frozenTubeArray));
+            vm.box.frozenTubeDTOS = [];
+            var tubeList = _.flatten(vm.frozenTubeArray);
+            for(var i = 0; i< tubeList.length; i++){
+                if(tubeList[i].sampleCode){
+                    vm.box.frozenTubeDTOS.push(tubeList[i]);
+                }
+            }
+            StockInInputService.saveStockInBox(vm.entity.stockInCode,vm.box).then(function (data) {
+                toastr.success("保存冻存盒成功！");
+                _initStockInBoxesTable();
+                vm.splittingBox = false;
+            })
         }
         vm.saveBox = _fnSaveBox;
         //关闭

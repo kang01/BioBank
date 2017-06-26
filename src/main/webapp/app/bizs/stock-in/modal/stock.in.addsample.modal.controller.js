@@ -36,6 +36,8 @@
         if(vm.sampleTypeName != "98"){
             vm.entity.sampleTypeId = items.sampleTypeId;
             vm.entity.sampleTypeName = items.sampleTypeName;
+            vm.entity.sampleClassificationId = items.sampleClassificationId;
+            vm.entity.sampleClassificationName = items.sampleClassificationName;
 
         }
         // var oldTube = items.oldTube;
@@ -91,6 +93,7 @@
                     vm.entity.sampleTypeId = vm.sampleTypeOptions[0].id;
                     vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:vm.entity.sampleTypeId}).backColor;
                 }
+                _fnQueryProjectSampleClass(vm.entity.projectId,vm.entity.sampleTypeId);
             });
             vm.sampleTypeConfig = {
                 valueField:'id',
@@ -103,14 +106,20 @@
                     vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+value}).backColor;
                 }
             };
+            vm.queryProjectSampleClass = _fnQueryProjectSampleClass;
             //样本分类
             function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
                 SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                     vm.projectSampleTypeOptions = data;
-                    if(vm.projectSampleTypeOptions.length){
-                        vm.entity.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
-                        vm.entity.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:vm.entity.sampleClassificationId}).backColor;
+                    if(vm.sampleTypeName == "98"){
+                        if(vm.projectSampleTypeOptions.length){
+                            if(!vm.entity.sampleClassificationId){
+                                vm.entity.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                                vm.entity.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:vm.entity.sampleClassificationId}).backColor;
+                            }
+                            }
                     }
+
 
                 });
             }
@@ -141,6 +150,7 @@
             vm.entity.status = item.status;
             $($event.target).closest('table').find('.rowLight').removeClass("rowLight");
             $($event.target).closest('tr').addClass("rowLight");
+            vm.queryProjectSampleClass(vm.entity.projectId,vm.entity.sampleTypeId);
         }
 
         function onError() {

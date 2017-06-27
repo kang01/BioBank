@@ -74,6 +74,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     private SampleTypeRepository sampleTypeRepository;
     @Autowired
     private FrozenBoxTypeRepository frozenBoxTypeRepository;
+
     @Autowired
     private FrozenBoxMapper frozenBoxMapper;
 
@@ -94,6 +95,12 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
     @Autowired
     private FrozenBoxService frozenBoxService;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private ProjectSiteRepository projectSiteRepository;
 
     public StockInBoxServiceImpl(StockInBoxRepository stockInBoxRepository, StockInBoxMapper stockInBoxMapper,
                                  StockInBoxRepositries stockInBoxRepositries,StockInRepository stockInRepository) {
@@ -645,28 +652,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             .columnsInShelf(stockInBox.getColumnsInShelf()).rowsInShelf(stockInBox.getRowsInShelf())
             .stockInBox(stockInBox);
         stockInBoxPositionRepository.save(stockInBoxPosition);
-//        TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBox.getFrozenBoxCode());
-        //保存冻存管历史
-//        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(boxCode);
-//        for(FrozenTube tube : frozenTubes){
-//            //保存入库与冻存管的关系
-//            StockInTubes stockInTubes = new StockInTubes();
-//            stockInTubes.setMemo(tube.getMemo());
-//            stockInTubes.setStatus(Constants.FROZEN_BOX_STOCKING);
-//            stockInTubes.setColumnsInTube(tube.getTubeColumns());
-//            stockInTubes.setRowsInTube(tube.getTubeRows());
-//            stockInTubes.setFrozenBoxPosition(frozenBoxPos);
-//            stockInTubes.setFrozenTube(tube);
-//            stockInTubes.setFrozenTubeCode(tube.getFrozenTubeCode());
-//            stockInTubes.setSampleCode(tube.getSampleCode());
-//            stockInTubes.setStockInBox(stockInBox);
-//            stockInTubes.setTranshipBox(transhipBox);
-//            stockInTubes.setSampleTempCode(tube.getSampleTempCode());
-//            stockInTubesRepository.save(stockInTubes);
-//        }
-
         stockInBoxDetail = frozenBoxService.createStockInBoxDetail(frozenBox,stockInCode);
-
         return stockInBoxDetail;
     }
 
@@ -716,8 +702,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         //保存冻存管信息
         for(FrozenTubeDTO tubeDTO:frozenBoxDTO.getFrozenTubeDTOS()){
             //项目编码
-            tubeDTO.setProjectId(frozenBoxDTO.getProjectId());
-            tubeDTO.setProjectCode(frozenBoxDTO.getProjectCode());
+            tubeDTO = createFrozenTubeByProject(frozenBoxDTO,tubeDTO);
+
             String status = getFrozenTubeStatus(tubeDTO);
             if(!status.equals("") && !status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) && !status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
                 throw new BankServiceException("冻存管编码已经在库存内，不能保存该冻存管！",tubeDTO.getSampleCode());
@@ -754,6 +740,31 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return frozenBoxDTO;
     }
 
+    public FrozenTubeDTO createFrozenTubeByProject(FrozenBoxDTO frozenBoxDTO, FrozenTubeDTO tubeDTO) {
+        if(tubeDTO.getProjectId()==null){
+            tubeDTO.setProjectId(frozenBoxDTO.getProjectId());
+            tubeDTO.setProjectCode(frozenBoxDTO.getProjectCode());
+        }else {
+            Project project = projectRepository.findOne(tubeDTO.getProjectId());
+            if(project ==null){
+                throw new BankServiceException("项目不存在！");
+            }
+            tubeDTO.setProjectCode(project.getProjectCode());
+        }
+        if(tubeDTO.getProjectSiteId()!=null){
+            tubeDTO.setProjectSiteId(frozenBoxDTO.getProjectSiteId());
+            tubeDTO.setProjectSiteCode(frozenBoxDTO.getProjectSiteCode());
+        }else {
+            ProjectSite projectSite = projectSiteRepository.findOne(tubeDTO.getProjectSiteId());
+            if(projectSite ==null){
+                throw new BankServiceException("项目点不存在！");
+            }
+            tubeDTO.setProjectSiteCode(projectSite.getProjectSiteCode());
+        }
+
+        return tubeDTO;
+    }
+
     /**
      * true:冻存盒编码不重复
      * false:冻存盒编码重复，冻存盒已在另一个入库单中满盒入库
@@ -785,7 +796,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return flag;
     }
 
-    private String getFrozenTubeStatus(FrozenTubeDTO tubeDTO) {
+    public String getFrozenTubeStatus(FrozenTubeDTO tubeDTO) {
         String status = "";
         List<Object[]> frozenTubeHistoryList =  frozenTubeRepository.findFrozenTubeHistoryListBySampleAndProjectCode(tubeDTO.getSampleCode(),tubeDTO.getProjectCode());
         if(frozenTubeHistoryList.size()>0){

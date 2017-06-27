@@ -199,6 +199,14 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
      * 样本分类名称
      */
     private String sampleClassificationName;
+    /**
+     * 项目点ID
+     */
+    private Long projectSiteId;
+    /**
+     * 项目点编码
+     */
+    private String projectSiteCode;
 
     public Long getId() {
         return id;
@@ -457,7 +465,7 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     }
 
     public void setHemolysis(Boolean hemolysis) {
-        isHemolysis = hemolysis;
+        this.isHemolysis = hemolysis;
     }
 
     public Boolean getBloodLipid() {
@@ -465,7 +473,7 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     }
 
     public void setBloodLipid(Boolean bloodLipid) {
-        isBloodLipid = bloodLipid;
+        this.isBloodLipid = bloodLipid;
     }
 
     public String getFrontColorForClass() {
@@ -514,6 +522,22 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSampleClassificationName(String sampleClassificationName) {
         this.sampleClassificationName = sampleClassificationName;
+    }
+
+    public Long getProjectSiteId() {
+        return projectSiteId;
+    }
+
+    public void setProjectSiteId(Long projectSiteId) {
+        this.projectSiteId = projectSiteId;
+    }
+
+    public String getProjectSiteCode() {
+        return projectSiteCode;
+    }
+
+    public void setProjectSiteCode(String projectSiteCode) {
+        this.projectSiteCode = projectSiteCode;
     }
 
     @Override
@@ -570,6 +594,7 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
             ", visitType='" + visitType + "'" +
             ", visitDate='" + visitDate + "'" +
             ", age='" + age + "'" +
+            ", projectSiteCode='" + projectSiteCode + "'" +
             '}';
     }
 }

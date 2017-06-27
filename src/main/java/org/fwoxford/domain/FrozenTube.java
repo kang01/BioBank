@@ -226,7 +226,7 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
     @ManyToOne
     private Project project;
     /**
-     * 项目
+     * 项目点
      */
     @ManyToOne
     private ProjectSite projectSite;

@@ -286,7 +286,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
 
             if(box.getSampleType().getIsMixed().equals(Constants.YES)
-                &&(box.getIsSplit().equals(null)||box.getIsSplit().equals(Constants.NO))){
+                &&(box.getIsSplit()==null||box.getIsSplit()!=null&&box.getIsSplit().equals(Constants.NO))){
                 throw new BankServiceException("混合型样本的冻存盒，必须分装！");
             }
 
@@ -452,6 +452,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             transhipBox.setFrozenBox(box);
             transhipBox.setTranship(tranship);
             transhipBox.setCountOfSample(countOfSample);
+            transhipBox.setEquipment( box.getEquipment() );
+            transhipBox.setArea( box.getArea() );
+            transhipBox.setSupportRack( box.getSupportRack() );
+
             transhipBoxRepository.save(transhipBox);
 
             //转运盒位置--如果冻存盒位置发生变更，则insert一条，否则不保存

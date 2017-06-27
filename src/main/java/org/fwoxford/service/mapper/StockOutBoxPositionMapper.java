@@ -15,6 +15,7 @@ public interface StockOutBoxPositionMapper {
     @Mapping(source = "equipment.id", target = "equipmentId")
     @Mapping(source = "area.id", target = "areaId")
     @Mapping(source = "supportRack.id", target = "supportRackId")
+    @Mapping(source = "stockOutFrozenBox.id", target = "stockOutFrozenBoxId")
     StockOutBoxPositionDTO stockOutBoxPositionToStockOutBoxPositionDTO(StockOutBoxPosition stockOutBoxPosition);
 
     List<StockOutBoxPositionDTO> stockOutBoxPositionsToStockOutBoxPositionDTOs(List<StockOutBoxPosition> stockOutBoxPositions);
@@ -22,6 +23,7 @@ public interface StockOutBoxPositionMapper {
     @Mapping(source = "equipmentId", target = "equipment")
     @Mapping(source = "areaId", target = "area")
     @Mapping(source = "supportRackId", target = "supportRack")
+    @Mapping(source = "stockOutFrozenBoxId", target = "stockOutFrozenBox")
     StockOutBoxPosition stockOutBoxPositionDTOToStockOutBoxPosition(StockOutBoxPositionDTO stockOutBoxPositionDTO);
 
     List<StockOutBoxPosition> stockOutBoxPositionDTOsToStockOutBoxPositions(List<StockOutBoxPositionDTO> stockOutBoxPositionDTOs);
@@ -53,12 +55,12 @@ public interface StockOutBoxPositionMapper {
         return supportRack;
     }
 
-    default FrozenBox frozenBoxFromId(Long id) {
+    default StockOutFrozenBox stockOutFrozenBoxFromId(Long id) {
         if (id == null) {
             return null;
         }
-        FrozenBox frozenBox = new FrozenBox();
-        frozenBox.setId(id);
-        return frozenBox;
+        StockOutFrozenBox stockOutFrozenBox = new StockOutFrozenBox();
+        stockOutFrozenBox.setId(id);
+        return stockOutFrozenBox;
     }
 }

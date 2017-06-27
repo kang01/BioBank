@@ -386,8 +386,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             box.setId(f.getId());
             box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             box.setSampleTypeName(frozenBox.getSampleTypeName());
-//            String position = getPositionString(frozenBox);
-            String position = BankUtil.toPositionString(f.getStockOutBoxPosition());
+            String position = BankUtil.getPositionString(f.getEquipmentCode(),f.getAreaCode(),f.getSupportRackCode(),f.getColumnsInShelf(),f.getRowsInShelf(),null,null);
             box.setPosition(position);
             Long count = stockOutBoxTubeRepository.countByStockOutFrozenBoxId(f.getId());
             box.setCountOfSample(count);
@@ -442,25 +441,30 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         }
 
         for(Long id:frozenBoxIds){
-            //保存冻存盒位置
-            StockOutBoxPosition stockOutBoxPosition = new StockOutBoxPosition();
+
             StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findOne(id);
             if(stockOutFrozenBox == null){
                 continue;
             }
             FrozenBox frozenBox = stockOutFrozenBox.getFrozenBox();
-            stockOutBoxPosition.frozenBox(frozenBox);
+            //保存出库冻存盒
+            stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_COMPLETED);
+            stockOutFrozenBox.setFrozenBox(frozenBox);
+            stockOutFrozenBox.setEquipment(equipment);
+            stockOutFrozenBox.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
+            stockOutFrozenBox.setArea(area);
+            stockOutFrozenBox.setAreaCode(area!=null?area.getAreaCode():null);
+            stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+            //保存冻存盒位置
+            StockOutBoxPosition stockOutBoxPosition = new StockOutBoxPosition();
+
+            stockOutBoxPosition.setStockOutFrozenBox(stockOutFrozenBox);
             stockOutBoxPosition.setEquipment(equipment);
             stockOutBoxPosition.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
             stockOutBoxPosition.setArea(area);
             stockOutBoxPosition.setAreaCode(area!=null?area.getAreaCode():null);
             stockOutBoxPosition.setStatus(Constants.VALID);
             stockOutBoxPositionRepository.save(stockOutBoxPosition);
-            //保存出库冻存盒
-            stockOutFrozenBox.setStockOutBoxPosition(stockOutBoxPosition);
-            stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_COMPLETED);
-            stockOutFrozenBoxRepository.save(stockOutFrozenBox);
-
             //保存冻存盒的位置和状态
             frozenBox.setEquipment(equipment);
             frozenBox.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
@@ -469,7 +473,8 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
             frozenBoxRepository.save(frozenBox);
             //保存出库盒与冻存管的关系
-            stockOutBoxTubeRepository.updateByStockOutFrozenBox(id); //样本使用次数加1
+            stockOutBoxTubeRepository.updateByStockOutFrozenBox(id);
+            //样本使用次数加1
             List<StockOutBoxTube> stockOutBoxTubes = stockOutBoxTubeRepository.findByStockOutFrozenBoxId(id);
             for(StockOutBoxTube s:stockOutBoxTubes){
                 FrozenTube frozenTube = s.getFrozenTube();
@@ -632,7 +637,8 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             dto.setDelegateId(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getDelegate().getId():null);
             dto.setDelegate(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getApplyPersonName():null);
             dto.setMemo(stockOutFrozenBox.getMemo());
-            String position = BankUtil.toPositionString(stockOutFrozenBox.getStockOutBoxPosition());
+            String position = BankUtil.getPositionString(stockOutFrozenBox.getEquipmentCode(),stockOutFrozenBox.getAreaCode(),
+                stockOutFrozenBox.getSupportRackCode(),stockOutFrozenBox.getColumnsInShelf(),stockOutFrozenBox.getRowsInShelf(),null,null);
             dto.setPosition(position);
             Long count = stockOutFrozenTubeRepository.countByFrozenBox(stockOutFrozenBox.getId());
             dto.setCountOfSample(count);

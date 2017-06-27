@@ -92,6 +92,22 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
     @ManyToOne(optional = false)
     private FrozenBox frozenBox;
 
+    /**
+     * 设备
+     */
+    @ManyToOne
+    private Equipment equipment;
+    /**
+     * 冻存架
+     */
+    @ManyToOne
+    private SupportRack supportRack;
+    /**
+     * 区域
+     */
+    @ManyToOne
+    private Area area;
+
     public Long getId() {
         return id;
     }
@@ -241,6 +257,39 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
 
     public void setFrozenBox(FrozenBox frozenBox) {
         this.frozenBox = frozenBox;
+    }
+
+    public Equipment getEquipment() {
+        return equipment;
+    }
+    public TranshipBox equipment(Equipment equipment) {
+        this.equipment = equipment;
+        return this;
+    }
+    public void setEquipment(Equipment equipment) {
+        this.equipment = equipment;
+    }
+
+    public SupportRack getSupportRack() {
+        return supportRack;
+    }
+    public TranshipBox supportRack(SupportRack supportRack) {
+        this.supportRack = supportRack;
+        return this;
+    }
+    public void setSupportRack(SupportRack supportRack) {
+        this.supportRack = supportRack;
+    }
+
+    public Area getArea() {
+        return area;
+    }
+    public TranshipBox area(Area area) {
+        this.area = area;
+        return this;
+    }
+    public void setArea(Area area) {
+        this.area = area;
     }
 
     @Override

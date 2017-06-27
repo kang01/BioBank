@@ -29,7 +29,8 @@
             'selectize',
             'blockUI',
             'toastr',
-            'angularMoment'
+            'angularMoment',
+            'pageslide-directive'
         ])
         .run(run);
 

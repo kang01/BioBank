@@ -19,4 +19,7 @@ public interface SupportRackRepository extends JpaRepository<SupportRack,Long> {
     List<SupportRack> findSupportRackByEquipmentCodeAndAreaCode(String equipmentCode, String areaCode);
 
     SupportRack findOneBySupportRackCodeAndAreaId(String supportRackCode, Long areaId);
+
+    @Query("select r from SupportRack r where r.area.equipment.id =?1")
+    List<SupportRack> findByEquipmentId(Long id);
 }

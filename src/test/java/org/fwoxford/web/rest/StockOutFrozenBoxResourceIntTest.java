@@ -99,11 +99,7 @@ public class StockOutFrozenBoxResourceIntTest {
         em.persist(frozenBox);
         em.flush();
         stockOutFrozenBox.setFrozenBox(frozenBox);
-        // Add required entity
-        StockOutBoxPosition stockOutBoxPosition = StockOutBoxPositionResourceIntTest.createEntity(em);
-        em.persist(stockOutBoxPosition);
-        em.flush();
-        stockOutFrozenBox.setStockOutBoxPosition(stockOutBoxPosition);
+        // Add enBox.setFrozenBox(frozenBox);
         // Add required entity
         StockOutTask stockOutTask = StockOutTaskResourceIntTest.createEntity(em);
         em.persist(stockOutTask);

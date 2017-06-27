@@ -19,6 +19,14 @@
             "projectSiteName": "Project Site Name",
             "memo": "Memo",
             "status": "Status",
+            "detailedLocation": "Detailed Location",
+            "department": "Department",
+            "detailedAddress": "Detailed Address",
+            "zipCode": "Zip Code",
+            "username1": "Username 1",
+            "phoneNumber1": "Phone Number 1",
+            "username2": "Username 2",
+            "phoneNumber2": "Phone Number 2",
             "projectRelate": "Project Relate"
         }
     }

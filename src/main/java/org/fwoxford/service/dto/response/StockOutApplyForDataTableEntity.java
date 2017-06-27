@@ -88,6 +88,12 @@ public class StockOutApplyForDataTableEntity {
     @JsonView(DataTablesOutput.View.class)
     @Column(name = "level_no")
     private Integer levelNo;
+    /**
+     * 满足需求样本量
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "count_of_stock_sample")
+    private Long countOfStockSample;
 
     @Override
     public boolean equals(Object o) {
@@ -188,5 +194,13 @@ public class StockOutApplyForDataTableEntity {
 
     public void setLevelNo(Integer levelNo) {
         this.levelNo = levelNo;
+    }
+
+    public Long getCountOfStockSample() {
+        return countOfStockSample;
+    }
+
+    public void setCountOfStockSample(Long countOfStockSample) {
+        this.countOfStockSample = countOfStockSample;
     }
 }

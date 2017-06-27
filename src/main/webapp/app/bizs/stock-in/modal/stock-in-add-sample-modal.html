@@ -1,29 +1,81 @@
 
-<form class="form-horizontal" novaildate name="newSampleForm">
+<form class="" novaildate name="newSampleForm">
     <div class="modal-header">
         <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
         <h3 class="modal-title" id="modal-title">新增样本</h3>
     </div>
-    <div class="modal-body" id="modal-body">
-        <h4>请选择对应样本，注意样本类型及样本分类，与盒子是否一致!</h4>
-        <div class="split-box">
-            <table class="table table-bordered">
-                <thead>
+    <div class="modal-body add-sample-modal-body" id="modal-body">
+        <div class="row">
+            <form>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>项目编码</label>
+                        <selectize options='vm.projectOptions' config="vm.projectConfig"
+                                   ng-model="vm.entity.projectId" ng-disabled="true"></selectize>
+                    </div>
+                </div>
+                <div class="col-md-3 project-sites" style="height: 30px">
+                    <div class="form-group">
+                        <label>项目点</label>
+                        <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
+                                   ng-model="vm.entity.projectSiteId"></selectize>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>样本类型</label>
+                        <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                                   ng-model="vm.entity.sampleTypeId" ng-disabled="vm.sampleTypeName != '98'"></selectize>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>样本分类</label>
+                        <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
+                                   ng-model="vm.entity.sampleClassificationId"
+                                   ng-disabled="vm.sampleTypeName != '98'"
+                        ></selectize>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>状态</label>
+                        <selectize options='vm.tubeStatusOptions' config="vm.tubeStatusConfig"
+                                   ng-model="vm.entity.status"
+                        ></selectize>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <label>备注</label>
+                        <textarea  class="form-control resize-none" rows="1" ng-model="vm.entity.memo"></textarea>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="" ng-if="vm.tubes.length">
+            <h4>请选择对应样本，注意样本类型及样本分类，与盒子是否一致!</h4>
+            <div class="split-box">
+                <table class="table table-bordered">
+                    <thead>
                     <th>样本编码</th>
                     <th>盒子编码</th>
                     <th>样本类型</th>
                     <th>样本分类</th>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <tr ng-repeat="item in vm.tubes track by $index" ng-click="vm.sampleBoxSelect(item,$event)">
                         <td>{{item.sampleCode}}</td>
                         <td>{{item.frozenBoxCode}}</td>
                         <td>{{item.sampleTypeName}}</td>
                         <td>{{item.sampleClassificationName}}</td>
                     </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
+
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" type="button" ng-click="vm.ok()" >确定</button>

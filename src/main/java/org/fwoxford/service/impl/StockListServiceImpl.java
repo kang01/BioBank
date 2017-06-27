@@ -38,8 +38,16 @@ public class StockListServiceImpl implements StockListService {
     private StockFrozenTubeListRepositries stockFrozenTubeListRepositries;
 
     @Autowired
-    private StockFrozenBoxListRepositries stockFrozenBoxListRepositries;
+    private FrozenTubeHistoryRepositories frozenTubeHistoryRepositories;
 
+    @Autowired
+    private StockFrozenBoxListRepositries stockFrozenBoxListRepositries;
+    /**
+     * 冻存位置清单
+     * @param input
+     * @param searchForm
+     * @return
+     */
     @Override
     public DataTablesOutput<FrozenPositionListAllDataTableEntity> getPageStockFrozenPositionList(DataTablesInput input, FrozenPositionListSearchForm searchForm) {
         DataTablesOutput<FrozenPositionListAllDataTableEntity> stockInDataTablesOutput = new DataTablesOutput<FrozenPositionListAllDataTableEntity>();
@@ -76,6 +84,12 @@ public class StockListServiceImpl implements StockListService {
 
         return stockInDataTablesOutput;
     }
+    /**
+     * 冻存盒清单
+     * @param input
+     * @param searchForm
+     * @return
+     */
     @Override
     public DataTablesOutput<FrozenBoxListAllDataTableEntity> getPageStockFrozenBoxList(DataTablesInput input, FrozenBoxListSearchForm searchForm) {
 
@@ -99,6 +113,12 @@ public class StockListServiceImpl implements StockListService {
         output = stockFrozenBoxListRepositries.findAll(input,specification,null,convert);
         return output;
     }
+    /**
+     * 样本清单
+     * @param input
+     * @param search
+     * @return
+     */
     @Override
     public DataTablesOutput<FrozenTubeListAllDataTableEntity> getPageStockFrozenTubeList(DataTablesInput input, FrozenTubeListSearchForm search) {
         DataTablesOutput<FrozenTubeListAllDataTableEntity> output = new DataTablesOutput<FrozenTubeListAllDataTableEntity>();
@@ -123,6 +143,39 @@ public class StockListServiceImpl implements StockListService {
         };
         output = stockFrozenTubeListRepositries.findAll(input,specification,null,convert);
         return output;
+    }
+    /**
+     * 样本历史清单
+     * @param frozenTubeId
+     * @return
+     */
+    @Override
+    public List<FrozenTubeHistory> findFrozenTubeHistoryDetail(Long frozenTubeId) {
+        Converter<FrozenTubeHistory, FrozenTubeHistory> convert = new Converter<FrozenTubeHistory, FrozenTubeHistory>() {
+            @Override
+            public FrozenTubeHistory convert(FrozenTubeHistory e) {
+                String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
+                return new FrozenTubeHistory(e.getId(),e.getTranshipId(),e.getTranshipCode(),e.getStockInId(),e.getStockInCode(),
+                    e.getStockOutTaskId(),e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),
+                    e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),position,e.getEquipmentCode(),e.getAreaCode(),
+                    e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),e.getAreaId(),
+                    e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId()
+                );
+            }
+        };
+        List<FrozenTubeHistory> frozenTubeHistories = frozenTubeHistoryRepositories.findByFrozenTubeId(frozenTubeId);
+        List<FrozenTubeHistory> frozenTubeHistoryList = new ArrayList<FrozenTubeHistory>();
+        for (FrozenTubeHistory e :frozenTubeHistories){
+            String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
+            FrozenTubeHistory frozenTubeHistory = new FrozenTubeHistory(e.getId(),e.getTranshipId(),e.getTranshipCode(),e.getStockInId(),e.getStockInCode(),
+                e.getStockOutTaskId(),e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),
+                e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),position,e.getEquipmentCode(),e.getAreaCode(),
+                e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),e.getAreaId(),
+                e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId()
+            );
+            frozenTubeHistoryList.add(frozenTubeHistory);
+        }
+        return frozenTubeHistoryList;
     }
 
     private CriteriaQuery<?> getSearchQueryForBox(Root<FrozenBoxListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, FrozenBoxListSearchForm searchForm) {

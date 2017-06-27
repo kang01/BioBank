@@ -1,6 +1,8 @@
 package org.fwoxford.web.rest;
 
+import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.github.jhipster.web.util.ResponseUtil;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 import org.fwoxford.service.StockListService;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -90,4 +93,16 @@ public class StockListResource {
         return stockListService.getPageStockFrozenTubeList(input,search);
     }
 
+    /**
+     * 查询样本历史详情
+     * @param frozenTubeId
+     * @return
+     */
+    @GetMapping("/stock-list/frozen-tube-history-detail/{frozenTubeId}")
+    @Timed
+    public ResponseEntity<List<FrozenTubeHistory>> getFrozenTubeHistoryDetail(@PathVariable Long frozenTubeId) {
+        log.debug("REST request to get FrozenTube : {}", frozenTubeId);
+        List<FrozenTubeHistory> frozenTubeHistories = stockListService.findFrozenTubeHistoryDetail(frozenTubeId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(frozenTubeHistories));
+    }
 }

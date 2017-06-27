@@ -489,7 +489,7 @@ public class StockInServiceImpl implements StockInService {
         stockInOld.setProject(stockInMapper.projectFromId(stockInDTO.getProjectId()));
         stockInOld.setProjectCode(stockInDTO.getProjectCode());
         stockInOld.setProjectSiteCode(stockInDTO.getProjectSiteCode());
-        stockInOld.setProjectSite(stockInMapper.projectSiteFromId(stockInDTO.getProjectId()));
+        stockInOld.setProjectSite(stockInMapper.projectSiteFromId(stockInDTO.getProjectSiteId()));
         stockInOld = stockInRepository.save(stockInOld);
         return stockInMapper.stockInToStockInDetail(stockInOld);
     }

@@ -14,11 +14,23 @@
                                  referencedColumnNames="id"
                                  referencedTableName="frozen_box"/>
 
-        <addForeignKeyConstraint baseColumnNames="stock_out_box_position_id"
+        <addForeignKeyConstraint baseColumnNames="equipment_id"
                                  baseTableName="stock_out_box"
-                                 constraintName="stock_out_box_pos_id"
+                                 constraintName="fk_stock_out_box_equipment_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="stock_out_box_position"/>
+                                 referencedTableName="equipment"/>
+
+        <addForeignKeyConstraint baseColumnNames="area_id"
+                                 baseTableName="stock_out_box"
+                                 constraintName="fk_stock_out_box_area_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="area"/>
+
+        <addForeignKeyConstraint baseColumnNames="support_rack_id"
+                                 baseTableName="stock_out_box"
+                                 constraintName="fk_stock_out_box_shelves_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="support_rack"/>
 
         <addForeignKeyConstraint baseColumnNames="stock_out_task_id"
                                  baseTableName="stock_out_box"

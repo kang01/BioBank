@@ -185,7 +185,7 @@
                 var oData = aoData[i];
                 data[oData.name] = oData.value;
             }
-            data["stockInCode"] = vm.stockInCode;
+            data["stockInCode"] = vm.entity.stockInCode;
             var jqDt = this;
             StockInBoxService.getJqDataTableValues(data, oSettings).then(function (res){
                 vm.selectAll = false;
@@ -749,15 +749,7 @@
                                             for(var i = 0; i < vm.frozenTubeArray.length; i++){
                                                 for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
                                                     if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
-                                                        vm.frozenTubeArray[i][j].sampleCode = "";
-                                                        // vm.frozenTubeArray[i][j].status = "";
-                                                        // vm.frozenTubeArray[i][j].projectSiteId = "";
-                                                        // vm.frozenTubeArray[i][j].memo = "";
-                                                        // vm.frozenTubeArray[i][j].sampleTypeId = "";
-                                                        // vm.frozenTubeArray[i][j].backColor = "";
-                                                        // vm.frozenTubeArray[i][j].sampleClassificationId = "";
-                                                        // vm.frozenTubeArray[i][j].sampleClassificationName = "";
-                                                        // vm.frozenTubeArray[i][j].backColorForClass = "";
+                                                        vm.frozenTubeArray[row][col].sampleCode = "";
                                                     }
                                                 }
                                             }
@@ -770,7 +762,7 @@
                                         for(var i = 0; i < vm.frozenTubeArray.length; i++){
                                             for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
                                                 if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
-                                                    vm.frozenTubeArray[i][j].sampleCode = "";
+                                                    vm.frozenTubeArray[row][col].sampleCode = "";
                                                 }
                                             }
                                         }
@@ -791,7 +783,31 @@
                     }
 
                 },
-                
+                beforeChange: function(changes, source) {
+                    for (var k=0; k<changes.length; ++k){
+                        var item = changes[k];
+                        var row = item[0];
+                        var col = item[1];
+                        var oldTube = item[2];
+                        var newTube = item[3];
+                        for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                            for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                if(i == row  && j == col){
+                                    continue;
+                                }
+                                if(vm.frozenTubeArray[i][j].sampleCode == changes[row][col].sampleCode){
+                                    vm.frozenTubeArray[row][col].sampleCode = "";
+                                    hotRegisterer.getInstance('my-handsontable').render();
+                                    toastr.error("冻存管编码不能重复!");
+                                    return false;
+                                }
+
+                            }
+                        }
+                    }
+
+
+                }
 
             };
             // 获取控制实体
@@ -1146,7 +1162,6 @@
         }
         //保存冻存盒
         function _fnSaveBox() {
-            // console.log(JSON.stringify(vm.frozenTubeArray));
             vm.box.frozenTubeDTOS = [];
             var tubeList = _.flatten(vm.frozenTubeArray);
             for(var i = 0; i< tubeList.length; i++){

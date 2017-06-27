@@ -35,8 +35,11 @@
         vm.sampleTypeName = items.sampleTypeName;
         if(vm.sampleTypeName != "98"){
             vm.entity.sampleTypeId = items.sampleTypeId;
+            vm.sampleTypeId = items.sampleTypeId;
             vm.entity.sampleTypeName = items.sampleTypeName;
+            vm.sampleTypeName = items.sampleTypeName;
             vm.entity.sampleClassificationId = items.sampleClassificationId;
+            vm.sampleClassificationId = items.sampleClassificationId;
             vm.entity.sampleClassificationName = items.sampleClassificationName;
 
         }
@@ -104,6 +107,8 @@
                     vm.entity.sampleTypeId = value;
                     vm.entity.sampleTypeName = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeName;
                     vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+value}).backColor;
+                    $('table').find('.rowLight').removeClass("rowLight");
+                    tube = "";
                 }
             };
             vm.queryProjectSampleClass = _fnQueryProjectSampleClass;
@@ -141,7 +146,7 @@
 
         function _fnSampleBoxSelect(item,$event) {
             tube = item;
-            console.log(JSON.stringify(item));
+            vm.entity.projectSiteId = item.projectSiteId;
             vm.entity.sampleTypeId = item.sampleTypeId;
             vm.entity.sampleClassificationId = item.sampleClassificationId;
             vm.entity.projectId = item.projectId;
@@ -160,22 +165,24 @@
             $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
-            console.log(JSON.stringify(vm.entity));
-            // if(oldTube.sampleTypeName != "98"){
-            //     if(oldTube.sampleTypeId != tube.sampleTypeId){
-            //         toastr.error("不同样本类型不能被选择！");
-            //         return;
-            //     }else{
-            //         if(oldTube.sampleClassificationId){
-            //             if(oldTube.sampleClassificationId != tube.sampleClassificationId){
-            //                 toastr.error("不同样本分类不能被选择！");
-            //                 return;
-            //             }
-            //         }
-            //
-            //     }
-            //
-            // }
+            if(vm.sampleTypeName != "98"){
+                if(tube){
+                    if(vm.sampleTypeId != tube.sampleTypeId){
+                        toastr.error("不同样本类型不能被选择！");
+                        return;
+                    }else{
+                        if(vm.entity.sampleClassificationId){
+                            if(vm.sampleClassificationId != tube.sampleClassificationId){
+                                toastr.error("不同样本分类不能被选择！");
+                                return;
+                            }
+                        }
+
+                    }
+                }
+
+
+            }
             $uibModalInstance.close(vm.entity);
         };
     }

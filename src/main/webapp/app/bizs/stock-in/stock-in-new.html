@@ -73,6 +73,9 @@
                             <h4>冻存盒信息</h4>
                         </div>
                         <div class="col-md-10  text-right mt-5">
+                            <button type="button" class="btn btn-default btn-sm btn-primary" ng-click="vm.saveBox()" ng-disabled="!vm.box.frozenBoxCode">
+                                保　　存
+                            </button>
                             <button type="button" class="btn btn-default btn-sm"
                                     ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus"
                                     uib-btn-checkbox ng-click="vm.editStatus()" ng-disabled="!vm.box">状态编辑
@@ -83,9 +86,7 @@
                             <button type="button" class="btn btn-default btn-sm" ng-click="vm.tubeRemark()"
                                     ng-disabled="!vm.box || vm.flagStatus">样本批注
                             </button>
-                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.saveBox()" ng-disabled="!vm.box.frozenBoxCode">
-                                保　　存
-                            </button>
+
                             <!--<button type="button" class="btn btn-default btn-sm" ng-click="vm.delBox()" ng-disabled="!vm.box">-->
                                 <!--删除盒子-->
                             <!--</button>-->
@@ -105,19 +106,19 @@
                                     <input type="text" class="form-control"  ng-model="vm.box.frozenBoxCode" ng-disabled="vm.editFlag" ng-blur="vm.frozenBoxForStockIn()">
                                 </div>
                                 <div class="form-group">
-                                    <label>盒类型</label>{{vm.box.frozenBoxTypeId}}
+                                    <label>盒类型</label>
                                     <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
-                                               ng-model="vm.box.frozenBoxTypeId" ></selectize>
+                                               ng-model="vm.box.frozenBoxTypeId"  ng-disabled="vm.editFlag"></selectize>
                                 </div>
                                 <div class="form-group">
                                     <label>样本类型</label>
                                     <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                               ng-model="vm.box.sampleTypeId" ></selectize>
+                                               ng-model="vm.box.sampleTypeId"  ng-disabled="vm.editFlag"></selectize>
                                 </div>
                                 <div class="form-group">
                                     <label>样本分类</label>
                                     <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
-                                               ng-model="vm.box.sampleClassificationId"
+                                               ng-model="vm.box.sampleClassificationId"  ng-disabled="vm.editFlag"
                                     ></selectize>
                                 </div>
                                 <div class="form-group">

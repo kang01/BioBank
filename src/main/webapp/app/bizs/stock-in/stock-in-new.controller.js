@@ -442,11 +442,13 @@
         vm.frozenBoxForStockIn =_fnFrozenBoxForStockIn;
         function _fnFrozenBoxForStockIn() {
             StockInInputService.queryStockInBox(vm.box.frozenBoxCode).success(function (data) {
-                // console.log(JSON.stringify(data));
                 if(data.frozenBoxCode){
                     vm.box = data;
                     _reloadTubesForTable(vm.box)
                 }
+            }).error(function (res) {
+                toastr.error(res.message);
+                vm.box.frozenBoxCode = "";
             });
         }
         function _initBoxInfo() {
@@ -678,56 +680,26 @@
                             var col = item[1];
                             var oldTube = item[2];
                             var newTube = item[3];
-                            // console.log(JSON.stringify(oldTube));
-                            // console.log(JSON.stringify(newTube));
-                            // var tubes = _.flatten(angular.copy(vm.frozenTubeArray));
-                            // for(var i = 0; i < tubes.length; i++){
-                            //     if(tubes[i].sampleCode == oldTube.sampleCode){
-                            //         var tableCtrl = _getTableCtrl();
-                            //         for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                            //             for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                            //                 if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
-                            //                     vm.frozenTubeArray[i][j].sampleCode = "";
-                            //                 }
-                            //             }
-                            //         }
-                            //         tableCtrl.loadData(vm.frozenTubeArray);
-                            //         toastr.error("样本编码不能重复!");
-                            //         return;
-                            //     }
-                            // }
-
-
                             if (oldTube.id
                                 || (oldTube.sampleCode && oldTube.sampleCode.length > 1)
                                 || (oldTube.sampleTempCode && oldTube.sampleTempCode.length > 1)){
-                                StockInInputService.queryTube(oldTube.sampleCode,vm.entity.projectCode).success(function (data) {
 
+                                // When delete a tube.
+                                if (newTube === ""){
+                                    newTube = angular.copy(oldTube);
+                                    newTube.id = null;
+                                    newTube.sampleCode = "";
+                                    newTube.sampleTempCode = "";
+                                    hotRegisterer.getInstance('my-handsontable').setDataAtCell(row, col, newTube);
+                                }else{
+                                    StockInInputService.queryTube(oldTube.sampleCode,vm.entity.projectCode).success(function (data) {
+                                        var stockInTubes;
+                                        if(vm.box.sampleTypeName != "98"){
+                                            stockInTubes = _.filter(data,{sampleTypeId:vm.box.sampleTypeId});
+                                        }else{
+                                            stockInTubes = data;
+                                        }
 
-
-
-
-                                    // console.log(JSON.stringify(oldTube));
-
-                                    // if(data.length == 1){
-                                    //     var tableCtrl = _getTableCtrl();
-                                    //     for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                                    //         for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                                    //             if(vm.frozenTubeArray[i][j].sampleTypeId != data[0].sampleTypeId){
-                                    //                 return;
-                                    //             }
-                                    //             if(vm.frozenTubeArray[i][j].sampleCode == data[0].sampleCode){
-                                    //                if(vm.frozenTubeArray[i][j].sampleTypeName == "98"){
-                                    //                    vm.frozenTubeArray[i][j].sampleClassificationId =  data[0].sampleClassificationId;
-                                    //                 }
-                                    //                 vm.frozenTubeArray[i][j].status =  data[0].status;
-                                    //                 vm.frozenTubeArray[i][j].memo =  data[0].memo;
-                                    //             }
-                                    //         }
-                                    //     }
-                                    //     tableCtrl.loadData(vm.frozenTubeArray);
-                                    // }
-                                    // if(data.length > 1){
                                         modalInstance = $uibModal.open({
                                             animation: true,
                                             templateUrl: 'app/bizs/stock-in/modal/stock-in-add-sample-modal.html',
@@ -739,7 +711,7 @@
                                                 items: function () {
                                                     return {
                                                         status :1,
-                                                        tubes:data,
+                                                        tubes:stockInTubes,
                                                         sampleCode:oldTube.sampleCode,
                                                         projectSiteId:vm.entity.projectSiteId,
                                                         projectId:vm.entity.projectId,
@@ -792,25 +764,18 @@
                                             tableCtrl.loadData(vm.frozenTubeArray);
                                         });
 
-                                }).error(function (data) {
-                                    var tableCtrl = _getTableCtrl();
-                                    toastr.error(data.message);
-                                    for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                                        for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                                            if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
-                                                vm.frozenTubeArray[i][j].sampleCode = "";
+                                    }).error(function (data) {
+                                        var tableCtrl = _getTableCtrl();
+                                        toastr.error(data.message);
+                                        for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                                            for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                                if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
+                                                    vm.frozenTubeArray[i][j].sampleCode = "";
+                                                }
                                             }
                                         }
-                                    }
-                                    tableCtrl.loadData(vm.frozenTubeArray);
-                                });
-                                // When delete a tube.
-                                if (newTube === ""){
-                                    newTube = angular.copy(oldTube);
-                                    newTube.id = null;
-                                    newTube.sampleCode = "";
-                                    newTube.sampleTempCode = "";
-                                    hotRegisterer.getInstance('my-handsontable').setDataAtCell(row, col, newTube);
+                                        tableCtrl.loadData(vm.frozenTubeArray);
+                                    });
                                 }
                             }
                         }
@@ -825,7 +790,8 @@
                         }
                     }
 
-                }
+                },
+                
 
             };
             // 获取控制实体

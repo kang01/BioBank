@@ -751,7 +751,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }
             tubeDTO.setProjectCode(project.getProjectCode());
         }
-        if(tubeDTO.getProjectSiteId()!=null){
+        if(tubeDTO.getProjectSiteId()==null){
             tubeDTO.setProjectSiteId(frozenBoxDTO.getProjectSiteId());
             tubeDTO.setProjectSiteCode(frozenBoxDTO.getProjectSiteCode());
         }else {

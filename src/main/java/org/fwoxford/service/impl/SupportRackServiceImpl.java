@@ -1,8 +1,10 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
+import org.fwoxford.domain.Equipment;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.SupportRackType;
+import org.fwoxford.repository.EquipmentRepository;
 import org.fwoxford.repository.FrozenBoxRepository;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.SupportRackService;
@@ -10,6 +12,7 @@ import org.fwoxford.domain.SupportRack;
 import org.fwoxford.repository.SupportRackRepository;
 import org.fwoxford.service.dto.SupportRackDTO;
 import org.fwoxford.service.mapper.SupportRackMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,9 @@ public class SupportRackServiceImpl implements SupportRackService{
 
     @Autowired
     private FrozenBoxRepository frozenBoxRepository;
+
+    @Autowired
+    EquipmentRepository equipmentRepository;
 
     public SupportRackServiceImpl(SupportRackRepository supportRackRepository, SupportRackMapper supportRackMapper) {
         this.supportRackRepository = supportRackRepository;
@@ -107,7 +113,11 @@ public class SupportRackServiceImpl implements SupportRackService{
 
     @Override
     public List<SupportRackDTO> getIncompleteShelves(String equipmentCode) {
-        List<SupportRack> supportRacks = supportRackRepository.findSupportRackByEquipmentCode(equipmentCode);
+        Equipment equipment = equipmentRepository.findOneByEquipmentCode(equipmentCode);
+        if(equipment == null){
+            throw new BankServiceException("设备不存在！");
+        }
+        List<SupportRack> supportRacks = supportRackRepository.findByEquipmentId(equipment.getId());
         List<FrozenBox> frozenBoxes = frozenBoxRepository.findByEquipmentCode(equipmentCode);
         List<SupportRack> supportRackList = new ArrayList<SupportRack>();
         for(SupportRack rack :supportRacks){
@@ -117,7 +127,8 @@ public class SupportRackServiceImpl implements SupportRackService{
             int countShelves = Integer.parseInt(rows)*Integer.parseInt(colomns);
             int count = 0;
             for(FrozenBox box :frozenBoxes){
-                if(!box.getStatus().equals(Constants.FROZEN_BOX_INVALID)
+                if(!box.getStatus().equals(Constants.FROZEN_BOX_INVALID )
+                    && box.getSupportRack()!=null
                     && rack.getId().equals(box.getSupportRack().getId())){
                     count++;
                 }

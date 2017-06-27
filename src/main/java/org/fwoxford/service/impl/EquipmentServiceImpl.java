@@ -1,17 +1,23 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.repository.SupportRackRepository;
 import org.fwoxford.service.EquipmentService;
 import org.fwoxford.domain.Equipment;
 import org.fwoxford.repository.EquipmentRepository;
+import org.fwoxford.service.SupportRackService;
 import org.fwoxford.service.dto.EquipmentDTO;
+import org.fwoxford.service.dto.SupportRackDTO;
 import org.fwoxford.service.mapper.EquipmentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +34,12 @@ public class EquipmentServiceImpl implements EquipmentService{
     private final EquipmentRepository equipmentRepository;
 
     private final EquipmentMapper equipmentMapper;
+
+    @Autowired
+    private SupportRackService supportRackService;
+
+    @Autowired
+    private SupportRackRepository supportRackRepository;
 
     public EquipmentServiceImpl(EquipmentRepository equipmentRepository, EquipmentMapper equipmentMapper) {
         this.equipmentRepository = equipmentRepository;
@@ -60,6 +72,14 @@ public class EquipmentServiceImpl implements EquipmentService{
     public Page<EquipmentDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Equipment");
         Page<Equipment> result = equipmentRepository.findAllUnFullEquipment(pageable);
+        Iterator<Equipment> it = result.iterator();
+        while(it.hasNext()){
+            Equipment equipment = it.next();
+            List<SupportRackDTO> supportRackDTOList = supportRackService.getIncompleteShelves(equipment.getEquipmentCode());
+            if(supportRackDTOList==null || supportRackDTOList.size()==0){
+                it.remove();
+            }
+        }
         return result.map(equipment -> equipmentMapper.equipmentToEquipmentDTO(equipment));
     }
 

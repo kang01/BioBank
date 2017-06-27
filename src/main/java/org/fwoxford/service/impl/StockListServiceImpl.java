@@ -350,7 +350,7 @@ public class StockListServiceImpl implements StockListService {
                 predicate.add(p5);
             }
             if (searchForm.getSampleUsedTimes() != null) {
-                Predicate p5 = cb.equal(root.get("sampleUsedTimes").as(Long.class), searchForm.getDiseaseType());
+                Predicate p5 = cb.equal(root.get("sampleUsedTimes").as(Long.class), searchForm.getSampleUsedTimes());
                 predicate.add(p5);
             }
             Predicate[] pre = new Predicate[predicate.size()];

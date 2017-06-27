@@ -433,8 +433,12 @@
                 if(value.status){
                     changeSampleStatus(value.status,row,col,td,cellProperties);
                 }
-                htm = "<div ng-if='value.sampleCode' style='line-height: 20px'>"+value.sampleCode+"</div>"+
-                    "<div ng-if='value.sampleTmpCode && !value.sampleCode' style='line-height: 20px'>"+value.sampleTempCode+"</div>";
+                if (value.sampleCode){
+                    htm = "<div style='line-height: 20px'>"+value.sampleCode+"</div>";
+                } else {
+                    htm = "<div style='line-height: 20px'>"+value.sampleTempCode+"</div>";
+                }
+
             }else {
                 htm = "";
             }

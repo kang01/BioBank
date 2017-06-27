@@ -349,40 +349,9 @@ public class StockListServiceImpl implements StockListService {
                 Predicate p5 = cb.equal(root.get("diseaseType").as(Long.class), searchForm.getDiseaseType());
                 predicate.add(p5);
             }
-            if (searchForm.getSpaceType() != null) {
-                String searchValue = "";
-                switch (searchForm.getSpaceType()) {
-                    case 1:
-                        searchValue = "countOfUsed";
-                        break;
-                    case 2:
-                        searchValue = "countOfRest";
-                        break;
-                    default:break;
-                }
-                Predicate p5 = null;
-                //1：大于，2：大于等于，3：等于，4：小于，5：小于等于
-                switch (searchForm.getCompareType()) {
-                    case 1:
-                        p5 = cb.gt(root.get(searchValue).as(Long.class), searchForm.getNumber());
-                        break;
-                    case 2:
-                        p5 = cb.ge(root.get(searchValue).as(Long.class), searchForm.getNumber());
-                        break;
-                    case 3:
-                        p5 = cb.equal(root.get(searchValue).as(Long.class), searchForm.getNumber());
-                        break;
-                    case 4:
-                        p5 = cb.lt(root.get(searchValue).as(Long.class), searchForm.getNumber());
-                        break;
-                    case 5:
-                        p5 = cb.le(root.get(searchValue).as(Long.class), searchForm.getNumber());
-                        break;
-                    default:break;
-                }
-                if (searchForm.getSpaceType() != null && searchForm.getCompareType() != null && searchForm.getNumber() != null) {
-                    predicate.add(p5);
-                }
+            if (searchForm.getSampleUsedTimes() != null) {
+                Predicate p5 = cb.equal(root.get("sampleUsedTimes").as(Long.class), searchForm.getDiseaseType());
+                predicate.add(p5);
             }
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));

@@ -680,7 +680,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }
         }
         SampleType entity = sampleTypeRepository.findOne(frozenBoxDTO.getSampleTypeId());
-        if(frozenBox == null){
+        if(frozenBox.getId()==null){
             //保存冻存盒信息
             frozenBoxDTO.setIsSplit(Constants.NO);
             //更改冻存盒的项目
@@ -725,18 +725,17 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }
             tubeDTO = createFrozenTubeBySampleType(tubeDTO);
             //验证冻存管是否重复
-            List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeCode(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeCode());
+            List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeId(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeId());
             for(FrozenTube f:frozenTubeList){
-                if(tubeDTO.getId()!=null&&f.getId()!=tubeDTO.getId()){
-                    String position = BankUtil.getPositionString(f.getFrozenBox().getEquipmentCode(),f.getFrozenBox().getAreaCode(),
-                        f.getFrozenBox().getSupportRackCode(),f.getFrozenBox().getColumnsInShelf(),f.getFrozenBox().getRowsInShelf(),null,null);
-                    throw new BankServiceException("冻存管编码已经在"+position+"中存在，盒内位置是"+f.getTubeColumns()+f.getTubeColumns());
+                if(tubeDTO.getId()==null ||
+                    (tubeDTO.getId()!=null&&!f.getId().equals(tubeDTO.getId()))){
+                    throw new BankServiceException("冻存管编码"+tubeDTO.getSampleCode()+"已经存在，不能保存该冻存管！",tubeDTO.getSampleCode());
                 }
             }
 
             String status = getFrozenTubeStatus(tubeDTO);
             if(!status.equals("") && !status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) && !status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
-                throw new BankServiceException("冻存管编码已经在库存内，不能保存该冻存管！",tubeDTO.getSampleCode());
+                throw new BankServiceException("冻存管编码"+tubeDTO.getSampleCode()+"已经存在，不能保存该冻存管！",tubeDTO.getSampleCode());
             }
             if(status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) || status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)||status.equals("")){
                 countOfStockInTube ++;

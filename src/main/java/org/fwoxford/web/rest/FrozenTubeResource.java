@@ -148,11 +148,11 @@ public class FrozenTubeResource {
      * @param sampleCode
      * @return
      */
-    @GetMapping("/frozen-tubes/sample/{sampleCode}/project/{projectCode}/sampleType/{sampleTypeCode}")
+    @GetMapping("/frozen-tubes/sample/{sampleCode}/project/{projectCode}/sampleType/{id}")
     @Timed
-    public ResponseEntity<List<FrozenTubeDTO>> getFrozenTubeBySampleCode(@PathVariable String sampleCode,@PathVariable String projectCode,@PathVariable String sampleTypeCode) {
+    public ResponseEntity<List<FrozenTubeDTO>> getFrozenTubeBySampleCode(@PathVariable String sampleCode,@PathVariable String projectCode,@PathVariable Long id) {
         log.debug("REST request to get FrozenTube : {}", sampleCode);
-        List<FrozenTubeDTO> frozenTubeDTO = frozenTubeService.getFrozenTubeBySampleCode(sampleCode,projectCode,sampleTypeCode);
+        List<FrozenTubeDTO> frozenTubeDTO = frozenTubeService.getFrozenTubeBySampleCode(sampleCode,projectCode,id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(frozenTubeDTO));
     }
 }

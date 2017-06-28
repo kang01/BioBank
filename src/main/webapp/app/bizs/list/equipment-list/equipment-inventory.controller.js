@@ -213,25 +213,26 @@
             DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型'),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用'),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余'),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         function createdRow(row, data, dataIndex) {
-            var planStatus = '';
-            switch (data.status){
-                case '1401': planStatus = '进行中';break;
-                case '1402': planStatus = '已完成';break;
-                case '1403': planStatus = '已作废';break;
-            }
-            $('td:eq(6)', row).html(planStatus);
-            $compile(angular.element(row).contents())($scope);
+            console.log(JSON.stringify(data));
+            // var planStatus = '';
+            // switch (data.status){
+            //     case '1401': planStatus = '进行中';break;
+            //     case '1402': planStatus = '已完成';break;
+            //     case '1403': planStatus = '已作废';break;
+            // }
+            // $('td:eq(6)', row).html(planStatus);
+            // $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;';
+            // return '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +
+            //     '   <i class="fa fa-edit"></i>' +
+            //     '</button>&nbsp;';
+            return "";
         }
     }
 })();

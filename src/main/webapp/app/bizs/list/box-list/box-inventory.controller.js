@@ -201,9 +201,9 @@
 
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('stockOutPlanCode').withTitle('设备'),
-            DTColumnBuilder.newColumn('planDate').withTitle('区域'),
-            DTColumnBuilder.newColumn('purposeOfSample').withTitle('架子'),
+            DTColumnBuilder.newColumn('position').withTitle('位置'),
+            // DTColumnBuilder.newColumn('planDate').withTitle('区域'),
+            // DTColumnBuilder.newColumn('purposeOfSample').withTitle('架子'),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码'),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型'),
@@ -216,14 +216,14 @@
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         function createdRow(row, data, dataIndex) {
-            var planStatus = '';
-            switch (data.status){
-                case '1401': planStatus = '进行中';break;
-                case '1402': planStatus = '已完成';break;
-                case '1403': planStatus = '已作废';break;
-            }
-            $('td:eq(6)', row).html(planStatus);
-            $compile(angular.element(row).contents())($scope);
+            // var planStatus = '';
+            // switch (data.status){
+            //     case '1401': planStatus = '进行中';break;
+            //     case '1402': planStatus = '已完成';break;
+            //     case '1403': planStatus = '已作废';break;
+            // }
+            // $('td:eq(6)', row).html(planStatus);
+            // $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
             return '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +

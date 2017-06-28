@@ -28,8 +28,8 @@
 
 
         };
-        function _queryTube(sampleCode,projectCode) {
-            return $http.get('api/frozen-tubes/sample/'+sampleCode+'/project/'+projectCode);
+        function _queryTube(sampleCode,projectCode,sampleTypeCode) {
+            return $http.get('api/frozen-tubes/sample/'+sampleCode+'/project/'+projectCode+'/sampleType/'+sampleTypeCode);
         }
         function _fnSaveStockIn(param) {
             return $http.post('api/stock-ins',param);

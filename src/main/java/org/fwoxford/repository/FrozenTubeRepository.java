@@ -285,4 +285,6 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     List<Object[]> findFrozenTubeHistoryListBySampleAndProjectCode(String sampleCode, String projectCode);
 
     List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeCode(String sampleCode, String projectCode, String sampleTypeCode);
+
+    List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeId(String sampleCode, String projectCode, Long sampleTypeId);
 }

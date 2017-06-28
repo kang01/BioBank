@@ -14,7 +14,7 @@
         angular.extend(toastrConfig,{
             closeButton:true,
             progressBar:true,
-            timeOut:1500
+            timeOut:3000
         });
     }
 })();

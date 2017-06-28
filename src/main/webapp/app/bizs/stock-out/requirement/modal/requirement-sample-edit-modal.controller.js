@@ -20,8 +20,8 @@
 
         }else{
             vm.sampleRequirement = {
-                isHemolysis:false,
-                isBloodLipid:false,
+                isHemolysis:false,//溶血
+                isBloodLipid:false,//脂质血
                 memo:null,
                 sampleClassificationId:null,
                 age:"0;0"

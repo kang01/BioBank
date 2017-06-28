@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('SampleInventoryController', SampleInventoryController);
 
-    SampleInventoryController.$inject = ['$scope','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable'];
+    SampleInventoryController.$inject = ['$scope','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable','MasterData'];
 
-    function SampleInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable) {
+    function SampleInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable,MasterData) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
@@ -34,24 +34,19 @@
                 {value:"1",label:"4*6"},
                 {value:"2",label:"6*4"}
             ];
-            vm.statusOptions = [
-                {value:"1",label:"运行中"},
-                {value:"2",label:"申请移出"},
-                {value:"3",label:"申请移入"},
-                {value:"4",label:"申请换位"},
-                {value:"5",label:"已停用"}
-            ];
-            vm.compareTypeOption = [
-                {value:"1",label:"大于"},
-                {value:"3",label:"等于"},
-                {value:"4",label:"小于"}
-            ];
-            vm.spaceTypeOption = [
-                {value:"1",label:"已用"},
-                {value:"2",label:"剩余"}
-            ];
-            vm.dto.spaceType = "1";
-            vm.dto.compareType = "1";
+            vm.statusOptions = MasterData.frozenTubeStatus;
+            vm.diseaseTypeOptions = MasterData.diseaseType;
+            // vm.compareTypeOption = [
+            //     {value:"1",label:"大于"},
+            //     {value:"3",label:"等于"},
+            //     {value:"4",label:"小于"}
+            // ];
+            // vm.spaceTypeOption = [
+            //     {value:"1",label:"已用"},
+            //     {value:"2",label:"剩余"}
+            // ];
+            // vm.dto.spaceType = "1";
+            // vm.dto.compareType = "1";
         }
         _init();
         vm.projectConfig = {
@@ -116,26 +111,41 @@
             }
         };
         vm.statusConfig = {
-            valueField:'value',
-            labelField:'label',
+            valueField:'id',
+            labelField:'name',
             maxItems: 1,
             onChange:function(value){
             }
         };
-        vm.compareTypeConfig = {
-            valueField:'value',
-            labelField:'label',
+        vm.diseaseTypeConfig = {
+            valueField:'id',
+            labelField:'name',
             maxItems: 1,
-            onChange:function(value){
+            onChange:function (value) {
             }
         };
-        vm.spaceTypeConfig = {
-            valueField:'value',
-            labelField:'label',
-            maxItems: 1,
-            onChange:function(value){
+        vm.boxCodeConfig = {
+            create: true,
+            persist:false,
+            onChange: function(value){
+                vm.dto.frozenBoxCodeStr = value;
+                console.log(vm.dto.frozenBoxCodeStr)
             }
         };
+        // vm.compareTypeConfig = {
+        //     valueField:'value',
+        //     labelField:'label',
+        //     maxItems: 1,
+        //     onChange:function(value){
+        //     }
+        // };
+        // vm.spaceTypeConfig = {
+        //     valueField:'value',
+        //     labelField:'label',
+        //     maxItems: 1,
+        //     onChange:function(value){
+        //     }
+        // };
 
         function onError(error) {
             // BioBankBlockUi.blockUiStop();
@@ -202,23 +212,41 @@
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型'),
             DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类'),
-            DTColumnBuilder.newColumn('status').withTitle('标签'),
+            DTColumnBuilder.newColumn('sex').withTitle('标签'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {
-            var planStatus = '';
-            switch (data.status){
-                case '1401': planStatus = '进行中';break;
-                case '1402': planStatus = '已完成';break;
-                case '1403': planStatus = '已作废';break;
+            var tag = '';
+            if(data.sex){
+                var sex;
+                switch (data.sex){
+                    case 'M': sex = '男';break;
+                    case 'F': sex = '女';break;
+                    case 'null': sex = '不详';break;
+                }
+                tag += sex+";";
             }
-            $('td:eq(6)', row).html(planStatus);
+            if(data.age){
+                tag += data.age+";";
+            }
+            if(data.diseaseType && data.diseaseType != " "){
+                tag += data.diseaseType+";";
+            }
+            if(data.isHemolysis){
+                tag += "溶血;";
+            }
+            if(data.isBloodLipid){
+                tag += "脂肪血;";
+            }
+            var status = MasterData.getStatus(data.status);
+            $('td:eq(6)', row).html(tag);
+            $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +
-                '   <i class="fa fa-edit"></i>' +
+            return '<button type="button" class="btn btn-xs">' +
+                '   <i class="fa fa-eye"></i>' +
                 '</button>&nbsp;';
         }
     }

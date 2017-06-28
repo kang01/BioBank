@@ -79,11 +79,11 @@
 
             function onProjectSitesSuccess(data) {
                 vm.projectSitesOptions = data;
-                if(!vm.entity.projectSiteId){
-                    if(data.length){
-                        vm.entity.projectSiteId = data[0].id;
-                    }
-                }
+                // if(!vm.entity.projectSiteId){
+                //     if(data.length){
+                //         vm.entity.projectSiteId = data[0].id;
+                //     }
+                // }
             }
 
 

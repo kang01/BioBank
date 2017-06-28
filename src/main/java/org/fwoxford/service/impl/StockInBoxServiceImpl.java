@@ -710,6 +710,20 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         int countOfStockInTube = 0;
         //保存冻存管信息
         for(FrozenTubeDTO tubeDTO:frozenBoxDTO.getFrozenTubeDTOS()){
+
+            //项目编码
+            tubeDTO = createFrozenTubeByProject(frozenBoxDTO,tubeDTO);
+
+            //样本类型---如果冻存盒不是混合的，则需要验证冻存管的样本类型和样本分类是否与冻存盒是一致的，反之，则不验证
+            if(entity.getIsMixed().equals(Constants.NO)){
+                if(tubeDTO.getSampleTypeId() == null){
+                    throw new BankServiceException("冻存管样本类型不能为空！");
+                }
+                if(entity.getId() != tubeDTO.getSampleTypeId()){
+                    throw new BankServiceException("样本类型与冻存盒的样本类型不符！");
+                }
+            }
+            tubeDTO = createFrozenTubeBySampleType(tubeDTO);
             //验证冻存管是否重复
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeCode(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeCode());
             for(FrozenTube f:frozenTubeList){
@@ -719,9 +733,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                     throw new BankServiceException("冻存管编码已经在"+position+"中存在，盒内位置是"+f.getTubeColumns()+f.getTubeColumns());
                 }
             }
-
-            //项目编码
-            tubeDTO = createFrozenTubeByProject(frozenBoxDTO,tubeDTO);
 
             String status = getFrozenTubeStatus(tubeDTO);
             if(!status.equals("") && !status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) && !status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
@@ -739,16 +750,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             tubeDTO.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             FrozenTube frozenTube = new FrozenTube();
 
-            //样本类型---如果冻存盒不是混合的，则需要验证冻存管的样本类型和样本分类是否与冻存盒是一致的，反之，则不验证
-            if(entity.getIsMixed().equals(Constants.NO)){
-                if(tubeDTO.getSampleTypeId() == null){
-                    throw new BankServiceException("冻存管样本类型不能为空！");
-                }
-                if(entity.getId() != tubeDTO.getSampleTypeId()){
-                    throw new BankServiceException("样本类型与冻存盒的样本类型不符！");
-                }
-            }
-            tubeDTO = createFrozenTubeBySampleType(tubeDTO);
             //冻存管类型
             tubeDTO = createFrozenTubeTypeInit(tubeDTO);
             frozenTube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);

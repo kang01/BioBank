@@ -663,7 +663,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
      * @return
      */
     @Override
-    public FrozenBoxDTO createBoxByStockIn(FrozenBoxDTO frozenBoxDTO, String stockInCode) {
+    public synchronized FrozenBoxDTO createBoxByStockIn(FrozenBoxDTO frozenBoxDTO, String stockInCode) {
         StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
         if(stockIn == null){
             throw new BankServiceException("入库记录不存在！");
@@ -671,25 +671,34 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         //验证冻存盒编码是否重复，验证库存中冻存盒是否在另一个入库单内已满，如果在另一个入库单内已满，不能在这次入库单中出现该冻存盒
         Boolean flag = checkFrozenCode(frozenBoxDTO,stockInCode);
-        //保存冻存盒信息
-        frozenBoxDTO.setIsSplit(Constants.NO);
-        //更改冻存盒的项目
-        frozenBoxDTO = createFrozenBoxByStockInProject(frozenBoxDTO,stockIn);
-        //冻存盒类型
-        frozenBoxDTO = createFrozenBoxByFrozenBoxType(frozenBoxDTO);
-        //冻存盒样本类型
-        SampleType entity = sampleTypeRepository.findOne(frozenBoxDTO.getSampleTypeId());
-        if(frozenBoxDTO.getSampleTypeId() == null){
-            throw new BankServiceException("冻存盒样本类型不能为空！");
+        //判断是否是原库存的冻存盒----如果该冻存盒有其他的入库信息，就是原库存中的冻存盒
+        List<StockInBox> stockInBoxes = stockInBoxRepository.findByFrozenBoxCode(frozenBoxDTO.getFrozenBoxCode());
+        FrozenBox frozenBox = new FrozenBox();
+        for(StockInBox s :stockInBoxes){
+            if(!s.getStockInCode().equals(stockInCode)){
+                frozenBox = s.getFrozenBox();
+            }
         }
-        frozenBoxDTO = createFrozenBoxBySampleType(frozenBoxDTO,entity);
-        //冻存盒样本分类验证
-        frozenBoxDTO = createFrozenBoxBySampleClass(frozenBoxDTO,entity);
-        //冻存盒位置验证
-        frozenBoxDTO = createFrozenBoxByPosition(frozenBoxDTO);
-        frozenBoxDTO.setStatus(Constants.FROZEN_BOX_STOCKING);
-//        frozenBoxDTO.setSampleNumber(frozenBoxDTO.getFrozenTubeDTOS().size());
-        FrozenBox frozenBox = frozenBoxMapper.frozenBoxDTOToFrozenBox(frozenBoxDTO);
+        SampleType entity = sampleTypeRepository.findOne(frozenBoxDTO.getSampleTypeId());
+        if(frozenBox == null){
+            //保存冻存盒信息
+            frozenBoxDTO.setIsSplit(Constants.NO);
+            //更改冻存盒的项目
+            frozenBoxDTO = createFrozenBoxByStockInProject(frozenBoxDTO,stockIn);
+            //冻存盒类型
+            frozenBoxDTO = createFrozenBoxByFrozenBoxType(frozenBoxDTO);
+            //冻存盒样本类型
+            if(frozenBoxDTO.getSampleTypeId() == null){
+                throw new BankServiceException("冻存盒样本类型不能为空！");
+            }
+            frozenBoxDTO = createFrozenBoxBySampleType(frozenBoxDTO,entity);
+            //冻存盒样本分类验证
+            frozenBoxDTO = createFrozenBoxBySampleClass(frozenBoxDTO,entity);
+            //冻存盒位置验证
+            frozenBoxDTO = createFrozenBoxByPosition(frozenBoxDTO);
+            frozenBoxDTO.setStatus(Constants.FROZEN_BOX_STOCKING);
+            frozenBox = frozenBoxMapper.frozenBoxDTOToFrozenBox(frozenBoxDTO);
+        }
         frozenBox = frozenBoxRepository.save(frozenBox);
         frozenBoxDTO.setId(frozenBox.getId());
         //保存入库冻存盒信息
@@ -701,6 +710,16 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         int countOfStockInTube = 0;
         //保存冻存管信息
         for(FrozenTubeDTO tubeDTO:frozenBoxDTO.getFrozenTubeDTOS()){
+            //验证冻存管是否重复
+            List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeCode(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeCode());
+            for(FrozenTube f:frozenTubeList){
+                if(tubeDTO.getId()!=null&&f.getId()!=tubeDTO.getId()){
+                    String position = BankUtil.getPositionString(f.getFrozenBox().getEquipmentCode(),f.getFrozenBox().getAreaCode(),
+                        f.getFrozenBox().getSupportRackCode(),f.getFrozenBox().getColumnsInShelf(),f.getFrozenBox().getRowsInShelf(),null,null);
+                    throw new BankServiceException("冻存管编码已经在"+position+"中存在，盒内位置是"+f.getTubeColumns()+f.getTubeColumns());
+                }
+            }
+
             //项目编码
             tubeDTO = createFrozenTubeByProject(frozenBoxDTO,tubeDTO);
 

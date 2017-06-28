@@ -69,7 +69,8 @@ public interface FrozenTubeService {
      *
      * @param code
      * @param sampleCode
+     * @param sampleTypeCode
      * @return
      */
-    List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode);
+    List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode, String sampleTypeCode);
 }

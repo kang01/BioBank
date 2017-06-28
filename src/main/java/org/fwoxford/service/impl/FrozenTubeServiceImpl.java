@@ -176,8 +176,14 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
     }
 
     @Override
-    public List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode) {
-        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCode(sampleCode,projectCode);
+    public List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode, String sampleTypeCode) {
+//        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCode(sampleCode,projectCode);
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeCode(sampleCode,projectCode,sampleTypeCode);
+        for(FrozenTube f:frozenTubeList){
+            if(f.getFrozenBox().getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
+                throw new BankServiceException("冻存管编码已经在库存内，请输入新的冻存管编码！");
+            }
+        }
         List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
         List<Object[]> frozenTubeHistoryList =  frozenTubeRepository.findFrozenTubeHistoryListBySampleAndProjectCode(sampleCode,projectCode);
         if(frozenTubeHistoryList.size()>0){

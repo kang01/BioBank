@@ -734,7 +734,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }
 
             String status = getFrozenTubeStatus(tubeDTO);
-            if(!status.equals("") && !status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) && !status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
+            if(!status.equals("") && !status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED)
+                && !status.equals(Constants.FROZEN_BOX_STOCKED)
+                && !status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
                 throw new BankServiceException("冻存管编码"+tubeDTO.getSampleCode()+"已经存在，不能保存该冻存管！",tubeDTO.getSampleCode());
             }
             if(status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) || status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)||status.equals("")){

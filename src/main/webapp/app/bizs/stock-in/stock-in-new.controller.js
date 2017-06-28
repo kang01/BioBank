@@ -446,7 +446,13 @@
                 StockInInputService.queryStockInBox(vm.box.frozenBoxCode).success(function (data) {
                     if(data.frozenBoxCode){
                         vm.box = data;
-                        vm.reloadTubesForTable(vm.box)
+                        if(vm.box.id){
+                            vm.editFlag = true;
+                        }else{
+                            vm.editFlag = false;
+                        }
+                        vm.reloadTubesForTable(vm.box);
+                        _initSampleType();
                     }
                 }).error(function (res) {
                     toastr.error(res.message);

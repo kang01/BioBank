@@ -83,7 +83,7 @@
 
             return service;
         }])
-        .factory('MasterData',function () {
+        .factory('MasterData',['SampleTypeService',function(SampleTypeService){
             var _sexDict= [{type:'M',name:'男'},{type:'F',name:'女'},{type:'null',name:'不详'}];
             //疾病类型
             var _diseaseType = [
@@ -144,7 +144,6 @@
                 {id:"3003",name:"空孔"},
                 {id:"3004",name:"异常"}
             ];
-
             var allStatus = null;
             function _getStatus(statusCode){
                 if (!allStatus){
@@ -176,7 +175,7 @@
                 getFrozenBoxStatus: _getFrozenBoxStatus
             };
             return masterData;
-        })
+        }])
         .factory('SampleService', function () {
             var factory = {};
             //改变管子样本类型 1:分类 2:类型

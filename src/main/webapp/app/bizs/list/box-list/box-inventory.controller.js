@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('BoxInventoryController', BoxInventoryController);
 
-    BoxInventoryController.$inject = ['$scope','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxInventoryService','BioBankDataTable'];
+    BoxInventoryController.$inject = ['$scope','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService','FrozenBoxTypesService'];
 
-    function BoxInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxInventoryService,BioBankDataTable) {
+    function BoxInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService,FrozenBoxTypesService) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
@@ -35,13 +35,7 @@
                 {value:"1",label:"4*6"},
                 {value:"2",label:"6*4"}
             ];
-            vm.statusOptions = [
-                {value:"1",label:"运行中"},
-                {value:"2",label:"申请移出"},
-                {value:"3",label:"申请移入"},
-                {value:"4",label:"申请换位"},
-                {value:"5",label:"已停用"}
-            ];
+            vm.statusOptions = MasterData.frozenBoxStatus;
             vm.compareTypeOption = [
                 {value:"1",label:"大于"},
                 {value:"3",label:"等于"},
@@ -53,15 +47,30 @@
             ];
             vm.dto.spaceType = "1";
             vm.dto.compareType = "1";
+            vm.sampleTypeOptions = [];
+            SampleTypeService.querySampleType().success(function (data) {
+                vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
+            });
+            FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
+            function onFrozenBoxTypeSuccess(data) {
+                vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['asc']);
+            }
         }
         _init();
+        //项目
+        var projectIds = "";
         vm.projectConfig = {
             valueField:'id',
             labelField:'projectName',
             onChange:function(value){
                 vm.projectIds = _.join(value, ',');
-                $scope.$apply();
+                projectIds = value;
+                vm.dto.projectCodeStr = [];
+                if(vm.dto.sampleTypeId){
+                    _fnQueryProjectSampleClass(vm.projectIds,vm.dto.sampleTypeId);
+                }
             }
+
         };
         //盒子位置
         vm.frozenBoxPlaceConfig = {
@@ -116,6 +125,7 @@
             onChange:function(value){
             }
         };
+        //盒子状态
         vm.statusConfig = {
             valueField:'value',
             labelField:'label',
@@ -137,6 +147,54 @@
             onChange:function(value){
             }
         };
+        //盒子编码
+        vm.boxCodeConfig = {
+            create: true,
+            persist:false,
+            onChange: function(value){
+                vm.dto.frozenBoxCodeStr = value;
+            }
+        };
+        //样本类型
+        vm.sampleTypeConfig = {
+            valueField:'id',
+            labelField:'sampleTypeName',
+            maxItems: 1,
+            onChange:function (value) {
+                if(vm.projectIds){
+                    _fnQueryProjectSampleClass(vm.projectIds,value);
+                }
+
+            }
+        };
+        //样本分类
+        function _fnQueryProjectSampleClass(projectIds,sampleTypeId) {
+            RequirementService.queryRequirementSampleClasses(projectIds,sampleTypeId).success(function (data) {
+                vm.sampleClassOptions = data;
+                if(vm.sampleClassOptions.length){
+                    vm.dto.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
+                }
+            });
+        }
+        vm.sampleClassConfig = {
+            valueField:'sampleClassificationId',
+            labelField:'sampleClassificationName',
+            maxItems: 1,
+            onChange:function (value) {
+            }
+        };
+        //盒子类型 17:10*10 18:8*8
+        vm.boxTypeConfig = {
+            valueField:'id',
+            labelField:'frozenBoxTypeName',
+            maxItems: 1,
+            onChange:function(value){
+
+            }
+        };
+
+
+
 
         function onError(error) {
             // BioBankBlockUi.blockUiStop();
@@ -149,6 +207,10 @@
         }
         vm.search = _fnSearch;
         function _fnSearch() {
+            for(var i = 0; i <projectIds.length; i++){
+                var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
+                vm.dto.projectCodeStr.push(projectCode)
+            }
             vm.checked = false;
             vm.dtInstance.rerender();
         }
@@ -202,8 +264,6 @@
 
         vm.dtColumns = [
             DTColumnBuilder.newColumn('position').withTitle('位置'),
-            // DTColumnBuilder.newColumn('planDate').withTitle('区域'),
-            // DTColumnBuilder.newColumn('purposeOfSample').withTitle('架子'),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码'),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型'),
@@ -216,19 +276,18 @@
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         function createdRow(row, data, dataIndex) {
-            // var planStatus = '';
-            // switch (data.status){
-            //     case '1401': planStatus = '进行中';break;
-            //     case '1402': planStatus = '已完成';break;
-            //     case '1403': planStatus = '已作废';break;
-            // }
-            // $('td:eq(6)', row).html(planStatus);
-            // $compile(angular.element(row).contents())($scope);
+            var projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
+            var status = "";
+            status = MasterData.getFrozenBoxStatus(data.status);
+            $('td:eq(2)', row).html(projectName);
+            $('td:eq(8)', row).html(status);
+            $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;';
+            // return '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +
+            //     '   <i class="fa fa-edit"></i>' +
+            //     '</button>&nbsp;';
+            return "";
         }
     }
 })();

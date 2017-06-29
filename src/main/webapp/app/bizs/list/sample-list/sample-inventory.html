@@ -9,104 +9,86 @@
     </div>
     <pageslide ps-push='true' ps-open="vm.checked" ps-container='container1' >
         <div class="p-10">
-            <form>
-                <div class="form-group">
-                    <label>样本编码</label>
-                    <input type="text" class="form-control" ng-model="vm.dto.sampleCode">
-                </div>
-                <div class="form-group">
-                    <label>盒子编码</label>
-                    <selectize placeholder='' options='vm.myOptions' config="vm.boxCodeConfig" ng-model="vm.arrayBoxCode" ng-disabled='disable' required='true'></selectize>
+            <div class="form-group">
+                <label>样本编码</label>
+                <selectize placeholder='' options='vm.myOptions' config="vm.sampleCodeConfig" ng-model="vm.arraySampleCode" ng-disabled='disable' required='true'></selectize>
 
-                </div>
-                <div class="form-group">
-                    <label>项目编码</label>
-                    <selectize options='vm.projectOptions' config="vm.projectConfig"
-                               ng-model="vm.dto.projectIds"></selectize>
-                </div>
-                <div class="form-group">
-                    <label>样本类型</label>
-                    <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                               ng-model="vm.dto.sampleTypeId" ></selectize>
-                </div>
-                <div class="form-group">
-                    <label>样本分类</label>
-                    <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
-                               ng-model="vm.dto.sampleClassificationId"
-                    ></selectize>
-                </div>
-                <div class="form-group">
-                    <label>状态</label>
-                    <selectize options='vm.statusOptions' config="vm.statusConfig"
-                               ng-model="vm.dto.status"></selectize>
-                </div>
+            </div>
+            <div class="form-group">
+                <label>盒子编码</label>
+                <selectize placeholder='' options='vm.myOptions' config="vm.boxCodeConfig" ng-model="vm.arrayBoxCode" ng-disabled='disable' required='true'></selectize>
 
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <label>性别</label>
-                        <input type="text" class="form-control" ng-model="vm.dto.sex">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label>年龄</label>
-                        <input type="text" class="form-control" ng-model="vm.dto.age">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <label>疾病类型</label>
-                        <selectize options='vm.diseaseTypeOptions' config="vm.diseaseTypeConfig"
-                                   ng-model="vm.dto.diseaseTypeId"></selectize>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label>使用次数</label>
-                        <input type="text" class="form-control" ng-model="vm.dto.sampleUsedTimes">
-                    </div>
-                </div>
+            </div>
+            <div class="form-group">
+                <label>项目编码</label>
+                <selectize options='vm.projectOptions' config="vm.projectConfig"
+                           ng-model="vm.projectCodeStr"></selectize>
+            </div>
+            <div class="form-group">
+                <label>样本类型</label>
+                <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                           ng-model="vm.dto.sampleTypeId"></selectize>
 
-                <div class="form-group">
-                    <div>
-                        <label>位置</label>
-                    </div>
-                    <div class="pull-left">
-                        <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig"
-                                   style="width:85px"
-                                   ng-model="vm.dto.equipmentId"></selectize>
-                    </div>
-                    <div class="pull-left pl-5">
-                        <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig"
-                                   style="width:85px"
-                                   ng-model="vm.dto.areaId" ></selectize>
-                    </div>
-                    <div class="pull-left pl-5">
-                        <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig"
-                                   style="width:85px"
-                                   ng-model="vm.dto.supportRackId"></selectize>
-                    </div>
+            </div>
+            <div class="form-group">
+                <label>样本分类</label>
+                <selectize options='vm.sampleClassOptions' config="vm.sampleClassConfig"
+                           ng-model="vm.dto.sampleClassificationId"
+                ></selectize>
+            </div>
+            <div class="form-group">
+                <label>状态</label>
+                <selectize options='vm.statusOptions' config="vm.statusConfig"
+                           ng-model="vm.dto.status"></selectize>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label>性别</label>
+                    <selectize options='vm.sexOptions' config="vm.sexConfig"
+                               ng-model="vm.dto.sex"></selectize>
                 </div>
-                <!--<div class="form-group">-->
-                    <!--<div>-->
-                        <!--<label>空间条件</label>-->
-                    <!--</div>-->
-                    <!--<div class="pull-left">-->
-                        <!--<selectize options='vm.spaceTypeOption' config="vm.spaceTypeConfig"-->
-                                   <!--style="width:85px"-->
-                                   <!--ng-model="vm.dto.spaceType"></selectize>-->
-                    <!--</div>-->
-                    <!--<div class="pull-left pl-5">-->
-                        <!--<selectize options='vm.compareTypeOption' config="vm.compareTypeConfig"-->
-                                   <!--style="width:85px"-->
-                                   <!--ng-model="vm.dto.compareType"></selectize>-->
-                    <!--</div>-->
-                    <!--<div class="pull-left pl-5">-->
-                        <!--<input type="text"  class="form-control" style="width:85px" ng-model="vm.dto.number">-->
-                    <!--</div>-->
-                    <!--<div class="clear-both"></div>-->
-                <!--</div>-->
-                <div class="form-group">
-                    <label>&nbsp;</label>
-                    <button type="submit" class="btn btn-default btn-primary" ng-click="vm.search()">搜索</button>
+                <div class="form-group col-md-6">
+                    <label>年龄</label>
+                    <input type="text" class="form-control" ng-model="vm.dto.age">
                 </div>
-            </form>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label>疾病类型</label>
+                    <selectize options='vm.diseaseTypeOptions' config="vm.diseaseTypeConfig"
+                               ng-model="vm.dto.diseaseTypeId"></selectize>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>使用次数</label>
+                    <input type="text" class="form-control" ng-model="vm.dto.sampleUsedTimes">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label>位置</label>
+                </div>
+                <div class="pull-left">
+                    <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig"
+                               style="width:85px"
+                               ng-model="vm.dto.equipmentId"></selectize>
+                </div>
+                <div class="pull-left pl-5">
+                    <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig"
+                               style="width:85px"
+                               ng-model="vm.dto.areaId" ></selectize>
+                </div>
+                <div class="pull-left pl-5">
+                    <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig"
+                               style="width:85px"
+                               ng-model="vm.dto.supportRackId"></selectize>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-default btn-primary" ng-click="vm.search()">搜索</button>
+            </div>
         </div>
     </pageslide>
     <div class="row">

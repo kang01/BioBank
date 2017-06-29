@@ -29,10 +29,10 @@
                 {value:"1",label:"冰箱"},
                 {value:"2",label:"液氮罐"}
             ];
-            vm.shelvesOptions = [
-                {value:"1",label:"4*6"},
-                {value:"2",label:"6*4"}
-            ];
+            EquipmentInventoryService.querySupportRackTypes().success(function (data) {
+                vm.shelvesOptions = data;
+            });
+
             vm.statusOptions = [
                 {value:"1",label:"运行中"},
                 {value:"2",label:"申请移出"},
@@ -57,8 +57,11 @@
             valueField:'id',
             labelField:'projectName',
             onChange:function(value){
-                vm.projectIds = _.join(value, ',');
-                $scope.$apply();
+                vm.dto.projectCodeStr = [];
+                for(var i = 0; i <value.length; i++){
+                    var projectCode = _.find(vm.projectOptions,{id:+value[i]}).projectCode;
+                    vm.dto.projectCodeStr.push(projectCode)
+                }
             }
         };
         //盒子位置
@@ -114,8 +117,8 @@
         };
         //架子类型
         vm.shelvesConfig = {
-            valueField:'value',
-            labelField:'label',
+            valueField:'id',
+            labelField:'supportRackTypeCode',
             maxItems: 1,
             onChange:function(value){
             }
@@ -219,14 +222,14 @@
         ];
         function createdRow(row, data, dataIndex) {
             console.log(JSON.stringify(data));
-            // var planStatus = '';
-            // switch (data.status){
-            //     case '1401': planStatus = '进行中';break;
-            //     case '1402': planStatus = '已完成';break;
-            //     case '1403': planStatus = '已作废';break;
-            // }
-            // $('td:eq(6)', row).html(planStatus);
-            // $compile(angular.element(row).contents())($scope);
+            var status = '';
+            switch (data.status){
+                case '0001': status = '运行中';break;
+                // case '1402': status = '已完成';break;
+                // case '1403': status = '已作废';break;
+            }
+            $('td:eq(7)', row).html(status);
+            $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
             // return '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +

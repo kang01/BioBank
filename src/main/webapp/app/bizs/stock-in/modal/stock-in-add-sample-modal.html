@@ -5,55 +5,61 @@
         <h3 class="modal-title" id="modal-title">新增样本</h3>
     </div>
     <div class="modal-body add-sample-modal-body" id="modal-body">
-        <div class="row">
+
             <form>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>项目编码</label>
-                        <selectize options='vm.projectOptions' config="vm.projectConfig"
-                                   ng-model="vm.entity.projectId" ng-disabled="true"></selectize>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>项目编码</label>
+                            <selectize options='vm.projectOptions' config="vm.projectConfig"
+                                       ng-model="vm.entity.projectId" ng-disabled="true"></selectize>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3 project-sites" style="height: 30px">
-                    <div class="form-group">
-                        <label>项目点</label>
-                        <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
-                                   ng-model="vm.entity.projectSiteId"></selectize>
+                    <div class="col-md-3 project-sites" style="height: 30px">
+                        <div class="form-group">
+                            <label>项目点</label>
+                            <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
+                                       ng-model="vm.entity.projectSiteId"></selectize>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>样本类型</label>
-                        <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                   ng-model="vm.entity.sampleTypeId" ng-disabled="vm.sampleTypeName != '98'"></selectize>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>样本类型</label>
+                            <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                                       ng-model="vm.entity.sampleTypeId" ng-disabled="vm.sampleTypeName != '98'"></selectize>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>样本分类</label>
-                        <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
-                                   ng-model="vm.entity.sampleClassificationId"
-                                   ng-disabled="vm.sampleTypeName != '98'"
-                        ></selectize>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>状态</label>
-                        <selectize options='vm.tubeStatusOptions' config="vm.tubeStatusConfig"
-                                   ng-model="vm.entity.status"
-                        ></selectize>
-                    </div>
-                </div>
-                <div class="col-md-9">
-                    <div class="form-group">
-                        <label>备注</label>
-                        <textarea  class="form-control resize-none" rows="1" ng-model="vm.entity.memo"></textarea>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>样本分类</label>
+                            <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
+                                       ng-model="vm.entity.sampleClassificationId"
+                                       ng-disabled="vm.sampleTypeName != '98'"
+                            ></selectize>
+                        </div>
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>状态</label>
+                            <selectize options='vm.tubeStatusOptions' config="vm.tubeStatusConfig"
+                                       ng-model="vm.entity.status"
+                            ></selectize>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <label>备注</label>
+                            <textarea  class="form-control resize-none" rows="1" ng-model="vm.entity.memo"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+
             </form>
-        </div>
+
         <div class="" ng-if="vm.tubes.length">
             <h4>请选择对应样本，注意样本类型及样本分类，与盒子是否一致!</h4>
             <div class="split-box">

@@ -378,7 +378,7 @@
                 resolve: {
                     items: function () {
                         return {
-                            stockInCode: vm.stockInCode,
+                            stockInCode: vm.entity.stockInCode,
                             boxIds: boxIds,
                             boxes: boxes
                         };
@@ -1219,7 +1219,7 @@
                 _initStockInBoxesTable();
                 vm.splittingBox = false;
             }).error(function (data) {
-                console.log(data);
+                // console.log(data);
                 toastr.error(data.message)
             })
         }

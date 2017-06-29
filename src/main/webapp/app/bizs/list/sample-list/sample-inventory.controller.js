@@ -272,7 +272,7 @@
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-xs">' +
+            return '<button type="button" class="btn btn-xs" ui-sref="sample-inventory-desc({id:'+ full.id +'})">' +
                 '   <i class="fa fa-eye"></i>' +
                 '</button>&nbsp;';
         }

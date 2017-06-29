@@ -1,0 +1,144 @@
+<div>
+    <div class="col-md-12">
+        <div class="pull-left">
+            <h2 style="margin: 0">样本详情<small>{{vm.entity.sampleCode}}</small></h2>
+        </div>
+        <div class="pull-right">
+            <button type="button" class="btn btn-default" ui-sref="sample-inventory">关闭</button>
+        </div>
+    </div>
+    <div class="row">
+        <form class="form-horizontal">
+            <div class="row">
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">项目编码</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.projectCode}}</p>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">样本类型:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.sampleTypeName}}</p>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">样本分类:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.sampleClassificationName}}</p>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">冻存管类型:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.frozenTubeTypeName}}</p>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">使用次数:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.sampleUsedTimes}}</p>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">状态:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.status}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">患者编码:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.patientId}}</p>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">患者性别:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.gender}}</p>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">采样年龄:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.age}}</p>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">疾病类型:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.diseaseType}}</p>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">是否溶血:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.isHemolysis}}</p>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">是否脂质血:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.isBloodLipid}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">冻存盒编码:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.frozenBoxCode}}</p>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">盒内位置:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.tubeRows}}{{vm.entity.tubeColumns}}</p>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">冻存位置:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.isBloodLipid}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-2">
+                    <label class="col-sm-6 control-label">备注:</label>
+                    <div class="col-sm-6">
+                        <p class="form-control-static">{{vm.entity.isBloodLipid}}</p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-left">
+                                <h4>样本历史</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body p-0">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="no-padding">
+                                <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance" class=" table table-striped table-bordered" style="table-layout: fixed;">
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

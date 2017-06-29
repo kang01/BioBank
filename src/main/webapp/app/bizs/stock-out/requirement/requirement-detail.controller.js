@@ -11,11 +11,11 @@
         .controller('RequirementSampleDelModalController', RequirementSampleDelModalController)
         .controller('RequirementApplyProjectModalController', RequirementApplyProjectModalController)
         .controller('RequirementCancellationModalController', RequirementCancellationModalController);
-    RequirementDetailController.$inject = ['$scope','$stateParams','$state','$compile','entity','MasterData','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService','BioBankDataTable'];
+    RequirementDetailController.$inject = ['$scope','$stateParams','$state','$compile','entity','MasterData','$uibModal','toastr','DTColumnBuilder','DTOptionsBuilder','RequirementService','SampleUserService','BioBankBlockUi','ProjectService','BioBankDataTable','Principal'];
     RequirementSampleDelModalController.$inject = ['$uibModalInstance'];
     RequirementApplyProjectModalController.$inject = ['$uibModalInstance'];
     RequirementCancellationModalController.$inject = ['$uibModalInstance'];
-    function RequirementDetailController($scope,$stateParams,$state,$compile,entity,MasterData,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService,BioBankDataTable) {
+    function RequirementDetailController($scope,$stateParams,$state,$compile,entity,MasterData,$uibModal,toastr,DTColumnBuilder,DTOptionsBuilder,RequirementService,SampleUserService,BioBankBlockUi,ProjectService,BioBankDataTable,Principal) {
         var vm = this;
         var modalInstance;
         vm.dtInstance = {};
@@ -57,7 +57,14 @@
             _requirementInfo();
 
             _fuQueryDelegates();
+            _fnQueryUser();
 
+        }
+        function _fnQueryUser() {
+            Principal.identity().then(function(account) {
+                vm.account = account;
+                vm.requirement.recordId = vm.account.id;
+            });
         }
         _initData();
         function _requirementInfo() {

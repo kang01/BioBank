@@ -451,8 +451,8 @@
                         }else{
                             vm.editFlag = false;
                         }
-                        vm.reloadTubesForTable(vm.box);
                         _initSampleType();
+                        vm.reloadTubesForTable(vm.box);
                     }
                 }).error(function (res) {
                     toastr.error(res.message);
@@ -760,6 +760,7 @@
                                                         vm.frozenTubeArray[i][j].sampleTypeId = tube.sampleTypeId;
                                                         vm.frozenTubeArray[i][j].sampleTypeName = tube.sampleTypeName;
                                                         vm.frozenTubeArray[i][j].backColor = tube.backColor;
+                                                        vm.frozenTubeArray[i][j].sampleVolumns = tube.sampleVolumns;
                                                         if(tube.sampleClassificationId){
                                                             vm.frozenTubeArray[i][j].sampleClassificationId = tube.sampleClassificationId;
                                                             vm.frozenTubeArray[i][j].sampleClassificationName = tube.sampleClassificationName;

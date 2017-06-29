@@ -24,7 +24,9 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>样本类型</label>
+                            <label>样本类型
+                                <span class="required-field"></span>
+                            </label>
                             <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
                                        ng-model="vm.entity.sampleTypeId" ng-disabled="vm.sampleTypeName != '98'"></selectize>
                         </div>
@@ -49,7 +51,13 @@
                             ></selectize>
                         </div>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>计量</label>
+                            <input type="text" class="form-control" ng-model="vm.entity.sampleVolumns">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>备注</label>
                             <textarea  class="form-control resize-none" rows="1" ng-model="vm.entity.memo"></textarea>
@@ -84,7 +92,7 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-click="vm.ok()" >确定</button>
+        <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="!vm.entity.sampleTypeId">确定</button>
         <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
     </div>
 </form>

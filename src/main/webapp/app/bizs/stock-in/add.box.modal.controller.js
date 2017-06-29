@@ -14,6 +14,7 @@
         var vm = this;
         vm.createBoxflag = false;
         var boxes = items.incompleteBoxes;
+        var stockInFrozenTubeList = angular.copy(items.box.stockInFrozenTubeList);
         vm.box = {};
         var projectId = items.projectId;
         //是否混合类型 1：是
@@ -61,7 +62,7 @@
 
                 if(countFlag){
                     //创建第一个新盒子，空管子
-                    if(!items.box.stockInFrozenTubeList.length){
+                    if(!stockInFrozenTubeList.length){
                         vm.createBoxflag = true;
                         _createBox();
                     }else{
@@ -96,24 +97,24 @@
                 //     memo:'',
                 //     stockInFrozenTubeList:[]
                 // };
-                if(items.box.stockInFrozenTubeList.length){
+                if(stockInFrozenTubeList.length){
                     var rows = +items.box.sampleType.frozenBoxTypeRows;
                     var cols = +items.box.sampleType.frozenBoxTypeColumns;
                     var m = 0,n = 0;
-                    for(var i = 0; i < items.box.stockInFrozenTubeList.length; i++){
+                    for(var i = 0; i < stockInFrozenTubeList.length; i++){
                         if(i >= rows){
                             m++;n = 0;
-                            items.box.stockInFrozenTubeList[i].tubeRows = String.fromCharCode(m+65);
-                            items.box.stockInFrozenTubeList[i].tubeColumns = n + 1;
+                            stockInFrozenTubeList[i].tubeRows = String.fromCharCode(m+65);
+                            stockInFrozenTubeList[i].tubeColumns = n + 1;
 
                         }else{
                             n++;
-                            items.box.stockInFrozenTubeList[i].tubeRows = String.fromCharCode(m + 65);
-                            items.box.stockInFrozenTubeList[i].tubeColumns = n;
+                            stockInFrozenTubeList[i].tubeRows = String.fromCharCode(m + 65);
+                            stockInFrozenTubeList[i].tubeColumns = n;
                         }
 
                     }
-                    vm.box.stockInFrozenTubeList = items.box.stockInFrozenTubeList;
+                    vm.box.stockInFrozenTubeList = stockInFrozenTubeList;
                 }
                 //盒子类型
                 if(frozenBoxTypeId){

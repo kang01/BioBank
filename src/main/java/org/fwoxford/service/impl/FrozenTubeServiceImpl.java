@@ -14,6 +14,7 @@ import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,11 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
         log.debug("Request to get FrozenTube : {}", id);
         FrozenTube frozenTube = frozenTubeRepository.findOne(id);
         FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(frozenTube);
+        if(frozenTube.getFrozenBox()!=null){
+            FrozenBox frozenBox = frozenBoxRepository.findOne(frozenTube.getFrozenBox().getId());
+            String position = BankUtil.getPositionString(frozenBox);
+            frozenTubeDTO.setPosition(position);
+        }
         return frozenTubeDTO;
     }
 

@@ -151,18 +151,6 @@ public class StockListServiceImpl implements StockListService {
      */
     @Override
     public List<FrozenTubeHistory> findFrozenTubeHistoryDetail(Long frozenTubeId) {
-        Converter<FrozenTubeHistory, FrozenTubeHistory> convert = new Converter<FrozenTubeHistory, FrozenTubeHistory>() {
-            @Override
-            public FrozenTubeHistory convert(FrozenTubeHistory e) {
-                String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
-                return new FrozenTubeHistory(e.getId(),e.getTranshipId(),e.getTranshipCode(),e.getStockInId(),e.getStockInCode(),
-                    e.getStockOutTaskId(),e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),
-                    e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),position,e.getEquipmentCode(),e.getAreaCode(),
-                    e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),e.getAreaId(),
-                    e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId()
-                );
-            }
-        };
         List<FrozenTubeHistory> frozenTubeHistories = frozenTubeHistoryRepositories.findByFrozenTubeId(frozenTubeId);
         List<FrozenTubeHistory> frozenTubeHistoryList = new ArrayList<FrozenTubeHistory>();
         for (FrozenTubeHistory e :frozenTubeHistories){
@@ -171,7 +159,7 @@ public class StockListServiceImpl implements StockListService {
                 e.getStockOutTaskId(),e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),
                 e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),position,e.getEquipmentCode(),e.getAreaCode(),
                 e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),e.getAreaId(),
-                e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId()
+                e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId(),e.getMemo(),e.getOperator()
             );
             frozenTubeHistoryList.add(frozenTubeHistory);
         }

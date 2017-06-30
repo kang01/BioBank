@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <!--
-        Added the view for entity StockOutApply.
+        Added the view for entity FrozenTubeHistory.
     -->
     <changeSet id="20170517000000-2" author="jhipster">
 
@@ -29,13 +29,14 @@
             (tranship.ROWS_IN_TUBE||tranship.COLUMNS_IN_TUBE) as position_in_box,
             tbox.equipment_code,tbox.equipment_id,tbox.area_code,tbox.area_id,tbox.support_rack_code as shelves_code ,
             tbox.support_rack_id as shelves_id,
-            tbox.columns_in_shelf,tbox.rows_in_shelf
+            tbox.columns_in_shelf,tbox.rows_in_shelf,tranship.memo, u.last_name||u.first_name as operator
 
             from tranship_tube tranship
             left join  frozen_tube tube on tranship.frozen_tube_id = tube.id
             left join tranship_box tbox on tranship.tranship_box_id = tbox.id
             left join  tranship tran on tbox.tranship_id = tran.id
             left join frozen_box box on tbox.frozen_box_id = box.id
+            left join jhi_user u on tran.receiver_id = u.id
 
             UNION
             select stockIn.frozen_tube_id as frozen_tube_id,
@@ -56,13 +57,16 @@
             (stockIn.tube_rows||stockIn.tube_columns) as position_in_box,
             sbox.equipment_code,sbox.equipment_id,sbox.area_code,sbox.area_id,sbox.support_rack_code as shelves_code ,
             sbox.support_rack_id as shelves_id,
-            sbox.columns_in_shelf,sbox.rows_in_shelf
+            sbox.columns_in_shelf,sbox.rows_in_shelf,stockIn.memo, u.last_name||u.first_name||','||u2.last_name||u2.first_name as operator
 
             from stock_in_tube stockIn
             left join frozen_tube tube on stockIn.frozen_tube_id = tube.id
             left join stock_in_box sbox on stockIn.stock_in_box_id = sbox.id
             left join  stock_in s on sbox.stock_in_id = s.id
             left join frozen_box box on sbox.frozen_box_id = box.id
+            left join jhi_user u on  s.store_keeper_id_1 = u.id
+            left join jhi_user u2 on  s.store_keeper_id_2 = u2.id
+
 
             UNION
             select stockOut.frozen_tube_id as frozen_tube_id,
@@ -83,7 +87,7 @@
             (stockOut.tube_rows||stockOut.tube_columns) as position_in_box,
             soutbox.equipment_code,soutbox.equipment_id,soutbox.area_code,soutbox.area_id,soutbox.support_rack_code as shelves_code ,
             soutbox.support_rack_id as shelves_id,
-            soutbox.columns_in_shelf,soutbox.rows_in_shelf
+            soutbox.columns_in_shelf,soutbox.rows_in_shelf,stockOut.memo,u.last_name||u.first_name||','||u2.last_name||u2.first_name as operator
 
 
             from stock_out_box_tube stockOut
@@ -91,7 +95,8 @@
             left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id
             left join frozen_box box on soutbox.frozen_box_id = box.id
             left join  stock_out_task task on soutbox.stock_out_task_id = task.id
-
+            left join jhi_user u on  task.stock_out_head_id_1 = u.id
+            left join jhi_user u2 on  task.stock_out_head_id_2 = u2.id
 
             UNION
             select stockOut.frozen_tube_id as frozen_tube_id,
@@ -112,7 +117,7 @@
             (stockOut.tube_rows||stockOut.tube_columns) as position_in_box,
             soutbox.equipment_code,soutbox.equipment_id,soutbox.area_code,soutbox.area_id,soutbox.support_rack_code as shelves_code ,
             soutbox.support_rack_id as shelves_id,
-            soutbox.columns_in_shelf,soutbox.rows_in_shelf
+            soutbox.columns_in_shelf,soutbox.rows_in_shelf,hand.memo, u.last_name||u.first_name as operator
 
 
             from stock_out_handover_details hand
@@ -121,6 +126,7 @@
             left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id
             left join frozen_box box on soutbox.frozen_box_id = box.id
             left join  stock_out_handover handover on hand.stock_out_handover_id = handover.id
+            left join jhi_user u on  handover.handover_person_id = u.id
             ) temp
             ORDER BY type desc,operate_time desc
         </createView>

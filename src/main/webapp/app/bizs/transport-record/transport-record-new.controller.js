@@ -362,7 +362,7 @@
                 .withOption('paging', false)
                 .withOption('sorting', false)
                 .withScroller()
-                .withOption('scrollY', 500)
+                .withOption('scrollY', 400)
                 .withOption('rowCallback', rowCallback);
 
             function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
@@ -453,11 +453,12 @@
                 stretchH: 'all',
                 autoWrapCol:true,
                 wordWrap:true,
-                colWidths: 94,
+                colWidths: 30,
                 rowHeaderWidth: 30,
                 editor: 'tube',
                 multiSelect: true,
                 comments: true,
+                manualColumnResize:false,
                 onAfterSelectionEnd:function (row, col, row2, col2) {
                     vm.remarkFlag = true;
                     var td = this;

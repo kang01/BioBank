@@ -78,6 +78,9 @@
                 .withFnServerData(_fnServerData)
                 // 每行的渲染
                 .withOption('createdRow', _fnCreatedRow)
+                .withOption('headerCallback', function(header) {
+                    $compile(angular.element(header).contents())($scope);
+                })
                 // 定义每个列过滤选项
                 .withColumnFilter(_createColumnFilters());
 
@@ -1005,7 +1008,9 @@
             },function (data) {
                 //复原被分装的剩余管子数
                 for(var k = 0; k < selectList.length; k++){
-                    vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = selectList[k];
+                    var rowIndex = getTubeRowIndex(selectList[k].tubeRows);
+                    var colIndex = getTubeColumnIndex(selectList[k].tubeColumns);
+                    vm.frozenTubeArray[rowIndex][colIndex] = selectList[k];
                 }
                 // $timeout(function(){
                 hotRegisterer.getInstance('my-handsontable').render();

@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('SampleInventoryController', SampleInventoryController);
 
-    SampleInventoryController.$inject = ['$scope','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable','MasterData'];
+    SampleInventoryController.$inject = ['$scope','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService'];
 
-    function SampleInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable,MasterData) {
+    function SampleInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
@@ -36,25 +36,23 @@
             ];
             vm.statusOptions = MasterData.frozenTubeStatus;
             vm.diseaseTypeOptions = MasterData.diseaseType;
-            // vm.compareTypeOption = [
-            //     {value:"1",label:"大于"},
-            //     {value:"3",label:"等于"},
-            //     {value:"4",label:"小于"}
-            // ];
-            // vm.spaceTypeOption = [
-            //     {value:"1",label:"已用"},
-            //     {value:"2",label:"剩余"}
-            // ];
-            // vm.dto.spaceType = "1";
-            // vm.dto.compareType = "1";
+            SampleTypeService.querySampleType().success(function (data) {
+                vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
+            });
+            vm.sexOptions = MasterData.sexDict;
         }
         _init();
+        var projectIds = [];
+        var projectIdStr = "";
         vm.projectConfig = {
             valueField:'id',
             labelField:'projectName',
             onChange:function(value){
-                vm.projectIds = _.join(value, ',');
-                $scope.$apply();
+                projectIdStr = _.join(value, ',');
+                projectIds = value;
+                if(vm.dto.sampleTypeId){
+                    _fnQueryProjectSampleClass(projectIdStr,vm.dto.sampleTypeId);
+                }
             }
         };
         //盒子位置
@@ -129,23 +127,43 @@
             persist:false,
             onChange: function(value){
                 vm.dto.frozenBoxCodeStr = value;
-                console.log(vm.dto.frozenBoxCodeStr)
             }
         };
-        // vm.compareTypeConfig = {
-        //     valueField:'value',
-        //     labelField:'label',
-        //     maxItems: 1,
-        //     onChange:function(value){
-        //     }
-        // };
-        // vm.spaceTypeConfig = {
-        //     valueField:'value',
-        //     labelField:'label',
-        //     maxItems: 1,
-        //     onChange:function(value){
-        //     }
-        // };
+        //样本类型
+        vm.sampleTypeConfig = {
+            valueField:'id',
+            labelField:'sampleTypeName',
+            maxItems: 1,
+            onChange:function (value) {
+                if(projectIdStr){
+                    _fnQueryProjectSampleClass(projectIdStr,value);
+                }
+            }
+        };
+        vm.sexConfig = {
+            valueField:'type',
+            labelField:'name',
+            maxItems: 1,
+            onChange:function (value) {
+
+            }
+        };
+        //样本分类
+        function _fnQueryProjectSampleClass(projectIds,sampleTypeId) {
+            RequirementService.queryRequirementSampleClasses(projectIds,sampleTypeId).success(function (data) {
+                vm.sampleClassOptions = data;
+                if(vm.sampleClassOptions.length){
+                    vm.dto.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
+                }
+            });
+        }
+        vm.sampleClassConfig = {
+            valueField:'sampleClassificationId',
+            labelField:'sampleClassificationName',
+            maxItems: 1,
+            onChange:function (value) {
+            }
+        };
 
         function onError(error) {
             // BioBankBlockUi.blockUiStop();
@@ -160,6 +178,13 @@
         }
         vm.search = _fnSearch;
         function _fnSearch() {
+            vm.dto.projectCodeStr = [];
+            if(projectIds.length){
+                for(var i = 0; i < projectIds.length; i++){
+                    var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
+                    vm.dto.projectCodeStr.push(projectCode)
+                }
+            }
             vm.checked = false;
             vm.dtInstance.rerender();
         }
@@ -217,6 +242,7 @@
             DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {
+            var projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
             var tag = '';
             if(data.sex){
                 var sex;
@@ -240,12 +266,13 @@
                 tag += "脂肪血;";
             }
             var status = MasterData.getStatus(data.status);
+            $('td:eq(3)', row).html(projectName);
             $('td:eq(6)', row).html(tag);
             $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-xs">' +
+            return '<button type="button" class="btn btn-xs" ui-sref="sample-inventory-desc({id:'+ full.id +'})">' +
                 '   <i class="fa fa-eye"></i>' +
                 '</button>&nbsp;';
         }

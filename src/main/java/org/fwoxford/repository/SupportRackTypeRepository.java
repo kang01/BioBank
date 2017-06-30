@@ -1,5 +1,6 @@
 package org.fwoxford.repository;
 
+import org.fwoxford.domain.SupportRack;
 import org.fwoxford.domain.SupportRackType;
 
 import org.springframework.data.jpa.repository.*;

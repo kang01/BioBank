@@ -474,13 +474,20 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     public String getRowsInShelf() {
         return rowsInShelf;
     }
-
+    public FrozenBox rowsInShelf(String rowsInShelf) {
+        this.rowsInShelf = rowsInShelf;
+        return this;
+    }
     public void setRowsInShelf(String rowsInShelf) {
         this.rowsInShelf = rowsInShelf;
     }
 
     public String getColumnsInShelf() {
         return columnsInShelf;
+    }
+    public FrozenBox columnsInShelf(String columnsInShelf) {
+        this.columnsInShelf = columnsInShelf;
+        return this;
     }
 
     public void setColumnsInShelf(String columnsInShelf) {

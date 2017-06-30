@@ -13,4 +13,6 @@ import java.util.List;
 public interface SampleTypeRepository extends JpaRepository<SampleType,Long> {
     @Query("select t from SampleType t where t.status !='0000' order by t.sampleTypeCode asc")
     List<SampleType> findAllSampleTypes();
+
+    SampleType findBySampleTypeCode(String sampleTypeCode);
 }

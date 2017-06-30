@@ -80,6 +80,11 @@ public class StockOutTaskForDataTableEntity {
     @JsonView(DataTablesOutput.View.class)
     private String status;
 
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "delegate_name")
+    private String delegateName;
+
     public Long getId() {
         return id;
     }
@@ -150,5 +155,13 @@ public class StockOutTaskForDataTableEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getDelegateName() {
+        return delegateName;
+    }
+
+    public void setDelegateName(String delegateName) {
+        this.delegateName = delegateName;
     }
 }

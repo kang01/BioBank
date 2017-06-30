@@ -201,11 +201,14 @@
             // toastr.error(error.data.message);
         }
         vm.dtInstance = {};
+        vm.search = _fnSearch;
         vm.searchShow = _fnSearchShow;
-        function _fnSearchShow() {
+        vm.selectedShow = _fnSearchShow;
+        vm.movement = _fnMovement;
+        function _fnSearchShow(status) {
+            vm.status = status;
             vm.checked = true;
         }
-        vm.search = _fnSearch;
         function _fnSearch() {
             for(var i = 0; i <projectIds.length; i++){
                 var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
@@ -214,18 +217,57 @@
             vm.checked = false;
             vm.dtInstance.rerender();
         }
+        function _fnMovement() {
+            var obj = {};
+            obj.selectedBox = selectedBox;
+            // $state.go('equipment-movement',obj)
+        }
 
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
+        vm.selectedColumns = [
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "110"),
+            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "60"),
 
-
-
-        // $scope.checked = !$scope.checked;
-        // vm.toggle = function () {
-        //     $scope.checked = !$scope.checked
-        // };
-
-
+        ];
+        vm.selected = {};
+        vm.selectAll = false;
+        vm.toggleAll = toggleAll;
+        vm.toggleOne = toggleOne;
+        function toggleAll (selectAll, selectedItems) {
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    selectedItems[id] = selectAll;
+                }
+            }
+        }
+        var selectedBox;
+        function toggleOne (selectedItems) {
+            var selectedBox = [];
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(selectedItems[id]) {
+                        var obj = _.find(vm.BoxData,{id:+id});
+                        selectedBox.push(obj);
+                    }
+                }
+            }
+            vm.selectedLen = selectedBox.length;
+            vm.selectedOptions.withOption('data', selectedBox);
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(!selectedItems[id]) {
+                        vm.selectAll = false;
+                        return;
+                    }
+                }
+            }
+            vm.selectAll = true;
+        }
 
         vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
+            .withOption('searching', false)
+            .withOption('order', [[1,'asc']])
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};
@@ -237,6 +279,7 @@
                 var searchForm = angular.toJson(vm.dto);
                 BoxInventoryService.queryBoxList(data,searchForm).then(function (res){
                     var json = res.data;
+                    vm.BoxData = res.data.data;
                     var error = json.error || json.sError;
                     if ( error ) {
                         jqDt._fnLog( oSettings, 0, error );
@@ -261,26 +304,35 @@
             })
             .withOption('createdRow', createdRow);
 
+        var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('position').withTitle('位置'),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码'),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
-            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型'),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类'),
-            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒类型'),
-            DTColumnBuilder.newColumn('countOfUsed').withTitle('已用'),
-            DTColumnBuilder.newColumn('countOfRest').withTitle('剩余'),
-            DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
-            DTColumnBuilder.newColumn('id').notVisible()
+            DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)
+                .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
+            DTColumnBuilder.newColumn('position').withTitle('位置').withOption("width", "120"),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "110"),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目').withOption("width", "180"),
+            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "60"),
+            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
+            DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
+            DTColumnBuilder.newColumn('countOfRest').withTitle('备注').withOption("width", 'auto'),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "80").withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
+        function _fnRowSelectorRender(data, type, full, meta) {
+            vm.selected[full.id] = false;
+            var html = '';
+            html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
+            return html;
+        }
         function createdRow(row, data, dataIndex) {
             var projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
             var status = "";
             status = MasterData.getFrozenBoxStatus(data.status);
-            $('td:eq(2)', row).html(projectName);
-            $('td:eq(8)', row).html(status);
+            $('td:eq(3)', row).html(projectName);
+            $('td:eq(10)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

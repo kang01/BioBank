@@ -173,10 +173,23 @@
 
         vm.dtInstance = {};
         vm.searchShow = _fnSearchShow;
+        vm.selectedShow = _fnSearchShow;
+        //移位
+        vm.movement = _fnMovement;
+        vm.search = _fnSearch;
         function _fnSearchShow() {
             vm.checked = true;
         }
-        vm.search = _fnSearch;
+        function _fnSearchShow(status) {
+            vm.status = status;
+            vm.checked = true;
+        }
+        function _fnMovement() {
+            var obj = {};
+            obj.selectedSample = selectedSample;
+            // $state.go('equipment-movement',obj)
+        }
+
         function _fnSearch() {
             vm.dto.projectCodeStr = [];
             if(projectIds.length){
@@ -188,12 +201,56 @@
             vm.checked = false;
             vm.dtInstance.rerender();
         }
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
+
+
+        vm.selectedColumns = [
+            DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),
+            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "60"),
+            // DTColumnBuilder.newColumn('status').withTitle('状态'),
+
+        ];
 
 
 
-
-
+        vm.selected = {};
+        vm.selectAll = false;
+        vm.toggleAll = toggleAll;
+        vm.toggleOne = toggleOne;
+        function toggleAll (selectAll, selectedItems) {
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    selectedItems[id] = selectAll;
+                }
+            }
+        }
+        var selectedSample;
+        function toggleOne (selectedItems) {
+            var selectedSample = [];
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(selectedItems[id]) {
+                        var obj = _.find(vm.sampleData,{id:+id});
+                        selectedSample.push(obj);
+                    }
+                }
+            }
+            vm.selectedLen = selectedSample.length;
+            vm.selectedOptions.withOption('data', selectedSample);
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(!selectedItems[id]) {
+                        vm.selectAll = false;
+                        return;
+                    }
+                }
+            }
+            vm.selectAll = true;
+        }
         vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
+            .withOption('order', [[1,'asc']])
+            .withOption('searching', false)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};
@@ -205,6 +262,7 @@
                 var searchForm = angular.toJson(vm.dto);
                 SampleInventoryService.querySampleList(data,searchForm).then(function (res){
                     var json = res.data;
+                    vm.sampleData = res.data.data;
                     var error = json.error || json.sError;
                     if ( error ) {
                         jqDt._fnLog( oSettings, 0, error );
@@ -229,18 +287,27 @@
             })
             .withOption('createdRow', createdRow);
 
+        var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('position').withTitle('定位'),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码'),
-            DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),
+            DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)
+                .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
+            DTColumnBuilder.newColumn('position').withTitle('定位').withOption("width", "120"),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "120"),
+            DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
-            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型'),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类'),
+            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "60"),
             DTColumnBuilder.newColumn('sex').withTitle('标签'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
+        function _fnRowSelectorRender(data, type, full, meta) {
+            vm.selected[full.id] = false;
+            var html = '';
+            html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
+            return html;
+        }
         function createdRow(row, data, dataIndex) {
             var projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
             var tag = '';
@@ -266,9 +333,9 @@
                 tag += "脂肪血;";
             }
             var status = MasterData.getStatus(data.status);
-            $('td:eq(3)', row).html(projectName);
-            $('td:eq(6)', row).html(tag);
-            $('td:eq(7)', row).html(status);
+            $('td:eq(4)', row).html(projectName);
+            $('td:eq(7)', row).html(tag);
+            $('td:eq(8)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

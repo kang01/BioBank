@@ -153,25 +153,79 @@
 
         vm.dtInstance = {};
         vm.searchShow = _fnSearchShow;
-        function _fnSearchShow() {
+        vm.search = _fnSearch;
+        vm.selectedShow = _fnSearchShow;
+        vm.movement = _fnMovement;
+        function _fnSearchShow(status) {
+            vm.status = status;
             vm.checked = true;
         }
-        vm.search = _fnSearch;
+
         function _fnSearch() {
             vm.checked = false;
             vm.dtInstance.rerender();
         }
 
+        function _fnMovement() {
+            var obj = {};
+            obj.selectedEquipment = selectedEquipment;
+            $state.go('equipment-movement',obj)
+        }
 
 
-        // $scope.checked = !$scope.checked;
-        // vm.toggle = function () {
-        //     $scope.checked = !$scope.checked
-        // };
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
 
 
+        vm.selectedColumns = [
+            DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型'),
+            // DTColumnBuilder.newColumn('equipmentCode').withTitle('设备'),
+            // DTColumnBuilder.newColumn('areaCode').withTitle('区域'),
+            // DTColumnBuilder.newColumn('shelvesCode').withTitle('架子'),
+            DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型')
+            // DTColumnBuilder.newColumn('countOfUsed').withTitle('已用'),
+            // DTColumnBuilder.newColumn('countOfRest').withTitle('剩余'),
+            // DTColumnBuilder.newColumn('status').withTitle('状态'),
+            // DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
+            // DTColumnBuilder.newColumn('id').notVisible()
+        ];
 
+        vm.selected = {};
+        vm.selectAll = false;
+        vm.toggleAll = toggleAll;
+        vm.toggleOne = toggleOne;
+        function toggleAll (selectAll, selectedItems) {
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    selectedItems[id] = selectAll;
+                }
+            }
+        }
+        var selectedEquipment;
+        function toggleOne (selectedItems) {
+            var selectedEquipment = [];
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(selectedItems[id]) {
+                        var obj = _.find(vm.equipmentData,{id:+id});
+                        selectedEquipment.push(obj);
+                    }
+                }
+            }
+            vm.selectedLen = selectedEquipment.length;
+            vm.selectedOptions.withOption('data', selectedEquipment);
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(!selectedItems[id]) {
+                        vm.selectAll = false;
+                        return;
+                    }
+                }
+            }
+            vm.selectAll = true;
+        }
         vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
+            .withOption('searching', false)
+            .withOption('order', [[1,'asc']])
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};
@@ -183,6 +237,7 @@
                 var searchForm = angular.toJson(vm.dto);
                 EquipmentInventoryService.queryEquipmentList(data,searchForm).then(function (res){
                     var json = res.data;
+                    vm.equipmentData = res.data.data;
                     var error = json.error || json.sError;
                     if ( error ) {
                         jqDt._fnLog( oSettings, 0, error );
@@ -205,30 +260,39 @@
                     jqDt._fnProcessingDisplay( oSettings, false );
                 });
             })
-            .withOption('createdRow', createdRow);
-
-
+            .withOption('createdRow', createdRow)
+            .withOption('headerCallback', function(header) {
+                $compile(angular.element(header).contents())($scope);
+            });
+        var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.dtColumns = [
+            DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)
+                .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型'),
-            DTColumnBuilder.newColumn('equipmentCode').withTitle('设备'),
-            DTColumnBuilder.newColumn('areaCode').withTitle('区域'),
-            DTColumnBuilder.newColumn('shelvesCode').withTitle('架子'),
+            DTColumnBuilder.newColumn('equipmentCode').withTitle('位置'),
+            // DTColumnBuilder.newColumn('areaCode').withTitle('区域'),
+            // DTColumnBuilder.newColumn('shelvesCode').withTitle('架子'),
             DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型'),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用'),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
-            DTColumnBuilder.newColumn('id').notVisible()
+            DTColumnBuilder.newColumn("").withTitle('操作')
+                .withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
+        function _fnRowSelectorRender(data, type, full, meta) {
+            vm.selected[full.id] = false;
+            var html = '';
+            html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
+            return html;
+        }
         function createdRow(row, data, dataIndex) {
-            console.log(JSON.stringify(data));
             var status = '';
+            var position = data.equipmentCode+"."+data.areaCode+"."+data.shelvesCode;
             switch (data.status){
                 case '0001': status = '运行中';break;
-                // case '1402': status = '已完成';break;
-                // case '1403': status = '已作废';break;
             }
-            $('td:eq(7)', row).html(status);
+            $('td:eq(6)', row).html(status);
+            $('td:eq(2)', row).html(position);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

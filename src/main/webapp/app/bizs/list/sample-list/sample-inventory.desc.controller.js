@@ -19,10 +19,11 @@
         SampleInventoryService.queryTubeDes(sampleId).success(function (data) {
            vm.entity = data;
            vm.status = MasterData.getStatus(vm.entity.status);
+           vm.sex = MasterData.getSex(vm.entity.gender);
         });
 
 
-        vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
+        vm.dtOptions = BioBankDataTable.buildDTOption("BASIC", null, 10)
             .withOption('createdRow', createdRow);
 
 
@@ -32,8 +33,8 @@
             DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码'),
             DTColumnBuilder.newColumn('positionInBox').withTitle('盒内位置'),
-            DTColumnBuilder.newColumn('status').withTitle('操作员'),
-            DTColumnBuilder.newColumn('status').withTitle('批注'),
+            DTColumnBuilder.newColumn('operator').withTitle('操作员'),
+            DTColumnBuilder.newColumn('memo').withTitle('批注'),
             DTColumnBuilder.newColumn('status').withTitle('状态')
         ];
         function createdRow(row, data, dataIndex) {

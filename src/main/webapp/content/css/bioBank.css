@@ -768,3 +768,22 @@ body.ng-pageslide-body-closed::before {
 .add-sample-modal-body .project-sites .selectize-input > *{
     width: 150px;
 }
+.position-relative{
+    position: relative;
+}
+.circle{
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: red;
+    font-size: 12px;
+    color: white;
+}
+.position-relative .circle{
+    top: -7px;
+    right: 5px;
+    position: absolute;
+}
+.text-left{
+    text-align: left !important;
+}

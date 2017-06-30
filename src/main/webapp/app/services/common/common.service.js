@@ -162,6 +162,9 @@
             function _getFrozenBoxStatus(statusCode) {
                 return (_.find(_frozenBoxStatus,{value:statusCode+""})|| {}).label;
             }
+            function _getSex(sex) {
+                return (_.find(_sexDict,{type:sex+""})|| {}).name;
+            }
             var masterData = {
                 sexDict :_sexDict,
                 diseaseType :_diseaseType,
@@ -172,7 +175,8 @@
                 frozenBoxStatus: _frozenBoxStatus,
                 frozenTubeStatus: _frozenTubeStatus,
                 getStatus: _getStatus,
-                getFrozenBoxStatus: _getFrozenBoxStatus
+                getFrozenBoxStatus: _getFrozenBoxStatus,
+                getSex: _getSex
             };
             return masterData;
         }])

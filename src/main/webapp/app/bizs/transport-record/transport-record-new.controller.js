@@ -954,8 +954,10 @@
                 // toastr.success("两个空冻存盒不能被交换!");
 
                 if(vm.exchangeFlag && domArray.length == 2){
+                    var v1 = (!domArray[0].sampleCode && !domArray[1].sampleCode)
+                    var v2 = (!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)
                     if((!domArray[0].sampleCode && !domArray[1].sampleCode)
-                    ||(!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)){
+                    && (!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)){
                         toastr.error("两个空冻存盒不能被交换!");
                         return;
                     }
@@ -1014,12 +1016,10 @@
                     });
                     modalInstance.result.then(function (memo) {
                         for(var i = 0; i < aRemarkArray.length; i++){
-
-                            if(aRemarkArray[i].sampleCode){
+                            if(aRemarkArray[i].sampleCode || aRemarkArray[i].sampleTempCode){
                                 aRemarkArray[i].memo = memo;
                             }
                         }
-
                         aRemarkArray = [];
                         hotRegisterer.getInstance('my-handsontable').render();
                     });

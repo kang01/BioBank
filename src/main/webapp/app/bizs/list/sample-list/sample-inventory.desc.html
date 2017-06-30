@@ -1,115 +1,152 @@
 <div>
-    <div class="col-md-12">
-        <div class="pull-left">
-            <h2 style="margin: 0">样本详情<small>{{vm.entity.sampleCode}}</small></h2>
-        </div>
-        <div class="pull-right">
-            <button type="button" class="btn btn-default" ui-sref="sample-inventory">关闭</button>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="pull-left">
+                <h2 style="margin: 0">样本详情<small>&nbsp;{{vm.entity.sampleCode}}</small></h2>
+            </div>
+            <div class="pull-right">
+                <button type="button" class="btn btn-default" ui-sref="sample-inventory">关闭</button>
+            </div>
         </div>
     </div>
-    <div class="row">
+    <div class="">
         <form class="form-horizontal">
             <div class="row">
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">项目编码</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.projectCode}}</p>
+                <div class="col-md-2 ">
+                    <div class="form-group">
+                        <label class="col-md-6 control-label text-left pr-0">项目编码:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.entity.projectCode ? vm.entity.projectCode : "N/A"}}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">样本类型:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.sampleTypeName}}</p>
+                <div class="col-md-2">
+                    <div class="form-group ">
+                        <label class="col-md-6 control-label text-left pr-0">样本类型:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.entity.sampleTypeName ? vm.entity.sampleTypeName : "N/A"}}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">样本分类:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.sampleClassificationName}}</p>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="col-md-6 control-label text-left pr-0">样本分类:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.entity.sampleClassificationName ? vm.entity.sampleClassificationName : "N/A"}}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">冻存管类型:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.frozenTubeTypeName}}</p>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="col-md-6 control-label text-left pr-0">冻存管类型:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.entity.frozenTubeTypeName ? vm.entity.frozenTubeTypeName : "N/A"}}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">使用次数:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.sampleUsedTimes}}</p>
+                <div class="col-md-2">
+                    <div class="form-group ">
+                        <label class="col-md-6 control-label text-left pr-0">使用次数:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.entity.sampleUsedTimes ? vm.entity.sampleUsedTimes : "N/A"}}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">状态:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.status}}</p>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="col-md-6 control-label text-left pr-0">状态:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.status ? vm.status : "N/A"}}</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="col-md-6 control-label text-left pr-0">患者编码:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.entity.patientId ? vm.entity.patientId : "N/A"}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="col-md-6 control-label text-left pr-0">患者性别:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.sex ? vm.sex : "N/A"}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="col-md-6 control-label text-left pr-0">采样年龄:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.entity.age ? vm.entity.age : "N/A"}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="col-md-6 control-label text-left pr-0">疾病类型:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.entity.diseaseType ? vm.entity.diseaseType : "N/A"}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="col-md-6 control-label text-left pr-0">是否溶血:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.entity.isHemolysis ? vm.entity.isHemolysis : "N/A"}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="col-md-6 control-label text-left pr-0">是否脂质血:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.entity.isBloodLipid  ? vm.entity.isBloodLipid : "N/A"}}</p>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">患者编码:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.patientId}}</p>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="col-md-6 control-label text-left pr-0">冻存盒编码:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.entity.frozenBoxCode ? vm.entity.frozenBoxCode : "N/A" }}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">患者性别:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.gender}}</p>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="col-md-6 control-label text-left pr-0">盒内位置:</label>
+                        <div class="col-md-6 pl-0">
+                            <p class="form-control-static">{{vm.entity.tubeRows}}{{vm.entity.tubeColumns}}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">采样年龄:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.age}}</p>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-left pr-0">冻存位置:</label>
+                        <div class="col-md-9 pl-0">
+                            <p class="form-control-static">{{vm.entity.position  ? vm.entity.position : "N/A"}}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">疾病类型:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.diseaseType}}</p>
-                    </div>
-                </div>
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">是否溶血:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.isHemolysis}}</p>
-                    </div>
-                </div>
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">是否脂质血:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.isBloodLipid}}</p>
-                    </div>
-                </div>
+
+
             </div>
             <div class="row">
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">冻存盒编码:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.frozenBoxCode}}</p>
-                    </div>
-                </div>
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">盒内位置:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.tubeRows}}{{vm.entity.tubeColumns}}</p>
-                    </div>
-                </div>
-                <div class="form-group col-md-2">
-                    <label class="col-md-6 control-label">冻存位置:</label>
-                    <div class="col-md-6">
-                        <p class="form-control-static">{{vm.entity.isBloodLipid}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <label class="col-md-1 control-label">备注:</label>
-                    <div class="col-md-11">
-                        <p class="form-control-static">{{vm.entity.isBloodLipid}}</p>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">备注:</label>
+                        <div class="col-md-11">
+                            <p class="form-control-static">{{vm.entity.isBloodLipid}}</p>
+                        </div>
                     </div>
                 </div>
             </div>

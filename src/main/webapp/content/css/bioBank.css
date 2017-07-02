@@ -743,7 +743,6 @@ body.ng-pageslide-body-open::before {
     z-index: 1;
     opacity: 0.5;
     transition: opacity 1s;
-    opacity: 0.5;
     pointer-events: all;
 }
 body.ng-pageslide-body-closed::before {
@@ -762,7 +761,7 @@ body.ng-pageslide-body-closed::before {
 }
 #container1, #container2 {
     width: 100%;
-    height: 60rem;
+    /*height: 60rem;*/
     /*border: 1px solid lightGrey;*/
 }
 .add-sample-modal-body .project-sites .selectize-input > *{

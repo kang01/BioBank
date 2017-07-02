@@ -324,7 +324,6 @@
                 DTColumnBuilder.newColumn('countOfSample').withOption("width", "90").withTitle('样本量'),
                 DTColumnBuilder.newColumn('status').withOption("width", "80").withTitle('状态'),
                 DTColumnBuilder.newColumn("").withOption("width", "120").withTitle('操作').withOption('searchable',false).notSortable().renderWith(_fnActionButtonsRender),
-                DTColumnBuilder.newColumn('id').notVisible()
                 // DTColumnBuilder.newColumn('sampleType').notVisible(),
                 // DTColumnBuilder.newColumn('frozenBoxRows').notVisible(),
                 // DTColumnBuilder.newColumn('frozenBoxColumns').notVisible()

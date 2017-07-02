@@ -129,6 +129,13 @@
                 vm.dto.frozenBoxCodeStr = value;
             }
         };
+        vm.sampleCodeConfig = {
+            create: true,
+            persist:false,
+            onChange: function(value){
+                vm.dto.sampleCodeStr = value;
+            }
+        };
         //样本类型
         vm.sampleTypeConfig = {
             valueField:'id',
@@ -177,6 +184,8 @@
         //移位
         vm.movement = _fnMovement;
         vm.search = _fnSearch;
+        vm.close = _fnClose;
+        vm.empty = _fnEmpty;
         function _fnSearchShow() {
             vm.checked = true;
         }
@@ -201,9 +210,15 @@
             vm.checked = false;
             vm.dtInstance.rerender();
         }
+        function _fnClose() {
+            vm.checked = false;
+        }
+        function _fnEmpty() {
+            vm.dto = {};
+            vm.dto.frozenBoxCodeStr = "";
+            vm.dto.projectCodeStr = "";
+        }
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
-
-
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),

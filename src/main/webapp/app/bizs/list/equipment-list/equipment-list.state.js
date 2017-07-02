@@ -52,7 +52,10 @@
             })
             .state('equipment-movement', {
                 parent: 'bizs',
-                url: '/equipment-movement?page&sort',
+                url: '/equipment-movement',
+                params: {
+                    selectedEquipment:null
+                },
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN']
                 },
@@ -63,26 +66,16 @@
                         controllerAs: 'vm'
                     }
                 },
-                params: {
-                    page: {
-                        value: '1',
-                        squash: true
-                    },
-                    sort: {
-                        value: 'id,asc',
-                        squash: true
-                    },
-                    selectedEquipment:null
-                },
+
                 resolve: {
-                    pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
-                        return {
-                            page: PaginationUtil.parsePage($stateParams.page),
-                            sort: $stateParams.sort,
-                            predicate: PaginationUtil.parsePredicate($stateParams.sort),
-                            ascending: PaginationUtil.parseAscending($stateParams.sort)
-                        };
-                    }],
+                    // pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                    //     return {
+                    //         page: PaginationUtil.parsePage($stateParams.page),
+                    //         sort: $stateParams.sort,
+                    //         predicate: PaginationUtil.parsePredicate($stateParams.sort),
+                    //         ascending: PaginationUtil.parseAscending($stateParams.sort)
+                    //     };
+                    // }],
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                         return $translate.refresh();
                     }]

@@ -12,27 +12,21 @@
 
     function EquipmentMovementController($scope,$compile,$state,$stateParams,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
         var vm = this;
+        vm.dtInstance = {};
+        vm.dto = {};
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         var selectedEquipment = $stateParams.selectedEquipment;
-        console.log(JSON.stringify(selectedEquipment));
-
-
-        vm.dto = {};
         function _init() {
 
         }
         _init();
-        function onError(error) {
-            // BioBankBlockUi.blockUiStop();
-            // toastr.error(error.data.message);
-        }
-
-
-        vm.dtInstance = {};
 
 
 
-        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10);
+
+
+        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
+            .withOption('searching', false);
 
 
         vm.selectedColumns = [
@@ -47,7 +41,7 @@
             // DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
             // DTColumnBuilder.newColumn('id').notVisible()
         ];
-
+        vm.selectedOptions.withOption('data', selectedEquipment);
         vm.selected = {};
         vm.selectAll = false;
         vm.toggleAll = toggleAll;
@@ -155,6 +149,11 @@
             //     '   <i class="fa fa-edit"></i>' +
             //     '</button>&nbsp;';
             return "";
+        }
+
+        function onError(error) {
+            // BioBankBlockUi.blockUiStop();
+            // toastr.error(error.data.message);
         }
     }
 })();

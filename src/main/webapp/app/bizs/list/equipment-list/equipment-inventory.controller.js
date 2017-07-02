@@ -12,8 +12,14 @@
 
     function EquipmentInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
         var vm = this;
+        vm.checked = false;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
+        var selectedEquipment;
+
+
+
+
         function _init() {
             //获取项目
             ProjectService.query({},onProjectSuccess, onError);
@@ -156,6 +162,8 @@
         vm.search = _fnSearch;
         vm.selectedShow = _fnSearchShow;
         vm.movement = _fnMovement;
+        vm.close = _fnClose;
+        vm.empty = _fnEmpty;
         function _fnSearchShow(status) {
             vm.status = status;
             vm.checked = true;
@@ -167,15 +175,17 @@
         }
 
         function _fnMovement() {
-            var obj = {};
-            obj.selectedEquipment = selectedEquipment;
-            $state.go('equipment-movement',obj)
+            $state.go('equipment-movement',{selectedEquipment:selectedEquipment})
+        }
+        function _fnClose() {
+            vm.checked = false;
+        }
+        function _fnEmpty() {
+            vm.dto = {};
+            vm.dto.frozenBoxCodeStr = "";
         }
 
-
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
-
-
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型'),
             // DTColumnBuilder.newColumn('equipmentCode').withTitle('设备'),
@@ -200,9 +210,9 @@
                 }
             }
         }
-        var selectedEquipment;
+
         function toggleOne (selectedItems) {
-            var selectedEquipment = [];
+            selectedEquipment = [];
             for (var id in selectedItems) {
                 if (selectedItems.hasOwnProperty(id)) {
                     if(selectedItems[id]) {

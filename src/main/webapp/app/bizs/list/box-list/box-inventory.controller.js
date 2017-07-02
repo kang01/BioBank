@@ -205,6 +205,8 @@
         vm.searchShow = _fnSearchShow;
         vm.selectedShow = _fnSearchShow;
         vm.movement = _fnMovement;
+        vm.close = _fnClose;
+        vm.empty = _fnEmpty;
         function _fnSearchShow(status) {
             vm.status = status;
             vm.checked = true;
@@ -222,7 +224,15 @@
             obj.selectedBox = selectedBox;
             // $state.go('equipment-movement',obj)
         }
-
+        function _fnClose() {
+            vm.checked = false;
+        }
+        function _fnEmpty() {
+            vm.dto = {};
+            vm.dto.frozenBoxCodeStr = "";
+            vm.dto.spaceType = "1";
+            vm.dto.compareType = "1";
+        }
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "110"),

@@ -14,7 +14,7 @@
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
-
+        var selectedSample;
         function _init() {
             //获取项目
             ProjectService.query({},onProjectSuccess, onError);
@@ -194,9 +194,7 @@
             vm.checked = true;
         }
         function _fnMovement() {
-            var obj = {};
-            obj.selectedSample = selectedSample;
-            // $state.go('equipment-movement',obj)
+            $state.go('sample-movement',selectedSample)
         }
 
         function _fnSearch() {
@@ -240,9 +238,9 @@
                 }
             }
         }
-        var selectedSample;
+
         function toggleOne (selectedItems) {
-            var selectedSample = [];
+            selectedSample = [];
             for (var id in selectedItems) {
                 if (selectedItems.hasOwnProperty(id)) {
                     if(selectedItems[id]) {

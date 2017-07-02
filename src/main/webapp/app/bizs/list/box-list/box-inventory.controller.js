@@ -15,7 +15,7 @@
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
         vm.checked = false;
-
+        var selectedBox;
         function _init() {
             //获取项目
             ProjectService.query({},onProjectSuccess, onError);
@@ -220,9 +220,7 @@
             vm.dtInstance.rerender();
         }
         function _fnMovement() {
-            var obj = {};
-            obj.selectedBox = selectedBox;
-            // $state.go('equipment-movement',obj)
+            $state.go('box-movement',{selectedBox:selectedBox})
         }
         function _fnClose() {
             vm.checked = false;
@@ -251,9 +249,9 @@
                 }
             }
         }
-        var selectedBox;
+
         function toggleOne (selectedItems) {
-            var selectedBox = [];
+            selectedBox = [];
             for (var id in selectedItems) {
                 if (selectedItems.hasOwnProperty(id)) {
                     if(selectedItems[id]) {

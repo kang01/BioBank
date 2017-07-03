@@ -786,3 +786,49 @@ body.ng-pageslide-body-closed::before {
 .text-left{
     text-align: left !important;
 }
+.home-body{
+    position: relative;
+    transition: all .1s linear;
+
+}
+.home-body .content{
+    position: absolute;
+    width: 100%;
+    animation:myfirst 1s;
+}
+.home-body .home-nav{
+    position: relative;
+    width: 190px;
+    height: 180px;
+    border: 1px solid #ccc;
+    padding-top: 62px;
+    text-align: center;
+    font-size: 32px;
+    border-radius: 4px;
+    margin-top: 36px;
+    cursor: pointer;
+    margin-left: 15px;
+}
+.home-body .home-nav:hover{
+    box-shadow: 2px 2px 5px #ccc;
+}
+.home-body .create{
+    width: 0;
+    height: 0;
+    position: absolute;
+    top:0;
+    left: 0;
+    background-color: #fafafa;
+    transition: all .5s ease;
+    overflow: hidden;
+}
+.home-body .create-body{
+    width: 99%;
+    height: 100%;
+    border:1px solid #ccc;
+}
+@keyframes myfirst
+{
+    from {right: -75%;}
+    to {right:0;}
+}

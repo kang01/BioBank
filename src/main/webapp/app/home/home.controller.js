@@ -29,5 +29,13 @@
         function register () {
             $state.go('register');
         }
+
+
+        vm.create = function () {
+            vm.isActive = true;
+        }
+        vm.close = function () {
+            vm.isActive = false;
+        }
     }
 })();

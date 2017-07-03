@@ -13,4 +13,6 @@ import java.util.List;
 public interface ProjectRepository extends JpaRepository<Project,Long> {
     @Query("select t from Project t  where t.status != '0000' order by t.id asc")
     List<Project> findAllProject();
+
+    Project findByProjectCode(String projectCode);
 }

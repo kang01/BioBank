@@ -287,4 +287,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeCode(String sampleCode, String projectCode, String sampleTypeCode);
 
     List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeId(String sampleCode, String projectCode, Long sampleTypeId);
+
+    @Query("select t from FrozenTube t where t.sampleCode =?1 and t.projectCode = ?2 and t.sampleTypeCode =?3 and t.sampleClassification.sampleClassificationCode = ?4")
+    FrozenTube findBySampleCodeAndProjectCodeAndSampleTypeCodeAndSampleClassificationCode(String sampleCode, String projectCode, String sampleTypeCode, String sampleClassTypeCode);
 }

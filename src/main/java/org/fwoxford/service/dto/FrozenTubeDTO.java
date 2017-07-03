@@ -209,6 +209,10 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     private String projectSiteCode;
 
     private String position;
+    /**
+     * 样本分期
+     */
+    private String sampleStage;
 
     public Long getId() {
         return id;
@@ -550,6 +554,14 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
         this.position = position;
     }
 
+    public String getSampleStage() {
+        return sampleStage;
+    }
+
+    public void setSampleStage(String sampleStage) {
+        this.sampleStage = sampleStage;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -606,6 +618,7 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
             ", age='" + age + "'" +
             ", projectSiteCode='" + projectSiteCode + "'" +
             ", position='" + position + "'" +
+            ", sampleStage='" + sampleStage + "'" +
             '}';
     }
 }

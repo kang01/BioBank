@@ -107,10 +107,13 @@ public class FrozenBoxListAllDataTableEntity  implements Serializable {
     @Column(name ="frozen_box_type_id")
     private Long frozenBoxTypeId;
 
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name ="memo")
+    private String memo;
     public FrozenBoxListAllDataTableEntity() {
     }
 
-    public FrozenBoxListAllDataTableEntity(Long id, String frozenBoxCode, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String position, String sampleType, String sampleClassification, String frozenBoxType, Long countOfUsed, Long countOfRest, String status, String projectName, String projectCode, Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId, Long frozenBoxTypeId) {
+    public FrozenBoxListAllDataTableEntity(Long id, String frozenBoxCode, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String position, String sampleType, String sampleClassification, String frozenBoxType, Long countOfUsed, Long countOfRest, String status, String projectName, String projectCode, Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId, Long frozenBoxTypeId, String memo) {
         this.id = id;
         this.frozenBoxCode = frozenBoxCode;
         this.equipmentCode = equipmentCode;
@@ -133,6 +136,7 @@ public class FrozenBoxListAllDataTableEntity  implements Serializable {
         this.sampleTypeId = sampleTypeId;
         this.sampleClassificationId = sampleClassificationId;
         this.frozenBoxTypeId = frozenBoxTypeId;
+        this.memo = memo;
     }
 
     public Long getId() {
@@ -309,5 +313,13 @@ public class FrozenBoxListAllDataTableEntity  implements Serializable {
 
     public void setFrozenBoxTypeId(Long frozenBoxTypeId) {
         this.frozenBoxTypeId = frozenBoxTypeId;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 }

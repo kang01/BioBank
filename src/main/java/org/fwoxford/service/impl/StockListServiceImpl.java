@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Service Implementation for managing StockIn.
+ * Service Implementation for managing StockList.
  */
 @Service
 @Transactional
@@ -52,7 +52,7 @@ public class StockListServiceImpl implements StockListService {
     public DataTablesOutput<FrozenPositionListAllDataTableEntity> getPageStockFrozenPositionList(DataTablesInput input, FrozenPositionListSearchForm searchForm) {
         DataTablesOutput<FrozenPositionListAllDataTableEntity> stockInDataTablesOutput = new DataTablesOutput<FrozenPositionListAllDataTableEntity>();
 
-        if(searchForm != null && searchForm.getProjectCodeStr()!=null){
+        if(searchForm != null && searchForm.getProjectCodeStr()!=null && searchForm.getProjectCodeStr().length>0){
             Specification<FrozenPositionListAllDataTableEntity> specification = new Specification<FrozenPositionListAllDataTableEntity>() {
                 @Override
                 public Predicate toPredicate(Root<FrozenPositionListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -73,10 +73,11 @@ public class StockListServiceImpl implements StockListService {
             Converter<FrozenPositionListDataTableEntity, FrozenPositionListAllDataTableEntity> userConverter = new Converter<FrozenPositionListDataTableEntity, FrozenPositionListAllDataTableEntity>() {
                 @Override
                 public FrozenPositionListAllDataTableEntity convert(FrozenPositionListDataTableEntity e) {
+                    String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),null,null,null,null);
                     return new FrozenPositionListAllDataTableEntity(e.getId(), e.getEquipmentType(),
                         e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getShelvesType(),
                         e.getCountOfUsed(),e.getCountOfRest(),
-                        e.getStatus(),"","",e.getEquipmentTypeId(),e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getShelvesTypeId(),e.getPosition());
+                        e.getStatus(),"","",e.getEquipmentTypeId(),e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getShelvesTypeId(),position,e.getMemo());
                 }
             };
             stockInDataTablesOutput =  stockListRepositries.findAll(input,null,specification,userConverter);
@@ -100,7 +101,7 @@ public class StockListServiceImpl implements StockListService {
                 String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
                 return new FrozenBoxListAllDataTableEntity(e.getId(),e.getFrozenBoxCode(),e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),
                     position,e.getSampleType(),e.getSampleClassification(),e.getFrozenBoxType(),e.getCountOfUsed(),e.getCountOfRest(),e.getStatus(),e.getProjectName(),e.getProjectCode(),
-                    e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getSampleTypeId(),e.getSampleClassificationId(),e.getFrozenBoxTypeId());
+                    e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getSampleTypeId(),e.getSampleClassificationId(),e.getFrozenBoxTypeId(),e.getMemo());
             }
         };
         Specification<FrozenBoxListAllDataTableEntity> specification = new Specification<FrozenBoxListAllDataTableEntity>() {

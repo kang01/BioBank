@@ -205,6 +205,14 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
 
     @Column(name = "age")
     private Integer age;
+
+    /**
+     * 样本分期
+     */
+    @Size(max = 255)
+    @Column(name = "sample_stage", length = 255)
+    private String sampleStage;
+
     /**
      * 冻存管类型
      */
@@ -634,6 +642,17 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
         this.age = age;
     }
 
+    public String getSampleStage() {
+        return sampleStage;
+    }
+    public FrozenTube sampleStage(String sampleStage) {
+        this.sampleStage = sampleStage;
+        return this;
+    }
+    public void setSampleStage(String sampleStage) {
+        this.sampleStage = sampleStage;
+    }
+
     public FrozenTubeType getFrozenTubeType() {
         return frozenTubeType;
     }
@@ -751,6 +770,7 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
             ", visitType='" + visitType + "'" +
             ", visitDate='" + visitDate + "'" +
             ", age='" + age + "'" +
+            ", sampleStage='" + sampleStage + "'" +
             '}';
     }
 }

@@ -10,12 +10,12 @@
 
         <createView viewName="view_position_by_project">
             SELECT
-                shelf.id,
+                a.id,
                 emodle.equipment_type,emodle.id as equipment_type_id, e.equipment_code,e.id as equipment_id,
                 a.area_code,a.id as area_id,
                 shelf.support_rack_code as shelves_code,shelf.id as shelves_id,shelfType.support_rack_type_code as shelves_type ,shelfType.id as shelves_type_id,
                 p.project_code ,p.project_name,shelf.status,
-                '' as position,
+                e.equipment_code||'.'|| a.area_code||'.'||shelf.support_rack_code as position,shelf.memo,
                 (select count(b.id) from frozen_box b where b.equipment_id = temp.equipment_id and  b.area_id = temp.area_id and  b.support_rack_id = temp.support_rack_id and b.status = '2004') as count_of_used,
                 (shelfType.support_rack_rows*shelfType.support_rack_columns-(select count(b.id) from frozen_box b where b.equipment_id = temp.equipment_id and  b.area_id = temp.area_id and  b.support_rack_id = temp.support_rack_id and b.status = '2004')) as count_of_rest
 

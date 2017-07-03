@@ -95,6 +95,7 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
         log.debug("Request to get FrozenTube : {}", id);
         FrozenTube frozenTube = frozenTubeRepository.findOne(id);
         FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(frozenTube);
+        frozenTubeDTO.setSampleClassificationName(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getSampleClassificationName():null);
         if(frozenTube.getFrozenBox()!=null){
             FrozenBox frozenBox = frozenBoxRepository.findOne(frozenTube.getFrozenBox().getId());
             String position = BankUtil.getPositionString(frozenBox);

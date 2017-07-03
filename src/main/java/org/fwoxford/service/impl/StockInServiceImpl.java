@@ -388,24 +388,6 @@ public class StockInServiceImpl implements StockInService {
                 stockInBoxPositionRepository.save(stockInBoxPosition);
                 //保存入库管子
                 stockInTubeService.saveStockInTube(box);
-                //保存冻存管历史
-                List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
-                for(FrozenTube tube : frozenTubes){
-                    //保存入库与冻存管的关系
-                    StockInTubes stockInTubes = new StockInTubes();
-                    stockInTubes.setMemo(tube.getMemo());
-                    stockInTubes.setStatus(Constants.FROZEN_BOX_STOCKED);
-                    stockInTubes.setColumnsInTube(tube.getTubeColumns());
-                    stockInTubes.setRowsInTube(tube.getTubeRows());
-                    stockInTubes.setFrozenBoxPosition(frozenBoxPos);
-                    stockInTubes.setFrozenTube(tube);
-                    stockInTubes.setFrozenTubeCode(tube.getFrozenTubeCode());
-                    stockInTubes.setSampleCode(tube.getSampleCode());
-                    stockInTubes.setStockInBox(box);
-                    stockInTubes.setTranshipBox(transhipBox);
-                    stockInTubes.setSampleTempCode(tube.getSampleTempCode());
-                    stockInTubesRepository.save(stockInTubes);
-                }
             }
         }
         //修改转运

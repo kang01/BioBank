@@ -82,13 +82,18 @@ public class FrozenPositionListAllDataTableEntity   implements Serializable {
     private Long shelvesTypeId;
 
     @Column(name ="position")
+    @JsonView(DataTablesOutput.View.class)
     private String position;
+
+    @Column(name ="memo")
+    @JsonView(DataTablesOutput.View.class)
+    private String memo;
 
     public FrozenPositionListAllDataTableEntity(){
 
     }
 
-    public FrozenPositionListAllDataTableEntity(Long id, String equipmentType, String equipmentCode, String areaCode, String shelvesCode, String shelvesType, Long countOfUsed, Long countOfRest, String status, String projectName, String projectCode, Long equipmentTypeId, Long equipmentId, Long areaId, Long shelvesId, Long shelvesTypeId, String position) {
+    public FrozenPositionListAllDataTableEntity(Long id, String equipmentType, String equipmentCode, String areaCode, String shelvesCode, String shelvesType, Long countOfUsed, Long countOfRest, String status, String projectName, String projectCode, Long equipmentTypeId, Long equipmentId, Long areaId, Long shelvesId, Long shelvesTypeId, String position, String memo) {
         this.id = id;
         this.equipmentType = equipmentType;
         this.equipmentCode = equipmentCode;
@@ -106,6 +111,7 @@ public class FrozenPositionListAllDataTableEntity   implements Serializable {
         this.shelvesId = shelvesId;
         this.shelvesTypeId = shelvesTypeId;
         this.position = position;
+        this.memo = memo;
     }
 
     public Long getId() {
@@ -242,5 +248,13 @@ public class FrozenPositionListAllDataTableEntity   implements Serializable {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 }

@@ -8,19 +8,35 @@
         .module('bioBankApp')
         .controller('EquipmentMovementController', EquipmentMovementController);
 
-    EquipmentMovementController.$inject = ['$scope','$compile','$state','$stateParams','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
+    EquipmentMovementController.$inject = ['$scope','$compile','$state','$uibModal','$stateParams','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
 
-    function EquipmentMovementController($scope,$compile,$state,$stateParams,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
+    function EquipmentMovementController($scope,$compile,$state,$uibModal,$stateParams,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
         var vm = this;
         vm.dtInstance = {};
         vm.dto = {};
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        var selectedEquipment = $stateParams.selectedEquipment;
+        var selectedEquipment = $stateParams.selectedEquipment||[];
         function _init() {
 
         }
         _init();
+        vm.close = _fnClose;
+        function _fnClose() {
+            if(selectedEquipment.length){
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'myModalContent.html',
+                    controller: 'ModalInstanceCtrl',
+                    controllerAs: 'vm'
+                });
+                modalInstance.result.then(function () {
+                    $state.go("equipment-inventory");
+                }, function () {
+                });
+            }else{
+                $state.go("equipment-inventory");
+            }
 
+        }
 
 
 

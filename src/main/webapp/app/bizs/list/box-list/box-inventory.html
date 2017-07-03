@@ -1,4 +1,4 @@
-<div id="container1">
+<div>
     <div class="col-md-12">
         <div class="pull-left">
             <h2 style="margin: 0">冻存盒清单</h2>
@@ -14,10 +14,25 @@
             <button type="button" class="btn btn-default" ng-click="vm.searchShow(2)">搜索</button>
         </div>
     </div>
-    <pageslide ps-open="vm.checked" ps-body-class="true">
+    <pageslide ps-open="vm.checked" ps-body-class="true" ps-click-outside="false">
         <div class="">
-            <div ng-if="vm.status == '1'" class="no-padding">
-                <table datatable="" dt-options="vm.selectedOptions" dt-columns="vm.selectedColumns" dt-instance="vm.selectedInstance" class=" table table-striped table-bordered"></table>
+            <div ng-if="vm.status == '1'" >
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-4 pr-0">
+                                <h4>冻存盒</h4>
+                            </div>
+                            <div class="col-md-8 pl-0 text-right">
+                                <button type="submit" class="btn btn-default btn-primary" ng-click="vm.movement()">移位</button>
+                                <button type="submit" class="btn btn-default" ng-click="vm.close()">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body no-padding">
+                        <table datatable="" dt-options="vm.selectedOptions" dt-columns="vm.selectedColumns" dt-instance="vm.selectedInstance" class=" table table-striped table-bordered"></table>
+                    </div>
+                </div>
             </div>
             <div ng-if="vm.status == '2'">
                 <div class="panel panel-default">

@@ -6,24 +6,38 @@
 
     angular
         .module('bioBankApp')
-        .controller('BoxMovementController', BoxMovementController);
+        .controller('BoxMovementController', BoxMovementController)
+        .controller('ModalInstanceCtrl', ModalInstanceCtrl);
 
-    BoxMovementController.$inject = ['$scope','$compile','$state','$stateParams','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
+    BoxMovementController.$inject = ['$scope','$compile','$state','$stateParams','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
+    ModalInstanceCtrl.$inject = ['$uibModalInstance'];
 
-    function BoxMovementController($scope,$compile,$state,$stateParams,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
+    function BoxMovementController($scope,$compile,$state,$stateParams,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
         var vm = this;
         vm.dtInstance = {};
         vm.dto = {};
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        var selectedBox = $stateParams.selectedBox;
-        function _init() {
-
-        }
+        var selectedBox = $stateParams.selectedBox || [];
+        function _init() {}
         _init();
 
+        vm.close = _fnClose;
+        function _fnClose() {
+            if(selectedBox.length){
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'myModalContent.html',
+                    controller: 'ModalInstanceCtrl',
+                    controllerAs: 'vm'
+                });
+                modalInstance.result.then(function () {
+                    $state.go("box-inventory");
+                }, function () {
+                });
+            }else{
+                $state.go("box-inventory");
+            }
 
-
-
+        }
 
         vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
             .withOption('searching', false);
@@ -42,5 +56,14 @@
             // BioBankBlockUi.blockUiStop();
             // toastr.error(error.data.message);
         }
+    }
+    function ModalInstanceCtrl($uibModalInstance) {
+        var vm = this;
+        vm.ok = function () {
+            $uibModalInstance.close();
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     }
 })();

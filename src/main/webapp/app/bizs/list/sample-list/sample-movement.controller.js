@@ -8,19 +8,35 @@
         .module('bioBankApp')
         .controller('SampleMovementController', SampleMovementController);
 
-    SampleMovementController.$inject = ['$scope','$compile','$state','$stateParams','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
+    SampleMovementController.$inject = ['$scope','$compile','$state','$stateParams','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
 
-    function SampleMovementController($scope,$compile,$state,$stateParams,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
+    function SampleMovementController($scope,$compile,$state,$stateParams,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
         var vm = this;
         vm.dtInstance = {};
         vm.dto = {};
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        var selectedSample = $stateParams.selectedSample;
+        var selectedSample = $stateParams.selectedSample || [];
         function _init() {
 
         }
         _init();
+        vm.close = _fnClose;
+        function _fnClose() {
+            if(selectedSample.length){
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'myModalContent.html',
+                    controller: 'ModalInstanceCtrl',
+                    controllerAs: 'vm'
+                });
+                modalInstance.result.then(function () {
+                    $state.go("sample-inventory");
+                }, function () {
+                });
+            }else{
+                $state.go("sample-inventory");
+            }
 
+        }
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),

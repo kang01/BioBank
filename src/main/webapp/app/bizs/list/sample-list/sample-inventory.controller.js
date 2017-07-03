@@ -194,7 +194,10 @@
             vm.checked = true;
         }
         function _fnMovement() {
-            $state.go('sample-movement',{selectedSample:selectedSample})
+            vm.checked = false;
+            setTimeout(function () {
+                $state.go('sample-movement',{selectedSample:selectedSample})
+            },50);
         }
 
         function _fnSearch() {
@@ -243,14 +246,27 @@
                 }
             }
         }
-
+        selectedSample = [];
         function toggleOne (selectedItems) {
-            selectedSample = [];
             for (var id in selectedItems) {
                 if (selectedItems.hasOwnProperty(id)) {
                     if(selectedItems[id]) {
                         var obj = _.find(vm.sampleData,{id:+id});
-                        selectedSample.push(obj);
+                        var len = _.filter(selectedSample,{id:+id}).length;
+                        if(!len){
+                            selectedSample.push(obj);
+                        }
+
+                    }
+                }else{
+                    var index = [];
+                    if(selectedBox.length){
+                        for(var i = 0; i < selectedSample.length; i++){
+                            if(+id == selectedSample[i].id){
+                                index.push(i);
+                            }
+                        }
+                        _.pullAt(selectedSample, index);
                     }
                 }
             }

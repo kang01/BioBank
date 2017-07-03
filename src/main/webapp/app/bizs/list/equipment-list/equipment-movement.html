@@ -4,7 +4,7 @@
             <h2 style="margin: 0">冻存架移位</h2>
         </div>
         <div class="pull-right">
-            <button type="button" class="btn btn-default" ui-sref="equipment-inventory">关闭</button>
+            <button type="button" class="btn btn-default" ng-click="vm.close()">关闭</button>
         </div>
     </div>
 </div>
@@ -12,15 +12,15 @@
     <div class="col-md-4">
         <div class="form-group">
             <label>移位原因</label>
-            <textarea type="text" class="form-control" rows="6"></textarea>
+            <textarea type="text" class="form-control resize-none" rows="6"></textarea>
         </div>
     </div>
     <div class="col-md-4">
         <label>移位影响评估</label>
-        <textarea type="text" class="form-control" rows="6"></textarea>
+        <textarea type="text" class="form-control resize-none" rows="6"></textarea>
     </div>
     <div class="col-md-4">
-        <div class="row ">
+        <div class="row">
 
             <div class="col-md-6">
                 <div class="form-group">
@@ -134,3 +134,15 @@
         </div>
     </div>
 </div>
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">移位操作</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        确定取消移位操作？
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+        <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+    </div>
+</script>

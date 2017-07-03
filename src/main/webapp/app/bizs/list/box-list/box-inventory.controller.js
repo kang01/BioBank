@@ -193,13 +193,6 @@
             }
         };
 
-
-
-
-        function onError(error) {
-            // BioBankBlockUi.blockUiStop();
-            // toastr.error(error.data.message);
-        }
         vm.dtInstance = {};
         vm.search = _fnSearch;
         vm.searchShow = _fnSearchShow;
@@ -222,7 +215,10 @@
             vm.dtInstance.rerender();
         }
         function _fnMovement() {
-            $state.go('box-movement',{selectedBox:selectedBox})
+            vm.checked = false;
+            setTimeout(function (data) {
+                $state.go('box-movement',{selectedBox:selectedBox})
+            },50);
         }
         function _fnClose() {
             vm.checked = false;
@@ -256,14 +252,26 @@
                 }
             }
         }
-
+        selectedBox = [];
         function toggleOne (selectedItems) {
-            selectedBox = [];
             for (var id in selectedItems) {
                 if (selectedItems.hasOwnProperty(id)) {
                     if(selectedItems[id]) {
                         var obj = _.find(vm.BoxData,{id:+id});
-                        selectedBox.push(obj);
+                        var len = _.filter(selectedBox,{id:+id}).length;
+                        if(!len){
+                            selectedBox.push(obj);
+                        }
+                    }else{
+                        var index = [];
+                        if(selectedBox.length){
+                            for(var i = 0; i < selectedBox.length; i++){
+                                if(+id == selectedBox[i].id){
+                                    index.push(i);
+                                }
+                            }
+                            _.pullAt(selectedBox, index);
+                        }
                     }
                 }
             }
@@ -337,7 +345,13 @@
             DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "80").withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
-            vm.selected[full.id] = false;
+            var len = _.filter(selectedBox,{id:full.id}).length;
+            if(len){
+                vm.selected[full.id] = true;
+            }else{
+                vm.selected[full.id] = false;
+            }
+
             var html = '';
             html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
             return html;
@@ -355,6 +369,11 @@
             //     '   <i class="fa fa-edit"></i>' +
             //     '</button>&nbsp;';
             return "";
+        }
+
+        function onError(error) {
+            // BioBankBlockUi.blockUiStop();
+            // toastr.error(error.data.message);
         }
     }
 })();

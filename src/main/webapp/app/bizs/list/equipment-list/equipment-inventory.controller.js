@@ -181,7 +181,10 @@
         }
 
         function _fnMovement() {
-            $state.go('equipment-movement',{selectedEquipment:selectedEquipment})
+            vm.checked = false;
+            setTimeout(function () {
+                $state.go('equipment-movement',{selectedEquipment:selectedEquipment})
+            },50);
         }
         function _fnClose() {
             vm.checked = false;
@@ -221,14 +224,27 @@
                 }
             }
         }
-
+        selectedEquipment = [];
         function toggleOne (selectedItems) {
-            selectedEquipment = [];
             for (var id in selectedItems) {
                 if (selectedItems.hasOwnProperty(id)) {
                     if(selectedItems[id]) {
                         var obj = _.find(vm.equipmentData,{id:+id});
-                        selectedEquipment.push(obj);
+                        var len = _.filter(selectedEquipment,{id:+id}).length;
+                        if(!len){
+                            selectedEquipment.push(obj);
+                        }
+
+                    }
+                }else{
+                    var index = [];
+                    if(selectedBox.length){
+                        for(var i = 0; i < selectedEquipment.length; i++){
+                            if(+id == selectedEquipment[i].id){
+                                index.push(i);
+                            }
+                        }
+                        _.pullAt(selectedEquipment, index);
                     }
                 }
             }

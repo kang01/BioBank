@@ -105,7 +105,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
      * @throws Exception
      */
     @Test
-    @Transactional
     public void createProject() throws Exception {
         Project project = projectRepository.findByProjectCode("0037");
         if(project != null){
@@ -157,7 +156,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
      * @throws Exception
      */
     @Test
-    @Transactional
     public void createProjectSite() throws Exception {
         Connection con = null;// 创建一个数据库连接
         PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
@@ -370,42 +368,42 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         SampleType sampleType1 = sampleTypeRepository.findBySampleTypeCode("A");
         if(sampleType1 == null){
             sampleType1 = new SampleType().sampleTypeCode("A").sampleTypeName("血浆")
-                .status("0001").isMixed(0).backColor("black").frontColor("rgb(240,224,255)");
+                .status("0001").isMixed(0).frontColor("black").backColor("rgb(240,224,255)");
             sampleTypeRepository.saveAndFlush(sampleType1);
             assertThat(sampleType1).isNotNull();
         }
         SampleType sampleType2 = sampleTypeRepository.findBySampleTypeCode("W");
         if(sampleType2 == null){
             sampleType2 = new SampleType().sampleTypeCode("W").sampleTypeName("白细胞")
-                .status("0001").isMixed(0).backColor("black").frontColor("rgb(255,255,255)");
+                .status("0001").isMixed(0).frontColor("black").backColor("rgb(255,255,255)");
             sampleTypeRepository.saveAndFlush(sampleType2);
             assertThat(sampleType2).isNotNull();
         }
         SampleType sampleType3 = sampleTypeRepository.findBySampleTypeCode("F");
         if(sampleType3 == null){
             sampleType3 = new SampleType().sampleTypeCode("F").sampleTypeName("血清")
-                .status("0001").isMixed(0).backColor("black").frontColor("rgb(255,179,179)");
+                .status("0001").isMixed(0).frontColor("black").backColor("rgb(255,179,179)");
             sampleTypeRepository.saveAndFlush(sampleType3);
             assertThat(sampleType3).isNotNull();
         }
         SampleType sampleType4 = sampleTypeRepository.findBySampleTypeCode("E");
         if(sampleType4 == null){
             sampleType4 = new SampleType().sampleTypeCode("E").sampleTypeName("尿")
-                .status("0001").isMixed(0).backColor("black").frontColor("rgb(255,255,179)");
+                .status("0001").isMixed(0).frontColor("black").backColor("rgb(255,255,179)");
             sampleTypeRepository.saveAndFlush(sampleType4);
             assertThat(sampleType4).isNotNull();
         }
         SampleType sampleType5 = sampleTypeRepository.findBySampleTypeCode("R");
         if(sampleType5 == null){
             sampleType5 = new SampleType().sampleTypeCode("R").sampleTypeName("红细胞")
-                .status("0001").isMixed(0).backColor("black").frontColor("rgb(236,236,236)");
+                .status("0001").isMixed(0).frontColor("black").backColor("rgb(236,236,236)");
             sampleTypeRepository.saveAndFlush(sampleType5);
             assertThat(sampleType5).isNotNull();
         }
         SampleType sampleType6 = sampleTypeRepository.findBySampleTypeCode("RNA");
         if(sampleType6 == null){
             sampleType6 = new SampleType().sampleTypeCode("RNA").sampleTypeName("RNA")
-                .status("0001").isMixed(0).backColor("black").frontColor("rgb(255,220,165)");
+                .status("0001").isMixed(0).frontColor("black").backColor("rgb(255,220,165)");
             sampleTypeRepository.saveAndFlush(sampleType6);
             assertThat(sampleType6).isNotNull();
         }
@@ -517,7 +515,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             if(!StringUtils.isEmpty(opt)){
                 stockInType = Constants.STOCK_IN_TYPE_MAP.get(opt);
             }
-            if(!StringUtils.isEmpty(storeKeeperId1)){
+            if(!StringUtils.isEmpty(storeKeeper1)){
                 storeKeeperId1 = Constants.RECEIVER_MAP.get(storeKeeper1);
             }
             if(!StringUtils.isEmpty(storeKeeper2)){
@@ -555,8 +553,8 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                     .sampleClassificationCode(sampleClassTypeCode)
                     .sampleClassificationName(sampleClassTypeName)
                     .status("0001")
-                    .backColor("black")
-                    .frontColor(frontColor);
+                    .backColor(frontColor)
+                    .frontColor("black");
                 sampleClassificationRepository.saveAndFlush(sampleClassification);
                 assertThat(sampleClassification).isNotNull();
 
@@ -567,7 +565,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                         .project(projectSampleClassMapper.projectFromId(1L)).projectCode("0037")
                         .sampleClassification(projectSampleClassMapper.sampleClassificationFromId(sampleClassification.getId()))
                         .sampleType(projectSampleClassMapper.sampleTypeFromId(sampleType.getId()))
-                        .columnsNumber(columnNumber)
+                        .columnsNumber("")
                         .status("0001");
                     projectSampleClassRepository.saveAndFlush(projectSampleClass);
                     assertThat(projectSampleClass).isNotNull();
@@ -725,7 +723,52 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         }
         return map;
     }
-
+    @Test
+    public void createSampleTypeMix() throws Exception {
+        SampleType sampleType7 = sampleTypeRepository.findBySampleTypeCode("98");
+        List<SampleClassification> sampleClassifications = sampleClassificationRepository.findAll();
+        if(sampleType7 == null){
+            sampleType7 = new SampleType().sampleTypeCode("98").sampleTypeName("98")
+                .status("0001").isMixed(1).frontColor("black").backColor("rgb(169,241,253)");
+            sampleTypeRepository.saveAndFlush(sampleType7);
+            assertThat(sampleType7).isNotNull();
+            for(SampleClassification s :sampleClassifications){
+                ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(1L,sampleType7.getId(),s.getId());;
+                String columnNumber = Constants.COLUMNNUMBER_MAP.get(s.getSampleClassificationCode());
+                if(projectSampleClass == null){
+                    projectSampleClass = new ProjectSampleClass()
+                        .project(projectSampleClassMapper.projectFromId(1L)).projectCode("0037")
+                        .sampleClassification(s)
+                        .sampleType(sampleType7)
+                        .columnsNumber(columnNumber)
+                        .status("0001");
+                    projectSampleClassRepository.saveAndFlush(projectSampleClass);
+                    assertThat(projectSampleClass).isNotNull();
+                }
+            }
+        }
+        SampleType sampleType8 = sampleTypeRepository.findBySampleTypeCode("99");
+        if(sampleType8 == null){
+            sampleType8 = new SampleType().sampleTypeCode("99").sampleTypeName("99")
+                .status("0001").isMixed(1).frontColor("black").backColor("rgb(169,241,253)");
+            sampleTypeRepository.saveAndFlush(sampleType8);
+            assertThat(sampleType8).isNotNull();
+            for(SampleClassification s :sampleClassifications){
+                ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(1L,sampleType8.getId(),s.getId());;
+                String columnNumber = Constants.COLUMNNUMBER_MAP.get(s.getSampleClassificationCode());
+                if(projectSampleClass == null){
+                    projectSampleClass = new ProjectSampleClass()
+                        .project(projectSampleClassMapper.projectFromId(1L)).projectCode("0037")
+                        .sampleClassification(s)
+                        .sampleType(sampleType8)
+                        .columnsNumber(columnNumber)
+                        .status("0001");
+                    projectSampleClassRepository.saveAndFlush(projectSampleClass);
+                    assertThat(projectSampleClass).isNotNull();
+                }
+            }
+        }
+    }
     @Test
     public void main() throws Exception {
         this.createProject();
@@ -747,5 +790,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         this.createFrozenBoxForA02("HE_COL_09","1498802167424","E");
         this.createFrozenBoxForA02("HE_COL_10","1498802175768","E");
         this.createFrozenBoxForA02("HE_COL_11_RNA","1499052532056","RNA");
+        this.createSampleTypeMix();
     }
 }

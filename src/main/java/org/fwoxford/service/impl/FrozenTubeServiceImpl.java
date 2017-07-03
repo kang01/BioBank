@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+
 /**
  * Service Implementation for managing FrozenTube.
  */
@@ -183,9 +185,14 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
     }
 
     @Override
-    public List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode, Long sampleTypeId) {
-//        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCode(sampleCode,projectCode);
-        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeId(sampleCode,projectCode,sampleTypeId);
+    public List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode, Long sampleTypeId, String sampleClassitionCode) {
+        List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
+        if(StringUtils.isEmpty(sampleClassitionCode)){
+            frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeId(sampleCode,projectCode,sampleTypeId);
+        }else{
+            frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionCode(sampleCode,projectCode,sampleTypeId,sampleClassitionCode);
+        }
+
         for(FrozenTube f:frozenTubeList){
             if(!f.getFrozenBox().getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
                 throw new BankServiceException("冻存管编码"+f.getSampleCode()+"已经在库存内，请输入新的冻存管编码！");

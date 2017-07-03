@@ -25,6 +25,7 @@ import org.springframework.data.jpa.datatables.mapping.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.Id;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -726,7 +727,12 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }
             tubeDTO = createFrozenTubeBySampleType(tubeDTO);
             //验证冻存管是否重复
-            List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeId(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeId());
+            List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
+            if(tubeDTO.getSampleClassificationId()==null){
+                frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeId(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeId());
+            }else{
+                frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
+            }
             for(FrozenTube f:frozenTubeList){
                 if(tubeDTO.getId()==null ||
                     (tubeDTO.getId()!=null&&!f.getId().equals(tubeDTO.getId()))){

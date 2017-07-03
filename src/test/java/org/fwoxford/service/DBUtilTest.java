@@ -19,8 +19,8 @@ public class DBUtilTest {
     static {
         driver="oracle.jdbc.driver.OracleDriver";//需要的数据库驱动
         url="jdbc:oracle:" + "thin:@10.24.10.56:1521:xe";//数据库名路径
-        username="biobank_peace";
-        password="root123";
+        username="biobank_p_20170703";
+        password="eyuXotN6";
     }
     public static Connection open()
     {

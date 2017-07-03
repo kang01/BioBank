@@ -5,18 +5,15 @@
         </h3>
         <div class="form-group pull-right pr-10">
             <div class="text-right">
-                <button type="button" class="btn btn-primary" ng-click="vm.importFrozenStorageBox('lg')"
-                        ng-show="vm.transportRecord.transhipState == '1001'">导入冻存盒
-                </button>
                 <button type="button" class="btn btn-primary" ng-click="vm.stockIn()"
                         ng-disabled="!vm.boxLength || !vm.transportRecord.receiver || !vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate || !vm.transportRecord.trackNumber"
                         ng-show="vm.transportRecord.transhipState == '1001'">开始入库
                 </button>
-                <button type="button" class="btn btn-primary" ng-click="vm.saveRecord()"
+                <button type="button" class="btn btn-default" ng-click="vm.saveRecord()"
                         ng-disabled="!vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId"
                         ng-show="vm.transportRecord.transhipState == '1001'">保存转运记录
                 </button>
-                <button type="button" class="btn btn-primary" ng-click="vm.invalid()"
+                <button type="button" class="btn btn-default" ng-click="vm.invalid()"
                         ng-show="vm.transportRecord.transhipState == '1001'">作废
                 </button>
                 <button type="button" class="btn btn-default" ui-sref="transport-record">关闭</button>
@@ -215,7 +212,17 @@
         <div class="col-md-2">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>转运冻存盒</h4>
+                    <div class="row">
+                        <div class="col-md-6 pl-5 pr-0">
+                            <h4>转运冻存盒</h4>
+                        </div>
+                        <div class="col-md-6 pl-0 pr-5 text-right" style="margin-top: 8px !important;">
+                            <button type="button" class="btn btn-primary btn-xs" ng-click="vm.importFrozenStorageBox('lg')"
+                                    ng-show="vm.transportRecord.transhipState == '1001'">导入冻存盒
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="panel-body p-0">
                     <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"
@@ -247,24 +254,24 @@
                                 <li></li>
                             </ul>
                         </div>
-                        <div class="col-md-6 text-right mt-5 " ng-show="vm.transportRecord.transhipState == '1001'">
-                            <button type="button" class="btn btn-default btn-sm btn-primary" ng-click="vm.saveBox()" ng-disabled="!vm.box">
+                        <div class="col-md-6 text-right mt-10 " ng-show="vm.transportRecord.transhipState == '1001'">
+                            <button type="button" class="btn btn-default btn-xs btn-primary" ng-click="vm.saveBox()" ng-disabled="!vm.box">
                                 保　　存
                             </button>
-                            <button type="button" class="btn btn-default btn-sm btn-danger" ng-click="vm.delBox()" ng-disabled="!vm.box">
+                            <button type="button" class="btn btn-default btn-xs btn-danger" ng-click="vm.delBox()" ng-disabled="!vm.box">
                                 删除盒子
                             </button>
-                            <button type="button" class="btn btn-default btn-sm"
+                            <button type="button" class="btn btn-default btn-xs"
                                     ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus"
                                     uib-btn-checkbox ng-click="vm.editStatus()" ng-disabled="!vm.box">状态编辑
                             </button>
-                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.exchange()"
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.exchange()"
                                     ng-disabled="!vm.box || vm.flagStatus">样本换位
                             </button>
-                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.tubeRemark()"
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.tubeRemark()"
                                     ng-disabled="!vm.box || vm.flagStatus">样本批注
                             </button>
-                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.reImportFrozenBoxData()"
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.reImportFrozenBoxData()"
                                     ng-disabled="!vm.box">重新导入
                             </button>
                         </div>

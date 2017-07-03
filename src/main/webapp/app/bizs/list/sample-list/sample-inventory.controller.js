@@ -194,7 +194,7 @@
             vm.checked = true;
         }
         function _fnMovement() {
-            $state.go('sample-movement',selectedSample)
+            $state.go('sample-movement',{selectedSample:selectedSample})
         }
 
         function _fnSearch() {
@@ -213,8 +213,13 @@
         }
         function _fnEmpty() {
             vm.dto = {};
-            vm.dto.frozenBoxCodeStr = "";
-            vm.dto.projectCodeStr = "";
+            vm.dto.frozenBoxCodeStr = [];
+            vm.dto.projectCodeStr = [];
+            vm.arrayBoxCode = [];
+            vm.arraySampleCode = [];
+            vm.projectCodeStr = [];
+            vm.checked = false;
+            vm.dtInstance.rerender();
         }
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
         vm.selectedColumns = [

@@ -40,11 +40,11 @@
             });
 
             vm.statusOptions = [
-                {value:"1",label:"运行中"},
-                {value:"2",label:"申请移出"},
-                {value:"3",label:"申请移入"},
-                {value:"4",label:"申请换位"},
-                {value:"5",label:"已停用"}
+                {value:"0001",label:"运行中"},
+                {value:"0002",label:"申请移出"},
+                {value:"0003",label:"申请移入"},
+                {value:"0004",label:"申请换位"},
+                {value:"0005",label:"已停用"}
             ];
             vm.compareTypeOption = [
                 {value:"1",label:"大于"},
@@ -57,17 +57,15 @@
             ];
             vm.dto.spaceType = "1";
             vm.dto.compareType = "1";
+            // vm.dto.projectCodeStr = [];
         }
         _init();
+        var projectIds = [];
         vm.projectConfig = {
             valueField:'id',
             labelField:'projectName',
             onChange:function(value){
-                vm.dto.projectCodeStr = [];
-                for(var i = 0; i <value.length; i++){
-                    var projectCode = _.find(vm.projectOptions,{id:+value[i]}).projectCode;
-                    vm.dto.projectCodeStr.push(projectCode)
-                }
+                projectIds = value;
             }
         };
         //盒子位置
@@ -170,6 +168,14 @@
         }
 
         function _fnSearch() {
+            vm.dto.projectCodeStr = [];
+            if(projectIds.length){
+                for(var i = 0; i <projectIds.length; i++){
+                    var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
+                    vm.dto.projectCodeStr.push(projectCode)
+                }
+            }
+
             vm.checked = false;
             vm.dtInstance.rerender();
         }
@@ -182,7 +188,12 @@
         }
         function _fnEmpty() {
             vm.dto = {};
-            vm.dto.frozenBoxCodeStr = "";
+            vm.dto.spaceType= "1";
+            vm.dto.compareType= "1";
+            vm.projectCodeStr = [];
+            projectIds = [];
+            vm.checked = false;
+            vm.dtInstance.rerender();
         }
 
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);

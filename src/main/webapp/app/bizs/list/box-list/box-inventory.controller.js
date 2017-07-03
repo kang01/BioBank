@@ -58,7 +58,7 @@
         }
         _init();
         //项目
-        var projectIds = "";
+        var projectIds = [];
         vm.projectConfig = {
             valueField:'id',
             labelField:'projectName',
@@ -212,9 +212,11 @@
             vm.checked = true;
         }
         function _fnSearch() {
-            for(var i = 0; i <projectIds.length; i++){
-                var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
-                vm.dto.projectCodeStr.push(projectCode)
+            if(projectIds.length){
+                for(var i = 0; i <projectIds.length; i++){
+                    var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
+                    vm.dto.projectCodeStr.push(projectCode)
+                }
             }
             vm.checked = false;
             vm.dtInstance.rerender();
@@ -227,9 +229,14 @@
         }
         function _fnEmpty() {
             vm.dto = {};
-            vm.dto.frozenBoxCodeStr = "";
+            vm.dto.projectCodeStr = [];
+            projectIds = [];
+            vm.projectCodeStr = [];
+            vm.arrayBoxCode = [];
             vm.dto.spaceType = "1";
             vm.dto.compareType = "1";
+            vm.checked = false;
+            vm.dtInstance.rerender();
         }
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
         vm.selectedColumns = [

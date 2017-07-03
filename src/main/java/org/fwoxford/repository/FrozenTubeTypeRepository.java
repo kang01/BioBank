@@ -16,4 +16,6 @@ public interface FrozenTubeTypeRepository extends JpaRepository<FrozenTubeType,L
     FrozenTubeType findTopOne();
 
     List<FrozenTubeType> findByStatusNot(String status);
+
+    FrozenTubeType findByFrozenTubeTypeCode(String frozenTubeTypeCode);
 }

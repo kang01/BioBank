@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface EquipmentGroupRepository extends JpaRepository<EquipmentGroup,Long> {
 
+    EquipmentGroup findByEquipmentGroupName(String equipmentGroupName);
 }

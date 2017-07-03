@@ -13,4 +13,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface SupportRackTypeRepository extends JpaRepository<SupportRackType,Long> {
 
+    SupportRackType findBySupportRackTypeCode(String supportRackTypeCode);
 }

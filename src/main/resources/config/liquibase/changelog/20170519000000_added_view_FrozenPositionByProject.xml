@@ -10,7 +10,7 @@
 
         <createView viewName="view_position_by_project">
             SELECT
-                a.id,
+                shelf.id,
                 emodle.equipment_type,emodle.id as equipment_type_id, e.equipment_code,e.id as equipment_id,
                 a.area_code,a.id as area_id,
                 shelf.support_rack_code as shelves_code,shelf.id as shelves_id,shelfType.support_rack_type_code as shelves_type ,shelfType.id as shelves_type_id,

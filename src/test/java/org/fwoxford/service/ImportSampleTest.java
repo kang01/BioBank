@@ -192,20 +192,12 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         {
             con = DBUtilTest.open();// 获取连接
             System.out.println("连接成功！");
-//            String sqlForSelect = "select * from project where project_code =?";// 预编译语句
-//            PreparedStatement pstmt=(PreparedStatement) con.prepareStatement(sqlForSelect);
-//            pstmt.setString(1,"0037");
-//            ResultSet rs=pstmt.executeQuery();
-//            if(rs.next())
-//            {
-//                projectId=rs.getLong(1);
-//            }
             projectId=1L;
             for(int i = 0 ;i<list.size();i++){
                 String projectSiteCode = list.get(i).get("LCC_ID").toString();
                 ProjectSite projectSite = projectSiteRepository.findByProjectSiteCode(projectSiteCode);
                 if(projectSite !=null){
-                    return;
+                    continue;
                 }
                 String sqlForInsert = "insert  into project_site(project_site_code,project_site_name,area," +
                     "status,detailed_location,department,detailed_address,zip_code," +
@@ -258,15 +250,27 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     @Test
     public void createSupportRackType() throws Exception {
         //冻存架类型
-        SupportRackType supportRackType = new SupportRackType();
-
-        supportRackType.setSupportRackTypeCode("5*5");
-        supportRackType.setSupportRackRows("5");
-        supportRackType.setSupportRackColumns("5");
-        supportRackType.setStatus("0001");
-        supportRackType.setCreatedBy("admin");
-        supportRackTypeRepository.saveAndFlush(supportRackType);
-        assertThat(supportRackType).isNotNull();
+        SupportRackType supportRackType = supportRackTypeRepository.findBySupportRackTypeCode("5*5");
+        if(supportRackType==null){
+            supportRackType = new SupportRackType();
+            supportRackType.setSupportRackTypeCode("5*5");
+            supportRackType.setSupportRackRows("5");
+            supportRackType.setSupportRackColumns("5");
+            supportRackType.setStatus("0001");
+            supportRackTypeRepository.saveAndFlush(supportRackType);
+            assertThat(supportRackType).isNotNull();
+        }
+        //冻存架类型
+        SupportRackType supportRackType1 = supportRackTypeRepository.findBySupportRackTypeCode("1*75");
+        if(supportRackType1==null){
+            supportRackType1 = new SupportRackType();
+            supportRackType1.setSupportRackTypeCode("1*75");
+            supportRackType1.setSupportRackRows("1");
+            supportRackType1.setSupportRackColumns("75");
+            supportRackType1.setStatus("0001");
+            supportRackTypeRepository.saveAndFlush(supportRackType1);
+            assertThat(supportRackType1).isNotNull();
+        }
     }
 
     /**
@@ -276,17 +280,30 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
      */
     @Test
     public void createFrozenTubeType() throws Exception {
-        //冻存架类型
-        FrozenTubeType frozenTubeType = new FrozenTubeType()
-            .frozenTubeTypeCode("2ml")
-            .frozenTubeTypeName("2ml")
-            .sampleUsedTimesMost(10)
-            .frozenTubeVolumn(2)
-            .frozenTubeVolumnUnit("ml")
-            .status("0001");
-        frozenTubeType.setCreatedBy("admin");
-        frozenTubeTypeRepository.saveAndFlush(frozenTubeType);
-        assertThat(frozenTubeType).isNotNull();
+        FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findByFrozenTubeTypeCode("2ml");
+        if(frozenTubeType == null){
+            frozenTubeType = new FrozenTubeType()
+                .frozenTubeTypeCode("2ml")
+                .frozenTubeTypeName("2ml")
+                .sampleUsedTimesMost(10)
+                .frozenTubeVolumn(2)
+                .frozenTubeVolumnUnit("ml")
+                .status("0001");
+            frozenTubeTypeRepository.saveAndFlush(frozenTubeType);
+            assertThat(frozenTubeType).isNotNull();
+        }
+        FrozenTubeType frozenTubeType1 = frozenTubeTypeRepository.findByFrozenTubeTypeCode("6ml");
+        if(frozenTubeType1 == null){
+            frozenTubeType1 = new FrozenTubeType()
+                .frozenTubeTypeCode("6ml")
+                .frozenTubeTypeName("6ml")
+                .sampleUsedTimesMost(10)
+                .frozenTubeVolumn(6)
+                .frozenTubeVolumnUnit("ml")
+                .status("0001");
+            frozenTubeTypeRepository.saveAndFlush(frozenTubeType1);
+            assertThat(frozenTubeType1).isNotNull();
+        }
     }
 
     /**
@@ -297,15 +314,18 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     @Test
     public void createEquipmentGroup() throws Exception {
         //创建设备组
-        EquipmentGroup equipmentGroup = new EquipmentGroup()
-            .equipmentGroupName("样本库")
-            .equipmentGroupManagerId(5L)
-            .equipmentManagerName("钟慧")
-            .equipmentGroupAddress("样本中心D座")
-            .status("0001");
-        equipmentGroup.setCreatedBy("admin");
-        equipmentGroupRepository.saveAndFlush(equipmentGroup);
-        assertThat(equipmentGroup).isNotNull();
+        EquipmentGroup equipmentGroup = equipmentGroupRepository.findByEquipmentGroupName("样本库");
+        if(equipmentGroup == null){
+            equipmentGroup = new EquipmentGroup()
+                .equipmentGroupName("样本库")
+                .equipmentGroupManagerId(5L)
+                .equipmentManagerName("钟慧")
+                .equipmentGroupAddress("样本中心D座")
+                .status("0001");
+            equipmentGroup.setCreatedBy("admin");
+            equipmentGroupRepository.saveAndFlush(equipmentGroup);
+            assertThat(equipmentGroup).isNotNull();
+        }
     }
 
     /**
@@ -314,16 +334,19 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
      */
     @Test
     public void createEquipmentModel() throws Exception {
-        EquipmentModle equipmentModle = new EquipmentModle()
-            .equipmentModelCode("01")
-            .equipmentModelName("冰箱")
-            .equipmentType("冰箱")
-            .areaNumber(4)
-            .shelveNumberInArea(6)
-            .status("0001");
-        equipmentModle.setCreatedBy("admin");
-        equipmentModleRepository.saveAndFlush(equipmentModle);
-        assertThat(equipmentModle).isNotNull();
+        EquipmentModle equipmentModle = equipmentModleRepository.findByEquipmentModelCode("01");
+        if(equipmentModle == null){
+            equipmentModle = new EquipmentModle()
+                .equipmentModelCode("01")
+                .equipmentModelName("冰箱")
+                .equipmentType("冰箱")
+                .areaNumber(4)
+                .shelveNumberInArea(6)
+                .status("0001");
+            equipmentModle.setCreatedBy("admin");
+            equipmentModleRepository.saveAndFlush(equipmentModle);
+            assertThat(equipmentModle).isNotNull();
+        }
     }
     /**
      * 创建冻存盒类型--固定值
@@ -342,7 +365,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         }
     }
     @Test
-    public void createSampleTypeAndClassification() throws Exception {
+    public void createSampleType() throws Exception {
 
         SampleType sampleType1 = sampleTypeRepository.findBySampleTypeCode("A");
         if(sampleType1 == null){
@@ -388,219 +411,18 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         }
     }
     /**
-     * 导入冻存盒--A类型--EDTA血浆1
-     * @throws Exception
-     */
-    @Test
-    public void createFrozenBoxForA01() throws Exception {
-        String sql = "select * from HE_COL_01";
-        Connection con = null;// 创建一个数据库连接
-        PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
-        ResultSet result = null;// 创建一个结果集对象
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        try{
-            con = DBUtilForTemp.open();
-            System.out.println("连接成功！");
-            String sqlForSelect = "select * from HE_COL_01";// 预编译语句
-            pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
-            result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
-            ResultSetMetaData rsMeta = result.getMetaData();
-            Map<String, Object> map = null;
-            while (result.next()){
-                map = this.Result2Map(result,rsMeta);
-                list.add(map);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            try {
-                DBUtilForTemp.close(con);
-                System.out.println("数据库连接已关闭！");
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        Map<String,Equipment> equipmentCodeMap = new HashMap<String,Equipment>();
-        Map<String,List<Map<String, Object>>> map = new HashMap<String,List<Map<String, Object>>>();
-        for(int i = 0;i<list.size();i++){
-
-            String boxCode = list.get(i).get("BOX_CODE").toString();
-            if(map.get(boxCode)==null){
-                List<Map<String, Object>> mapList = new ArrayList<>();
-                mapList.add(list.get(i));
-                map.put(boxCode,mapList);
-            }else{
-                List<Map<String, Object>> mapList = map.get(boxCode);
-                mapList.add(list.get(i));
-                map.put(boxCode,mapList);
-            }
-        }
-
-        SampleType sampleType = sampleTypeRepository.findBySampleTypeCode("A");
-        FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findByFrozenBoxTypeCode("B1010");
-        for(String key :map.keySet()){
-            Long LCC_ID = null;
-            try{
-                con = DBUtilForTemp.open();
-                System.out.println("连接成功！");
-                String sqlForSelectSite = "select DISTINCT LCC_ID from biobank_temp_01.fen_he_ji_lu where box_code = ?";
-                PreparedStatement pstmt=(PreparedStatement) con.prepareStatement(sqlForSelectSite);
-                pstmt.setString(1,key);
-                result = pstmt.executeQuery();// 执行查询，注意括号中不需要再加参数
-                while (result.next()){
-                    LCC_ID = result.getLong("LCC_ID");
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }finally {
-                try {
-                    DBUtilForTemp.close(con);
-                    System.out.println("数据库连接已关闭！");
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-            ProjectSite projectSite = null;
-            if(LCC_ID !=null){
-                projectSite = projectSiteRepository.findByProjectSiteCode(LCC_ID.toString());
-            }
-            List<Map<String, Object>> sampleList = map.get(key);
-            String sampleClassTypeCode = sampleList.get(0).get("SAMPLE_TYPE_CODE").toString();
-            String sampleClassTypeName = sampleList.get(0).get("SAMPLE_TYPE").toString();
-            if(sampleList.get(0).get("POS_IN_SHELF") == null){
-                throw new BankServiceException("所在架子内位置为空！");
-            }
-            String posInShelf = sampleList.get(0).get("POS_IN_SHELF").toString();
-            String columnsInShelf = posInShelf.substring(0, 1);
-            String rowsInShelf =  posInShelf.substring(1);
-            SampleClassification sampleClassification = sampleClassificationRepository.findBySampleClassificationCode(sampleClassTypeCode);
-                if(sampleClassification == null){
-                    sampleClassification = new SampleClassification()
-                        .sampleClassificationCode(sampleClassTypeCode)
-                        .sampleClassificationName(sampleClassTypeName)
-                        .status("0001")
-                        .backColor("black")
-                        .frontColor("rgb(240,224,255)");
-                    sampleClassification.setCreatedBy("admin");
-                    sampleClassificationRepository.saveAndFlush(sampleClassification);
-                    assertThat(sampleClassification).isNotNull();
-
-                    ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(1L,sampleType.getId(),sampleClassification.getId());;
-                    if(projectSampleClass == null){
-                        projectSampleClass = new ProjectSampleClass()
-                            .project(projectSampleClassMapper.projectFromId(1L)).projectCode("0037")
-                            .sampleClassification(projectSampleClassMapper.sampleClassificationFromId(sampleClassification.getId()))
-                            .sampleType(projectSampleClassMapper.sampleTypeFromId(sampleType.getId()))
-                            .columnsNumber("1")
-                            .status("0001");
-                        projectSampleClass.setCreatedBy("admin");
-                        projectSampleClassRepository.saveAndFlush(projectSampleClass);
-                        assertThat(projectSampleClass).isNotNull();
-                    }
-            }
-
-            String equipmentCode = sampleList.get(0).get("EQ_CODE").toString();
-            String areaCode = sampleList.get(0).get("AREA_CODE").toString();
-            String supportCode = sampleList.get(0).get("SHELF_CODE").toString();
-            Equipment entity = equipmentRepository.findOneByEquipmentCode(equipmentCode);
-            if(entity==null){
-                entity = new Equipment().equipmentAddress("样本中心D座").equipmentCode(equipmentCode)
-                        .equipmentGroup(equipmentMapper.equipmentGroupFromId(1L))
-                        .equipmentModle(equipmentMapper.equipmentModleFromId(1L)).temperature(-40).ampoulesMax(60000).ampoulesMin(38400).status("0001");
-                entity.setCreatedBy("admin");
-                }
-            //设备
-            equipmentRepository.saveAndFlush(entity);
-            assertThat(entity).isNotNull();
-
-            //区域
-            Area area = areaRepository.findOneByAreaCodeAndEquipmentId(areaCode,entity.getId());
-            if(area==null){
-                area = new Area().areaCode(areaCode).equipment(areaMapper.equipmentFromId(entity.getId())).freezeFrameNumber(6).equipmentCode(equipmentCode)
-                    .status("0001");
-                area.setCreatedBy("admin");
-                areaRepository.saveAndFlush(area);
-                assertThat(area).isNotNull();
-            }
-            //冻存架
-            SupportRack supportRack = supportRackRepository.findByAreaIdAndSupportRackCode(area.getId(),supportCode);
-            if(supportRack==null){
-                supportRack = new SupportRack().status("0001").supportRackCode(supportCode).supportRackType(supportRackMapper.supportRackTypeFromId(1L)).supportRackTypeCode("5*5")
-                .area(supportRackMapper.areaFromId(area.getId()));
-                supportRack.setCreatedBy("admin");
-                supportRackRepository.saveAndFlush(supportRack);
-                assertThat(supportRack).isNotNull();
-            }
-
-            //保存冻存盒
-            FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(key);
-            if(frozenBox == null){
-                frozenBox = new FrozenBox()
-                    .frozenBoxCode(key)
-                    .frozenBoxTypeCode("B1010")
-                    .frozenBoxTypeRows("10")
-                    .frozenBoxTypeColumns("10")
-                    .projectCode("0037")
-                    .projectName("PEACE5")
-                    .projectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():null)
-                    .projectSiteName(projectSite!=null?projectSite.getProjectSiteName():null)
-                    .equipmentCode(entity.getEquipmentCode())
-                    .areaCode(areaCode)
-                    .supportRackCode(supportCode)
-                    .sampleTypeCode(sampleType.getSampleTypeCode())
-                    .sampleTypeName(sampleType.getSampleTypeName())
-                    .isSplit(0)
-                    .status("2004")
-                    .emptyTubeNumber(0)
-                    .emptyHoleNumber(0)
-                    .dislocationNumber(0)
-                    .isRealData(1).frozenBoxType(frozenBoxType).sampleType(sampleType).sampleClassification(sampleClassification).equipment(entity).area(area)
-                    .supportRack(supportRack)
-                    .columnsInShelf(columnsInShelf).rowsInShelf(rowsInShelf).project(frozenBoxMapper.projectFromId(1L)).projectSite(projectSite);
-                frozenBox.setCreatedBy("admin");
-            }
-            frozenBoxRepository.saveAndFlush(frozenBox);
-            assertThat(frozenBox).isNotNull();
-            for(int i = 0 ; i<sampleList.size();i++){
-                if(sampleList.get(i).get("SAMPLE_CODE") ==null){
-                    throw new BankServiceException("样本编码为空！",sampleList.toString());
-                }
-                String sampleCode = sampleList.get(i).get("SAMPLE_CODE").toString();
-                String posInBox = sampleList.get(i).get("POS_IN_BOX").toString();
-                String tubeRows = posInBox.substring(0, 1);
-                String tubeColumns =  posInBox.substring(1);
-                List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeCode(sampleCode,"0037","A");
-                if(frozenTubeList.size()==0){
-                    FrozenTube frozenTube = new FrozenTube()
-                        .projectCode("0037").projectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():null)
-                        .sampleCode(sampleCode)
-                        .frozenTubeTypeCode("2ml")
-                        .frozenTubeTypeName("2ml")
-                        .sampleTypeCode("A")
-                        .sampleTypeName("血浆")
-                        .sampleUsedTimesMost(10)
-                        .sampleUsedTimes(0)
-                        .frozenTubeVolumns(2)
-                        .frozenTubeVolumnsUnit("ml")
-                        .tubeRows(tubeRows)
-                        .tubeColumns(tubeColumns)
-                        .status("3001")
-                        .frozenBoxCode(key).frozenTubeType(frozenTubeMapper.frozenTubeTypeFromId(1L)).sampleType(sampleType).sampleClassification(sampleClassification)
-                        .project(frozenTubeMapper.projectFromId(1L)).projectSite(projectSite).frozenBox(frozenBox).frozenTubeState("2004");
-                    frozenTube.setCreatedBy("admin");
-                    frozenTubeRepository.saveAndFlush(frozenTube);
-                    assertThat(frozenTube).isNotNull();
-                }
-            }
-        }
-    }
-
-    /**
-     * 导入冻存盒--A类型--EDTA血浆2
+     * 导入冻存盒
      * @throws Exception
      */
     public void createFrozenBoxForA02(String tableName,String stockInCode,String sampleTypeCode) throws Exception {
         SampleType sampleType = sampleTypeRepository.findBySampleTypeCode(sampleTypeCode);
+        if(sampleType == null){
+            throw new BankServiceException("样本类型为空！表名为："+tableName+"样本类型编码为："+sampleTypeCode);
+        }
+        FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findByFrozenTubeTypeCode(sampleTypeCode!="RNA"?"2ml":"6ml");
+        if(frozenTubeType == null){
+            throw new BankServiceException("冻存管类型为空！表名为："+tableName+"样本类型编码为："+sampleTypeCode);
+        }
         Connection con = null;// 创建一个数据库连接
         PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
         ResultSet result = null;// 创建一个结果集对象
@@ -725,7 +547,8 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             String posInShelf = sampleTypeCode!="RNA"?sampleList.get(0).get("POS_IN_SHELF").toString():null;
             String columnsInShelf = posInShelf!=null?posInShelf.substring(0, 1):null;
             String rowsInShelf =  posInShelf!=null?posInShelf.substring(1):null;
-            SampleClassification sampleClassification = sampleClassificationRepository.findBySampleClassificationCode(sampleClassTypeCode);
+            SampleClassification sampleClassification = null;
+            sampleClassification = sampleClassificationRepository.findBySampleClassificationCode(sampleClassTypeCode);
             String frontColor = Constants.SAMPLECLASSIFICATION_COLOR_MAP.get(sampleClassTypeCode).toString();
             if(sampleClassification == null){
                 sampleClassification = new SampleClassification()
@@ -750,10 +573,9 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                     assertThat(projectSampleClass).isNotNull();
                 }
             }
-
             String equipmentCode = sampleList.get(0).get("EQ_CODE").toString();
             String areaCode = sampleList.get(0).get("AREA_CODE").toString();
-            String supportCode = sampleTypeCode!="RNA"?sampleList.get(0).get("SHELF_CODE").toString():null;
+            String supportCode = sampleTypeCode!="RNA"?sampleList.get(0).get("SHELF_CODE").toString():"R01";
             Equipment entity = equipmentRepository.findOneByEquipmentCode(equipmentCode);
             if(entity==null){
                 entity = new Equipment().equipmentAddress("样本中心D座").equipmentCode(equipmentCode)
@@ -774,15 +596,16 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 assertThat(area).isNotNull();
             }
             //冻存架
-            SupportRack supportRack = null;
-            if(sampleTypeCode!="RNA"){
-                supportRack = supportRackRepository.findByAreaIdAndSupportRackCode(area.getId(),supportCode);
-                if(supportRack==null){
-                    supportRack = new SupportRack().status("0001").supportRackCode(supportCode).supportRackType(supportRackMapper.supportRackTypeFromId(1L)).supportRackTypeCode("5*5")
-                        .area(supportRackMapper.areaFromId(area.getId()));
-                    supportRackRepository.saveAndFlush(supportRack);
-                    assertThat(supportRack).isNotNull();
-                }
+            SupportRack supportRack = supportRackRepository.findByAreaIdAndSupportRackCode(area.getId(),supportCode);
+            SupportRackType supportRackType = supportRackTypeRepository.findBySupportRackTypeCode(sampleTypeCode!="RNA"?"5*5":"1*75");
+            if(supportRackType == null){
+                throw new BankServiceException("冻存架类型为空！表名为："+tableName+"；盒号为"+key+";样本类型为："+sampleTypeCode);
+            }
+            if(supportRack==null){
+                supportRack = new SupportRack().status("0001").supportRackCode(supportCode).supportRackType(supportRackType).supportRackTypeCode(supportRackType.getSupportRackTypeCode())
+                    .area(supportRackMapper.areaFromId(area.getId()));
+                supportRackRepository.saveAndFlush(supportRack);
+                assertThat(supportRack).isNotNull();
             }
 
             //保存冻存盒
@@ -865,18 +688,18 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                     FrozenTube tube = new FrozenTube()
                         .projectCode("0037").projectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():null)
                         .sampleCode(sampleCode)
-                        .frozenTubeTypeCode("2ml")
-                        .frozenTubeTypeName("2ml")
+                        .frozenTubeTypeCode(frozenTubeType.getFrozenTubeTypeCode())
+                        .frozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName())
                         .sampleTypeCode(sampleType.getSampleTypeCode())
                         .sampleTypeName(sampleType.getSampleTypeName())
-                        .sampleUsedTimesMost(10)
+                        .sampleUsedTimesMost(frozenTubeType.getSampleUsedTimesMost())
                         .sampleUsedTimes(0)
-                        .frozenTubeVolumns(2)
-                        .frozenTubeVolumnsUnit("ml")
+                        .frozenTubeVolumns(frozenTubeType.getFrozenTubeVolumn())
+                        .frozenTubeVolumnsUnit(frozenTubeType.getFrozenTubeVolumnUnit())
                         .tubeRows(tubeRows)
                         .tubeColumns(tubeColumns)
                         .status(status).memo(memo).sampleStage(times)
-                        .frozenBoxCode(key).frozenTubeType(frozenTubeMapper.frozenTubeTypeFromId(1L)).sampleType(sampleType).sampleClassification(sampleClassification)
+                        .frozenBoxCode(key).frozenTubeType(frozenTubeType).sampleType(sampleType).sampleClassification(sampleClassification)
                         .project(frozenTubeMapper.projectFromId(1L)).projectSite(projectSite).frozenBox(frozenBox).frozenTubeState("2004");
                     frozenTubeRepository.saveAndFlush(tube);
                     assertThat(tube).isNotNull();
@@ -894,50 +717,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             }
         }
     }
-    @Test
-    public void importSample() throws Exception {
-//        String sql = "select * from frozen_box";
-//        List<Map<String,Object>> map = jdbcTemplate.queryForList(sql);
 
-        Connection con = null;// 创建一个数据库连接
-        PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
-        ResultSet result = null;// 创建一个结果集对象
-        try
-        {
-            Class.forName("oracle.jdbc.driver.OracleDriver");// 加载Oracle驱动程序
-            System.out.println("开始尝试连接数据库！");
-            String url = "jdbc:oracle:" + "thin:@10.24.10.56:1521:xe";// 本机地址，XE是精简版Oracle的默认数据库名
-            String user = "biobank_temp_01";// 用户名
-            String password = "root123";// 密码
-            con = DriverManager.getConnection(url, user, password);// 获取连接
-            System.out.println("连接成功！");
-            String sql = "select * from frozen_box ";// 预编译语句
-            pre = con.prepareStatement(sql);// 实例化预编译语句
-            result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
-            while (result.next())
-                // 当结果集不为空时
-                System.out.println( result.getInt("id"));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        finally
-        {
-            try{
-                // 逐一将上面的几个对象关闭，因为不关闭的话会影响性能、并且占用资源
-                // 注意关闭的顺序，最后使用的最先关闭
-                if (result != null)
-                    result.close();
-                if (pre != null)
-                    pre.close();
-                if (con != null)
-                    con.close();
-                System.out.println("数据库连接已关闭！");
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
     private Map<String, Object> Result2Map(ResultSet rs, ResultSetMetaData meta) throws SQLException {
         Map<String, Object> map = new HashMap<String, Object>();
         for (int i = 1; i <= meta.getColumnCount(); i++) {
@@ -955,7 +735,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         this.createEquipmentModel();
         this.createFrozenTubeType();
         this.createFrozenBoxType();
-        this.createSampleTypeAndClassification();
+        this.createSampleType();
         this.createFrozenBoxForA02("HE_COL_01","1498790361822","A");
         this.createFrozenBoxForA02("HE_COL_02","1498793134929","A");
         this.createFrozenBoxForA02("HE_COL_03","1498802077085","W");
@@ -966,6 +746,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         this.createFrozenBoxForA02("HE_COL_08","1498802143791","F");
         this.createFrozenBoxForA02("HE_COL_09","1498802167424","E");
         this.createFrozenBoxForA02("HE_COL_10","1498802175768","E");
-        this.createFrozenBoxForA02("HE_COL_11_RNA","1498802167424","RNA");
+        this.createFrozenBoxForA02("HE_COL_11_RNA","1499052532056","RNA");
     }
 }

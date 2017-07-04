@@ -258,11 +258,13 @@
             //项目编码
             function onProjectSuccess(data)  {
                 vm.projectOptions = data;
-                if(!vm.transportRecord.projectId){
-                    vm.transportRecord.projectId = data[0].id;
+                if(vm.projectOptions.length){
+                    if(!vm.transportRecord.projectId){
+                        vm.transportRecord.projectId = data[0].id;
+                    }
+                    ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError);
                 }
-                ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError);
-            }
+                }
             //获取样本类型
             function _fnQuerySampleType() {
                 SampleTypeService.querySampleType().success(function (data) {
@@ -1083,6 +1085,7 @@
                 }
                 SampleTypeService.queryProjectSampleClasses(vm.transportRecord.projectId,vm.box.sampleTypeId).success(function (data1) {
                     vm.projectSampleTypeOptions = data1;
+                    vm.boxRowCol = "";
                     if(vm.box.sampleClassification){
                         vm.box.sampleClassificationId = vm.box.sampleClassification.id;
                     }
@@ -1097,7 +1100,9 @@
                     if(vm.box.areaId){
                         SupportacksByAreaIdService.query({id:vm.box.areaId},onShelfSuccess, onError);
                     }
-                    vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
+                    if(vm.box.columnsInShelf && vm.box.rowsInShelf){
+                        vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
+                    }
                     // initFrozenTube(vm.box.frozenBoxType.frozenBoxTypeRows,vm.box.frozenBoxType.frozenBoxTypeColumns);
                     _reloadTubesForTable(vm.box);
                     vm.boxStr = JSON.stringify(vm.createBoxDataFromTubesTable());

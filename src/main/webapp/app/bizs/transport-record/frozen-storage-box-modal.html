@@ -4,53 +4,61 @@
 </div>
 <div class="modal-body import-box-modal-body" id="modal-body">
     <div class="row form-horizontal">
-        <div class="form-group col-sm-2">
-            <div class="row">
-                <label  class="col-sm-5 control-label pr-5">
-                    样本类型
-                </label>
-                <div class="col-sm-7" >
-                    <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                               ng-model="vm.frozenBox.sampleTypeId"></selectize>
-                </div>
-            </div>
-
-        </div>
-        <div class="form-group col-sm-2" ng-hide="vm.sampleTypeFlag || !vm.projectSampleTypeOptions.length">
-            <div class="row">
-                <label  class="col-sm-5 control-label pr-5">
-                    样本分类
-                </label>
-                <div class="col-sm-7" >
-                    <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
-                               ng-model="vm.frozenBox.sampleClassificationId"></selectize>
-                </div>
-            </div>
-
-        </div>
-        <div class="form-group col-sm-2">
-            <div class="row">
-                <label  class="col-sm-5 control-label pr-5">
-                    盒类型
-                </label>
-                <div class="col-sm-7">
-                    <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
-                               ng-model="vm.frozenBox.frozenBoxTypeId"></selectize>
-                </div>
-            </div>
-
-        </div>
-        <div class="form-group col-md-3">
-            <div class="row">
-                <label  class="col-sm-4 control-label pr-5">暂存位置</label>
-                <div class="col-sm-8 storage-location">
-                    <div style="" class="location">
-                        <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfigTemp" style="width: 100%"
-                                   ng-model="vm.frozenBox.equipmentId" ></selectize>
+        <div class="col-md-2">
+            <div class="form-group">
+                <div class="row">
+                    <label  class="col-sm-5 control-label pr-5">
+                        样本类型
+                    </label>
+                    <div class="col-sm-7" >
+                        <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                                   ng-model="vm.frozenBox.sampleTypeId"></selectize>
                     </div>
-                    <div  class="location">
-                        <selectize options='vm.frozenBoxHoldAreaOptions' config="vm.frozenBoxAreaConfigTemp" style="width: 100%"
-                                   ng-model="vm.frozenBox.areaId" ></selectize>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group" ng-hide="vm.sampleTypeFlag || !vm.projectSampleTypeOptions.length">
+                <div class="row">
+                    <label  class="col-sm-5 control-label pr-5">
+                        样本分类
+                    </label>
+                    <div class="col-sm-7" >
+                        <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
+                                   ng-model="vm.frozenBox.sampleClassificationId"></selectize>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <div class="row">
+                    <label  class="col-sm-5 control-label pr-5">
+                        盒类型
+                    </label>
+                    <div class="col-sm-7">
+                        <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
+                                   ng-model="vm.frozenBox.frozenBoxTypeId"></selectize>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <div class="row">
+                    <label  class="col-sm-4 control-label pr-5">暂存位置</label>
+                    <div class="col-sm-8 storage-location">
+                        <div style="" class="location">
+                            <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfigTemp" style="width: 100%"
+                                       ng-model="vm.frozenBox.equipmentId" ></selectize>
+                        </div>
+                        <div  class="location">
+                            <selectize options='vm.frozenBoxHoldAreaOptions' config="vm.frozenBoxAreaConfigTemp" style="width: 100%"
+                                       ng-model="vm.frozenBox.areaId" ></selectize>
+                        </div>
                     </div>
                 </div>
             </div>

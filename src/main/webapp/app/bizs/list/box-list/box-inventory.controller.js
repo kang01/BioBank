@@ -336,11 +336,11 @@
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "110"),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目').withOption("width", "180"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "100"),
             DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒类型').withOption("width", "60"),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
-            DTColumnBuilder.newColumn('countOfRest').withTitle('备注').withOption("width", 'auto'),
+            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", 'auto'),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "80").withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];

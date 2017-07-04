@@ -326,15 +326,16 @@
         vm.dtColumns = [
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)
                 .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
-            DTColumnBuilder.newColumn('position').withTitle('定位').withOption("width", "120"),
+            DTColumnBuilder.newColumn('position').withTitle('定位').withOption("width", "140"),
+            DTColumnBuilder.newColumn('positionInBox').withTitle('盒内位置').withOption("width", "60"),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "120"),
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "120"),
             DTColumnBuilder.newColumn('sex').withTitle('标签'),
-            DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "100").withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
             vm.selected[full.id] = false;
@@ -367,9 +368,9 @@
                 tag += "脂肪血;";
             }
             var status = MasterData.getStatus(data.status);
-            $('td:eq(4)', row).html(projectName);
-            $('td:eq(7)', row).html(tag);
-            $('td:eq(8)', row).html(status);
+            $('td:eq(5)', row).html(projectName);
+            $('td:eq(8)', row).html(tag);
+            $('td:eq(9)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

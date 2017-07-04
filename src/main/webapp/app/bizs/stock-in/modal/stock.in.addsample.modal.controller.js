@@ -118,11 +118,17 @@
                     vm.projectSampleTypeOptions = data;
                     if(vm.sampleTypeName == "98"){
                         if(vm.projectSampleTypeOptions.length){
-                            if(!vm.entity.sampleClassificationId){
+                            // if(!vm.entity.sampleClassificationId){
                                 vm.entity.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
                                 vm.entity.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:vm.entity.sampleClassificationId}).backColor;
+                            // }
                             }
-                            }
+                    }else{
+                        if(!vm.entity.sampleClassificationId && !vm.entity.backColorForClass){
+                            vm.entity.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                            vm.entity.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:vm.entity.sampleClassificationId}).backColor;
+                        }
+
                     }
 
 

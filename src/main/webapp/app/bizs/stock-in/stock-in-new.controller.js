@@ -763,6 +763,7 @@
                                                         if(tube.sampleClassificationId){
                                                             vm.frozenTubeArray[i][j].sampleClassificationId = tube.sampleClassificationId;
                                                             vm.frozenTubeArray[i][j].sampleClassificationName = tube.sampleClassificationName;
+                                                            vm.frozenTubeArray[i][j].sampleClassitionCode = tube.sampleClassitionCode;
                                                             vm.frozenTubeArray[i][j].backColorForClass = tube.backColorForClass;
                                                         }
                                                     }

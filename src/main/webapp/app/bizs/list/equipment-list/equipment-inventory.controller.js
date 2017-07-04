@@ -305,15 +305,16 @@
         vm.dtColumns = [
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)
                 .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
-            DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型'),
-            DTColumnBuilder.newColumn('equipmentCode').withTitle('位置'),
+            DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型').withOption("width", "100"),
+            DTColumnBuilder.newColumn('equipmentCode').withTitle('位置').withOption("width", "140"),
             // DTColumnBuilder.newColumn('areaCode').withTitle('区域'),
             // DTColumnBuilder.newColumn('shelvesCode').withTitle('架子'),
-            DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型'),
-            DTColumnBuilder.newColumn('countOfUsed').withTitle('已用'),
-            DTColumnBuilder.newColumn('countOfRest').withTitle('剩余'),
-            DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作')
+            DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
+            DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
+            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60")
                 .withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
@@ -328,7 +329,7 @@
             switch (data.status){
                 case '0001': status = '运行中';break;
             }
-            $('td:eq(6)', row).html(status);
+            $('td:eq(7)', row).html(status);
             $('td:eq(2)', row).html(position);
             $compile(angular.element(row).contents())($scope);
         }

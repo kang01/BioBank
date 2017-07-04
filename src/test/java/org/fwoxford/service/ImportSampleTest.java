@@ -104,10 +104,46 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
      */
     @Test
     public void createProject() throws Exception {
-        Project project = projectRepository.findByProjectCode("0037");
-        if(project == null){
-            project = new Project().projectCode("0037").projectName("PEACE5").status("0001");
-            projectRepository.saveAndFlush(project);
+        Connection con = null;// 创建一个数据库连接
+        PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
+        ResultSet result = null;// 创建一个结果集对象
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        try{
+            con = DBUtilForTemp.open();
+            System.out.println("连接成功！");
+            String sqlForSelect = "select * from PROJECT";// 预编译语句
+            pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
+            result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
+            ResultSetMetaData rsMeta = result.getMetaData();
+            Map<String, Object> map = null;
+            while (result.next()){
+                map = this.Result2Map(result,rsMeta);
+                list.add(map);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                DBUtilForTemp.close(con);
+                System.out.println("数据库连接已关闭！");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        for(int i = 0 ;i<list.size();i++) {
+            String projectCode = list.get(i).get("PROJECT_CODE").toString().trim();
+            String projectName = list.get(i).get("PROJECT_NAME").toString().trim();
+            String delegateName = list.get(i).get("DELEGATE").toString().trim();
+            Delegate delegate = delegateRepository.findByDelegateName(delegateName);
+            if(delegate == null){
+                delegate = new Delegate().delegateCode("D_0000"+(i+1)).delegateName(delegateName).status("0001");
+                delegateRepository.saveAndFlush(delegate);
+            }
+            Project project = projectRepository.findByProjectCode(projectCode);
+            if(project == null){
+                project = new Project().projectCode(projectCode).projectName(projectName).status("0001").delegate(delegate);
+                projectRepository.saveAndFlush(project);
+            }
         }
     }
     /**
@@ -163,7 +199,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                     .username1(list.get(i).get("USER_1").toString()).username2(list.get(i).get("USER_2").toString())
                     .phoneNumber1(list.get(i).get("PHONE_1").toString()).phoneNumber2(list.get(i).get("PHONE_2").toString());
                 projectSiteRepository.saveAndFlush(projectSite);
-                ProjectRelate projectRelate = projectRelateRepository.findByProjectIdAndProjectSiteId(1L, projectSite.getId());
+                ProjectRelate projectRelate = projectRelateRepository.findByProjectIdAndProjectSiteId(project.getId(), projectSite.getId());
                 if (projectRelate == null) {
                     projectRelate = new ProjectRelate().project(project).projectSite(projectSite).status("0001");
                     projectRelateRepository.saveAndFlush(projectRelate);
@@ -490,7 +526,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 sampleClassificationRepository.saveAndFlush(sampleClassification);
                 assertThat(sampleClassification).isNotNull();
 
-                ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(1L,sampleType.getId(),sampleClassification.getId());;
+                ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType.getId(),sampleClassification.getId());;
                 String columnNumber = Constants.COLUMNNUMBER_MAP.get(sampleClassTypeCode);
                 if(projectSampleClass == null){
                     projectSampleClass = new ProjectSampleClass()
@@ -581,12 +617,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 stockInBoxRepository.saveAndFlush(stockInBox);
                 assertThat(stockInBox).isNotNull();
             }
-
-//            //增加冻存盒位置记录
-//            FrozenBoxPosition frozenBoxPos = new FrozenBoxPosition();
-//            frozenBoxPos = frozenBoxPositionMapper.frozenBoxToFrozenBoxPosition(frozenBoxPos,frozenBox);
-//            frozenBoxPos.setStatus(Constants.FROZEN_BOX_STOCKED);
-//            frozenBoxPos = frozenBoxPositionRepository.save(frozenBoxPos);
             //保存入库盒子位置
             StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
             stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_COMPLETE).memo(stockInBox.getMemo())
@@ -657,6 +687,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     }
     @Test
     public void createSampleTypeMix() throws Exception {
+        Project project = projectRepository.findByProjectCode("0037");
         SampleType sampleType7 = sampleTypeRepository.findBySampleTypeCode("98");
         List<SampleClassification> sampleClassifications = sampleClassificationRepository.findAll();
         if(sampleType7 == null){
@@ -665,20 +696,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             sampleTypeRepository.saveAndFlush(sampleType7);
             assertThat(sampleType7).isNotNull();
         }
-//        for(SampleClassification s :sampleClassifications){
-//            ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(1L,sampleType7.getId(),s.getId());;
-//            String columnNumber = Constants.COLUMNNUMBER_MAP.get(s.getSampleClassificationCode());
-//            if(projectSampleClass == null){
-//                projectSampleClass = new ProjectSampleClass()
-//                    .project(projectSampleClassMapper.projectFromId(1L)).projectCode("0037")
-//                    .sampleClassification(s)
-//                    .sampleType(sampleType7)
-//                    .columnsNumber(columnNumber)
-//                    .status("0001");
-//                projectSampleClassRepository.saveAndFlush(projectSampleClass);
-//                assertThat(projectSampleClass).isNotNull();
-//            }
-//        }
         SampleType sampleType8 = sampleTypeRepository.findBySampleTypeCode("99");
         if(sampleType8 == null){
             sampleType8 = new SampleType().sampleTypeCode("99").sampleTypeName("99")
@@ -687,11 +704,11 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             assertThat(sampleType8).isNotNull();
         }
         for(SampleClassification s :sampleClassifications){
-            ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(1L,sampleType8.getId(),s.getId());;
+            ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType8.getId(),s.getId());;
             String columnNumber = Constants.COLUMNNUMBER_MAP.get(s.getSampleClassificationCode());
             if(projectSampleClass == null){
                 projectSampleClass = new ProjectSampleClass()
-                    .project(projectSampleClassMapper.projectFromId(1L)).projectCode("0037")
+                    .project(project).projectCode(project.getProjectCode())
                     .sampleClassification(s)
                     .sampleType(sampleType8)
                     .columnsNumber(columnNumber)
@@ -702,14 +719,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         }
     }
 
-    @Test
-    public void createDelegate() throws Exception {
-        Delegate delegate = delegateRepository.findByDelegateCode("D_00001");
-        if(delegate == null){
-            delegate = new Delegate().delegateCode("D_00001").delegateName("中国牛津国际医学研究中心 中心实验室").status("0001");
-            delegateRepository.saveAndFlush(delegate);
-        }
-    }
     @Test
     public void main() throws Exception {
         this.createProject();
@@ -732,6 +741,5 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         this.createFrozenBoxForA02("HE_COL_10","1498802175768","E");
         this.createFrozenBoxForA02("HE_COL_11_RNA","1499052532056","RNA");
         this.createSampleTypeMix();
-//        this.createDelegate();
     }
 }

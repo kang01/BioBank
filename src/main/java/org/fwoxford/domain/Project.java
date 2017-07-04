@@ -61,6 +61,9 @@ public class Project extends AbstractAuditingEntity implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ProjectRelate> projectRelates = new HashSet<>();
 
+    @ManyToOne
+    private Delegate delegate;
+
     public Long getId() {
         return id;
     }
@@ -144,6 +147,17 @@ public class Project extends AbstractAuditingEntity implements Serializable {
 
     public void setProjectRelates(Set<ProjectRelate> projectRelates) {
         this.projectRelates = projectRelates;
+    }
+
+    public Delegate getDelegate() {
+        return delegate;
+    }
+    public Project delegate(Delegate delegate) {
+        this.delegate = delegate;
+        return this;
+    }
+    public void setDelegate(Delegate delegate) {
+        this.delegate = delegate;
     }
 
     @Override

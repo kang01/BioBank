@@ -23,6 +23,7 @@
                     <th jh-sort-by="projectCode"><span data-translate="bioBankApp.project.projectCode">Project Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="projectName"><span data-translate="bioBankApp.project.projectName">Project Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="memo"><span data-translate="bioBankApp.project.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="delegateId"><span data-translate="bioBankApp.project.delegate">Delegate</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -33,6 +34,9 @@
                     <td>{{project.projectCode}}</td>
                     <td>{{project.projectName}}</td>
                     <td>{{project.memo}}</td>
+                    <td>
+                        <a ui-sref="delegate-detail({id:project.delegateId})">{{project.delegateId}}</a>
+                    </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

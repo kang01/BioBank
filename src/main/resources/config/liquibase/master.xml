@@ -86,6 +86,7 @@
     <include file="classpath:config/liquibase/changelog/20170608013347_added_entity_constraints_TranshipBoxPosition.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170608020957_added_entity_constraints_StockInTube.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170608022411_added_entity_constraints_StockInBoxPosition.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170316011154_added_entity_constraints_Project.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 
     <include file="classpath:config/liquibase/changelog/20170502015417_added_view_StockIn.xml" relativeToChangelogFile="false"/>

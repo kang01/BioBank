@@ -19,7 +19,8 @@
             "projectCode": "Project Code",
             "projectName": "Project Name",
             "memo": "Memo",
-            "projectRelate": "Project Relate"
+            "projectRelate": "Project Relate",
+            "delegate": "Delegate"
         }
     }
 }

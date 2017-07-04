@@ -15,14 +15,25 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {})
 public interface ProjectMapper {
 
+    @Mapping(source = "delegate.id", target = "delegateId")
     ProjectDTO projectToProjectDTO(Project project);
 
     List<ProjectDTO> projectsToProjectDTOs(List<Project> projects);
 
     @Mapping(target = "projectRelates", ignore = true)
+    @Mapping(source = "delegateId", target = "delegate")
     Project projectDTOToProject(ProjectDTO projectDTO);
 
     List<Project> projectDTOsToProjects(List<ProjectDTO> projectDTOs);
+
+    default Delegate delegateFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        Delegate delegate = new Delegate();
+        delegate.setId(id);
+        return delegate;
+    }
 
     default List<ProjectResponse> projectsToProjectResponses(List<Project> projects){
         if ( projects == null ) {

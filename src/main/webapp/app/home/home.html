@@ -3,58 +3,65 @@
         <div class="col-md-3">
             <span class="hipster img-responsive img-rounded"></span>
         </div>
-        <div class="col-md-9 home-body">
+        <div class="col-md-9" >
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 style="margin-left: 18px">欢迎{{vm.account.login}}，使用(BBIS)样本库信息管理系统</h4>
+                </div>
+            </div>
+
+            <div class="home-body" style="width: 990px">
             <div class="content ">
-                <div class="row">
+                <div class="row mt-5" >
                     <div class="col-md-3">
                         <div class="home-nav" ng-click="vm.create()">
-                            <i class="fa fa-plus-square"></i>
+                            <img src="content/images/u7.svg">
                             <p>创建</p>
                         </div>
 
                     </div>
                     <div class="col-md-3">
                         <div class="home-nav" ui-sref="equipment-inventory">
-                            <i class="fa fa-server"></i>
+                            <img src="content/images/u12.svg">
                             <p>库存清单</p>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="home-nav" ui-sref="transport-record">
-                            <i class="fa fa-truck"></i>
+                            <img src="content/images/u17.svg">
                             <p>转运记录</p>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 home-stock-record">
                         <div class="home-nav" ui-sref="stock-in">
-                            <i class="fa fa-file-text"></i>
+                            <img src="content/images/u22.svg">
                             <p>入库记录</p>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" style="margin-top: 48px">
                     <div class="col-md-3">
                         <div class="home-nav" ui-sref="requirement-list">
-                            <i class="fa fa-plus-square"></i>
+                            <img src="content/images/u27.svg">
                             <p>出库申请</p>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="home-nav" ui-sref="plan-list">
-                            <i class="fa fa-wpforms"></i>
+                            <img src="content/images/u32.svg">
                             <p>出库计划</p>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="home-nav" ui-sref="task-list">
-                            <i class="fa fa-tasks"></i>
+                            <img src="content/images/u37.svg">
                             <p>出库任务</p>
                         </div>
 
                     </div>
                     <div class="col-md-3">
                         <div class="home-nav" ui-sref="take-over-list">
-                            <i class="fa fa-handshake-o"></i>
+                            <img src="content/images/u42.svg">
                             <p>出库交接</p>
                         </div>
 
@@ -64,33 +71,34 @@
                     <div class="">
                         <button class="btn " ng-click="vm.close()">收起</button>
                     </div>
-                    <div class="row">
+                    <div class="row mt-5">
                         <div class="col-md-3">
                             <div class="home-nav" ui-sref="transport-record-new">
-                                <i class="fa fa-plus-square"></i>
+                                <img src="content/images/u7.svg">
                                 <p>创建转运</p>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="home-nav" ui-sref="stock-in-new">
-                                <i class="fa fa-plus-square"></i>
+                                <img src="content/images/u7.svg">
                                 <p>创建入库单</p>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="home-nav" ui-sref="requirement-new">
-                                <i class="fa fa-plus-square"></i>
+                                <img src="content/images/u7.svg">
                                 <p>创建申请单</p>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="home-nav" ui-sref="take-over-new">
-                                <i class="fa fa-plus-square"></i>
+                                <img src="content/images/u7.svg">
                                 <p>创建交接单</p>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
         <!--<div class="col-md-8">-->

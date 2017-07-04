@@ -70,12 +70,15 @@ public class FrozenPositionListAllDataTableEntity   implements Serializable {
     private Long equipmentTypeId;
 
     @Column(name ="equipment_id")
+    @JsonView(DataTablesOutput.View.class)
     private Long equipmentId;
 
     @Column(name ="area_id")
+    @JsonView(DataTablesOutput.View.class)
     private Long areaId;
 
     @Column(name ="shelves_id")
+    @JsonView(DataTablesOutput.View.class)
     private Long shelvesId;
 
     @Column(name ="shelves_type_id")

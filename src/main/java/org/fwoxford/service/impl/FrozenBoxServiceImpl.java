@@ -690,17 +690,18 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         //查询冻存盒信息
         FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
 
-        //只能给已出库和已入库的
+        //只能给已出库和已入库的和已交接的
         if(frozenBox == null){
             return new FrozenBoxDTO();
         }else if(frozenBox !=null && !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
-            && !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED)){
+            && !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED)
+            && !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
             throw new BankServiceException("冻存盒编码已存在！");
         }
 
         //查询冻存管列表信息
         List<FrozenTube> frozenTubeList = new ArrayList<>();
-        if(!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
+        if(!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&&!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
             frozenTubeList = frozenTubeService.findFrozenTubeListByBoxCode(frozenBoxCode);
         }
 

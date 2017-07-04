@@ -11,7 +11,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface SampleTypeRepository extends JpaRepository<SampleType,Long> {
-    @Query("select t from SampleType t where t.status !='0000' order by t.sampleTypeCode asc")
+    @Query("select t from SampleType t where t.status !='0000' order by t.isMixed desc,t.sampleTypeCode asc")
     List<SampleType> findAllSampleTypes();
 
     SampleType findBySampleTypeCode(String sampleTypeCode);

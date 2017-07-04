@@ -577,7 +577,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         //保存上架位置
         stockInBoxPosition.stockInBox(stockInBox);
         stockInBoxPositionRepository.save(stockInBoxPosition);
-
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(stockInBox.getFrozenBoxCode());
+        for(FrozenTube tube :frozenTubeList){
+            tube.setFrozenTubeState(Constants.FROZEN_BOX_PUT_SHELVES);
+            frozenTubeRepository.saveAndFlush(tube);
+        }
         stockInBoxDetail = frozenBoxService.createStockInBoxDetail(frozenBox,stockInCode);
         return stockInBoxDetail;
     }
@@ -653,6 +657,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             .columnsInShelf(stockInBox.getColumnsInShelf()).rowsInShelf(stockInBox.getRowsInShelf())
             .stockInBox(stockInBox);
         stockInBoxPositionRepository.save(stockInBoxPosition);
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(stockInBox.getFrozenBoxCode());
+        for(FrozenTube tube :frozenTubeList){
+            tube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
+            frozenTubeRepository.saveAndFlush(tube);
+        }
         stockInBoxDetail = frozenBoxService.createStockInBoxDetail(frozenBox,stockInCode);
         return stockInBoxDetail;
     }
@@ -742,7 +751,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
             String status = getFrozenTubeStatus(tubeDTO);
             if(!status.equals("") && !status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED)
-                && !status.equals(Constants.STOCK_IN_TUBE_PENDING)
+                && !status.equals(Constants.STOCK_IN_TUBE_COMPELETE)
                 && !status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
                 throw new BankServiceException("冻存管编码"+tubeDTO.getSampleCode()+"已经存在，不能保存该冻存管！",tubeDTO.getSampleCode());
             }
@@ -761,6 +770,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             //冻存管类型
             tubeDTO = createFrozenTubeTypeInit(tubeDTO);
             frozenTube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
+            frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
             frozenTubeRepository.save(frozenTube);
         }
         stockInBox.setCountOfSample(countOfStockInTube);
@@ -809,6 +819,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
         if(frozenBox !=null && frozenBox.getId()!=frozenBoxDTO.getId()
             &&  !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
+            &&  !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)
             && !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED) ){
             flag=false;
             throw new BankServiceException("冻存盒编码已存在！");

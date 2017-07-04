@@ -13,4 +13,6 @@ import java.util.List;
 public interface StockInTubeRepository extends JpaRepository<StockInTube,Long> {
 
     StockInTube findByFrozenTubeId(Long id);
+
+    List<StockInTube> findByStockInBoxId(Long id);
 }

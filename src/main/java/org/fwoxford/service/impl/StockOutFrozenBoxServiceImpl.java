@@ -479,6 +479,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             for(StockOutBoxTube s:stockOutBoxTubes){
                 FrozenTube frozenTube = s.getFrozenTube();
                 frozenTube.setSampleUsedTimes(frozenTube.getSampleUsedTimes()!=null?frozenTube.getSampleUsedTimes():0+1);
+                frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
                 frozenTubeRepository.save(frozenTube);
             }
             List<Long> planTubes = stockOutBoxTubeRepository.findPlanFrozenTubeByStockOutFrozenBoxId(id);

@@ -37,7 +37,7 @@ public final class Constants {
     public static final String TRANSHIPE_IN_STOCKED = "1003";
     public static final String TRANSHIPE_IN_INVALID = "1004";
     /**
-     * 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库
+     * 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库，2010：已交接
      */
     public static final  String FROZEN_BOX_NEW = "2001" ;
     public static final  String FROZEN_BOX_STOCKING = "2002" ;
@@ -48,6 +48,7 @@ public final class Constants {
     public static final String FROZEN_BOX_SPLITING = "2007";
     public static final String FROZEN_BOX_STOCK_OUT_PENDING = "2008";
     public static final String FROZEN_BOX_STOCK_OUT_COMPLETED = "2009";
+    public static final String FROZEN_BOX_STOCK_OUT_HANDOVER = "2010";
     /**
      * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常
      */
@@ -169,9 +170,10 @@ public final class Constants {
     public static final Integer LEVEL_ONE = 1;
     public static final Integer LEVEL_TWO = 2;
     /**
-     * 入库管子状态:2301:已入库
+     * 入库管子状态:2300:待入库；2301:已入库
      */
-    public static final String STOCK_IN_TUBE_PENDING = "2301";
+    public static final String STOCK_IN_TUBE_PENDING = "2300";
+    public static final String STOCK_IN_TUBE_COMPELETE = "2301";
     /**
      * 入库盒子状态:2401:已上架，2402：已入库,2403:已撤销
      */
@@ -240,7 +242,7 @@ public final class Constants {
         put("06","6");
         put("07","7");
         put("08","8");
-        put("09","7");
+        put("09","9");
         put("10","10");
         put("11","");
     }};

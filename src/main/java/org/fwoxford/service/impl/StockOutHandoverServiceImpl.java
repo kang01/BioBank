@@ -67,6 +67,12 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     @Autowired
     private StockOutHandoverSampleRepositries stockOutHandoverSampleRepositries;
 
+    @Autowired
+    private FrozenBoxRepository frozenBoxRepository;
+
+    @Autowired
+    private FrozenTubeRepository frozenTubeRepository;
+
     public StockOutHandoverServiceImpl(StockOutHandoverRepository stockOutHandoverRepository, StockOutHandoverMapper stockOutHandoverMapper) {
         this.stockOutHandoverRepository = stockOutHandoverRepository;
         this.stockOutHandoverMapper = stockOutHandoverMapper;
@@ -291,6 +297,9 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
             if(stockOutFrozenBox != null){
                 stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_HANDOVER);
                 stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+                FrozenBox frozenBox = stockOutFrozenBox.getFrozenBox();
+                frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
+                frozenBoxRepository.save(frozenBox);
             }
             for(StockOutBoxTube b :stockOutBoxTubes){
                 //保存交接详情
@@ -299,6 +308,9 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                     .stockOutBoxTube(b)
                     .stockOutHandover(stockOutHandover);
                 stockOutHandoverDetailsRepository.save(stockOutHandoverDetails);
+                FrozenTube frozenTube = stockOutHandoverDetails.getStockOutBoxTube().getFrozenTube();
+                frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
+                frozenTubeRepository.save(frozenTube);
             }
         }
         return stockOutHandoverDTO;

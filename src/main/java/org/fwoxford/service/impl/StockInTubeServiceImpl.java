@@ -100,11 +100,33 @@ public class StockInTubeServiceImpl implements StockInTubeService{
     @Override
     public void saveStockInTube(StockInBox stockInBox) {
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(stockInBox.getFrozenBoxCode());
+//        List<StockInTube> stockInTubeList = stockInTubeRepository.findByStockInBoxId(stockInBox.getId());
+
         for(FrozenTube tube :frozenTubeList){
-            StockInTube stockInTube = new StockInTube();
-            stockInTube.status(Constants.STOCK_IN_TUBE_PENDING).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
-                .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox);
-            stockInTubeRepository.save(stockInTube);
+//            if(stockInTubeList!=null&&stockInTubeList.size()>0){
+//                for(StockInTube s :stockInTubeList){
+//                    if(tube.getId().equals(s.getId())){
+//                        if(tube.getTubeColumns()!=s.getTubeColumns()||tube.getTubeColumns()!=s.getTubeColumns()){
+//                            StockInTube stockInTube = new StockInTube();
+//                            stockInTube.status(Constants.STOCK_IN_TUBE_PENDING).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
+//                                .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox);
+//                        }
+//                        if(tube.getStatus()!=s.getStatus()){
+//                            StockInTube stockInTube = new StockInTube();
+//                            stockInTube.status(Constants.STOCK_IN_TUBE_PENDING).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
+//                                .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox);
+//                        }
+//                    }
+//                }
+//            }else{
+                tube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
+                frozenTubeRepository.saveAndFlush(tube);
+
+//                StockInTube stockInTube = new StockInTube();
+//                stockInTube.status(Constants.STOCK_IN_TUBE_PENDING).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
+//                    .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox);
+//                stockInTubeRepository.save(stockInTube);
+//            }
         }
     }
 }

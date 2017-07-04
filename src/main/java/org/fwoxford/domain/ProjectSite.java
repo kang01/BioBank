@@ -41,6 +41,10 @@ public class ProjectSite extends AbstractAuditingEntity implements Serializable 
     @Column(name = "memo", length = 1024)
     private String memo;
 
+    @Size(max = 1024)
+    @Column(name = "area", length = 1024)
+    private String area;
+
     @NotNull
     @Size(max = 20)
     @Column(name = "status", length = 20, nullable = false)
@@ -62,20 +66,20 @@ public class ProjectSite extends AbstractAuditingEntity implements Serializable 
     @Column(name = "zip_code", length = 20)
     private String zipCode;
 
-    @Size(max = 20)
-    @Column(name = "username_1", length = 20)
+    @Size(max = 100)
+    @Column(name = "username_1", length = 100)
     private String username1;
 
-    @Size(max = 20)
-    @Column(name = "phone_number_1", length = 20)
+    @Size(max = 100)
+    @Column(name = "phone_number_1", length = 100)
     private String phoneNumber1;
 
-    @Size(max = 20)
-    @Column(name = "username_2", length = 20)
+    @Size(max = 100)
+    @Column(name = "username_2", length = 100)
     private String username2;
 
-    @Size(max = 20)
-    @Column(name = "phone_number_2", length = 20)
+    @Size(max = 100)
+    @Column(name = "phone_number_2", length = 100)
     private String phoneNumber2;
 
     @OneToMany(mappedBy = "projectSite")
@@ -128,6 +132,17 @@ public class ProjectSite extends AbstractAuditingEntity implements Serializable 
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getArea() {
+        return area;
+    }
+    public ProjectSite area(String area) {
+        this.area = area;
+        return this;
+    }
+    public void setArea(String area) {
+        this.area = area;
     }
 
     public String getStatus() {

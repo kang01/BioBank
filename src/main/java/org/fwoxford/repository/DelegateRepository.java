@@ -13,4 +13,6 @@ import java.util.List;
 public interface DelegateRepository extends JpaRepository<Delegate,Long> {
 
     List<Delegate> findByStatusNot(String status);
+
+    Delegate findByDelegateCode(String delegateCode);
 }

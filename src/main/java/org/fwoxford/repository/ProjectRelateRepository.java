@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface ProjectRelateRepository extends JpaRepository<ProjectRelate,Long> {
 
+    ProjectRelate findByProjectIdAndProjectSiteId(Long projectId, Long projectSiteId);
 }

@@ -163,10 +163,10 @@ public class FrozenTubeResource {
      * @param sampleCode
      * @param projectCode
      * @param sampleTypeId
-     * @param sampleClassitionId
+     * @param sampleClassificationId
      * @return
      */
-    @GetMapping("/frozen-tubes/sample/{sampleCode}/project/{projectCode}/sampleType/{sampleTypeId}/sampleClassition/{sampleClassificationId}")
+    @GetMapping("/frozen-tubes/sample/{sampleCode}/project/{projectCode}/sampleType/{sampleTypeId}/sampleClassification/{sampleClassificationId}")
     @Timed
     public ResponseEntity<List<FrozenTubeDTO>> getFrozenTubeBySampleCodeNadProjectAndSampleTypeAndSampleClassifacition(@PathVariable String sampleCode,@PathVariable String projectCode,@PathVariable Long sampleTypeId,
                                                                                                                        @PathVariable Long sampleClassificationId) {

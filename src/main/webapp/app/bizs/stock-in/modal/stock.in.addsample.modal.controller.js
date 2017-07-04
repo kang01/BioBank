@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('StockInAddSampleModal', StockInAddSampleModal);
 
-    StockInAddSampleModal.$inject = ['$uibModalInstance','items','toastr','SampleTypeService','ProjectService','ProjectSitesByProjectIdService','MasterData'];
+    StockInAddSampleModal.$inject = ['$uibModalInstance','items','toastr','SampleTypeService','ProjectService','ProjectSitesByProjectIdService','MasterData','StockInInputService'];
 
-    function StockInAddSampleModal($uibModalInstance,items,toastr,SampleTypeService,ProjectService,ProjectSitesByProjectIdService,MasterData) {
+    function StockInAddSampleModal($uibModalInstance,items,toastr,SampleTypeService,ProjectService,ProjectSitesByProjectIdService,MasterData,StockInInputService) {
         var vm = this;
         vm.status = items.status;
         vm.tubes = items.tubes;
@@ -19,6 +19,7 @@
             sampleClassificationName:""
         };
         vm.entity.projectId = items.projectId;
+        vm.entity.projectCode = items.projectCode;
         vm.entity.projectSiteId = items.projectSiteId;
 
         vm.entity.sampleCode = items.sampleCode;
@@ -109,7 +110,11 @@
                     vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+value}).backColor;
                     $('table').find('.rowLight').removeClass("rowLight");
                     tube = "";
-                }
+                    StockInInputService.queryTube(vm.entity.sampleCode,vm.entity.projectCode,vm.entity.sampleTypeId).success(function (data) {
+                        vm.tubes = data;
+                    });
+
+                    }
             };
             vm.queryProjectSampleClass = _fnQueryProjectSampleClass;
             //样本分类
@@ -142,10 +147,11 @@
                     vm.entity.sampleClassificationId = value;
                     vm.entity.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationName;
                     vm.entity.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).backColor;
+                    StockInInputService.queryTubeBySampleClassificationId(vm.entity.sampleCode,vm.entity.projectCode,vm.entity.sampleTypeId,vm.entity.sampleClassificationId).success(function (data) {
+                        vm.tubes = data;
+                    });
                 }
             };
-
-
         }
         _init();
 

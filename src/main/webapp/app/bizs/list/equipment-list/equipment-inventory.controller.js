@@ -306,7 +306,7 @@
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)
                 .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型').withOption("width", "100"),
-            DTColumnBuilder.newColumn('equipmentCode').withTitle('位置').withOption("width", "140"),
+            DTColumnBuilder.newColumn('position').withTitle('位置').withOption("width", "140"),
             // DTColumnBuilder.newColumn('areaCode').withTitle('区域'),
             // DTColumnBuilder.newColumn('shelvesCode').withTitle('架子'),
             DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型').withOption("width", "60"),
@@ -325,12 +325,12 @@
         }
         function createdRow(row, data, dataIndex) {
             var status = '';
-            var position = data.equipmentCode+"."+data.areaCode+"."+data.shelvesCode;
+            // var position = data.equipmentCode+"."+data.areaCode+"."+data.shelvesCode;
             switch (data.status){
                 case '0001': status = '运行中';break;
             }
             $('td:eq(7)', row).html(status);
-            $('td:eq(2)', row).html(position);
+            // $('td:eq(2)', row).html(position);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

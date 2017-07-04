@@ -13,6 +13,7 @@
         var service = {
             //获取冻存管
             queryTube:_queryTube,
+            queryTubeBySampleClassificationId:_queryTubeBySampleClassificationId,
             //获取冻存盒
             queryStockInBox:_queryStockInBox,
             //编辑冻存盒
@@ -28,8 +29,11 @@
 
 
         };
-        function _queryTube(sampleCode,projectCode,sampleTypeCode) {
-            return $http.get('api/frozen-tubes/sample/'+sampleCode+'/project/'+projectCode+'/sampleType/'+sampleTypeCode);
+        function _queryTube(sampleCode,projectCode,sampleTypeId) {
+            return $http.get('api/frozen-tubes/sample/'+sampleCode+'/project/'+projectCode+'/sampleType/'+sampleTypeId);
+        }
+        function _queryTubeBySampleClassificationId(sampleCode,projectCode,sampleTypeId,sampleClassificationId) {
+            return $http.get('api/frozen-tubes/sample/'+sampleCode+'/project/'+projectCode+'/sampleType/'+sampleTypeId+'/sampleClassification/'+sampleClassificationId);
         }
         function _fnSaveStockIn(param) {
             return $http.post('api/stock-ins',param);

@@ -74,6 +74,12 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <label data-translate="bioBankApp.project.delegate" for="field_delegate">Delegate</label>
+            <select class="form-control" id="field_delegate" name="delegate" ng-model="vm.project.delegateId" ng-options="delegate.id as delegate.id for delegate in vm.delegates"            >
+                <option value=""></option>
+            </select>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">

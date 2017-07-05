@@ -97,7 +97,7 @@
                 .withButtons([
                     {
                         text: '创建任务',
-                        className: 'btn btn-default btn-sm ml-10',
+                        className: 'btn btn-primary btn-sm ml-10',
                         key: '1',
                         action: _fnCreateTask
                     }

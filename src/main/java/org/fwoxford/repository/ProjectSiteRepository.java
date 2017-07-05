@@ -13,4 +13,6 @@ import java.util.List;
 public interface ProjectSiteRepository extends JpaRepository<ProjectSite,Long> {
     @Query("select t from ProjectSite t left join ProjectRelate r on t.id=r.projectSite.id where r.project.id = ?1")
     List<ProjectSite> findAllProjectSitesByProjectId(Long projectId);
+
+    ProjectSite findByProjectSiteCode(String projectSiteCode);
 }

@@ -83,7 +83,7 @@
 
             return service;
         }])
-        .factory('MasterData',function () {
+        .factory('MasterData',['SampleTypeService',function(SampleTypeService){
             var _sexDict= [{type:'M',name:'男'},{type:'F',name:'女'},{type:'null',name:'不详'}];
             //疾病类型
             var _diseaseType = [
@@ -127,7 +127,7 @@
             // 冻存盒状态
             var _frozenBoxStatus = [
                 //2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架,2008:待出库
-                // {id:"2001",name:"新建"},
+                {value:"2001",label:"新建"},
                 {value:"2002",label:"待入库"},
                 {value:"2003",label:"已分装"},
                 {value:"2004",label:"已入库"},
@@ -144,7 +144,6 @@
                 {id:"3003",name:"空孔"},
                 {id:"3004",name:"异常"}
             ];
-
             var allStatus = null;
             function _getStatus(statusCode){
                 if (!allStatus){
@@ -163,6 +162,9 @@
             function _getFrozenBoxStatus(statusCode) {
                 return (_.find(_frozenBoxStatus,{value:statusCode+""})|| {}).label;
             }
+            function _getSex(sex) {
+                return (_.find(_sexDict,{type:sex+""})|| {}).name;
+            }
             var masterData = {
                 sexDict :_sexDict,
                 diseaseType :_diseaseType,
@@ -173,10 +175,11 @@
                 frozenBoxStatus: _frozenBoxStatus,
                 frozenTubeStatus: _frozenTubeStatus,
                 getStatus: _getStatus,
-                getFrozenBoxStatus: _getFrozenBoxStatus
+                getFrozenBoxStatus: _getFrozenBoxStatus,
+                getSex: _getSex
             };
             return masterData;
-        })
+        }])
         .factory('SampleService', function () {
             var factory = {};
             //改变管子样本类型 1:分类 2:类型

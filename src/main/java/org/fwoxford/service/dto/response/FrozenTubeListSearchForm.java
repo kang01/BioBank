@@ -27,18 +27,7 @@ public class FrozenTubeListSearchForm {
     private Long sampleClassificationId;
     private String tubeRows;
     private String tubeColumns;
-    /**
-     * 空间条件：1：已用：2：剩余
-     */
-    private Integer spaceType;
-    /**
-     * 比较类型：1：大于，2：大于等于，3：等于，4：小于，5：小于等于
-     */
-    private Integer compareType;
-    /**
-     * 数值
-     */
-    private Long number;
+    private Long sampleUsedTimes;
 
     public String getPosition() {
         return position;
@@ -224,27 +213,11 @@ public class FrozenTubeListSearchForm {
         this.tubeColumns = tubeColumns;
     }
 
-    public Integer getSpaceType() {
-        return spaceType;
+    public Long getSampleUsedTimes() {
+        return sampleUsedTimes;
     }
 
-    public void setSpaceType(Integer spaceType) {
-        this.spaceType = spaceType;
-    }
-
-    public Integer getCompareType() {
-        return compareType;
-    }
-
-    public void setCompareType(Integer compareType) {
-        this.compareType = compareType;
-    }
-
-    public Long getNumber() {
-        return number;
-    }
-
-    public void setNumber(Long number) {
-        this.number = number;
+    public void setSampleUsedTimes(Long sampleUsedTimes) {
+        this.sampleUsedTimes = sampleUsedTimes;
     }
 }

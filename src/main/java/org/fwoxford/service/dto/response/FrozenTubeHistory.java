@@ -103,10 +103,16 @@ public class FrozenTubeHistory {
     @Column(name = "frozen_tube_id")
     private Long frozenTubeId;
 
+    @Column(name = "memo")
+    private String memo;
+
+    @Column(name = "operator")
+    private String operator;
+
     public FrozenTubeHistory() {
     }
 
-    public FrozenTubeHistory(Long id, Long transhipId, String transhipCode, Long stockInId, String stockInCode, Long stockOutTaskId, String stockOutTaskCode, Long handoverId, String handoverCode, String projectCode, String sampleCode, Integer type, String status, String frozenBoxCode, String position, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String positionInBox, Long equipmentId, Long areaId, Long shelvesId, String tubeRows, String tubeColumns, ZonedDateTime operateTime, Long frozenTubeId) {
+    public FrozenTubeHistory(Long id, Long transhipId, String transhipCode, Long stockInId, String stockInCode, Long stockOutTaskId, String stockOutTaskCode, Long handoverId, String handoverCode, String projectCode, String sampleCode, Integer type, String status, String frozenBoxCode, String position, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String positionInBox, Long equipmentId, Long areaId, Long shelvesId, String tubeRows, String tubeColumns, ZonedDateTime operateTime, Long frozenTubeId, String memo, String operator) {
         this.id = id;
         this.transhipId = transhipId;
         this.transhipCode = transhipCode;
@@ -135,6 +141,8 @@ public class FrozenTubeHistory {
         this.tubeColumns = tubeColumns;
         this.operateTime = operateTime;
         this.frozenTubeId = frozenTubeId;
+        this.memo = memo;
+        this.operator = operator;
     }
 
     public Long getId() {
@@ -359,5 +367,21 @@ public class FrozenTubeHistory {
 
     public void setFrozenTubeId(Long frozenTubeId) {
         this.frozenTubeId = frozenTubeId;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
     }
 }

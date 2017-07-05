@@ -69,7 +69,12 @@ public  class FrozenPositionListBaseDataTableEntity implements Serializable {
     private Long shelvesTypeId;
 
     @Column(name ="position")
+    @JsonView(DataTablesOutput.View.class)
     private String position;
+
+    @Column(name ="memo")
+    @JsonView(DataTablesOutput.View.class)
+    private String memo;
 
     public Long getId() {
         return id;
@@ -189,5 +194,13 @@ public  class FrozenPositionListBaseDataTableEntity implements Serializable {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 }

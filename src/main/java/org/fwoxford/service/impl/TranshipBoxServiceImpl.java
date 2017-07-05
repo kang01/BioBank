@@ -433,6 +433,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     tube.setSampleUsedTimesMost(tubeType.getSampleUsedTimesMost());
                 }
                 tube.setSampleUsedTimes(0);
+                tube.setFrozenTubeState(Constants.FROZEN_BOX_NEW);
                 tube = frozenTubeRepository.save(tube);
                 frozenTubeList.add(tube);
             }

@@ -37,7 +37,7 @@ public final class Constants {
     public static final String TRANSHIPE_IN_STOCKED = "1003";
     public static final String TRANSHIPE_IN_INVALID = "1004";
     /**
-     * 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库
+     * 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库，2010：已交接
      */
     public static final  String FROZEN_BOX_NEW = "2001" ;
     public static final  String FROZEN_BOX_STOCKING = "2002" ;
@@ -48,6 +48,7 @@ public final class Constants {
     public static final String FROZEN_BOX_SPLITING = "2007";
     public static final String FROZEN_BOX_STOCK_OUT_PENDING = "2008";
     public static final String FROZEN_BOX_STOCK_OUT_COMPLETED = "2009";
+    public static final String FROZEN_BOX_STOCK_OUT_HANDOVER = "2010";
     /**
      * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常
      */
@@ -169,9 +170,10 @@ public final class Constants {
     public static final Integer LEVEL_ONE = 1;
     public static final Integer LEVEL_TWO = 2;
     /**
-     * 入库管子状态:2301:进行中
+     * 入库管子状态:2300:待入库；2301:已入库
      */
-    public static final String STOCK_IN_TUBE_PENDING = "2301";
+    public static final String STOCK_IN_TUBE_PENDING = "2300";
+    public static final String STOCK_IN_TUBE_COMPELETE = "2301";
     /**
      * 入库盒子状态:2401:已上架，2402：已入库,2403:已撤销
      */
@@ -187,6 +189,77 @@ public final class Constants {
             put("3003","空孔");
             put("3004","异常");
         }};
+    public static final  Map FROZEN_TUBE_STATUS_MAP = new HashMap(){{
+        put("样本","3001");
+        put("空管","3002");
+        put("空孔","3003");
+    }};
+    public static final  Map SAMPLECLASSIFICATION_COLOR_MAP = new HashMap(){{
+        put("01","rgb(240,224,255)");
+        put("02","rgb(240,224,255)");
+        put("03","rgb(255,255,255)");
+        put("04","rgb(236,236,236)");
+        put("05","rgb(179,255,179)");
+        put("06","rgb(179,255,179)");
+        put("07","rgb(255,179,179)");
+        put("08","rgb(255,179,179)");
+        put("09","rgb(255,255,179)");
+        put("10","rgb(255,255,179)");
+        put("11","rgb(255,220,165)");
+    }};
+    public static final Map<String,Long> RECEIVER_MAP =  new HashMap<String,Long>(){{
+        put("钟慧",5L);
+        put("张丽萍",6L);
+        put("王铁柱",7L);
+        put("王东",8L);
+        put("王思铭",9L);
+        put("王莹",10L);
+        put("王仁杰",11L);
+        put("董晨",12L);
+        put("李聪",13L);
+        put("李蕊鑫",14L);
+        put("刘启轩",15L);
+        put("屈鑫镁",16L);
+        put("杨博彦",17L);
+        put("周欣月",18L);
+        put("何炜",19L);
+        put("朱志鸿",20L);
+        put("戴浩",21L);
+        put("NA",22L);
+        put("连向华",23L);
+    }};
+
+    public static final  Map<String,String> STOCK_IN_TYPE_MAP = new HashMap<String,String>(){{
+        put("首次入库","8001");
+        put("移位入库","8002");
+    }};
+    public static final Map<String,String> COLUMNNUMBER_MAP = new HashMap<String,String>(){{
+        put("01","1");
+        put("02","2");
+        put("03","3");
+        put("04","4");
+        put("05","5");
+        put("06","6");
+        put("07","7");
+        put("08","8");
+        put("09","9");
+        put("10","10");
+        put("11","");
+    }};
+    public static final Map<String,String> SAMPLE_TYPE_MAP = new HashMap<String,String>(){{
+        put("01","EDTA抗凝血浆1");
+        put("02","EDTA抗凝血浆2");
+        put("03","EDTA抗凝白细胞");
+        put("04","EDTA抗凝红细胞");
+        put("05","肝素抗凝血浆1");
+        put("06","肝素抗凝血浆2");
+        put("07","血清1");
+        put("08","血清2");
+        put("09","尿1");
+        put("10","尿2");
+        put("11","RNA");
+    }};
+
     private Constants() {
     }
 }

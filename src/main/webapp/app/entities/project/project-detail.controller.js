@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('ProjectDetailController', ProjectDetailController);
 
-    ProjectDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Project', 'ProjectRelate'];
+    ProjectDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Project', 'ProjectRelate', 'Delegate'];
 
-    function ProjectDetailController($scope, $rootScope, $stateParams, previousState, entity, Project, ProjectRelate) {
+    function ProjectDetailController($scope, $rootScope, $stateParams, previousState, entity, Project, ProjectRelate, Delegate) {
         var vm = this;
 
         vm.project = entity;

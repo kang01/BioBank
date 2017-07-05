@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -98,7 +99,12 @@ public class ProjectSiteServiceImpl implements ProjectSiteService{
     public List<ProjectSiteDTO> findAllProjectSitesByProjectId(Long projectId) {
         log.debug("Request to get ProjectSite : {}", projectId);
         List<ProjectSite> projectSites = projectSiteRepository.findAllProjectSitesByProjectId(projectId);
-        List<ProjectSiteDTO> projectSiteDTOs = projectSiteMapper.projectSitesToProjectSiteDTOs(projectSites);
+        List<ProjectSiteDTO> projectSiteDTOs = new ArrayList<ProjectSiteDTO>();
+        for(ProjectSite p :projectSites){
+            ProjectSiteDTO projectSiteDTO = projectSiteMapper.projectSiteToProjectSiteDTO(p);
+            projectSiteDTO.setProjectSiteName(projectSiteDTO.getProjectSiteCode()+","+projectSiteDTO.getProjectSiteName());
+            projectSiteDTOs.add(projectSiteDTO);
+        }
         return projectSiteDTOs;
     }
 }

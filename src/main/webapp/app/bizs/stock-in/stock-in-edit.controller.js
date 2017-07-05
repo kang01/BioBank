@@ -78,6 +78,9 @@
                 .withFnServerData(_fnServerData)
                 // 每行的渲染
                 .withOption('createdRow', _fnCreatedRow)
+                .withOption('headerCallback', function(header) {
+                    $compile(angular.element(header).contents())($scope);
+                })
                 // 定义每个列过滤选项
                 .withColumnFilter(_createColumnFilters());
 
@@ -238,7 +241,7 @@
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
                 DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
-                DTColumnBuilder.newColumn('sampleClassificationName').withOption("width", "80").withTitle('样本分类'),
+                DTColumnBuilder.newColumn('sampleClassificationName').withOption("width", "120").withTitle('样本分类'),
                 DTColumnBuilder.newColumn('position').withOption("width", "auto").withTitle('冻存位置'),
                 DTColumnBuilder.newColumn('countOfSample').withOption("width", "90").withTitle('样本量'),
                 DTColumnBuilder.newColumn('isSplit').withOption("width", "100").withTitle('是否分装'),
@@ -1009,7 +1012,9 @@
             },function (data) {
                 //复原被分装的剩余管子数
                 for(var k = 0; k < selectList.length; k++){
-                    vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = selectList[k];
+                    var rowIndex = getTubeRowIndex(selectList[k].tubeRows);
+                    var colIndex = getTubeColumnIndex(selectList[k].tubeColumns);
+                    vm.frozenTubeArray[rowIndex][colIndex] = selectList[k];
                 }
                 // $timeout(function(){
                 hotRegisterer.getInstance('my-handsontable').render();

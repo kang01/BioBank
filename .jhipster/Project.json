@@ -6,6 +6,12 @@
             "otherEntityName": "projectRelate",
             "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "project"
+        },
+        {
+            "relationshipName": "delegate",
+            "otherEntityName": "delegate",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
         }
     ],
     "fields": [

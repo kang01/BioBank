@@ -114,9 +114,10 @@
             DTColumnBuilder.newColumn('applyTime').withTitle('需求日期').withOption('width', '170px'),
             DTColumnBuilder.newColumn('purposeOfSample').withTitle('用途').withOption('width', 'auto'),
             DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption('width', '50px'),
+            DTColumnBuilder.newColumn('countOfStockSample').withTitle('满足需求样本量').withOption('width', '110px'),
             DTColumnBuilder.newColumn('sampleTypes').withTitle('样本类型').withOption('width', '60px'),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption('width', '50px'),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml).withOption('width', '60px'),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml).withOption('width', '80px'),
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         //列表中字段替换
@@ -136,7 +137,7 @@
                     status = '已作废';
                     break;
             }
-            $('td:eq(8)', row).html(status);
+            $('td:eq(9)', row).html(status);
 
             $('td', row).unbind('click');
             $('td:first', row).css("cursor", "pointer");
@@ -203,6 +204,7 @@
                     "<td>" + (items[i].applyTime||' ') + "</td>" +
                     "<td>" + (items[i].purposeOfSample||' ') + "</td>" +
                     "<td>" + (items[i].countOfSample||' ') + "</td>" +
+                    "<td>" + (items[i].countOfStockSample||' ') + "</td>" +
                     "<td>" + (items[i].sampleTypes||' ') + "</td>" +
                     "<td>" + statusShow(items[i].status) + "</td>"
                 );

@@ -66,7 +66,7 @@ public class SampleType extends AbstractAuditingEntity implements Serializable {
     private String backColor;
 
     @NotNull
-    @Size(max = 20)
+    @Max(value = 20)
     @Column(name = "is_mixed",  nullable = false)
     private Integer isMixed;
     public Long getId() {

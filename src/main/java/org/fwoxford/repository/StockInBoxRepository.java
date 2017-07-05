@@ -29,4 +29,6 @@ public interface StockInBoxRepository extends JpaRepository<StockInBox,Long> {
     Page<StockInBox> findStockInBoxPageByStockInCode(String stockInCode, Pageable pageable);
 
     Long countByStockInCode(String stockInCode);
+
+    List<StockInBox> findByFrozenBoxCode(String frozenBoxCode);
 }

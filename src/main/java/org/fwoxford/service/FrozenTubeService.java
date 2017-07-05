@@ -67,9 +67,12 @@ public interface FrozenTubeService {
     /**
      * 根据样本编码查询样本的信息
      *
-     * @param code
      * @param sampleCode
+     * @param projectCode
+     * @param sampleTypeId
      * @return
      */
-    List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode);
+    List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode, Long sampleTypeId);
+
+    List<FrozenTubeDTO> findFrozenTubeBySampleCodeNadProjectAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long sampleTypeId, Long sampleClassificationId);
 }

@@ -283,4 +283,17 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " ORDER BY operate_time desc,type desc",nativeQuery = true)
         //此方法不能随意更改，尤其是返回参数的顺序
     List<Object[]> findFrozenTubeHistoryListBySampleAndProjectCode(String sampleCode, String projectCode);
+
+    List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeCode(String sampleCode, String projectCode, String sampleTypeCode);
+
+    List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeId(String sampleCode, String projectCode, Long sampleTypeId);
+
+    @Query("select t from FrozenTube t where t.sampleCode =?1 and t.projectCode = ?2 and t.sampleTypeCode =?3 and t.sampleClassification.sampleClassificationCode = ?4")
+    FrozenTube findBySampleCodeAndProjectCodeAndSampleTypeCodeAndSampleClassificationCode(String sampleCode, String projectCode, String sampleTypeCode, String sampleClassTypeCode);
+
+    @Query("select t from FrozenTube t where t.sampleCode =?1 and t.projectCode = ?2 and t.sampleType.id =?3 and t.sampleClassification.sampleClassificationCode = ?4")
+    List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionCode(String sampleCode, String projectCode, Long sampleTypeId, String sampleClassitionCode);
+
+    @Query("select t from FrozenTube t where t.sampleCode =?1 and t.projectCode = ?2 and t.sampleType.id =?3 and t.sampleClassification.id = ?4")
+    List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(String sampleCode, String projectCode, Long sampleTypeId, Long sampleClassificationId);
 }

@@ -50,23 +50,27 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="zip_code" type="nvarchar(20)" remarks="邮编">
+            <column name="zip_code" type="nvarchar(100)" remarks="邮编">
                 <constraints nullable="true" />
             </column>
 
-            <column name="username_1" type="nvarchar(20)" remarks="姓名1">
+            <column name="username_1" type="nvarchar(100)" remarks="姓名1">
                 <constraints nullable="true" />
             </column>
 
-            <column name="phone_number_1" type="nvarchar(20)" remarks="手机号码1">
+            <column name="phone_number_1" type="nvarchar(100)" remarks="手机号码1">
                 <constraints nullable="true" />
             </column>
 
-            <column name="username_2" type="nvarchar(20)" remarks="姓名2">
+            <column name="username_2" type="nvarchar(100)" remarks="姓名2">
                 <constraints nullable="true" />
             </column>
 
-            <column name="phone_number_2" type="nvarchar(20)" remarks="手机号码2">
+            <column name="phone_number_2" type="nvarchar(100)" remarks="手机号码2">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="area" type="nvarchar(1024)" remarks="项目点地区">
                 <constraints nullable="true" />
             </column>
 

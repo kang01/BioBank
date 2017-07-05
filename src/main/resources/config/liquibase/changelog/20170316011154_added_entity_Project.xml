@@ -31,6 +31,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="delegate_id" type="bigint" remarks="委托方">
+                <constraints nullable="true" />
+            </column>
+
             <column name="memo" type="nvarchar(1024)" remarks="备注">
                 <constraints nullable="true" />
             </column>

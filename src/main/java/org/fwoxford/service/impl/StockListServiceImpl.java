@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Service Implementation for managing StockIn.
+ * Service Implementation for managing StockList.
  */
 @Service
 @Transactional
@@ -52,7 +52,7 @@ public class StockListServiceImpl implements StockListService {
     public DataTablesOutput<FrozenPositionListAllDataTableEntity> getPageStockFrozenPositionList(DataTablesInput input, FrozenPositionListSearchForm searchForm) {
         DataTablesOutput<FrozenPositionListAllDataTableEntity> stockInDataTablesOutput = new DataTablesOutput<FrozenPositionListAllDataTableEntity>();
 
-        if(searchForm != null && searchForm.getProjectCodeStr()!=null){
+        if(searchForm != null && searchForm.getProjectCodeStr()!=null && searchForm.getProjectCodeStr().length>0){
             Specification<FrozenPositionListAllDataTableEntity> specification = new Specification<FrozenPositionListAllDataTableEntity>() {
                 @Override
                 public Predicate toPredicate(Root<FrozenPositionListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -73,10 +73,11 @@ public class StockListServiceImpl implements StockListService {
             Converter<FrozenPositionListDataTableEntity, FrozenPositionListAllDataTableEntity> userConverter = new Converter<FrozenPositionListDataTableEntity, FrozenPositionListAllDataTableEntity>() {
                 @Override
                 public FrozenPositionListAllDataTableEntity convert(FrozenPositionListDataTableEntity e) {
+                    String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),null,null,null,null);
                     return new FrozenPositionListAllDataTableEntity(e.getId(), e.getEquipmentType(),
                         e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getShelvesType(),
                         e.getCountOfUsed(),e.getCountOfRest(),
-                        e.getStatus(),"","",e.getEquipmentTypeId(),e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getShelvesTypeId(),e.getPosition());
+                        e.getStatus(),"","",e.getEquipmentTypeId(),e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getShelvesTypeId(),position,e.getMemo());
                 }
             };
             stockInDataTablesOutput =  stockListRepositries.findAll(input,null,specification,userConverter);
@@ -100,7 +101,7 @@ public class StockListServiceImpl implements StockListService {
                 String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
                 return new FrozenBoxListAllDataTableEntity(e.getId(),e.getFrozenBoxCode(),e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),
                     position,e.getSampleType(),e.getSampleClassification(),e.getFrozenBoxType(),e.getCountOfUsed(),e.getCountOfRest(),e.getStatus(),e.getProjectName(),e.getProjectCode(),
-                    e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getSampleTypeId(),e.getSampleClassificationId(),e.getFrozenBoxTypeId());
+                    e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getSampleTypeId(),e.getSampleClassificationId(),e.getFrozenBoxTypeId(),e.getMemo());
             }
         };
         Specification<FrozenBoxListAllDataTableEntity> specification = new Specification<FrozenBoxListAllDataTableEntity>() {
@@ -151,18 +152,6 @@ public class StockListServiceImpl implements StockListService {
      */
     @Override
     public List<FrozenTubeHistory> findFrozenTubeHistoryDetail(Long frozenTubeId) {
-        Converter<FrozenTubeHistory, FrozenTubeHistory> convert = new Converter<FrozenTubeHistory, FrozenTubeHistory>() {
-            @Override
-            public FrozenTubeHistory convert(FrozenTubeHistory e) {
-                String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
-                return new FrozenTubeHistory(e.getId(),e.getTranshipId(),e.getTranshipCode(),e.getStockInId(),e.getStockInCode(),
-                    e.getStockOutTaskId(),e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),
-                    e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),position,e.getEquipmentCode(),e.getAreaCode(),
-                    e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),e.getAreaId(),
-                    e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId()
-                );
-            }
-        };
         List<FrozenTubeHistory> frozenTubeHistories = frozenTubeHistoryRepositories.findByFrozenTubeId(frozenTubeId);
         List<FrozenTubeHistory> frozenTubeHistoryList = new ArrayList<FrozenTubeHistory>();
         for (FrozenTubeHistory e :frozenTubeHistories){
@@ -171,7 +160,7 @@ public class StockListServiceImpl implements StockListService {
                 e.getStockOutTaskId(),e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),
                 e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),position,e.getEquipmentCode(),e.getAreaCode(),
                 e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),e.getAreaId(),
-                e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId()
+                e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId(),e.getMemo(),e.getOperator()
             );
             frozenTubeHistoryList.add(frozenTubeHistory);
         }
@@ -349,40 +338,9 @@ public class StockListServiceImpl implements StockListService {
                 Predicate p5 = cb.equal(root.get("diseaseType").as(Long.class), searchForm.getDiseaseType());
                 predicate.add(p5);
             }
-            if (searchForm.getSpaceType() != null) {
-                String searchValue = "";
-                switch (searchForm.getSpaceType()) {
-                    case 1:
-                        searchValue = "countOfUsed";
-                        break;
-                    case 2:
-                        searchValue = "countOfRest";
-                        break;
-                    default:break;
-                }
-                Predicate p5 = null;
-                //1：大于，2：大于等于，3：等于，4：小于，5：小于等于
-                switch (searchForm.getCompareType()) {
-                    case 1:
-                        p5 = cb.gt(root.get(searchValue).as(Long.class), searchForm.getNumber());
-                        break;
-                    case 2:
-                        p5 = cb.ge(root.get(searchValue).as(Long.class), searchForm.getNumber());
-                        break;
-                    case 3:
-                        p5 = cb.equal(root.get(searchValue).as(Long.class), searchForm.getNumber());
-                        break;
-                    case 4:
-                        p5 = cb.lt(root.get(searchValue).as(Long.class), searchForm.getNumber());
-                        break;
-                    case 5:
-                        p5 = cb.le(root.get(searchValue).as(Long.class), searchForm.getNumber());
-                        break;
-                    default:break;
-                }
-                if (searchForm.getSpaceType() != null && searchForm.getCompareType() != null && searchForm.getNumber() != null) {
-                    predicate.add(p5);
-                }
+            if (searchForm.getSampleUsedTimes() != null) {
+                Predicate p5 = cb.equal(root.get("sampleUsedTimes").as(Long.class), searchForm.getSampleUsedTimes());
+                predicate.add(p5);
             }
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));

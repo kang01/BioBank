@@ -319,12 +319,11 @@
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
                 DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
-                DTColumnBuilder.newColumn('sampleClassificationName').withOption("width", "80").withTitle('样本分类'),
+                DTColumnBuilder.newColumn('sampleClassificationName').withOption("width", "120").withTitle('样本分类'),
                 DTColumnBuilder.newColumn('position').withOption("width", "auto").withTitle('冻存位置'),
                 DTColumnBuilder.newColumn('countOfSample').withOption("width", "90").withTitle('样本量'),
                 DTColumnBuilder.newColumn('status').withOption("width", "80").withTitle('状态'),
                 DTColumnBuilder.newColumn("").withOption("width", "120").withTitle('操作').withOption('searchable',false).notSortable().renderWith(_fnActionButtonsRender),
-                DTColumnBuilder.newColumn('id').notVisible()
                 // DTColumnBuilder.newColumn('sampleType').notVisible(),
                 // DTColumnBuilder.newColumn('frozenBoxRows').notVisible(),
                 // DTColumnBuilder.newColumn('frozenBoxColumns').notVisible()
@@ -378,7 +377,7 @@
                 resolve: {
                     items: function () {
                         return {
-                            stockInCode: vm.stockInCode,
+                            stockInCode: vm.entity.stockInCode,
                             boxIds: boxIds,
                             boxes: boxes
                         };
@@ -414,7 +413,7 @@
             StockInInputService.queryEditStockInBox(frozenBoxCode).success(function (data) {
                 if(data.frozenBoxCode){
                     vm.box = data;
-
+                    _initSampleType();
                 }
 
             });
@@ -434,6 +433,7 @@
             vm.saveStockInFlag = true;
             vm.stockInSave();
             _initBoxInfo();
+            _initSampleType();
             vm.splittingBox = true;
             vm.editFlag = false;
 
@@ -441,15 +441,24 @@
         //冻存盒搜索
         vm.frozenBoxForStockIn =_fnFrozenBoxForStockIn;
         function _fnFrozenBoxForStockIn() {
-            StockInInputService.queryStockInBox(vm.box.frozenBoxCode).success(function (data) {
-                if(data.frozenBoxCode){
-                    vm.box = data;
-                    _reloadTubesForTable(vm.box)
-                }
-            }).error(function (res) {
-                toastr.error(res.message);
-                vm.box.frozenBoxCode = "";
-            });
+            if(vm.box.frozenBoxCode){
+                StockInInputService.queryStockInBox(vm.box.frozenBoxCode).success(function (data) {
+                    if(data.frozenBoxCode){
+                        vm.box = data;
+                        if(vm.box.id){
+                            vm.editFlag = true;
+                        }else{
+                            vm.editFlag = false;
+                        }
+                        _initSampleType();
+                        vm.reloadTubesForTable(vm.box);
+                    }
+                }).error(function (res) {
+                    toastr.error(res.message);
+                    vm.box.frozenBoxCode = "";
+                });
+            }
+
         }
         function _initBoxInfo() {
             //盒子类型 17:10*10 18:8*8
@@ -483,6 +492,13 @@
                     hotRegisterer.getInstance('my-handsontable').render();
                 }
             };
+            _initFrozenBoxPanel();
+            setTimeout(function () {
+                vm.reloadTubesForTable(vm.box)
+            },500);
+
+        }
+        function _initSampleType() {
             //样本类型
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
@@ -490,6 +506,7 @@
                 if(!vm.box.sampleTypeId){
                     vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                     vm.box.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
+                    vm.box.sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
                 }
 
                 // vm.box.sampleType = vm.sampleTypeOptions[0];
@@ -505,6 +522,7 @@
                 onChange:function (value) {
                     vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
                     vm.box.sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeName;
+                    vm.box.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
                     _fnQueryProjectSampleClass(vm.entity.projectId,value,vm.isMixed);
                 }
             };
@@ -531,16 +549,16 @@
                         //
                         // }else{
                         //     //混合型无分类
-                            for (var i = 0; i < vm.frozenTubeArray.length; i++) {
-                                for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                                    if(!vm.frozenTubeArray[i][j].sampleCode){
-                                        vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
-                                        vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
-                                        vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).backColor;
-                                    }
+                        for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                            for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                                if(!vm.frozenTubeArray[i][j].sampleCode){
+                                    vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                                    vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
+                                    vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).backColor;
                                 }
-
                             }
+
+                        }
                         // }
 
                     }else{
@@ -590,13 +608,8 @@
                     hotRegisterer.getInstance('my-handsontable').render();
                 }
             };
-            _initFrozenBoxPanel();
-            setTimeout(function () {
-                vm.reloadTubesForTable(vm.box)
-            },500);
-
         }
-
+        // _initSampleType();
         //初始化冻存管
         function _initFrozenBoxPanel(){
             vm.frozenTubeArray = [];//初始管子数据二位数组
@@ -623,11 +636,11 @@
                 multiSelect: true,
                 comments: true,
                 onAfterSelectionEnd:function (row, col, row2, col2) {
+                    vm.nextFlag = true;
                     vm.remarkFlag = true;
                     var td = this;
                     remarkArray = this.getData(row,col,row2,col2);
                     var selectTubeArrayIndex = this.getSelected();
-
                     if(window.event && window.event.ctrlKey){
                         //换位
                         vm.exchangeFlag = true;
@@ -664,13 +677,18 @@
                     }
                 },
                 enterMoves:function () {
-                    var hotMoves = hotRegisterer.getInstance('my-handsontable');
-                    var selectedCol = hotMoves.getSelected()[1];
-                    if(selectedCol + 1 < hotMoves.countCols()){
-                        return{row:0,col:1};
-                    } else{
-                        return{row:1,col:-selectedCol};
+                    if(vm.nextFlag){
+                        var hotMoves = hotRegisterer.getInstance('my-handsontable');
+                        var selectedCol = hotMoves.getSelected()[1];
+                        if(selectedCol + 1 < hotMoves.countCols()){
+                            return{row:0,col:1};
+                        } else{
+                            return{row:1,col:-selectedCol};
+                        }
+                    }else{
+                        return{row:0,col:0};
                     }
+
                 },
                 afterChange:function (change,source) {
                     if(source == 'edit'){
@@ -692,7 +710,12 @@
                                     newTube.sampleTempCode = "";
                                     hotRegisterer.getInstance('my-handsontable').setDataAtCell(row, col, newTube);
                                 }else{
-                                    StockInInputService.queryTube(oldTube.sampleCode,vm.entity.projectCode).success(function (data) {
+                                    // console.log(JSON.stringify(oldTube));
+                                    if(!vm.oldTube){
+                                        vm.oldTube = oldTube;
+                                    }
+
+                                    StockInInputService.queryTube(oldTube.sampleCode,vm.entity.projectCode,oldTube.sampleTypeId).success(function (data) {
                                         var stockInTubes;
                                         if(vm.box.sampleTypeName != "98"){
                                             stockInTubes = _.filter(data,{sampleTypeId:vm.box.sampleTypeId});
@@ -715,6 +738,7 @@
                                                         sampleCode:oldTube.sampleCode,
                                                         projectSiteId:vm.entity.projectSiteId,
                                                         projectId:vm.entity.projectId,
+                                                        projectCode:vm.entity.projectCode,
                                                         sampleTypeId:vm.box.sampleTypeId,
                                                         sampleTypeName:vm.box.sampleTypeName,
                                                         sampleClassificationId:vm.box.sampleClassificationId,
@@ -734,10 +758,13 @@
                                                         vm.frozenTubeArray[i][j].projectSiteId = tube.projectSiteId;
                                                         vm.frozenTubeArray[i][j].memo = tube.memo;
                                                         vm.frozenTubeArray[i][j].sampleTypeId = tube.sampleTypeId;
+                                                        vm.frozenTubeArray[i][j].sampleTypeName = tube.sampleTypeName;
                                                         vm.frozenTubeArray[i][j].backColor = tube.backColor;
+                                                        vm.frozenTubeArray[i][j].sampleVolumns = tube.sampleVolumns;
                                                         if(tube.sampleClassificationId){
                                                             vm.frozenTubeArray[i][j].sampleClassificationId = tube.sampleClassificationId;
                                                             vm.frozenTubeArray[i][j].sampleClassificationName = tube.sampleClassificationName;
+                                                            vm.frozenTubeArray[i][j].sampleClassitionCode = tube.sampleClassitionCode;
                                                             vm.frozenTubeArray[i][j].backColorForClass = tube.backColorForClass;
                                                         }
                                                     }
@@ -757,6 +784,7 @@
                                         });
 
                                     }).error(function (data) {
+                                        vm.nextFlag = false;
                                         var tableCtrl = _getTableCtrl();
                                         toastr.error(data.message);
                                         for(var i = 0; i < vm.frozenTubeArray.length; i++){
@@ -790,23 +818,42 @@
                         var col = item[1];
                         var oldTube = item[2];
                         var newTube = item[3];
-                        for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                            for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                                if(i == row  && j == col){
-                                    continue;
-                                }
-                                if(vm.frozenTubeArray[i][j].sampleCode == changes[row][col].sampleCode){
-                                    vm.frozenTubeArray[row][col].sampleCode = "";
-                                    hotRegisterer.getInstance('my-handsontable').render();
-                                    toastr.error("冻存管编码不能重复!");
-                                    return false;
-                                }
+                        if(oldTube.sampleCode){
+                            for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                                for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                    if(i == row  && j == col){
+                                        continue;
+                                    }
+                                    if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
+                                        vm.frozenTubeArray[row][col].sampleCode = "";
+                                        hotRegisterer.getInstance('my-handsontable').render();
+                                        toastr.error("冻存管编码不能重复!");
+                                        vm.nextFlag = false;
+                                        return false;
+                                    }
 
+                                }
                             }
+                        }else{
+                            var tableCtrl = _getTableCtrl();
+                            vm.oldTube.sampleCode = "";
+                            vm.oldTube.tubeRows = getTubeRows(+row)+"";
+                            vm.oldTube.tubeColumns = getTubeColumns(+col);
+                            // vm.frozenTubeArray[row][col].backColor = vm.oldTube.backColor;
+                            vm.frozenTubeArray[row][col] = vm.oldTube;
+                            // hotRegisterer.getInstance('my-handsontable').setDataAtCell(row, col, "");
+                            hotRegisterer.getInstance('my-handsontable').render();
+                            // tableCtrl.loadData(vm.frozenTubeArray);
+                            return false;
                         }
+
                     }
 
 
+                },
+                afterBeginEditing:function (row,col) {
+                    // console.log(row)
+                    // console.log(col)
                 }
 
             };
@@ -1169,10 +1216,13 @@
                     vm.box.frozenTubeDTOS.push(tubeList[i]);
                 }
             }
-            StockInInputService.saveStockInBox(vm.entity.stockInCode,vm.box).then(function (data) {
+            StockInInputService.saveStockInBox(vm.entity.stockInCode,vm.box).success(function (data) {
                 toastr.success("保存冻存盒成功！");
                 _initStockInBoxesTable();
                 vm.splittingBox = false;
+            }).error(function (data) {
+                // console.log(data);
+                toastr.error(data.message)
             })
         }
         vm.saveBox = _fnSaveBox;

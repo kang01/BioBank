@@ -1,46 +1,145 @@
 <div ng-cloak>
     <div class="row m-0">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <span class="hipster img-responsive img-rounded"></span>
         </div>
-        <div class="col-md-8">
-            <h1 data-translate="home.title">Welcome, Java Hipster!</h1>
-            <p class="lead" data-translate="home.subtitle">This is your homepage</p>
-
-            <div ng-switch="vm.isAuthenticated()">
-                <div class="alert alert-success" ng-switch-when="true" data-translate="home.logged.message" translate-values="{username: '{{vm.account.login}}'}">
-                    You are logged in as user "{{vm.account.login}}".
-                </div>
-
-                <div class="alert alert-warning" ng-switch-when="false" data-translate="global.messages.info.authenticated" translate-compile>
-                    If you want to <a class="alert-link" href="" ng-click="vm.login()">sign in</a>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").
-                </div>
-
-                <div class="alert alert-warning" ng-switch-when="false" data-translate="global.messages.info.register" translate-compile>
-                    You don't have an account yet? <a class="alert-link" ui-sref="register">Register a new account</a>
+        <div class="col-md-9" >
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 style="margin-left: 18px">欢迎{{vm.account.login}}，使用(BBIS)样本库信息管理系统</h4>
                 </div>
             </div>
 
-            <p data-translate="home.question">
-                If you have any question on JHipster:
-            </p>
+            <div class="home-body" style="width: 990px">
+            <div class="content ">
+                <div class="row mt-5" >
+                    <div class="col-md-3">
+                        <div class="home-nav" ng-click="vm.create()">
+                            <img src="content/images/u7.svg">
+                            <p>创建</p>
+                        </div>
 
-            <ul>
-                <li>系统用户手册</li>
-                <li>常见问题 FAQ</li>
-                <li>在线留言 </li>
-                <li>邮件反馈 <a href="mailto://yu.zhu@fwoxford.org">yu.zhu@fwoxford.org</a></li>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="home-nav" ui-sref="equipment-inventory">
+                            <img src="content/images/u12.svg">
+                            <p>库存清单</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="home-nav" ui-sref="transport-record">
+                            <img src="content/images/u17.svg">
+                            <p>转运记录</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 home-stock-record">
+                        <div class="home-nav" ui-sref="stock-in">
+                            <img src="content/images/u22.svg">
+                            <p>入库记录</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 48px">
+                    <div class="col-md-3">
+                        <div class="home-nav" ui-sref="requirement-list">
+                            <img src="content/images/u27.svg">
+                            <p>出库申请</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="home-nav" ui-sref="plan-list">
+                            <img src="content/images/u32.svg">
+                            <p>出库计划</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="home-nav" ui-sref="task-list">
+                            <img src="content/images/u37.svg">
+                            <p>出库任务</p>
+                        </div>
 
-                <!--<li><a href="http://jhipster.github.io/" target="_blank" data-translate="home.link.homepage">JHipster homepage</a></li>-->
-                <!--<li><a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" data-translate="home.link.stackoverflow">JHipster on Stack Overflow</a></li>-->
-                <!--<li><a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" data-translate="home.link.bugtracker">JHipster bug tracker</a></li>-->
-                <!--<li><a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" data-translate="home.link.chat">JHipster public chat room</a></li>-->
-                <!--<li><a href="https://twitter.com/java_hipster" target="_blank"  data-translate="home.link.follow">follow @java_hipster on Twitter</a></li>-->
-            </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="home-nav" ui-sref="take-over-list">
+                            <img src="content/images/u42.svg">
+                            <p>出库交接</p>
+                        </div>
 
-            <p>
-             <!--<span data-translate="home.like">If you like JHipster, don't forget to give us a star on </span>&nbsp;<a href="https://github.com/jhipster/generator-jhipster" target="_blank" data-translate="home.github">Github</a>!-->
-            </p>
+                    </div>
+                </div>
+                <div class="create" ng-class="{true: 'create-body', false: ''}[vm.isActive]">
+                    <div class="">
+                        <button class="btn " ng-click="vm.close()">收起</button>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-md-3">
+                            <div class="home-nav" ui-sref="transport-record-new" ng-click="vm.addTransport()">
+                                <img src="content/images/u7.svg">
+                                <p>创建转运</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="home-nav" ui-sref="stock-in-new">
+                                <img src="content/images/u7.svg">
+                                <p>创建入库单</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="home-nav"ng-click="vm.addRequirement()">
+                                <img src="content/images/u7.svg">
+                                <p>创建申请单</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="home-nav" ui-sref="take-over-new">
+                                <img src="content/images/u7.svg">
+                                <p>创建交接单</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
         </div>
+        <!--<div class="col-md-8">-->
+            <!--<h1 data-translate="home.title">Welcome, Java Hipster!</h1>-->
+            <!--<p class="lead" data-translate="home.subtitle">This is your homepage</p>-->
+
+            <!--<div ng-switch="vm.isAuthenticated()">-->
+                <!--<div class="alert alert-success" ng-switch-when="true" data-translate="home.logged.message" translate-values="{username: '{{vm.account.login}}'}">-->
+                    <!--You are logged in as user "{{vm.account.login}}".-->
+                <!--</div>-->
+
+                <!--<div class="alert alert-warning" ng-switch-when="false" data-translate="global.messages.info.authenticated" translate-compile>-->
+                    <!--If you want to <a class="alert-link" href="" ng-click="vm.login()">sign in</a>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").-->
+                <!--</div>-->
+
+                <!--<div class="alert alert-warning" ng-switch-when="false" data-translate="global.messages.info.register" translate-compile>-->
+                    <!--You don't have an account yet? <a class="alert-link" ui-sref="register">Register a new account</a>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<p data-translate="home.question">-->
+                <!--If you have any question on JHipster:-->
+            <!--</p>-->
+
+            <!--<ul>-->
+                <!--<li>系统用户手册</li>-->
+                <!--<li>常见问题 FAQ</li>-->
+                <!--<li>在线留言 </li>-->
+                <!--<li>邮件反馈 <a href="mailto://yu.zhu@fwoxford.org">yu.zhu@fwoxford.org</a></li>-->
+
+                <!--&lt;!&ndash;<li><a href="http://jhipster.github.io/" target="_blank" data-translate="home.link.homepage">JHipster homepage</a></li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<li><a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" data-translate="home.link.stackoverflow">JHipster on Stack Overflow</a></li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<li><a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" data-translate="home.link.bugtracker">JHipster bug tracker</a></li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<li><a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" data-translate="home.link.chat">JHipster public chat room</a></li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<li><a href="https://twitter.com/java_hipster" target="_blank"  data-translate="home.link.follow">follow @java_hipster on Twitter</a></li>&ndash;&gt;-->
+            <!--</ul>-->
+
+            <!--<p>-->
+             <!--&lt;!&ndash;<span data-translate="home.like">If you like JHipster, don't forget to give us a star on </span>&nbsp;<a href="https://github.com/jhipster/generator-jhipster" target="_blank" data-translate="home.github">Github</a>!&ndash;&gt;-->
+            <!--</p>-->
+        <!--</div>-->
+
     </div>
 </div>

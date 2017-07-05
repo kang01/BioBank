@@ -264,8 +264,8 @@
 
             vm.dtBoxesListColumns = [
                 DTColumnBuilder.newColumn(0).withOption("width", "30").notSortable(),
-                DTColumnBuilder.newColumn(1).withOption("width", "50"),
-                DTColumnBuilder.newColumn(2).withOption("width", "30"),
+                DTColumnBuilder.newColumn(1).withOption("width", "80"),
+                DTColumnBuilder.newColumn(2).withOption("width", "80"),
                 DTColumnBuilder.newColumn(3).withOption("width", "auto")
             ];
             vm.dtBoxesListOptions = DTOptionsBuilder.newOptions()

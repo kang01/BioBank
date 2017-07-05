@@ -131,6 +131,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="sample_stage" type="nvarchar(255)" remarks="样本分期">
+                <constraints nullable="true" />
+            </column>
+
             <column name="frozen_tube_type_id" type="bigint" remarks="冻存管类型ID">
                 <constraints nullable="false" />
             </column>

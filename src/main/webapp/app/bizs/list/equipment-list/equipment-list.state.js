@@ -50,5 +50,37 @@
 
                 }
             })
+            .state('equipment-movement', {
+                parent: 'bizs',
+                url: '/equipment-movement',
+                params: {
+                    selectedEquipment:null
+                },
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN']
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/list/equipment-list/equipment-movement.html',
+                        controller: 'EquipmentMovementController',
+                        controllerAs: 'vm'
+                    }
+                },
+
+                resolve: {
+                    // pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                    //     return {
+                    //         page: PaginationUtil.parsePage($stateParams.page),
+                    //         sort: $stateParams.sort,
+                    //         predicate: PaginationUtil.parsePredicate($stateParams.sort),
+                    //         ascending: PaginationUtil.parseAscending($stateParams.sort)
+                    //     };
+                    // }],
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        return $translate.refresh();
+                    }]
+
+                }
+            })
     }
 })();

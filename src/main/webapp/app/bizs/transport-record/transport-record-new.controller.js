@@ -258,11 +258,13 @@
             //项目编码
             function onProjectSuccess(data)  {
                 vm.projectOptions = data;
-                if(!vm.transportRecord.projectId){
-                    vm.transportRecord.projectId = data[0].id;
+                if(vm.projectOptions.length){
+                    if(!vm.transportRecord.projectId){
+                        vm.transportRecord.projectId = data[0].id;
+                    }
+                    ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError);
                 }
-                ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError);
-            }
+                }
             //获取样本类型
             function _fnQuerySampleType() {
                 SampleTypeService.querySampleType().success(function (data) {
@@ -362,7 +364,7 @@
                 .withOption('paging', false)
                 .withOption('sorting', false)
                 .withScroller()
-                .withOption('scrollY', 500)
+                .withOption('scrollY', 400)
                 .withOption('rowCallback', rowCallback);
 
             function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
@@ -453,11 +455,12 @@
                 stretchH: 'all',
                 autoWrapCol:true,
                 wordWrap:true,
-                colWidths: 94,
+                colWidths: 30,
                 rowHeaderWidth: 30,
                 editor: 'tube',
                 multiSelect: true,
                 comments: true,
+                manualColumnResize:false,
                 onAfterSelectionEnd:function (row, col, row2, col2) {
                     vm.remarkFlag = true;
                     var td = this;
@@ -953,8 +956,10 @@
                 // toastr.success("两个空冻存盒不能被交换!");
 
                 if(vm.exchangeFlag && domArray.length == 2){
+                    var v1 = (!domArray[0].sampleCode && !domArray[1].sampleCode)
+                    var v2 = (!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)
                     if((!domArray[0].sampleCode && !domArray[1].sampleCode)
-                    ||(!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)){
+                    && (!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)){
                         toastr.error("两个空冻存盒不能被交换!");
                         return;
                     }
@@ -1013,12 +1018,10 @@
                     });
                     modalInstance.result.then(function (memo) {
                         for(var i = 0; i < aRemarkArray.length; i++){
-
-                            if(aRemarkArray[i].sampleCode){
+                            if(aRemarkArray[i].sampleCode || aRemarkArray[i].sampleTempCode){
                                 aRemarkArray[i].memo = memo;
                             }
                         }
-
                         aRemarkArray = [];
                         hotRegisterer.getInstance('my-handsontable').render();
                     });
@@ -1082,6 +1085,7 @@
                 }
                 SampleTypeService.queryProjectSampleClasses(vm.transportRecord.projectId,vm.box.sampleTypeId).success(function (data1) {
                     vm.projectSampleTypeOptions = data1;
+                    vm.boxRowCol = "";
                     if(vm.box.sampleClassification){
                         vm.box.sampleClassificationId = vm.box.sampleClassification.id;
                     }
@@ -1096,7 +1100,9 @@
                     if(vm.box.areaId){
                         SupportacksByAreaIdService.query({id:vm.box.areaId},onShelfSuccess, onError);
                     }
-                    vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
+                    if(vm.box.columnsInShelf && vm.box.rowsInShelf){
+                        vm.boxRowCol =  vm.box.columnsInShelf + vm.box.rowsInShelf;
+                    }
                     // initFrozenTube(vm.box.frozenBoxType.frozenBoxTypeRows,vm.box.frozenBoxType.frozenBoxTypeColumns);
                     _reloadTubesForTable(vm.box);
                     vm.boxStr = JSON.stringify(vm.createBoxDataFromTubesTable());

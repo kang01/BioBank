@@ -5,15 +5,16 @@
         .module('bioBankApp')
         .controller('ProjectDialogController', ProjectDialogController);
 
-    ProjectDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Project', 'ProjectRelate'];
+    ProjectDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Project', 'ProjectRelate', 'Delegate'];
 
-    function ProjectDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Project, ProjectRelate) {
+    function ProjectDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Project, ProjectRelate, Delegate) {
         var vm = this;
 
         vm.project = entity;
         vm.clear = clear;
         vm.save = save;
         vm.projectrelates = ProjectRelate.query();
+        vm.delegates = Delegate.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

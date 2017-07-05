@@ -41,7 +41,7 @@ public class FrozenTubeType extends AbstractAuditingEntity implements Serializab
 
     @NotNull
     @Column(name = "frozen_tube_volumn", nullable = false)
-    private Integer frozenTubeVolumn;
+    private Double frozenTubeVolumn;
 
     @NotNull
     @Size(max = 20)
@@ -104,16 +104,16 @@ public class FrozenTubeType extends AbstractAuditingEntity implements Serializab
         this.sampleUsedTimesMost = sampleUsedTimesMost;
     }
 
-    public Integer getFrozenTubeVolumn() {
+    public Double getFrozenTubeVolumn() {
         return frozenTubeVolumn;
     }
 
-    public FrozenTubeType frozenTubeVolumn(Integer frozenTubeVolumn) {
+    public FrozenTubeType frozenTubeVolumn(Double frozenTubeVolumn) {
         this.frozenTubeVolumn = frozenTubeVolumn;
         return this;
     }
 
-    public void setFrozenTubeVolumn(Integer frozenTubeVolumn) {
+    public void setFrozenTubeVolumn(Double frozenTubeVolumn) {
         this.frozenTubeVolumn = frozenTubeVolumn;
     }
 

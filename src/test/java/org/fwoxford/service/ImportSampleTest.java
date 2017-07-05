@@ -219,20 +219,24 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         if(supportRackType==null){
             supportRackType = new SupportRackType();
             supportRackType.setSupportRackTypeCode("5*5");
+            supportRackType.setSupportRackTypeName("冻存架1(5*5)");
             supportRackType.setSupportRackRows("5");
             supportRackType.setSupportRackColumns("5");
             supportRackType.setStatus("0001");
+            supportRackType.setMemo("宽");
             supportRackTypeRepository.saveAndFlush(supportRackType);
             assertThat(supportRackType).isNotNull();
         }
         //冻存架类型
-        SupportRackType supportRackType1 = supportRackTypeRepository.findBySupportRackTypeCode("1*75");
+        SupportRackType supportRackType1 = supportRackTypeRepository.findBySupportRackTypeCode("5*4");
         if(supportRackType1==null){
             supportRackType1 = new SupportRackType();
-            supportRackType1.setSupportRackTypeCode("1*75");
-            supportRackType1.setSupportRackRows("1");
-            supportRackType1.setSupportRackColumns("75");
+            supportRackType1.setSupportRackTypeCode("5*4");
+            supportRackType1.setSupportRackTypeName("冻存架3(5*4)");
+            supportRackType1.setSupportRackRows("5");
+            supportRackType1.setSupportRackColumns("4");
             supportRackType1.setStatus("0001");
+            supportRackType.setMemo("宽");
             supportRackTypeRepository.saveAndFlush(supportRackType1);
             assertThat(supportRackType1).isNotNull();
         }
@@ -245,29 +249,35 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
      */
     @Test
     public void createFrozenTubeType() throws Exception {
-        FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findByFrozenTubeTypeCode("2ml");
+        FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findByFrozenTubeTypeCode("DCG");
         if(frozenTubeType == null){
-            frozenTubeType = new FrozenTubeType()
-                .frozenTubeTypeCode("2ml")
-                .frozenTubeTypeName("2ml")
-                .sampleUsedTimesMost(10)
-                .frozenTubeVolumn(2)
-                .frozenTubeVolumnUnit("ml")
-                .status("0001");
+            frozenTubeType = new FrozenTubeType().frozenTubeTypeCode("DCG").frozenTubeTypeName("冻存管(1ml)").sampleUsedTimesMost(10).frozenTubeVolumn(2.0).frozenTubeVolumnUnit("ml").status("0001");
             frozenTubeTypeRepository.saveAndFlush(frozenTubeType);
             assertThat(frozenTubeType).isNotNull();
         }
-        FrozenTubeType frozenTubeType1 = frozenTubeTypeRepository.findByFrozenTubeTypeCode("6ml");
+        FrozenTubeType frozenTubeType1 = frozenTubeTypeRepository.findByFrozenTubeTypeCode("2DDCG");
         if(frozenTubeType1 == null){
-            frozenTubeType1 = new FrozenTubeType()
-                .frozenTubeTypeCode("6ml")
-                .frozenTubeTypeName("6ml")
-                .sampleUsedTimesMost(10)
-                .frozenTubeVolumn(6)
-                .frozenTubeVolumnUnit("ml")
-                .status("0001");
+            frozenTubeType1 = new FrozenTubeType().frozenTubeTypeCode("2DDCG").frozenTubeTypeName("2D冻存管(0.5ml)").sampleUsedTimesMost(10).frozenTubeVolumn(0.5).frozenTubeVolumnUnit("ml").status("0001");
             frozenTubeTypeRepository.saveAndFlush(frozenTubeType1);
             assertThat(frozenTubeType1).isNotNull();
+        }
+        FrozenTubeType frozenTubeType2 = frozenTubeTypeRepository.findByFrozenTubeTypeCode("6CXG");
+        if(frozenTubeType2 == null){
+            frozenTubeType2 = new FrozenTubeType().frozenTubeTypeCode("6CXG").frozenTubeTypeName("采血管(6ml)").sampleUsedTimesMost(10).frozenTubeVolumn(6.0).frozenTubeVolumnUnit("ml").status("0001");
+            frozenTubeTypeRepository.saveAndFlush(frozenTubeType2);
+            assertThat(frozenTubeType2).isNotNull();
+        }
+        FrozenTubeType frozenTubeType3 = frozenTubeTypeRepository.findByFrozenTubeTypeCode("RNA");
+        if(frozenTubeType3 == null){
+            frozenTubeType3 = new FrozenTubeType().frozenTubeTypeCode("RNA").frozenTubeTypeName("RNA管(9ml)").sampleUsedTimesMost(10).frozenTubeVolumn(9.0).frozenTubeVolumnUnit("ml").status("0001");
+            frozenTubeTypeRepository.saveAndFlush(frozenTubeType3);
+            assertThat(frozenTubeType3).isNotNull();
+        }
+        FrozenTubeType frozenTubeType4 = frozenTubeTypeRepository.findByFrozenTubeTypeCode("9CXG");
+        if(frozenTubeType4 == null){
+            frozenTubeType4 = new FrozenTubeType().frozenTubeTypeCode("9CXG").frozenTubeTypeName("采血管(9ml)").sampleUsedTimesMost(10).frozenTubeVolumn(9.0).frozenTubeVolumnUnit("ml").status("0001");
+            frozenTubeTypeRepository.saveAndFlush(frozenTubeType4);
+            assertThat(frozenTubeType4).isNotNull();
         }
     }
 
@@ -299,18 +309,25 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
      */
     @Test
     public void createEquipmentModel() throws Exception {
-        EquipmentModle equipmentModle = equipmentModleRepository.findByEquipmentModelCode("01");
+        EquipmentModle equipmentModle = equipmentModleRepository.findByEquipmentModelCode("FOMA907");
         if(equipmentModle == null){
-            equipmentModle = new EquipmentModle()
-                .equipmentModelCode("01")
-                .equipmentModelName("冰箱")
-                .equipmentType("冰箱")
+            equipmentModle = new EquipmentModle().equipmentModelCode("FOMA907")
+                .equipmentModelName("FOMA907")
+                .equipmentType("Freezer")
                 .areaNumber(4)
-                .shelveNumberInArea(6)
+                .shelveNumberInArea(0)
                 .status("0001");
-            equipmentModle.setCreatedBy("admin");
             equipmentModleRepository.saveAndFlush(equipmentModle);
-            assertThat(equipmentModle).isNotNull();
+        }
+        EquipmentModle equipmentModle1 = equipmentModleRepository.findByEquipmentModelCode("ColdRoom-3");
+        if(equipmentModle1 == null){
+            equipmentModle1 = new EquipmentModle().equipmentModelCode("ColdRoom-3")
+                .equipmentModelName("ColdRoom-3")
+                .equipmentType("coldroom")
+                .areaNumber(117)
+                .shelveNumberInArea(0)
+                .status("0001");
+            equipmentModleRepository.saveAndFlush(equipmentModle1);
         }
     }
     /**
@@ -320,15 +337,33 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     @Test
     public void createFrozenBoxType() throws Exception {
         //冻存盒类型
-        FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findByFrozenBoxTypeCode("B1010");
+        FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findByFrozenBoxTypeCode("DCH");
         if(frozenBoxType == null){
-            frozenBoxType = new FrozenBoxType().frozenBoxTypeCode("B1010")
-                .frozenBoxTypeName("10*10").frozenBoxTypeColumns("10").frozenBoxTypeRows("10").status("0001");
+            frozenBoxType = new FrozenBoxType().frozenBoxTypeCode("DCH")
+                .frozenBoxTypeName("冻存盒(10*10)").frozenBoxTypeColumns("10").frozenBoxTypeRows("10").status("0001");
             frozenBoxType.setCreatedBy("admin");
             frozenBoxTypeRepository.saveAndFlush(frozenBoxType);
-            assertThat(frozenBoxType).isNotNull();
+        }
+        //冻存盒类型
+        FrozenBoxType frozenBoxType1 = frozenBoxTypeRepository.findByFrozenBoxTypeCode("DJH");
+        if(frozenBoxType1 == null){
+            frozenBoxType1 = new FrozenBoxType().frozenBoxTypeCode("DJH")
+                .frozenBoxTypeName("大橘盒(10*10)").frozenBoxTypeColumns("10").frozenBoxTypeRows("10").status("DJH");
+            frozenBoxTypeRepository.saveAndFlush(frozenBoxType1);
+        }
+        //冻存盒类型
+        FrozenBoxType frozenBoxType2 = frozenBoxTypeRepository.findByFrozenBoxTypeCode("96KB");
+        if(frozenBoxType2 == null){
+            frozenBoxType2 = new FrozenBoxType().frozenBoxTypeCode("96KB")
+                .frozenBoxTypeName("96孔板(8*12)").frozenBoxTypeColumns("12").frozenBoxTypeRows("8").status("0001");
+            frozenBoxTypeRepository.saveAndFlush(frozenBoxType2);
         }
     }
+
+    /**
+     * 创建样本类型
+     * @throws Exception
+     */
     @Test
     public void createSampleType() throws Exception {
 
@@ -379,13 +414,12 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
      * 导入冻存盒
      * @throws Exception
      */
-    public void createFrozenBoxForA02(String tableName,String stockInCode,String sampleTypeCode) throws Exception {
+    public void createFrozenBoxForA02(String tableName,String stockInCode,String sampleTypeCode,FrozenTubeType frozenTubeType) throws Exception {
         Project project = projectRepository.findByProjectCode("0037");
         SampleType sampleType = sampleTypeRepository.findBySampleTypeCode(sampleTypeCode);
         if(sampleType == null){
             throw new BankServiceException("样本类型为空！表名为："+tableName+"样本类型编码为："+sampleTypeCode);
         }
-        FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findByFrozenTubeTypeCode(sampleTypeCode!="RNA"?"2ml":"6ml");
         if(frozenTubeType == null){
             throw new BankServiceException("冻存管类型为空！表名为："+tableName+"样本类型编码为："+sampleTypeCode);
         }
@@ -431,7 +465,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             }
         }
 
-        FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findByFrozenBoxTypeCode("B1010");
+        FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findByFrozenBoxTypeCode("DCH");
         int m = 0;
         for(String key :map.keySet()){
             m++;
@@ -541,13 +575,28 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             }
             String equipmentCode = sampleList.get(0).get("EQ_CODE").toString().trim();
             String areaCode = sampleList.get(0).get("AREA_CODE").toString().trim();
-            String supportCode = sampleTypeCode!="RNA"?sampleList.get(0).get("SHELF_CODE").toString().trim():"R01";
+            String supportCode ="";
+            if(sampleTypeCode!="RNA"){
+                supportCode = sampleList.get(0).get("SHELF_CODE").toString().trim();
+            }else{
+                Long count = frozenBoxRepository.countByEquipmentCodeAndAreaCode(equipmentCode,areaCode);
+                if(count.intValue()<25){
+                    supportCode = "R01";
+                }else{
+                    supportCode = "R02";
+                }
+
+            }
             Equipment entity = equipmentRepository.findOneByEquipmentCode(equipmentCode);
+            EquipmentModle equipmentModle = equipmentModleRepository.findByEquipmentModelCode(equipmentCode.contains("R4-03")?"ColdRoom-3":"FOMA907");
+            if(equipmentModle == null){
+                throw new BankServiceException("设备型号导入失败");
+            }
+            Integer temperature = equipmentCode.contains("R4-03")?-40:-80;
             if(entity==null){
                 entity = new Equipment().equipmentAddress("样本中心D座").equipmentCode(equipmentCode)
                     .equipmentGroup(equipmentMapper.equipmentGroupFromId(1L))
-                    .equipmentModle(equipmentMapper.equipmentModleFromId(1L)).temperature(-40).ampoulesMax(60000).ampoulesMin(38400).status("0001");
-                entity.setCreatedBy("admin");
+                    .equipmentModle(equipmentModle).temperature(temperature).ampoulesMax(60000).ampoulesMin(38400).status("0001");
             }
             //设备
             equipmentRepository.saveAndFlush(entity);
@@ -563,7 +612,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             }
             //冻存架
             SupportRack supportRack = supportRackRepository.findByAreaIdAndSupportRackCode(area.getId(),supportCode);
-            SupportRackType supportRackType = supportRackTypeRepository.findBySupportRackTypeCode(sampleTypeCode!="RNA"?"5*5":"1*75");
+            SupportRackType supportRackType = supportRackTypeRepository.findBySupportRackTypeCode("5*5");
             if(supportRackType == null){
                 throw new BankServiceException("冻存架类型为空！表名为："+tableName+"；盒号为"+key+";样本类型为："+sampleTypeCode);
             }
@@ -729,17 +778,22 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         this.createFrozenTubeType();
         this.createFrozenBoxType();
         this.createSampleType();
-        this.createFrozenBoxForA02("HE_COL_01","1498790361822","A");
-        this.createFrozenBoxForA02("HE_COL_02","1498793134929","A");
-        this.createFrozenBoxForA02("HE_COL_03","1498802077085","W");
-        this.createFrozenBoxForA02("HE_COL_04","1498802084828","R");
-        this.createFrozenBoxForA02("HE_COL_05","1498802097495","A");
-        this.createFrozenBoxForA02("HE_COL_06","1498802124180","A");
-        this.createFrozenBoxForA02("HE_COL_07","1498802133675","F");
-        this.createFrozenBoxForA02("HE_COL_08","1498802143791","F");
-        this.createFrozenBoxForA02("HE_COL_09","1498802167424","E");
-        this.createFrozenBoxForA02("HE_COL_10","1498802175768","E");
-        this.createFrozenBoxForA02("HE_COL_11_RNA","1499052532056","RNA");
+        FrozenTubeType rnaTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("RNA");
+        FrozenTubeType dcgTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("DCG");
+        if(rnaTube == null || dcgTube == null){
+            throw new BankServiceException("冻存管类型导入失败！");
+        }
+        this.createFrozenBoxForA02("HE_COL_01","1498790361822","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_02","1498793134929","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_03","1498802077085","W",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_04","1498802084828","R",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_05","1498802097495","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_06","1498802124180","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_07","1498802133675","F",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_08","1498802143791","F",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_09","1498802167424","E",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_10","1498802175768","E",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_11_RNA","1499052532056","RNA",rnaTube);
         this.createSampleTypeMix();
     }
 }

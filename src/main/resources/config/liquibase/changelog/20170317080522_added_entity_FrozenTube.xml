@@ -71,7 +71,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="frozen_tube_volumns" type="integer" remarks="冻存管容量值">
+            <column name="frozen_tube_volumns" type="Double" remarks="冻存管容量值">
                 <constraints nullable="false" />
             </column>
 
@@ -79,7 +79,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="sample_volumns" type="double" remarks="冻存管容量值">
+            <column name="sample_volumns" type="double" remarks="样本容量值">
                 <constraints nullable="true" />
             </column>
 

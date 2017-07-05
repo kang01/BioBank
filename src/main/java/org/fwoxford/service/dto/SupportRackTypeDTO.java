@@ -18,6 +18,12 @@ public class SupportRackTypeDTO extends AbstractAuditingDTO implements Serializa
     @Size(max = 20)
     private String supportRackTypeCode;
     /**
+     * 冻存架类型名称
+     */
+    @NotNull
+    @Size(max = 20)
+    private String supportRackTypeName;
+    /**
      * 冻存架行数
      */
     @NotNull
@@ -55,6 +61,15 @@ public class SupportRackTypeDTO extends AbstractAuditingDTO implements Serializa
     public void setSupportRackTypeCode(String supportRackTypeCode) {
         this.supportRackTypeCode = supportRackTypeCode;
     }
+
+    public String getSupportRackTypeName() {
+        return supportRackTypeName;
+    }
+
+    public void setSupportRackTypeName(String supportRackTypeName) {
+        this.supportRackTypeName = supportRackTypeName;
+    }
+
     public String getSupportRackRows() {
         return supportRackRows;
     }
@@ -110,6 +125,7 @@ public class SupportRackTypeDTO extends AbstractAuditingDTO implements Serializa
         return "SupportRackTypeDTO{" +
             "id=" + id +
             ", supportRackTypeCode='" + supportRackTypeCode + "'" +
+            ", supportRackTypeName='" + supportRackTypeName + "'" +
             ", supportRackRows='" + supportRackRows + "'" +
             ", supportRackColumns='" + supportRackColumns + "'" +
             ", memo='" + memo + "'" +

@@ -48,14 +48,14 @@ public class EquipmentModle extends AbstractAuditingEntity implements Serializab
      * 区域数量
      */
     @NotNull
-    @Max(value = 100)
+    @Max(value = 255)
     @Column(name = "area_number", nullable = false)
     private Integer areaNumber;
     /**
      * 区域内架子数量
      */
     @NotNull
-    @Max(value = 100)
+    @Max(value = 500)
     @Column(name = "shelve_number_in_area", nullable = false)
     private Integer shelveNumberInArea;
     /**

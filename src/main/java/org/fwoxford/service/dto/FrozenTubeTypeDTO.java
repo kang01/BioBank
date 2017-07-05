@@ -25,7 +25,7 @@ public class FrozenTubeTypeDTO extends AbstractAuditingDTO implements Serializab
     private Integer sampleUsedTimesMost;
 
     @NotNull
-    private Integer frozenTubeVolumn;
+    private Double frozenTubeVolumn;
 
     @NotNull
     @Size(max = 20)
@@ -66,11 +66,11 @@ public class FrozenTubeTypeDTO extends AbstractAuditingDTO implements Serializab
     public void setSampleUsedTimesMost(Integer sampleUsedTimesMost) {
         this.sampleUsedTimesMost = sampleUsedTimesMost;
     }
-    public Integer getFrozenTubeVolumn() {
+    public Double getFrozenTubeVolumn() {
         return frozenTubeVolumn;
     }
 
-    public void setFrozenTubeVolumn(Integer frozenTubeVolumn) {
+    public void setFrozenTubeVolumn(Double frozenTubeVolumn) {
         this.frozenTubeVolumn = frozenTubeVolumn;
     }
     public String getFrozenTubeVolumnUnit() {

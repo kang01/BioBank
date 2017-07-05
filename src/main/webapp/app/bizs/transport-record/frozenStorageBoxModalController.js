@@ -16,6 +16,7 @@
 
         var vm = this;
         vm.items = items;
+        vm.sampleTypeFlag = false;
         // vm.importSample = importSample;//导入样本数据
         vm.codeList = [];//扫码录入的盒号
         vm.obox = {
@@ -32,7 +33,7 @@
         if(vm.sampleTypeOptions.length){
             vm.frozenBox.sampleTypeId = vm.sampleTypeOptions[0].id;
             vm.isMixed = _.filter(vm.sampleTypeOptions,{'id':+vm.frozenBox.sampleTypeId})[0].isMixed;
-            _fnQueryProjectSampleClass(vm.items.projectId,vm.frozenBox.sampleTypeId);
+            _fnQueryProjectSampleClass(vm.items.projectId,vm.frozenBox.sampleTypeId,vm.isMixed);
         }
         //设备
         EquipmentService.query({},onEquipmentTempSuccess, onError);
@@ -128,7 +129,6 @@
 
         };
         //不同项目下的样本分类
-        vm.sampleTypeFlag = false;
         function _fnQueryProjectSampleClass(projectId,sampleTypeId,isMixed) {
             if(isMixed == 1){
                 vm.sampleTypeFlag = true;

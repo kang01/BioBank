@@ -34,7 +34,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="frozen_tube_volumn" type="integer" remarks="冻存管容量值">
+            <column name="frozen_tube_volumn" type="double" remarks="冻存管容量值">
                 <constraints nullable="false" />
             </column>
 

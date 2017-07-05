@@ -161,9 +161,12 @@ public class TranshipServiceImpl implements TranshipService{
             transhipDTO.setProjectName(oldTranship.getProjectName());
             transhipDTO.setProjectId(oldTranship.getProject()!=null?oldTranship.getProject().getId():null);
         }
-        ProjectSite projectSite = projectSiteRepository.findOne(transhipDTO.getProjectSiteId());
-        transhipDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():new String(""));
-        transhipDTO.setProjectSiteName(projectSite!=null?projectSite.getProjectSiteName():new String(""));
+        if(transhipDTO.getProjectSiteId()!=null){
+            ProjectSite projectSite = projectSiteRepository.findOne(transhipDTO.getProjectSiteId());
+            transhipDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():new String(""));
+            transhipDTO.setProjectSiteName(projectSite!=null?projectSite.getProjectSiteName():new String(""));
+        }
+
         Tranship tranship = transhipMapper.transhipDTOToTranship(transhipDTO);
         tranship.setTranshipState(oldTranship.getTranshipState());
         tranship.setStatus(oldTranship.getStatus());

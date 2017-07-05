@@ -72,7 +72,7 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
      * 冻存管容量值
      */
     @Max(value = 20)
-    private Integer frozenTubeVolumns;
+    private Double frozenTubeVolumns;
     /**
      * 冻存管容量值单位
      */
@@ -291,11 +291,11 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     public void setSampleUsedTimes(Integer sampleUsedTimes) {
         this.sampleUsedTimes = sampleUsedTimes;
     }
-    public Integer getFrozenTubeVolumns() {
+    public Double getFrozenTubeVolumns() {
         return frozenTubeVolumns;
     }
 
-    public void setFrozenTubeVolumns(Integer frozenTubeVolumns) {
+    public void setFrozenTubeVolumns(Double frozenTubeVolumns) {
         this.frozenTubeVolumns = frozenTubeVolumns;
     }
     public String getFrozenTubeVolumnsUnit() {

@@ -80,9 +80,10 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " and f.status=?5" +
         " and (select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000')<(f.frozen_box_columns*f.frozen_box_rows) " +
         " and f.is_split = 0 " +
+        " and s.stock_in_code =?6" +
         " order by sampleNumber asc",nativeQuery = true)
     List<FrozenBox> findIncompleteFrozenBoxBySampleClassificationId(String frozenBoxCode, Long projectId,
-                                                                    List<Long> sampleClassificationIdStr, Long frozenBoxTypeId, String status);
+                                                                    List<Long> sampleClassificationIdStr, Long frozenBoxTypeId, String status, String stockInCode);
     @Query(value = "select f.*,(select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000') as sampleNumber from frozen_box f left join stock_in_box s on f.id=s.frozen_box_id " +
         " where f.frozen_box_code != ?1 " +
         " and f.project_id=?2 " +
@@ -91,8 +92,9 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " and f.status=?5" +
         " and (select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code and tube.status!='0000')<(f.frozen_box_columns*f.frozen_box_rows) " +
         " and f.is_split = 0 " +
+        " and s.stock_in_code =?6" +
         " order by sampleNumber asc",nativeQuery = true)
-    List<FrozenBox> findIncompleteFrozenBoxBySampleTypeId(String frozenBoxCode, Long projectId, Long sampleTypeId, Long frozenBoxTypeId, String status);
+    List<FrozenBox> findIncompleteFrozenBoxBySampleTypeId(String frozenBoxCode, Long projectId, Long sampleTypeId, Long frozenBoxTypeId, String status, String stockInCode);
 
     @Query(value = "select box.id ,count(*) as num from frozen_box box  where box.frozen_box_code =?1" +
         " and box.status not in ('2005','0000') group by box.id " , nativeQuery = true)
@@ -132,4 +134,38 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " inner join StockOutTaskFrozenTube e on e.stockOutPlanFrozenTube.id =b.id" +
         " where e.stockOutTask.id = ?1 ")
     Page<FrozenBox> findAllByTask(Long taskId, Pageable pageable);
+
+    @Query(value = "select f.*,(select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000') as sampleNumber from frozen_box f " +
+        " where f.frozen_box_code != ?1 " +
+        " and f.project_id=?2 " +
+        " and f.frozen_box_type_id=?3 " +
+        " and f.status=?4" +
+        " and (select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000')<(f.frozen_box_columns*f.frozen_box_rows) " +
+        " and f.is_split = 0 " +
+        " order by sampleNumber asc",nativeQuery = true)
+    List<FrozenBox> findIncompleteFrozenBoxInAllStock(String frozenBoxCode, Long projectId, Long frozenBoxTypeId, String status);
+
+    @Query(value = "select f.*,(select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000') as sampleNumber from frozen_box f  " +
+        " where f.frozen_box_code != ?1 " +
+        " and f.project_id=?2 " +
+        " and f.sample_classification_id in ?3" +
+        " and f.frozen_box_type_id=?4 " +
+        " and f.status=?5" +
+        " and (select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000')<(f.frozen_box_columns*f.frozen_box_rows) " +
+        " and f.is_split = 0 " +
+        " order by sampleNumber asc",nativeQuery = true)
+    List<FrozenBox> findIncompleteFrozenBoxBySampleClassificationIdInAllStock(String frozenBoxCode, Long projectId,
+                                                                    List<Long> sampleClassificationIdStr, Long frozenBoxTypeId, String status);
+
+    @Query(value = "select f.*,(select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000') as sampleNumber from frozen_box f " +
+        " where f.frozen_box_code != ?1 " +
+        " and f.project_id=?2 " +
+        " and f.sample_type_id=?3 " +
+        " and f.frozen_box_type_id=?4 " +
+        " and f.status=?5" +
+        " and (select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code and tube.status!='0000')<(f.frozen_box_columns*f.frozen_box_rows) " +
+        " and f.is_split = 0 " +
+        " order by sampleNumber asc",nativeQuery = true)
+    List<FrozenBox> findIncompleteFrozenBoxBySampleTypeIdInAllStock(String frozenBoxCode, Long projectId, Long sampleTypeId, Long frozenBoxTypeId, String status);
+
 }

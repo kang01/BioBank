@@ -11,7 +11,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface ProjectSiteRepository extends JpaRepository<ProjectSite,Long> {
-    @Query("select t from ProjectSite t left join ProjectRelate r on t.id=r.projectSite.id where r.project.id = ?1")
+    @Query("select t from ProjectSite t left join ProjectRelate r on t.id=r.projectSite.id where r.project.id = ?1 order by t.projectSiteCode asc")
     List<ProjectSite> findAllProjectSitesByProjectId(Long projectId);
 
     ProjectSite findByProjectSiteCode(String projectSiteCode);

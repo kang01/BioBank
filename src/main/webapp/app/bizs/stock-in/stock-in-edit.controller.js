@@ -836,7 +836,7 @@
                 }
                 frozenBox.stockInFrozenTubeList= selectList;
 
-                vm.addBoxModal(frozenBox);
+                vm.addBoxModal(frozenBox,"1");
             }
             var obox = angular.copy(vm.obox);
 
@@ -930,12 +930,12 @@
                 vm.splittingBox = false;
             });
         };
-        //添加分装样本盒
-        vm.addBoxModal = function (box) {
+        //添加分装样本盒 1:第二个新盒子 2.新添第一个盒子
+        vm.addBoxModal = function (box,status) {
             if(!box){
                 box = {};
                 box.sampleTypeId = vm.box.sampleType.id;
-                box.isMixed = vm.box.sampleType.isMixed;
+                // box.isMixed = vm.box.sampleType.isMixed;
                 box.frozenBoxTypeId = vm.box.frozenBoxType.id;
                 box.stockInFrozenTubeList = [];
             }
@@ -951,10 +951,11 @@
                             projectId:vm.entity.projectId,
                             box :box || {stockInFrozenTubeList:[]},
                             incompleteBoxes: vm.incompleteBoxesList,
-                            isMixed:box.isMixed,
+                            isMixed:vm.box.sampleType.isMixed,
                             sampleTypeId:box.sampleTypeId,
                             sampleTypeClassId:vm.sampleTypeClassId || vm.box.sampleClassificationId,
-                            frozenBoxTypeId:box.frozenBoxTypeId
+                            frozenBoxTypeId:box.frozenBoxTypeId,
+                            status:status || "2"
                         };
                     }
                 }

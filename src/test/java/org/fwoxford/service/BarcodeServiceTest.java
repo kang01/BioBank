@@ -19,6 +19,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -197,12 +198,11 @@ public class BarcodeServiceTest {
                             --nRetryTimes;
                         }
                     }
-                    code = null;
                     if (code == null){
                         int cx = codeImage.getWidth() / 2;
                         int cy = codeImage.getHeight() / 2;
                         int minScope = 45;
-                        int minRadius = 25;
+                        int minRadius = 24;
 
                         int[] colors =  new int[minScope];
                         colors = codeImage.getRGB(cx, cy, minScope, 1, colors, 0, minScope);
@@ -243,7 +243,7 @@ public class BarcodeServiceTest {
                                         countOfColor = 0;
                                     }
 
-                                    if (countOfColor >= 1.8*minRadius){
+                                    if (countOfColor >= 1.9*minRadius){
                                         int countOfColor1 = 0;
                                         int countOfColor2 = 0;
                                         for (int i = cx - minScope; i < cx + minScope; ++i){
@@ -262,6 +262,9 @@ public class BarcodeServiceTest {
                                             countOfColor2 = colorComp(color2, codeColor, colorDistance) || colorComp(color22, codeColor, colorDistance) || colorComp(color23, codeColor, colorDistance) ? 1+countOfColor2 : 0;
 
                                             if (countOfColor1 >= 1.8*minRadius || countOfColor2 >= 1.8*minRadius){
+                                                if (i > tempX){
+                                                    break;
+                                                }
                                                 isCorrectAngle = true;
                                                 break;
                                             }
@@ -281,7 +284,7 @@ public class BarcodeServiceTest {
                                 BufferedImage tempImage = new BufferedImage(imgs[count].getWidth(), imgs[count].getHeight(), imgs[count].getType());
                                 g2d = tempImage.createGraphics();
                                 g2d.rotate(angle, cx, cy);
-                                g2d.translate(-offsetX, -offsetY);
+//                                g2d.translate(-offsetX, -offsetY);
                                 g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                                 g2d.drawImage(imgs[count], 0,0, null);
                                 g2d.dispose();
@@ -293,46 +296,62 @@ public class BarcodeServiceTest {
                                 for (int i = tcx + minScope - 1; i > tcx; --i){
                                     int color1 = tempImage.getRGB(i, cy);
                                     if (colorComp(color1, codeColor, colorDistance)){
+                                        if (i > tempX){
+                                            continue;
+                                        }
                                         tx2 = i;
                                         break;
                                     }
                                 }
 
                                 if (tx2 != 0){
-                                    for (int i = tcy + minScope; i > tcy; --i){
+                                    for (int i = tcy + minScope - 1; i > tcy; --i){
                                         int color1 = tempImage.getRGB(tx2, i);
                                         int color2 = tempImage.getRGB(tx2-1, i);
                                         int color3 = tempImage.getRGB(tx2-2, i);
                                         if (colorComp(color1, codeColor, colorDistance) || colorComp(color2, codeColor, colorDistance) || colorComp(color3, codeColor, colorDistance)){
+                                            if (i > tempY){
+                                                continue;
+                                            }
                                             ty2 = i;
                                             break;
                                         }
                                     }
                                 }
+                                int tox = tx2 - tcx - minRadius;
+                                int toy = ty2 - tcy - minRadius;
+
+                                int tx1 = tx2 - 2*minRadius - 5;
+                                int ty1 = ty2 - 2*minRadius - 5;
+                                tx2 += 5;
+                                ty2 += 5;
+                                int tw = tx2 - tx1;
+                                int th = ty2 - ty1;
+
+                                BufferedImage tempImage1 = new BufferedImage(tempImage.getWidth(), tempImage.getHeight(), tempImage.getType());
+                                g2d = tempImage1.createGraphics();
+                                g2d.translate(-tox, -toy);
+                                g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                                g2d.drawImage(tempImage, 0,0, null);
+                                g2d.dispose();
 
 
-
-                                int tx1 = tx2 - minRadius - 3;
-                                int ty1 = ty2 - minRadius - 3;
-                                tx2 += 3;
-                                ty2 += 3;
-
-                                codeImage = new BufferedImage(2*minScope, 2* minScope, tempImage.getType());
-                                g2d = codeImage.createGraphics();
 //                                minScope = 30;
                                 int dx1 = 0;
                                 int dy1 = 0;
-                                int dx2 = 2 * minScope;
-                                int dy2 = 2 * minScope;
-                                int sx1 = tempImage.getWidth() / 2 - minScope;
-                                int sy1 = tempImage.getHeight() / 2 - minScope;
-                                int sx2 = sx1 + 2 * minScope;
-                                int sy2 = sy1 + 2 * minScope;
+                                int dx2 = 2 * (minScope - 15);
+                                int dy2 = 2 * (minScope - 15);
+                                int sx1 = tempImage1.getWidth() / 2 - (minScope - 10);
+                                int sy1 = tempImage1.getHeight() / 2 - (minScope - 10);
+                                int sx2 = sx1 + 2 * (minScope - 10);
+                                int sy2 = sy1 + 2 * (minScope - 10);
+                                codeImage = new BufferedImage(dx2-dx1, dx2-dx1, tempImage1.getType());
+                                g2d = codeImage.createGraphics();
 //                                g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                                 g2d.setBackground(Color.white);
-                                g2d.fillRect(0,0,codeImage.getWidth(),codeImage.getHeight());
-//                                g2d.drawImage(tempImage, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, Color.white, null);
-                                g2d.drawImage(tempImage, dx1, dy1, dx2, dy2, tx1, ty1, tx2, ty2, Color.white, null);
+                                g2d.fillRect(0,0,dx2-dx1,dy2-dy1);
+                                g2d.drawImage(tempImage1, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, Color.white, null);
+//                                g2d.drawImage(tempImage, dx1, dy1, dx1+tw, dy1+th, tx1, ty1, tx2, ty2, Color.white, null);
                                 g2d.dispose();
 
                                 ImageIO.write(codeImage, "jpg", new File(path+"/temp/img_"+x+"_"+y+".jpg"));
@@ -341,7 +360,7 @@ public class BarcodeServiceTest {
 
                             int ox = codeImage.getWidth() / 2;
                             int oy = codeImage.getHeight() / 2;
-                            angle += Math.PI / 180;
+                            angle += Math.PI / 180 / 2;
                             BufferedImage tempImage = new BufferedImage(codeImage.getWidth(), codeImage.getHeight(), codeImage.getType());
                             g2d = tempImage.createGraphics();
 //                            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -360,11 +379,19 @@ public class BarcodeServiceTest {
                             BufferedImage newImage = zoomOutImage(codeImage, 2);
                             code = BarcodeUtil.decode(newImage);
                         }
+                        if (code == null){
+                            int nRetryTimes = 4;
+                            codeImage = zoomOutImage(codeImage, 2);
+                            while (code == null && nRetryTimes > 0){
+                                BufferedImage newImage = rotate(codeImage, 90 * nRetryTimes);
+                                code = BarcodeUtil.decode(newImage);
+                                --nRetryTimes;
+                            }
+                        }
                     }
                     if (code == null){
                         code = "------------";
                     }
-//                    ImageIO.write(codeImage, "jpg", new File(path+"/temp/img_"+x+"_"+y+".jpg"));
 
                     codes[x][y] = code;
                     count++;
@@ -385,6 +412,41 @@ public class BarcodeServiceTest {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void testDecodeDataMatrixArrayImage3(){
+        File dir = new File(".");
+        try {
+            System.out.println(dir.getCanonicalPath());
+
+            System.out.println(dir.getAbsolutePath());
+
+            String path = dir.getCanonicalPath();
+            dir = new File("./temp");
+            if (!dir.exists()){
+                dir.mkdir();
+            }
+
+            File imageFile = new File(path + "/96_8x12_tube_code_white.jpg");
+            FileInputStream fis = new FileInputStream(imageFile);
+            BufferedImage image = ImageIO.read(fis);
+
+            System.out.println(new Date());
+            String[][] codes = BarcodeUtil.decode8x12Box(image);
+            System.out.println(new Date());
+
+            for (int i = 0; i < codes.length; ++i){
+                for(int j = 0; j < codes[i].length; ++j){
+                    if (codes[i][j] == null){
+                        codes[i][j] = "------------";
+                    }
+                    System.out.print(codes[i][j] + ", ");
+                }
+                System.out.println();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

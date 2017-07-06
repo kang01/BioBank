@@ -79,8 +79,8 @@ public class FrozenTubeResourceIntTest {
     private static final Integer DEFAULT_SAMPLE_USED_TIMES = 20;
     private static final Integer UPDATED_SAMPLE_USED_TIMES = 19;
 
-    private static final Integer DEFAULT_FROZEN_TUBE_VOLUMNS = 20;
-    private static final Integer UPDATED_FROZEN_TUBE_VOLUMNS = 19;
+    private static final Double DEFAULT_FROZEN_TUBE_VOLUMNS = 20.0;
+    private static final Double UPDATED_FROZEN_TUBE_VOLUMNS = 19.0;
 
     private static final String DEFAULT_FROZEN_TUBE_VOLUMNS_UNIT = "AAAAAAAAAA";
     private static final String UPDATED_FROZEN_TUBE_VOLUMNS_UNIT = "BBBBBBBBBB";

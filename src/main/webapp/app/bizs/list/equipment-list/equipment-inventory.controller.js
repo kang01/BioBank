@@ -235,16 +235,16 @@
                             selectedEquipment.push(obj);
                         }
 
-                    }
-                }else{
-                    var index = [];
-                    if(selectedBox.length){
-                        for(var i = 0; i < selectedEquipment.length; i++){
-                            if(+id == selectedEquipment[i].id){
-                                index.push(i);
+                    }else{
+                        var index = [];
+                        if(selectedEquipment.length){
+                            for(var i = 0; i < selectedEquipment.length; i++){
+                                if(+id == selectedEquipment[i].id){
+                                    index.push(i);
+                                }
                             }
+                            _.pullAt(selectedEquipment, index);
                         }
-                        _.pullAt(selectedEquipment, index);
                     }
                 }
             }
@@ -318,7 +318,12 @@
                 .withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
-            vm.selected[full.id] = false;
+            var len = _.filter(selectedEquipment,{id:full.id}).length;
+            if(len){
+                vm.selected[full.id] = true;
+            }else{
+                vm.selected[full.id] = false;
+            }
             var html = '';
             html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
             return html;

@@ -143,7 +143,6 @@
                     if (boxes == null || typeof boxes === 'undefined' || !boxes.length){
                         boxes = [];
                     }
-
                     // 架子上的行数
                     var countOfRows = shelfType.supportRackRows || 4;
                     // 架子上的列数

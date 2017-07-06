@@ -78,7 +78,7 @@
                                     {{item1.countOfSample}}/{{item1.frozenBoxType.frozenBoxTypeColumns*item1.frozenBoxType.frozenBoxTypeRows}}
                                     <span ng-if="item1.addTubeCount">+{{item1.addTubeCount}}</span>
                                 </div>
-                                <div class="" ng-if="$index == 0">{{item1.sampleTypeName}}&nbsp;</div>
+                                <div class="box-name text-ellipsis" ng-if="$index == 0" title="{{item1.sampleTypeName}}">{{item1.sampleTypeName}}&nbsp;</div>
                                 <div ng-class="{'second-box': $index == 1}">{{item1.copyBoxCode}}</div>
                             </div>
                             <div class="box-feature box-feature-copy" style="background-color: #fff;" ng-if="item.boxList.length == 2"></div>

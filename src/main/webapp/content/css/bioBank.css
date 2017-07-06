@@ -520,6 +520,9 @@ table.dataTable tfoot th, table.dataTable tfoot td {
 .split-box li>div:nth-child(2){
     z-index: 2;
 }
+.split-box .box-name{
+    width: 100px;
+}
 .second-box{
     margin-top:40px;
     margin-left: -6px;

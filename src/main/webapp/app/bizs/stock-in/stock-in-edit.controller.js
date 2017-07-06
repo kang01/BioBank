@@ -436,19 +436,22 @@
                 if(value.status){
                     changeSampleStatus(value.status,row,col,td,cellProperties);
                 }
-                if (value.sampleCode){
-                    htm = "<div style='line-height: 20px'>"+value.sampleCode+"</div>";
-                } else {
-                    htm = "<div style='line-height: 20px'>"+value.sampleTempCode+"</div>";
-                }
-
+                // htm = "<div ng-if='value.sampleCode' style='line-height: 20px'>"+value.sampleCode+"</div>"+
+                //     "<div ng-if='value.sampleTmpCode && !value.sampleCode' style='line-height: 20px'>"+value.sampleTempCode+"</div>";
+                var code = value.sampleCode && value.sampleCode != " " ? value.sampleCode : value.sampleTempCode;
+                $(td).html("");
+                var $div = $("<div/>").html(code).css({
+                    'line-height': '20px',
+                    'word-wrap': 'break-word'
+                }).appendTo(td);
+                $div = $("<div id='microtubesStatus'/>").html(value.status).hide().appendTo(td);
             }else {
-                htm = "";
+                $(td).html("");
             }
             td.style.position = 'relative';
 
 
-            td.innerHTML = htm;
+            // td.innerHTML = htm;
         };
         var operateColor;
         var selectedTubesArray = [];
@@ -873,6 +876,7 @@
                 }
                 saveBoxList.push(objBox);
             }
+            // console.log(JSON.stringify(saveBoxList));
             BioBankBlockUi.blockUiStart();
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
                 BioBankBlockUi.blockUiStop();
@@ -928,6 +932,13 @@
         };
         //添加分装样本盒
         vm.addBoxModal = function (box) {
+            if(!box){
+                box = {};
+                box.sampleTypeId = vm.box.sampleType.id;
+                box.isMixed = vm.box.sampleType.isMixed;
+                box.frozenBoxTypeId = vm.box.frozenBoxType.id;
+                box.stockInFrozenTubeList = [];
+            }
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-in/add-box-modal.html',
@@ -940,10 +951,10 @@
                             projectId:vm.entity.projectId,
                             box :box || {stockInFrozenTubeList:[]},
                             incompleteBoxes: vm.incompleteBoxesList,
-                            isMixed:vm.box.sampleType.isMixed,
-                            sampleTypeId:vm.box.sampleType.id,
+                            isMixed:box.isMixed,
+                            sampleTypeId:box.sampleTypeId,
                             sampleTypeClassId:vm.sampleTypeClassId || vm.box.sampleClassificationId,
-                            frozenBoxTypeId:vm.box.frozenBoxType.id
+                            frozenBoxTypeId:box.frozenBoxTypeId
                         };
                     }
                 }

@@ -30,7 +30,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="equipment_type" type="nvarchar(20)" remarks = "设备类型：冰箱，液氮罐">
+            <column name="equipment_type" type="nvarchar(20)" remarks = "设备类型">
                 <constraints nullable="false" />
             </column>
 

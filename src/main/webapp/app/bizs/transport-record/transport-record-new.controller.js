@@ -269,6 +269,7 @@
             function _fnQuerySampleType() {
                 SampleTypeService.querySampleType().success(function (data) {
                     vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['asc']);
+                    _.remove(vm.sampleTypeOptions,{sampleTypeName:"98"});
                 });
             }
             //不同项目下的样本分类

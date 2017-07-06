@@ -27,9 +27,16 @@ public class SupportRackType extends AbstractAuditingEntity implements Serializa
      * 冻存架类型编码
      */
     @NotNull
-    @Size(max = 20)
-    @Column(name = "support_rack_type_code", length = 20, nullable = false)
+    @Size(max = 100)
+    @Column(name = "support_rack_type_code", length = 100, nullable = false)
     private String supportRackTypeCode;
+    /**
+     * 冻存架类型名称
+     */
+    @NotNull
+    @Size(max = 255)
+    @Column(name = "support_rack_type_name", length = 255, nullable = false)
+    private String supportRackTypeName;
     /**
      * 冻存架行数
      */
@@ -77,6 +84,17 @@ public class SupportRackType extends AbstractAuditingEntity implements Serializa
 
     public void setSupportRackTypeCode(String supportRackTypeCode) {
         this.supportRackTypeCode = supportRackTypeCode;
+    }
+
+    public String getSupportRackTypeName() {
+        return supportRackTypeName;
+    }
+    public SupportRackType supportRackTypeName(String supportRackTypeName) {
+        this.supportRackTypeName = supportRackTypeName;
+        return this;
+    }
+    public void setSupportRackTypeName(String supportRackTypeName) {
+        this.supportRackTypeName = supportRackTypeName;
     }
 
     public String getSupportRackRows() {
@@ -156,6 +174,7 @@ public class SupportRackType extends AbstractAuditingEntity implements Serializa
         return "SupportRackType{" +
             "id=" + id +
             ", supportRackTypeCode='" + supportRackTypeCode + "'" +
+            ", supportRackTypeName='" + supportRackTypeName + "'" +
             ", supportRackRows='" + supportRackRows + "'" +
             ", supportRackColumns='" + supportRackColumns + "'" +
             ", memo='" + memo + "'" +

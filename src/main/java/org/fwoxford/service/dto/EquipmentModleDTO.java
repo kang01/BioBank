@@ -33,13 +33,13 @@ public class EquipmentModleDTO extends AbstractAuditingDTO implements Serializab
      * 区域数量
      */
     @NotNull
-    @Max(value = 100)
+    @Max(value = 255)
     private Integer areaNumber;
     /**
      * 区域内架子数量
      */
     @NotNull
-    @Max(value = 100)
+    @Max(value = 500)
     private Integer shelveNumberInArea;
     /**
      * 备注

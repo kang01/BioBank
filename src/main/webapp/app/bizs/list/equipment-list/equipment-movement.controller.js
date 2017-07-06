@@ -151,6 +151,7 @@
             var html = '';
             html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
             return html;
+
         }
         function createdRow(row, data, dataIndex) {
             var status = '';

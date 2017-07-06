@@ -186,9 +186,6 @@
         vm.search = _fnSearch;
         vm.close = _fnClose;
         vm.empty = _fnEmpty;
-        function _fnSearchShow() {
-            vm.checked = true;
-        }
         function _fnSearchShow(status) {
             vm.status = status;
             vm.checked = true;
@@ -221,7 +218,7 @@
             vm.arrayBoxCode = [];
             vm.arraySampleCode = [];
             vm.projectCodeStr = [];
-            vm.checked = false;
+            // vm.checked = false;
             vm.dtInstance.rerender();
         }
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
@@ -338,7 +335,12 @@
             DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "100").withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
-            vm.selected[full.id] = false;
+            var len = _.filter(selectedSample,{id:full.id}).length;
+            if(len){
+                vm.selected[full.id] = true;
+            }else{
+                vm.selected[full.id] = false;
+            }
             var html = '';
             html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
             return html;

@@ -869,6 +869,7 @@
                 }
                 saveBoxList.push(objBox);
             }
+            // console.log(JSON.stringify(saveBoxList));
             BioBankBlockUi.blockUiStart();
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
                 BioBankBlockUi.blockUiStop();
@@ -924,6 +925,13 @@
         };
         //添加分装样本盒
         vm.addBoxModal = function (box) {
+            if(!box){
+                box = {};
+                box.sampleTypeId = vm.box.sampleType.id;
+                box.isMixed = vm.box.sampleType.isMixed;
+                box.frozenBoxTypeId = vm.box.frozenBoxType.id;
+                box.stockInFrozenTubeList = [];
+            }
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-in/add-box-modal.html',
@@ -936,10 +944,10 @@
                             projectId:vm.entity.projectId,
                             box :box || {stockInFrozenTubeList:[]},
                             incompleteBoxes: vm.incompleteBoxesList,
-                            isMixed:vm.box.sampleType.isMixed,
-                            sampleTypeId:vm.box.sampleType.id,
+                            isMixed:box.isMixed,
+                            sampleTypeId:box.sampleTypeId,
                             sampleTypeClassId:vm.sampleTypeClassId || vm.box.sampleClassificationId,
-                            frozenBoxTypeId:vm.box.frozenBoxType.id
+                            frozenBoxTypeId:box.frozenBoxTypeId
                         };
                     }
                 }

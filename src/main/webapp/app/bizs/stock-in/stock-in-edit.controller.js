@@ -436,15 +436,22 @@
                 if(value.status){
                     changeSampleStatus(value.status,row,col,td,cellProperties);
                 }
-                htm = "<div ng-if='value.sampleCode' style='line-height: 20px'>"+value.sampleCode+"</div>"+
-                    "<div ng-if='value.sampleTmpCode && !value.sampleCode' style='line-height: 20px'>"+value.sampleTempCode+"</div>";
+                // htm = "<div ng-if='value.sampleCode' style='line-height: 20px'>"+value.sampleCode+"</div>"+
+                //     "<div ng-if='value.sampleTmpCode && !value.sampleCode' style='line-height: 20px'>"+value.sampleTempCode+"</div>";
+                var code = value.sampleCode && value.sampleCode != " " ? value.sampleCode : value.sampleTempCode;
+                $(td).html("");
+                var $div = $("<div/>").html(code).css({
+                    'line-height': '20px',
+                    'word-wrap': 'break-word'
+                }).appendTo(td);
+                $div = $("<div id='microtubesStatus'/>").html(value.status).hide().appendTo(td);
             }else {
-                htm = "";
+                $(td).html("");
             }
             td.style.position = 'relative';
 
 
-            td.innerHTML = htm;
+            // td.innerHTML = htm;
         };
         var operateColor;
         var selectedTubesArray = [];

@@ -7,7 +7,7 @@
             <div class="text-right">
                 <button type="button" class="btn btn-primary" ng-click="vm.stockIn()"
                         ng-disabled="!vm.boxLength || !vm.transportRecord.receiver || !vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate || !vm.transportRecord.trackNumber"
-                        ng-show="vm.transportRecord.transhipState == '1001'">开始入库
+                        ng-show="vm.transportRecord.transhipState == '1001'">转运完成
                 </button>
                 <button type="button" class="btn btn-default" ng-click="vm.saveRecord()"
                         ng-disabled="!vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId"
@@ -198,9 +198,28 @@
                 <div class="form-group ">
                     <label class="col-md-4 control-label text-left">样本满意度</label>
                     <div class="col-md-8">
-                        <selectize options='vm.satisfactionOptions' config="vm.satisfactionConfig"
-                                   ng-model="vm.transportRecord.sampleSatisfaction"></selectize>
-                        <input type="hidden" class="form-control" ng-model="vm.transportRecord.sampleSatisfaction">
+                        <!--<selectize options='vm.satisfactionOptions' config="vm.satisfactionConfig"-->
+                                   <!--ng-model="vm.transportRecord.sampleSatisfaction"></selectize>-->
+                        <!--<input type="hidden" class="form-control" ng-model="vm.transportRecord.sampleSatisfaction">-->
+
+                        <span ng-repeat="rating in vm.ratings">
+                            <div star-rating rating-value="rating.current" max="rating.max"
+                                on-rating-selected="vm.getSelectedRating(rating)"
+                            ></div>
+                        </span>
+                        <!--<div star rating-value="vm.ratingVal" max="vm.max"-->
+                             <!--on-hover="vm.onHover()"-->
+                             <!--on-leave="vm.onLeave()"-->
+                             <!--readonly="{{vm.readonly}}">-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--Max: <input type="number" name="input" ng-model="vm.max" min="0" max="99" required>-->
+                            <!--<p>current value: {{vm.ratingVal}}</p>-->
+                            <!--<p>hover on : {{vm.hoverVal ? vm.hoverVal : "none"}}</p>-->
+                            <!--<p>readonly : <input type="checkbox"-->
+                                                 <!--ng-model="vm.readonly"></p>-->
+                        <!--</div>-->
+
                     </div>
                 </div>
             </div>

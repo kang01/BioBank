@@ -93,6 +93,7 @@
 
         // 从数据对象获取编辑器
         setValue: function(newValue) {
+            console.log(newValue);
             // var value = arguments[0] !== (void 0) ? arguments[0] : '';
             // value = value || '';
             // this.getInputElement().value = value;
@@ -106,7 +107,7 @@
             } else {
                 newValue = that.originalValue.sampleTempCode;
             }
-
+            newValue = "";
             this.getInputElement().value = newValue;
         },
 

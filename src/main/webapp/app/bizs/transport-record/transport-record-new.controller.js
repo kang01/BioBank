@@ -77,6 +77,7 @@
                 valueField:'id',
                 labelField:'projectName',
                 maxItems: 1,
+                searchField:'projectName',
                 onChange:function(value){
                     for(var i = 0; i < vm.projectOptions.length;i++){
                         if(value == vm.projectOptions[i].id){
@@ -85,13 +86,16 @@
                         }
                     }
                     vm.transportRecord.projectSiteId = "";
-                    ProjectSitesByProjectIdService.query({id:value},onProjectSitesSuccess,onError);
+                    if(value){
+                        ProjectSitesByProjectIdService.query({id:value},onProjectSitesSuccess,onError);
+                    }
                 }
             };
             //项目点
             vm.projectSitesConfig = {
                 valueField:'id',
                 labelField:'projectSiteName',
+                searchField:'projectSiteName',
                 maxItems: 1,
                 onChange:function (value) {
                     for(var i = 0; i < vm.projectSitesOptions.length;i++){
@@ -514,6 +518,22 @@
                 },
                 afterChange:function (change,source) {
                     if(source == 'edit'){
+                        console.log(JSON.stringify(change));
+                        var rowCount = +vm.box.frozenBoxType.frozenBoxTypeRows;
+                        var colCount = +vm.box.frozenBoxType.frozenBoxTypeColumns;
+                        if(vm.box.sampleType.sampleTypeName == "99"){
+                            var rowIndex = change[0][0];
+                            var oldTubeObject = change[0][2];
+                            for(var m = 0; m < vm.frozenTubeArray.length; m++){
+                                // hotRegisterer.getInstance('my-handsontable').setDataAtCell(rowIndex, m, oldTubeObject);
+                                for(var n = 0; n < vm.frozenTubeArray[m].length ; n++){
+                                    vm.frozenTubeArray[rowIndex][n].sampleCode = oldTubeObject.sampleCode;
+                                }
+
+                            }
+                            hotRegisterer.getInstance('my-handsontable').render();
+                        }
+
                         for (var i=0; i<change.length; ++i){
                             var item = change[i];
                             var row = item[0];
@@ -533,6 +553,9 @@
                                     hotRegisterer.getInstance('my-handsontable').setDataAtCell(row, col, newTube);
                                 }
                             }
+
+
+
                         }
 
                         return;
@@ -1118,6 +1141,15 @@
             BioBankBlockUi.blockUiStop();
             toastr.error(error.data.message);
         }
+
+        vm.rating = 0;
+        vm.ratings = [{
+            current: vm.transportRecord.sampleSatisfaction,
+            max: 10
+        }];
+        vm.getSelectedRating = function (rating) {
+            vm.transportRecord.sampleSatisfaction = rating;
+        };
     }
     function BoxInstanceCtrl($uibModalInstance) {
         var ctrl = this;

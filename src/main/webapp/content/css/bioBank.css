@@ -870,7 +870,7 @@ ul.rating {
     text-align: center;
     font-weight: bold;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 20px;
 }
 .rating .filled {
     color: red;

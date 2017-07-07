@@ -10,11 +10,11 @@
         .controller('TransportRecordNewController', TransportRecordNewController)
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
-    TransportRecordNewController.$inject = ['$scope','blockUI','$timeout','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
+    TransportRecordNewController.$inject = ['$scope','blockUI','$timeout','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TransportRecordService','TranshipSaveService','TranshipBoxService',
         'SampleTypeService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService',
     'BioBankBlockUi','BioBankDataTable'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
-    function TransportRecordNewController($scope,blockUI,$timeout,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
+    function TransportRecordNewController($scope,blockUI,$timeout,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TransportRecordService,TranshipSaveService,TranshipBoxService,
                                           SampleTypeService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService,
                                           BioBankBlockUi,BioBankDataTable) {
 
@@ -193,7 +193,7 @@
                 });
 
             };
-            //导入冻存盒
+            //为true时，导入冻存盒
             var importBoxFlag = false;
             function importFrozenStorageBox() {
                 importBoxFlag = true;
@@ -227,6 +227,7 @@
 
                             });
                             modalInstance.result.then(function (data) {
+                                vm.queryTransportRecord();
                                 vm.loadBox();
                                 importBoxFlag = false;
                             });
@@ -246,6 +247,7 @@
                         }
                         if(!vm.saveStockInFlag && !importBoxFlag){
                             toastr.success("保存转运记录成功");
+                            vm.queryTransportRecord();
                         }
                     }
                 });
@@ -922,6 +924,8 @@
                         if(vm.rowBoxCode){
                             frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
                         }
+                        vm.queryTransportRecord();
+
                     }
                     BioBankBlockUi.blockUiStop();
                     if (typeof callback === "function"){
@@ -1136,7 +1140,14 @@
                 _sampleCount(vm.box.frozenTubeDTOS);
             }
         }
-
+        //查询转运记录
+        vm.queryTransportRecord = _fuQueryTransportRecord;
+        function _fuQueryTransportRecord() {
+            TransportRecordService.get({id : vm.transportRecord.id},onRecordSuccess,onError);
+        }
+        function onRecordSuccess(data) {
+            vm.transportRecord.sampleNumber = data.sampleNumber;
+        }
         function onError(error) {
             BioBankBlockUi.blockUiStop();
             toastr.error(error.data.message);

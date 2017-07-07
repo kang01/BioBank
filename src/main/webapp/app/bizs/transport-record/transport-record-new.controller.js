@@ -473,6 +473,8 @@
                     var td = this;
                     remarkArray = this.getData(row,col,row2,col2);
                     var selectTubeArrayIndex = this.getSelected();
+                    var array = _.flatten(remarkArray);
+
                     if(window.event && window.event.ctrlKey){
                         //换位
                         vm.exchangeFlag = true;
@@ -481,8 +483,17 @@
                         //备注
                         _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex);
                     }else{
-                        domArray = [];
-                        domArray.push(vm.frozenTubeArray[row][col]);
+                        if(array.length == 2){
+                            vm.exchangeFlag = true;
+                            domArray = [];
+                            for(var i = 0; i < array.length; i++){
+                                domArray.push(array[i])
+                            }
+                        }
+                        if(array.length == 1){
+                            domArray = [];
+                            domArray.push(array[0])
+                        }
                         //备注
                         $(".temp").remove();
                         aRemarkArray = [];

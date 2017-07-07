@@ -80,7 +80,9 @@
             labelField:'equipmentCode',
             maxItems: 1,
             onChange:function (value) {
-                AreasByEquipmentIdService.query({id:value},onAreaTempSuccess, onError);
+                if(value){
+                    AreasByEquipmentIdService.query({id:value},onAreaTempSuccess, onError);
+                }
             }
         };
         vm.frozenBoxAreaConfigTemp = {
@@ -106,6 +108,7 @@
         vm.boxCodeConfig = {
             create: true,
             persist:false,
+            createOnBlur:false,
             onChange: function(value){
                 clearTimeout(changeTableTimer);
                 changeTableTimer = setTimeout(function () {

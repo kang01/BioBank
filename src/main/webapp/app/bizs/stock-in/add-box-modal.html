@@ -85,7 +85,7 @@
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="vm.yes()" ng-if="!vm.createBoxflag">是</button>
     <button class="btn btn-primary" type="button" ng-click="vm.no()"  ng-if="!vm.createBoxflag">否</button>
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-if="vm.createBoxflag && vm.sampleFlag" ng-disabled="newBoxForm.$invalid">确定</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-if="vm.createBoxflag && vm.sampleFlag " ng-disabled="newBoxForm.$invalid || !vm.noSampleClassFlag">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()" ng-if="vm.createBoxflag">取消</button>
 </div>
 </form>

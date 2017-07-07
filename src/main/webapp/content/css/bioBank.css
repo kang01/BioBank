@@ -521,7 +521,7 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     z-index: 2;
 }
 .split-box .box-name{
-    width: 100px;
+    width: 94px;
 }
 .second-box{
     margin-top:40px;
@@ -851,4 +851,27 @@ body.ng-pageslide-body-closed::before {
 {
     from {right: -75%;}
     to {right:0;}
+}
+
+
+
+.rating {
+    color: #a9a9a9;
+    margin: 0;
+    padding: 0;
+}
+ul.rating {
+    display: inline-block;
+}
+.rating li {
+    list-style-type: none;
+    display: inline-block;
+    padding: 1px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 20px;
+}
+.rating .filled {
+    color: red;
 }

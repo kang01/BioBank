@@ -10,11 +10,11 @@
         .controller('TransportRecordNewController', TransportRecordNewController)
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
-    TransportRecordNewController.$inject = ['$scope','blockUI','$timeout','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TranshipNewEmptyService','TranshipSaveService','TranshipBoxService',
+    TransportRecordNewController.$inject = ['$scope','blockUI','$timeout','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TransportRecordService','TranshipSaveService','TranshipBoxService',
         'SampleTypeService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService',
     'BioBankBlockUi','BioBankDataTable'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
-    function TransportRecordNewController($scope,blockUI,$timeout,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TranshipNewEmptyService,TranshipSaveService,TranshipBoxService,
+    function TransportRecordNewController($scope,blockUI,$timeout,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TransportRecordService,TranshipSaveService,TranshipBoxService,
                                           SampleTypeService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService,
                                           BioBankBlockUi,BioBankDataTable) {
 
@@ -77,6 +77,7 @@
                 valueField:'id',
                 labelField:'projectName',
                 maxItems: 1,
+                searchField:'projectName',
                 onChange:function(value){
                     for(var i = 0; i < vm.projectOptions.length;i++){
                         if(value == vm.projectOptions[i].id){
@@ -85,13 +86,16 @@
                         }
                     }
                     vm.transportRecord.projectSiteId = "";
-                    ProjectSitesByProjectIdService.query({id:value},onProjectSitesSuccess,onError);
+                    if(value){
+                        ProjectSitesByProjectIdService.query({id:value},onProjectSitesSuccess,onError);
+                    }
                 }
             };
             //项目点
             vm.projectSitesConfig = {
                 valueField:'id',
                 labelField:'projectSiteName',
+                searchField:'projectSiteName',
                 maxItems: 1,
                 onChange:function (value) {
                     for(var i = 0; i < vm.projectSitesOptions.length;i++){
@@ -189,7 +193,7 @@
                 });
 
             };
-            //导入冻存盒
+            //为true时，导入冻存盒
             var importBoxFlag = false;
             function importFrozenStorageBox() {
                 importBoxFlag = true;
@@ -223,6 +227,7 @@
 
                             });
                             modalInstance.result.then(function (data) {
+                                vm.queryTransportRecord();
                                 vm.loadBox();
                                 importBoxFlag = false;
                             });
@@ -242,6 +247,7 @@
                         }
                         if(!vm.saveStockInFlag && !importBoxFlag){
                             toastr.success("保存转运记录成功");
+                            vm.queryTransportRecord();
                         }
                     }
                 });
@@ -514,6 +520,22 @@
                 },
                 afterChange:function (change,source) {
                     if(source == 'edit'){
+                        console.log(JSON.stringify(change));
+                        var rowCount = +vm.box.frozenBoxType.frozenBoxTypeRows;
+                        var colCount = +vm.box.frozenBoxType.frozenBoxTypeColumns;
+                        if(vm.box.sampleType.sampleTypeName == "99"){
+                            var rowIndex = change[0][0];
+                            var oldTubeObject = change[0][2];
+                            for(var m = 0; m < vm.frozenTubeArray.length; m++){
+                                // hotRegisterer.getInstance('my-handsontable').setDataAtCell(rowIndex, m, oldTubeObject);
+                                for(var n = 0; n < vm.frozenTubeArray[m].length ; n++){
+                                    vm.frozenTubeArray[rowIndex][n].sampleCode = oldTubeObject.sampleCode;
+                                }
+
+                            }
+                            hotRegisterer.getInstance('my-handsontable').render();
+                        }
+
                         for (var i=0; i<change.length; ++i){
                             var item = change[i];
                             var row = item[0];
@@ -533,6 +555,9 @@
                                     hotRegisterer.getInstance('my-handsontable').setDataAtCell(row, col, newTube);
                                 }
                             }
+
+
+
                         }
 
                         return;
@@ -899,6 +924,8 @@
                         if(vm.rowBoxCode){
                             frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
                         }
+                        vm.queryTransportRecord();
+
                     }
                     BioBankBlockUi.blockUiStop();
                     if (typeof callback === "function"){
@@ -1113,11 +1140,27 @@
                 _sampleCount(vm.box.frozenTubeDTOS);
             }
         }
-
+        //查询转运记录
+        vm.queryTransportRecord = _fuQueryTransportRecord;
+        function _fuQueryTransportRecord() {
+            TransportRecordService.get({id : vm.transportRecord.id},onRecordSuccess,onError);
+        }
+        function onRecordSuccess(data) {
+            vm.transportRecord.sampleNumber = data.sampleNumber;
+        }
         function onError(error) {
             BioBankBlockUi.blockUiStop();
             toastr.error(error.data.message);
         }
+
+        vm.rating = 0;
+        vm.ratings = [{
+            current: vm.transportRecord.sampleSatisfaction,
+            max: 10
+        }];
+        vm.getSelectedRating = function (rating) {
+            vm.transportRecord.sampleSatisfaction = rating;
+        };
     }
     function BoxInstanceCtrl($uibModalInstance) {
         var ctrl = this;

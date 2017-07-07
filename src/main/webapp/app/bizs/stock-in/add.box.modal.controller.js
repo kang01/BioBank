@@ -25,6 +25,9 @@
         var sampleTypeClassId = items.sampleTypeClassId;
         //盒类型Id
         var frozenBoxTypeId = items.frozenBoxTypeId;
+        var status = items.status;
+        //99类型下有分类时，选择完了分类的变化
+        vm.noSampleClassFlag = true;
 
         var countFlag = true;
         var initData = function () {
@@ -38,15 +41,22 @@
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data, ['id'], ['asc']);
                 //去除混合类型
-                vm.sampleTypeOptions.pop();
-
-                if(vm.isMixed == "1"){
-                    vm.box.sampleType = vm.sampleTypeOptions[0];
-                    vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
-                }else{
+                _.remove(vm.sampleTypeOptions,{sampleTypeName:"98"});
+                _.remove(vm.sampleTypeOptions,{sampleTypeName:"99"});
+                //1:新加第二个盒子 2：新加第一个盒子
+                if(status == "1"){
                     vm.box.sampleTypeId = sampleTypeId;
-                    vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id': + vm.box.sampleTypeId})[0];
+                    vm.box.sampleType = _.find(vm.sampleTypeOptions,{'id': + vm.box.sampleTypeId});
+                }else{
+                    if(vm.isMixed == "1"){
+                        vm.box.sampleType = vm.sampleTypeOptions[0];
+                        vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                    }else{
+                        vm.box.sampleTypeId = sampleTypeId;
+                        vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id': + vm.box.sampleTypeId})[0];
+                    }
                 }
+
 
                 _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
             });
@@ -55,10 +65,26 @@
         function _fnQueryProjectSampleClasses(projectId,sampleTypeId) {
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.sampleTypeClassOptions = _.orderBy(data, ['sampleClassificationId'], ['asc']);
+                if(status == "2"){
+                    if(vm.isMixed == "1" && sampleTypeClassId) {
+                        for (var i = 0; i < boxes.length; i++) {
+                            for (var j = 0; j < vm.sampleTypeClassOptions.length; j++) {
+                                if (boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId) {
+                                    _.pullAt(vm.sampleTypeClassOptions, j);
+                                }
+                            }
+                        }
+                    }
+                }
+
                 if(vm.sampleTypeClassOptions.length){
+                    vm.noSampleClassFlag = true;
                     vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
                     vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                }else{
+                    vm.noSampleClassFlag = false;
                 }
+
 
                 if(countFlag){
                     //创建第一个新盒子，空管子
@@ -86,7 +112,6 @@
         }
         vm.sampleFlag = true;
         //是否手动创建盒子
-
         function _createBox() {
             if(vm.createBoxflag){
                 vm.box.frozenBoxCode="";
@@ -189,8 +214,7 @@
                             }
                         }
 
-                        vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
-                        vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
+
                         countFlag = true;
                         //样本类型下的样本分类为空时，样本类型也应该不存在
                         if(!vm.sampleTypeClassOptions.length){
@@ -208,6 +232,8 @@
                                 vm.sampleFlag = false;
                             }
                         }else{
+                            vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                            vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
                             vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
                             vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
                             sampleTypeClassId = vm.box.sampleClassificationId;

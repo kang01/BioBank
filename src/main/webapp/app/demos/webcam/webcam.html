@@ -1,0 +1,45 @@
+<div class="transport-record-index">
+    <div>
+        <h2 class="pull-left">DEMO Webcam</h2>
+        <h2 class="pull-right">
+
+            <button ng-click="vm.run()" class="btn btn-primary">RUN</button>
+            <button ng-click="vm.snapshot()" class="btn btn-primary">SNAPSHOT</button>
+
+        </h2>
+        <div class="clearfix"></div>
+    </div>
+    <div>
+        <div class="videoWrapper">
+            <style>
+                .videoWrapper {
+                    margin: 0px auto;
+                    width: 90%;
+                    /*height: 70vh;*/
+                    border: 10px #333 solid;
+                }
+
+                .videoElement {
+                    width: 100%;
+                    /*height: 70vh;*/
+                    background-color: #666;
+                    /*padding-bottom: 20px;*/
+                }
+                .imageElement {
+                    /*height: 70vh;*/
+                    /*background-color: #666;*/
+                }
+            </style>
+            <div class="row">
+                <div class="col-md-6">
+                    <video autoplay="true" class="videoElement"></video>
+                </div>
+                <div class="col-md-6">
+                    <img class="imageElement" src="http://ww1.sinaimg.cn/large/bab8ab1fgw1f5t7p0pjwxj20940fg76k.jpg">
+                </div>
+            </div>
+            <canvas class="canvasElement" style="display:none"></canvas>
+        </div>
+    </div>
+
+</div>

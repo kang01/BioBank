@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.SampleType;
 import org.fwoxford.repository.SampleTypeRepository;
 import org.fwoxford.service.ProjectSampleClassService;
@@ -8,7 +9,9 @@ import org.fwoxford.repository.ProjectSampleClassRepository;
 import org.fwoxford.service.dto.ProjectSampleClassDTO;
 import org.fwoxford.service.dto.ProjectSampleClassificationDTO;
 import org.fwoxford.service.dto.ProjectSampleTypeDTO;
+import org.fwoxford.service.dto.SampleTypeDTO;
 import org.fwoxford.service.mapper.ProjectSampleClassMapper;
+import org.fwoxford.service.mapper.SampleTypeMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +42,9 @@ public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
 
     @Autowired
     private SampleTypeRepository sampleTypeRepository;
+
+    @Autowired
+    private SampleTypeMapper sampleTypeMapper;
 
     public ProjectSampleClassServiceImpl(ProjectSampleClassRepository projectSampleClassRepository, ProjectSampleClassMapper projectSampleClassMapper) {
         this.projectSampleClassRepository = projectSampleClassRepository;
@@ -101,32 +107,23 @@ public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
     }
 
     @Override
-    public List<ProjectSampleTypeDTO> getSampleTypeByProjectId(Long projectId) {
+    public List<SampleTypeDTO> getSampleTypeByProjectId(Long projectId) {
         if(projectId == null){
             throw new BankServiceException("项目ID不能为空！");
         }
-        List<Object[]> projectSample =  projectSampleClassRepository.findSampleTypeByProject(projectId);
-        List<ProjectSampleTypeDTO> projectSampleTypeDTOList = new ArrayList<>();
+        List<SampleTypeDTO> sampleTypeDTOS = new ArrayList<SampleTypeDTO>();
         List<SampleType> sampleTypeList = sampleTypeRepository.findAll();
-        for(int i= 0 ;i<projectSample.size();i++){
-            Object[] obj = projectSample.get(i);
-            Long sampleTypeId = Long.valueOf(obj[0].toString());
-            String sampleTypeName = obj[1].toString();
-            SampleType sampleType = new SampleType();
-            for(SampleType s :sampleTypeList){
-                if(s.getId()==sampleTypeId){
-                    sampleType = s;
-                }
+        for(SampleType s :sampleTypeList){
+            SampleTypeDTO sampleTypeDTO = sampleTypeMapper.sampleTypeToSampleTypeDTO(s);
+            int count = projectSampleClassRepository.countByProjectIdAndSampleTypeId(projectId,s.getId());
+            if(count==0){
+                sampleTypeDTO.setFlag(Constants.NO);
+            }else{
+                sampleTypeDTO.setFlag(Constants.YES);
             }
-            ProjectSampleTypeDTO projectSampleTypeDTO = new ProjectSampleTypeDTO();
-            projectSampleTypeDTO.setSampleTypeId(sampleTypeId);
-            projectSampleTypeDTO.setSampleTypeName(sampleTypeName);
-
-            projectSampleTypeDTO.setBackColor(sampleType!=null?sampleType.getBackColor():null);
-            projectSampleTypeDTO.setFrontColor(sampleType!=null?sampleType.getFrontColor():null);
-            projectSampleTypeDTOList.add(projectSampleTypeDTO);
+            sampleTypeDTOS.add(sampleTypeDTO);
         }
-        return projectSampleTypeDTOList;
+        return sampleTypeDTOS;
     }
 
     @Override

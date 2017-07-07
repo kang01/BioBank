@@ -753,6 +753,9 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             assertThat(sampleType8).isNotNull();
         }
         for(SampleClassification s :sampleClassifications){
+            if(s.getSampleClassificationCode().equals("11")){
+                continue;
+            }
             ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType8.getId(),s.getId());;
             String columnNumber = Constants.COLUMNNUMBER_MAP.get(s.getSampleClassificationCode());
             if(projectSampleClass == null){
@@ -765,6 +768,14 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 projectSampleClassRepository.saveAndFlush(projectSampleClass);
                 assertThat(projectSampleClass).isNotNull();
             }
+        }
+
+        SampleType sampleType97 = sampleTypeRepository.findBySampleTypeCode("97");
+        if(sampleType97 == null){
+            sampleType97 = new SampleType().sampleTypeCode("97").sampleTypeName("97")
+                .status("0001").isMixed(1).frontColor("black").backColor("rgb(252, 245, 95)");
+            sampleTypeRepository.saveAndFlush(sampleType97);
+            assertThat(sampleType97).isNotNull();
         }
     }
 

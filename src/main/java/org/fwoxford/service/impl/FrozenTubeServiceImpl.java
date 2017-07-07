@@ -216,7 +216,7 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
 
     @Override
     public List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode, Long sampleTypeId) {
-        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeId(sampleCode,projectCode,sampleTypeId);
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCode,projectCode,sampleTypeId,Constants.INVALID);
 
         for(FrozenTube f:frozenTubeList){
             if(!f.getFrozenBox().getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){

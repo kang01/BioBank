@@ -51,6 +51,8 @@ public class SampleTypeDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 20)
     private Integer isMixed;
 
+    private Integer flag;
+
     public Long getId() {
         return id;
     }
@@ -107,6 +109,14 @@ public class SampleTypeDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setIsMixed(Integer isMixed) {
         this.isMixed = isMixed;
+    }
+
+    public Integer getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Integer flag) {
+        this.flag = flag;
     }
 
     @Override

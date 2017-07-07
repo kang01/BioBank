@@ -355,7 +355,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
            List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
             for(FrozenTubeForSaveBatchDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
                 FrozenTube tube = frozenTubeMapper.frozenTubeForSaveBatchDTOToFrozenTube(tubeDTO);
-//                tube.setSampleCode(tubeDTO.getSampleTempCode());
                 if (tube.getSampleType() == null){
                     tube.setSampleType(box.getSampleType());
                 } else {
@@ -403,6 +402,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                         throw new BankServiceException("样本类型无效！",box.toString());
                     }
                 }
+
                 tube.setSampleTypeCode(tube.getSampleType().getSampleTypeCode());
                 tube.setSampleTypeName(tube.getSampleType().getSampleTypeName());
 
@@ -411,7 +411,18 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
                 tube.setProject(box.getProject());
                 tube.setProjectCode(box.getProjectCode());
-
+                String sampleCode = tube.getSampleCode()!=null?tube.getSampleCode():tube.getSampleTempCode();
+                FrozenTube frozenTube = null;
+                if(tube.getSampleClassification()!=null){
+                    frozenTube =  frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeCodeAndSampleClassificationCode(sampleCode,tube.getProjectCode(),tube.getSampleTypeCode(),tube.getSampleClassification().getSampleClassificationCode());
+                }else{
+                    List<FrozenTube> frozenTubeLists =  frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCode,tube.getProjectCode(),tube.getSampleType().getId(),Constants.INVALID);
+                    frozenTube = frozenTubeLists!=null&&frozenTubeLists.size()>0?frozenTubeLists.get(0):null;
+                }
+                if(frozenTube!=null && tube.getId()!=null&&tube.getId()!=frozenTube.getId()
+                    ||(tube.getId() == null && frozenTube!=null)){
+                    throw new BankServiceException("冻存管编码已存在！"+sampleCode,sampleCode);
+                }
                 if (tube.getFrozenTubeType() != null){
                     int tubeTypeIndex = tubeTypes.indexOf(tube.getFrozenTubeType());
                     if (tubeTypeIndex >= 0){

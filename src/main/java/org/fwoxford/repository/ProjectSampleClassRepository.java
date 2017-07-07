@@ -29,4 +29,7 @@ public interface ProjectSampleClassRepository extends JpaRepository<ProjectSampl
     List<ProjectSampleClass> findSampleTypeByProjectCode(String projectCode);
 
     List<ProjectSampleClass> findByProjectIdInAndSampleTypeId(List<Long> projectIdList, Long sampleTypeId);
+
+    @Query("select p from ProjectSampleClass p where p.projectCode=?1 and p.sampleClassification.sampleClassificationCode=?2 and columnsNumber is null ")
+    List<ProjectSampleClass> findSampleTypeByProjectAndSampleClassification(String projectCode, String sampleClassificationCode);
 }

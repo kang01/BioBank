@@ -316,7 +316,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBoxForSplit.setStatus(Constants.FROZEN_BOX_SPLITED);
         }
         frozenBoxForSplit.setCountOfSample(tubeList.size());
-//        frozenBox.setSampleNumber(tubeList.size());
         stockInBoxRepository.save(frozenBoxForSplit);
         frozenBoxRepository.save(frozenBox);
       return stockInBoxForDataSplitList;
@@ -440,12 +439,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
         //样本分类
         SampleClassification sampleClassification = sampleClassifications.stream().filter(s->s.getId().equals(stockInBoxForDataSplit.getSampleClassificationId())).findFirst().orElse(null);
+
         frozenBoxNew.setSampleClassification(sampleClassification);
-
-
         frozenBoxNew.setColumnsInShelf(stockInBoxForDataSplit.getColumnsInShelf());
         frozenBoxNew.setRowsInShelf(stockInBoxForDataSplit.getRowsInShelf());
-//        frozenBoxNew.setSampleNumber(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
 
         frozenBoxNew.setMemo(stockInBoxForDataSplit.getMemo());
         frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
@@ -470,12 +467,17 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setColumnsInShelf(stockInBoxForDataSplit.getColumnsInShelf());
         stockInBox.setRowsInShelf(stockInBoxForDataSplit.getRowsInShelf());
         stockInBox.setStatus(Constants.FROZEN_BOX_STOCKING);
-        stockInBox.setCountOfSample(stockInBoxForDataSplit.getStockInFrozenTubeList().size());
-        stockInBoxRepository.save(stockInBox);
-        stockInBoxForDataSplit.setFrozenBoxId(stockInBox.getId());
+
         List<StockInTubeDTO> stockInTubeDTOS = stockInBoxForDataSplit.getStockInFrozenTubeList();
         List<StockInTubeDTO> stockInTubeDTOList = new ArrayList<>();
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
+        List<Long> frozenTubeIds = new ArrayList<Long>();
+        int countOfSample = 0;
+        for(FrozenTube f :frozenTubeList){
+            frozenTubeIds.add(f.getId());
+        }
         for(StockInTubeDTO tube : stockInTubeDTOS){
+
             if(tube.getId()==null){
                 throw new BankServiceException("冻存管ID不能为空！",tube.toString());
             }
@@ -483,27 +485,53 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             if(frozenTube == null){
                 throw new BankServiceException("冻存管不存在",tube.toString());
             }
+            if(!frozenTubeIds.contains(tube.getId())){
+                continue;
+            }
             if(tube.getFrozenBoxCode()!=null&&tube.getFrozenBoxCode().equals(frozenTube.getFrozenBox().getFrozenBoxCode())
                 &&tube.getTubeRows().equals(frozenTube.getTubeRows())
                 &&tube.getTubeColumns().equals(frozenTube.getTubeColumns())){
                 continue;
+            }
+            countOfSample++;
+            Long count = frozenTubeRepository.countFrozenTubeListByBoxCode(tube.getFrozenBoxCode());
+            if(count.intValue()==100){
+                throw new BankServiceException("冻存盒已满，不能继续分装！");
             }
             //更改管子的位置信息
             frozenTube.setFrozenBox(frozenBoxNew);
             frozenTube.setFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
             frozenTube.setTubeColumns(tube.getTubeColumns());
             frozenTube.setTubeRows(tube.getTubeRows());
-            //如果管子的样本信息为99，更改管子的样本类型为分装后冻存盒的样本类型
+            //如果管子的样本信息为99，更改管子的样本类型为在该项目下配置的样本分类对应的类型
+            String sampleCode = frozenTube.getSampleCode()!=null?frozenTube.getSampleCode():frozenTube.getSampleTempCode();
             if(frozenTube.getSampleType()!=null&&frozenTube.getSampleType().getIsMixed().equals(Constants.YES)){
-                frozenTube.setSampleType(frozenBoxNew.getSampleType());
-                frozenTube.setSampleTypeCode(frozenBoxNew.getSampleTypeCode());
-                frozenTube.setSampleTypeName(frozenBoxNew.getSampleTypeName());
+                if(frozenBoxNew.getSampleTypeCode().equals("97")&&frozenBox.getSampleTypeCode().equals("99")&&frozenTube.getSampleClassification()!=null){
+                    List<ProjectSampleClass> projectSampleClassList = projectSampleClassRepository.findSampleTypeByProjectAndSampleClassification(frozenBoxNew.getProjectCode(),frozenTube.getSampleClassification().getSampleClassificationCode());
+                    if(projectSampleClassList == null || projectSampleClassList.size()==0){
+                        throw new BankServiceException("该"+sampleCode+"冻存管在"+frozenBoxNew.getProjectCode()+"下未配置样本分类，请联系管理员！");
+                    }else {
+                        frozenTube.setSampleType(projectSampleClassList.get(0).getSampleType());
+                        frozenTube.setSampleTypeCode(projectSampleClassList.get(0).getSampleType().getSampleTypeCode());
+                        frozenTube.setSampleTypeName(projectSampleClassList.get(0).getSampleType().getSampleTypeName());
+                    }
+                }
             }
-            frozenTube.setSampleClassification(frozenBoxNew.getSampleClassification());
-            frozenTubeRepository.save(frozenTube);
+            if(frozenBoxNew.getSampleClassification()!=null
+                &&frozenTube.getSampleClassification()!=null
+                &&frozenTube.getSampleClassification().getId()!=frozenBoxNew.getSampleClassification().getId()){
+                throw new BankServiceException("样本分类不一致，不能进行分装！");
+            }
+            frozenTubeRepository.saveAndFlush(frozenTube);
             tube.setId(frozenTube.getId());
             stockInTubeDTOList.add(tube);
         }
+        StockInBox oldStockBox = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBoxNew.getFrozenBoxCode());
+        int countOfOldBox = oldStockBox!=null&&oldStockBox.getCountOfSample()!=null?oldStockBox.getCountOfSample():0;
+
+        stockInBox.setCountOfSample(countOfOldBox+countOfSample);
+        stockInBoxRepository.save(stockInBox);
+        stockInBoxForDataSplit.setFrozenBoxId(stockInBox.getId());
         stockInBoxForDataSplit.setStockInFrozenTubeList(stockInTubeDTOList);
         return stockInBoxForDataSplit;
     }
@@ -738,7 +766,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             //验证冻存管是否重复
             List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
             if(tubeDTO.getSampleClassificationId()==null){
-                frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeId(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeId());
+                frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeId(),Constants.INVALID);
             }else{
                 frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
             }
@@ -984,7 +1012,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             throw new BankServiceException("冻存盒样本类型不存在！");
         }
         frozenBoxDTO.setSampleTypeCode(entity.getSampleTypeCode());
-//        frozenBoxDTO.setSampleTypeName(entity.getSampleTypeName());
+        frozenBoxDTO.setSampleTypeName(entity.getSampleTypeName());
         return frozenBoxDTO;
     }
 

@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.response.*;
@@ -262,9 +263,13 @@ public class StockListServiceImpl implements StockListService {
     }
 
     private CriteriaQuery<?> getSearchQueryForTube(Root<FrozenTubeListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, FrozenTubeListSearchForm searchForm) {
+        List<Predicate> predicate = new ArrayList<>();
+        query.distinct(true);
+        Predicate p = cb.notEqual(root.get("status").as(String.class), Constants.INVALID);
+        predicate.add(p);
+        Predicate pred = cb.equal(root.get("frozenTubeState").as(String.class), Constants.FROZEN_BOX_STOCKED);
+        predicate.add(pred);
         if (searchForm != null) {
-            List<Predicate> predicate = new ArrayList<>();
-            query.distinct(true);
             if (searchForm.getProjectCodeStr() != null && searchForm.getProjectCodeStr().length > 0) {
                 CriteriaBuilder.In<String> in = cb.in(root.get("projectCode"));
                 for (String id : searchForm.getProjectCodeStr()) {
@@ -342,9 +347,9 @@ public class StockListServiceImpl implements StockListService {
                 Predicate p5 = cb.equal(root.get("sampleUsedTimes").as(Long.class), searchForm.getSampleUsedTimes());
                 predicate.add(p5);
             }
-            Predicate[] pre = new Predicate[predicate.size()];
-            query.where(predicate.toArray(pre));
         }
+        Predicate[] pre = new Predicate[predicate.size()];
+        query.where(predicate.toArray(pre));
         return query;
     }
 

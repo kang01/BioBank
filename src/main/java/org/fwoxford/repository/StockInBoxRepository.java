@@ -31,4 +31,8 @@ public interface StockInBoxRepository extends JpaRepository<StockInBox,Long> {
     Long countByStockInCode(String stockInCode);
 
     List<StockInBox> findByFrozenBoxCode(String frozenBoxCode);
+
+    Long countStockInBoxByStockInCodeAndFrozenBoxCode(String stockInCode, String frozenBoxCode);
+
+    List<StockInBox> findStockInBoxByStockInCodeAndStatus(String stockInCode, String status);
 }

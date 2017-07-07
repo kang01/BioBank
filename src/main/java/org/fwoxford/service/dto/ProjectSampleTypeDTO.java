@@ -8,6 +8,7 @@ public class ProjectSampleTypeDTO {
     private String sampleTypeName;
     private String frontColor;
     private String backColor;
+    private String flag;
     public Long getSampleTypeId() {
         return sampleTypeId;
     }
@@ -38,5 +39,13 @@ public class ProjectSampleTypeDTO {
 
     public void setBackColor(String backColor) {
         this.backColor = backColor;
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
     }
 }

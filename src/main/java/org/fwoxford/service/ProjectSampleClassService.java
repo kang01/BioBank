@@ -4,6 +4,7 @@ import org.fwoxford.domain.ProjectSampleClass;
 import org.fwoxford.service.dto.ProjectSampleClassDTO;
 import org.fwoxford.service.dto.ProjectSampleClassificationDTO;
 import org.fwoxford.service.dto.ProjectSampleTypeDTO;
+import org.fwoxford.service.dto.SampleTypeDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -44,7 +45,7 @@ public interface ProjectSampleClassService {
      */
     void delete(Long id);
 
-    List<ProjectSampleTypeDTO> getSampleTypeByProjectId(Long projectId);
+    List<SampleTypeDTO> getSampleTypeByProjectId(Long projectId);
 
     List<ProjectSampleClassificationDTO> getSampleClassificationByProjectIdAndsampleTypeId(Long projectId, Long sampleTypeId);
 

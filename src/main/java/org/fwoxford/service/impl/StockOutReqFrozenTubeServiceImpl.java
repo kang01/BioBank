@@ -113,24 +113,26 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
         int i = 0;
         for(StockOutRequiredSample s :stockOutRequiredSamples){
-            StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
             String appointedSampleCode = s.getSampleCode();
             String appointedSampleType = s.getSampleType();
-            FrozenTube frozenTube = frozenTubeRepository.findBySampleCodeAndSampleTypeCode(appointedSampleCode,appointedSampleType,s.getStockOutRequirement().getId(),projectIds);
-            if(frozenTube == null){
+            List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndSampleTypeCode(appointedSampleCode,appointedSampleType,s.getStockOutRequirement().getId(),projectIds);
+            if(frozenTubeList == null || frozenTubeList.size() ==0){
                 status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
                 continue;
             }
-            stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE);
-            stockOutReqFrozenTube.setStockOutRequirement(s.getStockOutRequirement());
-            stockOutReqFrozenTube.setMemo(frozenTube!=null?frozenTube.getMemo():null);
-            stockOutReqFrozenTube.setFrozenBox(frozenTube!=null?frozenTube.getFrozenBox():null);
-            stockOutReqFrozenTube.setFrozenTube(frozenTube!=null?frozenTube:null);
-            stockOutReqFrozenTube.setImportingSampleId(s.getId());
-            stockOutReqFrozenTube.setTubeColumns(frozenTube!=null?frozenTube.getTubeColumns():null);
-            stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
-            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
-            i++;
+            for(FrozenTube frozenTube : frozenTubeList){
+                StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
+                stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE);
+                stockOutReqFrozenTube.setStockOutRequirement(s.getStockOutRequirement());
+                stockOutReqFrozenTube.setMemo(frozenTube!=null?frozenTube.getMemo():null);
+                stockOutReqFrozenTube.setFrozenBox(frozenTube!=null?frozenTube.getFrozenBox():null);
+                stockOutReqFrozenTube.setFrozenTube(frozenTube!=null?frozenTube:null);
+                stockOutReqFrozenTube.setImportingSampleId(s.getId());
+                stockOutReqFrozenTube.setTubeColumns(frozenTube!=null?frozenTube.getTubeColumns():null);
+                stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
+                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
+                i++;
+            }
         }
         stockOutRequirement.setCountOfSampleReal(i);
         return status;

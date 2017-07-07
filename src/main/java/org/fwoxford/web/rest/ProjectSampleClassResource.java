@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.ProjectSampleClassService;
 import org.fwoxford.service.dto.ProjectSampleClassificationDTO;
 import org.fwoxford.service.dto.ProjectSampleTypeDTO;
+import org.fwoxford.service.dto.SampleTypeDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.ProjectSampleClassDTO;
@@ -130,20 +131,20 @@ public class ProjectSampleClassResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
-//    /**
-//     * 根据项目Id查询样本类型
-//     * @param projectId
-//     * @return
-//     * @throws URISyntaxException
-//     */
-//    @GetMapping("/project-sample-classes/projectId/{projectId}")
-//    @Timed
-//    public ResponseEntity<List<ProjectSampleTypeDTO>> getSampleTypeByProjectId(@PathVariable Long projectId)
-//        throws URISyntaxException {
-//        log.debug("REST request to get a page of ProjectSampleClasses");
-//        List<ProjectSampleTypeDTO> result = projectSampleClassService.getSampleTypeByProjectId(projectId);
-//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
-//    }
+    /**
+     * 根据项目Id查询样本类型
+     * @param projectId
+     * @return
+     * @throws URISyntaxException
+     */
+    @GetMapping("/project-sample-classes/projectId/{projectId}")
+    @Timed
+    public ResponseEntity<List<SampleTypeDTO>> getSampleTypeByProjectId(@PathVariable Long projectId)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of ProjectSampleClasses");
+        List<SampleTypeDTO> result = projectSampleClassService.getSampleTypeByProjectId(projectId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
+    }
 
     /**
      * 根据项目ID，样本类型ID，查询样本分类

@@ -17,19 +17,19 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
-    @Query("select t from FrozenTube t where t.frozenBox.id = ?1 and t.status!='0000'")
+    @Query("select t from FrozenTube t where t.frozenBox.id = ?1 and t.status!='0000' and t.frozenBox.status !='2005'")
     List<FrozenTube> findFrozenTubeListByBoxId(Long frozenBoxId);
 
-    @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000'")
+    @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000' and t.frozenBox.status !='2005'")
     List<FrozenTube> findFrozenTubeListByBoxCode(String frozenBoxCode);
 
-    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000'")
+    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000' and t.frozenBox.status !='2005'")
     Long countFrozenTubeListByBoxCode(String frozenBoxCode);
 
     List<FrozenTube> findFrozenTubeListByFrozenBoxCodeAndStatus(String frozenBoxCode, String status);
 
     @Query(value = "select t.frozen_box_code as frozenBoxCode,count(t.frozen_box_code) as sampleNumber \n" +
-        "from frozen_tube t where t.frozen_box_code in ?1 and t.status!='0000' group by t.frozen_box_code \n" +
+        "from frozen_tube t where t.frozen_box_code in ?1 and t.status!='0000' and t.frozenBox.status !='2005' group by t.frozen_box_code \n" +
         " order by sampleNumber asc,t.frozen_box_code desc " ,nativeQuery = true)
     List<Object[]> countSampleNumberByfrozenBoxList(List<String> frozenBoxList);
 
@@ -43,16 +43,16 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     @Query(value = "select t.* from frozen_tube t left join frozen_box b on t.frozen_box_id = b.id" +
         " left join sample_type st on t.sample_type_id = st.id " +
-        " where b.status = '2004' and t.sample_code = ?1 or t.sample_temp_code =?1 " +
+        " where b.status = '2004' and (t.sample_code = ?1 or t.sample_temp_code =?1) " +
         " and st.sample_type_code=?2 and t.status !='0000'" +
         " and t.id not in (select f.frozen_tube_id from stock_out_req_frozen_tube f where f.stock_out_requirement_id =?3 and f.status='1301')" +
         " and t.project_id in ?4"
         ,nativeQuery = true)
-    FrozenTube findBySampleCodeAndSampleTypeCode(String appointedSampleCode, String appointedSampleType, Long id, List<Long> projectIds);
+    List<FrozenTube> findBySampleCodeAndSampleTypeCode(String appointedSampleCode, String appointedSampleType, Long id, List<Long> projectIds);
 
     @Query("select t from FrozenTube t\n" +
         "  left join t.frozenBox \n"
-        + " left join StockOutReqFrozenTube f on t.id = f.frozenTube.id and f.status='1301' \n"
+        + " left join StockOutReqFrozenTube f on t.id = f.frozenTube.id and t.status='1301' \n"
         + " where  t.frozenBox is not null and t.frozenBox.status = '2004' and t.status!='0000'\n"
         + " and f.frozenTube.id is null \n"
         + " and (?1 is null or t.sampleType.id = ?1)\n"
@@ -284,16 +284,12 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         //此方法不能随意更改，尤其是返回参数的顺序
     List<Object[]> findFrozenTubeHistoryListBySampleAndProjectCode(String sampleCode, String projectCode);
 
-    List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeCode(String sampleCode, String projectCode, String sampleTypeCode);
+    List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(String sampleCode, String projectCode, Long sampleTypeId,String status);
 
-    List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeId(String sampleCode, String projectCode, Long sampleTypeId);
-
-    @Query("select t from FrozenTube t where t.sampleCode =?1 and t.projectCode = ?2 and t.sampleTypeCode =?3 and t.sampleClassification.sampleClassificationCode = ?4")
+    @Query("select t from FrozenTube t where t.sampleCode =?1  and t.projectCode = ?2 and t.sampleTypeCode =?3 and t.sampleClassification.sampleClassificationCode = ?4 and t.status!='0000'")
     FrozenTube findBySampleCodeAndProjectCodeAndSampleTypeCodeAndSampleClassificationCode(String sampleCode, String projectCode, String sampleTypeCode, String sampleClassTypeCode);
 
-    @Query("select t from FrozenTube t where t.sampleCode =?1 and t.projectCode = ?2 and t.sampleType.id =?3 and t.sampleClassification.sampleClassificationCode = ?4")
-    List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionCode(String sampleCode, String projectCode, Long sampleTypeId, String sampleClassitionCode);
 
-    @Query("select t from FrozenTube t where t.sampleCode =?1 and t.projectCode = ?2 and t.sampleType.id =?3 and t.sampleClassification.id = ?4")
+    @Query("select t from FrozenTube t where t.sampleCode =?1  and t.projectCode = ?2 and t.sampleType.id =?3 and t.sampleClassification.id = ?4 and t.status!='0000'")
     List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(String sampleCode, String projectCode, Long sampleTypeId, Long sampleClassificationId);
 }

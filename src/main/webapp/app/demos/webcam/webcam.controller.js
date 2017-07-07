@@ -61,8 +61,8 @@
                 ctx.drawImage(video,0,0);
                 setTimeout(function(){
                     image.src = canvas.toDataURL('image/webp');
+                    image.reload();
                 }, 100);
-                // image.reload();
             }
         };
     }

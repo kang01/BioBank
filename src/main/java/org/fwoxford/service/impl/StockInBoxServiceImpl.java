@@ -423,7 +423,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(sampleType == null){
             throw new BankServiceException("样本类型不存在！");
         }
-        if(frozenBox.getSampleType().getIsMixed().equals(Constants.NO)
+        if(frozenBox.getSampleType().getIsMixed().equals(Constants.NO)&&!sampleType.getSampleTypeCode().equals("97")
             && (!sampleType.getId().equals(frozenBox.getSampleType().getId()) || sampleType.getId()!= frozenBox.getSampleType().getId())){
             throw new BankServiceException("需要分装的冻存盒与分装后的冻存盒的样本类型不一致，不能分装！");
         }

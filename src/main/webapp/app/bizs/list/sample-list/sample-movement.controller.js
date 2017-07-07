@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('SampleMovementController', SampleMovementController);
 
-    SampleMovementController.$inject = ['$scope','hotRegisterer','$compile','$state','$stateParams','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','SampleTypeService','MasterData','BoxInventoryService','BioBankDataTable','frozenBoxByCodeService','SampleService'];
+    SampleMovementController.$inject = ['$scope','hotRegisterer','$compile','$state','$stateParams','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','SampleTypeService','MasterData','BoxInventoryService','BioBankDataTable','StockInBoxByCodeService','SampleService'];
 
-    function SampleMovementController($scope,hotRegisterer,$compile,$state,$stateParams,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,SampleTypeService,MasterData,BoxInventoryService,BioBankDataTable,frozenBoxByCodeService,SampleService) {
+    function SampleMovementController($scope,hotRegisterer,$compile,$state,$stateParams,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,SampleTypeService,MasterData,BoxInventoryService,BioBankDataTable,StockInBoxByCodeService,SampleService) {
         var vm = this;
         vm.dtInstance = {};
         vm.dto = {};
@@ -79,9 +79,9 @@
         vm.selectedColumns = [
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)
                 .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
-            DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),
+            DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "100"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "60")
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "80")
 
         ];
 
@@ -130,11 +130,11 @@
             })
             .withOption('createdRow', createdRow);
         vm.boxColumns = [
-            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒子类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒子类型').withOption("width", "80"),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "60").renderWith(_fnRowCodeRender),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "60"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "80"),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60")
@@ -157,7 +157,8 @@
         vm.sampleMovementFlag = false;
         function _fnSampleMovement(frozenBoxCode) {
             vm.sampleMovementFlag = true;
-            frozenBoxByCodeService.get({code:"123"},onFrozenSuccess,onError);
+            // frozenBoxByCodeService.get({code:"123"},onFrozenSuccess,onError);
+            StockInBoxByCodeService.get({code:frozenBoxCode},onFrozenSuccess,onError);
         }
         function onFrozenSuccess(data) {
             vm.box = data;

@@ -26,8 +26,7 @@
         //盒类型Id
         var frozenBoxTypeId = items.frozenBoxTypeId;
         var status = items.status;
-        //99类型下有分类时，选择完了分类的变化
-        vm.noSampleClassFlag = true;
+
 
         var countFlag = true;
         var initData = function () {
@@ -49,9 +48,12 @@
                     vm.box.sampleType = _.find(vm.sampleTypeOptions,{'id': + vm.box.sampleTypeId});
                 }else{
                     if(vm.isMixed == "1"){
+                        //99类型下有分类时，选择完了分类的变化
+                        vm.noSampleClassFlag = false;
                         vm.box.sampleType = vm.sampleTypeOptions[0];
                         vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                     }else{
+                        vm.noSampleClassFlag = true;
                         vm.box.sampleTypeId = sampleTypeId;
                         vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id': + vm.box.sampleTypeId})[0];
                     }
@@ -65,6 +67,8 @@
         function _fnQueryProjectSampleClasses(projectId,sampleTypeId) {
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.sampleTypeClassOptions = _.orderBy(data, ['sampleClassificationId'], ['asc']);
+                vm.noSampleClassFlag = true;
+                //1:新加第二个盒子 2：新加第一个盒子
                 if(status == "2"){
                     if(vm.isMixed == "1" && sampleTypeClassId) {
                         for (var i = 0; i < boxes.length; i++) {
@@ -74,16 +78,18 @@
                                 }
                             }
                         }
+                        if(vm.sampleTypeClassOptions.length){
+                            vm.noSampleClassFlag = true;
+                            vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                            vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                        }else{
+                            vm.noSampleClassFlag = false;
+                        }
                     }
+
                 }
 
-                if(vm.sampleTypeClassOptions.length){
-                    vm.noSampleClassFlag = true;
-                    vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
-                    vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
-                }else{
-                    vm.noSampleClassFlag = false;
-                }
+
 
 
                 if(countFlag){

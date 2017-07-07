@@ -642,6 +642,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             sampleClassificationIdStr.add(s.getSampleClassification().getId());
         }
         List<FrozenBox> frozenBoxList = new ArrayList<FrozenBox>();
+        List<FrozenBox> wrongFrozenBoxList = new ArrayList<FrozenBox>();
         //取本次入库的所有冻存盒
         List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCodeAndStatus(stockInCode,Constants.FROZEN_BOX_STOCKING);
         SampleType wrongSample =sampleTypeRepository.findBySampleTypeCode("97");
@@ -651,7 +652,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }
         for(StockInBox inBox:stockInBoxes){
             FrozenBox boxIn = inBox.getFrozenBox();
-            if(boxIn.getFrozenBoxTypeCode().equals(frozenBox.getFrozenBoxTypeCode())&boxIn.getId()!=frozenBox.getId()&&boxIn.getIsSplit().equals(Constants.NO)){
+            if(boxIn.getFrozenBoxTypeCode().equals(frozenBox.getFrozenBoxTypeCode())
+                &&boxIn.getId()!=frozenBox.getId()&&boxIn.getIsSplit().equals(Constants.NO)){
                 Long frozenTube = frozenTubeRepository.countFrozenTubeListByBoxCode(boxIn.getFrozenBoxCode());
                 String columns = boxIn.getFrozenBoxTypeColumns()!=null?boxIn.getFrozenBoxTypeColumns():new String("0");
                 String rows = boxIn.getFrozenBoxTypeRows()!=null?boxIn.getFrozenBoxTypeRows():new String("0");
@@ -660,6 +662,10 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                     continue;
                 }
                 Long key = null;
+                if(boxIn.getSampleTypeCode().equals("97")){
+                    wrongFrozenBoxList.add(boxIn);
+                    continue;
+                }
                 if(sampleClassificationIdStr.size()>0){//有分类
                     key = boxIn.getSampleClassification().getId();
                 }else{//无分类
@@ -691,18 +697,21 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         //无分类---取相同类型的
         else{
             Long sampleTypeId = null;
-            if(sampleType.getSampleTypeCode().equals("98")||sampleType.getSampleTypeCode().equals("99")){
-                sampleTypeId = wrongSample.getId();
-            }else{
+            if(!sampleType.getSampleTypeCode().equals("98")&&!sampleType.getSampleTypeCode().equals("99")){
                 sampleTypeId = sampleType.getId();
+                if (map.get(sampleTypeId) != null && map.get(sampleTypeId).size() > 0) {
+                    frozenBoxList.addAll(map.get(sampleTypeId));
+                } else {
+                    List<FrozenBox> stockInFrozenBox = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), sampleTypeId, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+                    frozenBoxList.addAll(stockInFrozenBox);
+                }
             }
-            if (map.get(sampleTypeId) != null && map.get(sampleTypeId).size() > 0) {
-                frozenBoxList.addAll(map.get(sampleTypeId));
-            } else {
-                List<FrozenBox> stockInFrozenBox = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), sampleTypeId, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
-                frozenBoxList.addAll(stockInFrozenBox);
-            }
+
         }
+        if(wrongFrozenBoxList==null || wrongFrozenBoxList.size()== 0 ){
+            wrongFrozenBoxList =  frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+        }
+        frozenBoxList.addAll(wrongFrozenBoxList);
 //        if(sampleClassificationIdStr.size()==0&&sampleType.getIsMixed().equals(Constants.YES)){//无分类--是混合类型
 //            //该项目下所有未满的冻存盒
 //            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBox(frozenBoxCode, frozenBox.getProject().getId(),stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);

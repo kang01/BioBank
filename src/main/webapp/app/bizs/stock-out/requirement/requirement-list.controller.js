@@ -94,6 +94,10 @@
                         bRegex: false,
                         width: 50
                     }, {
+                        type: 'text',
+                        bRegex: false,
+                        width: 50
+                    }, {
                         type: 'select',
                         bRegex: true,
                         width: 50,
@@ -107,16 +111,17 @@
             });
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn("").withTitle('').withOption('width', '10px').withOption('searchable',false).notSortable().renderWith(extraHtml),
+            DTColumnBuilder.newColumn("").withTitle('').withOption('width', '10px')
+                .withOption('searchable',false).notSortable().renderWith(extraHtml),
             DTColumnBuilder.newColumn('applyCode').withTitle('申请单号').withOption('width', '100px'),
             DTColumnBuilder.newColumn('delegateName').withTitle('委托方').withOption('width', '260px'),
-            DTColumnBuilder.newColumn('applyPersonName').withTitle('委托人').withOption('width', '50px'),
+            DTColumnBuilder.newColumn('applyPersonName').withTitle('委托人').withOption('width', '80px'),
             DTColumnBuilder.newColumn('applyTime').withTitle('需求日期').withOption('width', '170px'),
             DTColumnBuilder.newColumn('purposeOfSample').withTitle('用途').withOption('width', 'auto'),
-            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption('width', '50px'),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption('width', '80px'),
             DTColumnBuilder.newColumn('countOfStockSample').withTitle('满足需求样本量').withOption('width', '110px'),
-            DTColumnBuilder.newColumn('sampleTypes').withTitle('样本类型').withOption('width', '60px'),
-            DTColumnBuilder.newColumn('status').withTitle('状态').withOption('width', '50px'),
+            DTColumnBuilder.newColumn('sampleTypes').withTitle('样本类型').withOption('width', '80px'),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption('width', '80px'),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml).withOption('width', '80px'),
             DTColumnBuilder.newColumn('id').notVisible()
         ];

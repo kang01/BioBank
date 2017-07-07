@@ -450,7 +450,7 @@
             EquipmentService.query({},onEquipmentSuccess, onError);//设备
 
             initFrozenTube(10,10);
-
+            vm.nextFlag = true;
             vm.settings = {
                 colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
                 rowHeaders : ['A','B','C','D','E','F','G','H','J','K'],
@@ -473,7 +473,6 @@
                     var td = this;
                     remarkArray = this.getData(row,col,row2,col2);
                     var selectTubeArrayIndex = this.getSelected();
-
                     if(window.event && window.event.ctrlKey){
                         //换位
                         vm.exchangeFlag = true;
@@ -510,17 +509,27 @@
                     }
                 },
                 enterMoves:function () {
-                    var hotMoves = hotRegisterer.getInstance('my-handsontable');
-                    var selectedCol = hotMoves.getSelected()[1];
-                    if(selectedCol + 1 < hotMoves.countCols()){
-                        return{row:0,col:1};
-                    } else{
-                        return{row:1,col:-selectedCol};
+                    if(vm.nextFlag){
+                        if(vm.isMixedFlag){
+                            return{row:1,col:0};
+                        }else{
+                            var hotMoves = hotRegisterer.getInstance('my-handsontable');
+                            var selectedCol = hotMoves.getSelected()[1];
+                            if(selectedCol + 1 < hotMoves.countCols()){
+                                return{row:0,col:1};
+                            } else{
+                                return{row:1,col:-selectedCol};
+                            }
+                        }
+                    }else{
+                        return{row:0,col:0};
                     }
+
+
+
                 },
                 afterChange:function (change,source) {
                     if(source == 'edit'){
-                        console.log(JSON.stringify(change));
                         var rowCount = +vm.box.frozenBoxType.frozenBoxTypeRows;
                         var colCount = +vm.box.frozenBoxType.frozenBoxTypeColumns;
                         if(vm.box.sampleType.sampleTypeName == "99"){
@@ -570,6 +579,26 @@
                         }
                     }
 
+                },
+                beforeChange: function(changes, source) {
+                    var oldTubeObject = changes[0][2];
+                    var rowIndex = changes[0][0];
+                    var colIndex = changes[0][1];
+                    for(var m = 0; m < vm.frozenTubeArray.length; m++){
+                        for(var n = 0; n < vm.frozenTubeArray[m].length ; n++){
+                            if(m == rowIndex && n == colIndex){
+                                continue;
+                            }
+                            if(vm.frozenTubeArray[m][n].sampleCode == oldTubeObject.sampleCode){
+                                toastr.error("冻存管编码不能重复!");
+                                vm.nextFlag = false;
+                                return false;
+                            }else{
+                                vm.nextFlag = true;
+                            }
+                        }
+
+                    }
                 }
 
             };
@@ -628,7 +657,126 @@
                     td.style.border = '3px solid red;margin:-3px';
                 }
             }
+            var aRemarkArray = [];
+            //备注 选择单元格数据
+            function _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex) {
+                var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.2)"></div>';
+                for(var m = 0; m < remarkArray.length; m++){
+                    for (var n = 0; n < remarkArray[m].length; n++){
+                        if ((remarkArray[m][n].sampleCode && remarkArray[m][n].sampleCode.length > 1)
+                            || (remarkArray[m][n].sampleTempCode && remarkArray[m][n].sampleTempCode.length > 1)){
+                            aRemarkArray.push(remarkArray[m][n]);
+                        }
+                    }
+                }
+                var start1,end1,start2,end2;
+                if(selectTubeArrayIndex[0] > selectTubeArrayIndex[2]){
+                    start1 = selectTubeArrayIndex[2];
+                    end1 = selectTubeArrayIndex[0];
+                }else{
+                    start1 = selectTubeArrayIndex[0];
+                    end1 = selectTubeArrayIndex[2];
+                }
+                if(selectTubeArrayIndex[1] > selectTubeArrayIndex[3]){
+                    start2 = selectTubeArrayIndex[3];
+                    end2 = selectTubeArrayIndex[1];
+                }else{
+                    start2 = selectTubeArrayIndex[1];
+                    end2 = selectTubeArrayIndex[3];
+                }
+                for(var i = start1;i <= end1; i++){
+                    for(var j = start2;  j <= end2;j++)
+                        if($(td.getCell(i,j))[0].childElementCount !=3){
+                            $(td.getCell(i,j)).append(txt);
+                        }
 
+                }
+            }
+            //修改样本状态
+            vm.flagStatus = false;
+            vm.editStatus = function () {
+                var settings = {
+                    editor: vm.flagStatus ? false : 'tube'
+                };
+                hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
+            };
+            //换位
+            vm.exchangeFlag = false;
+            vm.exchange = function () {
+                // toastr.success("两个空冻存盒不能被交换!");
+
+                if(vm.exchangeFlag && domArray.length == 2){
+                    var v1 = (!domArray[0].sampleCode && !domArray[1].sampleCode);
+                    var v2 = (!domArray[0].sampleTempCode && !domArray[1].sampleTempCode);
+                    if((!domArray[0].sampleCode && !domArray[1].sampleCode)
+                        && (!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)){
+                        toastr.error("两个空冻存盒不能被交换!");
+                        return;
+                    }
+                    var row = getTubeRowIndex(domArray[0].tubeRows);
+                    var col = getTubeColumnIndex(domArray[0].tubeColumns);
+                    var row1 = getTubeRowIndex(domArray[1].tubeRows);
+                    var col1 = getTubeColumnIndex(domArray[1].tubeColumns);
+                    if(row > 8 ){
+                        vm.frozenTubeArray[row-1][col] = domArray[1];
+                        vm.frozenTubeArray[row-1][col].tubeRows = getTubeRows(row);
+                        vm.frozenTubeArray[row-1][col].tubeColumns = getTubeColumns(col);
+
+                    }else{
+                        vm.frozenTubeArray[row][col] = domArray[1];
+                        vm.frozenTubeArray[row][col].tubeRows = getTubeRows(row);
+                        vm.frozenTubeArray[row][col].tubeColumns = getTubeColumns(col);
+                    }
+                    if(row1 > 8){
+                        vm.frozenTubeArray[row1-1][col1] = domArray[0];
+                        vm.frozenTubeArray[row1-1][col1].tubeRows = getTubeRows(row1);
+                        vm.frozenTubeArray[row1-1][col1].tubeColumns = getTubeColumns(col1);
+                    }else{
+                        vm.frozenTubeArray[row1][col1] = domArray[0];
+                        vm.frozenTubeArray[row1][col1].tubeRows = getTubeRows(row1);
+                        vm.frozenTubeArray[row1][col1].tubeColumns = getTubeColumns(col1);
+                    }
+
+
+                    domArray = [];
+                    vm.exchangeFlag = false;
+
+                }else{
+                    toastr.error("只能选择两个进行交换！",{},'center');
+                    domArray = [];
+                }
+                hotRegisterer.getInstance('my-handsontable').render();
+            };
+            //批注
+            vm.remarkFlag = false;
+            vm.tubeRemark = function () {
+                if(aRemarkArray.length > 0){
+                    modalInstance = $uibModal.open({
+                        animation: true,
+                        templateUrl: 'app/bizs/transport-record/microtubes-remark-modal.html',
+                        controller: 'microtubesRemarkModalController',
+                        backdrop:'static',
+                        controllerAs: 'vm',
+                        resolve: {
+                            items: function () {
+                                return {
+                                    remarkArray :aRemarkArray
+                                };
+                            }
+                        }
+
+                    });
+                    modalInstance.result.then(function (memo) {
+                        for(var i = 0; i < aRemarkArray.length; i++){
+                            if(aRemarkArray[i].sampleCode || aRemarkArray[i].sampleTempCode){
+                                aRemarkArray[i].memo = memo;
+                            }
+                        }
+                        aRemarkArray = [];
+                        hotRegisterer.getInstance('my-handsontable').render();
+                    });
+                }
+            };
 
             function initFrozenTube(row,col) {
                 for(var i = 0; i < row; i++){
@@ -935,126 +1083,7 @@
                 }
             }
 
-            var aRemarkArray = [];
-            //备注 选择单元格数据
-            function _fnRemarkSelectData(td,remarkArray,selectTubeArrayIndex) {
-                var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.2)"></div>';
-                for(var m = 0; m < remarkArray.length; m++){
-                    for (var n = 0; n < remarkArray[m].length; n++){
-                        if ((remarkArray[m][n].sampleCode && remarkArray[m][n].sampleCode.length > 1)
-                            || (remarkArray[m][n].sampleTempCode && remarkArray[m][n].sampleTempCode.length > 1)){
-                            aRemarkArray.push(remarkArray[m][n]);
-                        }
-                    }
-                }
-                var start1,end1,start2,end2;
-                if(selectTubeArrayIndex[0] > selectTubeArrayIndex[2]){
-                    start1 = selectTubeArrayIndex[2];
-                    end1 = selectTubeArrayIndex[0];
-                }else{
-                    start1 = selectTubeArrayIndex[0];
-                    end1 = selectTubeArrayIndex[2];
-                }
-                if(selectTubeArrayIndex[1] > selectTubeArrayIndex[3]){
-                    start2 = selectTubeArrayIndex[3];
-                    end2 = selectTubeArrayIndex[1];
-                }else{
-                    start2 = selectTubeArrayIndex[1];
-                    end2 = selectTubeArrayIndex[3];
-                }
-                for(var i = start1;i <= end1; i++){
-                    for(var j = start2;  j <= end2;j++)
-                        if($(td.getCell(i,j))[0].childElementCount !=3){
-                            $(td.getCell(i,j)).append(txt);
-                        }
 
-                }
-            }
-            //修改样本状态
-            vm.flagStatus = false;
-            vm.editStatus = function () {
-                var settings = {
-                    editor: vm.flagStatus ? false : 'tube'
-                };
-                hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
-            };
-            //换位
-            vm.exchangeFlag = false;
-            vm.exchange = function () {
-                // toastr.success("两个空冻存盒不能被交换!");
-
-                if(vm.exchangeFlag && domArray.length == 2){
-                    var v1 = (!domArray[0].sampleCode && !domArray[1].sampleCode)
-                    var v2 = (!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)
-                    if((!domArray[0].sampleCode && !domArray[1].sampleCode)
-                    && (!domArray[0].sampleTempCode && !domArray[1].sampleTempCode)){
-                        toastr.error("两个空冻存盒不能被交换!");
-                        return;
-                    }
-                    var row = getTubeRowIndex(domArray[0].tubeRows);
-                    var col = getTubeColumnIndex(domArray[0].tubeColumns);
-                    var row1 = getTubeRowIndex(domArray[1].tubeRows);
-                    var col1 = getTubeColumnIndex(domArray[1].tubeColumns);
-                    if(row > 8 ){
-                        vm.frozenTubeArray[row-1][col] = domArray[1];
-                        vm.frozenTubeArray[row-1][col].tubeRows = getTubeRows(row);
-                        vm.frozenTubeArray[row-1][col].tubeColumns = getTubeColumns(col);
-
-                    }else{
-                        vm.frozenTubeArray[row][col] = domArray[1];
-                        vm.frozenTubeArray[row][col].tubeRows = getTubeRows(row);
-                        vm.frozenTubeArray[row][col].tubeColumns = getTubeColumns(col);
-                    }
-                    if(row1 > 8){
-                        vm.frozenTubeArray[row1-1][col1] = domArray[0];
-                        vm.frozenTubeArray[row1-1][col1].tubeRows = getTubeRows(row1);
-                        vm.frozenTubeArray[row1-1][col1].tubeColumns = getTubeColumns(col1);
-                    }else{
-                        vm.frozenTubeArray[row1][col1] = domArray[0];
-                        vm.frozenTubeArray[row1][col1].tubeRows = getTubeRows(row1);
-                        vm.frozenTubeArray[row1][col1].tubeColumns = getTubeColumns(col1);
-                    }
-
-
-                    domArray = [];
-                    vm.exchangeFlag = false;
-
-                }else{
-                    toastr.error("只能选择两个进行交换！",{},'center');
-                    domArray = [];
-                }
-                hotRegisterer.getInstance('my-handsontable').render();
-            };
-            //批注
-            vm.remarkFlag = false;
-            vm.tubeRemark = function () {
-                if(aRemarkArray.length > 0){
-                    modalInstance = $uibModal.open({
-                        animation: true,
-                        templateUrl: 'app/bizs/transport-record/microtubes-remark-modal.html',
-                        controller: 'microtubesRemarkModalController',
-                        backdrop:'static',
-                        controllerAs: 'vm',
-                        resolve: {
-                            items: function () {
-                                return {
-                                    remarkArray :aRemarkArray
-                                };
-                            }
-                        }
-
-                    });
-                    modalInstance.result.then(function (memo) {
-                        for(var i = 0; i < aRemarkArray.length; i++){
-                            if(aRemarkArray[i].sampleCode || aRemarkArray[i].sampleTempCode){
-                                aRemarkArray[i].memo = memo;
-                            }
-                        }
-                        aRemarkArray = [];
-                        hotRegisterer.getInstance('my-handsontable').render();
-                    });
-                }
-            };
             vm.reImportFrozenBoxData = _fnReImportFrozenBoxData;//重新导入
             //重新导入
             function _fnReImportFrozenBoxData(){

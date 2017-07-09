@@ -38,9 +38,10 @@
                     'next':       '下一页',
                     'previous':   '上一页'
                 },
-                'info': '第 _PAGE_ 页 / 总 _PAGES_ 页',
+                'info': '第 _PAGE_ 页 / 总 _PAGES_ 页 (共 _TOTAL_ 条)',
                 'infoEmpty': '没有数据',
-                'infoFiltered': '(过滤后总行数 _TOTAL_ 条)'
+                'infoFiltered': ''
+            //    (过滤后总行数 _TOTAL_ 条)
             };
             DTDefaultOptions.setLanguage(tableLang);
         }

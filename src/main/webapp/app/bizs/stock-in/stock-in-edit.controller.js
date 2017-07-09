@@ -41,6 +41,11 @@
                 selectedItems = vm.selected;
                 selectAll = vm.selectAll;
                 for (var id in selectedItems) {
+                    var status = _.find(vm.stockInBox,{frozenBoxCode:id}).status;
+                    var isSplit = _.find(vm.stockInBox,{frozenBoxCode:id}).isSplit;
+                   if(status == "2002"  && isSplit){
+                       continue;
+                   }
                     if (selectedItems.hasOwnProperty(id)) {
                         selectedItems[id] = selectAll;
                     }
@@ -64,7 +69,7 @@
                 // 设置Tool button
                 .withButtons([
                     {
-                        text: '<i class="fa fa-sign-in"></i> 批量上架',
+                        text: '<i class="fa fa-sign-in btn-primary"></i> 批量上架',
                         className: 'btn btn-default',
                         key: '1',
                         action: _fnActionPutInShelfButton
@@ -79,7 +84,11 @@
                 // 每行的渲染
                 .withOption('createdRow', _fnCreatedRow)
                 .withOption('headerCallback', function(header) {
-                    $compile(angular.element(header).contents())($scope);
+                    if (!vm.headerCompiled) {
+                        // Use this headerCompiled field to only compile header once
+                        vm.headerCompiled = true;
+                        $compile(angular.element(header).contents())($scope);
+                    }
                 })
                 // 定义每个列过滤选项
                 .withColumnFilter(_createColumnFilters());
@@ -108,6 +117,7 @@
                 vm.selected = {};
 
                 var json = res.data;
+                vm.stockInBox = res.data.data;
                 var error = json.error || json.sError;
                 if ( error ) {
                     jqDt._fnLog( oSettings, 0, error );

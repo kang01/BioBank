@@ -13,20 +13,73 @@
     function SampleMovementController($scope,hotRegisterer,$compile,$state,$stateParams,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,SampleTypeService,MasterData,BoxInventoryService,BioBankDataTable,StockInBoxByCodeService,SampleService) {
         var vm = this;
         vm.dtInstance = {};
+        vm.selectedInstance = {};
         vm.dto = {};
+        // 选中的要上架的盒子
+        vm.selectedTubes = {};
+        vm.selected = {};
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        var selectedSample = [];
-         selectedSample = $stateParams.selectedSample || [];
+        vm.selectedSample = [];
+        vm.selectedSample = $stateParams.selectedSample || [];
         function _init() {
-
+            // 过滤已上架的冻存盒
+            vm.filterNotPutInShelfTubes = function(tube){
+                return !tube.isPutInShelf && true;
+            };
         }
         _init();
+        //关闭移位
         vm.close = _fnClose;
+        //移入
         vm.putIn = _fnPutIn;
+        //关闭目标冻存区
+        vm.closeSampleMovement = _fnCloseSampleMovement;
+        //获取管子列表
         vm.sampleMovement = _fnSampleMovement;
+        //移入
+        function _fnPutIn() {
+            var countOfCols = vm.box.frozenBoxType.frozenBoxTypeColumns;
+            var countOfRows = vm.box.frozenBoxType.frozenBoxTypeRows;
+            var tableCtrl = _getTableCtrl();
+            var startEmptyPos = tableCtrl.getSelected();
+            var cellRow = startEmptyPos[0];
+            var cellCol = startEmptyPos[1];
 
+            for(var i in vm.selected){
+                if(vm.selected[i]){
+                    // 遍历选中的冻存管，i是冻存管的Id
+                    var tube = _.filter(vm.selectedSample, {id: +i})[0];
+                    if (!tube){
+                        continue;
+                    }
+                    for(; cellRow < countOfRows && !tube.isPutInShelf; ++cellRow){
+                        for (; cellCol < countOfCols && !tube.isPutInShelf; ++cellCol){
+                            var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                            if (cellData && !cellData.isEmpty){
+                                tube.isPutInShelf = true;
+                                vm.selected[i] = false;
+                                cellData.sampleCode = tube.sampleCode;
+                                cellData.isEmpty = true;
+                                break;
+                            }
+
+
+                        }
+                        if (tube.isPutInShelf){
+                            break;
+                        }
+                        cellCol = 0;
+                    }
+                }
+
+            }
+
+            vm.nextFlag = true;
+            tableCtrl.render();
+            vm.selectedInstance.rerender();
+        }
         function _fnClose() {
-            if(selectedSample.length){
+            if(vm.selectedSample.length){
                 var modalInstance = $uibModal.open({
                     templateUrl: 'myModalContent.html',
                     controller: 'ModalInstanceCtrl',
@@ -41,10 +94,76 @@
             }
 
         }
+        function _fnCloseSampleMovement() {
+            vm.sampleMovementFlag = false;
+        }
+        vm.sampleMovementFlag = false;
+        function _fnSampleMovement(frozenBoxCode) {
+            vm.sampleMovementFlag = true;
+            StockInBoxByCodeService.get({code:frozenBoxCode},onFrozenSuccess,onError);
+        }
+        function onFrozenSuccess(data) {
+            vm.box = data;
+            _initSampleType();
+            setTimeout(function () {
+                _reloadTubesForTable(vm.box);
+            },500);
+            _.forEach(vm.selectedSample, function(tube){
+                vm.selected[tube.id] = false;
+            });
+
+        }
+        _initFrozenBoxPanel();
+
+        function _initSampleType() {
+            //样本类型
+            SampleTypeService.querySampleType().success(function (data) {
+                vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
+                _.remove(vm.sampleTypeOptions,{sampleTypeName:"99"});
+                if(!vm.box.sampleType){
+                    vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                    vm.box.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
+                    vm.box.sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
+                }else{
+                    vm.box.sampleTypeId = vm.box.sampleType.id;
+                    vm.box.sampleTypeName = vm.box.sampleType.sampleTypeName;
+                    vm.box.sampleTypeCode = vm.box.sampleType.sampleTypeCode;
+                }
+
+                // vm.box.sampleType = vm.sampleTypeOptions[0];
+                // vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId}).isMixed;
+                // setTimeout(function () {
+                _fnQueryProjectSampleClass("31",vm.box.sampleTypeId);
+                // },500);
+            });
+            vm.sampleTypeConfig = {
+                valueField:'id',
+                labelField:'sampleTypeName',
+                maxItems: 1,
+                onChange:function (value) {
+                    // vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
+                    // vm.box.sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeName;
+                    // vm.box.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
+                    _fnQueryProjectSampleClass(vm.entity.projectId,value);
+                }
+            };
+            //样本分类
+            function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
+                SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
+                    vm.projectSampleTypeOptions = data;
+                });
+            }
+            vm.projectSampleTypeConfig = {
+                valueField:'sampleClassificationId',
+                labelField:'sampleClassificationName',
+                maxItems: 1,
+                onChange:function (value) {
+                }
+            };
+        }
 
 
-        vm.selected = {};
-        vm.selectAll = true;
+        vm.selectAll = false;
         vm.toggleAll = toggleAll;
         vm.toggleOne = toggleOne;
         function toggleAll (selectAll, selectedItems) {
@@ -66,22 +185,21 @@
             }
             vm.selectAll = true;
         }
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10)
-            .withOption('data', selectedSample)
-            .withOption('createdRow', function(row, data, dataIndex) {
-                $compile(angular.element(row).contents())($scope);
-            })
-            .withOption('headerCallback', function(header) {
-                $compile(angular.element(header).contents())($scope);
-            })
-            .withPaginationType('full_numbers');
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
+            // .withOption('data', selectedSample)
+            // .withOption('createdRow', function(row, data, dataIndex) {
+            //     $compile(angular.element(row).contents())($scope);
+            // })
+            // .withOption('headerCallback', function(header) {
+            //     $compile(angular.element(header).contents())($scope);
+            // })
+            // .withPaginationType('full_numbers');
         var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.selectedColumns = [
-            DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)
-                .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
-            DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "100"),
-            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "80")
+            DTColumnBuilder.newColumn(0).withOption("width", "30"),
+            DTColumnBuilder.newColumn(1).withOption("width", "100"),
+            DTColumnBuilder.newColumn(2).withOption("width", "60"),
+            DTColumnBuilder.newColumn(3).withOption("width", "80")
 
         ];
 
@@ -91,7 +209,9 @@
             html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
             return html;
         }
-
+        vm.dto.spaceType = "2";
+        vm.dto.compareType = "1";
+        vm.dto.number = 0;
         //盒子列表
         vm.boxOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
             .withOption('searching', false)
@@ -134,7 +254,7 @@
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "60").renderWith(_fnRowCodeRender),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "60"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "80"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "100"),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60")
@@ -152,69 +272,6 @@
             var html = '';
             html = '<a ng-click="vm.sampleMovement('+full.frozenBoxCode+')">'+full.frozenBoxCode+'</a>';
             return html;
-        }
-
-        vm.sampleMovementFlag = false;
-        function _fnSampleMovement(frozenBoxCode) {
-            vm.sampleMovementFlag = true;
-            // frozenBoxByCodeService.get({code:"123"},onFrozenSuccess,onError);
-            StockInBoxByCodeService.get({code:frozenBoxCode},onFrozenSuccess,onError);
-        }
-        function onFrozenSuccess(data) {
-            vm.box = data;
-            _initSampleType();
-            setTimeout(function () {
-                _reloadTubesForTable(vm.box);
-            },500);
-
-        }
-        _initFrozenBoxPanel();
-
-        function _initSampleType() {
-            //样本类型
-            SampleTypeService.querySampleType().success(function (data) {
-                vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
-                _.remove(vm.sampleTypeOptions,{sampleTypeName:"99"});
-                if(!vm.box.sampleType){
-                    vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
-                    vm.box.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
-                    vm.box.sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
-                }else{
-                    vm.box.sampleTypeId = vm.box.sampleType.id;
-                    vm.box.sampleTypeName = vm.box.sampleType.sampleTypeName;
-                    vm.box.sampleTypeCode = vm.box.sampleType.sampleTypeCode;
-                }
-
-                // vm.box.sampleType = vm.sampleTypeOptions[0];
-                // vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId}).isMixed;
-                // setTimeout(function () {
-                    _fnQueryProjectSampleClass("31",vm.box.sampleTypeId);
-                // },500);
-            });
-            vm.sampleTypeConfig = {
-                valueField:'id',
-                labelField:'sampleTypeName',
-                maxItems: 1,
-                onChange:function (value) {
-                    // vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
-                    // vm.box.sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeName;
-                    // vm.box.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
-                    _fnQueryProjectSampleClass(vm.entity.projectId,value);
-                }
-            };
-            //样本分类
-            function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
-                SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
-                    vm.projectSampleTypeOptions = data;
-                });
-            }
-            vm.projectSampleTypeConfig = {
-                valueField:'sampleClassificationId',
-                labelField:'sampleClassificationName',
-                maxItems: 1,
-                onChange:function (value) {
-                }
-            };
         }
 
         function _initFrozenBoxPanel(){
@@ -412,6 +469,7 @@
                 frozenBoxCode: box.frozenBoxType.frozenBoxCode,
                 status: "3001",
                 memo: "",
+                isEmpty: false,
                 tubeRows: pos.tubeRows,
                 tubeColumns: pos.tubeColumns,
                 rowNO: rowNO,
@@ -431,10 +489,16 @@
                 tube.sampleTypeId = tubeInBox.sampleType.id;
                 tube.sampleTypeName = tubeInBox.sampleType.sampleTypeName;
                 tube.backColor = tubeInBox.sampleType.backColor;
+                if(tube.sampleCode || tube.sampleTempCode){
+                    tube.isEmpty = true;
+                }
+
             }else{
                 tube.sampleTypeId = box.sampleType.id;
                 tube.sampleTypeName = box.sampleType.sampleTypeName;
-                tube.sampleClassificationId = box.sampleClassification.id;
+                if(box.sampleClassification){
+                    tube.sampleClassificationId = box.sampleClassification.id;
+                }
 
             }
 
@@ -504,43 +568,6 @@
             tableCtrl.updateSettings(settings);
             tableCtrl.loadData(tubesInTable);
             tableCtrl.selectCell(emptyPos.row, emptyPos.col);
-        }
-        //移入
-        function _fnPutIn() {
-            vm.selectedBox = [
-                {sampleTempCode:"1111"},
-                {sampleTempCode:"222"},
-                {sampleTempCode:"333"},
-                {sampleTempCode:"444"},
-                {sampleTempCode:"5565"},
-                {sampleTempCode:"336663"},
-                {sampleTempCode:"777"},
-                {sampleTempCode:"888"}
-            ];
-            var countOfCols = vm.box.frozenBoxType.frozenBoxTypeColumns;
-            var countOfRows = vm.box.frozenBoxType.frozenBoxTypeRows;
-            var tableCtrl = _getTableCtrl();
-            var startEmptyPos = tableCtrl.getSelected();
-            var cellRow = startEmptyPos[0];
-            var cellCol = startEmptyPos[1];
-            for(var i = 0; i < vm.selectedBox.length; i++){
-                for(; cellRow < countOfRows; ++cellRow){
-                    for (; cellCol < countOfCols; ++cellCol){
-                        var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
-                        if (cellData && !cellData.sampleTempCode){
-                            cellData.sampleTempCode = vm.selectedBox[i].sampleTempCode;
-                        }
-
-                        // break;
-                    }
-                    // break;
-                    cellCol = 0;
-                }
-
-            }
-
-            vm.nextFlag = true;
-            tableCtrl.render();
         }
         // 获取上架位置列表的控制实体
         function _getTableCtrl(){

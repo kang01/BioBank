@@ -332,14 +332,21 @@
                                 if(vm.box.sampleClassification){
                                     vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
                                 }
-                                vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                                if(vm.frozenTubeArray[i][j]){
+                                    vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                                }
                             }
                         }
                         for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
                             if(vm.box.sampleClassification){
                                 vm.box.frozenTubeDTOS[m].sampleClassification.id = vm.box.sampleClassificationId;
                             }
-                            vm.box.frozenTubeDTOS[m].sampleType.id = vm.box.sampleTypeId;
+                            if(vm.box.frozenTubeDTOS[m].sampleType){
+                                vm.box.frozenTubeDTOS[m].sampleType.id = vm.box.sampleTypeId;
+
+                            }else{
+                                vm.box.frozenTubeDTOS[m].sampleTypeId = vm.box.sampleTypeId;
+                            }
                         }
                     }
 
@@ -552,7 +559,9 @@
                             for(var m = 0; m < vm.frozenTubeArray.length; m++){
                                 // hotRegisterer.getInstance('my-handsontable').setDataAtCell(rowIndex, m, oldTubeObject);
                                 for(var n = 0; n < vm.frozenTubeArray[m].length ; n++){
-                                    vm.frozenTubeArray[rowIndex][n].sampleCode = oldTubeObject.sampleCode;
+                                    if(oldTubeObject.sampleCode){
+                                        vm.frozenTubeArray[rowIndex][n].sampleCode = oldTubeObject.sampleCode;
+                                    }
                                 }
 
                             }

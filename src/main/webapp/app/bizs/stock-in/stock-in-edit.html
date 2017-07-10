@@ -52,18 +52,19 @@
     </div>
     <!--ng-if="vm.showSplittingPanel()"-->
     <div ng-if="vm.isShowSplittingPanel()">
-        <div class="row split-box ml-0 mr-0">
+        <div class="row split-box">
             <div class="col-md-9">
-                <div class="col-md-5">
-                    <h4>待分装样本盒{{vm.box.frozenBoxCode}}</h4>
+                <div class="row">
+                    <div class="col-md-5">
+                        <h4>待分装样本盒{{vm.box.frozenBoxCode}}</h4>
+                    </div>
+                    <div class="col-md-7 text-right mb-10">
+                        <button type="button" class="btn btn-default" ng-click="vm.closeBox()">关闭</button>
+                        <button type="button" class="btn btn-default" ng-click="vm.splitBox()">分装</button>
+                        <button type="button" class="btn btn-default" ng-click="vm.recover()">复原</button>
+                        <button type="button" class="btn btn-primary" ng-click="vm.saveBox()">保存分装结果</button>
+                    </div>
                 </div>
-                <div class="col-md-7 text-right mb-10">
-                    <button type="button" class="btn btn-default" ng-click="vm.closeBox()">关闭</button>
-                    <button type="button" class="btn btn-default" ng-click="vm.splitBox()">分装</button>
-                    <button type="button" class="btn btn-default" ng-click="vm.recover()">复原</button>
-                    <button type="button" class="btn btn-primary" ng-click="vm.saveBox()">保存分装结果</button>
-                </div>
-                <div class="clear-both"></div>
                 <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"></hot-table>
             </div>
             <div class="col-md-3 pl-0 pr-0">

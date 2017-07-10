@@ -133,17 +133,27 @@
         };
         //不同项目下的样本分类
         function _fnQueryProjectSampleClass(projectId,sampleTypeId,isMixed) {
-            if(isMixed == 1){
-                vm.sampleTypeFlag = true;
-            }else{
-                vm.sampleTypeFlag = false;
 
-            }
             SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                 vm.projectSampleTypeOptions = data;
                 if(vm.projectSampleTypeOptions.length){
                     vm.frozenBox.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
                 }
+                if(vm.projectSampleTypeOptions.length){
+                    if(isMixed == 1){
+                        vm.sampleTypeFlag = false;
+                    }else{
+                        vm.sampleTypeFlag = true;
+                    }
+                }else{
+                    vm.sampleTypeFlag = false;
+                }
+                // if(isMixed == 1){
+                //     vm.sampleTypeFlag = true;
+                // }else{
+                //     vm.sampleTypeFlag = false;
+                //
+                // }
                 _fnInitBoxInfo();
 
 

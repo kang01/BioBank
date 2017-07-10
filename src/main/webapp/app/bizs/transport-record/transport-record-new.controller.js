@@ -230,7 +230,9 @@
                                 vm.queryTransportRecord();
                                 vm.loadBox();
                                 importBoxFlag = false;
-                            });
+                            },function () {
+                                importBoxFlag = false;
+                            })
                         }
                         vm.saveRecordFlag = false;
                         BioBankBlockUi.blockUiStop();
@@ -276,6 +278,7 @@
                 SampleTypeService.querySampleType().success(function (data) {
                     vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['asc']);
                     _.remove(vm.sampleTypeOptions,{sampleTypeName:"98"});
+                    _.remove(vm.sampleTypeOptions,{sampleTypeName:"97"});
                 });
             }
             //不同项目下的样本分类
@@ -592,24 +595,28 @@
 
                 },
                 beforeChange: function(changes, source) {
+                    var newTubeObject = changes[0][3];
                     var oldTubeObject = changes[0][2];
                     var rowIndex = changes[0][0];
                     var colIndex = changes[0][1];
-                    for(var m = 0; m < vm.frozenTubeArray.length; m++){
-                        for(var n = 0; n < vm.frozenTubeArray[m].length ; n++){
-                            if(m == rowIndex && n == colIndex){
-                                continue;
+                    if(newTubeObject && newTubeObject.sampleTempCode){
+                        for(var m = 0; m < vm.frozenTubeArray.length; m++){
+                            for(var n = 0; n < vm.frozenTubeArray[m].length ; n++){
+                                if(m == rowIndex && n == colIndex){
+                                    continue;
+                                }
+                                if(vm.frozenTubeArray[m][n].sampleCode == oldTubeObject.sampleCode){
+                                    toastr.error("冻存管编码不能重复!");
+                                    vm.nextFlag = false;
+                                    return false;
+                                }else{
+                                    vm.nextFlag = true;
+                                }
                             }
-                            if(vm.frozenTubeArray[m][n].sampleCode == oldTubeObject.sampleCode){
-                                toastr.error("冻存管编码不能重复!");
-                                vm.nextFlag = false;
-                                return false;
-                            }else{
-                                vm.nextFlag = true;
-                            }
-                        }
 
+                        }
                     }
+
                 }
 
             };
@@ -950,14 +957,54 @@
                 valueField:'id',
                 labelField:'frozenBoxTypeName',
                 maxItems: 1,
-                onChange:function(value){
-                    var boxType = _.filter(vm.frozenBoxTypeOptions, {id:+value})[0];
+                onChange:function(value) {
+                    var boxType = _.filter(vm.frozenBoxTypeOptions, {id: +value})[0];
                     if (!boxType) {
                         return;
                     }
                     vm.box.frozenBoxTypeId = value;
                     vm.box.frozenBoxType.frozenBoxTypeRows = boxType.frozenBoxTypeRows;
                     vm.box.frozenBoxType.frozenBoxTypeColumns = boxType.frozenBoxTypeColumns;
+                    var frozenTubeDTOS = angular.copy(vm.box.frozenTubeDTOS);
+                    vm.box.frozenTubeDTOS = [];
+                    var tubeList = [];
+                    for (var j = 0; j < vm.box.frozenBoxType.frozenBoxTypeRows; j++) {
+                        tubeList[j] = [];
+                        var rowNO = j > 7 ? j + 1 : j;
+                        rowNO = String.fromCharCode(rowNO + 65);
+                        for (var k = 0; k < vm.box.frozenBoxType.frozenBoxTypeColumns; k++) {
+                            tubeList[j][k] = {
+                                frozenBoxCode: vm.box.frozenBoxCode,
+                                sampleCode: "",
+                                sampleTempCode: vm.box.frozenBoxCode + "-" + rowNO + (k + 1),
+                                sampleTypeId: vm.box.sampleTypeId,
+                                sampleClassificationId: vm.box.sampleClassificationId,
+                                status: "3001",
+                                tubeRows: rowNO,
+                                tubeColumns: k + 1+""
+                            };
+                            if (isMixed == 1) {
+                                for (var l = 0; l < vm.projectSampleTypeOptions.length; l++) {
+                                    if (vm.projectSampleTypeOptions[l].columnsNumber == k + 1) {
+                                        tubeList[j][k].sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
+                                    }
+                                }
+                            }
+
+                            vm.box.frozenTubeDTOS.push(tubeList[j][k]);
+                            for (var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
+                                var row1 = vm.box.frozenTubeDTOS[m].tubeRows;
+                                var col1 = vm.box.frozenTubeDTOS[m].tubeColumns;
+                                for(var n = 0; n < frozenTubeDTOS.length; n++){
+                                    var row2 = frozenTubeDTOS[n].tubeRows;
+                                    var col2 = frozenTubeDTOS[n].tubeColumns;
+                                    if(row1 == row2 && col1 == col2 ){
+                                        vm.box.frozenTubeDTOS[m] = frozenTubeDTOS[n];
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     var box = vm.box;
                     _reloadTubesForTable(box);

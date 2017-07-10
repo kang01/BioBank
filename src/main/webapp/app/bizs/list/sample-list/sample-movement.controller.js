@@ -97,6 +97,7 @@
         function _fnCloseSampleMovement() {
             vm.sampleMovementFlag = false;
         }
+        //移位
         vm.sampleMovementFlag = false;
         function _fnSampleMovement(frozenBoxCode) {
             vm.sampleMovementFlag = true;

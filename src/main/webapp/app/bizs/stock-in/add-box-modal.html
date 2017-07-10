@@ -29,9 +29,12 @@
                                 <span class="required-field"></span>
                                 样本类型
                             </label>
+                            <!--ng-disabled="vm.isMixed != 1 || vm.fullBoxFlag"-->
                             <div class="col-sm-8">
-                                <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                           ng-model="vm.box.sampleTypeId" ng-disabled="vm.isMixed != 1 || vm.fullBoxFlag"></selectize>
+                                <selectize options='vm.problemOptions' config="vm.sampleTypeConfig"
+                                           ng-model="vm.box.sampleTypeId"
+                                           ng-disabled="vm.fullBoxFlag"
+                                ></selectize>
                                 <input type="hidden" class="form-control"  ng-model="vm.box.sampleTypeId"  required>
                             </div>
                         </div>
@@ -79,7 +82,7 @@
 
     </div>
     <div ng-if="!vm.sampleFlag">
-        <h4 class="" style="color: red">不允许添加盒子!</h4>
+        <h4 class="" style="color: red">有未满冻存盒，不允许添加盒子!</h4>
     </div>
 </div>
 <div class="modal-footer">

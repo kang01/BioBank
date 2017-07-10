@@ -898,6 +898,7 @@
                 vm.frozenBoxCode = "";
                 $(".box-selected").removeClass("box-selected");
             }).error(function (data) {
+                vm.recover();
                 BioBankBlockUi.blockUiStop();
                 toastr.error(data.message);
             });

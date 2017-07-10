@@ -338,8 +338,10 @@
                             }
                         }
                         for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
-                            if(vm.box.sampleClassification){
+                            if(vm.box.frozenTubeDTOS[m].sampleClassification){
                                 vm.box.frozenTubeDTOS[m].sampleClassification.id = vm.box.sampleClassificationId;
+                            }else{
+                                vm.box.frozenTubeDTOS[m].sampleClassificationId = vm.box.sampleClassificationId;
                             }
                             if(vm.box.frozenTubeDTOS[m].sampleType){
                                 vm.box.frozenTubeDTOS[m].sampleType.id = vm.box.sampleTypeId;

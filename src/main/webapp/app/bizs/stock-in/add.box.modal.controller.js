@@ -21,6 +21,7 @@
         vm.isMixed = items.isMixed;
         //样本类型
         var sampleTypeId = items.sampleTypeId;
+        vm.box.sampleTypeId = items.sampleTypeId;
         //样本分类
         var sampleTypeClassId = items.sampleTypeClassId;
         //盒类型Id
@@ -44,23 +45,61 @@
                 _.remove(vm.sampleTypeOptions,{sampleTypeName:"99"});
                 //1:新加第二个盒子 2：新加第一个盒子
                 if(status == "1"){
+                    vm.problemOptions = _.remove(vm.sampleTypeOptions,{id:sampleTypeId});
                     vm.box.sampleTypeId = sampleTypeId;
-                    vm.box.sampleType = _.find(vm.sampleTypeOptions,{'id': + vm.box.sampleTypeId});
+                    vm.box.sampleType = _.find(vm.problemOptions,{'id': + vm.box.sampleTypeId});
                 }else{
                     if(vm.isMixed == "1"){
                         //99类型下有分类时，选择完了分类的变化
+                        vm.problemOptions = vm.sampleTypeOptions;
+                        var problemSampleTypeId = _.find(vm.problemOptions,{sampleTypeCode:"97"}).id;
+                        for (var i = 0; i < boxes.length; i++) {
+                            if(boxes[i].sampleTypeId == problemSampleTypeId){
+                                _.remove(vm.problemOptions,{sampleTypeCode:"97"});
+                            }
+                        }
                         vm.noSampleClassFlag = false;
-                        vm.box.sampleType = vm.sampleTypeOptions[0];
-                        vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
+                        if(!sampleTypeClassId){
+                            if(boxes.length){
+                                vm.sampleFlag = false;
+                            }
+                            //是混合类型，并且无分类，为问题样本
+                            vm.problemOptions = _.remove(vm.sampleTypeOptions,function (o) {
+                                if(o.sampleTypeCode == "97"){
+                                    return o
+                                }
+                            });
+
+                        }
+                        vm.box.sampleType = vm.problemOptions[0];
+                        vm.box.sampleTypeId = vm.problemOptions[0].id;
+
                     }else{
                         vm.noSampleClassFlag = true;
-                        vm.box.sampleTypeId = sampleTypeId;
-                        vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id': + vm.box.sampleTypeId})[0];
+                        vm.problemOptions = _.remove(vm.sampleTypeOptions,function (o) {
+                            if(o.sampleTypeCode == "97" || o.id == vm.box.sampleTypeId){
+                                return o
+                            }
+                        });
+                        vm.problemOptions = _.remove(vm.problemOptions,function (o) {
+                            if(boxes.length){
+                                for(var i = 0; i < boxes.length; i++){
+                                    if(boxes[i].sampleTypeId != o.id){
+                                        return o;
+                                    }
+                                }
+                            }else{
+                                return o;
+                            }
+
+                        });
+                        vm.box.sampleTypeId = vm.problemOptions[0].id;
+                        vm.box.sampleType = vm.problemOptions[0];
+
                     }
                 }
-
-
                 _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
+
             });
         }
         vm.fullBoxFlag = false;
@@ -78,13 +117,36 @@
                                 }
                             }
                         }
+                        // vm.problemOptions = _.remove(vm.problemOptions,function (o) {
+                        //     if(boxes.length){
+                        //         for(var i = 0; i < boxes.length; i++){
+                        //             if(boxes[i].sampleTypeId != o.id){
+                        //                 return o;
+                        //             }
+                        //         }
+                        //     }else{
+                        //         return o;
+                        //     }
+                        //
+                        // });
+
                         if(vm.sampleTypeClassOptions.length){
                             vm.noSampleClassFlag = true;
                             vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
                             vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
                         }else{
-                            vm.noSampleClassFlag = false;
+                            if(vm.box.sampleType.sampleTypeCode == "97"){
+                                vm.noSampleClassFlag = true;
+                                vm.box.sampleClassificationId = "";
+                                vm.box.sampleClassification = "";
+                            }else{
+                                vm.noSampleClassFlag = false;
+                            }
+
                         }
+                    }else{
+
+
                     }
 
                 }
@@ -186,23 +248,24 @@
                 //是混合、无分类
                 if(vm.isMixed == "1" && !sampleTypeClassId){
                     if(!vm.fullBoxFlag){
-                        for(var i = 0; i < boxes.length; i++){
-                            for(var j = 0; j < vm.sampleTypeOptions.length; j++){
-                                if(boxes[i].sampleTypeId == vm.sampleTypeOptions[j].id){
-                                    _.pullAt(vm.sampleTypeOptions,j);
-                                }
-                            }
-                        }
-                        if(vm.sampleTypeOptions.length){
-                            vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
-                            vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId})[0];
-                        }else{
-                            vm.sampleFlag = false;
-                        }
+                        // for(var i = 0; i < boxes.length; i++){
+                        //     for(var j = 0; j < vm.sampleTypeOptions.length; j++){
+                        //         if(boxes[i].sampleTypeId == vm.sampleTypeOptions[j].id){
+                        //             _.pullAt(vm.sampleTypeOptions,j);
+                        //         }
+                        //     }
+                        // }
+
+                        // if(vm.problemOptions.length){
+                        //     vm.box.sampleTypeId = vm.problemOptions[0].id;
+                        //     vm.box.sampleType = _.filter(vm.problemOptions,{'id':+vm.box.sampleTypeId})[0];
+                        // }else{
+                        //     vm.sampleFlag = false;
+                        // }
                     }else{
                         if(vm.sampleTypeOptions.length){
-                            vm.box.sampleTypeId = _.filter(vm.sampleTypeOptions,{id:items.box.sampleTypeId})[0].id;
-                            vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+items.box.sampleTypeId})[0];
+                            vm.box.sampleTypeId = vm.problemOptions[0].id;
+                            vm.box.sampleType = vm.problemOptions[0];
                         }
                     }
 
@@ -247,7 +310,7 @@
                     }
                     //不是混合、无样本分类
                     if(vm.isMixed != "1" && !sampleTypeClassId){
-                        if(boxes.length){
+                        if(boxes.length == 2){
                             vm.sampleFlag = false;
                         }
                     }
@@ -300,10 +363,15 @@
             labelField:'sampleTypeName',
             maxItems: 1,
             onChange:function (value) {
-                vm.box.sampleType = _.filter(vm.sampleTypeOptions,{'id':+value})[0];
-                vm.box.sampleTypeId = value;
-                countFlag = false;
-                _fnQueryProjectSampleClasses(projectId,value);
+                if(value){
+                    vm.box.sampleType = _.filter(vm.problemOptions,{'id':+value})[0];
+                    vm.box.sampleTypeId = value;
+                    countFlag = false;
+                    _fnQueryProjectSampleClasses(projectId,value);
+                }else{
+                    vm.noSampleClassFlag = false;
+                }
+
 
 
             }

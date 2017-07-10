@@ -6,7 +6,7 @@
     <!--
         Added the view for entity StockIns.
     -->
-    <changeSet id="20170502015416-2" author="jhipster">
+    <changeSet id="20170522000000-2" author="jhipster">
 
         <createView viewName="view_tranship">
             select

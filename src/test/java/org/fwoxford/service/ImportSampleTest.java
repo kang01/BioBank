@@ -6,6 +6,7 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -96,6 +97,8 @@ public class ImportSampleTest {
     ProjectRelateRepository projectRelateRepository;
     @Autowired
     DelegateRepository delegateRepository;
+    @Autowired
+    BankUtil bankUtil;
 
 private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     /**
@@ -416,7 +419,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
      * 导入冻存盒
      * @throws Exception
      */
-    public void createFrozenBoxForA02(String tableName,String stockInCode,String sampleTypeCode,FrozenTubeType frozenTubeType) throws Exception {
+    public void createFrozenBoxForA02(String tableName,String sampleTypeCode,FrozenTubeType frozenTubeType) throws Exception {
         Project project = projectRepository.findByProjectCode("0037");
         SampleType sampleType = sampleTypeRepository.findBySampleTypeCode(sampleTypeCode);
         if(sampleType == null){
@@ -502,8 +505,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             if(LCC_ID !=null){
                 projectSite = projectSiteRepository.findByProjectSiteCode(LCC_ID.toString());
             }
-            Long code = Long.valueOf(stockInCode)+m;
-            String stockInCodeNew = "B"+code;
+            String stockInCodeNew = "B"+ bankUtil.getUniqueID("B");
             StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCodeNew);
             String receiver = sampleList.get(0).get("ECEIVER")!=null?sampleList.get(0).get("ECEIVER").toString():null;
             String opt = sampleList.get(0).get("OPT")!=null?sampleList.get(0).get("OPT").toString():null;
@@ -797,17 +799,17 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         if(rnaTube == null || dcgTube == null){
             throw new BankServiceException("冻存管类型导入失败！");
         }
-        this.createFrozenBoxForA02("HE_COL_01","201706301001","A",dcgTube);
-//        this.createFrozenBoxForA02("HE_COL_02","201706301010","A",dcgTube);
-//        this.createFrozenBoxForA02("HE_COL_03","201706301020","W",dcgTube);
-//        this.createFrozenBoxForA02("HE_COL_04","201706301030","R",dcgTube);
-//        this.createFrozenBoxForA02("HE_COL_05","201706301040","A",dcgTube);
-//        this.createFrozenBoxForA02("HE_COL_06","201706301050","A",dcgTube);
-//        this.createFrozenBoxForA02("HE_COL_07","201706301060","F",dcgTube);
-//        this.createFrozenBoxForA02("HE_COL_08","201706301070","F",dcgTube);
-//        this.createFrozenBoxForA02("HE_COL_09","201706301080","E",dcgTube);
-//        this.createFrozenBoxForA02("HE_COL_10","201706301090","E",dcgTube);
-//        this.createFrozenBoxForA02("HE_COL_11_RNA","201706302001","RNA",rnaTube);
+        this.createFrozenBoxForA02("HE_COL_01","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_02","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_03","W",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_04","R",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_05","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_06","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_07","F",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_08","F",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_09","E",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_10","E",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_11_RNA","RNA",rnaTube);
         this.createSampleTypeMix();
     }
 }

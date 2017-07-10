@@ -1,0 +1,39 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.serialNo.detail.title">Serial No</span> {{vm.serialNo.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.serialNo.serialNo">Serial No</span></dt>
+        <dd>
+            <span>{{vm.serialNo.serialNo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.serialNo.machineNo">Machine No</span></dt>
+        <dd>
+            <span>{{vm.serialNo.machineNo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.serialNo.status">Status</span></dt>
+        <dd>
+            <span>{{vm.serialNo.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.serialNo.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.serialNo.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.serialNo.usedDate">Used Date</span></dt>
+        <dd>
+            <span>{{vm.serialNo.usedDate | date:'mediumDate'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="serial-no-detail.edit({id:vm.serialNo.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

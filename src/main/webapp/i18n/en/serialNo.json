@@ -1,0 +1,25 @@
+{
+    "bioBankApp": {
+        "serialNo" : {
+            "home": {
+                "title": "Serial Nos",
+                "createLabel": "Create a new Serial No",
+                "createOrEditLabel": "Create or edit a Serial No"
+            },
+            "created": "A new Serial No is created with identifier {{ param }}",
+            "updated": "A Serial No is updated with identifier {{ param }}",
+            "deleted": "A Serial No is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Serial No {{ id }}?"
+            },
+            "detail": {
+                "title": "Serial No"
+            },
+            "serialNo": "Serial No",
+            "machineNo": "Machine No",
+            "status": "Status",
+            "memo": "Memo",
+            "usedDate": "Used Date"
+        }
+    }
+}

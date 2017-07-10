@@ -79,6 +79,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
     @Autowired
     private StockOutRequirementSampleRepositories stockOutRequirementSampleRepositories;
 
+    @Autowired
+    private BankUtil bankUtil;
+
     public StockOutRequirementServiceImpl(StockOutRequirementRepository stockOutRequirementRepository, StockOutRequirementMapper stockOutRequirementMapper) {
         this.stockOutRequirementRepository = stockOutRequirementRepository;
         this.stockOutRequirementMapper = stockOutRequirementMapper;
@@ -176,7 +179,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         requirement.setStatus(Constants.STOCK_OUT_REQUIREMENT_CKECKING);
         requirement.setStockOutApply(stockOutApply);
         requirement.setRequirementName(stockOutRequirement.getRequirementName());
-        requirement.setRequirementCode(BankUtil.getUniqueID());
+        requirement.setRequirementCode(bankUtil.getUniqueID("D"));
         requirement.setApplyCode(stockOutApply.getApplyCode());
         requirement.setCountOfSample(stockOutRequirement.getCountOfSample());
         requirement.setDiseaseType(!stockOutRequirement.getDiseaseTypeId().equals("null")?stockOutRequirement.getDiseaseTypeId():null);
@@ -253,7 +256,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         requirement.setStatus(Constants.STOCK_OUT_REQUIREMENT_CKECKING);
         requirement.setStockOutApply(stockOutApply);
         requirement.setRequirementName(stockOutRequirement.getRequirementName());
-        requirement.setRequirementCode(BankUtil.getUniqueID());
+        requirement.setRequirementCode(bankUtil.getUniqueID("D"));
         requirement.setApplyCode(stockOutApply.getApplyCode());
         requirement.setMemo(stockOutRequirement.getMemo());
         requirement.setImportingFileId(stockOutFiles!=null?stockOutFiles.getId():null);

@@ -52,8 +52,8 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     @Query("select t from FrozenTube t\n" +
         "  left join t.frozenBox \n"
-        + " left join StockOutReqFrozenTube f on t.id = f.frozenTube.id and t.status='1301' \n"
-        + " where  t.frozenBox is not null and t.frozenBox.status = '2004' and t.status!='0000'\n"
+        + " left join StockOutReqFrozenTube f on t.id = f.frozenTube.id and f.status='1301' \n"
+        + " where t.status='3001' and t.frozenBox is not null and t.frozenBox.status = '2004' and t.status!='0000'\n"
         + " and f.frozenTube.id is null \n"
         + " and (?1 is null or t.sampleType.id = ?1)\n"
         + " and (?2 is null or t.sampleClassification.id = ?2)\n"
@@ -283,7 +283,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " ORDER BY operate_time desc,type desc",nativeQuery = true)
         //此方法不能随意更改，尤其是返回参数的顺序
     List<Object[]> findFrozenTubeHistoryListBySampleAndProjectCode(String sampleCode, String projectCode);
-
+    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1) and t.project.projectCode = ?2 and t.sampleType.id = ?3 and t.status != ?4")
     List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(String sampleCode, String projectCode, Long sampleTypeId,String status);
 
     @Query("select t from FrozenTube t where t.sampleCode =?1  and t.projectCode = ?2 and t.sampleTypeCode =?3 and t.sampleClassification.sampleClassificationCode = ?4 and t.status!='0000'")

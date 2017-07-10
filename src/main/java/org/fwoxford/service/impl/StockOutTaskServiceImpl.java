@@ -73,6 +73,9 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     @Autowired
     private StockOutTaskByPlanRepositories stockOutTaskByPlanRepositories;
 
+    @Autowired
+    private BankUtil bankUtil;
+
     private final StockOutTaskMapper stockOutTaskMapper;
 
 
@@ -192,7 +195,7 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         }
         StockOutTask stockOutTask = new StockOutTask();
         stockOutTask.status(Constants.STOCK_OUT_TASK_NEW)
-            .stockOutTaskCode(BankUtil.getUniqueID())
+            .stockOutTaskCode(bankUtil.getUniqueID("F"))
             .stockOutPlan(stockOutPlan).usedTime(0)
             .stockOutDate(LocalDate.now());
 

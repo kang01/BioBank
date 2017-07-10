@@ -1,8 +1,14 @@
 package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,10 +18,14 @@ import java.util.Objects;
 /**
  * Created by gengluying on 2017/3/22.
  */
+@Entity
+@Table(name = "view_tranship")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class TranshipResponse {
     /**
      * 转运ID
      */
+    @Id
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private Long id;
@@ -24,6 +34,7 @@ public class TranshipResponse {
      */
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "tranship_date")
     private LocalDate transhipDate;
     /**
      * 项目编码
@@ -31,6 +42,7 @@ public class TranshipResponse {
     @NotNull
     @Size(max = 100)
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "project_code")
     private String projectCode;
 
     /**
@@ -39,6 +51,7 @@ public class TranshipResponse {
     @NotNull
     @Size(max = 100)
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "project_site_code")
     private String projectSiteCode;
 
     /**
@@ -47,6 +60,7 @@ public class TranshipResponse {
     @NotNull
     @Size(max = 20)
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "tranship_state")
     private String transhipState;
     /**
      * 接收人
@@ -54,26 +68,31 @@ public class TranshipResponse {
     @NotNull
     @Size(max = 100)
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "receiver")
     private String receiver;
     /**
      * 接收日期
      */
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "receive_date")
     private LocalDate receiveDate;
     /**
      * 样本满意度
      */
     @Max(value = 20)
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "sample_satisfaction")
     private Integer sampleSatisfaction;
     /**
      * 转运编码
      */
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "tranship_code")
     private String transhipCode;
 
     @JsonView(DataTablesOutput.View.class)
+    @Column(name = "track_number")
     private String trackNumber;
 
     public Long getId() {

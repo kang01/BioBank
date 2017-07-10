@@ -65,14 +65,6 @@ public class TranshipResource {
     @PostMapping("/tranships")
     @Timed
     public ResponseEntity<TranshipDTO> createTranship(@Valid @RequestBody TranshipDTO transhipDTO) throws URISyntaxException {
-//        log.debug("REST request to save Tranship : {}", transhipDTO);
-//        if (transhipDTO.getId() != null) {
-//            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new tranship cannot already have an ID")).body(null);
-//        }
-//        TranshipDTO result = transhipService.save(transhipDTO);
-//        return ResponseEntity.created(new URI("/api/tranships/" + result.getId()))
-//            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-//            .body(result);
         log.debug("REST request to save Tranship : {}", transhipDTO);
         if (transhipDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new tranship cannot already have an ID")).body(null);
@@ -173,28 +165,9 @@ public class TranshipResource {
                 u.setSearchable(false);
             }
         });
-        DataTablesOutput<Tranship> transhipsTablesOutput = transhipService.findAllTranship(input);
-        List<Tranship> tranships =  transhipsTablesOutput.getData();
-        List<User> userList = userService.findAll();
-        for(Tranship t :tranships){
-            for(User u :userList){
-                if(t.getReceiverId()!=null&&t.getReceiverId().equals(u.getId())){
-                    t.setReceiver(u.getLastName()+u.getFirstName());
-                }
-            }
-        }
-        //构造返回列表
-        List<TranshipResponse> transhipDTOS = transhipMapper.transhipsToTranshipTranshipResponse(tranships);
+        DataTablesOutput<TranshipResponse> transhipsTablesOutput = transhipService.findAllTranship(input);
 
-        //构造返回分页数据
-        DataTablesOutput<TranshipResponse> responseDataTablesOutput = new DataTablesOutput<>();
-        responseDataTablesOutput.setDraw(transhipsTablesOutput.getDraw());
-        responseDataTablesOutput.setError(transhipsTablesOutput.getError());
-        responseDataTablesOutput.setData(transhipDTOS);
-        responseDataTablesOutput.setRecordsFiltered(transhipsTablesOutput.getRecordsFiltered());
-        responseDataTablesOutput.setRecordsTotal(transhipsTablesOutput.getRecordsTotal());
-
-        return responseDataTablesOutput;
+        return transhipsTablesOutput;
     }
 
     /**

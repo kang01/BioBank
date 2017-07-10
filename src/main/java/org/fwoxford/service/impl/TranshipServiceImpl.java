@@ -6,6 +6,7 @@ import org.fwoxford.repository.*;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
+import org.fwoxford.service.dto.response.TranshipResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipMapper;
@@ -81,6 +82,9 @@ public class TranshipServiceImpl implements TranshipService{
     private EquipmentRepository equipmentRepository;
     @Autowired
     private AreaRepository areaRepository;
+
+    @Autowired
+    private BankUtil bankUtil;
 
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
@@ -240,12 +244,9 @@ public class TranshipServiceImpl implements TranshipService{
      * @return
      */
     @Override
-    public DataTablesOutput<Tranship> findAllTranship(DataTablesInput input) {
-
+    public DataTablesOutput<TranshipResponse> findAllTranship(DataTablesInput input) {
         //获取转运列表
-        input.addColumn("createdDate",true,true,"");
-        input.addOrder("createdDate",false);
-        DataTablesOutput<Tranship> transhipDataTablesOutput =  transhipRepositries.findAll(input);
+        DataTablesOutput<TranshipResponse> transhipDataTablesOutput =  transhipRepositries.findAll(input);
         return transhipDataTablesOutput;
     }
 
@@ -260,7 +261,7 @@ public class TranshipServiceImpl implements TranshipService{
         TranshipByIdResponse res = new TranshipByIdResponse();
 
         //获取转运详情
-        Tranship tranship = transhipRepositries.findOne(id);
+        Tranship tranship = transhipRepository.findOne(id);
         res = transhipMapper.transhipsToTranshipTranshipByIdResponse(tranship);
 
         //获取冻存盒列表
@@ -282,8 +283,8 @@ public class TranshipServiceImpl implements TranshipService{
         //保存转运记录
         Tranship tranship =transhipMapper.transhipDTOToTranship(transhipDTO);
         tranship.setStatus(Constants.VALID);
-        tranship.setTranshipCode(BankUtil.getUniqueID());
-        transhipRepositries.save(tranship);
+        tranship.setTranshipCode(bankUtil.getUniqueID("A"));
+        transhipRepository.save(tranship);
 
         //保存冻存盒
         List<FrozenBoxDTO> frozenBoxDTOList =  transhipDTO.getFrozenBoxDTOList();
@@ -295,7 +296,6 @@ public class TranshipServiceImpl implements TranshipService{
         List<TranshipBoxDTO> transhipBoxes = saveTranshipAndBoxRelation(frozenBoxDTOListLast);
 
         //保存冻存管
-//        List<FrozenTubeDTO> frozenTubeDTOList = frozenTubeMapper.frozenBoxAndTubeToFrozenTubeDTOList(frozenBoxDTOList,frozenBoxes);
         List<FrozenTubeDTO> frozenTubeDTOList = getFrozenTubeDTOList(frozenBoxDTOList,frozenBoxes);
         List<FrozenTube> frozenTubes =  frozenTubeService.saveBatch(frozenTubeDTOList);
         List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubes);
@@ -314,16 +314,17 @@ public class TranshipServiceImpl implements TranshipService{
      */
     @Override
     public TranshipDTO initTranship() {
+
         Tranship tranship = new Tranship();
         tranship.setStatus(Constants.VALID);
-        tranship.setTranshipCode(BankUtil.getUniqueID());
+        tranship.setTranshipCode(bankUtil.getUniqueID("A"));
         tranship.setTranshipState(Constants.TRANSHIPE_IN_PENDING);
         tranship.setFrozenBoxNumber(0);
         tranship.setEmptyHoleNumber(0);
         tranship.setEmptyTubeNumber(0);
         tranship.setSampleNumber(0);
         tranship.setEffectiveSampleNumber(0);
-        transhipRepositries.save(tranship);
+        transhipRepository.save(tranship);
         return transhipMapper.transhipToTranshipDTO(tranship);
     }
 

@@ -410,6 +410,8 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             assertThat(sampleType6).isNotNull();
         }
     }
+    @Autowired
+    private SerialNoRepository serialNoRepository;
     /**
      * 导入冻存盒
      * @throws Exception
@@ -500,7 +502,8 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             if(LCC_ID !=null){
                 projectSite = projectSiteRepository.findByProjectSiteCode(LCC_ID.toString());
             }
-            String stockInCodeNew = stockInCode +m;
+            Long code = Long.valueOf(stockInCode)+m;
+            String stockInCodeNew = "B"+code;
             StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCodeNew);
             String receiver = sampleList.get(0).get("ECEIVER")!=null?sampleList.get(0).get("ECEIVER").toString():null;
             String opt = sampleList.get(0).get("OPT")!=null?sampleList.get(0).get("OPT").toString():null;
@@ -794,17 +797,17 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         if(rnaTube == null || dcgTube == null){
             throw new BankServiceException("冻存管类型导入失败！");
         }
-        this.createFrozenBoxForA02("HE_COL_01","1498790361822","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_02","1498793134929","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_03","1498802077085","W",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_04","1498802084828","R",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_05","1498802097495","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_06","1498802124180","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_07","1498802133675","F",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_08","1498802143791","F",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_09","1498802167424","E",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_10","1498802175768","E",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_11_RNA","1499052532056","RNA",rnaTube);
+        this.createFrozenBoxForA02("HE_COL_01","201706301001","A",dcgTube);
+//        this.createFrozenBoxForA02("HE_COL_02","201706301010","A",dcgTube);
+//        this.createFrozenBoxForA02("HE_COL_03","201706301020","W",dcgTube);
+//        this.createFrozenBoxForA02("HE_COL_04","201706301030","R",dcgTube);
+//        this.createFrozenBoxForA02("HE_COL_05","201706301040","A",dcgTube);
+//        this.createFrozenBoxForA02("HE_COL_06","201706301050","A",dcgTube);
+//        this.createFrozenBoxForA02("HE_COL_07","201706301060","F",dcgTube);
+//        this.createFrozenBoxForA02("HE_COL_08","201706301070","F",dcgTube);
+//        this.createFrozenBoxForA02("HE_COL_09","201706301080","E",dcgTube);
+//        this.createFrozenBoxForA02("HE_COL_10","201706301090","E",dcgTube);
+//        this.createFrozenBoxForA02("HE_COL_11_RNA","201706302001","RNA",rnaTube);
         this.createSampleTypeMix();
     }
 }

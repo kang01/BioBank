@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import javax.jdo.annotations.Join;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -88,6 +89,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     @Autowired
     private StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
+
+    @Autowired
+    private BankUtil bankUtil;
 
     public StockOutApplyServiceImpl(StockOutApplyRepository stockOutApplyRepository, StockOutApplyMapper stockOutApplyMapper) {
         this.stockOutApplyRepository = stockOutApplyRepository;
@@ -162,7 +166,14 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
                 applyData.setLevelNo(apply.getLevelNo());
             }
             applyData.setId(apply.getId());
-            applyData.setSampleTypes(apply.getSampleTypes());
+            String sampleTypes = apply.getSampleTypes();
+//            String[] sampleType = sampleTypes!=null?sampleTypes.split(","):new String[]{};
+//            ArrayList<String> sampleTypeNames = new ArrayList<>();
+//            for(String s :sampleType){
+//                String sample = Constants.SAMPLE_TYPE_CODE_MAP.get(s)!=null?Constants.SAMPLE_TYPE_CODE_MAP.get(s):"NA";
+//                sampleTypeNames.add(sample);
+//            }
+            applyData.setSampleTypes(sampleTypes);
             applyData.setPurposeOfSample(apply.getPurposeOfSample());
             applyData.setStatus(apply.getStatus());
             applyData.setDelegateName(apply.getDelegateName());
@@ -181,7 +192,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
     public StockOutApplyForSave initStockOutApply() {
         StockOutApply stockOutApply = new StockOutApply();
         stockOutApply.setStatus(Constants.STOCK_OUT_PENDING);
-        stockOutApply.setApplyCode(BankUtil.getUniqueID());
+        stockOutApply.setApplyCode(bankUtil.getUniqueID("C"));
         stockOutApplyRepository.save(stockOutApply);
         StockOutApplyForSave stockOutApplyForSave = new StockOutApplyDetail();
         stockOutApplyForSave.setId(stockOutApply.getId());
@@ -352,7 +363,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         }
         StockOutApplyDTO stockOutApplyDTO = stockOutApplyMapper.stockOutApplyToStockOutApplyDTO(stockOutApply);
         stockOutApplyDTO.setId(null);
-        stockOutApplyDTO.setApplyCode(BankUtil.getUniqueID());
+        stockOutApplyDTO.setApplyCode(bankUtil.getUniqueID("C"));
         stockOutApplyDTO.setParentApplyId(parentApplyId);
         stockOutApplyDTO.setStatus(Constants.STOCK_OUT_PENDING);
         stockOutApplyDTO.setApproverId(null);

@@ -41,8 +41,9 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
 
     @Autowired
     private StockOutPlanRepositories stockOutPlanRepositories;
+
     @Autowired
-    private StockOutRequirementRepository stockOutRequirementRepository;
+    private BankUtil bankUtil;
 
     public StockOutPlanServiceImpl(StockOutPlanRepository stockOutPlanRepository, StockOutApplyRepository stockOutApplyRepository, StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository, StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository, StockOutPlanMapper stockOutPlanMapper) {
         this.stockOutPlanRepository = stockOutPlanRepository;
@@ -63,7 +64,7 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
         log.debug("Request to save StockOutPlan : {}", stockOutPlanDTO);
         StockOutPlan stockOutPlan = stockOutPlanMapper.stockOutPlanDTOToStockOutPlan(stockOutPlanDTO);
 
-        stockOutPlan.stockOutPlanCode(BankUtil.getUniqueID());
+        stockOutPlan.stockOutPlanCode(bankUtil.getUniqueID("E"));
 
         stockOutPlan = stockOutPlanRepository.save(stockOutPlan);
         StockOutPlanDTO result = stockOutPlanMapper.stockOutPlanToStockOutPlanDTO(stockOutPlan);
@@ -92,7 +93,7 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
 
         StockOutPlan stockOutPlan = new StockOutPlan();
         stockOutPlan.status(Constants.STOCK_OUT_PLAN_PENDING)
-            .stockOutPlanCode(BankUtil.getUniqueID())
+            .stockOutPlanCode(bankUtil.getUniqueID("E"))
             .applyNumber(apply.getApplyCode())
             .stockOutApply(apply);
         stockOutPlan = stockOutPlanRepository.save(stockOutPlan);

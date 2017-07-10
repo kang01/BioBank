@@ -10,25 +10,26 @@
 
         <createView viewName="view_stock_out_apply">
             SELECT
-                ap.id,ap.purpose_of_sample,0 as level_no,
-                (case when ap.start_time is not null then (TO_CHAR(ap.start_time,'yyyy-MM-dd')||'至'||TO_CHAR(ap.end_time,'yyyy-MM-dd')) else null end )  as apply_time,ap.apply_person_name,ap.apply_code,ap.status,
-                (select d.delegate_name from delegate d where d.id = ap.delegate_id) as delegate_name,
-                (select LISTAGG(TO_CHAR(sample),',') WITHIN GROUP (ORDER BY sample)
-                    from
-                        (select distinct s.sample_type_name as sample
-                        from stock_out_requirement req
-                        left join sample_type s on req.sample_type_id=s.id
-                        where req.stock_out_apply_id=ap.id
+            ap.id,ap.purpose_of_sample,0 as level_no,
+            (case when ap.start_time is not null then (TO_CHAR(ap.start_time,'yyyy-MM-dd')||'至'||TO_CHAR(ap.end_time,'yyyy-MM-dd')) else null end )  as apply_time,ap.apply_person_name,ap.apply_code,ap.status,
+            (select d.delegate_name from delegate d where d.id = ap.delegate_id) as delegate_name,
+            (select LISTAGG(TO_CHAR(sample),',') WITHIN GROUP (ORDER BY sample)
+            from
+            (select distinct s.sample_type_name as sample
+            from stock_out_requirement req
+            left join sample_type s on req.sample_type_id=s.id
+            where req.stock_out_apply_id=ap.id
 
-                        union
+            union
 
-                        select distinct s.sample_type as sample
-                        from stock_out_requirement req
-                        left join stock_out_required_sample s on req.id=s.stock_out_requirement_id
-                        where req.stock_out_apply_id=ap.id)
-                ) as sample_types,
-                (select sum(req.count_of_sample) from stock_out_requirement req where req.stock_out_apply_id=ap.id) as count_of_sample,
-                (select count(r.id) from stock_out_req_frozen_tube r left join stock_out_requirement req on r.STOCK_OUT_REQUIREMENT_ID = req.id where req.STOCK_OUT_APPLY_ID = ap.id) as count_of_stock_sample
+            select distinct st.sample_type_name as sample
+            from stock_out_requirement req
+            left join stock_out_required_sample s on req.id=s.stock_out_requirement_id
+            left join sample_type st on s.sample_type=st.sample_type_code
+            where req.stock_out_apply_id=ap.id)
+            ) as sample_types,
+            (select sum(req.count_of_sample) from stock_out_requirement req where req.stock_out_apply_id=ap.id) as count_of_sample,
+            (select count(r.id) from stock_out_req_frozen_tube r left join stock_out_requirement req on r.STOCK_OUT_REQUIREMENT_ID = req.id where req.STOCK_OUT_APPLY_ID = ap.id) as count_of_stock_sample
             FROM stock_out_apply ap
             WHERE ap.parent_apply_id is null
         </createView>

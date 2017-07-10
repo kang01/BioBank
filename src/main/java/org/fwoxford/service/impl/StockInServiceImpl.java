@@ -5,6 +5,7 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
+import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenBoxPositionMapper;
@@ -37,8 +38,6 @@ public class StockInServiceImpl implements StockInService {
     private final StockInMapper stockInMapper;
 
     private final StockInRepositries stockInRepositries;
-
-
 
     @Autowired
     private TranshipService transhipService;
@@ -77,6 +76,8 @@ public class StockInServiceImpl implements StockInService {
 
     @Autowired
     private ProjectSiteRepository projectSiteRepository;
+    @Autowired
+    private BankUtil bankUtil;
 
     public StockInServiceImpl(StockInRepository stockInRepository,
                               StockInMapper stockInMapper,
@@ -251,7 +252,7 @@ public class StockInServiceImpl implements StockInService {
 
     private StockInDTO createStockInDTO(Tranship tranship) {
         StockInDTO stockInDTO = new StockInDTO();
-        stockInDTO.setStockInCode(BankUtil.getUniqueID());
+        stockInDTO.setStockInCode(bankUtil.getUniqueID("B"));
         if(tranship.getProject()==null||tranship.getProjectSite()==null){
             throw new BankServiceException("项目信息不完整！",tranship.toString());
         }
@@ -363,13 +364,14 @@ public class StockInServiceImpl implements StockInService {
     @Override
     public StockInForDataDetail getStockInById(Long id) {
         StockIn stockIn = stockInRepository.findOne(id);
+        StockInForDataDetail stockInForDataDetail = stockInMapper.stockInToStockInDetail(stockIn);
         List<User> userList = userRepository.findAll();
             for(User u :userList){
                 if(stockIn.getReceiveId()!=null&&stockIn.getReceiveId().equals(u.getId())){
-                    stockIn.setReceiveName(u.getLastName()+u.getFirstName());
+                    stockInForDataDetail.setReceiver(u.getLastName()+u.getFirstName());
                 }
             }
-        return stockInMapper.stockInToStockInDetail(stockIn);
+        return stockInForDataDetail;
     }
 
     @Override
@@ -408,7 +410,7 @@ public class StockInServiceImpl implements StockInService {
             stockIn.setProjectSiteCode(projectSite.getProjectSiteCode());
         }
         stockIn.setProjectCode(project.getProjectCode());
-        stockIn.setStockInCode(BankUtil.getUniqueID());
+        stockIn.setStockInCode(bankUtil.getUniqueID("B"));
         stockInRepository.save(stockIn);
         StockInDTO result = stockInMapper.stockInToStockInDTO(stockIn);
         return result;

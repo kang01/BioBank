@@ -72,7 +72,8 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
 
     @Autowired
     private FrozenTubeRepository frozenTubeRepository;
-
+    @Autowired
+    private BankUtil bankUtil;
     public StockOutHandoverServiceImpl(StockOutHandoverRepository stockOutHandoverRepository, StockOutHandoverMapper stockOutHandoverMapper) {
         this.stockOutHandoverRepository = stockOutHandoverRepository;
         this.stockOutHandoverMapper = stockOutHandoverMapper;
@@ -89,7 +90,7 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         log.debug("Request to save StockOutHandover : {}", stockOutHandoverDTO);
         StockOutHandover stockOutHandover = stockOutHandoverMapper.stockOutHandOverDTOToStockOutHandOver(stockOutHandoverDTO);
         if(stockOutHandoverDTO.getId()==null){
-            stockOutHandover.setHandoverCode(BankUtil.getUniqueID());
+            stockOutHandover.setHandoverCode(bankUtil.getUniqueID("G"));
             stockOutHandover.setStatus(Constants.STOCK_OUT_HANDOVER_PENDING);
         }
         stockOutHandover = stockOutHandoverRepository.save(stockOutHandover);
@@ -158,7 +159,7 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         if(stockOutTask ==null){
             throw new BankServiceException("任务不存在！");
         }
-        stockOutHandover.handoverCode(BankUtil.getUniqueID())
+        stockOutHandover.handoverCode(bankUtil.getUniqueID("G"))
             .stockOutTask(stockOutTask)
             .stockOutApply(stockOutTask.getStockOutPlan().getStockOutApply())
             .stockOutPlan(stockOutTask.getStockOutPlan())

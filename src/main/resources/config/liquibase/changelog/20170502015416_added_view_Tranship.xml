@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockIns.
+    -->
+    <changeSet id="20170502015416-2" author="jhipster">
+
+        <createView viewName="view_tranship">
+            select
+            t.id,
+            t.tranship_code,
+            t.project_code,
+            t.project_site_code,
+            TO_CHAR(t.tranship_date,'yyyy-MM-dd') as tranship_date,
+            TO_CHAR(t.receive_date,'yyyy-MM-dd') as receive_date,
+            t.tranship_state,
+            t.sample_satisfaction,t.track_number,
+            (select u.last_name||u.first_name from jhi_user u where u.id=t.receiver_id) as receiver
+            from  tranship t
+        </createView>
+    </changeSet>
+
+</databaseChangeLog>

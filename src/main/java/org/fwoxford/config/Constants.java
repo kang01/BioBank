@@ -260,6 +260,15 @@ public final class Constants {
         put("11","RNA");
     }};
 
+//    public static final Map<String,String> SAMPLE_TYPE_CODE_MAP = new HashMap<String,String>(){{
+//        put("A","血浆");
+//        put("W","白细胞");
+//        put("F","血清");
+//        put("E","尿");
+//        put("R","红细胞");
+//        put("RNA","RNA");
+//    }};
+
     private Constants() {
     }
 }

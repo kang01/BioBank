@@ -50,6 +50,8 @@ public class TempResource {
     private static final String ENTITY_NAME = "tranship";
 
     private final TranshipService transhipService;
+    @Autowired
+    private BankUtil bankUtil;
     public TempResource(TranshipService transhipService) {
         this.transhipService = transhipService;
     }
@@ -355,7 +357,7 @@ public class TempResource {
         stockInForDataDetail.setReceiveDate(LocalDate.now());
         stockInForDataDetail.setReceiver("小高");
         stockInForDataDetail.setStatus("7001");
-        stockInForDataDetail.setStockInCode(BankUtil.getUniqueID());
+        stockInForDataDetail.setStockInCode(bankUtil.getUniqueID("B"));
         stockInForDataDetail.setStockInDate(LocalDate.now());
         return ResponseEntity.created(new URI("/res/stock-in" + stockInForDataDetail.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, stockInForDataDetail.getId().toString()))
@@ -374,7 +376,7 @@ public class TempResource {
         log.debug("REST request to update StockIn : {}", stockInCode);
         StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
         stockInForDataDetail.setId(1L);
-        stockInForDataDetail.setTranshipCode(BankUtil.getUniqueID());
+        stockInForDataDetail.setTranshipCode(bankUtil.getUniqueID("A"));
         stockInForDataDetail.setProjectCode("P00001");
         stockInForDataDetail.setProjectSiteCode("PS00001");
         stockInForDataDetail.setReceiveDate(LocalDate.now());
@@ -400,13 +402,13 @@ public class TempResource {
         log.debug("REST request to get Tranship : {}", id);
         StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
         stockInForDataDetail.setId(id);
-        stockInForDataDetail.setTranshipCode(BankUtil.getUniqueID());
+        stockInForDataDetail.setTranshipCode(bankUtil.getUniqueID("A"));
         stockInForDataDetail.setProjectCode("P00001");
         stockInForDataDetail.setProjectSiteCode("PS00001");
         stockInForDataDetail.setReceiveDate(LocalDate.now());
         stockInForDataDetail.setReceiver("小高");
         stockInForDataDetail.setStatus("7002");
-        stockInForDataDetail.setStockInCode(BankUtil.getUniqueID());
+        stockInForDataDetail.setStockInCode(bankUtil.getUniqueID("B"));
         stockInForDataDetail.setStockInDate(LocalDate.now());
         stockInForDataDetail.setStoreKeeper1("小张");
         stockInForDataDetail.setStoreKeeper2("小黄");
@@ -429,7 +431,7 @@ public class TempResource {
         stockInForDataDetail.setReceiveDate(LocalDate.now());
         stockInForDataDetail.setReceiver("小高");
         stockInForDataDetail.setStatus("7002");
-        stockInForDataDetail.setStockInCode(BankUtil.getUniqueID());
+        stockInForDataDetail.setStockInCode(bankUtil.getUniqueID("B"));
         stockInForDataDetail.setStockInDate(LocalDate.now());
         stockInForDataDetail.setStoreKeeper1("小张");
         stockInForDataDetail.setStoreKeeper2("小黄");
@@ -645,7 +647,7 @@ public class TempResource {
             StockOutApplyForDataTableEntity rowData = new StockOutApplyForDataTableEntity();
             rowData.setId(0L + i + input.getStart());
 
-            rowData.setApplyCode(BankUtil.getUniqueID());
+            rowData.setApplyCode(bankUtil.getUniqueID("C"));
             rowData.setCountOfSample(100L);
             rowData.setStatus("1101");
             rowData.setApplyPersonName("王东东");
@@ -679,7 +681,7 @@ public class TempResource {
         for (int i = 0; i < 10; ++i){
             StockOutApplyForDataTableEntity rowData = new StockOutApplyForDataTableEntity();
             rowData.setId(0L + i);
-            rowData.setApplyCode(BankUtil.getUniqueID());
+            rowData.setApplyCode(bankUtil.getUniqueID("C"));
             rowData.setCountOfSample(200L);
             rowData.setStatus("1101");
             rowData.setApplyPersonName("王西西");
@@ -709,7 +711,7 @@ public class TempResource {
         result.setPurposeOfSample("实验");
         result.setApplyPersonName("王东东");
         result.setStatus("1101");
-        result.setApplyCode(BankUtil.getUniqueID());
+        result.setApplyCode(bankUtil.getUniqueID("C"));
         result.setDelegateId(1L);
         result.setRecordId(5L);
         result.setStartTime(LocalDate.parse("2017-07-07"));
@@ -807,8 +809,8 @@ public class TempResource {
         for (int i = 0; i < input.getLength(); ++i){
             StockOutPlansForDataTableEntity rowData = new StockOutPlansForDataTableEntity();
             rowData.setId(0L + i + input.getStart());
-            rowData.setApplyNumber(BankUtil.getUniqueID());
-            rowData.setStockOutPlanCode(BankUtil.getUniqueID());
+            rowData.setApplyNumber(bankUtil.getUniqueID("C"));
+            rowData.setStockOutPlanCode(bankUtil.getUniqueID("E"));
             rowData.setPlanDate(LocalDate.now());
             rowData.setPurposeOfSample("实验");
             rowData.setCountOfStockOutPlanSample(1000L);
@@ -837,7 +839,7 @@ public class TempResource {
     public ResponseEntity<StockOutPlanDetail> getStockOutPlanDetail(@PathVariable Long id) throws URISyntaxException {
         StockOutPlanDetail result = new StockOutPlanDetail();
         result.setId(id);
-        result.setApplyNumber(BankUtil.getUniqueID());
+        result.setApplyNumber(bankUtil.getUniqueID("C"));
         return  ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
@@ -909,7 +911,7 @@ public class TempResource {
            tube.setAge(65);
            tube.setSex("男");
            tube.setSampleUsedTimes(0L);
-           tube.setSampleCode(BankUtil.getUniqueID());
+           tube.setSampleCode(String.valueOf(new Date().getTime()));
            tube.setMemo("正常");
            result.add(tube);
        }
@@ -981,7 +983,7 @@ public class TempResource {
         StockOutTaskDTO result = new StockOutTaskDTO();
         result.setId(1L);
         result.setUsedTime(0);
-        result.setStockOutTaskCode(BankUtil.getUniqueID());
+        result.setStockOutTaskCode(bankUtil.getUniqueID("F"));
         result.setStatus("");
         return ResponseEntity.created(new URI("/api/stock-out-tasks/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -1017,7 +1019,7 @@ public class TempResource {
             rowData.setId(0L + i + input.getStart());
             rowData.setCountOfSample(20L);
             rowData.setStatus("1501");
-            rowData.setStockOutTaskCode(BankUtil.getUniqueID());
+            rowData.setStockOutTaskCode(bankUtil.getUniqueID("F"));
             rowData.setMemo("");
             rowData.setCountOfFrozenBox(1L);
             rowData.setCreateDate(LocalDate.now());
@@ -1080,8 +1082,8 @@ public class TempResource {
             StockOutHandoverForDataTableEntity rowData = new StockOutHandoverForDataTableEntity();
             rowData.setId(0L + i + input.getStart());
 
-            rowData.setApplyCode(BankUtil.getUniqueID());
-            rowData.setHandoverCode(BankUtil.getUniqueID());
+            rowData.setApplyCode(bankUtil.getUniqueID("C"));
+            rowData.setHandoverCode(bankUtil.getUniqueID("G"));
             rowData.setCountOfSample(100L);
             rowData.setStatus("1101");
             rowData.setDeliverName("王东东");
@@ -1113,11 +1115,11 @@ public class TempResource {
             StockOutFrozenBoxForDataTableEntity rowData = new StockOutFrozenBoxForDataTableEntity();
             rowData.setId(0L + i + input.getStart());
 
-            rowData.setFrozenBoxCode(BankUtil.getUniqueID());
+            rowData.setFrozenBoxCode(String.valueOf(new Date().getTime()));
             rowData.setApplyId(1L);
-            rowData.setApplyCode(BankUtil.getUniqueID());
+            rowData.setApplyCode(bankUtil.getUniqueID("C"));
             rowData.setPlanId(1L);
-            rowData.setPlanCode(BankUtil.getUniqueID());
+            rowData.setPlanCode(bankUtil.getUniqueID("E"));
             rowData.setCountOfSample(100L);
             rowData.setStatus("1101");
             rowData.setDelegateId(1L);
@@ -1149,13 +1151,13 @@ public class TempResource {
             StockOutFrozenBoxForDataTableEntity rowData = new StockOutFrozenBoxForDataTableEntity();
             rowData.setId(0L + i + input.getStart());
 
-            rowData.setFrozenBoxCode(BankUtil.getUniqueID());
+            rowData.setFrozenBoxCode(String.valueOf(new Date().getTime()));
             rowData.setApplyId(1L);
-            rowData.setApplyCode(BankUtil.getUniqueID());
+            rowData.setApplyCode(bankUtil.getUniqueID("C"));
             rowData.setPlanId(1L);
-            rowData.setPlanCode(BankUtil.getUniqueID());
+            rowData.setPlanCode(bankUtil.getUniqueID("E"));
             rowData.setTaskId(1L);
-            rowData.setTaskCode(BankUtil.getUniqueID());
+            rowData.setTaskCode(bankUtil.getUniqueID("F"));
             rowData.setCountOfSample(100L);
             rowData.setStatus("1101");
             rowData.setDelegateId(1L);
@@ -1188,7 +1190,7 @@ public class TempResource {
         result.setStockOutPlanId(id);
         result.setStockOutTaskId(id);
         result.setHandoverPersonId(id);
-        result.setHandoverCode(BankUtil.getUniqueID());
+        result.setHandoverCode(bankUtil.getUniqueID("G"));
         result.setHandoverTime(LocalDate.parse("2017-05-05"));
         result.setReceiverName("实验员");
         result.setReceiverOrganization("实验室");
@@ -1211,7 +1213,7 @@ public class TempResource {
         for (int i=0; i<10; ++i){
             StockOutApplyDTO result = new StockOutApplyDTO();
             result.setId((long)i);
-            result.setApplyCode(BankUtil.getUniqueID());
+            result.setApplyCode(bankUtil.getUniqueID("C"));
 
             data.add(result);
         }
@@ -1233,7 +1235,7 @@ public class TempResource {
 //            StockOutPlanDTO result = new StockOutPlanDTO();
 //            result.setId((long)i);
 //            result.setStockOutApplyId(id);
-//            result.setStockOutPlanCode(BankUtil.getUniqueID());
+//            result.setStockOutPlanCode(bankUtil.getUniqueID());
 //
 //            data.add(result);
 //        }
@@ -1256,7 +1258,7 @@ public class TempResource {
             StockOutPlanDTO result = new StockOutPlanDTO();
             result.setId((long)i);
             result.setStockOutApplyId((long)i);
-            result.setStockOutPlanCode(BankUtil.getUniqueID());
+            result.setStockOutPlanCode(bankUtil.getUniqueID("E"));
 
             data.add(result);
         }
@@ -1279,7 +1281,7 @@ public class TempResource {
             StockOutTaskDTO result = new StockOutTaskDTO();
             result.setId((long)i);
             result.setStockOutPlanId(id);
-            result.setStockOutTaskCode(BankUtil.getUniqueID());
+            result.setStockOutTaskCode(bankUtil.getUniqueID("F"));
 
             data.add(result);
         }
@@ -1302,7 +1304,7 @@ public class TempResource {
             StockOutTaskDTO result = new StockOutTaskDTO();
             result.setId((long)i);
             result.setStockOutPlanId((long)i);
-            result.setStockOutTaskCode(BankUtil.getUniqueID());
+            result.setStockOutTaskCode(bankUtil.getUniqueID("F"));
 
             data.add(result);
         }
@@ -1325,7 +1327,7 @@ public class TempResource {
         result.setStockOutPlanId(id);
         result.setStockOutTaskId(id);
 //        result.setHandoverPersonId(id);
-        result.setHandoverCode(BankUtil.getUniqueID());
+        result.setHandoverCode(bankUtil.getUniqueID("G"));
 //        result.setHandoverTime(LocalDate.parse("2017-05-05"));
 //        result.setReceiverName("实验员");
 //        result.setReceiverOrganization("实验室");
@@ -1351,7 +1353,7 @@ public class TempResource {
         result.setStockOutPlanId(1L);
         result.setStockOutTaskId(1L);
 //        result.setHandoverPersonId(id);
-        result.setHandoverCode(BankUtil.getUniqueID());
+        result.setHandoverCode(bankUtil.getUniqueID("G"));
 //        result.setHandoverTime(LocalDate.parse("2017-05-05"));
 //        result.setReceiverName("实验员");
 //        result.setReceiverOrganization("实验室");
@@ -1379,8 +1381,8 @@ public class TempResource {
             rowData.setHandOverTimes(1L);
             rowData.setPurposeOfSample("实验");
             rowData.setStockOutDate(LocalDate.now());
-            rowData.setStockOutPlanCode(BankUtil.getUniqueID());
-            rowData.setStockOutTaskCode(BankUtil.getUniqueID());
+            rowData.setStockOutPlanCode(bankUtil.getUniqueID("E"));
+            rowData.setStockOutTaskCode(bankUtil.getUniqueID("F"));
             rowData.setStatus("1601");
             dataList.add(rowData);
         }
@@ -1407,9 +1409,9 @@ public class TempResource {
         stockOutTaskDTO.setStockOutDate( LocalDate.now() );
         stockOutTaskDTO.setStatus( "1601" );
         stockOutTaskDTO.setMemo("" );
-        stockOutTaskDTO.setStockOutTaskCode( BankUtil.getUniqueID() );
+        stockOutTaskDTO.setStockOutTaskCode( bankUtil.getUniqueID("F") );
         stockOutTaskDTO.setUsedTime( 1 );
-        stockOutTaskDTO.setStockOutPlanCode(BankUtil.getUniqueID());
+        stockOutTaskDTO.setStockOutPlanCode(bankUtil.getUniqueID("E"));
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutTaskDTO));
     }
 }

@@ -555,7 +555,7 @@
                     if(source == 'edit'){
                         var rowCount = +vm.box.frozenBoxType.frozenBoxTypeRows;
                         var colCount = +vm.box.frozenBoxType.frozenBoxTypeColumns;
-                        if(vm.box.sampleType.sampleTypeName == "99"){
+                        if(vm.box.sampleTypeCode == "99"){
                             var rowIndex = change[0][0];
                             var oldTubeObject = change[0][2];
                             for(var m = 0; m < vm.frozenTubeArray.length; m++){
@@ -852,7 +852,7 @@
                     tube.sampleCode = tubeInBox.sampleCode;
                     tube.sampleTempCode = tubeInBox.sampleTempCode;
                     tube.sampleTypeId = box.sampleTypeId;
-                    // tube.sampleTypeCode = tubeInBox.sampleTypeCode;
+                    tube.sampleTypeCode = tubeInBox.sampleTypeCode;
                     tube.status = tubeInBox.status;
                     tube.memo = tubeInBox.memo;
                     if(tubeInBox.sampleClassification){
@@ -1029,7 +1029,9 @@
                 labelField:'sampleTypeName',
                 maxItems: 1,
                 onChange:function (value) {
-                    var isMixed = _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed;
+                    vm.box.sampleTypeId = value;
+                    vm.box.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
+                    var isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
                     vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value,isMixed);
                     if(isMixed == 1){
                         vm.box.isSplit = 1;
@@ -1202,6 +1204,7 @@
                 vm.box = data;
                 vm.box.frozenBoxTypeId = vm.box.frozenBoxType.id;
                 vm.box.sampleTypeId = vm.box.sampleType.id;
+                vm.box.sampleTypeCode = vm.box.sampleType.sampleTypeCode;
                 isMixed = vm.box.sampleType.isMixed;
                 if(isMixed == 1){
                     vm.box.isSplit = 1;

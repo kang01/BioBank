@@ -29,6 +29,7 @@
         var sampleTypeClassCode = items.sampleTypeClassCode;
         //盒类型Id
         var frozenBoxTypeId = items.frozenBoxTypeId;
+        vm.box.frozenBoxType = items.frozenBoxType;
         var status = items.status;
 
 
@@ -82,6 +83,14 @@
                             }
                         }else{
                             vm.createBoxflag = true;
+                            if(!sampleTypeClassId){
+                                //是混合类型，并且无分类，为问题样本
+                                vm.problemOptions = _.remove(vm.problemOptions,function (o) {
+                                    if(o.sampleTypeCode == "97"){
+                                        return o
+                                    }
+                                });
+                            }
                         }
                         if(vm.problemOptions.length){
                             vm.box.sampleType = vm.problemOptions[0];
@@ -164,9 +173,11 @@
                         }
                     }else{
                         vm.noSampleClassFlag = true;
-                        vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
-                        vm.box.sampleClassificationCode = vm.sampleTypeClassOptions[0].sampleClassificationCode;
-                        vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                        if(vm.sampleTypeClassOptions.length){
+                            vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                            vm.box.sampleClassificationCode = vm.sampleTypeClassOptions[0].sampleClassificationCode;
+                            vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                        }
                     }
                 }
                 if(countFlag){

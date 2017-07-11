@@ -975,8 +975,10 @@
                 box.frozenBoxTypeId = vm.box.frozenBoxType.id;
                 box.stockInFrozenTubeList = [];
                 if(box.sampleTypeCode == "99"){
-                    vm.sampleTypeClassId =  vm.projectSampleTypeOptions[0].sampleClassificationId;
-                    vm.sampleTypeClassCode =  vm.projectSampleTypeOptions[0].sampleClassificationCode;
+                    if(vm.projectSampleTypeOptions.length){
+                        vm.sampleTypeClassId =  vm.projectSampleTypeOptions[0].sampleClassificationId;
+                        vm.sampleTypeClassCode =  vm.projectSampleTypeOptions[0].sampleClassificationCode;
+                    }
                 }
             }
             modalInstance = $uibModal.open({
@@ -997,6 +999,7 @@
                             sampleTypeClassId:vm.sampleTypeClassId || vm.box.sampleClassificationId,
                             sampleTypeClassCode:vm.sampleTypeClassCode || vm.box.sampleClassificationId,
                             frozenBoxTypeId:box.frozenBoxTypeId,
+                            frozenBoxType:vm.box.frozenBoxType,
                             status:status || "2"
                         };
                     }

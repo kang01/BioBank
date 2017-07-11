@@ -38,7 +38,9 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query(value = "select count(*) from frozen_tube t where t.frozen_box_id in ?1 and t.status=?2" ,nativeQuery = true)
     int countByFrozenBoxCodeStrAndStatus(List<Long> boxIds, String status);
 
-    @Query(value = "select count(t.sample_code) from frozen_tube t where t.frozen_box_id in ?1 and t.status!='0000'" ,nativeQuery = true)
+    @Query(value = "select count(count(case when t.sample_code is not null THEN t.sample_code ELSE t.sample_temp_code end)) from frozen_tube t\n" +
+        " where t.frozen_box_id in ?1 and t.status!='0000'\n" +
+        " GROUP BY case when t.sample_code is not null THEN t.sample_code ELSE t.sample_temp_code end" ,nativeQuery = true)
     int countByFrozenBoxCodeStrAndGroupBySampleCode(List<Long> boxIds);
 
     @Query(value = "select t.* from frozen_tube t left join frozen_box b on t.frozen_box_id = b.id" +

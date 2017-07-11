@@ -120,7 +120,6 @@ public class TranshipServiceImpl implements TranshipService{
 //            throw new BankServiceException("运单号不能重复！",trackNumber);
 //        }
         Project project = projectRepository.findOne(transhipDTO.getProjectId());
-
         User user = userRepository.findByLogin(transhipDTO.getReceiver());
         transhipDTO.setReceiverId(user!=null?user.getId():null);
         transhipDTO.setReceiver(user!=null?user.getLogin():transhipDTO.getReceiver());

@@ -411,6 +411,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
                 tube.setProject(box.getProject());
                 tube.setProjectCode(box.getProjectCode());
+                tube.setProjectSite(box.getProjectSite());
+                tube.setProjectSiteCode(box.getProjectSiteCode());
                 String sampleCode = tube.getSampleCode()!=null?tube.getSampleCode():tube.getSampleTempCode();
                 FrozenTube frozenTube = null;
                 if(tube.getSampleClassification()!=null){
@@ -478,6 +480,26 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
             result.getFrozenBoxDTOList().add(frozenBoxMapper.frozenBoxToFrozenBoxDTO(box));
         }
+
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipId);
+        int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfTube = 0;int countOfSample =0;
+        List<Long> boxIds = new ArrayList<Long>();
+        for(FrozenBox box : frozenBoxList){
+            frozenBoxRepository.save(box);
+            boxIds.add(box.getId());
+        }
+        if(boxIds.size()>0){
+            countOfEmptyHole = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_HOLE_EMPTY);
+            countOfEmptyTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_EMPTY);
+            countOfTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_NORMAL);
+            countOfSample = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleCode(boxIds);
+        }
+        tranship.setSampleNumber(countOfSample);
+        tranship.setFrozenBoxNumber(frozenBoxList.size());
+        tranship.setEmptyHoleNumber(countOfEmptyHole);
+        tranship.setEmptyTubeNumber(countOfEmptyTube);
+        tranship.setEffectiveSampleNumber(countOfTube);
+        transhipRepository.save(tranship);
         return result;
     }
 

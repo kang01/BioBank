@@ -40,7 +40,7 @@
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.5</commons-lang.version>
         <docker-maven-plugin.version>0.4.13</docker-maven-plugin.version>
-        <frontend-maven-plugin.version>1.5</frontend-maven-plugin.version>
+        <frontend-maven-plugin.version>1.4</frontend-maven-plugin.version>
 
         <hibernate.version>5.2.4.Final</hibernate.version>
 
@@ -63,7 +63,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.version>3.0.0</maven.version>
         <metrics-spring.version>3.1.3</metrics-spring.version>
-        <node.version>v6.9.5</node.version>
+        <node.version>v7.5.0</node.version>
         <oracle.version>12.1.0.2.0</oracle.version>
         <!-- These remain empty unless the corresponding profile is active -->
         <profile.no-liquibase />
@@ -110,6 +110,8 @@
         <undertow.version>1.4.10.Final</undertow.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
         <yarn.version>v0.20.3</yarn.version>
+
+        <skipTests>true</skipTests>
     </properties>
 
 
@@ -569,6 +571,7 @@
                 <configuration>
                     <!-- Force alphabetical order to have a reproducible build -->
                     <runOrder>alphabetical</runOrder>
+                    <skipTests>${skipTests}</skipTests>
                 </configuration>
             </plugin>
             <plugin>

@@ -53,34 +53,36 @@
                     if(vm.isMixed == "1"){
                         //99类型下有分类时，选择完了分类的变化
                         vm.problemOptions = vm.sampleTypeOptions;
-                        var problemSampleTypeId = _.find(vm.problemOptions,{sampleTypeCode:"97"}).id;
-                        for (var i = 0; i < boxes.length; i++) {
-                            if(boxes[i].sampleTypeId == problemSampleTypeId){
-                                _.remove(vm.problemOptions,{sampleTypeCode:"97"});
-                            }
-                        }
-                        vm.noSampleClassFlag = false;
-                        if(!sampleTypeClassId){
-                            if(boxes.length){
-                                vm.sampleFlag = false;
-                                vm.createBoxflag = true;
-                                vm.fullBoxFlag = true;
-                                return;
-                            }
-                            // //是混合类型，并且无分类，为问题样本
-                            vm.problemOptions = _.remove(vm.problemOptions,function (o) {
-                                if(o.sampleTypeCode == "97"){
-                                    return o
+                        if(boxes.length){
+                            var problemSampleTypeId = _.find(vm.problemOptions,{sampleTypeCode:"97"}).id;
+                            for (var i = 0; i < boxes.length; i++) {
+                                if(boxes[i].sampleTypeId == problemSampleTypeId){
+                                    _.remove(vm.problemOptions,{sampleTypeCode:"97"});
                                 }
-                            });
+                            }
+                            vm.noSampleClassFlag = false;
+                            if(!sampleTypeClassId){
+                                if(boxes.length){
+                                    vm.sampleFlag = false;
+                                    vm.createBoxflag = true;
+                                    vm.fullBoxFlag = true;
+                                    return;
+                                }
+                                // //是混合类型，并且无分类，为问题样本
+                                vm.problemOptions = _.remove(vm.problemOptions,function (o) {
+                                    if(o.sampleTypeCode == "97"){
+                                        return o
+                                    }
+                                });
+                            }
 
+                        }else{
+                            vm.createBoxflag = true;
                         }
                         if(vm.problemOptions.length){
                             vm.box.sampleType = vm.problemOptions[0];
                             vm.box.sampleTypeId = vm.problemOptions[0].id;
                         }
-
-
                     }else{
                         //不是混合类型
                         vm.noSampleClassFlag = true;
@@ -125,47 +127,39 @@
                 vm.noSampleClassFlag = true;
                 //1:新加第二个盒子 2：新加第一个盒子
                 if(status == "2"){
-                    if(vm.isMixed == "1" && sampleTypeClassId) {
-                        for (var i = 0; i < boxes.length; i++) {
-                            for (var j = 0; j < vm.sampleTypeClassOptions.length; j++) {
-                                if (boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId) {
-                                    _.pullAt(vm.sampleTypeClassOptions, j);
+                    if(boxes.length){
+                        if(vm.isMixed == "1" && sampleTypeClassId) {
+                            for (var i = 0; i < boxes.length; i++) {
+                                for (var j = 0; j < vm.sampleTypeClassOptions.length; j++) {
+                                    if (boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId) {
+                                        _.pullAt(vm.sampleTypeClassOptions, j);
+                                    }
                                 }
                             }
-                        }
 
-                        if(vm.sampleTypeClassOptions.length){
-                            vm.noSampleClassFlag = true;
-                            vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
-                            vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
-                        }else{
-                            vm.box.sampleClassificationId = "";
-                            vm.box.sampleClassification = "";
-                            vm.sampleTypeClassOptions = [];
-                            if(vm.box.sampleType.sampleTypeCode == "97"){
+                            if(vm.sampleTypeClassOptions.length){
                                 vm.noSampleClassFlag = true;
+                                vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                                vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
                             }else{
-                                vm.noSampleClassFlag = false;
+                                vm.box.sampleClassificationId = "";
+                                vm.box.sampleClassification = "";
+                                vm.sampleTypeClassOptions = [];
+                                if(vm.box.sampleType.sampleTypeCode == "97"){
+                                    vm.noSampleClassFlag = true;
+                                }else{
+                                    vm.noSampleClassFlag = false;
+                                }
+
+
                             }
-
-
                         }
                     }else{
-
-                        // if(vm.box.sampleType.sampleTypeCode == "97"){
-                        //     vm.noSampleClassFlag = true;
-                        //     vm.box.sampleClassificationId = "";
-                        //     vm.box.sampleClassification = "";
-                        // }else{
-                        //     vm.noSampleClassFlag = false;
-                        // }
+                        vm.noSampleClassFlag = true;
+                        vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                        vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
                     }
-
                 }
-
-
-
-
                 if(countFlag){
                     //创建第一个新盒子，空管子
                     if(!stockInFrozenTubeList.length){
@@ -174,7 +168,6 @@
                     }else{
                         vm.fullBoxFlag = true;
                     }
-                    // countFlag = false;
                 }
 
             });
@@ -197,11 +190,6 @@
                 vm.box.frozenBoxCode="";
                 vm.box.memo = "";
                 vm.box.stockInFrozenTubeList = [];
-                // vm.box = {
-                //     frozenBoxCode:'',
-                //     memo:'',
-                //     stockInFrozenTubeList:[]
-                // };
                 if(stockInFrozenTubeList.length){
                     var rows = +items.box.sampleType.frozenBoxTypeRows;
                     var cols = +items.box.sampleType.frozenBoxTypeColumns;
@@ -436,7 +424,7 @@
             labelField:'sampleClassificationName',
             maxItems: 1,
             onChange:function (value) {
-                vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{'sampleClassificationId':+value})[0];
+                vm.box.sampleClassification = _.find(vm.sampleTypeClassOptions,{'sampleClassificationId':+value});
                 vm.box.sampleClassificationId = value;
             }
         };

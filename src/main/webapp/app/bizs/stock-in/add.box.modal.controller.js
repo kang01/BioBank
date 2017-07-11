@@ -21,9 +21,12 @@
         vm.isMixed = items.isMixed;
         //样本类型
         var sampleTypeId = items.sampleTypeId;
+        var sampleTypeCode = items.sampleTypeCode;
         vm.box.sampleTypeId = items.sampleTypeId;
+        vm.box.sampleTypeCode = items.sampleTypeCode;
         //样本分类
         var sampleTypeClassId = items.sampleTypeClassId;
+        var sampleTypeClassCode = items.sampleTypeClassCode;
         //盒类型Id
         var frozenBoxTypeId = items.frozenBoxTypeId;
         var status = items.status;
@@ -33,6 +36,7 @@
         var initData = function () {
             //盒子类型
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
+            //样本分类
             _fnQuerySampleType();
         };
         initData();
@@ -47,6 +51,7 @@
                 if(status == "1"){
                     vm.problemOptions = _.remove(vm.sampleTypeOptions,{id:sampleTypeId});
                     vm.box.sampleTypeId = sampleTypeId;
+                    vm.box.sampleTypeCode = sampleTypeCode;
                     vm.box.sampleType = _.find(vm.problemOptions,{'id': + vm.box.sampleTypeId});
                     vm.fullBoxFlag = true;
                 }else{
@@ -54,9 +59,9 @@
                         //99类型下有分类时，选择完了分类的变化
                         vm.problemOptions = vm.sampleTypeOptions;
                         if(boxes.length){
-                            var problemSampleTypeId = _.find(vm.problemOptions,{sampleTypeCode:"97"}).id;
+                            // var problemSampleTypeId = _.find(vm.problemOptions,{sampleTypeCode:"97"}).id;
                             for (var i = 0; i < boxes.length; i++) {
-                                if(boxes[i].sampleTypeId == problemSampleTypeId){
+                                if(boxes[i].sampleTypeCode == "97"){
                                     _.remove(vm.problemOptions,{sampleTypeCode:"97"});
                                 }
                             }
@@ -68,33 +73,33 @@
                                     vm.fullBoxFlag = true;
                                     return;
                                 }
-                                // //是混合类型，并且无分类，为问题样本
+                                //是混合类型，并且无分类，为问题样本
                                 vm.problemOptions = _.remove(vm.problemOptions,function (o) {
                                     if(o.sampleTypeCode == "97"){
                                         return o
                                     }
                                 });
                             }
-
                         }else{
                             vm.createBoxflag = true;
                         }
                         if(vm.problemOptions.length){
                             vm.box.sampleType = vm.problemOptions[0];
                             vm.box.sampleTypeId = vm.problemOptions[0].id;
+                            vm.box.sampleTypeCode = vm.problemOptions[0].sampleTypeCode;
                         }
                     }else{
                         //不是混合类型
                         vm.noSampleClassFlag = true;
                         vm.problemOptions = _.remove(vm.sampleTypeOptions,function (o) {
-                            if(o.sampleTypeCode == "97" || o.id == vm.box.sampleTypeId){
+                            if(o.sampleTypeCode == "97" || o.sampleTypeCode == vm.box.sampleTypeCode){
                                 return o
                             }
                         });
                         vm.problemOptions = _.remove(vm.problemOptions,function (o) {
                             if(boxes.length){
                                 for(var i = 0; i < boxes.length; i++){
-                                    if(boxes[i].sampleTypeId != o.id){
+                                    if(boxes[i].sampleTypeCode != o.sampleTypeCode){
                                         return o;
                                     }
                                 }
@@ -104,12 +109,13 @@
 
                         });
                         vm.box.sampleTypeId = vm.problemOptions[0].id;
+                        vm.box.sampleTypeCode = vm.problemOptions[0].sampleTypeCode;
                         vm.box.sampleType = vm.problemOptions[0];
 
                     }
                 }
-                var problemSampleTypeCode = _.find(vm.problemOptions,{id:vm.box.sampleTypeId}).sampleTypeCode;
-                if(problemSampleTypeCode != "97"){
+                // var problemSampleTypeCode = vm.box.sampleTypeCode;
+                if(vm.box.sampleTypeCode != "97"){
                     _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
                 }else{
                     vm.createBoxflag = true;
@@ -131,7 +137,7 @@
                         if(vm.isMixed == "1" && sampleTypeClassId) {
                             for (var i = 0; i < boxes.length; i++) {
                                 for (var j = 0; j < vm.sampleTypeClassOptions.length; j++) {
-                                    if (boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId) {
+                                    if (boxes[i].sampleTypeCode == vm.sampleTypeClassOptions[j].sampleClassificationCode) {
                                         _.pullAt(vm.sampleTypeClassOptions, j);
                                     }
                                 }
@@ -140,9 +146,11 @@
                             if(vm.sampleTypeClassOptions.length){
                                 vm.noSampleClassFlag = true;
                                 vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                                vm.box.sampleClassificationCode = vm.sampleTypeClassOptions[0].sampleClassificationCode;
                                 vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
                             }else{
                                 vm.box.sampleClassificationId = "";
+                                vm.box.sampleClassificationCode = "";
                                 vm.box.sampleClassification = "";
                                 vm.sampleTypeClassOptions = [];
                                 if(vm.box.sampleType.sampleTypeCode == "97"){
@@ -157,6 +165,7 @@
                     }else{
                         vm.noSampleClassFlag = true;
                         vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                        vm.box.sampleClassificationCode = vm.sampleTypeClassOptions[0].sampleClassificationCode;
                         vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
                     }
                 }
@@ -222,31 +231,34 @@
                     if(!vm.fullBoxFlag){
                         for(var i = 0; i < boxes.length; i++){
                             for(var j = 0; j < vm.sampleTypeClassOptions.length; j++){
-                                if(boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId){
+                                if(boxes[i].sampleTypeCode == vm.sampleTypeClassOptions[j].sampleClassificationCode){
                                     _.pullAt(vm.sampleTypeClassOptions,j);
                                 }
                             }
                         }
-                        var problemSampleTypeId = _.find(vm.problemOptions,{sampleTypeCode:"97"}).id;
+                        // var problemSampleTypeId = _.find(vm.problemOptions,{sampleTypeCode:"97"}).id;
                         for (var i = 0; i < boxes.length; i++) {
-                            if(boxes[i].sampleTypeId == problemSampleTypeId){
+                            if(boxes[i].sampleTypeCode == "97"){
                                 _.remove(vm.problemOptions,{sampleTypeCode:"97"});
                             }
                         }
                         vm.box.sampleTypeId = sampleTypeId;
+                        vm.box.sampleTypeCode = sampleTypeCode;
                         vm.box.sampleType = _.filter(vm.problemOptions,{'id':+vm.box.sampleTypeId})[0];
 
                         if(vm.sampleTypeClassOptions.length){
                             vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                            vm.box.sampleClassificationCode = vm.sampleTypeClassOptions[0].sampleClassificationCode;
                             vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
                             sampleTypeClassId = vm.box.sampleClassificationId;
+                            sampleTypeClassCode = vm.box.sampleClassificationCode;
                         }else{
                             _.remove(vm.problemOptions,{"id":sampleTypeId});
 
                             if(vm.problemOptions.length){
-                                var problemSampleTypeId = _.find(vm.problemOptions,{sampleTypeCode:"97"}).id;
+                                // var problemSampleTypeId = _.find(vm.problemOptions,{sampleTypeCode:"97"}).id;
                                 for (var i = 0; i < boxes.length; i++) {
-                                    if(boxes[i].sampleTypeId == problemSampleTypeId){
+                                    if(boxes[i].sampleTypeCode == "97"){
                                         _.remove(vm.problemOptions,{sampleTypeCode:"97"});
                                     }
                                 }
@@ -258,6 +270,7 @@
 
                                 vm.sampleFlag = true;
                                 vm.box.sampleTypeId = vm.problemOptions[0].id;
+                                vm.box.sampleTypeCode = vm.problemOptions[0].sampleTypeCode;
                                 vm.box.sampleType = vm.problemOptions[0];
                             }else{
                                 vm.sampleFlag = false;
@@ -266,8 +279,9 @@
                     }else{
 
                         if(vm.sampleTypeClassOptions.length){
-                            vm.box.sampleClassificationId = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0].sampleClassificationId;
-                            vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0];
+                            vm.box.sampleClassificationId = _.find(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId}).sampleClassificationId;
+                            vm.box.sampleClassificationCode = _.find(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId}).sampleClassificationCode;
+                            vm.box.sampleClassification = _.find(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId});
                         }
                     }
 
@@ -292,6 +306,7 @@
                     }else{
                         if(vm.sampleTypeOptions.length){
                             vm.box.sampleTypeId = vm.problemOptions[0].id;
+                            vm.box.sampleTypeCode = vm.problemOptions[0].sampleTypeCode;
                             vm.box.sampleType = vm.problemOptions[0];
                         }
                     }
@@ -302,22 +317,22 @@
                 if(!vm.fullBoxFlag){
                     // 是混合、有分类
                     if(vm.isMixed == "1" && sampleTypeClassId){
-                        for(var i = 0; i < boxes.length; i++){
-                            for(var j = 0; j < vm.sampleTypeClassOptions.length; j++){
-                                if(boxes[i].sampleTypeId == vm.sampleTypeClassOptions[j].sampleClassificationId){
-                                    _.pullAt(vm.sampleTypeClassOptions,j);
+                        if(boxes.length){
+                            for(var i = 0; i < boxes.length; i++){
+                                for(var j = 0; j < vm.sampleTypeClassOptions.length; j++){
+                                    if(boxes[i].sampleTypeCode == vm.sampleTypeClassOptions[j].sampleClassificationCode){
+                                        _.pullAt(vm.sampleTypeClassOptions,j);
+                                    }
                                 }
                             }
                         }
-
-
                         countFlag = true;
                         //样本类型下的样本分类为空时，样本类型也应该不存在
                         if(!vm.sampleTypeClassOptions.length){
-                            var sampleTypeCode = _.find(vm.problemOptions,{id:vm.box.sampleTypeId}).sampleTypeCode;
-                            if(sampleTypeCode != "97"){
+                            // var sampleTypeCode = _.find(vm.problemOptions,{id:vm.box.sampleTypeId}).sampleTypeCode;
+                            if(vm.box.sampleTypeCode != "97"){
                                 for(var k = 0; k < vm.problemOptions.length; k++){
-                                    if(vm.box.sampleTypeId == vm.problemOptions[k].id){
+                                    if(vm.box.sampleTypeCode == vm.problemOptions[k].sampleTypeCode){
                                         _.pullAt(vm.problemOptions,k);
                                     }
                                 }
@@ -326,8 +341,9 @@
 
                             if(vm.problemOptions.length){
                                 vm.box.sampleTypeId = vm.problemOptions[0].id;
+                                vm.box.sampleTypeCode = vm.problemOptions[0].sampleTypeCode;
                                 vm.box.sampleType = vm.problemOptions[0];
-                                if(sampleTypeCode != "97"){
+                                if(vm.box.sampleTypeCode != "97"){
                                     _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
                                 }
                             }else{
@@ -335,10 +351,13 @@
                             }
                         }else{
                             vm.box.sampleTypeId = vm.problemOptions[0].id;
+                            vm.box.sampleTypeCode = vm.problemOptions[0].sampleTypeCode;
                             vm.box.sampleType = _.filter(vm.problemOptions,{'id':+vm.box.sampleTypeId})[0];
                             vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                            vm.box.sampleClassificationCode = vm.sampleTypeClassOptions[0].sampleClassificationCode;
                             vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
                             sampleTypeClassId = vm.box.sampleClassificationId;
+                            sampleTypeClassCode = vm.box.sampleClassificationCode;
                         }
                     }
                     //不是混合、无样本分类
@@ -350,8 +369,9 @@
 
                 }else{
                     if(vm.sampleTypeClassOptions.length){
-                        vm.box.sampleClassificationId = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0].sampleClassificationId;
-                        vm.box.sampleClassification = _.filter(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId})[0];
+                        vm.box.sampleClassificationId = _.find(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId}).sampleClassificationId;
+                        vm.box.sampleClassificationCode = _.find(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId}).sampleClassificationCode;
+                        vm.box.sampleClassification = _.find(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId});
                     }
 
 
@@ -387,7 +407,7 @@
             labelField:'frozenBoxTypeName',
             maxItems: 1,
             onChange:function(value){
-                vm.box.frozenBoxType = _.filter(vm.frozenBoxTypeOptions,{'id':+value})[0];
+                vm.box.frozenBoxType = _.find(vm.frozenBoxTypeOptions,{'id':+value});
                 vm.box.frozenBoxTypeId = value;
             }
         };
@@ -397,14 +417,16 @@
             maxItems: 1,
             onChange:function (value) {
                 if(value){
-                    vm.box.sampleType = _.filter(vm.problemOptions,{'id':+value})[0];
+                    vm.box.sampleType = _.find(vm.problemOptions,{'id':+value});
+                    vm.box.sampleTypeCode = _.find(vm.problemOptions,{'id':+value}).sampleTypeCode;
                     vm.box.sampleTypeId = value;
                     countFlag = false;
-                    var problemSampleTypeCode = _.find(vm.problemOptions,{id:+value}).sampleTypeCode;
-                    if(problemSampleTypeCode != "97"){
+                    // var problemSampleTypeCode = _.find(vm.problemOptions,{id:+value}).sampleTypeCode;
+                    if(vm.box.sampleTypeCode != "97"){
                         _fnQueryProjectSampleClasses(projectId,value);
                     }else{
                         vm.box.sampleClassificationId = "";
+                        vm.box.sampleClassificationCode = "";
                         vm.box.sampleClassification = "";
                         vm.sampleTypeClassOptions = [];
                         vm.noSampleClassFlag = true;
@@ -425,6 +447,7 @@
             maxItems: 1,
             onChange:function (value) {
                 vm.box.sampleClassification = _.find(vm.sampleTypeClassOptions,{'sampleClassificationId':+value});
+                vm.box.sampleClassificationCode = _.find(vm.sampleTypeClassOptions,{'sampleClassificationId':+value}).sampleClassificationCode;
                 vm.box.sampleClassificationId = value;
             }
         };

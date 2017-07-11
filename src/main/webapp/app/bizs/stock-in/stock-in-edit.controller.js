@@ -65,7 +65,7 @@
 
             vm.dtInstance = {};
 
-            vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 6, "<'row'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>", $scope)
+            vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10, "<'row'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>", $scope)
                 // 设置Tool button
                 .withButtons([
                     {
@@ -739,6 +739,7 @@
             if(item.sampleClassification){
                 vm.sampleTypeClassId = item.sampleClassification.id;
             }
+            vm.problemSamplyTypeCode = item.sampleType.sampleTypeCode;
             if(vm.frozenBoxCode ){
                 tubeList = item.stockInFrozenTubeList;
             }
@@ -748,6 +749,19 @@
         };
         //分装操作
         vm.splitBox = function () {
+            //97问题样本可以任意分装样本
+            if(vm.box.sampleType.sampleTypeCode == "99"){
+                if(vm.problemSamplyTypeCode != "97"){
+                    for(var i = 0; i< selectList.length; i++){
+                        if(vm.sampleTypeClassId != selectList[i].sampleClassificationId){
+                            toastr.error("被分装的样本分类必须跟要分装的盒子的分类要一致！");
+                            return;
+                        }
+                    }
+                }
+
+            }
+
             var rowCount = +vm.box.frozenBoxType.frozenBoxTypeRows;
             var colCount = +vm.box.frozenBoxType.frozenBoxTypeColumns;
             vm.obox.stockInFrozenTubeList = [];

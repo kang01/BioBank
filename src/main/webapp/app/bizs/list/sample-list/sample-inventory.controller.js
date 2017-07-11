@@ -83,7 +83,7 @@
         //架子
         function onShelfSuccess(data) {
             vm.frozenBoxShelfOptions = data;
-            vm.dto.supportRackId = vm.frozenBoxShelfOptions[0].id;
+            vm.dto.shelvesId = vm.frozenBoxShelfOptions[0].id;
         }
         vm.frozenBoxShelfConfig = {
             valueField:'id',

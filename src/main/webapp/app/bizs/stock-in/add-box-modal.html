@@ -46,9 +46,9 @@
                             </label>
                             <div class="col-sm-8">
                                 <selectize options='vm.sampleTypeClassOptions' config="vm.sampleTypeClassConfig"
-                                           ng-model="vm.box.sampleClassificationId" ng-disabled="!vm.box.sampleClassificationId || vm.fullBoxFlag"></selectize>
+                                           ng-model="vm.box.sampleClassificationId" ng-disabled="!vm.box.sampleClassificationId || vm.fullBoxFlag" ng-if="vm.box.sampleClassificationId"></selectize>
                                 <!--<input type="hidden" class="form-control"  ng-model="vm.box.sampleClassificationId"  required>-->
-
+                                <input type="text" class="form-control" ng-disabled="true" ng-if="!vm.box.sampleClassificationId">
                             </div>
                         </div>
                     </div>

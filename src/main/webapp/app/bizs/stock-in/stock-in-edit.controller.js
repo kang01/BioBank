@@ -664,39 +664,40 @@
         }
 
         function onIncompleteBoxesSuccess(data) {
-
-            for(var i = 0; i < data.length; i++){
-                var boxList = [];
-                //盒子编码太长时，用星号代替
+            if(data.length){
+                for(var i = 0; i < data.length; i++){
+                    var boxList = [];
+                    //盒子编码太长时，用星号代替
                     if(data[i].frozenBoxCode.length > 10){
                         data[i].copyBoxCode = _fnReplaceBoxCode(data[i].frozenBoxCode);
                     }else{
                         data[i].copyBoxCode = data[i].frozenBoxCode;
                     }
-                data[i].addTubeCount = 0;
-                if(data[i].sampleClassification){
-                    data[i].backColor = data[i].sampleClassification.backColor;
-                    data[i].sampleTypeName = data[i].sampleClassification.sampleClassificationName;
-                    vm.sampleTypeClassId = data[i].sampleClassification.sampleClassificationId || data[i].sampleClassification.id;
-                }else{
-                    data[i].backColor = data[i].sampleType.backColor;
-                    data[i].sampleTypeName = data[i].sampleType.sampleTypeName;
+                    data[i].addTubeCount = 0;
+                    if(data[i].sampleClassification){
+                        data[i].backColor = data[i].sampleClassification.backColor;
+                        data[i].sampleTypeName = data[i].sampleClassification.sampleClassificationName;
+                        vm.sampleTypeClassId = data[i].sampleClassification.sampleClassificationId || data[i].sampleClassification.id;
+                    }else{
+                        data[i].backColor = data[i].sampleType.backColor;
+                        data[i].sampleTypeName = data[i].sampleType.sampleTypeName;
+                    }
+                    boxList.push(data[i]);
+                    if(data[i].sampleClassification){
+                        vm.incompleteBoxesList.push({
+                            sampleTypeId:data[i].sampleClassification.id || data[i].sampleClassification.sampleClassificationId,
+                            boxList:boxList
+                        });
+                    }else{
+                        vm.incompleteBoxesList.push({
+                            sampleTypeId:data[i].sampleTypeId || data[i].sampleType.id,
+                            boxList:boxList
+                        });
+                    }
                 }
-                boxList.push(data[i]);
-                if(data[i].sampleClassification){
-                    vm.incompleteBoxesList.push({
-                        sampleTypeId:data[i].sampleClassification.id || data[i].sampleClassification.sampleClassificationId,
-                        boxList:boxList
-                    });
-                }else{
-                    vm.incompleteBoxesList.push({
-                        sampleTypeId:data[i].sampleTypeId || data[i].sampleType.id,
-                        boxList:boxList
-                    });
-                }
+                vm.incompleteBoxesList  = _.orderBy(vm.incompleteBoxesList, ['sampleTypeId'], ['esc']);
             }
 
-            vm.incompleteBoxesList  = _.orderBy(vm.incompleteBoxesList, ['sampleTypeId'], ['esc']);
         }
 
         function onError(error) {
@@ -960,9 +961,13 @@
             if(!box){
                 box = {};
                 box.sampleTypeId = vm.box.sampleType.id;
+                box.sampleTypeCode = vm.box.sampleType.sampleTypeCode;
                 // box.isMixed = vm.box.sampleType.isMixed;
                 box.frozenBoxTypeId = vm.box.frozenBoxType.id;
                 box.stockInFrozenTubeList = [];
+                if(box.sampleTypeCode == "99"){
+                    vm.sampleTypeClassId =  vm.projectSampleTypeOptions[0].sampleClassificationId;
+                }
             }
             modalInstance = $uibModal.open({
                 animation: true,

@@ -505,7 +505,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             if(LCC_ID !=null){
                 projectSite = projectSiteRepository.findByProjectSiteCode(LCC_ID.toString());
             }
-            String stockInCodeNew = "B"+ bankUtil.getUniqueID("B");
+            String stockInCodeNew = bankUtil.getUniqueID("B");
             StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCodeNew);
             String receiver = sampleList.get(0).get("ECEIVER")!=null?sampleList.get(0).get("ECEIVER").toString():null;
             String opt = sampleList.get(0).get("OPT")!=null?sampleList.get(0).get("OPT").toString():null;

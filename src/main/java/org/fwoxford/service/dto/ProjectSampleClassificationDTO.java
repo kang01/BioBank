@@ -5,6 +5,7 @@ package org.fwoxford.service.dto;
  */
 public class ProjectSampleClassificationDTO {
     private Long sampleClassificationId;
+    private String sampleClassificationCode;
     private String sampleClassificationName;
     private String columnsNumber;
     private String frontColor;
@@ -15,6 +16,14 @@ public class ProjectSampleClassificationDTO {
 
     public void setSampleClassificationId(Long sampleClassificationId) {
         this.sampleClassificationId = sampleClassificationId;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
     }
 
     public String getSampleClassificationName() {

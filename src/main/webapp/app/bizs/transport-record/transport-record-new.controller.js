@@ -558,16 +558,21 @@
                         if(vm.box.sampleTypeCode == "99"){
                             var rowIndex = change[0][0];
                             var oldTubeObject = change[0][2];
-                            for(var m = 0; m < vm.frozenTubeArray.length; m++){
-                                // hotRegisterer.getInstance('my-handsontable').setDataAtCell(rowIndex, m, oldTubeObject);
-                                for(var n = 0; n < vm.frozenTubeArray[m].length ; n++){
-                                    if(oldTubeObject.sampleCode){
-                                        vm.frozenTubeArray[rowIndex][n].sampleCode = oldTubeObject.sampleCode;
+                            if(oldTubeObject.sampleClassificationId){
+                                for(var m = 0; m < vm.frozenTubeArray.length; m++){
+                                    for(var n = 0; n < vm.frozenTubeArray[m].length ; n++){
+                                        if(oldTubeObject.sampleCode){
+                                            vm.frozenTubeArray[rowIndex][n].sampleCode = oldTubeObject.sampleCode;
+                                        }
                                     }
-                                }
 
+                                }
+                                hotRegisterer.getInstance('my-handsontable').render();
+                            }else{
+                                vm.nextFlag = true;
+                                vm.isMixedFlag = false;
                             }
-                            hotRegisterer.getInstance('my-handsontable').render();
+
                         }
 
                         for (var i=0; i<change.length; ++i){
@@ -616,13 +621,16 @@
                                 if(m == rowIndex && n == colIndex){
                                     continue;
                                 }
-                                if(vm.frozenTubeArray[m][n].sampleCode == oldTubeObject.sampleCode){
-                                    toastr.error("冻存管编码不能重复!");
-                                    vm.nextFlag = false;
-                                    return false;
-                                }else{
-                                    vm.nextFlag = true;
+                                if(vm.frozenTubeArray[m][n].sampleCode){
+                                    if(vm.frozenTubeArray[m][n].sampleCode == oldTubeObject.sampleCode){
+                                        toastr.error("冻存管编码不能重复!");
+                                        vm.nextFlag = false;
+                                        return false;
+                                    }else{
+                                        vm.nextFlag = true;
+                                    }
                                 }
+
                             }
 
                         }

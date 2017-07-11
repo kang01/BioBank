@@ -82,11 +82,14 @@
 
             var that = this;
             var value = this.getInputElement().value;
-            if (that.originalValue){
-                that.originalValue.sampleCode = value;
-            } else {
-                that.originalValue = value;
+            if(value){
+                if (that.originalValue){
+                    that.originalValue.sampleCode = value;
+                } else {
+                    that.originalValue = value;
+                }
             }
+
 
             return that.originalValue; // returns currently selected date, for example "2013/09/15"
         },

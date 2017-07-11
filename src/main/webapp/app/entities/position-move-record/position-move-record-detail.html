@@ -1,0 +1,119 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.positionMoveRecord.detail.title">Position Move Record</span> {{vm.positionMoveRecord.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.positionMoveRecord.equipmentCode">Equipment Code</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.equipmentCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.areaCode">Area Code</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.areaCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.supportRackCode">Support Rack Code</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.supportRackCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.rowsInShelf">Rows In Shelf</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.rowsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.columnsInShelf">Columns In Shelf</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.columnsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.frozenBoxCode">Frozen Box Code</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.frozenBoxCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.tubeRows">Tube Rows</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.tubeRows}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.tubeColumns">Tube Columns</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.tubeColumns}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.moveReason">Move Reason</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.moveReason}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.moveAffect">Move Affect</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.moveAffect}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.whetherFreezingAndThawing">Whether Freezing And Thawing</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.whetherFreezingAndThawing}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.moveType">Move Type</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.moveType}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.operator1">Operator 1</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.operator1}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.operator2">Operator 2</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.operator2}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.projectCode">Project Code</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.projectCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.projectSiteCode">Project Site Code</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.projectSiteCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.status">Status</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.positionMoveRecord.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.equipment">Equipment</span></dt>
+        <dd>
+            <a ui-sref="equipment-detail({id:vm.positionMoveRecord.equipmentId})">{{vm.positionMoveRecord.equipmentId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.area">Area</span></dt>
+        <dd>
+            <a ui-sref="area-detail({id:vm.positionMoveRecord.areaId})">{{vm.positionMoveRecord.areaId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.supportRack">Support Rack</span></dt>
+        <dd>
+            <a ui-sref="support-rack-detail({id:vm.positionMoveRecord.supportRackId})">{{vm.positionMoveRecord.supportRackId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.frozenBox">Frozen Box</span></dt>
+        <dd>
+            <a ui-sref="frozen-box-detail({id:vm.positionMoveRecord.frozenBoxId})">{{vm.positionMoveRecord.frozenBoxId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.frozenTube">Frozen Tube</span></dt>
+        <dd>
+            <a ui-sref="frozen-tube-detail({id:vm.positionMoveRecord.frozenTubeId})">{{vm.positionMoveRecord.frozenTubeId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.project">Project</span></dt>
+        <dd>
+            <a ui-sref="project-detail({id:vm.positionMoveRecord.projectId})">{{vm.positionMoveRecord.projectId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.projectSite">Project Site</span></dt>
+        <dd>
+            <a ui-sref="project-site-detail({id:vm.positionMoveRecord.projectSiteId})">{{vm.positionMoveRecord.projectSiteId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="position-move-record-detail.edit({id:vm.positionMoveRecord.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

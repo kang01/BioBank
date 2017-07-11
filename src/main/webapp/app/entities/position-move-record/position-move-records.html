@@ -1,0 +1,122 @@
+<div>
+    <h2 data-translate="bioBankApp.positionMoveRecord.home.title">Position Move Records</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="position-move-record.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.positionMoveRecord.home.createLabel">
+                        Create new Position Move Record
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentCode"><span data-translate="bioBankApp.positionMoveRecord.equipmentCode">Equipment Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="areaCode"><span data-translate="bioBankApp.positionMoveRecord.areaCode">Area Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="supportRackCode"><span data-translate="bioBankApp.positionMoveRecord.supportRackCode">Support Rack Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="rowsInShelf"><span data-translate="bioBankApp.positionMoveRecord.rowsInShelf">Rows In Shelf</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="columnsInShelf"><span data-translate="bioBankApp.positionMoveRecord.columnsInShelf">Columns In Shelf</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxCode"><span data-translate="bioBankApp.positionMoveRecord.frozenBoxCode">Frozen Box Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="tubeRows"><span data-translate="bioBankApp.positionMoveRecord.tubeRows">Tube Rows</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="tubeColumns"><span data-translate="bioBankApp.positionMoveRecord.tubeColumns">Tube Columns</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="moveReason"><span data-translate="bioBankApp.positionMoveRecord.moveReason">Move Reason</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="moveAffect"><span data-translate="bioBankApp.positionMoveRecord.moveAffect">Move Affect</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="whetherFreezingAndThawing"><span data-translate="bioBankApp.positionMoveRecord.whetherFreezingAndThawing">Whether Freezing And Thawing</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="moveType"><span data-translate="bioBankApp.positionMoveRecord.moveType">Move Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="operator1"><span data-translate="bioBankApp.positionMoveRecord.operator1">Operator 1</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="operator2"><span data-translate="bioBankApp.positionMoveRecord.operator2">Operator 2</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectCode"><span data-translate="bioBankApp.positionMoveRecord.projectCode">Project Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectSiteCode"><span data-translate="bioBankApp.positionMoveRecord.projectSiteCode">Project Site Code</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.positionMoveRecord.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.positionMoveRecord.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="equipmentId"><span data-translate="bioBankApp.positionMoveRecord.equipment">Equipment</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="areaId"><span data-translate="bioBankApp.positionMoveRecord.area">Area</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="supportRackId"><span data-translate="bioBankApp.positionMoveRecord.supportRack">Support Rack</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenBoxId"><span data-translate="bioBankApp.positionMoveRecord.frozenBox">Frozen Box</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="frozenTubeId"><span data-translate="bioBankApp.positionMoveRecord.frozenTube">Frozen Tube</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectId"><span data-translate="bioBankApp.positionMoveRecord.project">Project</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectSiteId"><span data-translate="bioBankApp.positionMoveRecord.projectSite">Project Site</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="positionMoveRecord in vm.positionMoveRecords track by positionMoveRecord.id">
+                    <td><a ui-sref="position-move-record-detail({id:positionMoveRecord.id})">{{positionMoveRecord.id}}</a></td>
+                    <td>{{positionMoveRecord.equipmentCode}}</td>
+                    <td>{{positionMoveRecord.areaCode}}</td>
+                    <td>{{positionMoveRecord.supportRackCode}}</td>
+                    <td>{{positionMoveRecord.rowsInShelf}}</td>
+                    <td>{{positionMoveRecord.columnsInShelf}}</td>
+                    <td>{{positionMoveRecord.frozenBoxCode}}</td>
+                    <td>{{positionMoveRecord.tubeRows}}</td>
+                    <td>{{positionMoveRecord.tubeColumns}}</td>
+                    <td>{{positionMoveRecord.moveReason}}</td>
+                    <td>{{positionMoveRecord.moveAffect}}</td>
+                    <td>{{positionMoveRecord.whetherFreezingAndThawing}}</td>
+                    <td>{{positionMoveRecord.moveType}}</td>
+                    <td>{{positionMoveRecord.operator1}}</td>
+                    <td>{{positionMoveRecord.operator2}}</td>
+                    <td>{{positionMoveRecord.projectCode}}</td>
+                    <td>{{positionMoveRecord.projectSiteCode}}</td>
+                    <td>{{positionMoveRecord.status}}</td>
+                    <td>{{positionMoveRecord.memo}}</td>
+                    <td>
+                        <a ui-sref="equipment-detail({id:positionMoveRecord.equipmentId})">{{positionMoveRecord.equipmentId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="area-detail({id:positionMoveRecord.areaId})">{{positionMoveRecord.areaId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="support-rack-detail({id:positionMoveRecord.supportRackId})">{{positionMoveRecord.supportRackId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="frozen-box-detail({id:positionMoveRecord.frozenBoxId})">{{positionMoveRecord.frozenBoxId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="frozen-tube-detail({id:positionMoveRecord.frozenTubeId})">{{positionMoveRecord.frozenTubeId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="project-detail({id:positionMoveRecord.projectId})">{{positionMoveRecord.projectId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="project-site-detail({id:positionMoveRecord.projectSiteId})">{{positionMoveRecord.projectSiteId}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="position-move-record-detail({id:positionMoveRecord.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="position-move-record.edit({id:positionMoveRecord.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="position-move-record.delete({id:positionMoveRecord.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

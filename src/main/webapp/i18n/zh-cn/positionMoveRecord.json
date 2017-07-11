@@ -1,0 +1,45 @@
+{
+    "bioBankApp": {
+        "positionMoveRecord" : {
+            "home": {
+                "title": "Position Move Records",
+                "createLabel": "Create a new Position Move Record",
+                "createOrEditLabel": "Create or edit a Position Move Record"
+            },
+            "created": "A new Position Move Record is created with identifier {{ param }}",
+            "updated": "A Position Move Record is updated with identifier {{ param }}",
+            "deleted": "A Position Move Record is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Position Move Record {{ id }}?"
+            },
+            "detail": {
+                "title": "Position Move Record"
+            },
+            "equipmentCode": "Equipment Code",
+            "areaCode": "Area Code",
+            "supportRackCode": "Support Rack Code",
+            "rowsInShelf": "Rows In Shelf",
+            "columnsInShelf": "Columns In Shelf",
+            "frozenBoxCode": "Frozen Box Code",
+            "tubeRows": "Tube Rows",
+            "tubeColumns": "Tube Columns",
+            "moveReason": "Move Reason",
+            "moveAffect": "Move Affect",
+            "whetherFreezingAndThawing": "Whether Freezing And Thawing",
+            "moveType": "Move Type",
+            "operator1": "Operator 1",
+            "operator2": "Operator 2",
+            "projectCode": "Project Code",
+            "projectSiteCode": "Project Site Code",
+            "status": "Status",
+            "memo": "Memo",
+            "equipment": "Equipment",
+            "area": "Area",
+            "supportRack": "Support Rack",
+            "frozenBox": "Frozen Box",
+            "frozenTube": "Frozen Tube",
+            "project": "Project",
+            "projectSite": "Project Site"
+        }
+    }
+}

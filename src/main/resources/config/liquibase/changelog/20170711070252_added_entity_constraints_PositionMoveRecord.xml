@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity PositionMoveRecord.
+    -->
+    <changeSet id="20170711070252-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="equipment_id"
+                                 baseTableName="position_move_record"
+                                 constraintName="pos_move_equipment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="equipment"/>
+
+        <addForeignKeyConstraint baseColumnNames="area_id"
+                                 baseTableName="position_move_record"
+                                 constraintName="pos_move_area_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="area"/>
+
+        <addForeignKeyConstraint baseColumnNames="support_rack_id"
+                                 baseTableName="position_move_record"
+                                 constraintName="pos_move_support_rack_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="support_rack"/>
+
+        <addForeignKeyConstraint baseColumnNames="frozen_box_id"
+                                 baseTableName="position_move_record"
+                                 constraintName="pos_move_frozen_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_box"/>
+
+        <addForeignKeyConstraint baseColumnNames="frozen_tube_id"
+                                 baseTableName="position_move_record"
+                                 constraintName="pos_move_frozen_tube_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_tube"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_id"
+                                 baseTableName="position_move_record"
+                                 constraintName="pos_move_project_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_site_id"
+                                 baseTableName="position_move_record"
+                                 constraintName="pos_move_project_site_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project_site"/>
+
+    </changeSet>
+</databaseChangeLog>

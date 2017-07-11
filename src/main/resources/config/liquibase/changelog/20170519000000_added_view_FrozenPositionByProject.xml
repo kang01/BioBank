@@ -6,7 +6,7 @@
     <!--
         Added the view for entity StockOutApply.
     -->
-    <changeSet id="20170518000000-2" author="jhipster">
+    <changeSet id="20170519000000-2" author="jhipster">
 
         <createView viewName="view_position_by_project">
             SELECT

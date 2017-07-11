@@ -59,6 +59,21 @@ public class StockInBoxForDataTableEntity {
     @Column(name="stock_in_code")
     private String stockInCode;
 
+    @Column(name ="equipment_code")
+    private String equipmentCode;
+
+    @Column(name ="area_code")
+    private String areaCode;
+
+    @Column(name ="support_rack_code")
+    private String supportRackCode;
+
+    @Column(name ="rows_in_shelf")
+    private String rowsInShelf;
+
+    @Column(name ="columns_in_shelf")
+    private String columnsInShelf;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -95,6 +110,25 @@ public class StockInBoxForDataTableEntity {
         return Objects.hashCode(getId());
     }
 
+    public StockInBoxForDataTableEntity() {
+    }
+
+    public StockInBoxForDataTableEntity(Long id, Integer countOfSample, String status, String frozenBoxCode, String sampleTypeName, String position, Integer isSplit, String sampleClassificationName, String stockInCode, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf) {
+        this.id = id;
+        this.countOfSample = countOfSample;
+        this.status = status;
+        this.frozenBoxCode = frozenBoxCode;
+        this.sampleTypeName = sampleTypeName;
+        this.position = position;
+        this.isSplit = isSplit;
+        this.sampleClassificationName = sampleClassificationName;
+        this.stockInCode = stockInCode;
+        this.equipmentCode = equipmentCode;
+        this.areaCode = areaCode;
+        this.supportRackCode = supportRackCode;
+        this.rowsInShelf = rowsInShelf;
+        this.columnsInShelf = columnsInShelf;
+    }
 
     public Long getId() {
         return id;
@@ -166,5 +200,45 @@ public class StockInBoxForDataTableEntity {
 
     public void setStockInCode(String stockInCode) {
         this.stockInCode = stockInCode;
+    }
+
+    public String getEquipmentCode() {
+        return equipmentCode;
+    }
+
+    public void setEquipmentCode(String equipmentCode) {
+        this.equipmentCode = equipmentCode;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    public String getSupportRackCode() {
+        return supportRackCode;
+    }
+
+    public void setSupportRackCode(String supportRackCode) {
+        this.supportRackCode = supportRackCode;
+    }
+
+    public String getRowsInShelf() {
+        return rowsInShelf;
+    }
+
+    public void setRowsInShelf(String rowsInShelf) {
+        this.rowsInShelf = rowsInShelf;
+    }
+
+    public String getColumnsInShelf() {
+        return columnsInShelf;
+    }
+
+    public void setColumnsInShelf(String columnsInShelf) {
+        this.columnsInShelf = columnsInShelf;
     }
 }

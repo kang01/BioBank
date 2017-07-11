@@ -9,7 +9,7 @@
     <changeSet id="20170510000000-2" author="jhipster">
         <createView viewName="view_frozen_box_for_task">
             select DISTINCT a.frozen_box_code,a.id,a.sample_type_name,a.status,a.memo,a.project_code,a.project_name,0 as count_of_sample,
-            (a.equipment_code||'.'||a.area_code||'.'||a.support_rack_code ||'.'||a.columns_in_shelf || a.rows_in_shelf) as position,
+            (a.equipment_code||'.'||a.area_code||'.'||a.support_rack_code ||'.'||a.columns_in_shelf || lpad(a.rows_in_shelf,2,0)) as position,
             sc.sample_classification_name,e.stock_out_task_id from frozen_box a
             left join sample_class sc on a.sample_classification_id = sc.id
             left join stock_out_req_frozen_tube c on c.frozen_box_id = a.id

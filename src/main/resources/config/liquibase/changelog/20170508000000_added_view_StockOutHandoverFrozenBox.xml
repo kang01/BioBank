@@ -15,9 +15,9 @@
             task.id as task_id,task.stock_out_task_code as task_code,
             plan.id as plan_id,plan.stock_out_plan_code as plan_code,
             ap.id as apply_id,ap.apply_code as apply_code,
-            ap.delegate_id,de.delegate_name as delegate,
+            ap.delegate_id,de.delegate_name as delegate,t.equipment_code,t.area_code,t.support_rack_code,t.columns_in_shelf,t.rows_in_shelf,
             (select count(tube.id) from stock_out_box_tube tube where tube.stock_out_frozen_box_id = t.id and tube.status!='2203') as count_of_sample,
-            (t.equipment_code||'.'||t.area_code||'.'||t.support_rack_code || '.'||t.rows_in_shelf ||'.'||t.columns_in_shelf) as position
+            (t.equipment_code||'.'||t.area_code||'.'||t.support_rack_code || '.'||t.columns_in_shelf||lpad(t.rows_in_shelf,2,0)) as position
             from stock_out_box t
             left join frozen_box box on t.frozen_box_id = box.id
             left join stock_out_task task on t.stock_out_task_id = task.id

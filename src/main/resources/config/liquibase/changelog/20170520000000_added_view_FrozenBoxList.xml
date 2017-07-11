@@ -13,7 +13,7 @@
                 box.id,box.frozen_box_code,
                 box.project_code,box.project_name,
                 box.equipment_code,box.area_code,box.support_rack_code as shelves_code,box.columns_in_shelf,box.rows_in_shelf,
-                (box.equipment_code||'.'||box.area_code||'.'||box.support_rack_code||'.'||box.columns_in_shelf||box.rows_in_shelf) as position,
+                (box.equipment_code||'.'||box.area_code||'.'||box.support_rack_code||'.'||box.columns_in_shelf||lpad(box.rows_in_shelf,2,0)) as position,
                 box.sample_type_id,
                 s.sample_type_name as sample_type,
                 box.sample_classification_id,

@@ -93,6 +93,47 @@ public class StockOutFrozenBoxForDataTableEntity {
     @Column(name ="status")
     private String status;
 
+    @Column(name ="equipment_code")
+    private String equipmentCode;
+
+    @Column(name ="area_code")
+    private String areaCode;
+
+    @Column(name ="support_rack_code")
+    private String supportRackCode;
+
+    @Column(name ="rows_in_shelf")
+    private String rowsInShelf;
+
+    @Column(name ="columns_in_shelf")
+    private String columnsInShelf;
+
+    public StockOutFrozenBoxForDataTableEntity() {
+    }
+
+    public StockOutFrozenBoxForDataTableEntity(Long id, String frozenBoxCode, String position, Long countOfSample, String sampleTypeName, Long applyId, String applyCode, Long planId, String planCode, Long taskId, String taskCode, Long delegateId, String delegate, String memo, String status, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf) {
+        this.id = id;
+        this.frozenBoxCode = frozenBoxCode;
+        this.position = position;
+        this.countOfSample = countOfSample;
+        this.sampleTypeName = sampleTypeName;
+        this.applyId = applyId;
+        this.applyCode = applyCode;
+        this.planId = planId;
+        this.planCode = planCode;
+        this.taskId = taskId;
+        this.taskCode = taskCode;
+        this.delegateId = delegateId;
+        this.delegate = delegate;
+        this.memo = memo;
+        this.status = status;
+        this.equipmentCode = equipmentCode;
+        this.areaCode = areaCode;
+        this.supportRackCode = supportRackCode;
+        this.rowsInShelf = rowsInShelf;
+        this.columnsInShelf = columnsInShelf;
+    }
+
     public Long getId() {
         return id;
     }
@@ -211,5 +252,45 @@ public class StockOutFrozenBoxForDataTableEntity {
 
     public void setTaskCode(String taskCode) {
         this.taskCode = taskCode;
+    }
+
+    public String getEquipmentCode() {
+        return equipmentCode;
+    }
+
+    public void setEquipmentCode(String equipmentCode) {
+        this.equipmentCode = equipmentCode;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    public String getSupportRackCode() {
+        return supportRackCode;
+    }
+
+    public void setSupportRackCode(String supportRackCode) {
+        this.supportRackCode = supportRackCode;
+    }
+
+    public String getRowsInShelf() {
+        return rowsInShelf;
+    }
+
+    public void setRowsInShelf(String rowsInShelf) {
+        this.rowsInShelf = rowsInShelf;
+    }
+
+    public String getColumnsInShelf() {
+        return columnsInShelf;
+    }
+
+    public void setColumnsInShelf(String columnsInShelf) {
+        this.columnsInShelf = columnsInShelf;
     }
 }

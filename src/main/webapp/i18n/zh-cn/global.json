@@ -54,6 +54,7 @@
                 "stockInTube": "Stock In Tube",
                 "stockInBoxPosition": "Stock In Box Position",
                 "serialNo": "Serial No",
+                "positionMoveRecord": "Position Move Record",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
                 "transportrecord":"转运记录"
             },

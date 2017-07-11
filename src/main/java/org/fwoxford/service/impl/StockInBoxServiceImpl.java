@@ -16,6 +16,7 @@ import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.Column;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.Convert;
 import javax.persistence.Id;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -180,19 +182,29 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         List<Column> columns = input.getColumns();
         List<Order> orders = new ArrayList<Order>();
 
-        input.getOrder().forEach(order -> {
-            orders.add(order);
-            Column column = columns.get(order.getColumn());
-            Order o = new Order();
-            Column column1 = new Column();
-            if(column.getData()!=""&&column.getData().equals("status")){
-                o.setColumn(6);
-                o.setDir(order.getDir());
-                orders.add(o);
+//        input.getOrder().forEach(order -> {
+//            orders.add(order);
+//            Column column = columns.get(order.getColumn());
+//            Order o = new Order();
+//            Column column1 = new Column();
+//            if(column.getData()!=""&&column.getData().equals("status")){
+//                o.setColumn(6);
+//                o.setDir(order.getDir());
+//                orders.add(o);
+//            }
+//        });
+//        input.setOrder(orders);
+        Converter<StockInBoxForDataTableEntity,StockInBoxForDataTableEntity> convert = new Converter<StockInBoxForDataTableEntity, StockInBoxForDataTableEntity>() {
+            @Override
+            public StockInBoxForDataTableEntity convert(StockInBoxForDataTableEntity source) {
+                String position = BankUtil.getPositionString(source.getEquipmentCode(),source.getAreaCode(),source.getSupportRackCode(),source.getColumnsInShelf(),source.getRowsInShelf(),null,null);
+                return new StockInBoxForDataTableEntity(source.getId(),source.getCountOfSample(),source.getStatus(),
+                    source.getFrozenBoxCode(),source.getSampleTypeName(),position,source.getIsSplit(),
+                    source.getSampleClassificationName(),source.getStockInCode(),source.getEquipmentCode(),
+                    source.getAreaCode(),source.getSupportRackCode(),source.getRowsInShelf(),source.getColumnsInShelf());
             }
-        });
-        input.setOrder(orders);
-        DataTablesOutput<StockInBoxForDataTableEntity> output = stockInBoxRepositries.findAll(input);
+        };
+        DataTablesOutput<StockInBoxForDataTableEntity> output = stockInBoxRepositries.findAll(input,convert);
         List<StockInBoxForDataTableEntity> alist = new ArrayList<StockInBoxForDataTableEntity>();
         output.getData().forEach(s->{
             StockInBox stockInBox = stockInBoxRepository.findOne(s.getId());

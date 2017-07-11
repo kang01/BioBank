@@ -27,6 +27,8 @@
             var hdConstraints = {
                 video: {
                     mandatory: {
+                        // width: { ideal: 1920 },
+                        // height: { ideal: 1080 },
                         minWidth: 1920,
                         minHeight: 1080
                     }
@@ -41,6 +43,12 @@
             }
 
             function handleVideo(stream) {
+                // if (navigator.mozGetUserMedia) {
+                //     video.mozSrcObject = stream;
+                // } else {
+                //     var vendorURL = window.URL || window.webkitURL;
+                //     video.src = vendorURL.createObjectURL(stream);
+                // }
                 video.src = window.URL.createObjectURL(stream);
                 localMediaStream = stream;
                 setTimeout(function () {

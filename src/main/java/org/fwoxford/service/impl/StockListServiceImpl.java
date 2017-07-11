@@ -128,11 +128,12 @@ public class StockListServiceImpl implements StockListService {
             @Override
             public FrozenTubeListAllDataTableEntity convert(FrozenTubeListAllDataTableEntity e) {
                 String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
+                String positionInBox = e.getTubeRows()+e.getTubeColumns();
                 return new FrozenTubeListAllDataTableEntity(
                     e.getId(),position,e.getFrozenBoxCode(),e.getSampleCode(),e.getProjectCode(),e.getProjectName(),e.getSampleType(),
                     e.getSampleClassification(),e.getSex(),e.getAge(),e.getDiseaseType(),e.getHemolysis(),e.getBloodLipid(),e.getSampleUsedTimes(),
                     e.getStatus(),e.getFrozenTubeState(),e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),
-                    e.getTubeRows(),e.getTubeColumns(),e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getSampleTypeId(),e.getSampleClassificationId(),e.getPositionInBox()
+                    e.getTubeRows(),e.getTubeColumns(),e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getSampleTypeId(),e.getSampleClassificationId(),positionInBox
                 );
             }
         };

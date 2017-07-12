@@ -39,6 +39,9 @@
                 labelField:'label',
                 maxItems: 1,
                 onChange:function(value){
+                    if(!value){
+                        delete vm.dto.status
+                    }
                 }
             };
             vm.statusOptions = MasterData.frozenBoxStatus;
@@ -116,6 +119,9 @@
 
         }
         function _positionInit() {
+            var equipmentCode;
+            var areaCode;
+            var supportRackCode;
             //设备
             EquipmentService.query({},onEquipmentSuccess, onError);
             function onEquipmentSuccess(data) {
@@ -127,13 +133,27 @@
                 labelField:'equipmentCode',
                 maxItems: 1,
                 onChange:function (value) {
-                    AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                    equipmentCode = _.find(vm.frozenBoxPlaceOptions,{id:+value}).equipmentCode;
+                    if(value){
+                        AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                    }else{
+                        vm.frozenBoxAreaOptions = [];
+                        vm.dto.areaId = "";
+                        vm.frozenBoxShelfOptions = [];
+                        vm.dto.shelvesId = "";
+                        supportRackCode = "";
+                        areaCode = "";
+                        vm.dto.position = "";
+                        $scope.$apply();
+                    }
+
                 }
             };
             function onAreaSuccess(data) {
                 vm.frozenBoxAreaOptions = data;
                 if(vm.frozenBoxAreaOptions.length){
                     vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
+                    areaCode = vm.frozenBoxAreaOptions[0].areaCode;
                     SupportacksByAreaIdService.query({id:vm.dto.areaId},onShelfSuccess, onError);
                 }
             }
@@ -142,7 +162,16 @@
                 labelField:'areaCode',
                 maxItems: 1,
                 onChange:function (value) {
-                    SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
+                    if(value){
+                        SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
+                    }else{
+                        vm.frozenBoxShelfOptions = [];
+                        vm.dto.shelvesId = "";
+                        supportRackCode = "";
+                        areaCode = "";
+                        vm.dto.position = equipmentCode;
+                        $scope.$apply();
+                    }
 
                 }
             };
@@ -150,28 +179,18 @@
             function onShelfSuccess(data) {
                 vm.frozenBoxShelfOptions = data;
                 vm.dto.shelvesId = vm.frozenBoxShelfOptions[0].id;
+                supportRackCode = vm.frozenBoxShelfOptions[0].supportRackCode;
+                vm.dto.position = equipmentCode + "." + areaCode+"." + supportRackCode
             }
             vm.frozenBoxShelfConfig = {
                 valueField:'id',
                 labelField:'supportRackCode',
                 maxItems: 1,
                 onChange:function (value) {
-                }
-            };
-            //设备类型
-            vm.equipmentConfig = {
-                valueField:'value',
-                labelField:'label',
-                maxItems: 1,
-                onChange:function(value){
-                }
-            };
-            //架子类型
-            vm.shelvesConfig = {
-                valueField:'value',
-                labelField:'label',
-                maxItems: 1,
-                onChange:function(value){
+                    if(!value){
+                        supportRackCode = "";
+                        vm.dto.position = equipmentCode + "." + areaCode
+                    }
                 }
             };
         }
@@ -185,28 +204,46 @@
                    searchObj[key] = vm.dto[key];
                }
             });
+            delete searchObj.frozenBoxCode;
             delete searchObj.sampleTypeId;
-            delete searchObj.sampleTypeCode;
+            delete searchObj.sampleTypeName;
             delete searchObj.sampleClassificationId;
-            delete searchObj.sampleClassificationCode;
+            delete searchObj.sampleClassificationName;
+            delete searchObj.equipmentId;
+            delete searchObj.areaId;
+            delete searchObj.shelvesId;
 
             var stockInBoxList = angular.copy(vm.stockInBox);
             var stockInBoxArray;
+            var dataArray = [];
+            var boxArray = [];
             stockInBoxArray = _.filter(stockInBoxList, searchObj);
-            vm.dtOptions.withOption("data",stockInBoxArray).withOption('serverSide',false);
+            //模糊搜索冻存盒编码
+            if(vm.dto.frozenBoxCode){
+                for(var i = 0 ; i <  stockInBoxArray.length; i++){
+                    if(stockInBoxArray[i].frozenBoxCode.indexOf(vm.dto.frozenBoxCode) >= 0){
+                        dataArray.push(stockInBoxArray[i]);
+                        boxArray.push(stockInBoxArray[i]);
+                    }
+                }
+            }
+            //模糊搜索位置
+            if(vm.dto.position && vm.dto.frozenBoxCode){
+                for(var i = 0 ; i <  boxArray.length; i++){
+                    if(boxArray[i].position.indexOf(vm.dto.position) >= 0){
+                        dataArray.push(boxArray[i]);
+                    }
+                }
+            }else{
+                for(var i = 0 ; i <  stockInBoxArray.length; i++){
+                    if(stockInBoxArray[i].position.indexOf(vm.dto.position) >= 0){
+                        dataArray.push(stockInBoxArray[i]);
+                    }
+                }
+            }
+            vm.dtOptions.withOption("data",dataArray).withOption('serverSide',false);
+            vm.checked = false;
 
-
-            //     for(var i = 0 ; i <  stockInBoxList.length; i++){
-            //         if(stockInBoxList[i].frozenBoxCode.indexOf(vm.dto.frozenBoxCode) >= 0){
-            //             stockInBoxArray.push(stockInBoxList[i]);
-            //         }
-            //     }
-            //
-            //
-            // }else{
-            //     vm.dtOptions.withOption("data",vm.stockInBox);
-            // }
-            // vm.checked = false;
         }
         function _fnEmpty() {
             vm.dto = {};

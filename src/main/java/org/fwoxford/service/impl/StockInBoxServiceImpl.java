@@ -205,23 +205,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }
         };
         DataTablesOutput<StockInBoxForDataTableEntity> output = stockInBoxRepositries.findAll(input,convert);
-        List<StockInBoxForDataTableEntity> alist = new ArrayList<StockInBoxForDataTableEntity>();
-        output.getData().forEach(s->{
-            StockInBox stockInBox = stockInBoxRepository.findOne(s.getId());
-            String position = toStockInBoxPosition(stockInBox);
-            StockInBoxForDataTableEntity entity = new StockInBoxForDataTableEntity();
-            entity.setId(s.getId());
-            entity.setStockInCode(s.getStockInCode());
-            entity.setFrozenBoxCode(s.getFrozenBoxCode());
-            entity.setSampleTypeName(s.getSampleTypeName());
-            entity.setSampleClassificationName(s.getSampleClassificationName());
-            entity.setPosition(position);
-            entity.setCountOfSample(s.getCountOfSample());
-            entity.setIsSplit(s.getIsSplit());
-            entity.setStatus(s.getStatus());
-            alist.add(entity);
-        });
-        output.setData(alist);
         return output;
     }
 

@@ -1,0 +1,28 @@
+{
+    "bioBankApp": {
+        "positionMove" : {
+            "home": {
+                "title": "Position Moves",
+                "createLabel": "Create a new Position Move",
+                "createOrEditLabel": "Create or edit a Position Move"
+            },
+            "created": "A new Position Move is created with identifier {{ param }}",
+            "updated": "A Position Move is updated with identifier {{ param }}",
+            "deleted": "A Position Move is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Position Move {{ id }}?"
+            },
+            "detail": {
+                "title": "Position Move"
+            },
+            "moveReason": "Move Reason",
+            "moveAffect": "Move Affect",
+            "whetherFreezingAndThawing": "Whether Freezing And Thawing",
+            "moveType": "Move Type",
+            "operatorId1": "Operator Id 1",
+            "operatorId2": "Operator Id 2",
+            "status": "Status",
+            "memo": "Memo"
+        }
+    }
+}

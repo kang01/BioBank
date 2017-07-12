@@ -1,0 +1,111 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myPositionMoveLabel" data-translate="bioBankApp.positionMove.home.createOrEditLabel">Create or edit a Position Move</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.positionMove.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.positionMove.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.positionMove.moveReason" for="field_moveReason">Move Reason</label>
+            <input type="text" class="form-control" name="moveReason" id="field_moveReason"
+                    ng-model="vm.positionMove.moveReason"
+                    ng-maxlength="1024"/>
+            <div ng-show="editForm.moveReason.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.moveReason.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
+                    This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.positionMove.moveAffect" for="field_moveAffect">Move Affect</label>
+            <input type="text" class="form-control" name="moveAffect" id="field_moveAffect"
+                    ng-model="vm.positionMove.moveAffect"
+                    ng-maxlength="1024"/>
+            <div ng-show="editForm.moveAffect.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.moveAffect.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
+                    This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.positionMove.whetherFreezingAndThawing" for="field_whetherFreezingAndThawing">Whether Freezing And Thawing</label>
+                <input type="checkbox" name="whetherFreezingAndThawing" id="field_whetherFreezingAndThawing"
+                          ng-model="vm.positionMove.whetherFreezingAndThawing"/>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.positionMove.moveType" for="field_moveType">Move Type</label>
+            <input type="text" class="form-control" name="moveType" id="field_moveType"
+                    ng-model="vm.positionMove.moveType"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.moveType.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.moveType.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.moveType.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.positionMove.operatorId1" for="field_operatorId1">Operator Id 1</label>
+            <input type="number" class="form-control" name="operatorId1" id="field_operatorId1"
+                    ng-model="vm.positionMove.operatorId1"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.positionMove.operatorId2" for="field_operatorId2">Operator Id 2</label>
+            <input type="number" class="form-control" name="operatorId2" id="field_operatorId2"
+                    ng-model="vm.positionMove.operatorId2"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.positionMove.status" for="field_status">Status</label>
+            <input type="text" class="form-control" name="status" id="field_status"
+                    ng-model="vm.positionMove.status"
+                    required ng-maxlength="20"/>
+            <div ng-show="editForm.status.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.status.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.status.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="20">
+                    This field cannot be longer than 20 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="bioBankApp.positionMove.memo" for="field_memo">Memo</label>
+            <input type="text" class="form-control" name="memo" id="field_memo"
+                    ng-model="vm.positionMove.memo"
+                    ng-maxlength="1024"/>
+            <div ng-show="editForm.memo.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.memo.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
+                    This field cannot be longer than 1024 characters.
+                </p>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

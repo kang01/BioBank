@@ -112,11 +112,10 @@
             DTColumnBuilder.newColumn('handOverTimes').withTitle('交接次数'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
-            DTColumnBuilder.newColumn('id').notVisible()
         ];
         function createdRow(row, data, dataIndex) {
             var status = MasterData.getStatus(data.status);
-            $('td:eq(7)', row).html(status);
+            $('td:eq(8)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

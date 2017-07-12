@@ -3,7 +3,10 @@
         <h3 class="pull-left">新增入库记录</h3>
         <div class="form-group pull-right mr-10">
             <div class="text-right">
-                <button type="button" class="btn btn-primary" ng-click="vm.saveStockIn()" ng-show="vm.entity.status == '7001'">入库完成</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.saveStockIn()"
+                        ng-show="vm.entity.status == '7001'"
+                        ng-disabled="!vm.stockInflag"
+                >入库完成</button>
                 <button type="button" class="btn" ui-sref="stock-in">关闭</button>
             </div>
         </div>
@@ -85,16 +88,19 @@
                         <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig"
                                    style="width:85px"
                                    ng-model="vm.dto.equipmentId"></selectize>
+
                     </div>
                     <div class="pull-left pl-5">
                         <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig"
                                    style="width:85px"
-                                   ng-model="vm.dto.areaId" ></selectize>
+                                   ng-model="vm.dto.areaId" ng-if="!vm.noClassFlag"></selectize>
+                        <input type="text" class="form-control" style="width:85px" ng-disabled="true" ng-if="vm.noClassFlag">
                     </div>
                     <div class="pull-left pl-5">
                         <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig"
                                    style="width:85px"
-                                   ng-model="vm.dto.shelvesId"></selectize>
+                                   ng-model="vm.dto.shelvesId" ng-if="!vm.noshelvesFlag"></selectize>
+                        <input type="text" class="form-control" style="width:85px" ng-disabled="true" ng-if="vm.noshelvesFlag">
                     </div>
                 </div>
             </div>

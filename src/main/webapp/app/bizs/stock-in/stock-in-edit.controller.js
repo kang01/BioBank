@@ -133,10 +133,14 @@
                 labelField:'equipmentCode',
                 maxItems: 1,
                 onChange:function (value) {
-                    equipmentCode = _.find(vm.frozenBoxPlaceOptions,{id:+value}).equipmentCode;
                     if(value){
+                        vm.noClassFlag = false;
+                        vm.noshelvesFlag = false;
+                        equipmentCode = _.find(vm.frozenBoxPlaceOptions,{id:+value}).equipmentCode;
                         AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
                     }else{
+                        vm.noClassFlag = true;
+                        vm.noshelvesFlag = true;
                         vm.frozenBoxAreaOptions = [];
                         vm.dto.areaId = "";
                         vm.frozenBoxShelfOptions = [];
@@ -163,8 +167,11 @@
                 maxItems: 1,
                 onChange:function (value) {
                     if(value){
+                        vm.noshelvesFlag = false;
+                        areaCode = _.find(vm.frozenBoxAreaOptions,{id:+value}).areaCode;
                         SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
                     }else{
+                        vm.noshelvesFlag = true;
                         vm.frozenBoxShelfOptions = [];
                         vm.dto.shelvesId = "";
                         supportRackCode = "";
@@ -187,7 +194,10 @@
                 labelField:'supportRackCode',
                 maxItems: 1,
                 onChange:function (value) {
-                    if(!value){
+                    if(value){
+                        supportRackCode = _.find(vm.frozenBoxShelfOptions,{id:+value}).supportRackCode;
+                        vm.dto.position = equipmentCode + "." + areaCode+"." + supportRackCode
+                    }else{
                         supportRackCode = "";
                         vm.dto.position = equipmentCode + "." + areaCode
                     }
@@ -204,6 +214,7 @@
                    searchObj[key] = vm.dto[key];
                }
             });
+            delete searchObj.position;
             delete searchObj.frozenBoxCode;
             delete searchObj.sampleTypeId;
             delete searchObj.sampleTypeName;
@@ -218,8 +229,10 @@
             var dataArray = [];
             var boxArray = [];
             stockInBoxArray = _.filter(stockInBoxList, searchObj);
+            dataArray = _.filter(stockInBoxList, searchObj);
             //模糊搜索冻存盒编码
             if(vm.dto.frozenBoxCode){
+                dataArray = [];
                 for(var i = 0 ; i <  stockInBoxArray.length; i++){
                     if(stockInBoxArray[i].frozenBoxCode.indexOf(vm.dto.frozenBoxCode) >= 0){
                         dataArray.push(stockInBoxArray[i]);
@@ -228,19 +241,26 @@
                 }
             }
             //模糊搜索位置
-            if(vm.dto.position && vm.dto.frozenBoxCode){
-                for(var i = 0 ; i <  boxArray.length; i++){
-                    if(boxArray[i].position.indexOf(vm.dto.position) >= 0){
-                        dataArray.push(boxArray[i]);
+            if(vm.dto.position){
+                if(vm.dto.frozenBoxCode){
+                    dataArray = [];
+                    for(var i = 0 ; i <  boxArray.length; i++){
+                        if(boxArray[i].position.indexOf(vm.dto.position) >= 0){
+                            dataArray.push(boxArray[i]);
+                        }
+                    }
+                }else{
+                    dataArray = [];
+                    for(var i = 0 ; i <  stockInBoxArray.length; i++){
+                        if(stockInBoxArray[i].position.indexOf(vm.dto.position) >= 0){
+                            dataArray.push(stockInBoxArray[i]);
+                        }
                     }
                 }
-            }else{
-                for(var i = 0 ; i <  stockInBoxArray.length; i++){
-                    if(stockInBoxArray[i].position.indexOf(vm.dto.position) >= 0){
-                        dataArray.push(stockInBoxArray[i]);
-                    }
-                }
+
             }
+
+            dataArray = _.uniq(dataArray);
             vm.dtOptions.withOption("data",dataArray).withOption('serverSide',false);
             vm.checked = false;
 
@@ -582,8 +602,12 @@
         }
         //全部上架可以入库完成
         function _isStockInFinish() {
-            var putInLen = _.filter(vm.stockInBox,{status:"2006"}).length;
-            if(putInLen == vm.stockInBox.length){
+            //已上架
+            var putInLen = _.filter(vm.stockInBox,{"status":"2006"}).length;
+            //去除分装的数据
+            var stockInBox = angular.copy(vm.stockInBox);
+            _.remove(stockInBox,{"status":"2003"});
+            if(putInLen == stockInBox.length){
                 vm.stockInflag = true;
             }else{
                 vm.stockInflag = false;

@@ -201,7 +201,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 return new StockInBoxForDataTableEntity(source.getId(),source.getCountOfSample(),source.getStatus(),
                     source.getFrozenBoxCode(),source.getSampleTypeName(),position,source.getIsSplit(),
                     source.getSampleClassificationName(),source.getStockInCode(),source.getEquipmentCode(),
-                    source.getAreaCode(),source.getSupportRackCode(),source.getRowsInShelf(),source.getColumnsInShelf());
+                    source.getAreaCode(),source.getSupportRackCode(),source.getRowsInShelf(),source.getColumnsInShelf(),source.getSampleTypeCode(),source.getSampleClassificationCode());
             }
         };
         DataTablesOutput<StockInBoxForDataTableEntity> output = stockInBoxRepositries.findAll(input,convert);

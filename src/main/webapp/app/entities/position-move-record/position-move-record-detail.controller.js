@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('PositionMoveRecordDetailController', PositionMoveRecordDetailController);
 
-    PositionMoveRecordDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'PositionMoveRecord', 'Equipment', 'Area', 'SupportRack', 'FrozenBox', 'FrozenTube', 'Project', 'ProjectSite'];
+    PositionMoveRecordDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'PositionMoveRecord', 'Equipment', 'Area', 'SupportRack', 'FrozenBox', 'FrozenTube', 'Project', 'ProjectSite', 'PositionMove'];
 
-    function PositionMoveRecordDetailController($scope, $rootScope, $stateParams, previousState, entity, PositionMoveRecord, Equipment, Area, SupportRack, FrozenBox, FrozenTube, Project, ProjectSite) {
+    function PositionMoveRecordDetailController($scope, $rootScope, $stateParams, previousState, entity, PositionMoveRecord, Equipment, Area, SupportRack, FrozenBox, FrozenTube, Project, ProjectSite, PositionMove) {
         var vm = this;
 
         vm.positionMoveRecord = entity;

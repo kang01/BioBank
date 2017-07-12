@@ -64,14 +64,6 @@ public class PositionMoveRecord extends AbstractAuditingEntity implements Serial
     @Column(name = "tube_columns", length = 100, nullable = false)
     private String tubeColumns;
 
-    @Size(max = 1024)
-    @Column(name = "move_reason", length = 1024)
-    private String moveReason;
-
-    @Size(max = 1024)
-    @Column(name = "move_affect", length = 1024)
-    private String moveAffect;
-
     @Column(name = "whether_freezing_and_thawing")
     private Boolean whetherFreezingAndThawing;
 
@@ -79,12 +71,6 @@ public class PositionMoveRecord extends AbstractAuditingEntity implements Serial
     @Size(max = 20)
     @Column(name = "move_type", length = 20, nullable = false)
     private String moveType;
-
-    @Column(name = "operator_1")
-    private Long operator1;
-
-    @Column(name = "operator_2")
-    private Long operator2;
 
     @NotNull
     @Size(max = 100)
@@ -130,6 +116,10 @@ public class PositionMoveRecord extends AbstractAuditingEntity implements Serial
 
     @ManyToOne
     private ProjectSite projectSite;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private PositionMove positionMove;
 
     public Long getId() {
         return id;
@@ -243,32 +233,6 @@ public class PositionMoveRecord extends AbstractAuditingEntity implements Serial
         this.tubeColumns = tubeColumns;
     }
 
-    public String getMoveReason() {
-        return moveReason;
-    }
-
-    public PositionMoveRecord moveReason(String moveReason) {
-        this.moveReason = moveReason;
-        return this;
-    }
-
-    public void setMoveReason(String moveReason) {
-        this.moveReason = moveReason;
-    }
-
-    public String getMoveAffect() {
-        return moveAffect;
-    }
-
-    public PositionMoveRecord moveAffect(String moveAffect) {
-        this.moveAffect = moveAffect;
-        return this;
-    }
-
-    public void setMoveAffect(String moveAffect) {
-        this.moveAffect = moveAffect;
-    }
-
     public Boolean isWhetherFreezingAndThawing() {
         return whetherFreezingAndThawing;
     }
@@ -293,32 +257,6 @@ public class PositionMoveRecord extends AbstractAuditingEntity implements Serial
 
     public void setMoveType(String moveType) {
         this.moveType = moveType;
-    }
-
-    public Long getOperator1() {
-        return operator1;
-    }
-
-    public PositionMoveRecord operator1(Long operator1) {
-        this.operator1 = operator1;
-        return this;
-    }
-
-    public void setOperator1(Long operator1) {
-        this.operator1 = operator1;
-    }
-
-    public Long getOperator2() {
-        return operator2;
-    }
-
-    public PositionMoveRecord operator2(Long operator2) {
-        this.operator2 = operator2;
-        return this;
-    }
-
-    public void setOperator2(Long operator2) {
-        this.operator2 = operator2;
     }
 
     public String getProjectCode() {
@@ -464,6 +402,19 @@ public class PositionMoveRecord extends AbstractAuditingEntity implements Serial
         this.projectSite = projectSite;
     }
 
+    public PositionMove getPositionMove() {
+        return positionMove;
+    }
+
+    public PositionMoveRecord positionMove(PositionMove positionMove) {
+        this.positionMove = positionMove;
+        return this;
+    }
+
+    public void setPositionMove(PositionMove positionMove) {
+        this.positionMove = positionMove;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -496,12 +447,8 @@ public class PositionMoveRecord extends AbstractAuditingEntity implements Serial
             ", frozenBoxCode='" + frozenBoxCode + "'" +
             ", tubeRows='" + tubeRows + "'" +
             ", tubeColumns='" + tubeColumns + "'" +
-            ", moveReason='" + moveReason + "'" +
-            ", moveAffect='" + moveAffect + "'" +
             ", whetherFreezingAndThawing='" + whetherFreezingAndThawing + "'" +
             ", moveType='" + moveType + "'" +
-            ", operator1='" + operator1 + "'" +
-            ", operator2='" + operator2 + "'" +
             ", projectCode='" + projectCode + "'" +
             ", projectSiteCode='" + projectSiteCode + "'" +
             ", status='" + status + "'" +

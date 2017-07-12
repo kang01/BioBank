@@ -74,6 +74,14 @@ public class StockInBoxForDataTableEntity {
     @Column(name ="columns_in_shelf")
     private String columnsInShelf;
 
+    @Column(name="sample_type_code")
+    @JsonView(DataTablesOutput.View.class)
+    private String sampleTypeCode;
+
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name="sample_classification_code")
+    private String sampleClassificationCode;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -92,7 +100,7 @@ public class StockInBoxForDataTableEntity {
 
     @Override
     public String toString() {
-        return "StockInBoxForDataTable{" +
+        return "StockInBoxForDataTableEntity{" +
             "id=" + id +
             ", countOfSample=" + countOfSample +
             ", status='" + status + '\'' +
@@ -100,8 +108,15 @@ public class StockInBoxForDataTableEntity {
             ", sampleTypeName='" + sampleTypeName + '\'' +
             ", position='" + position + '\'' +
             ", isSplit=" + isSplit +
-            ", sampleClassificationName=" + sampleClassificationName +
-            ", stockInCode=" + stockInCode +
+            ", sampleClassificationName='" + sampleClassificationName + '\'' +
+            ", stockInCode='" + stockInCode + '\'' +
+            ", equipmentCode='" + equipmentCode + '\'' +
+            ", areaCode='" + areaCode + '\'' +
+            ", supportRackCode='" + supportRackCode + '\'' +
+            ", rowsInShelf='" + rowsInShelf + '\'' +
+            ", columnsInShelf='" + columnsInShelf + '\'' +
+            ", sampleTypeCode='" + sampleTypeCode + '\'' +
+            ", sampleClassificationCode='" + sampleClassificationCode + '\'' +
             '}';
     }
 
@@ -113,7 +128,7 @@ public class StockInBoxForDataTableEntity {
     public StockInBoxForDataTableEntity() {
     }
 
-    public StockInBoxForDataTableEntity(Long id, Integer countOfSample, String status, String frozenBoxCode, String sampleTypeName, String position, Integer isSplit, String sampleClassificationName, String stockInCode, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf) {
+    public StockInBoxForDataTableEntity(Long id, Integer countOfSample, String status, String frozenBoxCode, String sampleTypeName, String position, Integer isSplit, String sampleClassificationName, String stockInCode, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf, String sampleTypeCode, String sampleClassificationCode) {
         this.id = id;
         this.countOfSample = countOfSample;
         this.status = status;
@@ -128,6 +143,8 @@ public class StockInBoxForDataTableEntity {
         this.supportRackCode = supportRackCode;
         this.rowsInShelf = rowsInShelf;
         this.columnsInShelf = columnsInShelf;
+        this.sampleTypeCode = sampleTypeCode;
+        this.sampleClassificationCode = sampleClassificationCode;
     }
 
     public Long getId() {
@@ -240,5 +257,21 @@ public class StockInBoxForDataTableEntity {
 
     public void setColumnsInShelf(String columnsInShelf) {
         this.columnsInShelf = columnsInShelf;
+    }
+
+    public String getSampleTypeCode() {
+        return sampleTypeCode;
+    }
+
+    public void setSampleTypeCode(String sampleTypeCode) {
+        this.sampleTypeCode = sampleTypeCode;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
     }
 }

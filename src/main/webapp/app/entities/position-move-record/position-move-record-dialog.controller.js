@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .controller('PositionMoveRecordDialogController', PositionMoveRecordDialogController);
 
-    PositionMoveRecordDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'PositionMoveRecord', 'Equipment', 'Area', 'SupportRack', 'FrozenBox', 'FrozenTube', 'Project', 'ProjectSite'];
+    PositionMoveRecordDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'PositionMoveRecord', 'Equipment', 'Area', 'SupportRack', 'FrozenBox', 'FrozenTube', 'Project', 'ProjectSite', 'PositionMove'];
 
-    function PositionMoveRecordDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, PositionMoveRecord, Equipment, Area, SupportRack, FrozenBox, FrozenTube, Project, ProjectSite) {
+    function PositionMoveRecordDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, PositionMoveRecord, Equipment, Area, SupportRack, FrozenBox, FrozenTube, Project, ProjectSite, PositionMove) {
         var vm = this;
 
         vm.positionMoveRecord = entity;
@@ -20,6 +20,7 @@
         vm.frozentubes = FrozenTube.query();
         vm.projects = Project.query();
         vm.projectsites = ProjectSite.query();
+        vm.positionmoves = PositionMove.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

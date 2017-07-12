@@ -36,14 +36,6 @@
         <dd>
             <span>{{vm.positionMoveRecord.tubeColumns}}</span>
         </dd>
-        <dt><span data-translate="bioBankApp.positionMoveRecord.moveReason">Move Reason</span></dt>
-        <dd>
-            <span>{{vm.positionMoveRecord.moveReason}}</span>
-        </dd>
-        <dt><span data-translate="bioBankApp.positionMoveRecord.moveAffect">Move Affect</span></dt>
-        <dd>
-            <span>{{vm.positionMoveRecord.moveAffect}}</span>
-        </dd>
         <dt><span data-translate="bioBankApp.positionMoveRecord.whetherFreezingAndThawing">Whether Freezing And Thawing</span></dt>
         <dd>
             <span>{{vm.positionMoveRecord.whetherFreezingAndThawing}}</span>
@@ -51,14 +43,6 @@
         <dt><span data-translate="bioBankApp.positionMoveRecord.moveType">Move Type</span></dt>
         <dd>
             <span>{{vm.positionMoveRecord.moveType}}</span>
-        </dd>
-        <dt><span data-translate="bioBankApp.positionMoveRecord.operator1">Operator 1</span></dt>
-        <dd>
-            <span>{{vm.positionMoveRecord.operator1}}</span>
-        </dd>
-        <dt><span data-translate="bioBankApp.positionMoveRecord.operator2">Operator 2</span></dt>
-        <dd>
-            <span>{{vm.positionMoveRecord.operator2}}</span>
         </dd>
         <dt><span data-translate="bioBankApp.positionMoveRecord.projectCode">Project Code</span></dt>
         <dd>
@@ -103,6 +87,10 @@
         <dt><span data-translate="bioBankApp.positionMoveRecord.projectSite">Project Site</span></dt>
         <dd>
             <a ui-sref="project-site-detail({id:vm.positionMoveRecord.projectSiteId})">{{vm.positionMoveRecord.projectSiteId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMoveRecord.positionMove">Position Move</span></dt>
+        <dd>
+            <a ui-sref="position-move-detail({id:vm.positionMoveRecord.positionMoveId})">{{vm.positionMoveRecord.positionMoveId}}</a>
         </dd>
     </dl>
 

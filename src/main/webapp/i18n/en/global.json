@@ -55,6 +55,7 @@
                 "stockInBoxPosition": "Stock In Box Position",
                 "serialNo": "Serial No",
                 "positionMoveRecord": "Position Move Record",
+                "positionMove": "Position Move",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

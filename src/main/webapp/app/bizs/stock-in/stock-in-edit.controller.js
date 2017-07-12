@@ -84,11 +84,7 @@
                 // 每行的渲染
                 .withOption('createdRow', _fnCreatedRow)
                 .withOption('headerCallback', function(header) {
-                    if (!vm.headerCompiled) {
-                        // Use this headerCompiled field to only compile header once
-                        vm.headerCompiled = true;
-                        $compile(angular.element(header).contents())($scope);
-                    }
+                    $compile(angular.element(header).contents())($scope);
                 })
                 // 定义每个列过滤选项
                 .withColumnFilter(_createColumnFilters());

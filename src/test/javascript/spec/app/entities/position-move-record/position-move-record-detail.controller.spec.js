@@ -4,7 +4,7 @@ describe('Controller Tests', function() {
 
     describe('PositionMoveRecord Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockPositionMoveRecord, MockEquipment, MockArea, MockSupportRack, MockFrozenBox, MockFrozenTube, MockProject, MockProjectSite;
+        var MockEntity, MockPreviousState, MockPositionMoveRecord, MockEquipment, MockArea, MockSupportRack, MockFrozenBox, MockFrozenTube, MockProject, MockProjectSite, MockPositionMove;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -20,6 +20,7 @@ describe('Controller Tests', function() {
             MockFrozenTube = jasmine.createSpy('MockFrozenTube');
             MockProject = jasmine.createSpy('MockProject');
             MockProjectSite = jasmine.createSpy('MockProjectSite');
+            MockPositionMove = jasmine.createSpy('MockPositionMove');
             
 
             var locals = {
@@ -34,7 +35,8 @@ describe('Controller Tests', function() {
                 'FrozenBox': MockFrozenBox,
                 'FrozenTube': MockFrozenTube,
                 'Project': MockProject,
-                'ProjectSite': MockProjectSite
+                'ProjectSite': MockProjectSite,
+                'PositionMove': MockPositionMove
             };
             createController = function() {
                 $injector.get('$controller')("PositionMoveRecordDetailController", locals);

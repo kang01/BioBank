@@ -142,30 +142,6 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.positionMoveRecord.moveReason" for="field_moveReason">Move Reason</label>
-            <input type="text" class="form-control" name="moveReason" id="field_moveReason"
-                    ng-model="vm.positionMoveRecord.moveReason"
-                    ng-maxlength="1024"/>
-            <div ng-show="editForm.moveReason.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.moveReason.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
-                    This field cannot be longer than 1024 characters.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.positionMoveRecord.moveAffect" for="field_moveAffect">Move Affect</label>
-            <input type="text" class="form-control" name="moveAffect" id="field_moveAffect"
-                    ng-model="vm.positionMoveRecord.moveAffect"
-                    ng-maxlength="1024"/>
-            <div ng-show="editForm.moveAffect.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.moveAffect.$error.maxlength" data-translate="entity.validation.maxlength" translate-value-max="1024">
-                    This field cannot be longer than 1024 characters.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.positionMoveRecord.whetherFreezingAndThawing" for="field_whetherFreezingAndThawing">Whether Freezing And Thawing</label>
                 <input type="checkbox" name="whetherFreezingAndThawing" id="field_whetherFreezingAndThawing"
                           ng-model="vm.positionMoveRecord.whetherFreezingAndThawing"/>
@@ -185,18 +161,6 @@
                     This field cannot be longer than 20 characters.
                 </p>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.positionMoveRecord.operator1" for="field_operator1">Operator 1</label>
-            <input type="number" class="form-control" name="operator1" id="field_operator1"
-                    ng-model="vm.positionMoveRecord.operator1"
-                    />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="bioBankApp.positionMoveRecord.operator2" for="field_operator2">Operator 2</label>
-            <input type="number" class="form-control" name="operator2" id="field_operator2"
-                    ng-model="vm.positionMoveRecord.operator2"
-                    />
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.positionMoveRecord.projectCode" for="field_projectCode">Project Code</label>
@@ -332,6 +296,18 @@
             <select class="form-control" id="field_projectSite" name="projectSite" ng-model="vm.positionMoveRecord.projectSiteId" ng-options="projectSite.id as projectSite.id for projectSite in vm.projectsites"            >
                 <option value=""></option>
             </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="bioBankApp.positionMoveRecord.positionMove" for="field_positionMove">Position Move</label>
+            <select class="form-control" id="field_positionMove" name="positionMove" ng-model="vm.positionMoveRecord.positionMoveId" ng-options="positionMove.id as positionMove.id for positionMove in vm.positionmoves"             required>
+                <option value=""></option>
+            </select>
+        </div>
+        <div ng-show="editForm.positionMove.$invalid">
+            <p class="help-block"
+                ng-show="editForm.positionMove.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
         </div>
     </div>
     <div class="modal-footer">

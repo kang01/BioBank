@@ -27,12 +27,8 @@
                     <th jh-sort-by="frozenBoxCode"><span data-translate="bioBankApp.positionMoveRecord.frozenBoxCode">Frozen Box Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="tubeRows"><span data-translate="bioBankApp.positionMoveRecord.tubeRows">Tube Rows</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="tubeColumns"><span data-translate="bioBankApp.positionMoveRecord.tubeColumns">Tube Columns</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="moveReason"><span data-translate="bioBankApp.positionMoveRecord.moveReason">Move Reason</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="moveAffect"><span data-translate="bioBankApp.positionMoveRecord.moveAffect">Move Affect</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="whetherFreezingAndThawing"><span data-translate="bioBankApp.positionMoveRecord.whetherFreezingAndThawing">Whether Freezing And Thawing</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="moveType"><span data-translate="bioBankApp.positionMoveRecord.moveType">Move Type</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="operator1"><span data-translate="bioBankApp.positionMoveRecord.operator1">Operator 1</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="operator2"><span data-translate="bioBankApp.positionMoveRecord.operator2">Operator 2</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="projectCode"><span data-translate="bioBankApp.positionMoveRecord.projectCode">Project Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="projectSiteCode"><span data-translate="bioBankApp.positionMoveRecord.projectSiteCode">Project Site Code</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="bioBankApp.positionMoveRecord.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -44,6 +40,7 @@
                     <th jh-sort-by="frozenTubeId"><span data-translate="bioBankApp.positionMoveRecord.frozenTube">Frozen Tube</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="projectId"><span data-translate="bioBankApp.positionMoveRecord.project">Project</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="projectSiteId"><span data-translate="bioBankApp.positionMoveRecord.projectSite">Project Site</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="positionMoveId"><span data-translate="bioBankApp.positionMoveRecord.positionMove">Position Move</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -58,12 +55,8 @@
                     <td>{{positionMoveRecord.frozenBoxCode}}</td>
                     <td>{{positionMoveRecord.tubeRows}}</td>
                     <td>{{positionMoveRecord.tubeColumns}}</td>
-                    <td>{{positionMoveRecord.moveReason}}</td>
-                    <td>{{positionMoveRecord.moveAffect}}</td>
                     <td>{{positionMoveRecord.whetherFreezingAndThawing}}</td>
                     <td>{{positionMoveRecord.moveType}}</td>
-                    <td>{{positionMoveRecord.operator1}}</td>
-                    <td>{{positionMoveRecord.operator2}}</td>
                     <td>{{positionMoveRecord.projectCode}}</td>
                     <td>{{positionMoveRecord.projectSiteCode}}</td>
                     <td>{{positionMoveRecord.status}}</td>
@@ -88,6 +81,9 @@
                     </td>
                     <td>
                         <a ui-sref="project-site-detail({id:positionMoveRecord.projectSiteId})">{{positionMoveRecord.projectSiteId}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="position-move-detail({id:positionMoveRecord.positionMoveId})">{{positionMoveRecord.positionMoveId}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

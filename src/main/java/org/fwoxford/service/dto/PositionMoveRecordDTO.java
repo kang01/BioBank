@@ -14,62 +14,41 @@ public class PositionMoveRecordDTO extends AbstractAuditingDTO implements Serial
 
     private Long id;
 
-    @NotNull
     @Size(max = 100)
     private String equipmentCode;
 
-    @NotNull
     @Size(max = 100)
     private String areaCode;
 
-    @NotNull
     @Size(max = 100)
     private String supportRackCode;
 
-    @NotNull
     @Size(max = 100)
     private String rowsInShelf;
 
-    @NotNull
     @Size(max = 100)
     private String columnsInShelf;
 
-    @NotNull
     @Size(max = 100)
     private String frozenBoxCode;
 
-    @NotNull
     @Size(max = 100)
     private String tubeRows;
 
-    @NotNull
     @Size(max = 100)
     private String tubeColumns;
 
-    @Size(max = 1024)
-    private String moveReason;
-
-    @Size(max = 1024)
-    private String moveAffect;
-
     private Boolean whetherFreezingAndThawing;
 
-    @NotNull
     @Size(max = 20)
     private String moveType;
 
-    private Long operator1;
-
-    private Long operator2;
-
-    @NotNull
     @Size(max = 100)
     private String projectCode;
 
     @Size(max = 100)
     private String projectSiteCode;
 
-    @NotNull
     @Size(max = 20)
     private String status;
 
@@ -89,6 +68,8 @@ public class PositionMoveRecordDTO extends AbstractAuditingDTO implements Serial
     private Long projectId;
 
     private Long projectSiteId;
+
+    private Long positionMoveId;
 
     public Long getId() {
         return id;
@@ -153,20 +134,6 @@ public class PositionMoveRecordDTO extends AbstractAuditingDTO implements Serial
     public void setTubeColumns(String tubeColumns) {
         this.tubeColumns = tubeColumns;
     }
-    public String getMoveReason() {
-        return moveReason;
-    }
-
-    public void setMoveReason(String moveReason) {
-        this.moveReason = moveReason;
-    }
-    public String getMoveAffect() {
-        return moveAffect;
-    }
-
-    public void setMoveAffect(String moveAffect) {
-        this.moveAffect = moveAffect;
-    }
     public Boolean getWhetherFreezingAndThawing() {
         return whetherFreezingAndThawing;
     }
@@ -180,20 +147,6 @@ public class PositionMoveRecordDTO extends AbstractAuditingDTO implements Serial
 
     public void setMoveType(String moveType) {
         this.moveType = moveType;
-    }
-    public Long getOperator1() {
-        return operator1;
-    }
-
-    public void setOperator1(Long operator1) {
-        this.operator1 = operator1;
-    }
-    public Long getOperator2() {
-        return operator2;
-    }
-
-    public void setOperator2(Long operator2) {
-        this.operator2 = operator2;
     }
     public String getProjectCode() {
         return projectCode;
@@ -280,6 +233,14 @@ public class PositionMoveRecordDTO extends AbstractAuditingDTO implements Serial
         this.projectSiteId = projectSiteId;
     }
 
+    public Long getPositionMoveId() {
+        return positionMoveId;
+    }
+
+    public void setPositionMoveId(Long positionMoveId) {
+        this.positionMoveId = positionMoveId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -313,12 +274,8 @@ public class PositionMoveRecordDTO extends AbstractAuditingDTO implements Serial
             ", frozenBoxCode='" + frozenBoxCode + "'" +
             ", tubeRows='" + tubeRows + "'" +
             ", tubeColumns='" + tubeColumns + "'" +
-            ", moveReason='" + moveReason + "'" +
-            ", moveAffect='" + moveAffect + "'" +
             ", whetherFreezingAndThawing='" + whetherFreezingAndThawing + "'" +
             ", moveType='" + moveType + "'" +
-            ", operator1='" + operator1 + "'" +
-            ", operator2='" + operator2 + "'" +
             ", projectCode='" + projectCode + "'" +
             ", projectSiteCode='" + projectSiteCode + "'" +
             ", status='" + status + "'" +

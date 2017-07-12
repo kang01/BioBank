@@ -1,0 +1,51 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.positionMove.detail.title">Position Move</span> {{vm.positionMove.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.positionMove.moveReason">Move Reason</span></dt>
+        <dd>
+            <span>{{vm.positionMove.moveReason}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMove.moveAffect">Move Affect</span></dt>
+        <dd>
+            <span>{{vm.positionMove.moveAffect}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMove.whetherFreezingAndThawing">Whether Freezing And Thawing</span></dt>
+        <dd>
+            <span>{{vm.positionMove.whetherFreezingAndThawing}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMove.moveType">Move Type</span></dt>
+        <dd>
+            <span>{{vm.positionMove.moveType}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMove.operatorId1">Operator Id 1</span></dt>
+        <dd>
+            <span>{{vm.positionMove.operatorId1}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMove.operatorId2">Operator Id 2</span></dt>
+        <dd>
+            <span>{{vm.positionMove.operatorId2}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMove.status">Status</span></dt>
+        <dd>
+            <span>{{vm.positionMove.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionMove.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.positionMove.memo}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="position-move-detail.edit({id:vm.positionMove.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

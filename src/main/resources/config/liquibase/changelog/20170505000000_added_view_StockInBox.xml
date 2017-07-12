@@ -11,6 +11,7 @@
         <createView viewName="view_stock_in_box">
             SELECT a.ID,a.FROZEN_BOX_CODE,a.EQUIPMENT_CODE,a.AREA_CODE,a.SUPPORT_RACK_CODE,a.COLUMNS_IN_SHELF,a.ROWS_IN_SHELF,
             (a.EQUIPMENT_CODE||'.'||a.AREA_CODE||'.'||a.SUPPORT_RACK_CODE ||'.'||a.COLUMNS_IN_SHELF || lpad(a.ROWS_IN_SHELF,2,0)) as position,
+            s.SAMPLE_TYPE_CODE,sc.SAMPLE_CLASSIFICATION_CODE,
             s.SAMPLE_TYPE_NAME,sc.SAMPLE_CLASSIFICATION_NAME ,f.IS_SPLIT ,
             a.STATUS,a.COUNT_OF_SAMPLE,a.STOCK_IN_CODE
             FROM STOCK_IN_BOX a

@@ -19,6 +19,7 @@ public interface PositionMoveRecordMapper {
     @Mapping(source = "frozenTube.id", target = "frozenTubeId")
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "projectSite.id", target = "projectSiteId")
+    @Mapping(source = "positionMove.id", target = "positionMoveId")
     PositionMoveRecordDTO positionMoveRecordToPositionMoveRecordDTO(PositionMoveRecord positionMoveRecord);
 
     List<PositionMoveRecordDTO> positionMoveRecordsToPositionMoveRecordDTOs(List<PositionMoveRecord> positionMoveRecords);
@@ -30,6 +31,7 @@ public interface PositionMoveRecordMapper {
     @Mapping(source = "frozenTubeId", target = "frozenTube")
     @Mapping(source = "projectId", target = "project")
     @Mapping(source = "projectSiteId", target = "projectSite")
+    @Mapping(source = "positionMoveId", target = "positionMove")
     PositionMoveRecord positionMoveRecordDTOToPositionMoveRecord(PositionMoveRecordDTO positionMoveRecordDTO);
 
     List<PositionMoveRecord> positionMoveRecordDTOsToPositionMoveRecords(List<PositionMoveRecordDTO> positionMoveRecordDTOs);
@@ -95,5 +97,14 @@ public interface PositionMoveRecordMapper {
         ProjectSite projectSite = new ProjectSite();
         projectSite.setId(id);
         return projectSite;
+    }
+
+    default PositionMove positionMoveFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        PositionMove positionMove = new PositionMove();
+        positionMove.setId(id);
+        return positionMove;
     }
 }

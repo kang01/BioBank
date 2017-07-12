@@ -9,6 +9,7 @@ import org.fwoxford.domain.SupportRack;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.Project;
+import org.fwoxford.domain.PositionMove;
 import org.fwoxford.repository.PositionMoveRecordRepository;
 import org.fwoxford.service.PositionMoveRecordService;
 import org.fwoxford.service.dto.PositionMoveRecordDTO;
@@ -70,23 +71,11 @@ public class PositionMoveRecordResourceIntTest {
     private static final String DEFAULT_TUBE_COLUMNS = "AAAAAAAAAA";
     private static final String UPDATED_TUBE_COLUMNS = "BBBBBBBBBB";
 
-    private static final String DEFAULT_MOVE_REASON = "AAAAAAAAAA";
-    private static final String UPDATED_MOVE_REASON = "BBBBBBBBBB";
-
-    private static final String DEFAULT_MOVE_AFFECT = "AAAAAAAAAA";
-    private static final String UPDATED_MOVE_AFFECT = "BBBBBBBBBB";
-
     private static final Boolean DEFAULT_WHETHER_FREEZING_AND_THAWING = false;
     private static final Boolean UPDATED_WHETHER_FREEZING_AND_THAWING = true;
 
     private static final String DEFAULT_MOVE_TYPE = "AAAAAAAAAA";
     private static final String UPDATED_MOVE_TYPE = "BBBBBBBBBB";
-
-    private static final Long DEFAULT_OPERATOR_1 = 1L;
-    private static final Long UPDATED_OPERATOR_1 = 2L;
-
-    private static final Long DEFAULT_OPERATOR_2 = 1L;
-    private static final Long UPDATED_OPERATOR_2 = 2L;
 
     private static final String DEFAULT_PROJECT_CODE = "AAAAAAAAAA";
     private static final String UPDATED_PROJECT_CODE = "BBBBBBBBBB";
@@ -151,12 +140,8 @@ public class PositionMoveRecordResourceIntTest {
                 .frozenBoxCode(DEFAULT_FROZEN_BOX_CODE)
                 .tubeRows(DEFAULT_TUBE_ROWS)
                 .tubeColumns(DEFAULT_TUBE_COLUMNS)
-                .moveReason(DEFAULT_MOVE_REASON)
-                .moveAffect(DEFAULT_MOVE_AFFECT)
                 .whetherFreezingAndThawing(DEFAULT_WHETHER_FREEZING_AND_THAWING)
                 .moveType(DEFAULT_MOVE_TYPE)
-                .operator1(DEFAULT_OPERATOR_1)
-                .operator2(DEFAULT_OPERATOR_2)
                 .projectCode(DEFAULT_PROJECT_CODE)
                 .projectSiteCode(DEFAULT_PROJECT_SITE_CODE)
                 .status(DEFAULT_STATUS)
@@ -191,6 +176,11 @@ public class PositionMoveRecordResourceIntTest {
         em.persist(project);
         em.flush();
         positionMoveRecord.setProject(project);
+        // Add required entity
+        PositionMove positionMove = PositionMoveResourceIntTest.createEntity(em);
+        em.persist(positionMove);
+        em.flush();
+        positionMoveRecord.setPositionMove(positionMove);
         return positionMoveRecord;
     }
 
@@ -224,12 +214,8 @@ public class PositionMoveRecordResourceIntTest {
         assertThat(testPositionMoveRecord.getFrozenBoxCode()).isEqualTo(DEFAULT_FROZEN_BOX_CODE);
         assertThat(testPositionMoveRecord.getTubeRows()).isEqualTo(DEFAULT_TUBE_ROWS);
         assertThat(testPositionMoveRecord.getTubeColumns()).isEqualTo(DEFAULT_TUBE_COLUMNS);
-        assertThat(testPositionMoveRecord.getMoveReason()).isEqualTo(DEFAULT_MOVE_REASON);
-        assertThat(testPositionMoveRecord.getMoveAffect()).isEqualTo(DEFAULT_MOVE_AFFECT);
         assertThat(testPositionMoveRecord.isWhetherFreezingAndThawing()).isEqualTo(DEFAULT_WHETHER_FREEZING_AND_THAWING);
         assertThat(testPositionMoveRecord.getMoveType()).isEqualTo(DEFAULT_MOVE_TYPE);
-        assertThat(testPositionMoveRecord.getOperator1()).isEqualTo(DEFAULT_OPERATOR_1);
-        assertThat(testPositionMoveRecord.getOperator2()).isEqualTo(DEFAULT_OPERATOR_2);
         assertThat(testPositionMoveRecord.getProjectCode()).isEqualTo(DEFAULT_PROJECT_CODE);
         assertThat(testPositionMoveRecord.getProjectSiteCode()).isEqualTo(DEFAULT_PROJECT_SITE_CODE);
         assertThat(testPositionMoveRecord.getStatus()).isEqualTo(DEFAULT_STATUS);
@@ -485,12 +471,8 @@ public class PositionMoveRecordResourceIntTest {
             .andExpect(jsonPath("$.[*].frozenBoxCode").value(hasItem(DEFAULT_FROZEN_BOX_CODE.toString())))
             .andExpect(jsonPath("$.[*].tubeRows").value(hasItem(DEFAULT_TUBE_ROWS.toString())))
             .andExpect(jsonPath("$.[*].tubeColumns").value(hasItem(DEFAULT_TUBE_COLUMNS.toString())))
-            .andExpect(jsonPath("$.[*].moveReason").value(hasItem(DEFAULT_MOVE_REASON.toString())))
-            .andExpect(jsonPath("$.[*].moveAffect").value(hasItem(DEFAULT_MOVE_AFFECT.toString())))
             .andExpect(jsonPath("$.[*].whetherFreezingAndThawing").value(hasItem(DEFAULT_WHETHER_FREEZING_AND_THAWING.booleanValue())))
             .andExpect(jsonPath("$.[*].moveType").value(hasItem(DEFAULT_MOVE_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].operator1").value(hasItem(DEFAULT_OPERATOR_1.intValue())))
-            .andExpect(jsonPath("$.[*].operator2").value(hasItem(DEFAULT_OPERATOR_2.intValue())))
             .andExpect(jsonPath("$.[*].projectCode").value(hasItem(DEFAULT_PROJECT_CODE.toString())))
             .andExpect(jsonPath("$.[*].projectSiteCode").value(hasItem(DEFAULT_PROJECT_SITE_CODE.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
@@ -516,12 +498,8 @@ public class PositionMoveRecordResourceIntTest {
             .andExpect(jsonPath("$.frozenBoxCode").value(DEFAULT_FROZEN_BOX_CODE.toString()))
             .andExpect(jsonPath("$.tubeRows").value(DEFAULT_TUBE_ROWS.toString()))
             .andExpect(jsonPath("$.tubeColumns").value(DEFAULT_TUBE_COLUMNS.toString()))
-            .andExpect(jsonPath("$.moveReason").value(DEFAULT_MOVE_REASON.toString()))
-            .andExpect(jsonPath("$.moveAffect").value(DEFAULT_MOVE_AFFECT.toString()))
             .andExpect(jsonPath("$.whetherFreezingAndThawing").value(DEFAULT_WHETHER_FREEZING_AND_THAWING.booleanValue()))
             .andExpect(jsonPath("$.moveType").value(DEFAULT_MOVE_TYPE.toString()))
-            .andExpect(jsonPath("$.operator1").value(DEFAULT_OPERATOR_1.intValue()))
-            .andExpect(jsonPath("$.operator2").value(DEFAULT_OPERATOR_2.intValue()))
             .andExpect(jsonPath("$.projectCode").value(DEFAULT_PROJECT_CODE.toString()))
             .andExpect(jsonPath("$.projectSiteCode").value(DEFAULT_PROJECT_SITE_CODE.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
@@ -554,12 +532,8 @@ public class PositionMoveRecordResourceIntTest {
                 .frozenBoxCode(UPDATED_FROZEN_BOX_CODE)
                 .tubeRows(UPDATED_TUBE_ROWS)
                 .tubeColumns(UPDATED_TUBE_COLUMNS)
-                .moveReason(UPDATED_MOVE_REASON)
-                .moveAffect(UPDATED_MOVE_AFFECT)
                 .whetherFreezingAndThawing(UPDATED_WHETHER_FREEZING_AND_THAWING)
                 .moveType(UPDATED_MOVE_TYPE)
-                .operator1(UPDATED_OPERATOR_1)
-                .operator2(UPDATED_OPERATOR_2)
                 .projectCode(UPDATED_PROJECT_CODE)
                 .projectSiteCode(UPDATED_PROJECT_SITE_CODE)
                 .status(UPDATED_STATUS)
@@ -583,12 +557,8 @@ public class PositionMoveRecordResourceIntTest {
         assertThat(testPositionMoveRecord.getFrozenBoxCode()).isEqualTo(UPDATED_FROZEN_BOX_CODE);
         assertThat(testPositionMoveRecord.getTubeRows()).isEqualTo(UPDATED_TUBE_ROWS);
         assertThat(testPositionMoveRecord.getTubeColumns()).isEqualTo(UPDATED_TUBE_COLUMNS);
-        assertThat(testPositionMoveRecord.getMoveReason()).isEqualTo(UPDATED_MOVE_REASON);
-        assertThat(testPositionMoveRecord.getMoveAffect()).isEqualTo(UPDATED_MOVE_AFFECT);
         assertThat(testPositionMoveRecord.isWhetherFreezingAndThawing()).isEqualTo(UPDATED_WHETHER_FREEZING_AND_THAWING);
         assertThat(testPositionMoveRecord.getMoveType()).isEqualTo(UPDATED_MOVE_TYPE);
-        assertThat(testPositionMoveRecord.getOperator1()).isEqualTo(UPDATED_OPERATOR_1);
-        assertThat(testPositionMoveRecord.getOperator2()).isEqualTo(UPDATED_OPERATOR_2);
         assertThat(testPositionMoveRecord.getProjectCode()).isEqualTo(UPDATED_PROJECT_CODE);
         assertThat(testPositionMoveRecord.getProjectSiteCode()).isEqualTo(UPDATED_PROJECT_SITE_CODE);
         assertThat(testPositionMoveRecord.getStatus()).isEqualTo(UPDATED_STATUS);

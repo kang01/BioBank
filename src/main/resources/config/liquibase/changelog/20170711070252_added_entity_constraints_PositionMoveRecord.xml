@@ -50,5 +50,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="project_site"/>
 
+        <addForeignKeyConstraint baseColumnNames="position_move_id"
+                                 baseTableName="position_move_record"
+                                 constraintName="pos_move_position_move_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="position_move"/>
+
     </changeSet>
 </databaseChangeLog>

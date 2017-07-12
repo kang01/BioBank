@@ -470,7 +470,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             }
         }
 
-        FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findByFrozenBoxTypeCode("DCH");
+        FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findByFrozenBoxTypeCode(sampleTypeCode.equals("RNA")?"DJH":"DCH");
         int m = 0;
         for(String key :map.keySet()){
             m++;
@@ -778,7 +778,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         SampleType sampleType97 = sampleTypeRepository.findBySampleTypeCode("97");
         if(sampleType97 == null){
             sampleType97 = new SampleType().sampleTypeCode("97").sampleTypeName("97")
-                .status("0001").isMixed(1).frontColor("black").backColor("rgb(252, 245, 95)");
+                .status("0001").isMixed(1).frontColor("black").backColor("rgb(255, 0, 0)");
             sampleTypeRepository.saveAndFlush(sampleType97);
             assertThat(sampleType97).isNotNull();
         }

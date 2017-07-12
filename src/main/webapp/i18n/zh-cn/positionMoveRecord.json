@@ -23,12 +23,8 @@
             "frozenBoxCode": "Frozen Box Code",
             "tubeRows": "Tube Rows",
             "tubeColumns": "Tube Columns",
-            "moveReason": "Move Reason",
-            "moveAffect": "Move Affect",
             "whetherFreezingAndThawing": "Whether Freezing And Thawing",
             "moveType": "Move Type",
-            "operator1": "Operator 1",
-            "operator2": "Operator 2",
             "projectCode": "Project Code",
             "projectSiteCode": "Project Site Code",
             "status": "Status",
@@ -39,7 +35,8 @@
             "frozenBox": "Frozen Box",
             "frozenTube": "Frozen Tube",
             "project": "Project",
-            "projectSite": "Project Site"
+            "projectSite": "Project Site",
+            "positionMove": "Position Move"
         }
     }
 }

@@ -18,7 +18,7 @@
         Added the entity PositionMoveRecord.
     -->
     <changeSet id="20170711070252-1" author="jhipster">
-        <createTable tableName="position_move_record" remarks="移位记录表">
+        <createTable tableName="position_move_record" remarks="移位记录详情表">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -34,11 +34,11 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="rows_in_shelf" type="nvarchar(100)" remarks="冻存架内行号">
+            <column name="rows_in_shelf" type="nvarchar(100)" remarks="架子内行号">
                 <constraints nullable="false" />
             </column>
 
-            <column name="columns_in_shelf" type="nvarchar(100)" remarks="冻存架内列号">
+            <column name="columns_in_shelf" type="nvarchar(100)" remarks="架子内列号">
                 <constraints nullable="false" />
             </column>
 
@@ -54,28 +54,12 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="move_reason" type="nvarchar(1024)" remarks="移位原因">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="move_affect" type="nvarchar(1024)" remarks="移位影响评估">
-                <constraints nullable="true" />
-            </column>
-
             <column name="whether_freezing_and_thawing" type="bit" remarks="是否冻融">
                 <constraints nullable="true" />
             </column>
 
-            <column name="move_type" type="nvarchar(20)" remarks="移位类型">
+            <column name="move_type" type="nvarchar(20)" remarks="移动类型">
                 <constraints nullable="false" />
-            </column>
-
-            <column name="operator_1" type="bigint" remarks="操作人1">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="operator_2" type="bigint" remarks="操作人2">
-                <constraints nullable="true" />
             </column>
 
             <column name="project_code" type="nvarchar(100)" remarks="项目编码">
@@ -120,6 +104,10 @@
 
             <column name="project_site_id" type="bigint" remarks="项目点ID">
                 <constraints nullable="true" />
+            </column>
+
+            <column name="position_move_id" type="bigint" remarks="移位ID">
+                <constraints nullable="false" />
             </column>
 
             <column name="created_by" type="nvarchar(50)" remarks="创建人">

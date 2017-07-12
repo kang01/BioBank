@@ -9,17 +9,17 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('position-move-record', {
+        .state('position-move', {
             parent: 'entity',
-            url: '/position-move-record?page&sort&search',
+            url: '/position-move?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'bioBankApp.positionMoveRecord.home.title'
+                pageTitle: 'bioBankApp.positionMove.home.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/entities/position-move-record/position-move-records.html',
-                    controller: 'PositionMoveRecordController',
+                    templateUrl: 'app/entities/position-move/position-moves.html',
+                    controller: 'PositionMoveController',
                     controllerAs: 'vm'
                 }
             },
@@ -45,37 +45,37 @@
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('positionMoveRecord');
+                    $translatePartialLoader.addPart('positionMove');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
             }
         })
-        .state('position-move-record-detail', {
-            parent: 'position-move-record',
-            url: '/position-move-record/{id}',
+        .state('position-move-detail', {
+            parent: 'position-move',
+            url: '/position-move/{id}',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'bioBankApp.positionMoveRecord.detail.title'
+                pageTitle: 'bioBankApp.positionMove.detail.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/entities/position-move-record/position-move-record-detail.html',
-                    controller: 'PositionMoveRecordDetailController',
+                    templateUrl: 'app/entities/position-move/position-move-detail.html',
+                    controller: 'PositionMoveDetailController',
                     controllerAs: 'vm'
                 }
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('positionMoveRecord');
+                    $translatePartialLoader.addPart('positionMove');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'PositionMoveRecord', function($stateParams, PositionMoveRecord) {
-                    return PositionMoveRecord.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', 'PositionMove', function($stateParams, PositionMove) {
+                    return PositionMove.get({id : $stateParams.id}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'position-move-record',
+                        name: $state.current.name || 'position-move',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
@@ -83,22 +83,22 @@
                 }]
             }
         })
-        .state('position-move-record-detail.edit', {
-            parent: 'position-move-record-detail',
+        .state('position-move-detail.edit', {
+            parent: 'position-move-detail',
             url: '/detail/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/position-move-record/position-move-record-dialog.html',
-                    controller: 'PositionMoveRecordDialogController',
+                    templateUrl: 'app/entities/position-move/position-move-dialog.html',
+                    controller: 'PositionMoveDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['PositionMoveRecord', function(PositionMoveRecord) {
-                            return PositionMoveRecord.get({id : $stateParams.id}).$promise;
+                        entity: ['PositionMove', function(PositionMove) {
+                            return PositionMove.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
@@ -108,34 +108,28 @@
                 });
             }]
         })
-        .state('position-move-record.new', {
-            parent: 'position-move-record',
+        .state('position-move.new', {
+            parent: 'position-move',
             url: '/new',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/position-move-record/position-move-record-dialog.html',
-                    controller: 'PositionMoveRecordDialogController',
+                    templateUrl: 'app/entities/position-move/position-move-dialog.html',
+                    controller: 'PositionMoveDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
                         entity: function () {
                             return {
-                                equipmentCode: null,
-                                areaCode: null,
-                                supportRackCode: null,
-                                rowsInShelf: null,
-                                columnsInShelf: null,
-                                frozenBoxCode: null,
-                                tubeRows: null,
-                                tubeColumns: null,
+                                moveReason: null,
+                                moveAffect: null,
                                 whetherFreezingAndThawing: null,
                                 moveType: null,
-                                projectCode: null,
-                                projectSiteCode: null,
+                                operatorId1: null,
+                                operatorId2: null,
                                 status: null,
                                 memo: null,
                                 id: null
@@ -143,56 +137,56 @@
                         }
                     }
                 }).result.then(function() {
-                    $state.go('position-move-record', null, { reload: 'position-move-record' });
+                    $state.go('position-move', null, { reload: 'position-move' });
                 }, function() {
-                    $state.go('position-move-record');
+                    $state.go('position-move');
                 });
             }]
         })
-        .state('position-move-record.edit', {
-            parent: 'position-move-record',
+        .state('position-move.edit', {
+            parent: 'position-move',
             url: '/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/position-move-record/position-move-record-dialog.html',
-                    controller: 'PositionMoveRecordDialogController',
+                    templateUrl: 'app/entities/position-move/position-move-dialog.html',
+                    controller: 'PositionMoveDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['PositionMoveRecord', function(PositionMoveRecord) {
-                            return PositionMoveRecord.get({id : $stateParams.id}).$promise;
+                        entity: ['PositionMove', function(PositionMove) {
+                            return PositionMove.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('position-move-record', null, { reload: 'position-move-record' });
+                    $state.go('position-move', null, { reload: 'position-move' });
                 }, function() {
                     $state.go('^');
                 });
             }]
         })
-        .state('position-move-record.delete', {
-            parent: 'position-move-record',
+        .state('position-move.delete', {
+            parent: 'position-move',
             url: '/{id}/delete',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/position-move-record/position-move-record-delete-dialog.html',
-                    controller: 'PositionMoveRecordDeleteController',
+                    templateUrl: 'app/entities/position-move/position-move-delete-dialog.html',
+                    controller: 'PositionMoveDeleteController',
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
-                        entity: ['PositionMoveRecord', function(PositionMoveRecord) {
-                            return PositionMoveRecord.get({id : $stateParams.id}).$promise;
+                        entity: ['PositionMove', function(PositionMove) {
+                            return PositionMove.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('position-move-record', null, { reload: 'position-move-record' });
+                    $state.go('position-move', null, { reload: 'position-move' });
                 }, function() {
                     $state.go('^');
                 });

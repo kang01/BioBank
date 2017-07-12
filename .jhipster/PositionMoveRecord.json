@@ -60,6 +60,15 @@
             "otherEntityName": "projectSite",
             "relationshipType": "many-to-one",
             "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "positionMove",
+            "otherEntityName": "positionMove",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
         }
     ],
     "fields": [
@@ -136,22 +145,6 @@
             "fieldValidateRulesMaxlength": "100"
         },
         {
-            "fieldName": "moveReason",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "1024"
-        },
-        {
-            "fieldName": "moveAffect",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": "1024"
-        },
-        {
             "fieldName": "whetherFreezingAndThawing",
             "fieldType": "Boolean",
             "fieldValidateRules": []
@@ -164,15 +157,6 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": 20
-        },
-        {
-            "fieldName": "operator1",
-            "fieldType": "Long",
-            "fieldValidateRules": []
-        },
-        {
-            "fieldName": "operator2",
-            "fieldType": "Long"
         },
         {
             "fieldName": "projectCode",

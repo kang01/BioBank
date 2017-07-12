@@ -283,6 +283,7 @@
                     // }
                     $compile(angular.element(header).contents())($scope);
                 });
+
                 // 定义每个列过滤选项
                 // .withColumnFilter(_createColumnFilters());
 

@@ -35,8 +35,8 @@
             //异常
             vm.abnormalCount =  _.filter(tubeList,{'status':'3004'}).length;
 
-            vm.transportRecord.emptyTubeNumber = vm.emptyPipeCount;
-            vm.transportRecord.emptyHoleNumber = vm.emptyHoleCount;
+            // vm.transportRecord.emptyTubeNumber = vm.emptyPipeCount;
+            // vm.transportRecord.emptyHoleNumber = vm.emptyHoleCount;
             if(!$scope.$$phase) {
                 $scope.$apply();
             }
@@ -1209,6 +1209,7 @@
             var isMixed;
             vm.onFrozenSuccess = onFrozenSuccess;
             function onFrozenSuccess(data) {
+                vm.flagStatus = false;
                 vm.box = data;
                 vm.box.frozenBoxTypeId = vm.box.frozenBoxType.id;
                 vm.box.sampleTypeId = vm.box.sampleType.id;
@@ -1255,7 +1256,16 @@
             TransportRecordService.get({id : vm.transportRecord.id},onRecordSuccess,onError);
         }
         function onRecordSuccess(data) {
+            //样本人份
             vm.transportRecord.sampleNumber = data.sampleNumber;
+            //有效样本数
+            vm.transportRecord.effectiveSampleNumber = data.effectiveSampleNumber;
+            //盒数
+            vm.transportRecord.frozenBoxNumber = data.frozenBoxNumber;
+            //空管数
+            vm.transportRecord.emptyTubeNumber = data.emptyTubeNumber;
+            //空孔数
+            vm.transportRecord.emptyHoleNumber = data.emptyHoleNumber;
         }
         function onError(error) {
             BioBankBlockUi.blockUiStop();

@@ -65,7 +65,7 @@
 
             vm.dtInstance = {};
 
-            vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10, "<'row'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>", $scope)
+            vm.dtOptions = BioBankDataTable.buildDTOption("NO-PAGING", 300, -1, "<'row'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>", $scope)
                 // 设置Tool button
                 .withButtons([
                     {

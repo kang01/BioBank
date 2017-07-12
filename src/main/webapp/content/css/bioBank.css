@@ -550,7 +550,7 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     outline:2px solid red !important;
 }
 .import-box-modal-body .import-box-input .selectize-input{
-    height: 352px;
+    height: 250px;
 }
 .transport-record-new .pipe-body .pipe-operate{
     width: 8%;
@@ -870,8 +870,12 @@ ul.rating {
     text-align: center;
     font-weight: bold;
     cursor: pointer;
-    font-size: 20px;
+    font-size: 18px;
 }
 .rating .filled {
     color: red;
+}
+.dataTables_scrollBody .table ,
+.dataTables_scrollFoot .table{
+    margin: 0;
 }

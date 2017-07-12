@@ -101,7 +101,7 @@
             .withOption('sorting', false)
             .withScroller()
             .withOption('deferRender', true)
-            .withOption('scrollY', 300);
+            .withOption('scrollY', 200);
 
         //录入冻存盒号
         var changeTableTimer = null;

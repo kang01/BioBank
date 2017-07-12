@@ -55,6 +55,8 @@
             TakeOverService.saveTakeOverComplete(boxIdsStr,vm.takeOver).success(function (data) {
                 toastr.success("交接成功!");
                 $uibModalInstance.close();
+            }).error(function (data) {
+                toastr.error(data.message);
             });
 
         };

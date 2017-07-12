@@ -122,6 +122,8 @@
             TaskService.saveOutput(taskId,frozenBoxIds,vm.stockOut).success(function (data) {
                 toastr.success("出库成功!");
                 $uibModalInstance.close();
+            }).error(function (data) {
+                toastr.error(data.message);
             });
 
         };

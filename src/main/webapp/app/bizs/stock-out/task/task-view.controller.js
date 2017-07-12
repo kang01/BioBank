@@ -92,7 +92,7 @@
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
         ];
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
-            $('td:eq(7)', nRow).html(MasterData.getStatus(oData.status));
+            $('td:eq(7)', nRow).html(MasterData.getFrozenBoxStatus(oData.status));
             $compile(angular.element(nRow).contents())($scope);
         }
 

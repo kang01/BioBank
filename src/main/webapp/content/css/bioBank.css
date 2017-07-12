@@ -875,7 +875,14 @@ ul.rating {
 .rating .filled {
     color: red;
 }
-.dataTables_scrollBody .table ,
-.dataTables_scrollFoot .table{
+.stock-in-list .dataTables_wrapper .dataTables_scroll{
+    margin-top: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.stock-in-list .dataTables_scrollBody .table ,
+.stock-in-list .dataTables_scrollFoot .table{
     margin: 0;
+}
+.stock-in-list .dataTables_wrapper .row{
+    margin-top: 5px;
 }

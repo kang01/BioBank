@@ -9,12 +9,12 @@
         .controller('StockInEditController', StockInEditController)
         .controller('RescindPutAwayModalController', RescindPutAwayModalController);
 
-    StockInEditController.$inject = ['$timeout','BioBankBlockUi','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
-        'entity','StockInService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','StockInSaveService',
+    StockInEditController.$inject = ['$scope','EquipmentService','BioBankBlockUi','$state','SupportacksByAreaIdService', '$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
+        'entity','AreasByEquipmentIdService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','RequirementService',
         'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService','MasterData'];
     RescindPutAwayModalController.$inject = ['$uibModalInstance'];
-    function StockInEditController($timeout,BioBankBlockUi,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
-                                  entity,StockInService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,StockInSaveService,
+    function StockInEditController($scope,EquipmentService,BioBankBlockUi,$state,SupportacksByAreaIdService,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
+                                  entity,AreasByEquipmentIdService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,RequirementService,
                                   SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService,MasterData) {
         var vm = this;
         vm.datePickerOpenStatus = {};
@@ -25,10 +25,196 @@
         vm.splittingBox = null;
         vm.splittedBoxes = {};
         vm.dtInstance = {};
+        vm.dto = {};
         var modalInstance;
+        vm.checked = false;
+        vm.search = _fnSearch;
+        vm.empty = _fnEmpty;
+        _statusInit();
+        _sampleTypeInit();
+        _positionInit();
+        function _statusInit() {
+            vm.statusConfig = {
+                valueField:'value',
+                labelField:'label',
+                maxItems: 1,
+                onChange:function(value){
+                }
+            };
+            vm.statusOptions = MasterData.frozenBoxStatus;
+        }
+        function _sampleTypeInit() {
+            vm.noSampleClassFlag = false;
+            //样本类型
+            vm.sampleTypeConfig = {
+                valueField:'id',
+                labelField:'sampleTypeName',
+                maxItems: 1,
+                onChange:function (value) {
+                    if(value){
+                        vm.dto.sampleTypeCode = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeCode;
+                        vm.dto.sampleTypeName = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeName;
+                        if(vm.dto.sampleTypeCode == "99"){
+                            vm.noSampleClassFlag = false;
+                            vm.sampleClassOptions = [];
+                            vm.dto.sampleClassificationId = "";
+                            vm.dto.sampleClassificationName = "";
+                            vm.dto.sampleClassificationCode = "";
+                            $scope.$apply();
+                        }else{
+                            _fnQuerySampleClass(vm.entity.projectId,value);
+                        }
+                    }else{
+                        vm.noSampleClassFlag = false;
+                        vm.sampleClassOptions = [];
+                        vm.dto.sampleTypeCode = "";
+                        vm.dto.sampleTypeName = "";
+                        vm.dto.sampleClassificationId = "";
+                        vm.dto.sampleClassificationName = "";
+                        vm.dto.sampleClassificationCode = "";
+                        $scope.$apply();
+                    }
+
+                }
+            };
+            vm.sampleTypeOptions = [];
+            SampleTypeService.querySampleType().success(function (data) {
+                vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"})
+            });
+            vm.sampleClassConfig = {
+                valueField:'sampleClassificationId',
+                labelField:'sampleClassificationName',
+                maxItems: 1,
+                onChange:function (value) {
+                    if(value){
+                        vm.dto.sampleClassificationName = _.find(vm.sampleClassOptions,{sampleClassificationId:+value}).sampleClassificationName;
+                        vm.dto.sampleClassificationCode = _.find(vm.sampleClassOptions,{sampleClassificationId:+value}).sampleClassificationCode;
+                    }else{
+                        vm.dto.sampleClassificationId = "";
+                        vm.dto.sampleClassificationName = "";
+                        vm.dto.sampleClassificationCode = "";
+                    }
 
 
+                }
+            };
+            //样本分类
+            function _fnQuerySampleClass(projectId,sampleTypeId) {
+                SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
+                    vm.sampleClassOptions = data;
+                    if(vm.sampleClassOptions.length){
+                        vm.noSampleClassFlag = true;
+                        vm.dto.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
+                        vm.dto.sampleClassificationName = vm.sampleClassOptions[0].sampleClassificationName;
+                        vm.dto.sampleClassificationCode = vm.sampleClassOptions[0].sampleClassificationCode;
+                    }else{
+                        vm.noSampleClassFlag = false
+                    }
+                });
+            }
 
+        }
+        function _positionInit() {
+            //设备
+            EquipmentService.query({},onEquipmentSuccess, onError);
+            function onEquipmentSuccess(data) {
+                vm.frozenBoxPlaceOptions = data;
+            }
+            //盒子位置
+            vm.frozenBoxPlaceConfig = {
+                valueField:'id',
+                labelField:'equipmentCode',
+                maxItems: 1,
+                onChange:function (value) {
+                    AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                }
+            };
+            function onAreaSuccess(data) {
+                vm.frozenBoxAreaOptions = data;
+                if(vm.frozenBoxAreaOptions.length){
+                    vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
+                    SupportacksByAreaIdService.query({id:vm.dto.areaId},onShelfSuccess, onError);
+                }
+            }
+            vm.frozenBoxAreaConfig = {
+                valueField:'id',
+                labelField:'areaCode',
+                maxItems: 1,
+                onChange:function (value) {
+                    SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
+
+                }
+            };
+            //架子
+            function onShelfSuccess(data) {
+                vm.frozenBoxShelfOptions = data;
+                vm.dto.shelvesId = vm.frozenBoxShelfOptions[0].id;
+            }
+            vm.frozenBoxShelfConfig = {
+                valueField:'id',
+                labelField:'supportRackCode',
+                maxItems: 1,
+                onChange:function (value) {
+                }
+            };
+            //设备类型
+            vm.equipmentConfig = {
+                valueField:'value',
+                labelField:'label',
+                maxItems: 1,
+                onChange:function(value){
+                }
+            };
+            //架子类型
+            vm.shelvesConfig = {
+                valueField:'value',
+                labelField:'label',
+                maxItems: 1,
+                onChange:function(value){
+                }
+            };
+        }
+
+
+        function _fnSearch() {
+
+            var searchObj = {};
+            _.forEach(vm.dto, function(value, key) {
+               if(vm.dto[key] != ""){
+                   searchObj[key] = vm.dto[key];
+               }
+            });
+            delete searchObj.sampleTypeId;
+            delete searchObj.sampleTypeCode;
+            delete searchObj.sampleClassificationId;
+            delete searchObj.sampleClassificationCode;
+
+            var stockInBoxList = angular.copy(vm.stockInBox);
+            var stockInBoxArray;
+            stockInBoxArray = _.filter(stockInBoxList, searchObj);
+            vm.dtOptions.withOption("data",stockInBoxArray).withOption('serverSide',false);
+
+
+            //     for(var i = 0 ; i <  stockInBoxList.length; i++){
+            //         if(stockInBoxList[i].frozenBoxCode.indexOf(vm.dto.frozenBoxCode) >= 0){
+            //             stockInBoxArray.push(stockInBoxList[i]);
+            //         }
+            //     }
+            //
+            //
+            // }else{
+            //     vm.dtOptions.withOption("data",vm.stockInBox);
+            // }
+            // vm.checked = false;
+        }
+        function _fnEmpty() {
+            vm.dto = {};
+            vm.dto.sampleTypeName = "";
+            vm.dto.sampleTypeCode = "";
+            vm.dto.sampleTypeClassName = "";
+            vm.dto.sampleTypeClassCode = "";
+        }
         _initStockInBoxesTable();
 
         function _initStockInBoxesTable(){
@@ -63,16 +249,22 @@
                 vm.selectAll = true;
             };
 
-            vm.dtInstance = {};
+
 
             vm.dtOptions = BioBankDataTable.buildDTOption("NO-PAGING", 300, -1, "<'row'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>", $scope)
                 // 设置Tool button
                 .withButtons([
                     {
-                        text: '<i class="fa fa-sign-in btn-primary"></i> 批量上架',
-                        className: 'btn btn-default',
+                        text: '<i class="fa fa-sign-in"></i> 批量上架',
+                        className: 'btn btn-default btn-primary',
                         key: '1',
                         action: _fnActionPutInShelfButton
+                    },
+                    {
+                        text: '<i class="fa fa-search"></i> 高级搜索',
+                        className: 'btn btn-default btn-primary ml-5',
+                        key: '1',
+                        action: _fnActionSearchButton
                     }
                 ])
                 // 数据从服务器加载
@@ -84,14 +276,15 @@
                 // 每行的渲染
                 .withOption('createdRow', _fnCreatedRow)
                 .withOption('headerCallback', function(header) {
-                    if (!vm.headerCompiled) {
-                        // Use this headerCompiled field to only compile header once
-                        vm.headerCompiled = true;
-                        $compile(angular.element(header).contents())($scope);
-                    }
-                })
+                    // if (!vm.headerCompiled) {
+                    //     // Use this headerCompiled field to only compile header once
+                    //     vm.headerCompiled = true;
+                    //
+                    // }
+                    $compile(angular.element(header).contents())($scope);
+                });
                 // 定义每个列过滤选项
-                .withColumnFilter(_createColumnFilters());
+                // .withColumnFilter(_createColumnFilters());
 
             // 表格中每个列的定义
             vm.dtColumns = _createColumns();
@@ -118,6 +311,7 @@
 
                 var json = res.data;
                 vm.stockInBox = res.data.data;
+                _isStockInFinish();
                 var error = json.error || json.sError;
                 if ( error ) {
                     jqDt._fnLog( oSettings, 0, error );
@@ -211,6 +405,15 @@
         }
         function _fnActionPutInShelfButton(e, dt, node, config){
             _putInShelf();
+        }
+
+        //高级搜索
+        function _fnActionSearchButton() {
+
+            vm.checked = true;
+
+
+            $scope.$apply();
         }
         function _createColumnFilters(){
             var filters = {
@@ -335,10 +538,19 @@
                     vm.dtOptions.isHeaderCompiled = false;
                     vm.dtInstance.rerender();
                 });
+
             });
 
         }
-
+        //全部上架可以入库完成
+        function _isStockInFinish() {
+            var putInLen = _.filter(vm.stockInBox,{status:"2006"}).length;
+            if(putInLen == vm.stockInBox.length){
+                vm.stockInflag = true;
+            }else{
+                vm.stockInflag = false;
+            }
+        }
 
 
         //入库完成

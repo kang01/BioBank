@@ -123,7 +123,7 @@
                     toastr.success("保存任务成功!");
                 }
             }).error(function (data) {
-                toastr.error("保存任务失败!");
+                toastr.error(data.message);
                 BioBankBlockUi.blockUiStop();
             });
         }

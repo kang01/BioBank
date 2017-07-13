@@ -135,7 +135,7 @@ public class ProjectSampleClassServiceImpl implements ProjectSampleClassService{
             throw new BankServiceException("样本类型Id不能为空！");
         }
         List<ProjectSampleClassificationDTO> projectSampleClassificationDTOS = new ArrayList<ProjectSampleClassificationDTO>();
-        List<ProjectSampleClass> projectSampleClasses = projectSampleClassRepository.findByProjectAndSampleTypeId(projectId,sampleTypeId);
+        List<ProjectSampleClass> projectSampleClasses = projectSampleClassRepository.findByProjectIdAndSampleTypeId(projectId,sampleTypeId);
         for(ProjectSampleClass p :projectSampleClasses){
             ProjectSampleClassificationDTO projectSampleClassificationDTO = projectSampleClassMapper.projectSampleClassToProjectClassificationDTO(p);
             projectSampleClassificationDTO.setSampleClassificationCode(p.getSampleClassification()!=null?p.getSampleClassification().getSampleClassificationCode():null);

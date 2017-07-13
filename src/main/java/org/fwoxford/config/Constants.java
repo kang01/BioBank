@@ -1,5 +1,7 @@
 package org.fwoxford.config;
 
+import org.fwoxford.domain.PositionMove;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -259,6 +261,7 @@ public final class Constants {
         put("10","尿2");
         put("11","RNA");
     }};
+    public static final String MOVE_TYPE_1 = "1";
 
 //    public static final Map<String,String> SAMPLE_TYPE_CODE_MAP = new HashMap<String,String>(){{
 //        put("A","血浆");

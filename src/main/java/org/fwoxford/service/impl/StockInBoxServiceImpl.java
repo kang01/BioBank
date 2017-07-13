@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.datatables.mapping.Column;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -182,18 +183,16 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         List<Column> columns = input.getColumns();
         List<Order> orders = new ArrayList<Order>();
 
-//        input.getOrder().forEach(order -> {
-//            orders.add(order);
-//            Column column = columns.get(order.getColumn());
-//            Order o = new Order();
-//            Column column1 = new Column();
-//            if(column.getData()!=""&&column.getData().equals("status")){
-//                o.setColumn(6);
-//                o.setDir(order.getDir());
-//                orders.add(o);
-//            }
-//        });
-//        input.setOrder(orders);
+        input.getOrder().forEach(order -> {
+            orders.add(order);
+            Column column = columns.get(order.getColumn());
+            Order o = new Order();
+            if(column.getData()!=""&&column.getData().equals("status")){
+                Order orderAdd = new Order(6,order.getDir());
+                orders.add(orderAdd);
+            }
+        });
+        input.setOrder(orders);
         Converter<StockInBoxForDataTableEntity,StockInBoxForDataTableEntity> convert = new Converter<StockInBoxForDataTableEntity, StockInBoxForDataTableEntity>() {
             @Override
             public StockInBoxForDataTableEntity convert(StockInBoxForDataTableEntity source) {

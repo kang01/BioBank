@@ -218,11 +218,11 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     @Test
     public void createSupportRackType() throws Exception {
         //冻存架类型
-        SupportRackType supportRackType = supportRackTypeRepository.findBySupportRackTypeCode("5*5");
+        SupportRackType supportRackType = supportRackTypeRepository.findBySupportRackTypeCode("S5x5");
         if(supportRackType==null){
             supportRackType = new SupportRackType();
-            supportRackType.setSupportRackTypeCode("5*5");
-            supportRackType.setSupportRackTypeName("冻存架1(5*5)");
+            supportRackType.setSupportRackTypeCode("S5x5");
+            supportRackType.setSupportRackTypeName("冻存架1(5x5)");
             supportRackType.setSupportRackRows("5");
             supportRackType.setSupportRackColumns("5");
             supportRackType.setStatus("0001");
@@ -230,18 +230,41 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             supportRackTypeRepository.saveAndFlush(supportRackType);
             assertThat(supportRackType).isNotNull();
         }
+        SupportRackType supportRackType55 = supportRackTypeRepository.findBySupportRackTypeCode("B5x5");
+        if(supportRackType55==null){
+            supportRackType55 = new SupportRackType();
+            supportRackType55.setSupportRackTypeCode("B5x5");
+            supportRackType55.setSupportRackTypeName("冻存架2(5x5)");
+            supportRackType55.setSupportRackRows("5");
+            supportRackType55.setSupportRackColumns("5");
+            supportRackType55.setStatus("0001");
+            supportRackType55.setMemo("窄");
+            supportRackTypeRepository.saveAndFlush(supportRackType55);
+        }
         //冻存架类型
-        SupportRackType supportRackType1 = supportRackTypeRepository.findBySupportRackTypeCode("5*4");
+        SupportRackType supportRackType1 = supportRackTypeRepository.findBySupportRackTypeCode("B5x4");
         if(supportRackType1==null){
             supportRackType1 = new SupportRackType();
-            supportRackType1.setSupportRackTypeCode("5*4");
-            supportRackType1.setSupportRackTypeName("冻存架3(5*4)");
+            supportRackType1.setSupportRackTypeCode("B5x4");
+            supportRackType1.setSupportRackTypeName("冻存架3(5x4)");
             supportRackType1.setSupportRackRows("5");
             supportRackType1.setSupportRackColumns("4");
             supportRackType1.setStatus("0001");
-            supportRackType.setMemo("宽");
+            supportRackType1.setMemo("宽");
             supportRackTypeRepository.saveAndFlush(supportRackType1);
             assertThat(supportRackType1).isNotNull();
+        }
+        //冻存架类型
+        SupportRackType supportRackType2 = supportRackTypeRepository.findBySupportRackTypeCode("S5x4");
+        if(supportRackType2==null){
+            supportRackType2 = new SupportRackType();
+            supportRackType2.setSupportRackTypeCode("S5x4");
+            supportRackType2.setSupportRackTypeName("冻存架4(5x4)");
+            supportRackType2.setSupportRackRows("5");
+            supportRackType2.setSupportRackColumns("4");
+            supportRackType2.setStatus("0001");
+            supportRackType2.setMemo("窄");
+            supportRackTypeRepository.saveAndFlush(supportRackType2);
         }
     }
 
@@ -331,6 +354,146 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 .shelveNumberInArea(0)
                 .status("0001");
             equipmentModleRepository.saveAndFlush(equipmentModle1);
+        }
+        EquipmentModle equipmentModle2= equipmentModleRepository.findByEquipmentModelCode("Haier-B");
+        if(equipmentModle2 == null){
+            equipmentModle2 = new EquipmentModle().equipmentModelCode("Haier-B")
+                .equipmentModelName("Haier-B")
+                .equipmentType("Freezer")
+                .areaNumber(4)
+                .shelveNumberInArea(0)
+                .status("0001");
+            equipmentModleRepository.saveAndFlush(equipmentModle2);
+        }
+    }
+
+    private void createEquipment() {
+        String[] equipmentCodeStr = new String[]{"F1-22","F1-23","F1-24"};
+        for(String equipmentCode:equipmentCodeStr){
+            Equipment entity = equipmentRepository.findOneByEquipmentCode(equipmentCode);
+            EquipmentModle equipmentModle = equipmentModleRepository.findByEquipmentModelCode("Haier-B");
+            if(equipmentModle == null){
+                throw new BankServiceException("设备型号导入失败");
+            }
+            Integer temperature =-80;
+            if(entity==null){
+                entity = new Equipment().equipmentAddress("样本中心D座").equipmentCode(equipmentCode)
+                    .equipmentGroup(equipmentMapper.equipmentGroupFromId(1L))
+                    .equipmentModle(equipmentModle).temperature(temperature).ampoulesMax(0).ampoulesMin(0).status("0001");
+            }
+            //设备
+            equipmentRepository.saveAndFlush(entity);
+
+            String[] areaCodeStr = new String[]{"S01","S02","S03","S04"};
+            for(String areaCode :areaCodeStr){
+                //区域
+                Area area = areaRepository.findOneByAreaCodeAndEquipmentId(areaCode,entity.getId());
+                if(area==null){
+                    area = new Area().areaCode(areaCode).equipment(areaMapper.equipmentFromId(entity.getId())).freezeFrameNumber(5).equipmentCode(equipmentCode)
+                        .status("0001");
+                    areaRepository.saveAndFlush(area);
+                }
+                String[] supportCodeStr = new String[]{"R01","R02","R03","R04","R05"};
+                for(String supportCode :supportCodeStr){
+                    //冻存架
+                    SupportRack supportRack = supportRackRepository.findByAreaIdAndSupportRackCode(area.getId(),supportCode);
+                    SupportRackType supportRackType = supportRackTypeRepository.findBySupportRackTypeCode("S5x4");
+                    if(supportRack==null){
+                        supportRack = new SupportRack().status("0001").supportRackCode(supportCode).supportRackType(supportRackType).supportRackTypeCode(supportRackType.getSupportRackTypeCode())
+                            .area(supportRackMapper.areaFromId(area.getId()));
+                        supportRackRepository.saveAndFlush(supportRack);
+                        assertThat(supportRack).isNotNull();
+                    }
+                }
+            }
+        }
+    }
+
+    private void createEquipmentForFOMA907() {
+        String[] equipmentCodeStr = new String[]{"F1-03","F1-04"};
+        for(String equipmentCode:equipmentCodeStr){
+            Equipment entity = equipmentRepository.findOneByEquipmentCode(equipmentCode);
+            EquipmentModle equipmentModle = equipmentModleRepository.findByEquipmentModelCode("FOMA907");
+            if(equipmentModle == null){
+                throw new BankServiceException("设备型号导入失败");
+            }
+            Integer temperature =-80;
+            if(entity==null){
+                entity = new Equipment().equipmentAddress("样本中心D座").equipmentCode(equipmentCode)
+                    .equipmentGroup(equipmentMapper.equipmentGroupFromId(1L))
+                    .equipmentModle(equipmentModle).temperature(temperature).ampoulesMax(0).ampoulesMin(0).status("0001");
+            }
+            //设备
+            equipmentRepository.saveAndFlush(entity);
+
+            String[] areaCodeStr = new String[]{"S01","S02","S03","S04"};
+            for(String areaCode :areaCodeStr){
+                //区域
+                Area area = areaRepository.findOneByAreaCodeAndEquipmentId(areaCode,entity.getId());
+                if(area==null){
+                    area = new Area().areaCode(areaCode).equipment(areaMapper.equipmentFromId(entity.getId())).freezeFrameNumber(6).equipmentCode(equipmentCode)
+                        .status("0001");
+                    areaRepository.saveAndFlush(area);
+                }
+                String[] supportCodeStr = new String[]{"R01","R02","R03","R04","R05","R06"};
+                for(String supportCode :supportCodeStr){
+                    //冻存架
+                    SupportRack supportRack = supportRackRepository.findByAreaIdAndSupportRackCode(area.getId(),supportCode);
+                    SupportRackType supportRackType = supportRackTypeRepository.findBySupportRackTypeCode("B5x5");
+                    if(supportRack==null){
+                        supportRack = new SupportRack().status("0001").supportRackCode(supportCode).supportRackType(supportRackType).supportRackTypeCode(supportRackType.getSupportRackTypeCode())
+                            .area(supportRackMapper.areaFromId(area.getId()));
+                        supportRackRepository.saveAndFlush(supportRack);
+                    }
+                }
+            }
+        }
+    }
+
+    private void createEquipmentForColdRoom3() {
+        String[] equipmentCodeStr = new String[]{"R4-03"};
+        for(String equipmentCode:equipmentCodeStr){
+            Equipment entity = equipmentRepository.findOneByEquipmentCode(equipmentCode);
+            EquipmentModle equipmentModle = equipmentModleRepository.findByEquipmentModelCode("ColdRoom-3");
+            if(equipmentModle == null){
+                throw new BankServiceException("设备型号导入失败");
+            }
+            Integer temperature =-40;
+            if(entity==null){
+                entity = new Equipment().equipmentAddress("样本中心D座").equipmentCode(equipmentCode)
+                    .equipmentGroup(equipmentMapper.equipmentGroupFromId(1L))
+                    .equipmentModle(equipmentModle).temperature(temperature).ampoulesMax(0).ampoulesMin(0).status("0001");
+            }
+            //设备
+            equipmentRepository.saveAndFlush(entity);
+
+            String[] areaCodeStr = new String[]{"S022","S202"};
+            for(String areaCode :areaCodeStr){
+                int freezeFrameNumber = areaCode.equals("S022")?13:10;
+                //区域
+                Area area = areaRepository.findOneByAreaCodeAndEquipmentId(areaCode,entity.getId());
+                if(area==null){
+                    area = new Area().areaCode(areaCode).equipment(areaMapper.equipmentFromId(entity.getId())).freezeFrameNumber(freezeFrameNumber).equipmentCode(equipmentCode)
+                        .status("0001");
+                    areaRepository.saveAndFlush(area);
+                }
+                String[] supportCodeStr = new String[]{};
+                if(areaCode.equals("S022")){
+                    supportCodeStr = new String[]{"R01","R02","R03","R04","R05","R06","R07","R08","R09","R10","R11","R12","R13"};
+                }else{
+                    supportCodeStr = new String[]{"R01","R02","R03","R04","R05","R06","R07","R08","R09","R10"};
+                }
+                for(String supportCode :supportCodeStr){
+                    //冻存架
+                    SupportRack supportRack = supportRackRepository.findByAreaIdAndSupportRackCode(area.getId(),supportCode);
+                    SupportRackType supportRackType = supportRackTypeRepository.findBySupportRackTypeCode("B5x5");
+                    if(supportRack==null){
+                        supportRack = new SupportRack().status("0001").supportRackCode(supportCode).supportRackType(supportRackType).supportRackTypeCode(supportRackType.getSupportRackTypeCode())
+                            .area(supportRackMapper.areaFromId(area.getId()));
+                        supportRackRepository.saveAndFlush(supportRack);
+                    }
+                }
+            }
         }
     }
     /**
@@ -592,40 +755,20 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 }
 
             }
-            Equipment entity = equipmentRepository.findOneByEquipmentCode(equipmentCode);
-            EquipmentModle equipmentModle = equipmentModleRepository.findByEquipmentModelCode(equipmentCode.contains("R4-03")?"ColdRoom-3":"FOMA907");
-            if(equipmentModle == null){
-                throw new BankServiceException("设备型号导入失败");
-            }
-            Integer temperature = equipmentCode.contains("R4-03")?-40:-80;
-            if(entity==null){
-                entity = new Equipment().equipmentAddress("样本中心D座").equipmentCode(equipmentCode)
-                    .equipmentGroup(equipmentMapper.equipmentGroupFromId(1L))
-                    .equipmentModle(equipmentModle).temperature(temperature).ampoulesMax(60000).ampoulesMin(38400).status("0001");
-            }
             //设备
-            equipmentRepository.saveAndFlush(entity);
-            assertThat(entity).isNotNull();
-
+            Equipment entity = equipmentRepository.findOneByEquipmentCode(equipmentCode);
+            if(entity==null){
+               throw new BankServiceException("设备未导入:"+equipmentCode);
+            }
             //区域
             Area area = areaRepository.findOneByAreaCodeAndEquipmentId(areaCode,entity.getId());
             if(area==null){
-                area = new Area().areaCode(areaCode).equipment(areaMapper.equipmentFromId(entity.getId())).freezeFrameNumber(6).equipmentCode(equipmentCode)
-                    .status("0001");
-                areaRepository.saveAndFlush(area);
-                assertThat(area).isNotNull();
+                throw new BankServiceException("设备未导入:"+areaCode);
             }
             //冻存架
             SupportRack supportRack = supportRackRepository.findByAreaIdAndSupportRackCode(area.getId(),supportCode);
-            SupportRackType supportRackType = supportRackTypeRepository.findBySupportRackTypeCode("5*5");
-            if(supportRackType == null){
-                throw new BankServiceException("冻存架类型为空！表名为："+tableName+"；盒号为"+key+";样本类型为："+sampleTypeCode);
-            }
             if(supportRack==null){
-                supportRack = new SupportRack().status("0001").supportRackCode(supportCode).supportRackType(supportRackType).supportRackTypeCode(supportRackType.getSupportRackTypeCode())
-                    .area(supportRackMapper.areaFromId(area.getId()));
-                supportRackRepository.saveAndFlush(supportRack);
-                assertThat(supportRack).isNotNull();
+                throw new BankServiceException("冻存架未导入:"+supportRack);
             }
 
             //保存冻存盒
@@ -791,6 +934,9 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         this.createSupportRackType();
         this.createEquipmentGroup();
         this.createEquipmentModel();
+        this.createEquipment();
+        this.createEquipmentForFOMA907();
+        this.createEquipmentForColdRoom3();
         this.createFrozenTubeType();
         this.createFrozenBoxType();
         this.createSampleType();
@@ -811,5 +957,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         this.createFrozenBoxForA02("HE_COL_10","E",dcgTube);
         this.createFrozenBoxForA02("HE_COL_11_RNA","RNA",rnaTube);
         this.createSampleTypeMix();
+
     }
 }

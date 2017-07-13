@@ -110,10 +110,14 @@ public class FrozenBoxListAllDataTableEntity  implements Serializable {
     @JsonView(DataTablesOutput.View.class)
     @Column(name ="memo")
     private String memo;
+
+    @Column(name ="project_id")
+    @JsonView(DataTablesOutput.View.class)
+    private Long projectId;
     public FrozenBoxListAllDataTableEntity() {
     }
 
-    public FrozenBoxListAllDataTableEntity(Long id, String frozenBoxCode, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String position, String sampleType, String sampleClassification, String frozenBoxType, Long countOfUsed, Long countOfRest, String status, String projectName, String projectCode, Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId, Long frozenBoxTypeId, String memo) {
+    public FrozenBoxListAllDataTableEntity(Long id, String frozenBoxCode, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String position, String sampleType, String sampleClassification, String frozenBoxType, Long countOfUsed, Long countOfRest, String status, String projectName, String projectCode, Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId, Long frozenBoxTypeId, String memo, Long projectId) {
         this.id = id;
         this.frozenBoxCode = frozenBoxCode;
         this.equipmentCode = equipmentCode;
@@ -137,6 +141,7 @@ public class FrozenBoxListAllDataTableEntity  implements Serializable {
         this.sampleClassificationId = sampleClassificationId;
         this.frozenBoxTypeId = frozenBoxTypeId;
         this.memo = memo;
+        this.projectId = projectId;
     }
 
     public Long getId() {
@@ -321,5 +326,13 @@ public class FrozenBoxListAllDataTableEntity  implements Serializable {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 }

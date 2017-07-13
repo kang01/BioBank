@@ -136,8 +136,9 @@
                 }
                 if(applyId){
                     vm.dto.stockOutApplyId = applyId;
-                    _fnGetPlans(applyId);
+
                 }
+                _fnGetPlans(vm.dto.stockOutApplyId);
                 if(planId){
                     _fnGetTasks(planId);
                 }

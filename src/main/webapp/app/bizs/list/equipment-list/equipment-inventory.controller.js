@@ -55,7 +55,9 @@
                 {value:"1",label:"已用"},
                 {value:"2",label:"剩余"}
             ];
+            //已用
             vm.dto.spaceType = "1";
+            //大于
             vm.dto.compareType = "1";
             // vm.dto.projectCodeStr = [];
         }
@@ -330,12 +332,27 @@
         }
         function createdRow(row, data, dataIndex) {
             var status = '';
-            // var position = data.equipmentCode+"."+data.areaCode+"."+data.shelvesCode;
             switch (data.status){
                 case '0001': status = '运行中';break;
             }
+            vm.progressStyle = {
+                width:"90%"
+            };
+            var countOfUsed = data.countOfUsed;
+            var countOfRest = data.countOfRest;
+            var total = countOfUsed+countOfRest;
+            vm.progress = ""+countOfUsed + "/" + total;
+            var html;
+            html = "<div class='progress'> " +
+                "<div class='Bar' ng-style ='vm.progressStyle'> " +
+                "<div >{{vm.progress}}</div>" +
+                " </div> " +
+                "</div>";
+
+
+
             $('td:eq(7)', row).html(status);
-            // $('td:eq(2)', row).html(position);
+            $('td:eq(3)', row).html(html);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
@@ -344,5 +361,22 @@
             //     '</button>&nbsp;';
             return "";
         }
+        function _fnRowUsedRender(data, type, full, meta) {
+            vm.a = {
+                width:"90%"
+            };
+            var countOfUsed = full.countOfUsed;
+            var countOfRest = full.countOfRest;
+            var total = countOfUsed+countOfRest;
+            vm.progress = ""+countOfUsed + "/" + total;
+            var html = "";
+            html = "<div class='progress'> " +
+                "<div class='Bar' ng-style ='vm.a'> " +
+                "<div >{{vm.progress}}</div>" +
+                " </div> " +
+                "</div>";
+            return html;
+        }
+
     }
 })();

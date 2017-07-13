@@ -9,23 +9,27 @@
         .controller('BoxMovementController', BoxMovementController)
         .controller('ModalInstanceCtrl', ModalInstanceCtrl);
 
-    BoxMovementController.$inject = ['$scope','hotRegisterer','$compile','$state','$stateParams','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
+    BoxMovementController.$inject = ['$scope','hotRegisterer','$compile','$state','$stateParams','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable','SampleUserService'];
     ModalInstanceCtrl.$inject = ['$uibModalInstance'];
 
-    function BoxMovementController($scope,hotRegisterer,$compile,$state,$stateParams,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
+    function BoxMovementController($scope,hotRegisterer,$compile,$state,$stateParams,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable,SampleUserService) {
         var vm = this;
         vm.shelfInstance = {};
         vm.dto = {};
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         var selectedBox = $stateParams.selectedBox || [];
         vm.movementFlag = false;
-
+        vm.movement = {};
+        var projectIds = [];
 
         function _init() {
             _initHandsonTablePanel();
+            _initSearch();
         }
         _init();
         vm.searchShelf = _fnSearchShelf;
+        vm.search = _fnSearch;
+        vm.empty = _fnEmpty;
         //关闭移位
         vm.close = _fnClose;
         function _fnClose() {
@@ -44,6 +48,26 @@
             }
 
         }
+        function _fnSearch() {
+            if(projectIds.length){
+                for(var i = 0; i <projectIds.length; i++){
+                    var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
+                    vm.dto.projectCodeStr.push(projectCode)
+                }
+            }
+            vm.shelfInstance.rerender();
+        }
+        function _fnEmpty() {
+            vm.dto = {};
+            vm.dto.projectCodeStr = [];
+            projectIds = [];
+            vm.projectCodeStr = [];
+            vm.arrayBoxCode = [];
+            vm.dto.spaceType = "2";
+            vm.dto.compareType = "1";
+            vm.dto.number = 0;
+            vm.shelfInstance.rerender();
+        }
         //移动冻存盒
         vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
             .withOption('searching', false);
@@ -56,6 +80,118 @@
         vm.selectedOptions.withOption('data', selectedBox);
 
         //目标冻存架
+        function _initSearch() {
+            //批注人
+            SampleUserService.query({},onUserSuccess, onError);
+            function onUserSuccess(data) {
+                vm.userOptions = data;
+            }
+            vm.userConfig = {
+                valueField:'id',
+                labelField:'userName',
+                maxItems: 1
+
+            };
+            //剩余
+            vm.dto.spaceType = "2";
+            //大于
+            vm.dto.compareType = "1";
+            vm.dto.number = 0;
+            //获取项目
+            ProjectService.query({},onProjectSuccess, onError);
+            function onProjectSuccess(data) {
+                vm.projectOptions = data;
+            }
+            //设备
+            EquipmentService.query({},onEquipmentSuccess, onError);
+            function onEquipmentSuccess(data) {
+                vm.frozenBoxPlaceOptions = data;
+            }
+            //设备类型
+            vm.equipmentOptions = [
+                {value:"1",label:"冰箱"},
+                {value:"2",label:"液氮罐"}
+            ];
+            //盒子位置
+            vm.frozenBoxPlaceConfig = {
+                valueField:'id',
+                labelField:'equipmentCode',
+                maxItems: 1,
+                onChange:function (value) {
+                    if(value){
+                        AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                    }else{
+                        vm.dto.areaId = "";
+                        vm.frozenBoxAreaOptions = [
+                            {id:"",areaCode:""}
+                        ];
+                        vm.dto.shelvesId = "";
+                        vm.frozenBoxShelfOptions = [
+                            {id:"",supportRackCode:""}
+                        ];
+                        $scope.$apply();
+                    }
+                }
+            };
+            function onAreaSuccess(data) {
+                vm.frozenBoxAreaOptions = data;
+                if(vm.frozenBoxAreaOptions.length){
+                    vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
+                    SupportacksByAreaIdService.query({id:vm.dto.areaId},onShelfSuccess, onError);
+                }
+
+            }
+            vm.frozenBoxAreaConfig = {
+                valueField:'id',
+                labelField:'areaCode',
+                maxItems: 1,
+                onChange:function (value) {
+                    if(value){
+                        SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
+                    }else{
+                        vm.dto.shelvesId = "";
+                        vm.frozenBoxShelfOptions = [
+                            {id:"",supportRackCode:""}
+                        ];
+                        $scope.$apply();
+                    }
+                }
+            };
+            //架子
+            function onShelfSuccess(data) {
+                vm.frozenBoxShelfOptions = data;
+                vm.dto.shelvesId = vm.frozenBoxShelfOptions[0].id;
+            }
+            vm.frozenBoxShelfConfig = {
+                valueField:'id',
+                labelField:'supportRackCode',
+                maxItems: 1,
+                onChange:function (value) {
+                }
+            };
+            //项目编码
+            vm.projectConfig = {
+                valueField:'id',
+                labelField:'projectName',
+                searchField:'projectName',
+                onChange:function(value){
+                    vm.projectIds = _.join(value, ',');
+                    projectIds = value;
+                    vm.dto.projectCodeStr = [];
+                    if(vm.dto.sampleTypeId){
+                        _fnQueryProjectsSampleClass(vm.projectIds,vm.dto.sampleTypeId);
+                    }
+                }
+            };
+            //设备类型
+            vm.equipmentConfig = {
+                valueField:'value',
+                labelField:'label',
+                maxItems: 1,
+                onChange:function(value){
+                }
+            };
+        }
         var shelfArray = [
         ];
         vm.shelfOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
@@ -68,9 +204,6 @@
                     data[oData.name] = oData.value;
                 }
                 var jqDt = this;
-                vm.dto.spaceType= "1";
-                vm.dto.compareType= "1";
-                vm.dto.number= 0;
                 var searchForm = angular.toJson(vm.dto);
                 EquipmentInventoryService.queryEquipmentList(data,searchForm).then(function (res){
                     var json = res.data;

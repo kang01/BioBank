@@ -28,7 +28,7 @@
                                 <span class="required-field"></span>
                             </label>
                             <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                       ng-model="vm.entity.sampleTypeId" ng-disabled="vm.sampleTypeName != '98'"></selectize>
+                                       ng-model="vm.entity.sampleTypeId" ng-disabled="vm.sampleTypeCode != '98'&& vm.sampleTypeCode != '97'"></selectize>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -36,7 +36,7 @@
                             <label>样本分类</label>
                             <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
                                        ng-model="vm.entity.sampleClassificationId"
-                                       ng-disabled="vm.sampleTypeName != '98'"
+                                       ng-disabled="vm.sampleTypeCode != '98' &&  vm.sampleTypeCode != '97'"
                             ></selectize>
                         </div>
                     </div>

@@ -554,6 +554,7 @@
                                 if(!vm.frozenTubeArray[i][j].sampleCode){
                                     vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
                                     vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeCode;
                                     vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).backColor;
                                 }
                             }
@@ -565,6 +566,7 @@
                         if(!vm.box.sampleClassificationId){
                             if(vm.projectSampleTypeOptions.length){
                                 vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                                vm.box.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
                             }
                         }
 
@@ -573,11 +575,13 @@
                                 if(vm.box.sampleClassificationId){
                                     if(!vm.frozenTubeArray[i][j].sampleCode){
                                         vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
+                                        vm.frozenTubeArray[i][j].sampleClassificationCode = vm.box.sampleClassificationCode;
 
                                     }
                                 }
                                 vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
                                 vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
+                                vm.frozenTubeArray[i][j].sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeCode;
                                 vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).backColor;
                             }
                         }
@@ -600,9 +604,11 @@
                 onChange:function (value) {
                     vm.box.sampleClassificationId = value;
                     vm.box.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationName;
+                    vm.box.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationCode;
                     for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                         for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
                             vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
+                            vm.frozenTubeArray[i][j].sampleClassificationCode = vm.box.sampleClassificationCode;
                         }
                     }
                     hotRegisterer.getInstance('my-handsontable').render();
@@ -741,8 +747,10 @@
                                                         projectCode:vm.entity.projectCode,
                                                         sampleTypeId:vm.box.sampleTypeId,
                                                         sampleTypeName:vm.box.sampleTypeName,
+                                                        sampleTypeCode:vm.box.sampleTypeCode,
                                                         sampleClassificationId:vm.box.sampleClassificationId,
-                                                        sampleClassificationName:vm.box.sampleClassificationName
+                                                        sampleClassificationName:vm.box.sampleClassificationName,
+                                                        sampleClassificationCode:vm.box.sampleClassificationCode
                                                     };
                                                 }
                                             }
@@ -801,6 +809,9 @@
                         }
 
                         return;
+                    }
+                    if(source == 'loadData'){
+
                     }
                 },
                 beforeKeyDown:function (event) {

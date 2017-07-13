@@ -16,7 +16,8 @@
         vm.tubes = items.tubes;
         vm.entity = {
             sampleClassificationId:"",
-            sampleClassificationName:""
+            sampleClassificationName:"",
+            sampleClassificationCode:""
         };
         vm.entity.projectId = items.projectId;
         vm.entity.projectCode = items.projectCode;
@@ -32,16 +33,21 @@
             }
         };
         vm.entity.status = vm.tubeStatusOptions[0].id;
-
         vm.sampleTypeName = items.sampleTypeName;
-        if(vm.sampleTypeName != "98"){
+        vm.sampleTypeCode = items.sampleTypeCode;
+
+        if(vm.sampleTypeCode != "98" || vm.sampleTypeCode != "97"){
             vm.entity.sampleTypeId = items.sampleTypeId;
-            vm.sampleTypeId = items.sampleTypeId;
+            vm.entity.sampleTypeCode = items.sampleTypeCode;
             vm.entity.sampleTypeName = items.sampleTypeName;
+            vm.sampleTypeId = items.sampleTypeId;
+            vm.sampleTypeCode = items.sampleTypeCode;
             vm.sampleTypeName = items.sampleTypeName;
             vm.entity.sampleClassificationId = items.sampleClassificationId;
-            vm.sampleClassificationId = items.sampleClassificationId;
+            vm.entity.sampleClassificationCode = items.sampleClassificationCode;
             vm.entity.sampleClassificationName = items.sampleClassificationName;
+            vm.sampleClassificationId = items.sampleClassificationId;
+            vm.sampleClassificationCode = items.sampleClassificationCode;
 
         }
         // var oldTube = items.oldTube;
@@ -91,10 +97,12 @@
             //样本类型
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','desc']);
-                _.remove(vm.sampleTypeOptions,{sampleTypeName:"99"});
-                _.remove(vm.sampleTypeOptions,{sampleTypeName:"98"});
-                if(vm.sampleTypeName == "98"){
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"});
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"97"});
+                if(vm.sampleTypeCode == "98" || vm.sampleTypeCode == "97"){
                     vm.entity.sampleTypeId = vm.sampleTypeOptions[0].id;
+                    vm.entity.sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
                     vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:vm.entity.sampleTypeId}).backColor;
                 }
                 _fnQueryProjectSampleClass(vm.entity.projectId,vm.entity.sampleTypeId);
@@ -107,6 +115,7 @@
                     _fnQueryProjectSampleClass(vm.entity.projectId,value);
                     vm.entity.sampleTypeId = value;
                     vm.entity.sampleTypeName = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeName;
+                    vm.entity.sampleTypeCode = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeCode;
                     vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+value}).backColor;
                     $('table').find('.rowLight').removeClass("rowLight");
                     tube = "";
@@ -121,17 +130,22 @@
             function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
                 SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                     vm.projectSampleTypeOptions = data;
-                    if(vm.sampleTypeName == "98"){
+                    if(vm.sampleTypeCode == "98" || vm.sampleTypeCode == "97"){
                         if(vm.projectSampleTypeOptions.length){
                             // if(!vm.entity.sampleClassificationId){
                                 vm.entity.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
-                                vm.entity.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:vm.entity.sampleClassificationId}).backColor;
+                                vm.entity.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
+                                vm.entity.backColorForClass = vm.projectSampleTypeOptions[0].backColor;
                             // }
                             }
                     }else{
                         if(!vm.entity.sampleClassificationId && !vm.entity.backColorForClass){
-                            vm.entity.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
-                            vm.entity.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:vm.entity.sampleClassificationId}).backColor;
+                            if(vm.projectSampleTypeOptions.length){
+                                vm.entity.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                                vm.entity.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
+                                vm.entity.backColorForClass = vm.projectSampleTypeOptions[0].backColor;
+
+                            }
                         }
 
                     }
@@ -146,6 +160,7 @@
                 onChange:function (value) {
                     vm.entity.sampleClassificationId = value;
                     vm.entity.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationName;
+                    vm.entity.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationCode;
                     vm.entity.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).backColor;
                     StockInInputService.queryTubeBySampleClassificationId(vm.entity.sampleCode,vm.entity.projectCode,vm.entity.sampleTypeId,vm.entity.sampleClassificationId).success(function (data) {
                         vm.tubes = data;
@@ -160,7 +175,9 @@
             tube = item;
             vm.entity.projectSiteId = item.projectSiteId;
             vm.entity.sampleTypeId = item.sampleTypeId;
+            vm.entity.sampleTypeCode = item.sampleTypeCode;
             vm.entity.sampleClassificationId = item.sampleClassificationId;
+            vm.entity.sampleClassificationCode = item.sampleClassificationCode;
             vm.entity.projectId = item.projectId;
             vm.entity.backColor = item.backColor;
             vm.entity.backColorForClass = item.backColorForClass;
@@ -177,7 +194,7 @@
             $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
-            if(vm.sampleTypeName != "98"){
+            if(vm.sampleTypeCode != "98" || vm.sampleTypeCode != "97"){
                 if(tube){
                     if(vm.sampleTypeId != tube.sampleTypeId){
                         toastr.error("不同样本类型不能被选择！");

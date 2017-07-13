@@ -147,6 +147,20 @@ public class PositionMoveResource {
             .body(result);
     }
 
+    @PutMapping("/position-moves/forSample")
+    @Timed
+    public ResponseEntity<PositionMoveDTO> updatePositionMoveForSample(@Valid @RequestBody PositionMoveDTO positionMoveDTO) throws URISyntaxException {
+        log.debug("REST request to save PositionMove : {}", positionMoveDTO);
+        if (positionMoveDTO.getId() == null) {
+            return createPositionMoveForSample(positionMoveDTO);
+        }
+        PositionMoveDTO result = positionMoveService.moveSamplePosition(positionMoveDTO);
+        return ResponseEntity.created(new URI("/api/position-moves/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+
     /**
      * 冻存盒移位
      * @param positionMoveDTO

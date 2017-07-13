@@ -143,7 +143,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
         for(FrozenTube f :frozenTubeList){
             frozenTubeIds.add(f.getId());
         }
-        List<PositionMoveForSample> sampleList = p.getPositionMoveForSampleList();
+        List<PositionMoveForSample> sampleList = p.getFrozenTubeDTOS();
         for (PositionMoveForSample s : sampleList) {
             if (s.getId() == null) {
                 throw new BankServiceException("冻存管ID不能为空！");

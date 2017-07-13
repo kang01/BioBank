@@ -10,7 +10,7 @@ public class PositionMoveForBox {
     @NotNull
     private Long id;
     private String memo;
-    private List<PositionMoveForSample> positionMoveForSampleList;
+    private List<PositionMoveForSample> frozenTubeDTOS;
 
     public Long getId() {
         return id;
@@ -28,11 +28,11 @@ public class PositionMoveForBox {
         this.memo = memo;
     }
 
-    public List<PositionMoveForSample> getPositionMoveForSampleList() {
-        return positionMoveForSampleList;
+    public List<PositionMoveForSample> getFrozenTubeDTOS() {
+        return frozenTubeDTOS;
     }
 
-    public void setPositionMoveForSampleList(List<PositionMoveForSample> positionMoveForSampleList) {
-        this.positionMoveForSampleList = positionMoveForSampleList;
+    public void setFrozenTubeDTOS(List<PositionMoveForSample> frozenTubeDTOS) {
+        this.frozenTubeDTOS = frozenTubeDTOS;
     }
 }

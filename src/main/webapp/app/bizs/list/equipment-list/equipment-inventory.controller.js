@@ -335,24 +335,24 @@
             switch (data.status){
                 case '0001': status = '运行中';break;
             }
-            vm.progressStyle = {
-                width:"90%"
-            };
-            var countOfUsed = data.countOfUsed;
-            var countOfRest = data.countOfRest;
-            var total = countOfUsed+countOfRest;
-            vm.progress = ""+countOfUsed + "/" + total;
-            var html;
-            html = "<div class='progress'> " +
-                "<div class='Bar' ng-style ='vm.progressStyle'> " +
-                "<div >{{vm.progress}}</div>" +
-                " </div> " +
-                "</div>";
+            // vm.progressStyle = {
+            //     width:"90%"
+            // };
+            // var countOfUsed = data.countOfUsed;
+            // var countOfRest = data.countOfRest;
+            // var total = countOfUsed+countOfRest;
+            // vm.progress = ""+countOfUsed + "/" + total;
+            // var html;
+            // html = "<div class='progress'> " +
+            //     "<div class='Bar' ng-style ='vm.progressStyle'> " +
+            //     "<div >{{vm.progress}}</div>" +
+            //     " </div> " +
+            //     "</div>";
 
 
 
             $('td:eq(7)', row).html(status);
-            $('td:eq(3)', row).html(html);
+            // $('td:eq(3)', row).html(html);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

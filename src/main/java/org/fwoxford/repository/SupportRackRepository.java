@@ -24,4 +24,6 @@ public interface SupportRackRepository extends JpaRepository<SupportRack,Long> {
     List<SupportRack> findByEquipmentId(Long id);
 
     SupportRack findByAreaIdAndSupportRackCode(Long id, String supportRackCode);
+
+    Long countSupportRackByAreaId(Long id);
 }

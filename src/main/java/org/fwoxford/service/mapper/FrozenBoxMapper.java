@@ -129,6 +129,31 @@ public interface FrozenBoxMapper {
         res.setProjectId(frozenBox.getProject()!=null?frozenBox.getProject().getId():null);
         res.setProjectCode(frozenBox.getProjectCode());
         res.setProjectName(frozenBox.getProjectName());
+        SampleType sampleType = frozenBox.getSampleType();
+        if(sampleType!=null){
+            res.setSampleTypeId(sampleType.getId());
+            res.setSampleTypeCode(sampleType.getSampleTypeCode());
+            res.setSampleTypeName(sampleType.getSampleTypeName());
+            res.setIsMixed(sampleType.getIsMixed());
+            res.setFrontColor(sampleType.getFrontColor());
+            res.setBackColor(sampleType.getBackColor());
+        }
+        FrozenBoxType frozenBoxType = frozenBox.getFrozenBoxType();
+        if(frozenBoxType!=null){
+            res.setFrozenBoxTypeId(frozenBoxType.getId());
+            res.setFrozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode());
+            res.setFrozenBoxTypeName(frozenBoxType.getFrozenBoxTypeName());
+            res.setFrozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns());
+            res.setFrozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows());
+        }
+        SampleClassification sampleClassification = frozenBox.getSampleClassification();
+       if(sampleClassification != null){
+           res.setSampleClassificationId(sampleClassification.getId());
+           res.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+           res.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+           res.setFrontColorForClass(sampleClassification.getFrontColor());
+           res.setBackColorForClass(sampleClassification.getBackColor());
+       }
         return res;
     }
 

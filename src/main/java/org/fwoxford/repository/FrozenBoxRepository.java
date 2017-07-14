@@ -2,6 +2,7 @@ package org.fwoxford.repository;
 
 import org.fwoxford.domain.FrozenBox;
 
+import org.fwoxford.domain.Project;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
@@ -174,4 +175,6 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     List<FrozenBox> findIncompleteFrozenBoxBySampleTypeIdInAllStock(String frozenBoxCode, Long projectId, Long sampleTypeId, Long frozenBoxTypeId, String status);
 
     FrozenBox findBySupportRackIdAndColumnsInShelfAndRowsInShelf(Long id, String columnsInShelf, String rowsInShelf);
+
+//    List<Project> findProjectByEquipmentIdGroupByProjectId(Long id);
 }

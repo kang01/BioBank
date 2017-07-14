@@ -176,5 +176,6 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
     FrozenBox findBySupportRackIdAndColumnsInShelfAndRowsInShelf(Long id, String columnsInShelf, String rowsInShelf);
 
-//    List<Project> findProjectByEquipmentIdGroupByProjectId(Long id);
+    List<FrozenBox> findProjectByEquipmentId(Long id);
+
 }

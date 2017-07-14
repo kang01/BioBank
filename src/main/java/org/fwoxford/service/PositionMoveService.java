@@ -54,4 +54,6 @@ public interface PositionMoveService {
     PositionMoveBoxDTO savePositionMoveForBox(PositionMoveBoxDTO positionMoveDTO);
 
     PositionMoveShelvesDTO savePositionMoveForShelf(PositionMoveShelvesDTO positionMoveDTO);
+
+    PositionMoveDTO creataSamplePosition(PositionMoveDTO positionMoveDTO);
 }

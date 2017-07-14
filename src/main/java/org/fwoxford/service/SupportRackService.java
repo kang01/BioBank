@@ -52,4 +52,6 @@ public interface SupportRackService {
     List<SupportRackDTO> findSupportRackByAreaId(Long areaId);
 
     List<SupportRackDTO> getSupportRackByEquipmentAndArea(Long equipmentId, Long areaId);
+
+    SupportRackDTO getSupportRackByEquipmentAndAreaAndShelf(String equipmentCode, String areaCode, String shelfCode);
 }

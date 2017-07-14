@@ -1,7 +1,9 @@
 package org.fwoxford.service.dto;
 
 
+import io.swagger.models.auth.In;
 import org.fwoxford.domain.Area;
+import org.fwoxford.domain.SampleClassification;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -67,6 +69,10 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
     private String supportRackColumns;
 
     private Integer flag;
+    private String equipmentType;
+    private String position;
+    private String projectCodes;
+    private Integer restOfSpace;
 
     public Long getId() {
         return id;
@@ -218,5 +224,37 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
 
     public void setFlag(Integer flag) {
         this.flag = flag;
+    }
+
+    public String getEquipmentType() {
+        return equipmentType;
+    }
+
+    public void setEquipmentType(String equipmentType) {
+        this.equipmentType = equipmentType;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getProjectCodes() {
+        return projectCodes;
+    }
+
+    public void setProjectCodes(String projectCodes) {
+        this.projectCodes = projectCodes;
+    }
+
+    public Integer getRestOfSpace() {
+        return restOfSpace;
+    }
+
+    public void setRestOfSpace(Integer restOfSpace) {
+        this.restOfSpace = restOfSpace;
     }
 }

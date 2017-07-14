@@ -2,6 +2,7 @@ package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.Area;
+import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.Project;
 import org.fwoxford.repository.AreaRepository;
 import org.fwoxford.repository.FrozenBoxRepository;
@@ -129,14 +130,17 @@ public class EquipmentServiceImpl implements EquipmentService{
             }
             areaDTOS.add(areaDTO);
         }
-//        List<Project> projectCodes = frozenBoxRepository.findProjectByEquipmentIdGroupByProjectId(id);
-//        ArrayList<String> positions = new ArrayList<>();
-//        for(Project p :projectCodes){
-//            positions.add(p.getProjectCode());
-//        }
+        List<FrozenBox> frozenBoxes = frozenBoxRepository.findProjectByEquipmentId(id);
+        ArrayList<String> positions = new ArrayList<>();
+        for(FrozenBox f : frozenBoxes){
+            Project project = f.getProject();
+            if(!positions.contains(project.getProjectCode())){
+                positions.add(project.getProjectCode());
+            }
+        }
         equipmentDTO.setAreaDTOList(areaDTOS);
         equipmentDTO.setEquipmentType(equipment.getEquipmentModle().getEquipmentType());
-//        equipmentDTO.setProjectCodes(String.join(";", positions));
+        equipmentDTO.setProjectCodes(String.join(";", positions));
         equipmentDTO.setRestOfSpace(allAreas-usedAreas);
         return equipmentDTO;
     }

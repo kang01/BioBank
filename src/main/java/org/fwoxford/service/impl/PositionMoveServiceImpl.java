@@ -279,6 +279,88 @@ public class PositionMoveServiceImpl implements PositionMoveService {
         return positionMoveDTO;
     }
 
+    @Override
+    public PositionMoveDTO creataSamplePosition(PositionMoveDTO positionMoveDTO) {
+        //保存移位数据
+        PositionMove positionMove = positionMoveMapper.positionMoveDTOToPositionMove(positionMoveDTO);
+        positionMove.setMoveType(Constants.MOVE_TYPE_1);
+        positionMove.setStatus(Constants.VALID);
+        positionMoveRepository.save(positionMove);
+        //保存移位记录详情数据
+        List<PositionMoveRecordDTO> positionMoveForBoxes = positionMoveDTO.getPositionMoveRecordDTOS();
+        for (PositionMoveRecordDTO p : positionMoveForBoxes) {
+            createMoveRecordDetailForSample(p, positionMove);
+        }
+        positionMoveDTO.setId(positionMove.getId());
+        return positionMoveDTO;
+    }
+
+    private void createMoveRecordDetailForSample(PositionMoveRecordDTO p, PositionMove positionMove) {
+        if (p.getFrozenBoxId() == null) {
+            throw new BankServiceException("冻存盒ID不能为空！");
+        }
+        FrozenBox frozenBox = frozenBoxRepository.findOne(p.getFrozenBoxId());
+        if(frozenBox == null ||(frozenBox!= null && !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED))){
+            throw new BankServiceException("冻存盒不在库存中！");
+        }
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
+        List<Long> frozenTubeIds = new ArrayList<Long>();
+        for(FrozenTube f :frozenTubeList){
+            frozenTubeIds.add(f.getId());
+        }
+        if (p.getFrozenTubeId() == null) {
+                throw new BankServiceException("冻存管ID不能为空！");
+            }
+        FrozenTube frozenTube = frozenTubeRepository.findOne(p.getFrozenTubeId());
+        if(frozenTube == null || (!frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKED))){
+            throw new BankServiceException("样本不在库存中！");
+        }
+        if(!frozenTubeIds.contains(frozenTube.getId())){
+            String sampleCode = frozenTube.getSampleCode() != null ? frozenTube.getSampleCode() : frozenTube.getSampleTempCode();
+            //验证项目是否一致
+            checkProject(frozenBox, frozenTube);
+            //验证冻存盒类型与原冻存盒类型是否一样
+            checkFrozenBoxType(frozenBox, frozenTube);
+            //验证样本类型与盒子是否一致，盒子若有分类，验证与冻存管是否一致，冻存管若有分类，验证与冻存盒是否一致
+            checkSampleTypeAndClassification(frozenBox, frozenTube);
+            //验证盒内位置是否有效
+            checkPositionInBox(frozenBox,p.getTubeRows(),p.getTubeColumns(),sampleCode);
+            saveMoveDetail(positionMove,Constants.MOVE_TYPE_1,frozenTube);
+            frozenTube.setTubeColumns(p.getTubeColumns());
+            frozenTube.setTubeRows(p.getTubeRows());
+            frozenTube.setFrozenBox(frozenBox);
+            frozenTube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            frozenTubeRepository.save(frozenTube);
+        }
+    }
+
+    public void saveMoveDetail(PositionMove positionMove, String moveType, FrozenTube frozenTube) {
+        PositionMoveRecord positionMoveRecord = new PositionMoveRecord()
+            .positionMove(positionMove)
+            .frozenTube(frozenTube)
+            .moveType(moveType)
+            .equipment(frozenTube.getFrozenBox().getEquipment())
+            .equipmentCode(frozenTube.getFrozenBox().getEquipmentCode())
+            .area(frozenTube.getFrozenBox().getArea())
+            .areaCode(frozenTube.getFrozenBox().getAreaCode())
+            .supportRack(frozenTube.getFrozenBox().getSupportRack())
+            .supportRackCode(frozenTube.getFrozenBox().getSampleTypeCode())
+            .columnsInShelf(frozenTube.getFrozenBox().getColumnsInShelf())
+            .rowsInShelf(frozenTube.getFrozenBox().getRowsInShelf())
+            .frozenBox(frozenTube.getFrozenBox())
+            .frozenBoxCode(frozenTube.getFrozenBoxCode())
+            .memo(frozenTube.getMemo())
+            .project(frozenTube.getProject())
+            .projectCode(frozenTube.getProjectCode())
+            .projectSite(frozenTube.getProjectSite())
+            .projectSiteCode(frozenTube.getProjectSiteCode())
+            .whetherFreezingAndThawing(positionMove.isWhetherFreezingAndThawing())
+            .status(frozenTube.getStatus())
+            .tubeColumns(frozenTube.getTubeColumns())
+            .tubeRows(frozenTube.getTubeRows());
+        positionMoveRecordRepository.save(positionMoveRecord);
+    }
+
     public void checkArea(Area area) {
         //判断这个设备下的这个区域是否还有剩余空间
         List<SupportRack> supportRack = supportRackRepository.findSupportRackByAreaId(area.getId());

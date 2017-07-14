@@ -1,6 +1,7 @@
 package org.fwoxford.service.dto;
 
 
+import org.fwoxford.domain.PositionMoveRecord;
 import org.fwoxford.service.dto.response.PositionMoveForBox;
 
 import javax.validation.constraints.*;
@@ -35,6 +36,8 @@ public class PositionMoveDTO extends AbstractAuditingDTO implements Serializable
 
     @Size(max = 1024)
     private String memo;
+
+    private List<PositionMoveRecordDTO> positionMoveRecordDTOS;
 
     public Long getId() {
         return id;
@@ -98,6 +101,14 @@ public class PositionMoveDTO extends AbstractAuditingDTO implements Serializable
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public List<PositionMoveRecordDTO> getPositionMoveRecordDTOS() {
+        return positionMoveRecordDTOS;
+    }
+
+    public void setPositionMoveRecordDTOS(List<PositionMoveRecordDTO> positionMoveRecordDTOS) {
+        this.positionMoveRecordDTOS = positionMoveRecordDTOS;
     }
 
     @Override

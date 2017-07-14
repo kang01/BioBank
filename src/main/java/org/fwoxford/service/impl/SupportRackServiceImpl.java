@@ -1,18 +1,18 @@
 package org.fwoxford.service.impl;
 
+import io.swagger.models.auth.In;
 import org.fwoxford.config.Constants;
-import org.fwoxford.domain.Equipment;
-import org.fwoxford.domain.FrozenBox;
-import org.fwoxford.domain.SupportRackType;
+import org.fwoxford.domain.*;
 import org.fwoxford.repository.EquipmentRepository;
 import org.fwoxford.repository.FrozenBoxRepository;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.SupportRackService;
-import org.fwoxford.domain.SupportRack;
 import org.fwoxford.repository.SupportRackRepository;
+import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.SupportRackDTO;
 import org.fwoxford.service.mapper.SupportRackMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,5 +198,39 @@ public class SupportRackServiceImpl implements SupportRackService{
              supportRackDTOS.add(supportRackDTO);
         }
         return supportRackDTOS;
+    }
+
+    @Override
+    public SupportRackDTO getSupportRackByEquipmentAndAreaAndShelf(String equipmentCode, String areaCode, String shelfCode) {
+        SupportRack supportRack = supportRackRepository.findBySupportRackCode(shelfCode);
+        if(supportRack == null){
+            throw new BankServiceException("冻存架不存在！");
+        }
+        List<FrozenBox> frozenBoxs = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(equipmentCode, areaCode, shelfCode);
+        List<FrozenBoxDTO> frozenBoxDTOList = new ArrayList<FrozenBoxDTO>();
+        ArrayList<String> positions = new ArrayList<>();
+        int i = 0;
+        for (FrozenBox frozenBox : frozenBoxs) {
+            if (frozenBox.getStatus() != null && (frozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID) || frozenBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED))) {
+                continue;
+            }
+            i++;
+            Project project = frozenBox.getProject();
+            if(!positions.contains(project.getProjectCode())){
+                positions.add(project.getProjectCode());
+            }
+        }
+        int columns = supportRack.getSupportRackType().getSupportRackColumns()!=null? Integer.valueOf(supportRack.getSupportRackType().getSupportRackColumns()):0;
+        int rows = supportRack.getSupportRackType().getSupportRackRows()!=null? Integer.valueOf(supportRack.getSupportRackType().getSupportRackRows()):0;
+        int all = columns*rows;
+        SupportRackDTO supportRackDTO = supportRackMapper.supportRackToSupportRackDTO(supportRack);
+        supportRackDTO.setSupportRackColumns(supportRack.getSupportRackType().getSupportRackColumns());
+        supportRackDTO.setSupportRackRows(supportRack.getSupportRackType().getSupportRackRows());
+        supportRackDTO.setFrozenBoxDTOList(frozenBoxDTOList);
+        supportRackDTO.setEquipmentType(supportRack.getArea().getEquipment().getEquipmentModle().getEquipmentType());
+        supportRackDTO.setPosition(BankUtil.getPositionString(equipmentCode,areaCode,shelfCode,null,null,null,null));
+        supportRackDTO.setProjectCodes(String.join(";", positions));
+        supportRackDTO.setRestOfSpace(all-i);
+        return supportRackDTO;
     }
 }

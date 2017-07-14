@@ -19,8 +19,8 @@
                 box.sample_classification_id,
                 sc.sample_classification_name as sample_classification,
                 boxType.frozen_box_type_name as frozen_box_type,
-                (select count(tube.id) from frozen_tube tube where tube.frozen_box_id = box.id) as count_of_used,
-                (boxType.frozen_box_type_columns*boxType.frozen_box_type_rows-(select count(tube.id) from frozen_tube tube where tube.frozen_box_id = box.id)) as count_of_rest,
+                (select count(tube.id) from frozen_tube tube where tube.frozen_box_id = box.id and tube.status !='0000') as count_of_used,
+                (boxType.frozen_box_type_columns*boxType.frozen_box_type_rows-(select count(tube.id) from frozen_tube tube where tube.frozen_box_id = box.id and tube.status !='0000')) as count_of_rest,
                 box.status,box.frozen_box_type_id,box.project_id,
                 box.equipment_id,box.area_id,box.support_rack_id as shelves_id,box.memo
             FROM frozen_box box

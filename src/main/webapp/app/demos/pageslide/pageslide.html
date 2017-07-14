@@ -1,0 +1,30 @@
+<div class="transport-record-index">
+    <div class="row">
+        <h2 class="pull-left">DEMO Pageslide</h2>
+    </div>
+    <div style="height: 500px">
+        <h3>Push content ps-click-outside false</h3>
+        <div >
+            <a class="tiny button" href="" ng-click="vm.toggle1()">Open Sidebar</a>
+            <div pageslide ps-open="vm.checked1" ps-side="left" ps-push="true" ps-click-outside="false">
+                <div style="padding:20px" >
+                    <h2>Hello Pageslide</h2>
+                    <p>Put here whatever you want</p>
+                    <a ng-click="vm.toggle1()" class="button" >Close</a>
+                </div>
+            </div>
+        </div>
+        <h3>Push content ps-click-outside true</h3>
+        <div >
+            <a class="tiny button" href="" ng-click="vm.toggle2()">Open Sidebar</a>
+            <div pageslide ps-open="vm.checked2" ps-side="left" ps-push="true" ps-click-outside="true">
+                <div style="padding:20px" >
+                    <h2>Hello Pageslide</h2>
+                    <p>Put here whatever you want</p>
+                    <a ng-click="vm.toggle2()" class="button" >Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

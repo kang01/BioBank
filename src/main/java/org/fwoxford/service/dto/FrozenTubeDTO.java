@@ -165,6 +165,7 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
      *样本分类ID
      */
     private Long sampleClassificationId;
+    private String sampleClassificationCode;
     /**
      * 项目ID
      */
@@ -448,6 +449,14 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSampleClassificationId(Long sampleClassificationId) {
         this.sampleClassificationId = sampleClassificationId;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
     }
 
     public Long getProjectId() {

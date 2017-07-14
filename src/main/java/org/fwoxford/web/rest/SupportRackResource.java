@@ -140,4 +140,12 @@ public class SupportRackResource {
         List<SupportRackDTO> supportRackDTOs = supportRackService.findSupportRackByAreaId(areaId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(supportRackDTOs));
     }
+
+    @GetMapping("/support-racks/equipment/{equipmentId}/area/{areaId}")
+    @Timed
+    public ResponseEntity<List<SupportRackDTO>> getSupportRackByEquipmentAndArea(@PathVariable Long equipmentId ,@PathVariable Long areaId) {
+        log.debug("REST request to get SupportRack By EquipmentAndArea : {}", areaId);
+        List<SupportRackDTO> supportRackDTOs = supportRackService.getSupportRackByEquipmentAndArea(equipmentId,areaId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(supportRackDTOs));
+    }
 }

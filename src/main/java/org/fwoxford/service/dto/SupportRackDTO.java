@@ -50,8 +50,6 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
      */
     private Long supportRackTypeId;
 
-
-
     /**
      * 区域
      */
@@ -59,6 +57,16 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
     private Area area;
 
     private List<FrozenBoxDTO> frozenBoxDTOList;
+    /**
+    * 冻存架行数
+     */
+    private String supportRackRows;
+    /**
+     * 冻存架列数
+     */
+    private String supportRackColumns;
+
+    private Integer flag;
 
     public Long getId() {
         return id;
@@ -174,7 +182,6 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
             ", status='" + status + '\'' +
             ", supportRackCode='" + supportRackCode + '\'' +
             ", supportRackTypeId=" + supportRackTypeId +
-            ", area=" + area +
             '}';
     }
 
@@ -187,5 +194,29 @@ public class SupportRackDTO extends AbstractAuditingDTO implements Serializable 
 
     public void setFrozenBoxDTOList(List<FrozenBoxDTO> frozenBoxDTOList) {
         this.frozenBoxDTOList = frozenBoxDTOList;
+    }
+
+    public String getSupportRackRows() {
+        return supportRackRows;
+    }
+
+    public void setSupportRackRows(String supportRackRows) {
+        this.supportRackRows = supportRackRows;
+    }
+
+    public String getSupportRackColumns() {
+        return supportRackColumns;
+    }
+
+    public void setSupportRackColumns(String supportRackColumns) {
+        this.supportRackColumns = supportRackColumns;
+    }
+
+    public Integer getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Integer flag) {
+        this.flag = flag;
     }
 }

@@ -50,4 +50,6 @@ public interface SupportRackService {
     List<SupportRackDTO> getSupportRackListByEquipmentAndArea(String equipmentCode, String areaCode);
 
     List<SupportRackDTO> findSupportRackByAreaId(Long areaId);
+
+    List<SupportRackDTO> getSupportRackByEquipmentAndArea(Long equipmentId, Long areaId);
 }

@@ -565,7 +565,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if (area == null){
             throw new BankServiceException("未查询到指定设备的指定区域！",boxPositionDTO.toString());
         }
-        SupportRack shelf = supportRackRepository.findOneBySupportRackCodeAndAreaId(boxPositionDTO.getSupportRackCode(), area.getId());
+        SupportRack shelf = supportRackRepository.findByAreaIdAndSupportRackCode(area.getId(),boxPositionDTO.getSupportRackCode());
         if (shelf == null){
             throw new BankServiceException("未查询到指定设备的指定区域的指定架子！",boxPositionDTO.toString());
         }

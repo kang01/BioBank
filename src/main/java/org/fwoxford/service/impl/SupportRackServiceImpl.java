@@ -181,4 +181,22 @@ public class SupportRackServiceImpl implements SupportRackService{
         List<SupportRackDTO> supportRackDTOS = supportRackMapper.supportRacksToSupportRackDTOs(supportRacks);
         return supportRackDTOS;
     }
+
+    @Override
+    public List<SupportRackDTO> getSupportRackByEquipmentAndArea(Long equipmentId, Long areaId) {
+        List<SupportRackDTO> supportRackDTOS = new ArrayList<SupportRackDTO>();
+        List<SupportRack> supportRacks = supportRackRepository.findSupportRackByAreaId(areaId);
+        for(SupportRack s :supportRacks){
+            SupportRackDTO supportRackDTO = supportRackMapper.supportRackToSupportRackDTO(s);
+            supportRackDTO.setSupportRackColumns(s.getSupportRackType().getSupportRackColumns());
+            supportRackDTO.setSupportRackRows(s.getSupportRackType().getSupportRackRows());
+            Long count = frozenBoxRepository.countByEquipmentCodeAndAreaCodeAndSupportRackCode(s.getArea().getEquipmentCode(),s.getArea().getAreaCode(),s.getSupportRackCode());
+            supportRackDTO.setFlag(Constants.NO);
+            if(count.intValue()>0){
+                supportRackDTO.setFlag(Constants.YES);
+            }
+             supportRackDTOS.add(supportRackDTO);
+        }
+        return supportRackDTOS;
+    }
 }

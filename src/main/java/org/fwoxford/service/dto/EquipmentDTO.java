@@ -1,6 +1,8 @@
 package org.fwoxford.service.dto;
 
 
+import io.swagger.models.auth.In;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -76,6 +78,11 @@ public class EquipmentDTO extends AbstractAuditingDTO implements Serializable {
     private Long equipmentGroupId;
 
     private Long equipmentModleId;
+
+    private String equipmentType;
+    private Integer restOfSpace;
+    private String projectCode;
+
 
     public Long getId() {
         return id;
@@ -176,6 +183,30 @@ public class EquipmentDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setEquipmentModleId(Long equipmentModleId) {
         this.equipmentModleId = equipmentModleId;
+    }
+
+    public String getEquipmentType() {
+        return equipmentType;
+    }
+
+    public void setEquipmentType(String equipmentType) {
+        this.equipmentType = equipmentType;
+    }
+
+    public Integer getRestOfSpace() {
+        return restOfSpace;
+    }
+
+    public void setRestOfSpace(Integer restOfSpace) {
+        this.restOfSpace = restOfSpace;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
     }
 
     @Override

@@ -126,6 +126,9 @@ public interface FrozenBoxMapper {
         res.setSupportRackId(frozenBox.getSupportRack()!=null?frozenBox.getSupportRack().getId():null);
         res.setColumnsInShelf(frozenBox.getColumnsInShelf());
         res.setRowsInShelf(frozenBox.getRowsInShelf());
+        res.setProjectId(frozenBox.getProject()!=null?frozenBox.getProject().getId():null);
+        res.setProjectCode(frozenBox.getProjectCode());
+        res.setProjectName(frozenBox.getProjectName());
         return res;
     }
 

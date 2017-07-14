@@ -49,6 +49,11 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " and f.status!='0000'" ,nativeQuery = true)
     List<FrozenBox> findByEquipmentCodeAndAreaCodeAndSupportRackCode(String equipmentCode, String areaCode, String shelfCode);
 
+    @Query(value = "select count(f.id) from frozen_box f where f.equipment_code = ?1 and f.area_code =?2" +
+        " and f.support_rack_code = ?3" +
+        " and f.status!='0000'" ,nativeQuery = true)
+    Long countByEquipmentCodeAndAreaCodeAndSupportRackCode(String equipmentCode, String areaCode, String shelfCode);
+
     @Query(value = "select f.* from frozen_box f where f.project_code = ?1 and f.sample_type_code =?2 and f.status!='0000'" ,nativeQuery = true)
     List<FrozenBox> findByProjectCodeAndSampleTypeCode(String projectCode, String sampleTypeCode);
 

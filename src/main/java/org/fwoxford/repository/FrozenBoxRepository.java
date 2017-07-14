@@ -168,4 +168,5 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " order by sampleNumber asc",nativeQuery = true)
     List<FrozenBox> findIncompleteFrozenBoxBySampleTypeIdInAllStock(String frozenBoxCode, Long projectId, Long sampleTypeId, Long frozenBoxTypeId, String status);
 
+    FrozenBox findBySupportRackIdAndColumnsInShelfAndRowsInShelf(Long id, String columnsInShelf, String rowsInShelf);
 }

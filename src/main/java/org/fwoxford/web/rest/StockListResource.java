@@ -105,4 +105,24 @@ public class StockListResource {
         List<FrozenTubeHistory> frozenTubeHistories = stockListService.findFrozenTubeHistoryDetail(frozenTubeId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(frozenTubeHistories));
     }
+
+    /**
+     * 所有设备清单
+     * @param input
+     * @param searchForm
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/shelves-list", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<ShelvesListAllDataTableEntity> getPageShelvesList(@RequestBody DataTablesInput input,
+                                                                                                 @RequestParam(value = "searchForm",required = false) String searchForm ) {
+        JSONObject jsonObject = JSONObject.fromObject(searchForm);
+        FrozenPositionListSearchForm search = (FrozenPositionListSearchForm) JSONObject.toBean(jsonObject, FrozenPositionListSearchForm.class);
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
+        return stockListService.getPageShelvesList(input,search);
+    }
 }

@@ -8,11 +8,8 @@ import java.util.List;
  */
 
 public class PositionMoveForSample {
-    @NotNull
     private Long id;
-    @NotNull
     private String tubeRows;
-    @NotNull
     private String tubeColumns;
     private String memo;
     public Long getId() {

@@ -37,4 +37,12 @@ public interface StockListService {
      * @return
      */
     List<FrozenTubeHistory> findFrozenTubeHistoryDetail(Long frozenTubeId);
+
+    /**
+     * 所有设备清单
+     * @param input
+     * @param search
+     * @return
+     */
+    DataTablesOutput<ShelvesListAllDataTableEntity> getPageShelvesList(DataTablesInput input, FrozenPositionListSearchForm search);
 }

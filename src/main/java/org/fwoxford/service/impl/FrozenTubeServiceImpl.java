@@ -215,6 +215,30 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
     }
 
     @Override
+    public List<FrozenTubeDTO> getFrozenTubeByIds(String ids) {
+        List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
+        if(StringUtils.isEmpty(ids)){
+            throw new BankServiceException("冻存管ID不能为空！");
+        }
+        String [] frozenTubeIds = ids.split(",");
+        for(String id :frozenTubeIds){
+            FrozenTube f = frozenTubeRepository.findOne(Long.valueOf(id));
+            if(f == null || (f!= null&&f.getStatus().equals(Constants.INVALID))){
+                throw new BankServiceException("冻存管不存在！");
+            }
+            FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
+            frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
+            frozenTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
+            frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
+            frozenTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
+            frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
+            frozenTubeDTO.setSampleClassificationName(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationName():null);
+            frozenTubeDTOS.add(frozenTubeDTO);
+        }
+        return frozenTubeDTOS;
+    }
+
+    @Override
     public List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode, Long sampleTypeId) {
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCode,projectCode,sampleTypeId,Constants.INVALID);
 

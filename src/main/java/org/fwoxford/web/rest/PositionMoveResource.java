@@ -2,6 +2,9 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.PositionMoveService;
+import org.fwoxford.service.dto.response.PositionMoveBoxDTO;
+import org.fwoxford.service.dto.response.PositionMoveSampleDTO;
+import org.fwoxford.service.dto.response.PositionMoveShelvesDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.PositionMoveDTO;
@@ -136,12 +139,12 @@ public class PositionMoveResource {
      */
     @PostMapping("/position-moves/forSample")
     @Timed
-    public ResponseEntity<PositionMoveDTO> createPositionMoveForSample(@Valid @RequestBody PositionMoveDTO positionMoveDTO) throws URISyntaxException {
+    public ResponseEntity<PositionMoveSampleDTO> createPositionMoveForSample(@Valid @RequestBody PositionMoveSampleDTO positionMoveDTO) throws URISyntaxException {
         log.debug("REST request to save PositionMove : {}", positionMoveDTO);
         if (positionMoveDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionMove cannot already have an ID")).body(null);
         }
-        PositionMoveDTO result = positionMoveService.moveSamplePosition(positionMoveDTO);
+        PositionMoveSampleDTO result = positionMoveService.moveSamplePosition(positionMoveDTO);
         return ResponseEntity.created(new URI("/api/position-moves/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -149,12 +152,12 @@ public class PositionMoveResource {
 
     @PutMapping("/position-moves/forSample")
     @Timed
-    public ResponseEntity<PositionMoveDTO> updatePositionMoveForSample(@Valid @RequestBody PositionMoveDTO positionMoveDTO) throws URISyntaxException {
+    public ResponseEntity<PositionMoveSampleDTO> updatePositionMoveForSample(@Valid @RequestBody PositionMoveSampleDTO positionMoveDTO) throws URISyntaxException {
         log.debug("REST request to save PositionMove : {}", positionMoveDTO);
         if (positionMoveDTO.getId() == null) {
             return createPositionMoveForSample(positionMoveDTO);
         }
-        PositionMoveDTO result = positionMoveService.moveSamplePosition(positionMoveDTO);
+        PositionMoveSampleDTO result = positionMoveService.moveSamplePosition(positionMoveDTO);
         return ResponseEntity.created(new URI("/api/position-moves/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -169,12 +172,24 @@ public class PositionMoveResource {
      */
     @PostMapping("/position-moves/forBox")
     @Timed
-    public ResponseEntity<PositionMoveDTO> createPositionMoveForBox(@Valid @RequestBody PositionMoveDTO positionMoveDTO) throws URISyntaxException {
+    public ResponseEntity<PositionMoveBoxDTO> createPositionMoveForBox(@Valid @RequestBody PositionMoveBoxDTO positionMoveDTO) throws URISyntaxException {
         log.debug("REST request to save PositionMove : {}", positionMoveDTO);
         if (positionMoveDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionMove cannot already have an ID")).body(null);
         }
-        PositionMoveDTO result = positionMoveService.save(positionMoveDTO);
+        PositionMoveBoxDTO result = positionMoveService.savePositionMoveForBox(positionMoveDTO);
+        return ResponseEntity.created(new URI("/api/position-moves/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+    @PutMapping("/position-moves/forBox")
+    @Timed
+    public ResponseEntity<PositionMoveBoxDTO> updatePositionMoveForBox(@Valid @RequestBody PositionMoveBoxDTO positionMoveDTO) throws URISyntaxException {
+        log.debug("REST request to save PositionMove : {}", positionMoveDTO);
+        if (positionMoveDTO.getId() == null) {
+            return createPositionMoveForBox(positionMoveDTO);
+        }
+        PositionMoveBoxDTO result = positionMoveService.savePositionMoveForBox(positionMoveDTO);
         return ResponseEntity.created(new URI("/api/position-moves/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -188,12 +203,12 @@ public class PositionMoveResource {
      */
     @PostMapping("/position-moves/forShelf")
     @Timed
-    public ResponseEntity<PositionMoveDTO> createPositionMoveForShelf(@Valid @RequestBody PositionMoveDTO positionMoveDTO) throws URISyntaxException {
+    public ResponseEntity<PositionMoveShelvesDTO> createPositionMoveForShelf(@Valid @RequestBody PositionMoveShelvesDTO positionMoveDTO) throws URISyntaxException {
         log.debug("REST request to save PositionMove : {}", positionMoveDTO);
         if (positionMoveDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionMove cannot already have an ID")).body(null);
         }
-        PositionMoveDTO result = positionMoveService.save(positionMoveDTO);
+        PositionMoveShelvesDTO result = positionMoveService.savePositionMoveForShelf(positionMoveDTO);
         return ResponseEntity.created(new URI("/api/position-moves/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

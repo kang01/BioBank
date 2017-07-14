@@ -36,8 +36,6 @@ public class PositionMoveDTO extends AbstractAuditingDTO implements Serializable
     @Size(max = 1024)
     private String memo;
 
-    private List<PositionMoveForBox> positionMoveForBoxList;
-
     public Long getId() {
         return id;
     }
@@ -100,14 +98,6 @@ public class PositionMoveDTO extends AbstractAuditingDTO implements Serializable
 
     public void setMemo(String memo) {
         this.memo = memo;
-    }
-
-    public List<PositionMoveForBox> getPositionMoveForBoxList() {
-        return positionMoveForBoxList;
-    }
-
-    public void setPositionMoveForBoxList(List<PositionMoveForBox> positionMoveForBoxList) {
-        this.positionMoveForBoxList = positionMoveForBoxList;
     }
 
     @Override

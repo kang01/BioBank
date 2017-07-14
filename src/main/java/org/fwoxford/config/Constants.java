@@ -262,6 +262,8 @@ public final class Constants {
         put("11","RNA");
     }};
     public static final String MOVE_TYPE_1 = "1";
+    public static final String MOVE_TYPE_2 = "2";
+    public static final String MOVE_TYPE_3 = "3";
 
 //    public static final Map<String,String> SAMPLE_TYPE_CODE_MAP = new HashMap<String,String>(){{
 //        put("A","血浆");

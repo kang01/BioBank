@@ -1,6 +1,9 @@
 package org.fwoxford.service;
 
 import org.fwoxford.service.dto.PositionMoveDTO;
+import org.fwoxford.service.dto.response.PositionMoveBoxDTO;
+import org.fwoxford.service.dto.response.PositionMoveSampleDTO;
+import org.fwoxford.service.dto.response.PositionMoveShelvesDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -46,5 +49,9 @@ public interface PositionMoveService {
      * @param positionMoveDTO
      * @return
      */
-    PositionMoveDTO moveSamplePosition(PositionMoveDTO positionMoveDTO);
+    PositionMoveSampleDTO moveSamplePosition(PositionMoveSampleDTO positionMoveDTO);
+
+    PositionMoveBoxDTO savePositionMoveForBox(PositionMoveBoxDTO positionMoveDTO);
+
+    PositionMoveShelvesDTO savePositionMoveForShelf(PositionMoveShelvesDTO positionMoveDTO);
 }

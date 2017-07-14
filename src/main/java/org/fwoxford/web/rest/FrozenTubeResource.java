@@ -174,4 +174,12 @@ public class FrozenTubeResource {
         List<FrozenTubeDTO> frozenTubeDTO = frozenTubeService.findFrozenTubeBySampleCodeNadProjectAndSampleTypeAndSampleClassifacition(sampleCode,projectCode,sampleTypeId,sampleClassificationId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(frozenTubeDTO));
     }
+
+    @GetMapping("/frozen-tubes/ids/{ids}")
+    @Timed
+    public ResponseEntity<List<FrozenTubeDTO>> getFrozenTubeByIds(@PathVariable String ids) {
+        log.debug("REST request to get FrozenTubeList : {}", ids);
+        List<FrozenTubeDTO> frozenTubeDTO = frozenTubeService.getFrozenTubeByIds(ids);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(frozenTubeDTO));
+    }
 }

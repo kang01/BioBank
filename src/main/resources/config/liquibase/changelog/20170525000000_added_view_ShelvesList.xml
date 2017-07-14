@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity ShelvesListAllDataTableEntity.
+    -->
+    <changeSet id="20170525000000-1" author="jhipster">
+
+        <createView viewName="view_shelves_list">
+            SELECT DISTINCT
+            shelf.id as id,
+            emodle.equipment_type as equipment_type,emodle.id as equipment_type_id, e.equipment_code,e.id as equipment_id,
+            a.area_code,a.id as area_id,
+            shelf.support_rack_code as shelves_code,shelf.id as shelves_id,shelfType.support_rack_type_code as shelves_type ,
+            shelfType.id as shelves_type_id,
+            shelf.status as status,
+            e.equipment_code||'.'|| a.area_code||'.'||shelf.support_rack_code as position,shelf.memo as memo,
+            (select count(b.id) from frozen_box b where b.equipment_id = e.id and  b.area_id = a.id and  b.support_rack_id = shelf.id and b.status in ('2004','2006')) as count_of_used,
+            (shelfType.support_rack_rows*shelfType.support_rack_columns-(select count(b.id) from frozen_box b where b.equipment_id = e.id and  b.area_id = a.id and  b.support_rack_id = shelf.id and b.status in ('2004','2006'))) as count_of_rest
+
+            FROM support_rack shelf
+            LEFT JOIN support_rack_type shelfType ON shelf.support_rack_type_id = shelfType.id
+            LEFT JOIN area a ON shelf.area_id = a.id
+            LEFT JOIN equipment e ON a.equipment_id = e.id
+            LEFT JOIN equipment_modle emodle ON e.equipment_modle_id = emodle.id where shelf.status!='0000'
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

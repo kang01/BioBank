@@ -6,6 +6,7 @@ import io.swagger.models.auth.In;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -81,8 +82,9 @@ public class EquipmentDTO extends AbstractAuditingDTO implements Serializable {
 
     private String equipmentType;
     private Integer restOfSpace;
-    private String projectCode;
+    private String projectCodes;
 
+    private List<AreaDTO> areaDTOList;
 
     public Long getId() {
         return id;
@@ -201,12 +203,20 @@ public class EquipmentDTO extends AbstractAuditingDTO implements Serializable {
         this.restOfSpace = restOfSpace;
     }
 
-    public String getProjectCode() {
-        return projectCode;
+    public String getProjectCodes() {
+        return projectCodes;
     }
 
-    public void setProjectCode(String projectCode) {
-        this.projectCode = projectCode;
+    public void setProjectCodes(String projectCodes) {
+        this.projectCodes = projectCodes;
+    }
+
+    public List<AreaDTO> getAreaDTOList() {
+        return areaDTOList;
+    }
+
+    public void setAreaDTOList(List<AreaDTO> areaDTOList) {
+        this.areaDTOList = areaDTOList;
     }
 
     @Override

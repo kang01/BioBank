@@ -110,6 +110,23 @@ public interface FrozenTubeMapper {
         res.setTubeRows(tube.getTubeRows());
         res.setFrozenBoxCode(tube.getFrozenBoxCode());
         res.setFrozenBoxId(tube.getFrozenBox()!=null?tube.getFrozenBox().getId():null);
+        SampleClassification sampleClassification = tube.getSampleClassification();
+        if(sampleClassification != null){
+            res.setSampleClassificationId(sampleClassification.getId());
+            res.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+            res.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+            res.setFrontColorForClass(sampleClassification.getFrontColor());
+            res.setBackColorForClass(sampleClassification.getBackColor());
+        }
+        SampleType sampleType = tube.getSampleType();
+        if(sampleType!=null){
+            res.setSampleTypeId(sampleType.getId());
+            res.setSampleTypeCode(sampleType.getSampleTypeCode());
+            res.setSampleTypeName(sampleType.getSampleTypeName());
+            res.setIsMixed(sampleType.getIsMixed());
+            res.setFrontColor(sampleType.getFrontColor());
+            res.setBackColor(sampleType.getBackColor());
+        }
         return res;
     }
 

@@ -11,6 +11,8 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface AreaRepository extends JpaRepository<Area,Long> {
+
     Area findOneByAreaCodeAndEquipmentId(String areaCode, Long equipmentId);
+
     List<Area> getAreaByEquipmentId(Long equipmentId);
 }

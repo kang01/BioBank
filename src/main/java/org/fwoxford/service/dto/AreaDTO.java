@@ -52,6 +52,8 @@ public class AreaDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Equipment equipment;
 
+    private Integer flag;
+
     public Long getId() {
         return id;
     }
@@ -150,5 +152,13 @@ public class AreaDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setEquipment(Equipment equipment) {
         this.equipment = equipment;
+    }
+
+    public Integer getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Integer flag) {
+        this.flag = flag;
     }
 }

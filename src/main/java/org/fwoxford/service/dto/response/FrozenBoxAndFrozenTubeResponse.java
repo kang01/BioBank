@@ -188,6 +188,25 @@ public class FrozenBoxAndFrozenTubeResponse {
     private String projectCode;
     private String projectName;
 
+    private Long frozenBoxTypeId;
+    private String frozenBoxTypeName;
+    private String frozenBoxTypeCode;
+    private String frozenBoxTypeRows;
+    private String frozenBoxTypeColumns;
+
+    private Long sampleClassificationId;
+    private String sampleClassificationName;
+    private String sampleClassificationCode;
+    private String frontColorForClass;
+    private String backColorForClass;
+
+    private Long sampleTypeId;
+    private String sampleTypeCode;
+    private String sampleTypeName;
+    private Integer isMixed;
+    private String frontColor;
+    private String backColor;
+
     public Long getProjectId() {
         return projectId;
     }
@@ -210,5 +229,133 @@ public class FrozenBoxAndFrozenTubeResponse {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public Long getFrozenBoxTypeId() {
+        return frozenBoxTypeId;
+    }
+
+    public void setFrozenBoxTypeId(Long frozenBoxTypeId) {
+        this.frozenBoxTypeId = frozenBoxTypeId;
+    }
+
+    public String getFrozenBoxTypeName() {
+        return frozenBoxTypeName;
+    }
+
+    public void setFrozenBoxTypeName(String frozenBoxTypeName) {
+        this.frozenBoxTypeName = frozenBoxTypeName;
+    }
+
+    public String getFrozenBoxTypeCode() {
+        return frozenBoxTypeCode;
+    }
+
+    public void setFrozenBoxTypeCode(String frozenBoxTypeCode) {
+        this.frozenBoxTypeCode = frozenBoxTypeCode;
+    }
+
+    public String getFrozenBoxTypeRows() {
+        return frozenBoxTypeRows;
+    }
+
+    public void setFrozenBoxTypeRows(String frozenBoxTypeRows) {
+        this.frozenBoxTypeRows = frozenBoxTypeRows;
+    }
+
+    public String getFrozenBoxTypeColumns() {
+        return frozenBoxTypeColumns;
+    }
+
+    public void setFrozenBoxTypeColumns(String frozenBoxTypeColumns) {
+        this.frozenBoxTypeColumns = frozenBoxTypeColumns;
+    }
+
+    public Long getSampleClassificationId() {
+        return sampleClassificationId;
+    }
+
+    public void setSampleClassificationId(Long sampleClassificationId) {
+        this.sampleClassificationId = sampleClassificationId;
+    }
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+    }
+
+    public String getFrontColorForClass() {
+        return frontColorForClass;
+    }
+
+    public void setFrontColorForClass(String frontColorForClass) {
+        this.frontColorForClass = frontColorForClass;
+    }
+
+    public String getBackColorForClass() {
+        return backColorForClass;
+    }
+
+    public void setBackColorForClass(String backColorForClass) {
+        this.backColorForClass = backColorForClass;
+    }
+
+    public Long getSampleTypeId() {
+        return sampleTypeId;
+    }
+
+    public void setSampleTypeId(Long sampleTypeId) {
+        this.sampleTypeId = sampleTypeId;
+    }
+
+    public String getSampleTypeCode() {
+        return sampleTypeCode;
+    }
+
+    public void setSampleTypeCode(String sampleTypeCode) {
+        this.sampleTypeCode = sampleTypeCode;
+    }
+
+    public String getSampleTypeName() {
+        return sampleTypeName;
+    }
+
+    public void setSampleTypeName(String sampleTypeName) {
+        this.sampleTypeName = sampleTypeName;
+    }
+
+    public Integer getIsMixed() {
+        return isMixed;
+    }
+
+    public void setIsMixed(Integer isMixed) {
+        this.isMixed = isMixed;
+    }
+
+    public String getFrontColor() {
+        return frontColor;
+    }
+
+    public void setFrontColor(String frontColor) {
+        this.frontColor = frontColor;
+    }
+
+    public String getBackColor() {
+        return backColor;
+    }
+
+    public void setBackColor(String backColor) {
+        this.backColor = backColor;
     }
 }

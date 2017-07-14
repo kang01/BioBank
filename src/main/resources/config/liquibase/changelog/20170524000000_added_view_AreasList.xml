@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity ShelvesListAllDataTableEntity.
+    -->
+    <changeSet id="20170524000000-1" author="jhipster">
+
+        <createView viewName="view_areas_list">
+            select a.id,m.id as equipment_model_id,m.equipment_type,e.equipment_code ||'.'||a.area_code as position,a.freeze_frame_number,
+            (select count(s.id) from support_rack s where s.area_id = a.id and s.status!='0000') as countOfUsed,
+            (a.FREEZE_FRAME_NUMBER -(select count(s.id) from support_rack s where s.area_id = a.id and s.status!='0000') )as countOfRest,
+            a.status,
+            a.equipment_id,e.equipment_code,a.area_code
+            from area a
+            left join equipment e on a.equipment_id = e.id
+            left join equipment_modle m on e.equipment_modle_id = m.id
+            where a.status !='0000'
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

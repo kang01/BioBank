@@ -125,4 +125,18 @@ public class StockListResource {
         });
         return stockListService.getPageShelvesList(input,search);
     }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/areas-list", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<ShelvesListAllDataTableEntity> getPageAreaList(@RequestBody DataTablesInput input,
+                                                                              @RequestParam(value = "searchForm",required = false) String searchForm ) {
+        JSONObject jsonObject = JSONObject.fromObject(searchForm);
+        FrozenPositionListSearchForm search = (FrozenPositionListSearchForm) JSONObject.toBean(jsonObject, FrozenPositionListSearchForm.class);
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
+        return stockListService.getPageShelvesList(input,search);
+    }
 }

@@ -886,3 +886,19 @@ ul.rating {
 .stock-in-list .dataTables_wrapper .row{
     margin-top: 5px;
 }
+.progress{
+    width:400px;
+    border:1px solid #ccc;
+    height: 28px;
+    text-align: center;
+    line-height: 28px;
+    font-weight: bold;
+    color: #fff;
+    overflow: hidden;
+}
+.Bar{
+    width:50%;
+    height: 28px;
+    background: #5BC0DE;
+
+}

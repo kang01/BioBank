@@ -231,7 +231,7 @@
             vm.arrayBoxCode = [];
             vm.dto.spaceType = "1";
             vm.dto.compareType = "1";
-            vm.checked = false;
+            // vm.checked = false;
             vm.dtInstance.rerender();
         }
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);

@@ -83,7 +83,25 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="col-sm-4 control-label">剩余空位</label>
+                                <label class="col-sm-4 control-label pr-0">剩余空位</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" step="1" min="0" ng-model="vm.dto.number"
+                                           onkeyup="this.value=this.value.replace(/[^\d]/g,'');">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label pr-0">设备类型</label>
+                                <div class="col-sm-8">
+                                    <selectize options='vm.equipmentOptions' config="vm.equipmentConfig"
+                                               ng-model="vm.dto.equipmentTypeId"></selectize>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label pr-0">区域编码</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control">
                                 </div>
@@ -91,23 +109,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="col-sm-4 control-label">设备类型</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="col-sm-4 control-label">区域编码</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="col-sm-4 control-label">设备编码</label>
+                                <label class="col-sm-4 control-label pr-0">设备编码</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control">
                                 </div>
@@ -117,7 +119,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="col-sm-1 control-label">剩余空位</label>
+                                <label class="col-sm-1 control-label pr-0">项目编码</label>
                                 <div class="col-sm-11">
                                     <input type="text" class="form-control">
                                 </div>

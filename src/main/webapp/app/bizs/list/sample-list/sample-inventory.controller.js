@@ -47,6 +47,7 @@
         vm.projectConfig = {
             valueField:'id',
             labelField:'projectName',
+            searchField:'projectName',
             onChange:function(value){
                 projectIdStr = _.join(value, ',');
                 projectIds = value;
@@ -324,10 +325,10 @@
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)
                 .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('position').withTitle('定位').withOption("width", "140"),
-            DTColumnBuilder.newColumn('positionInBox').withTitle('盒内位置').withOption("width", "60"),
+            DTColumnBuilder.newColumn('positionInBox').withTitle('盒内位置').withOption("width", "80"),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "120"),
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目名称'),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
             DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "120"),
             DTColumnBuilder.newColumn('sex').withTitle('标签'),
@@ -346,7 +347,9 @@
             return html;
         }
         function createdRow(row, data, dataIndex) {
-            var projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
+            if(vm.projectOptions){
+                var projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
+            }
             var tag = '';
             if(data.sex){
                 var sex;

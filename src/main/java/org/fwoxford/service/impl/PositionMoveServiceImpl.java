@@ -344,7 +344,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
             throw new BankServiceException("冻存盒ID不能为空！");
          }
         FrozenBox frozenBox = frozenBoxRepository.findOne(p.getFrozenBoxId());
-        if(frozenBox == null || (frozenBox != null &&frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED))){
+        if(frozenBox == null || (frozenBox != null &&!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED))){
             throw new BankServiceException("冻存盒不存在！");
         }
         if(p.getRowsInShelf()== null || p.getColumnsInShelf() == null){

@@ -202,7 +202,7 @@ public class SupportRackServiceImpl implements SupportRackService{
 
     @Override
     public SupportRackDTO getSupportRackByEquipmentAndAreaAndShelf(String equipmentCode, String areaCode, String shelfCode) {
-        SupportRack supportRack = supportRackRepository.findBySupportRackCode(shelfCode);
+        SupportRack supportRack = supportRackRepository.findSupportRackByEquipmentCodeAndAreaCodeAndSupportRackCode(equipmentCode,areaCode,shelfCode);
         if(supportRack == null){
             throw new BankServiceException("冻存架不存在！");
         }

@@ -10,6 +10,7 @@ import org.fwoxford.service.SupportRackService;
 import org.fwoxford.repository.SupportRackRepository;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.SupportRackDTO;
+import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.SupportRackMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -45,6 +46,8 @@ public class SupportRackServiceImpl implements SupportRackService{
     @Autowired
     EquipmentRepository equipmentRepository;
 
+    @Autowired
+    private FrozenBoxMapper frozenBoxMapper;
     public SupportRackServiceImpl(SupportRackRepository supportRackRepository, SupportRackMapper supportRackMapper) {
         this.supportRackRepository = supportRackRepository;
         this.supportRackMapper = supportRackMapper;
@@ -219,6 +222,7 @@ public class SupportRackServiceImpl implements SupportRackService{
             if(!positions.contains(project.getProjectCode())){
                 positions.add(project.getProjectCode());
             }
+            frozenBoxDTOList.add(frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox));
         }
         int columns = supportRack.getSupportRackType().getSupportRackColumns()!=null? Integer.valueOf(supportRack.getSupportRackType().getSupportRackColumns()):0;
         int rows = supportRack.getSupportRackType().getSupportRackRows()!=null? Integer.valueOf(supportRack.getSupportRackType().getSupportRackRows()):0;

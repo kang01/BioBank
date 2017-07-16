@@ -4,6 +4,7 @@
             <h2 style="margin: 0">冻存盒移位</h2>
         </div>
         <div class="pull-right">
+            <button type="button" class="btn btn-primary"  ng-click="vm.saveMovement()">保存</button>
             <button type="button" class="btn btn-default"  ng-click="vm.close()">关闭</button>
         </div>
     </div>
@@ -12,12 +13,12 @@
     <div class="col-md-4">
         <div class="form-group">
             <label>移位原因</label>
-            <textarea type="text" class="form-control resize-none" rows="6"></textarea>
+            <textarea type="text" class="form-control resize-none" rows="6" ng-model="vm.movement.moveAffect"></textarea>
         </div>
     </div>
     <div class="col-md-4">
         <label>移位影响评估</label>
-        <textarea type="text" class="form-control resize-none" rows="6"></textarea>
+        <textarea type="text" class="form-control resize-none" rows="6" ng-model="vm.movement.moveReason"></textarea>
     </div>
     <div class="col-md-4">
         <div class="row ">
@@ -43,6 +44,9 @@
                     <label>操作员2</label>
                     <selectize options='vm.userOptions' config="vm.userConfig"
                                ng-model="vm.movement.operatorId2"></selectize>
+                    <label class="checkbox mt-0 ml-20" style="">
+                        <input type="checkbox" ng-model="vm.movement.whetherFreezingAndThawing" ng-true-value="true" ng-false-value="false">是否发生样本冻溶
+                    </label>
                 </div>
             </div>
             <div class="col-md-6">
@@ -52,27 +56,44 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12 pl-40">
-                <label class="checkbox">
-                    <input type="checkbox">是否发生样本冻溶
-                </label>
-            </div>
+        <!--<div class="row">-->
+            <!--<div class="col-md-12 pl-40">-->
+                <!--<label class="checkbox">-->
+                    <!--<input type="checkbox" ng-model="vm.movement.whetherFreezingAndThawing" ng-true-value="true" ng-false-value="false">是否发生样本冻溶-->
+                <!--</label>-->
+            <!--</div>-->
 
-        </div>
+        <!--</div>-->
     </div>
 </div>
 <div class="row">
     <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <div class="row">
-                    <h4>移动冻存盒</h4>
-                </div>
+                <h4>移动冻存盒</h4>
             </div>
             <div class="panel-body p-0">
                 <div class="no-padding">
-                    <table datatable="" dt-options="vm.selectedOptions" dt-columns="vm.selectedColumns" dt-instance="vm.selectedInstance" class=" table table-striped table-bordered"></table>
+                    <table datatable="ng" dt-options="vm.selectedOptions" dt-columns="vm.selectedColumns" dt-instance="vm.selectedInstance" class=" table table-striped table-bordered">
+                        <thead>
+                            <th>
+                                <input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll(vm.selectAll, vm.selected)">
+                            </th>
+                            <th>冻存盒编码</th>
+                            <th>样本类型</th>
+                            <th>样本分类</th>
+                        </thead>
+                        <tbody >
+                            <tr ng-repeat="box in vm.selectedBox | filter:vm.filterNotPutInShelfTubes">
+                                <td>
+                                    <input type="checkbox" ng-model="vm.selected[box.id]" ng-click="vm.toggleOne(vm.selected)">
+                                </td>
+                                <td>{{box.frozenBoxCode}}</td>
+                                <td>{{box.sampleType}}</td>
+                                <td>{{box.sampleClassification}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -88,8 +109,7 @@
                         <button class="btn btn-primary btn-xs"  ng-if="!vm.movementFlag" ng-click="vm.search()">搜索</button>
                         <button class="btn btn-primary btn-xs"  ng-if="!vm.movementFlag" ng-click="vm.empty()">清空</button>
                         <button class="btn btn-primary btn-xs"  ng-if="vm.movementFlag" ng-click="vm.putIn()">移入</button>
-                        <button class="btn btn-primary btn-xs"  ng-if="vm.movementFlag" ng-click="vm.saveMovement()">保存</button>
-                        <button class="btn btn-primary btn-xs"  ng-if="vm.movementFlag" ng-click="vm.movementFlag=false">关闭</button>
+                        <button class="btn btn-primary btn-xs"  ng-if="vm.movementFlag" ng-click="vm.closeMovement()">关闭</button>
                     </div>
                 </div>
             </div>
@@ -152,53 +172,23 @@
                 </div>
 
                 </form>
-                <form class="form-horizontal" ng-if="vm.movementFlag">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="col-md-4 control-label pr-0">定位</label>
-                                <div class="col-md-8">
-                                    <p class="form-control-static">{{vm.box.frozenBoxCode}}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="col-md-4 control-label pr-0">设备类型</label>
-                                <div class="col-md-8">
-                                    <p class="form-control-static">{{vm.box.frozenBoxType.frozenBoxTypeName}}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="col-md-4 control-label pr-0">剩余空位</label>
-                                <div class="col-md-8">
-                                    <p class="form-control-static"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="col-md-2 control-label pr-0">相关项目</label>
-                                <div class="col-md-10">
-                                    <p class="form-control-static">111111；222222；</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </form>
+                <div ng-if="vm.movementFlag">
+                    <p>
+                        <span>定位:{{vm.shelf.position}}&nbsp;&nbsp;</span>
+                        <span>设备类型:{{vm.shelf.equipmentType}}&nbsp;&nbsp;</span>
+                        <span>剩余空位:{{vm.shelf.restOfSpace}}&nbsp;&nbsp;</span>
+                    </p>
+                    <p>
+                        <span>相关项目:{{vm.shelf.projectCodes}}</span>
+                    </p>
+                </div>
                 <div class="no-padding">
                     <div ng-if="!vm.movementFlag">
                         <table datatable="" dt-options="vm.shelfOptions" dt-columns="vm.shelfColumns"
                                dt-instance="vm.shelfInstance" class=" table table-striped table-bordered"></table>
                     </div>
                     <div ng-if="vm.movementFlag">
-                        <hot-table hot-id="shelfDetailsTable" settings="vm.settings" class="tube"
+                        <hot-table hot-id="my-handsontable" settings="vm.shelfDetailsTableSettings" class="tube"
                                    style="width: 100%; padding: 0;margin: 0;"></hot-table>
                     </div>
                 </div>

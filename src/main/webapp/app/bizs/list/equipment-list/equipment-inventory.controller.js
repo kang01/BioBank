@@ -361,22 +361,6 @@
             //     '</button>&nbsp;';
             return "";
         }
-        function _fnRowUsedRender(data, type, full, meta) {
-            vm.a = {
-                width:"90%"
-            };
-            var countOfUsed = full.countOfUsed;
-            var countOfRest = full.countOfRest;
-            var total = countOfUsed+countOfRest;
-            vm.progress = ""+countOfUsed + "/" + total;
-            var html = "";
-            html = "<div class='progress'> " +
-                "<div class='Bar' ng-style ='vm.a'> " +
-                "<div class='text'>{{vm.progress}}</div>" +
-                " </div> " +
-                "</div>";
-            return html;
-        }
 
     }
 })();

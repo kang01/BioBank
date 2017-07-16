@@ -9,10 +9,10 @@
         .controller('SampleMovementController', SampleMovementController);
 
     SampleMovementController.$inject = ['$scope','hotRegisterer','$compile','$state','$stateParams','$uibModal','toastr','DTColumnBuilder','ProjectService','EquipmentService',
-        'SampleTypeService','MasterData','BoxInventoryService','BioBankDataTable','StockInBoxByCodeService','SampleService','FrozenBoxTypesService','RequirementService','SampleInventoryService','SampleUserService'];
+        'SampleTypeService','MasterData','BoxInventoryService','BioBankDataTable','StockInBoxByCodeService','SampleService','FrozenBoxTypesService','RequirementService','SampleInventoryService','SampleUserService','BioBankBlockUi'];
 
     function SampleMovementController($scope,hotRegisterer,$compile,$state,$stateParams,$uibModal,toastr,DTColumnBuilder,ProjectService,EquipmentService,
-                                      SampleTypeService,MasterData,BoxInventoryService,BioBankDataTable,StockInBoxByCodeService,SampleService,FrozenBoxTypesService,RequirementService,SampleInventoryService,SampleUserService) {
+                                      SampleTypeService,MasterData,BoxInventoryService,BioBankDataTable,StockInBoxByCodeService,SampleService,FrozenBoxTypesService,RequirementService,SampleInventoryService,SampleUserService,BioBankBlockUi) {
         var vm = this;
         vm.boxInstance = {};
         vm.selectedInstance = {};
@@ -321,8 +321,6 @@
             setTimeout(function () {
                 _reloadTubesForTable(vm.box);
             },500);
-
-
         }
         function _fnRecover() {
             var tableCtrl = hotRegisterer.getInstance('my-handsontable');
@@ -777,29 +775,19 @@
 
 
         function _fnSaveMovement() {
-
+            if(vm.movement.operatorId1 == vm.movement.operatorId2){
+                toastr.error("操作员不能重复！");
+                return;
+            }
+            BioBankBlockUi.blockUiStart();
             vm.movement.positionMoveRecordDTOS = _.filter(vm.selectedSample,{isPutInShelf:true});
-            console.log(JSON.stringify(vm.movement));
-            // var box = {
-            //     id : vm.box.id,
-            //     frozenTubeDTOS:[]
-            // };
-            // for(var i = 0; i < vm.frozenTubeArray.length; i++){
-            //     for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-            //         if(vm.frozenTubeArray[i][j].sampleCode || vm.frozenTubeArray[i][j].sampleTempCode){
-            //             box.frozenTubeDTOS.push(vm.frozenTubeArray[i][j]);
-            //         }
-            //     }
-            // }
-            //
-            // vm.movement.positionMoveForBoxList = [];
-            // vm.movement.positionMoveForBoxList.push(box);
-            // console.log(JSON.stringify(vm.movement));
             SampleInventoryService.saveMovementDes(vm.movement).success(function (data) {
                 vm.movement.id = data.id;
                 toastr.success("保存成功!");
+                BioBankBlockUi.blockUiStop();
             }).error(function (data) {
                 toastr.error(data.message);
+                BioBankBlockUi.blockUiStop();
             })
         }
     }

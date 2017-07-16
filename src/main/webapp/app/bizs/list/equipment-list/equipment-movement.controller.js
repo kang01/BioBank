@@ -8,21 +8,75 @@
         .module('bioBankApp')
         .controller('EquipmentMovementController', EquipmentMovementController);
 
-    EquipmentMovementController.$inject = ['$scope','$compile','$state','$uibModal','$stateParams','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
+    EquipmentMovementController.$inject = ['$scope','$compile','$state','$uibModal','$stateParams','hotRegisterer','toastr','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable','SampleUserService','RequirementService','BioBankBlockUi'];
 
-    function EquipmentMovementController($scope,$compile,$state,$uibModal,$stateParams,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
+    function EquipmentMovementController($scope,$compile,$state,$uibModal,$stateParams,hotRegisterer,toastr,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable,SampleUserService,RequirementService,BioBankBlockUi) {
         var vm = this;
         vm.dtInstance = {};
         vm.dto = {};
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        var selectedEquipment = $stateParams.selectedEquipment||[];
+        vm.selectedEquipment = $stateParams.selectedEquipment||[];
+        vm.movement = {
+            operatorId1:"",
+            operatorId2:"",
+            moveAffect:"",
+            moveReason:"",
+            whetherFreezingAndThawing:false
+        };
+        vm.selected = {};
+        var projectIds = [];
         function _init() {
-
+            _initSearch();
+            _initHandsonTablePanel();
+            if(vm.selectedEquipment.length){
+                _.forEach(vm.selectedEquipment, function(equipment){
+                    vm.selected[equipment.id] = false;
+                });
+            }
         }
         _init();
+        vm.searchEquipment = _fnSearchEquipment;
+        vm.putIn = _fnPutIn;
+        vm.saveMovement = _fnSaveMovement;
+        vm.search = _fnSearch;
+        vm.empty = _fnEmpty;
         vm.close = _fnClose;
+        function _fnSearch() {
+            if(projectIds.length){
+                for(var i = 0; i <projectIds.length; i++){
+                    var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
+                    vm.dto.projectCodeStr.push(projectCode)
+                }
+            }
+            vm.dtInstance.rerender();
+        }
+        function _fnEmpty() {
+            vm.dto = {};
+            vm.dto.projectCodeStr = [];
+            projectIds = [];
+            vm.projectCodeStr = [];
+            vm.arrayBoxCode = [];
+            vm.dto.spaceType = "2";
+            vm.dto.compareType = "1";
+            vm.dto.number = 0;
+            vm.dtInstance.rerender();
+        }
+        function _fnSaveMovement() {
+            if(vm.movement.operatorId1 == vm.movement.operatorId2){
+                toastr.error("操作员不能重复！");
+                return;
+            }
+            BioBankBlockUi.blockUiStart();
+            console.log(JSON.stringify(vm.movement));
+            EquipmentInventoryService.saveMovement(vm.movement).success(function (data) {
+                BioBankBlockUi.blockUiStop();
+            }).error(function (data) {
+                toastr.error(data.message);
+                BioBankBlockUi.blockUiStop();
+            })
+        }
         function _fnClose() {
-            if(selectedEquipment.length){
+            if(vm.selectedEquipment.length){
                 var modalInstance = $uibModal.open({
                     templateUrl: 'myModalContent.html',
                     controller: 'ModalInstanceCtrl',
@@ -40,25 +94,6 @@
 
 
 
-
-        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
-            .withOption('searching', false);
-
-
-        vm.selectedColumns = [
-            DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型'),
-            // DTColumnBuilder.newColumn('equipmentCode').withTitle('设备'),
-            // DTColumnBuilder.newColumn('areaCode').withTitle('区域'),
-            // DTColumnBuilder.newColumn('shelvesCode').withTitle('架子'),
-            DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型'),
-            // DTColumnBuilder.newColumn('countOfUsed').withTitle('已用'),
-            // DTColumnBuilder.newColumn('countOfRest').withTitle('剩余'),
-            // DTColumnBuilder.newColumn('status').withTitle('状态'),
-            // DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
-            // DTColumnBuilder.newColumn('id').notVisible()
-        ];
-        vm.selectedOptions.withOption('data', selectedEquipment);
-        vm.selected = {};
         vm.selectAll = false;
         vm.toggleAll = toggleAll;
         vm.toggleOne = toggleOne;
@@ -70,17 +105,17 @@
             }
         }
         function toggleOne (selectedItems) {
-            var selectedEquipment = [];
-            for (var id in selectedItems) {
-                if (selectedItems.hasOwnProperty(id)) {
-                    if(selectedItems[id]) {
-                        var obj = _.find(vm.equipmentData,{id:+id});
-                        selectedEquipment.push(obj);
-                    }
-                }
-            }
-            vm.selectedLen = selectedEquipment.length;
-            vm.selectedOptions.withOption('data', selectedEquipment);
+            // vm.selectedEquipment = [];
+            // for (var id in selectedItems) {
+            //     if (selectedItems.hasOwnProperty(id)) {
+            //         if(selectedItems[id]) {
+            //             var obj = _.find(vm.equipmentData,{id:+id});
+            //             vm.selectedEquipment.push(obj);
+            //         }
+            //     }
+            // }
+            // vm.selectedLen = vm.selectedEquipment.length;
+            // vm.selectedOptions.withOption('data', vm.selectedEquipment);
             for (var id in selectedItems) {
                 if (selectedItems.hasOwnProperty(id)) {
                     if(!selectedItems[id]) {
@@ -91,7 +126,100 @@
             }
             vm.selectAll = true;
         }
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
+        vm.selectedColumns = [
+            DTColumnBuilder.newColumn(0).withOption("width", "30"),
+            DTColumnBuilder.newColumn(1).withOption("width", "100"),
+            DTColumnBuilder.newColumn(2).withOption("width", "100")
+        ];
+
+        //目标冻存架
+        function _initSearch() {
+            //批注人
+            SampleUserService.query({},onUserSuccess, onError);
+            function onUserSuccess(data) {
+                vm.userOptions = data;
+            }
+            vm.userConfig = {
+                valueField:'id',
+                labelField:'userName',
+                maxItems: 1
+
+            };
+            //剩余
+            vm.dto.spaceType = "2";
+            //大于
+            vm.dto.compareType = "1";
+            vm.dto.number = 0;
+            //获取项目
+            ProjectService.query({},onProjectSuccess, onError);
+            function onProjectSuccess(data) {
+                vm.projectOptions = data;
+            }
+            //设备编码
+            EquipmentService.query({},onEquipmentSuccess, onError);
+            function onEquipmentSuccess(data) {
+                vm.frozenBoxPlaceOptions = data;
+            }
+            //设备编码
+            vm.frozenBoxPlaceConfig = {
+                valueField:'id',
+                labelField:'equipmentCode',
+                maxItems: 1,
+                onChange:function (value) {
+                    if(value){
+                        AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                    }else{
+                        vm.dto.areaId = "";
+                        vm.frozenBoxAreaOptions = [
+                            {id:"",areaCode:""}
+                        ];
+                        $scope.$apply();
+                    }
+                }
+            };
+            function onAreaSuccess(data) {
+                vm.frozenBoxAreaOptions = data;
+                if(vm.frozenBoxAreaOptions.length){
+                    vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
+                }
+
+            }
+            vm.frozenBoxAreaConfig = {
+                valueField:'id',
+                labelField:'areaCode',
+                maxItems: 1,
+                onChange:function (value) {
+                }
+            };
+            //设备类型
+            vm.equipmentOptions = [
+                {value:"1",label:"冰箱"},
+                {value:"2",label:"液氮罐"}
+            ];
+            //项目编码
+            vm.projectConfig = {
+                valueField:'id',
+                labelField:'projectName',
+                searchField:'projectName',
+                onChange:function(value){
+                    vm.projectIds = _.join(value, ',');
+                    projectIds = value;
+                    vm.dto.projectCodeStr = [];
+                }
+            };
+            //设备类型
+            vm.equipmentConfig = {
+                valueField:'value',
+                labelField:'label',
+                maxItems: 1,
+                onChange:function(value){
+                }
+            };
+
+        }
         vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
+            .withOption('searching', false)
             .withOption('order', [[1,'asc']])
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
@@ -131,35 +259,41 @@
             .withOption('headerCallback', function(header) {
                 $compile(angular.element(header).contents())($scope);
             });
-        var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.dtColumns = [
-            DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)
-                .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
-            DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型'),
-            DTColumnBuilder.newColumn('equipmentCode').withTitle('设备'),
-            DTColumnBuilder.newColumn('areaCode').withTitle('区域'),
-            DTColumnBuilder.newColumn('shelvesCode').withTitle('架子'),
-            DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型'),
-            DTColumnBuilder.newColumn('countOfUsed').withTitle('已用'),
-            DTColumnBuilder.newColumn('countOfRest').withTitle('剩余'),
-            DTColumnBuilder.newColumn('status').withTitle('状态'),
-            DTColumnBuilder.newColumn("").withTitle('操作')
+            DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型').withOption("width", "100"),
+            DTColumnBuilder.newColumn('position').withTitle('位置').withOption("width", "140").renderWith(_fnRowPositionRender),
+            DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
+            DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
+            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60")
                 .withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
-        function _fnRowSelectorRender(data, type, full, meta) {
-            vm.selected[full.id] = false;
-            var html = '';
-            html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
-            return html;
-
-        }
         function createdRow(row, data, dataIndex) {
             var status = '';
             switch (data.status){
                 case '0001': status = '运行中';break;
             }
-            $('td:eq(7)', row).html(status);
+            var countOfUsed = data.countOfUsed;
+            var countOfRest = data.countOfRest;
+            var total = countOfUsed+countOfRest;
+            var progressStyle = "width:"+countOfUsed/total*100+"%";
+            var progress = ""+countOfUsed + "/" + total;
+            var html;
+            html = "<div class='pos-progress'> " +
+                "<div class='text'>"+progress+"</div>" +
+                "<div class='Bar' style ='"+progressStyle+"'> " +
+                " </div> " +
+                "</div>";
+            $('td:eq(6)', row).html(status);
+            $('td:eq(3)', row).html(html);
             $compile(angular.element(row).contents())($scope);
+        }
+        function _fnRowPositionRender(data, type, full, meta) {
+            var html = '';
+            html = '<a ng-click="vm.searchEquipment('+full.equipmentId+')">'+full.position+'</a>';
+            return html;
         }
         function actionsHtml(data, type, full, meta) {
             // return '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +
@@ -168,6 +302,233 @@
             return "";
         }
 
+        function _fnSearchEquipment(equipmentId) {
+            vm.movementFlag = true;
+            EquipmentInventoryService.queryEquipmentById(equipmentId).success(function (data) {
+                vm.equipment = data;
+                _fnLoadEquipment(vm.equipment);
+                // console.log(JSON.stringify(vm.equipment))
+            }).error(function (data) {
+                toastr.error(data.message);
+            })
+        }
+        // 需要保存的盒子上架信息
+        vm.putInShelfAreas = {};
+        function _fnLoadEquipment(equipment){
+            var areas = equipment.areaDTOList;
+            // 架子上的行数
+            var countOfRows = 1;
+            // 架子上的列数
+            var countOfCols = areas.length || 13;
+            // 架子定位列表的控制对象
+            var tableCtrl = _getTableCtrl();
+            // 架子定位列表的总宽度
+            var tableWidth = $(tableCtrl.container).width();
+            // 架子定位列表的配置信息
+            var settings = vm.settings;
+            // 架子定位列表 行头 的宽度
+            var rowHeaderWidth = settings.rowHeaderWidth;
+            // 架子定位列表每列的宽度
+            var colWidth = (tableWidth - rowHeaderWidth) / countOfCols;
+            // 创建架子定位列表的 列头
+            var columns = [];
+            var charCode = 'A'.charCodeAt(0);
+            for(var i = 0; i < countOfCols; ++i){
+                var col = {
+                    data: 0,
+                    title: String.fromCharCode(charCode + i)
+                    // readOnly: true,
+                };
+                columns.push(col);
+            }
+            // 创建架子定位列表的定位数据
+            var arrayAreas = [];
+            var emptyPos = null;
+            // 先列
+            for(var i = 0; i < countOfCols; ++i){
+                // 再行
+                for(var j = 0; j < countOfRows; ++j){
+                    arrayAreas[j] = arrayAreas[j] || [];
+                    var pos = {columnsInShelf: "S", rowsInShelf: j+1+""};
+                    // 从已入库的盒子中查询架子中该位置的盒子
+                    var areasInShelf = _.filter(areas, pos);
+                    if (areasInShelf.length){
+                        arrayAreas[j][i] = areasInShelf[0];
+                    } else {
+                        var boxesPos = vm.putInShelfAreas[equipment.id];
+                        // 从已上架的盒子中查询架子中该位置的盒子
+                        areasInShelf = _.filter(boxesPos||[], pos);
+                        if (areasInShelf.length){
+                            arrayAreas[j][i] = areasInShelf[0];
+                        } else {
+                            // 该位置没有任何盒子
+                            arrayAreas[j][i] = {
+                                frozenBoxId: null,
+                                frozenBoxCode: "",
+                                columnsInShelf: String.fromCharCode(charCode + i),
+                                rowsInShelf: j + 1 + "",
+                                isEmpty: true
+                            };
+                            if (!emptyPos){
+                                emptyPos = {row:j,col:i};
+                            }
+                        }
+                    }
+
+                    // 该位置的位置信息
+                    arrayAreas[j][i].supportRackCode = shelf.supportRackCode;
+                    arrayAreas[j][i].areaCode = shelf.areaCode;
+                    arrayAreas[j][i].equipmentCode = shelf.equipmentCode;
+                    arrayAreas[j][i].supportRackId = shelf.id;
+                    arrayAreas[j][i].rowNO = j;
+                    arrayAreas[j][i].colNO = i;
+                }
+            }
+
+            // 修改架子定位列表的配置信息
+            settings.width = tableWidth;
+            settings.height = 380;
+            settings.minRows = countOfRows;
+            settings.minCols = countOfCols;
+            settings.colWidths = colWidth;
+            settings.manualColumnResize = colWidth;
+            settings.columns = columns;
+
+            // 更新架子定位列表并选中第一个空位置
+            tableCtrl.loadData(arrayAreas);
+            if (emptyPos){
+                // tableCtrl.selectCell(0, 0);
+                tableCtrl.selectCell(emptyPos.row, emptyPos.col);
+            }
+        }
+        function _fnPutIn() {
+
+        }
+        function _initHandsonTablePanel(){
+            vm.handsonTableArray = [];//初始管子数据二位数组
+
+            initHandsonTable(1,1);
+
+            vm.settings = {
+                colHeaders : ['S'],
+                rowHeaders : ['1','2','3','4','5','6','7','8','9','10'],
+                outsideClickDeselectsCache: false,
+                outsideClickDeselects: false,
+                data:vm.handsonTableArray,
+                minRows: 1,
+                minCols: 1,
+                fillHandle:false,
+                stretchH: 'all',
+                autoWrapCol:true,
+                wordWrap:true,
+                colWidths: 80,
+                rowHeaderWidth: 30,
+                multiSelect: false,
+                comments: true,
+                editor: false,
+                renderer: myCustomRenderer,
+                cells: _changeCellProperties,
+                enterMoves:function () {
+                    if(vm.nextFlag){
+                        var hotMoves = hotRegisterer.getInstance('my-handsontable');
+                        var selectedCol = hotMoves.getSelected()[1];
+                        if(selectedCol + 1 < hotMoves.countCols()){
+                            return{row:0,col:1};
+                        } else{
+                            return{row:1,col:-selectedCol};
+                        }
+                    }else{
+                        return{row:0,col:0};
+                    }
+
+                }
+
+            };
+            //渲染管子表格
+            function myCustomRenderer(hotInstance, td, row, col, prop, value, cellProperties) {
+                var hot = _getTableCtrl();
+                var cellData = value;
+                if (hot){
+                    cellData = hot.getDataAtCell(row, col);
+                }
+
+                if (cellProperties.readOnly){
+                    $(td).addClass('htDimmed');
+                    $(td).addClass('htReadOnly');
+                } else {
+                    $(td).removeClass('htDimmed');
+                    $(td).removeClass('htReadOnly');
+                }
+
+                var $div = $("<div/>").addClass(cellProperties && cellProperties.className ? cellProperties.className : "");
+                if (value){
+                    $div.html(value.frozenBoxCode)
+                        .data("frozenBoxId", value.frozenBoxId)
+                        .data("frozenBoxCode", value.frozenBoxCode)
+                        .data("columnsInShelf", value.columnsInShelf)
+                        .data("rowsInShelf", value.rowsInShelf)
+                        .data("countOfSample", value.countOfSample);
+                }
+
+                $(td).html("");
+                $(td).append($div);
+
+            }
+            // 修改单元格属性
+            function _changeCellProperties(row, col, prop) {
+                var hot = _getTableCtrl();
+                if (!hot){
+                    return;
+                }
+                var cellProperties = {};
+                var cellData = hot.getDataAtCell(row, col);
+                cellProperties.isEmpty = true;
+                if (cellData && cellData.frozenBoxId) {
+                    // 单元格有数据，并且有冻存盒ID，表示该单元格在库里有位置
+                    // 该单元格不能被使用
+                    cellProperties.isEmpty = false;
+                    // 该单元格不能编辑
+                    cellProperties.editor = false;
+                    // 该单元格只读
+                    cellProperties.readOnly = true;
+                    // 该单元格的样式
+                    cellProperties.className = 'a00';
+                    // cellProperties.readOnlyCellClassName = 'htDimmed';
+                } else {
+                    cellProperties.isEmpty = cellData && cellData.isEmpty;
+                }
+
+                return cellProperties;
+            }
+
+
+            function initHandsonTable(row,col) {
+                for(var i = 0; i < row; i++){
+                    vm.handsonTableArray[i] = [];
+                    for(var j = 0;j < col; j++){
+                        vm.handsonTableArray[i][j] = "";
+                    }
+                }
+            }
+            function getTubeRows(row) {
+                return String.fromCharCode(row + 65);
+            }
+            function getTubeColumns(col) {
+                return col + 1;
+            }
+            function getTubeRowIndex(row) {
+                return row.charCodeAt(0) -65;
+            }
+            function getTubeColumnIndex(col) {
+                return +col -1;
+            }
+
+        }
+        // 获取上架位置列表的控制实体
+        function _getTableCtrl(){
+            vm.shelfDetailsTableCtrl = hotRegisterer.getInstance('shelfDetailsTable');
+            return vm.shelfDetailsTableCtrl;
+        }
         function onError(error) {
             // BioBankBlockUi.blockUiStop();
             // toastr.error(error.data.message);

@@ -357,7 +357,10 @@
             return html;
         }
         function createdRow(row, data, dataIndex) {
-            var projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
+            var projectName;
+            if(vm.projectOptions.length){
+                projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
+            }
             var status = "";
             status = MasterData.getFrozenBoxStatus(data.status);
             $('td:eq(3)', row).html(projectName);

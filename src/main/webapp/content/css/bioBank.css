@@ -714,6 +714,7 @@ tr.shown td .details-control {
 }
 
 .htReadOnly {
+    background: transparent !important;
     background-color: darkgray !important;
 }
 
@@ -886,17 +887,25 @@ ul.rating {
 .stock-in-list .dataTables_wrapper .row{
     margin-top: 5px;
 }
-.progress{
-    width:400px;
+.pos-progress{
+    position: relative;
+    width:160px;
     border:1px solid #ccc;
-    height: 28px;
+    height: 20px;
     text-align: center;
-    line-height: 28px;
+    line-height: 20px;
     font-weight: bold;
     color: #fff;
     overflow: hidden;
+    border-radius: 4px;
 }
-.Bar{
+.pos-progress .text{
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: #333;
+}
+.pos-progress .Bar{
     width:50%;
     height: 28px;
     background: #5BC0DE;

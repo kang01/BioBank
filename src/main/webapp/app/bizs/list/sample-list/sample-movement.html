@@ -4,6 +4,7 @@
             <h2 style="margin: 0">样本清单</h2>
         </div>
         <div class="pull-right">
+            <button type="button" class="btn btn-primary" ng-click="vm.saveMovement()">保存</button>
             <button type="button" class="btn btn-default" ng-click="vm.close()">关闭</button>
         </div>
     </div>
@@ -78,6 +79,7 @@
                         <th>样本编码</th>
                         <th>样本类型</th>
                         <th>样本分类</th>
+                        <th>项目编码</th>
                         </thead>
                         <tbody>
                             <tr ng-repeat="tube in vm.selectedSample | filter:vm.filterNotPutInShelfTubes">
@@ -85,8 +87,9 @@
                                     <input type="checkbox" ng-model="vm.selected[tube.id]" ng-click="vm.toggleOne(vm.selected)">
                                 </td>
                                 <td>{{tube.sampleCode}}</td>
-                                <td>{{tube.sampleType}}</td>
-                                <td>{{tube.sampleClassification}}</td>
+                                <td>{{tube.sampleTypeName}}</td>
+                                <td>{{tube.sampleClassificationName}}</td>
+                                <td>{{tube.projectCode}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -105,7 +108,8 @@
                         <button class="btn btn-primary btn-xs" ng-if="!vm.sampleMovementFlag" ng-click="vm.search()">搜索</button>
                         <button class="btn btn-primary btn-xs" ng-if="!vm.sampleMovementFlag" ng-click="vm.empty()">清空</button>
                         <button class="btn btn-primary btn-xs" ng-if="vm.sampleMovementFlag" ng-click="vm.putIn()">移入</button>
-                        <button class="btn btn-primary btn-xs"  ng-if="vm.sampleMovementFlag" ng-click="vm.saveMovement()">保存</button>
+                        <!--<button class="btn btn-primary btn-xs" ng-if="vm.sampleMovementFlag" ng-click="vm.recover()">复原</button>-->
+                        <!--<button class="btn btn-primary btn-xs"  ng-if="vm.sampleMovementFlag" ng-click="vm.saveMovement()">保存</button>-->
                         <button class="btn btn-primary btn-xs"  ng-if="vm.sampleMovementFlag" ng-click="vm.closeSampleMovement()">关闭</button>
                     </div>
                 </div>
@@ -204,7 +208,7 @@
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">项目编码</label>
                                 <div class="col-sm-8">
-                                    <p class="form-control-static">{{vm.box.frozenBoxCode}}</p>
+                                    <p class="form-control-static">{{vm.box.projectCode}}</p>
                                 </div>
                             </div>
                         </div>

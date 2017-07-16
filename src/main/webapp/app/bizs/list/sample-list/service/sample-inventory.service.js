@@ -14,6 +14,7 @@
             querySampleList:_querySampleList,
             querySampleDesList:_querySampleDesList,
             queryTubeDes:_queryTubeDes,
+            queryTubeDesByIds:_queryTubeDesByIds,
             //保存移位
             saveMovementDes:_saveMovementDes
         };
@@ -25,6 +26,9 @@
         }
         function _queryTubeDes(frozenTubeId) {
             return $http.get('api/frozen-tubes/'+frozenTubeId);
+        }
+        function _queryTubeDesByIds(frozenTubeIds) {
+            return $http.get('api/frozen-tubes/ids/'+frozenTubeIds);
         }
         function _saveMovementDes(param) {
             if(param.id){

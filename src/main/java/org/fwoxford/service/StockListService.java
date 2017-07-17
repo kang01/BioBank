@@ -45,4 +45,6 @@ public interface StockListService {
      * @return
      */
     DataTablesOutput<ShelvesListAllDataTableEntity> getPageShelvesList(DataTablesInput input, FrozenPositionListSearchForm search);
+
+    DataTablesOutput<AreasListAllDataTableEntity> getPageAreaList(DataTablesInput input, FrozenPositionListSearchForm search);
 }

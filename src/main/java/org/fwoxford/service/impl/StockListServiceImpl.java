@@ -50,6 +50,9 @@ public class StockListServiceImpl implements StockListService {
 
     @Autowired
     private ShelvesListByProjectRepositries shelvesListByProjectRepositries;
+
+    @Autowired
+    private AreasListRepositories areasListRepositories;
     /**
      * 冻存位置清单
      * @param input
@@ -217,6 +220,11 @@ public class StockListServiceImpl implements StockListService {
             output =  shelvesListRepositries.findAll(input,null,specification,userConverter);
         }
         return output;
+    }
+
+    @Override
+    public DataTablesOutput<AreasListAllDataTableEntity> getPageAreaList(DataTablesInput input, FrozenPositionListSearchForm search) {
+        return areasListRepositories.findAll(input);
     }
 
     private CriteriaQuery<?> getSearchShelvesListByProject(Root<ShelvesListByProjectDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, FrozenPositionListSearchForm searchForm) {

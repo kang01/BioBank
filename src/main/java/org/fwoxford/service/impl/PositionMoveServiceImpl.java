@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -46,10 +47,18 @@ public class PositionMoveServiceImpl implements PositionMoveService {
 
     @Autowired
     private PositionMoveRecordRepository positionMoveRecordRepository;
+
     @Autowired
     private SupportRackRepository supportRackRepository;
+
     @Autowired
     private AreaRepository areaRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public PositionMoveServiceImpl(PositionMoveRepository positionMoveRepository, PositionMoveMapper positionMoveMapper) {
         this.positionMoveRepository = positionMoveRepository;
@@ -121,6 +130,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
     public PositionMoveSampleDTO moveSamplePosition(PositionMoveSampleDTO positionMoveDTO) {
         //保存移位数据
         PositionMove positionMove = positionMoveMapper.positionMoveSampleDTOToPositionMove(positionMoveDTO);
+        checkUser(positionMoveDTO);
         positionMove.setMoveType(Constants.MOVE_TYPE_1);
         positionMove.setStatus(Constants.VALID);
         positionMoveRepository.save(positionMove);
@@ -137,6 +147,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
     public PositionMoveBoxDTO savePositionMoveForBox(PositionMoveBoxDTO positionMoveDTO) {
         //保存移位数据
         PositionMove positionMove = positionMoveMapper.positionMoveBoxDTOToPositionMove(positionMoveDTO);
+        checkUser(positionMoveDTO);
         positionMove.setMoveType(Constants.MOVE_TYPE_2);
         positionMove.setStatus(Constants.VALID);
         positionMoveRepository.save(positionMove);
@@ -213,6 +224,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
     public PositionMoveShelvesDTO savePositionMoveForShelf(PositionMoveShelvesDTO positionMoveDTO) {
         //保存移位数据
         PositionMove positionMove = positionMoveMapper.positionMoveShelvesDTOToPositionMove(positionMoveDTO);
+        checkUser(positionMoveDTO);
         positionMove.setMoveType(Constants.MOVE_TYPE_3);
         positionMove.setStatus(Constants.VALID);
         positionMoveRepository.save(positionMove);
@@ -260,6 +272,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
     public PositionMoveDTO creataSamplePosition(PositionMoveDTO positionMoveDTO) {
         //保存移位数据
         PositionMove positionMove = positionMoveMapper.positionMoveDTOToPositionMove(positionMoveDTO);
+        checkUser(positionMoveDTO);
         positionMove.setMoveType(Constants.MOVE_TYPE_1);
         positionMove.setStatus(Constants.VALID);
         positionMoveRepository.save(positionMove);
@@ -276,6 +289,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
     public PositionMoveDTO createPositionMoveForBox(PositionMoveDTO positionMoveDTO) {
         //保存移位数据
         PositionMove positionMove = positionMoveMapper.positionMoveDTOToPositionMove(positionMoveDTO);
+        checkUser(positionMoveDTO);
         positionMove.setMoveType(Constants.MOVE_TYPE_2);
         positionMove.setStatus(Constants.VALID);
         positionMoveRepository.save(positionMove);
@@ -291,6 +305,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
     public PositionMoveDTO createPositionMoveForShelf(PositionMoveDTO positionMoveDTO) {
         //保存移位数据
         PositionMove positionMove = positionMoveMapper.positionMoveDTOToPositionMove(positionMoveDTO);
+        checkUser(positionMoveDTO);
         positionMove.setMoveType(Constants.MOVE_TYPE_3);
         positionMove.setStatus(Constants.VALID);
         positionMoveRepository.save(positionMove);
@@ -339,6 +354,34 @@ public class PositionMoveServiceImpl implements PositionMoveService {
              }
         }
         return positionMoveDTO;
+    }
+
+    public void checkUser(PositionMoveDTO positionMoveDTO) {
+        if(positionMoveDTO.getOperatorId1() == null || positionMoveDTO.getOperatorId2()==null){
+            throw new BankServiceException("操作人不能为空！");
+        }
+        if(positionMoveDTO.getPassword1() == null || positionMoveDTO.getPassword2()==null){
+            throw new BankServiceException("密码不能为空！");
+        }
+        Long operatorId1 = positionMoveDTO.getOperatorId1();
+        String password1 = positionMoveDTO.getPassword1();
+        User user = userRepository.findOne(operatorId1);
+        if(user == null){
+            throw new BankServiceException("操作人1不存在！");
+        }
+        if(!passwordEncoder.matches(password1,user.getPassword())){
+            throw new BankServiceException("操作人1的用户名与密码不一致！");
+        }
+
+        Long operatorId2 = positionMoveDTO.getOperatorId1();
+        String password2 = positionMoveDTO.getPassword1();
+        User user2 = userRepository.findOne(operatorId1);
+        if(user2 == null){
+            throw new BankServiceException("操作人2不存在！");
+        }
+        if(!passwordEncoder.matches(password2,user2.getPassword())){
+            throw new BankServiceException("操作人2的用户名与密码不一致！");
+        }
     }
 
     public void createMoveRecordDetailForBox(PositionMoveRecordDTO p, PositionMove positionMove) {

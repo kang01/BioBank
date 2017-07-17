@@ -29,7 +29,11 @@ public class PositionMoveDTO extends AbstractAuditingDTO implements Serializable
 
     private Long operatorId1;
 
+    private String password1;
+
     private Long operatorId2;
+
+    private String password2;
 
     @Size(max = 20)
     private String status;
@@ -78,6 +82,14 @@ public class PositionMoveDTO extends AbstractAuditingDTO implements Serializable
         return operatorId1;
     }
 
+    public String getPassword1() {
+        return password1;
+    }
+
+    public void setPassword1(String password1) {
+        this.password1 = password1;
+    }
+
     public void setOperatorId1(Long operatorId1) {
         this.operatorId1 = operatorId1;
     }
@@ -90,6 +102,14 @@ public class PositionMoveDTO extends AbstractAuditingDTO implements Serializable
     }
     public String getStatus() {
         return status;
+    }
+
+    public String getPassword2() {
+        return password2;
+    }
+
+    public void setPassword2(String password2) {
+        this.password2 = password2;
     }
 
     public void setStatus(String status) {

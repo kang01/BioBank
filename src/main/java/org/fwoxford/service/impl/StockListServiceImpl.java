@@ -53,6 +53,8 @@ public class StockListServiceImpl implements StockListService {
 
     @Autowired
     private AreasListRepositories areasListRepositories;
+    @Autowired
+    private AreasListByProjectRepositories areasListByProjectRepositories;
     /**
      * 冻存位置清单
      * @param input
@@ -223,8 +225,190 @@ public class StockListServiceImpl implements StockListService {
     }
 
     @Override
-    public DataTablesOutput<AreasListAllDataTableEntity> getPageAreaList(DataTablesInput input, FrozenPositionListSearchForm search) {
-        return areasListRepositories.findAll(input);
+    public DataTablesOutput<AreasListAllDataTableEntity> getPageAreaList(DataTablesInput input, FrozenPositionListSearchForm searchForm) {
+        DataTablesOutput<AreasListAllDataTableEntity> output = new DataTablesOutput<AreasListAllDataTableEntity>();
+        if(searchForm != null && searchForm.getProjectCodeStr()!=null && searchForm.getProjectCodeStr().length>0){
+            Specification<AreasListByProjectDataTableEntity> specification = new Specification<AreasListByProjectDataTableEntity>() {
+                @Override
+                public Predicate toPredicate(Root<AreasListByProjectDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                    query = getSearchAreasListByProject(root,query,cb,searchForm);
+                    return query.getRestriction();
+                }
+            };
+            Converter<AreasListByProjectDataTableEntity, AreasListAllDataTableEntity> userConverter = new Converter<AreasListByProjectDataTableEntity, AreasListAllDataTableEntity>() {
+                @Override
+                public AreasListAllDataTableEntity convert(AreasListByProjectDataTableEntity e) {
+                    String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),null,null,null,null,null);
+                    return new AreasListAllDataTableEntity(e.getId(),e.getEquipmentType(),e.getEquipmentCode(),e.getAreaCode(),e.getStatus(),
+                        e.getEquipmentTypeId(),e.getEquipmentId(),position,e.getFreezeFrameNumber(),e.getCountOfRest(),e.getCountOfUsed());
+                }
+            };
+            output = areasListByProjectRepositories.findAll(input,null,specification,userConverter);
+        }else{
+            Specification<AreasListAllDataTableEntity> specification = new Specification<AreasListAllDataTableEntity>() {
+                @Override
+                public Predicate toPredicate(Root<AreasListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                    query = getSearchAreasList(root,query,cb,searchForm);
+                    return query.getRestriction();
+                }
+            };
+            Converter<AreasListAllDataTableEntity, AreasListAllDataTableEntity> userConverter = new Converter<AreasListAllDataTableEntity, AreasListAllDataTableEntity>() {
+                @Override
+                public AreasListAllDataTableEntity convert(AreasListAllDataTableEntity e) {
+                    String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),null,null,null,null,null);
+                    return new AreasListAllDataTableEntity(e.getId(),e.getEquipmentType(),e.getEquipmentCode(),e.getAreaCode(),e.getStatus(),
+                        e.getEquipmentTypeId(),e.getEquipmentId(),position,e.getFreezeFrameNumber(),e.getCountOfRest(),e.getCountOfUsed());
+                }
+            };
+            output =  areasListRepositories.findAll(input,null,specification,userConverter);
+        }
+        return output;
+    }
+
+    private CriteriaQuery<?> getSearchAreasList(Root<AreasListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, FrozenPositionListSearchForm searchForm) {
+        if (searchForm != null) {
+            List<Predicate> predicate = new ArrayList<>();
+            if (searchForm.getEquipmentTypeId() != null) {
+                Predicate p1 = cb.equal(root.get("equipmentTypeId").as(Long.class), searchForm.getEquipmentTypeId());
+                predicate.add(p1);
+            }
+            if (searchForm.getShelvesTypeId() != null) {
+                Predicate p2 = cb.equal(root.get("shelvesTypeId").as(Long.class), searchForm.getShelvesTypeId());
+                predicate.add(p2);
+            }
+            if (searchForm.getStatus() != null) {
+                Predicate p3 = cb.equal(root.get("status").as(String.class), searchForm.getStatus());
+                predicate.add(p3);
+            }
+            if (searchForm.getEquipmentId() != null) {
+                Predicate p3 = cb.equal(root.get("equipmentId").as(Long.class), searchForm.getEquipmentId());
+                predicate.add(p3);
+            }
+            if (searchForm.getAreaId() != null) {
+                Predicate p4 = cb.equal(root.get("areaId").as(Long.class), searchForm.getAreaId());
+                predicate.add(p4);
+            }
+            if (searchForm.getShelvesId() != null) {
+                Predicate p5 = cb.equal(root.get("shelvesId").as(Long.class), searchForm.getShelvesId());
+                predicate.add(p5);
+            }
+            if (searchForm.getSpaceType() != null) {
+                String searchValue = "";
+                switch (searchForm.getSpaceType()) {
+                    case 1:
+                        searchValue = "countOfUsed";
+                        break;
+                    case 2:
+                        searchValue = "countOfRest";
+                        break;
+                    default:break;
+                }
+                Predicate p5 = null;
+                //1：大于，2：大于等于，3：等于，4：小于，5：小于等于
+                switch (searchForm.getCompareType()) {
+                    case 1:
+                        p5 = cb.gt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        break;
+                    case 2:
+                        p5 = cb.ge(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        break;
+                    case 3:
+                        p5 = cb.equal(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        break;
+                    case 4:
+                        p5 = cb.lt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        break;
+                    case 5:
+                        p5 = cb.le(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        break;
+                    default:break;
+                }
+                if (searchForm.getSpaceType() != null && searchForm.getCompareType() != null && searchForm.getNumber() != null) {
+                    predicate.add(p5);
+                }
+            }
+            Predicate[] pre = new Predicate[predicate.size()];
+            query.where(predicate.toArray(pre));
+        }
+        return query;
+    }
+
+    private CriteriaQuery<?> getSearchAreasListByProject(Root<AreasListByProjectDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, FrozenPositionListSearchForm searchForm) {
+        if (searchForm != null) {
+            List<Predicate> predicate = new ArrayList<>();
+            if (searchForm.getProjectCodeStr() != null && searchForm.getProjectCodeStr().length > 0) {
+                query.distinct(true);
+                if (searchForm.getProjectCodeStr() != null && searchForm.getProjectCodeStr().length > 0) {
+                    CriteriaBuilder.In<String> in = cb.in(root.get("projectCode"));
+                    for (String id : searchForm.getProjectCodeStr()) {
+                        in.value(id);
+                    }
+                    predicate.add(in);
+                }
+            }
+            if (searchForm.getEquipmentTypeId() != null) {
+                Predicate p1 = cb.equal(root.get("equipmentTypeId").as(Long.class), searchForm.getEquipmentTypeId());
+                predicate.add(p1);
+            }
+            if (searchForm.getShelvesTypeId() != null) {
+                Predicate p2 = cb.equal(root.get("shelvesTypeId").as(Long.class), searchForm.getShelvesTypeId());
+                predicate.add(p2);
+            }
+            if (searchForm.getStatus() != null) {
+                Predicate p3 = cb.equal(root.get("status").as(String.class), searchForm.getStatus());
+                predicate.add(p3);
+            }
+            if (searchForm.getEquipmentId() != null) {
+                Predicate p3 = cb.equal(root.get("equipmentId").as(Long.class), searchForm.getEquipmentId());
+                predicate.add(p3);
+            }
+            if (searchForm.getAreaId() != null) {
+                Predicate p4 = cb.equal(root.get("areaId").as(Long.class), searchForm.getAreaId());
+                predicate.add(p4);
+            }
+            if (searchForm.getShelvesId() != null) {
+                Predicate p5 = cb.equal(root.get("shelvesId").as(Long.class), searchForm.getShelvesId());
+                predicate.add(p5);
+            }
+            if (searchForm.getSpaceType() != null) {
+                String searchValue = "";
+                switch (searchForm.getSpaceType()) {
+                    case 1:
+                        searchValue = "countOfUsed";
+                        break;
+                    case 2:
+                        searchValue = "countOfRest";
+                        break;
+                    default:break;
+                }
+                Predicate p5 = null;
+                //1：大于，2：大于等于，3：等于，4：小于，5：小于等于
+                switch (searchForm.getCompareType()) {
+                    case 1:
+                        p5 = cb.gt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        break;
+                    case 2:
+                        p5 = cb.ge(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        break;
+                    case 3:
+                        p5 = cb.equal(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        break;
+                    case 4:
+                        p5 = cb.lt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        break;
+                    case 5:
+                        p5 = cb.le(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        break;
+                    default:break;
+                }
+                if (searchForm.getSpaceType() != null && searchForm.getCompareType() != null && searchForm.getNumber() != null) {
+                    predicate.add(p5);
+                }
+            }
+            Predicate[] pre = new Predicate[predicate.size()];
+            query.where(predicate.toArray(pre));
+        }
+        return query;
     }
 
     private CriteriaQuery<?> getSearchShelvesListByProject(Root<ShelvesListByProjectDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, FrozenPositionListSearchForm searchForm) {

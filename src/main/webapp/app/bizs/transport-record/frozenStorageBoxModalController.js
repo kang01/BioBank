@@ -82,6 +82,12 @@
             onChange:function (value) {
                 if(value){
                     AreasByEquipmentIdService.query({id:value},onAreaTempSuccess, onError);
+                }else{
+                    vm.frozenBoxHoldAreaOptions = [
+                        {id:"",areaCode:""}
+                    ];
+                    vm.frozenBox.areaId = "";
+                    $scope.$apply();
                 }
             }
         };
@@ -214,8 +220,8 @@
         }
         function onEquipmentTempSuccess(data) {
             vm.frozenBoxPlaceOptions = data;
-            vm.frozenBox.equipmentId = vm.frozenBoxPlaceOptions[0].id;
-            AreasByEquipmentIdService.query({id:vm.frozenBox.equipmentId},onAreaTempSuccess, onError);
+            // vm.frozenBox.equipmentId = vm.frozenBoxPlaceOptions[0].id;
+            // AreasByEquipmentIdService.query({id:vm.frozenBox.equipmentId},onAreaTempSuccess, onError);
         }
         function onAreaTempSuccess(data) {
             vm.frozenBoxHoldAreaOptions = data;

@@ -251,10 +251,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
                        .supportRackCode(supportRack.getSupportRackCode());
                    frozenBoxRepository.save(frozenBox);
                }
-                supportRack.area(area);
-                supportRackRepository.save(supportRack);
             }
-
         }
         return positionMoveDTO;
     }
@@ -323,8 +320,9 @@ public class PositionMoveServiceImpl implements PositionMoveService {
             if(supportRack == null){
                 throw new BankServiceException("新冻存架不存在！");
             }
-             List<FrozenBox> frozenBoxList = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(supportRackOld.getArea().getEquipmentCode(),supportRackOld.getArea().getAreaCode(),supportRackOld.getSupportRackCode());
-            if(frozenBoxList.size()>=area.getFreezeFrameNumber()){
+            List<FrozenBox> frozenBoxList = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(supportRackOld.getArea().getEquipmentCode(),supportRackOld.getArea().getAreaCode(),supportRackOld.getSupportRackCode());
+            List<FrozenBox> frozenBoxListNew = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(supportRack.getArea().getEquipmentCode(),supportRack.getArea().getAreaCode(),supportRack.getSupportRackCode());
+            if(frozenBoxListNew.size()>=area.getFreezeFrameNumber()){
                 throw new BankServiceException("该区域冻存架已满");
             }
              for(FrozenBox frozenBox:frozenBoxList){

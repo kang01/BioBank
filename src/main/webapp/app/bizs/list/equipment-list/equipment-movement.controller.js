@@ -74,7 +74,6 @@
             }
             vm.movement.positionMoveRecordDTOS = _.filter(vm.selectedEquipment, {isPutInShelf: true});
             BioBankBlockUi.blockUiStart();
-            console.log(JSON.stringify(vm.movement));
             EquipmentInventoryService.saveMovement(vm.movement).success(function (data) {
                 BioBankBlockUi.blockUiStop();
                 toastr.error("保存成功!");
@@ -238,7 +237,7 @@
                 }
                 var jqDt = this;
                 var searchForm = angular.toJson(vm.dto);
-                EquipmentInventoryService.queryEquipmentList(data,searchForm).then(function (res){
+                EquipmentInventoryService.queryAreaList(data,searchForm).then(function (res){
                     var json = res.data;
                     vm.equipmentData = res.data.data;
                     var error = json.error || json.sError;
@@ -269,11 +268,9 @@
             });
         vm.dtColumns = [
             DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型').withOption("width", "100"),
-            DTColumnBuilder.newColumn('position').withTitle('位置').withOption("width", "140").renderWith(_fnRowPositionRender),
-            DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
+            DTColumnBuilder.newColumn('position').withTitle('区域位置').withOption("width", "100").renderWith(_fnRowPositionRender),
+            DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "50"),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
-            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60")
                 .withOption('searchable',false).notSortable().renderWith(actionsHtml)
@@ -294,8 +291,8 @@
                 "<div class='Bar' style ='"+progressStyle+"'> " +
                 " </div> " +
                 "</div>";
-            $('td:eq(6)', row).html(status);
-            $('td:eq(3)', row).html(html);
+            $('td:eq(4)', row).html(status);
+            $('td:eq(2)', row).html(html);
             $compile(angular.element(row).contents())($scope);
         }
         function _fnRowPositionRender(data, type, full, meta) {

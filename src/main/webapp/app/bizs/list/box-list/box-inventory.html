@@ -60,28 +60,33 @@
                             <selectize options='vm.projectOptions' config="vm.projectConfig"
                                        ng-model="vm.projectCodeStr"></selectize>
                         </div>
-                        <div class="form-group">
-                            <label>样本类型</label>
-                            <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                       ng-model="vm.dto.sampleTypeId"></selectize>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>样本类型</label>
+                                <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                                           ng-model="vm.dto.sampleTypeId"></selectize>
 
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>样本分类</label>
+                                <selectize options='vm.sampleClassOptions' config="vm.sampleClassConfig"
+                                           ng-model="vm.dto.sampleClassificationId"
+                                ></selectize>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>样本分类</label>
-                            <selectize options='vm.sampleClassOptions' config="vm.sampleClassConfig"
-                                       ng-model="vm.dto.sampleClassificationId"
-                            ></selectize>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>盒类型</label>
+                                <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
+                                           ng-model="vm.dto.frozenBoxTypeId"></selectize>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>状态</label>
+                                <selectize options='vm.statusOptions' config="vm.statusConfig"
+                                           ng-model="vm.dto.status"></selectize>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>盒类型</label>
-                            <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
-                                       ng-model="vm.dto.frozenBoxTypeId"></selectize>
-                        </div>
-                        <div class="form-group">
-                            <label>状态</label>
-                            <selectize options='vm.statusOptions' config="vm.statusConfig"
-                                       ng-model="vm.dto.status"></selectize>
-                        </div>
+
                         <div class="form-group">
                             <div>
                                 <label>位置</label>

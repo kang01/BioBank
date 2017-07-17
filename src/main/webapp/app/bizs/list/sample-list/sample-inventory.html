@@ -48,7 +48,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body sample-search">
                         <div class="form-group">
                             <label>样本编码</label>
                             <selectize placeholder='' options='vm.myOptions' config="vm.sampleCodeConfig" ng-model="vm.arraySampleCode" ng-disabled='disable' required='true'></selectize>
@@ -78,22 +78,23 @@
                                 ></selectize>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>状态</label>
-                            <selectize options='vm.statusOptions' config="vm.statusConfig"
-                                       ng-model="vm.dto.status"></selectize>
-                        </div>
                         <div class="row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
+                                <label>状态</label>
+                                <selectize options='vm.statusOptions' config="vm.statusConfig"
+                                           ng-model="vm.dto.status"></selectize>
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label>性别</label>
                                 <selectize options='vm.sexOptions' config="vm.sexConfig"
                                            ng-model="vm.dto.sex"></selectize>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label>年龄</label>
                                 <input type="text" class="form-control" ng-model="vm.dto.age">
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <label>疾病类型</label>

@@ -63,7 +63,19 @@
             labelField:'equipmentCode',
             maxItems: 1,
             onChange:function (value) {
-                AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                if(value){
+                    AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                }else{
+                    vm.frozenBoxAreaOptions = [
+                        {id:"",areaCode:""}
+                    ];
+                    vm.dto.areaId = "";
+                    vm.frozenBoxShelfOptions = [
+                        {id:"",supportRackCode:""}
+                    ];
+                    vm.dto.shelvesId = "";
+                    $scope.$apply();
+                }
             }
         };
         function onAreaSuccess(data) {
@@ -78,8 +90,15 @@
             labelField:'areaCode',
             maxItems: 1,
             onChange:function (value) {
-                SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
-
+                if(value){
+                    SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
+                }else{
+                    vm.frozenBoxShelfOptions = [
+                        {id:"",supportRackCode:""}
+                    ];
+                    vm.dto.shelvesId = "";
+                    $scope.$apply();
+                }
             }
         };
         //架子
@@ -256,16 +275,16 @@
                             selectedSample.push(obj);
                         }
 
-                    }
-                }else{
-                    var index = [];
-                    if(selectedBox.length){
-                        for(var i = 0; i < selectedSample.length; i++){
-                            if(+id == selectedSample[i].id){
-                                index.push(i);
+                    }else{
+                        var index = [];
+                        if(selectedSample.length){
+                            for(var i = 0; i < selectedSample.length; i++){
+                                if(+id == selectedSample[i].id){
+                                    index.push(i);
+                                }
                             }
+                            _.pullAt(selectedSample, index);
                         }
-                        _.pullAt(selectedSample, index);
                     }
                 }
             }

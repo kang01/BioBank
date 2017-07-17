@@ -80,7 +80,20 @@
             labelField:'equipmentCode',
             maxItems: 1,
             onChange:function (value) {
-                AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                if(value){
+                    AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                }else{
+                    vm.frozenBoxAreaOptions = [
+                        {id:"",areaCode:""}
+                    ];
+                    vm.dto.areaId = "";
+                    vm.frozenBoxShelfOptions = [
+                        {id:"",supportRackCode:""}
+                    ];
+                    vm.dto.shelvesId = "";
+                    $scope.$apply();
+                }
+
             }
         };
         function onAreaSuccess(data) {
@@ -95,8 +108,15 @@
             labelField:'areaCode',
             maxItems: 1,
             onChange:function (value) {
-                SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
-
+                if(value){
+                    SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
+                }else{
+                    vm.frozenBoxShelfOptions = [
+                        {id:"",supportRackCode:""}
+                    ];
+                    vm.dto.shelvesId = "";
+                    $scope.$apply();
+                }
             }
         };
         //架子

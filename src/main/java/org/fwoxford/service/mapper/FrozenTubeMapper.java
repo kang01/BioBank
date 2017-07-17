@@ -1,5 +1,6 @@
 package org.fwoxford.service.mapper;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenTubeForSaveBatchDTO;
@@ -7,6 +8,7 @@ import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.FrozenTubeDTO;
 
 import org.mapstruct.*;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,7 +165,7 @@ public interface FrozenTubeMapper {
         frozenTube.setTubeColumns( frozenTubeDTO.getTubeColumns() );
         frozenTube.setMemo( frozenTubeDTO.getMemo() );
         frozenTube.setSampleClassification( sampleClassificationFromId( frozenTubeDTO.getSampleClassificationId() ));
-        frozenTube.setStatus( frozenTubeDTO.getStatus() );
+        frozenTube.setStatus(StringUtils.isEmpty(frozenTubeDTO.getStatus())?Constants.FROZEN_TUBE_NORMAL: frozenTubeDTO.getStatus());
         frozenTube.setFrozenBoxCode( frozenTubeDTO.getFrozenBoxCode() );
         return frozenTube;
     }

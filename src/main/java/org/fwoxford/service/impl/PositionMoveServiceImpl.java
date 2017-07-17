@@ -375,7 +375,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
 
         Long operatorId2 = positionMoveDTO.getOperatorId1();
         String password2 = positionMoveDTO.getPassword1();
-        User user2 = userRepository.findOne(operatorId1);
+        User user2 = userRepository.findOne(operatorId2);
         if(user2 == null){
             throw new BankServiceException("操作人2不存在！");
         }

@@ -367,8 +367,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                         tube.getSampleType().setSampleTypeName(tube.getSampleTypeName());
                     }
                 }
-                if((tube.getSampleTempCode().equals(" ")||tube.getSampleTempCode().equals(null))
-                        &&(tube.getSampleCode().equals(" ")||tube.getSampleCode().equals(null))){
+                if((StringUtils.isEmpty(tube.getSampleTempCode()))
+                        &&(StringUtils.isEmpty(tube.getSampleCode()))){
                     throw new BankServiceException("冻存管编码为空，不能保存！");
                 }
 
@@ -447,7 +447,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 }
                 tube.setSampleUsedTimes(0);
                 tube.setFrozenTubeState(Constants.FROZEN_BOX_NEW);
-                tube = frozenTubeRepository.save(tube);
+                frozenTubeRepository.save(tube);
                 frozenTubeList.add(tube);
             }
 

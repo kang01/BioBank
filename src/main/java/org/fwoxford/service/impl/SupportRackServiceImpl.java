@@ -226,6 +226,7 @@ public class SupportRackServiceImpl implements SupportRackService{
         areaDTO.setPosition(BankUtil.getPositionString(areaDTO.getEquipmentCode(),areaDTO.getAreaCode(),null,null,null,null,null));
         areaDTO.setProjectCodes(String.join(";", projects));
         areaDTO.setSupportRackDTOS(supportRackDTOS);
+        areaDTO.setEquipmentType(area.getEquipment().getEquipmentModle().getEquipmentType());
         return areaDTO;
     }
 

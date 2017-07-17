@@ -32,7 +32,7 @@
         };
         var projectIds = [];
         vm.selected = {};
-
+        vm.moveOperateFlag = false;
         function _init() {
             // 过滤已上架的冻存盒
             vm.filterNotPutInShelfTubes = function (box) {
@@ -60,6 +60,7 @@
         vm.empty = _fnEmpty;
         vm.close = _fnClose;
         vm.closeMovement = _fnCloseMovement;
+        vm.moveOperate = _fnMoveOperate;
 
         function _fnClose() {
             if (vm.selectedBox.length) {
@@ -285,7 +286,7 @@
                 }
                 var jqDt = this;
                 var searchForm = angular.toJson(vm.dto);
-                EquipmentInventoryService.queryEquipmentList(data, searchForm).then(function (res) {
+                BoxInventoryService.queryShelfList(data, searchForm).then(function (res) {
                     var json = res.data;
                     vm.equipmentData = res.data.data;
                     var error = json.error || json.sError;
@@ -316,13 +317,37 @@
             DTColumnBuilder.newColumn('position').withTitle('冻存架位置').withOption("width", "120").renderWith(_fnRowPositionRender),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "50"),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "50"),
-            DTColumnBuilder.newColumn('projectName').withTitle('项目名称').withOption("width", "auto")
-
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60")
+                .withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {
+            var status = '';
+            switch (data.status){
+                case '0001': status = '运行中';break;
+            }
+            var countOfUsed = data.countOfUsed;
+            var countOfRest = data.countOfRest;
+            var total = countOfUsed+countOfRest;
+            var progressStyle = "width:"+countOfUsed/total*100+"%";
+            var progress = ""+countOfUsed + "/" + total;
+            var html;
+            html = "<div class='pos-progress'> " +
+                "<div class='text'>"+progress+"</div>" +
+                "<div class='Bar' style ='"+progressStyle+"'> " +
+
+                " </div> " +
+                "</div>";
+            $('td:eq(4)', row).html(status);
+            $('td:eq(2)', row).html(html);
             $compile(angular.element(row).contents())($scope);
         }
-
+        function actionsHtml(data, type, full, meta) {
+            var position = "'" + full.position + "'";
+            return '<button type="button" class="btn btn-xs" ng-click="vm.moveOperate('+position+')">' +
+                '   移入' +
+                '</button>&nbsp;';
+        }
         function _fnRowPositionRender(data, type, full, meta) {
             var position = "'" + full.position + "'";
             var html = '';
@@ -331,8 +356,12 @@
         }
 
         function _fnSearchShelf(position) {
+            vm.moveOperateFlag = false;
             vm.movementFlag = true;
-            BoxInventoryService.queryShelfList(position).success(function (data) {
+            _queryShelfDesc(position);
+        }
+        function _queryShelfDesc(position) {
+            BoxInventoryService.queryShelfDesc(position).success(function (data) {
                 vm.shelf = data;
                 var boxList = _.filter(vm.selectedBox,{'moveFrozenBoxPosition':position});
                 for(var i = 0; i< boxList.length; i++){
@@ -342,6 +371,10 @@
             }).error(function (data) {
                 toastr.error(data.message);
             })
+        }
+        function _fnMoveOperate(position) {
+            vm.moveOperateFlag = true;
+            _queryShelfDesc(position);
         }
         //移入
         function _fnPutIn() {
@@ -477,6 +510,9 @@
             if (emptyPos) {
                 // tableCtrl.selectCell(0, 0);
                 tableCtrl.selectCell(emptyPos.row, emptyPos.col);
+            }
+            if(vm.moveOperateFlag){
+                _fnPutIn();
             }
         }
 

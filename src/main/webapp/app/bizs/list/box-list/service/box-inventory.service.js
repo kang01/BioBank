@@ -13,12 +13,16 @@
         var service = {
             queryBoxList:_queryBoxList,
             queryShelfList:_queryShelfList,
+            queryShelfDesc:_queryShelfDesc,
             saveMovement:_saveMovement
         };
         function _queryBoxList(data,searchForm) {
             return $http.post('api/res/stock-list/frozen-box?searchForm='+searchForm,angular.toJson(data));
         }
-        function _queryShelfList(positon) {
+        function _queryShelfList(data,searchForm) {
+            return $http.post('api/res/shelves-list?searchForm='+searchForm,angular.toJson(data));
+        }
+        function _queryShelfDesc(positon) {
             var array =  _.split(positon, '.');
             var equipmentCode = array[0];
             var areaCode = array[1];

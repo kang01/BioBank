@@ -307,19 +307,19 @@
             return html;
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-xs" ng-click="vm.searchArea('+full.equipmentId+')">' +
+            return '<button type="button" class="btn btn-xs" ng-click="vm.searchArea('+full.equipmentId+','+full.id+')">' +
                 '   移入' +
             '</button>&nbsp;';
         }
-        function _fnSearchEquipment(equipmentId,areaId,shelvesCode) {
+        function _fnSearchEquipment(equipmentId,areaId) {
             vm.movementFlag = true;
-            _queryAreaById(equipmentId,areaId,shelvesCode);
+            _queryAreaById(equipmentId,areaId);
         }
-        function _fnSearchArea(equipmentId) {
+        function _fnSearchArea(equipmentId,areaId) {
             vm.moveOperateFlag = true;
-            _queryAreaById(equipmentId);
+            _queryAreaById(equipmentId,areaId);
         }
-        function _queryAreaById(equipmentId,areaId,shelvesCode) {
+        function _queryAreaById(equipmentId,areaId) {
             EquipmentInventoryService.queryRack(equipmentId,areaId).success(function (data) {
                 vm.rack = data;
                 var equipmentList = _.filter(vm.selectedEquipment,{'moveShelfPosition':vm.rack.position});

@@ -32,7 +32,7 @@
         vm.selectedSample = [];
         var selectedSampleId = [];
         vm.sampleMovementFlag = false;
-
+        vm.moveOperateFlag = false;
         if(vm.selectedTubes.length){
             for(var i = 0; i < vm.selectedTubes.length; i++){
                 vm.selectedTubes[i].moveFrozenBoxCode = '';
@@ -88,6 +88,7 @@
         vm.saveMovement = _fnSaveMovement;
         //获取管子列表
         vm.sampleMovement = _fnSampleMovement;
+        vm.moveOperate = _fnMoveOperate;
 
         function _fnSearch() {
             if(projectIds.length){
@@ -358,14 +359,16 @@
             })
             .withOption('createdRow', createdRow);
         vm.boxColumns = [
-            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒子类型').withOption("width", "80"),
+            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒子类型').withOption("width", "100"),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "60").renderWith(_fnRowCodeRender),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "60"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
             DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "100"),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
-            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60")
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60")
+                .withOption('searchable',false).notSortable().renderWith(actionsHtml)
 
         ];
         function createdRow(row, data, dataIndex) {
@@ -376,6 +379,12 @@
             $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
+        function actionsHtml(data, type, full, meta) {
+            var frozenBoxCode = "'"+full.frozenBoxCode + "'";
+            return '<button type="button" class="btn btn-xs" ng-click="vm.moveOperate('+frozenBoxCode+')">' +
+                '   移入' +
+                '</button>&nbsp;';
+        }
         function _fnRowCodeRender(data, type, full, meta) {
             var frozenBoxCode = "'"+full.frozenBoxCode + "'";
             var html = '';
@@ -383,12 +392,19 @@
             return html;
         }
 
-
-
         /*冻存管修改*/
+
         //查询管子
         function _fnSampleMovement(frozenBoxCode) {
+            vm.moveOperateFlag = false;
             vm.sampleMovementFlag = true;
+            _queryTubes(frozenBoxCode);
+        }
+        function _fnMoveOperate(frozenBoxCode) {
+            vm.moveOperateFlag = true;
+            _queryTubes(frozenBoxCode);
+        }
+        function _queryTubes(frozenBoxCode) {
             StockInBoxByCodeService.get({code:frozenBoxCode},onFrozenSuccess,onError);
         }
         function onFrozenSuccess(data) {
@@ -755,17 +771,6 @@
                         }
 
                     }
-                    //混合类型
-                    // if(box.isMixed == "1"){
-                    //     for (var l = 0; l < vm.projectSampleTypeOptions.length; l++) {
-                    //         if (vm.projectSampleTypeOptions[l].columnsNumber == pos.tubeColumns) {
-                    //             if(!tube.sampleClassificationId){
-                    //                 tube.sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
-                    //             }
-                    //
-                    //         }
-                    //     }
-                    // }
                     tubes.push(tube);
                 }
                 tubesInTable.push(tubes);
@@ -780,6 +785,10 @@
             tableCtrl.updateSettings(settings);
             tableCtrl.loadData(tubesInTable);
             tableCtrl.selectCell(emptyPos.row, emptyPos.col);
+
+            if(vm.moveOperateFlag){
+                _fnPutIn();
+            }
         }
         // 获取上架位置列表的控制实体
         function _getTableCtrl(){

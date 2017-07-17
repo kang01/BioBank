@@ -82,15 +82,20 @@
                             <th>冻存盒编码</th>
                             <th>样本类型</th>
                             <th>样本分类</th>
+                            <th>移入冻存区位置</th>
                         </thead>
                         <tbody >
-                            <tr ng-repeat="box in vm.selectedBox | filter:vm.filterNotPutInShelfTubes">
+                        <!--| filter:vm.filterNotPutInShelfTubes-->
+                            <tr ng-repeat="box in vm.selectedBox">
                                 <td>
-                                    <input type="checkbox" ng-model="vm.selected[box.id]" ng-click="vm.toggleOne(vm.selected)">
+                                    <div ng-if="!box.moveFrozenBoxPosition">
+                                        <input type="checkbox" ng-model="vm.selected[box.id]" ng-click="vm.toggleOne(vm.selected)">
+                                    </div>
                                 </td>
                                 <td>{{box.frozenBoxCode}}</td>
                                 <td>{{box.sampleType}}</td>
                                 <td>{{box.sampleClassification}}</td>
+                                <td>{{box.moveFrozenBoxPosition}}</td>
                             </tr>
                         </tbody>
                     </table>

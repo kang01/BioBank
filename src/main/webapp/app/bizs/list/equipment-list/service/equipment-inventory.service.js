@@ -24,7 +24,7 @@
             return $http.post('api/res/stock-list/frozen-position?searchForm='+searchForm,angular.toJson(data));
         }
         function _queryAreaList(data,searchForm) {
-            return $http.post('api/res/stock-list/frozen-position?searchForm='+searchForm,angular.toJson(data));
+            return $http.post('api/res/areas-list?searchForm='+searchForm,angular.toJson(data));
         }
         function _querySupportRackTypes() {
             return $http.get('api/support-rack-types');

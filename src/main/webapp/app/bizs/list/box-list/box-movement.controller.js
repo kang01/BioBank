@@ -45,6 +45,7 @@
             _initSearch();
             if (vm.selectedBox.length) {
                 _.forEach(vm.selectedBox, function (box) {
+                    box.moveFrozenBoxPosition = '';
                     vm.selected[box.id] = false;
                 });
             }
@@ -155,7 +156,8 @@
             DTColumnBuilder.newColumn(0).withOption("width", "30"),
             DTColumnBuilder.newColumn(1).withOption("width", "100"),
             DTColumnBuilder.newColumn(2).withOption("width", "60"),
-            DTColumnBuilder.newColumn(3).withOption("width", "80")
+            DTColumnBuilder.newColumn(3).withOption("width", "80"),
+            DTColumnBuilder.newColumn(4).withOption("width", "80")
 
         ];
 
@@ -328,6 +330,19 @@
             return html;
         }
 
+        function _fnSearchShelf(position) {
+            vm.movementFlag = true;
+            BoxInventoryService.queryShelfList(position).success(function (data) {
+                vm.shelf = data;
+                var boxList = _.filter(vm.selectedBox,{'moveFrozenBoxPosition':position});
+                for(var i = 0; i< boxList.length; i++){
+                    vm.shelf.frozenBoxDTOList.push(boxList[i]);
+                }
+                _fnLoadHandSonTable(vm.shelf);
+            }).error(function (data) {
+                toastr.error(data.message);
+            })
+        }
         //移入
         function _fnPutIn() {
             var countOfCols = vm.shelf.supportRackColumns;
@@ -355,6 +370,8 @@
                                 box.rowsInShelf = cellData.rowsInShelf;
                                 box.columnsInShelf = cellData.columnsInShelf;
                                 box.supportRackId = cellData.supportRackId;
+                                //+"."+cellData.columnsInShelf+cellData.rowsInShelf
+                                box.moveFrozenBoxPosition = vm.shelf.position;
                                 box.frozenBoxId = box.id;
 
                                 cellData.frozenBoxCode = box.frozenBoxCode;
@@ -372,17 +389,6 @@
             tableCtrl.render();
             vm.selectedInstance.rerender();
         }
-
-        function _fnSearchShelf(position) {
-            vm.movementFlag = true;
-            BoxInventoryService.queryShelfList(position).success(function (data) {
-                vm.shelf = data;
-                _fnLoadHandSonTable(vm.shelf);
-            }).error(function (data) {
-                toastr.error(data.message);
-            })
-        }
-
         // 需要保存的盒子上架信息
         vm.putInShelfBoxes = {};
         function _fnLoadHandSonTable(shelf) {

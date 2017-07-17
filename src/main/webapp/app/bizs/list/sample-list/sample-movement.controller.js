@@ -18,6 +18,10 @@
         vm.selectedInstance = {};
         vm.dto = {};
         vm.movement = {
+            operatorId1: "",
+            operatorId2: "",
+            moveAffect: "",
+            moveReason: "",
             whetherFreezingAndThawing:false,
             positionMoveRecordDTOS:[]
         };
@@ -390,7 +394,6 @@
         function onFrozenSuccess(data) {
             var boxCode = data.frozenBoxCode;
             var tubeList = _.filter(vm.selectedSample,{'moveFrozenBoxCode':boxCode});
-            console.log(JSON.stringify(tubeList));
             vm.box = data;
             for(var i = 0; i < tubeList.length; i++){
                 tubeList[i].sampleType = {};

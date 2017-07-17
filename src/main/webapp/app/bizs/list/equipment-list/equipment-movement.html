@@ -73,14 +73,19 @@
                             </th>
                             <th>冻存架位置</th>
                             <th>架子类型</th>
+                            <th>移入区域位置</th>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="equipment in vm.selectedEquipment | filter:vm.filterNotPutInShelfTubes">
+                        <!--| filter:vm.filterNotPutInShelfTubes-->
+                        <tr ng-repeat="equipment in vm.selectedEquipment ">
                             <td>
-                                <input type="checkbox" ng-model="vm.selected[equipment.id]" ng-click="vm.toggleOne(vm.selected)">
+                                <div ng-if="!equipment.moveShelfPosition">
+                                    <input type="checkbox" ng-model="vm.selected[equipment.id]" ng-click="vm.toggleOne(vm.selected)">
+                                </div>
                             </td>
                             <td>{{equipment.position}}</td>
                             <td>{{equipment.shelvesType}}</td>
+                            <td>{{equipment.moveShelfPosition}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -159,7 +164,7 @@
                 </form>
                 <div ng-if="vm.movementFlag">
                     <p>
-                        <span>定位:{{vm.rack.equipmentCode}}&nbsp;&nbsp;</span>
+                        <span>定位:{{vm.rack.position}}&nbsp;&nbsp;</span>
                         <span>设备类型:{{vm.rack.equipmentType}}&nbsp;&nbsp;</span>
                         <span>剩余空位:{{vm.rack.restOfSpace}}&nbsp;&nbsp;</span>
                     </p>

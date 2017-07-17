@@ -38,11 +38,14 @@
             _initHandsonTablePanel();
             if(vm.selectedEquipment.length){
                 _.forEach(vm.selectedEquipment, function(equipment){
+                    equipment.moveShelfPosition = "";
                     vm.selected[equipment.id] = false;
                 });
             }
         }
         _init();
+        //移入操作
+        vm.searchArea = _fnSearchArea;
         vm.searchEquipment = _fnSearchEquipment;
         vm.putIn = _fnPutIn;
         vm.saveMovement = _fnSaveMovement;
@@ -139,7 +142,8 @@
         vm.selectedColumns = [
             DTColumnBuilder.newColumn(0).withOption("width", "30"),
             DTColumnBuilder.newColumn(1).withOption("width", "100"),
-            DTColumnBuilder.newColumn(2).withOption("width", "100")
+            DTColumnBuilder.newColumn(2).withOption("width", "100"),
+            DTColumnBuilder.newColumn(3).withOption("width", "100")
         ];
 
         //目标冻存架
@@ -299,7 +303,7 @@
         }
         function _fnRowPositionRender(data, type, full, meta) {
             var html = '';
-            html = '<a ng-click="vm.searchEquipment('+full.equipmentId+','+full.areaId+')">'+full.position+'</a>';
+            html = '<a ng-click="vm.searchEquipment('+full.equipmentId+','+full.id+')">'+full.position+'</a>';
             return html;
         }
         function actionsHtml(data, type, full, meta) {
@@ -307,18 +311,27 @@
                 '   移入' +
             '</button>&nbsp;';
         }
-        vm.searchArea = _fnSearchArea;
-        function _fnSearchEquipment(equipmentId,areaId) {
+        function _fnSearchEquipment(equipmentId,areaId,shelvesCode) {
             vm.movementFlag = true;
-            _queryAreaById(equipmentId,areaId);
+            _queryAreaById(equipmentId,areaId,shelvesCode);
         }
         function _fnSearchArea(equipmentId) {
             vm.moveOperateFlag = true;
             _queryAreaById(equipmentId);
         }
-        function _queryAreaById(equipmentId,areaId) {
+        function _queryAreaById(equipmentId,areaId,shelvesCode) {
             EquipmentInventoryService.queryRack(equipmentId,areaId).success(function (data) {
                 vm.rack = data;
+                var equipmentList = _.filter(vm.selectedEquipment,{'moveShelfPosition':vm.rack.position});
+                for(var i = 0; i < equipmentList.length; i++){
+                    for(var j = 0; j < vm.rack.supportRackDTOS.length;j++){
+                        var position1 = equipmentList[i].moveShelfPosition+"."+equipmentList[i].supportRackCode;
+                        var position2 = vm.rack.position+"."+vm.rack.supportRackDTOS[j].supportRackCode;
+                        if(position1 == position2){
+                            vm.rack.supportRackDTOS[j].flag = 1;
+                        }
+                    }
+                }
                 _fnLoadRack(vm.rack);
             }).error(function (data) {
                 toastr.error(data.message);
@@ -384,7 +397,9 @@
                                 equipment.isPutInShelf = true;
                                 equipment.supportRackId = cellData.id;
                                 equipment.areaId = cellData.areaId;
+                                equipment.moveShelfPosition = vm.rack.position;
                                 equipment.supportRackOldId = equipment.id;
+                                equipment.supportRackCode = cellData.supportRackCode;
                                 cellData.flag = 1;
                                 break;
                             }

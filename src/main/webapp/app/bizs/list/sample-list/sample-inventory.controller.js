@@ -38,6 +38,7 @@
             vm.diseaseTypeOptions = MasterData.diseaseType;
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
             });
             vm.sexOptions = MasterData.sexDict;
         }

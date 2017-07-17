@@ -69,21 +69,28 @@
                 <div class="no-padding">
                     <table datatable="ng" dt-options="vm.selectedOptions" dt-columns="vm.selectedColumns" dt-instance="vm.selectedInstance" class=" table table-striped table-bordered">
                         <thead>
-                        <th><input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll(vm.selectAll, vm.selected)"></th>
+                        <th>
+                            <input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll(vm.selectAll, vm.selected)">
+                        </th>
                         <th>样本编码</th>
                         <th>样本类型</th>
                         <th>样本分类</th>
                         <th>项目编码</th>
+                        <th>移入冻存盒编码</th>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="tube in vm.selectedSample | filter:vm.filterNotPutInShelfTubes">
-                                <td>
-                                    <input type="checkbox" ng-model="vm.selected[tube.id]" ng-click="vm.toggleOne(vm.selected)">
+                        <!-- | filter:vm.filterNotPutInShelfTubes-->
+                            <tr ng-repeat="tube in vm.selectedSample">
+                                <td >
+                                    <div ng-if="!tube.moveFrozenBoxCode">
+                                            <input type="checkbox" ng-model="vm.selected[tube.id]" ng-click="vm.toggleOne(vm.selected)">
+                                    </div>
                                 </td>
                                 <td>{{tube.sampleCode}}</td>
                                 <td>{{tube.sampleTypeName}}</td>
                                 <td>{{tube.sampleClassificationName}}</td>
                                 <td>{{tube.projectCode}}</td>
+                                <td>{{tube.moveFrozenBoxCode}}</td>
                             </tr>
                         </tbody>
                     </table>

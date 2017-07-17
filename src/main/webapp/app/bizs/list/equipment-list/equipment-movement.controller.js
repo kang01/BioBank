@@ -26,6 +26,8 @@
             positionMoveRecordDTOS:[]
         };
         vm.selected = {};
+        //列表中移入
+        vm.moveOperateFlag = false;
         var projectIds = [];
         function _init() {
             // 过滤已上架的冻存盒
@@ -76,7 +78,7 @@
             BioBankBlockUi.blockUiStart();
             EquipmentInventoryService.saveMovement(vm.movement).success(function (data) {
                 BioBankBlockUi.blockUiStop();
-                toastr.error("保存成功!");
+                toastr.success("保存成功!");
             }).error(function (data) {
                 toastr.error(data.message);
                 BioBankBlockUi.blockUiStop();
@@ -297,43 +299,49 @@
         }
         function _fnRowPositionRender(data, type, full, meta) {
             var html = '';
-            html = '<a ng-click="vm.searchEquipment('+full.equipmentId+')">'+full.position+'</a>';
+            html = '<a ng-click="vm.searchEquipment('+full.equipmentId+','+full.areaId+')">'+full.position+'</a>';
             return html;
         }
         function actionsHtml(data, type, full, meta) {
-            // return '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +
-            //     '   <i class="fa fa-edit"></i>' +
-            //     '</button>&nbsp;';
-            return "";
+            return '<button type="button" class="btn btn-xs" ng-click="vm.searchArea('+full.equipmentId+')">' +
+                '   移入' +
+            '</button>&nbsp;';
         }
-
-        function _fnSearchEquipment(equipmentId) {
+        vm.searchArea = _fnSearchArea;
+        function _fnSearchEquipment(equipmentId,areaId) {
             vm.movementFlag = true;
-            EquipmentInventoryService.queryEquipmentById(equipmentId).success(function (data) {
-                vm.equipment = data;
-                _fnLoadEquipment(vm.equipment);
+            _queryAreaById(equipmentId,areaId);
+        }
+        function _fnSearchArea(equipmentId) {
+            vm.moveOperateFlag = true;
+            _queryAreaById(equipmentId);
+        }
+        function _queryAreaById(equipmentId,areaId) {
+            EquipmentInventoryService.queryRack(equipmentId,areaId).success(function (data) {
+                vm.rack = data;
+                _fnLoadRack(vm.rack);
             }).error(function (data) {
                 toastr.error(data.message);
             })
         }
-        // 需要保存的盒子上架信息
+        // 需要保存的架子上架信息
         vm.putInShelfAreas = {};
-        function _fnLoadEquipment(equipment){
-            var areas = equipment.areaDTOList;
+        function _fnLoadRack(rack){
+            var racks = rack.supportRackDTOS;
             // 架子上的行数
             var countOfRows = 1;
             // 架子上的列数
-            var countOfCols = areas.length || 13;
+            var countOfCols = racks.length || 13;
             // // 架子定位列表的控制对象
             var tableCtrl = _getTableCtrl();
             // 创建架子定位列表的定位数据
-            var arrayAreas = [];
+            var arrayRack = [];
             var emptyPos = null;
             for(var i = 0; i < countOfRows; i++){
-                arrayAreas[i] = [];
+                arrayRack[i] = [];
                 for(var j = 0; j < countOfCols;j++){
-                    arrayAreas[i][j] = areas[j];
-                    if(!areas[j].flag){
+                    arrayRack[i][j] = racks[j];
+                    if(!racks[j].flag){
                         if (!emptyPos) {
                             emptyPos = {row: i, col: j};
                         }
@@ -341,20 +349,23 @@
                 }
             }
             // 更新架子定位列表并选中第一个空位置
-            tableCtrl.loadData(arrayAreas);
+            tableCtrl.loadData(arrayRack);
             if (emptyPos) {
                 tableCtrl.selectCell(emptyPos.row, emptyPos.col);
             }
-
+            if(vm.moveOperateFlag){
+                _fnPutIn();
+            }
         }
         //移入
         function _fnPutIn() {
-            var countOfCols = vm.equipment.areaDTOList.length;
+            var countOfCols = vm.rack.supportRackDTOS.length;
             var countOfRows = 1;
             var tableCtrl = _getTableCtrl();
             var startEmptyPos = tableCtrl.getSelected();
             var cellRow = startEmptyPos[0];
             var cellCol = startEmptyPos[1];
+
             for (var i in vm.selected) {
                 if (vm.selected[i]) {
                     vm.selectAll = false;
@@ -371,8 +382,9 @@
                                 // 标记区域已经上架
                                 vm.selected[i] = false;
                                 equipment.isPutInShelf = true;
-                                equipment.areaId = cellData.id;
-                                equipment.supportRackId = equipment.id;
+                                equipment.supportRackId = cellData.id;
+                                equipment.areaId = cellData.areaId;
+                                equipment.supportRackOldId = equipment.id;
                                 cellData.flag = 1;
                                 break;
                             }
@@ -392,7 +404,7 @@
             initHandsonTable(1,13);
 
             vm.settings = {
-                rowHeaders : ['S'],
+                rowHeaders : ['R'],
                 outsideClickDeselectsCache: false,
                 outsideClickDeselects: false,
                 data:vm.handsonTableArray,
@@ -441,7 +453,7 @@
 
                 var $div = $("<div/>").addClass(cellProperties && cellProperties.className ? cellProperties.className : "");
                 if (value){
-                    $div.html(value.areaCode);
+                    $div.html(value.supportRackCode);
                         // .data("frozenBoxId", value.frozenBoxId)
                         // .data("frozenBoxCode", value.frozenBoxCode)
                         // .data("columnsInShelf", value.columnsInShelf)

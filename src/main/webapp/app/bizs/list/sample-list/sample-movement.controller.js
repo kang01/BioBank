@@ -21,15 +21,17 @@
             whetherFreezingAndThawing:false,
             positionMoveRecordDTOS:[]
         };
-        // 选中的要上架的盒子
+        // 选中的要上架的样本
         vm.selectedTubes = $stateParams.selectedSample || [];
         vm.selected = {};
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.selectedSample = [];
         var selectedSampleId = [];
+        vm.sampleMovementFlag = false;
 
         if(vm.selectedTubes.length){
             for(var i = 0; i < vm.selectedTubes.length; i++){
+                vm.selectedTubes[i].moveFrozenBoxCode = '';
                 selectedSampleId.push(vm.selectedTubes[i].id);
             }
         }
@@ -73,7 +75,7 @@
         //清空
         vm.empty = _fnEmpty;
         //复原
-        vm.recover = _fnRecover;
+        // vm.recover = _fnRecover;
         //移入
         vm.putIn = _fnPutIn;
         //关闭目标冻存区
@@ -129,7 +131,7 @@
             //样本类型
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
-                _.remove(vm.sampleTypeOptions,{sampleTypeName:"99"});
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
                 if(!vm.box.sampleType){
                     vm.box.sampleTypeId = vm.sampleTypeOptions[0].id;
                     vm.box.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
@@ -205,9 +207,10 @@
         vm.selectedColumns = [
             DTColumnBuilder.newColumn(0).withOption("width", "30"),
             DTColumnBuilder.newColumn(1).withOption("width", "100"),
-            DTColumnBuilder.newColumn(2).withOption("width", "60"),
+            DTColumnBuilder.newColumn(2).withOption("width", "100"),
             DTColumnBuilder.newColumn(3).withOption("width", "80"),
-            DTColumnBuilder.newColumn(4).withOption("width", "80")
+            DTColumnBuilder.newColumn(4).withOption("width", "80"),
+            DTColumnBuilder.newColumn(5).withOption("width", "100")
 
         ];
 
@@ -243,7 +246,7 @@
             }
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data,['sampleTypeCode','asc']);
-                _.remove(vm.sampleTypeOptions,{"sampleTypeCode":"99"})
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"})
             });
             //盒子编码
             vm.boxCodeConfig = {
@@ -309,22 +312,10 @@
         function _fnCloseSampleMovement() {
             vm.sampleMovementFlag = false;
         }
-        //移位
-        vm.sampleMovementFlag = false;
-        function _fnSampleMovement(frozenBoxCode) {
-            vm.sampleMovementFlag = true;
-            StockInBoxByCodeService.get({code:frozenBoxCode},onFrozenSuccess,onError);
-        }
-        function onFrozenSuccess(data) {
-            vm.box = data;
-            _initSampleType();
-            setTimeout(function () {
-                _reloadTubesForTable(vm.box);
-            },500);
-        }
-        function _fnRecover() {
-            var tableCtrl = hotRegisterer.getInstance('my-handsontable');
-        }
+
+        // function _fnRecover() {
+        //     var tableCtrl = hotRegisterer.getInstance('my-handsontable');
+        // }
         //盒子列表
         vm.boxOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
             .withOption('searching', false)
@@ -391,6 +382,29 @@
 
 
         /*冻存管修改*/
+        //查询管子
+        function _fnSampleMovement(frozenBoxCode) {
+            vm.sampleMovementFlag = true;
+            StockInBoxByCodeService.get({code:frozenBoxCode},onFrozenSuccess,onError);
+        }
+        function onFrozenSuccess(data) {
+            var boxCode = data.frozenBoxCode;
+            var tubeList = _.filter(vm.selectedSample,{'moveFrozenBoxCode':boxCode});
+            console.log(JSON.stringify(tubeList));
+            vm.box = data;
+            for(var i = 0; i < tubeList.length; i++){
+                tubeList[i].sampleType = {};
+                tubeList[i].sampleType.id = tubeList[i].sampleTypeId;
+                tubeList[i].sampleType.sampleTypeCode = tubeList[i].sampleTypeCode;
+                tubeList[i].sampleType.sampleTypeName = tubeList[i].sampleTypeName;
+                tubeList[i].sampleType.backColor = tubeList[i].backColor;
+                vm.box.frozenTubeDTOS.push(tubeList[i]);
+            }
+            _initSampleType();
+            setTimeout(function () {
+                _reloadTubesForTable(vm.box);
+            },500);
+        }
         //移入
         function _fnPutIn() {
             var countOfCols = vm.box.frozenBoxType.frozenBoxTypeColumns;
@@ -430,6 +444,7 @@
                                 tube.tubeRows = cellData.tubeRows;
                                 tube.tubeColumns = cellData.tubeColumns;
                                 tube.frozenBoxId = cellData.frozenBoxId;
+                                tube.moveFrozenBoxCode = cellData.frozenBoxCode;
                                 tube.frozenTubeId = tube.id;
                                 vm.selected[i] = false;
                                 // cellData.id = tube.id;

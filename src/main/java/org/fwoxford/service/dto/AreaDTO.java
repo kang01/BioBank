@@ -6,6 +6,7 @@ import org.fwoxford.domain.Equipment;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -53,6 +54,12 @@ public class AreaDTO extends AbstractAuditingDTO implements Serializable {
     private Equipment equipment;
 
     private Integer flag;
+
+    private List<SupportRackDTO> supportRackDTOS;
+    private String position;
+    private String equipmentType;
+    private Integer restOfSpace;
+    private String projectCodes;
 
     public Long getId() {
         return id;
@@ -109,6 +116,46 @@ public class AreaDTO extends AbstractAuditingDTO implements Serializable {
             this.equipment = new Equipment();
         }
         this.equipment.setId(equipmentId);
+    }
+
+    public List<SupportRackDTO> getSupportRackDTOS() {
+        return supportRackDTOS;
+    }
+
+    public void setSupportRackDTOS(List<SupportRackDTO> supportRackDTOS) {
+        this.supportRackDTOS = supportRackDTOS;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getEquipmentType() {
+        return equipmentType;
+    }
+
+    public void setEquipmentType(String equipmentType) {
+        this.equipmentType = equipmentType;
+    }
+
+    public Integer getRestOfSpace() {
+        return restOfSpace;
+    }
+
+    public void setRestOfSpace(Integer restOfSpace) {
+        this.restOfSpace = restOfSpace;
+    }
+
+    public String getProjectCodes() {
+        return projectCodes;
+    }
+
+    public void setProjectCodes(String projectCodes) {
+        this.projectCodes = projectCodes;
     }
 
     @Override

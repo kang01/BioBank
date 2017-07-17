@@ -61,6 +61,8 @@ public class PositionMoveRecordDTO extends AbstractAuditingDTO implements Serial
 
     private Long supportRackId;
 
+    private Long supportRackOldId;
+
     private Long frozenBoxId;
 
     private Long frozenTubeId;
@@ -199,6 +201,14 @@ public class PositionMoveRecordDTO extends AbstractAuditingDTO implements Serial
 
     public void setSupportRackId(Long supportRackId) {
         this.supportRackId = supportRackId;
+    }
+
+    public Long getSupportRackOldId() {
+        return supportRackOldId;
+    }
+
+    public void setSupportRackOldId(Long supportRackOldId) {
+        this.supportRackOldId = supportRackOldId;
     }
 
     public Long getFrozenBoxId() {

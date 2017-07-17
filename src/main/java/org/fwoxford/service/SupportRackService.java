@@ -1,5 +1,6 @@
 package org.fwoxford.service;
 
+import org.fwoxford.service.dto.AreaDTO;
 import org.fwoxford.service.dto.SupportRackDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +52,7 @@ public interface SupportRackService {
 
     List<SupportRackDTO> findSupportRackByAreaId(Long areaId);
 
-    List<SupportRackDTO> getSupportRackByEquipmentAndArea(Long equipmentId, Long areaId);
+    AreaDTO getSupportRackByEquipmentAndArea(Long equipmentId, Long areaId);
 
     SupportRackDTO getSupportRackByEquipmentAndAreaAndShelf(String equipmentCode, String areaCode, String shelfCode);
 }

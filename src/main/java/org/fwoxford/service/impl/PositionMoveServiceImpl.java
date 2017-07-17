@@ -308,12 +308,21 @@ public class PositionMoveServiceImpl implements PositionMoveService {
             if(p.getSupportRackId() == null){
                 throw new BankServiceException("冻存架ID不能为空！");
             }
+            if(p.getSupportRackOldId() == null){
+                throw new BankServiceException("需要移动的冻存架ID不能为空！");
+            }
+            //原冻存架
+            SupportRack supportRackOld = supportRackRepository.findOne(p.getSupportRackOldId());
+            if(supportRackOld == null){
+                throw new BankServiceException("原冻存架不存在！");
+            }
+            //新冻存架
             SupportRack supportRack = supportRackRepository.findOne(p.getSupportRackId());
             if(supportRack == null){
-                throw new BankServiceException("冻存架不存在！");
+                throw new BankServiceException("新冻存架不存在！");
             }
              checkArea(area);
-             List<FrozenBox> frozenBoxList = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(supportRack.getArea().getEquipmentCode(),supportRack.getArea().getAreaCode(),supportRack.getSupportRackCode());
+             List<FrozenBox> frozenBoxList = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(supportRackOld.getArea().getEquipmentCode(),supportRackOld.getArea().getAreaCode(),supportRackOld.getSupportRackCode());
              for(FrozenBox frozenBox:frozenBoxList){
                 List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(p.getId());
                 for(FrozenTube frozenTube:frozenTubeList){
@@ -326,8 +335,6 @@ public class PositionMoveServiceImpl implements PositionMoveService {
                     .supportRackCode(supportRack.getSupportRackCode());
                 frozenBoxRepository.save(frozenBox);
              }
-            supportRack.area(area);
-            supportRackRepository.save(supportRack);
         }
         return positionMoveDTO;
     }

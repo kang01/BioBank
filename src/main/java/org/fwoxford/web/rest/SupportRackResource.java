@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.fwoxford.service.SupportRackService;
+import org.fwoxford.service.dto.AreaDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.SupportRackDTO;
@@ -143,9 +144,9 @@ public class SupportRackResource {
 
     @GetMapping("/support-racks/equipment/{equipmentId}/area/{areaId}")
     @Timed
-    public ResponseEntity<List<SupportRackDTO>> getSupportRackByEquipmentAndArea(@PathVariable Long equipmentId ,@PathVariable Long areaId) {
+    public ResponseEntity<AreaDTO> getSupportRackByEquipmentAndArea(@PathVariable Long equipmentId , @PathVariable Long areaId) {
         log.debug("REST request to get SupportRack By EquipmentAndArea : {}", areaId);
-        List<SupportRackDTO> supportRackDTOs = supportRackService.getSupportRackByEquipmentAndArea(equipmentId,areaId);
+        AreaDTO supportRackDTOs = supportRackService.getSupportRackByEquipmentAndArea(equipmentId,areaId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(supportRackDTOs));
     }
 

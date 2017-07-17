@@ -3,13 +3,16 @@ package org.fwoxford.service.impl;
 import io.swagger.models.auth.In;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
+import org.fwoxford.repository.AreaRepository;
 import org.fwoxford.repository.EquipmentRepository;
 import org.fwoxford.repository.FrozenBoxRepository;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.SupportRackService;
 import org.fwoxford.repository.SupportRackRepository;
+import org.fwoxford.service.dto.AreaDTO;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.SupportRackDTO;
+import org.fwoxford.service.mapper.AreaMapper;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.SupportRackMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -44,10 +47,17 @@ public class SupportRackServiceImpl implements SupportRackService{
     private FrozenBoxRepository frozenBoxRepository;
 
     @Autowired
-    EquipmentRepository equipmentRepository;
+    private EquipmentRepository equipmentRepository;
 
     @Autowired
     private FrozenBoxMapper frozenBoxMapper;
+
+    @Autowired
+    private AreaRepository areaRepository;
+
+    @Autowired
+    private AreaMapper areaMapper;
+
     public SupportRackServiceImpl(SupportRackRepository supportRackRepository, SupportRackMapper supportRackMapper) {
         this.supportRackRepository = supportRackRepository;
         this.supportRackMapper = supportRackMapper;
@@ -186,21 +196,37 @@ public class SupportRackServiceImpl implements SupportRackService{
     }
 
     @Override
-    public List<SupportRackDTO> getSupportRackByEquipmentAndArea(Long equipmentId, Long areaId) {
+    public AreaDTO getSupportRackByEquipmentAndArea(Long equipmentId, Long areaId) {
+        Area area = areaRepository.findOne(areaId);
+        AreaDTO areaDTO = areaMapper.areaToAreaDTO(area);
         List<SupportRackDTO> supportRackDTOS = new ArrayList<SupportRackDTO>();
         List<SupportRack> supportRacks = supportRackRepository.findSupportRackByAreaId(areaId);
+        ArrayList<String> projects = new ArrayList<>();
         for(SupportRack s :supportRacks){
             SupportRackDTO supportRackDTO = supportRackMapper.supportRackToSupportRackDTO(s);
             supportRackDTO.setSupportRackColumns(s.getSupportRackType().getSupportRackColumns());
             supportRackDTO.setSupportRackRows(s.getSupportRackType().getSupportRackRows());
-            Long count = frozenBoxRepository.countByEquipmentCodeAndAreaCodeAndSupportRackCode(s.getArea().getEquipmentCode(),s.getArea().getAreaCode(),s.getSupportRackCode());
+            List<FrozenBox> frozenBoxs = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(s.getArea().getEquipmentCode(),s.getArea().getAreaCode(),s.getSupportRackCode());
             supportRackDTO.setFlag(Constants.NO);
-            if(count.intValue()>0){
+            if(frozenBoxs.size()>0){
                 supportRackDTO.setFlag(Constants.YES);
+            }
+            for (FrozenBox frozenBox : frozenBoxs) {
+                if (frozenBox.getStatus() != null && (frozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID) || frozenBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED))) {
+                    continue;
+                }
+                Project project = frozenBox.getProject();
+                if (!projects.contains(project.getProjectCode())) {
+                    projects.add(project.getProjectCode());
+                }
             }
              supportRackDTOS.add(supportRackDTO);
         }
-        return supportRackDTOS;
+        areaDTO.setRestOfSpace(areaDTO.getFreezeFrameNumber()-supportRackDTOS.size());
+        areaDTO.setPosition(BankUtil.getPositionString(areaDTO.getEquipmentCode(),areaDTO.getAreaCode(),null,null,null,null,null));
+        areaDTO.setProjectCodes(String.join(";", projects));
+        areaDTO.setSupportRackDTOS(supportRackDTOS);
+        return areaDTO;
     }
 
     @Override
@@ -211,7 +237,7 @@ public class SupportRackServiceImpl implements SupportRackService{
         }
         List<FrozenBox> frozenBoxs = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(equipmentCode, areaCode, shelfCode);
         List<FrozenBoxDTO> frozenBoxDTOList = new ArrayList<FrozenBoxDTO>();
-        ArrayList<String> positions = new ArrayList<>();
+        ArrayList<String> projects = new ArrayList<>();
         int i = 0;
         for (FrozenBox frozenBox : frozenBoxs) {
             if (frozenBox.getStatus() != null && (frozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID) || frozenBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED))) {
@@ -219,8 +245,8 @@ public class SupportRackServiceImpl implements SupportRackService{
             }
             i++;
             Project project = frozenBox.getProject();
-            if(!positions.contains(project.getProjectCode())){
-                positions.add(project.getProjectCode());
+            if(!projects.contains(project.getProjectCode())){
+                projects.add(project.getProjectCode());
             }
             frozenBoxDTOList.add(frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox));
         }
@@ -233,7 +259,7 @@ public class SupportRackServiceImpl implements SupportRackService{
         supportRackDTO.setFrozenBoxDTOList(frozenBoxDTOList);
         supportRackDTO.setEquipmentType(supportRack.getArea().getEquipment().getEquipmentModle().getEquipmentType());
         supportRackDTO.setPosition(BankUtil.getPositionString(equipmentCode,areaCode,shelfCode,null,null,null,null));
-        supportRackDTO.setProjectCodes(String.join(";", positions));
+        supportRackDTO.setProjectCodes(String.join(";", projects));
         supportRackDTO.setRestOfSpace(all-i);
         return supportRackDTO;
     }

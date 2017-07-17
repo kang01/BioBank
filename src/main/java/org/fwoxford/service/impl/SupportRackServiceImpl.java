@@ -202,27 +202,32 @@ public class SupportRackServiceImpl implements SupportRackService{
         List<SupportRackDTO> supportRackDTOS = new ArrayList<SupportRackDTO>();
         List<SupportRack> supportRacks = supportRackRepository.findSupportRackByAreaId(areaId);
         ArrayList<String> projects = new ArrayList<>();
+        int i= 0;
         for(SupportRack s :supportRacks){
             SupportRackDTO supportRackDTO = supportRackMapper.supportRackToSupportRackDTO(s);
             supportRackDTO.setSupportRackColumns(s.getSupportRackType().getSupportRackColumns());
             supportRackDTO.setSupportRackRows(s.getSupportRackType().getSupportRackRows());
             List<FrozenBox> frozenBoxs = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(s.getArea().getEquipmentCode(),s.getArea().getAreaCode(),s.getSupportRackCode());
             supportRackDTO.setFlag(Constants.NO);
-            if(frozenBoxs.size()>0){
-                supportRackDTO.setFlag(Constants.YES);
-            }
+            List<FrozenBoxDTO> frozenBoxDTOList = new ArrayList<FrozenBoxDTO>();
             for (FrozenBox frozenBox : frozenBoxs) {
-                if (frozenBox.getStatus() != null && (frozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID) || frozenBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED))) {
+                if (frozenBox.getStatus() != null && (frozenBox.getStatus().equals(Constants.FROZEN_BOX_INVALID)
+                    || frozenBox.getStatus().equals(Constants.FROZEN_BOX_SPLITED))) {
                     continue;
                 }
                 Project project = frozenBox.getProject();
                 if (!projects.contains(project.getProjectCode())) {
                     projects.add(project.getProjectCode());
                 }
+                frozenBoxDTOList.add(frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox));
             }
-             supportRackDTOS.add(supportRackDTO);
+            if(frozenBoxDTOList.size()>0){
+                i++;
+                supportRackDTO.setFlag(Constants.YES);
+            }
+            supportRackDTOS.add(supportRackDTO);
         }
-        areaDTO.setRestOfSpace(areaDTO.getFreezeFrameNumber()-supportRackDTOS.size());
+        areaDTO.setRestOfSpace(areaDTO.getFreezeFrameNumber()-i);
         areaDTO.setPosition(BankUtil.getPositionString(areaDTO.getEquipmentCode(),areaDTO.getAreaCode(),null,null,null,null,null));
         areaDTO.setProjectCodes(String.join(";", projects));
         areaDTO.setSupportRackDTOS(supportRackDTOS);

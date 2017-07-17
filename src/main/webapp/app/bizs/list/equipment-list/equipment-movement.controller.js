@@ -13,6 +13,7 @@
     function EquipmentMovementController($scope,$compile,$state,$uibModal,$stateParams,hotRegisterer,toastr,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable,SampleUserService,RequirementService,BioBankBlockUi) {
         var vm = this;
         vm.dtInstance = {};
+        vm.selectedInstance = {};
         vm.dto = {};
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.selectedEquipment = $stateParams.selectedEquipment||[];
@@ -21,11 +22,16 @@
             operatorId2:"",
             moveAffect:"",
             moveReason:"",
-            whetherFreezingAndThawing:false
+            whetherFreezingAndThawing:false,
+            positionMoveRecordDTOS:[]
         };
         vm.selected = {};
         var projectIds = [];
         function _init() {
+            // 过滤已上架的冻存盒
+            vm.filterNotPutInShelfTubes = function (equipment) {
+                return !equipment.isPutInShelf && true;
+            };
             _initSearch();
             _initHandsonTablePanel();
             if(vm.selectedEquipment.length){
@@ -66,10 +72,12 @@
                 toastr.error("操作员不能重复！");
                 return;
             }
+            vm.movement.positionMoveRecordDTOS = _.filter(vm.selectedEquipment, {isPutInShelf: true});
             BioBankBlockUi.blockUiStart();
             console.log(JSON.stringify(vm.movement));
             EquipmentInventoryService.saveMovement(vm.movement).success(function (data) {
                 BioBankBlockUi.blockUiStop();
+                toastr.error("保存成功!");
             }).error(function (data) {
                 toastr.error(data.message);
                 BioBankBlockUi.blockUiStop();
@@ -307,7 +315,6 @@
             EquipmentInventoryService.queryEquipmentById(equipmentId).success(function (data) {
                 vm.equipment = data;
                 _fnLoadEquipment(vm.equipment);
-                // console.log(JSON.stringify(vm.equipment))
             }).error(function (data) {
                 toastr.error(data.message);
             })
@@ -320,98 +327,75 @@
             var countOfRows = 1;
             // 架子上的列数
             var countOfCols = areas.length || 13;
-            // 架子定位列表的控制对象
+            // // 架子定位列表的控制对象
             var tableCtrl = _getTableCtrl();
-            // 架子定位列表的总宽度
-            var tableWidth = $(tableCtrl.container).width();
-            // 架子定位列表的配置信息
-            var settings = vm.settings;
-            // 架子定位列表 行头 的宽度
-            var rowHeaderWidth = settings.rowHeaderWidth;
-            // 架子定位列表每列的宽度
-            var colWidth = (tableWidth - rowHeaderWidth) / countOfCols;
-            // 创建架子定位列表的 列头
-            var columns = [];
-            var charCode = 'A'.charCodeAt(0);
-            for(var i = 0; i < countOfCols; ++i){
-                var col = {
-                    data: 0,
-                    title: String.fromCharCode(charCode + i)
-                    // readOnly: true,
-                };
-                columns.push(col);
-            }
             // 创建架子定位列表的定位数据
             var arrayAreas = [];
             var emptyPos = null;
-            // 先列
-            for(var i = 0; i < countOfCols; ++i){
-                // 再行
-                for(var j = 0; j < countOfRows; ++j){
-                    arrayAreas[j] = arrayAreas[j] || [];
-                    var pos = {columnsInShelf: "S", rowsInShelf: j+1+""};
-                    // 从已入库的盒子中查询架子中该位置的盒子
-                    var areasInShelf = _.filter(areas, pos);
-                    if (areasInShelf.length){
-                        arrayAreas[j][i] = areasInShelf[0];
-                    } else {
-                        var boxesPos = vm.putInShelfAreas[equipment.id];
-                        // 从已上架的盒子中查询架子中该位置的盒子
-                        areasInShelf = _.filter(boxesPos||[], pos);
-                        if (areasInShelf.length){
-                            arrayAreas[j][i] = areasInShelf[0];
-                        } else {
-                            // 该位置没有任何盒子
-                            arrayAreas[j][i] = {
-                                frozenBoxId: null,
-                                frozenBoxCode: "",
-                                columnsInShelf: String.fromCharCode(charCode + i),
-                                rowsInShelf: j + 1 + "",
-                                isEmpty: true
-                            };
-                            if (!emptyPos){
-                                emptyPos = {row:j,col:i};
-                            }
+            for(var i = 0; i < countOfRows; i++){
+                arrayAreas[i] = [];
+                for(var j = 0; j < countOfCols;j++){
+                    arrayAreas[i][j] = areas[j];
+                    if(!areas[j].flag){
+                        if (!emptyPos) {
+                            emptyPos = {row: i, col: j};
                         }
                     }
-
-                    // 该位置的位置信息
-                    arrayAreas[j][i].supportRackCode = shelf.supportRackCode;
-                    arrayAreas[j][i].areaCode = shelf.areaCode;
-                    arrayAreas[j][i].equipmentCode = shelf.equipmentCode;
-                    arrayAreas[j][i].supportRackId = shelf.id;
-                    arrayAreas[j][i].rowNO = j;
-                    arrayAreas[j][i].colNO = i;
                 }
             }
-
-            // 修改架子定位列表的配置信息
-            settings.width = tableWidth;
-            settings.height = 380;
-            settings.minRows = countOfRows;
-            settings.minCols = countOfCols;
-            settings.colWidths = colWidth;
-            settings.manualColumnResize = colWidth;
-            settings.columns = columns;
-
             // 更新架子定位列表并选中第一个空位置
             tableCtrl.loadData(arrayAreas);
-            if (emptyPos){
-                // tableCtrl.selectCell(0, 0);
+            if (emptyPos) {
                 tableCtrl.selectCell(emptyPos.row, emptyPos.col);
             }
-        }
-        function _fnPutIn() {
 
+        }
+        //移入
+        function _fnPutIn() {
+            var countOfCols = vm.equipment.areaDTOList.length;
+            var countOfRows = 1;
+            var tableCtrl = _getTableCtrl();
+            var startEmptyPos = tableCtrl.getSelected();
+            var cellRow = startEmptyPos[0];
+            var cellCol = startEmptyPos[1];
+            for (var i in vm.selected) {
+                if (vm.selected[i]) {
+                    vm.selectAll = false;
+                    var equipment = _.find(vm.selectedEquipment, {id: +i});
+                    if (!equipment) {
+                        continue;
+                    }
+                    // 从选中的位置，开始上架，先行后列
+                    for (; cellCol < countOfCols && !equipment.isPutInShelf; ++cellCol) {
+                        for (; cellRow < countOfRows && !equipment.isPutInShelf; ++cellRow) {
+                            var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                            if (cellData && !cellData.flag) {
+                                // 单元格为空可以上架
+                                // 标记区域已经上架
+                                vm.selected[i] = false;
+                                equipment.isPutInShelf = true;
+                                equipment.areaId = cellData.id;
+                                equipment.supportRackId = equipment.id;
+                                cellData.flag = 1;
+                                break;
+                            }
+                        }
+                        if (equipment.isPutInShelf) {
+                            break;
+                        }
+                    }
+                }
+            }
+            tableCtrl.render();
+            vm.selectedInstance.rerender();
         }
         function _initHandsonTablePanel(){
             vm.handsonTableArray = [];//初始管子数据二位数组
 
-            initHandsonTable(1,1);
+            initHandsonTable(1,13);
 
             vm.settings = {
-                colHeaders : ['S'],
-                rowHeaders : ['1','2','3','4','5','6','7','8','9','10'],
+                rowHeaders : ['S'],
                 outsideClickDeselectsCache: false,
                 outsideClickDeselects: false,
                 data:vm.handsonTableArray,
@@ -421,8 +405,6 @@
                 stretchH: 'all',
                 autoWrapCol:true,
                 wordWrap:true,
-                colWidths: 80,
-                rowHeaderWidth: 30,
                 multiSelect: false,
                 comments: true,
                 editor: false,
@@ -462,12 +444,12 @@
 
                 var $div = $("<div/>").addClass(cellProperties && cellProperties.className ? cellProperties.className : "");
                 if (value){
-                    $div.html(value.frozenBoxCode)
-                        .data("frozenBoxId", value.frozenBoxId)
-                        .data("frozenBoxCode", value.frozenBoxCode)
-                        .data("columnsInShelf", value.columnsInShelf)
-                        .data("rowsInShelf", value.rowsInShelf)
-                        .data("countOfSample", value.countOfSample);
+                    $div.html(value.areaCode);
+                        // .data("frozenBoxId", value.frozenBoxId)
+                        // .data("frozenBoxCode", value.frozenBoxCode)
+                        // .data("columnsInShelf", value.columnsInShelf)
+                        // .data("rowsInShelf", value.rowsInShelf)
+                        // .data("countOfSample", value.countOfSample);
                 }
 
                 $(td).html("");
@@ -482,11 +464,11 @@
                 }
                 var cellProperties = {};
                 var cellData = hot.getDataAtCell(row, col);
-                cellProperties.isEmpty = true;
-                if (cellData && cellData.frozenBoxId) {
+                cellProperties.flag = 0;
+                if (cellData && cellData.flag) {
                     // 单元格有数据，并且有冻存盒ID，表示该单元格在库里有位置
                     // 该单元格不能被使用
-                    cellProperties.isEmpty = false;
+                    cellProperties.flag = 1;
                     // 该单元格不能编辑
                     cellProperties.editor = false;
                     // 该单元格只读
@@ -495,7 +477,7 @@
                     cellProperties.className = 'a00';
                     // cellProperties.readOnlyCellClassName = 'htDimmed';
                 } else {
-                    cellProperties.isEmpty = cellData && cellData.isEmpty;
+                    cellProperties.flag = cellData && cellData.flag;
                 }
 
                 return cellProperties;

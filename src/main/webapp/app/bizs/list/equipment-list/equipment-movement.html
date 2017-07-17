@@ -75,7 +75,7 @@
                             <th>架子类型</th>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="equipment in vm.selectedEquipment">
+                        <tr ng-repeat="equipment in vm.selectedEquipment | filter:vm.filterNotPutInShelfTubes">
                             <td>
                                 <input type="checkbox" ng-model="vm.selected[equipment.id]" ng-click="vm.toggleOne(vm.selected)">
                             </td>

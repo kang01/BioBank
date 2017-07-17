@@ -50,6 +50,7 @@
             vm.sampleTypeOptions = [];
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:'99'});
             });
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
             function onFrozenBoxTypeSuccess(data) {
@@ -62,6 +63,7 @@
         vm.projectConfig = {
             valueField:'id',
             labelField:'projectName',
+            searchField:'projectName',
             onChange:function(value){
                 vm.projectIds = _.join(value, ',');
                 projectIds = value;

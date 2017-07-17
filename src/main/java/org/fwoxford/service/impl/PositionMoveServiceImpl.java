@@ -235,9 +235,11 @@ public class PositionMoveServiceImpl implements PositionMoveService {
                 if(supportRack == null){
                     throw new BankServiceException("冻存架不存在！");
                 }
-                checkArea(area);
                 List<FrozenBox> frozenBoxList = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(supportRack.getArea().getEquipmentCode(),supportRack.getArea().getAreaCode(),supportRack.getSupportRackCode());
-               for(FrozenBox frozenBox:frozenBoxList){
+                if(frozenBoxList.size()>=area.getFreezeFrameNumber()){
+                    throw new BankServiceException("该区域冻存架已满");
+                }
+                for(FrozenBox frozenBox:frozenBoxList){
                    List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(p.getId());
                    for(FrozenTube frozenTube:frozenTubeList){
                        saveMoveDetail(positionMove,Constants.MOVE_TYPE_3,frozenTube);
@@ -321,8 +323,10 @@ public class PositionMoveServiceImpl implements PositionMoveService {
             if(supportRack == null){
                 throw new BankServiceException("新冻存架不存在！");
             }
-             checkArea(area);
              List<FrozenBox> frozenBoxList = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(supportRackOld.getArea().getEquipmentCode(),supportRackOld.getArea().getAreaCode(),supportRackOld.getSupportRackCode());
+            if(frozenBoxList.size()>=area.getFreezeFrameNumber()){
+                throw new BankServiceException("该区域冻存架已满");
+            }
              for(FrozenBox frozenBox:frozenBoxList){
                 List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(p.getId());
                 for(FrozenTube frozenTube:frozenTubeList){
@@ -437,14 +441,6 @@ public class PositionMoveServiceImpl implements PositionMoveService {
             .tubeColumns(frozenTube.getTubeColumns())
             .tubeRows(frozenTube.getTubeRows());
         positionMoveRecordRepository.save(positionMoveRecord);
-    }
-
-    public void checkArea(Area area) {
-        //判断这个设备下的这个区域是否还有剩余空间
-        List<SupportRack> supportRack = supportRackRepository.findSupportRackByAreaId(area.getId());
-        if(supportRack.size()>=area.getFreezeFrameNumber()){
-            throw new BankServiceException("该区域已满，不能移入冻存架");
-        }
     }
 
     public void createMoveRecordDetail(PositionMoveForBox p, PositionMove positionMove) {

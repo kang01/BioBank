@@ -152,7 +152,7 @@
             vm.selectAll = true;
         }
 
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 474, 10);
         vm.selectedColumns = [
             DTColumnBuilder.newColumn(0).withOption("width", "30"),
             DTColumnBuilder.newColumn(1).withOption("width", "100"),

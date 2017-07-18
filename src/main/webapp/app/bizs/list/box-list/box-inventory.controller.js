@@ -256,11 +256,11 @@
             // vm.checked = false;
             vm.dtInstance.rerender();
         }
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 500, 10);
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "110"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "60")
 
         ];
         vm.selected = {};
@@ -329,6 +329,19 @@
                     if ( error ) {
                         jqDt._fnLog( oSettings, 0, error );
                     }
+                    var count = 0;
+                    _.forEach(vm.BoxData, function(value) {
+                        var len  =  _.filter(selectedBox, {id:value.id}).length;
+                        if(len){
+                            count++;
+                        }
+                    });
+                    if(count == vm.BoxData.length){
+                        vm.selectAll = true;
+                    }else{
+                        vm.selectAll = false;
+                        count = 0;
+                    }
                     oSettings.json = json;
                     fnCallback( json );
                 }).catch(function(res){
@@ -349,10 +362,37 @@
             })
             .withOption('createdRow', createdRow)
             .withOption('headerCallback', function(header) {
-                console.log(header);
                 $compile(angular.element(header).contents())($scope);
+                $(header).find(".selectAll").bind('click',function () {
+                    if(vm.selectAll){
+                        for(var i = 0; i< vm.BoxData.length; i++){
+                            var len = _.filter(selectedBox,{id:+vm.BoxData[i].id}).length;
+                            if(!len){
+                                selectedBox.push(vm.BoxData[i])
+                            }
+                        }
+                    }else{
+                        _.forEach(vm.BoxData, function(value) {
+                            var len  =  _.filter(selectedBox, {id:value.id}).length;
+                            if(len){
+                                _.remove(selectedBox,{id:value.id});
+                            }
+                        });
+                    }
+                    for (var id in vm.selected) {
+                        if (vm.selected.hasOwnProperty(id)) {
+                            vm.selected[id] = vm.selectAll;
+                        }
+                    }
+                    vm.selectedLen = selectedBox.length;
+                    vm.selectedOptions.withOption('data', selectedBox);
+                });
+                $compile(angular.element(header).contents())($scope);
+
+
+
             });
-        var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
+        var titleHtml = '<input  class="selectAll" type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
 
         vm.dtColumns = [
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)

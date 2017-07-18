@@ -217,7 +217,7 @@
             vm.dtInstance.rerender();
         }
 
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 500, 10);
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型'),
             // DTColumnBuilder.newColumn('equipmentCode').withTitle('设备'),
@@ -297,6 +297,19 @@
                     if ( error ) {
                         jqDt._fnLog( oSettings, 0, error );
                     }
+                    var count = 0;
+                    _.forEach(vm.equipmentData, function(value) {
+                       var len  =  _.filter(selectedEquipment, {id:value.id}).length;
+                       if(len){
+                           count++;
+                       }
+                    });
+                    if(count == vm.equipmentData.length){
+                        vm.selectAll = true;
+                    }else{
+                        vm.selectAll = false;
+                        count = 0;
+                    }
                     oSettings.json = json;
                     fnCallback( json );
                 }).catch(function(res){
@@ -318,8 +331,34 @@
             .withOption('createdRow', createdRow)
             .withOption('headerCallback', function(header) {
                 $compile(angular.element(header).contents())($scope);
+                $(header).find(".selectAll").bind('click',function () {
+                    if(vm.selectAll){
+                        for(var i = 0; i< vm.equipmentData.length; i++){
+                            var len = _.filter(selectedEquipment,{id:+vm.equipmentData[i].id}).length;
+                            if(!len){
+                                selectedEquipment.push(vm.equipmentData[i])
+                            }
+                        }
+                    }else{
+                        _.forEach(vm.equipmentData, function(value) {
+                            var len  =  _.filter(selectedEquipment, {id:value.id}).length;
+                            if(len){
+                                _.remove(selectedEquipment,{id:value.id});
+                            }
+                        });
+                    }
+                    for (var id in vm.selected) {
+                        if (vm.selected.hasOwnProperty(id)) {
+                            vm.selected[id] = vm.selectAll;
+                        }
+                    }
+                    vm.selectedLen = selectedEquipment.length;
+                    vm.selectedOptions.withOption('data', selectedEquipment);
+                });
+                $compile(angular.element(header).contents())($scope);
+
             });
-        var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
+        var titleHtml = '<input  class="selectAll" type="checkbox" ng-model="vm.selectAll">';
         vm.dtColumns = [
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml)
                 .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),

@@ -199,7 +199,7 @@
             }
             vm.selectAll = true;
         }
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 450, 10);
             // .withOption('data', selectedSample)
             // .withOption('createdRow', function(row, data, dataIndex) {
             //     $compile(angular.element(row).contents())($scope);

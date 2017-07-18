@@ -373,8 +373,8 @@ public class PositionMoveServiceImpl implements PositionMoveService {
             throw new BankServiceException("操作人1的用户名与密码不一致！");
         }
 
-        Long operatorId2 = positionMoveDTO.getOperatorId1();
-        String password2 = positionMoveDTO.getPassword1();
+        Long operatorId2 = positionMoveDTO.getOperatorId2();
+        String password2 = positionMoveDTO.getPassword2();
         User user2 = userRepository.findOne(operatorId2);
         if(user2 == null){
             throw new BankServiceException("操作人2不存在！");

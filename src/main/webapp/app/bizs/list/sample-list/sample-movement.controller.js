@@ -425,39 +425,41 @@
             },500);
         }
         //移入
-        function _fnPutIn() {
+        function _fnPutIn(emptyPos) {
+            var cellRow;
+            var cellCol;
             var countOfCols = vm.box.frozenBoxType.frozenBoxTypeColumns;
             var countOfRows = vm.box.frozenBoxType.frozenBoxTypeRows;
-            var tableCtrl = _getTableCtrl();
-            var startEmptyPos = tableCtrl.getSelected();
-            var cellRow = startEmptyPos[0];
-            var cellCol = startEmptyPos[1];
-
-            for(var i in vm.selected){
-                if(vm.selected[i]){
-                    // 遍历选中的冻存管，i是冻存管的Id
-                    var tube = _.find(vm.selectedSample, {id: +i});
-                    if (!tube){
-                        continue;
-                    }
-                    if(tube.projectCode != vm.box.projectCode){
-                        toastr.error("项目不一致，不能移入此冻存盒内！");
-                        return;
-                    }
-                    if(tube.sampleClassificationCode){
-                        if(tube.sampleClassificationCode != vm.box.sampleClassificationCode){
-                            toastr.error("样本分类不一致，不能移入此冻存盒内！");
+            if(vm.moveOperateFlag){
+                cellRow = emptyPos.row;
+                cellCol = emptyPos.col;
+                console.log(JSON.stringify(vm.frozenTubeArray));
+                for(var i in vm.selected){
+                    if(vm.selected[i]) {
+                        // 遍历选中的冻存管，i是冻存管的Id
+                        var tube = _.find(vm.selectedSample, {id: +i});
+                        if (!tube) {
+                            continue;
+                        }
+                        if (tube.projectCode != vm.box.projectCode) {
+                            toastr.error("项目不一致，不能移入此冻存盒内！");
                             return;
                         }
-                    }else{
-                        if(tube.sampleTypeCode != vm.box.sampleTypeCode){
-                            toastr.error("样本类型不一致，不能移入此冻存盒内！");
-                            return;
+                        if (tube.sampleClassificationCode) {
+                            if (tube.sampleClassificationCode != vm.box.sampleClassificationCode) {
+                                toastr.error("样本分类不一致，不能移入此冻存盒内！");
+                                return;
+                            }
+                        } else {
+                            if (tube.sampleTypeCode != vm.box.sampleTypeCode) {
+                                toastr.error("样本类型不一致，不能移入此冻存盒内！");
+                                return;
+                            }
                         }
                     }
                     for(; cellRow < countOfRows && !tube.isPutInShelf; ++cellRow){
                         for (; cellCol < countOfCols && !tube.isPutInShelf; ++cellCol){
-                            var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                            var cellData = vm.frozenTubeArray[cellRow][cellCol];
                             if (cellData && !cellData.isEmpty){
                                 tube.isPutInShelf = true;
                                 tube.tubeRows = cellData.tubeRows;
@@ -488,12 +490,77 @@
                         cellCol = 0;
                     }
                 }
+            }else{
+                var tableCtrl = _getTableCtrl();
+                var startEmptyPos = tableCtrl.getSelected();
+                cellRow = startEmptyPos[0];
+                cellCol = startEmptyPos[1];
+                for(var i in vm.selected){
+                    if(vm.selected[i]){
+                        // 遍历选中的冻存管，i是冻存管的Id
+                        var tube = _.find(vm.selectedSample, {id: +i});
+                        if (!tube){
+                            continue;
+                        }
+                        if(tube.projectCode != vm.box.projectCode){
+                            toastr.error("项目不一致，不能移入此冻存盒内！");
+                            return;
+                        }
+                        if(tube.sampleClassificationCode){
+                            if(tube.sampleClassificationCode != vm.box.sampleClassificationCode){
+                                toastr.error("样本分类不一致，不能移入此冻存盒内！");
+                                return;
+                            }
+                        }else{
+                            if(tube.sampleTypeCode != vm.box.sampleTypeCode){
+                                toastr.error("样本类型不一致，不能移入此冻存盒内！");
+                                return;
+                            }
+                        }
+                        for(; cellRow < countOfRows && !tube.isPutInShelf; ++cellRow){
+                            for (; cellCol < countOfCols && !tube.isPutInShelf; ++cellCol){
+                                var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                                if (cellData && !cellData.isEmpty){
+                                    tube.isPutInShelf = true;
+                                    tube.tubeRows = cellData.tubeRows;
+                                    tube.tubeColumns = cellData.tubeColumns;
+                                    tube.frozenBoxId = cellData.frozenBoxId;
+                                    tube.moveFrozenBoxCode = cellData.frozenBoxCode;
+                                    tube.frozenTubeId = tube.id;
+                                    vm.selected[i] = false;
+                                    // cellData.id = tube.id;
+                                    cellData.sampleCode = tube.sampleCode;
+                                    cellData.sampleTypeId = tube.sampleTypeId;
+                                    cellData.sampleTypeCode = tube.sampleTypeCode;
+                                    cellData.sampleTypeName = tube.sampleTypeName;
+                                    cellData.sampleClassificationId = tube.sampleClassificationId;
+                                    cellData.sampleClassificationCode = tube.sampleClassificationCode;
+                                    cellData.sampleClassificationName = tube.sampleClassificationName;
+                                    cellData.backColor = tube.backColor;
+                                    cellData.backColorForClass = tube.backColorForClass;
+                                    cellData.isEmpty = true;
+                                    break;
+                                }
 
+
+                            }
+                            if (tube.isPutInShelf){
+                                break;
+                            }
+                            cellCol = 0;
+                        }
+                    }
+
+                }
+
+                vm.nextFlag = true;
+                tableCtrl.render();
+                vm.selectedInstance.rerender();
             }
 
-            vm.nextFlag = true;
-            tableCtrl.render();
-            vm.selectedInstance.rerender();
+
+
+
         }
         function _initFrozenBoxPanel(){
             vm.frozenTubeArray = [];//初始管子数据二位数组
@@ -732,61 +799,89 @@
             return tube;
         }
         function _reloadTubesForTable(box){
-            var tableCtrl = _getTableCtrl();
-            var tableWidth = $(tableCtrl.container).width();
-            var settings = {
-                minCols: +box.frozenBoxType.frozenBoxTypeColumns,
-                minRows: +box.frozenBoxType.frozenBoxTypeRows
-            };
-
-            var rowHeaderWidth = 30;
-            // 架子定位列表每列的宽度
-            var colWidth = (tableWidth - rowHeaderWidth) / settings.minCols;
-
-            // colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
-            // rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
-
-            var tubesInTable = [];
-            var colHeaders = [];
-            var rowHeaders = [];
-            var emptyPos;
-            for (var i=0; i<settings.minRows; ++i){
-                var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
-                if(i > 7){
-                    pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1);
-                }
-                var tubes = [];
-                rowHeaders.push(pos.tubeRows);
-                for (var j = 0; j < settings.minCols; ++j){
-                    pos.tubeColumns = j + 1 + "";
-                    if (colHeaders.length < settings.minCols){
-                        colHeaders.push(pos.tubeColumns);
-                    }
-                    var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
-                    var tube = _createTubeForTableCell(tubeInBox, box, i, j + 1, pos);
-                    if(!tubeInBox){
-                        if(!emptyPos){
-                            emptyPos = {row:i,col:j};
-                        }
-
-                    }
-                    tubes.push(tube);
-                }
-                tubesInTable.push(tubes);
-            }
-
-            vm.frozenTubeArray = tubesInTable;
-
-            settings.rowHeaders = rowHeaders;
-            settings.colHeaders = colHeaders;
-            settings.colWidths = colWidth;
-            settings.manualColumnResize = colWidth;
-            tableCtrl.updateSettings(settings);
-            tableCtrl.loadData(tubesInTable);
-            tableCtrl.selectCell(emptyPos.row, emptyPos.col);
-
             if(vm.moveOperateFlag){
-                _fnPutIn();
+                var minRows = box.frozenBoxType.frozenBoxTypeRows;
+                var minCols = box.frozenBoxType.frozenBoxTypeColumns;
+                var tubesInTable = [];
+                for (var i=0; i < minRows; ++i){
+                    var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
+                    if(i > 7){
+                        pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1);
+                    }
+                    var tubes = [];
+                    // rowHeaders.push(pos.tubeRows);
+                    for (var j = 0; j < minCols; ++j){
+                        pos.tubeColumns = j + 1 + "";
+                        // if (colHeaders.length < minCols){
+                        //     colHeaders.push(pos.tubeColumns);
+                        // }
+                        var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
+                        var tube = _createTubeForTableCell(tubeInBox, box, i, j + 1, pos);
+                        if(!tubeInBox){
+                            if(!emptyPos){
+                                emptyPos = {row:i,col:j};
+                            }
+
+                        }
+                        tubes.push(tube);
+                    }
+                    tubesInTable.push(tubes);
+                }
+                vm.frozenTubeArray = tubesInTable;
+                _fnPutIn(emptyPos);
+            }else{
+                var tableCtrl = _getTableCtrl();
+                var tableWidth = $(tableCtrl.container).width();
+                var settings = {
+                    minCols: +box.frozenBoxType.frozenBoxTypeColumns,
+                    minRows: +box.frozenBoxType.frozenBoxTypeRows
+                };
+
+                var rowHeaderWidth = 30;
+                // 架子定位列表每列的宽度
+                var colWidth = (tableWidth - rowHeaderWidth) / settings.minCols;
+
+                // colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
+                // rowHeaders : ['A','B','C','D','E','F','G','H','I','J'],
+
+                var tubesInTable = [];
+                var colHeaders = [];
+                var rowHeaders = [];
+                var emptyPos;
+                for (var i=0; i<settings.minRows; ++i){
+                    var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
+                    if(i > 7){
+                        pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1);
+                    }
+                    var tubes = [];
+                    rowHeaders.push(pos.tubeRows);
+                    for (var j = 0; j < settings.minCols; ++j){
+                        pos.tubeColumns = j + 1 + "";
+                        if (colHeaders.length < settings.minCols){
+                            colHeaders.push(pos.tubeColumns);
+                        }
+                        var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
+                        var tube = _createTubeForTableCell(tubeInBox, box, i, j + 1, pos);
+                        if(!tubeInBox){
+                            if(!emptyPos){
+                                emptyPos = {row:i,col:j};
+                            }
+
+                        }
+                        tubes.push(tube);
+                    }
+                    tubesInTable.push(tubes);
+                }
+
+                vm.frozenTubeArray = tubesInTable;
+
+                settings.rowHeaders = rowHeaders;
+                settings.colHeaders = colHeaders;
+                settings.colWidths = colWidth;
+                settings.manualColumnResize = colWidth;
+                tableCtrl.updateSettings(settings);
+                tableCtrl.loadData(tubesInTable);
+                tableCtrl.selectCell(emptyPos.row, emptyPos.col);
             }
         }
         // 获取上架位置列表的控制实体

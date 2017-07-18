@@ -347,8 +347,11 @@
                     jqDt._fnProcessingDisplay( oSettings, false );
                 });
             })
-            .withOption('createdRow', createdRow);
-
+            .withOption('createdRow', createdRow)
+            .withOption('headerCallback', function(header) {
+                console.log(header);
+                $compile(angular.element(header).contents())($scope);
+            });
         var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
 
         vm.dtColumns = [

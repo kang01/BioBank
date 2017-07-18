@@ -377,49 +377,93 @@
             _queryShelfDesc(position);
         }
         //移入
-        function _fnPutIn() {
+        function _fnPutIn(emptyPos) {
+            var cellRow;
+            var cellCol;
             var countOfCols = vm.shelf.supportRackColumns;
             var countOfRows = vm.shelf.supportRackRows;
-            var tableCtrl = _getShelfDetailsTableCtrl();
-            var startEmptyPos = tableCtrl.getSelected();
-            var cellRow = startEmptyPos[0];
-            var cellCol = startEmptyPos[1];
-            for (var i in vm.selected) {
-                if (vm.selected[i]) {
-                    vm.selectAll = false;
-                    var box = _.find(vm.selectedBox, {id: +i});
-                    if (!box) {
-                        continue;
-                    }
-                    // 从选中的位置，开始上架，先行后列
-                    for (; cellCol < countOfCols && !box.isPutInShelf; ++cellCol) {
-                        for (; cellRow < countOfRows && !box.isPutInShelf; ++cellRow) {
-                            var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
-                            if (cellData && cellData.isEmpty) {
-                                // 单元格为空可以上架
-                                // 标记盒子已经上架
-                                vm.selected[i] = false;
-                                box.isPutInShelf = true;
-                                box.rowsInShelf = cellData.rowsInShelf;
-                                box.columnsInShelf = cellData.columnsInShelf;
-                                box.supportRackId = cellData.supportRackId;
-                                //+"."+cellData.columnsInShelf+cellData.rowsInShelf
-                                box.moveFrozenBoxPosition = vm.shelf.position;
-                                box.frozenBoxId = box.id;
+            if(vm.moveOperateFlag){
+                cellRow = emptyPos.row;
+                cellCol = emptyPos.col;
+                for (var i in vm.selected) {
+                    if (vm.selected[i]) {
+                        vm.selectAll = false;
+                        var box = _.find(vm.selectedBox, {id: +i});
+                        if (!box) {
+                            continue;
+                        }
+                        // 从选中的位置，开始上架，先行后列
+                        for (; cellCol < countOfCols && !box.isPutInShelf; ++cellCol) {
+                            for (; cellRow < countOfRows && !box.isPutInShelf; ++cellRow) {
+                                var cellData = vm.boxArray[cellRow][cellCol];
+                                if (cellData && cellData.isEmpty) {
+                                    // 单元格为空可以上架
+                                    // 标记盒子已经上架
+                                    vm.selected[i] = false;
+                                    box.isPutInShelf = true;
+                                    box.rowsInShelf = cellData.rowsInShelf;
+                                    box.columnsInShelf = cellData.columnsInShelf;
+                                    box.supportRackId = cellData.supportRackId;
+                                    //+"."+cellData.columnsInShelf+cellData.rowsInShelf
+                                    box.moveFrozenBoxPosition = vm.shelf.position;
+                                    box.frozenBoxId = box.id;
 
-                                cellData.frozenBoxCode = box.frozenBoxCode;
-                                cellData.isEmpty = false;
+                                    cellData.frozenBoxCode = box.frozenBoxCode;
+                                    cellData.isEmpty = false;
+                                    break;
+                                }
+                            }
+                            if (box.isPutInShelf) {
                                 break;
                             }
+                            cellRow = 0;
                         }
-                        if (box.isPutInShelf) {
-                            break;
-                        }
-                        cellRow = 0;
                     }
                 }
+            }else{
+                var tableCtrl = _getShelfDetailsTableCtrl();
+                var startEmptyPos = tableCtrl.getSelected();
+                cellRow = startEmptyPos[0];
+                cellCol = startEmptyPos[1];
+                for (var i in vm.selected) {
+                    if (vm.selected[i]) {
+                        vm.selectAll = false;
+                        var box = _.find(vm.selectedBox, {id: +i});
+                        if (!box) {
+                            continue;
+                        }
+                        // 从选中的位置，开始上架，先行后列
+                        for (; cellCol < countOfCols && !box.isPutInShelf; ++cellCol) {
+                            for (; cellRow < countOfRows && !box.isPutInShelf; ++cellRow) {
+                                var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                                if (cellData && cellData.isEmpty) {
+                                    // 单元格为空可以上架
+                                    // 标记盒子已经上架
+                                    vm.selected[i] = false;
+                                    box.isPutInShelf = true;
+                                    box.rowsInShelf = cellData.rowsInShelf;
+                                    box.columnsInShelf = cellData.columnsInShelf;
+                                    box.supportRackId = cellData.supportRackId;
+                                    //+"."+cellData.columnsInShelf+cellData.rowsInShelf
+                                    box.moveFrozenBoxPosition = vm.shelf.position;
+                                    box.frozenBoxId = box.id;
+
+                                    cellData.frozenBoxCode = box.frozenBoxCode;
+                                    cellData.isEmpty = false;
+                                    break;
+                                }
+                            }
+                            if (box.isPutInShelf) {
+                                break;
+                            }
+                            cellRow = 0;
+                        }
+                    }
+                }
+                tableCtrl.render();
             }
-            tableCtrl.render();
+
+
             vm.selectedInstance.rerender();
         }
         // 需要保存的盒子上架信息
@@ -430,90 +474,138 @@
             var countOfRows = shelf.supportRackRows || 4;
             // 架子上的列数
             var countOfCols = shelf.supportRackColumns || 4;
-            // 架子定位列表的控制对象
-            var tableCtrl = _getShelfDetailsTableCtrl();
-            // 架子定位列表的总宽度
-            var tableWidth = $(tableCtrl.container).width();
-            // 架子定位列表的配置信息
-            var settings = vm.shelfDetailsTableSettings;
-            // 架子定位列表 行头 的宽度
-            var rowHeaderWidth = settings.rowHeaderWidth;
-            // 架子定位列表每列的宽度
-            var colWidth = (tableWidth - rowHeaderWidth) / countOfCols;
-
-            // 创建架子定位列表的 列头
-            var columns = [];
-            var charCode = 'A'.charCodeAt(0);
-            for (var i = 0; i < countOfCols; ++i) {
-                var col = {
-                    data: 0,
-                    title: String.fromCharCode(charCode + i)
-                    // readOnly: true,
-                };
-                columns.push(col);
-            }
-            // 创建架子定位列表的定位数据
-            var arrayBoxes = [];
-            var emptyPos = null;
-            // 先列
-            for (var i = 0; i < countOfCols; ++i) {
-                // 再行
-                for (var j = 0; j < countOfRows; ++j) {
-                    arrayBoxes[j] = arrayBoxes[j] || [];
-                    var pos = {columnsInShelf: String.fromCharCode(charCode + i), rowsInShelf: j + 1 + ""};
-                    // 从已入库的盒子中查询架子中该位置的盒子
-                    var boxesInShelf = _.filter(boxes, pos);
-                    if (boxesInShelf.length) {
-                        arrayBoxes[j][i] = boxesInShelf[0];
-                    } else {
-                        var boxesPos = vm.putInShelfBoxes[shelf.id];
-                        // 从已上架的盒子中查询架子中该位置的盒子
-                        boxesInShelf = _.filter(boxesPos || [], pos);
+            if(vm.moveOperateFlag){
+                // 创建架子定位列表的定位数据
+                var arrayBoxes = [];
+                var emptyPos = null;
+                var charCode = 'A'.charCodeAt(0);
+                // 先列
+                for (var i = 0; i < countOfCols; ++i) {
+                    // 再行
+                    for (var j = 0; j < countOfRows; ++j) {
+                        arrayBoxes[j] = arrayBoxes[j] || [];
+                        var pos = {columnsInShelf: String.fromCharCode(charCode + i), rowsInShelf: j + 1 + ""};
+                        // 从已入库的盒子中查询架子中该位置的盒子
+                        var boxesInShelf = _.filter(boxes, pos);
                         if (boxesInShelf.length) {
                             arrayBoxes[j][i] = boxesInShelf[0];
                         } else {
-                            // 该位置没有任何盒子
-                            arrayBoxes[j][i] = {
-                                frozenBoxId: null,
-                                frozenBoxCode: "",
-                                columnsInShelf: String.fromCharCode(charCode + i),
-                                rowsInShelf: j + 1 + "",
-                                isEmpty: true
-                            };
-                            if (!emptyPos) {
-                                emptyPos = {row: j, col: i};
+                            var boxesPos = vm.putInShelfBoxes[shelf.id];
+                            // 从已上架的盒子中查询架子中该位置的盒子
+                            boxesInShelf = _.filter(boxesPos || [], pos);
+                            if (boxesInShelf.length) {
+                                arrayBoxes[j][i] = boxesInShelf[0];
+                            } else {
+                                // 该位置没有任何盒子
+                                arrayBoxes[j][i] = {
+                                    frozenBoxId: null,
+                                    frozenBoxCode: "",
+                                    columnsInShelf: String.fromCharCode(charCode + i),
+                                    rowsInShelf: j + 1 + "",
+                                    isEmpty: true
+                                };
+                                if (!emptyPos) {
+                                    emptyPos = {row: j, col: i};
+                                }
                             }
                         }
-                    }
 
-                    // 该位置的位置信息
-                    arrayBoxes[j][i].supportRackCode = shelf.supportRackCode;
-                    arrayBoxes[j][i].areaCode = shelf.areaCode;
-                    arrayBoxes[j][i].equipmentCode = shelf.equipmentCode;
-                    arrayBoxes[j][i].supportRackId = shelf.id;
-                    arrayBoxes[j][i].rowNO = j;
-                    arrayBoxes[j][i].colNO = i;
+                        // 该位置的位置信息
+                        arrayBoxes[j][i].supportRackCode = shelf.supportRackCode;
+                        arrayBoxes[j][i].areaCode = shelf.areaCode;
+                        arrayBoxes[j][i].equipmentCode = shelf.equipmentCode;
+                        arrayBoxes[j][i].supportRackId = shelf.id;
+                        arrayBoxes[j][i].rowNO = j;
+                        arrayBoxes[j][i].colNO = i;
+                    }
+                }
+                vm.boxArray = arrayBoxes;
+                _fnPutIn(emptyPos);
+            }else{
+                // 架子定位列表的控制对象
+                var tableCtrl = _getShelfDetailsTableCtrl();
+                // 架子定位列表的总宽度
+                var tableWidth = $(tableCtrl.container).width();
+                // 架子定位列表的配置信息
+                var settings = vm.shelfDetailsTableSettings;
+                // 架子定位列表 行头 的宽度
+                var rowHeaderWidth = settings.rowHeaderWidth;
+                // 架子定位列表每列的宽度
+                var colWidth = (tableWidth - rowHeaderWidth) / countOfCols;
+                // 创建架子定位列表的 列头
+                var columns = [];
+                var charCode = 'A'.charCodeAt(0);
+                for (var i = 0; i < countOfCols; ++i) {
+                    var col = {
+                        data: 0,
+                        title: String.fromCharCode(charCode + i)
+                        // readOnly: true,
+                    };
+                    columns.push(col);
+                }
+                // 创建架子定位列表的定位数据
+                var arrayBoxes = [];
+                var emptyPos = null;
+                // 先列
+                for (var i = 0; i < countOfCols; ++i) {
+                    // 再行
+                    for (var j = 0; j < countOfRows; ++j) {
+                        arrayBoxes[j] = arrayBoxes[j] || [];
+                        var pos = {columnsInShelf: String.fromCharCode(charCode + i), rowsInShelf: j + 1 + ""};
+                        // 从已入库的盒子中查询架子中该位置的盒子
+                        var boxesInShelf = _.filter(boxes, pos);
+                        if (boxesInShelf.length) {
+                            arrayBoxes[j][i] = boxesInShelf[0];
+                        } else {
+                            var boxesPos = vm.putInShelfBoxes[shelf.id];
+                            // 从已上架的盒子中查询架子中该位置的盒子
+                            boxesInShelf = _.filter(boxesPos || [], pos);
+                            if (boxesInShelf.length) {
+                                arrayBoxes[j][i] = boxesInShelf[0];
+                            } else {
+                                // 该位置没有任何盒子
+                                arrayBoxes[j][i] = {
+                                    frozenBoxId: null,
+                                    frozenBoxCode: "",
+                                    columnsInShelf: String.fromCharCode(charCode + i),
+                                    rowsInShelf: j + 1 + "",
+                                    isEmpty: true
+                                };
+                                if (!emptyPos) {
+                                    emptyPos = {row: j, col: i};
+                                }
+                            }
+                        }
+
+                        // 该位置的位置信息
+                        arrayBoxes[j][i].supportRackCode = shelf.supportRackCode;
+                        arrayBoxes[j][i].areaCode = shelf.areaCode;
+                        arrayBoxes[j][i].equipmentCode = shelf.equipmentCode;
+                        arrayBoxes[j][i].supportRackId = shelf.id;
+                        arrayBoxes[j][i].rowNO = j;
+                        arrayBoxes[j][i].colNO = i;
+                    }
+                }
+
+                // 修改架子定位列表的配置信息
+                settings.width = tableWidth;
+                settings.height = 380;
+                settings.minRows = countOfRows;
+                settings.minCols = countOfCols;
+                settings.colWidths = colWidth;
+                settings.manualColumnResize = colWidth;
+                settings.columns = columns;
+
+                // 更新架子定位列表并选中第一个空位置
+                tableCtrl.loadData(arrayBoxes);
+                if (emptyPos) {
+                    tableCtrl.selectCell(emptyPos.row, emptyPos.col);
                 }
             }
 
-            // 修改架子定位列表的配置信息
-            settings.width = tableWidth;
-            settings.height = 380;
-            settings.minRows = countOfRows;
-            settings.minCols = countOfCols;
-            settings.colWidths = colWidth;
-            settings.manualColumnResize = colWidth;
-            settings.columns = columns;
 
-            // 更新架子定位列表并选中第一个空位置
-            tableCtrl.loadData(arrayBoxes);
-            if (emptyPos) {
-                // tableCtrl.selectCell(0, 0);
-                tableCtrl.selectCell(emptyPos.row, emptyPos.col);
-            }
-            if(vm.moveOperateFlag){
-                _fnPutIn();
-            }
+
+
         }
 
         // 初始化冻存架上架位置的列表控件

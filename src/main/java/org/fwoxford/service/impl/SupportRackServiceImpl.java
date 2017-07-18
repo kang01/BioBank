@@ -201,6 +201,7 @@ public class SupportRackServiceImpl implements SupportRackService{
         AreaDTO areaDTO = areaMapper.areaToAreaDTO(area);
         List<SupportRackDTO> supportRackDTOS = new ArrayList<SupportRackDTO>();
         List<SupportRack> supportRacks = supportRackRepository.findSupportRackByAreaId(areaId);
+        Long countOfShelves = supportRackRepository.countSupportRackByAreaId(areaId);
         ArrayList<String> projects = new ArrayList<>();
         int i= 0;
         for(SupportRack s :supportRacks){
@@ -227,7 +228,7 @@ public class SupportRackServiceImpl implements SupportRackService{
             }
             supportRackDTOS.add(supportRackDTO);
         }
-        areaDTO.setRestOfSpace(areaDTO.getFreezeFrameNumber()-i);
+        areaDTO.setRestOfSpace(countOfShelves.intValue()-i);
         areaDTO.setPosition(BankUtil.getPositionString(areaDTO.getEquipmentCode(),areaDTO.getAreaCode(),null,null,null,null,null));
         areaDTO.setProjectCodes(String.join(";", projects));
         areaDTO.setSupportRackDTOS(supportRackDTOS);

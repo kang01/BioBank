@@ -78,6 +78,8 @@
         }
         //关闭移位
         vm.close = _fnClose;
+        //复原
+        vm.recover = _fnRecover;
         //搜索
         vm.search = _fnSearch;
         //清空
@@ -115,7 +117,9 @@
             vm.dto.status = "2004";
             vm.boxInstance.rerender();
         }
-
+        function _fnRecover() {
+            vm.boxInstance.rerender();
+        }
         function _fnClose() {
             if(!vm.closeFlag){
                 var modalInstance = $uibModal.open({
@@ -896,6 +900,7 @@
                 vm.movement.id = data.id;
                 toastr.success("保存成功!");
                 BioBankBlockUi.blockUiStop();
+                vm.boxInstance.rerender();
                 //判断是否可以关闭移位的提示消息
                 var selectedFinish =  _.filter(vm.selectedSample, {isPutInShelf: true});
                 for(var i = 0; i < selectedFinish.length;i++){

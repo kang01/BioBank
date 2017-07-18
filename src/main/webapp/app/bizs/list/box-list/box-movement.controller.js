@@ -116,6 +116,7 @@
                 vm.movement.id = data.id;
                 toastr.success("保存成功!");
                 BioBankBlockUi.blockUiStop();
+                vm.shelfInstance.rerender();
                 //判断是否可以关闭移位的提示消息
                 var selectedFinish =  _.filter(vm.selectedBox, {isPutInShelf: true});
                 for(var i = 0; i < selectedFinish.length;i++){

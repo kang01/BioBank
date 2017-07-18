@@ -84,6 +84,7 @@
             EquipmentInventoryService.saveMovement(vm.movement).success(function (data) {
                 BioBankBlockUi.blockUiStop();
                 toastr.success("保存成功!");
+                vm.dtInstance.rerender();
                 var selectedFinish =  _.filter(vm.selectedEquipment, {isPutInShelf: true});
                 for(var i = 0; i < selectedFinish.length;i++){
                     selectedFinish[i].saveFinishFlag = true;

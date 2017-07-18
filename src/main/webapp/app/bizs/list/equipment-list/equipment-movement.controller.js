@@ -52,6 +52,7 @@
         vm.search = _fnSearch;
         vm.empty = _fnEmpty;
         vm.close = _fnClose;
+        vm.closeMovement = _fnCloseMovement;
         function _fnSearch() {
             if(projectIds.length){
                 for(var i = 0; i <projectIds.length; i++){
@@ -102,6 +103,9 @@
                 $state.go("equipment-inventory");
             }
 
+        }
+        function _fnCloseMovement() {
+            vm.movementFlag = false;
         }
 
 
@@ -312,9 +316,11 @@
             '</button>&nbsp;';
         }
         function _fnSearchEquipment(equipmentId,areaId) {
+            vm.moveOperateFlag = false;
             vm.movementFlag = true;
             _queryAreaById(equipmentId,areaId);
         }
+        //列表移入操作
         function _fnSearchArea(equipmentId,areaId) {
             vm.moveOperateFlag = true;
             _queryAreaById(equipmentId,areaId);
@@ -345,72 +351,130 @@
             var countOfRows = 1;
             // 架子上的列数
             var countOfCols = racks.length || 13;
-            // // 架子定位列表的控制对象
-            var tableCtrl = _getTableCtrl();
-            // 创建架子定位列表的定位数据
-            var arrayRack = [];
-            var emptyPos = null;
-            for(var i = 0; i < countOfRows; i++){
-                arrayRack[i] = [];
-                for(var j = 0; j < countOfCols;j++){
-                    arrayRack[i][j] = racks[j];
-                    if(!racks[j].flag){
-                        if (!emptyPos) {
-                            emptyPos = {row: i, col: j};
+            if(vm.moveOperateFlag){
+                // 创建架子定位列表的定位数据
+                var arrayRack = [];
+                var emptyPos = null;
+                for(var i = 0; i < countOfRows; i++){
+                    arrayRack[i] = [];
+                    for(var j = 0; j < countOfCols;j++){
+                        arrayRack[i][j] = racks[j];
+                        if(!racks[j].flag){
+                            if (!emptyPos) {
+                                emptyPos = {row: i, col: j};
+                            }
                         }
                     }
                 }
-            }
-            // 更新架子定位列表并选中第一个空位置
-            tableCtrl.loadData(arrayRack);
-            if (emptyPos) {
-                tableCtrl.selectCell(emptyPos.row, emptyPos.col);
-            }
-            if(vm.moveOperateFlag){
-                _fnPutIn();
+                vm.handsonTableArray = arrayRack;
+                if(emptyPos){
+                    _fnPutIn(emptyPos);
+                }else{
+                    toastr.error("无可移入的空位置!")
+                }
+            }else{
+                // 架子定位列表的控制对象
+                var tableCtrl = _getTableCtrl();
+                // 创建架子定位列表的定位数据
+                var arrayRack = [];
+                var emptyPos = null;
+                for(var i = 0; i < countOfRows; i++){
+                    arrayRack[i] = [];
+                    for(var j = 0; j < countOfCols;j++){
+                        arrayRack[i][j] = racks[j];
+                        if(!racks[j].flag){
+                            if (!emptyPos) {
+                                emptyPos = {row: i, col: j};
+                            }
+                        }
+                    }
+                }
+                // 更新架子定位列表并选中第一个空位置
+                tableCtrl.loadData(arrayRack);
+                if (emptyPos) {
+                    tableCtrl.selectCell(emptyPos.row, emptyPos.col);
+                }
             }
         }
         //移入
-        function _fnPutIn() {
+        function _fnPutIn(emptyPos) {
+            var cellRow;
+            var cellCol;
             var countOfCols = vm.rack.supportRackDTOS.length;
             var countOfRows = 1;
-            var tableCtrl = _getTableCtrl();
-            var startEmptyPos = tableCtrl.getSelected();
-            var cellRow = startEmptyPos[0];
-            var cellCol = startEmptyPos[1];
-
-            for (var i in vm.selected) {
-                if (vm.selected[i]) {
-                    vm.selectAll = false;
-                    var equipment = _.find(vm.selectedEquipment, {id: +i});
-                    if (!equipment) {
-                        continue;
-                    }
-                    // 从选中的位置，开始上架，先行后列
-                    for (; cellCol < countOfCols && !equipment.isPutInShelf; ++cellCol) {
-                        for (; cellRow < countOfRows && !equipment.isPutInShelf; ++cellRow) {
-                            var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
-                            if (cellData && !cellData.flag) {
-                                // 单元格为空可以上架
-                                // 标记区域已经上架
-                                vm.selected[i] = false;
-                                equipment.isPutInShelf = true;
-                                equipment.supportRackId = cellData.id;
-                                equipment.areaId = cellData.areaId;
-                                equipment.moveShelfPosition = vm.rack.position;
-                                equipment.supportRackOldId = equipment.id;
-                                equipment.supportRackCode = cellData.supportRackCode;
-                                cellData.flag = 1;
+            if(vm.moveOperateFlag){
+                cellRow = emptyPos.row;
+                cellCol = emptyPos.col;
+                for (var i in vm.selected) {
+                    if (vm.selected[i]) {
+                        vm.selectAll = false;
+                        var equipment = _.find(vm.selectedEquipment, {id: +i});
+                        if (!equipment) {
+                            continue;
+                        }
+                        // 从选中的位置，开始上架，先行后列
+                        for (; cellCol < countOfCols && !equipment.isPutInShelf; ++cellCol) {
+                            for (; cellRow < countOfRows && !equipment.isPutInShelf; ++cellRow) {
+                                var cellData = vm.handsonTableArray[cellRow][cellCol];
+                                if (cellData && !cellData.flag) {
+                                    // 单元格为空可以上架
+                                    // 标记区域已经上架
+                                    vm.selected[i] = false;
+                                    equipment.isPutInShelf = true;
+                                    equipment.supportRackId = cellData.id;
+                                    equipment.areaId = cellData.areaId;
+                                    equipment.moveShelfPosition = vm.rack.position;
+                                    equipment.supportRackOldId = equipment.id;
+                                    equipment.supportRackCode = cellData.supportRackCode;
+                                    cellData.flag = 1;
+                                    break;
+                                }
+                            }
+                            if (equipment.isPutInShelf) {
                                 break;
                             }
                         }
-                        if (equipment.isPutInShelf) {
-                            break;
+                    }
+                }
+            }else{
+                var tableCtrl = _getTableCtrl();
+                var startEmptyPos = tableCtrl.getSelected();
+                cellRow = startEmptyPos[0];
+                cellCol = startEmptyPos[1];
+                for (var i in vm.selected) {
+                    if (vm.selected[i]) {
+                        vm.selectAll = false;
+                        var equipment = _.find(vm.selectedEquipment, {id: +i});
+                        if (!equipment) {
+                            continue;
+                        }
+                        // 从选中的位置，开始上架，先行后列
+                        for (; cellCol < countOfCols && !equipment.isPutInShelf; ++cellCol) {
+                            for (; cellRow < countOfRows && !equipment.isPutInShelf; ++cellRow) {
+                                var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                                if (cellData && !cellData.flag) {
+                                    // 单元格为空可以上架
+                                    // 标记区域已经上架
+                                    vm.selected[i] = false;
+                                    equipment.isPutInShelf = true;
+                                    equipment.supportRackId = cellData.id;
+                                    equipment.areaId = cellData.areaId;
+                                    equipment.moveShelfPosition = vm.rack.position;
+                                    equipment.supportRackOldId = equipment.id;
+                                    equipment.supportRackCode = cellData.supportRackCode;
+                                    cellData.flag = 1;
+                                    break;
+                                }
+                            }
+                            if (equipment.isPutInShelf) {
+                                break;
+                            }
                         }
                     }
                 }
+                tableCtrl.render();
             }
-            tableCtrl.render();
+
             vm.selectedInstance.rerender();
         }
         function _initHandsonTablePanel(){

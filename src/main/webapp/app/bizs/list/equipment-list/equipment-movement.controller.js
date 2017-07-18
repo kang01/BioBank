@@ -412,9 +412,9 @@
                         if (!equipment) {
                             continue;
                         }
-                        // 从选中的位置，开始上架，先行后列
-                        for (; cellCol < countOfCols && !equipment.isPutInShelf; ++cellCol) {
-                            for (; cellRow < countOfRows && !equipment.isPutInShelf; ++cellRow) {
+                        // 从选中的位置，开始上架，先列后行
+                        for (; cellRow < countOfRows && !equipment.isPutInShelf; ++cellRow) {
+                            for (; cellCol < countOfCols && !equipment.isPutInShelf; ++cellCol) {
                                 var cellData = vm.handsonTableArray[cellRow][cellCol];
                                 if (cellData && !cellData.flag) {
                                     // 单元格为空可以上架
@@ -448,9 +448,9 @@
                         if (!equipment) {
                             continue;
                         }
-                        // 从选中的位置，开始上架，先行后列
-                        for (; cellCol < countOfCols && !equipment.isPutInShelf; ++cellCol) {
-                            for (; cellRow < countOfRows && !equipment.isPutInShelf; ++cellRow) {
+                        // 从选中的位置，开始上架，先列后行
+                        for (; cellRow < countOfRows && !equipment.isPutInShelf; ++cellRow) {
+                            for (; cellCol < countOfCols && !equipment.isPutInShelf; ++cellCol) {
                                 var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
                                 if (cellData && !cellData.flag) {
                                     // 单元格为空可以上架

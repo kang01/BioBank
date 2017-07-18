@@ -912,8 +912,14 @@ ul.rating {
     width:50%;
     height: 28px;
     background: #5BC0DE;
-
 }
 .sample-search .form-group{
     margin-bottom: 0;
+}
+.inventory .selected-content{
+    position: absolute;
+    top: 46px;
+    bottom: 0;
+    overflow: auto;
+    width: 100%;
 }

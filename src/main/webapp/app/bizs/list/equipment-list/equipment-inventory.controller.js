@@ -16,10 +16,6 @@
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
         var selectedEquipment;
-
-
-
-
         function _init() {
             //获取项目
             ProjectService.query({},onProjectSuccess, onError);
@@ -329,8 +325,6 @@
                 .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型').withOption("width", "100"),
             DTColumnBuilder.newColumn('position').withTitle('位置').withOption("width", "140"),
-            // DTColumnBuilder.newColumn('areaCode').withTitle('区域'),
-            // DTColumnBuilder.newColumn('shelvesCode').withTitle('架子'),
             DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型').withOption("width", "60"),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),

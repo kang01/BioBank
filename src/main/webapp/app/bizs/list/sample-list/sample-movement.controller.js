@@ -672,7 +672,6 @@
         function _createTubeForTableCell(tubeInBox, box, rowNO, colNO, pos){
             var tube = {
                 id: null,
-
                 sampleCode: "",
                 sampleTempCode: "",
                 sampleTypeId: "",
@@ -733,7 +732,7 @@
             return tube;
         }
         function _reloadTubesForTable(box){
-            var tableCtrl = hotRegisterer.getInstance('my-handsontable');
+            var tableCtrl = _getTableCtrl();
             var tableWidth = $(tableCtrl.container).width();
             var settings = {
                 minCols: +box.frozenBoxType.frozenBoxTypeColumns,

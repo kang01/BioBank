@@ -62,6 +62,10 @@ public class AreasListByProjectDataTableEntity {
     @JsonView(DataTablesOutput.View.class)
     private Integer countOfUsed;
 
+    @Column(name ="count_of_shelves")
+    @JsonView(DataTablesOutput.View.class)
+    private Integer countOfShelves;
+
     @Column(name ="project_id")
     private String projectId;
 
@@ -158,5 +162,37 @@ public class AreasListByProjectDataTableEntity {
 
     public void setCountOfUsed(Integer countOfUsed) {
         this.countOfUsed = countOfUsed;
+    }
+
+    public Integer getCountOfShelves() {
+        return countOfShelves;
+    }
+
+    public void setCountOfShelves(Integer countOfShelves) {
+        this.countOfShelves = countOfShelves;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 }

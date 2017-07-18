@@ -240,7 +240,7 @@ public class StockListServiceImpl implements StockListService {
                 public AreasListAllDataTableEntity convert(AreasListByProjectDataTableEntity e) {
                     String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),null,null,null,null,null);
                     return new AreasListAllDataTableEntity(e.getId(),e.getEquipmentType(),e.getEquipmentCode(),e.getAreaCode(),e.getStatus(),
-                        e.getEquipmentTypeId(),e.getEquipmentId(),position,e.getFreezeFrameNumber(),e.getCountOfRest(),e.getCountOfUsed());
+                        e.getEquipmentTypeId(),e.getEquipmentId(),position,e.getFreezeFrameNumber(),e.getCountOfRest(),e.getCountOfUsed(),e.getCountOfShelves());
                 }
             };
             output = areasListByProjectRepositories.findAll(input,null,specification,userConverter);
@@ -257,7 +257,7 @@ public class StockListServiceImpl implements StockListService {
                 public AreasListAllDataTableEntity convert(AreasListAllDataTableEntity e) {
                     String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),null,null,null,null,null);
                     return new AreasListAllDataTableEntity(e.getId(),e.getEquipmentType(),e.getEquipmentCode(),e.getAreaCode(),e.getStatus(),
-                        e.getEquipmentTypeId(),e.getEquipmentId(),position,e.getFreezeFrameNumber(),e.getCountOfRest(),e.getCountOfUsed());
+                        e.getEquipmentTypeId(),e.getEquipmentId(),position,e.getFreezeFrameNumber(),e.getCountOfRest(),e.getCountOfUsed(),e.getCountOfShelves());
                 }
             };
             output =  areasListRepositories.findAll(input,null,specification,userConverter);

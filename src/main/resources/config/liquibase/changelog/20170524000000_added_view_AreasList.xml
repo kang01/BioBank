@@ -10,8 +10,9 @@
 
         <createView viewName="view_areas_list">
             select a.id,m.id as equipment_type_id,m.equipment_type,e.equipment_code ||'.'||a.area_code as position,a.freeze_frame_number,
-            (select count(s.id) from support_rack s where s.area_id = a.id and s.status!='0000') as count_of_used,
-            (a.FREEZE_FRAME_NUMBER -(select count(s.id) from support_rack s where s.area_id = a.id and s.status!='0000') )as count_of_rest,
+            (select  count( DISTINCT s.id) from support_rack s left join frozen_box box on box.support_rack_id = s.id where s.area_id = a.id and s.status!='0000' and box.status in ('2004','2006')) as count_of_used,
+            (select count(s.id) from support_rack s where s.area_id = a.id and s.status!='0000')  as count_of_shelves,
+            ((select count(s.id) from support_rack s where s.area_id = a.id and s.status!='0000')-(select  count( DISTINCT s.id) from support_rack s left join frozen_box box on box.support_rack_id = s.id where s.area_id = a.id and s.status!='0000' and box.status in ('2004','2006')) )as count_of_rest,
             a.status,
             a.equipment_id,e.equipment_code,a.area_code
             from area a

@@ -62,10 +62,14 @@ public class AreasListAllDataTableEntity {
     @JsonView(DataTablesOutput.View.class)
     private Integer countOfUsed;
 
+    @Column(name ="count_of_shelves")
+    @JsonView(DataTablesOutput.View.class)
+    private Integer countOfShelves;
+
     public AreasListAllDataTableEntity() {
     }
 
-    public AreasListAllDataTableEntity(Long id, String equipmentType, String equipmentCode, String areaCode, String status, Long equipmentTypeId, Long equipmentId, String position, String freezeFrameNumber, Integer countOfRest, Integer countOfUsed) {
+    public AreasListAllDataTableEntity(Long id, String equipmentType, String equipmentCode, String areaCode, String status, Long equipmentTypeId, Long equipmentId, String position, String freezeFrameNumber, Integer countOfRest, Integer countOfUsed, Integer countOfShelves) {
         this.id = id;
         this.equipmentType = equipmentType;
         this.equipmentCode = equipmentCode;
@@ -77,6 +81,7 @@ public class AreasListAllDataTableEntity {
         this.freezeFrameNumber = freezeFrameNumber;
         this.countOfRest = countOfRest;
         this.countOfUsed = countOfUsed;
+        this.countOfShelves = countOfShelves;
     }
 
     public Long getId() {
@@ -165,5 +170,13 @@ public class AreasListAllDataTableEntity {
 
     public void setCountOfUsed(Integer countOfUsed) {
         this.countOfUsed = countOfUsed;
+    }
+
+    public Integer getCountOfShelves() {
+        return countOfShelves;
+    }
+
+    public void setCountOfShelves(Integer countOfShelves) {
+        this.countOfShelves = countOfShelves;
     }
 }

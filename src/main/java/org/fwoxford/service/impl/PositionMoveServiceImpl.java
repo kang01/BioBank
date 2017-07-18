@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -357,6 +358,9 @@ public class PositionMoveServiceImpl implements PositionMoveService {
     }
 
     public void checkUser(PositionMoveDTO positionMoveDTO) {
+        if(StringUtils.isEmpty(positionMoveDTO.getMoveReason())){
+            throw new BankServiceException("移位原因不能为空！");
+        }
         if(positionMoveDTO.getOperatorId1() == null || positionMoveDTO.getOperatorId2()==null){
             throw new BankServiceException("操作人不能为空！");
         }

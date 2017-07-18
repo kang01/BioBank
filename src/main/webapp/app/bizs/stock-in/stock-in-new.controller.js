@@ -6,13 +6,13 @@
 
     angular
         .module('bioBankApp')
-        .controller('StockInNewController', StockInNewController);
-        // .controller('RescindPutAwayModalController', RescindPutAwayModalController);
+        .controller('StockInNewController', StockInNewController)
+        .controller('StockInNewModalController', StockInNewModalController);
 
     StockInNewController.$inject = ['$timeout','BioBankBlockUi','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
         'entity','StockInService','StockInBoxService','StockInBoxByCodeService','StockInInputService','ProjectService','ProjectSitesByProjectIdService',
         'SampleTypeService','SampleService','FrozenBoxTypesService','RescindPutAwayService','MasterData'];
-    // RescindPutAwayModalController.$inject = ['$uibModalInstance'];
+    StockInNewModalController.$inject = ['$uibModalInstance'];
     function StockInNewController($timeout,BioBankBlockUi,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
                                    entity,StockInService,StockInBoxService,StockInBoxByCodeService,StockInInputService,ProjectService,ProjectSitesByProjectIdService,
                                    SampleTypeService,SampleService,FrozenBoxTypesService,RescindPutAwayService,MasterData) {
@@ -84,16 +84,26 @@
             vm.projectConfig = {
                 valueField:'id',
                 labelField:'projectName',
+                searchField:'projectName',
                 maxItems: 1,
                 onChange:function(value){
-                    vm.entity.projectSiteId = "";
-                    ProjectSitesByProjectIdService.query({id:value},onProjectSitesSuccess,onError);
+                    if(value){
+                        ProjectSitesByProjectIdService.query({id:value},onProjectSitesSuccess,onError);
+                    }else{
+                        vm.entity.projectSiteId = "";
+                        vm.projectSitesOptions = [
+                            {id:"",projectSiteName:""}
+                        ]
+                    }
+
+
                 }
             };
             //项目点
             vm.projectSitesConfig = {
                 valueField:'id',
                 labelField:'projectSiteName',
+                searchField:'projectSiteName',
                 maxItems: 1,
                 onChange:function (value) {
                 }
@@ -143,14 +153,14 @@
             // 设置Tool button
                 .withButtons([
                     {
-                        text: '<i class="fa fa-sign-in"></i> 批量上架',
-                        className: 'btn btn-default mr-5',
+                        text: '<i class="fa fa-sign-in "></i> 批量上架',
+                        className: 'btn btn-default mr-5 btn-primary',
                         key: '1',
                         action: _fnActionPutInShelfButton
                     },
                     {
                         text: '<i class="fa fa-plus"></i> 添加冻存盒',
-                        className: 'btn btn-default',
+                        className: 'btn btn-default btn-primary',
                         key: '1',
                         action: _fnActionAddBoxButton
                     }
@@ -430,12 +440,31 @@
             vm.box = {
                 frozenTubeDTOS:[]
             };
-            vm.saveStockInFlag = true;
-            vm.stockInSave();
-            _initBoxInfo();
-            _initSampleType();
-            vm.splittingBox = true;
-            vm.editFlag = false;
+            if(!vm.entity.id){
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'stockInNew.html',
+                    controller: 'StockInNewModalController',
+                    controllerAs: 'vm'
+                });
+                modalInstance.result.then(function () {
+                    vm.saveStockInFlag = true;
+                    vm.stockInSave();
+                    _initBoxInfo();
+                    _initSampleType();
+                    vm.splittingBox = true;
+                    vm.editFlag = false;
+                }, function () {
+                });
+            }else{
+                vm.saveStockInFlag = true;
+                vm.stockInSave();
+                _initBoxInfo();
+                _initSampleType();
+                vm.splittingBox = true;
+                vm.editFlag = false;
+            }
+
+
 
         }
         //冻存盒搜索
@@ -1267,13 +1296,13 @@
             vm.datePickerOpenStatus[date] = true;
         }
     }
-    // function RescindPutAwayModalController($uibModalInstance) {
-    //     var vm = this;
-    //     vm.ok = function () {
-    //         $uibModalInstance.close(true);
-    //     };
-    //     vm.cancel = function () {
-    //         $uibModalInstance.dismiss('cancel');
-    //     };
-    // }
+    function StockInNewModalController($uibModalInstance) {
+        var vm = this;
+        vm.ok = function () {
+            $uibModalInstance.close();
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    }
 })();

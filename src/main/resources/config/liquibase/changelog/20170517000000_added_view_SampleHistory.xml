@@ -149,7 +149,7 @@
             null as handover_code,
             tube.sample_code,
             101 as type,
-            box.status,box.frozen_box_code,tranship.rows_in_tube as tube_rows,tranship.columns_in_tube as tube_columns
+            tranship.status,box.frozen_box_code,tranship.rows_in_tube as tube_rows,tranship.columns_in_tube as tube_columns
             ,tran.tranship_date as operate_time,
             (tbox.equipment_code||'.'||tbox.area_code||'.'||tbox.support_rack_code||'.'||tbox.columns_in_shelf||tbox.rows_in_shelf) as position,
             (tranship.ROWS_IN_TUBE||tranship.COLUMNS_IN_TUBE) as position_in_box,
@@ -177,7 +177,7 @@
             null as handover_code,
             tube.sample_code,
             102 as type,
-            box.status,box.frozen_box_code,stockIn.tube_rows,stockIn.tube_columns
+            stockIn.status,box.frozen_box_code,stockIn.tube_rows,stockIn.tube_columns
             ,s.stock_in_date as operate_time,
             (sbox.equipment_code||'.'||sbox.area_code||'.'||sbox.support_rack_code||'.'||sbox.columns_in_shelf||sbox.rows_in_shelf) as position,
             (stockIn.tube_rows||stockIn.tube_columns) as position_in_box,
@@ -207,7 +207,7 @@
             null as handover_code,
             tube.sample_code,
             103 as type,
-            box.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns
+            stockOut.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns
             ,task.stock_out_date as operate_time,
             (soutbox.equipment_code||'.'||soutbox.area_code||'.'||soutbox.support_rack_code||'.'||soutbox.columns_in_shelf||soutbox.rows_in_shelf) as position,
             (stockOut.tube_rows||stockOut.tube_columns) as position_in_box,
@@ -237,7 +237,7 @@
             handover.handover_code,
             tube.sample_code,
             104 as type,
-            box.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns
+            hand.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns
             ,handover.handover_time  as operate_time,
             (soutbox.equipment_code||'.'||soutbox.area_code||'.'||soutbox.support_rack_code||'.'||soutbox.columns_in_shelf||soutbox.rows_in_shelf) as position,
             (stockOut.tube_rows||stockOut.tube_columns) as position_in_box,
@@ -267,7 +267,7 @@
             null as handover_code,
             m.sample_code,
             105 as type,
-            b.status,m.frozen_box_code,m.tube_rows,m.tube_columns
+            m.status,m.frozen_box_code,m.tube_rows,m.tube_columns
             ,m.created_date  as operate_time,
             (m.equipment_code||'.'||m.area_code||'.'||m.support_rack_code||'.'||m.columns_in_shelf||m.rows_in_shelf) as position,
             (m.tube_rows||m.tube_columns) as position_in_box,

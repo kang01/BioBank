@@ -26,6 +26,11 @@ public class PositionMoveRecord extends AbstractAuditingEntity implements Serial
 
     @NotNull
     @Size(max = 100)
+    @Column(name = "sample_code", length = 100, nullable = false)
+    private String sampleCode;
+
+    @NotNull
+    @Size(max = 100)
     @Column(name = "equipment_code", length = 100, nullable = false)
     private String equipmentCode;
 
@@ -127,6 +132,19 @@ public class PositionMoveRecord extends AbstractAuditingEntity implements Serial
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getSampleCode() {
+        return sampleCode;
+    }
+
+    public PositionMoveRecord sampleCode(String sampleCode) {
+        this.sampleCode = sampleCode;
+        return this;
+    }
+
+    public void setSampleCode(String sampleCode) {
+        this.sampleCode = sampleCode;
     }
 
     public String getEquipmentCode() {
@@ -439,6 +457,7 @@ public class PositionMoveRecord extends AbstractAuditingEntity implements Serial
     public String toString() {
         return "PositionMoveRecord{" +
             "id=" + id +
+            ", sampleCode='" + sampleCode + "'" +
             ", equipmentCode='" + equipmentCode + "'" +
             ", areaCode='" + areaCode + "'" +
             ", supportRackCode='" + supportRackCode + "'" +

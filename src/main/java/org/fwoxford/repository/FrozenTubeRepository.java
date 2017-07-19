@@ -70,8 +70,6 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     List<FrozenTube> findByRequirement(Long sampleTypeId, Long samplyClassificationId, Long frozenTubeTypeId,
                                        String diseaseType, String sex, Boolean isBloodLipid, Boolean isHemolysis, Integer ageMin, Integer ageMax);
 
-    List<FrozenTube> findBySampleCode(String sampleCode);
-
     @Query(value = "select  id,\n" +
         "cast(project_code as varchar2(255)) as projectCode,\n" +
         "tranship_id as transhipId,\n" +

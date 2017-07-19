@@ -1,7 +1,8 @@
 package org.fwoxford.service.impl;
 
+import liquibase.util.StringUtils;
 import org.fwoxford.config.Constants;
-import org.fwoxford.domain.FrozenBox;
+import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.response.*;
@@ -55,6 +56,8 @@ public class StockListServiceImpl implements StockListService {
     private AreasListRepositories areasListRepositories;
     @Autowired
     private AreasListByProjectRepositories areasListByProjectRepositories;
+    @Autowired
+    private FrozenTubeRepository frozenTubeRepository;
     /**
      * 冻存位置清单
      * @param input
@@ -139,10 +142,12 @@ public class StockListServiceImpl implements StockListService {
         Converter<FrozenTubeListAllDataTableEntity, FrozenTubeListAllDataTableEntity> convert = new Converter<FrozenTubeListAllDataTableEntity, FrozenTubeListAllDataTableEntity>() {
             @Override
             public FrozenTubeListAllDataTableEntity convert(FrozenTubeListAllDataTableEntity e) {
+                FrozenTube frozenTube = frozenTubeRepository.findOne(e.getId());
+                String sampleCode = StringUtils.isEmpty(frozenTube.getSampleCode())?frozenTube.getSampleTempCode():frozenTube.getSampleCode();
                 String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
                 String positionInBox = e.getTubeRows()+e.getTubeColumns();
                 return new FrozenTubeListAllDataTableEntity(
-                    e.getId(),position,e.getFrozenBoxCode(),e.getSampleCode(),e.getProjectCode(),e.getProjectName(),e.getSampleType(),
+                    e.getId(),position,e.getFrozenBoxCode(),sampleCode,e.getProjectCode(),e.getProjectName(),e.getSampleType(),
                     e.getSampleClassification(),e.getSex(),e.getAge(),e.getDiseaseType(),e.getHemolysis(),e.getBloodLipid(),e.getSampleUsedTimes(),
                     e.getStatus(),e.getFrozenTubeState(),e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),
                     e.getTubeRows(),e.getTubeColumns(),e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getSampleTypeId(),e.getSampleClassificationId(),positionInBox

@@ -126,6 +126,12 @@ public class StockListResource {
         return stockListService.getPageShelvesList(input,search);
     }
 
+    /**
+     * 所有区域清单
+     * @param input
+     * @param searchForm
+     * @return
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/res/areas-list", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<AreasListAllDataTableEntity> getPageAreaList(@RequestBody DataTablesInput input,

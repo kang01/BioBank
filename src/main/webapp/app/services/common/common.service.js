@@ -29,7 +29,7 @@
                 _.each(types, function(t){
                     switch (t){
                         case "NORMALLY":
-                            if (window.innerHeight >= 950){
+                            if (window.innerHeight >= 850){
                                 pageLength += pageLength;
                             }
                             options.withPaginationType('full_numbers');

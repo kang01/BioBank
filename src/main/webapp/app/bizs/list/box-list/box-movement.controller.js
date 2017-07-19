@@ -21,7 +21,6 @@
         vm.dto = {};
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.selectedBox = $stateParams.selectedBox || [];
-        vm.movementFlag = false;
         vm.movement = {
             operatorId1: "",
             operatorId2: "",
@@ -32,7 +31,12 @@
         };
         var projectIds = [];
         vm.selected = {};
+        //内容切换显示列表与详情
+        vm.movementFlag = false;
+        //是否时列表中的移入操作
         vm.moveOperateFlag = false;
+        //是否关闭移位的提示信息
+        vm.closeFlag = false;
         function _init() {
             // 过滤已上架的冻存盒
             vm.filterNotPutInShelfTubes = function (box) {
@@ -63,7 +67,7 @@
         vm.moveOperate = _fnMoveOperate;
 
         function _fnClose() {
-            if (vm.selectedBox.length) {
+            if (!vm.closeFlag) {
                 var modalInstance = $uibModal.open({
                     templateUrl: 'myModalContent.html',
                     controller: 'ModalInstanceCtrl',
@@ -112,6 +116,18 @@
                 vm.movement.id = data.id;
                 toastr.success("保存成功!");
                 BioBankBlockUi.blockUiStop();
+                vm.shelfInstance.rerender();
+                //判断是否可以关闭移位的提示消息
+                var selectedFinish =  _.filter(vm.selectedBox, {isPutInShelf: true});
+                for(var i = 0; i < selectedFinish.length;i++){
+                    selectedFinish[i].saveFinishFlag = true;
+                }
+                var len = _.filter(selectedFinish, {saveFinishFlag: true}).length;
+                if(len == vm.selectedBox.length){
+                    vm.closeFlag = true;
+                }else{
+                    vm.closeFlag = false;
+                }
             }).error(function (data) {
                 toastr.error(data.message);
                 BioBankBlockUi.blockUiStop();

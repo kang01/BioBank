@@ -30,13 +30,17 @@
         vm.selected = {};
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.selectedSample = [];
-        var selectedSampleId = [];
+        var selectedSampleIds = [];
+        //内容切换显示列表与详情
         vm.sampleMovementFlag = false;
+        //是否时列表中的移入操作
         vm.moveOperateFlag = false;
+        //是否关闭移位的提示信息
+        vm.closeFlag = false;
         if(vm.selectedTubes.length){
             for(var i = 0; i < vm.selectedTubes.length; i++){
                 vm.selectedTubes[i].moveFrozenBoxCode = '';
-                selectedSampleId.push(vm.selectedTubes[i].id);
+                selectedSampleIds.push(vm.selectedTubes[i].id);
             }
         }
         var projectIds = [];
@@ -57,14 +61,14 @@
                 maxItems: 1
 
             };
-            if(selectedSampleId.length){
+            if(selectedSampleIds.length){
                 _searchTubesByIds();
             }
 
         }
         _init();
         function _searchTubesByIds() {
-            var tubeIds = selectedSampleId.join(",");
+            var tubeIds = selectedSampleIds.join(",");
             SampleInventoryService.queryTubeDesByIds(tubeIds).success(function (data) {
                 vm.selectedSample = data;
                 _.forEach(vm.selectedSample, function(tube){
@@ -74,12 +78,12 @@
         }
         //关闭移位
         vm.close = _fnClose;
+        //复原
+        vm.recover = _fnRecover;
         //搜索
         vm.search = _fnSearch;
         //清空
         vm.empty = _fnEmpty;
-        //复原
-        // vm.recover = _fnRecover;
         //移入
         vm.putIn = _fnPutIn;
         //关闭目标冻存区
@@ -88,6 +92,7 @@
         vm.saveMovement = _fnSaveMovement;
         //获取管子列表
         vm.sampleMovement = _fnSampleMovement;
+        //列表移入操作
         vm.moveOperate = _fnMoveOperate;
 
         function _fnSearch() {
@@ -112,9 +117,11 @@
             vm.dto.status = "2004";
             vm.boxInstance.rerender();
         }
-
+        function _fnRecover() {
+            vm.boxInstance.rerender();
+        }
         function _fnClose() {
-            if(vm.selectedSample.length){
+            if(!vm.closeFlag){
                 var modalInstance = $uibModal.open({
                     templateUrl: 'myModalContent.html',
                     controller: 'ModalInstanceCtrl',
@@ -200,15 +207,6 @@
             vm.selectAll = true;
         }
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 450, 10);
-            // .withOption('data', selectedSample)
-            // .withOption('createdRow', function(row, data, dataIndex) {
-            //     $compile(angular.element(row).contents())($scope);
-            // })
-            // .withOption('headerCallback', function(header) {
-            //     $compile(angular.element(header).contents())($scope);
-            // })
-            // .withPaginationType('full_numbers');
-        // var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.selectedColumns = [
             DTColumnBuilder.newColumn(0).withOption("width", "30"),
             DTColumnBuilder.newColumn(1).withOption("width", "100"),
@@ -318,9 +316,6 @@
             vm.sampleMovementFlag = false;
         }
 
-        // function _fnRecover() {
-        //     var tableCtrl = hotRegisterer.getInstance('my-handsontable');
-        // }
         //盒子列表
         vm.boxOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
             .withOption('searching', false)
@@ -433,7 +428,6 @@
             if(vm.moveOperateFlag){
                 cellRow = emptyPos.row;
                 cellCol = emptyPos.col;
-                console.log(JSON.stringify(vm.frozenTubeArray));
                 for(var i in vm.selected){
                     if(vm.selected[i]) {
                         // 遍历选中的冻存管，i是冻存管的Id
@@ -906,6 +900,18 @@
                 vm.movement.id = data.id;
                 toastr.success("保存成功!");
                 BioBankBlockUi.blockUiStop();
+                vm.boxInstance.rerender();
+                //判断是否可以关闭移位的提示消息
+                var selectedFinish =  _.filter(vm.selectedSample, {isPutInShelf: true});
+                for(var i = 0; i < selectedFinish.length;i++){
+                    selectedFinish[i].saveFinishFlag = true;
+                }
+                var len = _.filter(selectedFinish, {saveFinishFlag: true}).length;
+                if(len == vm.selectedSample.length){
+                    vm.closeFlag = true;
+                }else{
+                    vm.closeFlag = false;
+                }
             }).error(function (data) {
                 toastr.error(data.message);
                 BioBankBlockUi.blockUiStop();

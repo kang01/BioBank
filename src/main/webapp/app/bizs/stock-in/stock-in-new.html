@@ -10,13 +10,12 @@
         </div>
         <div style="clear: both"></div>
     </div>
-
     <div class="row form-horizontal">
         <!--<div class="col-md-1 text-right"><strong>入库单编号</strong></div>-->
         <!--<div class="col-md-1">{{vm.entity.stockInCode}}</div>-->
         <div class="col-md-3">
             <div class="form-group ">
-                <label class="col-md-4 control-label text-left">
+                <label class="col-md-4 control-label">
                     <span class="required-field"></span>
                     项目编码
                 </label>
@@ -29,7 +28,7 @@
         </div>
         <div class="col-md-3">
             <div class="form-group three-col project-sites">
-                <label class="col-md-4 control-label text-left">
+                <label class="col-md-4 control-label">
                     项目点</label>
                 <div class="col-md-8">
                     <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
@@ -41,10 +40,6 @@
         </div>
 
     </div>
-
-
-
-
     <div class="row">
         <div class="col-md-12">
             <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"
@@ -146,3 +141,15 @@
 
     </div>
 </div>
+<script type="text/ng-template" id="stockInNew.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">保存入库记录操作</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        添加冻存盒时，需要保存项目编码，且项目编码不可修改，是否继续添加？
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+        <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+    </div>
+</script>

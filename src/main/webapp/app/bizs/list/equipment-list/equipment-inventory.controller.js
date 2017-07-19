@@ -217,18 +217,10 @@
             vm.dtInstance.rerender();
         }
 
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 500, 10);
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型'),
-            // DTColumnBuilder.newColumn('equipmentCode').withTitle('设备'),
-            // DTColumnBuilder.newColumn('areaCode').withTitle('区域'),
-            // DTColumnBuilder.newColumn('shelvesCode').withTitle('架子'),
             DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型')
-            // DTColumnBuilder.newColumn('countOfUsed').withTitle('已用'),
-            // DTColumnBuilder.newColumn('countOfRest').withTitle('剩余'),
-            // DTColumnBuilder.newColumn('status').withTitle('状态'),
-            // DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml),
-            // DTColumnBuilder.newColumn('id').notVisible()
         ];
 
         vm.selected = {};

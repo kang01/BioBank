@@ -28,14 +28,14 @@
 
 
         vm.dtColumns = [
-            DTColumnBuilder.newColumn('operateTime').withTitle('日期'),
-            DTColumnBuilder.newColumn('type').withTitle('变更'),
-            DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码'),
-            DTColumnBuilder.newColumn('positionInBox').withTitle('盒内位置'),
-            DTColumnBuilder.newColumn('operator').withTitle('操作员'),
-            DTColumnBuilder.newColumn('memo').withTitle('批注'),
-            DTColumnBuilder.newColumn('status').withTitle('状态')
+            DTColumnBuilder.newColumn('operateTime').withTitle('日期').withOption("width", "80"),
+            DTColumnBuilder.newColumn('type').withTitle('变更').withOption("width", "50"),
+            DTColumnBuilder.newColumn('position').withTitle('冻存位置').withOption("width", "120"),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "100"),
+            DTColumnBuilder.newColumn('positionInBox').withTitle('盒内位置').withOption("width", "80"),
+            DTColumnBuilder.newColumn('operator').withTitle('操作员').withOption("width", "80"),
+            DTColumnBuilder.newColumn('memo').withTitle('批注').withOption("width", "auto"),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "80")
         ];
         function createdRow(row, data, dataIndex) {
             var type = "";

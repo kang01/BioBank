@@ -256,7 +256,7 @@
             // vm.checked = false;
             vm.dtInstance.rerender();
         }
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 500, 10);
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "110"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),

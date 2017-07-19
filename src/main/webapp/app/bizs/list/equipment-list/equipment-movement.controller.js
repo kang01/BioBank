@@ -28,6 +28,7 @@
         vm.selected = {};
         //列表中移入
         vm.moveOperateFlag = false;
+        vm.closeFlag = false;
         var projectIds = [];
         function _init() {
             // 过滤已上架的冻存盒
@@ -83,13 +84,24 @@
             EquipmentInventoryService.saveMovement(vm.movement).success(function (data) {
                 BioBankBlockUi.blockUiStop();
                 toastr.success("保存成功!");
+                vm.dtInstance.rerender();
+                var selectedFinish =  _.filter(vm.selectedEquipment, {isPutInShelf: true});
+                for(var i = 0; i < selectedFinish.length;i++){
+                    selectedFinish[i].saveFinishFlag = true;
+                }
+                var len = _.filter(selectedFinish, {saveFinishFlag: true}).length;
+                if(len == vm.selectedEquipment.length){
+                    vm.closeFlag = true;
+                }else{
+                    vm.closeFlag = false;
+                }
             }).error(function (data) {
                 toastr.error(data.message);
                 BioBankBlockUi.blockUiStop();
             })
         }
         function _fnClose() {
-            if(vm.selectedEquipment.length){
+            if(!vm.closeFlag){
                 var modalInstance = $uibModal.open({
                     templateUrl: 'myModalContent.html',
                     controller: 'ModalInstanceCtrl',

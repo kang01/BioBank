@@ -308,7 +308,7 @@
 
 
 
-            vm.dtOptions = BioBankDataTable.buildDTOption("NO-PAGING", 300, -1, "<'row'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>", $scope)
+            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC", 200, 10, "<'row'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>", $scope)
                 // 设置Tool button
                 .withButtons([
                     {
@@ -333,16 +333,9 @@
                 // 每行的渲染
                 .withOption('createdRow', _fnCreatedRow)
                 .withOption('headerCallback', function(header) {
-                    // if (!vm.headerCompiled) {
-                    //     // Use this headerCompiled field to only compile header once
-                    //     vm.headerCompiled = true;
-                    //
-                    // }
                     $compile(angular.element(header).contents())($scope);
                 });
 
-                // 定义每个列过滤选项
-                // .withColumnFilter(_createColumnFilters());
 
             // 表格中每个列的定义
             vm.dtColumns = _createColumns();

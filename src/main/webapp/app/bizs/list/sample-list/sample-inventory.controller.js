@@ -242,7 +242,7 @@
             // vm.checked = false;
             vm.dtInstance.rerender();
         }
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 500, 10);
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),

@@ -37,6 +37,11 @@
         vm.moveOperateFlag = false;
         //是否关闭移位的提示信息
         vm.closeFlag = false;
+        //单次移入的数据
+        var singleRecoverDataArray = [];
+        //全部移入的数据
+        var totalRecoverDataArray = [];
+
         function _init() {
             // 过滤已上架的冻存盒
             vm.filterNotPutInShelfTubes = function (box) {
@@ -50,13 +55,15 @@
             if (vm.selectedBox.length) {
                 _.forEach(vm.selectedBox, function (box) {
                     box.moveFrozenBoxPosition = '';
+                    box.frozenBoxId = box.id;
                     vm.selected[box.id] = false;
                 });
             }
         }
-
         _init();
 
+        //撤消
+        vm.recover = _fnRecover;
         vm.searchShelf = _fnSearchShelf;
         vm.putIn = _fnPutIn;
         vm.saveMovement = _fnSaveMovement;
@@ -168,9 +175,13 @@
             vm.selectAll = true;
         }
 
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 474, 10);
+        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 474, 10)
+            .withOption('order', [[1,'asc']])
+            .withOption('info', false)
+            .withOption('paging', false)
+            .withOption('searching', false);
         vm.selectedColumns = [
-            DTColumnBuilder.newColumn(0).withOption("width", "30"),
+            DTColumnBuilder.newColumn(0).withOption("width", "30").withOption('searchable',false).notSortable(),
             DTColumnBuilder.newColumn(1).withOption("width", "100"),
             DTColumnBuilder.newColumn(2).withOption("width", "60"),
             DTColumnBuilder.newColumn(3).withOption("width", "80"),
@@ -388,59 +399,60 @@
                 toastr.error(data.message);
             })
         }
+
         function _fnMoveOperate(position) {
             vm.moveOperateFlag = true;
             _queryShelfDesc(position);
         }
+        //撤销
+        function _fnRecover() {
+            if(totalRecoverDataArray.length){
+                vm.selectAll = false;
+                var recoverData = totalRecoverDataArray.pop();
+                for(var i = 0; i < vm.selectedBox.length; i++){
+                    for(var id in recoverData){
+                        if(vm.selectedBox[i].id == +id){
+                            vm.selectedBox[i] = recoverData[id];
+                        }
+                    }
+                }
+                console.log(JSON.stringify(vm.selectedBox));
+                // vm.selectedInstance.rerender();
+                _queryShelfDesc(vm.shelf.position);
+            }else{
+                toastr.error("无内容撤消！")
+            }
+
+        }
         //移入
         function _fnPutIn(emptyPos) {
+            singleRecoverDataArray = [];
             var cellRow;
             var cellCol;
             var countOfCols = vm.shelf.supportRackColumns;
             var countOfRows = vm.shelf.supportRackRows;
             if(vm.moveOperateFlag){
-                cellRow = emptyPos.row;
-                cellCol = emptyPos.col;
-                for (var i in vm.selected) {
-                    if (vm.selected[i]) {
-                        vm.selectAll = false;
-                        var box = _.find(vm.selectedBox, {id: +i});
-                        if (!box) {
-                            continue;
-                        }
-                        // 从选中的位置，开始上架，先行后列
-                        for (; cellCol < countOfCols && !box.isPutInShelf; ++cellCol) {
-                            for (; cellRow < countOfRows && !box.isPutInShelf; ++cellRow) {
-                                var cellData = vm.boxArray[cellRow][cellCol];
-                                if (cellData && cellData.isEmpty) {
-                                    // 单元格为空可以上架
-                                    // 标记盒子已经上架
-                                    vm.selected[i] = false;
-                                    box.isPutInShelf = true;
-                                    box.rowsInShelf = cellData.rowsInShelf;
-                                    box.columnsInShelf = cellData.columnsInShelf;
-                                    box.supportRackId = cellData.supportRackId;
-                                    //+"."+cellData.columnsInShelf+cellData.rowsInShelf
-                                    box.moveFrozenBoxPosition = vm.shelf.position;
-                                    box.frozenBoxId = box.id;
-
-                                    cellData.frozenBoxCode = box.frozenBoxCode;
-                                    cellData.isEmpty = false;
-                                    break;
-                                }
-                            }
-                            if (box.isPutInShelf) {
-                                break;
-                            }
-                            cellRow = 0;
-                        }
-                    }
+                if(emptyPos){
+                    cellRow = emptyPos.row;
+                    cellCol = emptyPos.col;
+                    _fnPutInOperate();
+                }else{
+                    toastr.error("冻存架无可用移入的位置！")
                 }
             }else{
                 var tableCtrl = _getShelfDetailsTableCtrl();
                 var startEmptyPos = tableCtrl.getSelected();
-                cellRow = startEmptyPos[0];
-                cellCol = startEmptyPos[1];
+                if(startEmptyPos){
+                    cellRow = startEmptyPos[0];
+                    cellCol = startEmptyPos[1];
+                    _fnPutInOperate();
+                    tableCtrl.render();
+                }else{
+                    toastr.error("冻存架无可用移入的位置！")
+                }
+
+            }
+            function _fnPutInOperate() {
                 for (var i in vm.selected) {
                     if (vm.selected[i]) {
                         vm.selectAll = false;
@@ -451,8 +463,16 @@
                         // 从选中的位置，开始上架，先行后列
                         for (; cellCol < countOfCols && !box.isPutInShelf; ++cellCol) {
                             for (; cellRow < countOfRows && !box.isPutInShelf; ++cellRow) {
-                                var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                                if(vm.moveOperateFlag){
+                                    var cellData = vm.boxArray[cellRow][cellCol];
+                                }else{
+                                    var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                                }
+
                                 if (cellData && cellData.isEmpty) {
+                                    var rowsInShelf = box.rowsInShelf;
+                                    var columnsInShelf = box.columnsInShelf;
+                                    var supportRackId = box.supportRackId;
                                     // 单元格为空可以上架
                                     // 标记盒子已经上架
                                     vm.selected[i] = false;
@@ -460,12 +480,30 @@
                                     box.rowsInShelf = cellData.rowsInShelf;
                                     box.columnsInShelf = cellData.columnsInShelf;
                                     box.supportRackId = cellData.supportRackId;
-                                    //+"."+cellData.columnsInShelf+cellData.rowsInShelf
                                     box.moveFrozenBoxPosition = vm.shelf.position;
                                     box.frozenBoxId = box.id;
 
                                     cellData.frozenBoxCode = box.frozenBoxCode;
                                     cellData.isEmpty = false;
+
+                                    //撤销操作
+                                    var obj = angular.copy(box);
+                                    obj.rowsInShelf  = rowsInShelf;
+                                    obj.columnsInShelf = columnsInShelf;
+                                    obj.supportRackId = "";
+                                    obj.moveFrozenBoxPosition = "";
+                                    obj.frozenBoxId = "";
+                                    obj.isPutInShelf = false;
+                                    //单次移入的数据
+                                    if(singleRecoverDataArray.length){
+                                        var len = _.filter(singleRecoverDataArray,{id:+obj.id}).length;
+                                        if(!len){
+                                            singleRecoverDataArray.push(obj);
+                                        }
+                                    }else{
+                                        singleRecoverDataArray.push(obj);
+                                    }
+
                                     break;
                                 }
                             }
@@ -476,9 +514,22 @@
                         }
                     }
                 }
-                tableCtrl.render();
-            }
+                var oRecoverData = _.keyBy(singleRecoverDataArray,'id');
+                if(totalRecoverDataArray.length){
+                    for(var i = 0; i < totalRecoverDataArray.length; i++){
+                        for(var id in oRecoverData){
+                            if(!totalRecoverDataArray[i].hasOwnProperty(id)){
+                                totalRecoverDataArray.push(oRecoverData);
+                                break;
+                            }
+                        }
+                        break;
+                    }
 
+                }else{
+                    totalRecoverDataArray.push(oRecoverData);
+                }
+            }
 
             vm.selectedInstance.rerender();
         }

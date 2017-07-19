@@ -29,6 +29,11 @@
         //列表中移入
         vm.moveOperateFlag = false;
         vm.closeFlag = false;
+        //单次移入的数据
+        var singleRecoverDataArray = [];
+        //全部移入的数据
+        var totalRecoverDataArray = [];
+
         var projectIds = [];
         function _init() {
             // 过滤已上架的冻存盒
@@ -40,20 +45,25 @@
             if(vm.selectedEquipment.length){
                 _.forEach(vm.selectedEquipment, function(equipment){
                     equipment.moveShelfPosition = "";
+                    equipment.isPutInShelf = false;
+                    equipment.supportRackOldId = equipment.id;
                     vm.selected[equipment.id] = false;
                 });
             }
         }
         _init();
+
         //移入操作
         vm.searchArea = _fnSearchArea;
         vm.searchEquipment = _fnSearchEquipment;
+        vm.recover = _fnRecover;
         vm.putIn = _fnPutIn;
         vm.saveMovement = _fnSaveMovement;
         vm.search = _fnSearch;
         vm.empty = _fnEmpty;
         vm.close = _fnClose;
         vm.closeMovement = _fnCloseMovement;
+
         function _fnSearch() {
             if(projectIds.length){
                 for(var i = 0; i <projectIds.length; i++){
@@ -154,9 +164,13 @@
             }
             vm.selectAll = true;
         }
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 450, 10);
+        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 450, 10)
+            .withOption('order', [[1,'asc']])
+            .withOption('info', false)
+            .withOption('paging', false)
+            .withOption('searching', false);
         vm.selectedColumns = [
-            DTColumnBuilder.newColumn(0).withOption("width", "30"),
+            DTColumnBuilder.newColumn(0).withOption("width", "30").withOption('searchable',false).notSortable(),
             DTColumnBuilder.newColumn(1).withOption("width", "100"),
             DTColumnBuilder.newColumn(2).withOption("width", "100"),
             DTColumnBuilder.newColumn(3).withOption("width", "100")
@@ -337,6 +351,7 @@
             vm.moveOperateFlag = true;
             _queryAreaById(equipmentId,areaId);
         }
+
         function _queryAreaById(equipmentId,areaId) {
             EquipmentInventoryService.queryRack(equipmentId,areaId).success(function (data) {
                 vm.rack = data;
@@ -408,8 +423,29 @@
                 }
             }
         }
+        //撤销
+        function _fnRecover() {
+            if(totalRecoverDataArray.length){
+                vm.selectAll = false;
+                var recoverData = totalRecoverDataArray.pop();
+                for(var i = 0; i < vm.selectedEquipment.length; i++){
+                    for(var id in recoverData){
+                        if(vm.selectedEquipment[i].id == +id){
+                            vm.selectedEquipment[i] = recoverData[id];
+                        }
+                    }
+                }
+                // console.log(JSON.stringify(vm.selectedEquipment));
+                // vm.selectedInstance.rerender();
+                _queryAreaById(vm.rack.equipmentId,vm.rack.id);
+            }else{
+                toastr.error("无内容撤消！")
+            }
+
+        }
         //移入
         function _fnPutIn(emptyPos) {
+            singleRecoverDataArray = [];
             var cellRow;
             var cellCol;
             var countOfCols = vm.rack.supportRackDTOS.length;
@@ -417,42 +453,16 @@
             if(vm.moveOperateFlag){
                 cellRow = emptyPos.row;
                 cellCol = emptyPos.col;
-                for (var i in vm.selected) {
-                    if (vm.selected[i]) {
-                        vm.selectAll = false;
-                        var equipment = _.find(vm.selectedEquipment, {id: +i});
-                        if (!equipment) {
-                            continue;
-                        }
-                        // 从选中的位置，开始上架，先列后行
-                        for (; cellRow < countOfRows && !equipment.isPutInShelf; ++cellRow) {
-                            for (; cellCol < countOfCols && !equipment.isPutInShelf; ++cellCol) {
-                                var cellData = vm.handsonTableArray[cellRow][cellCol];
-                                if (cellData && !cellData.flag) {
-                                    // 单元格为空可以上架
-                                    // 标记区域已经上架
-                                    vm.selected[i] = false;
-                                    equipment.isPutInShelf = true;
-                                    equipment.supportRackId = cellData.id;
-                                    equipment.areaId = cellData.areaId;
-                                    equipment.moveShelfPosition = vm.rack.position;
-                                    equipment.supportRackOldId = equipment.id;
-                                    equipment.supportRackCode = cellData.supportRackCode;
-                                    cellData.flag = 1;
-                                    break;
-                                }
-                            }
-                            if (equipment.isPutInShelf) {
-                                break;
-                            }
-                        }
-                    }
-                }
+                _fnPutInOperate();
             }else{
                 var tableCtrl = _getTableCtrl();
                 var startEmptyPos = tableCtrl.getSelected();
                 cellRow = startEmptyPos[0];
                 cellCol = startEmptyPos[1];
+                _fnPutInOperate();
+                tableCtrl.render();
+            }
+            function _fnPutInOperate() {
                 for (var i in vm.selected) {
                     if (vm.selected[i]) {
                         vm.selectAll = false;
@@ -463,8 +473,15 @@
                         // 从选中的位置，开始上架，先列后行
                         for (; cellRow < countOfRows && !equipment.isPutInShelf; ++cellRow) {
                             for (; cellCol < countOfCols && !equipment.isPutInShelf; ++cellCol) {
-                                var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                                if(vm.moveOperateFlag){
+                                    var cellData = vm.handsonTableArray[cellRow][cellCol];
+                                }else{
+                                    var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                                }
                                 if (cellData && !cellData.flag) {
+                                    var supportRackId = equipment.supportRackId;
+                                    var areaId = equipment.areaId;
+                                    var supportRackCode = equipment.supportRackCode;
                                     // 单元格为空可以上架
                                     // 标记区域已经上架
                                     vm.selected[i] = false;
@@ -475,6 +492,24 @@
                                     equipment.supportRackOldId = equipment.id;
                                     equipment.supportRackCode = cellData.supportRackCode;
                                     cellData.flag = 1;
+
+                                    //撤销操作
+                                    var obj = angular.copy(equipment);
+                                    obj.supportRackId  = supportRackId;
+                                    obj.areaId = areaId;
+                                    obj.supportRackCode = supportRackCode;
+                                    obj.moveShelfPosition = "";
+                                    obj.isPutInShelf = false;
+                                    //单次移入的数据
+                                    if(singleRecoverDataArray.length){
+                                        var len = _.filter(singleRecoverDataArray,{id:+obj.id}).length;
+                                        if(!len){
+                                            singleRecoverDataArray.push(obj);
+                                        }
+                                    }else{
+                                        singleRecoverDataArray.push(obj);
+                                    }
+
                                     break;
                                 }
                             }
@@ -484,9 +519,22 @@
                         }
                     }
                 }
-                tableCtrl.render();
-            }
+                var oRecoverData = _.keyBy(singleRecoverDataArray,'id');
+                if(totalRecoverDataArray.length){
+                    for(var i = 0; i < totalRecoverDataArray.length; i++){
+                        for(var id in oRecoverData){
+                            if(!totalRecoverDataArray[i].hasOwnProperty(id)){
+                                totalRecoverDataArray.push(oRecoverData);
+                                break;
+                            }
+                        }
+                        break;
+                    }
 
+                }else{
+                    totalRecoverDataArray.push(oRecoverData);
+                }
+            }
             vm.selectedInstance.rerender();
         }
         function _initHandsonTablePanel(){

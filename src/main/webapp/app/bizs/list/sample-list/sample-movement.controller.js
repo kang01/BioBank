@@ -37,6 +37,12 @@
         vm.moveOperateFlag = false;
         //是否关闭移位的提示信息
         vm.closeFlag = false;
+        //单次移入的数据
+        var singleRecoverDataArray = [];
+        //全部移入的数据
+        var totalRecoverDataArray = [];
+        //待移位的样本数据添加一个临时的要移入的冻存盒
+        //得到待移位的样本的ids，去服务器请求样本的详情
         if(vm.selectedTubes.length){
             for(var i = 0; i < vm.selectedTubes.length; i++){
                 vm.selectedTubes[i].moveFrozenBoxCode = '';
@@ -78,7 +84,7 @@
         }
         //关闭移位
         vm.close = _fnClose;
-        //复原
+        //撤消
         vm.recover = _fnRecover;
         //搜索
         vm.search = _fnSearch;
@@ -117,9 +123,7 @@
             vm.dto.status = "2004";
             vm.boxInstance.rerender();
         }
-        function _fnRecover() {
-            vm.boxInstance.rerender();
-        }
+
         function _fnClose() {
             if(!vm.closeFlag){
                 var modalInstance = $uibModal.open({
@@ -206,9 +210,13 @@
             }
             vm.selectAll = true;
         }
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 450, 10);
+        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 450, 10)
+            .withOption('order', [[1,'asc']])
+            .withOption('info', false)
+            .withOption('paging', false)
+            .withOption('searching', false);
         vm.selectedColumns = [
-            DTColumnBuilder.newColumn(0).withOption("width", "30"),
+            DTColumnBuilder.newColumn(0).withOption("width", "30").withOption('searchable',false).notSortable(),
             DTColumnBuilder.newColumn(1).withOption("width", "100"),
             DTColumnBuilder.newColumn(2).withOption("width", "100"),
             DTColumnBuilder.newColumn(3).withOption("width", "80"),
@@ -370,7 +378,19 @@
             // var projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
             var status = "";
             status = MasterData.getFrozenBoxStatus(data.status);
-            // $('td:eq(3)', row).html(projectName);
+            var countOfUsed = data.countOfUsed;
+            var countOfRest = data.countOfRest;
+            var total = countOfUsed+countOfRest;
+            var progressStyle = "width:"+countOfUsed/total*100+"%";
+            var progress = ""+countOfUsed + "/" + total;
+            var html;
+            html = "<div class='pos-progress'> " +
+                "<div class='text'>"+progress+"</div>" +
+                "<div class='Bar' style ='"+progressStyle+"'> " +
+
+                " </div> " +
+                "</div>";
+            $('td:eq(5)', row).html(html);
             $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
@@ -403,92 +423,69 @@
             StockInBoxByCodeService.get({code:frozenBoxCode},onFrozenSuccess,onError);
         }
         function onFrozenSuccess(data) {
-            var boxCode = data.frozenBoxCode;
-            var tubeList = _.filter(vm.selectedSample,{'moveFrozenBoxCode':boxCode});
+            // var boxCode = data.frozenBoxCode;
+            // var tubeList = _.filter(vm.selectedSample,{'moveFrozenBoxCode':boxCode});
             vm.box = data;
-            for(var i = 0; i < tubeList.length; i++){
-                tubeList[i].sampleType = {};
-                tubeList[i].sampleType.id = tubeList[i].sampleTypeId;
-                tubeList[i].sampleType.sampleTypeCode = tubeList[i].sampleTypeCode;
-                tubeList[i].sampleType.sampleTypeName = tubeList[i].sampleTypeName;
-                tubeList[i].sampleType.backColor = tubeList[i].backColor;
-                vm.box.frozenTubeDTOS.push(tubeList[i]);
-            }
+            // for(var i = 0; i < tubeList.length; i++){
+            //     tubeList[i].sampleType = {};
+            //     tubeList[i].sampleType.id = tubeList[i].sampleTypeId;
+            //     tubeList[i].sampleType.sampleTypeCode = tubeList[i].sampleTypeCode;
+            //     tubeList[i].sampleType.sampleTypeName = tubeList[i].sampleTypeName;
+            //     tubeList[i].sampleType.backColor = tubeList[i].backColor;
+            //     vm.box.frozenTubeDTOS.push(tubeList[i]);
+            // }
+
             _initSampleType();
             setTimeout(function () {
                 _reloadTubesForTable(vm.box);
             },500);
         }
+        //撤销
+        function _fnRecover() {
+            vm.selectAll = false;
+            var recoverData = totalRecoverDataArray.pop();
+            for(var i = 0; i < vm.selectedSample.length; i++){
+                for(var id in recoverData){
+                    if(vm.selectedSample[i].id == +id){
+                        vm.selectedSample[i] = recoverData[id];
+                    }
+                }
+            }
+            vm.boxInstance.rerender();
+            _queryTubes(vm.box.frozenBoxCode);
+        }
         //移入
         function _fnPutIn(emptyPos) {
+            singleRecoverDataArray = [];
             var cellRow;
             var cellCol;
             var countOfCols = vm.box.frozenBoxType.frozenBoxTypeColumns;
             var countOfRows = vm.box.frozenBoxType.frozenBoxTypeRows;
             if(vm.moveOperateFlag){
-                cellRow = emptyPos.row;
-                cellCol = emptyPos.col;
-                for(var i in vm.selected){
-                    if(vm.selected[i]) {
-                        // 遍历选中的冻存管，i是冻存管的Id
-                        var tube = _.find(vm.selectedSample, {id: +i});
-                        if (!tube) {
-                            continue;
-                        }
-                        if (tube.projectCode != vm.box.projectCode) {
-                            toastr.error("项目不一致，不能移入此冻存盒内！");
-                            return;
-                        }
-                        if (tube.sampleClassificationCode) {
-                            if (tube.sampleClassificationCode != vm.box.sampleClassificationCode) {
-                                toastr.error("样本分类不一致，不能移入此冻存盒内！");
-                                return;
-                            }
-                        } else {
-                            if (tube.sampleTypeCode != vm.box.sampleTypeCode) {
-                                toastr.error("样本类型不一致，不能移入此冻存盒内！");
-                                return;
-                            }
-                        }
-                    }
-                    for(; cellRow < countOfRows && !tube.isPutInShelf; ++cellRow){
-                        for (; cellCol < countOfCols && !tube.isPutInShelf; ++cellCol){
-                            var cellData = vm.frozenTubeArray[cellRow][cellCol];
-                            if (cellData && !cellData.isEmpty){
-                                tube.isPutInShelf = true;
-                                tube.tubeRows = cellData.tubeRows;
-                                tube.tubeColumns = cellData.tubeColumns;
-                                tube.frozenBoxId = cellData.frozenBoxId;
-                                tube.moveFrozenBoxCode = cellData.frozenBoxCode;
-                                tube.frozenTubeId = tube.id;
-                                vm.selected[i] = false;
-                                // cellData.id = tube.id;
-                                cellData.sampleCode = tube.sampleCode;
-                                cellData.sampleTypeId = tube.sampleTypeId;
-                                cellData.sampleTypeCode = tube.sampleTypeCode;
-                                cellData.sampleTypeName = tube.sampleTypeName;
-                                cellData.sampleClassificationId = tube.sampleClassificationId;
-                                cellData.sampleClassificationCode = tube.sampleClassificationCode;
-                                cellData.sampleClassificationName = tube.sampleClassificationName;
-                                cellData.backColor = tube.backColor;
-                                cellData.backColorForClass = tube.backColorForClass;
-                                cellData.isEmpty = true;
-                                break;
-                            }
-
-
-                        }
-                        if (tube.isPutInShelf){
-                            break;
-                        }
-                        cellCol = 0;
-                    }
+                if(emptyPos){
+                    cellRow = emptyPos.row;
+                    cellCol = emptyPos.col;
+                    _fnPutInOperate();
+                }else{
+                    toastr.error("冻存盒无可用移入的位置！")
                 }
+
             }else{
                 var tableCtrl = _getTableCtrl();
                 var startEmptyPos = tableCtrl.getSelected();
-                cellRow = startEmptyPos[0];
-                cellCol = startEmptyPos[1];
+                if(startEmptyPos){
+                    cellRow = startEmptyPos[0];
+                    cellCol = startEmptyPos[1];
+                    _fnPutInOperate();
+                    vm.nextFlag = true;
+                    tableCtrl.render();
+                    vm.selectedInstance.rerender();
+                }else {
+                    toastr.error("冻存盒无可用移入的位置！")
+                }
+
+            }
+            function _fnPutInOperate() {
                 for(var i in vm.selected){
                     if(vm.selected[i]){
                         // 遍历选中的冻存管，i是冻存管的Id
@@ -511,10 +508,18 @@
                                 return;
                             }
                         }
+
                         for(; cellRow < countOfRows && !tube.isPutInShelf; ++cellRow){
                             for (; cellCol < countOfCols && !tube.isPutInShelf; ++cellCol){
-                                var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                                if(vm.moveOperateFlag){
+                                    var cellData = vm.frozenTubeArray[cellRow][cellCol];
+                                }else{
+                                    var cellData = tableCtrl.getDataAtCell(cellRow, cellCol);
+                                }
                                 if (cellData && !cellData.isEmpty){
+                                    var row =  tube.tubeRows;
+                                    var col =  tube.tubeColumns;
+                                    var frozenBoxId =  tube.frozenBoxId;
                                     tube.isPutInShelf = true;
                                     tube.tubeRows = cellData.tubeRows;
                                     tube.tubeColumns = cellData.tubeColumns;
@@ -533,6 +538,26 @@
                                     cellData.backColor = tube.backColor;
                                     cellData.backColorForClass = tube.backColorForClass;
                                     cellData.isEmpty = true;
+
+
+
+                                    //撤销操作
+                                    var obj = angular.copy(tube);
+                                    obj.tubeRows  = row;
+                                    obj.tubeColumns = col;
+                                    obj.frozenBoxId = frozenBoxId;
+                                    obj.moveFrozenBoxCode = "";
+                                    obj.isPutInShelf = false;
+                                    //单次移入的数据
+                                    if(singleRecoverDataArray.length){
+                                        var len = _.filter(singleRecoverDataArray,{id:+obj.id}).length;
+                                        if(!len){
+                                            singleRecoverDataArray.push(obj);
+                                        }
+                                    }else{
+                                        singleRecoverDataArray.push(obj);
+                                    }
+
                                     break;
                                 }
 
@@ -543,19 +568,27 @@
                             }
                             cellCol = 0;
                         }
+
+                    }
+                }
+                var oRecoverData = _.keyBy(singleRecoverDataArray,'id');
+                if(totalRecoverDataArray.length){
+                    for(var i = 0; i < totalRecoverDataArray.length; i++){
+                        for(var id in oRecoverData){
+                            if(!totalRecoverDataArray[i].hasOwnProperty(id)){
+                                totalRecoverDataArray.push(oRecoverData);
+                                break;
+                            }
+                        }
+                        break;
                     }
 
+                }else{
+                    totalRecoverDataArray.push(oRecoverData);
                 }
-
-                vm.nextFlag = true;
-                tableCtrl.render();
-                vm.selectedInstance.rerender();
             }
-
-
-
-
         }
+
         function _initFrozenBoxPanel(){
             vm.frozenTubeArray = [];//初始管子数据二位数组
             var operateColor;//单元格颜色
@@ -793,6 +826,20 @@
             return tube;
         }
         function _reloadTubesForTable(box){
+            var tubeList = _.filter(vm.selectedSample,{'moveFrozenBoxCode':box.frozenBoxCode});
+            for(var i = 0; i < tubeList.length; i++){
+                tubeList[i].sampleType = {};
+                tubeList[i].sampleType.id = tubeList[i].sampleTypeId;
+                tubeList[i].sampleType.sampleTypeCode = tubeList[i].sampleTypeCode;
+                tubeList[i].sampleType.sampleTypeName = tubeList[i].sampleTypeName;
+                tubeList[i].sampleType.backColor = tubeList[i].backColor;
+                box.frozenTubeDTOS.push(tubeList[i]);
+            }
+            // for(var i = 0; i < totalRecoverDataArray.length;i++){
+            //     for(var id in totalRecoverDataArray[i]){
+            //         box.frozenTubeDTOS.push
+            //     }
+            // }
             if(vm.moveOperateFlag){
                 var minRows = box.frozenBoxType.frozenBoxTypeRows;
                 var minCols = box.frozenBoxType.frozenBoxTypeColumns;
@@ -875,7 +922,9 @@
                 settings.manualColumnResize = colWidth;
                 tableCtrl.updateSettings(settings);
                 tableCtrl.loadData(tubesInTable);
-                tableCtrl.selectCell(emptyPos.row, emptyPos.col);
+                if(emptyPos){
+                    tableCtrl.selectCell(emptyPos.row, emptyPos.col);
+                }
             }
         }
         // 获取上架位置列表的控制实体
@@ -888,7 +937,7 @@
             // toastr.error(error.data.message);
         }
 
-
+        //保存移位
         function _fnSaveMovement() {
             if(vm.movement.operatorId1 == vm.movement.operatorId2){
                 toastr.error("操作员不能重复！");

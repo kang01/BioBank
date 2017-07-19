@@ -50,6 +50,8 @@
                     type = "出库", status = "已出库";break;
                 case 104 :
                     type = "交接", status = "已交接";break;
+                case 105 :
+                    type = "移位", status = "已入库";break;
             }
             $('td:eq(0)', row).html(operateTime);
             $('td:eq(1)', row).html(type);

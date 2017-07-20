@@ -211,6 +211,7 @@
                 valueField:'id',
                 labelField:'projectName',
                 searchField:'projectName',
+                maxItems: 1,
                 onChange:function(value){
                     vm.projectIds = _.join(value, ',');
                     projectIds = value;
@@ -349,15 +350,15 @@
             })
             .withOption('createdRow', createdRow);
         vm.boxColumns = [
-            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒子类型').withOption("width", "70"),
+            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒子类型').withOption("width", "140"),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "60").renderWith(_fnRowCodeRender),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "80"),
-            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "80"),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "130"),
+            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "120"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "160"),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "auto"),
-            DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
-            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60")
+            DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "80"),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "80"),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "50")
                 .withOption('searchable',false).notSortable().renderWith(actionsHtml)
 
         ];

@@ -902,6 +902,9 @@ ul.rating {
     overflow: hidden;
     border-radius: 4px;
 }
+.box-movement-table .pos-progress{
+    width: 80px;
+}
 .pos-progress .text{
     position: absolute;
     width: 100%;

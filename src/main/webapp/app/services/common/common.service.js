@@ -28,6 +28,9 @@
                 var types = type.split(',');
                 _.each(types, function(t){
                     switch (t){
+                        case "ORDINARY":
+                            options.withPaginationType('full_numbers');
+                            break;
                         case "NORMALLY":
                             if (window.innerHeight >= 850){
                                 pageLength += pageLength;

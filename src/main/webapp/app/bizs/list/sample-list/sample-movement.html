@@ -91,10 +91,10 @@
                             <input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll(vm.selectAll, vm.selected)">
                         </th>
                         <th>样本编码</th>
-                        <th>样本类型</th>
+                        <!--<th>样本类型</th>-->
                         <th>样本分类</th>
                         <th>项目编码</th>
-                        <th>移入冻存盒编码</th>
+                        <th>移入位置</th>
                         </thead>
                         <tbody>
                         <!-- | filter:vm.filterNotPutInShelfTubes-->
@@ -105,7 +105,7 @@
                                     </div>
                                 </td>
                                 <td>{{tube.sampleCode}}</td>
-                                <td>{{tube.sampleTypeName}}</td>
+                                <!--<td>{{tube.sampleTypeName}}</td>-->
                                 <td>{{tube.sampleClassificationName}}</td>
                                 <td>{{tube.projectCode}}</td>
                                 <td>{{tube.moveFrozenBoxCode}}</td>
@@ -113,6 +113,9 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div class="panel-footer">
+                <div>共{{vm.selectedSample.length}}条数据</div>
             </div>
         </div>
     </div>
@@ -127,7 +130,7 @@
                         <button class="btn btn-primary btn-xs" ng-if="!vm.sampleMovementFlag" ng-click="vm.search()">搜索</button>
                         <button class="btn btn-primary btn-xs" ng-if="!vm.sampleMovementFlag" ng-click="vm.empty()">清空</button>
                         <button class="btn btn-primary btn-xs" ng-if="vm.sampleMovementFlag" ng-click="vm.putIn()">移入</button>
-                        <button class="btn btn-primary btn-xs" ng-click="vm.recover()">复原</button>
+                        <button class="btn btn-primary btn-xs" ng-click="vm.recover()">撤消</button>
                         <!--<button class="btn btn-primary btn-xs"  ng-if="vm.sampleMovementFlag" ng-click="vm.saveMovement()">保存</button>-->
                         <button class="btn btn-primary btn-xs"  ng-if="vm.sampleMovementFlag" ng-click="vm.closeSampleMovement()">关闭</button>
                     </div>

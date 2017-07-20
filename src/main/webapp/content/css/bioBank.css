@@ -892,7 +892,7 @@ ul.rating {
 }
 .pos-progress{
     position: relative;
-    width:160px;
+    width:120px;
     border:1px solid #ccc;
     height: 20px;
     text-align: center;

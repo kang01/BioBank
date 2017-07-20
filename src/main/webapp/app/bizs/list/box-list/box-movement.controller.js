@@ -175,7 +175,7 @@
             vm.selectAll = true;
         }
 
-        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 474, 10)
+        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 432, 10)
             .withOption('order', [[1,'asc']])
             .withOption('info', false)
             .withOption('paging', false)
@@ -183,9 +183,9 @@
         vm.selectedColumns = [
             DTColumnBuilder.newColumn(0).withOption("width", "30").withOption('searchable',false).notSortable(),
             DTColumnBuilder.newColumn(1).withOption("width", "100"),
-            DTColumnBuilder.newColumn(2).withOption("width", "60"),
+            DTColumnBuilder.newColumn(2).withOption("width", "80"),
             DTColumnBuilder.newColumn(3).withOption("width", "80"),
-            DTColumnBuilder.newColumn(4).withOption("width", "80")
+            DTColumnBuilder.newColumn(4).withOption("width", "auto")
 
         ];
 
@@ -245,11 +245,13 @@
             };
             function onAreaSuccess(data) {
                 vm.frozenBoxAreaOptions = data;
+                vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
+                vm.dto.areaId = "";
+                vm.dto.shelvesId = "";
                 if (vm.frozenBoxAreaOptions.length) {
-                    vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
+                    // vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
                     SupportacksByAreaIdService.query({id: vm.dto.areaId}, onShelfSuccess, onError);
                 }
-
             }
 
             vm.frozenBoxAreaConfig = {
@@ -271,7 +273,8 @@
             //架子
             function onShelfSuccess(data) {
                 vm.frozenBoxShelfOptions = data;
-                vm.dto.shelvesId = vm.frozenBoxShelfOptions[0].id;
+                vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
+                vm.dto.shelvesId = "";
             }
 
             vm.frozenBoxShelfConfig = {
@@ -302,7 +305,7 @@
             };
         }
 
-        vm.shelfOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
+        vm.shelfOptions = BioBankDataTable.buildDTOption("ORDINARY", null, 10)
             .withOption('searching', false)
             .withOption('serverSide', true)
             .withFnServerData(function (sSource, aoData, fnCallback, oSettings) {
@@ -349,13 +352,14 @@
                 .withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {
+            var boxList = _.filter(vm.selectedBox,{'moveFrozenBoxPosition':data.position});
             var status = '';
             switch (data.status){
                 case '0001': status = '运行中';break;
             }
-            var countOfUsed = data.countOfUsed;
-            var countOfRest = data.countOfRest;
-            var total = countOfUsed+countOfRest;
+            var countOfUsed = data.countOfUsed + boxList.length;
+            var countOfRest = data.countOfRest - boxList.length;
+            var total = data.countOfUsed + data.countOfRest;
             var progressStyle = "width:"+countOfUsed/total*100+"%";
             var progress = ""+countOfUsed + "/" + total;
             var html;
@@ -367,6 +371,7 @@
                 "</div>";
             $('td:eq(4)', row).html(status);
             $('td:eq(2)', row).html(html);
+            $('td:eq(3)', row).html(countOfRest);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
@@ -381,12 +386,13 @@
             html = '<a ng-click="vm.searchShelf(' + position + ')">' + full.position + '</a>';
             return html;
         }
-
+        //详情移入操作
         function _fnSearchShelf(position) {
             vm.moveOperateFlag = false;
             vm.movementFlag = true;
             _queryShelfDesc(position);
         }
+        //获取架子详情
         function _queryShelfDesc(position) {
             BoxInventoryService.queryShelfDesc(position).success(function (data) {
                 vm.shelf = data;
@@ -399,7 +405,7 @@
                 toastr.error(data.message);
             })
         }
-
+        //列表移入操作
         function _fnMoveOperate(position) {
             vm.moveOperateFlag = true;
             _queryShelfDesc(position);
@@ -416,8 +422,7 @@
                         }
                     }
                 }
-                console.log(JSON.stringify(vm.selectedBox));
-                // vm.selectedInstance.rerender();
+                vm.shelfInstance.rerender();
                 _queryShelfDesc(vm.shelf.position);
             }else{
                 toastr.error("无内容撤消！")
@@ -436,6 +441,7 @@
                     cellRow = emptyPos.row;
                     cellCol = emptyPos.col;
                     _fnPutInOperate();
+                    vm.shelfInstance.rerender();
                 }else{
                     toastr.error("冻存架无可用移入的位置！")
                 }
@@ -531,7 +537,7 @@
                 }
             }
 
-            vm.selectedInstance.rerender();
+            // vm.selectedInstance.rerender();
         }
         // 需要保存的盒子上架信息
         vm.putInShelfBoxes = {};

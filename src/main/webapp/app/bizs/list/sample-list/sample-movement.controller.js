@@ -158,81 +158,16 @@
                     vm.box.sampleTypeCode = vm.box.sampleType.sampleTypeCode;
                 }
 
-                // vm.box.sampleType = vm.sampleTypeOptions[0];
-                // vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+vm.box.sampleTypeId}).isMixed;
-                // setTimeout(function () {
                 _fnQueryProjectSampleClass(vm.box.projectId,vm.box.sampleTypeId);
-                // },500);
             });
-            // vm.sampleTypeConfig = {
-            //     valueField:'id',
-            //     labelField:'sampleTypeName',
-            //     maxItems: 1,
-            //     onChange:function (value) {
-            //         _fnQueryProjectSampleClass(vm.entity.projectId,value);
-            //     }
-            // };
+
             //样本分类
             function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
                 SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                     vm.projectSampleTypeOptions = data;
                 });
             }
-            // vm.projectSampleTypeConfig = {
-            //     valueField:'sampleClassificationId',
-            //     labelField:'sampleClassificationName',
-            //     maxItems: 1,
-            //     onChange:function (value) {
-            //     }
-            // };
         }
-
-
-        vm.selectAll = false;
-        vm.toggleAll = toggleAll;
-        vm.toggleOne = toggleOne;
-        function toggleAll (selectAll, selectedItems) {
-            for (var id in selectedItems) {
-                if (selectedItems.hasOwnProperty(id)) {
-                    selectedItems[id] = selectAll;
-                }
-            }
-        }
-
-        function toggleOne (selectedItems) {
-            for (var id in selectedItems) {
-                if (selectedItems.hasOwnProperty(id)) {
-                    if(!selectedItems[id]) {
-                        vm.selectAll = false;
-                        return;
-                    }
-                }
-            }
-            vm.selectAll = true;
-        }
-        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 450, 10)
-            .withOption('order', [[1,'asc']])
-            .withOption('info', false)
-            .withOption('paging', false)
-            .withOption('searching', false);
-        vm.selectedColumns = [
-            DTColumnBuilder.newColumn(0).withOption("width", "30").withOption('searchable',false).notSortable(),
-            DTColumnBuilder.newColumn(1).withOption("width", "100"),
-            DTColumnBuilder.newColumn(2).withOption("width", "100"),
-            DTColumnBuilder.newColumn(3).withOption("width", "80"),
-            DTColumnBuilder.newColumn(4).withOption("width", "80"),
-            DTColumnBuilder.newColumn(5).withOption("width", "100")
-
-        ];
-
-        function _fnRowSelectorRender(data, type, full, meta) {
-            vm.selected[full.id] = true;
-            var html = '';
-            html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
-            return html;
-        }
-
-
         /*目标冻存区*/
         function _initSearch() {
             vm.dto.spaceType = "2";
@@ -319,13 +254,61 @@
             }
         }
         _initSearch();
+
+        vm.selectAll = false;
+        vm.toggleAll = toggleAll;
+        vm.toggleOne = toggleOne;
+        function toggleAll (selectAll, selectedItems) {
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    selectedItems[id] = selectAll;
+                }
+            }
+        }
+
+        function toggleOne (selectedItems) {
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(!selectedItems[id]) {
+                        vm.selectAll = false;
+                        return;
+                    }
+                }
+            }
+            vm.selectAll = true;
+        }
+        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 600, 10)
+            .withOption('order', [[1,'asc']])
+            .withOption('info', false)
+            .withOption('paging', false)
+            .withOption('searching', false);
+        vm.selectedColumns = [
+            DTColumnBuilder.newColumn(0).withOption("width", "30").withOption('searchable',false).notSortable(),
+            DTColumnBuilder.newColumn(1).withOption("width", "100"),
+            // DTColumnBuilder.newColumn(2).withOption("width", "100"),
+            DTColumnBuilder.newColumn(2).withOption("width", "80"),
+            DTColumnBuilder.newColumn(3).withOption("width", "80"),
+            DTColumnBuilder.newColumn(4).withOption("width", "auto")
+
+        ];
+
+        function _fnRowSelectorRender(data, type, full, meta) {
+            vm.selected[full.id] = true;
+            var html = '';
+            html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
+            return html;
+        }
+
+
+
         //关闭
         function _fnCloseSampleMovement() {
             vm.sampleMovementFlag = false;
         }
 
         //盒子列表
-        vm.boxOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
+        vm.boxOptions = BioBankDataTable.buildDTOption("ORDINARY", null, 10)
+            .withOption('order', [[4,'asc']])
             .withOption('searching', false)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
@@ -362,12 +345,12 @@
             })
             .withOption('createdRow', createdRow);
         vm.boxColumns = [
-            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒子类型').withOption("width", "100"),
+            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒子类型').withOption("width", "70"),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "60").renderWith(_fnRowCodeRender),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "60"),
-            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "100"),
-            DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "80"),
+            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "80"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "130"),
+            DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "auto"),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60")
@@ -375,22 +358,22 @@
 
         ];
         function createdRow(row, data, dataIndex) {
-            // var projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
+            var tubeList = _.filter(vm.selectedSample,{'moveFrozenBoxCode':data.frozenBoxCode});
             var status = "";
             status = MasterData.getFrozenBoxStatus(data.status);
-            var countOfUsed = data.countOfUsed;
-            var countOfRest = data.countOfRest;
-            var total = countOfUsed+countOfRest;
+            var countOfUsed = data.countOfUsed + tubeList.length;
+            var countOfRest = data.countOfRest - tubeList.length;
+            var total = data.countOfUsed + data.countOfRest;
             var progressStyle = "width:"+countOfUsed/total*100+"%";
             var progress = ""+countOfUsed + "/" + total;
             var html;
             html = "<div class='pos-progress'> " +
                 "<div class='text'>"+progress+"</div>" +
                 "<div class='Bar' style ='"+progressStyle+"'> " +
-
                 " </div> " +
                 "</div>";
             $('td:eq(5)', row).html(html);
+            $('td:eq(6)', row).html(countOfRest);
             $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
@@ -408,7 +391,6 @@
         }
 
         /*冻存管修改*/
-
         //查询管子
         function _fnSampleMovement(frozenBoxCode) {
             vm.moveOperateFlag = false;
@@ -435,7 +417,7 @@
             //     vm.box.frozenTubeDTOS.push(tubeList[i]);
             // }
 
-            _initSampleType();
+            // _initSampleType();
             setTimeout(function () {
                 _reloadTubesForTable(vm.box);
             },500);
@@ -452,7 +434,7 @@
                 }
             }
             vm.boxInstance.rerender();
-            _queryTubes(vm.box.frozenBoxCode);
+            // _queryTubes(vm.box.frozenBoxCode);
         }
         //移入
         function _fnPutIn(emptyPos) {
@@ -466,6 +448,8 @@
                     cellRow = emptyPos.row;
                     cellCol = emptyPos.col;
                     _fnPutInOperate();
+                    vm.boxInstance.rerender();
+                    vm.selectedInstance.rerender();
                 }else{
                     toastr.error("冻存盒无可用移入的位置！")
                 }
@@ -835,11 +819,6 @@
                 tubeList[i].sampleType.backColor = tubeList[i].backColor;
                 box.frozenTubeDTOS.push(tubeList[i]);
             }
-            // for(var i = 0; i < totalRecoverDataArray.length;i++){
-            //     for(var id in totalRecoverDataArray[i]){
-            //         box.frozenTubeDTOS.push
-            //     }
-            // }
             if(vm.moveOperateFlag){
                 var minRows = box.frozenBoxType.frozenBoxTypeRows;
                 var minCols = box.frozenBoxType.frozenBoxTypeColumns;
@@ -853,9 +832,6 @@
                     // rowHeaders.push(pos.tubeRows);
                     for (var j = 0; j < minCols; ++j){
                         pos.tubeColumns = j + 1 + "";
-                        // if (colHeaders.length < minCols){
-                        //     colHeaders.push(pos.tubeColumns);
-                        // }
                         var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
                         var tube = _createTubeForTableCell(tubeInBox, box, i, j + 1, pos);
                         if(!tubeInBox){

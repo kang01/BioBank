@@ -164,7 +164,7 @@
             }
             vm.selectAll = true;
         }
-        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 450, 10)
+        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 400, 10)
             .withOption('order', [[1,'asc']])
             .withOption('info', false)
             .withOption('paging', false)
@@ -223,9 +223,11 @@
             };
             function onAreaSuccess(data) {
                 vm.frozenBoxAreaOptions = data;
-                if(vm.frozenBoxAreaOptions.length){
-                    vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
-                }
+                vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
+                vm.dto.areaId = "";
+                // if(vm.frozenBoxAreaOptions.length){
+                //     vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
+                // }
 
             }
             vm.frozenBoxAreaConfig = {
@@ -261,7 +263,7 @@
             };
 
         }
-        vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
+        vm.dtOptions = BioBankDataTable.buildDTOption("ORDINARY", null, 10)
             .withOption('searching', false)
             .withOption('order', [[1,'asc']])
             .withOption('serverSide',true)
@@ -312,13 +314,14 @@
                 .withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function createdRow(row, data, dataIndex) {
+            var equipmentList = _.filter(vm.selectedEquipment,{'moveShelfPosition':data.position});
             var status = '';
             switch (data.status){
                 case '0001': status = '运行中';break;
             }
-            var countOfUsed = data.countOfUsed;
-            var countOfRest = data.countOfRest;
-            var total = countOfUsed+countOfRest;
+            var countOfUsed = data.countOfUsed + equipmentList.length;
+            var countOfRest = data.countOfRest - equipmentList.length;
+            var total = data.countOfUsed + data.countOfRest;
             var progressStyle = "width:"+countOfUsed/total*100+"%";
             var progress = ""+countOfUsed + "/" + total;
             var html;
@@ -329,6 +332,7 @@
                 "</div>";
             $('td:eq(4)', row).html(status);
             $('td:eq(2)', row).html(html);
+            $('td:eq(3)', row).html(countOfRest);
             $compile(angular.element(row).contents())($scope);
         }
         function _fnRowPositionRender(data, type, full, meta) {
@@ -437,6 +441,7 @@
                 }
                 // console.log(JSON.stringify(vm.selectedEquipment));
                 // vm.selectedInstance.rerender();
+                vm.dtInstance.rerender();
                 _queryAreaById(vm.rack.equipmentId,vm.rack.id);
             }else{
                 toastr.error("无内容撤消！")
@@ -454,6 +459,7 @@
                 cellRow = emptyPos.row;
                 cellCol = emptyPos.col;
                 _fnPutInOperate();
+                vm.dtInstance.rerender();
             }else{
                 var tableCtrl = _getTableCtrl();
                 var startEmptyPos = tableCtrl.getSelected();
@@ -535,7 +541,7 @@
                     totalRecoverDataArray.push(oRecoverData);
                 }
             }
-            vm.selectedInstance.rerender();
+            // vm.selectedInstance.rerender();
         }
         function _initHandsonTablePanel(){
             vm.handsonTableArray = [];//初始管子数据二位数组

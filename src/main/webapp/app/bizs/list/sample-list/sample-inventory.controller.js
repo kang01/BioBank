@@ -84,6 +84,7 @@
             vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
             if(vm.frozenBoxAreaOptions.length){
                 vm.dto.areaId = "";
+                vm.dto.shelvesId = "";
                 // vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
                 SupportacksByAreaIdService.query({id:vm.dto.areaId},onShelfSuccess, onError);
             }
@@ -108,7 +109,7 @@
         function onShelfSuccess(data) {
             vm.frozenBoxShelfOptions = data;
             vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
-            // vm.dto.shelvesId = vm.frozenBoxShelfOptions[0].id;
+            vm.dto.shelvesId = "";
         }
         vm.frozenBoxShelfConfig = {
             valueField:'id',

@@ -78,24 +78,28 @@
                                 ></selectize>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div>
-                                <label>位置</label>
-                            </div>
-                            <div class="pull-left">
-                                <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig"
-                                           style="width:85px"
-                                           ng-model="vm.dto.equipmentId"></selectize>
-                            </div>
-                            <div class="pull-left pl-5">
-                                <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig"
-                                           style="width:85px"
-                                           ng-model="vm.dto.areaId" ></selectize>
-                            </div>
-                            <div class="pull-left pl-5">
-                                <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig"
-                                           style="width:85px"
-                                           ng-model="vm.dto.shelvesId"></selectize>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div>
+                                        <label>位置</label>
+                                    </div>
+                                    <div class="pull-left">
+                                        <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig"
+                                                   style="width:85px"
+                                                   ng-model="vm.dto.equipmentId"></selectize>
+                                    </div>
+                                    <div class="pull-left pl-5">
+                                        <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig"
+                                                   style="width:85px"
+                                                   ng-model="vm.dto.areaId" ></selectize>
+                                    </div>
+                                    <div class="pull-left pl-5">
+                                        <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig"
+                                                   style="width:85px"
+                                                   ng-model="vm.dto.shelvesId"></selectize>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row">

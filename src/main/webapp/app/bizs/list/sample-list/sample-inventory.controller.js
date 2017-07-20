@@ -25,6 +25,7 @@
             EquipmentService.query({},onEquipmentSuccess, onError);
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = data;
+
             }
             vm.equipmentOptions = [
                 {value:"1",label:"冰箱"},
@@ -80,8 +81,10 @@
         };
         function onAreaSuccess(data) {
             vm.frozenBoxAreaOptions = data;
+            vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
             if(vm.frozenBoxAreaOptions.length){
-                vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
+                vm.dto.areaId = "";
+                // vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
                 SupportacksByAreaIdService.query({id:vm.dto.areaId},onShelfSuccess, onError);
             }
         }
@@ -104,7 +107,8 @@
         //架子
         function onShelfSuccess(data) {
             vm.frozenBoxShelfOptions = data;
-            vm.dto.shelvesId = vm.frozenBoxShelfOptions[0].id;
+            vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
+            // vm.dto.shelvesId = vm.frozenBoxShelfOptions[0].id;
         }
         vm.frozenBoxShelfConfig = {
             valueField:'id',

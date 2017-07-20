@@ -105,21 +105,26 @@
         //列表移入操作
         vm.moveOperate = _fnMoveOperate;
 
+
+
         function _fnSearch() {
-            if(projectIds.length){
-                for(var i = 0; i <projectIds.length; i++){
-                    var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
-                    vm.dto.projectCodeStr.push(projectCode)
-                }
-            }
+            var projectCode = _.find(vm.projectOptions,{id:+vm.projectId}).projectCode;
+            vm.dto.projectCodeStr = [];
+            vm.dto.projectCodeStr.push(projectCode);
+            // if(projectIds.length){
+            //     for(var i = 0; i <projectIds.length; i++){
+            //         var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
+            //         vm.dto.projectCodeStr.push(projectCode)
+            //     }
+            // }
             vm.checked = false;
             vm.boxInstance.rerender();
         }
         function _fnEmpty() {
             vm.dto = {};
             vm.dto.projectCodeStr = [];
-            projectIds = [];
-            vm.projectCodeStr = [];
+            // projectIds = [];
+            // vm.projectCodeStr = [];
             vm.arrayBoxCode = [];
             vm.dto.spaceType = "2";
             vm.dto.compareType = "1";
@@ -213,11 +218,11 @@
                 searchField:'projectName',
                 maxItems: 1,
                 onChange:function(value){
-                    vm.projectIds = _.join(value, ',');
-                    projectIds = value;
-                    vm.dto.projectCodeStr = [];
+                    vm.projectId = value;
+                    // console.log(vm.projectIds);
+                    // projectIds = value;
                     if(vm.dto.sampleTypeId){
-                        _fnQueryProjectsSampleClass(vm.projectIds,vm.dto.sampleTypeId);
+                        _fnQueryProjectsSampleClass(value,vm.dto.sampleTypeId);
                     }
                 }
             };
@@ -236,8 +241,8 @@
                 labelField:'sampleTypeName',
                 maxItems: 1,
                 onChange:function (value) {
-                    if(vm.projectIds) {
-                        _fnQueryProjectsSampleClass(vm.projectIds, value);
+                    if(vm.projectId) {
+                        _fnQueryProjectsSampleClass(vm.projectId, value);
                     }
                 }
             };
@@ -248,12 +253,15 @@
                 onChange:function (value) {
                 }
             };
+            vm.queryProjectsSampleClass = _fnQueryProjectsSampleClass;
             //样本分类
-            function _fnQueryProjectsSampleClass(projectIds,sampleTypeId) {
-                RequirementService.queryRequirementSampleClasses(projectIds,sampleTypeId).success(function (data) {
+            function _fnQueryProjectsSampleClass(projectId,sampleTypeId,sampleClassificationId) {
+                RequirementService.queryRequirementSampleClasses(projectId,sampleTypeId).success(function (data) {
                     vm.sampleClassOptions = data;
                     if(vm.sampleClassOptions.length){
-                        vm.dto.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
+                        if(sampleClassificationId){
+                            vm.dto.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
+                        }
                     }
                 });
             }
@@ -269,9 +277,42 @@
                     selectedItems[id] = selectAll;
                 }
             }
+            for(var i in vm.selected){
+                if(vm.selected[i]){
+                    // 遍历选中的冻存管，i是冻存管的Id
+                    var tube = _.find(vm.selectedSample, {id: +i});
+                    if(tube){
+                        vm.projectId = tube.projectId;
+                        vm.dto.sampleTypeId = tube.sampleTypeId;
+                        vm.queryProjectsSampleClass(vm.projectId,vm.dto.sampleTypeId,tube.sampleClassificationId);
+                        return;
+                    }
+                }else{
+                    vm.projectId = "";
+                    vm.dto.sampleTypeId = "";
+                    vm.dto.sampleClassificationId = "";
+                }
+            }
+
         }
 
         function toggleOne (selectedItems) {
+            for(var i in vm.selected){
+                if(vm.selected[i]){
+                    // 遍历选中的冻存管，i是冻存管的Id
+                    var tube = _.find(vm.selectedSample, {id: +i});
+                    if(tube){
+                        vm.projectId = tube.projectId;
+                        vm.dto.sampleTypeId = tube.sampleTypeId;
+                        vm.queryProjectsSampleClass(vm.projectId,vm.dto.sampleTypeId,tube.sampleClassificationId);
+                        return;
+                    }
+                }else{
+                    vm.projectId = "";
+                    vm.dto.sampleTypeId = "";
+                    vm.dto.sampleClassificationId = "";
+                }
+            }
             for (var id in selectedItems) {
                 if (selectedItems.hasOwnProperty(id)) {
                     if(!selectedItems[id]) {

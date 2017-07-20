@@ -1047,9 +1047,6 @@
                     vm.box.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
                     var isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
                     var sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
-                    if(sampleTypeCode == 'RNA'){
-                        isMixed = 1;
-                    }
                     vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value,isMixed);
                     if(isMixed == 1){
                         vm.box.isSplit = 1;
@@ -1060,6 +1057,9 @@
                         vm.box.isSplit = 0;
                         vm.isMixedFlag = false;
                         vm.sampleClassFlag = false;
+                    }
+                    if(sampleTypeCode == 'RNA'){
+                        vm.box.isSplit = 1;
                     }
                 }
             };
@@ -1226,7 +1226,7 @@
                 vm.box.sampleTypeCode = vm.box.sampleType.sampleTypeCode;
                 isMixed = vm.box.sampleType.isMixed;
                 if(vm.box.sampleTypeCode == 'RNA'){
-                    isMixed = 1;
+                    vm.box.isSplit = 1;
                 }
                 if(isMixed == 1){
                     vm.box.isSplit = 1;

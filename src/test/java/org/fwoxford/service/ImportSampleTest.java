@@ -210,6 +210,90 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             }
         }
     }
+    public void createProjectSiteForPeace3() {
+        Connection con = null;// 创建一个数据库连接
+        PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
+        ResultSet result = null;// 创建一个结果集对象
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> listAll = new ArrayList<Map<String, Object>>();
+        Long projectId = null;
+        try{
+            con = DBUtilForTemp.open();
+            System.out.println("连接成功！");
+            String sqlForSelect = "select * from LCC_2";// 预编译语句
+            pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
+            result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
+            ResultSetMetaData rsMeta = result.getMetaData();
+            Map<String, Object> map = null;
+            while (result.next()){
+                map = this.Result2Map(result,rsMeta);
+                list.add(map);
+            }
+            String sqlForSelectAllLcc = "select * from LCC_1";// 预编译语句
+            PreparedStatement pres = con.prepareStatement(sqlForSelectAllLcc);// 实例化预编译语句
+            ResultSet result2 = pres.executeQuery();// 执行查询，注意括号中不需要再加参数
+            ResultSetMetaData rsMetas2 = result2.getMetaData();
+            Map<String, Object> mapForAll = null;
+            while (result2.next()){
+                mapForAll = this.Result2Map(result2,rsMetas2);
+                listAll.add(mapForAll);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                DBUtilForTemp.close(con);
+                System.out.println("数据库连接已关闭！");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        Project project = projectRepository.findByProjectCode("0038");
+        for(int i = 0 ;i<list.size();i++) {
+            Object projectSiteCodeObj = list.get(i).get("LCC_ID");
+            if(projectSiteCodeObj == null){
+                continue;
+            }
+            String projectSiteCode = list.get(i).get("LCC_ID").toString();
+            Object names = list.get(i).get("NAME");
+            if(names == null){
+                continue;
+            }
+            String name = list.get(i).get("NAME").toString();
+            if(projectSiteCode.length()<4){
+                throw new BankServiceException("项目点异常:"+projectSiteCode);
+            }
+            String projectSiteId =  projectSiteCode.substring(0,4);
+            String area = null;
+            for(int j = 0 ;j<listAll.size();j++){
+                String lcc = listAll.get(j).get("LCC_ID").toString();
+                if(projectSiteId .equals( lcc)){
+                    area = listAll.get(j).get("PROVINCE").toString();
+                }
+            }
+            ProjectSite projectSite = projectSiteRepository.findByProjectSiteCode(projectSiteCode);
+            if (projectSite == null) {
+                projectSite = new ProjectSite()
+                    .projectSiteCode(list.get(i).get("LCC_ID").toString())
+                    .projectSiteName(name)
+                    .area(area)
+                    .status("0001");
+//                    .detailedLocation(list.get(i).get("LOCATION") != null ? list.get(i).get("LOCATION").toString() : null)
+//                    .department(list.get(i).get("DEPARTMENT").toString())
+//                    .detailedAddress(list.get(i).get("ADDRESS").toString())
+//                    .zipCode(list.get(i).get("ZIP_CODE") != null ? list.get(i).get("ZIP_CODE").toString() : null)
+//                    .username1(list.get(i).get("USER_1").toString()).username2(list.get(i).get("USER_2").toString())
+//                    .phoneNumber1(list.get(i).get("PHONE_1").toString()).phoneNumber2(list.get(i).get("PHONE_2").toString());
+                projectSiteRepository.saveAndFlush(projectSite);
+                ProjectRelate projectRelate = projectRelateRepository.findByProjectIdAndProjectSiteId(project.getId(), projectSite.getId());
+                if (projectRelate == null) {
+                    projectRelate = new ProjectRelate().project(project).projectSite(projectSite).status("0001");
+                    projectRelateRepository.saveAndFlush(projectRelate);
+                }
+            }
+        }
+    }
     /**
      * 冻存架类型，固定值
      * 2017年6月29日09:32:05
@@ -712,9 +796,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             if(sampleTypeCode!="RNA"&&sampleList.get(0).get("POS_IN_SHELF") == null){
                 throw new BankServiceException("所在架子内位置为空！"+tableName+":盒子编码："+key);
             }
-            String posInShelf = sampleTypeCode!="RNA"?sampleList.get(0).get("POS_IN_SHELF").toString():null;
-            String columnsInShelf = posInShelf!=null?posInShelf.substring(0, 1):null;
-            String rowsInShelf =  posInShelf!=null?posInShelf.substring(1):null;
+
             SampleClassification sampleClassification = null;
             sampleClassification = sampleClassificationRepository.findBySampleClassificationCode(sampleClassTypeCode);
             String frontColor = Constants.SAMPLECLASSIFICATION_COLOR_MAP.get(sampleClassTypeCode).toString();
@@ -753,7 +835,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 }else{
                     supportCode = "R02";
                 }
-
             }
             //设备
             Equipment entity = equipmentRepository.findOneByEquipmentCode(equipmentCode);
@@ -770,7 +851,30 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             if(supportRack==null){
                 throw new BankServiceException("冻存架未导入:"+supportRack);
             }
-
+            String pos = null;
+            String columns[] = new String[]{"A","B","C","D","E"};
+            Boolean flag = false;
+            if(sampleTypeCode.equals("RNA")){
+                for(int j = 0;j<columns.length;j++){
+                    for(int i=1;i<=5;i++){
+                        String bb = columns[j]+i;
+                        FrozenBox frozenBox = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(equipmentCode,areaCode,supportCode,columns[j],String.valueOf(i));
+                        if(frozenBox != null){
+                            continue;
+                        }else {
+                            flag = true;
+                            pos=bb;
+                            break;
+                        }
+                    }
+                    if(flag){
+                        break;
+                    }
+                }
+            }
+            String posInShelf = sampleTypeCode!="RNA"?sampleList.get(0).get("POS_IN_SHELF").toString():pos;
+            String columnsInShelf = posInShelf!=null?posInShelf.substring(0, 1):null;
+            String rowsInShelf =  posInShelf!=null?posInShelf.substring(1):null;
             //保存冻存盒
             FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(key);
             if(frozenBox == null){
@@ -833,7 +937,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 if(sampleTypeCode!="RNA"&&sampleList.get(i).get("POS_IN_BOX") ==null){
                     throw new BankServiceException("盒内位置为空！"+tableName+":盒子编码："+key+",样本编码为："+sampleCode,sampleList.get(i).toString());
                 }
-
                 String posInBox = sampleList.get(i).get("POS_IN_BOX").toString();
                 String tubeRows = posInBox.substring(0, 1);
                 String tubeColumns =  posInBox.substring(1);
@@ -931,6 +1034,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     public void main() throws Exception {
         this.createProject();
         this.createProjectSite();
+        this.createProjectSiteForPeace3();
         this.createSupportRackType();
         this.createEquipmentGroup();
         this.createEquipmentModel();
@@ -958,5 +1062,27 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         this.createFrozenBoxForA02("HE_COL_11_RNA","RNA",rnaTube);
         this.createSampleTypeMix();
 
+    }
+
+    @Test
+    public  void mainqq()
+    {
+        String[] b=new String[]{"A","B","C","D","E"};  //定义数组b
+        boolean flag = false;
+        for(int j = 0;j<b.length;j++){
+            for(int i=1;i<=5;i++){
+                String bb = b[j]+i;
+               if(bb.equals("A1")){//若库存里有，则继续取下一个，若没有，就取当前的这个
+                   continue;
+               }else{
+                   flag = true;
+                   System.out.print(bb);
+                   break ;
+               }
+           }
+           if(flag){
+                break;
+           }
+        }
     }
 }

@@ -8,14 +8,17 @@
         .module('bioBankApp')
         .controller('BoxInventoryController', BoxInventoryController);
 
-    BoxInventoryController.$inject = ['$scope','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService','FrozenBoxTypesService'];
+    BoxInventoryController.$inject = ['$scope','$stateParams','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService','FrozenBoxTypesService'];
 
-    function BoxInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService,FrozenBoxTypesService) {
+    function BoxInventoryController($scope,$stateParams,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService,FrozenBoxTypesService) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
         vm.checked = false;
         var selectedBox;
+        vm.dto.equipmentId = $stateParams.equipmentId;
+        vm.dto.areaId = $stateParams.areaId;
+        vm.dto.shelvesId = $stateParams.shelvesId;
         function _init() {
             //获取项目
             ProjectService.query({},onProjectSuccess, onError);

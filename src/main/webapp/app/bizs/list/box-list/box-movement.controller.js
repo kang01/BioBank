@@ -10,11 +10,11 @@
         .controller('ModalInstanceCtrl', ModalInstanceCtrl);
 
     BoxMovementController.$inject = ['$scope','hotRegisterer','$timeout','$compile','toastr','$state','$stateParams','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService',
-        'SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable','SampleUserService','BoxInventoryService','BioBankBlockUi'];
+        'SupportacksByAreaIdService','Principal','BioBankDataTable','SampleUserService','BoxInventoryService','BioBankBlockUi'];
     ModalInstanceCtrl.$inject = ['$uibModalInstance'];
 
     function BoxMovementController($scope,hotRegisterer,$timeout,$compile,toastr,$state,$stateParams,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,
-                                   SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable,SampleUserService,BoxInventoryService,BioBankBlockUi) {
+                                   SupportacksByAreaIdService,Principal,BioBankDataTable,SampleUserService,BoxInventoryService,BioBankBlockUi) {
         var vm = this;
         vm.shelfInstance = {};
         vm.selectedInstance = {};
@@ -59,6 +59,10 @@
                     vm.selected[box.id] = false;
                 });
             }
+            Principal.identity().then(function(account) {
+                vm.account = account;
+                vm.movement.operatorId1 = vm.account.id;
+            });
         }
         _init();
 

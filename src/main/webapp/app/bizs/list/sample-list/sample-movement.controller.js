@@ -9,10 +9,10 @@
         .controller('SampleMovementController', SampleMovementController);
 
     SampleMovementController.$inject = ['$scope','hotRegisterer','$compile','$state','$stateParams','$uibModal','toastr','DTColumnBuilder','ProjectService','EquipmentService',
-        'SampleTypeService','MasterData','BoxInventoryService','BioBankDataTable','StockInBoxByCodeService','SampleService','FrozenBoxTypesService','RequirementService','SampleInventoryService','SampleUserService','BioBankBlockUi'];
+        'SampleTypeService','MasterData','BoxInventoryService','BioBankDataTable','StockInBoxByCodeService','SampleService','FrozenBoxTypesService','RequirementService','SampleInventoryService','SampleUserService','BioBankBlockUi','Principal'];
 
     function SampleMovementController($scope,hotRegisterer,$compile,$state,$stateParams,$uibModal,toastr,DTColumnBuilder,ProjectService,EquipmentService,
-                                      SampleTypeService,MasterData,BoxInventoryService,BioBankDataTable,StockInBoxByCodeService,SampleService,FrozenBoxTypesService,RequirementService,SampleInventoryService,SampleUserService,BioBankBlockUi) {
+                                      SampleTypeService,MasterData,BoxInventoryService,BioBankDataTable,StockInBoxByCodeService,SampleService,FrozenBoxTypesService,RequirementService,SampleInventoryService,SampleUserService,BioBankBlockUi,Principal) {
         var vm = this;
         vm.boxInstance = {};
         vm.selectedInstance = {};
@@ -70,6 +70,10 @@
             if(selectedSampleIds.length){
                 _searchTubesByIds();
             }
+            Principal.identity().then(function(account) {
+                vm.account = account;
+                vm.movement.operatorId1 = vm.account.id;
+            });
 
         }
         _init();

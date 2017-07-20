@@ -279,6 +279,12 @@
                     vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['asc']);
                     _.remove(vm.sampleTypeOptions,{sampleTypeName:"98"});
                     _.remove(vm.sampleTypeOptions,{sampleTypeName:"97"});
+                    // _.forEach(vm.sampleTypeOptions,function (value) {
+                    //     if(value.sampleTypeCode == 'RNA'){
+                    //         vm.isMixedFlag = true;
+                    //     }
+                    // });
+
                 });
             }
             //不同项目下的样本分类
@@ -1040,6 +1046,10 @@
                     vm.box.sampleTypeId = value;
                     vm.box.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
                     var isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
+                    var sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
+                    if(sampleTypeCode == 'RNA'){
+                        isMixed = 1;
+                    }
                     vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value,isMixed);
                     if(isMixed == 1){
                         vm.box.isSplit = 1;
@@ -1215,6 +1225,9 @@
                 vm.box.sampleTypeId = vm.box.sampleType.id;
                 vm.box.sampleTypeCode = vm.box.sampleType.sampleTypeCode;
                 isMixed = vm.box.sampleType.isMixed;
+                if(vm.box.sampleTypeCode == 'RNA'){
+                    isMixed = 1;
+                }
                 if(isMixed == 1){
                     vm.box.isSplit = 1;
                     vm.isMixedFlag = true;

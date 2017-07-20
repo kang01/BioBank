@@ -28,6 +28,7 @@
         vm.dto = {};
         var modalInstance;
         vm.checked = false;
+        vm.selectedDataFlag = false;
         vm.search = _fnSearch;
         vm.empty = _fnEmpty;
         _statusInit();
@@ -205,7 +206,7 @@
             };
         }
 
-
+        var selected = {};
         function _fnSearch() {
 
             var searchObj = {};
@@ -261,9 +262,16 @@
             }
 
             dataArray = _.uniq(dataArray);
+            // vm.stockInBox = dataArray;
             vm.dtOptions.withOption("data",dataArray).withOption('serverSide',false);
             vm.checked = false;
-
+            vm.selectAll = false;
+            selected = {};
+            _.forEach(dataArray,function (full) {
+                selected[full.frozenBoxCode] = false;
+            });
+            vm.selectedDataFlag = true;
+            console.log(JSON.stringify(selected))
         }
         function _fnEmpty() {
             vm.dto = {};
@@ -281,6 +289,10 @@
 
             // 处理盒子选中状态
             vm.toggleAll = function (selectAll, selectedItems) {
+                if(vm.selectedDataFlag){
+                    vm.selected = selected;
+                }
+
                 selectedItems = vm.selected;
                 selectAll = vm.selectAll;
                 for (var id in selectedItems) {
@@ -308,7 +320,7 @@
 
 
 
-            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC", 200, 10, "<'row'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>", $scope)
+            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC", 200, 10, "<'row' <'col-xs-12 text-right' TB> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>", $scope)
                 // 设置Tool button
                 .withButtons([
                     {

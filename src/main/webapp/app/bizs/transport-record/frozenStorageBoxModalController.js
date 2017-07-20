@@ -45,6 +45,10 @@
             onChange:function (value) {
                 vm.frozenBox.sampleTypeId = value;
                 vm.isMixed = _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed;
+                var sampleCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleCode;
+                if(sampleCode == 'RNA'){
+                    vm.isMixed = 1;
+                }
                 _fnQueryProjectSampleClass(vm.items.projectId,value,vm.isMixed);
 
             }

@@ -363,7 +363,7 @@
                 .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('equipmentType').withTitle('设备类型').withOption("width", "100"),
             DTColumnBuilder.newColumn('position').withTitle('位置').withOption("width", "140").renderWith(_fnRowPositionRender),
-            DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('shelvesType').withTitle('架子类型').withOption("width", "100"),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
             DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),

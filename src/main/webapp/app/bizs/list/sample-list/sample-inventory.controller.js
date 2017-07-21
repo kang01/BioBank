@@ -395,7 +395,7 @@
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "120"),
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目名称'),
-            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "100"),
             DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "120"),
             DTColumnBuilder.newColumn('sex').withTitle('标签'),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),

@@ -431,7 +431,7 @@
             DTColumnBuilder.newColumn('position').withTitle('位置').withOption("width", "140"),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "110").renderWith(_fnRowBoxCodeRender),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目').withOption("width", "180"),
-            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "100"),
             DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "120"),
             DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒类型').withOption("width", "120"),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),

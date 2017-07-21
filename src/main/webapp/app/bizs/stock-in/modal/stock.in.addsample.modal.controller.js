@@ -173,6 +173,7 @@
 
         function _fnSampleBoxSelect(item,$event) {
             tube = item;
+            vm.entity.id = item.id;
             vm.entity.projectSiteId = item.projectSiteId;
             vm.entity.sampleTypeId = item.sampleTypeId;
             vm.entity.sampleTypeCode = item.sampleTypeCode;

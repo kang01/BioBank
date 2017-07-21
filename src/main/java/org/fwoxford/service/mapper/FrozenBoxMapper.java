@@ -200,8 +200,6 @@ public interface FrozenBoxMapper {
             box.setRowsInShelf(box.getRowsInShelf());
             box.setColumnsInShelf(box.getColumnsInShelf());
 
-
-//            box.setSampleNumber(box.getSampleNumber());
             box.setDislocationNumber(box.getDislocationNumber() != null ? box.getDislocationNumber() : 0);
             box.setEmptyHoleNumber(box.getEmptyHoleNumber() != null ? box.getEmptyHoleNumber() : 0);
             box.setEmptyTubeNumber(box.getEmptyTubeNumber() != null ? box.getEmptyTubeNumber() : 0);

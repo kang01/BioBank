@@ -5,6 +5,7 @@ import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.service.TranshipBoxService;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -77,7 +78,7 @@ public class TranshipBoxResource {
     public ResponseEntity<TranshipBoxListForSaveBatchDTO> updateTranshipBox(@Valid @RequestBody TranshipBoxListDTO transhipBoxListDTO) throws URISyntaxException {
         log.debug("REST request to update TranshipBox : {}", transhipBoxListDTO);
         if (transhipBoxListDTO.getTranshipId() == null) {
-            return createTranshipBox(transhipBoxListDTO);
+            throw new BankServiceException("转运ID不能为空！");
         }
         TranshipBoxListForSaveBatchDTO result = transhipBoxService.saveBatchTranshipBox(transhipBoxListDTO);
         return ResponseEntity.ok()

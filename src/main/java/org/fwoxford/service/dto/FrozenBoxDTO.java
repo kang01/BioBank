@@ -80,10 +80,6 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
      */
     @Size(max = 255)
     private String sampleTypeName;
-//    /**
-//     * 样本数量
-//     */
-//    private Integer sampleNumber;
     /**
      * 是否分装：1：是，0：否
      */

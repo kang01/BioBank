@@ -765,7 +765,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             if(tubeDTO.getSampleClassificationId()==null){
                 frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeId(),Constants.INVALID);
             }else{
-                frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
+                frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),frozenBox.getId(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
             }
             for(FrozenTube f:frozenTubeList){
                 if(tubeDTO.getId()==null ||
@@ -842,7 +842,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         Boolean flag = true;
         String frozenBoxCode = frozenBoxDTO.getFrozenBoxCode();
         FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
-        if(frozenBox !=null && frozenBox.getId()!=frozenBoxDTO.getId()
+        if(frozenBox !=null && !frozenBox.getId().equals(frozenBoxDTO.getId())
             &&  !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
             &&  !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)
             && !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED) ){

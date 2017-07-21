@@ -269,4 +269,34 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
         }
         return frozenTubeDTOS;
     }
+    @Override
+    public List<FrozenTubeDTO> findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long frozenBoxId, Long sampleTypeId, Long sampleClassificationId) {
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(sampleCode,projectCode,frozenBoxId,sampleTypeId,sampleClassificationId);
+        for(FrozenTube f:frozenTubeList){
+            if(!f.getFrozenBox().getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
+                throw new BankServiceException("冻存管编码"+f.getSampleCode()+"已经在库存内，请输入新的冻存管编码！");
+            }
+        }
+        List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
+        List<Object[]> frozenTubeHistoryList =  frozenTubeRepository.findFrozenTubeHistoryListBySampleAndProjectCode(sampleCode,projectCode);
+        if(frozenTubeHistoryList.size()>0){
+            Object[] object = frozenTubeHistoryList.get(0);
+            Object status = object[12];
+            if(!status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) &&! status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
+                throw new BankServiceException("冻存管编码已经在库存内，请输入新的冻存管编码！");
+            }
+        }
+        for(FrozenTube f: frozenTubeList){
+            FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
+            frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
+            frozenTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
+            frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
+            frozenTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
+            frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
+            frozenTubeDTO.setSampleClassificationName(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationName():null);
+            frozenTubeDTOS.add(frozenTubeDTO);
+        }
+        return frozenTubeDTOS;
+    }
+
 }

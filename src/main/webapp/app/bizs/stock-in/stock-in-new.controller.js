@@ -111,11 +111,13 @@
 
             function onProjectSitesSuccess(data) {
                 vm.projectSitesOptions = data;
-                if(!vm.entity.projectSiteId){
-                    if(data.length){
-                        vm.entity.projectSiteId = data[0].id;
-                    }
-                }
+                vm.projectSitesOptions.push({id:"",projectSiteName:""});
+                vm.entity.projectSiteId = "";
+                // if(!vm.entity.projectSiteId){
+                //     if(data.length){
+                //         vm.entity.projectSiteId = data[0].id;
+                //     }
+                // }
             }
         }
         _initStockInBoxesTable();
@@ -750,7 +752,7 @@
                                         vm.oldTube = oldTube;
                                     }
 
-                                    StockInInputService.queryTube(oldTube.sampleCode,vm.entity.projectCode,oldTube.sampleTypeId).success(function (data) {
+                                    StockInInputService.queryTube(oldTube.sampleCode,vm.entity.projectCode,vm.box.id,oldTube.sampleTypeId,oldTube.sampleClassificationId).success(function (data) {
                                         var stockInTubes;
                                         if(vm.box.sampleTypeName != "98"){
                                             stockInTubes = _.filter(data,{sampleTypeId:vm.box.sampleTypeId});

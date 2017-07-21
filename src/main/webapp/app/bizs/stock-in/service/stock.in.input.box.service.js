@@ -29,8 +29,17 @@
 
 
         };
-        function _queryTube(sampleCode,projectCode,sampleTypeId) {
-            return $http.get('api/frozen-tubes/sample/'+sampleCode+'/project/'+projectCode+'/sampleType/'+sampleTypeId);
+        // function _queryTube(sampleCode,projectCode,sampleTypeId) {
+        //     return $http.get('api/frozen-tubes/sample/'+sampleCode+'/project/'+projectCode+'/sampleType/'+sampleTypeId);
+        // }
+        function _queryTube(sampleCode,projectCode,frozenBoxId,sampleTypeId,sampleClassificationId) {
+            if(!frozenBoxId){
+                frozenBoxId = -1;
+            }
+            if(!sampleClassificationId){
+                sampleClassificationId = -1;
+            }
+            return $http.get('api/frozen-tubes/sample/'+sampleCode+'/project/'+projectCode+'/frozenBox/'+frozenBoxId+'/sampleType/'+sampleTypeId+'/sampleClassification/'+sampleClassificationId);
         }
         function _queryTubeBySampleClassificationId(sampleCode,projectCode,sampleTypeId,sampleClassificationId) {
             return $http.get('api/frozen-tubes/sample/'+sampleCode+'/project/'+projectCode+'/sampleType/'+sampleTypeId+'/sampleClassification/'+sampleClassificationId);

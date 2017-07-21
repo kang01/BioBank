@@ -381,13 +381,13 @@
             loadAll();
             vm.dtInstance = {};
             vm.dtColumns = [
-                DTColumnBuilder.newColumn(null).withOption("width", "30").withTitle('序号'),
+                DTColumnBuilder.newColumn(null).withOption("width", "50").withTitle('序号'),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号')
             ];
             vm.dtOptions = DTOptionsBuilder.newOptions()
+                .withOption('order', [[1,'asc']])
                 .withOption('info', false)
                 .withOption('paging', false)
-                .withOption('sorting', false)
                 .withScroller()
                 .withOption('scrollY', 400)
                 .withOption('rowCallback', rowCallback);

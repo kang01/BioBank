@@ -366,8 +366,8 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <label>备注</label>
-                                    <textarea name="memo" class="form-control" rows="10" style="resize: none"
-                                              ng-model="vm.box.memo" ng-disabled="!vm.box"></textarea>
+                                    <textarea name="memo" class="form-control" rows="10" style="resize: none;ime-mode:disabled"
+                                              ng-model="vm.box.memo" ng-disabled="!vm.box" onfocus=" this.style.imeMode='disabled' "></textarea>
                                 </div>
                             </div>
                         </div>

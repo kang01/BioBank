@@ -773,6 +773,7 @@
                                                         status :1,
                                                         tubes:stockInTubes,
                                                         sampleCode:oldTube.sampleCode,
+                                                        frozenBoxId:vm.box.id,
                                                         projectSiteId:vm.entity.projectSiteId,
                                                         projectId:vm.entity.projectId,
                                                         projectCode:vm.entity.projectCode,

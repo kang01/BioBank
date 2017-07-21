@@ -22,8 +22,9 @@
         vm.entity.projectId = items.projectId;
         vm.entity.projectCode = items.projectCode;
         vm.entity.projectSiteId = items.projectSiteId;
-
         vm.entity.sampleCode = items.sampleCode;
+        vm.entity.frozenBoxId = items.frozenBoxId;
+
         vm.tubeStatusOptions = MasterData.frozenTubeStatus;
         vm.tubeStatusConfig = {
             valueField:'id',
@@ -119,9 +120,7 @@
                     vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+value}).backColor;
                     $('table').find('.rowLight').removeClass("rowLight");
                     tube = "";
-                    StockInInputService.queryTube(vm.entity.sampleCode,vm.entity.projectCode,vm.entity.sampleTypeId).success(function (data) {
-                        vm.tubes = data;
-                    });
+
 
                     }
             };
@@ -144,12 +143,12 @@
                                 vm.entity.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
                                 vm.entity.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
                                 vm.entity.backColorForClass = vm.projectSampleTypeOptions[0].backColor;
-
                             }
                         }
-
                     }
-
+                    StockInInputService.queryTube(vm.entity.sampleCode,vm.entity.projectCode,vm.entity.frozenBoxId,vm.entity.sampleTypeId,vm.entity.sampleClassificationId).success(function (data) {
+                        vm.tubes = data;
+                    });
 
                 });
             }

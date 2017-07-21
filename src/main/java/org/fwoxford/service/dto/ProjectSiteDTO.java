@@ -3,6 +3,7 @@ package org.fwoxford.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -52,6 +53,24 @@ public class ProjectSiteDTO extends AbstractAuditingDTO implements Serializable 
 
     @Size(max = 20)
     private String phoneNumber2;
+
+    private String projectSiteId;
+    /**
+     * 经度
+     */
+    private BigDecimal longitude;
+    /**
+     * 纬度
+     */
+    private BigDecimal latitude;
+
+    private String province;
+
+    private String city;
+
+    private String district;
+
+    private String street;
 
     public Long getId() {
         return id;
@@ -145,6 +164,62 @@ public class ProjectSiteDTO extends AbstractAuditingDTO implements Serializable 
         this.phoneNumber2 = phoneNumber2;
     }
 
+    public String getProjectSiteId() {
+        return projectSiteId;
+    }
+
+    public void setProjectSiteId(String projectSiteId) {
+        this.projectSiteId = projectSiteId;
+    }
+
+    public BigDecimal getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(BigDecimal longitude) {
+        this.longitude = longitude;
+    }
+
+    public BigDecimal getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(BigDecimal latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -182,6 +257,13 @@ public class ProjectSiteDTO extends AbstractAuditingDTO implements Serializable 
             ", phoneNumber1='" + phoneNumber1 + "'" +
             ", username2='" + username2 + "'" +
             ", phoneNumber2='" + phoneNumber2 + "'" +
+            ", projectSiteId='" + projectSiteId + "'" +
+            ", longitude='" + longitude + "'" +
+            ", latitude='" + latitude + "'" +
+            ", province='" + province + "'" +
+            ", city='" + city + "'" +
+            ", district='" + district + "'" +
+            ", street='" + street + "'" +
             '}';
     }
 }

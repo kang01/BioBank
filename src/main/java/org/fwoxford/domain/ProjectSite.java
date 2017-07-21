@@ -7,6 +7,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -81,6 +82,36 @@ public class ProjectSite extends AbstractAuditingEntity implements Serializable 
     @Size(max = 100)
     @Column(name = "phone_number_2", length = 100)
     private String phoneNumber2;
+
+    @Size(max = 100)
+    @Column(name = "project_site_id", length = 100)
+    private String projectSiteId;
+    /**
+     * 经度
+     */
+    @Column(name = "longitude")
+    private BigDecimal longitude;
+    /**
+     * 纬度
+     */
+    @Column(name = "latitude")
+    private BigDecimal latitude;
+
+    @Size(max = 100)
+    @Column(name = "province", length = 100)
+    private String province;
+
+    @Size(max = 100)
+    @Column(name = "city", length = 100)
+    private String city;
+
+    @Size(max = 100)
+    @Column(name = "district", length = 100)
+    private String district;
+
+    @Size(max = 100)
+    @Column(name = "street", length = 100)
+    private String street;
 
     @OneToMany(mappedBy = "projectSite")
     @JsonIgnore
@@ -262,6 +293,83 @@ public class ProjectSite extends AbstractAuditingEntity implements Serializable 
         this.phoneNumber2 = phoneNumber2;
     }
 
+    public String getProjectSiteId() {
+        return projectSiteId;
+    }
+    public ProjectSite projectSiteId(String projectSiteId) {
+        this.projectSiteId = projectSiteId;
+        return this;
+    }
+    public void setProjectSiteId(String projectSiteId) {
+        this.projectSiteId = projectSiteId;
+    }
+
+    public BigDecimal getLongitude() {
+        return longitude;
+    }
+    public ProjectSite longitude(BigDecimal longitude) {
+        this.longitude = longitude;
+        return this;
+    }
+    public void setLongitude(BigDecimal longitude) {
+        this.longitude = longitude;
+    }
+
+    public BigDecimal getLatitude() {
+        return latitude;
+    }
+    public ProjectSite latitude(BigDecimal latitude) {
+        this.latitude = latitude;
+        return this;
+    }
+    public void setLatitude(BigDecimal latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+    public ProjectSite province(String province) {
+        this.province = province;
+        return this;
+    }
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+    public ProjectSite city(String city) {
+        this.city = city;
+        return this;
+    }
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+    public ProjectSite district(String district) {
+        this.district = district;
+        return this;
+    }
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+    public ProjectSite street(String street) {
+        this.street = street;
+        return this;
+    }
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
     public Set<ProjectRelate> getProjectRelates() {
         return projectRelates;
     }
@@ -323,6 +431,13 @@ public class ProjectSite extends AbstractAuditingEntity implements Serializable 
             ", phoneNumber1='" + phoneNumber1 + "'" +
             ", username2='" + username2 + "'" +
             ", phoneNumber2='" + phoneNumber2 + "'" +
+            ", projectSiteId='" + projectSiteId + "'" +
+            ", longitude='" + longitude + "'" +
+            ", latitude='" + latitude + "'" +
+            ", province='" + province + "'" +
+            ", city='" + city + "'" +
+            ", district='" + district + "'" +
+            ", street='" + street + "'" +
             '}';
     }
 }

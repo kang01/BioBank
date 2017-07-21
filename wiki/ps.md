@@ -87,7 +87,14 @@ public DataTablesOutput<TranshipResponse> getPageTranship(@RequestBody DataTable
 
 
 ### 诡异问题集锦 -- geng luying
+1.fetch first n row only 的诡异
+select * from tablename order by column desc
 
+select * from tablename order by column desc fetch first n row only
+
+执行这两条sql的时候如果 order by column 中 column 存在重复的字段 fetch first n row only 会打乱以前的排序.
+
+原因：order by如果列有相同值就按物理顺序排的（即先插入的数据排在前面），但是 加了fetch first n rows only 后竟然改变了对查询结果的排序方式，在ordery by 字段值相同的时候，90% 以上的数据是按键值（这里是日期acdate）倒序排序的，永远取到日期acdate 最小的那几条条数据
 
 ### 诡异问题集锦 -- gao kangkang
 

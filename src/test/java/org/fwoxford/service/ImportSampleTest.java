@@ -1,12 +1,20 @@
 package org.fwoxford.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.minidev.json.JSONUtil;
 import org.fwoxford.BioBankApp;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
+import org.fwoxford.service.dto.response.GeocoderSearchAddressResponse;
+import org.fwoxford.service.dto.response.GeocoderSearchResponse;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
+import org.fwoxford.web.rest.util.GeocoderReaderUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.XML;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -16,6 +24,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StringUtils;
 
+import java.io.*;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -1065,7 +1078,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     }
 
     @Test
-    public  void mainqq()
+    public  void createPositionInShelf()
     {
         String[] b=new String[]{"A","B","C","D","E"};  //定义数组b
         boolean flag = false;
@@ -1083,6 +1096,65 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
            if(flag){
                 break;
            }
+        }
+    }
+    @Test
+    public  void getLocation() throws IOException, JSONException {
+        //这里调用百度的ip定位api服务 详见 http://api.map.baidu.com/lbsapi/cloud/ip-location-api.htm
+        JSONObject json = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?address=","曲沃县医院");
+        ObjectMapper objectMapper=new ObjectMapper();
+        GeocoderSearchResponse response = objectMapper.readValue(json.getString("GeocoderSearchResponse"),GeocoderSearchResponse.class);
+        BigDecimal lat = response.getResult().getLocation().getLat();
+        BigDecimal lng = response.getResult().getLocation().getLng();
+        JSONObject jsonForAddress = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?location=",lat+","+lng);
+        ObjectMapper objectMapperForAddress = new ObjectMapper();
+        GeocoderSearchAddressResponse res = objectMapperForAddress.readValue(jsonForAddress.getString("GeocoderSearchResponse"),GeocoderSearchAddressResponse.class);
+        System.out.println(jsonForAddress.toString());
+    }
+    @Test
+    public  void importLocationForProjectSite() throws IOException, JSONException {
+        List<ProjectSite> projectSites = projectSiteRepository.findAll();
+        for(ProjectSite p :projectSites){
+            String projectSiteCode = p.getProjectSiteCode();
+            String projectSiteId = null;
+            if(projectSiteCode.length()<4){
+                projectSiteId = projectSiteCode;
+            }else{
+                projectSiteId = projectSiteCode.substring(0,4);
+            }
+            if(StringUtils.isEmpty(p.getProjectSiteName())){
+                throw new BankServiceException("项目点名称异常"+p.toString());
+            }
+            JSONObject json = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?address=",p.getProjectSiteName().replaceAll("\r|\n", "").replaceAll(" +",""));
+            ObjectMapper objectMapper=new ObjectMapper();
+            System.out.print(json.toString());
+            if(json.length()==0||json == null || json.getString("GeocoderSearchResponse") == null ){
+
+            }else{
+                if(json.getJSONObject("GeocoderSearchResponse").get("status").equals("OK")){
+                    GeocoderSearchResponse response = objectMapper.readValue(json.getString("GeocoderSearchResponse"),GeocoderSearchResponse.class);
+                    if(response != null &&response.getStatus().equals("OK")) {
+                        BigDecimal lat = response.getResult().getLocation().getLat();
+                        BigDecimal lng = response.getResult().getLocation().getLng();
+                        String address = lat + "," + lng;
+                        JSONObject jsonForAddress = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?location=", address);
+                        ObjectMapper objectMapperForAddress = new ObjectMapper();
+                        if (jsonForAddress.getJSONObject("GeocoderSearchResponse").get("status").equals("OK")) {
+                            GeocoderSearchAddressResponse res = objectMapperForAddress.readValue(jsonForAddress.getString("GeocoderSearchResponse"), GeocoderSearchAddressResponse.class);
+                            if (res != null && res.getStatus().equals("OK")) {
+                                p.setProjectSiteId(projectSiteId);
+                                p.setLatitude(lat);
+                                p.setLongitude(lng);
+                                p.setProvince(res.getResult().getAddressComponent().getProvince());
+                                p.setCity(res.getResult().getAddressComponent().getCity());
+                                p.setDistrict(res.getResult().getAddressComponent().getDistrict());
+                                p.setStreet(res.getResult().getAddressComponent().getStreet());
+                            }
+                            projectSiteRepository.saveAndFlush(p);
+                        }
+                    }
+                }
+            }
         }
     }
 }

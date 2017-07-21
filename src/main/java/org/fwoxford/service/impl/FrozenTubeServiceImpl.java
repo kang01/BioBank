@@ -188,8 +188,8 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
     public List<FrozenTubeDTO> findFrozenTubeBySampleCodeNadProjectAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long sampleTypeId, Long sampleClassificationId) {
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(sampleCode,projectCode,sampleTypeId,sampleClassificationId);
         for(FrozenTube f:frozenTubeList){
-            if(!f.getFrozenBox().getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
-                throw new BankServiceException("冻存管编码"+f.getSampleCode()+"已经在库存内，请输入新的冻存管编码！");
+            if(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&&!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
+                throw new BankServiceException("冻存管编码"+sampleCode+"已经在库存内，请输入新的冻存管编码！");
             }
         }
         List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
@@ -244,8 +244,8 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCode,projectCode,sampleTypeId,Constants.INVALID);
 
         for(FrozenTube f:frozenTubeList){
-            if(!f.getFrozenBox().getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
-                throw new BankServiceException("冻存管编码"+f.getSampleCode()+"已经在库存内，请输入新的冻存管编码！");
+            if(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&&!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
+                throw new BankServiceException("冻存管编码"+sampleCode+"已经在库存内，请输入新的冻存管编码！");
             }
         }
         List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
@@ -271,10 +271,19 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
     }
     @Override
     public List<FrozenTubeDTO> findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long frozenBoxId, Long sampleTypeId, Long sampleClassificationId) {
-        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(sampleCode,projectCode,frozenBoxId,sampleTypeId,sampleClassificationId);
+        List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
+        if(frozenBoxId == -1 || frozenBoxId.equals(-1)){
+            if(sampleClassificationId == -1 || sampleClassificationId.equals(-1) ){
+                frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCode,projectCode,sampleTypeId,Constants.INVALID);
+            }else{
+                frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(sampleCode,projectCode,sampleTypeId,sampleClassificationId);
+            }
+        }else{
+            frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(sampleCode,projectCode,frozenBoxId,sampleTypeId,sampleClassificationId);
+        }
         for(FrozenTube f:frozenTubeList){
-            if(!f.getFrozenBox().getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
-                throw new BankServiceException("冻存管编码"+f.getSampleCode()+"已经在库存内，请输入新的冻存管编码！");
+            if(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&&!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
+                throw new BankServiceException("冻存管编码"+sampleCode+"已经在库存内，请输入新的冻存管编码！");
             }
         }
         List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();

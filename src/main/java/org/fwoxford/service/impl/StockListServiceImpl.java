@@ -158,17 +158,6 @@ public class StockListServiceImpl implements StockListService {
             @Override
             public Predicate toPredicate(Root<FrozenTubeListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 query = getSearchQueryForTube(root,query,cb,search);
-                Subquery<FrozenTubeListAllDataTableEntity> publishingSubquery = query.subquery(FrozenTubeListAllDataTableEntity.class);
-                cb.createQuery(FrozenTubeListAllDataTableEntity.class).from(FrozenTubeListAllDataTableEntity.class);
-//                Root<ResidencyRelationship> residencyRelationshipSubqueryRoot = relationshipSubquery.from(ResidencyRelationship)
-//                relationshipSubquery.select(residencyRelationshipSubqueryRoot)
-//                Predicate correlatePredicate = builder.equal(residencyRelationshipSubqueryRoot.get("studentDemographic"), root)
-//                Predicate reviewStatusPredicate = builder.equal(residencyRelationshipSubqueryRoot.get("source"), reportSource)
-//                Predicate updatedSincePredicate = builder.greaterThan(residencyRelationshipSubqueryRoot.get("lastModifiedDate"), modifiedSince)
-//                relationshipSubquery.where(
-//                    builder.and(correlatePredicate, reviewStatusPredicate, updatedSincePredicate)
-//                )
-//                builder.exists(relationshipSubquery)
                 return query.getRestriction();
             }
         };

@@ -156,6 +156,8 @@ public class StockOutFrozenBoxResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         DataTablesOutput<StockOutFrozenBoxForTaskDetailDataTableEntity> result = stockOutFrozenBoxService.getPageByTask(id, input);
         return result;
     }
@@ -174,6 +176,8 @@ public class StockOutFrozenBoxResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         DataTablesOutput<FrozenBoxForStockOutDataTableEntity> output =  stockOutFrozenBoxService.getPageByRequirementIds(ids, input);
         return output;
     }
@@ -358,6 +362,8 @@ public class StockOutFrozenBoxResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         DataTablesOutput<StockOutFrozenBoxForDataTableEntity> result = stockOutFrozenBoxService.getPageWaitingHandOverStockOutFrozenBoxes(id,input);
         return result;
     }

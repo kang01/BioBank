@@ -1139,7 +1139,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                         String address = lat + "," + lng;
                         JSONObject jsonForAddress = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?location=", address);
                         ObjectMapper objectMapperForAddress = new ObjectMapper();
-                        if (jsonForAddress.getJSONObject("GeocoderSearchResponse").get("status").equals("OK")) {
+                        if (jsonForAddress.length()>0&&jsonForAddress.getJSONObject("GeocoderSearchResponse").get("status").equals("OK")) {
                             GeocoderSearchAddressResponse res = objectMapperForAddress.readValue(jsonForAddress.getString("GeocoderSearchResponse"), GeocoderSearchAddressResponse.class);
                             if (res != null && res.getStatus().equals("OK")) {
                                 p.setProjectSiteId(projectSiteId);
@@ -1155,6 +1155,8 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                     }
                 }
             }
+            p.setProjectSiteId(projectSiteId);
+            projectSiteRepository.saveAndFlush(p);
         }
     }
 }

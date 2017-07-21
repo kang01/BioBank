@@ -165,8 +165,9 @@ public class TranshipResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         DataTablesOutput<TranshipResponse> transhipsTablesOutput = transhipService.findAllTranship(input);
-
         return transhipsTablesOutput;
     }
 

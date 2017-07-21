@@ -194,6 +194,8 @@ public class StockInResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         return stockInService.findStockIn(input);
     }
 

@@ -189,7 +189,7 @@ public class FrozenTubeResource {
     }
 
     /**
-     * 根据样本编码，项目编码，冻存盒编码样本类型，样本分类查询样本信息
+     * 根据样本编码，项目编码，冻存盒ID，样本类型，样本分类查询样本信息
      * @param sampleCode
      * @param projectCode
      * @param sampleTypeId

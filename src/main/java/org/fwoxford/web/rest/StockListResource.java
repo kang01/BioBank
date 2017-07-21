@@ -50,6 +50,8 @@ public class StockListResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         return stockListService.getPageStockFrozenPositionList(input,search);
     }
 
@@ -70,6 +72,8 @@ public class StockListResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         return stockListService.getPageStockFrozenBoxList(input,search);
     }
 
@@ -90,6 +94,8 @@ public class StockListResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         return stockListService.getPageStockFrozenTubeList(input,search);
     }
 
@@ -123,6 +129,8 @@ public class StockListResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         return stockListService.getPageShelvesList(input,search);
     }
 
@@ -143,6 +151,8 @@ public class StockListResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         return stockListService.getPageAreaList(input,search);
     }
 }

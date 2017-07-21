@@ -168,6 +168,8 @@ public class StockOutHandoverResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         DataTablesOutput<StockOutHandoverForDataTableEntity> result = stockOutHandoverService.getPageDataStockOutHandOver(input);
         return result;
     }
@@ -245,6 +247,8 @@ public class StockOutHandoverResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         DataTablesOutput<StockOutHandoverSampleReportDTO> result =  stockOutHandoverService.getPageStockOutHandoverSample(id, input);
         return result;
     }

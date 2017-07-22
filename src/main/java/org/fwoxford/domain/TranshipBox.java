@@ -60,14 +60,12 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
     @Size(max = 20)
     @Column(name = "columns_in_shelf", length = 20)
     private String columnsInShelf;
-
     /**
      * 样本数量
      */
     @NotNull
     @Column(name = "count_of_sample", nullable = false)
     private Integer countOfSample;
-
     /**
      * 冻存盒类型编码
      */

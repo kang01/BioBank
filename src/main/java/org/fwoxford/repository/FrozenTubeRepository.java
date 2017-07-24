@@ -48,7 +48,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " where b.status = '2004' and (t.sample_code = ?1 or t.sample_temp_code =?1) " +
         " and st.sample_type_code=?2 and t.status !='0000'" +
         " and t.id not in (select f.frozen_tube_id from stock_out_req_frozen_tube f where f.stock_out_requirement_id =?3 and f.status='1301')" +
-        " and t.project_id in ?4"
+        " and t.project_id in ?4 and ROWNUM <=1"
         ,nativeQuery = true)
     List<FrozenTube> findBySampleCodeAndSampleTypeCode(String appointedSampleCode, String appointedSampleType, Long id, List<Long> projectIds);
 

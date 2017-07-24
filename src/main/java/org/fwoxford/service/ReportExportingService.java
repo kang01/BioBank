@@ -703,7 +703,7 @@ public class ReportExportingService {
                     continue;
                 }
                 XSSFCell cell = dataRow.getCell(sampleCodeColIndex);
-                if (cell == null){
+                if (cell == null || (cell != null&&("")==cell.toString())){
                     if (emptyRowIndexos.size() == 0 || i-1 == emptyRowIndexos.get(emptyRowIndexos.size() - 1)){
                         countOfEmptyRow++;
                     }

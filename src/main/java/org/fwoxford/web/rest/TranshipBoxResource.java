@@ -1,6 +1,7 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.service.TranshipBoxService;
 import org.fwoxford.service.dto.*;
@@ -14,14 +15,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -183,5 +188,10 @@ public class TranshipBoxResource {
         log.debug("REST request to get FrozenBox : {}", transhipCode);
         List<FrozenBoxCodeForTranshipDTO> res = transhipBoxService.getFrozenBoxCodeByTranshipCode(transhipCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/tranship-boxes/transhipCode/{transhipCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<FrozenBoxCodeForTranshipDTO> getFrozenBoxCodeByTranshipCode(@PathVariable String transhipCode, @RequestBody DataTablesInput input) {
+        return transhipBoxService.getPageFrozenBoxCodeByTranshipCode(transhipCode,input);
     }
 }

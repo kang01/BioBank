@@ -67,7 +67,6 @@ public class CacheConfiguration {
             cm.createCache(org.fwoxford.domain.FrozenTube.class.getName() + ".frozenBoxes", jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.FrozenBox.class.getName() + ".frozenTubes", jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.FrozenBoxPosition.class.getName(), jcacheConfiguration);
-            cm.createCache(org.fwoxford.domain.StockInTubes.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.SampleClassification.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.ProjectSampleClass.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.Delegate.class.getName(), jcacheConfiguration);

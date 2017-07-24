@@ -25,7 +25,6 @@
     <include file="classpath:config/liquibase/changelog/20170317160203_added_entity_StockIn.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170319153727_added_entity_StockInBox.xml" relativeToChangelogFile="false"/>
     <!--<include file="classpath:config/liquibase/changelog/20170419010458_added_entity_FrozenBoxPosition.xml" relativeToChangelogFile="false"/>-->
-    <!--<include file="classpath:config/liquibase/changelog/20170419015417_added_entity_StockInTubes.xml" relativeToChangelogFile="false"/>-->
     <include file="classpath:config/liquibase/changelog/20170503063650_added_entity_SampleClassification.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170503064727_added_entity_ProjectSampleClass.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170514060212_added_entity_Delegate.xml" relativeToChangelogFile="false"/>
@@ -67,7 +66,6 @@
     <include file="classpath:config/liquibase/changelog/20170317065947_added_entity_constraints_Tranship.xml" relativeToChangelogFile="false"/>
 
     <!--<include file="classpath:config/liquibase/changelog/20170419010458_added_entity_constraints_FrozenBoxPosition.xml" relativeToChangelogFile="false"/>-->
-    <!--<include file="classpath:config/liquibase/changelog/20170419015417_added_entity_constraints_StockInTubes.xml" relativeToChangelogFile="false"/>-->
     <include file="classpath:config/liquibase/changelog/20170503064727_added_entity_constraints_ProjectSampleClass.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170514062123_added_entity_constraints_StockOutApply.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170514063802_added_entity_constraints_StockOutRequirement.xml" relativeToChangelogFile="false"/>

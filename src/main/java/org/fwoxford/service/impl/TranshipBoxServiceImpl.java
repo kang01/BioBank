@@ -6,21 +6,31 @@ import org.fwoxford.repository.*;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenBoxListAllDataTableEntity;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipBoxMapper;
 import org.fwoxford.service.util.EntityUtil;
 import org.fwoxford.web.rest.errors.BankServiceException;
+import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +87,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
     @Autowired
     private FrozenBoxCheckService frozenBoxCheckService;
+
+    @Autowired
+    private TranshipBoxRepositories transhipBoxRepositories;
 
     public TranshipBoxServiceImpl(TranshipBoxRepository transhipBoxRepository,
                                   FrozenBoxRepository frozenBoxRepository,
@@ -621,5 +634,32 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             frozenBoxCodeForTranshipDTOS.add(frozenBoxCodeForTranshipDTO);
         }
         return frozenBoxCodeForTranshipDTOS;
+    }
+
+    @Override
+    public DataTablesOutput<FrozenBoxCodeForTranshipDTO> getPageFrozenBoxCodeByTranshipCode(String transhipCode, DataTablesInput input) {
+        if(StringUtils.isEmpty(transhipCode)){
+            throw new BankServiceException("转运编码不能为空！");
+        }
+        Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
+        if(tranship == null){
+            throw new BankServiceException("转运记录不存在！",transhipCode);
+        }
+        input.addColumn("tranship.id",true,true,tranship.getId()+"+");
+        DataTablesOutput<FrozenBoxCodeForTranshipDTO> output = new DataTablesOutput<FrozenBoxCodeForTranshipDTO>();
+        Converter<TranshipBox, FrozenBoxCodeForTranshipDTO> convert = new Converter<TranshipBox, FrozenBoxCodeForTranshipDTO>() {
+            @Override
+            public FrozenBoxCodeForTranshipDTO convert(TranshipBox e) {
+                return new FrozenBoxCodeForTranshipDTO(e.getFrozenBox().getId(),e.getFrozenBoxCode());
+            }
+        };
+        Specification<TranshipBox> specification = new Specification<TranshipBox>() {
+            @Override
+            public Predicate toPredicate(Root<TranshipBox> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                return query.getRestriction();
+            }
+        };
+        output = transhipBoxRepositories.findAll(input,specification,null,convert);
+        return output;
     }
 }

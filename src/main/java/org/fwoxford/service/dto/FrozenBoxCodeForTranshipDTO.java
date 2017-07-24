@@ -14,6 +14,14 @@ public class FrozenBoxCodeForTranshipDTO {
     @JsonView(DataTablesOutput.View.class)
     private String frozenBoxCode;
 
+    public FrozenBoxCodeForTranshipDTO() {
+    }
+
+    public FrozenBoxCodeForTranshipDTO(Long frozenBoxId, String frozenBoxCode) {
+        this.frozenBoxId = frozenBoxId;
+        this.frozenBoxCode = frozenBoxCode;
+    }
+
     public Long getFrozenBoxId() {
         return frozenBoxId;
     }

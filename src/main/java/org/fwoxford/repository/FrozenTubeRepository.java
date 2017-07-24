@@ -66,6 +66,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         + " and (?7 is null or ?7 is false or t.isHemolysis  = ?7)\n"
         + " and (?8 is null or t.age >= ?8 )\n"
         + " and (?9 is null or t.age <= ?9 )\n"
+        + " order by t.frozenBox.frozenBoxCode asc\n"
     )
     List<FrozenTube> findByRequirement(Long sampleTypeId, Long samplyClassificationId, Long frozenTubeTypeId,
                                        String diseaseType, String sex, Boolean isBloodLipid, Boolean isHemolysis, Integer ageMin, Integer ageMax);

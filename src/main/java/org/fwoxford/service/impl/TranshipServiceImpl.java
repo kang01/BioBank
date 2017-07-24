@@ -393,7 +393,7 @@ public class TranshipServiceImpl implements TranshipService{
             Long supportRackId = box.getSupportRackId();
             String column = box.getColumnsInShelf();
             String row = box.getRowsInShelf();
-            List<FrozenBoxDTO> frozenBoxDTOList =  frozenBoxService.countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId,areaId,supportRackId,column,row);
+            List<FrozenBoxDTO> frozenBoxDTOList =  frozenBoxService.findByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId,areaId,supportRackId,column,row);
             for(FrozenBoxDTO b:frozenBoxDTOList){
                 if(!b.getId().equals(box.getId())&&!b.getStatus().equals(Constants.FROZEN_BOX_INVALID)){
                     throw new BankServiceException("该位置已有冻存盒存在，请更换冻存盒位置！",box.getEquipmentCode()+"."+box.getAreaCode()+"."+box.getSupportRackCode()+"."+box.getRowsInShelf()+box.getColumnsInShelf());

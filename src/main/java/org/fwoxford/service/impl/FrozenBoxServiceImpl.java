@@ -250,8 +250,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
      * @return
      */
     @Override
-    public List<FrozenBoxDTO> countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row) {
-        List<FrozenBox> frozenBoxes = frozenBoxRepository.countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId, areaId, supportRackId, column, row);
+    public List<FrozenBoxDTO> findByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row) {
+        List<FrozenBox> frozenBoxes = frozenBoxRepository.findByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(equipmentId, areaId, supportRackId, column, row);
         return frozenBoxMapper.frozenBoxesToFrozenBoxDTOs(frozenBoxes);
     }
 

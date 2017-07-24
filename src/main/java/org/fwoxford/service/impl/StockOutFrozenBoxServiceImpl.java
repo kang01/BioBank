@@ -319,6 +319,15 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_NEW);
             stockOutFrozenBox.setFrozenBox(frozenBox);
             stockOutFrozenBox.setStockOutTask(stockOutTask);
+            stockOutFrozenBox.frozenBoxCode(frozenBox.getFrozenBoxCode()).sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
+                .sampleClassification(frozenBox.getSampleClassification())
+                .sampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null)
+                .sampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null)
+                .dislocationNumber(frozenBox.getDislocationNumber()).emptyHoleNumber(frozenBox.getEmptyHoleNumber()).emptyTubeNumber(frozenBox.getEmptyTubeNumber())
+                .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
+                .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
+                .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
+                .projectSiteName(frozenBox.getProjectSiteName());
             stockOutFrozenBoxRepository.save(stockOutFrozenBox);
 
             //保存出库盒与管之间的关系
@@ -342,9 +351,19 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 stockOutBoxTube.setStockOutFrozenBox(stockOutFrozenBox);
                 stockOutBoxTube.setStockOutTaskFrozenTube(stockOutTaskFrozenTube);
                 FrozenTube tube = stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube();
-                stockOutBoxTube.setFrozenTube(tube);
-                stockOutBoxTube.setTubeRows(f.getTubeRows());
-                stockOutBoxTube.setTubeColumns(f.getTubeColumns());
+                stockOutBoxTube.memo(tube.getMemo()).frozenTube(tube).tubeColumns(f.getTubeColumns()).tubeRows(f.getTubeRows())
+                    .frozenBoxCode(tube.getFrozenBoxCode()).errorType(tube.getErrorType())
+                    .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(tube.getFrozenTubeState())
+                    .frozenTubeType(tube.getFrozenTubeType()).frozenTubeTypeCode(tube.getFrozenTubeTypeCode())
+                    .frozenTubeTypeName(tube.getFrozenTubeTypeName()).frozenTubeVolumns(tube.getFrozenTubeVolumns())
+                    .frozenTubeVolumnsUnit(tube.getFrozenTubeVolumnsUnit()).sampleVolumns(tube.getSampleVolumns())
+                    .project(tube.getProject()).projectCode(tube.getProjectCode()).projectSite(tube.getProjectSite())
+                    .projectSiteCode(tube.getProjectSiteCode()).sampleClassification(tube.getSampleClassification())
+                    .sampleClassificationCode(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationCode():null)
+                    .sampleClassificationName(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationName():null)
+                    .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
+                    .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
+                    .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
                 stockOutBoxTubeRepository.save(stockOutBoxTube);
             }
 
@@ -454,6 +473,15 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutFrozenBox.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
             stockOutFrozenBox.setArea(area);
             stockOutFrozenBox.setAreaCode(area!=null?area.getAreaCode():null);
+            stockOutFrozenBox.frozenBoxCode(frozenBox.getFrozenBoxCode()).sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
+                .sampleClassification(frozenBox.getSampleClassification())
+                .sampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null)
+                .sampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null)
+                .dislocationNumber(frozenBox.getDislocationNumber()).emptyHoleNumber(frozenBox.getEmptyHoleNumber()).emptyTubeNumber(frozenBox.getEmptyTubeNumber())
+                .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
+                .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
+                .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
+                .projectSiteName(frozenBox.getProjectSiteName());
             stockOutFrozenBoxRepository.save(stockOutFrozenBox);
             //保存冻存盒位置
             StockOutBoxPosition stockOutBoxPosition = new StockOutBoxPosition();
@@ -526,6 +554,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             throw new BankServiceException("出库盒ID不能为空！");
         }
         StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findOne(stockOutFrozenBoxDTO.getId());
+        if(stockOutFrozenBox == null){
+            throw new BankServiceException("出库盒不存在！");
+        }
         stockOutFrozenBox.setMemo(stockOutFrozenBoxDTO.getMemo());
         stockOutFrozenBoxRepository.save(stockOutFrozenBox);
         return stockOutFrozenBoxDTO;

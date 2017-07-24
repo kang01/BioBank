@@ -411,7 +411,7 @@ public class TranshipTube extends AbstractAuditingEntity implements Serializable
     public Double getSampleVolumns() {
         return sampleVolumns;
     }
-    public TranshipTube frozenTubeVolumnsUnit(Double sampleVolumns) {
+    public TranshipTube sampleVolumns(Double sampleVolumns) {
         this.sampleVolumns = sampleVolumns;
         return this;
     }

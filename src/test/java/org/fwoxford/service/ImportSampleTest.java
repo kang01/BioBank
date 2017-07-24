@@ -928,6 +928,15 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                     .columnsInShelf(columnsInShelf)
                     .status(Constants.FROZEN_BOX_STOCKED).countOfSample(sampleList.size())
                     .frozenBoxCode(key).frozenBox(frozenBox).stockIn(stockIn).stockInCode(stockInCodeNew).area(area).equipment(entity).supportRack(supportRack);
+                stockInBox.sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
+                    .sampleClassification(frozenBox.getSampleClassification())
+                    .sampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null)
+                    .sampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null)
+                    .dislocationNumber(frozenBox.getDislocationNumber()).emptyHoleNumber(frozenBox.getEmptyHoleNumber()).emptyTubeNumber(frozenBox.getEmptyTubeNumber())
+                    .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
+                    .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
+                    .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
+                    .projectSiteName(frozenBox.getProjectSiteName());
                 stockInBoxRepository.saveAndFlush(stockInBox);
                 assertThat(stockInBox).isNotNull();
             }

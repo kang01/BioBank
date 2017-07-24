@@ -247,6 +247,15 @@ public class StockInServiceImpl implements StockInService {
         inBox.setMemo(box.getMemo());
         inBox.setStatus(box.getStatus());
         inBox.setFrozenBox(box);
+        inBox.sampleTypeCode(box.getSampleTypeCode()).sampleType(box.getSampleType()).sampleTypeName(box.getSampleTypeName())
+            .sampleClassification(box.getSampleClassification())
+            .sampleClassificationCode(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationCode():null)
+            .sampleClassificationName(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationName():null)
+            .dislocationNumber(box.getDislocationNumber()).emptyHoleNumber(box.getEmptyHoleNumber()).emptyTubeNumber(box.getEmptyTubeNumber())
+            .frozenBoxType(box.getFrozenBoxType()).frozenBoxTypeCode(box.getFrozenBoxTypeCode()).frozenBoxTypeColumns(box.getFrozenBoxTypeColumns())
+            .frozenBoxTypeRows(box.getFrozenBoxTypeRows()).isRealData(box.getIsRealData()).isSplit(box.getIsSplit()).project(box.getProject())
+            .projectCode(box.getProjectCode()).projectName(box.getProjectName()).projectSite(box.getProjectSite()).projectSiteCode(box.getProjectSiteCode())
+            .projectSiteName(box.getProjectSiteName());
         return inBox;
     }
 
@@ -349,7 +358,18 @@ public class StockInServiceImpl implements StockInService {
                     frozenTubeRepository.saveAndFlush(tube);
                     StockInTube stockInTube = new StockInTube();
                     stockInTube.status(Constants.STOCK_IN_TUBE_COMPELETE).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
-                        .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(box);
+                        .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(box).errorType(tube.getErrorType())
+                        .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(tube.getFrozenTubeState())
+                        .frozenTubeType(tube.getFrozenTubeType()).frozenTubeTypeCode(tube.getFrozenTubeTypeCode())
+                        .frozenTubeTypeName(tube.getFrozenTubeTypeName()).frozenTubeVolumns(tube.getFrozenTubeVolumns())
+                        .frozenTubeVolumnsUnit(tube.getFrozenTubeVolumnsUnit()).sampleVolumns(tube.getSampleVolumns())
+                        .project(tube.getProject()).projectCode(tube.getProjectCode()).projectSite(tube.getProjectSite())
+                        .projectSiteCode(tube.getProjectSiteCode()).sampleClassification(tube.getSampleClassification())
+                        .sampleClassificationCode(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationCode():null)
+                        .sampleClassificationName(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationName():null)
+                        .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
+                        .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
+                        .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
                     stockInTubeRepository.save(stockInTube);
                 }
             }

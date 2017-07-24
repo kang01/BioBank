@@ -96,7 +96,7 @@ public interface FrozenBoxService {
      * @param row
      * @return
      */
-    List<FrozenBoxDTO>  countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
+    List<FrozenBoxDTO>  findByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
 
     /**
      * 根据转运编码查询冻存盒列表

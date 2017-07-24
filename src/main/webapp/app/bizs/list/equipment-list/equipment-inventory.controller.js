@@ -21,7 +21,10 @@
         vm.searchShow = _fnSearchShow;
         vm.search = _fnSearch;
         vm.selectedShow = _fnSearchShow;
+        //移位
         vm.movement = _fnMovement;
+        //交换
+        vm.exchange = _fnExchange;
         vm.close = _fnClose;
         vm.empty = _fnEmpty;
         //查询盒子
@@ -223,6 +226,10 @@
                 shelvesId:shelvesId
             };
             $state.go('box-inventory',obj);
+        }
+        function _fnExchange() {
+            var ids =  _.map(selectedEquipment, 'id');
+            console.log(JSON.stringify(ids));
         }
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
         vm.selectedColumns = [

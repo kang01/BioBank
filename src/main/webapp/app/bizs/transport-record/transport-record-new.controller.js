@@ -1090,48 +1090,70 @@
                 labelField:'equipmentCode',
                 maxItems: 1,
                 onChange:function (value) {
-                    AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                    vm.box.areaId = "";
+                    vm.box.supportRackId = "";
+                    vm.boxRowCol = "";
+                    if(value){
+                        AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                    }else{
+                        vm.frozenBoxAreaOptions = [];
+                        vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
+
+                        vm.frozenBoxShelfOptions = [];
+                        vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
+
+
+                        $scope.$apply();
+                    }
                 }
             };
             //区域
             function onAreaSuccess(data) {
                 vm.frozenBoxAreaOptions = data;
-                // if(vm.box){
-                //     if(!vm.box.areaId){
-                        vm.box.areaId = vm.frozenBoxAreaOptions[0].id;
-                    // }
-
-                // }
-
+                vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
             }
             vm.frozenBoxAreaConfig = {
                 valueField:'id',
                 labelField:'areaCode',
                 maxItems: 1,
                 onChange:function (value) {
-                    for(var i = 0; i < vm.frozenBoxAreaOptions.length; i++){
-                        if(value == vm.frozenBoxAreaOptions[i].id){
-                            vm.box.areaCode = vm.frozenBoxAreaOptions[i].areaCode;
+                    vm.box.supportRackId = "";
+                    vm.boxRowCol = "";
+                    if(value){
+                        for(var i = 0; i < vm.frozenBoxAreaOptions.length; i++){
+                            if(value == vm.frozenBoxAreaOptions[i].id){
+                                vm.box.areaCode = vm.frozenBoxAreaOptions[i].areaCode;
+                            }
                         }
+                        SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
+                    }else{
+                        vm.frozenBoxShelfOptions = [];
+                        vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
+                        $scope.$apply();
                     }
-                    SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
+
 
                 }
             };
             //架子
             function onShelfSuccess(data) {
                 vm.frozenBoxShelfOptions = data;
+                vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
             }
             vm.frozenBoxShelfConfig = {
                 valueField:'id',
                 labelField:'supportRackCode',
                 maxItems: 1,
                 onChange:function (value) {
-                    for(var i = 0; i < vm.frozenBoxShelfOptions.length; i++){
-                        if(value == vm.frozenBoxShelfOptions[i].id){
-                            vm.box.supportRackCode = vm.frozenBoxShelfOptions[i].areaCode;
+                    vm.boxRowCol = "";
+                    if(value){
+                        for(var i = 0; i < vm.frozenBoxShelfOptions.length; i++){
+                            if(value == vm.frozenBoxShelfOptions[i].id){
+                                vm.box.supportRackCode = vm.frozenBoxShelfOptions[i].areaCode;
+                            }
                         }
                     }
+                    $scope.$apply();
                 }
             };
             //盒子位置

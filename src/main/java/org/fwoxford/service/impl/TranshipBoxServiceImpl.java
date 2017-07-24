@@ -656,6 +656,13 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         Specification<TranshipBox> specification = new Specification<TranshipBox>() {
             @Override
             public Predicate toPredicate(Root<TranshipBox> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                List<Predicate> predicate = new ArrayList<>();
+                Predicate p1 = cb.notEqual(root.get("status").as(String.class), Constants.INVALID);
+                predicate.add(p1);
+                Predicate p2 = cb.notEqual(root.get("status").as(String.class), Constants.FROZEN_BOX_INVALID);
+                predicate.add(p2);
+                Predicate[] pre = new Predicate[predicate.size()];
+                query.where(predicate.toArray(pre));
                 return query.getRestriction();
             }
         };

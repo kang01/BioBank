@@ -1414,4 +1414,31 @@ public class TempResource {
         stockOutTaskDTO.setStockOutPlanCode(bankUtil.getUniqueID("E"));
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockOutTaskDTO));
     }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/tranship-boxes/transhipCode/{transhipCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<FrozenBoxCodeForTranshipDTO> getFrozenBoxCodeByTranshipCode(@PathVariable String transhipCode, @RequestBody DataTablesInput input) {
+        List<FrozenBoxCodeForTranshipDTO> dataList =  new ArrayList<>();
+        for(int i=(int)'a';i<'a'+26;i++)
+        {
+            FrozenBoxCodeForTranshipDTO rowData = new FrozenBoxCodeForTranshipDTO();
+            rowData.setFrozenBoxId(1L);
+            rowData.setFrozenBoxCode("123456789"+(char)i);
+            dataList.add(rowData);
+        }
+        for(int i=(int)'A';i<'A'+26;i++)
+        {
+            FrozenBoxCodeForTranshipDTO rowData = new FrozenBoxCodeForTranshipDTO();
+            rowData.setFrozenBoxId(1L);
+            rowData.setFrozenBoxCode("987654321"+(char)i);
+            dataList.add(rowData);
+        }
+        DataTablesOutput<FrozenBoxCodeForTranshipDTO> result = new DataTablesOutput<FrozenBoxCodeForTranshipDTO>();
+        result.setDraw(input.getDraw());
+        result.setError("");
+        result.setData(dataList);
+        result.setRecordsFiltered(dataList.size());
+        result.setRecordsTotal(dataList.size() * 10);
+        return result;
+    }
 }

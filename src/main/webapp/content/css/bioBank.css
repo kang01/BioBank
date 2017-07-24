@@ -443,6 +443,9 @@ table.dataTable tfoot th, table.dataTable tfoot td {
 .transport-record-new div.dataTables_filter input{
     width: 8em;
 }
+.dataTables_wrapper .text-left  .dataTables_filter{
+    float: left;
+}
 .tube .handsontable th,
 .tube .handsontable td{
     height: 40px;
@@ -926,3 +929,4 @@ ul.rating {
     overflow: auto;
     width: 100%;
 }
+

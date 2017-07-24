@@ -378,7 +378,7 @@
         //左侧冻存盒
         function _initFrozenBoxesTable(){
             vm.loadBox = loadBox;
-            loadAll();
+
             vm.dtInstance = {};
             vm.dtColumns = [
                 DTColumnBuilder.newColumn(null).withOption("width", "50").withTitle('序号'),
@@ -406,7 +406,7 @@
                 }
                 return nRow;
             }
-
+            loadAll();
             function loadAll() {
                 loadBox();
             }
@@ -415,9 +415,8 @@
                     TranshipBoxByCodeService.query({code:vm.transportRecord.transhipCode},onBoxSuccess,onError);
                 }
                 function onBoxSuccess(data) {
-                    vm.arrayBox =  _.orderBy(data, ['frozenBoxCode'], ['esc']);
+                    vm.arrayBox =  _.orderBy(data, ['frozenBoxCode'], ['asc']);
                     vm.boxLength = data.length;
-
                     vm.dtOptions.withOption('data', vm.arrayBox);
                 }
             }

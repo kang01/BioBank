@@ -146,6 +146,7 @@
         vm.projectConfig = {
             valueField:'id',
             labelField:'projectName',
+            searchField:'projectName',
             onInitialize: function(){
                 selector = arguments[0];
             },

@@ -93,7 +93,7 @@
             };
             //盒子列表
             var boxId;
-            vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", 170, 5,  "<'row mt-0 mb-10'<'col-xs-6' TB> <'col-xs-6' f> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>")
+            vm.dtOptions = BioBankDataTable.buildDTOption("ORDINARY", 300, 5)
                 .withButtons([
                     {
                         text: '创建任务',
@@ -103,6 +103,8 @@
                     }
                 ])
                 .withOption('order', [[1,'asc']])
+                .withOption('paging', false)
+                .withOption('info', false)
                 .withOption('serverSide',true)
                 .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                     var data = {};
@@ -113,30 +115,21 @@
                     var jqDt = this;
                     if(vm.sampleIds){
                         PlanService.queryPlanBoxes(vm.sampleIds,data).then(function (res){
-
                             vm.selectAll = false;
                             vm.selected = {};
                             var json;
+                            json = res.data;
+                            var error = json.error || json.sError;
+                            if ( error ) {
+                                jqDt._fnLog( oSettings, 0, error );
+                            }
+                            oSettings.json = json;
+                            vm.boxData = res.data.data;
+                            //任务列表中有数据时，获取第一条的id，去获取冻存管列表
                             if(res.data.data.length){
-                                json = res.data;
-                                var error = json.error || json.sError;
-                                if ( error ) {
-                                    jqDt._fnLog( oSettings, 0, error );
-                                }
-                                oSettings.json = json;
                                 boxId = res.data.data[0].id;
                                 _loadTubes(boxId);
-                            }else{
-                                var array = {
-                                    draw : 1,
-                                    recordsTotal : 0,
-                                    recordsFiltered : 0,
-                                    data: [ ],
-                                    error : ""
-                                };
-                                json = array;
                             }
-
                             fnCallback( json );
                         }).catch(function(res){
                             // console.log(res);
@@ -154,14 +147,14 @@
                             jqDt._fnProcessingDisplay( oSettings, false );
                         });
                     }else{
-                        var array = {
-                            draw : 1,
-                            recordsTotal : 0,
-                            recordsFiltered : 0,
-                            data: [ ],
-                            error : ""
-                        };
-                        fnCallback( array );
+                        // var array = {
+                        //     draw : 1,
+                        //     recordsTotal : 0,
+                        //     recordsFiltered : 0,
+                        //     data: [ ],
+                        //     error : ""
+                        // };
+                        // fnCallback( array );
 
                     }
 
@@ -186,9 +179,9 @@
                 // DTColumnBuilder.newColumn('id').notVisible(),
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "90"),
-                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "70"),
+                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "90"),
                 DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
-                DTColumnBuilder.newColumn('countOfSample').withTitle('出库样本数量').withOption("width", "90").notSortable()
+                DTColumnBuilder.newColumn('countOfSample').withTitle('出库样本数量').withOption("width", "100").notSortable()
             ];
 
 
@@ -220,14 +213,15 @@
             function _loadTubes(boxId) {
                 if(vm.sampleIds){
                     PlanService.queryPlanTubes(vm.sampleIds,boxId).success(function (data) {
+                        vm.tubeData = data;
                         vm.tubeOptions.withOption('data', data);
-                        vm.tubeInstance.rerender();
+                        // vm.tubeInstance.rerender();
                     });
                 }
 
             }
             //管子列表
-            vm.tubeOptions = BioBankDataTable.buildDTOption("BASIC", 247)
+            vm.tubeOptions = BioBankDataTable.buildDTOption("BASIC", 300)
                 .withOption('createdRow', function(row, data, dataIndex) {
                     var status = '';
                     switch (data.status){
@@ -243,7 +237,7 @@
                 DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "100"),
                 DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
                 DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "60"),
-                DTColumnBuilder.newColumn('sampleClassificationName').withTitle('样本分类').withOption("width", "60"),
+                DTColumnBuilder.newColumn('sampleClassificationName').withTitle('样本分类').withOption("width", "90"),
                 // DTColumnBuilder.newColumn('sex').withTitle('性别'),
                 // DTColumnBuilder.newColumn('age').withTitle('年龄'),
                 // DTColumnBuilder.newColumn('sampleUsedTimes').withTitle('使用次数'),

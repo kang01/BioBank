@@ -234,10 +234,13 @@ public class TranshipServiceImpl implements TranshipService{
         if(number>0){
             throw new BankServiceException("此次转运已经在执行入库！",transhipCode);
         }
-        TranshipByIdResponse transhipRes = this.findTranshipAndFrozenBox(tranship.getId());
-        List<FrozenBoxDTO> frozenBoxDTOList =  transhipRes.getFrozenBoxDTOList();
-        if(frozenBoxDTOList.size()==0){
+        List<FrozenBox> frozenBoxList =  frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship.getId());
+        if(frozenBoxList.size()==0){
             throw new BankServiceException("此次转运没有冻存盒数据！",transhipCode);
+        }
+        List<String> frozenBoxCodes = new ArrayList<String>();
+        for(FrozenBox frozenBox:frozenBoxList){
+            frozenBoxCodes.add(frozenBox.getFrozenBoxCode());
         }
         //修改转运表中数据状态为转运完成
         tranship.setTranshipState(Constants.TRANSHIPE_IN_COMPLETE);
@@ -250,9 +253,9 @@ public class TranshipServiceImpl implements TranshipService{
         //转运盒的状态更改为转运完成
         transhipBoxRepository.updateStatusByTranshipId(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,tranship.getId());
         //冻存盒的状态更改为转运完成
-        frozenBoxRepository.updateStatusByTranshipId(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,tranship.getId());
-        //冻存管的状态更改为转运完成
-//        frozenTubeRepository.updateFrozenTubeStateByTranshipId(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,tranship.getId());
+        frozenBoxRepository.updateStatusByFrozenBoxCodes(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
+//        冻存管的状态更改为转运完成
+        frozenTubeRepository.updateFrozenTubeStateByFrozenBoxCodes(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
         stockInForDataDetail.setProjectCode(tranship.getProjectCode());
         stockInForDataDetail.setProjectSiteCode(tranship.getProjectSiteCode());
         stockInForDataDetail.setReceiver(tranship.getReceiver());

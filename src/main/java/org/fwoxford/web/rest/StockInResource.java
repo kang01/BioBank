@@ -242,16 +242,16 @@ public class StockInResource {
     }
     /**
      * 转运单 到 入库
-     * @param transhipCode
+     * @param transhipCodes
      * @return
      * @throws URISyntaxException
      */
     @PostMapping("/stock-in/tranship/codes/{transhipCodes}")
     @Timed
-    public ResponseEntity<StockInDTO> createStockInByTranshipCodes(@PathVariable String transhipCode) throws URISyntaxException {
-        log.debug("REST request to save StockIn : {}", transhipCode);
+    public ResponseEntity<StockInDTO> createStockInByTranshipCodes(@PathVariable String transhipCodes) throws URISyntaxException {
+        log.debug("REST request to createStockInByTranshipCodes : {}", transhipCodes);
 
-        StockInDTO result = stockInService.createStockInByTranshipCodes(transhipCode);
+        StockInDTO result = stockInService.createStockInByTranshipCodes(transhipCodes);
         return ResponseEntity.created(new URI("/api/res/stock-in" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

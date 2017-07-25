@@ -376,13 +376,14 @@
             }
         }
         //左侧冻存盒
+        vm.dtInstance = {};
         function _initFrozenBoxesTable(){
             vm.loadBox = loadBox;
 
-            vm.dtInstance = {};
+
             vm.dtColumns = [
-                DTColumnBuilder.newColumn(null).withOption("width", "50").withTitle('序号'),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号')
+                DTColumnBuilder.newColumn('frozenBoxId').withOption("width", "50").notSortable().withOption('searchable',false).withTitle('序号'),
+                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
             ];
             vm.dtOptions = DTOptionsBuilder.newOptions()
                 .withOption('order', [[1,'asc']])
@@ -390,7 +391,40 @@
                 .withOption('paging', false)
                 .withScroller()
                 .withOption('scrollY', 400)
-                .withOption('rowCallback', rowCallback);
+                .withOption('rowCallback', rowCallback)
+                .withOption('serverSide',true)
+                .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
+                    var data = {};
+                    for(var i=0; aoData && i<aoData.length; ++i){
+                        var oData = aoData[i];
+                        data[oData.name] = oData.value;
+                    }
+                    var jqDt = this;
+                    TranshipBoxByCodeService.queryByCodes(vm.transportRecord.transhipCode,data).then(function (res){
+                        var json = res.data;
+                        var error = json.error || json.sError;
+                        if ( error ) {
+                            jqDt._fnLog( oSettings, 0, error );
+                        }
+                        oSettings.json = json;
+                        fnCallback( json );
+                    }).catch(function(res){
+                        console.log(res);
+
+                        var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+
+                        if ( $.inArray( true, ret ) === -1 ) {
+                            if ( error == "parsererror" ) {
+                                jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+                            }
+                            else if ( res.readyState === 4 ) {
+                                jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
+                            }
+                        }
+
+                        jqDt._fnProcessingDisplay( oSettings, false );
+                    });
+                });
 
             function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
                 $('td:first', nRow).html(iDisplayIndex+1);
@@ -412,7 +446,8 @@
             }
             function loadBox() {
                 if(vm.transportRecord.transhipCode){
-                    TranshipBoxByCodeService.query({code:vm.transportRecord.transhipCode},onBoxSuccess,onError);
+                    // vm.dtInstance.rerender();
+                    // TranshipBoxByCodeService.query({code:vm.transportRecord.transhipCode},onBoxSuccess,onError);
                 }
                 function onBoxSuccess(data) {
                     vm.arrayBox =  _.orderBy(data, ['frozenBoxCode'], ['asc']);

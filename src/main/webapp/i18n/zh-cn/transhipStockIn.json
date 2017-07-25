@@ -1,0 +1,26 @@
+{
+    "bioBankApp": {
+        "transhipStockIn" : {
+            "home": {
+                "title": "Tranship Stock Ins",
+                "createLabel": "Create a new Tranship Stock In",
+                "createOrEditLabel": "Create or edit a Tranship Stock In"
+            },
+            "created": "A new Tranship Stock In is created with identifier {{ param }}",
+            "updated": "A Tranship Stock In is updated with identifier {{ param }}",
+            "deleted": "A Tranship Stock In is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Tranship Stock In {{ id }}?"
+            },
+            "detail": {
+                "title": "Tranship Stock In"
+            },
+            "transhipCode": "Tranship Code",
+            "stockInCode": "Stock In Code",
+            "status": "Status",
+            "memo": "Memo",
+            "tranship": "Tranship",
+            "stockIn": "Stock In"
+        }
+    }
+}

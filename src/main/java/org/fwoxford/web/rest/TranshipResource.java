@@ -8,7 +8,9 @@ import org.fwoxford.domain.Tranship;
 import org.fwoxford.domain.User;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.UserService;
+import org.fwoxford.service.dto.StockInForDataDetail;
 import org.fwoxford.service.dto.TranshipDTO;
+import org.fwoxford.service.dto.TranshipToStockInDTO;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
 import org.fwoxford.service.mapper.TranshipMapper;
@@ -228,5 +230,23 @@ public class TranshipResource {
     public Boolean isRepeatFrozenBoxCode(@PathVariable String transhipCode ,@PathVariable String trackNumber) {
         Boolean flag =  transhipService.isRepeatTrackNumber(transhipCode,trackNumber);
         return flag;
+    }
+
+    /**
+     * 转运完成
+     * @param transhipCode
+     * @param transhipToStockInDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/tranships/{transhipCode}/completed")
+    @Timed
+    public ResponseEntity<StockInForDataDetail> completedTranship(@PathVariable String transhipCode, @RequestBody @Valid TranshipToStockInDTO transhipToStockInDTO) throws URISyntaxException {
+        log.debug("REST request to save StockIn : {}", transhipCode);
+
+        StockInForDataDetail result = transhipService.completedTranship(transhipCode,transhipToStockInDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 }

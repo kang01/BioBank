@@ -53,6 +53,7 @@
     <include file="classpath:config/liquibase/changelog/20170710080056_added_entity_SerialNo.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170711070252_added_entity_PositionMoveRecord.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170712035218_added_entity_PositionMove.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170724115832_added_entity_TranshipStockIn.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20170316050525_added_entity_constraints_ProjectRelate.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317021528_added_entity_constraints_Equipment.xml" relativeToChangelogFile="false"/>
@@ -89,6 +90,7 @@
     <include file="classpath:config/liquibase/changelog/20170608022411_added_entity_constraints_StockInBoxPosition.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170316011154_added_entity_constraints_Project.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170711070252_added_entity_constraints_PositionMoveRecord.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170724115832_added_entity_constraints_TranshipStockIn.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <include file="classpath:config/liquibase/changelog/20170502015417_added_view_StockIn.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170505000000_added_view_StockInBox.xml" relativeToChangelogFile="false"/>

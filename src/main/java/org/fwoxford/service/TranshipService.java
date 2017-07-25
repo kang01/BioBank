@@ -2,9 +2,7 @@ package org.fwoxford.service;
 
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.Tranship;
-import org.fwoxford.service.dto.FrozenBoxDTO;
-import org.fwoxford.service.dto.FrozenTubeDTO;
-import org.fwoxford.service.dto.TranshipDTO;
+import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
 import org.springframework.data.domain.Page;
@@ -84,4 +82,12 @@ public interface TranshipService {
     TranshipDTO invalidTranship(String transhipCode);
 
     Boolean isRepeatTrackNumber(String transhipCode, String trackNumber);
+
+    /**
+     * 转运完成
+     * @param transhipCode
+     * @param transhipToStockInDTO
+     * @return
+     */
+    StockInForDataDetail completedTranship(String transhipCode, TranshipToStockInDTO transhipToStockInDTO);
 }

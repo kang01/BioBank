@@ -1,0 +1,43 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.transhipStockIn.detail.title">Tranship Stock In</span> {{vm.transhipStockIn.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.transhipStockIn.transhipCode">Tranship Code</span></dt>
+        <dd>
+            <span>{{vm.transhipStockIn.transhipCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipStockIn.stockInCode">Stock In Code</span></dt>
+        <dd>
+            <span>{{vm.transhipStockIn.stockInCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipStockIn.status">Status</span></dt>
+        <dd>
+            <span>{{vm.transhipStockIn.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipStockIn.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.transhipStockIn.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipStockIn.tranship">Tranship</span></dt>
+        <dd>
+            <a ui-sref="tranship-detail({id:vm.transhipStockIn.transhipId})">{{vm.transhipStockIn.transhipId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.transhipStockIn.stockIn">Stock In</span></dt>
+        <dd>
+            <a ui-sref="stock-in-detail({id:vm.transhipStockIn.stockInId})">{{vm.transhipStockIn.stockInId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="tranship-stock-in-detail.edit({id:vm.transhipStockIn.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

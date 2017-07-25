@@ -23,6 +23,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,6 +86,12 @@ public class TranshipServiceImpl implements TranshipService{
 
     @Autowired
     private BankUtil bankUtil;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private  StockInRepository stockInRepository;
 
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
@@ -195,6 +202,58 @@ public class TranshipServiceImpl implements TranshipService{
             flag = true;
         }
         return flag;
+    }
+
+    /**
+     * 转运完成
+     * @param transhipCode
+     * @param transhipToStockInDTO
+     * @return
+     */
+    @Override
+    public StockInForDataDetail completedTranship(String transhipCode, TranshipToStockInDTO transhipToStockInDTO) {
+        StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
+        stockInForDataDetail.setTranshipCode(transhipCode);
+
+        if(transhipCode == null){
+            throw new BankServiceException("转运编码不能为空！",transhipCode);
+        }
+        String receiver = transhipToStockInDTO.getLogin();
+        LocalDate receiveDate = transhipToStockInDTO.getReceiveDate();
+        String password = transhipToStockInDTO.getPassword();
+        userService.isCorrectUser(receiver,password);
+
+        Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
+        if(tranship == null){
+            throw new BankServiceException("转运记录不存在！",transhipCode);
+        }
+        if(tranship.getTrackNumber()==null||tranship.getTrackNumber()==""){
+            throw new BankServiceException("运单号不能为空！",tranship.toString());
+        }
+        int number = stockInRepository.countByTranshipCode(transhipCode);
+        if(number>0){
+            throw new BankServiceException("此次转运已经在执行入库！",transhipCode);
+        }
+        TranshipByIdResponse transhipRes = this.findTranshipAndFrozenBox(tranship.getId());
+        List<FrozenBoxDTO> frozenBoxDTOList =  transhipRes.getFrozenBoxDTOList();
+        if(frozenBoxDTOList.size()==0){
+            throw new BankServiceException("此次转运没有冻存盒数据！",transhipCode);
+        }
+        //修改转运表中数据状态为转运完成
+        tranship.setTranshipState(Constants.TRANSHIPE_IN_COMPLETE);
+        User user = userRepository.findByLogin(receiver);
+        tranship.setReceiverId(user!=null?user.getId():null);
+        tranship.setReceiver(receiver);
+        tranship.setReceiveDate(receiveDate);
+        transhipRepository.save(tranship);
+
+        stockInForDataDetail.setProjectCode(tranship.getProjectCode());
+        stockInForDataDetail.setProjectSiteCode(tranship.getProjectSiteCode());
+        stockInForDataDetail.setReceiver(tranship.getReceiver());
+        stockInForDataDetail.setReceiveDate(tranship.getReceiveDate());
+        stockInForDataDetail.setStatus(Constants.TRANSHIPE_IN_COMPLETE);
+        stockInForDataDetail.setId(tranship.getId());
+        return stockInForDataDetail;
     }
 
     /**

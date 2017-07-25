@@ -247,6 +247,12 @@ public class TranshipServiceImpl implements TranshipService{
         tranship.setReceiveDate(receiveDate);
         transhipRepository.save(tranship);
 
+        //转运盒的状态更改为转运完成
+        transhipBoxRepository.updateStatusByTranshipId(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,tranship.getId());
+        //冻存盒的状态更改为转运完成
+        frozenBoxRepository.updateStatusByTranshipId(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,tranship.getId());
+        //冻存管的状态更改为转运完成
+//        frozenTubeRepository.updateFrozenTubeStateByTranshipId(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,tranship.getId());
         stockInForDataDetail.setProjectCode(tranship.getProjectCode());
         stockInForDataDetail.setProjectSiteCode(tranship.getProjectSiteCode());
         stockInForDataDetail.setReceiver(tranship.getReceiver());

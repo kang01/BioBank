@@ -92,4 +92,6 @@ public interface StockInService {
     StockInForDataDetail updateStockIns(StockInForDataDetail stockInDTO);
 
     StockInBox createStockInBox(FrozenBox frozenBox, StockIn stockIn);
+
+    StockInDTO createStockInByTranshipCodes(String transhipCode);
 }

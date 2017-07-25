@@ -183,6 +183,9 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
      */
     private String backColor;
 
+    private String sampleClassificationCode;
+    private String sampleClassificationName;
+
     public Long getId() {
         return id;
     }
@@ -465,6 +468,22 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setBackColor(String backColor) {
         this.backColor = backColor;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+    }
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
     }
 
     @Override

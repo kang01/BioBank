@@ -240,4 +240,20 @@ public class StockInResource {
         StockInForDataDetail stockInForDataDetail = stockInService.getStockInByTranshipCode(transhipCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInForDataDetail));
     }
+    /**
+     * 转运单 到 入库
+     * @param transhipCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-in/tranship/codes/{transhipCodes}")
+    @Timed
+    public ResponseEntity<StockInDTO> createStockInByTranshipCodes(@PathVariable String transhipCode) throws URISyntaxException {
+        log.debug("REST request to save StockIn : {}", transhipCode);
+
+        StockInDTO result = stockInService.createStockInByTranshipCodes(transhipCode);
+        return ResponseEntity.created(new URI("/api/res/stock-in" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 }

@@ -32,7 +32,7 @@ public final class Constants {
     public static final String VALID = "0001";
     public static final String INVALID = "0000";
     /**
-     * 转运状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废，1005:入库完成
+     * 转运状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废，1005:转运完成
      */
     public static final String TRANSHIPE_IN_PENDING = "1001";
     public static final String TRANSHIPE_IN_STOCKING = "1002";
@@ -40,9 +40,10 @@ public final class Constants {
     public static final String TRANSHIPE_IN_INVALID = "1004";
     public static final String TRANSHIPE_IN_COMPLETE = "1005";
     /**
-     * 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库，2010：已交接
+     * 冻存盒状态：2001：新建，2011：转运完成；2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库，2010：已交接
      */
     public static final  String FROZEN_BOX_NEW = "2001" ;
+    public static final  String FROZEN_BOX_TRANSHIP_COMPLETE = "2011" ;
     public static final  String FROZEN_BOX_STOCKING = "2002" ;
     public static final  String FROZEN_BOX_SPLITED = "2003" ;
     public static final  String FROZEN_BOX_STOCKED = "2004" ;

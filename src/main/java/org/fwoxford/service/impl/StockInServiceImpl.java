@@ -20,8 +20,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -76,8 +79,12 @@ public class StockInServiceImpl implements StockInService {
 
     @Autowired
     private ProjectSiteRepository projectSiteRepository;
+
     @Autowired
     private BankUtil bankUtil;
+
+    @Autowired
+    private TranshipStockInRepository transhipStockInRepository;
 
     public StockInServiceImpl(StockInRepository stockInRepository,
                               StockInMapper stockInMapper,
@@ -259,7 +266,7 @@ public class StockInServiceImpl implements StockInService {
         return inBox;
     }
 
-    private StockInDTO createStockInDTO(Tranship tranship) {
+    public StockInDTO createStockInDTO(Tranship tranship) {
         StockInDTO stockInDTO = new StockInDTO();
         stockInDTO.setStockInCode(bankUtil.getUniqueID("B"));
         if(tranship.getProject()==null||tranship.getProjectSite()==null){
@@ -459,5 +466,60 @@ public class StockInServiceImpl implements StockInService {
         stockInOld.setProjectSite(stockInMapper.projectSiteFromId(stockInDTO.getProjectSiteId()));
         stockInOld = stockInRepository.save(stockInOld);
         return stockInMapper.stockInToStockInDetail(stockInOld);
+    }
+
+    @Override
+    public StockInDTO createStockInByTranshipCodes(String transhipCode) {
+        if(StringUtils.isEmpty(transhipCode)){
+            throw new BankServiceException("请传入有效的转运编码！");
+        }
+        String[] transhipCodeStr = transhipCode.split(",");
+        if(transhipCodeStr.length == 0){
+            throw new BankServiceException("未选择转运记录！");
+        }
+        List<String> transhipCodeList = Arrays.asList(transhipCodeStr);
+        Long count = transhipBoxRepository.countByTranshipCodes(transhipCodeList);
+        //创建入库单
+        StockIn stockIn = new StockIn();
+        stockIn.stockInCode(bankUtil.getUniqueID("B")).status(Constants.STOCK_IN_PENDING).stockInType(Constants.STORANGE_IN_TYPE_1ST).countOfSample(count.intValue());
+        stockInRepository.save(stockIn);
+        for(String code:transhipCodeStr){
+            //判断转运是否完成，转运完成，才可以入库；
+            Tranship tranship = transhipRepository.findByTranshipCode(code);
+            if(tranship == null){
+                throw new BankServiceException("转运编码为"+code+"的转运记录不存在！");
+            }
+            if(!tranship.getStatus().equals(Constants.TRANSHIPE_IN_COMPLETE)){
+                throw new BankServiceException("转运编码为"+code+"的转运记录转运未完成，不能入库！");
+            }
+            //创建入库与转运的关系
+            TranshipStockIn transhipStockIn = new TranshipStockIn();
+            transhipStockIn.stockInCode(stockIn.getStockInCode()).stockIn(stockIn).transhipCode(code).tranship(tranship).status(Constants.VALID);
+            transhipStockInRepository.save(transhipStockIn);
+            //转运状态为待入库
+            tranship.setStatus(Constants.TRANSHIPE_IN_STOCKING);
+            transhipRepository.save(tranship);
+        }
+        List<FrozenBox> frozenBoxes = transhipBoxRepository.findByTranshipCodes(transhipCodeList);
+        for(FrozenBox box : frozenBoxes){
+            //冻存盒状态变为待入库
+            box.setStatus(Constants.FROZEN_BOX_STOCKING);
+            frozenBoxRepository.save(box);
+            //保存入库冻存盒
+            StockInBox stockInBox = new StockInBox();
+            stockInBox.sampleTypeCode(box.getSampleTypeCode()).sampleType(box.getSampleType()).sampleTypeName(box.getSampleTypeName())
+                .sampleClassification(box.getSampleClassification())
+                .sampleClassificationCode(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationCode():null)
+                .sampleClassificationName(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationName():null)
+                .dislocationNumber(box.getDislocationNumber()).emptyHoleNumber(box.getEmptyHoleNumber()).emptyTubeNumber(box.getEmptyTubeNumber())
+                .frozenBoxType(box.getFrozenBoxType()).frozenBoxTypeCode(box.getFrozenBoxTypeCode()).frozenBoxTypeColumns(box.getFrozenBoxTypeColumns())
+                .frozenBoxTypeRows(box.getFrozenBoxTypeRows()).isRealData(box.getIsRealData()).isSplit(box.getIsSplit()).project(box.getProject())
+                .projectCode(box.getProjectCode()).projectName(box.getProjectName()).projectSite(box.getProjectSite()).projectSiteCode(box.getProjectSiteCode())
+                .projectSiteName(box.getProjectSiteName());
+            stockInBoxRepository.save(stockInBox);
+        }
+        //修改转运冻存管状态
+//        frozenTubeRepository.updateFrozenTubeStateByTranshipCodes(Constants.FROZEN_BOX_STOCKING,transhipCodeList);
+        return stockInMapper.stockInToStockInDTO(stockIn);
     }
 }

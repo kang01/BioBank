@@ -183,4 +183,8 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " and box.status!='0000'and box.status!='2005'")
     Long countByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(String equipmentCode, String areaCode, String shelfCode, String columnsInShelf, String rowsInShelf);
 
+    @Modifying
+    @Query("update TranshipBox b set b.frozenBox.status=?1 where b.tranship.id=?2")
+    void updateStatusByTranshipId(String status, Long transhipId);
+
 }

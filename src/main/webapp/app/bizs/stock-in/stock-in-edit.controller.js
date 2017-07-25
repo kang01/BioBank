@@ -585,8 +585,10 @@
                 }
             });
             modalInstance.result.then(function (data) {
+                _fnEmpty();
                 vm.dtOptions.isHeaderCompiled = false;
                 vm.dtInstance.rerender();
+                _fnSearch();
             });
         }
         function _rescindInShelf(boxCode) {

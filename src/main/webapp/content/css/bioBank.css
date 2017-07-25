@@ -443,8 +443,14 @@ table.dataTable tfoot th, table.dataTable tfoot td {
 .transport-record-new div.dataTables_filter input{
     width: 8em;
 }
+.no-padding .dataTables_wrapper .text-right{
+    margin-bottom: 0 !important;
+}
 .dataTables_wrapper .text-left  .dataTables_filter{
     float: left;
+}
+.min-table .dataTables_filter input[type="search"]{
+    width: 130px;
 }
 .tube .handsontable th,
 .tube .handsontable td{

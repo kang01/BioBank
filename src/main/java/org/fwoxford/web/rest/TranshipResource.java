@@ -4,11 +4,9 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
-import org.fwoxford.domain.Tranship;
-import org.fwoxford.domain.User;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.UserService;
-import org.fwoxford.service.dto.StockInForDataDetail;
+import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.TranshipToStockInDTO;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
@@ -168,7 +166,7 @@ public class TranshipResource {
             }
         });
         input.addColumn("id",true,true,null);
-        input.addOrder("id",true);
+        input.addOrder("id",false);
         DataTablesOutput<TranshipResponse> transhipsTablesOutput = transhipService.findAllTranship(input);
         return transhipsTablesOutput;
     }

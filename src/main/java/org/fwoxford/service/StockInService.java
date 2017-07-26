@@ -3,18 +3,15 @@ package org.fwoxford.service;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.StockIn;
 import org.fwoxford.domain.StockInBox;
-import org.fwoxford.domain.StockInForDataTableEntity;
 import org.fwoxford.service.dto.StockInCompleteDTO;
 import org.fwoxford.service.dto.StockInDTO;
-import org.fwoxford.service.dto.StockInForDataDetail;
+import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.TranshipToStockInDTO;
-import org.fwoxford.service.dto.response.StockInForDataTable;
+import org.fwoxford.service.dto.response.StockInForDataTableEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-
-import java.time.LocalDate;
 
 /**
  * Service Interface for managing StockIn.

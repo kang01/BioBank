@@ -1,4 +1,4 @@
-package org.fwoxford.service.dto;
+package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.domain.SampleType;

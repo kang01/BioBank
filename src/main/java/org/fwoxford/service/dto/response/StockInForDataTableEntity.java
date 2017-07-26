@@ -1,4 +1,4 @@
-package org.fwoxford.domain;
+package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.Cache;
@@ -7,7 +7,6 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Objects;
 

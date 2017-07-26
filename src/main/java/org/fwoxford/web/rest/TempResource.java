@@ -7,8 +7,6 @@ import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.Area;
 import org.fwoxford.domain.Equipment;
-import org.fwoxford.domain.SampleClassification;
-import org.fwoxford.domain.StockOutHandover;
 import org.fwoxford.service.ProjectService;
 import org.fwoxford.service.SampleTypeService;
 import org.fwoxford.service.TranshipService;

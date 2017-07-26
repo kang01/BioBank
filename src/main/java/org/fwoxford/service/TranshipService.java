@@ -1,8 +1,8 @@
 package org.fwoxford.service;
 
 import org.fwoxford.domain.FrozenBox;
-import org.fwoxford.domain.Tranship;
 import org.fwoxford.service.dto.*;
+import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
 import org.springframework.data.domain.Page;

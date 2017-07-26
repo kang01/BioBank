@@ -48,7 +48,8 @@ public class StockInForDataTable {
     @NotNull
     @JsonView(DataTablesOutput.View.class)
     private String transhipCode;
-
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private String stockInCode;
 
     @Override

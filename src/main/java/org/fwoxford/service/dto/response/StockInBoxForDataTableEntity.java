@@ -1,4 +1,4 @@
-package org.fwoxford.domain;
+package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.Cache;
@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity

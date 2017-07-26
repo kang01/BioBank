@@ -308,6 +308,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query("update FrozenTube t set t.frozenTubeState = ?1  where t.frozenBoxCode in ?2")
     void updateFrozenTubeStateByFrozenBoxCodes(String status, List<String> frozenBoxCodes);
 
-    @Query("select count(t) from FrozenTube t left join TranshipBox b on b.frozenBox.id = t.frozenBox.id where b.tranship.transhipCode in ?1 and t.status!='0000' and t.frozenBox.status not in ('2005','0000')")
+    @Query(value = "select count(t.id) from frozen_tube t left join tranship_box b on t.frozen_box_id = b.frozen_box_id left join tranship s on s.id = b.tranship_id left join frozen_box x on x.id = t.id and x.status not in ('2005','0000')" +
+        "where s.tranship_code in ?1 and t.status!='0000' " ,nativeQuery = true)
     Long countByTranshipCodes(List<String> transhipCodeList);
 }

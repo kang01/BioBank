@@ -3,7 +3,7 @@ package org.fwoxford.service.mapper;
 import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.StockInDTO;
 
-import org.fwoxford.service.dto.StockInForDataDetail;
+import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.response.StockInForDataTable;
 import org.mapstruct.*;
 
@@ -100,7 +100,7 @@ public interface StockInMapper {
         StockInForDataDetail stockInDetail = new StockInForDataDetail();
 
         stockInDetail.setId( stockIn.getId() );
-        stockInDetail.setProjectId(stockIn.getProject().getId());
+        stockInDetail.setProjectId(stockIn.getProject()!=null?stockIn.getProject().getId():null);
         stockInDetail.setProjectCode( stockIn.getProjectCode() );
         stockInDetail.setProjectSiteId(stockIn.getProjectSite()!=null?stockIn.getProjectSite().getId():null);
         stockInDetail.setProjectSiteCode( stockIn.getProjectSiteCode() );

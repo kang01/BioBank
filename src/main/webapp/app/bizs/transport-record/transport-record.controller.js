@@ -87,6 +87,10 @@
                     type: 'text',
                     width:50,
                     iFilterLength:3
+                },{
+                    type: 'text',
+                    width:50,
+                    iFilterLength:3
                 }, {
                     type: 'text',
                     bRegex: true,
@@ -128,12 +132,14 @@
                         {value:'1001',label:"进行中"},
                         {value:"1002",label:"待入库"},
                         {value:"1003",label:"已入库"},
-                        {value:"1004",label:"已作废"}
+                        {value:"1004",label:"已作废"},
+                        {value:"1005",label:"转运完成"}
                         ]
                 }]
             });
 
         vm.dtColumns = [
+            DTColumnBuilder.newColumn('transhipCode').withTitle('转运编码'),
             DTColumnBuilder.newColumn('trackNumber').withTitle('运单号'),
             DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点'),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编号'),
@@ -152,6 +158,7 @@
                 case '1002': transhipState = '待入库';break;
                 case '1003': transhipState = '已入库';break;
                 case '1004': transhipState = '已作废';break;
+                case '1005': transhipState = '转运完成';break;
             }
             // switch (data.sampleSatisfaction){
             //     case 1: sampleSatisfaction = '非常不满意';break;
@@ -166,7 +173,7 @@
             //     case 10: sampleSatisfaction = '非常满意';break;
             // }
             // $('td:eq(6)', row).html(sampleSatisfaction);
-            $('td:eq(7)', row).html(transhipState);
+            $('td:eq(8)', row).html(transhipState);
             $compile(angular.element(row).contents())($scope);
         }
 

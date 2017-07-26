@@ -2,7 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.fwoxford.domain.StockInBoxForDataTableEntity;
+import org.fwoxford.service.dto.response.StockInBoxForDataTableEntity;
 import org.fwoxford.service.StockInBoxService;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.StockInBoxDetail;

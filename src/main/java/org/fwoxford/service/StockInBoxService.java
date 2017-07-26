@@ -1,6 +1,6 @@
 package org.fwoxford.service;
 
-import org.fwoxford.domain.StockInBoxForDataTableEntity;
+import org.fwoxford.service.dto.response.StockInBoxForDataTableEntity;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenBoxPositionDTO;
 import org.fwoxford.service.dto.StockInBoxDTO;

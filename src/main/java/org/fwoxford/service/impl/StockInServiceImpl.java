@@ -5,10 +5,10 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
-import org.fwoxford.service.dto.response.StockInForDataTable;
+import org.fwoxford.service.dto.response.StockInForDataDetail;
+import org.fwoxford.service.dto.response.StockInForDataTableEntity;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
-import org.fwoxford.service.mapper.FrozenBoxPositionMapper;
 import org.fwoxford.service.mapper.StockInMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -164,7 +164,7 @@ public class StockInServiceImpl implements StockInService {
      * @return
      */
     @Override
-    public StockInForDataDetail saveStockIns(String transhipCode,TranshipToStockInDTO transhipToStockInDTO) {
+    public StockInForDataDetail saveStockIns(String transhipCode, TranshipToStockInDTO transhipToStockInDTO) {
         StockInForDataDetail stockInForDataDetail = new StockInForDataDetail();
         stockInForDataDetail.setTranshipCode(transhipCode);
 
@@ -491,7 +491,9 @@ public class StockInServiceImpl implements StockInService {
             if(tranship.getProject() == null){
                 throw new BankServiceException("转运编码为"+code+"的转运记录未指定项目，不能入库！");
             }
-            if(project != null && (project.getProjectCode()!=tranship.getProjectCode()||!project.getProjectCode().equals(tranship.getProjectCode()))){
+            if(project != null &&
+                (project.getProjectCode()!=tranship.getProjectCode()
+                    &&!project.getProjectCode().equals(tranship.getProjectCode()))){
                 throw new BankServiceException("转运编码为"+code+"的转运记录与其他转运记录项目不一致，不能同时入库！");
             }else{
                 project = tranship.getProject();

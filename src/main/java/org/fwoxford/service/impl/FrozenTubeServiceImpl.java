@@ -287,12 +287,14 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
             }
         }
         List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
-        List<Object[]> frozenTubeHistoryList =  frozenTubeRepository.findFrozenTubeHistoryListBySampleAndProjectCode(sampleCode,projectCode);
-        if(frozenTubeHistoryList.size()>0){
-            Object[] object = frozenTubeHistoryList.get(0);
-            Object status = object[12];
-            if(!status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) &&! status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
-                throw new BankServiceException("冻存管编码已经在库存内，请输入新的冻存管编码！");
+        if(frozenBoxId==-1){
+            List<Object[]> frozenTubeHistoryList =  frozenTubeRepository.findFrozenTubeHistoryListBySampleAndProjectCode(sampleCode,projectCode);
+            if(frozenTubeHistoryList.size()>0){
+                Object[] object = frozenTubeHistoryList.get(0);
+                Object status = object[12];
+                if(!status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) &&! status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
+                    throw new BankServiceException("冻存管编码已经在库存内，请输入新的冻存管编码！");
+                }
             }
         }
         for(FrozenTube f: frozenTubeList){

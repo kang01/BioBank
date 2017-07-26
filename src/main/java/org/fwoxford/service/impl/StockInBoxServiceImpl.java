@@ -794,12 +794,12 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }else{
                 frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),frozenBox.getId(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
             }
-            for(FrozenTube f:frozenTubeList){
-                if(tubeDTO.getId()==null ||
-                    (tubeDTO.getId()!=null&&!f.getId().equals(tubeDTO.getId()))){
-                    throw new BankServiceException("冻存管编码"+tubeDTO.getSampleCode()+"已经存在，不能保存该冻存管！",tubeDTO.getSampleCode());
-                }
-            }
+//            for(FrozenTube f:frozenTubeList){
+//                if(tubeDTO.getId()==null ||
+//                    (tubeDTO.getId()!=null&&!f.getId().equals(tubeDTO.getId()))){
+//                    throw new BankServiceException("冻存管编码"+tubeDTO.getSampleCode()+"已经存在，不能保存该冻存管！",tubeDTO.getSampleCode());
+//                }
+//            }
 
             String status = getFrozenTubeStatus(tubeDTO);
             if(!status.equals("") && !status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED)

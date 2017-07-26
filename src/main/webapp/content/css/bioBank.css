@@ -780,6 +780,9 @@ body.ng-pageslide-body-closed::before {
 .add-sample-modal-body .project-sites .selectize-input > *{
     width: 150px;
 }
+/*.add-sample-modal-body .multi .project-sites .selectize-input > *{*/
+    /*width: 80px;*/
+/*}*/
 .position-relative{
     position: relative;
 }

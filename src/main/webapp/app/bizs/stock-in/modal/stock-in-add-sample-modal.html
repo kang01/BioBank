@@ -5,8 +5,79 @@
         <h3 class="modal-title" id="modal-title">新增样本</h3>
     </div>
     <div class="modal-body add-sample-modal-body" id="modal-body">
+        <div ng-if="vm.singleMultipleFlag != 'single'" class="multi">
+            <div class="row">
+                <div class="col-md-4">
+                    <table datatable="" dt-options="vm.sampleOptions" dt-columns="vm.sampleColumns" dt-instance="vm.sampleInstance"
+                           class="table table-bordered"></table>
+                </div>
+                <div class="col-md-8">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 project-sites">
+                                <div class="form-group">
+                                    <label>项目编码</label>
+                                    <selectize options='vm.projectOptions' config="vm.projectConfig"
+                                               ng-model="vm.entity.projectId" ng-disabled="true"></selectize>
+                                </div>
+                            </div>
+                            <div class="col-md-6 project-sites" style="height: 30px">
+                                <div class="form-group">
+                                    <label>项目点</label>
+                                    <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
+                                               ng-model="vm.entity.projectSiteId"></selectize>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
 
-            <form>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>样本类型
+                                        <span class="required-field"></span>
+                                    </label>
+                                    <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                                               ng-model="vm.entity.sampleTypeId" ng-disabled="vm.sampleTypeCode != '98'&& vm.sampleTypeCode != '97'"></selectize>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>样本分类</label>
+                                    <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
+                                               ng-model="vm.entity.sampleClassificationId"
+                                               ng-disabled="vm.sampleTypeCode != '98' &&  vm.sampleTypeCode != '97'"
+                                    ></selectize>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>状态</label>
+                                            <selectize options='vm.tubeStatusOptions' config="vm.tubeStatusConfig"
+                                                       ng-model="vm.entity.status"
+                                            ></selectize>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>计量</label>
+                                            <input type="text" class="form-control" ng-model="vm.entity.sampleVolumns">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>备注</label>
+                                            <textarea  class="form-control resize-none" rows="1" ng-model="vm.entity.memo"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                    </form>
+                </div>
+        </div>
+        </div>
+        <div  ng-if="vm.singleMultipleFlag === 'single'">
+            <form >
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
@@ -64,31 +135,30 @@
                         </div>
                     </div>
                 </div>
-
-
             </form>
-
-        <div class="" ng-if="vm.tubes.length">
-            <h4>请选择对应样本，注意样本类型及样本分类，与盒子是否一致!</h4>
-            <div class="split-box">
-                <table class="table table-bordered">
-                    <thead>
-                    <th>样本编码</th>
-                    <th>盒子编码</th>
-                    <th>样本类型</th>
-                    <th>样本分类</th>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="item in vm.tubes track by $index" ng-click="vm.sampleBoxSelect(item,$event)">
-                        <td>{{item.sampleCode}}</td>
-                        <td>{{item.frozenBoxCode}}</td>
-                        <td>{{item.sampleTypeName}}</td>
-                        <td>{{item.sampleClassificationName}}</td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="" ng-if="vm.tubes.length">
+                <h4>请选择对应样本，注意样本类型及样本分类，与盒子是否一致!</h4>
+                <div class="split-box">
+                    <table class="table table-bordered">
+                        <thead>
+                        <th>样本编码</th>
+                        <th>盒子编码</th>
+                        <th>样本类型</th>
+                        <th>样本分类</th>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in vm.tubes track by $index" ng-click="vm.sampleBoxSelect(item,$event)">
+                            <td>{{item.sampleCode}}</td>
+                            <td>{{item.frozenBoxCode}}</td>
+                            <td>{{item.sampleTypeName}}</td>
+                            <td>{{item.sampleClassificationName}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+
 
     </div>
     <div class="modal-footer">

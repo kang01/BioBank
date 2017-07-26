@@ -43,7 +43,7 @@
     <div class="row">
         <div class="col-md-12">
             <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"
-                   class=" table table-striped table-bordered">
+                   class=" table table-striped table-bordered mt-0">
                 <tfoot>
                 <tr>
                     <th></th>
@@ -68,29 +68,38 @@
                             <h4>冻存盒信息</h4>
                         </div>
                         <div class="col-md-10  text-right mt-5">
-                            <button type="button" class="btn btn-default btn-sm btn-primary" ng-click="vm.saveBox()" ng-disabled="!vm.box.frozenBoxCode" >
+                            <label class="radio-inline">
+                                <input type="radio" name="inlineRadioOptions" id="inlineRadio1" ng-model="vm.singleMultipleFlag" value="single"> 单次录入
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="inlineRadioOptions" id="inlineRadio2" ng-model="vm.singleMultipleFlag" value="multiple"> 批量录入
+                            &nbsp;&nbsp;
+                            </label>
+                            <button type="button" class="btn btn-default btn-xs btn-primary" ng-click="vm.saveBox()" ng-disabled="!vm.box.frozenBoxCode" >
                                 保　　存
                             </button>
-                            <button type="button" class="btn btn-default btn-sm"
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.editEntering()">
+                                修　　改
+                            </button>
+                            <button type="button" class="btn btn-default btn-xs"
                                     ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus"
                                     uib-btn-checkbox ng-click="vm.editStatus()" ng-disabled="!vm.box">状态编辑
                             </button>
-                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.exchange()"
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.exchange()"
                                     ng-disabled="!vm.box || vm.flagStatus">样本换位
                             </button>
-                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.tubeRemark()"
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.tubeRemark()"
                                     ng-disabled="!vm.box || vm.flagStatus">样本批注
                             </button>
 
                             <!--<button type="button" class="btn btn-default btn-sm" ng-click="vm.delBox()" ng-disabled="!vm.box">-->
                                 <!--删除盒子-->
                             <!--</button>-->
-                            <button type="button" class="btn btn-default btn-sm" ng-click=" vm.closeBox()" >
+                            <button type="button" class="btn btn-default btn-xs" ng-click=" vm.closeBox()" >
                                 关　　闭
                             </button>
                         </div>
                     </div>
-
                 </div>
                 <div class="panel-body p-0">
                     <div class="row">
@@ -107,6 +116,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>样本类型</label>
+                                    <!--{{vm.sampleTypeOptions}}-->
                                     <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
                                                ng-model="vm.box.sampleTypeId"  ng-disabled="vm.editFlag"></selectize>
                                 </div>

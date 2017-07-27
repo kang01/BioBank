@@ -505,8 +505,12 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
             result.getFrozenBoxDTOList().add(frozenBoxMapper.frozenBoxToFrozenBoxDTO(box));
         }
+        this.updateTranshipSampleNumber(tranship);
+        return result;
+    }
 
-        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipId);
+    public void updateTranshipSampleNumber(Tranship tranship) {
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship.getId());
         int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfTube = 0;int countOfSample =0;
         List<Long> boxIds = new ArrayList<Long>();
         for(FrozenBox box : frozenBoxList){
@@ -525,7 +529,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         tranship.setEmptyTubeNumber(countOfEmptyTube);
         tranship.setEffectiveSampleNumber(countOfTube);
         transhipRepository.save(tranship);
-        return result;
     }
 
 
@@ -612,6 +615,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             .supportRack(transhipBox.getFrozenBox().getSupportRack()).supportRackCode(transhipBox.getSupportRackCode())
             .rowsInShelf(transhipBox.getRowsInShelf()).columnsInShelf(transhipBox.getColumnsInShelf());
         transhipBoxPositionRepository.save(transhipBoxPosition);
+        //修改转运的数量
+        this.updateTranshipSampleNumber(transhipBox.getTranship());
     }
 
     @Override

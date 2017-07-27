@@ -12,11 +12,11 @@
 
     TransportRecordNewController.$inject = ['$scope','blockUI','$timeout','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TransportRecordService','TranshipSaveService','TranshipBoxService',
         'SampleTypeService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService',
-    'BioBankBlockUi','BioBankDataTable'];
+    'BioBankBlockUi','Principal'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
     function TransportRecordNewController($scope,blockUI,$timeout,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TransportRecordService,TranshipSaveService,TranshipBoxService,
                                           SampleTypeService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService,
-                                          BioBankBlockUi,BioBankDataTable) {
+                                          BioBankBlockUi,Principal) {
 
         var modalInstance;
         var vm = this;
@@ -41,7 +41,12 @@
                 $scope.$apply();
             }
         }
-
+        function _fnQueryUser() {
+            Principal.identity().then(function(account) {
+                vm.account = account;
+                vm.transportRecord.receiver = vm.account.login;
+            });
+        }
         function _initTransportRecordPage(){
             if($stateParams.transhipId){
                 vm.transportRecord.id = $stateParams.transhipId;
@@ -61,8 +66,12 @@
             }else{
                 vm.transportRecord.receiveDate = new Date();
             }
+            if(!vm.transportRecord.receiver){
+                _fnQueryUser();
+            }
             vm.transportRecord.transhipBatch = +vm.transportRecord.transhipBatch;
             _fnQuerySampleType();
+
             if(vm.transportRecord.projectId){
                 ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError);
             }
@@ -1130,6 +1139,8 @@
                     vm.box.areaId = "";
                     vm.box.supportRackId = "";
                     vm.boxRowCol = "";
+                    vm.box.columnsInShelf = "";
+                    vm.box.rowsInShelf = "";
                     if(value){
                         AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
                     }else{
@@ -1156,6 +1167,8 @@
                 onChange:function (value) {
                     vm.box.supportRackId = "";
                     vm.boxRowCol = "";
+                    vm.box.columnsInShelf = "";
+                    vm.box.rowsInShelf = "";
                     if(value){
                         for(var i = 0; i < vm.frozenBoxAreaOptions.length; i++){
                             if(value == vm.frozenBoxAreaOptions[i].id){
@@ -1183,6 +1196,8 @@
                 maxItems: 1,
                 onChange:function (value) {
                     vm.boxRowCol = "";
+                    vm.box.columnsInShelf = "";
+                    vm.box.rowsInShelf = "";
                     if(value){
                         for(var i = 0; i < vm.frozenBoxShelfOptions.length; i++){
                             if(value == vm.frozenBoxShelfOptions[i].id){
@@ -1198,6 +1213,9 @@
                 if(vm.boxRowCol){
                     vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
                     vm.box.rowsInShelf = vm.boxRowCol.substring(1);
+                }else{
+                    vm.box.columnsInShelf = "";
+                    vm.box.rowsInShelf = "";
                 }
             };
             vm.saveBox = saveBox;//保存盒子
@@ -1266,7 +1284,7 @@
                     }
                     function onDelBoxSuccess() {
                         toastr.success("删除成功!");
-                        vm.loadBox();
+                        vm.dtInstance.rerender();
                         vm.box = null;
                         vm.boxStr = null;
                         initFrozenTube(10,10);

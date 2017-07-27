@@ -11,11 +11,11 @@
 
     StockInEditController.$inject = ['$scope','EquipmentService','BioBankBlockUi','$state','SupportacksByAreaIdService', '$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
         'entity','AreasByEquipmentIdService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','ProjectSitesByProjectIdService',
-        'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService','MasterData','ProjectService','SampleUserService'];
+        'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService','MasterData','ProjectService','SampleUserService','Principal'];
     RescindPutAwayModalController.$inject = ['$uibModalInstance'];
     function StockInEditController($scope,EquipmentService,BioBankBlockUi,$state,SupportacksByAreaIdService,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
                                   entity,AreasByEquipmentIdService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,ProjectSitesByProjectIdService,
-                                  SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService,MasterData,ProjectService,SampleUserService) {
+                                  SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService,MasterData,ProjectService,SampleUserService,Principal) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
@@ -33,6 +33,14 @@
         vm.search = _fnSearch;
         vm.empty = _fnEmpty;
 
+        if(vm.entity.receiveDate){
+            vm.entity.receiveDate = new Date(vm.entity.receiveDate);
+        }else{
+            vm.entity.receiveDate = new Date();
+        }
+        if(!vm.entity.receiveName){
+            _fnQueryUser();
+        }
         function _initStockInInfo() {
             _statusInit();
             _sampleTypeInit();
@@ -221,7 +229,7 @@
                     vm.entity.projectId = data[0].id;
                 }
                 vm.entity.projectCode = _.find(vm.projectOptions,{id:vm.entity.projectId}).projectCode;
-                ProjectSitesByProjectIdService.query({id:vm.entity.projectId},onProjectSitesSuccess,onError);
+                // ProjectSitesByProjectIdService.query({id:vm.entity.projectId},onProjectSitesSuccess,onError);
             }
             //项目
             vm.projectConfig = {
@@ -243,20 +251,20 @@
                 }
             };
             //项目点
-            vm.projectSitesConfig = {
-                valueField:'id',
-                labelField:'projectSiteName',
-                searchField:'projectSiteName',
-                maxItems: 1,
-                onChange:function (value) {
-                }
-            };
+            // vm.projectSitesConfig = {
+            //     valueField:'id',
+            //     labelField:'projectSiteName',
+            //     searchField:'projectSiteName',
+            //     maxItems: 1,
+            //     onChange:function (value) {
+            //     }
+            // };
 
-            function onProjectSitesSuccess(data) {
-                vm.projectSitesOptions = data;
-                vm.projectSitesOptions.push({id:"",projectSiteName:""});
-                vm.entity.projectSiteId = "";
-            }
+            // function onProjectSitesSuccess(data) {
+            //     vm.projectSitesOptions = data;
+            //     vm.projectSitesOptions.push({id:"",projectSiteName:""});
+            //     vm.entity.projectSiteId = "";
+            // }
         }
         function _fnUserInit() {
             //接收人
@@ -270,6 +278,12 @@
             function onReceiverSuccess(data) {
                 vm.receiverOptions = data;
             }
+        }
+        function _fnQueryUser() {
+            Principal.identity().then(function(account) {
+                vm.account = account;
+                vm.entity.receiveName = vm.account.login;
+            });
         }
 
         var selected = {};
@@ -586,7 +600,7 @@
                 DTColumnBuilder.newColumn('isSplit').withOption("width", "100").withTitle('是否分装'),
                 DTColumnBuilder.newColumn('status').withOption("width", "80").withTitle('状态'),
                 DTColumnBuilder.newColumn("").withOption("width", "120").withTitle('操作').withOption('searchable',false).notSortable().renderWith(_fnActionButtonsRender),
-                DTColumnBuilder.newColumn('id').notVisible()
+                // DTColumnBuilder.newColumn('id').notVisible()
                 // DTColumnBuilder.newColumn('sampleType').notVisible(),
                 // DTColumnBuilder.newColumn('frozenBoxRows').notVisible(),
                 // DTColumnBuilder.newColumn('frozenBoxColumns').notVisible()

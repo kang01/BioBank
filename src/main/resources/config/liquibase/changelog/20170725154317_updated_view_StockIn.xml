@@ -13,7 +13,7 @@
                 s.id as id,
                 (select count(*) from stock_in_box a where a.stock_in_code = s.stock_in_code and a.status!='2003') as count_Of_box ,
                 (
-                    select LISTAGG(TO_CHAR(project_code),',') WITHIN GROUP (ORDER BY project_code)
+                    select LISTAGG(TO_CHAR(project_code),', ') WITHIN GROUP (ORDER BY project_code)
                     from
                     (
                         select distinct inbox.project_code from stock_in_box inbox where inbox.stock_in_id = s.id
@@ -23,7 +23,7 @@
                 ) as project_code,
                 (
                     select
-                    LISTAGG(TO_CHAR(project_site_code),',') WITHIN GROUP (ORDER BY project_site_code)
+                    LISTAGG(TO_CHAR(project_site_code),', ') WITHIN GROUP (ORDER BY project_site_code)
                     from
                     (
                         select distinct inbox.project_site_code from stock_in_box inbox where inbox.stock_in_id = s.id
@@ -39,10 +39,10 @@
                 (select u.last_name||u.first_name from jhi_user u where u.id=s.store_keeper_id_2) as store_keeper_2,
                 s.count_of_sample,
                 (
-                    select LISTAGG(TO_CHAR(tranship_code),',') WITHIN GROUP (ORDER BY tranship_code)
+                    select LISTAGG(TO_CHAR(tranship_code),', ') WITHIN GROUP (ORDER BY tranship_code)
                     from
                         (
-                            select distinct t.tranship_code from stock_in_tranship_box t  where t.stock_in_id = s.id
+                            select distinct t.tranship_code from tranship_stock_in t  where t.stock_in_id = s.id
                         )
                 )as tranship_code
             from stock_in s

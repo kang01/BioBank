@@ -24,9 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Service Implementation for managing StockIn.
@@ -401,22 +399,34 @@ public class StockInServiceImpl implements StockInService {
         }
         //查询出入库单下的转运盒
         List<String> transhipCodes = new ArrayList<String>();
-        List<StockInTranshipBox> stockInTranshipBoxes = stockInTranshipBoxRepository.findByStockInCode(stockInCode);
-        for(StockInTranshipBox inTranshipBox :stockInTranshipBoxes){
-            String transhipCode = inTranshipBox.getTranshipCode();
+        List<TranshipStockIn> transhipStockIns = transhipStockInRepository.findByStockInCode(stockInCode);
+        for(TranshipStockIn transhipStockIn :transhipStockIns){
+            String transhipCode = transhipStockIn.getTranshipCode();
             if(transhipCodes.contains(transhipCode)){
                 continue;
             }else{
                 transhipCodes.add(transhipCode);
             }
-            //判断盒子内的样本是否都入库完成
-            Long count = transhipTubeRepository.countUnStockInTubeByTranshipCode(transhipCode);
-            if(count.intValue()==0){
-                transhipRepository.updateTranshipStateById(inTranshipBox.getTranshipBox().getTranship().getId(),Constants.TRANSHIPE_IN_STOCKED);
+            //查询此次转运内已入库完成的样本量
+            Long countInStock = transhipTubeRepository.countUnStockInTubeByTranshipCodeAndStatus(transhipCode,Constants.FROZEN_BOX_STOCKED);
+            //查询此次转运内待入库的样本量
+            Long countUnStock = transhipTubeRepository.countUnStockInTubeByTranshipCodeAndStatus(transhipCode,Constants.FROZEN_BOX_STOCKING);
+            if(countUnStock.intValue()==0){//转运全部都入库完成
+                transhipRepository.updateTranshipStateById(transhipStockIn.getTranship().getId(),Constants.TRANSHIPE_IN_STOCKED);
             }else{
-                inTranshipBox.setStockIn(stockInNew);
-                inTranshipBox.setStockInCode(stockInNew.getStockInCode());
-                stockInTranshipBoxRepository.save(inTranshipBox);
+                if(countInStock.intValue() > 0){
+                    TranshipStockIn transhipStockIn1 = new TranshipStockIn();
+                    BeanUtils.copyProperties(transhipStockIn,transhipStockIn1);
+                    transhipStockIn1.setId(null);
+                    transhipStockIn1.setStockIn(stockInNew);
+                    transhipStockIn1.setStockInCode(stockInNew.getStockInCode());
+                    transhipStockInRepository.save(transhipStockIn1);
+                }else if(countInStock.intValue() == 0){
+                    transhipStockIn.setStockIn(stockInNew);
+                    transhipStockIn.setStockInCode(stockInNew.getStockInCode());
+                    transhipStockInRepository.save(transhipStockIn);
+                }
+
             }
         }
         return stockInMapper.stockInToStockInDetail(stockIn);
@@ -437,8 +447,8 @@ public class StockInServiceImpl implements StockInService {
                 projectSiteCode.add(transhipStockIn.getTranshipBox().getProjectSiteCode());
             }
         }
-        stockInForDataDetail.setTranshipCode(String.join(",",transhipCodes));
-        stockInForDataDetail.setProjectSiteCode(String.join(",",projectSiteCode));
+        stockInForDataDetail.setTranshipCode(String.join(", ",transhipCodes));
+        stockInForDataDetail.setProjectSiteCode(String.join(", ",projectSiteCode));
         List<User> userList = userRepository.findAll();
             for(User u :userList){
                 if(stockIn.getReceiveId()!=null&&stockIn.getReceiveId().equals(u.getId())){

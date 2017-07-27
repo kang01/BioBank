@@ -87,9 +87,9 @@ public class StockInResource {
      */
     @PutMapping("/stock-ins")
     @Timed
-    public ResponseEntity<StockInForDataDetail> updateStockIns(@Valid @RequestBody StockInForDataDetail stockInDTO) throws URISyntaxException {
+    public ResponseEntity<StockInDTO> updateStockIns(@Valid @RequestBody StockInDTO stockInDTO) throws URISyntaxException {
         log.debug("REST request to update StockIn : {}", stockInDTO);
-        StockInForDataDetail result = stockInService.updateStockIns(stockInDTO);
+        StockInDTO result = stockInService.updateStockIns(stockInDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInDTO.getId().toString()))
             .body(result);
@@ -220,9 +220,9 @@ public class StockInResource {
      */
     @GetMapping("/stock-in/{id}")
     @Timed
-    public ResponseEntity<StockInForDataDetail> getStockInById(@PathVariable Long id) {
+    public ResponseEntity<StockInDTO> getStockInById(@PathVariable Long id) {
         log.debug("REST request to get Tranship : {}", id);
-        StockInForDataDetail stockInForDataDetail = stockInService.getStockInById(id);
+        StockInDTO stockInForDataDetail = stockInService.getStockInById(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInForDataDetail));
     }
 
@@ -238,7 +238,7 @@ public class StockInResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInForDataDetail));
     }
     /**
-     * 转运单 到 入库
+     * 多个转运单开始入库
      * @param transhipCodes
      * @return
      * @throws URISyntaxException

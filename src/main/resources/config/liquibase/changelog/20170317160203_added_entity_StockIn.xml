@@ -119,4 +119,9 @@
         </createTable>
 
     </changeSet>
+    <changeSet id="20170317160203-3" author="jhipster">
+        <addColumn tableName="stock_in">
+            <column name="parent_stock_in_id" type="bigint" remarks="上一级入库ID"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

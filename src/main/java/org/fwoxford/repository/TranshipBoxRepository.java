@@ -33,6 +33,6 @@ public interface TranshipBoxRepository extends JpaRepository<TranshipBox,Long> {
     @Query("select count(t) from TranshipBox t where t.tranship.transhipCode in ?1 and t.status = '2011'")
     Long countByTranshipCodes(List<String> transhipCodeList);
 
-    @Query("select t.frozenBox from TranshipBox t where t.tranship.transhipCode in ?1 and t.status = '2011'")
-    List<FrozenBox> findByTranshipCodes(List<String> transhipCodeList);
+    @Query("select t from TranshipBox t where t.tranship.transhipCode in ?1 and t.status = '2011'")
+    List<TranshipBox> findByTranshipCodes(List<String> transhipCodeList);
 }

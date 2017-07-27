@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity StockInTranshipBox.
+    -->
+    <changeSet id="20170726071542-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="tranship_box_id"
+                                 baseTableName="stock_in_tranship_box"
+                                 constraintName="stock_transfer_tranship_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tranship_box"/>
+
+        <addForeignKeyConstraint baseColumnNames="stock_in_id"
+                                 baseTableName="stock_in_tranship_box"
+                                 constraintName="stock_transfer_stock_in_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock_in"/>
+
+    </changeSet>
+</databaseChangeLog>

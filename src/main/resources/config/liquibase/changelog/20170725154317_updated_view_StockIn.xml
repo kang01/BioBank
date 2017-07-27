@@ -39,8 +39,11 @@
                 (select u.last_name||u.first_name from jhi_user u where u.id=s.store_keeper_id_2) as store_keeper_2,
                 s.count_of_sample,
                 (
-                    select LISTAGG(TO_CHAR(t.tranship_code),',') WITHIN GROUP (ORDER BY t.tranship_code)
-                    from tranship_stock_in t where t.stock_in_id = s.id
+                    select LISTAGG(TO_CHAR(tranship_code),',') WITHIN GROUP (ORDER BY tranship_code)
+                    from
+                        (
+                            select distinct t.tranship_code from stock_in_tranship_box t  where t.stock_in_id = s.id
+                        )
                 )as tranship_code
             from stock_in s
         </createView>

@@ -14,6 +14,7 @@ import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,7 +45,6 @@ public class StockInServiceImpl implements StockInService {
 
     @Autowired
     private TranshipService transhipService;
-
     @Autowired
     private TranshipRepository transhipRepository;
     @Autowired
@@ -55,36 +55,30 @@ public class StockInServiceImpl implements StockInService {
     private TranshipBoxRepository transhipBoxRepository;
     @Autowired
     private StockInBoxRepository stockInBoxRepository;
-
     @Autowired
     private FrozenTubeRepository frozenTubeRepository;
-
     @Autowired
     private StockInTubeRepository stockInTubeRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private StockInTubeService stockInTubeService;
-
     @Autowired
     private StockInBoxPositionRepository stockInBoxPositionRepository;
-
     @Autowired
     private ProjectRepository projectRepository;
-
     @Autowired
     private ProjectSiteRepository projectSiteRepository;
-
     @Autowired
     private BankUtil bankUtil;
-
     @Autowired
     private TranshipStockInRepository transhipStockInRepository;
+    @Autowired
+    private StockInTranshipBoxRepository stockInTranshipBoxRepository;
+    @Autowired
+    private TranshipTubeRepository transhipTubeRepository;
 
     public StockInServiceImpl(StockInRepository stockInRepository,
                               StockInMapper stockInMapper,
@@ -330,68 +324,112 @@ public class StockInServiceImpl implements StockInService {
         stockIn.setStoreKeeper1(loginName1);
         stockIn.setStoreKeeper2(loginName2);
         stockIn.setStockInDate(stockInDate);
-        stockInRepository.save(stockIn);
         List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(stockInCode);
-        //修改盒子
+        //已上架的冻存盒列表
+        List<StockInBox> stockInBoxListForOnShelf = new ArrayList<StockInBox>();
+        //未上架的冻存盒列表
+        List<StockInBox> stockInBoxListForUnOnShelf = new ArrayList<StockInBox>();
         for(StockInBox box: stockInBoxes){
             if(box.getStatus().equals(Constants.FROZEN_BOX_STOCKING)){
-                throw new BankServiceException("冻存盒未上架！",box.toString());
-            }
-            if(box.getStatus().equals(Constants.FROZEN_BOX_PUT_SHELVES)){
-                frozenBoxRepository.updateStatusByFrozenBoxCode(box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
-                //修改入库盒子
-                box.setStatus(Constants.FROZEN_BOX_STOCKED);
-                stockInBoxRepository.save(box);
-//                //增加冻存盒位置记录
-                FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(box.getFrozenBoxCode());
-//                FrozenBoxPosition frozenBoxPos = new FrozenBoxPosition();
-//                frozenBoxPos = frozenBoxPositionMapper.frozenBoxToFrozenBoxPosition(frozenBoxPos,frozenBox);
-//                frozenBoxPos.setStatus(Constants.FROZEN_BOX_STOCKED);
-//                frozenBoxPos = frozenBoxPositionRepository.save(frozenBoxPos);
-                TranshipBox transhipBox = transhipBoxRepository.findByFrozenBoxCode(frozenBox.getFrozenBoxCode());
-                //保存入库盒子位置
-                StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
-                stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_COMPLETE).memo(box.getMemo())
-                    .equipment(box.getEquipment()).equipmentCode(box.getEquipmentCode())
-                    .area(box.getArea()).areaCode(box.getAreaCode())
-                    .supportRack(box.getSupportRack()).supportRackCode(box.getSupportRackCode())
-                    .columnsInShelf(box.getColumnsInShelf()).rowsInShelf(box.getRowsInShelf())
-                    .stockInBox(box);
-                stockInBoxPositionRepository.save(stockInBoxPosition);
-                //保存入库管子
-                List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
-                for(FrozenTube tube :frozenTubeList){
-                    tube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKED);
-                    frozenTubeRepository.saveAndFlush(tube);
-                    StockInTube stockInTube = new StockInTube();
-                    stockInTube.status(Constants.STOCK_IN_TUBE_COMPELETE).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
-                        .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(box).errorType(tube.getErrorType())
-                        .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(tube.getFrozenTubeState())
-                        .frozenTubeType(tube.getFrozenTubeType()).frozenTubeTypeCode(tube.getFrozenTubeTypeCode())
-                        .frozenTubeTypeName(tube.getFrozenTubeTypeName()).frozenTubeVolumns(tube.getFrozenTubeVolumns())
-                        .frozenTubeVolumnsUnit(tube.getFrozenTubeVolumnsUnit()).sampleVolumns(tube.getSampleVolumns())
-                        .project(tube.getProject()).projectCode(tube.getProjectCode()).projectSite(tube.getProjectSite())
-                        .projectSiteCode(tube.getProjectSiteCode()).sampleClassification(tube.getSampleClassification())
-                        .sampleClassificationCode(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationCode():null)
-                        .sampleClassificationName(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationName():null)
-                        .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
-                        .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
-                        .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
-                    stockInTubeRepository.save(stockInTube);
-                }
+                stockInBoxListForUnOnShelf.add(box);
+            }else if (box.getStatus().equals(Constants.FROZEN_BOX_PUT_SHELVES)){
+                stockInBoxListForOnShelf.add(box);
             }
         }
-        //修改转运
-        if(stockIn.getTranship()!=null){
-            transhipRepository.updateTranshipStateById(stockIn.getTranship().getId(),Constants.TRANSHIPE_IN_STOCKED);
+        if(stockInBoxListForOnShelf.size()==0){
+            throw new BankServiceException("该入库单下不含有已上架的冻存盒！");
+        }
+        //修改盒子
+        int countOfSampleIn = 0;
+        for(StockInBox box: stockInBoxListForOnShelf){
+            countOfSampleIn+=box.getCountOfSample();
+            frozenBoxRepository.updateStatusByFrozenBoxCode(box.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
+            //修改入库盒子
+            box.setStatus(Constants.FROZEN_BOX_STOCKED);
+            stockInBoxRepository.save(box);
+            //保存入库盒子位置
+            StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
+            stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_COMPLETE).memo(box.getMemo())
+                .equipment(box.getEquipment()).equipmentCode(box.getEquipmentCode())
+                .area(box.getArea()).areaCode(box.getAreaCode())
+                .supportRack(box.getSupportRack()).supportRackCode(box.getSupportRackCode())
+                .columnsInShelf(box.getColumnsInShelf()).rowsInShelf(box.getRowsInShelf())
+                .stockInBox(box);
+            stockInBoxPositionRepository.save(stockInBoxPosition);
+            //保存入库管子
+            List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
+            for(FrozenTube tube :frozenTubeList){
+                tube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKED);
+                frozenTubeRepository.saveAndFlush(tube);
+                StockInTube stockInTube = new StockInTube();
+                stockInTube.status(Constants.STOCK_IN_TUBE_COMPELETE).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
+                    .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(box).errorType(tube.getErrorType())
+                    .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(tube.getFrozenTubeState())
+                    .frozenTubeType(tube.getFrozenTubeType()).frozenTubeTypeCode(tube.getFrozenTubeTypeCode())
+                    .frozenTubeTypeName(tube.getFrozenTubeTypeName()).frozenTubeVolumns(tube.getFrozenTubeVolumns())
+                    .frozenTubeVolumnsUnit(tube.getFrozenTubeVolumnsUnit()).sampleVolumns(tube.getSampleVolumns())
+                    .project(tube.getProject()).projectCode(tube.getProjectCode()).projectSite(tube.getProjectSite())
+                    .projectSiteCode(tube.getProjectSiteCode()).sampleClassification(tube.getSampleClassification())
+                    .sampleClassificationCode(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationCode():null)
+                    .sampleClassificationName(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationName():null)
+                    .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
+                    .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
+                    .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
+                stockInTubeRepository.save(stockInTube);
+            }
+        }
+        stockIn.setCountOfSample(countOfSampleIn);
+        stockInRepository.save(stockIn);
+        //含有待入库的冻存盒开始拆单
+        StockIn stockInNew = new StockIn();
+        if(stockInBoxListForUnOnShelf.size()>0){
+            //创建入库单
+            BeanUtils.copyProperties(stockIn,stockInNew);
+            stockInNew.setId(null);
+            stockInNew.stockInCode(bankUtil.getUniqueID("B")).status(Constants.STOCK_IN_PENDING).parentStockInId(stockIn.getId()).countOfSample(0);
+            stockInRepository.save(stockInNew);
+            int  countOfSample = 0;
+            for(StockInBox stockInBox :stockInBoxListForUnOnShelf){
+                stockInBox.stockIn(stockInNew).stockInCode(stockInNew.getStockInCode());
+                stockInBoxRepository.save(stockInBox);
+                countOfSample+=stockInBox.getCountOfSample();
+            }
+            stockInNew.setCountOfSample(countOfSample);
+            stockInRepository.save(stockInNew);
+        }
+        //查询出入库单下的转运盒
+        List<String> transhipCodes = new ArrayList<String>();
+        List<StockInTranshipBox> stockInTranshipBoxes = stockInTranshipBoxRepository.findByStockInCode(stockInCode);
+        for(StockInTranshipBox inTranshipBox :stockInTranshipBoxes){
+            String transhipCode = inTranshipBox.getTranshipCode();
+            if(transhipCodes.contains(transhipCode)){
+                continue;
+            }else{
+                transhipCodes.add(transhipCode);
+            }
+            //判断盒子内的样本是否都入库完成
+            Long count = transhipTubeRepository.countUnStockInTubeByTranshipCode(transhipCode);
+            if(count.intValue()==0){
+                transhipRepository.updateTranshipStateById(inTranshipBox.getTranshipBox().getTranship().getId(),Constants.TRANSHIPE_IN_STOCKED);
+            }else{
+                inTranshipBox.setStockIn(stockInNew);
+                inTranshipBox.setStockInCode(stockInNew.getStockInCode());
+                stockInTranshipBoxRepository.save(inTranshipBox);
+            }
         }
         return stockInMapper.stockInToStockInDetail(stockIn);
     }
 
     @Override
-    public StockInForDataDetail getStockInById(Long id) {
+    public StockInDTO getStockInById(Long id) {
         StockIn stockIn = stockInRepository.findOne(id);
-        StockInForDataDetail stockInForDataDetail = stockInMapper.stockInToStockInDetail(stockIn);
+        StockInDTO stockInForDataDetail = stockInMapper.stockInToStockInDTO(stockIn);
+        List<TranshipStockIn> transhipStockIns = transhipStockInRepository.findByStockInCode(stockIn.getStockInCode());
+        List<String> transhipCodes = new ArrayList<String>();
+        for(TranshipStockIn transhipStockIn:transhipStockIns){
+            transhipCodes.add(transhipStockIn.getTranshipCode());
+        }
+        stockInForDataDetail.setTranshipCode(String.join(",",transhipCodes));
         List<User> userList = userRepository.findAll();
             for(User u :userList){
                 if(stockIn.getReceiveId()!=null&&stockIn.getReceiveId().equals(u.getId())){
@@ -448,7 +486,7 @@ public class StockInServiceImpl implements StockInService {
      * @return
      */
     @Override
-    public StockInForDataDetail updateStockIns(StockInForDataDetail stockInDTO) {
+    public StockInDTO updateStockIns(StockInDTO stockInDTO) {
         log.debug("Request to save StockIn : {}", stockInDTO);
         if(stockInDTO.getId()==null){
             throw new BankServiceException("入库ID不能为空！",stockInDTO.toString());
@@ -460,12 +498,9 @@ public class StockInServiceImpl implements StockInService {
                 throw new BankServiceException("该入库单下已经有冻存盒记录，不能修改项目！",stockInDTO.toString());
             }
         }
-        stockInOld.setProject(stockInMapper.projectFromId(stockInDTO.getProjectId()));
-        stockInOld.setProjectCode(stockInDTO.getProjectCode());
-        stockInOld.setProjectSiteCode(stockInDTO.getProjectSiteCode());
-        stockInOld.setProjectSite(stockInMapper.projectSiteFromId(stockInDTO.getProjectSiteId()));
-        stockInOld = stockInRepository.save(stockInOld);
-        return stockInMapper.stockInToStockInDetail(stockInOld);
+        StockIn stockIn = stockInMapper.stockInDTOToStockIn(stockInDTO);
+        stockInRepository.save(stockIn);
+        return stockInMapper.stockInToStockInDTO(stockIn);
     }
 
     @Override
@@ -505,6 +540,9 @@ public class StockInServiceImpl implements StockInService {
         //创建入库单
         StockIn stockIn = new StockIn();
         stockIn.stockInCode(bankUtil.getUniqueID("B")).status(Constants.STOCK_IN_PENDING)
+            .receiveId(tranships.get(0).getReceiverId())
+            .receiveDate(tranships.get(0).getReceiveDate())
+            .receiveName(tranships.get(0).getProjectName())
             .stockInType(Constants.STORANGE_IN_TYPE_1ST).countOfSample(count.intValue()).project(project).projectCode(project.getProjectCode());
         stockInRepository.save(stockIn);
 
@@ -517,27 +555,35 @@ public class StockInServiceImpl implements StockInService {
             tranship.setTranshipState(Constants.TRANSHIPE_IN_STOCKING);
             transhipRepository.save(tranship);
         }
-        List<FrozenBox> frozenBoxes = transhipBoxRepository.findByTranshipCodes(transhipCodeList);
+        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipCodes(transhipCodeList);
         List<String> frozenBoxCodes = new ArrayList<String>();
-        for(FrozenBox box : frozenBoxes){
-            frozenBoxCodes.add(box.getFrozenBoxCode());
+        for(TranshipBox transhipBox : transhipBoxes){
+            frozenBoxCodes.add(transhipBox.getFrozenBoxCode());
+            FrozenBox frozenBox = transhipBox.getFrozenBox();
             //冻存盒状态变为待入库
-            box.setStatus(Constants.FROZEN_BOX_STOCKING);
-            frozenBoxRepository.save(box);
+            frozenBox.setStatus(Constants.FROZEN_BOX_STOCKING);
+            frozenBoxRepository.save(frozenBox);
             //保存入库冻存盒
             StockInBox stockInBox = new StockInBox();
-            Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(box.getFrozenBoxCode());
-            stockInBox.sampleTypeCode(box.getSampleTypeCode()).sampleType(box.getSampleType()).sampleTypeName(box.getSampleTypeName())
-                .sampleClassification(box.getSampleClassification())
-                .sampleClassificationCode(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationCode():null)
-                .sampleClassificationName(box.getSampleClassification()!=null?box.getSampleClassification().getSampleClassificationName():null)
-                .dislocationNumber(box.getDislocationNumber()).emptyHoleNumber(box.getEmptyHoleNumber()).emptyTubeNumber(box.getEmptyTubeNumber())
-                .frozenBoxType(box.getFrozenBoxType()).frozenBoxTypeCode(box.getFrozenBoxTypeCode()).frozenBoxTypeColumns(box.getFrozenBoxTypeColumns())
-                .frozenBoxTypeRows(box.getFrozenBoxTypeRows()).isRealData(box.getIsRealData()).isSplit(box.getIsSplit()).project(box.getProject())
-                .projectCode(box.getProjectCode()).projectName(box.getProjectName()).projectSite(box.getProjectSite()).projectSiteCode(box.getProjectSiteCode())
-                .projectSiteName(box.getProjectSiteName()).countOfSample(countOfSample.intValue()).status(box.getStatus()).stockIn(stockIn).stockInCode(stockIn.getStockInCode())
-                .frozenBoxCode(box.getFrozenBoxCode()).frozenBox(box);
+            Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
+            stockInBox.sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
+                .sampleClassification(frozenBox.getSampleClassification())
+                .sampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null)
+                .sampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null)
+                .dislocationNumber(frozenBox.getDislocationNumber()).emptyHoleNumber(frozenBox.getEmptyHoleNumber()).emptyTubeNumber(frozenBox.getEmptyTubeNumber())
+                .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
+                .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
+                .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
+                .projectSiteName(frozenBox.getProjectSiteName()).countOfSample(countOfSample.intValue()).status(frozenBox.getStatus()).stockIn(stockIn).stockInCode(stockIn.getStockInCode())
+                .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBox(frozenBox);
             stockInBoxRepository.save(stockInBox);
+            StockInTranshipBox stockInTranshipBox = new StockInTranshipBox()
+                .transhipBox(transhipBox).stockIn(stockIn)
+                .frozenBoxCode(frozenBox.getFrozenBoxCode())
+                .stockInCode(stockIn.getStockInCode())
+                .status(Constants.FROZEN_BOX_STOCKING)
+                .transhipCode(transhipBox.getTranship().getTranshipCode());
+            stockInTranshipBoxRepository.save(stockInTranshipBox);
         }
         //修改转运冻存管状态
         frozenTubeRepository.updateFrozenTubeStateByFrozenBoxCodes(Constants.FROZEN_BOX_STOCKING,frozenBoxCodes);

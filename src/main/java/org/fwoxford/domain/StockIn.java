@@ -474,4 +474,18 @@ public class StockIn extends AbstractAuditingEntity implements Serializable {
             ", status='" + status + "'" +
             '}';
     }
+
+    @Column(name = "parent_stock_in_id")
+    private Long parentStockInId;
+
+    public Long getParentStockInId() {
+        return parentStockInId;
+    }
+    public StockIn parentStockInId(Long parentStockInId){
+        this.parentStockInId = parentStockInId;
+        return this;
+    }
+    public void setParentStockInId(Long parentStockInId) {
+        this.parentStockInId = parentStockInId;
+    }
 }

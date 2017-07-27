@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface TranshipStockInRepository extends JpaRepository<TranshipStockIn,Long> {
 
+    List<TranshipStockIn> findByStockInCode(String stockInCode);
 }

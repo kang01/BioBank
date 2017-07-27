@@ -70,7 +70,7 @@ public interface StockInService {
      */
     StockInForDataDetail completedStockIn(String stockInCode,StockInCompleteDTO stockInCompleteDTO);
 
-    StockInForDataDetail getStockInById(Long id);
+    StockInDTO getStockInById(Long id);
 
     StockInForDataDetail getStockInByTranshipCode(String transhipCode);
 
@@ -86,7 +86,7 @@ public interface StockInService {
      * @param stockInDTO
      * @return
      */
-    StockInForDataDetail updateStockIns(StockInForDataDetail stockInDTO);
+    StockInDTO updateStockIns(StockInDTO stockInDTO);
 
     StockInBox createStockInBox(FrozenBox frozenBox, StockIn stockIn);
 

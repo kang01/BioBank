@@ -386,7 +386,7 @@
 
 
 
-            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC", 200, 10, "<'row' <'col-xs-12 text-right' TB> r> t <'row'<'col-xs-6'i> <'col-xs-6'p>>", $scope)
+            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC", 200, 10)
                 // 设置Tool button
                 .withButtons([
                     {

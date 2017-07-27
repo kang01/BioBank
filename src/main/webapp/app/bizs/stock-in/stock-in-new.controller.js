@@ -271,7 +271,7 @@
                 //         '</button>';
                 // } else {
                     buttonHtml += '<button type="button" class="btn btn-xs btn-error" ng-click="vm.editBox(\''+ full.frozenBoxCode +'\')">' +
-                        '   <i class="fa fa-sign-in"></i> 编辑 ' +
+                        '   <i class="fa fa-edit"></i> 编辑 ' +
                         '</button>&nbsp;'+
                         '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf(\''+ full.frozenBoxCode +'\')">' +
                         '   <i class="fa fa-sign-in"></i> 上架' +

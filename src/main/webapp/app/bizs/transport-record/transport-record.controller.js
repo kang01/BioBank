@@ -49,7 +49,6 @@
             }
             if(codeArray.length){
                 var transhipCodes = _.join(codeArray, ',');
-                console.log(JSON.stringify(transhipCodes));
                 var modalInstance = $uibModal.open({
                     templateUrl: 'startStockIn.html',
                     controller: 'StartStockInModalController',
@@ -95,7 +94,7 @@
             vm.selectAll = true;
         };
         vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withOption('order', [[1, 'asc' ]])
+            .withOption('order', [[1, 'desc' ]])
             .withOption('processing',true)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {

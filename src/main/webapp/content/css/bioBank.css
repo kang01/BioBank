@@ -1,6 +1,8 @@
 
 .selectize-control .selectize-input.disabled{
-    background-color: #ccc;
+    background-color: #eee;
+    opacity: 1;
+    cursor: not-allowed !important;
 }
 .p-0{
     padding: 0 !important;

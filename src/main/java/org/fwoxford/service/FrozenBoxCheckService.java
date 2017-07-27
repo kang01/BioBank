@@ -42,7 +42,7 @@ public class FrozenBoxCheckService {
             &&(equipment==null||area==null||supportRack==null)){
             throw new BankServiceException("位置无效！");
         }
-        if(columnsInShelf!=null && rowsInShelf!=null){
+        if(!StringUtils.isEmpty(columnsInShelf) && !StringUtils.isEmpty(rowsInShelf)){
             Long count = frozenBoxRepository.countByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(equipment.getEquipmentCode()
                 ,area.getAreaCode(),supportRack.getSupportRackCode(),columnsInShelf,rowsInShelf);
             if(count.intValue()>0){

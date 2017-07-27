@@ -413,8 +413,9 @@
             return html;
         }
         function createdRow(row, data, dataIndex) {
-            if(vm.projectOptions){
-                var projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
+            var projectName;
+            if(data.projectCode){
+                projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
             }
             var tag = '';
             if(data.sex){

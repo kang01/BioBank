@@ -455,12 +455,11 @@
             var operateColor;//单元格颜色
 
             initFrozenTube(10,10);
-
+            var delFlag = false;
             vm.settings = {
                 colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
                 rowHeaders : ['A','B','C','D','E','F','G','H','J','K'],
                 data:vm.frozenTubeArray,
-                renderer: myCustomRenderer,
                 minRows: 10,
                 minCols: 10,
                 fillHandle:false,
@@ -472,6 +471,7 @@
                 editor: 'tubeInput',
                 multiSelect: true,
                 comments: true,
+                renderer: myCustomRenderer,
                 onAfterSelectionEnd:function (row, col, row2, col2) {
                     vm.nextFlag = true;
                     vm.remarkFlag = true;
@@ -537,6 +537,7 @@
 
                 },
                 afterChange:function (change,source) {
+                    var tableCtrl = _getTableCtrl();
                     if(source == 'edit'){
                         for (var i=0; i<change.length; ++i){
                             var item = change[i];
@@ -544,163 +545,194 @@
                             var col = item[1];
                             var oldTube = item[2];
                             var newTube = item[3];
-                            if (oldTube.id
-                                || (oldTube.sampleCode && oldTube.sampleCode.length > 1)
-                                || (oldTube.sampleTempCode && oldTube.sampleTempCode.length > 1)){
-                                // When delete a tube.
-                                if (newTube === ""){
-                                    newTube = angular.copy(oldTube);
-                                    newTube.id = null;
-                                    newTube.sampleCode = "";
-                                    newTube.sampleTempCode = "";
-                                    hotRegisterer.getInstance('my-handsontable').setDataAtCell(row, col, newTube);
-                                }else{
-                                    // console.log(JSON.stringify(oldTube));
-                                    if(!vm.oldTube){
-                                        vm.oldTube = oldTube;
+
+                            if (newTube.id
+                                || (newTube.sampleCode && newTube.sampleCode.length > 1)
+                                || (newTube.sampleTempCode && newTube.sampleTempCode.length > 1)){
+                                StockInInputService.queryTube(oldTube.sampleCode,vm.entity.projectCode,vm.box.id,oldTube.sampleTypeId,oldTube.sampleClassificationId).success(function (data) {
+                                    var stockInTubes;
+                                    if(vm.box.sampleTypeName != "98" || vm.box.sampleTypeName != "97"){
+                                        stockInTubes = _.filter(data,{sampleTypeId:vm.box.sampleTypeId});
+                                    }else{
+                                        stockInTubes = data;
                                     }
-
-                                    StockInInputService.queryTube(oldTube.sampleCode,vm.entity.projectCode,vm.box.id,oldTube.sampleTypeId,oldTube.sampleClassificationId).success(function (data) {
-                                        var stockInTubes;
-                                        if(vm.box.sampleTypeName != "98" || vm.box.sampleTypeName != "97"){
-                                            stockInTubes = _.filter(data,{sampleTypeId:vm.box.sampleTypeId});
-                                        }else{
-                                            stockInTubes = data;
-                                        }
-                                        if(vm.singleMultipleFlag == "single"){
-                                            modalInstance = $uibModal.open({
-                                                animation: true,
-                                                templateUrl: 'app/bizs/stock-in/modal/stock-in-add-sample-modal.html',
-                                                controller: 'StockInAddSampleModal',
-                                                backdrop:'static',
-                                                controllerAs: 'vm',
-                                                size:'lg',
-                                                resolve: {
-                                                    items: function () {
-                                                        return {
-                                                            tubes:stockInTubes,
-                                                            sampleCode:oldTube.sampleCode,
-                                                            frozenBoxId:vm.box.id,
-                                                            projectSiteId:vm.entity.projectSiteId,
-                                                            projectId:vm.entity.projectId,
-                                                            projectCode:vm.entity.projectCode,
-                                                            sampleTypeId:vm.box.sampleTypeId,
-                                                            sampleTypeName:vm.box.sampleTypeName,
-                                                            sampleTypeCode:vm.box.sampleTypeCode,
-                                                            sampleClassificationId:vm.box.sampleClassificationId,
-                                                            sampleClassificationName:vm.box.sampleClassificationName,
-                                                            sampleClassificationCode:vm.box.sampleClassificationCode,
-                                                            singleMultipleFlag:vm.singleMultipleFlag
-                                                        };
-                                                    }
-                                                }
-
-                                            });
-                                            modalInstance.result.then(function (tubes) {
-                                                var tableCtrl = _getTableCtrl();
-                                                for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                                                    for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                                                        for(var k = 0; k < tubes.length; k++ ){
-                                                            if(vm.frozenTubeArray[i][j].sampleCode == tubes[k].sampleCode){
-                                                                vm.frozenTubeArray[i][j].status = tubes[k].status;
-                                                                vm.frozenTubeArray[i][j].projectSiteId = tubes[k].projectSiteId;
-                                                                vm.frozenTubeArray[i][j].memo = tubes[k].memo;
-                                                                vm.frozenTubeArray[i][j].sampleTypeId = tubes[k].sampleTypeId;
-                                                                vm.frozenTubeArray[i][j].sampleTypeName = tubes[k].sampleTypeName;
-                                                                vm.frozenTubeArray[i][j].backColor = tubes[k].backColor;
-                                                                vm.frozenTubeArray[i][j].sampleVolumns = tubes[k].sampleVolumns;
-                                                                if(tubes[k].sampleClassificationId){
-                                                                    vm.frozenTubeArray[i][j].sampleClassificationId = tubes[k].sampleClassificationId;
-                                                                    vm.frozenTubeArray[i][j].sampleClassificationName = tubes[k].sampleClassificationName;
-                                                                    vm.frozenTubeArray[i][j].sampleClassitionCode = tubes[k].sampleClassitionCode;
-                                                                    vm.frozenTubeArray[i][j].backColorForClass = tubes[k].backColorForClass;
-                                                                }
-                                                            }
-                                                        }
-
-                                                    }
-                                                }
-                                                tableCtrl.render();
-                                            },function (tube) {
-                                                // var tableCtrl = _getTableCtrl();
-                                                // for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                                                //     for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                                                //         if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
-                                                //             vm.frozenTubeArray[row][col].sampleCode = "";
-                                                //         }
-                                                //     }
-                                                // }
-                                                // tableCtrl.loadData(vm.frozenTubeArray);
-                                            });
-                                        }
-
-
-                                    }).error(function (data) {
-                                        vm.nextFlag = false;
-                                        var tableCtrl = _getTableCtrl();
-                                        toastr.error(data.message);
-                                        for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                                            for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                                                if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
-                                                    vm.frozenTubeArray[row][col].sampleCode = "";
+                                    if(vm.singleMultipleFlag == "single"){
+                                        modalInstance = $uibModal.open({
+                                            animation: true,
+                                            templateUrl: 'app/bizs/stock-in/modal/stock-in-add-sample-modal.html',
+                                            controller: 'StockInAddSampleModal',
+                                            backdrop:'static',
+                                            controllerAs: 'vm',
+                                            size:'lg',
+                                            resolve: {
+                                                items: function () {
+                                                    return {
+                                                        tubes:stockInTubes,
+                                                        sampleCode:oldTube.sampleCode,
+                                                        frozenBoxId:vm.box.id,
+                                                        projectSiteId:vm.entity.projectSiteId,
+                                                        projectId:vm.entity.projectId,
+                                                        projectCode:vm.entity.projectCode,
+                                                        sampleTypeId:vm.box.sampleTypeId,
+                                                        sampleTypeName:vm.box.sampleTypeName,
+                                                        sampleTypeCode:vm.box.sampleTypeCode,
+                                                        sampleClassificationId:vm.box.sampleClassificationId,
+                                                        sampleClassificationName:vm.box.sampleClassificationName,
+                                                        sampleClassificationCode:vm.box.sampleClassificationCode,
+                                                        singleMultipleFlag:vm.singleMultipleFlag
+                                                    };
                                                 }
                                             }
+
+                                        });
+                                        modalInstance.result.then(function (tubes) {
+                                            for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                                                for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                                    for(var k = 0; k < tubes.length; k++ ){
+                                                        if(vm.frozenTubeArray[i][j].sampleCode == tubes[k].sampleCode){
+                                                            vm.frozenTubeArray[i][j].status = tubes[k].status;
+                                                            vm.frozenTubeArray[i][j].projectSiteId = tubes[k].projectSiteId;
+                                                            vm.frozenTubeArray[i][j].memo = tubes[k].memo;
+                                                            vm.frozenTubeArray[i][j].sampleTypeId = tubes[k].sampleTypeId;
+                                                            vm.frozenTubeArray[i][j].sampleTypeName = tubes[k].sampleTypeName;
+                                                            vm.frozenTubeArray[i][j].backColor = tubes[k].backColor;
+                                                            vm.frozenTubeArray[i][j].sampleVolumns = tubes[k].sampleVolumns;
+                                                            if(tubes[k].sampleClassificationId){
+                                                                vm.frozenTubeArray[i][j].sampleClassificationId = tubes[k].sampleClassificationId;
+                                                                vm.frozenTubeArray[i][j].sampleClassificationName = tubes[k].sampleClassificationName;
+                                                                vm.frozenTubeArray[i][j].sampleClassitionCode = tubes[k].sampleClassitionCode;
+                                                                vm.frozenTubeArray[i][j].backColorForClass = tubes[k].backColorForClass;
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                            tableCtrl.render();
+                                        },function (tube) {
+                                            // var tableCtrl = _getTableCtrl();
+                                            // for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                                            //     for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                            //         if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
+                                            //             vm.frozenTubeArray[row][col].sampleCode = "";
+                                            //         }
+                                            //     }
+                                            // }
+                                            // tableCtrl.loadData(vm.frozenTubeArray);
+                                        });
+                                    }
+                                }).error(function (data) {
+                                    vm.nextFlag = false;
+                                    var tableCtrl = _getTableCtrl();
+                                    toastr.error(data.message);
+                                    for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                                        for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                            if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
+                                                vm.frozenTubeArray[row][col].sampleCode = "";
+                                            }
                                         }
-                                        tableCtrl.loadData(vm.frozenTubeArray);
-                                    });
-                                }
+                                    }
+                                    tableCtrl.loadData(vm.frozenTubeArray);
+                                });
+
+                                // When delete a tube.
+                                // if (newTube === ""){
+                                //     newTube = angular.copy(oldTube);
+                                //     newTube.id = null;
+                                //     newTube.sampleCode = "";
+                                //     newTube.sampleTempCode = "";
+                                //     tableCtrl.setDataAtCell(row, col, newTube);
+                                //     tableCtrl.render();
+                                // }
                             }
                         }
 
                         return;
                     }
-                    if(source == 'loadData'){
-
-                    }
                 },
-                beforeKeyDown:function (event) {
+                beforeKeyDown:function (event,change) {
                     if(vm.flagStatus){
+                        //9Tab键 left Arrow37  up Arrow38 right Arrow39 Dw Arrow40
                         if(event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 40){
                             Handsontable.Dom.stopImmediatePropagation(event);
                         }
                     }
+                    //后退键
+                    if(event.keyCode == 8){
+                        Handsontable.Dom.stopImmediatePropagation(event);
+                    }
 
                 },
                 beforeChange: function(changes, source) {
-                    var tableCtrl = _getTableCtrl();
-                    for (var k=0; k<changes.length; ++k){
-                        var item = changes[k];
+                    // var tableCtrl = _getTableCtrl();
+                    for (var i = 0; i < changes.length; ++i){
+                        var item = changes[i];
                         var row = item[0];
                         var col = item[1];
                         var oldTube = item[2];
                         var newTube = item[3];
-                        if(oldTube.sampleCode){
-                            for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                                for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                                    if(i == row  && j == col){
-                                        continue;
-                                    }
-                                    if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
-                                        vm.frozenTubeArray[row][col].sampleCode = "";
-                                        tableCtrl.render();
-                                        toastr.error("冻存管编码不能重复!");
-                                        vm.nextFlag = false;
-                                        return false;
-                                    }
+                        if(newTube === ""){
+                            newTube = angular.copy(oldTube);
+                            newTube.id = "";
+                            newTube.sampleCode = "";
+                            newTube.sampleTempCode = "";
+                            newTube.status = "3001";
+                            newTube.memo = "";
 
-                                }
+                            if(vm.box.sampleTypeId){
+                                newTube.sampleTypeId = vm.box.sampleTypeId;
+                                newTube.sampleTypeCode = vm.box.sampleTypeCode;
+                                newTube.sampleTypeName = vm.box.sampleTypeName;
+                                newTube.backColor = vm.box.backColor;
                             }
-                        }else{
-                            // var tableCtrl = _getTableCtrl();
-                            // vm.oldTube.sampleCode = "";
-                            // vm.oldTube.tubeRows = getTubeRows(+row)+"";
-                            // vm.oldTube.tubeColumns = getTubeColumns(+col);
-                            // vm.frozenTubeArray[row][col] = vm.oldTube;
-                            // tableCtrl.render();
-                            return false;
-                        }
+                            if(vm.box.sampleClassificationId){
+                                newTube.sampleClassificationId = vm.box.sampleClassificationId;
+                                newTube.sampleClassificationCode = vm.box.sampleClassificationCode;
+                                newTube.sampleClassificationName = vm.box.sampleClassificationName;
+                                newTube.backColorForClass = vm.box.backColorForClass;
+                            }
+                            if(newTube.sampleTypeCode == '97' || newTube.sampleTypeCode == '98'){
+                                newTube.sampleClassificationId = "";
+                                newTube.sampleClassificationCode = "";
+                                newTube.sampleClassificationName = "";
+                                newTube.backColorForClass = "";
+                            }
 
+                            // tableCtrl.setDataAtCell(row, col, newTube);
+                            // changes[row][col] = newTube;
+                            // changes[0][3] = newTube;
+                        }
                     }
+
+                    if(oldTube.sampleCode){
+                        for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                            for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
+                                if(i == row  && j == col){
+                                    continue;
+                                }
+                                if(vm.frozenTubeArray[i][j].sampleCode == oldTube.sampleCode){
+                                    vm.frozenTubeArray[row][col].sampleCode = "";
+                                    tableCtrl.render();
+                                    toastr.error("冻存管编码不能重复!");
+                                    vm.nextFlag = false;
+                                    return false;
+                                }
+
+                            }
+                        }
+                    }else{
+                        // var tableCtrl = _getTableCtrl();
+                        // vm.oldTube.sampleCode = "";
+                        // vm.oldTube.tubeRows = getTubeRows(+row)+"";
+                        // vm.oldTube.tubeColumns = getTubeColumns(+col);
+                        // vm.frozenTubeArray[row][col] = vm.oldTube;
+                        // tableCtrl.render();
+                        return false;
+                    }
+
+
+
+                    // }
 
 
                 },

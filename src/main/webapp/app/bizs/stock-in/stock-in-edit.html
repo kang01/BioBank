@@ -12,25 +12,73 @@
         </div>
         <div style="clear: both"></div>
     </div>
-
-    <div class="row ml-0 mr-0">
-        <div class="col-md-1 text-right"><strong>入库单编号</strong></div>
-        <div class="col-md-1">{{vm.entity.stockInCode}}</div>
-        <div class="col-md-1 text-right"><strong>转运编号</strong></div>
-        <div class="col-md-1">{{vm.entity.transhipCode}}</div>
-        <div class="col-md-1 text-right"><strong>项目编号</strong></div>
-        <div class="col-md-1">{{vm.entity.projectCode}}</div>
-        <div class="col-md-1 text-right"><strong>项目点</strong></div>
-        <div class="col-md-1">{{vm.entity.projectSiteCode}}</div>
-
-        <div class="col-md-1 text-right"><strong>接收日期</strong></div>
-        <div class="col-md-1">{{vm.entity.receiveDate}}</div>
-        <div class="col-md-1 text-right"><strong>接收人</strong></div>
-        <div class="col-md-1">{{vm.entity.receiver}}</div>
-        <div class="col-md-12"></div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>入库单号</label>
+                <input type="text" class="form-control" ng-disabled="true" ng-model="vm.entity.stockInCode">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group ">
+                <label>
+                    项目编码
+                </label>
+                <selectize options='vm.projectOptions' config="vm.projectConfig"
+                           ng-model="vm.transportRecord.projectId" ng-disabled="vm.boxLength"></selectize>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group ">
+                <label>
+                    项目点
+                </label>
+                <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
+                           ng-model="vm.transportRecord.projectSiteId"></selectize>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label>
+                接收日期
+            </label>
+            <div class="input-group">
+                <input type="text" class="form-control" name="receiveDate"
+                       uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.receiveDate"
+                       is-open="vm.datePickerOpenStatus.receiveDate"
+                       required/>
+                <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i
+                                    class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label>
+                接收人
+            </label>
+            <selectize options='vm.receiverOptions' config="vm.receiverConfig"
+                       ng-model="vm.transportRecord.receiver"></selectize>
+            <input type="hidden" class="form-control" ng-model="vm.transportRecord.receiver">
+        </div>
     </div>
+    <!--<div class="row">-->
+        <!--<div class="col-md-1 text-right"><strong>入库单编号</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.stockInCode}}</div>-->
+        <!--<div class="col-md-1 text-right"><strong>转运编号</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.transhipCode}}</div>-->
+        <!--<div class="col-md-1 text-right"><strong>项目编号</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.projectCode}}</div>-->
+        <!--<div class="col-md-1 text-right"><strong>项目点</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.projectSiteCode}}</div>-->
 
-    <div class="row ml-0 mr-0">
+        <!--<div class="col-md-1 text-right"><strong>接收日期</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.receiveDate}}</div>-->
+        <!--<div class="col-md-1 text-right"><strong>接收人</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.receiver}}</div>-->
+        <!--<div class="col-md-12"></div>-->
+    <!--</div>-->
+
+    <div class="row">
         <div class="col-md-12">
             <div class="stock-in-list">
                 <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"
@@ -108,7 +156,6 @@
         </div>
     </pageslide>
 
-    <!--ng-if="vm.showSplittingPanel()"-->
     <div ng-if="vm.isShowSplittingPanel()">
         <div class="row split-box">
             <div class="col-md-9">

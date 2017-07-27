@@ -460,7 +460,7 @@
         }
         function createdRow(row, data, dataIndex) {
             var projectName;
-            if(vm.projectOptions.length){
+            if(data.projectCode){
                 projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
             }
             var status = "";

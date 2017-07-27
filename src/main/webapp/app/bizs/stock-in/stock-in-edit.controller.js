@@ -10,12 +10,12 @@
         .controller('RescindPutAwayModalController', RescindPutAwayModalController);
 
     StockInEditController.$inject = ['$scope','EquipmentService','BioBankBlockUi','$state','SupportacksByAreaIdService', '$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
-        'entity','AreasByEquipmentIdService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','RequirementService',
-        'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService','MasterData'];
+        'entity','AreasByEquipmentIdService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','ProjectSitesByProjectIdService',
+        'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService','MasterData','ProjectService','SampleUserService'];
     RescindPutAwayModalController.$inject = ['$uibModalInstance'];
     function StockInEditController($scope,EquipmentService,BioBankBlockUi,$state,SupportacksByAreaIdService,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
-                                  entity,AreasByEquipmentIdService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,RequirementService,
-                                  SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService,MasterData) {
+                                  entity,AreasByEquipmentIdService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,ProjectSitesByProjectIdService,
+                                  SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService,MasterData,ProjectService,SampleUserService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
@@ -26,14 +26,21 @@
         vm.splittedBoxes = {};
         vm.dtInstance = {};
         vm.dto = {};
+
         var modalInstance;
         vm.checked = false;
         vm.selectedDataFlag = false;
         vm.search = _fnSearch;
         vm.empty = _fnEmpty;
-        _statusInit();
-        _sampleTypeInit();
-        _positionInit();
+
+        function _initStockInInfo() {
+            _statusInit();
+            _sampleTypeInit();
+            _positionInit();
+            _fnProjectInit();
+            _fnUserInit();
+        }
+        _initStockInInfo();
         function _statusInit() {
             vm.statusConfig = {
                 valueField:'value',
@@ -204,6 +211,65 @@
                     }
                 }
             };
+        }
+        function _fnProjectInit() {
+            //项目
+            ProjectService.query({},onProjectSuccess, onError);
+            function onProjectSuccess(data) {
+                vm.projectOptions = data;
+                if(!vm.entity.projectId){
+                    vm.entity.projectId = data[0].id;
+                }
+                vm.entity.projectCode = _.find(vm.projectOptions,{id:vm.entity.projectId}).projectCode;
+                ProjectSitesByProjectIdService.query({id:vm.entity.projectId},onProjectSitesSuccess,onError);
+            }
+            //项目
+            vm.projectConfig = {
+                valueField:'id',
+                labelField:'projectName',
+                searchField:'projectName',
+                maxItems: 1,
+                onChange:function(value){
+                    if(value){
+                        ProjectSitesByProjectIdService.query({id:value},onProjectSitesSuccess,onError);
+                    }else{
+                        vm.entity.projectSiteId = "";
+                        vm.projectSitesOptions = [
+                            {id:"",projectSiteName:""}
+                        ]
+                    }
+
+
+                }
+            };
+            //项目点
+            vm.projectSitesConfig = {
+                valueField:'id',
+                labelField:'projectSiteName',
+                searchField:'projectSiteName',
+                maxItems: 1,
+                onChange:function (value) {
+                }
+            };
+
+            function onProjectSitesSuccess(data) {
+                vm.projectSitesOptions = data;
+                vm.projectSitesOptions.push({id:"",projectSiteName:""});
+                vm.entity.projectSiteId = "";
+            }
+        }
+        function _fnUserInit() {
+            //接收人
+            vm.receiverConfig = {
+                valueField:'login',
+                labelField:'userName',
+                maxItems: 1
+
+            };
+            SampleUserService.query({},onReceiverSuccess, onError);
+            function onReceiverSuccess(data) {
+                vm.receiverOptions = data;
+            }
         }
 
         var selected = {};
@@ -472,10 +538,7 @@
 
         //高级搜索
         function _fnActionSearchButton() {
-
             vm.checked = true;
-
-
             $scope.$apply();
         }
         function _createColumnFilters(){

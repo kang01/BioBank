@@ -168,7 +168,7 @@
             //保存记录
             vm.saveRecord = saveRecord;
             //入库
-            vm.stockIn = function () {
+            vm.transferFinish = function () {
                 modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'app/bizs/transport-record/stock-in-affirm-modal.html',
@@ -207,6 +207,7 @@
                     BioBankBlockUi.blockUiStart();
                     TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError);
                     function onSaveTranshipRecordSuccess(data) {
+                        //导入冻存盒
                         if(importBoxFlag){
                             modalInstance = $uibModal.open({
                                 animation: true,
@@ -228,7 +229,7 @@
                             });
                             modalInstance.result.then(function (data) {
                                 vm.queryTransportRecord();
-                                vm.loadBox();
+                                vm.dtInstance.rerender();
                                 importBoxFlag = false;
                             },function () {
                                 importBoxFlag = false;
@@ -237,14 +238,14 @@
                         vm.saveRecordFlag = false;
                         BioBankBlockUi.blockUiStop();
                         if(vm.saveStockInFlag){
-                            TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
+                            TranshipStockInService.saveTransferFinish(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
                                 BioBankBlockUi.blockUiStop();
-                                toastr.success("入库成功！");
+                                toastr.success("转运成功！");
                                 vm.saveStockInFlag = false;
-                                $state.go('stock-in-edit',{id:data.id});
+                                $state.go('transport-record');
                             }).error(function (data) {
                                 BioBankBlockUi.blockUiStop();
-                                toastr.error(data.message+"入库失败！");
+                                toastr.error(data.message+"转运失败！");
                             });
                         }
                         if(!vm.saveStockInFlag && !importBoxFlag){
@@ -378,7 +379,7 @@
         //左侧冻存盒
         vm.dtInstance = {};
         function _initFrozenBoxesTable(){
-            vm.loadBox = loadBox;
+            // vm.loadBox = loadBox;
 
 
             vm.dtColumns = [
@@ -402,6 +403,7 @@
                     var jqDt = this;
                     TranshipBoxByCodeService.queryByCodes(vm.transportRecord.transhipCode,data).then(function (res){
                         var json = res.data;
+                        vm.boxLength = res.data.data.length;
                         var error = json.error || json.sError;
                         if ( error ) {
                             jqDt._fnLog( oSettings, 0, error );
@@ -440,21 +442,21 @@
                 }
                 return nRow;
             }
-            loadAll();
-            function loadAll() {
-                loadBox();
-            }
-            function loadBox() {
-                if(vm.transportRecord.transhipCode){
-                    // vm.dtInstance.rerender();
-                    // TranshipBoxByCodeService.query({code:vm.transportRecord.transhipCode},onBoxSuccess,onError);
-                }
-                function onBoxSuccess(data) {
-                    vm.arrayBox =  _.orderBy(data, ['frozenBoxCode'], ['asc']);
-                    vm.boxLength = data.length;
-                    vm.dtOptions.withOption('data', vm.arrayBox);
-                }
-            }
+            // loadAll();
+            // function loadAll() {
+            //     loadBox();
+            // }
+            // function loadBox() {
+            //     if(vm.transportRecord.transhipCode){
+            //         // vm.dtInstance.rerender();
+            //         // TranshipBoxByCodeService.query({code:vm.transportRecord.transhipCode},onBoxSuccess,onError);
+            //     }
+            //     function onBoxSuccess(data) {
+            //         // vm.arrayBox =  _.orderBy(data, ['frozenBoxCode'], ['asc']);
+            //         // vm.boxLength = data.length;
+            //         // vm.dtOptions.withOption('data', vm.arrayBox);
+            //     }
+            // }
 
             //点击冻存盒行
             function someClickHandler(tr,boxInfo) {

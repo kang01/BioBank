@@ -5,8 +5,11 @@
         </h3>
         <div class="form-group pull-right pr-10">
             <div class="text-right">
-                <button type="button" class="btn btn-primary" ng-click="vm.stockIn()"
-                        ng-disabled="!vm.boxLength || !vm.transportRecord.receiver || !vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate || !vm.transportRecord.trackNumber"
+                <button type="button" class="btn btn-primary" ng-click="vm.transferFinish()"
+                        ng-disabled="!vm.boxLength || !vm.transportRecord.receiver ||
+                        !vm.transportRecord.transhipDate || !vm.transportRecord.projectId ||
+                        !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate ||
+                        !vm.transportRecord.trackNumber"
                         ng-show="vm.transportRecord.transhipState == '1001'">转运完成
                 </button>
                 <button type="button" class="btn btn-default" ng-click="vm.saveRecord()"
@@ -128,9 +131,9 @@
                                    is-open="vm.datePickerOpenStatus.receiveDate"
                                    required/>
                             <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i
-                            class="glyphicon glyphicon-calendar"></i></button>
-                        </span>
+                                <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i
+                                class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
                         </div>
                     </div>
                 </div>

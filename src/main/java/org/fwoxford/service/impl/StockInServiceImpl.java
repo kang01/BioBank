@@ -386,7 +386,9 @@ public class StockInServiceImpl implements StockInService {
             //创建入库单
             BeanUtils.copyProperties(stockIn,stockInNew);
             stockInNew.setId(null);
-            stockInNew.stockInCode(bankUtil.getUniqueID("B")).status(Constants.STOCK_IN_PENDING).parentStockInId(stockIn.getId()).countOfSample(0);
+            stockInNew.stockInCode(bankUtil.getUniqueID("B")).status(Constants.STOCK_IN_PENDING)
+                .parentStockInId(stockIn.getId()).countOfSample(0).stockInDate(null).storeKeeper1(null).storeKeeper2(null)
+                .storeKeeperId1(null).storeKeeperId2(null);
             stockInRepository.save(stockInNew);
             int  countOfSample = 0;
             for(StockInBox stockInBox :stockInBoxListForUnOnShelf){
@@ -424,12 +426,19 @@ public class StockInServiceImpl implements StockInService {
     public StockInDTO getStockInById(Long id) {
         StockIn stockIn = stockInRepository.findOne(id);
         StockInDTO stockInForDataDetail = stockInMapper.stockInToStockInDTO(stockIn);
-        List<TranshipStockIn> transhipStockIns = transhipStockInRepository.findByStockInCode(stockIn.getStockInCode());
+        List<StockInTranshipBox> transhipStockIns = stockInTranshipBoxRepository.findByStockInCode(stockIn.getStockInCode());
         List<String> transhipCodes = new ArrayList<String>();
-        for(TranshipStockIn transhipStockIn:transhipStockIns){
-            transhipCodes.add(transhipStockIn.getTranshipCode());
+        List<String> projectSiteCode = new ArrayList<String>();
+        for(StockInTranshipBox transhipStockIn:transhipStockIns){
+            if(!transhipCodes.contains(transhipStockIn.getTranshipCode())){
+                transhipCodes.add(transhipStockIn.getTranshipCode());
+            }
+            if(!projectSiteCode.contains(transhipStockIn.getTranshipBox().getProjectSiteCode())){
+                projectSiteCode.add(transhipStockIn.getTranshipBox().getProjectSiteCode());
+            }
         }
         stockInForDataDetail.setTranshipCode(String.join(",",transhipCodes));
+        stockInForDataDetail.setProjectSiteCode(String.join(",",projectSiteCode));
         List<User> userList = userRepository.findAll();
             for(User u :userList){
                 if(stockIn.getReceiveId()!=null&&stockIn.getReceiveId().equals(u.getId())){
@@ -542,7 +551,7 @@ public class StockInServiceImpl implements StockInService {
         stockIn.stockInCode(bankUtil.getUniqueID("B")).status(Constants.STOCK_IN_PENDING)
             .receiveId(tranships.get(0).getReceiverId())
             .receiveDate(tranships.get(0).getReceiveDate())
-            .receiveName(tranships.get(0).getProjectName())
+            .receiveName(tranships.get(0).getReceiver())
             .stockInType(Constants.STORANGE_IN_TYPE_1ST).countOfSample(count.intValue()).project(project).projectCode(project.getProjectCode());
         stockInRepository.save(stockIn);
 

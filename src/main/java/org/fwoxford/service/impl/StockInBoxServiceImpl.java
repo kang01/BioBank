@@ -26,6 +26,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.mapping.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -734,7 +735,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }
         }
         SampleType entity = sampleTypeRepository.findOne(frozenBoxDTO.getSampleTypeId());
-        if(frozenBox.getId()==null){
+        if(frozenBox.getId()==null){//新冻存盒
             //保存冻存盒信息
             frozenBoxDTO.setIsSplit(Constants.NO);
             //更改冻存盒的项目
@@ -754,6 +755,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBox = frozenBoxMapper.frozenBoxDTOToFrozenBox(frozenBoxDTO);
         }
         frozenBox.setStatus(Constants.FROZEN_BOX_STOCKING);
+        frozenBox.setMemo(frozenBoxDTO.getMemo());
         frozenBox = frozenBoxRepository.save(frozenBox);
         frozenBoxDTO.setId(frozenBox.getId());
         //保存入库冻存盒信息
@@ -781,40 +783,52 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             tubeDTO = createFrozenTubeBySampleType(tubeDTO);
             //验证冻存管是否重复
             List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
+
             if(tubeDTO.getSampleClassificationId()==null){
                 frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeId(),Constants.INVALID);
             }else{
                 frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),frozenBox.getId(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
             }
-//            for(FrozenTube f:frozenTubeList){
-//                if(tubeDTO.getId()==null ||
-//                    (tubeDTO.getId()!=null&&!f.getId().equals(tubeDTO.getId()))){
-//                    throw new BankServiceException("冻存管编码"+tubeDTO.getSampleCode()+"已经存在，不能保存该冻存管！",tubeDTO.getSampleCode());
-//                }
-//            }
+            for(FrozenTube f:frozenTubeList){
+                if(tubeDTO.getId()==null ||
+                    (tubeDTO.getId()!=null&&!f.getId().equals(tubeDTO.getId()))){
+                    throw new BankServiceException("冻存管编码"+tubeDTO.getSampleCode()+"已经存在，不能保存该冻存管！",tubeDTO.getSampleCode());
+                }
+            }
 
-            String status = getFrozenTubeStatus(tubeDTO);
-            if(!status.equals("") && !status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED)
-                && !status.equals(Constants.STOCK_IN_TUBE_COMPELETE)
-                && !status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
-                throw new BankServiceException("冻存管编码"+tubeDTO.getSampleCode()+"已经存在，不能保存该冻存管！",tubeDTO.getSampleCode());
-            }
-            if(status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) || status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)||status.equals("")){
-                countOfStockInTube ++;
-            }
             //取原冻存管的患者信息
-            tubeDTO = createFrozenTubeByOldFrozenTube(tubeDTO);
+            FrozenTube frozenTube = null;
+            if(tubeDTO.getId() != null){
+                frozenTube = frozenTubeRepository.findOne(tubeDTO.getId());
+                if(frozenTube == null){
+                    throw new BankServiceException("冻存管不存在！");
+                }
+            }
+            tubeDTO = createFrozenTubeByOldFrozenTube(frozenTube,tubeDTO);
             if(tubeDTO.getId()==null){
                 tubeDTO.setSampleUsedTimes(tubeDTO.getSampleUsedTimes()!=null?tubeDTO.getSampleUsedTimes():0);
             }
             tubeDTO.setFrozenBoxId(frozenBox.getId());
             tubeDTO.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-            FrozenTube frozenTube = new FrozenTube();
 
             //冻存管类型
             tubeDTO = createFrozenTubeTypeInit(tubeDTO);
+            if(frozenTube == null
+                || (frozenTube!= null &&
+                    (!StringUtils.isEmpty(frozenTube.getFrozenTubeState())
+                        &&(frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
+                            ||frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)
+                            ||frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING))))
+                ){
+                tubeDTO.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
+            }else{
+                tubeDTO.setFrozenTubeState(frozenTube.getFrozenTubeState());
+            }
+            if(!StringUtils.isEmpty(tubeDTO.getFrozenTubeState())
+                &&(tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)||tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)||tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER))){
+                countOfStockInTube++;
+            }
             frozenTube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
-            frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
             frozenTubeRepository.save(frozenTube);
         }
         stockInBox.setCountOfSample(countOfStockInTube);
@@ -901,15 +915,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return status;
     }
 
-    public FrozenTubeDTO createFrozenTubeByOldFrozenTube(FrozenTubeDTO tubeDTO) {
-        if(tubeDTO.getId() == null){
-            return tubeDTO;
-        }
-
-        FrozenTube frozenTube = frozenTubeRepository.findOne(tubeDTO.getId());
-        if(frozenTube == null){
-            throw new BankServiceException("冻存管不存在！");
-        }
+    public FrozenTubeDTO createFrozenTubeByOldFrozenTube(FrozenTube frozenTube ,FrozenTubeDTO tubeDTO) {
+       if(frozenTube == null || frozenTube.getId()==null){
+           return tubeDTO;
+       }
         tubeDTO.setSampleUsedTimes(frozenTube.getSampleUsedTimes());
         tubeDTO.setPatientId(frozenTube.getPatientId());
         tubeDTO.setAge(frozenTube.getAge());

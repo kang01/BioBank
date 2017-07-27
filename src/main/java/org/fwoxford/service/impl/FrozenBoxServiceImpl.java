@@ -794,6 +794,12 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
                 frozenTubeDTO.setSampleClassificationName(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationName():null);
                 frozenTubeDTO.setSampleClassificationCode(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationCode():null);
+                if(frozenTubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED )
+                    ||frozenTubeDTO.getFrozenTubeState().equals( Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
+                    frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_1);
+                }else{
+                    frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_2);
+                }
                 frozenTubeDTOS.add(frozenTubeDTO);
             }
         FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);

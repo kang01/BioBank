@@ -169,7 +169,7 @@ public final class Constants {
      */
     public static final Integer TUBE_CANCEL = 2;
     /**
-     * 级别1，级别1
+     * 级别1，级别2
      */
     public static final Integer LEVEL_ONE = 1;
     public static final Integer LEVEL_TWO = 2;
@@ -276,6 +276,8 @@ public final class Constants {
 //        put("RNA","RNA");
 //    }};
 
+    public static final String FROZEN_FLAG_1 = "1";
+    public static final String FROZEN_FLAG_2 = "2";
     private Constants() {
     }
 }

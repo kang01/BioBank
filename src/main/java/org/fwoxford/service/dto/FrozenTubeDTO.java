@@ -630,4 +630,17 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
             ", sampleStage='" + sampleStage + "'" +
             '}';
     }
+
+    /**
+     * 管子标识，1：原盒原库存，2：盒内新加入的冻存管
+     */
+    private String flag;
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
 }

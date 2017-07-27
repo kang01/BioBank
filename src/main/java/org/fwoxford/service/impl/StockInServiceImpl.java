@@ -357,6 +357,9 @@ public class StockInServiceImpl implements StockInService {
             //保存入库管子
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
             for(FrozenTube tube :frozenTubeList){
+                if(tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED) || tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
+                    continue;
+                }
                 tube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKED);
                 frozenTubeRepository.saveAndFlush(tube);
                 StockInTube stockInTube = new StockInTube();

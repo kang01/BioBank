@@ -53,7 +53,7 @@ public class FrozenTubeHistory {
      * 类型：101：转运，102：入库，103：出库，104：交接
      */
     @Column(name = "type")
-    private Integer type;
+    private String type;
     //样本状态
     @Column(name = "status")
     private String status;
@@ -112,7 +112,8 @@ public class FrozenTubeHistory {
     public FrozenTubeHistory() {
     }
 
-    public FrozenTubeHistory(Long id, Long transhipId, String transhipCode, Long stockInId, String stockInCode, Long stockOutTaskId, String stockOutTaskCode, Long handoverId, String handoverCode, String projectCode, String sampleCode, Integer type, String status, String frozenBoxCode, String position, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String positionInBox, Long equipmentId, Long areaId, Long shelvesId, String tubeRows, String tubeColumns, ZonedDateTime operateTime, Long frozenTubeId, String memo, String operator) {
+    public FrozenTubeHistory(Long id, Long transhipId, String transhipCode, Long stockInId, String stockInCode, Long stockOutTaskId, String stockOutTaskCode, Long handoverId, String handoverCode, String projectCode,
+                             String sampleCode, String type, String status, String frozenBoxCode, String position, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String positionInBox, Long equipmentId, Long areaId, Long shelvesId, String tubeRows, String tubeColumns, ZonedDateTime operateTime, Long frozenTubeId, String memo, String operator) {
         this.id = id;
         this.transhipId = transhipId;
         this.transhipCode = transhipCode;
@@ -233,11 +234,11 @@ public class FrozenTubeHistory {
         this.sampleCode = sampleCode;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 

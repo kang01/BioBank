@@ -482,8 +482,9 @@
                     var td = this;
                     remarkArray = this.getData(row,col,row2,col2);
                     var selectTubeArrayIndex = this.getSelected();
-                    vm.selectedPos = this.getSelected();
                     var array = _.flatten(remarkArray);
+                    vm.selectedPos = this.getSelected();
+                    vm.selectedTubesForDel = _.flatten(remarkArray);
 
                     if(window.event && window.event.ctrlKey){
                         //换位
@@ -683,53 +684,57 @@
                     }
                     //删除键
                     if(event.keyCode == 46){
-                        var tableCtrl = _getTableCtrl();
-                        var tubeObject = {
-                            id : "",
-                            sampleCode : "",
-                            sampleTempCode : "",
-                            status : "3001",
-                            memo : ""
-                        };
-                        if(vm.box.sampleTypeId){
-                            tubeObject.sampleTypeId = vm.box.sampleTypeId;
-                            tubeObject.sampleTypeCode = vm.box.sampleTypeCode;
-                            tubeObject.sampleTypeName = vm.box.sampleTypeName;
-                            tubeObject.backColor = vm.box.backColor;
-                        }
-                        if(vm.box.sampleClassificationId){
-                            tubeObject.sampleClassificationId = vm.box.sampleClassificationId;
-                            tubeObject.sampleClassificationCode = vm.box.sampleClassificationCode;
-                            tubeObject.sampleClassificationName = vm.box.sampleClassificationName;
-                            tubeObject.backColorForClass = vm.box.backColorForClass;
-                        }
-                        if(vm.box.sampleTypeCode == '97' || vm.box.sampleTypeCode == '98'){
-                            tubeObject.sampleClassificationId = "";
-                            tubeObject.sampleClassificationCode = "";
-                            tubeObject.sampleClassificationName = "";
-                            tubeObject.backColorForClass = "";
-                        }
-                        delFlag = true;
-                        var start1,end1,start2,end2;
-                        if(vm.selectedPos[0] > vm.selectedPos[2]){
-                            start1 = vm.selectedPos[2];
-                            end1 = vm.selectedPos[0];
-                        }else{
-                            start1 = vm.selectedPos[0];
-                            end1 = vm.selectedPos[2];
-                        }
-                        if(vm.selectedPos[1] > vm.selectedPos[3]){
-                            start2 = vm.selectedPos[3];
-                            end2 = vm.selectedPos[1];
-                        }else{
-                            start2 = vm.selectedPos[1];
-                            end2 = vm.selectedPos[3];
-                        }
-                        for(var i = start1;i <= end1; i++){
-                            for(var j = start2;  j <= end2;j++){
-                                tableCtrl.setDataAtCell(i, j, tubeObject);
+                        var len = _.filter(vm.selectedTubesForDel,{flag:"2"}).length;
+                        if(!len){
+                            var tableCtrl = _getTableCtrl();
+                            var tubeObject = {
+                                id : "",
+                                sampleCode : "",
+                                sampleTempCode : "",
+                                status : "3001",
+                                memo : ""
+                            };
+                            if(vm.box.sampleTypeId){
+                                tubeObject.sampleTypeId = vm.box.sampleTypeId;
+                                tubeObject.sampleTypeCode = vm.box.sampleTypeCode;
+                                tubeObject.sampleTypeName = vm.box.sampleTypeName;
+                                tubeObject.backColor = vm.box.backColor;
+                            }
+                            if(vm.box.sampleClassificationId){
+                                tubeObject.sampleClassificationId = vm.box.sampleClassificationId;
+                                tubeObject.sampleClassificationCode = vm.box.sampleClassificationCode;
+                                tubeObject.sampleClassificationName = vm.box.sampleClassificationName;
+                                tubeObject.backColorForClass = vm.box.backColorForClass;
+                            }
+                            if(vm.box.sampleTypeCode == '97' || vm.box.sampleTypeCode == '98'){
+                                tubeObject.sampleClassificationId = "";
+                                tubeObject.sampleClassificationCode = "";
+                                tubeObject.sampleClassificationName = "";
+                                tubeObject.backColorForClass = "";
+                            }
+                            delFlag = true;
+                            var start1,end1,start2,end2;
+                            if(vm.selectedPos[0] > vm.selectedPos[2]){
+                                start1 = vm.selectedPos[2];
+                                end1 = vm.selectedPos[0];
+                            }else{
+                                start1 = vm.selectedPos[0];
+                                end1 = vm.selectedPos[2];
+                            }
+                            if(vm.selectedPos[1] > vm.selectedPos[3]){
+                                start2 = vm.selectedPos[3];
+                                end2 = vm.selectedPos[1];
+                            }else{
+                                start2 = vm.selectedPos[1];
+                                end2 = vm.selectedPos[3];
+                            }
+                            for(var i = start1;i <= end1; i++){
+                                for(var j = start2;  j <= end2;j++){
+                                    tableCtrl.setDataAtCell(i, j, tubeObject);
+                                }
                             }
                         }
+
 
                         event.stopImmediatePropagation();
                     }else{

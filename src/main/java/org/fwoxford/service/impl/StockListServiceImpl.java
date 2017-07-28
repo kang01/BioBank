@@ -671,8 +671,8 @@ public class StockListServiceImpl implements StockListService {
         query.distinct(true);
         Predicate p = cb.notEqual(root.get("status").as(String.class), Constants.INVALID);
         predicate.add(p);
-        Predicate pred = cb.equal(root.get("frozenTubeState").as(String.class), Constants.FROZEN_BOX_STOCKED);
-        predicate.add(pred);
+//        Predicate pred = cb.equal(root.get("frozenTubeState").as(String.class), Constants.FROZEN_BOX_STOCKED);
+//        predicate.add(pred);
         if (searchForm != null) {
             if (searchForm.getProjectCodeStr() != null && searchForm.getProjectCodeStr().length > 0) {
                 CriteriaBuilder.In<String> in = cb.in(root.get("projectCode"));

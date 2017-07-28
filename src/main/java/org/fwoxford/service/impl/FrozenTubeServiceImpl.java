@@ -290,6 +290,7 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
 
         for(FrozenTube f: frozenTubeList){
             FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
+            frozenTubeDTO.setSampleCode(StringUtils.isEmpty(frozenTubeDTO.getSampleCode())?frozenTubeDTO.getSampleTempCode():frozenTubeDTO.getSampleCode());
             frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
             frozenTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
             frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);

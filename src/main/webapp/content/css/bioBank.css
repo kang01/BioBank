@@ -876,9 +876,26 @@ body.ng-pageslide-body-closed::before {
     from {right: -75%;}
     to {right:0;}
 }
-
-
-
+.repeat-sample-class{
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    border:1px solid red;
+}
+.stockInAnimation{
+    -webkit-animation:twinkling 2s infinite ease-in-out;
+    opacity:1;
+}
+@-webkit-keyframes twinkling{
+    50%{
+        opacity:0;
+    }
+    100%{
+        opacity:1;
+    }
+}
 .rating {
     color: #a9a9a9;
     margin: 0;

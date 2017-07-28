@@ -300,7 +300,6 @@
                 sample.sampleVolumns = vm.entity.sampleVolumns;
                 sample.memo = vm.entity.memo;
             });
-            console.log(JSON.stringify(sampleSelectedArray));
             var array = [];
             if(vm.singleMultipleFlag === 'single'){
                 array.push(vm.entity);

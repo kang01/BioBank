@@ -351,7 +351,8 @@
                 selected[full.frozenBoxCode] = false;
             });
             vm.selectedDataFlag = true;
-            console.log(JSON.stringify(selected))
+            vm.stockInBox = dataArray;
+            _isStockInFinish();
         }
         function _fnEmpty() {
             vm.dto = {};
@@ -688,14 +689,19 @@
         function _isStockInFinish() {
             //已上架
             var putInLen = _.filter(vm.stockInBox,{"status":"2006"}).length;
-            //去除分装的数据
-            var stockInBox = angular.copy(vm.stockInBox);
-            _.remove(stockInBox,{"status":"2003"});
-            if(putInLen == stockInBox.length){
+            if(putInLen){
                 vm.stockInflag = true;
             }else{
                 vm.stockInflag = false;
             }
+            // //去除分装的数据
+            // var stockInBox = angular.copy(vm.stockInBox);
+            // _.remove(stockInBox,{"status":"2003"});
+            // if(putInLen == stockInBox.length){
+            //     vm.stockInflag = true;
+            // }else{
+            //     vm.stockInflag = false;
+            // }
         }
 
 

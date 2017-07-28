@@ -18,6 +18,8 @@
         vm.tubes = items.tubes;
         //single:单次录入 multiple 批量录入
         vm.singleMultipleFlag = items.singleMultipleFlag;
+        //是否出库再回来样本
+        vm.originalSampleFlag = false;
         var sampleSelectedArray = items.sampleSelectedArray || [];
         vm.entity = {
             sampleClassificationId:"",
@@ -36,6 +38,7 @@
         _.forEach(sampleSelectedArray, function(sample) {
             sample.status = vm.entity.status;
         });
+
         vm.sampleTypeName = items.sampleTypeName;
         vm.sampleTypeCode = items.sampleTypeCode;
 
@@ -59,6 +62,11 @@
         var tube;
 
         function _init() {
+           // var len =  _.filter(sampleSelectedArray,{flag:"2"}).length;
+           // if(len){
+           //     //是否原盒的样本
+           //     vm.originalSampleFlag = true;
+           // }
             //项目
             ProjectService.query({},onProjectSuccess, onError);
             function onProjectSuccess(data) {
@@ -197,29 +205,40 @@
                 labelField:'sampleClassificationName',
                 maxItems: 1,
                 onChange:function (value) {
-                    vm.entity.sampleClassificationId = value;
-                    vm.entity.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationName;
-                    vm.entity.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationCode;
-                    vm.entity.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).backColor;
-                    _queryTube();
-                    _.forEach(sampleSelectedArray, function(sample) {
-                        sample.sampleClassificationId = value;
-                        sample.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationName;
-                        sample.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationCode;
-                        sample.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).backColor;
-                    });
+                    if(value){
+                        vm.entity.sampleClassificationId = value;
+                        vm.entity.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationName;
+                        vm.entity.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationCode;
+                        vm.entity.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).backColor;
+                        _queryTube();
+                        _.forEach(sampleSelectedArray, function(sample) {
+                            sample.sampleClassificationId = value;
+                            sample.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationName;
+                            sample.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationCode;
+                            sample.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).backColor;
+                        });
+                    }else{
+                        _queryTube();
+                    }
+
                 }
             };
         }
         _init();
         //查询库存中同一项目下有的样本，盒子id是为了不验证本盒子中的样本
+        vm.errorFlag = false;
         function _queryTube() {
             StockInInputService.queryTube(vm.entity.sampleCode,vm.entity.projectCode,vm.entity.frozenBoxId,vm.entity.sampleTypeId,vm.entity.sampleClassificationId).success(function (data) {
                 vm.tubes = data;
+            }).error(function (data) {
+                toastr.error(data.message);
+                vm.errorFlag = true;
             });
         }
         //从查询出来的样本中选出要入库的样本
+        // vm.clickFlag = false;
         function _fnSampleBoxSelect(item,$event) {
+            // vm.originalSampleFlag = true;
             tube = item;
             vm.entity.id = item.id;
             vm.entity.projectSiteId = item.projectSiteId;
@@ -234,6 +253,7 @@
             $($event.target).closest('table').find('.rowLight').removeClass("rowLight");
             $($event.target).closest('tr').addClass("rowLight");
             vm.queryProjectSampleClass(vm.entity.projectId,vm.entity.sampleTypeId);
+            // vm.clickFlag = true;
         }
 
 

@@ -782,6 +782,15 @@ body.ng-pageslide-body-closed::before {
 .add-sample-modal-body .project-sites .selectize-input > *{
     width: 150px;
 }
+.add-sample-modal-body .table > tbody > tr > td,
+.add-sample-modal-body .table > tbody > tr > th,
+.add-sample-modal-body .table > tfoot > tr > td,
+.add-sample-modal-body .table > tfoot > tr > th,
+.add-sample-modal-body .table > thead > tr > td,
+.add-sample-modal-body .table > thead > tr > th{
+    padding: 8px;
+    line-height: 1.42857143;
+}
 /*.add-sample-modal-body .multi .project-sites .selectize-input > *{*/
     /*width: 80px;*/
 /*}*/

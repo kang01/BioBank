@@ -295,7 +295,6 @@
             }
 
         }
-
         function toggleOne (selectedItems) {
             for(var i in vm.selected){
                 if(vm.selected[i]){
@@ -335,23 +334,17 @@
             DTColumnBuilder.newColumn(2).withOption("width", "80"),
             DTColumnBuilder.newColumn(3).withOption("width", "80"),
             DTColumnBuilder.newColumn(4).withOption("width", "auto")
-
         ];
-
         function _fnRowSelectorRender(data, type, full, meta) {
             vm.selected[full.id] = true;
             var html = '';
             html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
             return html;
         }
-
-
-
         //关闭
         function _fnCloseSampleMovement() {
             vm.sampleMovementFlag = false;
         }
-
         //盒子列表
         vm.boxOptions = BioBankDataTable.buildDTOption("ORDINARY", null, 10)
             .withOption('order', [[4,'asc']])
@@ -658,7 +651,6 @@
                     }
 
                 }
-
             };
             //渲染管子表格
             function myCustomRenderer(hotInstance, td, row, col, prop, value, cellProperties) {

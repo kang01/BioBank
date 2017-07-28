@@ -795,7 +795,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 if(frozenTubeHistory != null &&
                     (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
                     frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_2);//原盒原库存
-                }else if(frozenTubeHistory != null && frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT) || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER)){
+                }else if(frozenTubeHistory != null &&( frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)
+                    || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
                     frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_1);//出库再回来
                 }
                 frozenTubeDTOS.add(frozenTubeDTO);

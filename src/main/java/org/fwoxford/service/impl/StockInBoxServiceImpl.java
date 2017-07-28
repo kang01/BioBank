@@ -759,12 +759,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         //保存冻存管信息
         for(FrozenTubeDTO tubeDTO:frozenBoxDTO.getFrozenTubeDTOS()){
-            if(!StringUtils.isEmpty(tubeDTO.getFrozenTubeState())
-                &&(tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)
-                ||tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
-                ||tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER))){
-                countOfStockInTube++;
-            }
             //取原冻存管的患者信息
             FrozenTube frozenTube = null;
             String tubeflag = Constants.FROZEN_FLAG_3;//盒内新增
@@ -780,7 +774,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                     (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
                     //原盒原库存
                     tubeflag = Constants.FROZEN_FLAG_2;
-                }else if(frozenTubeHistory != null && frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT) || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER)){
+                }else if(frozenTubeHistory != null && (frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)
+                    || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
                     //出库再回来
                     tubeflag = Constants.FROZEN_FLAG_1;
                 }
@@ -788,9 +783,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             if(tubeflag.equals(Constants.FROZEN_FLAG_1)){//出库再回来
                 frozenTube.setMemo(frozenTube.getMemo()+","+tubeDTO.getMemo());
                 frozenTube.setSampleVolumns(tubeDTO.getSampleVolumns());
+                countOfStockInTube++;
             }else if(tubeflag.equals(Constants.FROZEN_FLAG_2)){//原盒原库存
                 continue;
             }else{
+                countOfStockInTube++;
                 //项目编码
                 tubeDTO = createFrozenTubeByProject(frozenBoxDTO,tubeDTO);
                 //样本类型---如果冻存盒不是混合的，则需要验证冻存管的样本类型和样本分类是否与冻存盒是一致的，反之，则不验证
@@ -1113,7 +1110,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             if(frozenTubeHistory != null &&
                 (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
                 frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_2);//原盒原库存
-            }else if(frozenTubeHistory != null && frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT) || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER)){
+            }else if(frozenTubeHistory != null &&(frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)
+                || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
                 frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_1);//出库再回来
             }
             frozenTubeDTOS.add(frozenTubeDTO);

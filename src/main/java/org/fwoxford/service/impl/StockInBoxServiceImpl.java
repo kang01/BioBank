@@ -6,11 +6,9 @@ import org.fwoxford.repository.*;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.StockInBoxService;
 import org.fwoxford.service.StockInService;
+import org.fwoxford.service.StockListService;
 import org.fwoxford.service.dto.*;
-import org.fwoxford.service.dto.response.StockInBoxDetail;
-import org.fwoxford.service.dto.response.StockInBoxForDataTable;
-import org.fwoxford.service.dto.response.StockInBoxForDataTableEntity;
-import org.fwoxford.service.dto.response.StockInBoxForSplit;
+import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
@@ -71,33 +69,26 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     private SampleTypeRepository sampleTypeRepository;
     @Autowired
     private FrozenBoxTypeRepository frozenBoxTypeRepository;
-
     @Autowired
     private FrozenBoxMapper frozenBoxMapper;
-
     @Autowired
     private StockInBoxPositionRepository stockInBoxPositionRepository;
-
     @Autowired
     private SampleClassificationRepository sampleClassificationRepository;
-
     @Autowired
     private StockInService stockInService;
-
     @Autowired
     private FrozenTubeMapper frozenTubeMapper;
-
     @Autowired
     private FrozenTubeTypeRepository frozenTubeTypeRepository;
-
     @Autowired
     private FrozenBoxService frozenBoxService;
-
     @Autowired
     private ProjectRepository projectRepository;
-
     @Autowired
     private ProjectSiteRepository projectSiteRepository;
+    @Autowired
+    private StockListService stockListService;
 
     public StockInBoxServiceImpl(StockInBoxRepository stockInBoxRepository, StockInBoxMapper stockInBoxMapper,
                                  StockInBoxRepositries stockInBoxRepositries,StockInRepository stockInRepository) {
@@ -765,70 +756,76 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
 
         int countOfStockInTube = 0;
+
         //保存冻存管信息
         for(FrozenTubeDTO tubeDTO:frozenBoxDTO.getFrozenTubeDTOS()){
-
-            //项目编码
-            tubeDTO = createFrozenTubeByProject(frozenBoxDTO,tubeDTO);
-
-            //样本类型---如果冻存盒不是混合的，则需要验证冻存管的样本类型和样本分类是否与冻存盒是一致的，反之，则不验证
-            if(entity.getIsMixed().equals(Constants.NO)){
-                if(tubeDTO.getSampleTypeId() == null){
-                    throw new BankServiceException("冻存管样本类型不能为空！");
-                }
-                if(entity.getId() != tubeDTO.getSampleTypeId()){
-                    throw new BankServiceException("样本类型与冻存盒的样本类型不符！");
-                }
+            if(!StringUtils.isEmpty(tubeDTO.getFrozenTubeState())
+                &&(tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)
+                ||tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
+                ||tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER))){
+                countOfStockInTube++;
             }
-            tubeDTO = createFrozenTubeBySampleType(tubeDTO);
-            //验证冻存管是否重复
-            List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
-
-            if(tubeDTO.getSampleClassificationId()==null){
-                frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeId(),Constants.INVALID);
-            }else{
-                frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),frozenBox.getId(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
-            }
-            for(FrozenTube f:frozenTubeList){
-                if(tubeDTO.getId()==null ||
-                    (tubeDTO.getId()!=null&&!f.getId().equals(tubeDTO.getId()))){
-                    throw new BankServiceException("冻存管编码"+tubeDTO.getSampleCode()+"已经存在，不能保存该冻存管！",tubeDTO.getSampleCode());
-                }
-            }
-
             //取原冻存管的患者信息
             FrozenTube frozenTube = null;
+            String tubeflag = Constants.FROZEN_FLAG_3;//盒内新增
             if(tubeDTO.getId() != null){
                 frozenTube = frozenTubeRepository.findOne(tubeDTO.getId());
                 if(frozenTube == null){
                     throw new BankServiceException("冻存管不存在！");
                 }
+                //查询冻存管历史
+                List<FrozenTubeHistory> frozenTubeHistories = stockListService.findFrozenTubeHistoryDetail(tubeDTO.getId());
+                FrozenTubeHistory frozenTubeHistory = frozenTubeHistories.size()>0?frozenTubeHistories.get(0):null;
+                if(frozenTubeHistory != null &&
+                    (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
+                    //原盒原库存
+                    tubeflag = Constants.FROZEN_FLAG_2;
+                }else if(frozenTubeHistory != null && frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT) || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER)){
+                    //出库再回来
+                    tubeflag = Constants.FROZEN_FLAG_1;
+                }
             }
-            tubeDTO = createFrozenTubeByOldFrozenTube(frozenTube,tubeDTO);
-            if(tubeDTO.getId()==null){
-                tubeDTO.setSampleUsedTimes(tubeDTO.getSampleUsedTimes()!=null?tubeDTO.getSampleUsedTimes():0);
-            }
-            tubeDTO.setFrozenBoxId(frozenBox.getId());
-            tubeDTO.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-
-            //冻存管类型
-            tubeDTO = createFrozenTubeTypeInit(tubeDTO);
-            if(frozenTube == null
-                || (frozenTube!= null &&
-                    (!StringUtils.isEmpty(frozenTube.getFrozenTubeState())
-                        &&(frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
-                            ||frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)
-                            ||frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING))))
-                ){
-                tubeDTO.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
+            if(tubeflag.equals(Constants.FROZEN_FLAG_1)){//出库再回来
+                frozenTube.setMemo(frozenTube.getMemo()+","+tubeDTO.getMemo());
+                frozenTube.setSampleVolumns(tubeDTO.getSampleVolumns());
+            }else if(tubeflag.equals(Constants.FROZEN_FLAG_2)){//原盒原库存
+                continue;
             }else{
-                tubeDTO.setFrozenTubeState(frozenTube.getFrozenTubeState());
+                //项目编码
+                tubeDTO = createFrozenTubeByProject(frozenBoxDTO,tubeDTO);
+                //样本类型---如果冻存盒不是混合的，则需要验证冻存管的样本类型和样本分类是否与冻存盒是一致的，反之，则不验证
+                if(entity.getIsMixed().equals(Constants.NO)){
+                    if(tubeDTO.getSampleTypeId() == null){
+                        throw new BankServiceException("冻存管样本类型不能为空！");
+                    }
+                    if(entity.getId() != tubeDTO.getSampleTypeId()){
+                        throw new BankServiceException("样本类型与冻存盒的样本类型不符！");
+                    }
+                }
+                tubeDTO = createFrozenTubeBySampleType(tubeDTO);
+                //验证冻存管是否重复
+                List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
+                if(tubeDTO.getSampleClassificationId()==null){
+                    frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),tubeDTO.getSampleTypeId(),Constants.INVALID);
+                }else{
+                    frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(tubeDTO.getSampleCode(),tubeDTO.getProjectCode(),frozenBox.getId(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
+                }
+                for(FrozenTube f:frozenTubeList){
+                    if(tubeDTO.getId()==null ||
+                        (tubeDTO.getId()!=null&&!f.getId().equals(tubeDTO.getId()))){
+                        throw new BankServiceException("冻存管编码"+tubeDTO.getSampleCode()+"已经存在，不能保存该冻存管！",tubeDTO.getSampleCode());
+                    }
+                }
+                if(tubeDTO.getId()==null){
+                    tubeDTO.setSampleUsedTimes(tubeDTO.getSampleUsedTimes()!=null?tubeDTO.getSampleUsedTimes():0);
+                }
+                tubeDTO.setFrozenBoxId(frozenBox.getId());
+                tubeDTO.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+                //冻存管类型
+                tubeDTO = createFrozenTubeTypeInit(tubeDTO);
+                frozenTube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
             }
-            if(!StringUtils.isEmpty(tubeDTO.getFrozenTubeState())
-                &&(tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)||tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)||tubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER))){
-                countOfStockInTube++;
-            }
-            frozenTube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
+            frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
             frozenTubeRepository.save(frozenTube);
         }
         stockInBox.setCountOfSample(countOfStockInTube);
@@ -1109,11 +1106,15 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
             frozenTubeDTO.setSampleClassificationName(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationName():null);
             frozenTubeDTO.setSampleClassificationCode(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationCode():null);
-            if(frozenTubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED )
-                ||frozenTubeDTO.getFrozenTubeState().equals( Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
-                frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_1);
-            }else{
-                frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_2);
+            frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_3);//盒内新增样本
+            //查询样本历史信息
+            List<FrozenTubeHistory> frozenTubeHistories = stockListService.findFrozenTubeHistoryDetail(f.getId());
+            FrozenTubeHistory frozenTubeHistory = frozenTubeHistories.size()>0?frozenTubeHistories.get(0):null;
+            if(frozenTubeHistory != null &&
+                (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
+                frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_2);//原盒原库存
+            }else if(frozenTubeHistory != null && frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT) || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER)){
+                frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_1);//出库再回来
             }
             frozenTubeDTOS.add(frozenTubeDTO);
         }

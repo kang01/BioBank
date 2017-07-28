@@ -91,4 +91,11 @@ public interface StockInService {
     StockInBox createStockInBox(FrozenBox frozenBox, StockIn stockIn);
 
     StockInDTO createStockInByTranshipCodes(String transhipCode);
+
+    /**
+     * 作废入库单
+     * @param stockInCode
+     * @return
+     */
+    StockInDTO invalidStockIn(String stockInCode);
 }

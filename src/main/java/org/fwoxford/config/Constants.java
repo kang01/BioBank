@@ -18,10 +18,11 @@ public final class Constants {
     public static final String SYSTEM_ACCOUNT = "system";
     public static final String ANONYMOUS_USER = "anonymoususer";
     /**
-     * 入库状态 ：7001：进行中，7002已入库
+     * 入库状态：7001：进行中，7002：已入库，7090：已作废
      */
     public static final String STOCK_IN_PENDING = "7001";
     public static final String STOCK_IN_COMPLETE = "7002";
+    public static final String STOCK_IN_INVALID= "7090";
     /**
      * 入库类型：8001：首次入库
      */
@@ -267,6 +268,14 @@ public final class Constants {
     public static final String MOVE_TYPE_2 = "2";
     public static final String MOVE_TYPE_3 = "3";
 
+
+    public static final String SAMPLE_HISTORY_TRANSHIP = "101";
+    public static final String SAMPLE_HISTORY_STOCK_IN = "102";
+    public static final String SAMPLE_HISTORY_STOCK_OUT = "103";
+    public static final String SAMPLE_HISTORY_HAND_OVER = "104";
+    public static final String SAMPLE_HISTORY_MOVE = "105";
+    public static final String SAMPLE_HISTORY_CHANGE_POSITION = "106";
+    public static final String SAMPLE_HISTORY_DESTORY = "107";
 //    public static final Map<String,String> SAMPLE_TYPE_CODE_MAP = new HashMap<String,String>(){{
 //        put("A","血浆");
 //        put("W","白细胞");
@@ -276,8 +285,10 @@ public final class Constants {
 //        put("RNA","RNA");
 //    }};
 
+    //1：有出库记录再回来，2:原盒样本，3：盒内新增样本
     public static final String FROZEN_FLAG_1 = "1";
     public static final String FROZEN_FLAG_2 = "2";
+    public static final String FROZEN_FLAG_3 = "3";
     private Constants() {
     }
 }

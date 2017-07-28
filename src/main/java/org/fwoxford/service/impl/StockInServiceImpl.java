@@ -611,4 +611,36 @@ public class StockInServiceImpl implements StockInService {
         frozenTubeRepository.updateFrozenTubeStateByFrozenBoxCodes(Constants.FROZEN_BOX_STOCKING,frozenBoxCodes);
         return stockInMapper.stockInToStockInDTO(stockIn);
     }
+
+    /**
+     * 入库单作废
+     * @param stockInCode
+     * @return
+     */
+    @Override
+    public StockInDTO invalidStockIn(String stockInCode) {
+        StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
+        if(stockIn == null){
+            throw new BankServiceException("入库单不存在！");
+        }
+        if(!stockIn.getStatus().equals(Constants.STOCK_IN_PENDING)){
+            throw new BankServiceException("入库单状态不在进行中，不能作废！");
+        }
+        //查询此次入库单是否有转运记录
+        List<TranshipStockIn> transhipStockIn = transhipStockInRepository.findByStockInCode(stockInCode);
+        if(transhipStockIn.size()>0){
+            throw new BankServiceException("此次入库单含有转运记录，不能作废！");
+        }
+        stockIn.setStatus(Constants.STOCK_IN_INVALID);
+        stockInRepository.save(stockIn);
+        List<StockInBox> stockInBox = stockInBoxRepository.findStockInBoxByStockInCode(stockInCode);
+        for(StockInBox s :stockInBox){
+            s.setStatus(Constants.FROZEN_BOX_INVALID);
+            //恢复盒子之前的状态，若历史信息最新一条是已入库，则是原盒入库，恢复为已入库，盒内新增样本置为无效，原盒样本为已出库，盒内原库存样本，更改为上一次的状态
+            //若历史信息是已出库，则原盒已出库
+            //若历史信息无更多历史，为新增的冻存盒，置为已作废
+
+        }
+        return stockInMapper.stockInToStockInDTO(stockIn);
+    }
 }

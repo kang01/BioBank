@@ -5,6 +5,7 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.FrozenTubeService;
+import org.fwoxford.service.StockListService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.response.*;
@@ -32,15 +33,11 @@ import java.util.*;
 public class FrozenBoxServiceImpl implements FrozenBoxService {
 
     private final Logger log = LoggerFactory.getLogger(FrozenBoxServiceImpl.class);
-
     private final FrozenBoxRepository frozenBoxRepository;
     private final FrozenBoxRepositories frozenBoxRepositories;
-
     private final FrozenBoxMapper frozenBoxMapper;
-
     @Autowired
     private FrozenTubeService frozenTubeService;
-
     @Autowired
     private FrozenTubeMapper frozenTubeMapping;
     @Autowired
@@ -59,19 +56,16 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
     private FrozenBoxTypeMapper frozenBoxTypeMapper;
     @Autowired
     private ProjectSampleClassRepository projectSampleClassRepository;
-
     @Autowired
     private SampleClassificationMapper sampleClassificationMapper;
-
     @Autowired
     private FrozenTubeMapper frozenTubeMapper;
-
     @Autowired
     private StockInBoxRepository stockInBoxRepository;
-
     @Autowired
     private SampleTypeRepository sampleTypeRepository;
-
+    @Autowired
+    private StockListService stockListService;
     public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper, FrozenBoxRepositories frozenBoxRepositories) {
         this.frozenBoxRepository = frozenBoxRepository;
         this.frozenBoxMapper = frozenBoxMapper;
@@ -794,11 +788,15 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
                 frozenTubeDTO.setSampleClassificationName(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationName():null);
                 frozenTubeDTO.setSampleClassificationCode(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationCode():null);
-                if(frozenTubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED )
-                    ||frozenTubeDTO.getFrozenTubeState().equals( Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
-                    frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_1);
-                }else{
-                    frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_2);
+                frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_3);//盒内新增样本
+                //查询样本历史信息
+                List<FrozenTubeHistory> frozenTubeHistories = stockListService.findFrozenTubeHistoryDetail(f.getId());
+                FrozenTubeHistory frozenTubeHistory = frozenTubeHistories.size()>0?frozenTubeHistories.get(0):null;
+                if(frozenTubeHistory != null &&
+                    (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
+                    frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_2);//原盒原库存
+                }else if(frozenTubeHistory != null && frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT) || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER)){
+                    frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_1);//出库再回来
                 }
                 frozenTubeDTOS.add(frozenTubeDTO);
             }

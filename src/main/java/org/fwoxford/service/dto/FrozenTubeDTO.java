@@ -632,7 +632,7 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
     }
 
     /**
-     * 管子标识，1：原盒原库存，2：盒内新加入的冻存管
+     * 管子标识，2：原盒原库存，1：盒内新加入的冻存管
      */
     private String flag;
 

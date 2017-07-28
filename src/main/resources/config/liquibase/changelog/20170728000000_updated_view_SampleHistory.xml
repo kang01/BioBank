@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity FrozenTubeHistory.
+    -->
+    <changeSet id="201705728000000-3" author="jhipster">
+        <createView viewName="view_frozen_tube_history">
+            select ROWNUM  as id,temp.* from
+            (
+            select tranship.frozen_tube_id as frozen_tube_id,
+            tube.project_code,
+            tran.id as tranship_id,
+            tran.tranship_code,
+            null as stock_in_id,
+            null as stock_in_code,
+            null as stock_out_task_id,
+            null as stock_out_task_code,
+            null as handover_id,
+            null as handover_code,
+            tube.sample_code,
+            101 as type,
+            tranship.status,box.frozen_box_code,tranship.rows_in_tube as tube_rows,tranship.columns_in_tube as tube_columns
+            ,tran.tranship_date as operate_time,
+            (tbox.equipment_code||'.'||tbox.area_code||'.'||tbox.support_rack_code||'.'||tbox.columns_in_shelf||tbox.rows_in_shelf) as position,
+            (tranship.ROWS_IN_TUBE||tranship.COLUMNS_IN_TUBE) as position_in_box,
+            tbox.equipment_code,tbox.equipment_id,tbox.area_code,tbox.area_id,tbox.support_rack_code as shelves_code ,
+            tbox.support_rack_id as shelves_id,
+            tbox.columns_in_shelf,tbox.rows_in_shelf,tranship.memo, u.last_name||u.first_name as operator
+
+            from tranship_tube tranship
+            left join  frozen_tube tube on tranship.frozen_tube_id = tube.id
+            left join tranship_box tbox on tranship.tranship_box_id = tbox.id
+            left join  tranship tran on tbox.tranship_id = tran.id
+            left join frozen_box box on tbox.frozen_box_id = box.id
+            left join jhi_user u on tran.receiver_id = u.id
+
+            UNION
+            select stockIn.frozen_tube_id as frozen_tube_id,
+            tube.project_code,
+            null as tranship_id,
+            null as tranship_code,
+            s.id as stock_in_id,
+            s.stock_in_code,
+            null as stock_out_task_id,
+            null as stock_out_task_code,
+            null as handover_id,
+            null as handover_code,
+            tube.sample_code,
+            102 as type,
+            stockIn.status,box.frozen_box_code,stockIn.tube_rows,stockIn.tube_columns
+            ,s.stock_in_date as operate_time,
+            (sbox.equipment_code||'.'||sbox.area_code||'.'||sbox.support_rack_code||'.'||sbox.columns_in_shelf||sbox.rows_in_shelf) as position,
+            (stockIn.tube_rows||stockIn.tube_columns) as position_in_box,
+            sbox.equipment_code,sbox.equipment_id,sbox.area_code,sbox.area_id,sbox.support_rack_code as shelves_code ,
+            sbox.support_rack_id as shelves_id,
+            sbox.columns_in_shelf,sbox.rows_in_shelf,stockIn.memo, u.last_name||u.first_name||','||u2.last_name||u2.first_name as operator
+
+            from stock_in_tube stockIn
+            left join frozen_tube tube on stockIn.frozen_tube_id = tube.id
+            left join stock_in_box sbox on stockIn.stock_in_box_id = sbox.id
+            left join  stock_in s on sbox.stock_in_id = s.id
+            left join frozen_box box on sbox.frozen_box_id = box.id
+            left join jhi_user u on  s.store_keeper_id_1 = u.id
+            left join jhi_user u2 on  s.store_keeper_id_2 = u2.id
+
+
+            UNION
+            select stockOut.frozen_tube_id as frozen_tube_id,
+            tube.project_code,
+            null as tranship_id,
+            null as tranship_code,
+            null as stock_in_id,
+            null as stock_in_code,
+            task.id as stock_out_task_id,
+            task.stock_out_task_code,
+            null as handover_id,
+            null as handover_code,
+            tube.sample_code,
+            103 as type,
+            stockOut.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns
+            ,task.stock_out_date as operate_time,
+            (soutbox.equipment_code||'.'||soutbox.area_code||'.'||soutbox.support_rack_code||'.'||soutbox.columns_in_shelf||soutbox.rows_in_shelf) as position,
+            (stockOut.tube_rows||stockOut.tube_columns) as position_in_box,
+            soutbox.equipment_code,soutbox.equipment_id,soutbox.area_code,soutbox.area_id,soutbox.support_rack_code as shelves_code ,
+            soutbox.support_rack_id as shelves_id,
+            soutbox.columns_in_shelf,soutbox.rows_in_shelf,stockOut.memo,u.last_name||u.first_name||','||u2.last_name||u2.first_name as operator
+
+
+            from stock_out_box_tube stockOut
+            left join  frozen_tube tube on stockOut.frozen_tube_id = tube.id
+            left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id
+            left join frozen_box box on soutbox.frozen_box_id = box.id
+            left join  stock_out_task task on soutbox.stock_out_task_id = task.id
+            left join jhi_user u on  task.stock_out_head_id_1 = u.id
+            left join jhi_user u2 on  task.stock_out_head_id_2 = u2.id
+
+            UNION
+            select stockOut.frozen_tube_id as frozen_tube_id,
+            tube.project_code,
+            null as tranship_id,
+            null as tranship_code,
+            null as stock_in_id,
+            null as stock_in_code,
+            null as stock_out_task_id,
+            null as stock_out_task_code,
+            handover.id as handover_id,
+            handover.handover_code,
+            tube.sample_code,
+            104 as type,
+            hand.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns
+            ,handover.handover_time  as operate_time,
+            (soutbox.equipment_code||'.'||soutbox.area_code||'.'||soutbox.support_rack_code||'.'||soutbox.columns_in_shelf||soutbox.rows_in_shelf) as position,
+            (stockOut.tube_rows||stockOut.tube_columns) as position_in_box,
+            soutbox.equipment_code,soutbox.equipment_id,soutbox.area_code,soutbox.area_id,soutbox.support_rack_code as shelves_code ,
+            soutbox.support_rack_id as shelves_id,
+            soutbox.columns_in_shelf,soutbox.rows_in_shelf,hand.memo, u.last_name||u.first_name as operator
+
+
+            from stock_out_handover_details hand
+            left join stock_out_box_tube stockOut on hand.stock_out_box_tube_id = stockOut.id
+            left join  frozen_tube tube on stockOut.frozen_tube_id = tube.id
+            left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id
+            left join frozen_box box on soutbox.frozen_box_id = box.id
+            left join  stock_out_handover handover on hand.stock_out_handover_id = handover.id
+            left join jhi_user u on  handover.handover_person_id = u.id
+
+            UNION
+            select m.frozen_tube_id as frozen_tube_id,
+            m.project_code,
+            null as tranship_id,
+            null as tranship_code,
+            null as stock_in_id,
+            null as stock_in_code,
+            null as stock_out_task_id,
+            null as stock_out_task_code,
+            null as handover_id,
+            null as handover_code,
+            m.sample_code,
+            105 as type,
+            m.status,m.frozen_box_code,m.tube_rows,m.tube_columns
+            ,m.created_date  as operate_time,
+            (m.equipment_code||'.'||m.area_code||'.'||m.support_rack_code||'.'||m.columns_in_shelf||m.rows_in_shelf) as position,
+            (m.tube_rows||m.tube_columns) as position_in_box,
+            m.equipment_code,m.equipment_id,m.area_code,m.area_id,m.support_rack_code as shelves_code ,
+            m.support_rack_id as shelves_id,
+            m.columns_in_shelf,m.rows_in_shelf,p.move_reason as memo ,u.last_name||u.first_name||','||u2.last_name||u2.first_name as operator
+
+            from position_move_record m
+            left join position_move p on m.position_move_id = p.id
+            left join frozen_box b on m.frozen_box_id = b.id
+            left join jhi_user u on  p.operator_id_1 = u.id
+            left join jhi_user u2 on  p.operator_id_2 = u2.id
+            ) temp
+            ORDER BY type desc,operate_time desc
+        </createView>
+    </changeSet>
+</databaseChangeLog>

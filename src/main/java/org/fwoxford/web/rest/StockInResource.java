@@ -253,4 +253,22 @@ public class StockInResource {
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+
+    /**
+     * 作废入库单
+     * @param stockInCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-in/invalid/{stockInCode}")
+    @Timed
+    public ResponseEntity<StockInDTO> invalidStockIn(@PathVariable String stockInCode) throws URISyntaxException {
+        log.debug("REST request to invalid stockIn : {}", stockInCode);
+
+        StockInDTO result = stockInService.invalidStockIn(stockInCode);
+
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 }

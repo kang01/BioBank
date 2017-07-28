@@ -521,6 +521,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         return stockInBoxForDataTables;
     }
 
+
     public StockInBoxForDataTable frozenBoxToStockInBoxForDataTable(FrozenBox box){
         StockInBoxForDataTable stockInBoxForDataTable = new StockInBoxForDataTable();
         if(box == null){
@@ -572,6 +573,13 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         return flag;
     }
 
+    /**
+     * 获取未满冻存盒
+     * @param projectCode
+     * @param sampleTypeCode
+     * @param stockInCode
+     * @return
+     */
     @Override
     public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxesByStockIn(String projectCode, String sampleTypeCode, String stockInCode) {
         List<StockInBoxForChangingPosition> stockInBoxForChangingPositionList = new ArrayList<StockInBoxForChangingPosition>();
@@ -703,28 +711,6 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             wrongFrozenBoxList =  frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
         }
         frozenBoxList.addAll(wrongFrozenBoxList);
-//        if(sampleClassificationIdStr.size()==0&&sampleType.getIsMixed().equals(Constants.YES)){//无分类--是混合类型
-//            //该项目下所有未满的冻存盒
-//            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBox(frozenBoxCode, frozenBox.getProject().getId(),stockInCode, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING);
-//        }else if(sampleClassificationIdStr.size()>0&&sampleType.getIsMixed().equals(Constants.YES)){//有分类--是混合类型
-//            //该项目下该类型下所有样本分类的不分类型的未装满的冻存盒
-//            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationId(frozenBoxCode, frozenBox.getProject().getId(),sampleClassificationIdStr, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING,stockInCode);
-//        }else{//无分类--不是混合类型，有分类--不是混合类型
-//            //该项目下该类型的所有未满冻存盒
-//            frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeId(frozenBoxCode, frozenBox.getProject().getId(),sampleType.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKING,stockInCode);
-//        }
-//        if (frozenBoxList.size() == 0) {
-//            if(sampleClassificationIdStr.size()==0&&sampleType.getIsMixed().equals(Constants.YES)){//无分类--是混合类型
-//                //该项目下所有未满的冻存盒
-//                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxInAllStock(frozenBoxCode, frozenBox.getProject().getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
-//            }else if(sampleClassificationIdStr.size()>0&&sampleType.getIsMixed().equals(Constants.YES)){//有分类--是混合类型
-//                //该项目下该类型下所有样本分类的不分类型的未装满的冻存盒
-//                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), sampleClassificationIdStr, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
-//            }else{//无分类--不是混合类型，有分类--不是混合类型
-//                //该项目下该类型的所有未满冻存盒
-//                frozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(),sampleType.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
-//            }
-//        }
 
         for(FrozenBox f :frozenBoxList){
             StockInBoxForIncomplete stockInBoxForIncomplete = new StockInBoxForIncomplete();
@@ -811,5 +797,10 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         frozenBoxDTO.setSampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null);
         frozenBoxDTO.setSampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null);
         return frozenBoxDTO;
+    }
+
+    @Override
+    public List<FrozenBox> findFrozenBoxHistory(Long id) {
+        return null;
     }
 }

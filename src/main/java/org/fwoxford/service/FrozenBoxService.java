@@ -128,4 +128,11 @@ public interface FrozenBoxService {
     StockInBoxDetail createStockInBoxDetail(FrozenBox frozenBox, String stockInCode);
 
     List<StockInBoxForDataTable> frozenBoxesToStockInBoxForDataTables(List<FrozenBox> frozenBoxes);
+
+    /**
+     * 查询冻存盒的历史
+     * @param id
+     * @return
+     */
+    List<FrozenBox> findFrozenBoxHistory(Long id);
 }

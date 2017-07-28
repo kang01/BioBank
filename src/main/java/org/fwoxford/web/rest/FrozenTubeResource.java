@@ -171,7 +171,7 @@ public class FrozenTubeResource {
     public ResponseEntity<List<FrozenTubeDTO>> getFrozenTubeBySampleCodeNadProjectAndSampleTypeAndSampleClassifacition(@PathVariable String sampleCode,@PathVariable String projectCode,@PathVariable Long sampleTypeId,
                                                                                                                        @PathVariable Long sampleClassificationId) {
         log.debug("REST request to get FrozenTube : {}", sampleCode);
-        List<FrozenTubeDTO> frozenTubeDTO = frozenTubeService.findFrozenTubeBySampleCodeNadProjectAndSampleTypeAndSampleClassifacition(sampleCode,projectCode,sampleTypeId,sampleClassificationId);
+        List<FrozenTubeDTO> frozenTubeDTO = frozenTubeService.findFrozenTubeBySampleCodeAndProjectAndSampleTypeAndSampleClassifacition(sampleCode,projectCode,sampleTypeId,sampleClassificationId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(frozenTubeDTO));
     }
 

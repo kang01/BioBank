@@ -74,7 +74,7 @@ public interface FrozenTubeService {
      */
     List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode, Long sampleTypeId);
 
-    List<FrozenTubeDTO> findFrozenTubeBySampleCodeNadProjectAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long sampleTypeId, Long sampleClassificationId);
+    List<FrozenTubeDTO> findFrozenTubeBySampleCodeAndProjectAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long sampleTypeId, Long sampleClassificationId);
 
     List<FrozenTubeDTO> getFrozenTubeByIds(String ids);
 

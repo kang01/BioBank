@@ -90,6 +90,9 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.frozenBox.id !=?3 and t.sampleType.id = ?4 and t.sampleClassification.id = ?5 and t.status!='0000'")
     List<FrozenTube> findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long frozenBoxId, Long sampleTypeId, Long sampleClassificationId);
 
+    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.frozenBox.id !=?3 and t.sampleType.id = ?4  and t.status!='0000'")
+    List<FrozenTube> findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleType(String sampleCode, String projectCode, Long frozenBoxId, Long sampleTypeId);
+
     @Modifying
     @Query("update FrozenTube t set t.frozenTubeState = ?1  where t.frozenBoxCode in ?2")
     void updateFrozenTubeStateByFrozenBoxCodes(String status, List<String> frozenBoxCodes);

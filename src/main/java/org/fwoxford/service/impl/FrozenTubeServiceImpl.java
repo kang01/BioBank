@@ -267,8 +267,12 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
                 frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(sampleCode,projectCode,sampleTypeId,sampleClassificationId);
             }
         }else{
-            frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(sampleCode,projectCode,frozenBoxId,sampleTypeId,sampleClassificationId);
-        }
+            if(sampleClassificationId == -1 || sampleClassificationId.equals(-1) ){
+                frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleType(sampleCode,projectCode,frozenBoxId,sampleTypeId);
+            }else{
+                frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(sampleCode,projectCode,frozenBoxId,sampleTypeId,sampleClassificationId);
+            }}
+
         for(FrozenTube f:frozenTubeList){
             if(!StringUtils.isEmpty(f.getFrozenTubeState())
                 &&(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&&!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER))){

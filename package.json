@@ -72,5 +72,8 @@
   },
   "scripts": {
     "test": "gulp test"
+  },
+  "dependencies": {
+    "viewerjs": "^0.7.1"
   }
 }

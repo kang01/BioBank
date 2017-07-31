@@ -1360,7 +1360,7 @@
             BioBankBlockUi.blockUiStop();
             toastr.error(error.data.message);
         }
-
+        //滿意程度
         vm.rating = 0;
         vm.ratings = [{
             current: vm.transportRecord.sampleSatisfaction,
@@ -1369,6 +1369,21 @@
         vm.getSelectedRating = function (rating) {
             vm.transportRecord.sampleSatisfaction = rating;
         };
+
+        vm.phones = [{
+            'name': 'Nexus S',
+            'snippet': 'Fast just got faster with Nexus S.',
+            'age': 1
+        }, {
+            'name': 'Motorola XOOM™ with Wi-Fi',
+            'snippet': 'The Next, Next Generation tablet.',
+            'age': 2
+        }, {
+            'name': 'MOTOROLA XOOM™',
+            'snippet': 'The Next, Next Generation tablet.',
+            'age': 3
+        }];
+        vm.alert = function (phone) { window.alert(phone.name); };
     }
     function BoxInstanceCtrl($uibModalInstance) {
         var ctrl = this;

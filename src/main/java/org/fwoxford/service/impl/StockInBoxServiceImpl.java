@@ -825,17 +825,17 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 f.setStatus(Constants.INVALID);
             }else{
                f.setProjectCode(frozenTubeHistory.getProjectCode());
-               f.setFrozenTubeState(frozenTubeHistory.getFrozenTubeState());
-               f.setProject(frozenTubeMapper.projectFromId(frozenTubeHistory.getProjectId()));
-               f.setProjectSite(frozenTubeMapper.projectSiteFromId(frozenTubeHistory.getProjectSiteId()));
-               f.setProjectSiteCode(frozenTubeHistory.getFrozenSiteCode());
-               f.setFrozenBox(frozenTubeMapper.frozenBoxFromId(frozenTubeHistory.getFrozenBoxId()));
-               f.setFrozenBoxCode(frozenTubeHistory.getFrozenBoxCode());
-               f.setTubeColumns(frozenTubeHistory.getTubeColumns());
-               f.setTubeRows(frozenTubeHistory.getTubeColumns());
-               f.setSampleType(frozenTubeMapper.sampleTypeFromId(frozenTubeHistory.getSampleTypeId()));
-               f.setSampleTypeCode(frozenTubeHistory.getSampleTypeCode());
-               f.setSampleTypeName(frozenTubeHistory.getSampleTypeName());
+//               f.setFrozenTubeState(frozenTubeHistory.getFrozenTubeState());
+//               f.setProject(frozenTubeMapper.projectFromId(frozenTubeHistory.getProjectId()));
+//               f.setProjectSite(frozenTubeMapper.projectSiteFromId(frozenTubeHistory.getProjectSiteId()));
+//               f.setProjectSiteCode(frozenTubeHistory.getFrozenSiteCode());
+//               f.setFrozenBox(frozenTubeMapper.frozenBoxFromId(frozenTubeHistory.getFrozenBoxId()));
+//               f.setFrozenBoxCode(frozenTubeHistory.getFrozenBoxCode());
+//               f.setTubeColumns(frozenTubeHistory.getTubeColumns());
+//               f.setTubeRows(frozenTubeHistory.getTubeColumns());
+//               f.setSampleType(frozenTubeMapper.sampleTypeFromId(frozenTubeHistory.getSampleTypeId()));
+//               f.setSampleTypeCode(frozenTubeHistory.getSampleTypeCode());
+//               f.setSampleTypeName(frozenTubeHistory.getSampleTypeName());
                f.setStatus(frozenTubeHistory.getStatus());
             }
         }

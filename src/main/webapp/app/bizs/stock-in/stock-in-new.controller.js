@@ -209,6 +209,8 @@
                 vm.selected = {};
 
                 var json = res.data;
+                vm.stockInBox = res.data.data;
+                _isStockInFinish();
                 var error = json.error || json.sError;
                 if ( error ) {
                     jqDt._fnLog( oSettings, 0, error );
@@ -421,6 +423,18 @@
             });
 
         }
+        //有上架的就可以入库完成
+        function _isStockInFinish() {
+            //已上架
+            var putInLen = _.filter(vm.stockInBox,{"status":"2006"}).length;
+            if(putInLen){
+                vm.stockInflag = true;
+            }else{
+                vm.stockInflag = false;
+            }
+        }
+
+
         vm.box = {};
         // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
         vm.editFlag = false;
@@ -617,6 +631,7 @@
                                                             vm.frozenTubeArray[i][j].projectSiteId = tubes[k].projectSiteId;
                                                             vm.frozenTubeArray[i][j].memo = tubes[k].memo;
                                                             vm.frozenTubeArray[i][j].sampleTypeId = tubes[k].sampleTypeId;
+                                                            vm.frozenTubeArray[i][j].sampleTypeCode = tubes[k].sampleTypeCode;
                                                             vm.frozenTubeArray[i][j].sampleTypeName = tubes[k].sampleTypeName;
                                                             vm.frozenTubeArray[i][j].backColor = tubes[k].backColor;
                                                             vm.frozenTubeArray[i][j].sampleVolumns = tubes[k].sampleVolumns;

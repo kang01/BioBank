@@ -39,7 +39,7 @@
             sample.status = vm.entity.status;
         });
 
-        vm.sampleTypeName = items.sampleTypeName;
+        // vm.sampleTypeName = items.sampleTypeName;
         vm.sampleTypeCode = items.sampleTypeCode;
 
         if(vm.sampleTypeCode != "98" || vm.sampleTypeCode != "97"){
@@ -48,7 +48,7 @@
             vm.entity.sampleTypeName = items.sampleTypeName;
             vm.sampleTypeId = items.sampleTypeId;
             vm.sampleTypeCode = items.sampleTypeCode;
-            vm.sampleTypeName = items.sampleTypeName;
+            // vm.sampleTypeName = items.sampleTypeName;
             vm.entity.sampleClassificationId = items.sampleClassificationId;
             vm.entity.sampleClassificationCode = items.sampleClassificationCode;
             vm.entity.sampleClassificationName = items.sampleClassificationName;
@@ -127,6 +127,7 @@
                 _.remove(vm.sampleTypeOptions,{sampleTypeCode:"97"});
                 if(vm.sampleTypeCode == "98" || vm.sampleTypeCode == "97"){
                     vm.entity.sampleTypeId = vm.sampleTypeOptions[0].id;
+                    vm.entity.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
                     vm.entity.sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
                     vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+vm.entity.sampleTypeId}).backColor;
                 }else{
@@ -244,8 +245,10 @@
             vm.entity.projectSiteId = item.projectSiteId;
             vm.entity.sampleTypeId = item.sampleTypeId;
             vm.entity.sampleTypeCode = item.sampleTypeCode;
+            vm.entity.sampleTypeName = item.sampleTypeName;
             vm.entity.sampleClassificationId = item.sampleClassificationId;
             vm.entity.sampleClassificationCode = item.sampleClassificationCode;
+            vm.entity.sampleClassificationName = item.sampleClassificationName;
             vm.entity.projectId = item.projectId;
             vm.entity.backColor = item.backColor;
             vm.entity.backColorForClass = item.backColorForClass;

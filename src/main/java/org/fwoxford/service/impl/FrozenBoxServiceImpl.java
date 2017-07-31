@@ -765,28 +765,31 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             throw new BankServiceException("冻存盒已满！");
         }
         List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
+        List<Long> ids = new ArrayList<Long>();
         for(FrozenTube f: frozenTubeList){
-                FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
-                frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
-                frozenTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
-                frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
-                frozenTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
-                frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
-                frozenTubeDTO.setSampleClassificationName(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationName():null);
-                frozenTubeDTO.setSampleClassificationCode(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationCode():null);
-                frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_3);//盒内新增样本
-                //查询样本历史信息
-                List<FrozenTubeHistory> frozenTubeHistories = stockListService.findFrozenTubeHistoryDetail(f.getId());
-                FrozenTubeHistory frozenTubeHistory = frozenTubeHistories.size()>0?frozenTubeHistories.get(0):null;
-                if(frozenTubeHistory != null &&
-                    (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
-                    frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_2);//原盒原库存
-                }else if(frozenTubeHistory != null &&( frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)
-                    || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
-                    frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_1);//出库再回来
-                }
-                frozenTubeDTOS.add(frozenTubeDTO);
+            ids.add(f.getId());
+        }
+        Map<Long,FrozenTubeHistory> allFrozenTubeHistories = stockListService.findFrozenTubeHistoryDetailByIds(ids);
+        for(FrozenTube f: frozenTubeList){
+            FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
+            frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
+            frozenTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
+            frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
+            frozenTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
+            frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
+            frozenTubeDTO.setSampleClassificationName(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationName():null);
+            frozenTubeDTO.setSampleClassificationCode(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationCode():null);
+            frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_3);//盒内新增样本
+            FrozenTubeHistory frozenTubeHistory =  allFrozenTubeHistories.get(f.getId());
+            if(frozenTubeHistory != null &&
+                (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
+                frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_2);//原盒原库存
+            }else if(frozenTubeHistory != null &&(frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)
+                || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
+                frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_1);//出库再回来
             }
+            frozenTubeDTOS.add(frozenTubeDTO);
+        }
         FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
         frozenBoxDTO.setFrozenTubeDTOS(frozenTubeDTOS);
         frozenBoxDTO.setFrontColor(frozenBox.getSampleType()!=null?frozenBox.getSampleType().getFrontColor():null);

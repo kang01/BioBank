@@ -13,4 +13,8 @@ import java.util.List;
 public interface FrozenTubeHistoryRepositories extends DataTablesRepository<FrozenTubeHistory,Long> {
 
     List<FrozenTubeHistory> findByFrozenTubeId(Long frozenTubeId);
+
+    List<FrozenTubeHistory> findByFrozenTubeIdIn(List<Long> frozenTubeId);
+
+    List<FrozenTubeHistory> findByFrozenTubeIdInAndType(List<Long> ids, String type);
 }

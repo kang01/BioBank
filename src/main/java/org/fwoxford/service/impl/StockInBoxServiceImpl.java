@@ -93,6 +93,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     private ProjectSiteRepository projectSiteRepository;
     @Autowired
     private StockListService stockListService;
+    @Autowired
+    private StockOutBoxTubeRepository stockOutBoxTubeRepository;
+    @Autowired
+    private StockInTubeRepository stockInTubeRepository;
 
     public StockInBoxServiceImpl(StockInBoxRepository stockInBoxRepository, StockInBoxMapper stockInBoxMapper,
                                  StockInBoxRepositries stockInBoxRepositries,StockInRepository stockInRepository) {
@@ -781,14 +785,13 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
         List<FrozenTube> frozenTubesForDelete = new ArrayList<FrozenTube>();
         JSONArray jsonArray = new JSONArray();
+        List<Long> delOrRevertIds = new ArrayList<>();
         for(FrozenTube oldTube:frozenTubeList){
-            Boolean isOldFlag = false;
-            FrozenTubeDTO frozenTubeDTO = new FrozenTubeDTO();
             if(!tubeIds.contains(oldTube.getId())){
+                delOrRevertIds.add(oldTube.getId());
                 frozenTubesForDelete.add(oldTube);
             }
         }
-        List<Map<String,String>> alist = new ArrayList<Map<String,String>>();
         //验证冻存管编码是否重复
         for(FrozenTubeDTO tubeDTO :frozenBoxDTO.getFrozenTubeDTOS()){
             //验证冻存管是否重复
@@ -813,9 +816,33 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(jsonArray.size()>0){
             throw new BankServiceException("盒内有重复的冻存管，不能保存！",jsonArray.toString());
         }
+        //删除原盒内不存在的样本
+//        frozenTubeRepository.save(frozenTubesForDelete);
+        Map<Long,FrozenTubeHistory> allFrozenTubeHistories = stockListService.findFrozenTubeHistoryDetailByIds(delOrRevertIds);
+        for(FrozenTube f : frozenTubesForDelete){
+            FrozenTubeHistory frozenTubeHistory = allFrozenTubeHistories.get(f.getId());
+            if(frozenTubeHistory == null){
+                f.setStatus(Constants.INVALID);
+            }else{
+               f.setProjectCode(frozenTubeHistory.getProjectCode());
+               f.setFrozenTubeState(frozenTubeHistory.getFrozenTubeState());
+               f.setProject(frozenTubeMapper.projectFromId(frozenTubeHistory.getProjectId()));
+               f.setProjectSite(frozenTubeMapper.projectSiteFromId(frozenTubeHistory.getProjectSiteId()));
+               f.setProjectSiteCode(frozenTubeHistory.getFrozenSiteCode());
+               f.setFrozenBox(frozenTubeMapper.frozenBoxFromId(frozenTubeHistory.getFrozenBoxId()));
+               f.setFrozenBoxCode(frozenTubeHistory.getFrozenBoxCode());
+               f.setTubeColumns(frozenTubeHistory.getTubeColumns());
+               f.setTubeRows(frozenTubeHistory.getTubeColumns());
+               f.setSampleType(frozenTubeMapper.sampleTypeFromId(frozenTubeHistory.getSampleTypeId()));
+               f.setSampleTypeCode(frozenTubeHistory.getSampleTypeCode());
+               f.setSampleTypeName(frozenTubeHistory.getSampleTypeName());
+               f.setStatus(frozenTubeHistory.getStatus());
+            }
+        }
         //保存冻存管信息
         for(FrozenTubeDTO tubeDTO:frozenBoxDTO.getFrozenTubeDTOS()){
             //取原冻存管的患者信息
+            FrozenTubeDTO frozenTubeDTOForSave = null;
             FrozenTube frozenTube = null;
             String tubeflag = Constants.FROZEN_FLAG_3;//盒内新增
             if(tubeDTO.getId() != null){
@@ -835,21 +862,19 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                     //出库再回来
                     tubeflag = Constants.FROZEN_FLAG_1;
                 }
+                frozenTubeDTOForSave = frozenTubeMapper.frozenTubeToFrozenTubeDTO(frozenTube);
             }
-            if(tubeflag.equals(Constants.FROZEN_FLAG_1)){//出库再回来
-                frozenTube.setMemo(frozenTube.getMemo()+","+tubeDTO.getMemo());
-                frozenTube.setSampleVolumns(tubeDTO.getSampleVolumns());
-                countOfStockInTube++;
-            }else if(tubeflag.equals(Constants.FROZEN_FLAG_2)){//原盒原库存
+            if(tubeflag.equals(Constants.FROZEN_FLAG_2)){//原盒原库存
                 continue;
-            }else{
-                countOfStockInTube++;
-                //项目编码
-                tubeDTO = createFrozenTubeByProject(frozenBoxDTO,tubeDTO);
-                //冻存管类型
-                tubeDTO = createFrozenTubeTypeInit(tubeDTO);
-                frozenTube = frozenTubeMapper.frozenTubeDTOToFrozenTube(tubeDTO);
             }
+            if(!StringUtils.isEmpty(tubeDTO.getMemo())){
+                frozenTubeDTOForSave.setMemo(frozenTube.getMemo()+","+tubeDTO.getMemo());
+            }
+            //项目编码
+            frozenTubeDTOForSave = createFrozenTubeByProject(frozenBoxDTO,tubeDTO);
+
+            //冻存管类型
+            frozenTubeDTOForSave = createFrozenTubeTypeInit(tubeDTO);
             //样本类型---如果冻存盒不是混合的，则需要验证冻存管的样本类型和样本分类是否与冻存盒是一致的，反之，则不验证
             if(entity.getIsMixed().equals(Constants.NO)){
                 if(tubeDTO.getSampleTypeId() == null){
@@ -860,13 +885,14 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 }
             }
             if(tubeDTO.getId()==null){
-                tubeDTO.setSampleUsedTimes(tubeDTO.getSampleUsedTimes()!=null?tubeDTO.getSampleUsedTimes():0);
+                frozenTubeDTOForSave.setSampleUsedTimes(tubeDTO.getSampleUsedTimes()!=null?tubeDTO.getSampleUsedTimes():0);
             }
-            tubeDTO = createFrozenTubeBySampleType(tubeDTO);
-            tubeDTO.setFrozenBoxId(frozenBox.getId());
-            tubeDTO.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-            frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
-            frozenTubeRepository.save(frozenTube);
+            frozenTubeDTOForSave = createFrozenTubeBySampleType(tubeDTO);
+            frozenTubeDTOForSave.setFrozenBoxId(frozenBox.getId());
+            frozenTubeDTOForSave.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            frozenTubeDTOForSave.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
+            frozenTubeRepository.save(frozenTubeMapper.frozenTubeDTOToFrozenTube(frozenTubeDTOForSave));
+            countOfStockInTube++;
         }
         stockInBox.setCountOfSample(countOfStockInTube);
         stockInBox.sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
@@ -1106,6 +1132,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
 
         List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
+        List<Long> ids = new ArrayList<Long>();
+        for(FrozenTube f: frozenTubeList){
+            ids.add(f.getId());
+        }
+        Map<Long,FrozenTubeHistory> allFrozenTubeHistories = stockListService.findFrozenTubeHistoryDetailByIds(ids);
         for(FrozenTube f: frozenTubeList){
             FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
             frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
@@ -1116,9 +1147,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenTubeDTO.setSampleClassificationName(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationName():null);
             frozenTubeDTO.setSampleClassificationCode(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationCode():null);
             frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_3);//盒内新增样本
-            //查询样本历史信息
-            List<FrozenTubeHistory> frozenTubeHistories = stockListService.findFrozenTubeHistoryDetail(f.getId());
-            FrozenTubeHistory frozenTubeHistory = frozenTubeHistories.size()>0?frozenTubeHistories.get(0):null;
+            FrozenTubeHistory frozenTubeHistory =  allFrozenTubeHistories.get(f.getId());
             if(frozenTubeHistory != null &&
                 (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
                 frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_2);//原盒原库存
@@ -1128,7 +1157,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }
             frozenTubeDTOS.add(frozenTubeDTO);
         }
-
         FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
 
         frozenBoxDTO.setFrozenTubeDTOS(frozenTubeDTOS);

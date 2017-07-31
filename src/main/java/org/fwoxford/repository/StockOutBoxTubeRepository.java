@@ -43,6 +43,6 @@ public interface StockOutBoxTubeRepository extends JpaRepository<StockOutBoxTube
     @Query("select count(t) from StockOutBoxTube t where t.stockOutTaskFrozenTube.stockOutTask.id=?1 and t.status = '2204'")
     Long countByStockOutTaskId(Long taskId);
 
-    @Query("select count(t) from StockOutBoxTube t where t.stockOutTaskFrozenTube.stockOutTask.id=?1 and t.status = '2204' and t.frozenTube != '3001'")
+    @Query("select count(t) from StockOutBoxTube t where t.stockOutTaskFrozenTube.stockOutTask.id=?1 and t.status = '2204' and t.frozenTube.status != '3001'")
     Long countAbnormalTubeByStockOutTaskId(Long taskId);
 }

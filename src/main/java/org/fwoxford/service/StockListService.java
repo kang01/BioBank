@@ -5,6 +5,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service Interface for managing StockList.
@@ -47,4 +48,6 @@ public interface StockListService {
     DataTablesOutput<ShelvesListAllDataTableEntity> getPageShelvesList(DataTablesInput input, FrozenPositionListSearchForm search);
 
     DataTablesOutput<AreasListAllDataTableEntity> getPageAreaList(DataTablesInput input, FrozenPositionListSearchForm search);
+
+    Map<Long,FrozenTubeHistory> findFrozenTubeHistoryDetailByIds(List<Long> ids);
 }

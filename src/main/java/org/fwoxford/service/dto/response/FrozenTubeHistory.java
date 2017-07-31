@@ -112,8 +112,10 @@ public class FrozenTubeHistory {
     public FrozenTubeHistory() {
     }
 
-    public FrozenTubeHistory(Long id, Long transhipId, String transhipCode, Long stockInId, String stockInCode, Long stockOutTaskId, String stockOutTaskCode, Long handoverId, String handoverCode, String projectCode,
-                             String sampleCode, String type, String status, String frozenBoxCode, String position, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String positionInBox, Long equipmentId, Long areaId, Long shelvesId, String tubeRows, String tubeColumns, ZonedDateTime operateTime, Long frozenTubeId, String memo, String operator) {
+
+    public FrozenTubeHistory(Long id, Long transhipId, String transhipCode, Long stockInId, String stockInCode, Long stockOutTaskId, String stockOutTaskCode, Long handoverId, String handoverCode, String projectCode, String sampleCode, String type, String status, String frozenBoxCode, String position, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String positionInBox, Long equipmentId, Long areaId, Long shelvesId, String tubeRows, String tubeColumns, ZonedDateTime operateTime, Long frozenTubeId, String memo, String operator
+//        , Long sampleTypeId, String sampleTypeCode, String sampleTypeName, Long frozenTubeTypeId, String frozenTubeTypeCode, String frozenTubeTypeName, Double frozenTubeVolumns, String frozenTubeVolumnsUnit, Integer sampleUsedTimesMost, Integer sampleUsedTimes, Double sampleVolumns, Long projectId, Long projectSiteId, String frozenSiteCode, String frozenTubeState, Long sampleClassificationId, Long frozenBoxId
+    ) {
         this.id = id;
         this.transhipId = transhipId;
         this.transhipCode = transhipCode;
@@ -144,6 +146,23 @@ public class FrozenTubeHistory {
         this.frozenTubeId = frozenTubeId;
         this.memo = memo;
         this.operator = operator;
+//        this.sampleTypeId = sampleTypeId;
+//        this.sampleTypeCode = sampleTypeCode;
+//        this.sampleTypeName = sampleTypeName;
+//        this.frozenTubeTypeId = frozenTubeTypeId;
+//        this.frozenTubeTypeCode = frozenTubeTypeCode;
+//        this.frozenTubeTypeName = frozenTubeTypeName;
+//        this.frozenTubeVolumns = frozenTubeVolumns;
+//        this.frozenTubeVolumnsUnit = frozenTubeVolumnsUnit;
+//        this.sampleUsedTimesMost = sampleUsedTimesMost;
+//        this.sampleUsedTimes = sampleUsedTimes;
+//        this.sampleVolumns = sampleVolumns;
+//        this.projectId = projectId;
+//        this.projectSiteId = projectSiteId;
+//        this.frozenSiteCode = frozenSiteCode;
+//        this.frozenTubeState = frozenTubeState;
+//        this.sampleClassificationId = sampleClassificationId;
+//        this.frozenBoxId = frozenBoxId;
     }
 
     public Long getId() {
@@ -385,4 +404,173 @@ public class FrozenTubeHistory {
     public void setOperator(String operator) {
         this.operator = operator;
     }
+//    @Column(name = "sample_type_id")
+//    private Long sampleTypeId;
+//    @Column(name = "sample_type_code")
+//    private String sampleTypeCode;
+//    @Column(name = "sample_type_name")
+//    private String sampleTypeName;
+//    @Column(name = "frozen_tube_type _id")
+//    private Long frozenTubeTypeId;
+//    @Column(name = "frozen_tube_type_code")
+//    private String frozenTubeTypeCode;
+//    @Column(name = "frozen_tube_type_name")
+//    private String frozenTubeTypeName;
+//    @Column(name = "frozen_tube_volumns")
+//    private Double frozenTubeVolumns;
+//    @Column(name = "frozen_tube_volumns_unit")
+//    private String frozenTubeVolumnsUnit;
+//    @Column(name = "sample_used_times_most")
+//    private Integer sampleUsedTimesMost;
+//    @Column(name = "sample_used_times")
+//    private Integer sampleUsedTimes;
+//    @Column(name = "sample_volumns")
+//    private Double sampleVolumns;
+//    @Column(name = "project_id")
+//    private Long projectId;
+//    @Column(name = "project_site_id")
+//    private Long projectSiteId;
+//    @Column(name = "project_site_code")
+//    private String frozenSiteCode;
+//    @Column(name = "frozen_tube_state")
+//    private String frozenTubeState;
+//    @Column(name = "sample_classification_id")
+//    private Long sampleClassificationId;
+//    @Column(name = "frozen_box_id")
+//    private Long frozenBoxId;
+//    public Long getSampleTypeId() {
+//        return sampleTypeId;
+//    }
+//
+//    public void setSampleTypeId(Long sampleTypeId) {
+//        this.sampleTypeId = sampleTypeId;
+//    }
+//
+//    public String getSampleTypeCode() {
+//        return sampleTypeCode;
+//    }
+//
+//    public void setSampleTypeCode(String sampleTypeCode) {
+//        this.sampleTypeCode = sampleTypeCode;
+//    }
+//
+//    public String getSampleTypeName() {
+//        return sampleTypeName;
+//    }
+//
+//    public void setSampleTypeName(String sampleTypeName) {
+//        this.sampleTypeName = sampleTypeName;
+//    }
+//
+//    public Long getFrozenTubeTypeId() {
+//        return frozenTubeTypeId;
+//    }
+//
+//    public void setFrozenTubeTypeId(Long frozenTubeTypeId) {
+//        this.frozenTubeTypeId = frozenTubeTypeId;
+//    }
+//
+//    public String getFrozenTubeTypeCode() {
+//        return frozenTubeTypeCode;
+//    }
+//
+//    public void setFrozenTubeTypeCode(String frozenTubeTypeCode) {
+//        this.frozenTubeTypeCode = frozenTubeTypeCode;
+//    }
+//
+//    public String getFrozenTubeTypeName() {
+//        return frozenTubeTypeName;
+//    }
+//
+//    public void setFrozenTubeTypeName(String frozenTubeTypeName) {
+//        this.frozenTubeTypeName = frozenTubeTypeName;
+//    }
+//
+//    public Double getFrozenTubeVolumns() {
+//        return frozenTubeVolumns;
+//    }
+//
+//    public void setFrozenTubeVolumns(Double frozenTubeVolumns) {
+//        this.frozenTubeVolumns = frozenTubeVolumns;
+//    }
+//
+//    public String getFrozenTubeVolumnsUnit() {
+//        return frozenTubeVolumnsUnit;
+//    }
+//
+//    public void setFrozenTubeVolumnsUnit(String frozenTubeVolumnsUnit) {
+//        this.frozenTubeVolumnsUnit = frozenTubeVolumnsUnit;
+//    }
+//
+//    public Integer getSampleUsedTimesMost() {
+//        return sampleUsedTimesMost;
+//    }
+//
+//    public void setSampleUsedTimesMost(Integer sampleUsedTimesMost) {
+//        this.sampleUsedTimesMost = sampleUsedTimesMost;
+//    }
+//
+//    public Integer getSampleUsedTimes() {
+//        return sampleUsedTimes;
+//    }
+//
+//    public void setSampleUsedTimes(Integer sampleUsedTimes) {
+//        this.sampleUsedTimes = sampleUsedTimes;
+//    }
+//
+//    public Double getSampleVolumns() {
+//        return sampleVolumns;
+//    }
+//
+//    public void setSampleVolumns(Double sampleVolumns) {
+//        this.sampleVolumns = sampleVolumns;
+//    }
+//
+//    public Long getProjectId() {
+//        return projectId;
+//    }
+//
+//    public void setProjectId(Long projectId) {
+//        this.projectId = projectId;
+//    }
+//
+//    public Long getProjectSiteId() {
+//        return projectSiteId;
+//    }
+//
+//    public void setProjectSiteId(Long projectSiteId) {
+//        this.projectSiteId = projectSiteId;
+//    }
+//
+//    public String getFrozenSiteCode() {
+//        return frozenSiteCode;
+//    }
+//
+//    public void setFrozenSiteCode(String frozenSiteCode) {
+//        this.frozenSiteCode = frozenSiteCode;
+//    }
+//
+//    public String getFrozenTubeState() {
+//        return frozenTubeState;
+//    }
+//
+//    public void setFrozenTubeState(String frozenTubeState) {
+//        this.frozenTubeState = frozenTubeState;
+//    }
+//
+//    public Long getSampleClassificationId() {
+//        return sampleClassificationId;
+//    }
+//
+//    public void setSampleClassificationId(Long sampleClassificationId) {
+//        this.sampleClassificationId = sampleClassificationId;
+//    }
+//
+//    public Long getFrozenBoxId() {
+//        return frozenBoxId;
+//    }
+//
+//    public void setFrozenBoxId(Long frozenBoxId) {
+//        this.frozenBoxId = frozenBoxId;
+//    }
 }

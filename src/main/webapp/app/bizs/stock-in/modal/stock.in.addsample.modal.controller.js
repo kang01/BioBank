@@ -140,19 +140,22 @@
                 labelField:'sampleTypeName',
                 maxItems: 1,
                 onChange:function (value) {
-                    _fnQueryProjectSampleClass(vm.entity.projectId,value);
-                    vm.entity.sampleTypeId = value;
-                    vm.entity.sampleTypeName = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeName;
-                    vm.entity.sampleTypeCode = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeCode;
-                    vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+value}).backColor;
-                    $('table').find('.rowLight').removeClass("rowLight");
-                    tube = "";
-                    _.forEach(sampleSelectedArray, function(sample) {
-                        sample.sampleTypeId = value;
-                        sample.sampleTypeName = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeName;
-                        sample.sampleTypeCode = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeCode;
-                        sample.backColor = _.find(vm.sampleTypeOptions,{id:+value}).backColor;
-                    });
+                    if(value){
+                        _fnQueryProjectSampleClass(vm.entity.projectId,value);
+                        vm.entity.sampleTypeId = value;
+                        vm.entity.sampleTypeName = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeName;
+                        vm.entity.sampleTypeCode = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeCode;
+                        vm.entity.backColor = _.find(vm.sampleTypeOptions,{id:+value}).backColor;
+                        $('table').find('.rowLight').removeClass("rowLight");
+                        tube = "";
+                        _.forEach(sampleSelectedArray, function(sample) {
+                            sample.sampleTypeId = value;
+                            sample.sampleTypeName = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeName;
+                            sample.sampleTypeCode = _.find(vm.sampleTypeOptions,{id:+value}).sampleTypeCode;
+                            sample.backColor = _.find(vm.sampleTypeOptions,{id:+value}).backColor;
+                        });
+                    }
+
                 }
             };
             vm.queryProjectSampleClass = _fnQueryProjectSampleClass;

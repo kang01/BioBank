@@ -541,6 +541,8 @@
                         var rowIndex = tube.rowNO - selectedRow;
                         var colIndex = tube.colNO - selectedCol - 1;
                         return{row:rowIndex,col:colIndex};
+                    }else{
+                        return{row:0,col:0};
                     }
 
                     // if(vm.nextFlag){
@@ -1194,6 +1196,7 @@
             if(aRemarkArray.length == 1){
                 singleMultipleFlag = "single";
             }
+            var selectedData = _.uniq(aRemarkArray);
            modalInstance = $uibModal.open({
                animation: true,
                templateUrl: 'app/bizs/stock-in/modal/stock-in-add-sample-modal.html',
@@ -1205,7 +1208,7 @@
                    items: function () {
                        return {
                            singleMultipleFlag:singleMultipleFlag,
-                           sampleSelectedArray:aRemarkArray,
+                           sampleSelectedArray:selectedData,
                            // tubes:stockInTubes,
                            // sampleCode:oldTube.sampleCode,
                            frozenBoxId:vm.box.id,

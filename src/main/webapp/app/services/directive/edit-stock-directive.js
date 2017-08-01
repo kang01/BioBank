@@ -690,7 +690,7 @@
                 projectSiteId:vm.entity.projectSiteId,
                 sampleVolumns :"", //计量
                 flag:"",
-                frozenTubeId:""
+                frozenTubeId:vm.entity.frozenTubeId
             };
 
             if (tubeInBox){

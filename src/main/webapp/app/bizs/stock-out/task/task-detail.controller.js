@@ -515,16 +515,18 @@
             }
             var tableCtrl = _getSampleDetailsTableCtrl();
             var sampleCode = vm.sampleCode.toUpperCase();
+            // var sampleCodeLower = vm.sampleCode.toLowerCase();
             vm.sampleCode = "";
             //获取待出库样本
             var stockOutTubes = _.filter(vm.tubeList,{stockOutFlag:1});
-
+            _.forEach(stockOutTubes, function(sample) {
+                sample.sampleCode = sample.sampleCode.toUpperCase();
+            });
             //获取扫码取得样本
-            var scanCodeTubes = _.filter(stockOutTubes,{sampleCode: sampleCode});
+            var scanCodeTubes = _.filter(stockOutTubes,{"sampleCode": sampleCode});
             if (!scanCodeTubes.length){
-                scanCodeTubes = _.filter(stockOutTubes,{sampleTempCode: sampleCode});
+                scanCodeTubes = _.filter(stockOutTubes,{"sampleTempCode": sampleCode});
             }
-
             if(!scanCodeTubes.length) {
                 setTimeout(function(){
                     toastr.error("编码错误，请重新扫码!");

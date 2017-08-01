@@ -11,11 +11,11 @@
 
     StockInEditController.$inject = ['$scope','EquipmentService','BioBankBlockUi','$state','SupportacksByAreaIdService', '$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
         'entity','AreasByEquipmentIdService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','ProjectSitesByProjectIdService',
-        'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService','MasterData','ProjectService','SampleUserService','Principal'];
+        'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService','MasterData','ProjectService','SampleUserService','Principal','StockInInputService'];
     RescindPutAwayModalController.$inject = ['$uibModalInstance'];
     function StockInEditController($scope,EquipmentService,BioBankBlockUi,$state,SupportacksByAreaIdService,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
                                   entity,AreasByEquipmentIdService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,ProjectSitesByProjectIdService,
-                                  SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService,MasterData,ProjectService,SampleUserService,Principal) {
+                                  SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService,MasterData,ProjectService,SampleUserService,Principal,StockInInputService) {
         var vm = this;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
@@ -435,6 +435,8 @@
 
             // 分装按钮
             vm.splitIt = _splitABox;
+            // 编辑
+            vm.editBox = _editBox;
             // 上架按钮
             vm.putInShelf = _putInShelf;
             //撤销上架
@@ -514,6 +516,12 @@
             // console.log(vm.splitIt, vm.putInShelf);
             var buttonHtml = "";
             if (full.status == "2002"){
+                if(full.sampleTypeCode != '99'){
+                    buttonHtml +='<button type="button" class="btn btn-xs btn-error" ng-click="vm.editBox(\''+ full.frozenBoxCode +'\')">' +
+                        '   <i class="fa fa-edit"></i> 编辑 ' +
+                        '</button>&nbsp;';
+                }
+
                 if (full.isSplit){
                     buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
                        '   <i class="fa fa-sitemap"></i> 分装' +
@@ -703,7 +711,17 @@
             //     vm.stockInflag = false;
             // }
         }
-
+        // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
+        vm.editFlag = false;
+        function _editBox(frozenBoxCode) {
+            StockInInputService.queryEditStockInBox(frozenBoxCode).success(function (data) {
+                if(data.frozenBoxCode){
+                    vm.box = data;
+                    vm.editFlag = true;
+                    vm.showFlag = true;
+                }
+            });
+        }
 
         //入库完成
         vm.saveStockIn = function () {

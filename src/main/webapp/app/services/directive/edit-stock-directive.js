@@ -62,10 +62,11 @@
 
         //初始化冻存管
         var aRemarkArray = [];
+        var domArray = [];//单元格操作的数据
         function _initFrozenBoxPanel(){
             var remarkArray;//批注
             vm.frozenTubeArray = [];//初始管子数据二位数组
-            var domArray = [];//单元格操作的数据
+
             var operateColor;//单元格颜色
 
             initFrozenTube(10,10);
@@ -627,13 +628,15 @@
 
                     });
                     modalInstance.result.then(function (memo) {
-                        for(var i = 0; i < aRemarkArray.length; i++){
 
-                            if(aRemarkArray[i].sampleCode){
-                                aRemarkArray[i].memo = memo;
+                        for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                            for(var j = 0; j < vm.frozenTubeArray[i].length;j++){
+                                if(vm.frozenTubeArray[i][j].sampleCode){
+                                    vm.frozenTubeArray[i][j].memo = memo;
+                                }
                             }
-                        }
 
+                        }
                         aRemarkArray = [];
                         hotRegisterer.getInstance('my-handsontable').render();
                     });

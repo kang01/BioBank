@@ -1,6 +1,7 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.service.StockOutRequiredSampleService;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -11,8 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +38,7 @@ public class StockOutRequiredSampleResource {
     private final Logger log = LoggerFactory.getLogger(StockOutRequiredSampleResource.class);
 
     private static final String ENTITY_NAME = "stockOutRequiredSample";
-        
+
     private final StockOutRequiredSampleService stockOutRequiredSampleService;
 
     public StockOutRequiredSampleResource(StockOutRequiredSampleService stockOutRequiredSampleService) {
@@ -128,4 +132,22 @@ public class StockOutRequiredSampleResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * 查询已经上传的样本需求
+     * @param input
+     * @param id
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/stock-out-required-samples/stockOutRequirement/{id}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<StockOutRequiredSampleDTO> getPageStockOutRequiredSampleByRequired(@RequestBody DataTablesInput input, @PathVariable Long id) {
+        input.getColumns().forEach(u->{
+            if(u.getData()==null||u.getData().equals(null)||u.getData()==""){
+                u.setSearchable(false);
+            }
+        });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
+        return stockOutRequiredSampleService.getPageStockOutRequiredSampleByRequired(input,id);
+    }
 }

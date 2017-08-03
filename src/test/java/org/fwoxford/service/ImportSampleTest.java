@@ -1187,7 +1187,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     @Test
     public void aa() throws Exception {
         HashSet<Integer> hashSet = new HashSet<>();
-        randomSet(3000000,4000000,200,hashSet);
+        randomSet(5000000,5001000,200,hashSet);
         System.out.print(hashSet.toString());
     }
 

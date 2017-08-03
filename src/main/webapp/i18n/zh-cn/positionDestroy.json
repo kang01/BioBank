@@ -1,0 +1,26 @@
+{
+    "bioBankApp": {
+        "positionDestroy" : {
+            "home": {
+                "title": "Position Destroys",
+                "createLabel": "Create a new Position Destroy",
+                "createOrEditLabel": "Create or edit a Position Destroy"
+            },
+            "created": "A new Position Destroy is created with identifier {{ param }}",
+            "updated": "A Position Destroy is updated with identifier {{ param }}",
+            "deleted": "A Position Destroy is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Position Destroy {{ id }}?"
+            },
+            "detail": {
+                "title": "Position Destroy"
+            },
+            "destroyReason": "Destroy Reason",
+            "destroyType": "Destroy Type",
+            "operatorId1": "Operator Id 1",
+            "operatorId2": "Operator Id 2",
+            "status": "Status",
+            "memo": "Memo"
+        }
+    }
+}

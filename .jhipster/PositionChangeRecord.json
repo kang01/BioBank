@@ -1,0 +1,21 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "positionChange",
+            "otherEntityName": "positionChange",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [],
+    "changelogDate": "20170803012501",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "pos_change",
+    "pagination": "pager",
+    "enableEntityAudit": true
+}

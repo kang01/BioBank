@@ -58,6 +58,9 @@
                 "positionMove": "Position Move",
                 "transhipStockIn": "Tranship Stock In",
                 "stockInTranshipBox": "Stock In Tranship Box",
+                "positionChange": "Position Change",
+                "positionChangeRecord": "Position Change Record",
+                "positionDestroy": "Position Destroy",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
                 "transportrecord":"转运记录"
             },

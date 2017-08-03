@@ -207,106 +207,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         List<TranshipTube> transhipTubeList = new ArrayList<TranshipTube>();
         for(FrozenBoxForSaveBatchDTO boxDTO : transhipBoxListDTO.getFrozenBoxDTOList()){
             FrozenBox box = frozenBoxMapper.frozenBoxForSaveBatchDTOToFrozenBox(boxDTO);
-            if (tranship.getProject() != null ) {
-                Project project = tranship.getProject();
-                box.setProject(project);
-                box.setProjectCode(project.getProjectCode());
-                box.setProjectName(project.getProjectName());
-            }
-
-            if (box.getEquipment() != null) {
-                Equipment equipment = equipmentRepository.findOne(box.getEquipment().getId());
-                box.setEquipment(equipment);
-                box.setEquipmentCode(equipment.getEquipmentCode());
-            } else {
-                box.setEquipment(null);
-                box.setEquipmentCode(null);
-            }
-
-            if (box.getArea() != null) {
-                Area area = areaRepository.findOne(box.getArea().getId());
-                box.setArea(area);
-                box.setAreaCode(area.getAreaCode());
-            } else {
-                box.setArea(null);
-                box.setAreaCode(null);
-            }
-
-            if (box.getSupportRack() != null) {
-                SupportRack shelf = supportRackRepository.findOne(box.getSupportRack().getId());
-                box.setSupportRack(shelf);
-                box.setSupportRackCode(shelf.getSupportRackCode());
-            } else {
-                box.setSupportRack(null);
-                box.setSupportRackCode(null);
-            }
-
-            if (tranship.getProjectSite() != null) {
-                ProjectSite projectSite = tranship.getProjectSite();
-                box.setProjectSite(projectSite);
-                box.setProjectSiteCode(projectSite.getProjectSiteCode());
-                box.setProjectSiteName(projectSite.getProjectSiteName());
-            }
-
-            if (box.getFrozenBoxType() != null) {
-                int boxTypeIndex = boxTypes.indexOf(box.getFrozenBoxType());
-                if (boxTypeIndex >= 0) {
-                    FrozenBoxType boxType = boxTypes.get(boxTypeIndex);
-                    box.setFrozenBoxType(boxType);
-                    box.setFrozenBoxTypeCode(boxType.getFrozenBoxTypeCode());
-                    box.setFrozenBoxTypeColumns(boxType.getFrozenBoxTypeColumns());
-                    box.setFrozenBoxTypeRows(boxType.getFrozenBoxTypeRows());
-                }else {
-                    throw new BankServiceException("冻存盒类型不能为空！",box.toString());
-                }
-            }
-
-            if (box.getSampleType() != null) {
-                int boxSampleTypeIndex = sampleTypes.indexOf(box.getSampleType());
-                if (boxSampleTypeIndex >= 0) {
-                    SampleType sampleType = sampleTypes.get(boxSampleTypeIndex);
-                    box.setSampleType(sampleType);
-                    box.setSampleTypeCode(sampleType.getSampleTypeCode());
-                    box.setSampleTypeName(sampleType.getSampleTypeName());
-                }else{
-                    throw new BankServiceException("样本类型不能为空！",box.toString());
-                }
-            }
-            //验证项目下该样本类型是否有样本分类，如果已经配置了样本分类，则样本分类ID不能为空，（99的除外）
-            if(box.getSampleType().getIsMixed().equals(Constants.YES)&&box.getSampleClassification()!=null){
-                throw new BankServiceException("混合型样本的冻存盒，样本分类应该为空！");
-            }
-
-            if(box.getSampleType().getIsMixed().equals(Constants.YES)
-                &&(box.getIsSplit()==null||box.getIsSplit()!=null&&box.getIsSplit().equals(Constants.NO))){
-                throw new BankServiceException("混合型样本的冻存盒，必须分装！");
-            }
-
-            int countOfSampleClass = projectSampleClassRepository.countByProjectIdAndSampleTypeId(box.getProject()!=null?box.getProject().getId():null,boxDTO.getSampleTypeId());
-            if(countOfSampleClass>0&&box.getSampleType().getIsMixed().equals(Constants.NO)&&box.getSampleClassification()==null){
-                throw new BankServiceException("该项目下已经配置样本分类，样本分类不能为空！");
-            }
-
-            if (box.getSampleClassification() != null) {
-                int boxClassificationIndex = sampleClassifications.indexOf(box.getSampleClassification());
-                if (boxClassificationIndex >= 0) {
-                    SampleClassification sampleClass = sampleClassifications.get(boxClassificationIndex);
-                    box.setSampleClassification(sampleClass);
-                }
-            }
-           if(boxDTO.getSampleClassificationId()!=null){
-               //验证项目下样本类型以及样本分类的有效性
-               ProjectSampleClass sampleType = null;
-               for(ProjectSampleClass p :projectSampleClasses){
-                    if(boxDTO.getSampleClassificationId().equals(p.getSampleClassification().getId())
-                      &&boxDTO.getSampleTypeId().equals(p.getSampleType().getId())){
-                      sampleType = p;
-                    }
-                }
-                if(sampleType == null){
-                    throw new BankServiceException("冻存盒的样本类型无效！",box.toString());
-                }
-            }
+            box = createFrozenBox(tranship,box);
+            box = createFrozenBoxTypeAndSampleType(box,boxTypes,sampleTypes,sampleClassifications,projectSampleClasses);
             int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfSample=0;
             for(FrozenTubeForSaveBatchDTO tube : boxDTO.getFrozenTubeDTOS()){
                 if(tube.getStatus().equals(Constants.FROZEN_TUBE_HOLE_EMPTY)){
@@ -333,106 +235,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             frozenBoxCheckService.checkFrozenBoxPosition(box);
             box.setStatus(Constants.FROZEN_BOX_NEW);
             box = frozenBoxRepository.save(box);
-           //获取原冻存管，与当前冻存管比对，删除原来有而当前没有的冻存管
-           List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxId(box.getId());
-           List<Long> forSaveTubeIds = new ArrayList<Long>();
-           List<FrozenTube> frozenTubeListForDelete = new ArrayList<FrozenTube>();
-           for(FrozenTubeForSaveBatchDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
-               forSaveTubeIds.add(tubeDTO.getId());
-           }
-           for(FrozenTube f:frozenTubes){
-                if(!forSaveTubeIds.contains(f.getId())){
-                    f.setStatus(Constants.INVALID);
-                    frozenTubeListForDelete.add(f);
-                }
-            }
-           frozenTubeRepository.save(frozenTubeListForDelete);
-           List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
-           Map<String,FrozenTube> frozenTubeMap = new HashMap<String,FrozenTube>();
-           List<String> sampleCodeStr = new ArrayList<String>();
-           for(FrozenTubeForSaveBatchDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
-                FrozenTube tube = frozenTubeMapper.frozenTubeForSaveBatchDTOToFrozenTube(tubeDTO);
-                if (tube.getSampleType() == null){
-                    tube.setSampleType(box.getSampleType());
-                } else {
-                    int sampleTypeIndex = sampleTypes.indexOf(box.getSampleType());
-                    if (sampleTypeIndex >= 0) {
-                        SampleType sampleType = sampleTypes.get(sampleTypeIndex);
-                        tube.setSampleType(sampleType);
-                    } else {
-                        tube.getSampleType().setSampleTypeCode(tube.getSampleTypeCode());
-                        tube.getSampleType().setSampleTypeName(tube.getSampleTypeName());
-                    }
-                }
-                if((StringUtils.isEmpty(tube.getSampleTempCode()))
-                        &&(StringUtils.isEmpty(tube.getSampleCode()))){
-                    throw new BankServiceException("冻存管编码为空，不能保存！");
-                }
-                if (tube.getSampleClassification() == null){
-                    tube.setSampleClassification(box.getSampleClassification());
-                } else {
-                    int sampleClassificationsIndex = sampleClassifications.indexOf(tube.getSampleClassification());
-                    if (sampleClassificationsIndex >= 0) {
-                        SampleClassification sampleClass = sampleClassifications.get(sampleClassificationsIndex);
-                        tube.setSampleClassification(sampleClass);
-                    } else {
-                       throw new BankServiceException("样本分类不能为空！");
-                    }
-                }
-                if(tubeDTO.getSampleClassificationId()!=null){
-                    //验证项目下样本类型以及样本分类的有效性
-                    ProjectSampleClass sampleType = null;
-                    for(ProjectSampleClass p :projectSampleClasses){
-                        if(tubeDTO.getSampleClassificationId().equals(p.getSampleClassification().getId())
-                            &&tubeDTO.getSampleTypeId().equals(p.getSampleType().getId())){
-                            sampleType = p;
-                        }
-                    }
-                    if(sampleType == null){
-                        throw new BankServiceException("样本类型无效！",box.toString());
-                    }
-                }
-
-                tube.setSampleTypeCode(tube.getSampleType().getSampleTypeCode());
-                tube.setSampleTypeName(tube.getSampleType().getSampleTypeName());
-
-                tube.setFrozenBox(box);
-                tube.setFrozenBoxCode(box.getFrozenBoxCode());
-
-                tube.setProject(box.getProject());
-                tube.setProjectCode(box.getProjectCode());
-                tube.setProjectSite(box.getProjectSite());
-                tube.setProjectSiteCode(box.getProjectSiteCode());
-
-                if (tube.getFrozenTubeType() != null){
-                    int tubeTypeIndex = tubeTypes.indexOf(tube.getFrozenTubeType());
-                    if (tubeTypeIndex >= 0){
-                        FrozenTubeType tubeType = tubeTypes.get(tubeTypeIndex);
-                        tube.setFrozenTubeType(tubeType);
-                        tube.setFrozenTubeTypeCode(tubeType.getFrozenTubeTypeCode());
-                        tube.setFrozenTubeTypeName(tubeType.getFrozenTubeTypeName());
-                        tube.setFrozenTubeVolumnsUnit(tubeType.getFrozenTubeVolumnUnit());
-                        tube.setFrozenTubeVolumns(tubeType.getFrozenTubeVolumn());
-                        tube.setSampleUsedTimesMost(tubeType.getSampleUsedTimesMost());
-                    }
-                } else {
-                    FrozenTubeType tubeType = tubeTypes.get(0);
-                    tube.setFrozenTubeType(tubeType);
-                    tube.setFrozenTubeTypeCode(tubeType.getFrozenTubeTypeCode());
-                    tube.setFrozenTubeTypeName(tubeType.getFrozenTubeTypeName());
-                    tube.setFrozenTubeVolumnsUnit(tubeType.getFrozenTubeVolumnUnit());
-                    tube.setFrozenTubeVolumns(tubeType.getFrozenTubeVolumn());
-                    tube.setSampleUsedTimesMost(tubeType.getSampleUsedTimesMost());
-                }
-                tube.setSampleUsedTimes(0);
-                tube.setFrozenTubeState(Constants.FROZEN_BOX_NEW);
-                frozenTubeList.add(tube);
-                String sampleCode = tube.getSampleCode()!=null?tube.getSampleCode():tube.getSampleTempCode();
-                sampleCodeStr.add(sampleCode);
-               frozenTubeMap.put(sampleCode,tube);
-            }
-            frozenTubeCheckService.checkSampleCodeRepeat(sampleCodeStr,frozenTubeMap,box);
-            frozenTubeRepository.save(frozenTubeList);
             TranshipBox transhipBox = transhipBoxRepository.findByTranshipIdAndFrozenBoxId(transhipId, box.getId());
             if (transhipBox == null){
                 transhipBox = new TranshipBox();
@@ -463,14 +265,226 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             transhipBoxRepository.save(transhipBox);
             //转运盒位置
             TranshipBoxPosition transhipBoxPosition = transhipBoxPositionService.saveTranshipBoxPosition(transhipBox);
+           //获取原冻存管，与当前冻存管比对，删除原来有而当前没有的冻存管
+           List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxId(box.getId());
+           List<Long> forSaveTubeIds = new ArrayList<Long>();
+           List<FrozenTube> frozenTubeListForDelete = new ArrayList<FrozenTube>();
+           for(FrozenTubeForSaveBatchDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
+               forSaveTubeIds.add(tubeDTO.getId());
+           }
+           for(FrozenTube f:frozenTubes){
+                if(!forSaveTubeIds.contains(f.getId())){
+                    f.setStatus(Constants.INVALID);
+                    frozenTubeListForDelete.add(f);
+                }
+            }
+           frozenTubeRepository.save(frozenTubeListForDelete);
+           List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
+           Map<String,FrozenTube> frozenTubeMap = new HashMap<String,FrozenTube>();
+           List<String> sampleCodeStr = new ArrayList<String>();
+           for(FrozenTubeForSaveBatchDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
+                FrozenTube tube = frozenTubeMapper.frozenTubeForSaveBatchDTOToFrozenTube(tubeDTO);
+                tube = createFrozenTubeSampleType(tube,box,sampleTypes,sampleClassifications,projectSampleClasses,tubeTypes);
+                if((StringUtils.isEmpty(tube.getSampleTempCode()))
+                        &&(StringUtils.isEmpty(tube.getSampleCode()))){
+                    throw new BankServiceException("冻存管编码为空，不能保存！");
+                }
+                frozenTubeList.add(tube);
+                String sampleCode = tube.getSampleCode()!=null?tube.getSampleCode():tube.getSampleTempCode();
+                sampleCodeStr.add(sampleCode);
+               frozenTubeMap.put(sampleCode,tube);
+            }
+            frozenTubeCheckService.checkSampleCodeRepeat(sampleCodeStr,frozenTubeMap,box);
+            frozenTubeRepository.save(frozenTubeList);
             //转运冻存管
             List<TranshipTube> transhipTubeDTOS = transhipTubeService.saveTranshipTube(transhipBox,frozenTubeList);
             result.getFrozenBoxDTOList().add(frozenBoxMapper.frozenBoxToFrozenBoxDTO(box));
-            transhipTubeList.addAll(transhipTubeDTOS);
+            transhipTubeRepository.save(transhipTubeDTOS);
+//            transhipTubeList.addAll(transhipTubeDTOS);
         }
         this.updateTranshipSampleNumber(tranship);
-        transhipTubeRepository.save(transhipTubeList);
+
         return result;
+    }
+
+    public FrozenTube createFrozenTubeSampleType(FrozenTube tube, FrozenBox box, List<SampleType> sampleTypes, List<SampleClassification> sampleClassifications, List<ProjectSampleClass> projectSampleClasses, List<FrozenTubeType> tubeTypes) {
+        if (tube.getSampleType() == null){
+            tube.setSampleType(box.getSampleType());
+        } else {
+            int sampleTypeIndex = sampleTypes.indexOf(box.getSampleType());
+            if (sampleTypeIndex >= 0) {
+                SampleType sampleType = sampleTypes.get(sampleTypeIndex);
+                tube.setSampleType(sampleType);
+            } else {
+                tube.getSampleType().setSampleTypeCode(tube.getSampleTypeCode());
+                tube.getSampleType().setSampleTypeName(tube.getSampleTypeName());
+            }
+        }
+        if (tube.getSampleClassification() == null){
+            tube.setSampleClassification(box.getSampleClassification());
+        } else {
+            int sampleClassificationsIndex = sampleClassifications.indexOf(tube.getSampleClassification());
+            if (sampleClassificationsIndex >= 0) {
+                SampleClassification sampleClass = sampleClassifications.get(sampleClassificationsIndex);
+                tube.setSampleClassification(sampleClass);
+            } else {
+                throw new BankServiceException("样本分类不能为空！");
+            }
+        }
+        if(tube.getSampleClassification()!=null){
+            //验证项目下样本类型以及样本分类的有效性
+            ProjectSampleClass sampleType = null;
+            for(ProjectSampleClass p :projectSampleClasses){
+                if(tube.getSampleClassification().getId().equals(p.getSampleClassification().getId())
+                    &&tube.getSampleType().getId().equals(p.getSampleType().getId())){
+                    sampleType = p;
+                }
+            }
+            if(sampleType == null){
+                throw new BankServiceException("样本类型无效！",box.toString());
+            }
+        }
+
+        tube.setSampleTypeCode(tube.getSampleType().getSampleTypeCode());
+        tube.setSampleTypeName(tube.getSampleType().getSampleTypeName());
+
+        tube.setFrozenBox(box);
+        tube.setFrozenBoxCode(box.getFrozenBoxCode());
+
+        tube.setProject(box.getProject());
+        tube.setProjectCode(box.getProjectCode());
+        tube.setProjectSite(box.getProjectSite());
+        tube.setProjectSiteCode(box.getProjectSiteCode());
+        if (tube.getFrozenTubeType() != null){
+            int tubeTypeIndex = tubeTypes.indexOf(tube.getFrozenTubeType());
+            if (tubeTypeIndex >= 0){
+                FrozenTubeType tubeType = tubeTypes.get(tubeTypeIndex);
+                tube.setFrozenTubeType(tubeType);
+                tube.setFrozenTubeTypeCode(tubeType.getFrozenTubeTypeCode());
+                tube.setFrozenTubeTypeName(tubeType.getFrozenTubeTypeName());
+                tube.setFrozenTubeVolumnsUnit(tubeType.getFrozenTubeVolumnUnit());
+                tube.setFrozenTubeVolumns(tubeType.getFrozenTubeVolumn());
+                tube.setSampleUsedTimesMost(tubeType.getSampleUsedTimesMost());
+            }
+        } else {
+            FrozenTubeType tubeType = tubeTypes.get(0);
+            tube.setFrozenTubeType(tubeType);
+            tube.setFrozenTubeTypeCode(tubeType.getFrozenTubeTypeCode());
+            tube.setFrozenTubeTypeName(tubeType.getFrozenTubeTypeName());
+            tube.setFrozenTubeVolumnsUnit(tubeType.getFrozenTubeVolumnUnit());
+            tube.setFrozenTubeVolumns(tubeType.getFrozenTubeVolumn());
+            tube.setSampleUsedTimesMost(tubeType.getSampleUsedTimesMost());
+        }
+        tube.setSampleUsedTimes(0);
+        tube.setFrozenTubeState(Constants.FROZEN_BOX_NEW);
+        return tube;
+    }
+
+    public FrozenBox createFrozenBoxTypeAndSampleType(FrozenBox box, List<FrozenBoxType> boxTypes, List<SampleType> sampleTypes, List<SampleClassification> sampleClassifications, List<ProjectSampleClass> projectSampleClasses) {
+        if (box.getFrozenBoxType() != null) {
+            int boxTypeIndex = boxTypes.indexOf(box.getFrozenBoxType());
+            if (boxTypeIndex >= 0) {
+                FrozenBoxType boxType = boxTypes.get(boxTypeIndex);
+                box.setFrozenBoxType(boxType);
+                box.setFrozenBoxTypeCode(boxType.getFrozenBoxTypeCode());
+                box.setFrozenBoxTypeColumns(boxType.getFrozenBoxTypeColumns());
+                box.setFrozenBoxTypeRows(boxType.getFrozenBoxTypeRows());
+            }else {
+                throw new BankServiceException("冻存盒类型不能为空！",box.toString());
+            }
+        }
+
+        if (box.getSampleType() != null) {
+            int boxSampleTypeIndex = sampleTypes.indexOf(box.getSampleType());
+            if (boxSampleTypeIndex >= 0) {
+                SampleType sampleType = sampleTypes.get(boxSampleTypeIndex);
+                box.setSampleType(sampleType);
+                box.setSampleTypeCode(sampleType.getSampleTypeCode());
+                box.setSampleTypeName(sampleType.getSampleTypeName());
+            }else{
+                throw new BankServiceException("样本类型不能为空！",box.toString());
+            }
+        }
+        //验证项目下该样本类型是否有样本分类，如果已经配置了样本分类，则样本分类ID不能为空，（99的除外）
+        if(box.getSampleType().getIsMixed().equals(Constants.YES)&&box.getSampleClassification()!=null){
+            throw new BankServiceException("混合型样本的冻存盒，样本分类应该为空！");
+        }
+
+        if(box.getSampleType().getIsMixed().equals(Constants.YES)
+            &&(box.getIsSplit()==null||box.getIsSplit()!=null&&box.getIsSplit().equals(Constants.NO))){
+            throw new BankServiceException("混合型样本的冻存盒，必须分装！");
+        }
+
+        int countOfSampleClass = projectSampleClassRepository.countByProjectIdAndSampleTypeId(box.getProject()!=null?box.getProject().getId():null,box.getSampleType().getId());
+        if(countOfSampleClass>0&&box.getSampleType().getIsMixed().equals(Constants.NO)&&box.getSampleClassification()==null){
+            throw new BankServiceException("该项目下已经配置样本分类，样本分类不能为空！");
+        }
+
+        if (box.getSampleClassification() != null) {
+            int boxClassificationIndex = sampleClassifications.indexOf(box.getSampleClassification());
+            if (boxClassificationIndex >= 0) {
+                SampleClassification sampleClass = sampleClassifications.get(boxClassificationIndex);
+                box.setSampleClassification(sampleClass);
+            }
+        }
+        if(box.getSampleClassification()!=null){
+            //验证项目下样本类型以及样本分类的有效性
+            ProjectSampleClass sampleType = null;
+            for(ProjectSampleClass p :projectSampleClasses){
+                if(box.getSampleClassification().getId().equals(p.getSampleClassification().getId())
+                    &&box.getSampleType().getId().equals(p.getSampleType().getId())){
+                    sampleType = p;
+                }
+            }
+            if(sampleType == null){
+                throw new BankServiceException("冻存盒的样本类型无效！",box.toString());
+            }
+        }
+        return box;
+    }
+
+    public FrozenBox createFrozenBox(Tranship tranship, FrozenBox box) {
+        if (tranship.getProject() != null ) {
+            Project project = tranship.getProject();
+            box.setProject(project);
+            box.setProjectCode(project.getProjectCode());
+            box.setProjectName(project.getProjectName());
+        }
+
+        if (box.getEquipment() != null) {
+            Equipment equipment = equipmentRepository.findOne(box.getEquipment().getId());
+            box.setEquipment(equipment);
+            box.setEquipmentCode(equipment.getEquipmentCode());
+        } else {
+            box.setEquipment(null);
+            box.setEquipmentCode(null);
+        }
+
+        if (box.getArea() != null) {
+            Area area = areaRepository.findOne(box.getArea().getId());
+            box.setArea(area);
+            box.setAreaCode(area.getAreaCode());
+        } else {
+            box.setArea(null);
+            box.setAreaCode(null);
+        }
+
+        if (box.getSupportRack() != null) {
+            SupportRack shelf = supportRackRepository.findOne(box.getSupportRack().getId());
+            box.setSupportRack(shelf);
+            box.setSupportRackCode(shelf.getSupportRackCode());
+        } else {
+            box.setSupportRack(null);
+            box.setSupportRackCode(null);
+        }
+
+        if (tranship.getProjectSite() != null) {
+            ProjectSite projectSite = tranship.getProjectSite();
+            box.setProjectSite(projectSite);
+            box.setProjectSiteCode(projectSite.getProjectSiteCode());
+            box.setProjectSiteName(projectSite.getProjectSiteName());
+        }
+        return box;
     }
 
     public void updateTranshipSampleNumber(Tranship tranship) {

@@ -45,7 +45,7 @@ public class FrozenBoxCheckService {
         if(!StringUtils.isEmpty(columnsInShelf) && !StringUtils.isEmpty(rowsInShelf)){
             FrozenBox frozenBox = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(equipment.getEquipmentCode()
                 ,area.getAreaCode(),supportRack.getSupportRackCode(),columnsInShelf,rowsInShelf);
-            if((box.getId()==null&&frozenBox!=null)|| (box.getId()!=null && box.getId()!=frozenBox.getId()&&!box.getId().equals(frozenBox.getId()))){
+            if((box.getId()==null&&frozenBox!=null)|| (box.getId()!=null &&frozenBox!=null &&  box.getId()!=frozenBox.getId()&&!box.getId().equals(frozenBox.getId()))){
                 throw new BankServiceException("此位置已存放冻存盒，请更换其他位置！",box.toString());
             }
         }

@@ -1,6 +1,6 @@
 /**
  * Created by gaokangkang on 2017/5/12.
- * 申请样本库存详情
+ * 申请样本库存核对详情
  */
 (function() {
     'use strict';

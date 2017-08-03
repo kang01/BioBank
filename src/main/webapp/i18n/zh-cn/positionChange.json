@@ -1,0 +1,27 @@
+{
+    "bioBankApp": {
+        "positionChange" : {
+            "home": {
+                "title": "Position Changes",
+                "createLabel": "Create a new Position Change",
+                "createOrEditLabel": "Create or edit a Position Change"
+            },
+            "created": "A new Position Change is created with identifier {{ param }}",
+            "updated": "A Position Change is updated with identifier {{ param }}",
+            "deleted": "A Position Change is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Position Change {{ id }}?"
+            },
+            "detail": {
+                "title": "Position Change"
+            },
+            "changeReason": "Change Reason",
+            "changeType": "Change Type",
+            "whetherFreezingAndThawing": "Whether Freezing And Thawing",
+            "operatorId1": "Operator Id 1",
+            "operatorId2": "Operator Id 2",
+            "status": "Status",
+            "memo": "Memo"
+        }
+    }
+}

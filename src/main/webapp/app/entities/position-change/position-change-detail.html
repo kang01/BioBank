@@ -1,0 +1,47 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.positionChange.detail.title">Position Change</span> {{vm.positionChange.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.positionChange.changeReason">Change Reason</span></dt>
+        <dd>
+            <span>{{vm.positionChange.changeReason}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionChange.changeType">Change Type</span></dt>
+        <dd>
+            <span>{{vm.positionChange.changeType}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionChange.whetherFreezingAndThawing">Whether Freezing And Thawing</span></dt>
+        <dd>
+            <span>{{vm.positionChange.whetherFreezingAndThawing}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionChange.operatorId1">Operator Id 1</span></dt>
+        <dd>
+            <span>{{vm.positionChange.operatorId1}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionChange.operatorId2">Operator Id 2</span></dt>
+        <dd>
+            <span>{{vm.positionChange.operatorId2}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionChange.status">Status</span></dt>
+        <dd>
+            <span>{{vm.positionChange.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionChange.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.positionChange.memo}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="position-change-detail.edit({id:vm.positionChange.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

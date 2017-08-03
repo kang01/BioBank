@@ -1,0 +1,21 @@
+{
+    "bioBankApp": {
+        "positionChangeRecord" : {
+            "home": {
+                "title": "Position Change Records",
+                "createLabel": "Create a new Position Change Record",
+                "createOrEditLabel": "Create or edit a Position Change Record"
+            },
+            "created": "A new Position Change Record is created with identifier {{ param }}",
+            "updated": "A Position Change Record is updated with identifier {{ param }}",
+            "deleted": "A Position Change Record is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Position Change Record {{ id }}?"
+            },
+            "detail": {
+                "title": "Position Change Record"
+            },
+            "positionChange": "Position Change"
+        }
+    }
+}

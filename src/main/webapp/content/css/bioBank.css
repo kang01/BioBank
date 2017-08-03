@@ -791,6 +791,9 @@ body.ng-pageslide-body-closed::before {
     padding: 8px;
     line-height: 1.42857143;
 }
+.add-sample-modal-body .pagination{
+    margin: 8px 0;
+}
 /*.add-sample-modal-body .multi .project-sites .selectize-input > *{*/
     /*width: 80px;*/
 /*}*/

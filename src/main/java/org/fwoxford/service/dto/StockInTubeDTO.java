@@ -1,6 +1,10 @@
 package org.fwoxford.service.dto;
 
 
+import org.fwoxford.domain.FrozenTubeType;
+import org.fwoxford.domain.SampleClassification;
+import org.fwoxford.domain.SampleType;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -444,6 +448,9 @@ public class StockInTubeDTO extends AbstractAuditingDTO implements Serializable 
     private String frontColor;
     private String backColor;
     private String flag;
+    private FrozenTubeType frozenTubeType;
+    private SampleType sampleType;
+    private SampleClassification sampleClassification;
 
     public String getFrontColorForClass() {
         return frontColorForClass;
@@ -491,5 +498,32 @@ public class StockInTubeDTO extends AbstractAuditingDTO implements Serializable 
 
     public void setFlag(String flag) {
         this.flag = flag;
+    }
+
+    public FrozenTubeType getFrozenTubeType() {
+        return frozenTubeType;
+    }
+
+    public StockInTubeDTO setFrozenTubeType(FrozenTubeType frozenTubeType) {
+        this.frozenTubeType = frozenTubeType;
+        return this;
+    }
+
+    public SampleType getSampleType() {
+        return sampleType;
+    }
+
+    public StockInTubeDTO setSampleType(SampleType sampleType) {
+        this.sampleType = sampleType;
+        return this;
+    }
+
+    public SampleClassification getSampleClassification() {
+        return sampleClassification;
+    }
+
+    public StockInTubeDTO setSampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
+        return this;
     }
 }

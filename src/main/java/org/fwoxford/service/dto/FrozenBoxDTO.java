@@ -1,6 +1,10 @@
 package org.fwoxford.service.dto;
 
 
+import org.fwoxford.domain.FrozenBoxType;
+import org.fwoxford.domain.SampleClassification;
+import org.fwoxford.domain.SampleType;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -534,5 +538,35 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
             ", rowsInShelf='" + rowsInShelf + "'" +
             ", columnsInShelf='" + columnsInShelf + "'" +
             '}';
+    }
+    private FrozenBoxType frozenBoxType;
+    private SampleClassification sampleClassification;
+    private SampleType sampleType;
+
+    public FrozenBoxType getFrozenBoxType() {
+        return frozenBoxType;
+    }
+
+    public FrozenBoxDTO setFrozenBoxType(FrozenBoxType frozenBoxType) {
+        this.frozenBoxType = frozenBoxType;
+        return this;
+    }
+
+    public SampleClassification getSampleClassification() {
+        return sampleClassification;
+    }
+
+    public FrozenBoxDTO setSampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
+        return this;
+    }
+
+    public SampleType getSampleType() {
+        return sampleType;
+    }
+
+    public FrozenBoxDTO setSampleType(SampleType sampleType) {
+        this.sampleType = sampleType;
+        return this;
     }
 }

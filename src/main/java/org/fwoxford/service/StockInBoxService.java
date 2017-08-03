@@ -78,4 +78,11 @@ public interface StockInBoxService {
      * @return
      */
     FrozenBoxDTO getFrozenBoxAndTubeByForzenBoxCode(String frozenBoxCode);
+
+    /**
+     * 根据入库冻存盒ID查询冻存盒和冻存管的信息
+     * @param id
+     * @return
+     */
+    FrozenBoxDTO getBoxAndStockTubeByStockInBoxId(Long id);
 }

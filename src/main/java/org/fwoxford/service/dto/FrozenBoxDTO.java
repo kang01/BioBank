@@ -160,7 +160,7 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 冻存管列表
      */
-    private List<FrozenTubeDTO> frozenTubeDTOS;
+    private List<StockInTubeDTO> frozenTubeDTOS;
     /**
      * 样本分类前景色
      */
@@ -418,11 +418,11 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
         this.supportRackId = supportRackId;
     }
 
-    public List<FrozenTubeDTO> getFrozenTubeDTOS() {
+    public List<StockInTubeDTO> getFrozenTubeDTOS() {
         return frozenTubeDTOS;
     }
 
-    public void setFrozenTubeDTOS(List<FrozenTubeDTO> frozenTubeDTOS) {
+    public void setFrozenTubeDTOS(List<StockInTubeDTO> frozenTubeDTOS) {
         this.frozenTubeDTOS = frozenTubeDTOS;
     }
 

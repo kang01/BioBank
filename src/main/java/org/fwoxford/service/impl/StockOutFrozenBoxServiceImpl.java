@@ -347,13 +347,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 if(stockOutBoxTube == null){
                     stockOutBoxTube = new StockOutBoxTube();
                 }
-                stockOutBoxTube.setStatus(Constants.FROZEN_BOX_TUBE_STOCKOUT_PENDING);
                 stockOutBoxTube.setStockOutFrozenBox(stockOutFrozenBox);
                 stockOutBoxTube.setStockOutTaskFrozenTube(stockOutTaskFrozenTube);
                 FrozenTube tube = stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube();
-                stockOutBoxTube.memo(tube.getMemo()).frozenTube(tube).tubeColumns(f.getTubeColumns()).tubeRows(f.getTubeRows())
+                stockOutBoxTube.status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(f.getTubeColumns()).tubeRows(f.getTubeRows())
                     .frozenBoxCode(tube.getFrozenBoxCode()).errorType(tube.getErrorType())
-                    .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(tube.getFrozenTubeState())
+                    .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_PENDING)
                     .frozenTubeType(tube.getFrozenTubeType()).frozenTubeTypeCode(tube.getFrozenTubeTypeCode())
                     .frozenTubeTypeName(tube.getFrozenTubeTypeName()).frozenTubeVolumns(tube.getFrozenTubeVolumns())
                     .frozenTubeVolumnsUnit(tube.getFrozenTubeVolumnsUnit()).sampleVolumns(tube.getSampleVolumns())
@@ -418,6 +417,13 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         return alist;
     }
 
+    /**
+     * 出库
+     * @param stockOutFrozenBoxPoisition
+     * @param taskId
+     * @param frozenBoxIds
+     * @return
+     */
     @Override
     public StockOutTaskDTO stockOut(StockOutFrozenBoxPoisition stockOutFrozenBoxPoisition, Long taskId, List<Long> frozenBoxIds) {
         StockOutTask stockOutTask = stockOutTaskRepository.findOne(taskId);

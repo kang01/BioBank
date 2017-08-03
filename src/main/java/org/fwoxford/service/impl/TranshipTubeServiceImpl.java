@@ -2,6 +2,7 @@ package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.domain.Tranship;
 import org.fwoxford.domain.TranshipBox;
 import org.fwoxford.service.TranshipTubeService;
 import org.fwoxford.domain.TranshipTube;
@@ -15,9 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -94,31 +93,28 @@ public class TranshipTubeServiceImpl implements TranshipTubeService{
     }
 
     @Override
-    public List<TranshipTubeDTO> saveTranshipTube(TranshipBox transhipBox, List<FrozenTube> frozenTubeList) {
+    public List<TranshipTube> saveTranshipTube(TranshipBox transhipBox, List<FrozenTube> frozenTubeList) {
         if(transhipBox == null){
             return null;
         }
-        List<TranshipTubeDTO> transhipTubeDTOS = new ArrayList<TranshipTubeDTO>();
         List<TranshipTube> transhipTubes = transhipTubeRepository.findByTranshipBoxIdLast(transhipBox.getId());
-
+        List<Long> oldTubeIds = new ArrayList<Long>();
         for (FrozenTube frozenTube : frozenTubeList) {
-            for(TranshipTube f:transhipTubes) {
-                if (f.getFrozenTube().getId().equals(frozenTube.getId())) {
-                    continue;
-                } else {
-                    f.setStatus(Constants.INVALID);
-                }
+            oldTubeIds.add(frozenTube.getId());
+        }
+        List<TranshipTube> transhipTubesForDelete = new ArrayList<TranshipTube>();
+        Map<Long,TranshipTube> map = new HashMap<>();
+        for (TranshipTube transhipTube : transhipTubes) {
+            if(!oldTubeIds.contains(transhipTube.getFrozenTube().getId())){
+                transhipTube.setStatus(Constants.INVALID);
+                transhipTubesForDelete.add(transhipTube);
+            }else {
+                map.put(transhipTube.getFrozenTube().getId(),transhipTube);
             }
         }
+        transhipTubeRepository.save(transhipTubesForDelete);
         for (FrozenTube frozenTube : frozenTubeList) {
-            if (frozenTube.getId() == null) {
-                return null;
-            }
-            Long count = transhipTubeRepository.countByColumnsInTubeAndRowsInTubeAndStatusAndTranshipBoxIdAndFrozenTubeId(
-                frozenTube.getTubeColumns(), frozenTube.getTubeRows(), frozenTube.getStatus(), transhipBox.getId(), frozenTube.getId()
-            );
-            if (count.intValue() == 0) {
-                TranshipTube transhipTube = new TranshipTube();
+                TranshipTube transhipTube = map.get(frozenTube.getId())==null?new TranshipTube():map.get(frozenTube.getId());
                 transhipTube.status(frozenTube.getStatus()).memo(frozenTube.getMemo())
                     .rowsInTube(frozenTube.getTubeRows()).frozenTube(frozenTube).columnsInTube(frozenTube.getTubeColumns())
                     .transhipBox(transhipBox).errorType(frozenTube.getErrorType()).frozenBoxCode(frozenTube.getFrozenBoxCode())
@@ -133,10 +129,8 @@ public class TranshipTubeServiceImpl implements TranshipTubeService{
                     .sampleCode(frozenTube.getSampleCode()).sampleTempCode(frozenTube.getSampleTempCode()).sampleType(frozenTube.getSampleType())
                     .sampleTypeCode(frozenTube.getSampleTypeCode()).sampleTypeName(frozenTube.getSampleTypeName()).sampleUsedTimes(frozenTube.getSampleUsedTimes())
                     .sampleUsedTimesMost(frozenTube.getSampleUsedTimesMost());
-                transhipTubeDTOS.add(transhipTubeMapper.transhipTubeToTranshipTubeDTO(transhipTube));
-                transhipTubeRepository.save(transhipTube);
-            }
+                transhipTubes.add(transhipTube);
         }
-        return transhipTubeDTOS;
+        return transhipTubes;
     }
 }

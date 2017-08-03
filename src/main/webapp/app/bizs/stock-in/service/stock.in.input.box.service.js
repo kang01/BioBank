@@ -53,8 +53,8 @@
         function _queryStockInBox(frozenBoxCode) {
             return $http.get('api/frozen-boxes/boxCode/'+frozenBoxCode+'/forStockIn/');
         }
-        function _queryEditStockInBox(frozenBoxCode) {
-            return $http.get('/api/stock-in-boxes/boxCode/'+frozenBoxCode);
+        function _queryEditStockInBox(stockInBoxId) {
+            return $http.get('/api/stock-in-boxes/stockInBoxId/'+stockInBoxId);
         }
         function _fnSaveStockInBox(stockInCode,param) {
             return $http.post('/api/stock-in-boxes/stockInCode/'+stockInCode,param);

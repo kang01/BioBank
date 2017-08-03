@@ -57,4 +57,26 @@
                                  referencedTableName="position_move"/>
 
     </changeSet>
+
+    <changeSet id="20170608020957-4" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="frozen_tube_type_id"
+                                 baseTableName="position_move_record"
+                                 constraintName="pos_move_tube_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_tube_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="sample_type_id"
+                                 baseTableName="position_move_record"
+                                 constraintName="pos_move_sample_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="sample_classification_id"
+                                 baseTableName="position_move_record"
+                                 constraintName="pos_move_sample_class_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_class"/>
+
+    </changeSet>
 </databaseChangeLog>

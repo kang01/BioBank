@@ -54,49 +54,6 @@ public class TranshipResource {
     public TranshipResource(TranshipService transhipService) {
         this.transhipService = transhipService;
     }
-
-    /**
-     * POST  /tranships : Create a new tranship.
-     *
-     * @param transhipDTO the transhipDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new transhipDTO, or with status 400 (Bad Request) if the tranship has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/tranships")
-    @Timed
-    public ResponseEntity<TranshipDTO> createTranship(@Valid @RequestBody TranshipDTO transhipDTO) throws URISyntaxException {
-        log.debug("REST request to save Tranship : {}", transhipDTO);
-        if (transhipDTO.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new tranship cannot already have an ID")).body(null);
-        }
-        TranshipDTO result = transhipService.insertTranship(transhipDTO);
-        return ResponseEntity.created(new URI("/res/api/tranships/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * PUT  /tranships : Updates an existing tranship.
-     *
-     * @param transhipDTO the transhipDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated transhipDTO,
-     * or with status 400 (Bad Request) if the transhipDTO is not valid,
-     * or with status 500 (Internal Server Error) if the transhipDTO couldnt be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PutMapping("/tranships")
-    @Timed
-    public ResponseEntity<TranshipDTO> updateTranship(@Valid @RequestBody TranshipDTO transhipDTO) throws URISyntaxException {
-        log.debug("REST request to update Tranship : {}", transhipDTO);
-        if (transhipDTO.getId() == null) {
-            return createTranship(transhipDTO);
-        }
-        TranshipDTO result = transhipService.insertTranship(transhipDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, transhipDTO.getId().toString()))
-            .body(result);
-    }
-
     /**
      * GET  /tranships : get all the tranships.
      *

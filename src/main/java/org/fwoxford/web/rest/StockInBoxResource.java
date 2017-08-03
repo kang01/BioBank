@@ -275,4 +275,17 @@ public class StockInBoxResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+
+    /**
+     * 根据入库冻存盒ID查询冻存盒和冻存管的信息（包含盒内已入库的）
+     * @param id
+     * @return
+     */
+    @GetMapping("/stock-in-boxes/stockInBoxId/{id}")
+    @Timed
+    public ResponseEntity<FrozenBoxDTO> getBoxAndTubeByStockInBox(@PathVariable Long id) {
+        log.debug("REST request to get Box and Tube : {}", id);
+        FrozenBoxDTO res = stockInBoxService.getBoxAndStockTubeByStockInBoxId(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
 }

@@ -485,7 +485,25 @@ public class PositionMoveServiceImpl implements PositionMoveService {
             .whetherFreezingAndThawing(positionMove.isWhetherFreezingAndThawing())
             .status(frozenTube.getStatus())
             .tubeColumns(frozenTube.getTubeColumns())
-            .tubeRows(frozenTube.getTubeRows());
+            .tubeRows(frozenTube.getTubeRows())
+            .frozenTubeType(frozenTube.getFrozenTubeType())
+            .frozenTubeTypeCode(frozenTube.getFrozenTubeTypeCode())
+            .frozenTubeTypeName(frozenTube.getFrozenTubeTypeName())
+            .sampleType(frozenTube.getSampleType())
+            .sampleTypeCode(frozenTube.getSampleTypeCode())
+            .sampleTypeName(frozenTube.getSampleTypeName())
+            .sampleClassification(frozenTube.getSampleClassification())
+            .sampleClassificationCode(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getSampleClassificationCode():null)
+            .sampleClassificationName(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getSampleClassificationName():null)
+            .frozenTubeCode(frozenTube.getFrozenTubeCode())
+            .frozenTubeState(frozenTube.getFrozenTubeState())
+            .sampleTempCode(frozenTube.getSampleTempCode())
+            .sampleUsedTimes(frozenTube.getSampleUsedTimes())
+            .sampleUsedTimesMost(frozenTube.getSampleUsedTimesMost())
+            .frozenTubeVolumns(frozenTube.getFrozenTubeVolumns())
+            .frozenTubeVolumnsUnit(frozenTube.getFrozenTubeVolumnsUnit())
+            .sampleVolumns(frozenTube.getSampleVolumns())
+            .errorType(frozenTube.getErrorType());
         positionMoveRecordRepository.save(positionMoveRecord);
     }
 

@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.domain.FrozenBox;
+import org.fwoxford.domain.StockInBox;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.response.*;
 import org.springframework.data.domain.Page;
@@ -125,7 +126,7 @@ public interface FrozenBoxService {
 
     FrozenBoxDTO getBoxAndTubeByForzenBoxCode(String frozenBoxCode);
 
-    StockInBoxDetail createStockInBoxDetail(FrozenBox frozenBox, String stockInCode);
+    StockInBoxDetail createStockInBoxDetail(StockInBox frozenBox, String stockInCode);
 
     List<StockInBoxForDataTable> frozenBoxesToStockInBoxForDataTables(List<FrozenBox> frozenBoxes);
 

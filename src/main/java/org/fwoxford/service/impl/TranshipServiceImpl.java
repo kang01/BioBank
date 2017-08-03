@@ -40,36 +40,25 @@ public class TranshipServiceImpl implements TranshipService{
     private final TranshipRepository transhipRepository;
 
     private final TranshipMapper transhipMapper;
-
     private  TranshipRepositries transhipRepositries;
-
     @Autowired
     private FrozenBoxService frozenBoxService;
-
     @Autowired
     private FrozenTubeService frozenTubeService;
-
     @Autowired
     private FrozenBoxMapper frozenBoxMapper;
-
     @Autowired
     private FrozenTubeMapper frozenTubeMapper;
-
     @Autowired
     private TranshipBoxService transhipBoxService;
-
     @Autowired
     private FrozenTubeTypeService frozenTubeTypeService;
-
     @Autowired
     private SampleTypeService sampleTypeService;
-
     @Autowired
     private FrozenBoxRepository frozenBoxRepository;
-
     @Autowired
     private FrozenTubeRepository frozenTubeRepository;
-
     @Autowired
     private ProjectRepository projectRepository;
     @Autowired
@@ -82,16 +71,14 @@ public class TranshipServiceImpl implements TranshipService{
     private EquipmentRepository equipmentRepository;
     @Autowired
     private AreaRepository areaRepository;
-
     @Autowired
     private BankUtil bankUtil;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private  StockInRepository stockInRepository;
-
+    @Autowired
+    private TranshipTubeRepository transhipTubeRepository;
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
         this.transhipMapper = transhipMapper;
@@ -116,15 +103,6 @@ public class TranshipServiceImpl implements TranshipService{
             || oldTranship.getTranshipState().equals(Constants.TRANSHIPE_IN_STOCKING))){
             throw new BankServiceException("转运已不在进行中状态，不能修改记录！",transhipDTO.toString());
         }
-        //验证运单号不能重复----true：已经存在，false:不存在
-//        String trackNumber = transhipDTO.getTrackNumber();
-//        if(trackNumber==null||trackNumber.equals(null)){
-//            throw new BankServiceException("运单号不能为空！",trackNumber);
-//        }
-//        Tranship transhipByTrack = transhipRepository.findByTrackNumber(trackNumber);
-//        if(transhipByTrack!=null&&transhipByTrack.getId()!=transhipId){
-//            throw new BankServiceException("运单号不能重复！",trackNumber);
-//        }
         Project project = projectRepository.findOne(transhipDTO.getProjectId());
         User user = userRepository.findByLogin(transhipDTO.getReceiver());
         transhipDTO.setReceiverId(user!=null?user.getId():null);
@@ -186,7 +164,6 @@ public class TranshipServiceImpl implements TranshipService{
 
     /**
      * 判断运单号是否重复
-     *
      * @param transhipCode
      * @param trackNumber
      * @return
@@ -255,6 +232,8 @@ public class TranshipServiceImpl implements TranshipService{
         frozenBoxRepository.updateStatusByFrozenBoxCodes(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
 //        冻存管的状态更改为转运完成
         frozenTubeRepository.updateFrozenTubeStateByFrozenBoxCodes(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
+        //转运冻存管的状态为转运完成
+        transhipTubeRepository.updateFrozenTubeStateByFrozenBoxCodesAndTranshipCode(Constants.FROZEN_BOX_TRANSHIP_COMPLETE,frozenBoxCodes);
         stockInForDataDetail.setProjectCode(tranship.getProjectCode());
         stockInForDataDetail.setProjectSiteCode(tranship.getProjectSiteCode());
         stockInForDataDetail.setReceiver(tranship.getReceiver());
@@ -338,43 +317,6 @@ public class TranshipServiceImpl implements TranshipService{
     }
 
     /**
-     * 保存转运记录，包括冻存盒，冻存管
-     * @param transhipDTO
-     * @return
-     */
-    @Override
-    public TranshipDTO insertTranship(TranshipDTO transhipDTO) {
-        //验证是否可以保存转运记录
-        Boolean isCanTranship =  isCanTranship(transhipDTO);
-        //保存转运记录
-        Tranship tranship =transhipMapper.transhipDTOToTranship(transhipDTO);
-        tranship.setStatus(Constants.VALID);
-        tranship.setTranshipCode(bankUtil.getUniqueID("A"));
-        transhipRepository.save(tranship);
-
-        //保存冻存盒
-        List<FrozenBoxDTO> frozenBoxDTOList =  transhipDTO.getFrozenBoxDTOList();
-        List<FrozenBoxDTO> frozenBoxDTOLists =  frozenBoxMapper.frozenTranshipAndBoxToFrozenBoxDTOList(frozenBoxDTOList,tranship);
-        List<FrozenBox> frozenBoxes =  frozenBoxService.saveBatch(frozenBoxDTOLists);
-        List<FrozenBoxDTO> frozenBoxDTOListLast = frozenBoxMapper.frozenBoxesToFrozenBoxDTOs(frozenBoxes);
-
-        //保存转运与冻存盒的关系
-        List<TranshipBoxDTO> transhipBoxes = saveTranshipAndBoxRelation(frozenBoxDTOListLast);
-
-        //保存冻存管
-        List<FrozenTubeDTO> frozenTubeDTOList = getFrozenTubeDTOList(frozenBoxDTOList,frozenBoxes);
-        List<FrozenTube> frozenTubes =  frozenTubeService.saveBatch(frozenTubeDTOList);
-        List<FrozenTubeDTO> frozenTubeDTOS = frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubes);
-
-        //构造返回函数
-        TranshipDTO dto = transhipMapper.transhipToTranshipDTO(tranship);
-        List<FrozenBoxDTO> alist = getFrozenBoxDtoList(frozenBoxDTOListLast,frozenTubeDTOS);
-        dto.setFrozenBoxDTOList(alist);
-        log.debug("Response to saveBatch tranship: {}", dto);
-        return dto;
-    }
-
-    /**
      * 初始化转运记录
      * @return
      */
@@ -392,57 +334,6 @@ public class TranshipServiceImpl implements TranshipService{
         tranship.setEffectiveSampleNumber(0);
         transhipRepository.save(tranship);
         return transhipMapper.transhipToTranshipDTO(tranship);
-    }
-
-    public List<FrozenTubeDTO> getFrozenTubeDTOList(List<FrozenBoxDTO> frozenBoxDTOList, List<FrozenBox> frozenBoxes) {
-        List<FrozenTubeDTO> frozenTubeDTOList = new ArrayList<FrozenTubeDTO>();
-        Page<FrozenTubeTypeDTO> frozentubeTypeDTO =  frozenTubeTypeService.findAll(new PageRequest(1,1));
-        List<SampleTypeDTO> sampleTypeDTOS = sampleTypeService.findAllSampleTypes();
-        //        FrozenTubeTypeDTO frozentubeTypeDTO = frozenTubeTypeService.findTopOne();
-        for(FrozenBoxDTO boxDto:frozenBoxDTOList){
-            for(FrozenTubeDTO tube :boxDto.getFrozenTubeDTOS()){
-                for(FrozenBox box:frozenBoxes){
-                    if(tube != null && tube.getFrozenBoxCode().equals(box.getFrozenBoxCode())){
-                        if(frozentubeTypeDTO.getContent().size()>0){
-                            tube.setFrozenTubeTypeId(frozentubeTypeDTO.getContent().get(0).getId());
-                            tube.setFrozenTubeTypeCode(frozentubeTypeDTO.getContent().get(0).getFrozenTubeTypeCode());
-                            tube.setFrozenTubeTypeName(frozentubeTypeDTO.getContent().get(0).getFrozenTubeTypeName());
-                            tube.setFrozenTubeVolumns(frozentubeTypeDTO.getContent().get(0).getFrozenTubeVolumn());
-                            tube.setFrozenTubeVolumnsUnit(frozentubeTypeDTO.getContent().get(0).getFrozenTubeVolumnUnit());
-                            tube.setSampleUsedTimesMost(frozentubeTypeDTO.getContent().get(0).getSampleUsedTimesMost());
-                        }
-                        tube.setProjectId(box.getProject() !=null ?box.getProject().getId():null);
-                        tube.setProjectCode(box.getProjectCode());
-                        tube.setFrozenBoxId(box.getId());
-                        frozenTubeDTOList.add(tube);
-                    }
-                }
-                for(SampleTypeDTO sampleType : sampleTypeDTOS){
-                    if(tube.getSampleTypeId().equals(sampleType.getId())){
-                        tube.setSampleTypeName(sampleType.getSampleTypeName());
-                        tube.setSampleTypeCode(sampleType.getSampleTypeCode());
-                    }
-                }
-                tube.setSampleCode(tube.getSampleCode()!=null && tube.getSampleCode() !="" ? tube.getSampleCode():" ");
-            }
-        }
-        return frozenTubeDTOList;
-    }
-
-    /**
-     * 保存转运记录和冻存盒的关系
-     * @param frozenBoxDTOListLast
-     * @return
-     */
-    public List<TranshipBoxDTO> saveTranshipAndBoxRelation(List<FrozenBoxDTO> frozenBoxDTOListLast) {
-        List<TranshipBoxDTO> transhipBoxDTOList = new ArrayList<TranshipBoxDTO>();
-        for(FrozenBoxDTO boxDTO : frozenBoxDTOListLast){
-            TranshipBoxDTO transhipBoxDTO = transhipBoxService.findByTranshipIdAndFrozenBoxId(boxDTO.getTranshipId(),boxDTO.getId());
-            transhipBoxDTO = frozenBoxMapper.frozenBoxToTranshipBoxDTO(boxDTO);
-            transhipBoxDTOList.add(transhipBoxDTO);
-        }
-        List<TranshipBoxDTO> transhipBoxes =  transhipBoxService.saveBatch(transhipBoxDTOList);
-        return transhipBoxes;
     }
 
     /**
@@ -474,20 +365,6 @@ public class TranshipServiceImpl implements TranshipService{
             }
         }
         return isCanTranship;
-    }
-    public List<FrozenBoxDTO> getFrozenBoxDtoList(List<FrozenBoxDTO> frozenBoxDTOListLast, List<FrozenTubeDTO> frozenTubeDTOS) {
-        List<FrozenBoxDTO> alist = new ArrayList<FrozenBoxDTO>();
-        for(FrozenBoxDTO box :frozenBoxDTOListLast){
-            List<FrozenTubeDTO> frozenTubeList = new ArrayList<FrozenTubeDTO>();
-            for(FrozenTubeDTO tube:frozenTubeDTOS){
-                if(box.getId().equals(tube.getFrozenBoxId())){
-                    frozenTubeList.add(tube);
-                }
-            }
-            box.setFrozenTubeDTOS(frozenTubeList);
-            alist.add(box);
-        }
-        return alist;
     }
 
     /**

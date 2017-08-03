@@ -2,6 +2,7 @@ package org.fwoxford.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONUtil;
+import org.apache.commons.lang3.RandomUtils;
 import org.fwoxford.BioBankApp;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
@@ -9,6 +10,7 @@ import org.fwoxford.repository.*;
 import org.fwoxford.service.dto.response.GeocoderSearchAddressResponse;
 import org.fwoxford.service.dto.response.GeocoderSearchResponse;
 import org.fwoxford.service.mapper.*;
+import org.fwoxford.service.util.RandomUtil;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.GeocoderReaderUtils;
@@ -34,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -988,7 +991,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
 
                     StockInTube stockInTube = stockInTubeRepository.findByFrozenTubeId(tube.getId());
                     if(stockInTube == null){
-                        stockInTube = new StockInTube().status(Constants.STOCK_IN_TUBE_COMPELETE)
+                        stockInTube = new StockInTube().status(tube.getStatus())
                             .memo(memo)
                             .frozenTube(tube)
                             .tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
@@ -1051,41 +1054,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             assertThat(sampleType97).isNotNull();
         }
     }
-
-    @Test
-    public void main() throws Exception {
-        this.createProject();
-        this.createProjectSite();
-        this.createProjectSiteForPeace3();
-        this.createSupportRackType();
-        this.createEquipmentGroup();
-        this.createEquipmentModel();
-        this.createEquipment();
-        this.createEquipmentForFOMA907();
-        this.createEquipmentForColdRoom3();
-        this.createFrozenTubeType();
-        this.createFrozenBoxType();
-        this.createSampleType();
-        FrozenTubeType rnaTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("RNA");
-        FrozenTubeType dcgTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("DCG");
-        if(rnaTube == null || dcgTube == null){
-            throw new BankServiceException("冻存管类型导入失败！");
-        }
-        this.createFrozenBoxForA02("HE_COL_01","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_02","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_03","W",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_04","R",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_05","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_06","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_07","F",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_08","F",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_09","E",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_10","E",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_11_RNA","RNA",rnaTube);
-        this.createSampleTypeMix();
-
-    }
-
     @Test
     public  void createPositionInShelf()
     {
@@ -1168,4 +1136,59 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             projectSiteRepository.saveAndFlush(p);
         }
     }
+    @Test
+    public void main() throws Exception {
+        this.createProject();
+        this.createProjectSite();
+        this.createProjectSiteForPeace3();
+        this.createSupportRackType();
+        this.createEquipmentGroup();
+        this.createEquipmentModel();
+        this.createEquipment();
+        this.createEquipmentForFOMA907();
+        this.createEquipmentForColdRoom3();
+        this.createFrozenTubeType();
+        this.createFrozenBoxType();
+        this.createSampleType();
+        FrozenTubeType rnaTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("RNA");
+        FrozenTubeType dcgTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("DCG");
+        if(rnaTube == null || dcgTube == null){
+            throw new BankServiceException("冻存管类型导入失败！");
+        }
+        this.createFrozenBoxForA02("HE_COL_01","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_02","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_03","W",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_04","R",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_05","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_06","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_07","F",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_08","F",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_09","E",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_10","E",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_11_RNA","RNA",rnaTube);
+        this.createSampleTypeMix();
+
+    }
+    public static void randomSet(int min, int max, int n, HashSet<Integer> set) {
+        if (n > (max - min + 1) || max < min) {
+            return;
+        }
+        for (int i = 0; i < n; i++) {
+            // 调用Math.random()方法
+            int num = (int) (Math.random() * (max - min)) + min;
+            set.add(num);// 将不同的数存入HashSet中
+        }
+        int setSize = set.size();
+        // 如果存入的数小于指定生成的个数，则调用递归再生成剩余个数的随机数，如此循环，直到达到指定大小
+        if (setSize < n) {
+            randomSet(min, max, n - setSize, set);// 递归
+        }
+    }
+    @Test
+    public void aa() throws Exception {
+        HashSet<Integer> hashSet = new HashSet<>();
+        randomSet(3000000,4000000,200,hashSet);
+        System.out.print(hashSet.toString());
+    }
+
 }

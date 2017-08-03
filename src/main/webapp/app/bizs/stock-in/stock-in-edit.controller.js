@@ -517,7 +517,7 @@
             var buttonHtml = "";
             if (full.status == "2002"){
                 if(full.sampleTypeCode != '99'){
-                    buttonHtml +='<button type="button" class="btn btn-xs btn-error" ng-click="vm.editBox(\''+ full.frozenBoxCode +'\')">' +
+                    buttonHtml +='<button type="button" class="btn btn-xs btn-error" ng-click="vm.editBox(\''+ full.id +'\')">' +
                         '   <i class="fa fa-edit"></i> 编辑 ' +
                         '</button>&nbsp;';
                 }
@@ -713,13 +713,13 @@
         }
         // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
         vm.editFlag = false;
-        function _editBox(frozenBoxCode) {
-            StockInInputService.queryEditStockInBox(frozenBoxCode).success(function (data) {
-                if(data.frozenBoxCode){
-                    vm.box = data;
-                    vm.editFlag = true;
-                    vm.showFlag = true;
-                }
+        function _editBox(stockInBoxId) {
+            StockInInputService.queryEditStockInBox(stockInBoxId).success(function (data) {
+                vm.box = data;
+                vm.editFlag = true;
+                vm.showFlag = true;
+            }).error(function (data) {
+                toastr.error(data.message);
             });
         }
 

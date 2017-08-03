@@ -46,4 +46,8 @@ public interface TranshipTubeRepository extends JpaRepository<TranshipTube,Long>
         " left join tranship s on  tb.tranship_id = s.id " +
         " where s.tranship_code = ?1 and f.frozen_tube_state = ?2",nativeQuery = true)
     Long countUnStockInTubeByTranshipCodeAndStatus(String transhipCode, String status);
+
+    @Modifying
+    @Query("update TranshipTube t set t.frozenTubeState = ?1  where t.frozenBoxCode in ?2 and t.status not in ('0000')")
+    void updateFrozenTubeStateByFrozenBoxCodesAndTranshipCode(String status, List<String> frozenBoxCodes);
 }

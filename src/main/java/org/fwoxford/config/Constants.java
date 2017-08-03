@@ -175,11 +175,6 @@ public final class Constants {
     public static final Integer LEVEL_ONE = 1;
     public static final Integer LEVEL_TWO = 2;
     /**
-     * 入库管子状态:2300:待入库；2301:已入库
-     */
-    public static final String STOCK_IN_TUBE_PENDING = "2300";
-    public static final String STOCK_IN_TUBE_COMPELETE = "2301";
-    /**
      * 入库盒子状态:2401:已上架，2402：已入库,2403:已撤销
      */
     public static final String STOCK_IN_BOX_POSITION_PENDING = "2401";

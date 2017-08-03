@@ -63,22 +63,16 @@ public interface TranshipService {
     TranshipByIdResponse findTranshipAndFrozenBox(Long id);
 
     /**
-     * 新增保存转运记录
-     * @param transhipDTO
-     * @return
-     */
-    TranshipDTO insertTranship(TranshipDTO transhipDTO);
-
-    /**
      * 初始化转运记录
      * @return
      */
     TranshipDTO initTranship();
 
-    List<FrozenTubeDTO> getFrozenTubeDTOList(List<FrozenBoxDTO> frozenBoxDTOList, List<FrozenBox> frozenBoxes);
-
-    List<FrozenBoxDTO> getFrozenBoxDtoList(List<FrozenBoxDTO> frozenBoxDTOListLast, List<FrozenTubeDTO> frozenTubeDTOS);
-
+    /**
+     * 作废转运记录
+     * @param transhipCode
+     * @return
+     */
     TranshipDTO invalidTranship(String transhipCode);
 
     Boolean isRepeatTrackNumber(String transhipCode, String trackNumber);

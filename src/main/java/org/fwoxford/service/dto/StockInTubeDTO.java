@@ -134,6 +134,7 @@ public class StockInTubeDTO extends AbstractAuditingDTO implements Serializable 
 
     private Long frozenTubeId;
 
+
     public Long getId() {
         return id;
     }
@@ -436,5 +437,59 @@ public class StockInTubeDTO extends AbstractAuditingDTO implements Serializable 
             ", stockInBoxId=" + stockInBoxId +
             ", frozenTubeId=" + frozenTubeId +
             '}';
+    }
+    private String frontColorForClass;
+    private String backColorForClass;
+    private Integer isMixed;
+    private String frontColor;
+    private String backColor;
+    private String flag;
+
+    public String getFrontColorForClass() {
+        return frontColorForClass;
+    }
+
+    public void setFrontColorForClass(String frontColorForClass) {
+        this.frontColorForClass = frontColorForClass;
+    }
+
+    public String getBackColorForClass() {
+        return backColorForClass;
+    }
+
+    public void setBackColorForClass(String backColorForClass) {
+        this.backColorForClass = backColorForClass;
+    }
+
+    public Integer getIsMixed() {
+        return isMixed;
+    }
+
+    public void setIsMixed(Integer isMixed) {
+        this.isMixed = isMixed;
+    }
+
+    public String getFrontColor() {
+        return frontColor;
+    }
+
+    public void setFrontColor(String frontColor) {
+        this.frontColor = frontColor;
+    }
+
+    public String getBackColor() {
+        return backColor;
+    }
+
+    public void setBackColor(String backColor) {
+        this.backColor = backColor;
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
     }
 }

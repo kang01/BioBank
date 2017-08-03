@@ -173,7 +173,7 @@ public class StockListServiceImpl implements StockListService {
      */
     @Override
     public List<FrozenTubeHistory> findFrozenTubeHistoryDetail(Long frozenTubeId) {
-        List<FrozenTubeHistory> frozenTubeHistories = frozenTubeHistoryRepositories.findByFrozenTubeId(frozenTubeId);
+        List<FrozenTubeHistory> frozenTubeHistories = frozenTubeHistoryRepositories.findByFrozenTubeIdAndStatusNot(frozenTubeId,Constants.INVALID);
         List<FrozenTubeHistory> frozenTubeHistoryList = new ArrayList<FrozenTubeHistory>();
         for (FrozenTubeHistory e :frozenTubeHistories){
             String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
@@ -181,9 +181,9 @@ public class StockListServiceImpl implements StockListService {
                 e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),
                 position,e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),
                 e.getAreaId(),e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId(),e.getMemo(),e.getOperator()
-//              ,e.getSampleTypeId(),e.getSampleTypeCode(),e.getSampleTypeName(),e.getFrozenTubeTypeId(),e.getFrozenTubeTypeCode(),e.getFrozenTubeTypeName(),e.getFrozenTubeVolumns(),
-//                e.getFrozenTubeVolumnsUnit(),e.getSampleUsedTimesMost(),e.getSampleUsedTimes(),e.getSampleVolumns(),e.getProjectId(),e.getProjectSiteId(),e.getFrozenSiteCode(),
-//                e.getFrozenTubeState(),e.getSampleClassificationId(),e.getFrozenBoxId()
+              ,e.getSampleTypeId(),e.getSampleTypeCode(),e.getSampleTypeName(),e.getFrozenTubeTypeId(),e.getFrozenTubeTypeCode(),e.getFrozenTubeTypeName(),e.getFrozenTubeVolumns(),
+                e.getFrozenTubeVolumnsUnit(),e.getSampleUsedTimesMost(),e.getSampleUsedTimes(),e.getSampleVolumns(),e.getProjectId(),e.getProjectSiteId(),e.getFrozenSiteCode(),
+                e.getFrozenTubeState(),e.getSampleClassificationId(),e.getFrozenBoxId()
             );
             frozenTubeHistoryList.add(frozenTubeHistory);
         }
@@ -276,7 +276,7 @@ public class StockListServiceImpl implements StockListService {
 
     @Override
     public Map<Long,FrozenTubeHistory> findFrozenTubeHistoryDetailByIds(List<Long> ids) {
-        List<FrozenTubeHistory> frozenTubeHistories = frozenTubeHistoryRepositories.findByFrozenTubeIdIn(ids);
+        List<FrozenTubeHistory> frozenTubeHistories = frozenTubeHistoryRepositories.findByFrozenTubeIdInAndOperateTimeNotNullAndStatusNot(ids,Constants.INVALID);
         List<FrozenTubeHistory> frozenTubeHistoryList = new ArrayList<FrozenTubeHistory>();
         Map<Long,List<FrozenTubeHistory>> map = new HashMap<Long,List<FrozenTubeHistory>>();
         Map<Long,FrozenTubeHistory> tubeMap = new HashMap<Long,FrozenTubeHistory>();
@@ -286,10 +286,10 @@ public class StockListServiceImpl implements StockListService {
                 e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),
                 position,e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),
                 e.getAreaId(),e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId(),e.getMemo(),e.getOperator()
-//                ,e.getSampleTypeId(),
-//                e.getSampleTypeCode(),e.getSampleTypeName(),e.getFrozenTubeTypeId(),e.getFrozenTubeTypeCode(),e.getFrozenTubeTypeName(),e.getFrozenTubeVolumns(),
-//                e.getFrozenTubeVolumnsUnit(),e.getSampleUsedTimesMost(),e.getSampleUsedTimes(),e.getSampleVolumns(),e.getProjectId(),e.getProjectSiteId(),e.getFrozenSiteCode(),
-//                e.getFrozenTubeState(),e.getSampleClassificationId(),e.getFrozenBoxId()
+                ,e.getSampleTypeId(),
+                e.getSampleTypeCode(),e.getSampleTypeName(),e.getFrozenTubeTypeId(),e.getFrozenTubeTypeCode(),e.getFrozenTubeTypeName(),e.getFrozenTubeVolumns(),
+                e.getFrozenTubeVolumnsUnit(),e.getSampleUsedTimesMost(),e.getSampleUsedTimes(),e.getSampleVolumns(),e.getProjectId(),e.getProjectSiteId(),e.getFrozenSiteCode(),
+                e.getFrozenTubeState(),e.getSampleClassificationId(),e.getFrozenBoxId()
             );
             frozenTubeHistoryList.add(frozenTubeHistory);
         }

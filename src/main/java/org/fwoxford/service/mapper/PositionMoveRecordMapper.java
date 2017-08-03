@@ -20,6 +20,9 @@ public interface PositionMoveRecordMapper {
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "projectSite.id", target = "projectSiteId")
     @Mapping(source = "positionMove.id", target = "positionMoveId")
+    @Mapping(source = "frozenTubeType.id", target = "frozenTubeTypeId")
+    @Mapping(source = "sampleType.id", target = "sampleTypeId")
+    @Mapping(source = "sampleClassification.id", target = "sampleClassificationId")
     PositionMoveRecordDTO positionMoveRecordToPositionMoveRecordDTO(PositionMoveRecord positionMoveRecord);
 
     List<PositionMoveRecordDTO> positionMoveRecordsToPositionMoveRecordDTOs(List<PositionMoveRecord> positionMoveRecords);
@@ -32,6 +35,9 @@ public interface PositionMoveRecordMapper {
     @Mapping(source = "projectId", target = "project")
     @Mapping(source = "projectSiteId", target = "projectSite")
     @Mapping(source = "positionMoveId", target = "positionMove")
+    @Mapping(source = "frozenTubeTypeId", target = "frozenTubeType")
+    @Mapping(source = "sampleTypeId", target = "sampleType")
+    @Mapping(source = "sampleClassificationId", target = "sampleClassification")
     PositionMoveRecord positionMoveRecordDTOToPositionMoveRecord(PositionMoveRecordDTO positionMoveRecordDTO);
 
     List<PositionMoveRecord> positionMoveRecordDTOsToPositionMoveRecords(List<PositionMoveRecordDTO> positionMoveRecordDTOs);
@@ -106,5 +112,29 @@ public interface PositionMoveRecordMapper {
         PositionMove positionMove = new PositionMove();
         positionMove.setId(id);
         return positionMove;
+    }
+    default FrozenTubeType frozenTubeTypeFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        FrozenTubeType frozenTubeType = new FrozenTubeType();
+        frozenTubeType.setId(id);
+        return frozenTubeType;
+    }
+    default SampleType sampleTypeFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        SampleType sampleType = new SampleType();
+        sampleType.setId(id);
+        return sampleType;
+    }
+    default SampleClassification sampleClassificationFromId(Long id){
+        if (id == null) {
+            return null;
+        }
+        SampleClassification sampleClassification = new SampleClassification();
+        sampleClassification.setId(id);
+        return sampleClassification;
     }
 }

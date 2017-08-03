@@ -8,6 +8,7 @@ import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.StockListService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenTubeDTO;
+import org.fwoxford.service.dto.StockInTubeDTO;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -66,6 +67,10 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
     private SampleTypeRepository sampleTypeRepository;
     @Autowired
     private StockListService stockListService;
+    @Autowired
+    private StockInTubeRepository stockInTubeRepository;
+    @Autowired
+    private StockInTubeMapper stockInTubeMapper;
     public FrozenBoxServiceImpl(FrozenBoxRepository frozenBoxRepository, FrozenBoxMapper frozenBoxMapper, FrozenBoxRepositories frozenBoxRepositories) {
         this.frozenBoxRepository = frozenBoxRepository;
         this.frozenBoxMapper = frozenBoxMapper;
@@ -539,14 +544,14 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         stockInBoxForDataTable.setStatus(box.getStatus());
         return stockInBoxForDataTable;
     }
-    public StockInBoxDetail createStockInBoxDetail(FrozenBox frozenBox,String stockInCode) {
+    public StockInBoxDetail createStockInBoxDetail(StockInBox frozenBox,String stockInCode) {
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
         stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
         stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
         stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
         stockInBoxDetail.setMemo(frozenBox.getMemo());
         stockInBoxDetail.setStockInCode(stockInCode);
-        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
+        List<StockInTube> frozenTubes = stockInTubeRepository.findByStockInBoxId(frozenBox.getId());
         stockInBoxDetail.setCountOfSample(frozenTubes.size());
         stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
         stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
@@ -753,42 +758,39 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }
 
         //查询冻存管列表信息
-        List<FrozenTube> frozenTubeList = new ArrayList<>();
+        List<StockInTube> stockInTubes = new ArrayList<StockInTube>();
         if(!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&&!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
-            frozenTubeList = frozenTubeService.findFrozenTubeListByBoxCode(frozenBoxCode);
+            stockInTubes = stockInTubeRepository.findByFrozenBoxCodeAndSampleState(frozenBoxCode);
         }
-
+        List<Long> ids = new ArrayList<Long>();
+        for(StockInTube s :stockInTubes){
+            ids.add(s.getFrozenTube().getId());
+        }
         String columns = frozenBox.getFrozenBoxTypeColumns()!=null?frozenBox.getFrozenBoxTypeColumns():new String("0");
         String rows = frozenBox.getFrozenBoxTypeRows()!=null?frozenBox.getFrozenBoxTypeRows():new String("0");
         int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
-        if(frozenTubeList.size() == allCounts){
+        if(stockInTubes.size() == allCounts){
             throw new BankServiceException("冻存盒已满！");
         }
-        List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
-        List<Long> ids = new ArrayList<Long>();
-        for(FrozenTube f: frozenTubeList){
-            ids.add(f.getId());
-        }
+        List<StockInTubeDTO> frozenTubeDTOS = new ArrayList<StockInTubeDTO>();
         Map<Long,FrozenTubeHistory> allFrozenTubeHistories = stockListService.findFrozenTubeHistoryDetailByIds(ids);
-        for(FrozenTube f: frozenTubeList){
-            FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
-            frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
-            frozenTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
-            frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
-            frozenTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
-            frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
-            frozenTubeDTO.setSampleClassificationName(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationName():null);
-            frozenTubeDTO.setSampleClassificationCode(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationCode():null);
-            frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_3);//盒内新增样本
-            FrozenTubeHistory frozenTubeHistory =  allFrozenTubeHistories.get(f.getId());
+        for(StockInTube f: stockInTubes){
+            StockInTubeDTO stockInTubeDTO = stockInTubeMapper.stockInTubeToStockInTubeDTO(f);
+            stockInTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
+            stockInTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
+            stockInTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
+            stockInTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
+            stockInTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
+            stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_3);//盒内新增样本
+            FrozenTubeHistory frozenTubeHistory =  allFrozenTubeHistories.get(f.getFrozenTube().getId());
             if(frozenTubeHistory != null &&
                 (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
-                frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_2);//原盒原库存
+                stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_2);//原盒原库存
             }else if(frozenTubeHistory != null &&(frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)
                 || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
-                frozenTubeDTO.setFlag(Constants.FROZEN_FLAG_1);//出库再回来
+                stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_1);//出库再回来
             }
-            frozenTubeDTOS.add(frozenTubeDTO);
+            frozenTubeDTOS.add(stockInTubeDTO);
         }
         FrozenBoxDTO frozenBoxDTO = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);
         frozenBoxDTO.setFrozenTubeDTOS(frozenTubeDTOS);

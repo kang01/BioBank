@@ -236,7 +236,9 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
 
     @Override
     public List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode, Long sampleTypeId) {
-        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCode,projectCode,sampleTypeId,Constants.INVALID);
+        List<String> sampleCodeStr = new ArrayList<>();
+        sampleCodeStr.add(sampleCode);
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCodeStr,projectCode,sampleTypeId,Constants.INVALID);
 
         for(FrozenTube f:frozenTubeList){
             if(!StringUtils.isEmpty(f.getFrozenTubeState())&&(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED
@@ -262,7 +264,9 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
         List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
         if(frozenBoxId == -1 || frozenBoxId.equals(-1)){
             if(sampleClassificationId == -1 || sampleClassificationId.equals(-1) ){
-                frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCode,projectCode,sampleTypeId,Constants.INVALID);
+                List<String> sampleCodeStr = new ArrayList<>();
+                sampleCodeStr.add(sampleCode);
+                frozenTubeList = frozenTubeRepository.findBySampleCodeInAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCodeStr,projectCode,sampleTypeId,Constants.INVALID);
             }else{
                 frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(sampleCode,projectCode,sampleTypeId,sampleClassificationId);
             }

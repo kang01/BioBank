@@ -663,7 +663,7 @@
                 projectSiteId:vm.entity.projectSiteId,
                 sampleVolumns :"", //计量
                 flag:"",
-                frozenTubeId:vm.entity.frozenTubeId
+                frozenTubeId:vm.obox.frozenTubeId
             };
 
             if (tubeInBox){
@@ -811,13 +811,12 @@
                 for(var i = 0; i < vm.frozenTubeArray.length; i++){
                     for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
                         if(vm.frozenTubeArray[i][j].sampleCode == tube.sampleCode){
-                            vm.frozenTubeArray[i][j].status = tube.status;
-                            vm.frozenTubeArray[i][j].projectSiteId = tube.projectSiteId;
+                            vm.frozenTubeArray[i][j].frozenTubeId = tube.frozenTubeId;
                             vm.frozenTubeArray[i][j].memo = tube.memo;
                             vm.frozenTubeArray[i][j].sampleTypeId = tube.sampleTypeId;
                             vm.frozenTubeArray[i][j].sampleTypeName = tube.sampleTypeName;
                             vm.frozenTubeArray[i][j].backColor = tube.backColor;
-                            // vm.frozenTubeArray[i][j].sampleVolumns = tube.sampleVolumns;
+                            vm.frozenTubeArray[i][j].sampleVolumns = tube.sampleVolumns;
                             if(tube.sampleClassificationId){
                                 vm.frozenTubeArray[i][j].sampleClassificationId = tube.sampleClassificationId;
                                 vm.frozenTubeArray[i][j].sampleClassificationName = tube.sampleClassificationName;
@@ -1078,7 +1077,7 @@
             vm.obox.frozenTubeDTOS = [];
             var tubeList = _.flatten(vm.frozenTubeArray);
             for(var i = 0; i< tubeList.length; i++){
-                if(tubeList[i].sampleCode){
+                if(tubeList[i].sampleCode|| tubeList[i].sampleTempCode){
                     vm.obox.frozenTubeDTOS.push(tubeList[i]);
                 }
             }

@@ -32,6 +32,7 @@
         vm.selectedDataFlag = false;
         vm.search = _fnSearch;
         vm.empty = _fnEmpty;
+        vm.initStockInBoxesTable = _initStockInBoxesTable;
 
         if(vm.entity.receiveDate){
             vm.entity.receiveDate = new Date(vm.entity.receiveDate);
@@ -523,7 +524,7 @@
                 }
 
                 if (full.isSplit){
-                    buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
+                    buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.id +'\')">' +
                        '   <i class="fa fa-sitemap"></i> 分装' +
                         '</button>';
                 } else {
@@ -618,10 +619,25 @@
             return columns;
         }
 
-        function _splitABox(code){
+        function _splitABox(stockInBoxId){
             _fnQuerySampleType();
-            _fnTubeByBoxCode(code);
+            _fnTubeByBoxCode(stockInBoxId);
+            vm.editFlag = false;
+            vm.showFlag = false;
 
+        }
+        // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
+        vm.editFlag = false;
+        function _editBox(stockInBoxId) {
+            vm.box = {};
+            vm.splittingBox = false;
+            StockInInputService.queryEditStockInBox(stockInBoxId).success(function (data) {
+                vm.box = data;
+                vm.editFlag = true;
+                vm.showFlag = true;
+            }).error(function (data) {
+                toastr.error(data.message);
+            });
         }
         function _putInShelf(boxIds){
             var boxes = [];
@@ -675,6 +691,8 @@
                 vm.dtOptions.isHeaderCompiled = false;
                 vm.dtInstance.rerender();
                 _fnSearch();
+                vm.showFlag = false;
+                vm.splittingBox = false;
             });
         }
         function _rescindInShelf(boxCode) {
@@ -711,17 +729,7 @@
             //     vm.stockInflag = false;
             // }
         }
-        // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
-        vm.editFlag = false;
-        function _editBox(stockInBoxId) {
-            StockInInputService.queryEditStockInBox(stockInBoxId).success(function (data) {
-                vm.box = data;
-                vm.editFlag = true;
-                vm.showFlag = true;
-            }).error(function (data) {
-                toastr.error(data.message);
-            });
-        }
+
 
         //入库完成
         vm.saveStockIn = function () {
@@ -758,9 +766,8 @@
         var size = 10;
         var htm;
         //根据盒子编码取管子
-        function _fnTubeByBoxCode(code) {
-            StockInBoxByCodeService.get({code:code},onFrozenSuccess,onError);
-            function onFrozenSuccess(data) {
+        function _fnTubeByBoxCode(stockInBoxId) {
+            StockInInputService.queryEditStockInBox(stockInBoxId).success(function (data) {
                 vm.box =  data;
                 if(!vm.box.frozenTubeDTOS.length){
                     vm.splittingBox = false;
@@ -805,7 +812,53 @@
                 },500);
                 //取未满盒子
                 _fnIncompleteBox();
-            }
+            });
+            // function onFrozenSuccess(data) {
+            //     vm.box =  data;
+            //     if(!vm.box.frozenTubeDTOS.length){
+            //         vm.splittingBox = false;
+            //     }else{
+            //         vm.splittingBox = true;
+            //     }
+            //
+            //     //获取样本分类
+            //     _fnQueryProjectSampleClass(vm.entity.projectId,vm.box.sampleType.id,vm.box.sampleType.isMixed);
+            //     var settings = {
+            //         minCols: +vm.box.frozenBoxType.frozenBoxTypeColumns,
+            //         minRows: +vm.box.frozenBoxType.frozenBoxTypeRows
+            //     };
+            //     var tubesInTable = [];
+            //     var colHeaders = [];
+            //     var rowHeaders = [];
+            //     for(var i = 0; i < settings.minRows; i++){
+            //         var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
+            //         if(i > 7){
+            //             pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1);
+            //         }
+            //         rowHeaders.push(pos.tubeRows);
+            //         var tubes = [];
+            //         for(var j = 0; j < settings.minCols;j++){
+            //             pos.tubeColumns = j + 1 + "";
+            //             if (colHeaders.length < settings.minCols){
+            //                 colHeaders.push(pos.tubeColumns);
+            //             }
+            //             var tubeInBox = _.filter(vm.box.frozenTubeDTOS, pos)[0];
+            //             var tube = _createTubeForTableCell(tubeInBox, vm.box, pos);
+            //             tubes.push(tube);
+            //         }
+            //         tubesInTable.push(tubes);
+            //     }
+            //     vm.frozenTubeArray = tubesInTable;
+            //     settings.rowHeaders = rowHeaders;
+            //     settings.colHeaders = colHeaders;
+            //     setTimeout(function () {
+            //         hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
+            //         hotRegisterer.getInstance('my-handsontable').loadData(tubesInTable);
+            //         hotRegisterer.getInstance('my-handsontable').render();
+            //     },500);
+            //     //取未满盒子
+            //     _fnIncompleteBox();
+            // }
 
         }
         var customRenderer = function (hotInstance, td, row, col, prop, value, cellProperties) {

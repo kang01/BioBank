@@ -442,7 +442,7 @@
                     'line-height': '20px',
                     'word-wrap': 'break-word'
                 }).appendTo(td);
-                $div = $("<div id='microtubesStatus'/>").html(tube.status).hide().appendTo(td);
+                // $div = $("<div id='microtubesStatus'/>").html(tube.status).hide().appendTo(td);
 
                 if(vm.repeatSampleArray.length){
                     var len = _.filter(vm.repeatSampleArray,{sampleCode:tube.sampleCode}).length;
@@ -454,7 +454,6 @@
 
 
             }
-
             //修改样本状态正常、空管、空孔、异常
             function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
 
@@ -628,46 +627,17 @@
 
                     });
                     modalInstance.result.then(function (memo) {
-
-                        for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                            for(var j = 0; j < vm.frozenTubeArray[i].length;j++){
-                                if(vm.frozenTubeArray[i][j].sampleCode){
-                                    vm.frozenTubeArray[i][j].memo = memo;
-                                }
+                        var tableCtrl = _getTableCtrl();
+                        for(var i = 0; i < aRemarkArray.length; i++){
+                            if(aRemarkArray[i].sampleCode || aRemarkArray[i].sampleTempCode){
+                                aRemarkArray[i].memo = memo;
                             }
-
                         }
                         aRemarkArray = [];
-                        hotRegisterer.getInstance('my-handsontable').render();
+                        tableCtrl.render();
                     });
                 }
             };
-            //删除盒子
-            vm.delBox = _fnDelBox;
-            //删除盒子
-            function _fnDelBox() {
-                modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'app/bizs/transport-record/frozen-box-delete-modal.html',
-                    controller: 'FrozenBoxDeleteController',
-                    backdrop:'static',
-                    controllerAs: 'vm'
-
-                });
-                modalInstance.result.then(function (flage) {
-                    if (flage){
-                        FrozenBoxDelService.delete({code:vm.obox.frozenBoxCode},onDelBoxSuccess,onError);
-                    }
-                    function onDelBoxSuccess() {
-                        toastr.success("删除成功!");
-                        vm.loadBox();
-                        vm.obox = null;
-                        vm.boxStr = null;
-                        initFrozenTube(10,10);
-                        hotRegisterer.getInstance('my-handsontable').render();
-                    }
-                });
-            }
         }
         // 创建一个对象用于管子Table的控件
         function _createTubeForTableCell(tubeInBox, box, rowNO, colNO, pos){

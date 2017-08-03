@@ -96,10 +96,10 @@ public class StockOutRequiredSampleResource {
      */
     @GetMapping("/stock-out-required-samples/stockOutRequirement/{id}")
     @Timed
-    public ResponseEntity<List<StockOutRequiredSampleDTO>> getAllStockOutRequiredSamples(@ApiParam Pageable pageable)
+    public ResponseEntity<List<StockOutRequiredSampleDTO>> getAllStockOutRequiredSamplesByRequirementId(@ApiParam Pageable pageable,@PathVariable Long id)
         throws URISyntaxException {
         log.debug("REST request to get a page of StockOutRequiredSamples");
-        Page<StockOutRequiredSampleDTO> page = stockOutRequiredSampleService.findAll(pageable);
+        Page<StockOutRequiredSampleDTO> page = stockOutRequiredSampleService.getAllStockOutRequiredSamplesByRequirementId(pageable,id);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/stock-out-required-samples");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

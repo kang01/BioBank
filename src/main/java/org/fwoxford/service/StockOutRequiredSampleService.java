@@ -45,4 +45,6 @@ public interface StockOutRequiredSampleService {
     void delete(Long id);
 
     DataTablesOutput<StockOutRequiredSampleDTO> getPageStockOutRequiredSampleByRequired(DataTablesInput input, Long id);
+
+    Page<StockOutRequiredSampleDTO> getAllStockOutRequiredSamplesByRequirementId(Pageable pageable, Long id);
 }

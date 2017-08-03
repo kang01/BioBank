@@ -112,4 +112,10 @@ public class StockOutRequiredSampleServiceImpl implements StockOutRequiredSample
         DataTablesOutput<StockOutRequiredSampleDTO> dtoDataTablesOutput = stockOutRequiredSampleRepositories.findAll(input,userConverter);
         return dtoDataTablesOutput;
     }
+
+    @Override
+    public Page<StockOutRequiredSampleDTO> getAllStockOutRequiredSamplesByRequirementId(Pageable pageable, Long id) {
+        Page<StockOutRequiredSample> result = stockOutRequiredSampleRepository.findAllByStockOutRequirementId(id,pageable);
+        return result.map(stockOutRequiredSample -> stockOutRequiredSampleMapper.stockOutRequiredSampleToStockOutRequiredSampleDTO(stockOutRequiredSample));
+    }
 }

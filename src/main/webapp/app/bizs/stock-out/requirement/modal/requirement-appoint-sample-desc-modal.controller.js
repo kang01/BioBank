@@ -9,16 +9,41 @@
         .module('bioBankApp')
         .controller('RequirementAppointSampleDescModalController', RequirementAppointSampleDescModalController);
 
-    RequirementAppointSampleDescModalController.$inject = ['$scope','$uibModalInstance','$compile','$uibModal','items','DTOptionsBuilder','DTColumnBuilder','RequirementService','BioBankDataTable'];
+    RequirementAppointSampleDescModalController.$inject = ['$scope','$uibModalInstance','toastr','items','DTOptionsBuilder','DTColumnBuilder','RequirementAppointSampleDescService','BioBankDataTable'];
 
-    function RequirementAppointSampleDescModalController($scope,$uibModalInstance,$compile,$uibModal,items,DTOptionsBuilder,DTColumnBuilder,RequirementService,BioBankDataTable) {
+    function RequirementAppointSampleDescModalController($scope,$uibModalInstance,toastr,items,DTOptionsBuilder,DTColumnBuilder,RequirementAppointSampleDescService,BioBankDataTable) {
         var vm = this;
         //样本需求ID
         var sampleRequirementId = items.sampleRequirementId;
 
+        function loadSample() {
+            RequirementAppointSampleDescService.query({
+                requirementId:sampleRequirementId,
+                page:0,
+                size: 30
+            }, onSuccess, onError);
+            function onSuccess(data,headers) {
+                // vm.links = ParseLinks.parse(headers('link'));
+                vm.totalItems = headers('X-Total-Count');
+                vm.queryCount = vm.totalItems;
+                vm.samples = data;
+                // vm.page =1;
+            }
+            function onError(data) {
+                toastr.error(data.message)
+            }
+            // RequirementService.appointDescSampleRequirement(sampleRequirementId).success(function (data,headers) {
+            //     vm.totalItems = headers('X-Total-Count');
+            //     vm.queryCount = vm.totalItems;
+            //     vm.samples = data;
+            //    console.log(JSON.stringify(data));
+            // });
+        }
+        loadSample();
+
         vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY")
-            .withOption('serverSide',true)
-            .withFnServerData(_fnServerData);
+            // .withOption('serverSide',true)
+            // .withFnServerData(_fnServerData);
 
         vm.dtColumns = [
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),

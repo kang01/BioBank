@@ -1092,6 +1092,7 @@
                 tableCtrl.render();
                 toastr.error(data.message);
             })
+
         }
         //关闭
         vm.closeBox = function () {

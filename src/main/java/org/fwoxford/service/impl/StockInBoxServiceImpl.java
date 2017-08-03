@@ -749,11 +749,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         List<StockInBox> stockInBoxes = stockInBoxRepository.findByFrozenBoxCode(frozenBoxDTO.getFrozenBoxCode());
         FrozenBox frozenBox = new FrozenBox();
         for(StockInBox s :stockInBoxes){
-            if(!s.getStockInCode().equals(stockInCode)){
+            if(s.getStockInCode().equals(stockInCode)){
                 frozenBox = s.getFrozenBox();
-            }
-            if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_PUT_SHELVES)){
-                throw new BankServiceException("冻存盒已上架，不能执行保存！");
+                if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_PUT_SHELVES)){
+                    throw new BankServiceException("冻存盒已上架，不能执行保存！");
+                }
             }
         }
         SampleType entity = sampleTypeRepository.findOne(frozenBoxDTO.getSampleTypeId());

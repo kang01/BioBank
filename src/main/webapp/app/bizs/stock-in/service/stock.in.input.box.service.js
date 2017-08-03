@@ -57,7 +57,11 @@
             return $http.get('/api/stock-in-boxes/stockInBoxId/'+stockInBoxId);
         }
         function _fnSaveStockInBox(stockInCode,param) {
-            return $http.post('/api/stock-in-boxes/stockInCode/'+stockInCode,param);
+            if(param.id){
+                return $http.put('api/stock-in-boxes/stockInCode/'+stockInCode,param);
+            }else{
+                return $http.post('/api/stock-in-boxes/stockInCode/'+stockInCode,param);
+            }
         }
         function _fnSaveEditStockInBox(stockInBoxCode,param) {
             return $http.put('api/stock-in-boxes/stockInCode/'+stockInBoxCode,param);

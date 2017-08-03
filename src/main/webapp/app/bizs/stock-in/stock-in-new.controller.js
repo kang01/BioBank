@@ -39,6 +39,10 @@
                     if(!vm.saveStockInFlag){
                         toastr.success("保存入库信息成功!");
                     }
+                    //显示冻存盒信息
+                    vm.showFlag = true;
+                    // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
+                    vm.editFlag = false;
                 });
             }else{
                 StockInInputService.saveStockIn(vm.entity).success(function (data) {
@@ -46,6 +50,10 @@
                     if(!vm.showFlag){
                         toastr.success("保存入库信息成功!");
                     }
+                    //显示冻存盒信息
+                    vm.showFlag = true;
+                    // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
+                    vm.editFlag = false;
                 });
             }
 
@@ -450,18 +458,13 @@
                 modalInstance.result.then(function () {
                     vm.saveStockInFlag = true;
                     vm.stockInSave();
-                    vm.showFlag = true;
-                    vm.editFlag = false;
+
                 }, function () {
                 });
             }else{
                 vm.showFlag = false;
                 vm.saveStockInFlag = true;
                 vm.stockInSave();
-                //显示冻存盒信息
-                vm.showFlag = true;
-                // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
-                vm.editFlag = false;
                 vm.box = {};
 
             }

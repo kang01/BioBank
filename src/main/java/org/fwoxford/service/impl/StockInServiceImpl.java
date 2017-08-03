@@ -588,12 +588,13 @@ public class StockInServiceImpl implements StockInService {
         }
         List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipCodes(transhipCodeList);
         List<String> frozenBoxCodes = new ArrayList<String>();
+        List<FrozenBox> frozenBoxes = new ArrayList<>();
         for(TranshipBox transhipBox : transhipBoxes){
             frozenBoxCodes.add(transhipBox.getFrozenBoxCode());
             FrozenBox frozenBox = transhipBox.getFrozenBox();
             //冻存盒状态变为待入库
             frozenBox.setStatus(Constants.FROZEN_BOX_STOCKING);
-            frozenBoxRepository.save(frozenBox);
+            frozenBoxes.add(frozenBox);
             //保存入库冻存盒
             StockInBox stockInBox = new StockInBox();
             Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
@@ -618,12 +619,13 @@ public class StockInServiceImpl implements StockInService {
             //保存入库管子
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
             List<StockInTube> stockInTubes = new ArrayList<StockInTube>();
+            List<FrozenTube> frozenTubes = new ArrayList<FrozenTube>();
             for (FrozenTube tube : frozenTubeList) {
                 if (!tube.getFrozenTubeState().equals(Constants.FROZEN_BOX_TRANSHIP_COMPLETE)) {
                     continue;
                 }
                 tube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
-                frozenTubeRepository.saveAndFlush(tube);
+                frozenTubes.add(tube);
                 StockInTube stockInTube = new StockInTube();
                 stockInTube.status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
                     .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox).errorType(tube.getErrorType())
@@ -640,8 +642,10 @@ public class StockInServiceImpl implements StockInService {
                     .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
                 stockInTubes.add(stockInTube);
             }
+            frozenTubeRepository.save(frozenTubes);
             stockInTubeRepository.save(stockInTubes);
         }
+        frozenBoxRepository.save(frozenBoxes);
         return stockInMapper.stockInToStockInDTO(stockIn);
     }
 

@@ -1,0 +1,43 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.positionDestroy.detail.title">Position Destroy</span> {{vm.positionDestroy.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.positionDestroy.destroyReason">Destroy Reason</span></dt>
+        <dd>
+            <span>{{vm.positionDestroy.destroyReason}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionDestroy.destroyType">Destroy Type</span></dt>
+        <dd>
+            <span>{{vm.positionDestroy.destroyType}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionDestroy.operatorId1">Operator Id 1</span></dt>
+        <dd>
+            <span>{{vm.positionDestroy.operatorId1}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionDestroy.operatorId2">Operator Id 2</span></dt>
+        <dd>
+            <span>{{vm.positionDestroy.operatorId2}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionDestroy.status">Status</span></dt>
+        <dd>
+            <span>{{vm.positionDestroy.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.positionDestroy.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.positionDestroy.memo}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="position-destroy-detail.edit({id:vm.positionDestroy.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

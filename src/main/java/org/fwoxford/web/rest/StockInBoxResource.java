@@ -283,9 +283,9 @@ public class StockInBoxResource {
      */
     @GetMapping("/stock-in-boxes/stockInBoxId/{id}")
     @Timed
-    public ResponseEntity<FrozenBoxDTO> getBoxAndTubeByStockInBox(@PathVariable Long id) {
+    public ResponseEntity<StockInBoxDTO> getBoxAndTubeByStockInBox(@PathVariable Long id) {
         log.debug("REST request to get Box and Tube : {}", id);
-        FrozenBoxDTO res = stockInBoxService.getBoxAndStockTubeByStockInBoxId(id);
+        StockInBoxDTO res = stockInBoxService.getBoxAndStockTubeByStockInBoxId(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

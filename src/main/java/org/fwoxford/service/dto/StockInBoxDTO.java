@@ -1,8 +1,13 @@
 package org.fwoxford.service.dto;
 
 
+import org.fwoxford.domain.FrozenBoxType;
+import org.fwoxford.domain.SampleClassification;
+import org.fwoxford.domain.SampleType;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -528,5 +533,113 @@ public class StockInBoxDTO extends AbstractAuditingDTO implements Serializable {
             ", supportRackId=" + supportRackId +
             ", areaId=" + areaId +
             '}';
+    }
+    /**
+     * 冻存管列表
+     */
+    private List<StockInTubeDTO> frozenTubeDTOS;
+    /**
+     * 样本分类前景色
+     */
+    private String frontColorForClass;
+    /**
+     * 样本分类背景色
+     */
+    private String backColorForClass;
+    /**
+     * 样本类型是否混合
+     */
+    private Integer isMixed;
+
+    /**
+     * 样本类型前景色
+     */
+    private String frontColor;
+    /**
+     * 样本类型背景色
+     */
+    private String backColor;
+    private FrozenBoxType frozenBoxType;
+    private SampleClassification sampleClassification;
+    private SampleType sampleType;
+    public List<StockInTubeDTO> getFrozenTubeDTOS() {
+        return frozenTubeDTOS;
+    }
+
+    public StockInBoxDTO setFrozenTubeDTOS(List<StockInTubeDTO> frozenTubeDTOS) {
+        this.frozenTubeDTOS = frozenTubeDTOS;
+        return this;
+    }
+
+    public String getFrontColorForClass() {
+        return frontColorForClass;
+    }
+
+    public StockInBoxDTO setFrontColorForClass(String frontColorForClass) {
+        this.frontColorForClass = frontColorForClass;
+        return this;
+    }
+
+    public String getBackColorForClass() {
+        return backColorForClass;
+    }
+
+    public StockInBoxDTO setBackColorForClass(String backColorForClass) {
+        this.backColorForClass = backColorForClass;
+        return this;
+    }
+
+    public Integer getIsMixed() {
+        return isMixed;
+    }
+
+    public StockInBoxDTO setIsMixed(Integer isMixed) {
+        this.isMixed = isMixed;
+        return this;
+    }
+
+    public String getFrontColor() {
+        return frontColor;
+    }
+
+    public StockInBoxDTO setFrontColor(String frontColor) {
+        this.frontColor = frontColor;
+        return this;
+    }
+
+    public String getBackColor() {
+        return backColor;
+    }
+
+    public StockInBoxDTO setBackColor(String backColor) {
+        this.backColor = backColor;
+        return this;
+    }
+
+    public FrozenBoxType getFrozenBoxType() {
+        return frozenBoxType;
+    }
+
+    public StockInBoxDTO setFrozenBoxType(FrozenBoxType frozenBoxType) {
+        this.frozenBoxType = frozenBoxType;
+        return this;
+    }
+
+    public SampleClassification getSampleClassification() {
+        return sampleClassification;
+    }
+
+    public StockInBoxDTO setSampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
+        return this;
+    }
+
+    public SampleType getSampleType() {
+        return sampleType;
+    }
+
+    public StockInBoxDTO setSampleType(SampleType sampleType) {
+        this.sampleType = sampleType;
+        return this;
     }
 }

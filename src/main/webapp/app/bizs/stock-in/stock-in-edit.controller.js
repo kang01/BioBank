@@ -1345,14 +1345,14 @@
                 }
                 saveBoxList.push(objBox);
             }
-            // console.log(JSON.stringify(saveBoxList));
+            // console.log(JSON.stringify(SBoxList));
             BioBankBlockUi.blockUiStart();
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
                 BioBankBlockUi.blockUiStop();
                 toastr.success("分装成功!");
                 vm.dtOptions.isHeaderCompiled = false;
                 vm.dtInstance.rerender();
-                _splitABox(vm.box.frozenBoxCode);
+                _splitABox(vm.box.id);
                 vm.boxList = [];
                 vm.frozenBoxCode = "";
                 $(".box-selected").removeClass("box-selected");

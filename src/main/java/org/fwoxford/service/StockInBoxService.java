@@ -84,5 +84,5 @@ public interface StockInBoxService {
      * @param id
      * @return
      */
-    FrozenBoxDTO getBoxAndStockTubeByStockInBoxId(Long id);
+    StockInBoxDTO getBoxAndStockTubeByStockInBoxId(Long id);
 }

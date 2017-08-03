@@ -94,7 +94,7 @@ public class StockOutRequiredSampleResource {
      * @return the ResponseEntity with status 200 (OK) and the list of stockOutRequiredSamples in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @GetMapping("/stock-out-required-samples")
+    @GetMapping("/stock-out-required-samples/stockOutRequirement/{id}")
     @Timed
     public ResponseEntity<List<StockOutRequiredSampleDTO>> getAllStockOutRequiredSamples(@ApiParam Pageable pageable)
         throws URISyntaxException {

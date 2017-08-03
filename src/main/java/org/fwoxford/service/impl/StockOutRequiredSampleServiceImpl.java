@@ -1,6 +1,7 @@
 package org.fwoxford.service.impl;
 
 import org.apache.commons.beanutils.ConvertUtils;
+import org.fwoxford.config.Constants;
 import org.fwoxford.repository.StockOutRequiredSampleRepositories;
 import org.fwoxford.service.StockOutRequiredSampleService;
 import org.fwoxford.domain.StockOutRequiredSample;
@@ -104,7 +105,8 @@ public class StockOutRequiredSampleServiceImpl implements StockOutRequiredSample
         Converter<StockOutRequiredSample, StockOutRequiredSampleDTO> userConverter = new Converter<StockOutRequiredSample, StockOutRequiredSampleDTO>() {
             @Override
             public StockOutRequiredSampleDTO convert(StockOutRequiredSample e) {
-                return new StockOutRequiredSampleDTO(e.getId(),e.getSampleCode(),e.getSampleType(),e.getStatus(),e.getMemo(),e.getStockOutRequirement().getId());
+                String sampleType = Constants.SAMPLE_TYPE_CODE_MAP.get(e.getSampleType());
+                return new StockOutRequiredSampleDTO(e.getId(),e.getSampleCode(),sampleType,e.getStatus(),e.getMemo(),e.getStockOutRequirement().getId());
             }
         };
         DataTablesOutput<StockOutRequiredSampleDTO> dtoDataTablesOutput = stockOutRequiredSampleRepositories.findAll(input,userConverter);

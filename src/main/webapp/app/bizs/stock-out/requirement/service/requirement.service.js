@@ -42,8 +42,10 @@
             checkSampleRequirementList:_checkSampleRequirementList,
             //删除
             delSampleRequirement:_delSampleRequirement,
-            //详情
+            //核对详情
             descSampleRequirement:_descSampleRequirement,
+            //指定样本详情
+            appointDescSampleRequirement:_appointDescSampleRequirement,
             //详情列表
             descSampleList:_descSampleList,
             //复原
@@ -122,8 +124,11 @@
             return $http.get('api/stock-out-requirements/getCheckDetail/'+id);
         }
         function _descSampleList(id,data) {
-            // return $http.get('api/res/stock-out-requirements/getCheckDetail/'+id);
             return $http.post('api/res/stock-out-requirements/getCheckDetail/'+id,angular.toJson(data));
+        }
+        //指定样本详情
+        function _appointDescSampleRequirement(id,data) {
+            return $http.post('api/res/stock-out-required-samples/stockOutRequirement/'+id,angular.toJson(data));
         }
         function _revertSampleRequirement(id) {
             return $http.put('api/stock-out-requirements/revert/'+id);

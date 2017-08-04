@@ -648,12 +648,12 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         for(ProjectSampleClass s : projectSampleClasses ){
             sampleClassificationIdStr.add(s.getSampleClassification().getId());
         }
-        List<StockInBox> frozenBoxList = new ArrayList<StockInBox>();
-        List<StockInBox> wrongFrozenBoxList = new ArrayList<StockInBox>();
+        List<FrozenBox> frozenBoxList = new ArrayList<FrozenBox>();
+        List<FrozenBox> wrongFrozenBoxList = new ArrayList<FrozenBox>();
         //取本次入库的所有冻存盒
         List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCodeAndStatus(stockInCode,Constants.FROZEN_BOX_STOCKING);
         SampleType wrongSample =sampleTypeRepository.findBySampleTypeCode("97");
-        Map<Long,List<StockInBox>> map = new HashMap<Long,List<StockInBox>>();
+        Map<Long,List<FrozenBox>> map = new HashMap<Long,List<FrozenBox>>();
         for(StockInBox inBox:stockInBoxes){
             FrozenBox boxIn = inBox.getFrozenBox();
             if(boxIn.getFrozenBoxTypeCode().equals(frozenBox.getFrozenBoxTypeCode())
@@ -667,7 +667,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 }
                 Long key = null;
                 if(boxIn.getSampleTypeCode().equals("97")){
-                    wrongFrozenBoxList.add(inBox);
+                    wrongFrozenBoxList.add(boxIn);
                     continue;
                 }
                 if(sampleClassificationIdStr.size()>0){//有分类
@@ -675,13 +675,13 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 }else{//无分类
                     key = boxIn.getSampleType().getId();
                 }
-                List<StockInBox> frozenBoxes =map.get(key);
+                List<FrozenBox> frozenBoxes =map.get(key);
                 if(frozenBoxes==null||frozenBoxes.size()==0){
-                    List<StockInBox> frozenBoxLists = new ArrayList<StockInBox>();
-                    frozenBoxLists.add(inBox);
+                    List<FrozenBox> frozenBoxLists = new ArrayList<FrozenBox>();
+                    frozenBoxLists.add(boxIn);
                     map.put(key,frozenBoxLists);
                 }else{
-                    frozenBoxes.add(inBox);
+                    frozenBoxes.add(boxIn);
                     map.put(key,frozenBoxes);
                 }
             }
@@ -693,8 +693,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 if(map.get(id)!=null && map.get(id).size()>0){
                     frozenBoxList.addAll(map.get(id));
                 }else{
-                    List<StockInBox> stockInFrozenBox = stockInBoxRepository.findIncompleteFrozenBoxBySampleClassificationIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), new ArrayList<Long>(){{add(id);}}, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
-//                    List<FrozenBox> stockInFrozenBox = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), new ArrayList<Long>(){{add(id);}}, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+//                    List<StockInBox> stockInFrozenBox = stockInBoxRepository.findIncompleteFrozenBoxBySampleClassificationIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), new ArrayList<Long>(){{add(id);}}, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+                    List<FrozenBox> stockInFrozenBox = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), new ArrayList<Long>(){{add(id);}}, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
                     frozenBoxList.addAll(stockInFrozenBox);
                 }
             }
@@ -707,36 +707,50 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 if (map.get(sampleTypeId) != null && map.get(sampleTypeId).size() > 0) {
                     frozenBoxList.addAll(map.get(sampleTypeId));
                 } else {
-                    List<StockInBox> stockInFrozenBox = stockInBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), sampleTypeId, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
-//                    List<FrozenBox> stockInFrozenBox = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), sampleTypeId, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+//                    List<StockInBox> stockInFrozenBox = stockInBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), sampleTypeId, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+                    List<FrozenBox> stockInFrozenBox = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), sampleTypeId, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
                     frozenBoxList.addAll(stockInFrozenBox);
                 }
             }
 
         }
         if(wrongFrozenBoxList==null || wrongFrozenBoxList.size()== 0 ){
-            wrongFrozenBoxList =  stockInBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
-//            wrongFrozenBoxList =  frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+//            wrongFrozenBoxList =  stockInBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+            wrongFrozenBoxList =  frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
         }
         frozenBoxList.addAll(wrongFrozenBoxList);
-
-        for(StockInBox f :frozenBoxList){
+        List<FrozenBox> frozenBoxes = new ArrayList<>();
+        for(FrozenBox f :frozenBoxList){
             StockInBoxForIncomplete stockInBoxForIncomplete = new StockInBoxForIncomplete();
             stockInBoxForIncomplete.setFrozenBoxId(f.getId());
             stockInBoxForIncomplete.setFrozenBoxCode(f.getFrozenBoxCode());
             stockInBoxForIncomplete.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(f.getFrozenBoxType()));
             stockInBoxForIncomplete.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(f.getSampleType()));
             stockInBoxForIncomplete.setSampleClassification(sampleClassificationMapper.sampleClassificationToSampleClassificationDTO(f.getSampleClassification()));
-            List<StockInTube> stockInTubes = stockInTubeRepository.findByStockInBoxId(f.getId());
-//            List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(f.getFrozenBoxCode());
+            List<StockInTube> stockInTubes = stockInTubeRepository.findByFrozenBoxCode(f.getFrozenBoxCode());
+            List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(f.getFrozenBoxCode());
             List<StockInTubeForBox> stockInTubeForBoxes = new ArrayList<StockInTubeForBox>();
-            for(StockInTube t :stockInTubes){
+            for(FrozenTube t :frozenTubes){
                 StockInTubeForBox inTubeForBox = new StockInTubeForBox();
                 inTubeForBox.setId(t.getId());
                 inTubeForBox.setFrozenBoxCode(f.getFrozenBoxCode());
                 inTubeForBox.setTubeColumns(t.getTubeColumns());
                 inTubeForBox.setTubeRows(t.getTubeRows());
                 stockInTubeForBoxes.add(inTubeForBox);
+            }for(StockInTube stockInTube : stockInTubes){
+                StockInTubeForBox inTubeForBox = new StockInTubeForBox();
+                inTubeForBox.setId(stockInTube.getFrozenTube().getId());
+                inTubeForBox.setFrozenBoxCode(stockInTube.getFrozenBoxCode());
+                inTubeForBox.setTubeColumns(stockInTube.getTubeColumns());
+                inTubeForBox.setTubeRows(stockInTube.getTubeRows());
+                stockInTubeForBoxes.add(inTubeForBox);
+            }
+            FrozenBoxType boxType = f.getFrozenBoxType();
+            String columns = boxType.getFrozenBoxTypeColumns()!=null?boxType.getFrozenBoxTypeColumns():new String("0");
+            String rows = boxType.getFrozenBoxTypeRows()!=null?boxType.getFrozenBoxTypeRows():new String("0");
+            int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
+            if(stockInTubeForBoxes.size() >= allCounts){
+                continue;
             }
             stockInBoxForIncomplete.setCountOfSample(stockInTubeForBoxes.size());
             stockInBoxForIncomplete.setStockInFrozenTubeList(stockInTubeForBoxes);

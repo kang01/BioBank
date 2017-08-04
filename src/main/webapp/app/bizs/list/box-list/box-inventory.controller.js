@@ -8,14 +8,15 @@
         .module('bioBankApp')
         .controller('BoxInventoryController', BoxInventoryController);
 
-    BoxInventoryController.$inject = ['$scope','$stateParams','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService','FrozenBoxTypesService'];
+    BoxInventoryController.$inject = ['$scope','$stateParams','$compile','$state','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService','FrozenBoxTypesService'];
 
-    function BoxInventoryController($scope,$stateParams,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService,FrozenBoxTypesService) {
+    function BoxInventoryController($scope,$stateParams,$compile,$state,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService,FrozenBoxTypesService) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
         vm.checked = false;
         var selectedBox;
+        var modalInstance;
         vm.dto.equipmentId = $stateParams.equipmentId;
         vm.dto.areaId = $stateParams.areaId;
         vm.dto.shelvesId = $stateParams.shelvesId;
@@ -29,6 +30,9 @@
         vm.movement = _fnMovement;
         vm.close = _fnClose;
         vm.empty = _fnEmpty;
+        //交换、销毁
+        vm.exchangeDestroy = _fnExchangeDestroy;
+
         //根据盒子编码查找样本
         vm.searchSample = _fnSearchSample;
 
@@ -287,6 +291,27 @@
             };
             $state.go('sample-inventory',obj);
         }
+        function _fnExchangeDestroy(operateStatus) {
+            // operateStatus:1.交换 2.销毁
+            var ids =  _.map(selectedBox, 'id');
+            modalInstance = $uibModal.open({
+                templateUrl: 'app/bizs/list/modal/list-exchange-destroy-modal.html',
+                controller: 'ListExchangeDestroyModalController',
+                controllerAs: 'vm',
+                resolve:{
+                    items:function () {
+                        return{
+                            operateStatus:operateStatus
+                        }
+                    }
+                }
+            });
+            modalInstance.result.then(function (reson) {
+                console.log(reson)
+            }, function () {
+            });
+        }
+
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "110"),
@@ -430,7 +455,7 @@
                 .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('position').withTitle('位置').withOption("width", "140"),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "110").renderWith(_fnRowBoxCodeRender),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目').withOption("width", "180"),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目名称').withOption("width", "180"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "100"),
             DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "120"),
             DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒类型').withOption("width", "120"),
@@ -438,7 +463,7 @@
             DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
             DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", 'auto'),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "80").withOption('searchable',false).notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60").withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
             var len = _.filter(selectedBox,{id:full.id}).length;
@@ -461,7 +486,7 @@
         function createdRow(row, data, dataIndex) {
             var projectName;
             if(data.projectCode){
-                projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
+                projectName = data.projectCode+","+data.projectName;
             }
             var status = "";
             status = MasterData.getFrozenBoxStatus(data.status);

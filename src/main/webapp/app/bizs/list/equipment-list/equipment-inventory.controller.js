@@ -8,24 +8,27 @@
         .module('bioBankApp')
         .controller('EquipmentInventoryController', EquipmentInventoryController);
 
-    EquipmentInventoryController.$inject = ['$scope','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
+    EquipmentInventoryController.$inject = ['$scope','$compile','$state','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
 
-    function EquipmentInventoryController($scope,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
+    function EquipmentInventoryController($scope,$compile,$state,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
         var vm = this;
         vm.checked = false;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
         var selectedEquipment;
         var projectIds = [];
+        var modalInstance;
         vm.dtInstance = {};
         vm.searchShow = _fnSearchShow;
         vm.search = _fnSearch;
         vm.selectedShow = _fnSearchShow;
         //移位
         vm.movement = _fnMovement;
-        //交换
-        vm.exchange = _fnExchange;
+        //交换、销毁
+        vm.exchangeDestroy = _fnExchangeDestroy;
+        //搜索关闭
         vm.close = _fnClose;
+        //搜索清空
         vm.empty = _fnEmpty;
         //查询盒子
         vm.searchBox = _fnSearchBox;
@@ -227,9 +230,27 @@
             };
             $state.go('box-inventory',obj);
         }
-        function _fnExchange() {
+        function _fnExchangeDestroy(operateStatus) {
+            // operateStatus:1.交换 2.销毁
             var ids =  _.map(selectedEquipment, 'id');
-            console.log(JSON.stringify(ids));
+            // console.log(JSON.stringify(ids));
+            modalInstance = $uibModal.open({
+                templateUrl: 'app/bizs/list/modal/list-exchange-destroy-modal.html',
+                controller: 'ListExchangeDestroyModalController',
+                controllerAs: 'vm',
+                resolve:{
+                    items:function () {
+                        return {
+                            operateStatus:operateStatus
+                        }
+                    }
+                }
+            });
+            modalInstance.result.then(function (reson) {
+                console.log(reson)
+            }, function () {
+            });
+
         }
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
         vm.selectedColumns = [

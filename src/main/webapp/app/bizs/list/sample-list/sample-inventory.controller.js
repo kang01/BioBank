@@ -8,14 +8,15 @@
         .module('bioBankApp')
         .controller('SampleInventoryController', SampleInventoryController);
 
-    SampleInventoryController.$inject = ['$scope','$stateParams','$compile','$state','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService'];
+    SampleInventoryController.$inject = ['$scope','$stateParams','$compile','$state','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService'];
 
-    function SampleInventoryController($scope,$stateParams,$compile,$state,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService) {
+    function SampleInventoryController($scope,$stateParams,$compile,$state,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {
             frozenBoxCodeStr:[]
         };
+        var modalInstance;
         var selectedSample;
         var projectIds = [];
         var projectIdStr = "";
@@ -28,6 +29,9 @@
         vm.search = _fnSearch;
         vm.close = _fnClose;
         vm.empty = _fnEmpty;
+        //交换、销毁
+        vm.exchangeDestroy = _fnExchangeDestroy;
+
         var frozenBoxCode = $stateParams.frozenBoxCode;
         if(frozenBoxCode){
             vm.dto.frozenBoxCodeStr.push(frozenBoxCode)
@@ -247,6 +251,26 @@
             // vm.checked = false;
             vm.dtInstance.rerender();
         }
+        function _fnExchangeDestroy(operateStatus) {
+            // operateStatus:1.交换 2.销毁
+            var ids =  _.map(selectedSample, 'id');
+            modalInstance = $uibModal.open({
+                templateUrl: 'app/bizs/list/modal/list-exchange-destroy-modal.html',
+                controller: 'ListExchangeDestroyModalController',
+                controllerAs: 'vm',
+                resolve:{
+                    items:function () {
+                        return{
+                            operateStatus:operateStatus
+                        }
+                    }
+                }
+            });
+            modalInstance.result.then(function (reson) {
+                console.log(reson)
+            }, function () {
+            });
+        }
 
         vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
         vm.selectedColumns = [
@@ -394,12 +418,12 @@
             DTColumnBuilder.newColumn('positionInBox').withTitle('盒内位置').withOption("width", "80"),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "120"),
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目名称'),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "100"),
             DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "120"),
             DTColumnBuilder.newColumn('sex').withTitle('标签'),
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "100").withOption('searchable',false).notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60").withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
             var len = _.filter(selectedSample,{id:full.id}).length;
@@ -415,7 +439,7 @@
         function createdRow(row, data, dataIndex) {
             var projectName;
             if(data.projectCode){
-                projectName = _.find(vm.projectOptions,{projectCode:data.projectCode}).projectName;
+                projectName = data.projectCode+","+data.projectName;
             }
             var tag = '';
             if(data.sex){

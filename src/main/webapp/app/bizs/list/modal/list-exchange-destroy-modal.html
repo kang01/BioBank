@@ -1,0 +1,36 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
+    <h3 class="modal-title" id="modal-title">
+        <span ng-if="vm.operateStatus == '1'">交换操作</span>
+        <span ng-if="vm.operateStatus == '2'">销毁操作</span>
+    </h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>原因</label>
+                <textarea class="form-control resize-none" rows="3" ng-model="vm.reason" focus-me></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>操作员</label>
+                <input type="text" class="form-control">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>秘钥</label>
+                <input type="password" class="form-control">
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+</div>

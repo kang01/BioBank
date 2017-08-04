@@ -6,12 +6,12 @@
         .directive('editStockDirective',  editStockDirective)
         .controller('EditStockController',EditStockController);
 
-    editStockDirective.$inject  =  ['$compile'];
+    editStockDirective.$inject  =  [];
     EditStockController.$inject  =  ['$scope','hotRegisterer','$uibModal','FrozenBoxTypesService','toastr','SampleTypeService','StockInInputService'];
     // =： 通过属性进行双向数据绑定，内外变化会保持一致；
     // @： 通过属性值进行绑定，但是单向的，即外界控制器可以把值传进来供内部使用，但内部对这个属性值进行修改时不会影响到外部的；
     // &： 调用父级作用域中的方法（function）；
-    function  editStockDirective($compile)  {
+    function  editStockDirective()  {
         var  directive  =  {
             restrict: 'EAC',
             replace:true,
@@ -20,10 +20,9 @@
                 stockInBox  :  '=stockInBox',
                 reloadData: "&",
                 editFlag: "=",
-                showFlag: "=",
-                compile: '='
+                showFlag: "="
             },
-            templateUrl: 'editStockIn.html',
+            templateUrl: 'app/bizs/stock-in/template/edit-stockInBox-template.html',
             link: function(scope, elem, attrs){
 
                 // elem.html($compile(scope.compile)(scope))
@@ -204,7 +203,7 @@
                                                     return {
                                                         tubes:stockInTubes,
                                                         sampleCode:oldTube.sampleCode,
-                                                        frozenBoxId:vm.obox.id,
+                                                        frozenBoxId:vm.obox.frozenBoxId,
                                                         projectSiteId:vm.entity.projectSiteId,
                                                         projectId:vm.entity.projectId,
                                                         projectCode:vm.entity.projectCode,

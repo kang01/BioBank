@@ -11,7 +11,8 @@
                     <div class="circle" ng-if="vm.selectedLen">{{vm.selectedLen}}</div>
                 </button>
             </span>
-            <button type="button" class="btn btn-default" ng-click="vm.exchange()" ng-disabled="vm.selectedLen != 2">交换</button>
+            <button type="button" class="btn btn-default" ng-click="vm.exchangeDestroy(1)" ng-disabled="vm.selectedLen != 2">交换</button>
+            <button type="button" class="btn btn-default" ng-click="vm.exchangeDestroy(2)" ng-disabled="!vm.selectedLen">销毁</button>
             <button type="button" class="btn btn-default" ng-click="vm.movement()" ng-disabled="!vm.selectedLen">移位</button>
             <button type="button" class="btn btn-default" ng-click="vm.searchShow(2)">搜索</button>
         </div>

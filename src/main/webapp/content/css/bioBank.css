@@ -969,4 +969,34 @@ ul.rating {
     overflow: auto;
     width: 100%;
 }
+/*转运附件*/
+.img-show{
+    position: relative;
+    float: left;
+    width: 140px;
+    height: 140px;
+    margin-left: 14px;
+    overflow: hidden;
+    user-select:none;
+}
+.img-show:hover{
+    outline: 1px solid #000;
+    cursor: pointer;
+}
+.img-show:hover .img-operate{
+    right:0
+}
+.img-operate{
+    position: absolute;
+    right: -32px;
+    width: 32px;
+    height: 64px;
+    background-color: #000;
+    color: white;
+    text-align: center;
+    border-radius: 4px 0 0 4px;
+    transition: all 0.2s linear;
+    font-size: 20px;
+    padding-top: 4px;
+}
 

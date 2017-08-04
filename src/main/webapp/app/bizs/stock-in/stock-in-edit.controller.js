@@ -622,14 +622,9 @@
             return columns;
         }
 
-        function _splitABox(stockInBoxId){
-            _fnQuerySampleType();
-            _fnTubeByBoxCode(stockInBoxId);
-            vm.editFlag = false;
-            vm.showFlag = false;
-        }
         // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
         vm.editFlag = false;
+        //编辑
         function _editBox(stockInBoxId) {
 
             vm.box = {};
@@ -643,6 +638,22 @@
                 toastr.error(data.message);
             });
         }
+        //分装
+        function _splitABox(stockInBoxId){
+            _fnQuerySampleType();
+            _fnTubeByBoxCode(stockInBoxId);
+            //重置
+            //编辑时，盒子信息的可以编辑
+            vm.editFlag = false;
+            //关闭编辑的区域
+            vm.showFlag = false;
+            //选中的管子数量清零
+            // vm.selectedSampleLen = 0;
+            //选中的冻存盒清除
+            vm.frozenBoxCode = "";
+
+        }
+        //上架
         function _putInShelf(boxIds){
             var boxes = [];
             var table = vm.dtInstance.DataTable;
@@ -699,6 +710,7 @@
                 vm.splittingBox = false;
             });
         }
+        //撤销上架
         function _rescindInShelf(boxCode) {
             modalInstance = $uibModal.open({
                 animation: true,
@@ -1015,6 +1027,7 @@
                     }
                 }
             }
+
         }
         // 创建一个对象用于管子Table的控件
         function _createTubeForTableCell(tubeInBox, box, pos){
@@ -1141,7 +1154,7 @@
                         });
                     }
                 }
-                vm.incompleteBoxesList  = _.orderBy(vm.incompleteBoxesList, ['sampleTypeCode'], ['esc']);
+                vm.incompleteBoxesList  = _.orderBy(vm.incompleteBoxesList, ['sampleTypeCode'], ['asc']);
             }
 
         }
@@ -1174,12 +1187,16 @@
             return +col -1;
         }
         vm.boxList = [];
+
+        //选中分装的冻存盒
         vm.obox = {
             stockInFrozenTubeList:[]
         };
+        //选中分装盒内的样本数
         var tubeList = [];
         //选中要分装样本盒
         vm.sampleBoxSelect = function (item,$event) {
+            console.log(JSON.stringify(item));
             tubeList = [];
             vm.frozenBoxCode = item.frozenBoxCode;
             if(item.sampleClassification){
@@ -1187,35 +1204,20 @@
                 vm.sampleTypeClassCode = item.sampleClassification.sampleClassificationCode;
             }
             vm.problemSamplyTypeCode = item.sampleType.sampleTypeCode;
-            if(vm.frozenBoxCode ){
+            if(vm.frozenBoxCode){
                 tubeList = item.stockInFrozenTubeList;
             }
             vm.obox = angular.copy(item);
-            $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
-            $($event.target).addClass("box-selected");
-        };
-        //分装操作
-        vm.splitBox = function () {
-            if(vm.box.sampleClassification || vm.box.sampleType.sampleTypeCode == "99"){
-                if(vm.problemSamplyTypeCode != "97"){
-                    for(var i = 0; i< selectList.length; i++){
-                        if(vm.sampleTypeClassCode != selectList[i].sampleClassificationCode){
-                            toastr.error("被分装的样本分类必须跟要分装的盒子的分类要一致！");
-                            return;
-                        }
-                    }
-                }
-            }
-            // //97问题样本可以任意分装样本
-            // if(vm.box.sampleType.sampleTypeCode == "99"){
-            //
-            //
-            // }
 
-            var rowCount = +vm.box.frozenBoxType.frozenBoxTypeRows;
-            var colCount = +vm.box.frozenBoxType.frozenBoxTypeColumns;
+
+            //行数
+            var rowCount = +vm.obox.frozenBoxType.frozenBoxTypeRows;
+            //列数
+            var colCount = +vm.obox.frozenBoxType.frozenBoxTypeColumns;
+            //选中分装盒的样本数
             vm.obox.stockInFrozenTubeList = [];
-            //初始100个管子或者80个管子
+
+            //初始管子数量，重新组织一个盒子
             for(var i = 0; i < rowCount; i++){
                 tempTubeArray[i] = [];
                 for(var j = 0;j < colCount; j++){
@@ -1228,27 +1230,44 @@
                     vm.obox.stockInFrozenTubeList.push(tempTubeArray[i][j]);
                 }
             }
-            //把已有管子放进去
+            //把在分装盒内已有管子放进去 tubeList 选中分装盒内的样本
             for(var m =0 ; m < vm.obox.stockInFrozenTubeList.length; m++){
                 for(var n = 0; n < tubeList.length;n++){
                     var tube = tubeList[n];
-                    if(vm.obox.stockInFrozenTubeList[m].tubeRows == tube.tubeRows && vm.obox.stockInFrozenTubeList[m].tubeColumns == +tube.tubeColumns){
+                    if(vm.obox.stockInFrozenTubeList[m].tubeRows == tube.tubeRows
+                        && vm.obox.stockInFrozenTubeList[m].tubeColumns == +tube.tubeColumns){
                         vm.obox.stockInFrozenTubeList[m] = tube;
                     }
                 }
             }
+            // console.log(JSON.stringify(vm.obox));
+            $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
+            $($event.target).addClass("box-selected");
+        };
+        //分装操作
+        vm.splitBox = function () {
+            // 判断是否选中要分装的样本或者冻存盒
             if(!selectList.length || !vm.frozenBoxCode ){
-                modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'app/bizs/stock-in/stock-in-splittingBox-message-modal.html',
-                    controller: 'SplittingBoxMessageController',
-                    controllerAs:'vm'
-                });
+                toastr.error("请选择被分装的冻存管或者请选择要分装到的冻存盒！");
                 return;
             }
+            //分装时，样本分类必须相同，问题样本盒可以任意分装
+            //selectList 选择的单元格样本
+            if(vm.box.sampleClassification || vm.box.sampleType.sampleTypeCode == "99"){
+                if(vm.problemSamplyTypeCode != "97"){
+                    for(var i = 0; i< selectList.length; i++){
+                        if(vm.sampleTypeClassCode != selectList[i].sampleClassificationCode){
+                            toastr.error("被分装的样本分类必须跟要分装的盒子的分类要一致！");
+                            return;
+                        }
+                    }
+                }
+            }
+
             //总管子数
-            var tubeCount = colCount*rowCount;
+            var tubeCount = vm.obox.stockInFrozenTubeList.length;
             //剩余管子数
+            _.filter(vm.obox.stockInFrozenTubeList,{})
             var surplusCount =  tubeCount - vm.obox.countOfSample;
             //选中的被分装的管子数
             var selectCount = selectList.length;
@@ -1350,7 +1369,7 @@
                 }
                 saveBoxList.push(objBox);
             }
-            // console.log(JSON.stringify(SBoxList));
+            // console.log(JSON.stringify(saveBoxList));
             BioBankBlockUi.blockUiStart();
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
                 BioBankBlockUi.blockUiStop();
@@ -1369,7 +1388,7 @@
         };
         //复原
         vm.recover = function () {
-            _fnTubeByBoxCode(vm.box.frozenBoxCode);
+            _fnTubeByBoxCode(vm.box.id);
             vm.boxList = [];
             tubeList = [];
             selectList = [];

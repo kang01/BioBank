@@ -33,6 +33,9 @@
         vm.search = _fnSearch;
         vm.empty = _fnEmpty;
         vm.initStockInBoxesTable = _initStockInBoxesTable;
+        vm.tableRender = function () {
+          vm.dtInstance.rerender();
+        };
 
         if(vm.entity.receiveDate){
             vm.entity.receiveDate = new Date(vm.entity.receiveDate);
@@ -624,17 +627,18 @@
             _fnTubeByBoxCode(stockInBoxId);
             vm.editFlag = false;
             vm.showFlag = false;
-
         }
         // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
         vm.editFlag = false;
         function _editBox(stockInBoxId) {
+
             vm.box = {};
             vm.splittingBox = false;
             StockInInputService.queryEditStockInBox(stockInBoxId).success(function (data) {
                 vm.box = data;
                 vm.editFlag = true;
                 vm.showFlag = true;
+                vm.dtInstance.rerender();
             }).error(function (data) {
                 toastr.error(data.message);
             });
@@ -768,6 +772,7 @@
         //根据盒子编码取管子
         function _fnTubeByBoxCode(stockInBoxId) {
             StockInInputService.queryEditStockInBox(stockInBoxId).success(function (data) {
+                vm.tableRender();
                 vm.box =  data;
                 if(!vm.box.frozenTubeDTOS.length){
                     vm.splittingBox = false;
@@ -1391,13 +1396,16 @@
                 }
             });
             modalInstance.result.then(function (flag) {
-                if(flag && vm.boxList.length) {
-
+                if(flag) {
                     SplitedBoxService.saveSplit(vm.stockInCode, vm.box.frozenBoxCode, vm.boxList).then(function (data) {
-                        toastr.success("分装成功!");
+
+                        toastr.success("保存成功!");
                     });
                 }
+                vm.tableRender();
                 vm.splittingBox = false;
+            },function () {
+                vm.tableRender();
             });
         };
         //添加分装样本盒 1:第二个新盒子 2.新添第一个盒子

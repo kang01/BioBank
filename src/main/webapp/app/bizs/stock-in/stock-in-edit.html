@@ -81,7 +81,7 @@
                        class=" table table-striped table-bordered">
 
                 </table>
-                <div>共{{vm.stockInBox.length}}条数据</div>
+                <div class="mt-10 mb-10">共{{vm.stockInBox.length}}条数据</div>
             </div>
 
         </div>
@@ -152,7 +152,7 @@
         </div>
     </pageslide>
 
-    <div ng-if="vm.isShowSplittingPanel()">
+    <div ng-if="vm.splittingBox">
         <div class="row split-box">
             <div class="col-md-9">
                 <div class="row">
@@ -200,7 +200,7 @@
         <edit-stock-directive
             stock-in-info = "vm.entity"
             stock-in-box = "vm.box"
-            reload-data = "vm.initStockInBoxesTable()"
+            reload-data = "vm.tableRender()"
             edit-flag = "vm.editFlag"
             show-flag = "vm.showFlag"
             compile="editStockIn.html"></edit-stock-directive>

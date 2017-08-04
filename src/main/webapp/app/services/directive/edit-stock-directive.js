@@ -968,7 +968,7 @@
                     vm.obox.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
                     vm.obox.sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
                 }
-                vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).isMixed;
+                vm.isMixed = _.find(vm.sampleTypeOptions,{'sampleTypeCode':vm.obox.sampleTypeCode}).isMixed;
                 //是否混合类型 1：是混合类型 不能添加99类型的的盒子只能添加97类型98类型
                 if(vm.isMixed == 1){
                     vm.projectSampleTypeOptions = [];
@@ -1086,10 +1086,12 @@
                 $scope.reloadData();
                 $scope.showFlag = false;
             }).error(function (data) {
+                toastr.error(data.message);
+                $scope.reloadData();
                 vm.repeatSampleArray = JSON.parse(data.params[0]);
                 var tableCtrl = _getTableCtrl();
                 tableCtrl.render();
-                toastr.error(data.message);
+
             })
 
         }
@@ -1115,6 +1117,7 @@
                 }
                 $scope.showFlag = false;
                 vm.saveStockInFlag = false;
+                $scope.reloadData();
             });
         };
 

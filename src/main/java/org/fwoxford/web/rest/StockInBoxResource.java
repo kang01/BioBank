@@ -242,35 +242,35 @@ public class StockInBoxResource {
 
     /**
      * 创建入库盒
-     * @param frozenBoxDTO
+     * @param stockInBoxDTO
      * @param stockInCode
      * @return
      * @throws URISyntaxException
      */
     @PostMapping("/stock-in-boxes/stockInCode/{stockInCode}")
     @Timed
-    public ResponseEntity<FrozenBoxDTO> createBoxByStockIn(@Valid @RequestBody FrozenBoxDTO frozenBoxDTO,@PathVariable String stockInCode) throws URISyntaxException {
-        log.debug("REST request to save StockInBox : {}", frozenBoxDTO);
-        FrozenBoxDTO result = stockInBoxService.createBoxByStockIn(frozenBoxDTO,stockInCode);
+    public ResponseEntity<StockInBoxDTO> createBoxByStockIn(@Valid @RequestBody StockInBoxDTO stockInBoxDTO,@PathVariable String stockInCode) throws URISyntaxException {
+        log.debug("REST request to save StockInBox : {}", stockInBoxDTO);
+        StockInBoxDTO result = stockInBoxService.createBoxByStockIn(stockInBoxDTO,stockInCode);
         return ResponseEntity.created(new URI("/api/stock-in-boxes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
     /**
      * 编辑保存入库盒
-     * @param frozenBoxDTO
+     * @param stockInBoxDTO
      * @param stockInCode
      * @return
      * @throws URISyntaxException
      */
     @PutMapping("/stock-in-boxes/stockInCode/{stockInCode}")
     @Timed
-    public ResponseEntity<FrozenBoxDTO> updateBoxByStockIn(@Valid @RequestBody FrozenBoxDTO frozenBoxDTO,@PathVariable String stockInCode) throws URISyntaxException {
-        log.debug("REST request to save StockInBox : {}", frozenBoxDTO);
-        if(frozenBoxDTO.getId() == null){
+    public ResponseEntity<StockInBoxDTO> updateBoxByStockIn(@Valid @RequestBody StockInBoxDTO stockInBoxDTO,@PathVariable String stockInCode) throws URISyntaxException {
+        log.debug("REST request to save StockInBox : {}", stockInBoxDTO);
+        if(stockInBoxDTO.getId() == null){
             throw new BankServiceException("冻存盒ID不能为空！");
         }
-        FrozenBoxDTO result = stockInBoxService.createBoxByStockIn(frozenBoxDTO,stockInCode);
+        StockInBoxDTO result = stockInBoxService.createBoxByStockIn(stockInBoxDTO,stockInCode);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

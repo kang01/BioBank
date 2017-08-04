@@ -184,7 +184,7 @@
                             if (newTube.id
                                 || (newTube.sampleCode && newTube.sampleCode.length > 1)
                                 || (newTube.sampleTempCode && newTube.sampleTempCode.length > 1)){
-                                StockInInputService.queryTube(oldTube.sampleCode,vm.entity.projectCode,vm.obox.id,oldTube.sampleTypeId,oldTube.sampleClassificationId).success(function (data) {
+                                StockInInputService.queryTube(oldTube.sampleCode,vm.entity.projectCode,vm.obox.frozenBoxId,oldTube.sampleTypeId,oldTube.sampleClassificationId).success(function (data) {
                                     var stockInTubes;
                                     if(vm.obox.sampleTypeName != "98" || vm.obox.sampleTypeName != "97"){
                                         stockInTubes = _.filter(data,{sampleTypeId:vm.obox.sampleTypeId});

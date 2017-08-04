@@ -66,11 +66,11 @@ public interface StockInBoxService {
     DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(String stockInCode, DataTablesInput input);
     /**
      * 创建入库盒
-     * @param frozenBoxDTO
+     * @param stockInBoxDTO
      * @param stockInCode
      * @return
      */
-    FrozenBoxDTO createBoxByStockIn(FrozenBoxDTO frozenBoxDTO, String stockInCode);
+    StockInBoxDTO createBoxByStockIn(StockInBoxDTO stockInBoxDTO, String stockInCode);
 
     /**
      * 根据冻存盒编码查询入库冻存盒

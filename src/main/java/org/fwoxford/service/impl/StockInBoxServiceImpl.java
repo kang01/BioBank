@@ -6,10 +6,7 @@ import org.apache.poi.util.ArrayUtil;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
-import org.fwoxford.service.FrozenBoxService;
-import org.fwoxford.service.StockInBoxService;
-import org.fwoxford.service.StockInService;
-import org.fwoxford.service.StockListService;
+import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.*;
@@ -98,7 +95,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     private StockInTubeRepository stockInTubeRepository;
     @Autowired
     private StockInTubeMapper stockInTubeMapper;
-
+    @Autowired
+    FrozenBoxCheckService frozenBoxCheckService;
     public StockInBoxServiceImpl(StockInBoxRepository stockInBoxRepository, StockInBoxMapper stockInBoxMapper,
                                  StockInBoxRepositries stockInBoxRepositries,StockInRepository stockInRepository) {
         this.stockInBoxRepository = stockInBoxRepository;
@@ -352,8 +350,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(countOfTube==0||countOfTube>allCounts){
             throw new BankServiceException("冻存管数量错误！",stockInBoxForDataSplit.toString());
         }
-        //验证盒子编码是否存在
-
         //新增盒子
         FrozenBox frozenBoxNew = new FrozenBox();
         StockIn stockIn = stockInRepository.findStockInByStockInCode(stockInCode);
@@ -363,6 +359,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(stockInBoxSplitIn.getId()!= null){
             frozenBoxNew = stockInBoxSplitIn.getFrozenBox();
         }else {//入库盒ID为空，表示新增的冻存盒---保存冻存盒，保存入库盒
+            frozenBoxNew = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
+            if(frozenBoxNew == null){
+                frozenBoxNew = new FrozenBox();
+            }
             frozenBoxNew.setFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
             frozenBoxNew.setProject(frozenBox.getProject());
             frozenBoxNew.setProjectCode(frozenBox.getProjectCode());
@@ -430,6 +430,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBoxNew.setRowsInShelf(stockInBoxForDataSplit.getRowsInShelf());
 
             frozenBoxNew.setMemo(stockInBoxForDataSplit.getMemo());
+            //验证盒子编码是否存在
+            Map<String,Long> map = new HashMap<String,Long>();
+            map.put(frozenBoxNew.getFrozenBoxCode(),frozenBoxNew.getId());
+            frozenBoxCheckService.checkFrozenBoxCodeRepead(map);
             frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
             stockInBoxSplitIn.setStockIn(stockIn);
             stockInBoxSplitIn.setFrozenBox(frozenBoxNew);

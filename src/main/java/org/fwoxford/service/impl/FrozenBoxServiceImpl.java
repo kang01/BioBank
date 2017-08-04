@@ -694,7 +694,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                     frozenBoxList.addAll(map.get(id));
                 }else{
 //                    List<StockInBox> stockInFrozenBox = stockInBoxRepository.findIncompleteFrozenBoxBySampleClassificationIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), new ArrayList<Long>(){{add(id);}}, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
-                    List<FrozenBox> stockInFrozenBox = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), new ArrayList<Long>(){{add(id);}}, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+                    List<FrozenBox> stockInFrozenBox = frozenBoxRepository.findIncompleteFrozenBoxBySampleClassificationIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), new ArrayList<Long>(){{add(id);}}, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED,stockInCode);
                     frozenBoxList.addAll(stockInFrozenBox);
                 }
             }
@@ -708,7 +708,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                     frozenBoxList.addAll(map.get(sampleTypeId));
                 } else {
 //                    List<StockInBox> stockInFrozenBox = stockInBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), sampleTypeId, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
-                    List<FrozenBox> stockInFrozenBox = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), sampleTypeId, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+                    List<FrozenBox> stockInFrozenBox = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), sampleTypeId, frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED,stockInCode);
                     frozenBoxList.addAll(stockInFrozenBox);
                 }
             }
@@ -716,9 +716,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }
         if(wrongFrozenBoxList==null || wrongFrozenBoxList.size()== 0 ){
 //            wrongFrozenBoxList =  stockInBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
-            wrongFrozenBoxList =  frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
+            wrongFrozenBoxList =  frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED,stockInCode);
         }
-        frozenBoxList.addAll(wrongFrozenBoxList);
+        frozenBoxList.add(wrongFrozenBoxList.get(0));
         List<FrozenBox> frozenBoxes = new ArrayList<>();
         for(FrozenBox f :frozenBoxList){
             StockInBoxForIncomplete stockInBoxForIncomplete = new StockInBoxForIncomplete();
@@ -727,7 +727,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             stockInBoxForIncomplete.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(f.getFrozenBoxType()));
             stockInBoxForIncomplete.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(f.getSampleType()));
             stockInBoxForIncomplete.setSampleClassification(sampleClassificationMapper.sampleClassificationToSampleClassificationDTO(f.getSampleClassification()));
-            List<StockInTube> stockInTubes = stockInTubeRepository.findByFrozenBoxCode(f.getFrozenBoxCode());
+            List<StockInTube> stockInTubes = stockInTubeRepository.findByFrozenBoxCodeAndStockInCode(f.getFrozenBoxCode(),stockInCode);
             List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(f.getFrozenBoxCode());
             List<StockInTubeForBox> stockInTubeForBoxes = new ArrayList<StockInTubeForBox>();
             for(FrozenTube t :frozenTubes){
@@ -737,7 +737,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 inTubeForBox.setTubeColumns(t.getTubeColumns());
                 inTubeForBox.setTubeRows(t.getTubeRows());
                 stockInTubeForBoxes.add(inTubeForBox);
-            }for(StockInTube stockInTube : stockInTubes){
+            }
+            for(StockInTube stockInTube : stockInTubes){
                 StockInTubeForBox inTubeForBox = new StockInTubeForBox();
                 inTubeForBox.setId(stockInTube.getFrozenTube().getId());
                 inTubeForBox.setFrozenBoxCode(stockInTube.getFrozenBoxCode());

@@ -826,6 +826,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
     @Override
     public List<FrozenBox> findFrozenBoxHistory(Long id) {
+
         return null;
     }
 }

@@ -1118,10 +1118,13 @@
             vm.incompleteBoxesList = [];
             IncompleteBoxService.query({frozenBoxCode:vm.box.frozenBoxCode,stockInCode:vm.entity.stockInCode},onIncompleteBoxesSuccess,onError);
         }
-
         function onIncompleteBoxesSuccess(data) {
             if(data.length){
                 for(var i = 0; i < data.length; i++){
+                    _.forEach(data[i].stockInFrozenTubeList,function (tube) {
+                        tube.frozenTubeId = tube.id;
+                        tube.id = ""
+                    });
                     var boxList = [];
                     //盒子编码太长时，用星号代替
                     if(data[i].frozenBoxCode.length > 10){
@@ -1156,7 +1159,7 @@
                 }
                 vm.incompleteBoxesList  = _.orderBy(vm.incompleteBoxesList, ['sampleTypeCode'], ['asc']);
             }
-
+            console.log(JSON.stringify(vm.incompleteBoxesList))
         }
         function onError(error) {
             toastr.error(error.data.message);

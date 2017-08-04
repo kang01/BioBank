@@ -11,7 +11,6 @@ public class StockInBoxForSplit {
     private Long equipmentId;
     private Long areaId;
     private Long supportRackId;
-    //入库冻存盒的ID
     private Long frozenBoxId;
     private String frozenBoxCode;
     private Long frozenBoxTypeId;

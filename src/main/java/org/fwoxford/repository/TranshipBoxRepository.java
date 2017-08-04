@@ -27,7 +27,7 @@ public interface TranshipBoxRepository extends JpaRepository<TranshipBox,Long> {
     TranshipBox findByFrozenBoxCode(String frozenBoxCode);
 
     @Modifying
-    @Query("update TranshipBox t set t.status=?1 where t.tranship.id=?2")
+    @Query("update TranshipBox t set t.status=?1 where t.tranship.id=?2 and t.status not in ('2005','0000')")
     void updateStatusByTranshipId(String status, Long transhipId);
 
     @Query("select count(t) from TranshipBox t where t.tranship.transhipCode in ?1 and t.status = '2011'")

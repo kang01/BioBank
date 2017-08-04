@@ -10,27 +10,33 @@
         <div class="col-md-12">
             <div class="form-group">
                 <label>原因</label>
-                <textarea class="form-control resize-none" rows="3" ng-model="vm.reason" focus-me></textarea>
+                <textarea class="form-control resize-none" rows="3" ng-model="vm.entity.reason" focus-me></textarea>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label>操作员</label>
-                <input type="text" class="form-control">
+                <label>操作员
+                    <span class="required-field"></span>
+                </label>
+                <selectize options='vm.userOptions' config="vm.userConfig"
+                           ng-model="vm.entity.userId"></selectize>
+                <input type="hidden" ng-model="vm.entity.userId" required>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label>秘钥</label>
-                <input type="password" class="form-control">
+                <label>秘钥
+                    <span class="required-field"></span>
+                </label>
+                <input type="password" class="form-control" ng-model="vm.entity.password">
             </div>
         </div>
     </div>
 
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="!vm.entity.password || !vm.entity.userId">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>

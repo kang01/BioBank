@@ -878,10 +878,12 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                     throw new BankServiceException("入库冻存管不存在！");
                 }
                 frozenTubeDTOForSave = stockInTubeMapper.stockInTubeToStockInTubeDTO(stockInTube);
+                tubeDTO.setFrozenTubeId(frozenTubeDTOForSave.getFrozenTubeId());
                 if(!StringUtils.isEmpty(stockInTube.getMemo())){
                     memoList.add(stockInTube.getMemo());
                 }
             }
+            frozenTubeDTOForSave.setSampleCode(tubeDTO.getSampleCode());
             frozenTubeDTOForSave.setStatus(tubeDTO.getStatus());
             if(!StringUtils.isEmpty(tubeDTO.getMemo())){
                 memoList.add(tubeDTO.getMemo());

@@ -25,7 +25,9 @@
             //保存盒子
             saveStockInBox:_fnSaveStockInBox,
             //编辑保存盒子
-            saveEditStockInBox:_fnSaveEditStockInBox
+            saveEditStockInBox:_fnSaveEditStockInBox,
+            //作废
+            stockInCancellation:_fnStockInCancellation
 
 
         };
@@ -70,6 +72,10 @@
         }
         function _fnSaveEditStockInBox(stockInBoxCode,param) {
             return $http.put('api/stock-in-boxes/stockInCode/'+stockInBoxCode,param);
+        }
+        //作废
+        function _fnStockInCancellation(stockInCode) {
+            return $http.put('api/stock-in/invalid/'+stockInCode);
         }
         return service;
     }

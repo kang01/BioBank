@@ -7,7 +7,7 @@
                         ng-show="vm.entity.status != '7002'"
                         ng-disabled="!vm.stockInflag"
                 >入库完成</button>
-                <button type="button" class="btn btn-primary" ng-click="vm.cancellation()" ng-show="vm.entity.status != '7002'">作废</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.cancellation()" ng-disabled="!vm.entity.stockInCode" ng-show="vm.entity.status != '7002'">作废</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.stockInSave()" ng-show="vm.entity.status != '7002'">保存</button>
                 <button type="button" class="btn" ui-sref="stock-in">关闭</button>
             </div>

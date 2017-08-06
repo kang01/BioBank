@@ -203,6 +203,14 @@
                 controllerAs:'vm'
             });
             modalInstance.result.then(function (data) {
+                StockInInputService.stockInCancellation(vm.entity.stockInCode).success(function (data) {
+                    toastr.success("作废成功!");
+                    $state.go('stock-in');
+                }).error(function (data) {
+                    toastr.error(data.message);
+                })
+            },function (data) {
+
             });
         }
 
@@ -282,18 +290,12 @@
             // console.log(vm.splitIt, vm.putInShelf);
             var buttonHtml = "";
             if (full.status == "2002"){
-                // if (full.isSplit){
-                //     buttonHtml += '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
-                //         '   <i class="fa fa-sitemap"></i> 分装' +
-                //         '</button>';
-                // } else {
-                    buttonHtml += '<button type="button" class="btn btn-xs btn-error" ng-click="vm.editBox(\''+ full.id +'\')">' +
-                        '   <i class="fa fa-edit"></i> 编辑 ' +
-                        '</button>&nbsp;'+
-                        '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf(\''+ full.frozenBoxCode +'\')">' +
-                        '   <i class="fa fa-sign-in"></i> 上架' +
-                        '</button>';
-                // }
+                buttonHtml += '<button type="button" class="btn btn-xs btn-error" ng-click="vm.editBox(\''+ full.id +'\')">' +
+                    '   <i class="fa fa-edit"></i> 编辑 ' +
+                    '</button>&nbsp;'+
+                    '<button type="button" class="btn btn-xs btn-error" ng-click="vm.putInShelf(\''+ full.frozenBoxCode +'\')">' +
+                    '   <i class="fa fa-sign-in"></i> 上架' +
+                    '</button>';
             }
             if(full.status == "2006"){
                 buttonHtml += '<button type="button" class="btn btn-xs btn-error" ng-click="vm.rescindInShelf(\''+ full.frozenBoxCode +'\')">' +
@@ -453,7 +455,7 @@
             vm.showFlag = true;
             // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
             vm.editFlag = false;
-            
+            //已入库
             if(vm.entity.status == '7002'){
                 return;
             }

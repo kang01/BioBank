@@ -86,21 +86,43 @@
             switch (data.status){
                 case '7001': status = '进行中'; break;
                 case '7002': status = '已入库'; break;
+                case '7090': status = '已作废'; break;
             }
             $('td:eq(1)', row).html(transportCodes);
-            $('td:eq(9)', row).html(status);
             $("td:eq(6)", row).text([data.storeKeeper1, data.storeKeeper2].join("; "));
+            $('td:eq(9)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function _fnActionButtonsRender(data, type, full, meta) {
-            if(full.transhipCode){
-                return '<button type="button" class="btn btn-xs" ui-sref="stock-in-edit({id:'+ full.id +'})">' +
-                    '   <i class="fa fa-edit"></i>' +
-                    '</button>&nbsp;';
+            if(full.status == '7090'){
+                return '';
+            }else{
+                if(full.transhipCode){
+                    if(full.status == '7002'){
+                        return '<button type="button" class="btn btn-xs" ui-sref="stock-in-edit({id:'+ full.id +'})">' +
+                            '   <i class="fa fa-eye"></i>' +
+                            '</button>&nbsp;';
+                    }else{
+                        return '<button type="button" class="btn btn-xs" ui-sref="stock-in-edit({id:'+ full.id +'})">' +
+                            '   <i class="fa fa-edit"></i>' +
+                            '</button>&nbsp;';
+                    }
+
+                }else{
+                    if(full.status == '7002'){
+                        return '<button type="button" class="btn btn-xs" ui-sref="stock-in-add-box-edit({id:'+ full.id +'})">' +
+                            '   <i class="fa fa-eye"></i>' +
+                            '</button>&nbsp;';
+                    }else{
+                        return '<button type="button" class="btn btn-xs" ui-sref="stock-in-add-box-edit({id:'+ full.id +'})">' +
+                            '   <i class="fa fa-edit"></i>' +
+                            '</button>&nbsp;';
+                    }
+
+                }
+
             }
-            return '<button type="button" class="btn btn-xs" ui-sref="stock-in-add-box-edit({id:'+ full.id +'})">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;';
+
 
         }
 

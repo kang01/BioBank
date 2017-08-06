@@ -1,6 +1,7 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.fwoxford.config.Constants;
 import org.fwoxford.service.PositionDestroyService;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -34,7 +35,7 @@ public class PositionDestroyResource {
     private final Logger log = LoggerFactory.getLogger(PositionDestroyResource.class);
 
     private static final String ENTITY_NAME = "positionDestroy";
-        
+
     private final PositionDestroyService positionDestroyService;
 
     public PositionDestroyResource(PositionDestroyService positionDestroyService) {
@@ -127,5 +128,41 @@ public class PositionDestroyResource {
         positionDestroyService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+    /**
+     * 样本销毁
+     * @param positionDestroyDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/position-destroys/forSample")
+    @Timed
+    public ResponseEntity<PositionDestroyDTO> createPositionDestroyForSample(@Valid @RequestBody PositionDestroyDTO positionDestroyDTO) throws URISyntaxException {
+        log.debug("REST request to save PositionChange : {}", positionDestroyDTO);
+        if (positionDestroyDTO.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionDestroy cannot already have an ID")).body(null);
+        }
+        PositionDestroyDTO result = positionDestroyService.createDestroyPosition(positionDestroyDTO, Constants.MOVE_TYPE_1);
+        return ResponseEntity.created(new URI("/api/position-destroys/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 
+    /**
+     * 冻存盒销毁
+     * @param positionDestroyDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/position-destroys/forBox")
+    @Timed
+    public ResponseEntity<PositionDestroyDTO> createPositionChangeForBox(@Valid @RequestBody PositionDestroyDTO positionDestroyDTO) throws URISyntaxException {
+        log.debug("REST request to save PositionChange : {}", positionDestroyDTO);
+        if (positionDestroyDTO.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionDestroy cannot already have an ID")).body(null);
+        }
+        PositionDestroyDTO result = positionDestroyService.createDestroyPosition(positionDestroyDTO, Constants.MOVE_TYPE_2);
+        return ResponseEntity.created(new URI("/api/position-destroys/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 }

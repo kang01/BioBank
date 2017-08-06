@@ -3,6 +3,7 @@ package org.fwoxford.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -12,10 +13,10 @@ public class PositionDestroyDTO extends AbstractAuditingDTO implements Serializa
 
     private Long id;
 
+    @NotNull
     @Size(max = 1024)
     private String destroyReason;
 
-    @NotNull
     @Size(max = 20)
     private String destroyType;
 
@@ -23,12 +24,15 @@ public class PositionDestroyDTO extends AbstractAuditingDTO implements Serializa
 
     private Long operatorId2;
 
-    @NotNull
     @Size(max = 20)
     private String status;
 
     @Size(max = 1024)
     private String memo;
+
+    private List<Long> ids;
+    private String password1;
+    private String password2;
 
     public Long getId() {
         return id;
@@ -78,6 +82,33 @@ public class PositionDestroyDTO extends AbstractAuditingDTO implements Serializa
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public List<Long> getIds() {
+        return ids;
+    }
+
+    public PositionDestroyDTO setIds(List<Long> ids) {
+        this.ids = ids;
+        return this;
+    }
+
+    public String getPassword1() {
+        return password1;
+    }
+
+    public PositionDestroyDTO setPassword1(String password1) {
+        this.password1 = password1;
+        return this;
+    }
+
+    public String getPassword2() {
+        return password2;
+    }
+
+    public PositionDestroyDTO setPassword2(String password2) {
+        this.password2 = password2;
+        return this;
     }
 
     @Override

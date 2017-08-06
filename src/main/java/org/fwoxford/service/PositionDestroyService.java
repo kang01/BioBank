@@ -20,7 +20,7 @@ public interface PositionDestroyService {
 
     /**
      *  Get all the positionDestroys.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,12 @@ public interface PositionDestroyService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * 销毁
+     * @param positionDestroyDTO
+     * @param type
+     * @return
+     */
+    PositionDestroyDTO createDestroyPosition(PositionDestroyDTO positionDestroyDTO, String type);
 }

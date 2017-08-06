@@ -1,6 +1,7 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.fwoxford.config.Constants;
 import org.fwoxford.service.PositionChangeService;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -34,7 +35,7 @@ public class PositionChangeResource {
     private final Logger log = LoggerFactory.getLogger(PositionChangeResource.class);
 
     private static final String ENTITY_NAME = "positionChange";
-        
+
     private final PositionChangeService positionChangeService;
 
     public PositionChangeResource(PositionChangeService positionChangeService) {
@@ -128,4 +129,60 @@ public class PositionChangeResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * 样本换位
+     * @param positionChangeDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/position-changes/forSample")
+    @Timed
+    public ResponseEntity<PositionChangeDTO> createPositionChangeForSample(@Valid @RequestBody PositionChangeDTO positionChangeDTO) throws URISyntaxException {
+        log.debug("REST request to save PositionChange : {}", positionChangeDTO);
+        if (positionChangeDTO.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionMove cannot already have an ID")).body(null);
+        }
+        PositionChangeDTO result = positionChangeService.createChangePosition(positionChangeDTO, Constants.MOVE_TYPE_1);
+        return ResponseEntity.created(new URI("/api/position-changes/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * 冻存盒换位
+     * @param positionChangeDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/position-changes/forBox")
+    @Timed
+    public ResponseEntity<PositionChangeDTO> createPositionChangeForBox(@Valid @RequestBody PositionChangeDTO positionChangeDTO) throws URISyntaxException {
+        log.debug("REST request to save PositionChange : {}", positionChangeDTO);
+        if (positionChangeDTO.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionMove cannot already have an ID")).body(null);
+        }
+        PositionChangeDTO result = positionChangeService.createChangePosition(positionChangeDTO, Constants.MOVE_TYPE_2);
+        return ResponseEntity.created(new URI("/api/position-changes/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * 冻存架换位
+     * @param positionChangeDTO
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/position-changes/forShelf")
+    @Timed
+    public ResponseEntity<PositionChangeDTO> createPositionChangeForShelf(@Valid @RequestBody PositionChangeDTO positionChangeDTO) throws URISyntaxException {
+        log.debug("REST request to save PositionChange : {}", positionChangeDTO);
+        if (positionChangeDTO.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionMove cannot already have an ID")).body(null);
+        }
+        PositionChangeDTO result = positionChangeService.createChangePosition(positionChangeDTO, Constants.MOVE_TYPE_3);
+        return ResponseEntity.created(new URI("/api/position-changes/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 }

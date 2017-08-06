@@ -1,17 +1,23 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
+import org.fwoxford.domain.*;
+import org.fwoxford.repository.*;
 import org.fwoxford.service.PositionChangeService;
-import org.fwoxford.domain.PositionChange;
-import org.fwoxford.repository.PositionChangeRepository;
 import org.fwoxford.service.dto.PositionChangeDTO;
 import org.fwoxford.service.mapper.PositionChangeMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,10 +30,33 @@ import java.util.stream.Collectors;
 public class PositionChangeServiceImpl implements PositionChangeService{
 
     private final Logger log = LoggerFactory.getLogger(PositionChangeServiceImpl.class);
-    
+
     private final PositionChangeRepository positionChangeRepository;
 
     private final PositionChangeMapper positionChangeMapper;
+
+    @Autowired
+    private FrozenTubeRepository frozenTubeRepository;
+
+    @Autowired
+    private FrozenBoxRepository frozenBoxRepository;
+
+    @Autowired
+    private ProjectSampleClassRepository projectSampleClassRepository;
+
+    @Autowired
+    private PositionChangeRecordRepository positionChangeRecordRepository;
+
+    @Autowired
+    private SupportRackRepository supportRackRepository;
+
+    @Autowired
+    private AreaRepository areaRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public PositionChangeServiceImpl(PositionChangeRepository positionChangeRepository, PositionChangeMapper positionChangeMapper) {
         this.positionChangeRepository = positionChangeRepository;
@@ -51,7 +80,7 @@ public class PositionChangeServiceImpl implements PositionChangeService{
 
     /**
      *  Get all the positionChanges.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +116,232 @@ public class PositionChangeServiceImpl implements PositionChangeService{
     public void delete(Long id) {
         log.debug("Request to delete PositionChange : {}", id);
         positionChangeRepository.delete(id);
+    }
+
+    /**
+     * 换位
+     * @param positionChangeDTO
+     * @param moveType 1：样本换位，2：冻存盒换位，3：冻存架换位。
+     * @return
+     */
+    @Override
+    public PositionChangeDTO createChangePosition(PositionChangeDTO positionChangeDTO, String moveType) {
+        if(positionChangeDTO == null){
+            return null;
+        }
+        if(positionChangeDTO.getChangeId1()==null || positionChangeDTO.getChangeId2() == null){
+            throw new BankServiceException("需要换位的ID不能为空！");
+        }
+        if(positionChangeDTO.getChangeId1() == positionChangeDTO.getChangeId2()){
+            throw new BankServiceException("两个相同的ID不能换位！");
+        }
+        checkUser(positionChangeDTO);
+        PositionChange positionChange = positionChangeMapper.positionChangeDTOToPositionChange(positionChangeDTO);
+        positionChange.setChangeType(moveType);
+        positionChange.setStatus(Constants.VALID);
+        positionChangeRepository.save(positionChange);
+        positionChangeDTO.setId(positionChange.getId());
+        switch (moveType){
+            case "1":createChangePositionForSample(positionChangeDTO);break;
+            case "2":createChangePositionForBox(positionChangeDTO);break;
+            case "3":createChangePositionForShelf(positionChangeDTO);break;
+            default:break;
+        }
+        return positionChangeDTO;
+    }
+
+    /**
+     * 样本换位
+     *  需满足：1.冻存管类型相同
+     *          2.两支冻存管所属冻存盒样本类型相同（99除外）
+     *          2.两支冻存管所属冻存盒类型相同
+     * @param positionChangeDTO
+     */
+    public void createChangePositionForSample(PositionChangeDTO positionChangeDTO) {
+        //获取第一支样本
+        Long sampleId1 = positionChangeDTO.getChangeId1();
+        FrozenTube frozenTube1 = frozenTubeRepository.findOne(sampleId1);
+
+        //获取第二支样本
+        Long sampleId2 = positionChangeDTO.getChangeId2();
+        FrozenTube frozenTube2 = frozenTubeRepository.findOne(sampleId2);
+        if(frozenTube1 == null || (frozenTube1!=null && frozenTube1.getStatus().equals(Constants.INVALID))
+            ||frozenTube2 == null || (frozenTube2!=null && frozenTube2.getStatus().equals(Constants.INVALID))){
+            throw new BankServiceException("冻存管无效！");
+        }
+        frozenTube1.setFrozenBox(frozenTube2.getFrozenBox());
+        frozenTube1.setFrozenBoxCode(frozenTube2.getFrozenBoxCode());
+        frozenTube1.setTubeColumns(frozenTube2.getTubeColumns());
+        frozenTube1.setTubeRows(frozenTube2.getTubeRows());
+        frozenTubeRepository.save(frozenTube1);
+
+        frozenTube2.setFrozenBox(frozenTube1.getFrozenBox());
+        frozenTube2.setFrozenBoxCode(frozenTube1.getFrozenBoxCode());
+        frozenTube2.setTubeColumns(frozenTube1.getTubeColumns());
+        frozenTube2.setTubeRows(frozenTube1.getTubeRows());
+        frozenTubeRepository.save(frozenTube2);
+        List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>(){{add(frozenTube1);add(frozenTube2);}};
+        saveChangeDetail(positionChangeDTO,Constants.MOVE_TYPE_1,frozenTubeList);
+    }
+
+    public void saveChangeDetail(PositionChangeDTO positionChangeDTO, String changeType, List<FrozenTube> frozenTubeList) {
+        PositionChange positionChange = positionChangeMapper.positionChangeDTOToPositionChange(positionChangeDTO);
+        List<PositionChangeRecord> positionChangeRecordList = new ArrayList<PositionChangeRecord>();
+        for(FrozenTube frozenTube : frozenTubeList){
+            PositionChangeRecord positionChangeRecord = new PositionChangeRecord()
+                .sampleCode(StringUtils.isEmpty(frozenTube.getSampleCode())?frozenTube.getSampleTempCode():frozenTube.getSampleCode())
+                .positionChange(positionChange)
+                .frozenTube(frozenTube)
+                .moveType(changeType)
+                .equipment(frozenTube.getFrozenBox().getEquipment())
+                .equipmentCode(frozenTube.getFrozenBox().getEquipmentCode())
+                .area(frozenTube.getFrozenBox().getArea())
+                .areaCode(frozenTube.getFrozenBox().getAreaCode())
+                .supportRack(frozenTube.getFrozenBox().getSupportRack())
+                .supportRackCode(frozenTube.getFrozenBox().getSupportRackCode())
+                .columnsInShelf(frozenTube.getFrozenBox().getColumnsInShelf())
+                .rowsInShelf(frozenTube.getFrozenBox().getRowsInShelf())
+                .frozenBox(frozenTube.getFrozenBox())
+                .frozenBoxCode(frozenTube.getFrozenBoxCode())
+                .memo(frozenTube.getMemo())
+                .project(frozenTube.getProject())
+                .projectCode(frozenTube.getProjectCode())
+                .projectSite(frozenTube.getProjectSite())
+                .projectSiteCode(frozenTube.getProjectSiteCode())
+                .whetherFreezingAndThawing(positionChange.isWhetherFreezingAndThawing())
+                .status(frozenTube.getStatus())
+                .tubeColumns(frozenTube.getTubeColumns())
+                .tubeRows(frozenTube.getTubeRows())
+                .frozenTubeType(frozenTube.getFrozenTubeType())
+                .frozenTubeTypeCode(frozenTube.getFrozenTubeTypeCode())
+                .frozenTubeTypeName(frozenTube.getFrozenTubeTypeName())
+                .sampleType(frozenTube.getSampleType())
+                .sampleTypeCode(frozenTube.getSampleTypeCode())
+                .sampleTypeName(frozenTube.getSampleTypeName())
+                .sampleClassification(frozenTube.getSampleClassification())
+                .sampleClassificationCode(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getSampleClassificationCode():null)
+                .sampleClassificationName(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getSampleClassificationName():null)
+                .frozenTubeCode(frozenTube.getFrozenTubeCode())
+                .frozenTubeState(frozenTube.getFrozenTubeState())
+                .sampleTempCode(frozenTube.getSampleTempCode())
+                .sampleUsedTimes(frozenTube.getSampleUsedTimes())
+                .sampleUsedTimesMost(frozenTube.getSampleUsedTimesMost())
+                .frozenTubeVolumns(frozenTube.getFrozenTubeVolumns())
+                .frozenTubeVolumnsUnit(frozenTube.getFrozenTubeVolumnsUnit())
+                .sampleVolumns(frozenTube.getSampleVolumns())
+                .errorType(frozenTube.getErrorType());
+            positionChangeRecordList.add(positionChangeRecord);
+            if(positionChangeRecordList.size()==5000){
+                positionChangeRecordRepository.save(positionChangeRecordList);
+                positionChangeRecordList = new ArrayList<PositionChangeRecord>();
+            }
+        }
+        positionChangeRecordRepository.save(positionChangeRecordList);
+    }
+
+    public void createChangePositionForBox(PositionChangeDTO positionChangeDTO) {
+        //获取第一个冻存盒
+        Long boxId1 = positionChangeDTO.getChangeId1();
+        FrozenBox frozenBox1 = frozenBoxRepository.findOne(boxId1);
+
+        //获取第二个冻存盒
+        Long boxId2 = positionChangeDTO.getChangeId2();
+        FrozenBox frozenBox2 = frozenBoxRepository.findOne(boxId2);
+        if(frozenBox1 == null || (frozenBox1!=null && frozenBox1.getStatus().equals(Constants.INVALID))
+            ||frozenBox2 == null || (frozenBox2!=null && frozenBox2.getStatus().equals(Constants.INVALID))){
+            throw new BankServiceException("冻存盒无效！");
+        }
+
+        frozenBox1.equipment(frozenBox2.getEquipment()).equipmentCode(frozenBox2.getEquipmentCode())
+            .area(frozenBox2.getArea()).areaCode(frozenBox2.getAreaCode())
+            .supportRack(frozenBox2.getSupportRack()).supportRackCode(frozenBox2.getSupportRackCode())
+            .rowsInShelf(frozenBox2.getRowsInShelf()).columnsInShelf(frozenBox2.getColumnsInShelf());
+        frozenBoxRepository.save(frozenBox1);
+
+
+        frozenBox2.equipment(frozenBox1.getEquipment()).equipmentCode(frozenBox1.getEquipmentCode())
+            .area(frozenBox1.getArea()).areaCode(frozenBox1.getAreaCode())
+            .supportRack(frozenBox1.getSupportRack()).supportRackCode(frozenBox1.getSupportRackCode())
+            .rowsInShelf(frozenBox1.getRowsInShelf()).columnsInShelf(frozenBox1.getColumnsInShelf());
+        frozenBoxRepository.save(frozenBox2);
+
+        List<Long> frozenBoxIds = new ArrayList<Long>(){{add(boxId1);add(boxId2);}};
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxIdIn(frozenBoxIds);
+        saveChangeDetail(positionChangeDTO,Constants.MOVE_TYPE_2,frozenTubeList);
+    }
+    public void createChangePositionForShelf(PositionChangeDTO positionChangeDTO) {
+        //获取第一个冻存架
+        Long shelvefId1 = positionChangeDTO.getChangeId1();
+        SupportRack supportRack1 = supportRackRepository.findOne(shelvefId1);
+
+        //获取第一个冻存架
+        Long shelvefId2 = positionChangeDTO.getChangeId2();
+        SupportRack supportRack2 = supportRackRepository.findOne(shelvefId2);
+        if(supportRack1 == null || (supportRack1!=null && supportRack1.getStatus().equals(Constants.INVALID))
+            ||supportRack2 == null || (supportRack2!=null && supportRack2.getStatus().equals(Constants.INVALID))){
+            throw new BankServiceException("冻存架无效！");
+        }
+        //冻存架1里的冻存盒
+        List<FrozenBox> frozenBoxList1 = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(supportRack1.getArea().getEquipmentCode(),supportRack1.getArea().getAreaCode(),supportRack1.getSupportRackCode());
+        //冻存架2里的冻存盒
+        List<FrozenBox> frozenBoxList2 = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(supportRack2.getArea().getEquipmentCode(),supportRack2.getArea().getAreaCode(),supportRack2.getSupportRackCode());
+        List<FrozenBox> frozenBoxes = new ArrayList<>();
+        List<Long> frozenBoxIds = new ArrayList<Long>();
+        for(FrozenBox frozenBox1 : frozenBoxList1){
+            frozenBoxIds.add(frozenBox1.getId());
+            frozenBox1.equipment(supportRack2.getArea().getEquipment()).equipmentCode(supportRack2.getArea().getEquipment().getEquipmentCode())
+                .area(supportRack2.getArea()).areaCode(supportRack2.getArea().getAreaCode())
+                .supportRack(supportRack2).supportRackCode(supportRack2.getSupportRackCode());
+            frozenBoxes.add(frozenBox1);
+            if(frozenBoxes.size() == 5000){
+                frozenBoxRepository.save(frozenBoxes);
+                frozenBoxes = new ArrayList<FrozenBox>();
+            }
+        }
+        for(FrozenBox frozenBox2 : frozenBoxList2){
+            frozenBoxIds.add(frozenBox2.getId());
+            frozenBox2.equipment(supportRack1.getArea().getEquipment()).equipmentCode(supportRack1.getArea().getEquipment().getEquipmentCode())
+                .area(supportRack1.getArea()).areaCode(supportRack1.getArea().getAreaCode())
+                .supportRack(supportRack1).supportRackCode(supportRack1.getSupportRackCode());
+            if(frozenBoxes.size() == 5000){
+                frozenBoxRepository.save(frozenBoxes);
+                frozenBoxes = new ArrayList<FrozenBox>();
+            }
+        }
+
+        frozenBoxRepository.save(frozenBoxes);
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxIdIn(frozenBoxIds);
+        saveChangeDetail(positionChangeDTO,Constants.MOVE_TYPE_3,frozenTubeList);
+    }
+
+    public void checkUser(PositionChangeDTO positionChangeDTO) {
+        if(StringUtils.isEmpty(positionChangeDTO.getChangeReason())){
+            throw new BankServiceException("换位原因不能为空！");
+        }
+        if(positionChangeDTO.getOperatorId1() == null || positionChangeDTO.getOperatorId2()==null){
+            throw new BankServiceException("操作人不能为空！");
+        }
+        if(positionChangeDTO.getPassword1() == null || positionChangeDTO.getPassword2()==null){
+            throw new BankServiceException("密码不能为空！");
+        }
+        Long operatorId1 = positionChangeDTO.getOperatorId1();
+        String password1 = positionChangeDTO.getPassword1();
+        User user = userRepository.findOne(operatorId1);
+        if(user == null){
+            throw new BankServiceException("操作人1不存在！");
+        }
+        if(!passwordEncoder.matches(password1,user.getPassword())){
+            throw new BankServiceException("操作人1的用户名与密码不一致！");
+        }
+
+        Long operatorId2 = positionChangeDTO.getOperatorId2();
+        String password2 = positionChangeDTO.getPassword2();
+        User user2 = userRepository.findOne(operatorId2);
+        if(user2 == null){
+            throw new BankServiceException("操作人2不存在！");
+        }
+        if(!passwordEncoder.matches(password2,user2.getPassword())){
+            throw new BankServiceException("操作人2的用户名与密码不一致！");
+        }
     }
 }

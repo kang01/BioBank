@@ -44,18 +44,7 @@ public interface PositionMoveService {
      */
     void delete(Long id);
 
-    /**
-     * 样本移位
-     * @param positionMoveDTO
-     * @return
-     */
-    PositionMoveSampleDTO moveSamplePosition(PositionMoveSampleDTO positionMoveDTO);
-
-    PositionMoveBoxDTO savePositionMoveForBox(PositionMoveBoxDTO positionMoveDTO);
-
-    PositionMoveShelvesDTO savePositionMoveForShelf(PositionMoveShelvesDTO positionMoveDTO);
-
-    PositionMoveDTO creataSamplePosition(PositionMoveDTO positionMoveDTO);
+    PositionMoveDTO createSamplePosition(PositionMoveDTO positionMoveDTO);
 
     PositionMoveDTO createPositionMoveForBox(PositionMoveDTO positionMoveDTO);
 

@@ -679,7 +679,7 @@ public class StockInServiceImpl implements StockInService {
             List<FrozenBox> frozenBoxes = frozenBoxService.findFrozenBoxHistory(s.getFrozenBox().getId());
 
             //恢复样本状态
-            stockInTubeRepository.updateStatusByStockInBoxId(Constants.FROZEN_BOX_INVALID,s.getId());
+//            stockInTubeRepository.updateStatusByStockInBoxId(Constants.FROZEN_BOX_INVALID,s.getId());
         }
         return stockInMapper.stockInToStockInDTO(stockIn);
     }

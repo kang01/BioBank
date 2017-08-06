@@ -20,7 +20,7 @@ public interface PositionChangeService {
 
     /**
      *  Get all the positionChanges.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +40,6 @@ public interface PositionChangeService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    PositionChangeDTO createChangePosition(PositionChangeDTO positionChangeDTO, String moveType);
 }

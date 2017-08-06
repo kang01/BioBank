@@ -461,7 +461,7 @@ public class PositionChangeRecord extends AbstractAuditingEntity implements Seri
     public Project getProject() {
         return project;
     }
-    public PositionChangeRecord projectSite(Project project) {
+    public PositionChangeRecord project(Project project) {
         this.project = project;
         return this;
     }

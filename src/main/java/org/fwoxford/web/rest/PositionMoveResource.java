@@ -152,12 +152,18 @@ public class PositionMoveResource {
         if (positionMoveDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionMove cannot already have an ID")).body(null);
         }
-        PositionMoveDTO result = positionMoveService.creataSamplePosition(positionMoveDTO);
+        PositionMoveDTO result = positionMoveService.createSamplePosition(positionMoveDTO);
         return ResponseEntity.created(new URI("/api/position-moves/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
+    /**
+     * 样本移位保存
+     * @param positionMoveDTO
+     * @return
+     * @throws URISyntaxException
+     */
     @PutMapping("/position-moves/forSample")
     @Timed
     public ResponseEntity<PositionMoveDTO> updatePositionMoveForSample(@Valid @RequestBody PositionMoveDTO positionMoveDTO) throws URISyntaxException {
@@ -165,7 +171,7 @@ public class PositionMoveResource {
         if (positionMoveDTO.getId() == null) {
             return createPositionMoveForSample(positionMoveDTO);
         }
-        PositionMoveDTO result = positionMoveService.creataSamplePosition(positionMoveDTO);
+        PositionMoveDTO result = positionMoveService.createSamplePosition(positionMoveDTO);
         return ResponseEntity.created(new URI("/api/position-moves/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -190,6 +196,13 @@ public class PositionMoveResource {
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+
+    /**
+     * 冻存盒移位保存
+     * @param positionMoveDTO
+     * @return
+     * @throws URISyntaxException
+     */
     @PutMapping("/position-moves/forBox")
     @Timed
     public ResponseEntity<PositionMoveDTO> updatePositionMoveForBox(@Valid @RequestBody PositionMoveDTO positionMoveDTO) throws URISyntaxException {

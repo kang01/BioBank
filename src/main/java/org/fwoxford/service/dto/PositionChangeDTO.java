@@ -12,10 +12,10 @@ public class PositionChangeDTO extends AbstractAuditingDTO implements Serializab
 
     private Long id;
 
+    @NotNull
     @Size(max = 1024)
     private String changeReason;
 
-    @NotNull
     @Size(max = 20)
     private String changeType;
 
@@ -25,7 +25,6 @@ public class PositionChangeDTO extends AbstractAuditingDTO implements Serializab
 
     private Long operatorId2;
 
-    @NotNull
     @Size(max = 20)
     private String status;
 
@@ -122,5 +121,48 @@ public class PositionChangeDTO extends AbstractAuditingDTO implements Serializab
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             '}';
+    }
+    private String password1;
+
+    private String password2;
+
+    private Long changeId1;
+
+    private Long changeId2;
+
+    public String getPassword1() {
+        return password1;
+    }
+
+    public PositionChangeDTO setPassword1(String password1) {
+        this.password1 = password1;
+        return this;
+    }
+
+    public String getPassword2() {
+        return password2;
+    }
+
+    public PositionChangeDTO setPassword2(String password2) {
+        this.password2 = password2;
+        return this;
+    }
+
+    public Long getChangeId1() {
+        return changeId1;
+    }
+
+    public PositionChangeDTO setChangeId1(Long changeId1) {
+        this.changeId1 = changeId1;
+        return this;
+    }
+
+    public Long getChangeId2() {
+        return changeId2;
+    }
+
+    public PositionChangeDTO setChangeId2(Long changeId2) {
+        this.changeId2 = changeId2;
+        return this;
     }
 }

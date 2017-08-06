@@ -677,7 +677,9 @@ public class StockInServiceImpl implements StockInService {
             //若历史信息是已出库，则原盒已出库
             //若历史信息无更多历史，为新增的冻存盒，置为已作废
             List<FrozenBox> frozenBoxes = frozenBoxService.findFrozenBoxHistory(s.getFrozenBox().getId());
+
             //恢复样本状态
+            stockInTubeRepository.updateStatusByStockInBoxId(Constants.FROZEN_BOX_INVALID,s.getId());
         }
         return stockInMapper.stockInToStockInDTO(stockIn);
     }

@@ -718,7 +718,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 //            wrongFrozenBoxList =  stockInBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED);
             wrongFrozenBoxList =  frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED,stockInCode);
         }
-        frozenBoxList.add(wrongFrozenBoxList.get(0));
+        frozenBoxList.addAll(wrongFrozenBoxList);
         List<FrozenBox> frozenBoxes = new ArrayList<>();
         for(FrozenBox f :frozenBoxList){
             StockInBoxForIncomplete stockInBoxForIncomplete = new StockInBoxForIncomplete();
@@ -826,6 +826,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
     @Override
     public List<FrozenBox> findFrozenBoxHistory(Long id) {
+
         return null;
     }
 }

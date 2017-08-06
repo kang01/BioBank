@@ -7,12 +7,14 @@
     angular
         .module('bioBankApp')
         .controller('StockInNewController', StockInNewController)
-        .controller('StockInNewModalController', StockInNewModalController);
+        .controller('StockInNewModalController', StockInNewModalController)
+        .controller('StockInCancellationModalController', StockInCancellationModalController);
 
     StockInNewController.$inject = ['$timeout','BioBankBlockUi','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
         'entity','StockInService','StockInBoxService','StockInBoxByCodeService','StockInInputService','ProjectService','ProjectSitesByProjectIdService',
         'SampleTypeService','SampleService','FrozenBoxTypesService','RescindPutAwayService','MasterData'];
     StockInNewModalController.$inject = ['$uibModalInstance'];
+    StockInCancellationModalController.$inject = ['$uibModalInstance'];
     function StockInNewController($timeout,BioBankBlockUi,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
                                    entity,StockInService,StockInBoxService,StockInBoxByCodeService,StockInInputService,ProjectService,ProjectSitesByProjectIdService,
                                    SampleTypeService,SampleService,FrozenBoxTypesService,RescindPutAwayService,MasterData) {
@@ -32,32 +34,9 @@
         //保存入库记录
         vm.stockInSave = _fnStockInSave;
         vm.initStockInBoxesTable = _initStockInBoxesTable;
-        function _fnStockInSave() {
-            if(vm.entity.id){
-                StockInInputService.saveEditStockIn(vm.entity).success(function (data) {
-                    vm.entity = data;
-                    if(!vm.saveStockInFlag){
-                        toastr.success("保存入库信息成功!");
-                    }
-                    //显示冻存盒信息
-                    vm.showFlag = true;
-                    // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
-                    vm.editFlag = false;
-                });
-            }else{
-                StockInInputService.saveStockIn(vm.entity).success(function (data) {
-                    vm.entity = data;
-                    if(!vm.showFlag){
-                        toastr.success("保存入库信息成功!");
-                    }
-                    //显示冻存盒信息
-                    vm.showFlag = true;
-                    // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
-                    vm.editFlag = false;
-                });
-            }
+        //作废
+        vm.cancellation = _fnCancellation;
 
-        }
 
         //入库完成
         vm.stockInFinish = function () {
@@ -79,8 +58,19 @@
                 $state.go('stock-in');
             });
         };
-
-        _initStockInInfo();
+        //保存入库记录
+        function _fnStockInSave() {
+            vm.saveStockInFlag = false;
+            _saveStockIn();
+        }
+        function _saveStockIn() {
+            StockInInputService.saveStockIn(vm.entity).success(function (data) {
+                vm.entity = data;
+                if(!vm.saveStockInFlag){
+                    toastr.success("保存入库信息成功!");
+                }
+            });
+        }
         function _initStockInInfo() {
             //项目
             ProjectService.query({},onProjectSuccess, onError);
@@ -132,7 +122,6 @@
                 // }
             }
         }
-        _initStockInBoxesTable();
 
         function _initStockInBoxesTable(){
             vm.selectedStockInBoxes = {};
@@ -205,6 +194,20 @@
             //撤销上架
             vm.rescindInShelf = _rescindInShelf;
         }
+        //作废
+        function _fnCancellation() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'stockInCancellation.html',
+                controller: 'StockInCancellationModalController',
+                controllerAs:'vm'
+            });
+            modalInstance.result.then(function (data) {
+            });
+        }
+
+        _initStockInInfo();
+        _initStockInBoxesTable();
 
         function _fnServerData( sSource, aoData, fnCallback, oSettings ) {
             var data = {};
@@ -446,6 +449,11 @@
 
         //添加冻存盒
         function _fnActionAddBoxButton() {
+            //显示冻存盒信息
+            vm.showFlag = true;
+            // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
+            vm.editFlag = false;
+            
             if(vm.entity.status == '7002'){
                 return;
             }
@@ -457,14 +465,12 @@
                 });
                 modalInstance.result.then(function () {
                     vm.saveStockInFlag = true;
-                    vm.stockInSave();
-
+                    _saveStockIn();
                 }, function () {
                 });
             }else{
-                vm.showFlag = false;
                 vm.saveStockInFlag = true;
-                vm.stockInSave();
+                _saveStockIn();
                 vm.box = {};
 
             }
@@ -491,6 +497,20 @@
     }
     function StockInNewModalController($uibModalInstance) {
         var vm = this;
+        vm.ok = function () {
+            $uibModalInstance.close();
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    }
+    function StockInCancellationModalController($uibModalInstance) {
+        var vm = this;
+
+
+
+
+
         vm.ok = function () {
             $uibModalInstance.close();
         };

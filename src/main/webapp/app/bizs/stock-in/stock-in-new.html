@@ -7,6 +7,7 @@
                         ng-show="vm.entity.status != '7002'"
                         ng-disabled="!vm.stockInflag"
                 >入库完成</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.cancellation()" ng-show="vm.entity.status != '7002'">作废</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.stockInSave()" ng-show="vm.entity.status != '7002'">保存</button>
                 <button type="button" class="btn" ui-sref="stock-in">关闭</button>
             </div>
@@ -78,6 +79,18 @@
     </div>
     <div class="modal-body" id="modal-body">
         添加冻存盒时，需要保存项目编码，且项目编码不可修改，是否继续添加？
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+        <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+    </div>
+</script>
+<script type="text/ng-template" id="stockInCancellation.html">
+    <div class="modal-header">
+        <h3 class="modal-title">作废</h3>
+    </div>
+    <div class="modal-body">
+        确定作废吗？
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>

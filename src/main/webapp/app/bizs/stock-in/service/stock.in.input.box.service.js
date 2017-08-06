@@ -21,7 +21,7 @@
             //新增保存入库
             saveStockIn:_fnSaveStockIn,
             //编辑保存入库
-            saveEditStockIn:_fnSaveEditStockIn,
+            // saveEditStockIn:_fnSaveEditStockIn,
             //保存盒子
             saveStockInBox:_fnSaveStockInBox,
             //编辑保存盒子
@@ -45,11 +45,16 @@
             return $http.get('api/frozen-tubes/sample/'+sampleCode+'/project/'+projectCode+'/sampleType/'+sampleTypeId+'/sampleClassification/'+sampleClassificationId);
         }
         function _fnSaveStockIn(param) {
-            return $http.post('api/stock-ins',param);
+            if(param.id){
+                return $http.put('api/stock-ins',param);
+            }else{
+                return $http.post('api/stock-ins',param);
+
+            }
         }
-        function _fnSaveEditStockIn(param) {
-            return $http.put('api/stock-ins',param);
-        }
+        // function _fnSaveEditStockIn(param) {
+        //
+        // }
         function _queryStockInBox(frozenBoxCode) {
             return $http.get('api/frozen-boxes/boxCode/'+frozenBoxCode+'/forStockIn/');
         }

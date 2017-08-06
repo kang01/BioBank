@@ -1,0 +1,22 @@
+{
+    "bioBankApp": {
+        "positionDestroyRecord" : {
+            "home": {
+                "title": "Position Destroy Records",
+                "createLabel": "Create a new Position Destroy Record",
+                "createOrEditLabel": "Create or edit a Position Destroy Record"
+            },
+            "created": "A new Position Destroy Record is created with identifier {{ param }}",
+            "updated": "A Position Destroy Record is updated with identifier {{ param }}",
+            "deleted": "A Position Destroy Record is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Position Destroy Record {{ id }}?"
+            },
+            "detail": {
+                "title": "Position Destroy Record"
+            },
+            "status": "Status",
+            "memo": "Memo"
+        }
+    }
+}

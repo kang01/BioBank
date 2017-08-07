@@ -934,15 +934,18 @@
             }
         };
         function _initBoxInfo() {
-            //盒子类型 17:10*10 18:8*8
+            //盒子类型
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
             function onFrozenBoxTypeSuccess(data) {
                 vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['asc']);
                 if(vm.frozenBoxTypeOptions.length){
-                    vm.obox.frozenBoxTypeId = vm.frozenBoxTypeOptions[0].id;
-                    vm.obox.frozenBoxTypeName = vm.frozenBoxTypeOptions[0].frozenBoxTypeName;
-                    vm.obox.frozenBoxTypeRows = vm.frozenBoxTypeOptions[0].frozenBoxTypeRows;
-                    vm.obox.frozenBoxTypeColumns = vm.frozenBoxTypeOptions[0].frozenBoxTypeColumns;
+                    if(!vm.obox.frozenBoxTypeId){
+                        vm.obox.frozenBoxTypeId = vm.frozenBoxTypeOptions[0].id;
+                        vm.obox.frozenBoxTypeName = vm.frozenBoxTypeOptions[0].frozenBoxTypeName;
+                        vm.obox.frozenBoxTypeRows = vm.frozenBoxTypeOptions[0].frozenBoxTypeRows;
+                        vm.obox.frozenBoxTypeColumns = vm.frozenBoxTypeOptions[0].frozenBoxTypeColumns;
+                    }
+
                 }
                 setTimeout(function () {
                     vm.reloadTubesForTable(vm.obox);

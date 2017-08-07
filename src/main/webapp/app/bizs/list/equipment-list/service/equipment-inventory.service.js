@@ -18,7 +18,9 @@
             querySupportRackTypes:_querySupportRackTypes,
             //获取架子详情
             queryRack:_queryRack,
-            saveMovement:_saveMovement
+            saveMovement:_saveMovement,
+            //换位
+            changePosition:_changePosition
         };
         function _queryEquipmentList(data,searchForm) {
             return $http.post('api/res/stock-list/frozen-position?searchForm='+searchForm,angular.toJson(data));
@@ -38,6 +40,10 @@
             }else{
                 return $http.post('api/position-moves/forShelf',param);
             }
+        }
+        //换位
+        function _changePosition(param) {
+            return $http.post('api/position-changes/forShelf',param);
         }
 
         return service;

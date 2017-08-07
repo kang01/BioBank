@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('BoxInventoryController', BoxInventoryController);
 
-    BoxInventoryController.$inject = ['$scope','$stateParams','$compile','$state','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService','FrozenBoxTypesService'];
+    BoxInventoryController.$inject = ['$scope','$stateParams','$compile','$state','$uibModal','DTColumnBuilder','toastr','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService','FrozenBoxTypesService'];
 
-    function BoxInventoryController($scope,$stateParams,$compile,$state,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService,FrozenBoxTypesService) {
+    function BoxInventoryController($scope,$stateParams,$compile,$state,$uibModal,DTColumnBuilder,toastr,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService,FrozenBoxTypesService) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {};
@@ -307,7 +307,29 @@
                 }
             });
             modalInstance.result.then(function (reson) {
-                console.log(reson)
+                var obj = reson;
+                if(operateStatus == '1'){
+                    obj.changeId1 = ids[0];
+                    obj.changeId2 = ids[1];
+                    obj.changeReason = obj.reason;
+                    delete obj.reason;
+                    BoxInventoryService.changePosition(obj).success(function (data) {
+                        toastr.success("换位成功!");
+                        vm.dtInstance.rerender();
+                    }).error(function (data) {
+                        toastr.error(data.message);
+                    });
+                }else{
+                    obj.destroyReason = obj.reason;
+                    obj.ids = ids;
+                    delete obj.reason;
+                    BoxInventoryService.destroyBox(obj).success(function (data) {
+                        toastr.success("销毁成功!");
+                        vm.dtInstance.rerender();
+                    }).error(function (data) {
+                        toastr.error(data.message);
+                    });
+                }
             }, function () {
             });
         }

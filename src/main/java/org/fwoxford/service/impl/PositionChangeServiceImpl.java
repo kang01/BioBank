@@ -165,9 +165,9 @@ public class PositionChangeServiceImpl implements PositionChangeService{
         //获取第二支样本
         Long sampleId2 = positionChangeDTO.getChangeId2();
         FrozenTube frozenTube2 = frozenTubeRepository.findOne(sampleId2);
-        if(frozenTube1 == null || (frozenTube1!=null && frozenTube1.getStatus().equals(Constants.INVALID))
-            ||frozenTube2 == null || (frozenTube2!=null && frozenTube2.getStatus().equals(Constants.INVALID))){
-            throw new BankServiceException("冻存管无效！");
+        if(frozenTube1 == null || (frozenTube1!=null && !frozenTube1.getFrozenTubeState().equals(Constants.FROZEN_BOX_SPLITED))
+            ||frozenTube2 == null || (frozenTube2!=null && !frozenTube2.getFrozenTubeState().equals(Constants.FROZEN_BOX_SPLITED))){
+            throw new BankServiceException("冻存管未入库，不能换位！");
         }
         if(!frozenTube1.getProjectCode().equals(frozenTube2.getProjectCode())){
             throw new BankServiceException("两支样本所属项目不同，不能执行换位！");
@@ -273,9 +273,9 @@ public class PositionChangeServiceImpl implements PositionChangeService{
         //获取第二个冻存盒
         Long boxId2 = positionChangeDTO.getChangeId2();
         FrozenBox frozenBox2 = frozenBoxRepository.findOne(boxId2);
-        if(frozenBox1 == null || (frozenBox1!=null && frozenBox1.getStatus().equals(Constants.INVALID))
-            ||frozenBox2 == null || (frozenBox2!=null && frozenBox2.getStatus().equals(Constants.INVALID))){
-            throw new BankServiceException("冻存盒无效！");
+        if(frozenBox1 == null || (frozenBox1!=null && !frozenBox1.getStatus().equals(Constants.FROZEN_BOX_STOCKED))
+            ||frozenBox2 == null || (frozenBox2!=null && !frozenBox2.getStatus().equals(Constants.FROZEN_BOX_STOCKED))){
+            throw new BankServiceException("冻存盒未入库，不能换位！");
         }
 
         frozenBox1.equipment(frozenBox2.getEquipment()).equipmentCode(frozenBox2.getEquipmentCode())

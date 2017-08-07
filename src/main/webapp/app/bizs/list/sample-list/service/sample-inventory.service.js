@@ -16,7 +16,11 @@
             queryTubeDes:_queryTubeDes,
             queryTubeDesByIds:_queryTubeDesByIds,
             //保存移位
-            saveMovementDes:_saveMovementDes
+            saveMovementDes:_saveMovementDes,
+            //换位
+            changePosition:_changePosition,
+            //销毁
+            destroySample:_destroySample
         };
         function _querySampleList(data,searchForm) {
             return $http.post('api/res/stock-list/frozen-tube?searchForm='+searchForm,angular.toJson(data));
@@ -36,6 +40,14 @@
             }else{
                 return $http.post('api/position-moves/forSample',param);
             }
+        }
+        //换位
+        function _changePosition(param) {
+            return $http.post('api/position-changes/forSample',param);
+        }
+        //销毁
+        function _destroySample(param) {
+            return $http.post('api/position-destroys/forSample',param);
         }
 
         return service;

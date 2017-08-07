@@ -14,7 +14,11 @@
             queryBoxList:_queryBoxList,
             queryShelfList:_queryShelfList,
             queryShelfDesc:_queryShelfDesc,
-            saveMovement:_saveMovement
+            saveMovement:_saveMovement,
+            //换位
+            changePosition:_changePosition,
+            //销毁
+            destroyBox:_destroyBox
         };
         function _queryBoxList(data,searchForm) {
             return $http.post('api/res/stock-list/frozen-box?searchForm='+searchForm,angular.toJson(data));
@@ -35,6 +39,14 @@
             }else{
                 return $http.post('api/position-moves/forBox',param);
             }
+        }
+        //换位
+        function _changePosition(param) {
+            return $http.post('api/position-changes/forBox',param);
+        }
+        //销毁
+        function _destroyBox(param) {
+            return $http.post('api/position-destroys/forBox',param);
         }
         return service;
     }

@@ -123,7 +123,7 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
         if(positionDestroyDTO == null){
             return null;
         }
-        if(positionDestroyDTO.getIds()==null ||positionDestroyDTO.getIds().size()==0 ){
+        if(positionDestroyDTO.getIds()==null ||positionDestroyDTO.getIds().length==0 ){
             throw new BankServiceException("需要换位的ID不能为空！");
         }
         checkUser(positionDestroyDTO);
@@ -141,18 +141,32 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
     }
 
     private void createDestroyPositionForSample(PositionDestroyDTO positionDestroyDTO) {
-        List<Long> frozenTubeIds = positionDestroyDTO.getIds();
+        Long[] ids =positionDestroyDTO.getIds();
+        List<Long> frozenTubeIds = new ArrayList<Long>();
+        for(Long id :ids){
+            frozenTubeIds.add(id);
+        }
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findAll(frozenTubeIds);
         for(FrozenTube f:frozenTubeList){
+            if(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_SPLITED)){
+                throw new BankServiceException("冻存管未入库，不能换位！");
+            }
             f.setStatus(Constants.VALID);
         }
         frozenTubeRepository.save(frozenTubeList);
         saveDestroyDetail(positionDestroyDTO,Constants.MOVE_TYPE_1,frozenTubeList);
     }
     private void createDestroyPositionForBox(PositionDestroyDTO positionDestroyDTO) {
-        List<Long> boxIds = positionDestroyDTO.getIds();
+        Long[] ids =positionDestroyDTO.getIds();
+        List<Long> boxIds = new ArrayList<Long>();
+        for(Long id :ids){
+            boxIds.add(id);
+        }
         List<FrozenBox> frozenBoxList = frozenBoxRepository.findAll(boxIds);
         for(FrozenBox frozenBox:frozenBoxList){
+            if(!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED)){
+                throw new BankServiceException("冻存盒未入库，不能销毁！");
+            }
             frozenBox.setStatus(Constants.VALID);
         }
         frozenBoxRepository.save(frozenBoxList);

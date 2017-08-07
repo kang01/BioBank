@@ -19,6 +19,11 @@
     -->
     <changeSet id="20170806064658-1" author="jhipster">
         <createTable tableName="position_destroy_record" remarks="销毁记录表">
+
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
             <column name="sample_code" type="nvarchar(100)" remarks="样本编码">
                 <constraints nullable="false"/>
             </column>

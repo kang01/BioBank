@@ -224,7 +224,7 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
                 .sampleVolumns(frozenTube.getSampleVolumns())
                 .errorType(frozenTube.getErrorType());
             positionDestroyRecordList.add(positionDestroyRecord);
-            if(positionDestroyRecordList.size()==5000){
+            if(positionDestroyRecordList.size()>=5000){
                 positionDestroyRecordRepository.save(positionDestroyRecordList);
                 positionDestroyRecordList = new ArrayList<PositionDestroyRecord>();
             }

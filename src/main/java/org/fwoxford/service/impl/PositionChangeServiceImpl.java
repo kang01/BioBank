@@ -192,7 +192,7 @@ public class PositionChangeServiceImpl implements PositionChangeService{
                 .sampleCode(StringUtils.isEmpty(frozenTube.getSampleCode())?frozenTube.getSampleTempCode():frozenTube.getSampleCode())
                 .positionChange(positionChange)
                 .frozenTube(frozenTube)
-                .moveType(changeType)
+                .changeType(changeType)
                 .equipment(frozenTube.getFrozenBox().getEquipment())
                 .equipmentCode(frozenTube.getFrozenBox().getEquipmentCode())
                 .area(frozenTube.getFrozenBox().getArea())

@@ -236,7 +236,9 @@ public class PositionChangeServiceImpl implements PositionChangeService{
                 positionChangeRecordList = new ArrayList<PositionChangeRecord>();
             }
         }
-        positionChangeRecordRepository.save(positionChangeRecordList);
+        if(positionChangeRecordList.size()>0){
+            positionChangeRecordRepository.save(positionChangeRecordList);
+        }
     }
 
     public void createChangePositionForBox(PositionChangeDTO positionChangeDTO) {
@@ -303,13 +305,15 @@ public class PositionChangeServiceImpl implements PositionChangeService{
             frozenBox2.equipment(supportRack1.getArea().getEquipment()).equipmentCode(supportRack1.getArea().getEquipment().getEquipmentCode())
                 .area(supportRack1.getArea()).areaCode(supportRack1.getArea().getAreaCode())
                 .supportRack(supportRack1).supportRackCode(supportRack1.getSupportRackCode());
+            frozenBoxes.add(frozenBox2);
             if(frozenBoxes.size() == 5000){
                 frozenBoxRepository.save(frozenBoxes);
                 frozenBoxes = new ArrayList<FrozenBox>();
             }
         }
-
-        frozenBoxRepository.save(frozenBoxes);
+        if(frozenBoxes.size()>0){
+            frozenBoxRepository.save(frozenBoxes);
+        }
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxIdIn(frozenBoxIds);
         saveChangeDetail(positionChangeDTO,Constants.MOVE_TYPE_3,frozenTubeList);
     }

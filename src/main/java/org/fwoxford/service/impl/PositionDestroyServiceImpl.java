@@ -215,7 +215,9 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
                 positionDestroyRecordList = new ArrayList<PositionDestroyRecord>();
             }
         }
-        positionDestroyRecordRepository.save(positionDestroyRecordList);
+        if(positionDestroyRecordList.size()>0){
+            positionDestroyRecordRepository.save(positionDestroyRecordList);
+        }
     }
 
     public void checkUser(PositionDestroyDTO positionDestroyDTO) {

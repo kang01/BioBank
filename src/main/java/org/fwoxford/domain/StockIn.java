@@ -34,9 +34,8 @@ public class StockIn extends AbstractAuditingEntity implements Serializable {
     /**
      * 项目编码
      */
-    @NotNull
     @Size(max = 100)
-    @Column(name = "project_code", length = 100, nullable = false)
+    @Column(name = "project_code", length = 100)
     private String projectCode;
     /**
      * 项目点编码
@@ -141,8 +140,7 @@ public class StockIn extends AbstractAuditingEntity implements Serializable {
     /**
      * 项目
      */
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     private Project project;
     /**
      * 项目点
@@ -475,5 +473,19 @@ public class StockIn extends AbstractAuditingEntity implements Serializable {
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
             '}';
+    }
+
+    @Column(name = "parent_stock_in_id")
+    private Long parentStockInId;
+
+    public Long getParentStockInId() {
+        return parentStockInId;
+    }
+    public StockIn parentStockInId(Long parentStockInId){
+        this.parentStockInId = parentStockInId;
+        return this;
+    }
+    public void setParentStockInId(Long parentStockInId) {
+        this.parentStockInId = parentStockInId;
     }
 }

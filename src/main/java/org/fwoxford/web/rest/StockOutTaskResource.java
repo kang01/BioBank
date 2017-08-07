@@ -174,6 +174,8 @@ public class StockOutTaskResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         DataTablesOutput<StockOutTaskForPlanDataTableEntity> result = stockOutTaskService.getPageStockOutTaskByPlan(id, input);
         return result;
     }
@@ -191,6 +193,8 @@ public class StockOutTaskResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         DataTablesOutput<StockOutTaskForDataTableEntity> result = stockOutTaskService.getPageStockOutTask(input);
         return result;
     }

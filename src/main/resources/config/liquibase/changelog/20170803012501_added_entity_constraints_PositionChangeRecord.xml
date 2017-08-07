@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity PositionChangeRecord.
+    -->
+    <changeSet id="20170803012501-2" author="jhipster">
+        <addForeignKeyConstraint baseColumnNames="equipment_id"
+                                 baseTableName="position_change_record"
+                                 constraintName="pos_change_equipment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="equipment"/>
+
+        <addForeignKeyConstraint baseColumnNames="area_id"
+                                 baseTableName="position_change_record"
+                                 constraintName="pos_change_area_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="area"/>
+
+        <addForeignKeyConstraint baseColumnNames="support_rack_id"
+                                 baseTableName="position_change_record"
+                                 constraintName="pos_change_support_rack_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="support_rack"/>
+
+        <addForeignKeyConstraint baseColumnNames="frozen_box_id"
+                                 baseTableName="position_change_record"
+                                 constraintName="pos_change_frozen_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_box"/>
+
+        <addForeignKeyConstraint baseColumnNames="frozen_tube_id"
+                                 baseTableName="position_change_record"
+                                 constraintName="pos_change_frozen_tube_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_tube"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_id"
+                                 baseTableName="position_change_record"
+                                 constraintName="pos_change_project_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_site_id"
+                                 baseTableName="position_change_record"
+                                 constraintName="pos_change_project_site_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project_site"/>
+
+        <addForeignKeyConstraint baseColumnNames="position_change_id"
+                                 baseTableName="position_change_record"
+                                 constraintName="fk_postion_change_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="position_change"/>
+
+    </changeSet>
+
+    <changeSet id="20170803012501-4" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="frozen_tube_type_id"
+                                 baseTableName="position_change_record"
+                                 constraintName="pos_change_tube_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_tube_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="sample_type_id"
+                                 baseTableName="position_change_record"
+                                 constraintName="pos_change_sample_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="sample_classification_id"
+                                 baseTableName="position_change_record"
+                                 constraintName="pos_change_sample_class_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_class"/>
+
+    </changeSet>
+</databaseChangeLog>

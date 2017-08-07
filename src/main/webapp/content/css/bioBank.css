@@ -1,6 +1,8 @@
 
 .selectize-control .selectize-input.disabled{
-    background-color: #ccc;
+    background-color: #eee;
+    opacity: 1;
+    cursor: not-allowed !important;
 }
 .p-0{
     padding: 0 !important;
@@ -443,6 +445,15 @@ table.dataTable tfoot th, table.dataTable tfoot td {
 .transport-record-new div.dataTables_filter input{
     width: 8em;
 }
+.no-padding .dataTables_wrapper .text-right{
+    margin-bottom: 0 !important;
+}
+.dataTables_wrapper .text-left  .dataTables_filter{
+    float: left;
+}
+.min-table .dataTables_filter input[type="search"]{
+    width: 130px;
+}
 .tube .handsontable th,
 .tube .handsontable td{
     height: 40px;
@@ -744,7 +755,7 @@ body.ng-pageslide-body-open::before {
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1;
+    z-index: 106;
     opacity: 0.5;
     transition: opacity 1s;
     pointer-events: all;
@@ -771,6 +782,21 @@ body.ng-pageslide-body-closed::before {
 .add-sample-modal-body .project-sites .selectize-input > *{
     width: 150px;
 }
+.add-sample-modal-body .table > tbody > tr > td,
+.add-sample-modal-body .table > tbody > tr > th,
+.add-sample-modal-body .table > tfoot > tr > td,
+.add-sample-modal-body .table > tfoot > tr > th,
+.add-sample-modal-body .table > thead > tr > td,
+.add-sample-modal-body .table > thead > tr > th{
+    padding: 8px;
+    line-height: 1.42857143;
+}
+.add-sample-modal-body .pagination{
+    margin: 8px 0;
+}
+/*.add-sample-modal-body .multi .project-sites .selectize-input > *{*/
+    /*width: 80px;*/
+/*}*/
 .position-relative{
     position: relative;
 }
@@ -853,9 +879,26 @@ body.ng-pageslide-body-closed::before {
     from {right: -75%;}
     to {right:0;}
 }
-
-
-
+.repeat-sample-class{
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    border:1px solid red;
+}
+.stockInAnimation{
+    -webkit-animation:twinkling 2s infinite ease-in-out;
+    opacity:1;
+}
+@-webkit-keyframes twinkling{
+    50%{
+        opacity:0;
+    }
+    100%{
+        opacity:1;
+    }
+}
 .rating {
     color: #a9a9a9;
     margin: 0;
@@ -902,6 +945,9 @@ ul.rating {
     overflow: hidden;
     border-radius: 4px;
 }
+.box-movement-table .pos-progress{
+    width: 80px;
+}
 .pos-progress .text{
     position: absolute;
     width: 100%;
@@ -923,3 +969,34 @@ ul.rating {
     overflow: auto;
     width: 100%;
 }
+/*转运附件*/
+.img-show{
+    position: relative;
+    float: left;
+    width: 140px;
+    height: 140px;
+    margin-left: 14px;
+    overflow: hidden;
+    user-select:none;
+}
+.img-show:hover{
+    outline: 1px solid #000;
+    cursor: pointer;
+}
+.img-show:hover .img-operate{
+    right:0
+}
+.img-operate{
+    position: absolute;
+    right: -32px;
+    width: 32px;
+    height: 64px;
+    background-color: #000;
+    color: white;
+    text-align: center;
+    border-radius: 4px 0 0 4px;
+    transition: all 0.2s linear;
+    font-size: 20px;
+    padding-top: 4px;
+}
+

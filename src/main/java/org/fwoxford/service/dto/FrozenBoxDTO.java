@@ -1,6 +1,10 @@
 package org.fwoxford.service.dto;
 
 
+import org.fwoxford.domain.FrozenBoxType;
+import org.fwoxford.domain.SampleClassification;
+import org.fwoxford.domain.SampleType;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -80,10 +84,6 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
      */
     @Size(max = 255)
     private String sampleTypeName;
-//    /**
-//     * 样本数量
-//     */
-//    private Integer sampleNumber;
     /**
      * 是否分装：1：是，0：否
      */
@@ -164,7 +164,7 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 冻存管列表
      */
-    private List<FrozenTubeDTO> frozenTubeDTOS;
+    private List<StockInTubeDTO> frozenTubeDTOS;
     /**
      * 样本分类前景色
      */
@@ -186,6 +186,9 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
      * 样本类型背景色
      */
     private String backColor;
+
+    private String sampleClassificationCode;
+    private String sampleClassificationName;
 
     public Long getId() {
         return id;
@@ -419,11 +422,11 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
         this.supportRackId = supportRackId;
     }
 
-    public List<FrozenTubeDTO> getFrozenTubeDTOS() {
+    public List<StockInTubeDTO> getFrozenTubeDTOS() {
         return frozenTubeDTOS;
     }
 
-    public void setFrozenTubeDTOS(List<FrozenTubeDTO> frozenTubeDTOS) {
+    public void setFrozenTubeDTOS(List<StockInTubeDTO> frozenTubeDTOS) {
         this.frozenTubeDTOS = frozenTubeDTOS;
     }
 
@@ -469,6 +472,22 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setBackColor(String backColor) {
         this.backColor = backColor;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+    }
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
     }
 
     @Override
@@ -519,5 +538,35 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
             ", rowsInShelf='" + rowsInShelf + "'" +
             ", columnsInShelf='" + columnsInShelf + "'" +
             '}';
+    }
+    private FrozenBoxType frozenBoxType;
+    private SampleClassification sampleClassification;
+    private SampleType sampleType;
+
+    public FrozenBoxType getFrozenBoxType() {
+        return frozenBoxType;
+    }
+
+    public FrozenBoxDTO setFrozenBoxType(FrozenBoxType frozenBoxType) {
+        this.frozenBoxType = frozenBoxType;
+        return this;
+    }
+
+    public SampleClassification getSampleClassification() {
+        return sampleClassification;
+    }
+
+    public FrozenBoxDTO setSampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
+        return this;
+    }
+
+    public SampleType getSampleType() {
+        return sampleType;
+    }
+
+    public FrozenBoxDTO setSampleType(SampleType sampleType) {
+        this.sampleType = sampleType;
+        return this;
     }
 }

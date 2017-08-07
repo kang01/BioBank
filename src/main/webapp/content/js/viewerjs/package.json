@@ -1,0 +1,91 @@
+{
+  "_from": "viewerjs@^0.7.1",
+  "_id": "viewerjs@0.7.1",
+  "_inBundle": false,
+  "_integrity": "sha1-nrKMvxpksk32/vxbJr8QzXsiYOk=",
+  "_location": "/viewerjs",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "viewerjs@^0.7.1",
+    "name": "viewerjs",
+    "escapedName": "viewerjs",
+    "rawSpec": "^0.7.1",
+    "saveSpec": null,
+    "fetchSpec": "^0.7.1"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/viewerjs/-/viewerjs-0.7.1.tgz",
+  "_shasum": "9eb28cbf1a64b24df6fefc5b26bf10cd7b2260e9",
+  "_spec": "viewerjs@^0.7.1",
+  "_where": "E:\\centerForInternationalHealthResearch\\BioBank",
+  "author": {
+    "name": "Fengyuan Chen",
+    "url": "http://chenfengyuan.com"
+  },
+  "bugs": {
+    "url": "https://github.com/fengyuanchen/viewerjs/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "JavaScript image viewer.",
+  "devDependencies": {
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-es2015": "^6.22.0",
+    "cssnano": "^3.10.0",
+    "eslint": "^3.17.0",
+    "eslint-config-airbnb-base": "^10.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "node-qunit-phantomjs": "^1.5.0",
+    "npm-run-all": "^3.1.2",
+    "postcss-assets": "^4.1.0",
+    "postcss-cli": "^2.6.0",
+    "postcss-cssnext": "^2.9.0",
+    "rollup": "^0.36.4",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-watch": "^2.5.0",
+    "uglify-js": "^2.8.5"
+  },
+  "homepage": "https://fengyuanchen.github.io/viewerjs",
+  "keywords": [
+    "image",
+    "view",
+    "viewer",
+    "viewerjs",
+    "viewer.js",
+    "html",
+    "css",
+    "javascript",
+    "front-end",
+    "web",
+    "component",
+    "development"
+  ],
+  "license": "MIT",
+  "main": "dist/viewer.js",
+  "name": "viewerjs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fengyuanchen/viewerjs.git"
+  },
+  "scripts": {
+    "build": "npm run build:css && npm run build:js",
+    "build:css": "postcss -c postcss.config.json",
+    "build:js": "rollup -c",
+    "compress": "npm run compress:css && npm run compress:js",
+    "compress:css": "postcss -u cssnano dist/viewer.css -o dist/viewer.min.css",
+    "compress:js": "uglifyjs dist/viewer.js -o dist/viewer.min.js -c -m --comments /^!/",
+    "lint": "eslint src/js",
+    "postbuild": "npm run compress && node build",
+    "prebuild": "npm run lint && npm test",
+    "start": "npm-run-all --parallel watch:*",
+    "test": "node-qunit-phantomjs test/index.html --timeout 10",
+    "watch:css": "postcss -c postcss.config.json -w",
+    "watch:js": "rollup -c -w -m"
+  },
+  "version": "0.7.1"
+}

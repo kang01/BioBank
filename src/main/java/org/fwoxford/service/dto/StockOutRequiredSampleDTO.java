@@ -1,6 +1,9 @@
 package org.fwoxford.service.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -12,24 +15,43 @@ import java.util.Objects;
  */
 public class StockOutRequiredSampleDTO extends AbstractAuditingDTO implements Serializable {
 
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private Long id;
-
+    @JsonView(DataTablesOutput.View.class)
     @NotNull
     @Size(max = 100)
     private String sampleCode;
 
+    @JsonView(DataTablesOutput.View.class)
     @NotNull
     @Size(max = 100)
     private String sampleType;
 
     @NotNull
     @Size(max = 20)
+    @JsonView(DataTablesOutput.View.class)
     private String status;
 
     @Size(max = 1024)
+    @JsonView(DataTablesOutput.View.class)
     private String memo;
 
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     private Long stockOutRequirementId;
+
+    public StockOutRequiredSampleDTO() {
+    }
+
+    public StockOutRequiredSampleDTO(Long id, String sampleCode, String sampleType, String status, String memo, Long stockOutRequirementId) {
+        this.id = id;
+        this.sampleCode = sampleCode;
+        this.sampleType = sampleType;
+        this.status = status;
+        this.memo = memo;
+        this.stockOutRequirementId = stockOutRequirementId;
+    }
 
     public Long getId() {
         return id;

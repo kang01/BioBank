@@ -2,7 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.fwoxford.domain.StockInBoxForDataTableEntity;
+import org.fwoxford.service.dto.response.StockInBoxForDataTableEntity;
 import org.fwoxford.service.StockInBoxService;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.StockInBoxDetail;
@@ -149,6 +149,8 @@ public class StockInBoxResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         DataTablesOutput<StockInBoxForDataTableEntity> result = stockInBoxService.getPageStockInBoxes(stockInCode,input);
         return result;
     }
@@ -240,37 +242,50 @@ public class StockInBoxResource {
 
     /**
      * 创建入库盒
-     * @param frozenBoxDTO
+     * @param stockInBoxDTO
      * @param stockInCode
      * @return
      * @throws URISyntaxException
      */
     @PostMapping("/stock-in-boxes/stockInCode/{stockInCode}")
     @Timed
-    public ResponseEntity<FrozenBoxDTO> createBoxByStockIn(@Valid @RequestBody FrozenBoxDTO frozenBoxDTO,@PathVariable String stockInCode) throws URISyntaxException {
-        log.debug("REST request to save StockInBox : {}", frozenBoxDTO);
-        FrozenBoxDTO result = stockInBoxService.createBoxByStockIn(frozenBoxDTO,stockInCode);
+    public ResponseEntity<StockInBoxDTO> createBoxByStockIn(@Valid @RequestBody StockInBoxDTO stockInBoxDTO,@PathVariable String stockInCode) throws URISyntaxException {
+        log.debug("REST request to save StockInBox : {}", stockInBoxDTO);
+        StockInBoxDTO result = stockInBoxService.createBoxByStockIn(stockInBoxDTO,stockInCode);
         return ResponseEntity.created(new URI("/api/stock-in-boxes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
     /**
      * 编辑保存入库盒
-     * @param frozenBoxDTO
+     * @param stockInBoxDTO
      * @param stockInCode
      * @return
      * @throws URISyntaxException
      */
     @PutMapping("/stock-in-boxes/stockInCode/{stockInCode}")
     @Timed
-    public ResponseEntity<FrozenBoxDTO> updateBoxByStockIn(@Valid @RequestBody FrozenBoxDTO frozenBoxDTO,@PathVariable String stockInCode) throws URISyntaxException {
-        log.debug("REST request to save StockInBox : {}", frozenBoxDTO);
-        if(frozenBoxDTO.getId() == null){
+    public ResponseEntity<StockInBoxDTO> updateBoxByStockIn(@Valid @RequestBody StockInBoxDTO stockInBoxDTO,@PathVariable String stockInCode) throws URISyntaxException {
+        log.debug("REST request to save StockInBox : {}", stockInBoxDTO);
+        if(stockInBoxDTO.getId() == null){
             throw new BankServiceException("冻存盒ID不能为空！");
         }
-        FrozenBoxDTO result = stockInBoxService.createBoxByStockIn(frozenBoxDTO,stockInCode);
+        StockInBoxDTO result = stockInBoxService.createBoxByStockIn(stockInBoxDTO,stockInCode);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+    /**
+     * 根据入库冻存盒ID查询冻存盒和冻存管的信息（包含盒内已入库的）
+     * @param id
+     * @return
+     */
+    @GetMapping("/stock-in-boxes/stockInBoxId/{id}")
+    @Timed
+    public ResponseEntity<StockInBoxDTO> getBoxAndTubeByStockInBox(@PathVariable Long id) {
+        log.debug("REST request to get Box and Tube : {}", id);
+        StockInBoxDTO res = stockInBoxService.getBoxAndStockTubeByStockInBoxId(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

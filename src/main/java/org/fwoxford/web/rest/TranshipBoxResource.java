@@ -1,10 +1,11 @@
 package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import org.fwoxford.domain.FrozenBox;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.fwoxford.service.TranshipBoxService;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -13,18 +14,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing TranshipBox.
@@ -77,7 +79,7 @@ public class TranshipBoxResource {
     public ResponseEntity<TranshipBoxListForSaveBatchDTO> updateTranshipBox(@Valid @RequestBody TranshipBoxListDTO transhipBoxListDTO) throws URISyntaxException {
         log.debug("REST request to update TranshipBox : {}", transhipBoxListDTO);
         if (transhipBoxListDTO.getTranshipId() == null) {
-            return createTranshipBox(transhipBoxListDTO);
+            throw new BankServiceException("转运ID不能为空！");
         }
         TranshipBoxListForSaveBatchDTO result = transhipBoxService.saveBatchTranshipBox(transhipBoxListDTO);
         return ResponseEntity.ok()
@@ -182,5 +184,17 @@ public class TranshipBoxResource {
         log.debug("REST request to get FrozenBox : {}", transhipCode);
         List<FrozenBoxCodeForTranshipDTO> res = transhipBoxService.getFrozenBoxCodeByTranshipCode(transhipCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
+     * 分页查询转运冻存盒
+     * @param transhipCode
+     * @param input
+     * @return
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/res/tranship-boxes/transhipCode/{transhipCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
+    public DataTablesOutput<FrozenBoxCodeForTranshipDTO> getFrozenBoxCodeByTranshipCode(@PathVariable String transhipCode, @RequestBody DataTablesInput input) {
+        return transhipBoxService.getPageFrozenBoxCodeByTranshipCode(transhipCode,input);
     }
 }

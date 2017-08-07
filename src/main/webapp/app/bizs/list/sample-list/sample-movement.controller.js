@@ -9,10 +9,10 @@
         .controller('SampleMovementController', SampleMovementController);
 
     SampleMovementController.$inject = ['$scope','hotRegisterer','$compile','$state','$stateParams','$uibModal','toastr','DTColumnBuilder','ProjectService','EquipmentService',
-        'SampleTypeService','MasterData','BoxInventoryService','BioBankDataTable','StockInBoxByCodeService','SampleService','FrozenBoxTypesService','RequirementService','SampleInventoryService','SampleUserService','BioBankBlockUi'];
+        'SampleTypeService','MasterData','BoxInventoryService','BioBankDataTable','StockInBoxByCodeService','SampleService','FrozenBoxTypesService','RequirementService','SampleInventoryService','SampleUserService','BioBankBlockUi','Principal'];
 
     function SampleMovementController($scope,hotRegisterer,$compile,$state,$stateParams,$uibModal,toastr,DTColumnBuilder,ProjectService,EquipmentService,
-                                      SampleTypeService,MasterData,BoxInventoryService,BioBankDataTable,StockInBoxByCodeService,SampleService,FrozenBoxTypesService,RequirementService,SampleInventoryService,SampleUserService,BioBankBlockUi) {
+                                      SampleTypeService,MasterData,BoxInventoryService,BioBankDataTable,StockInBoxByCodeService,SampleService,FrozenBoxTypesService,RequirementService,SampleInventoryService,SampleUserService,BioBankBlockUi,Principal) {
         var vm = this;
         vm.boxInstance = {};
         vm.selectedInstance = {};
@@ -70,6 +70,10 @@
             if(selectedSampleIds.length){
                 _searchTubesByIds();
             }
+            Principal.identity().then(function(account) {
+                vm.account = account;
+                vm.movement.operatorId1 = vm.account.id;
+            });
 
         }
         _init();
@@ -101,21 +105,26 @@
         //列表移入操作
         vm.moveOperate = _fnMoveOperate;
 
+
+
         function _fnSearch() {
-            if(projectIds.length){
-                for(var i = 0; i <projectIds.length; i++){
-                    var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
-                    vm.dto.projectCodeStr.push(projectCode)
-                }
-            }
+            var projectCode = _.find(vm.projectOptions,{id:+vm.projectId}).projectCode;
+            vm.dto.projectCodeStr = [];
+            vm.dto.projectCodeStr.push(projectCode);
+            // if(projectIds.length){
+            //     for(var i = 0; i <projectIds.length; i++){
+            //         var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
+            //         vm.dto.projectCodeStr.push(projectCode)
+            //     }
+            // }
             vm.checked = false;
             vm.boxInstance.rerender();
         }
         function _fnEmpty() {
             vm.dto = {};
             vm.dto.projectCodeStr = [];
-            projectIds = [];
-            vm.projectCodeStr = [];
+            // projectIds = [];
+            // vm.projectCodeStr = [];
             vm.arrayBoxCode = [];
             vm.dto.spaceType = "2";
             vm.dto.compareType = "1";
@@ -207,12 +216,13 @@
                 valueField:'id',
                 labelField:'projectName',
                 searchField:'projectName',
+                maxItems: 1,
                 onChange:function(value){
-                    vm.projectIds = _.join(value, ',');
-                    projectIds = value;
-                    vm.dto.projectCodeStr = [];
+                    vm.projectId = value;
+                    // console.log(vm.projectIds);
+                    // projectIds = value;
                     if(vm.dto.sampleTypeId){
-                        _fnQueryProjectsSampleClass(vm.projectIds,vm.dto.sampleTypeId);
+                        _fnQueryProjectsSampleClass(value,vm.dto.sampleTypeId);
                     }
                 }
             };
@@ -231,8 +241,8 @@
                 labelField:'sampleTypeName',
                 maxItems: 1,
                 onChange:function (value) {
-                    if(vm.projectIds) {
-                        _fnQueryProjectsSampleClass(vm.projectIds, value);
+                    if(vm.projectId) {
+                        _fnQueryProjectsSampleClass(vm.projectId, value);
                     }
                 }
             };
@@ -243,12 +253,15 @@
                 onChange:function (value) {
                 }
             };
+            vm.queryProjectsSampleClass = _fnQueryProjectsSampleClass;
             //样本分类
-            function _fnQueryProjectsSampleClass(projectIds,sampleTypeId) {
-                RequirementService.queryRequirementSampleClasses(projectIds,sampleTypeId).success(function (data) {
+            function _fnQueryProjectsSampleClass(projectId,sampleTypeId,sampleClassificationId) {
+                RequirementService.queryRequirementSampleClasses(projectId,sampleTypeId).success(function (data) {
                     vm.sampleClassOptions = data;
                     if(vm.sampleClassOptions.length){
-                        vm.dto.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
+                        if(sampleClassificationId){
+                            vm.dto.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
+                        }
                     }
                 });
             }
@@ -264,9 +277,41 @@
                     selectedItems[id] = selectAll;
                 }
             }
-        }
+            for(var i in vm.selected){
+                if(vm.selected[i]){
+                    // 遍历选中的冻存管，i是冻存管的Id
+                    var tube = _.find(vm.selectedSample, {id: +i});
+                    if(tube){
+                        vm.projectId = tube.projectId;
+                        vm.dto.sampleTypeId = tube.sampleTypeId;
+                        vm.queryProjectsSampleClass(vm.projectId,vm.dto.sampleTypeId,tube.sampleClassificationId);
+                        return;
+                    }
+                }else{
+                    vm.projectId = "";
+                    vm.dto.sampleTypeId = "";
+                    vm.dto.sampleClassificationId = "";
+                }
+            }
 
+        }
         function toggleOne (selectedItems) {
+            for(var i in vm.selected){
+                if(vm.selected[i]){
+                    // 遍历选中的冻存管，i是冻存管的Id
+                    var tube = _.find(vm.selectedSample, {id: +i});
+                    if(tube){
+                        vm.projectId = tube.projectId;
+                        vm.dto.sampleTypeId = tube.sampleTypeId;
+                        vm.queryProjectsSampleClass(vm.projectId,vm.dto.sampleTypeId,tube.sampleClassificationId);
+                        return;
+                    }
+                }else{
+                    vm.projectId = "";
+                    vm.dto.sampleTypeId = "";
+                    vm.dto.sampleClassificationId = "";
+                }
+            }
             for (var id in selectedItems) {
                 if (selectedItems.hasOwnProperty(id)) {
                     if(!selectedItems[id]) {
@@ -289,23 +334,17 @@
             DTColumnBuilder.newColumn(2).withOption("width", "80"),
             DTColumnBuilder.newColumn(3).withOption("width", "80"),
             DTColumnBuilder.newColumn(4).withOption("width", "auto")
-
         ];
-
         function _fnRowSelectorRender(data, type, full, meta) {
             vm.selected[full.id] = true;
             var html = '';
             html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
             return html;
         }
-
-
-
         //关闭
         function _fnCloseSampleMovement() {
             vm.sampleMovementFlag = false;
         }
-
         //盒子列表
         vm.boxOptions = BioBankDataTable.buildDTOption("ORDINARY", null, 10)
             .withOption('order', [[4,'asc']])
@@ -345,15 +384,15 @@
             })
             .withOption('createdRow', createdRow);
         vm.boxColumns = [
-            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒子类型').withOption("width", "70"),
+            DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒子类型').withOption("width", "140"),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "60").renderWith(_fnRowCodeRender),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "80"),
-            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "80"),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "130"),
+            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "120"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "160"),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "auto"),
-            DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "60"),
-            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60")
+            DTColumnBuilder.newColumn('countOfRest').withTitle('剩余').withOption("width", "80"),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "80"),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "50")
                 .withOption('searchable',false).notSortable().renderWith(actionsHtml)
 
         ];
@@ -612,7 +651,6 @@
                     }
 
                 }
-
             };
             //渲染管子表格
             function myCustomRenderer(hotInstance, td, row, col, prop, value, cellProperties) {

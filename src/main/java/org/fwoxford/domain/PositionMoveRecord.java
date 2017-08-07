@@ -447,7 +447,112 @@ public class PositionMoveRecord extends AbstractAuditingEntity implements Serial
         }
         return Objects.equals(id, positionMoveRecord.id);
     }
+    /**
+     * 冻存管编码
+     */
+    @Size(max = 100)
+    @Column(name = "frozen_tube_code", length = 100)
+    private String frozenTubeCode;
+    /**
+     * 样本临时编码
+     */
+    @Size(max = 100)
+    @Column(name = "sample_temp_code", length = 100)
+    private String sampleTempCode;
+    /**
+     * 冻存管类型编码
+     */
+    @Size(max = 100)
+    @Column(name = "frozen_tube_type_code", length = 100)
+    private String frozenTubeTypeCode;
+    /**
+     * 冻存管类型名称
+     */
+    @Size(max = 255)
+    @Column(name = "frozen_tube_type_name", length = 255)
+    private String frozenTubeTypeName;
+    /**
+     * 样本类型编码
+     */
+    @Size(max = 100)
+    @Column(name = "sample_type_code", length = 100)
+    private String sampleTypeCode;
+    /**
+     * 样本类型名称
+     */
+    @Size(max = 255)
+    @Column(name = "sample_type_name", length = 255)
+    private String sampleTypeName;
+    /**
+     * 样本分类编码
+     */
+    @Size(max = 100)
+    @Column(name = "sample_classification_code", length = 100)
+    private String sampleClassificationCode;
+    /**
+     * 样本分类名称
+     */
+    @Size(max = 255)
+    @Column(name = "sample_classification_name", length = 255)
+    private String sampleClassificationName;
+    /**
+     * 样本最多使用次数
+     */
+    @Max(value = 20)
+    @Column(name = "sample_used_times_most")
+    private Integer sampleUsedTimesMost;
+    /**
+     * 样本已使用次数
+     */
+    @Max(value = 20)
+    @Column(name = "sample_used_times")
+    private Integer sampleUsedTimes;
+    /**
+     * 冻存管容量值
+     */
 
+    @Column(name = "frozen_tube_volumns")
+    private Double frozenTubeVolumns;
+
+    /**
+     * 样本容量值
+     */
+    @Column(name = "sample_volumns")
+    private Double sampleVolumns;
+
+    /**
+     * 冻存管容量值单位
+     */
+    @Size(max = 20)
+    @Column(name = "frozen_tube_volumns_unit", length = 20)
+    private String frozenTubeVolumnsUnit;
+    /**
+     * 错误类型：6001：位置错误，6002：样本类型错误，6003：其他
+     */
+    @Size(max = 20)
+    @Column(name = "error_type", length = 20)
+    private String errorType;
+    /**
+     * 状态
+     */
+    @Size(max = 20)
+    @Column(name = "frozen_tube_state", length = 20)
+    private String frozenTubeState;
+    /**
+     * 冻存管类型
+     */
+    @ManyToOne(optional = false)
+    private FrozenTubeType frozenTubeType;
+    /**
+     * 样本类型
+     */
+    @ManyToOne(optional = false)
+    private SampleType sampleType;
+    /**
+     * 样本分类
+     */
+    @ManyToOne
+    private SampleClassification sampleClassification;
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
@@ -457,21 +562,243 @@ public class PositionMoveRecord extends AbstractAuditingEntity implements Serial
     public String toString() {
         return "PositionMoveRecord{" +
             "id=" + id +
-            ", sampleCode='" + sampleCode + "'" +
-            ", equipmentCode='" + equipmentCode + "'" +
-            ", areaCode='" + areaCode + "'" +
-            ", supportRackCode='" + supportRackCode + "'" +
-            ", rowsInShelf='" + rowsInShelf + "'" +
-            ", columnsInShelf='" + columnsInShelf + "'" +
-            ", frozenBoxCode='" + frozenBoxCode + "'" +
-            ", tubeRows='" + tubeRows + "'" +
-            ", tubeColumns='" + tubeColumns + "'" +
-            ", whetherFreezingAndThawing='" + whetherFreezingAndThawing + "'" +
-            ", moveType='" + moveType + "'" +
-            ", projectCode='" + projectCode + "'" +
-            ", projectSiteCode='" + projectSiteCode + "'" +
-            ", status='" + status + "'" +
-            ", memo='" + memo + "'" +
+            ", sampleCode='" + sampleCode + '\'' +
+            ", equipmentCode='" + equipmentCode + '\'' +
+            ", areaCode='" + areaCode + '\'' +
+            ", supportRackCode='" + supportRackCode + '\'' +
+            ", rowsInShelf='" + rowsInShelf + '\'' +
+            ", columnsInShelf='" + columnsInShelf + '\'' +
+            ", frozenBoxCode='" + frozenBoxCode + '\'' +
+            ", tubeRows='" + tubeRows + '\'' +
+            ", tubeColumns='" + tubeColumns + '\'' +
+            ", whetherFreezingAndThawing=" + whetherFreezingAndThawing +
+            ", moveType='" + moveType + '\'' +
+            ", projectCode='" + projectCode + '\'' +
+            ", projectSiteCode='" + projectSiteCode + '\'' +
+            ", status='" + status + '\'' +
+            ", memo='" + memo + '\'' +
+            ", equipment=" + equipment +
+            ", area=" + area +
+            ", supportRack=" + supportRack +
+            ", frozenBox=" + frozenBox +
+            ", frozenTube=" + frozenTube +
+            ", project=" + project +
+            ", projectSite=" + projectSite +
+            ", positionMove=" + positionMove +
+            ", frozenTubeCode='" + frozenTubeCode + '\'' +
+            ", sampleTempCode='" + sampleTempCode + '\'' +
+            ", frozenTubeTypeCode='" + frozenTubeTypeCode + '\'' +
+            ", frozenTubeTypeName='" + frozenTubeTypeName + '\'' +
+            ", sampleTypeCode='" + sampleTypeCode + '\'' +
+            ", sampleTypeName='" + sampleTypeName + '\'' +
+            ", sampleClassificationCode='" + sampleClassificationCode + '\'' +
+            ", sampleClassificationName='" + sampleClassificationName + '\'' +
+            ", sampleUsedTimesMost=" + sampleUsedTimesMost +
+            ", sampleUsedTimes=" + sampleUsedTimes +
+            ", frozenTubeVolumns=" + frozenTubeVolumns +
+            ", sampleVolumns=" + sampleVolumns +
+            ", frozenTubeVolumnsUnit='" + frozenTubeVolumnsUnit + '\'' +
+            ", errorType='" + errorType + '\'' +
+            ", frozenTubeState='" + frozenTubeState + '\'' +
+            ", frozenTubeType=" + frozenTubeType +
+            ", sampleType=" + sampleType +
+            ", sampleClassification=" + sampleClassification +
             '}';
+    }
+
+    public String getFrozenTubeCode() {
+        return frozenTubeCode;
+    }
+    public PositionMoveRecord frozenTubeCode(String frozenTubeCode) {
+        this.frozenTubeCode = frozenTubeCode;
+        return this;
+    }
+    public void setFrozenTubeCode(String frozenTubeCode) {
+        this.frozenTubeCode = frozenTubeCode;
+    }
+    public String getSampleTempCode() {
+        return sampleTempCode;
+    }
+    public PositionMoveRecord sampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
+        return this;
+    }
+    public void setSampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
+    }
+
+    public String getFrozenTubeTypeCode() {
+        return frozenTubeTypeCode;
+    }
+    public PositionMoveRecord frozenTubeTypeCode(String frozenTubeTypeCode) {
+        this.sampleTempCode = frozenTubeTypeCode;
+        return this;
+    }
+    public void setFrozenTubeTypeCode(String frozenTubeTypeCode) {
+        this.frozenTubeTypeCode = frozenTubeTypeCode;
+    }
+    public String getFrozenTubeTypeName() {
+        return frozenTubeTypeName;
+    }
+    public PositionMoveRecord frozenTubeTypeName(String frozenTubeTypeName) {
+        this.frozenTubeTypeName = frozenTubeTypeName;
+        return this;
+    }
+    public void setFrozenTubeTypeName(String frozenTubeTypeName) {
+        this.frozenTubeTypeName = frozenTubeTypeName;
+    }
+
+    public String getSampleTypeCode() {
+        return sampleTypeCode;
+    }
+    public PositionMoveRecord sampleTypeCode(String sampleTypeCode) {
+        this.sampleTypeCode = sampleTypeCode;
+        return this;
+    }
+    public void setSampleTypeCode(String sampleTypeCode) {
+        this.sampleTypeCode = sampleTypeCode;
+    }
+
+    public String getSampleTypeName() {
+        return sampleTypeName;
+    }
+    public PositionMoveRecord sampleTypeName(String sampleTypeName) {
+        this.sampleTypeName = sampleTypeName;
+        return this;
+    }
+    public void setSampleTypeName(String sampleTypeName) {
+        this.sampleTypeName = sampleTypeName;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+    public PositionMoveRecord sampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+        return this;
+    }
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+    }
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+    public PositionMoveRecord sampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+        return this;
+    }
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+    }
+
+    public Integer getSampleUsedTimesMost() {
+        return sampleUsedTimesMost;
+    }
+    public PositionMoveRecord sampleUsedTimesMost(Integer sampleUsedTimesMost) {
+        this.sampleUsedTimesMost = sampleUsedTimesMost;
+        return this;
+    }
+    public void setSampleUsedTimesMost(Integer sampleUsedTimesMost) {
+        this.sampleUsedTimesMost = sampleUsedTimesMost;
+    }
+
+    public Integer getSampleUsedTimes() {
+        return sampleUsedTimes;
+    }
+    public PositionMoveRecord sampleUsedTimes(Integer sampleUsedTimes) {
+        this.sampleUsedTimes = sampleUsedTimes;
+        return this;
+    }
+    public void setSampleUsedTimes(Integer sampleUsedTimes) {
+        this.sampleUsedTimes = sampleUsedTimes;
+    }
+
+    public Double getFrozenTubeVolumns() {
+        return frozenTubeVolumns;
+    }
+    public PositionMoveRecord frozenTubeVolumns(Double frozenTubeVolumns) {
+        this.frozenTubeVolumns = frozenTubeVolumns;
+        return this;
+    }
+    public void setFrozenTubeVolumns(Double frozenTubeVolumns) {
+        this.frozenTubeVolumns = frozenTubeVolumns;
+    }
+
+    public Double getSampleVolumns() {
+        return sampleVolumns;
+    }
+    public PositionMoveRecord sampleVolumns(Double sampleVolumns) {
+        this.sampleVolumns = sampleVolumns;
+        return this;
+    }
+    public void setSampleVolumns(Double sampleVolumns) {
+        this.sampleVolumns = sampleVolumns;
+    }
+
+    public String getFrozenTubeVolumnsUnit() {
+        return frozenTubeVolumnsUnit;
+    }
+    public PositionMoveRecord frozenTubeVolumnsUnit(String frozenTubeVolumnsUnit) {
+        this.frozenTubeVolumnsUnit = frozenTubeVolumnsUnit;
+        return this;
+    }
+    public void setFrozenTubeVolumnsUnit(String frozenTubeVolumnsUnit) {
+        this.frozenTubeVolumnsUnit = frozenTubeVolumnsUnit;
+    }
+
+    public String getErrorType() {
+        return errorType;
+    }
+    public PositionMoveRecord errorType(String errorType) {
+        this.errorType = errorType;
+        return this;
+    }
+    public void setErrorType(String errorType) {
+        this.errorType = errorType;
+    }
+
+    public String getFrozenTubeState() {
+        return frozenTubeState;
+    }
+    public PositionMoveRecord frozenTubeState(String frozenTubeState) {
+        this.frozenTubeState = frozenTubeState;
+        return this;
+    }
+    public void setFrozenTubeState(String frozenTubeState) {
+        this.frozenTubeState = frozenTubeState;
+    }
+
+    public FrozenTubeType getFrozenTubeType() {
+        return frozenTubeType;
+    }
+    public PositionMoveRecord frozenTubeType(FrozenTubeType frozenTubeType) {
+        this.frozenTubeType = frozenTubeType;
+        return this;
+    }
+    public void setFrozenTubeType(FrozenTubeType frozenTubeType) {
+        this.frozenTubeType = frozenTubeType;
+    }
+
+    public SampleType getSampleType() {
+        return sampleType;
+    }
+    public PositionMoveRecord sampleType(SampleType sampleType) {
+        this.sampleType = sampleType;
+        return this;
+    }
+    public void setSampleType(SampleType sampleType) {
+        this.sampleType = sampleType;
+    }
+
+    public SampleClassification getSampleClassification() {
+        return sampleClassification;
+    }
+    public PositionMoveRecord sampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
+        return this;
+    }
+    public void setSampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
     }
 }

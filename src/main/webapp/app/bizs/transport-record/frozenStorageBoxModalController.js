@@ -45,6 +45,11 @@
             onChange:function (value) {
                 vm.frozenBox.sampleTypeId = value;
                 vm.isMixed = _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed;
+                var sampleCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleCode;
+                vm.frozenBox.sampleTypeCode = sampleCode;
+                if(sampleCode == 'RNA'){
+                    vm.box.isSplit = 1;
+                }
                 _fnQueryProjectSampleClass(vm.items.projectId,value,vm.isMixed);
 
             }
@@ -144,6 +149,7 @@
                 vm.projectSampleTypeOptions = data;
                 if(vm.projectSampleTypeOptions.length){
                     vm.frozenBox.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                    vm.frozenBox.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
                 }
                 if(vm.projectSampleTypeOptions.length){
                     if(isMixed == 1){
@@ -170,11 +176,13 @@
             var box = {
                 frozenBoxCode:code,
                 sampleTypeId:vm.frozenBox.sampleTypeId,
+                sampleTypeCode:vm.frozenBox.sampleTypeCode,
                 isMixed:vm.isMixed,
                 frozenBoxTypeId:vm.frozenBox.frozenBoxTypeId,
                 equipmentId:vm.frozenBox.equipmentId,
                 areaId:vm.frozenBox.areaId,
                 sampleClassificationId: vm.frozenBox.sampleClassificationId || undefined,
+                sampleClassificationCode: vm.frozenBox.sampleClassificationCode || undefined,
                 frozenTubeDTOS:[]
             };
             for(var j = 0; j < vm.frozenBox.frozenBoxTypeRows;j++){
@@ -187,7 +195,9 @@
                         sampleCode: "",
                         sampleTempCode: box.frozenBoxCode+"-"+rowNO+(k+1),
                         sampleTypeId: box.sampleTypeId,
+                        sampleTypeCode: box.sampleTypeCode,
                         sampleClassificationId:box.sampleClassificationId,
+                        sampleClassificationCode:box.sampleClassificationCode,
                         status: "3001",
                         tubeRows:rowNO,
                         tubeColumns: k+1
@@ -196,6 +206,7 @@
                         for (var l = 0; l < vm.projectSampleTypeOptions.length; l++) {
                             if (vm.projectSampleTypeOptions[l].columnsNumber == k + 1) {
                                 tubeList[j][k].sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
+                                tubeList[j][k].sampleClassificationCode = vm.projectSampleTypeOptions[l].sampleClassificationCode;
                             }
                         }
                     }
@@ -204,7 +215,7 @@
                 }
             }
             //是混合类型
-            if(box.isMixed == 1){
+            if(box.isMixed == 1 || box.sampleTypeCode == 'RNA'){
                 box.isSplit = 1;
                 delete box.sampleClassificationId;
             }else{

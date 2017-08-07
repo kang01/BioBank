@@ -9,22 +9,28 @@
         .module('bioBankApp')
         .factory('TranshipBoxByCodeService', TranshipBoxByCodeService);
 
-    TranshipBoxByCodeService.$inject = ['$resource'];
+    TranshipBoxByCodeService.$inject = ['$resource','$http'];
 
-    function TranshipBoxByCodeService ($resource) {
-        var service = $resource('api/tranship-boxes/transhipCode/:code', {}, {
-            'query': {method: 'GET', isArray: true},
-            'get': {
-                method: 'GET',
-                transformResponse: function (data) {
-                    data = angular.fromJson(data);
-                    return data;
-                }
-            },
-            'save': { method:'POST' },
-            'update': { method:'PUT' },
-            'delete':{ method:'DELETE'}
-        });
+    function TranshipBoxByCodeService ($resource,$http) {
+        var service = {
+            queryByCodes:_fnQueryByCodes
+        };
+        function _fnQueryByCodes(transhipCode,data) {
+            return $http.post('api/res/tranship-boxes/transhipCode/'+transhipCode,data);
+        }
+        // var service = $resource('api/tranship-boxes/transhipCode/:code', {}, {
+        //     'query': {method: 'GET', isArray: true},
+        //     'get': {
+        //         method: 'GET',
+        //         transformResponse: function (data) {
+        //             data = angular.fromJson(data);
+        //             return data;
+        //         }
+        //     },
+        //     'save': { method:'POST' },
+        //     'update': { method:'PUT' },
+        //     'delete':{ method:'DELETE'}
+        // });
 
         return service;
     }

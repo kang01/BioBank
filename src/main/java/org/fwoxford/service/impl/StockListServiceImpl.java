@@ -1,8 +1,11 @@
 package org.fwoxford.service.impl;
 
+import liquibase.util.CollectionUtil;
 import liquibase.util.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.domain.FrozenTubeType;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.response.*;
@@ -18,8 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Service Implementation for managing StockList.
@@ -171,15 +173,17 @@ public class StockListServiceImpl implements StockListService {
      */
     @Override
     public List<FrozenTubeHistory> findFrozenTubeHistoryDetail(Long frozenTubeId) {
-        List<FrozenTubeHistory> frozenTubeHistories = frozenTubeHistoryRepositories.findByFrozenTubeId(frozenTubeId);
+        List<FrozenTubeHistory> frozenTubeHistories = frozenTubeHistoryRepositories.findByFrozenTubeIdAndStatusNot(frozenTubeId,Constants.INVALID);
         List<FrozenTubeHistory> frozenTubeHistoryList = new ArrayList<FrozenTubeHistory>();
         for (FrozenTubeHistory e :frozenTubeHistories){
             String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
-            FrozenTubeHistory frozenTubeHistory = new FrozenTubeHistory(e.getId(),e.getTranshipId(),e.getTranshipCode(),e.getStockInId(),e.getStockInCode(),
-                e.getStockOutTaskId(),e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),
-                e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),position,e.getEquipmentCode(),e.getAreaCode(),
-                e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),e.getAreaId(),
-                e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId(),e.getMemo(),e.getOperator()
+            FrozenTubeHistory frozenTubeHistory = new FrozenTubeHistory(e.getId(),e.getTranshipId(),e.getTranshipCode(),e.getStockInId(),e.getStockInCode(),e.getStockOutTaskId(),
+                e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),
+                position,e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),
+                e.getAreaId(),e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId(),e.getMemo(),e.getOperator()
+              ,e.getSampleTypeId(),e.getSampleTypeCode(),e.getSampleTypeName(),e.getFrozenTubeTypeId(),e.getFrozenTubeTypeCode(),e.getFrozenTubeTypeName(),e.getFrozenTubeVolumns(),
+                e.getFrozenTubeVolumnsUnit(),e.getSampleUsedTimesMost(),e.getSampleUsedTimes(),e.getSampleVolumns(),e.getProjectId(),e.getProjectSiteId(),e.getFrozenSiteCode(),
+                e.getFrozenTubeState(),e.getSampleClassificationId(),e.getFrozenBoxId()
             );
             frozenTubeHistoryList.add(frozenTubeHistory);
         }
@@ -268,6 +272,48 @@ public class StockListServiceImpl implements StockListService {
             output =  areasListRepositories.findAll(input,null,specification,userConverter);
         }
         return output;
+    }
+
+    @Override
+    public Map<Long,FrozenTubeHistory> findFrozenTubeHistoryDetailByIds(List<Long> ids) {
+        List<FrozenTubeHistory> frozenTubeHistories = frozenTubeHistoryRepositories.findByFrozenTubeIdInAndOperateTimeNotNullAndStatusNot(ids,Constants.INVALID);
+        List<FrozenTubeHistory> frozenTubeHistoryList = new ArrayList<FrozenTubeHistory>();
+        Map<Long,List<FrozenTubeHistory>> map = new HashMap<Long,List<FrozenTubeHistory>>();
+        Map<Long,FrozenTubeHistory> tubeMap = new HashMap<Long,FrozenTubeHistory>();
+        for (FrozenTubeHistory e :frozenTubeHistories){
+            String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
+            FrozenTubeHistory frozenTubeHistory = new FrozenTubeHistory(e.getId(),e.getTranshipId(),e.getTranshipCode(),e.getStockInId(),e.getStockInCode(),e.getStockOutTaskId(),
+                e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),
+                position,e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),
+                e.getAreaId(),e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId(),e.getMemo(),e.getOperator()
+                ,e.getSampleTypeId(),
+                e.getSampleTypeCode(),e.getSampleTypeName(),e.getFrozenTubeTypeId(),e.getFrozenTubeTypeCode(),e.getFrozenTubeTypeName(),e.getFrozenTubeVolumns(),
+                e.getFrozenTubeVolumnsUnit(),e.getSampleUsedTimesMost(),e.getSampleUsedTimes(),e.getSampleVolumns(),e.getProjectId(),e.getProjectSiteId(),e.getFrozenSiteCode(),
+                e.getFrozenTubeState(),e.getSampleClassificationId(),e.getFrozenBoxId()
+            );
+            frozenTubeHistoryList.add(frozenTubeHistory);
+        }
+        for (FrozenTubeHistory e :frozenTubeHistories){
+            List<FrozenTubeHistory> list = new ArrayList<FrozenTubeHistory>();
+            list = map.get(e.getFrozenTubeId());
+            if(list != null && list.size()>0){
+                list.add(e);
+            }else{
+                list = new ArrayList<FrozenTubeHistory>();
+            }
+            list.add(e);
+            map.put(e.getFrozenTubeId(),list);
+        }
+        for(Long key:map.keySet()){
+            List<FrozenTubeHistory> frozenTubeList = map.get(key);
+            Collections.sort(frozenTubeList,new Comparator<FrozenTubeHistory>(){
+                public int compare(FrozenTubeHistory arg1, FrozenTubeHistory arg0) {
+                    return arg0.getOperateTime().compareTo(arg1.getOperateTime());
+                }
+            });
+            tubeMap.put(key,frozenTubeList.get(0));
+        }
+        return tubeMap;
     }
 
     private CriteriaQuery<?> getSearchAreasList(Root<AreasListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, FrozenPositionListSearchForm searchForm) {
@@ -671,8 +717,8 @@ public class StockListServiceImpl implements StockListService {
         query.distinct(true);
         Predicate p = cb.notEqual(root.get("status").as(String.class), Constants.INVALID);
         predicate.add(p);
-        Predicate pred = cb.equal(root.get("frozenTubeState").as(String.class), Constants.FROZEN_BOX_STOCKED);
-        predicate.add(pred);
+//        Predicate pred = cb.equal(root.get("frozenTubeState").as(String.class), Constants.FROZEN_BOX_STOCKED);
+//        predicate.add(pred);
         if (searchForm != null) {
             if (searchForm.getProjectCodeStr() != null && searchForm.getProjectCodeStr().length > 0) {
                 CriteriaBuilder.In<String> in = cb.in(root.get("projectCode"));

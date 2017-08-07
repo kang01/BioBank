@@ -12,11 +12,11 @@
 
     TransportRecordNewController.$inject = ['$scope','blockUI','$timeout','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TransportRecordService','TranshipSaveService','TranshipBoxService',
         'SampleTypeService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService',
-    'BioBankBlockUi','BioBankDataTable'];
+    'BioBankBlockUi','Principal'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
     function TransportRecordNewController($scope,blockUI,$timeout,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TransportRecordService,TranshipSaveService,TranshipBoxService,
                                           SampleTypeService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService,
-                                          BioBankBlockUi,BioBankDataTable) {
+                                          BioBankBlockUi,Principal) {
 
         var modalInstance;
         var vm = this;
@@ -41,7 +41,12 @@
                 $scope.$apply();
             }
         }
-
+        function _fnQueryUser() {
+            Principal.identity().then(function(account) {
+                vm.account = account;
+                vm.transportRecord.receiver = vm.account.login;
+            });
+        }
         function _initTransportRecordPage(){
             if($stateParams.transhipId){
                 vm.transportRecord.id = $stateParams.transhipId;
@@ -61,8 +66,12 @@
             }else{
                 vm.transportRecord.receiveDate = new Date();
             }
+            if(!vm.transportRecord.receiver){
+                _fnQueryUser();
+            }
             vm.transportRecord.transhipBatch = +vm.transportRecord.transhipBatch;
             _fnQuerySampleType();
+
             if(vm.transportRecord.projectId){
                 ProjectSitesByProjectIdService.query({id:vm.transportRecord.projectId},onProjectSitesSuccess,onError);
             }
@@ -168,7 +177,7 @@
             //保存记录
             vm.saveRecord = saveRecord;
             //入库
-            vm.stockIn = function () {
+            vm.transferFinish = function () {
                 modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'app/bizs/transport-record/stock-in-affirm-modal.html',
@@ -207,6 +216,7 @@
                     BioBankBlockUi.blockUiStart();
                     TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError);
                     function onSaveTranshipRecordSuccess(data) {
+                        //导入冻存盒
                         if(importBoxFlag){
                             modalInstance = $uibModal.open({
                                 animation: true,
@@ -228,7 +238,7 @@
                             });
                             modalInstance.result.then(function (data) {
                                 vm.queryTransportRecord();
-                                vm.loadBox();
+                                vm.dtInstance.rerender();
                                 importBoxFlag = false;
                             },function () {
                                 importBoxFlag = false;
@@ -237,14 +247,14 @@
                         vm.saveRecordFlag = false;
                         BioBankBlockUi.blockUiStop();
                         if(vm.saveStockInFlag){
-                            TranshipStockInService.saveStockIn(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
+                            TranshipStockInService.saveTransferFinish(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
                                 BioBankBlockUi.blockUiStop();
-                                toastr.success("入库成功！");
+                                toastr.success("转运成功！");
                                 vm.saveStockInFlag = false;
-                                $state.go('stock-in-edit',{id:data.id});
+                                $state.go('transport-record');
                             }).error(function (data) {
                                 BioBankBlockUi.blockUiStop();
-                                toastr.error(data.message+"入库失败！");
+                                toastr.error(data.message+"转运失败！");
                             });
                         }
                         if(!vm.saveStockInFlag && !importBoxFlag){
@@ -279,6 +289,12 @@
                     vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['asc']);
                     _.remove(vm.sampleTypeOptions,{sampleTypeName:"98"});
                     _.remove(vm.sampleTypeOptions,{sampleTypeName:"97"});
+                    // _.forEach(vm.sampleTypeOptions,function (value) {
+                    //     if(value.sampleTypeCode == 'RNA'){
+                    //         vm.isMixedFlag = true;
+                    //     }
+                    // });
+
                 });
             }
             //不同项目下的样本分类
@@ -370,21 +386,56 @@
             }
         }
         //左侧冻存盒
+        vm.dtInstance = {};
         function _initFrozenBoxesTable(){
-            vm.loadBox = loadBox;
-            loadAll();
-            vm.dtInstance = {};
+            // vm.loadBox = loadBox;
+
+
             vm.dtColumns = [
-                DTColumnBuilder.newColumn(null).withOption("width", "30").withTitle('序号'),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号')
+                DTColumnBuilder.newColumn('frozenBoxId').withOption("width", "50").notSortable().withOption('searchable',false).withTitle('序号'),
+                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
             ];
             vm.dtOptions = DTOptionsBuilder.newOptions()
+                .withOption('order', [[1,'asc']])
                 .withOption('info', false)
                 .withOption('paging', false)
-                .withOption('sorting', false)
                 .withScroller()
                 .withOption('scrollY', 400)
-                .withOption('rowCallback', rowCallback);
+                .withOption('rowCallback', rowCallback)
+                .withOption('serverSide',true)
+                .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
+                    var data = {};
+                    for(var i=0; aoData && i<aoData.length; ++i){
+                        var oData = aoData[i];
+                        data[oData.name] = oData.value;
+                    }
+                    var jqDt = this;
+                    TranshipBoxByCodeService.queryByCodes(vm.transportRecord.transhipCode,data).then(function (res){
+                        var json = res.data;
+                        vm.boxLength = res.data.data.length;
+                        var error = json.error || json.sError;
+                        if ( error ) {
+                            jqDt._fnLog( oSettings, 0, error );
+                        }
+                        oSettings.json = json;
+                        fnCallback( json );
+                    }).catch(function(res){
+                        console.log(res);
+
+                        var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+
+                        if ( $.inArray( true, ret ) === -1 ) {
+                            if ( error == "parsererror" ) {
+                                jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+                            }
+                            else if ( res.readyState === 4 ) {
+                                jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
+                            }
+                        }
+
+                        jqDt._fnProcessingDisplay( oSettings, false );
+                    });
+                });
 
             function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
                 $('td:first', nRow).html(iDisplayIndex+1);
@@ -400,21 +451,21 @@
                 }
                 return nRow;
             }
-
-            function loadAll() {
-                loadBox();
-            }
-            function loadBox() {
-                if(vm.transportRecord.transhipCode){
-                    TranshipBoxByCodeService.query({code:vm.transportRecord.transhipCode},onBoxSuccess,onError);
-                }
-                function onBoxSuccess(data) {
-                    vm.arrayBox =  _.orderBy(data, ['frozenBoxCode'], ['esc']);
-                    vm.boxLength = data.length;
-
-                    vm.dtOptions.withOption('data', vm.arrayBox);
-                }
-            }
+            // loadAll();
+            // function loadAll() {
+            //     loadBox();
+            // }
+            // function loadBox() {
+            //     if(vm.transportRecord.transhipCode){
+            //         // vm.dtInstance.rerender();
+            //         // TranshipBoxByCodeService.query({code:vm.transportRecord.transhipCode},onBoxSuccess,onError);
+            //     }
+            //     function onBoxSuccess(data) {
+            //         // vm.arrayBox =  _.orderBy(data, ['frozenBoxCode'], ['asc']);
+            //         // vm.boxLength = data.length;
+            //         // vm.dtOptions.withOption('data', vm.arrayBox);
+            //     }
+            // }
 
             //点击冻存盒行
             function someClickHandler(tr,boxInfo) {
@@ -1040,6 +1091,7 @@
                     vm.box.sampleTypeId = value;
                     vm.box.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
                     var isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
+                    var sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
                     vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value,isMixed);
                     if(isMixed == 1){
                         vm.box.isSplit = 1;
@@ -1050,6 +1102,9 @@
                         vm.box.isSplit = 0;
                         vm.isMixedFlag = false;
                         vm.sampleClassFlag = false;
+                    }
+                    if(sampleTypeCode == 'RNA'){
+                        vm.box.isSplit = 1;
                     }
                 }
             };
@@ -1081,48 +1136,76 @@
                 labelField:'equipmentCode',
                 maxItems: 1,
                 onChange:function (value) {
-                    AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                    vm.box.areaId = "";
+                    vm.box.supportRackId = "";
+                    vm.boxRowCol = "";
+                    vm.box.columnsInShelf = "";
+                    vm.box.rowsInShelf = "";
+                    if(value){
+                        AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                    }else{
+                        vm.frozenBoxAreaOptions = [];
+                        vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
+
+                        vm.frozenBoxShelfOptions = [];
+                        vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
+
+
+                        $scope.$apply();
+                    }
                 }
             };
             //区域
             function onAreaSuccess(data) {
                 vm.frozenBoxAreaOptions = data;
-                // if(vm.box){
-                //     if(!vm.box.areaId){
-                        vm.box.areaId = vm.frozenBoxAreaOptions[0].id;
-                    // }
-
-                // }
-
+                vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
             }
             vm.frozenBoxAreaConfig = {
                 valueField:'id',
                 labelField:'areaCode',
                 maxItems: 1,
                 onChange:function (value) {
-                    for(var i = 0; i < vm.frozenBoxAreaOptions.length; i++){
-                        if(value == vm.frozenBoxAreaOptions[i].id){
-                            vm.box.areaCode = vm.frozenBoxAreaOptions[i].areaCode;
+                    vm.box.supportRackId = "";
+                    vm.boxRowCol = "";
+                    vm.box.columnsInShelf = "";
+                    vm.box.rowsInShelf = "";
+                    if(value){
+                        for(var i = 0; i < vm.frozenBoxAreaOptions.length; i++){
+                            if(value == vm.frozenBoxAreaOptions[i].id){
+                                vm.box.areaCode = vm.frozenBoxAreaOptions[i].areaCode;
+                            }
                         }
+                        SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
+                    }else{
+                        vm.frozenBoxShelfOptions = [];
+                        vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
+                        $scope.$apply();
                     }
-                    SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
+
 
                 }
             };
             //架子
             function onShelfSuccess(data) {
                 vm.frozenBoxShelfOptions = data;
+                vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
             }
             vm.frozenBoxShelfConfig = {
                 valueField:'id',
                 labelField:'supportRackCode',
                 maxItems: 1,
                 onChange:function (value) {
-                    for(var i = 0; i < vm.frozenBoxShelfOptions.length; i++){
-                        if(value == vm.frozenBoxShelfOptions[i].id){
-                            vm.box.supportRackCode = vm.frozenBoxShelfOptions[i].areaCode;
+                    vm.boxRowCol = "";
+                    vm.box.columnsInShelf = "";
+                    vm.box.rowsInShelf = "";
+                    if(value){
+                        for(var i = 0; i < vm.frozenBoxShelfOptions.length; i++){
+                            if(value == vm.frozenBoxShelfOptions[i].id){
+                                vm.box.supportRackCode = vm.frozenBoxShelfOptions[i].areaCode;
+                            }
                         }
                     }
+                    $scope.$apply();
                 }
             };
             //盒子位置
@@ -1130,6 +1213,9 @@
                 if(vm.boxRowCol){
                     vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
                     vm.box.rowsInShelf = vm.boxRowCol.substring(1);
+                }else{
+                    vm.box.columnsInShelf = "";
+                    vm.box.rowsInShelf = "";
                 }
             };
             vm.saveBox = saveBox;//保存盒子
@@ -1198,7 +1284,7 @@
                     }
                     function onDelBoxSuccess() {
                         toastr.success("删除成功!");
-                        vm.loadBox();
+                        vm.dtInstance.rerender();
                         vm.box = null;
                         vm.boxStr = null;
                         initFrozenTube(10,10);
@@ -1215,6 +1301,9 @@
                 vm.box.sampleTypeId = vm.box.sampleType.id;
                 vm.box.sampleTypeCode = vm.box.sampleType.sampleTypeCode;
                 isMixed = vm.box.sampleType.isMixed;
+                if(vm.box.sampleTypeCode == 'RNA'){
+                    vm.box.isSplit = 1;
+                }
                 if(isMixed == 1){
                     vm.box.isSplit = 1;
                     vm.isMixedFlag = true;
@@ -1271,7 +1360,7 @@
             BioBankBlockUi.blockUiStop();
             toastr.error(error.data.message);
         }
-
+        //滿意程度
         vm.rating = 0;
         vm.ratings = [{
             current: vm.transportRecord.sampleSatisfaction,
@@ -1280,6 +1369,70 @@
         vm.getSelectedRating = function (rating) {
             vm.transportRecord.sampleSatisfaction = rating;
         };
+
+
+        //附件
+        vm.imagesArray = [];
+        vm.reader = new FileReader();   //创建一个FileReader接口
+        vm.thumb = {};
+        vm.img_upload = function(files) {       //单次提交图片的函数
+            vm.guid = (new Date()).valueOf();   //通过时间戳创建一个随机数，作为键名使用
+            vm.reader.readAsDataURL(files[0]);  //FileReader的方法，把图片转成base64
+            vm.reader.onload = function(ev) {
+                $scope.$apply(function(){
+                    vm.thumb = {
+                        imgSrc : ev.target.result ||  'content/images/timg.jpg' //接收base64
+                    };
+
+                    var img = new Image();
+                    img.src = vm.thumb.imgSrc;
+                    var dataURL;
+                    img.onload = function(){
+                        var canvas = document.getElementById("canvas");
+                        var context = canvas.getContext("2d");
+                        var width = img.width;
+                        var height = img.height;
+                        var startWithPos;
+                        var startHeightPos;
+                        if(width - height > 0){
+                            var w = width*140/height;
+                            canvas.width = w;
+                            canvas.height = 140;
+                            startWithPos = (canvas.width-140)/2;
+                        }else{
+                            var h = height*140/width;
+                            canvas.width = 140;
+                            canvas.height = h;
+                            startHeightPos = (canvas.height-140)/2;
+                        }
+                        context.drawImage(img,0,0,canvas.width,canvas.height);
+                        dataURL  = canvas.toDataURL("image/png");
+
+                        if(dataURL){
+                            var img1 = new Image();
+                            img1.src = dataURL;
+                            img1.onload = function(){
+                                var canvas1 = document.getElementById("canvas1");
+                                canvas1.width = 140;
+                                canvas1.height = 140;
+                                var context1 = canvas1.getContext("2d");
+                                if(startWithPos){
+                                    context1.drawImage(img1,startWithPos,0,140,140,0,0,140,140);
+                                }else{
+                                    context1.drawImage(img1,0,startHeightPos,140,140,0,0,140,140);
+                                }
+                                var dataURL1  = canvas1.toDataURL("image/png");
+                                // console.log(dataURL1);
+                                // vm.imagesArray.push(dataURL1)
+                                vm.thumb.imgSrc = dataURL1 ;
+                            }
+                        }
+                    };
+                });
+
+            };
+        };
+
     }
     function BoxInstanceCtrl($uibModalInstance) {
         var ctrl = this;

@@ -20,6 +20,9 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query("select t from FrozenTube t where t.frozenBox.id = ?1 and t.status!='0000' and t.frozenBox.status !='2005'")
     List<FrozenTube> findFrozenTubeListByBoxId(Long frozenBoxId);
 
+    @Query("select t from FrozenTube t where t.frozenBox.id in ?1 and t.status!='0000' and t.frozenBox.status !='2005'")
+    List<FrozenTube> findFrozenTubeListByBoxIdIn(List<Long> frozenBoxId);
+
     @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000' and t.frozenBox.status !='2005'")
     List<FrozenTube> findFrozenTubeListByBoxCode(String frozenBoxCode);
 
@@ -48,7 +51,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " where b.status = '2004' and (t.sample_code = ?1 or t.sample_temp_code =?1) " +
         " and st.sample_type_code=?2 and t.status !='0000'" +
         " and t.id not in (select f.frozen_tube_id from stock_out_req_frozen_tube f where f.stock_out_requirement_id =?3 and f.status='1301')" +
-        " and t.project_id in ?4"
+        " and t.project_id in ?4 and ROWNUM <=1"
         ,nativeQuery = true)
     List<FrozenTube> findBySampleCodeAndSampleTypeCode(String appointedSampleCode, String appointedSampleType, Long id, List<Long> projectIds);
 
@@ -66,231 +69,19 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         + " and (?7 is null or ?7 is false or t.isHemolysis  = ?7)\n"
         + " and (?8 is null or t.age >= ?8 )\n"
         + " and (?9 is null or t.age <= ?9 )\n"
+        + " order by t.frozenBox.frozenBoxCode asc\n"
     )
     List<FrozenTube> findByRequirement(Long sampleTypeId, Long samplyClassificationId, Long frozenTubeTypeId,
                                        String diseaseType, String sex, Boolean isBloodLipid, Boolean isHemolysis, Integer ageMin, Integer ageMax);
 
-    @Query(value = "select  id,\n" +
-        "cast(project_code as varchar2(255)) as projectCode,\n" +
-        "tranship_id as transhipId,\n" +
-        "cast(tranship_code as varchar2(255)) as transhipCode,\n" +
-        "stock_in_id as stockInId,\n" +
-        "cast(stock_in_code as varchar2(255)) as stockInCode,\n" +
-        "stock_out_task_id as stockOutTaskId," +
-        "cast(stock_out_task_code as varchar2(255)) as stockOutTaskCode,\n" +
-        "handover_id as handoverId," +
-        "cast(handover_code as varchar2(255)) as handoverCode,\n" +
-        "cast(sample_code as varchar2(255)) as sampleCode,\n" +
-        "cast(type as integer) as type,cast(status as varchar2(255)) as status,\n" +
-        "cast(frozen_box_code as varchar2(255)) as frozenBoxCode,\n" +
-        "cast(tube_rows as varchar2(255)) as tubeRows,\n" +
-        "cast(tube_columns as varchar2(255)) as tubeColumns,\n" +
-        "operate_time as operateTime\n " +
-        "from\n" +
-        "(\n" +
-        "select tranship.frozen_tube_id as id,\n" +
-        "tube.project_code,\n" +
-        "tran.id as tranship_id, "+
-        "N'' as tranship_code,\n" +
-        "null as stock_in_id, "+
-        "N'' as stock_in_code,\n" +
-        "null as stock_out_task_id,\n" +
-        "N'' as stock_out_task_code,\n" +
-        "null as handover_id,\n" +
-        "N'' as handover_code,\n" +
-        "tube.sample_code,101 as type,\n" +
-        "tranship.status,box.frozen_box_code,tranship.rows_in_tube as tube_rows,tranship.columns_in_tube as tube_columns\n" +
-        " ,tran.tranship_date as operate_time\n" +
-        "from tranship_tube tranship\n" +
-        "left join  frozen_tube tube on tranship.frozen_tube_id = tube.id\n" +
-        "left join tranship_box tbox on tranship.tranship_box_id = tbox.id\n" +
-        "left join  tranship tran on tbox.tranship_id = tran.id\n" +
-        "left join frozen_box box on tbox.frozen_box_id = box.id \n" +
-        "where tube.sample_code=?1 \n" +
-        "UNION\n" +
-        "select stockIn.frozen_tube_id as id,\n" +
-        "tube.project_code,\n" +
-        "null as tranship_id, "+
-        "N'' as tranship_code,\n" +
-        "s.id as stock_in_id, "+
-        "s.stock_in_code,\n" +
-        "null as stock_out_task_id,\n" +
-        "N'' as stock_out_task_code,\n" +
-        "null as handover_id,\n" +
-        "N'' as handover_code,\n" +
-        "tube.sample_code,102 as type,\n" +
-        "stockIn.status,box.frozen_box_code,stockIn.tube_rows,stockIn.tube_columns\n" +
-        " ,s.stock_in_date as operate_time\n" +
-        " from stock_in_tube stockIn\n" +
-        "left join frozen_tube tube on stockIn.frozen_tube_id = tube.id\n" +
-        "left join stock_in_box sbox on stockIn.stock_in_box_id = sbox.id\n" +
-        "left join  stock_in s on sbox.stock_in_id = s.id\n" +
-        "left join frozen_box box on sbox.frozen_box_id = box.id \n" +
-        "where tube.sample_code=?1\n" +
-        "UNION\n" +
-        "select  stockOut.frozen_tube_id as id,\n" +
-        "tube.project_code,\n" +
-        "null as tranship_id,"+
-        "N'' as tranship_code,\n" +
-        "null as stock_in_id,"+
-        "N'' as stock_in_code,\n" +
-        "task.id as stock_out_task_id,\n" +
-        "task.stock_out_task_code,\n" +
-        "null as handover_id,\n" +
-        "N'' as handover_code,\n" +
-        "tube.sample_code,103 as type,\n" +
-        "stockOut.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns\n" +
-        " ,task.stock_out_date as operate_time\n" +
-        " from stock_out_box_tube stockOut \n" +
-        "left join  frozen_tube tube on stockOut.frozen_tube_id = tube.id\n" +
-        "left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id\n" +
-        "left join frozen_box box on soutbox.frozen_box_id = box.id\n" +
-        "left join  stock_out_task task on soutbox.stock_out_task_id = task.id\n" +
-        "where tube.sample_code=?1\n" +
-        "UNION\n" +
-        "select  stockOut.frozen_tube_id as id,\n" +
-        "tube.project_code,\n" +
-        "null as tranship_id,"+
-        "N'' as tranship_code,\n" +
-        "null as stock_in_id,"+
-        "N'' as stock_in_code,\n" +
-        "null as stock_out_task_id,\n" +
-        "N'' as stock_out_task_code,\n" +
-        "handover.id as handover_id,\n" +
-        "handover.handover_code ,\n" +
-        "tube.sample_code,104 as type,\n" +
-        "hand.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns\n" +
-        " ,handover.handover_time as operate_time\n" +
-        " from stock_out_handover_details hand \n" +
-        "left join stock_out_box_tube stockOut on hand.stock_out_box_tube_id = stockOut.id\n" +
-        "left join  frozen_tube tube on stockOut.frozen_tube_id = tube.id\n" +
-        "left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id\n" +
-        "left join frozen_box box on soutbox.frozen_box_id = box.id\n" +
-        "left join  stock_out_handover handover on hand.stock_out_handover_id = handover.id\n" +
-        "where tube.sample_code=?1 \n" +
-        ")\n" +
-        " ORDER BY operate_time,type desc",nativeQuery = true)
-    //此方法不能随意更改，尤其是返回参数的顺序
-    List<Object[]> findFrozenTubeHistoryListBySample(String sampleCode);
-
-    List<FrozenTube> findBySampleCodeAndProjectCode(String sampleCode, String projectCode);
-    @Query(value = "select  id,\n" +
-        "cast(project_code as varchar2(255)) as projectCode,\n" +
-        "tranship_id as transhipId,\n" +
-        "cast(tranship_code as varchar2(255)) as transhipCode,\n" +
-        "stock_in_id as stockInId,\n" +
-        "cast(stock_in_code as varchar2(255)) as stockInCode,\n" +
-        "stock_out_task_id as stockOutTaskId," +
-        "cast(stock_out_task_code as varchar2(255)) as stockOutTaskCode,\n" +
-        "handover_id as handoverId," +
-        "cast(handover_code as varchar2(255)) as handoverCode,\n" +
-        "cast(sample_code as varchar2(255)) as sampleCode,\n" +
-        "cast(type as integer) as type,cast(status as varchar2(255)) as status,\n" +
-        "cast(frozen_box_code as varchar2(255)) as frozenBoxCode,\n" +
-        "cast(tube_rows as varchar2(255)) as tubeRows,\n" +
-        "cast(tube_columns as varchar2(255)) as tubeColumns,\n" +
-        "operate_time as operateTime\n " +
-        "from\n" +
-        "(\n" +
-        "select tranship.frozen_tube_id as id,\n" +
-        "tube.project_code,\n" +
-        "tran.id as tranship_id, "+
-        "N'' as tranship_code,\n" +
-        "null as stock_in_id, "+
-        "N'' as stock_in_code,\n" +
-        "null as stock_out_task_id,\n" +
-        "N'' as stock_out_task_code,\n" +
-        "null as handover_id,\n" +
-        "N'' as handover_code,\n" +
-        "tube.sample_code,101 as type,\n" +
-        "tranship.status,box.frozen_box_code,tranship.rows_in_tube as tube_rows,tranship.columns_in_tube as tube_columns\n" +
-        " ,tran.tranship_date as operate_time\n" +
-        "from tranship_tube tranship\n" +
-        "left join  frozen_tube tube on tranship.frozen_tube_id = tube.id\n" +
-        "left join tranship_box tbox on tranship.tranship_box_id = tbox.id\n" +
-        "left join  tranship tran on tbox.tranship_id = tran.id\n" +
-        "left join frozen_box box on tbox.frozen_box_id = box.id \n" +
-        "where tube.sample_code=?1 \n" +
-        "and tube.project_code=?2 \n" +
-
-        "UNION\n" +
-        "select stockIn.frozen_tube_id as id,\n" +
-        "tube.project_code,\n" +
-        "null as tranship_id, "+
-        "N'' as tranship_code,\n" +
-        "s.id as stock_in_id, "+
-        "s.stock_in_code,\n" +
-        "null as stock_out_task_id,\n" +
-        "N'' as stock_out_task_code,\n" +
-        "null as handover_id,\n" +
-        "N'' as handover_code,\n" +
-        "tube.sample_code,102 as type,\n" +
-        "stockIn.status,box.frozen_box_code,stockIn.tube_rows,stockIn.tube_columns\n" +
-        " ,s.stock_in_date as operate_time\n" +
-        " from stock_in_tube stockIn\n" +
-        "left join frozen_tube tube on stockIn.frozen_tube_id = tube.id\n" +
-        "left join stock_in_box sbox on stockIn.stock_in_box_id = sbox.id\n" +
-        "left join  stock_in s on sbox.stock_in_id = s.id\n" +
-        "left join frozen_box box on sbox.frozen_box_id = box.id \n" +
-        "where tube.sample_code=?1\n" +
-        "and tube.project_code=?2 \n" +
-
-        "UNION\n" +
-        "select  stockOut.frozen_tube_id as id,\n" +
-        "tube.project_code,\n" +
-        "null as tranship_id,"+
-        "N'' as tranship_code,\n" +
-        "null as stock_in_id,"+
-        "N'' as stock_in_code,\n" +
-        "task.id as stock_out_task_id,\n" +
-        "task.stock_out_task_code,\n" +
-        "null as handover_id,\n" +
-        "N'' as handover_code,\n" +
-        "tube.sample_code,103 as type,\n" +
-        "stockOut.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns\n" +
-        " ,task.stock_out_date as operate_time\n" +
-        " from stock_out_box_tube stockOut \n" +
-        "left join  frozen_tube tube on stockOut.frozen_tube_id = tube.id\n" +
-        "left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id\n" +
-        "left join frozen_box box on soutbox.frozen_box_id = box.id\n" +
-        "left join  stock_out_task task on soutbox.stock_out_task_id = task.id\n" +
-        "where tube.sample_code=?1\n" +
-        "and tube.project_code=?2 \n" +
-
-        "UNION\n" +
-        "select  stockOut.frozen_tube_id as id,\n" +
-        "tube.project_code,\n" +
-        "null as tranship_id,"+
-        "N'' as tranship_code,\n" +
-        "null as stock_in_id,"+
-        "N'' as stock_in_code,\n" +
-        "null as stock_out_task_id,\n" +
-        "N'' as stock_out_task_code,\n" +
-        "handover.id as handover_id,\n" +
-        "handover.handover_code ,\n" +
-        "tube.sample_code,104 as type,\n" +
-        "hand.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns\n" +
-        " ,handover.handover_time as operate_time\n" +
-        " from stock_out_handover_details hand \n" +
-        "left join stock_out_box_tube stockOut on hand.stock_out_box_tube_id = stockOut.id\n" +
-        "left join  frozen_tube tube on stockOut.frozen_tube_id = tube.id\n" +
-        "left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id\n" +
-        "left join frozen_box box on soutbox.frozen_box_id = box.id\n" +
-        "left join  stock_out_handover handover on hand.stock_out_handover_id = handover.id\n" +
-        "where tube.sample_code=?1 \n" +
-        "and tube.project_code=?2 \n" +
-        ")\n" +
-        " ORDER BY operate_time desc,type desc",nativeQuery = true)
-        //此方法不能随意更改，尤其是返回参数的顺序
-    List<Object[]> findFrozenTubeHistoryListBySampleAndProjectCode(String sampleCode, String projectCode);
-    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1) and t.project.projectCode = ?2 and t.sampleType.id = ?3 and t.status != ?4")
-    List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(String sampleCode, String projectCode, Long sampleTypeId,String status);
+    @Query("select t from FrozenTube t where (t.sampleCode in ?1 or t.sampleTempCode in ?1) and t.project.projectCode = ?2 and t.sampleType.id = ?3 and t.status != ?4")
+    List<FrozenTube> findBySampleCodeInAndProjectCodeAndSampleTypeIdAndStatusNot(List<String> sampleCode, String projectCode, Long sampleTypeId,String status);
 
     @Query("select t from FrozenTube t where t.sampleCode =?1  and t.projectCode = ?2 and t.sampleTypeCode =?3 and t.sampleClassification.sampleClassificationCode = ?4 and t.status!='0000'")
     FrozenTube findBySampleCodeAndProjectCodeAndSampleTypeCodeAndSampleClassificationCode(String sampleCode, String projectCode, String sampleTypeCode, String sampleClassTypeCode);
 
 
-    @Query("select t from FrozenTube t where t.sampleCode =?1  and t.projectCode = ?2 and t.sampleType.id =?3 and t.sampleClassification.id = ?4 and t.status!='0000'")
+    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.sampleType.id =?3 and t.sampleClassification.id = ?4 and t.status!='0000'")
     List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(String sampleCode, String projectCode, Long sampleTypeId, Long sampleClassificationId);
 
     FrozenTube findByFrozenBoxCodeAndTubeRowsAndTubeColumnsAndStatusNot(String frozenBoxCode, String tubeRows, String tubeColumns, String status);
@@ -298,4 +89,19 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query("select t from FrozenTube t where t.frozenBox.equipmentCode =?1  and t.frozenBox.areaCode = ?2" +
         " and t.frozenBox.supportRackCode =?3 and  t.frozenBox.status = '2004'and t.status!='0000'")
     List<FrozenTube> findByEquipmentCodeAndAreaCodeAndSupportRackCode(String equipmentCode, String areaCode, String supportRackCode);
+
+    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.frozenBox.id !=?3 and t.sampleType.id = ?4 and t.sampleClassification.id = ?5 and t.status!='0000'")
+    List<FrozenTube> findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long frozenBoxId, Long sampleTypeId, Long sampleClassificationId);
+
+    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.frozenBox.id !=?3 and t.sampleType.id = ?4  and t.status!='0000'")
+    List<FrozenTube> findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleType(String sampleCode, String projectCode, Long frozenBoxId, Long sampleTypeId);
+
+    @Modifying
+    @Query("update FrozenTube t set t.frozenTubeState = ?1  where t.frozenBoxCode in ?2 and t.status not in ('0000')")
+    void updateFrozenTubeStateByFrozenBoxCodes(String status, List<String> frozenBoxCodes);
+
+    @Query(value = "select count(t.id) from frozen_tube t left join tranship_box b on t.frozen_box_id = b.frozen_box_id left join tranship s on s.id = b.tranship_id left join frozen_box x on x.id = t.id and x.status not in ('2005','0000')" +
+        "where s.tranship_code in ?1 and t.status!='0000' " ,nativeQuery = true)
+    Long countByTranshipCodes(List<String> transhipCodeList);
+
 }

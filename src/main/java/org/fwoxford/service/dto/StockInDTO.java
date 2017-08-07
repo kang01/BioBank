@@ -42,6 +42,7 @@ public class StockInDTO extends AbstractAuditingDTO implements Serializable {
      */
     @Size(max = 100)
     private String receiveName;
+    private String receiver;
     /**
      * 入库类型：（首次入库，移位入库，调整入库）
      */
@@ -111,6 +112,14 @@ public class StockInDTO extends AbstractAuditingDTO implements Serializable {
      * 项目点ID
      */
     private Long projectSiteId;
+    /**
+     * 上级入库单ID
+     */
+    private Long parentStockInId;
+    /**
+     * 转运编码
+     */
+    private String transhipCode;
 
     public Long getId() {
         return id;
@@ -165,6 +174,15 @@ public class StockInDTO extends AbstractAuditingDTO implements Serializable {
     public void setReceiveName(String receiveName) {
         this.receiveName = receiveName;
     }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
     public String getStockInType() {
         return stockInType;
     }
@@ -272,6 +290,22 @@ public class StockInDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setProjectSiteId(Long projectSiteId) {
         this.projectSiteId = projectSiteId;
+    }
+
+    public Long getParentStockInId() {
+        return parentStockInId;
+    }
+
+    public void setParentStockInId(Long parentStockInId) {
+        this.parentStockInId = parentStockInId;
+    }
+
+    public String getTranshipCode() {
+        return transhipCode;
+    }
+
+    public void setTranshipCode(String transhipCode) {
+        this.transhipCode = transhipCode;
     }
 
     @Override

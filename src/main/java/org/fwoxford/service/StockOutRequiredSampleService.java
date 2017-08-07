@@ -3,6 +3,9 @@ package org.fwoxford.service;
 import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import java.util.List;
 
 /**
@@ -20,7 +23,7 @@ public interface StockOutRequiredSampleService {
 
     /**
      *  Get all the stockOutRequiredSamples.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -40,4 +43,8 @@ public interface StockOutRequiredSampleService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    DataTablesOutput<StockOutRequiredSampleDTO> getPageStockOutRequiredSampleByRequired(DataTablesInput input, Long id);
+
+    Page<StockOutRequiredSampleDTO> getAllStockOutRequiredSamplesByRequirementId(Pageable pageable, Long id);
 }

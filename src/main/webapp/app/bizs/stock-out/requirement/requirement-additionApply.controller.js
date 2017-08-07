@@ -200,7 +200,7 @@
         //判断是否都是核对完的列表
         vm.isApproval = _fnIsApproval;
 
-        vm.dtOptions = BioBankDataTable.buildDTOption("BASIC")
+        vm.dtOptions = BioBankDataTable.buildDTOption("BASIC",240)
             .withOption('createdRow', createdRow);
 
         vm.dtColumns = [

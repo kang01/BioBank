@@ -1,6 +1,6 @@
 <div class="stock-in-new">
     <div class="">
-        <h3 class="pull-left">新增入库记录</h3>
+        <h3 class="pull-left" style="margin: 0">编辑入库记录</h3>
         <div class="form-group pull-right mr-10">
             <div class="text-right">
                 <button type="button" class="btn btn-primary" ng-click="vm.saveStockIn()"
@@ -12,32 +12,76 @@
         </div>
         <div style="clear: both"></div>
     </div>
-
-    <div class="row ml-0 mr-0">
-        <div class="col-md-1 text-right"><strong>入库单编号</strong></div>
-        <div class="col-md-1">{{vm.entity.stockInCode}}</div>
-        <div class="col-md-1 text-right"><strong>转运编号</strong></div>
-        <div class="col-md-1">{{vm.entity.transhipCode}}</div>
-        <div class="col-md-1 text-right"><strong>项目编号</strong></div>
-        <div class="col-md-1">{{vm.entity.projectCode}}</div>
-        <div class="col-md-1 text-right"><strong>项目点</strong></div>
-        <div class="col-md-1">{{vm.entity.projectSiteCode}}</div>
-
-        <div class="col-md-1 text-right"><strong>接收日期</strong></div>
-        <div class="col-md-1">{{vm.entity.receiveDate}}</div>
-        <div class="col-md-1 text-right"><strong>接收人</strong></div>
-        <div class="col-md-1">{{vm.entity.receiver}}</div>
-        <div class="col-md-12"></div>
-    </div>
-
-    <div class="row ml-0 mr-0">
+    <div class="row">
         <div class="col-md-12">
-            <div class="stock-in-list">
+            <strong>转运编码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>{{vm.entity.transhipCode}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>入库单号</label>
+                <input type="text" class="form-control" ng-disabled="true" ng-model="vm.entity.stockInCode">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group ">
+                <label>
+                    项目编码
+                </label>
+                <selectize options='vm.projectOptions' config="vm.projectConfig"
+                           ng-model="vm.entity.projectId" ng-disabled="true"></selectize>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label>
+                接收日期
+            </label>
+            <div class="input-group">
+                <input type="text" class="form-control" name="receiveDate"
+                       uib-datepicker-popup="{{dateformat}}" ng-model="vm.entity.receiveDate"
+                       is-open="vm.datePickerOpenStatus.receiveDate"
+                       required/>
+                <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i
+                                    class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label>
+                接收人
+            </label>
+            <selectize options='vm.receiverOptions' config="vm.receiverConfig"
+                       ng-model="vm.entity.receiveName"></selectize>
+            <input type="hidden" class="form-control" ng-model="vm.entity.receiveName">
+        </div>
+    </div>
+    <!--<div class="row">-->
+        <!--<div class="col-md-1 text-right"><strong>入库单编号</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.stockInCode}}</div>-->
+        <!--<div class="col-md-1 text-right"><strong>转运编号</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.transhipCode}}</div>-->
+        <!--<div class="col-md-1 text-right"><strong>项目编号</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.projectCode}}</div>-->
+        <!--<div class="col-md-1 text-right"><strong>项目点</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.projectSiteCode}}</div>-->
+
+        <!--<div class="col-md-1 text-right"><strong>接收日期</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.receiveDate}}</div>-->
+        <!--<div class="col-md-1 text-right"><strong>接收人</strong></div>-->
+        <!--<div class="col-md-1">{{vm.entity.receiver}}</div>-->
+        <!--<div class="col-md-12"></div>-->
+    <!--</div>-->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="stock-in-list no-padding">
                 <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"
                        class=" table table-striped table-bordered">
 
                 </table>
-                <div>共{{vm.stockInBox.length}}条数据</div>
+                <div class="mt-10 mb-10">共{{vm.stockInBox.length}}条数据</div>
             </div>
 
         </div>
@@ -108,8 +152,7 @@
         </div>
     </pageslide>
 
-    <!--ng-if="vm.showSplittingPanel()"-->
-    <div ng-if="vm.isShowSplittingPanel()">
+    <div ng-if="vm.splittingBox">
         <div class="row split-box">
             <div class="col-md-9">
                 <div class="row">
@@ -153,5 +196,13 @@
             </div>
         </div>
     </div>
+    <div class="row" ng-if="vm.showFlag">
+        <edit-stock-directive
+            stock-in-info = "vm.entity"
+            stock-in-box = "vm.box"
+            reload-data = "vm.tableRender()"
+            edit-flag = "vm.editFlag"
+            show-flag = "vm.showFlag"
+        ></edit-stock-directive>
+    </div>
 </div>
-

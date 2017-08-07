@@ -4,16 +4,13 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
-import org.fwoxford.config.Constants;
-import org.fwoxford.domain.StockIn;
-import org.fwoxford.domain.StockInBox;
-import org.fwoxford.domain.StockInForDataTableEntity;
+import org.fwoxford.service.dto.response.StockInForDataTableEntity;
 import org.fwoxford.repository.StockInBoxRepository;
 import org.fwoxford.service.StockInService;
 import org.fwoxford.service.UserService;
 import org.fwoxford.service.dto.StockInCompleteDTO;
 import org.fwoxford.service.dto.StockInDTO;
-import org.fwoxford.service.dto.StockInForDataDetail;
+import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.TranshipToStockInDTO;
 import org.fwoxford.service.mapper.StockInMapper;
 import org.fwoxford.web.rest.util.HeaderUtil;
@@ -90,9 +87,9 @@ public class StockInResource {
      */
     @PutMapping("/stock-ins")
     @Timed
-    public ResponseEntity<StockInForDataDetail> updateStockIns(@Valid @RequestBody StockInForDataDetail stockInDTO) throws URISyntaxException {
+    public ResponseEntity<StockInDTO> updateStockIns(@Valid @RequestBody StockInDTO stockInDTO) throws URISyntaxException {
         log.debug("REST request to update StockIn : {}", stockInDTO);
-        StockInForDataDetail result = stockInService.updateStockIns(stockInDTO);
+        StockInDTO result = stockInService.updateStockIns(stockInDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInDTO.getId().toString()))
             .body(result);
@@ -194,6 +191,8 @@ public class StockInResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         return stockInService.findStockIn(input);
     }
 
@@ -221,9 +220,9 @@ public class StockInResource {
      */
     @GetMapping("/stock-in/{id}")
     @Timed
-    public ResponseEntity<StockInForDataDetail> getStockInById(@PathVariable Long id) {
+    public ResponseEntity<StockInDTO> getStockInById(@PathVariable Long id) {
         log.debug("REST request to get Tranship : {}", id);
-        StockInForDataDetail stockInForDataDetail = stockInService.getStockInById(id);
+        StockInDTO stockInForDataDetail = stockInService.getStockInById(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInForDataDetail));
     }
 
@@ -237,5 +236,39 @@ public class StockInResource {
     public ResponseEntity<StockInForDataDetail> getStockIn(@PathVariable String transhipCode) {
         StockInForDataDetail stockInForDataDetail = stockInService.getStockInByTranshipCode(transhipCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(stockInForDataDetail));
+    }
+    /**
+     * 多个转运单开始入库
+     * @param transhipCodes
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-in/tranship/codes/{transhipCodes}")
+    @Timed
+    public ResponseEntity<StockInDTO> createStockInByTranshipCodes(@PathVariable String transhipCodes) throws URISyntaxException {
+        log.debug("REST request to createStockInByTranshipCodes : {}", transhipCodes);
+
+        StockInDTO result = stockInService.createStockInByTranshipCodes(transhipCodes);
+        return ResponseEntity.created(new URI("/api/res/stock-in" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * 作废入库单
+     * @param stockInCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PutMapping("/stock-in/invalid/{stockInCode}")
+    @Timed
+    public ResponseEntity<StockInDTO> invalidStockIn(@PathVariable String stockInCode) throws URISyntaxException {
+        log.debug("REST request to invalid stockIn : {}", stockInCode);
+
+        StockInDTO result = stockInService.invalidStockIn(stockInCode);
+
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 }

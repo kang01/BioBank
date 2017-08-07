@@ -1,9 +1,13 @@
 <div class="stock-in-new">
     <div class="">
-        <h3 class="pull-left">新增入库记录<small>&nbsp;{{vm.entity.stockInCode}}</small></h3>
+        <h3 class="pull-left" style="margin: 0">新增入库记录<small>&nbsp;{{vm.entity.stockInCode}}</small></h3>
         <div class="form-group pull-right mr-10">
             <div class="text-right">
-                <button type="button" class="btn btn-primary" ng-click="vm.stockInFinish()" ng-show="vm.entity.status != '7002'">入库完成</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.stockInFinish()"
+                        ng-show="vm.entity.status != '7002'"
+                        ng-disabled="!vm.stockInflag"
+                >入库完成</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.cancellation()" ng-disabled="!vm.entity.stockInCode" ng-show="vm.entity.status != '7002'">作废</button>
                 <button type="button" class="btn btn-primary" ng-click="vm.stockInSave()" ng-show="vm.entity.status != '7002'">保存</button>
                 <button type="button" class="btn" ui-sref="stock-in">关闭</button>
             </div>
@@ -26,24 +30,24 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="form-group three-col project-sites">
-                <label class="col-md-4 control-label">
-                    项目点</label>
-                <div class="col-md-8">
-                    <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
-                               ng-model="vm.entity.projectSiteId"></selectize>
-                    <!--<input type="text" class="form-control"  ng-model="vm.transportRecord.projectCode">-->
-                </div>
-            </div>
+        <!--<div class="col-md-3">-->
+            <!--<div class="form-group three-col project-sites">-->
+                <!--<label class="col-md-4 control-label">-->
+                    <!--项目点</label>-->
+                <!--<div class="col-md-8">-->
+                    <!--<selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"-->
+                               <!--ng-model="vm.entity.projectSiteId"></selectize>-->
+                    <!--&lt;!&ndash;<input type="text" class="form-control"  ng-model="vm.transportRecord.projectCode">&ndash;&gt;-->
+                <!--</div>-->
+            <!--</div>-->
 
-        </div>
+        <!--</div>-->
 
     </div>
     <div class="row">
         <div class="col-md-12">
             <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"
-                   class=" table table-striped table-bordered">
+                   class=" table table-striped table-bordered mt-0">
                 <tfoot>
                 <tr>
                     <th></th>
@@ -59,86 +63,14 @@
             </table>
         </div>
     </div>
-    <div class="row" ng-if="vm.splittingBox">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <h4>冻存盒信息</h4>
-                        </div>
-                        <div class="col-md-10  text-right mt-5">
-                            <button type="button" class="btn btn-default btn-sm btn-primary" ng-click="vm.saveBox()" ng-disabled="!vm.box.frozenBoxCode" >
-                                保　　存
-                            </button>
-                            <button type="button" class="btn btn-default btn-sm"
-                                    ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus"
-                                    uib-btn-checkbox ng-click="vm.editStatus()" ng-disabled="!vm.box">状态编辑
-                            </button>
-                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.exchange()"
-                                    ng-disabled="!vm.box || vm.flagStatus">样本换位
-                            </button>
-                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.tubeRemark()"
-                                    ng-disabled="!vm.box || vm.flagStatus">样本批注
-                            </button>
-
-                            <!--<button type="button" class="btn btn-default btn-sm" ng-click="vm.delBox()" ng-disabled="!vm.box">-->
-                                <!--删除盒子-->
-                            <!--</button>-->
-                            <button type="button" class="btn btn-default btn-sm" ng-click=" vm.closeBox()" >
-                                关　　闭
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="panel-body p-0">
-                    <div class="row">
-                        <div class="col-md-2 pr-0 pl-20">
-                            <form>
-                                <div class="form-group">
-                                    <label>冻存盒号</label>
-                                    <input type="text" class="form-control"  ng-model="vm.box.frozenBoxCode" ng-disabled="vm.editFlag" ng-blur="vm.frozenBoxForStockIn()" focus-me>
-                                </div>
-                                <div class="form-group">
-                                    <label>盒类型</label>
-                                    <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
-                                               ng-model="vm.box.frozenBoxTypeId"  ng-disabled="vm.editFlag"></selectize>
-                                </div>
-                                <div class="form-group">
-                                    <label>样本类型</label>
-                                    <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                               ng-model="vm.box.sampleTypeId"  ng-disabled="vm.editFlag"></selectize>
-                                </div>
-                                <div class="form-group">
-                                    <label>样本分类</label>
-                                    <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
-                                               ng-model="vm.box.sampleClassificationId"  ng-disabled="vm.editFlag"
-                                    ></selectize>
-                                </div>
-                                <div class="form-group">
-                                    <label>备注</label>
-                                    <textarea  class="form-control resize-none" rows="9"></textarea>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="col-md-10 pl-0">
-                            <div class="col-md-12 pipe-table mt-5">
-                                <span class="">图例说明：</span><span><img src="content/images/legend-for-tube-status.svg"
-                                                                      height="30px"/></span>
-                            </div>
-                            <div class="col-md-12 pr-0">
-                                <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"
-                                           style="width: 100%; padding: 0;margin: 0;"></hot-table>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
+    <div class="row" ng-if="vm.showFlag">
+        <edit-stock-directive
+        stock-in-info = "vm.entity"
+        stock-in-box = "vm.box"
+        reload-data = "vm.initStockInBoxesTable()"
+        edit-flag = "vm.editFlag"
+        show-flag = "vm.showFlag"
+        ></edit-stock-directive>
     </div>
 </div>
 <script type="text/ng-template" id="stockInNew.html">
@@ -147,6 +79,18 @@
     </div>
     <div class="modal-body" id="modal-body">
         添加冻存盒时，需要保存项目编码，且项目编码不可修改，是否继续添加？
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+        <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+    </div>
+</script>
+<script type="text/ng-template" id="stockInCancellation.html">
+    <div class="modal-header">
+        <h3 class="modal-title">作废</h3>
+    </div>
+    <div class="modal-body">
+        确定作废吗？
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>

@@ -56,6 +56,12 @@
                 "serialNo": "Serial No",
                 "positionMoveRecord": "Position Move Record",
                 "positionMove": "Position Move",
+                "transhipStockIn": "Tranship Stock In",
+                "stockInTranshipBox": "Stock In Tranship Box",
+                "positionChange": "Position Change",
+                "positionChangeRecord": "Position Change Record",
+                "positionDestroy": "Position Destroy",
+                "positionDestroyRecord": "Position Destroy Record",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

@@ -185,6 +185,8 @@ public class StockOutPlanResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         DataTablesOutput<StockOutPlansForDataTableEntity> result =  stockOutPlanService.findAllStockOutPlan(input);
         return result;
     }

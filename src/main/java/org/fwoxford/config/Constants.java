@@ -18,10 +18,11 @@ public final class Constants {
     public static final String SYSTEM_ACCOUNT = "system";
     public static final String ANONYMOUS_USER = "anonymoususer";
     /**
-     * 入库状态 ：7001：进行中，7002已入库
+     * 入库状态：7001：进行中，7002：已入库，7090：已作废
      */
     public static final String STOCK_IN_PENDING = "7001";
     public static final String STOCK_IN_COMPLETE = "7002";
+    public static final String STOCK_IN_INVALID= "7090";
     /**
      * 入库类型：8001：首次入库
      */
@@ -32,16 +33,18 @@ public final class Constants {
     public static final String VALID = "0001";
     public static final String INVALID = "0000";
     /**
-     * 转运状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废
+     * 转运状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废，1005:转运完成
      */
     public static final String TRANSHIPE_IN_PENDING = "1001";
     public static final String TRANSHIPE_IN_STOCKING = "1002";
     public static final String TRANSHIPE_IN_STOCKED = "1003";
     public static final String TRANSHIPE_IN_INVALID = "1004";
+    public static final String TRANSHIPE_IN_COMPLETE = "1005";
     /**
-     * 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库，2010：已交接
+     * 冻存盒状态：2001：新建，2011：转运完成；2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库，2010：已交接
      */
     public static final  String FROZEN_BOX_NEW = "2001" ;
+    public static final  String FROZEN_BOX_TRANSHIP_COMPLETE = "2011" ;
     public static final  String FROZEN_BOX_STOCKING = "2002" ;
     public static final  String FROZEN_BOX_SPLITED = "2003" ;
     public static final  String FROZEN_BOX_STOCKED = "2004" ;
@@ -167,15 +170,10 @@ public final class Constants {
      */
     public static final Integer TUBE_CANCEL = 2;
     /**
-     * 级别1，级别1
+     * 级别1，级别2
      */
     public static final Integer LEVEL_ONE = 1;
     public static final Integer LEVEL_TWO = 2;
-    /**
-     * 入库管子状态:2300:待入库；2301:已入库
-     */
-    public static final String STOCK_IN_TUBE_PENDING = "2300";
-    public static final String STOCK_IN_TUBE_COMPELETE = "2301";
     /**
      * 入库盒子状态:2401:已上架，2402：已入库,2403:已撤销
      */
@@ -265,15 +263,27 @@ public final class Constants {
     public static final String MOVE_TYPE_2 = "2";
     public static final String MOVE_TYPE_3 = "3";
 
-//    public static final Map<String,String> SAMPLE_TYPE_CODE_MAP = new HashMap<String,String>(){{
-//        put("A","血浆");
-//        put("W","白细胞");
-//        put("F","血清");
-//        put("E","尿");
-//        put("R","红细胞");
-//        put("RNA","RNA");
-//    }};
 
+    public static final String SAMPLE_HISTORY_TRANSHIP = "101";
+    public static final String SAMPLE_HISTORY_STOCK_IN = "102";
+    public static final String SAMPLE_HISTORY_STOCK_OUT = "103";
+    public static final String SAMPLE_HISTORY_HAND_OVER = "104";
+    public static final String SAMPLE_HISTORY_MOVE = "105";
+    public static final String SAMPLE_HISTORY_CHANGE_POSITION = "106";
+    public static final String SAMPLE_HISTORY_DESTORY = "107";
+    public static final Map<String,String> SAMPLE_TYPE_CODE_MAP = new HashMap<String,String>(){{
+        put("A","血浆");
+        put("W","白细胞");
+        put("F","血清");
+        put("E","尿");
+        put("R","红细胞");
+        put("RNA","RNA");
+    }};
+
+    //1：有出库记录再回来，2:原盒样本，3：盒内新增样本
+    public static final String FROZEN_FLAG_1 = "1";
+    public static final String FROZEN_FLAG_2 = "2";
+    public static final String FROZEN_FLAG_3 = "3";
     private Constants() {
     }
 }

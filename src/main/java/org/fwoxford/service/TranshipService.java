@@ -1,10 +1,8 @@
 package org.fwoxford.service;
 
 import org.fwoxford.domain.FrozenBox;
-import org.fwoxford.domain.Tranship;
-import org.fwoxford.service.dto.FrozenBoxDTO;
-import org.fwoxford.service.dto.FrozenTubeDTO;
-import org.fwoxford.service.dto.TranshipDTO;
+import org.fwoxford.service.dto.*;
+import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
 import org.springframework.data.domain.Page;
@@ -65,23 +63,25 @@ public interface TranshipService {
     TranshipByIdResponse findTranshipAndFrozenBox(Long id);
 
     /**
-     * 新增保存转运记录
-     * @param transhipDTO
-     * @return
-     */
-    TranshipDTO insertTranship(TranshipDTO transhipDTO);
-
-    /**
      * 初始化转运记录
      * @return
      */
     TranshipDTO initTranship();
 
-    List<FrozenTubeDTO> getFrozenTubeDTOList(List<FrozenBoxDTO> frozenBoxDTOList, List<FrozenBox> frozenBoxes);
-
-    List<FrozenBoxDTO> getFrozenBoxDtoList(List<FrozenBoxDTO> frozenBoxDTOListLast, List<FrozenTubeDTO> frozenTubeDTOS);
-
+    /**
+     * 作废转运记录
+     * @param transhipCode
+     * @return
+     */
     TranshipDTO invalidTranship(String transhipCode);
 
     Boolean isRepeatTrackNumber(String transhipCode, String trackNumber);
+
+    /**
+     * 转运完成
+     * @param transhipCode
+     * @param transhipToStockInDTO
+     * @return
+     */
+    StockInForDataDetail completedTranship(String transhipCode, TranshipToStockInDTO transhipToStockInDTO);
 }

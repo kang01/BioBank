@@ -97,22 +97,16 @@ public class TranshipBoxPositionServiceImpl implements TranshipBoxPositionServic
         if(transhipBox == null || transhipBox.getId() ==null){
             return null;
         }
-
-        Long count = transhipBoxPositionRepository
-            .countByTranshipBoxIdAndEquipmentCodeAndAreaCodeAndSupportRackCodeAndRowsInShelfAndColumnsInShelf(
-                transhipBox.getId(),transhipBox.getEquipmentCode(),transhipBox.getAreaCode(),transhipBox.getSupportRackCode(),
-                transhipBox.getRowsInShelf(),transhipBox.getColumnsInShelf()
-            );
-        TranshipBoxPosition transhipBoxPosition = new TranshipBoxPosition();
-        if(count.intValue()==0){
+        TranshipBoxPosition transhipBoxPosition = transhipBoxPositionRepository.findByTranshipBoxIdLast(transhipBox.getId());
+        if(transhipBoxPosition == null){
+            transhipBoxPosition = new TranshipBoxPosition();
+        }
             transhipBoxPosition.transhipBox(transhipBox).memo(transhipBox.getMemo()).status(Constants.VALID)
                 .equipment(transhipBox.getFrozenBox().getEquipment()).equipmentCode(transhipBox.getEquipmentCode())
                 .area(transhipBox.getFrozenBox().getArea()).areaCode(transhipBox.getAreaCode())
                 .supportRack(transhipBox.getFrozenBox().getSupportRack()).supportRackCode(transhipBox.getSupportRackCode())
                 .rowsInShelf(transhipBox.getRowsInShelf()).columnsInShelf(transhipBox.getColumnsInShelf());
             transhipBoxPositionRepository.save(transhipBoxPosition);
-        }
-
         return transhipBoxPosition;
     }
 

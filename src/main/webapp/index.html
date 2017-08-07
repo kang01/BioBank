@@ -34,6 +34,7 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="content/css/main.css">
     <link rel="stylesheet" href="content/css/bioBank.css">
+    <link rel="stylesheet" href="content/js/viewerjs/dist/viewer.css">
     <!-- endbuild -->
 </head>
 <body ng-app="bioBankApp" ng-strict-di>
@@ -132,6 +133,7 @@
     <script src="app/components/util/jquery.dataTables.columnFilter.js"></script>
     <script src="app/components/util/jquery.handsontable-custom-editor.js"></script>
     <script src="app/components/util/jquery.handsontable-tubeinput-editor.js"></script>
+    <script src="content/js/viewerjs/dist/viewer.js"></script>
     <!--<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>-->
     <!--<script src="https://cdn.bootcss.com/angular-block-ui/0.2.2/angular-block-ui.js"></script>-->
     <!--<script src="https://unpkg.com/angular-toastr/dist/angular-toastr.tpls.js"></script>-->
@@ -141,8 +143,10 @@
     <script src="app/services/user/user.service.js"></script>
     <script src="app/services/profiles/profile.service.js"></script>
     <script src="app/services/profiles/page-ribbon.directive.js"></script>
+    <script src="app/services/directive/viewer.directive.js"></script>
     <script src="app/services/directive/star.directive.js"></script>
     <script src="app/services/directive/focus-Input.directive.js"></script>
+    <script src="app/services/directive/edit-stock-directive.js"></script>
     <script src="app/services/directive/age-slider.directive.js"></script>
     <script src="app/services/common/common.service.js"></script>
     <script src="app/services/auth/sessions.service.js"></script>
@@ -176,6 +180,12 @@
     <script src="app/entities/tranship-tube/tranship-tube.state.js"></script>
     <script src="app/entities/tranship-tube/tranship-tube.service.js"></script>
     <script src="app/entities/tranship-tube/tranship-tube.controller.js"></script>
+    <script src="app/entities/tranship-stock-in/tranship-stock-in-dialog.controller.js"></script>
+    <script src="app/entities/tranship-stock-in/tranship-stock-in-detail.controller.js"></script>
+    <script src="app/entities/tranship-stock-in/tranship-stock-in-delete-dialog.controller.js"></script>
+    <script src="app/entities/tranship-stock-in/tranship-stock-in.state.js"></script>
+    <script src="app/entities/tranship-stock-in/tranship-stock-in.service.js"></script>
+    <script src="app/entities/tranship-stock-in/tranship-stock-in.controller.js"></script>
     <script src="app/entities/tranship-box-position/tranship-box-position-dialog.controller.js"></script>
     <script src="app/entities/tranship-box-position/tranship-box-position-detail.controller.js"></script>
     <script src="app/entities/tranship-box-position/tranship-box-position-delete-dialog.controller.js"></script>
@@ -332,6 +342,12 @@
     <script src="app/entities/stock-in-tube/stock-in-tube.state.js"></script>
     <script src="app/entities/stock-in-tube/stock-in-tube.service.js"></script>
     <script src="app/entities/stock-in-tube/stock-in-tube.controller.js"></script>
+    <script src="app/entities/stock-in-tranship-box/stock-in-tranship-box-dialog.controller.js"></script>
+    <script src="app/entities/stock-in-tranship-box/stock-in-tranship-box-detail.controller.js"></script>
+    <script src="app/entities/stock-in-tranship-box/stock-in-tranship-box-delete-dialog.controller.js"></script>
+    <script src="app/entities/stock-in-tranship-box/stock-in-tranship-box.state.js"></script>
+    <script src="app/entities/stock-in-tranship-box/stock-in-tranship-box.service.js"></script>
+    <script src="app/entities/stock-in-tranship-box/stock-in-tranship-box.controller.js"></script>
     <script src="app/entities/stock-in-box-position/stock-in-box-position-dialog.controller.js"></script>
     <script src="app/entities/stock-in-box-position/stock-in-box-position-detail.controller.js"></script>
     <script src="app/entities/stock-in-box-position/stock-in-box-position-delete-dialog.controller.js"></script>
@@ -392,6 +408,30 @@
     <script src="app/entities/position-move/position-move.state.js"></script>
     <script src="app/entities/position-move/position-move.service.js"></script>
     <script src="app/entities/position-move/position-move.controller.js"></script>
+    <script src="app/entities/position-destroy-record/position-destroy-record-dialog.controller.js"></script>
+    <script src="app/entities/position-destroy-record/position-destroy-record-detail.controller.js"></script>
+    <script src="app/entities/position-destroy-record/position-destroy-record-delete-dialog.controller.js"></script>
+    <script src="app/entities/position-destroy-record/position-destroy-record.state.js"></script>
+    <script src="app/entities/position-destroy-record/position-destroy-record.service.js"></script>
+    <script src="app/entities/position-destroy-record/position-destroy-record.controller.js"></script>
+    <script src="app/entities/position-destroy/position-destroy-dialog.controller.js"></script>
+    <script src="app/entities/position-destroy/position-destroy-detail.controller.js"></script>
+    <script src="app/entities/position-destroy/position-destroy-delete-dialog.controller.js"></script>
+    <script src="app/entities/position-destroy/position-destroy.state.js"></script>
+    <script src="app/entities/position-destroy/position-destroy.service.js"></script>
+    <script src="app/entities/position-destroy/position-destroy.controller.js"></script>
+    <script src="app/entities/position-change-record/position-change-record-dialog.controller.js"></script>
+    <script src="app/entities/position-change-record/position-change-record-detail.controller.js"></script>
+    <script src="app/entities/position-change-record/position-change-record-delete-dialog.controller.js"></script>
+    <script src="app/entities/position-change-record/position-change-record.state.js"></script>
+    <script src="app/entities/position-change-record/position-change-record.service.js"></script>
+    <script src="app/entities/position-change-record/position-change-record.controller.js"></script>
+    <script src="app/entities/position-change/position-change-dialog.controller.js"></script>
+    <script src="app/entities/position-change/position-change-detail.controller.js"></script>
+    <script src="app/entities/position-change/position-change-delete-dialog.controller.js"></script>
+    <script src="app/entities/position-change/position-change.state.js"></script>
+    <script src="app/entities/position-change/position-change.service.js"></script>
+    <script src="app/entities/position-change/position-change.controller.js"></script>
     <script src="app/entities/frozen-tube-type/frozen-tube-type-dialog.controller.js"></script>
     <script src="app/entities/frozen-tube-type/frozen-tube-type-detail.controller.js"></script>
     <script src="app/entities/frozen-tube-type/frozen-tube-type-delete-dialog.controller.js"></script>
@@ -549,6 +589,7 @@
     <script src="app/bizs/stock-out/take-over/modal/take-over-modal.controller.js"></script>
     <script src="app/bizs/stock-out/service/stock-out.service.js"></script>
     <script src="app/bizs/stock-out/requirement/service/requirement.service.js"></script>
+    <script src="app/bizs/stock-out/requirement/service/requirement.appoint.sample.desc.service.js"></script>
     <script src="app/bizs/stock-out/requirement/requirement-list.controller.js"></script>
     <script src="app/bizs/stock-out/requirement/requirement-detail.controller.js"></script>
     <script src="app/bizs/stock-out/requirement/requirement-additionApply.controller.js"></script>
@@ -556,6 +597,7 @@
     <script src="app/bizs/stock-out/requirement/modal/requirement-sample-edit-modal.controller.js"></script>
     <script src="app/bizs/stock-out/requirement/modal/requirement-sample-desc-modal.controller.js"></script>
     <script src="app/bizs/stock-out/requirement/modal/requirement-approval-modal.controller.js"></script>
+    <script src="app/bizs/stock-out/requirement/modal/requirement-appoint-sample-desc-modal.controller.js"></script>
     <script src="app/bizs/stock-out/plan/service/plan.service.js"></script>
     <script src="app/bizs/stock-out/plan/plan-list.controller.js"></script>
     <script src="app/bizs/stock-out/plan/plan-detail.controller.js"></script>
@@ -587,6 +629,7 @@
     <script src="app/bizs/list/sample-list/sample-inventory.state.js"></script>
     <script src="app/bizs/list/sample-list/sample-inventory.desc.controller.js"></script>
     <script src="app/bizs/list/sample-list/sample-inventory.controller.js"></script>
+    <script src="app/bizs/list/modal/list-exchange-destroy-modal.controller.js"></script>
     <script src="app/bizs/list/equipment-list/service/equipment-inventory.service.js"></script>
     <script src="app/bizs/list/equipment-list/equipment-movement.controller.js"></script>
     <script src="app/bizs/list/equipment-list/equipment-list.state.js"></script>

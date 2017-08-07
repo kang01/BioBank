@@ -6,11 +6,12 @@
 
     angular
         .module('bioBankApp')
-        .controller('TransportRecordController', TransportRecordController);
+        .controller('TransportRecordController', TransportRecordController)
+        .controller('StartStockInModalController', StartStockInModalController);
 
-    TransportRecordController.$inject = ['$scope', '$compile', 'Principal', 'TransportRecordService', 'ParseLinks', 'AlertService', '$state', 'pagingParams', 'paginationConstants', 'JhiLanguageService','DTOptionsBuilder','DTColumnBuilder','TranshipNewEmptyService'];
-
-    function TransportRecordController($scope, $compile, Principal, TransportRecordService, ParseLinks, AlertService, $state, pagingParams, paginationConstants, JhiLanguageService,DTOptionsBuilder,DTColumnBuilder,TranshipNewEmptyService) {
+    TransportRecordController.$inject = ['$scope', '$compile', 'Principal','$uibModal', 'TransportRecordService', 'TranshipStockInService', 'toastr', '$state', 'pagingParams', 'paginationConstants', 'JhiLanguageService','DTOptionsBuilder','DTColumnBuilder','TranshipNewEmptyService'];
+    StartStockInModalController.$inject = ['$uibModalInstance'];
+    function TransportRecordController($scope, $compile, Principal, $uibModal,TransportRecordService, TranshipStockInService, toastr, $state, pagingParams, paginationConstants, JhiLanguageService,DTOptionsBuilder,DTColumnBuilder,TranshipNewEmptyService) {
         var vm = this;
 
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
@@ -30,6 +31,7 @@
         vm.message = '';
         vm.edit = edit;
         vm.add = add;
+        vm.stockIn = _fnStockIn;
 
         function add() {
             TranshipNewEmptyService.save({},onTranshipNewEmptyService,onError);
@@ -37,14 +39,67 @@
         function onTranshipNewEmptyService(data) {
             $state.go('transport-record-new',{transhipId : data.id,transhipCode : data.transhipCode});
         }
-        function onError(error) {
-            AlertService.error(error.data.message);
+        //开始入库
+        function _fnStockIn() {
+            var codeArray = [];
+            for(var code in vm.selected){
+                if(vm.selected[code]){
+                    codeArray.push(code)
+                }
+            }
+            if(codeArray.length){
+                var transhipCodes = _.join(codeArray, ',');
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'startStockIn.html',
+                    controller: 'StartStockInModalController',
+                    controllerAs: 'vm'
+                });
+                modalInstance.result.then(function () {
+                    TranshipStockInService.saveStockIn(transhipCodes).success(function (data) {
+                        $state.go('stock-in-edit',{id:data.id});
+                    }).error(function (data) {
+                        toastr.error(data.message);
+                    })
+                }, function () {
+                });
+            }else{
+                toastr.error("请选择转运完成的转运记录!");
+                vm.selectAll = false;
+            }
         }
 
+
+        vm.selected = {};
+        vm.selectAll = false;
+
+        // 处理盒子选中状态
+        vm.toggleAll = function (selectAll, selectedItems) {
+            selectedItems = vm.selected;
+            selectAll = vm.selectAll;
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    selectedItems[id] = selectAll;
+                }
+            }
+        };
+        vm.toggleOne = function (selectedItems) {
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(!selectedItems[id]) {
+                        vm.selectAll = false;
+                        return;
+                    }
+                }
+            }
+            vm.selectAll = true;
+        };
         vm.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('order', [[1, 'desc' ]])
             .withOption('processing',true)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
+                vm.selectAll = false;
+                vm.selected = {};
                 var data = {};
                 for(var i=0; aoData && i<aoData.length; ++i){
                     var oData = aoData[i];
@@ -78,62 +133,75 @@
             })
             .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow)
+            .withOption('headerCallback', function(header) {
+                $compile(angular.element(header).contents())($scope);
+            })
             .withColumnFilter({
-                aoColumns: [{
-                    type: 'text',
-                    width:50,
-                    iFilterLength:3
-                },{
-                    type: 'text',
-                    width:50,
-                    iFilterLength:3
-                }, {
-                    type: 'text',
-                    bRegex: true,
-                    bSmart: true,
-                    iFilterLength:3
-                }, {
-                    type: 'text',
-                    bRegex: true,
-                    bSmart: true
-                }, {
-                    type: 'text',
-                    bRegex: true,
-                    bSmart: true
-                }, {
-                    type: 'text',
-                    bRegex: true,
-                    bSmart: true
-                }, {
-                    type: 'select',
-                    bRegex: false,
-                    width:50,
-                    values: [
-                        {value:"10",label:"10"},
-                        {value:"9",label:"9"},
-                        {value:"8",label:"8"},
-                        {value:"7",label:"7"},
-                        {value:"6",label:"6"},
-                        {value:"5",label:"5"},
-                        {value:"4",label:"4"},
-                        {value:"3",label:"3"},
-                        {value:"2",label:"2"},
-                        {value:"1",label:"1"}
-                        ]
-                }, {
-                    type: 'select',
-                    bRegex: true,
-                    width:50,
-                    values: [
-                        {value:'1001',label:"进行中"},
-                        {value:"1002",label:"待入库"},
-                        {value:"1003",label:"已入库"},
-                        {value:"1004",label:"已作废"}
-                        ]
-                }]
+                aoColumns: [
+                    null,
+                    {
+                        type: 'text',
+                        width:50,
+                        iFilterLength:3
+                    },{
+                        type: 'text',
+                        width:50,
+                        iFilterLength:3
+                    },{
+                        type: 'text',
+                        width:50,
+                        iFilterLength:3
+                    }, {
+                        type: 'text',
+                        bRegex: true,
+                        bSmart: true,
+                        iFilterLength:3
+                    }, {
+                        type: 'text',
+                        bRegex: true,
+                        bSmart: true
+                    }, {
+                        type: 'text',
+                        bRegex: true,
+                        bSmart: true
+                    }, {
+                        type: 'text',
+                        bRegex: true,
+                        bSmart: true
+                    }, {
+                        type: 'select',
+                        bRegex: false,
+                        width:50,
+                        values: [
+                            {value:"10",label:"10"},
+                            {value:"9",label:"9"},
+                            {value:"8",label:"8"},
+                            {value:"7",label:"7"},
+                            {value:"6",label:"6"},
+                            {value:"5",label:"5"},
+                            {value:"4",label:"4"},
+                            {value:"3",label:"3"},
+                            {value:"2",label:"2"},
+                            {value:"1",label:"1"}
+                            ]
+                    }, {
+                        type: 'select',
+                        bRegex: true,
+                        width:50,
+                        values: [
+                            {value:'1001',label:"进行中"},
+                            {value:"1002",label:"待入库"},
+                            {value:"1003",label:"已入库"},
+                            {value:"1004",label:"已作废"},
+                            {value:"1005",label:"转运完成"}
+                            ]
+                    }
+                ]
             });
-
+        var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.dtColumns = [
+            DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
+            DTColumnBuilder.newColumn('transhipCode').withTitle('转运编码'),
             DTColumnBuilder.newColumn('trackNumber').withTitle('运单号'),
             DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点'),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编号'),
@@ -146,30 +214,25 @@
         ];
         function createdRow(row, data, dataIndex) {
             var transhipState = '';
-            var sampleSatisfaction = '';
             switch (data.transhipState){
                 case '1001': transhipState = '进行中';break;
                 case '1002': transhipState = '待入库';break;
                 case '1003': transhipState = '已入库';break;
                 case '1004': transhipState = '已作废';break;
+                case '1005': transhipState = '转运完成';break;
             }
-            // switch (data.sampleSatisfaction){
-            //     case 1: sampleSatisfaction = '非常不满意';break;
-            //     case 2: sampleSatisfaction = '有大量错位';break;
-            //     case 3: sampleSatisfaction = '有少量错位';break;
-            //     case 4: sampleSatisfaction = '有少量空孔';break;
-            //     case 5: sampleSatisfaction = '有大量空管';break;
-            //     case 6: sampleSatisfaction = '有许多空管';break;
-            //     case 7: sampleSatisfaction = '有少量空管';break;
-            //     case 8: sampleSatisfaction = '满意';break;
-            //     case 9: sampleSatisfaction = '较满意';break;
-            //     case 10: sampleSatisfaction = '非常满意';break;
-            // }
-            // $('td:eq(6)', row).html(sampleSatisfaction);
-            $('td:eq(7)', row).html(transhipState);
+            $('td:eq(9)', row).html(transhipState);
             $compile(angular.element(row).contents())($scope);
         }
+        function _fnRowSelectorRender(data, type, full, meta) {
 
+            var html = '';
+            if(full.transhipState == '1005'){
+                vm.selected[full.transhipCode] = false;
+                html = '<input type="checkbox" ng-model="vm.selected[\'' + full.transhipCode + '\']" ng-click="vm.toggleOne(vm.selected)">';
+            }
+            return html;
+        }
         function edit(person) {
             vm.message = 'You are trying to edit the row: ' + JSON.stringify(person);
             vm.dtInstance.reloadData();
@@ -182,5 +245,17 @@
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }
+        function onError(error) {
+            toastr.error(error.data.message);
+        }
+    }
+    function StartStockInModalController($uibModalInstance) {
+        var vm = this;
+        vm.ok = function () {
+            $uibModalInstance.close();
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     }
 })();

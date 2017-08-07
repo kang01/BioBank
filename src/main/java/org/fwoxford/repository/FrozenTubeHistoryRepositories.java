@@ -12,5 +12,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface FrozenTubeHistoryRepositories extends DataTablesRepository<FrozenTubeHistory,Long> {
 
-    List<FrozenTubeHistory> findByFrozenTubeId(Long frozenTubeId);
+    List<FrozenTubeHistory> findByFrozenTubeIdInAndOperateTimeNotNullAndStatusNot(List<Long> ids, String invalid);
+
+    List<FrozenTubeHistory> findByFrozenTubeIdAndStatusNot(Long frozenTubeId, String invalid);
 }

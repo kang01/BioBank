@@ -109,12 +109,6 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @Size(max = 255)
     @Column(name = "sample_type_name", length = 255, nullable = false)
     private String sampleTypeName;
-//    /**
-//     * 样本数量
-//     */
-//    @NotNull
-//    @Column(name = "sample_number", nullable = false)
-//    private Integer sampleNumber;
     /**
      * 是否分装：1：是，0：否
      */

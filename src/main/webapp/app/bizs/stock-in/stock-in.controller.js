@@ -35,6 +35,7 @@
             };
 
             vm.dtOptions = DTOptionsBuilder.fromSource({"url": 'api/temp/res/stock-in',"dataSrc": "data"})
+                .withOption('order', [[0, 'desc' ]])
                 .withOption('sServerMethod','POST')
                 .withOption('processing',true)
                 .withOption('serverSide',true)
@@ -79,30 +80,56 @@
             });
         }
         function _fnCreatedRow(row, data, dataIndex) {
+            var transportCodes = _.replace(data.transhipCode, /,/g, ', ');;
+
             var status = '';
             switch (data.status){
                 case '7001': status = '进行中'; break;
                 case '7002': status = '已入库'; break;
+                case '7090': status = '已作废'; break;
             }
-            $('td:eq(8)', row).html(status);
-            $("td:eq(5)", row).text([data.storeKeeper1, data.storeKeeper2].join("; "));
+            $('td:eq(1)', row).html(transportCodes);
+            $("td:eq(6)", row).text([data.storeKeeper1, data.storeKeeper2].join("; "));
+            $('td:eq(9)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function _fnActionButtonsRender(data, type, full, meta) {
-            if(full.transhipCode){
-                return '<button type="button" class="btn btn-xs" ui-sref="stock-in-edit({id:'+ full.id +'})">' +
-                    '   <i class="fa fa-edit"></i>' +
-                    '</button>&nbsp;';
+            if(full.status == '7090'){
+                return '';
+            }else{
+                if(full.transhipCode){
+                    if(full.status == '7002'){
+                        return '<button type="button" class="btn btn-xs" ui-sref="stock-in-edit({id:'+ full.id +'})">' +
+                            '   <i class="fa fa-eye"></i>' +
+                            '</button>&nbsp;';
+                    }else{
+                        return '<button type="button" class="btn btn-xs" ui-sref="stock-in-edit({id:'+ full.id +'})">' +
+                            '   <i class="fa fa-edit"></i>' +
+                            '</button>&nbsp;';
+                    }
+
+                }else{
+                    if(full.status == '7002'){
+                        return '<button type="button" class="btn btn-xs" ui-sref="stock-in-add-box-edit({id:'+ full.id +'})">' +
+                            '   <i class="fa fa-eye"></i>' +
+                            '</button>&nbsp;';
+                    }else{
+                        return '<button type="button" class="btn btn-xs" ui-sref="stock-in-add-box-edit({id:'+ full.id +'})">' +
+                            '   <i class="fa fa-edit"></i>' +
+                            '</button>&nbsp;';
+                    }
+
+                }
+
             }
-            return '<button type="button" class="btn btn-xs" ui-sref="stock-in-add-box-edit({id:'+ full.id +'})">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;';
+
 
         }
 
         function _createColumnFilters(){
             var filters = {
                 aoColumns: [
+                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
                     {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
@@ -128,17 +155,17 @@
         }
         function _createColumns(){
             var columns = [
-                // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
-                DTColumnBuilder.newColumn('transhipCode').withTitle('转运编码'),
-                DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点'),
-                DTColumnBuilder.newColumn('projectCode').withTitle('项目编号'),
-                DTColumnBuilder.newColumn('recordDate').withTitle('创建日期'),
-                DTColumnBuilder.newColumn('stockInDate').withTitle('入库日期'),
-                DTColumnBuilder.newColumn('storeKeeper1').withTitle('库管员'),
-                DTColumnBuilder.newColumn('countOfSample').withTitle('样本数量'),
-                DTColumnBuilder.newColumn('countOfBox').withTitle('冻存盒数量'),
-                DTColumnBuilder.newColumn('status').withTitle('状态'),
-                DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(_fnActionButtonsRender)
+                DTColumnBuilder.newColumn('stockInCode').withTitle('入库编码').withOption('width','100'),
+                DTColumnBuilder.newColumn('transhipCode').withTitle('转运编码').withOption('width','auto'),
+                DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点').withOption('width','70'),
+                DTColumnBuilder.newColumn('projectCode').withTitle('项目编号').withOption('width','70'),
+                DTColumnBuilder.newColumn('recordDate').withTitle('创建日期').withOption('width','90'),
+                DTColumnBuilder.newColumn('stockInDate').withTitle('入库日期').withOption('width','90'),
+                DTColumnBuilder.newColumn('storeKeeper1').withTitle('库管员').withOption('width','90'),
+                DTColumnBuilder.newColumn('countOfSample').withTitle('样本数量').withOption('width','80'),
+                DTColumnBuilder.newColumn('countOfBox').withTitle('冻存盒数量').withOption('width','100'),
+                DTColumnBuilder.newColumn('status').withTitle('状态').withOption('width','80'),
+                DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(_fnActionButtonsRender).withOption('width','40')
             ];
 
             return columns;

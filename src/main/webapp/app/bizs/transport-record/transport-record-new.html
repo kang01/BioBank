@@ -5,8 +5,11 @@
         </h3>
         <div class="form-group pull-right pr-10">
             <div class="text-right">
-                <button type="button" class="btn btn-primary" ng-click="vm.stockIn()"
-                        ng-disabled="!vm.boxLength || !vm.transportRecord.receiver || !vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate || !vm.transportRecord.trackNumber"
+                <button type="button" class="btn btn-primary" ng-click="vm.transferFinish()"
+                        ng-disabled="!vm.boxLength || !vm.transportRecord.receiver ||
+                        !vm.transportRecord.transhipDate || !vm.transportRecord.projectId ||
+                        !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate ||
+                        !vm.transportRecord.trackNumber"
                         ng-show="vm.transportRecord.transhipState == '1001'">转运完成
                 </button>
                 <button type="button" class="btn btn-default" ng-click="vm.saveRecord()"
@@ -128,9 +131,9 @@
                                    is-open="vm.datePickerOpenStatus.receiveDate"
                                    required/>
                             <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i
-                            class="glyphicon glyphicon-calendar"></i></button>
-                        </span>
+                                <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i
+                                class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -245,7 +248,7 @@
                 </div>
                 <div class="panel-body p-0">
                     <table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance"
-                           class="table table-bordered"></table>
+                           class="table table-striped table-bordered"></table>
                 </div>
             </div>
         </div>
@@ -366,8 +369,8 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <label>备注</label>
-                                    <textarea name="memo" class="form-control" rows="10" style="resize: none"
-                                              ng-model="vm.box.memo" ng-disabled="!vm.box"></textarea>
+                                    <textarea name="memo" class="form-control" rows="10" style="resize: none;ime-mode:disabled"
+                                              ng-model="vm.box.memo" ng-disabled="!vm.box" onfocus=" this.style.imeMode='disabled' "></textarea>
                                 </div>
                             </div>
                         </div>
@@ -417,6 +420,55 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+               <div class="panel-heading">
+                   <div class="row">
+                       <div class="col-md-4">
+                           <h4>附件</h4>
+                       </div>
+                       <div class="col-md-8 text-right" style="margin-top: 8px !important;">
+                           <input type="file" id="one-input" accept="image/*" file-model="vm.images"
+                                  onchange="angular.element(this).scope().vm.img_upload(this.files)"/>
+
+                           <!--<div class="button" ngf-select ng-model="vm.file" name="file" ngf-pattern="'image/*'"-->
+                                <!--ngf-accept="'image/*'" ngf-max-size="2MB" ngf-min-height="100"-->
+                                <!--ngf-resize="{width: 100, height: 100}" ng-click="angular.element(this).scope().vm.img_upload(this.files)">Select</div>-->
+
+                       </div>
+                   </div>
+
+               </div>
+                <div class="panel-body" >
+                    <!--<img ng-src="{{vm.thumb.imgSrc}}" id="transportImage">-->
+                    <div  id="dowebok" viewer images-data="vm.thumb.imgSrc"></div>
+                    <div class="">
+                        <canvas id="canvas" style="display: none">
+                            你的浏览器居然不支持Canvas？！赶快换一个吧！！
+                        </canvas>
+                    </div>
+                    <div style="margin-left: 10px">
+                        <canvas id="canvas1">
+                            你的浏览器居然不支持Canvas？！赶快换一个吧！！
+                        </canvas>
+                    </div>
+                    <!--<img-->
+                    <!--*ngf-src="{{vm.file}}"-->
+                    <!--*ngf-background="{{vm.file}}"-->
+                    <!--ngf-resize="{width: 20, height: 20, quality: 0.9}"-->
+                    <!--ngf-no-object-url="true or false"-->
+                    <!--/>-->
+                    <!--<div id="dowebok" viewer>-->
+                        <!--<img data-original="content/images/timg.jpg" src="content/images/timg.jpg" >-->
+                        <!--<img data-original="content/images/timg.jpg" src="content/images/timg.jpg" >-->
+                    <!--</div>-->
+
+
+                </div>
+            </div>
         </div>
     </div>
 </div>

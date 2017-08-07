@@ -1,0 +1,47 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockInTranshipBox.detail.title">Stock In Tranship Box</span> {{vm.stockInTranshipBox.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockInTranshipBox.stockInCode">Stock In Code</span></dt>
+        <dd>
+            <span>{{vm.stockInTranshipBox.stockInCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInTranshipBox.transhipCode">Tranship Code</span></dt>
+        <dd>
+            <span>{{vm.stockInTranshipBox.transhipCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInTranshipBox.frozenBoxCode">Frozen Box Code</span></dt>
+        <dd>
+            <span>{{vm.stockInTranshipBox.frozenBoxCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInTranshipBox.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockInTranshipBox.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInTranshipBox.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockInTranshipBox.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInTranshipBox.transhipBox">Tranship Box</span></dt>
+        <dd>
+            <a ui-sref="tranship-box-detail({id:vm.stockInTranshipBox.transhipBoxId})">{{vm.stockInTranshipBox.transhipBoxId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockInTranshipBox.stockIn">Stock In</span></dt>
+        <dd>
+            <a ui-sref="stock-in-detail({id:vm.stockInTranshipBox.stockInId})">{{vm.stockInTranshipBox.stockInId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-in-tranship-box-detail.edit({id:vm.stockInTranshipBox.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

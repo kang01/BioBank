@@ -1,5 +1,7 @@
 package org.fwoxford.service.impl;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.StockOutTaskFrozenTube;
@@ -185,22 +187,15 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
     }
 
     @Override
-    public List<FrozenTubeDTO> findFrozenTubeBySampleCodeNadProjectAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long sampleTypeId, Long sampleClassificationId) {
+    public List<FrozenTubeDTO> findFrozenTubeBySampleCodeAndProjectAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long sampleTypeId, Long sampleClassificationId) {
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(sampleCode,projectCode,sampleTypeId,sampleClassificationId);
         for(FrozenTube f:frozenTubeList){
-            if(!f.getFrozenBox().getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
-                throw new BankServiceException("冻存管编码"+f.getSampleCode()+"已经在库存内，请输入新的冻存管编码！");
+            if(!StringUtils.isEmpty(f.getFrozenTubeState())&&(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
+                &&!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER))){
+                throw new BankServiceException("冻存管编码"+sampleCode+"已经在库存内，请输入新的冻存管编码！");
             }
         }
         List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
-        List<Object[]> frozenTubeHistoryList =  frozenTubeRepository.findFrozenTubeHistoryListBySampleAndProjectCode(sampleCode,projectCode);
-        if(frozenTubeHistoryList.size()>0){
-            Object[] object = frozenTubeHistoryList.get(0);
-            Object status = object[12];
-            if(!status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) &&! status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
-                throw new BankServiceException("冻存管编码已经在库存内，请输入新的冻存管编码！");
-            }
-        }
         for(FrozenTube f: frozenTubeList){
             FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
             frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
@@ -241,24 +236,58 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
 
     @Override
     public List<FrozenTubeDTO> getFrozenTubeBySampleCode(String sampleCode, String projectCode, Long sampleTypeId) {
-        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCode,projectCode,sampleTypeId,Constants.INVALID);
+        List<String> sampleCodeStr = new ArrayList<>();
+        sampleCodeStr.add(sampleCode);
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCodeStr,projectCode,sampleTypeId,Constants.INVALID);
 
         for(FrozenTube f:frozenTubeList){
-            if(!f.getFrozenBox().getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
-                throw new BankServiceException("冻存管编码"+f.getSampleCode()+"已经在库存内，请输入新的冻存管编码！");
+            if(!StringUtils.isEmpty(f.getFrozenTubeState())&&(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED
+            )&&!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER))){
+                throw new BankServiceException("冻存管编码"+sampleCode+"已经在库存内，请输入新的冻存管编码！");
             }
         }
         List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
-        List<Object[]> frozenTubeHistoryList =  frozenTubeRepository.findFrozenTubeHistoryListBySampleAndProjectCode(sampleCode,projectCode);
-        if(frozenTubeHistoryList.size()>0){
-            Object[] object = frozenTubeHistoryList.get(0);
-            Object status = object[12];
-            if(!status.equals(Constants.STOCK_OUT_HANDOVER_COMPLETED) &&! status.equals(Constants.FROZEN_BOX_TUBE_STOCKOUT_COMPLETED)){
-                throw new BankServiceException("冻存管编码已经在库存内，请输入新的冻存管编码！");
-            }
-        }
         for(FrozenTube f: frozenTubeList){
             FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
+            frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
+            frozenTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
+            frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
+            frozenTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
+            frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
+            frozenTubeDTO.setSampleClassificationName(f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationName():null);
+            frozenTubeDTOS.add(frozenTubeDTO);
+        }
+        return frozenTubeDTOS;
+    }
+    @Override
+    public List<FrozenTubeDTO> findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long frozenBoxId, Long sampleTypeId, Long sampleClassificationId) {
+        List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
+        if(frozenBoxId == -1 || frozenBoxId.equals(-1)){
+            if(sampleClassificationId == -1 || sampleClassificationId.equals(-1) ){
+                List<String> sampleCodeStr = new ArrayList<>();
+                sampleCodeStr.add(sampleCode);
+                frozenTubeList = frozenTubeRepository.findBySampleCodeInAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCodeStr,projectCode,sampleTypeId,Constants.INVALID);
+            }else{
+                frozenTubeList = frozenTubeRepository.findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(sampleCode,projectCode,sampleTypeId,sampleClassificationId);
+            }
+        }else{
+            if(sampleClassificationId == -1 || sampleClassificationId.equals(-1) ){
+                frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleType(sampleCode,projectCode,frozenBoxId,sampleTypeId);
+            }else{
+                frozenTubeList = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(sampleCode,projectCode,frozenBoxId,sampleTypeId,sampleClassificationId);
+            }}
+
+        for(FrozenTube f:frozenTubeList){
+            if(!StringUtils.isEmpty(f.getFrozenTubeState())
+                &&(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&&!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER))){
+                throw new BankServiceException("冻存管编码"+sampleCode+"已经在库存内，请输入新的冻存管编码！");
+            }
+        }
+        List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
+
+        for(FrozenTube f: frozenTubeList){
+            FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
+            frozenTubeDTO.setSampleCode(StringUtils.isEmpty(frozenTubeDTO.getSampleCode())?frozenTubeDTO.getSampleTempCode():frozenTubeDTO.getSampleCode());
             frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
             frozenTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
             frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);

@@ -151,6 +151,8 @@ public class StockOutBoxTubeResource {
                 u.setSearchable(false);
             }
         });
+        input.addColumn("id",true,true,null);
+        input.addOrder("id",true);
         DataTablesOutput<StockOutFrozenTubeDataTableEntity> result =stockOutBoxTubeService.getPageStockOutTubeByStockOutBoxIds(ids, input);
         return result;
     }

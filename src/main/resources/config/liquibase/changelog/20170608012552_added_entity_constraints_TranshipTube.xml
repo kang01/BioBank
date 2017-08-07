@@ -7,7 +7,7 @@
         Added the constraints for entity TranshipTube.
     -->
     <changeSet id="20170608012552-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="tranship_box_id"
                                  baseTableName="tranship_tube"
                                  constraintName="tranship_tube_tranship_box_id"
@@ -19,6 +19,40 @@
                                  constraintName="tranship_tube_frozen_tube_id"
                                  referencedColumnNames="id"
                                  referencedTableName="frozen_tube"/>
+
+    </changeSet>
+
+    <changeSet id="20170608012552-4" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="frozen_tube_type_id"
+                                 baseTableName="tranship_tube"
+                                 constraintName="fk_tranship_tube_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_tube_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="sample_type_id"
+                                 baseTableName="tranship_tube"
+                                 constraintName="tranship_tube_sample_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_id"
+                                 baseTableName="tranship_tube"
+                                 constraintName="tranship_tube_project_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_site_id"
+                                 baseTableName="tranship_tube"
+                                 constraintName="tranship_tube_project_site_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project_site"/>
+
+        <addForeignKeyConstraint baseColumnNames="sample_classification_id"
+                                 baseTableName="tranship_tube"
+                                 constraintName="tranship_tube_sample_class_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_class"/>
 
     </changeSet>
 </databaseChangeLog>

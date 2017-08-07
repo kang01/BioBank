@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import org.fwoxford.domain.FrozenBox;
+import org.fwoxford.domain.StockInBox;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.response.*;
 import org.springframework.data.domain.Page;
@@ -96,7 +97,7 @@ public interface FrozenBoxService {
      * @param row
      * @return
      */
-    List<FrozenBoxDTO>  countByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
+    List<FrozenBoxDTO>  findByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
 
     /**
      * 根据转运编码查询冻存盒列表
@@ -125,7 +126,14 @@ public interface FrozenBoxService {
 
     FrozenBoxDTO getBoxAndTubeByForzenBoxCode(String frozenBoxCode);
 
-    StockInBoxDetail createStockInBoxDetail(FrozenBox frozenBox, String stockInCode);
+    StockInBoxDetail createStockInBoxDetail(StockInBox frozenBox, String stockInCode);
 
     List<StockInBoxForDataTable> frozenBoxesToStockInBoxForDataTables(List<FrozenBox> frozenBoxes);
+
+    /**
+     * 查询冻存盒的历史
+     * @param id
+     * @return
+     */
+    List<FrozenBox> findFrozenBoxHistory(Long id);
 }

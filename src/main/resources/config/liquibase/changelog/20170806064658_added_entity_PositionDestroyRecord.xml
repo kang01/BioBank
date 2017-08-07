@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="sysdate" dbms="oracle"/>
+    <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity PositionDestroyRecord.
+    -->
+    <changeSet id="20170806064658-1" author="jhipster">
+        <createTable tableName="position_destroy_record" remarks="销毁记录表">
+            <column name="sample_code" type="nvarchar(100)" remarks="样本编码">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="equipment_code" type="nvarchar(100)" remarks="设备编码">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="area_code" type="nvarchar(100)" remarks="区域编码">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="support_rack_code" type="nvarchar(100)" remarks="冻存架编码">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="rows_in_shelf" type="nvarchar(100)" remarks="架子内行号">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="columns_in_shelf" type="nvarchar(100)" remarks="架子内列号">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="frozen_box_code" type="nvarchar(100)" remarks="冻存盒编码">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="tube_rows" type="nvarchar(100)" remarks="盒内行号">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="tube_columns" type="nvarchar(100)" remarks="盒内列号">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="destroy_type" type="nvarchar(20)" remarks="销毁类型">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="project_code" type="nvarchar(100)" remarks="项目编码">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="project_site_code" type="nvarchar(100)" remarks="项目点编码">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="status" type="nvarchar(20)" remarks="状态">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="memo" type="nvarchar(1024)" remarks="备注">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="equipment_id" type="bigint" remarks="设备ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="area_id" type="bigint" remarks="区域ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="support_rack_id" type="bigint" remarks="冻存架ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="frozen_box_id" type="bigint" remarks="冻存盒ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="frozen_tube_id" type="bigint" remarks="冻存管ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="project_id" type="bigint" remarks="项目ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="project_site_id" type="bigint" remarks="项目点ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="position_destroy_id" type="bigint" remarks="销毁ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="created_by" type="nvarchar(50)" remarks="创建人">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}" remarks="创建时间">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="nvarchar(50)" remarks="修改人"/>
+            <column name="last_modified_date" type="timestamp" remarks="修改时间"/>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="20170806064658-3" author="jhipster">
+        <addColumn tableName="position_destroy_record">
+            <column name="frozen_tube_type_code" type="nvarchar(100)" remarks="冻存管类型编码"></column>
+            <column name="frozen_tube_type_name" type="nvarchar(255)" remarks="冻存管类型名称"></column>
+            <column name="sample_type_code" type="nvarchar(100)" remarks="样本类型编码"></column>
+            <column name="sample_type_name" type="nvarchar(255)" remarks="样本类型名称"></column>
+            <column name="sample_classification_code" type="nvarchar(100)" remarks="样本分类编码"></column>
+            <column name="sample_classification_name" type="nvarchar(100)" remarks="样本分类名称"></column>
+            <column name="frozen_tube_volumns" type="Double" remarks="冻存管容量值"></column>
+            <column name="frozen_tube_volumns_unit" type="nvarchar(20)" remarks="冻存管容量单位"></column>
+            <column name="frozen_tube_code" type="nvarchar(100)" remarks="冻存管编码"></column>
+            <column name="sample_temp_code" type="nvarchar(100)" remarks="样本临时编码"></column>
+            <column name="sample_used_times_most" type="integer" remarks="样本最多使用次数"></column>
+            <column name="sample_used_times" type="integer" remarks="样本已使用次数"></column>
+            <column name="sample_volumns" type="double" remarks="样本容量值"></column>
+            <column name="error_type" type="nvarchar(20)" remarks="错误类型：6001：位置错误，6002：样本类型错误，6003：其他"></column>
+            <column name="frozen_tube_state" type="nvarchar(20)" remarks="冻存管状态"></column>
+            <column name="frozen_tube_type_id" type="bigint" remarks="冻存管类型ID"></column>
+            <column name="sample_type_id" type="bigint" remarks="样本类型ID"></column>
+            <column name="sample_classification_id" type="bigint" remarks="样本分类ID"></column>
+        </addColumn>
+    </changeSet>
+
+
+</databaseChangeLog>

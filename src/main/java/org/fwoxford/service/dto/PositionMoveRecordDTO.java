@@ -292,4 +292,186 @@ public class PositionMoveRecordDTO extends AbstractAuditingDTO implements Serial
             ", memo='" + memo + "'" +
             '}';
     }
+    @Size(max = 100)
+    private String frozenTubeCode;
+    @Size(max = 100)
+    private String sampleTempCode;
+    @Size(max = 100)
+    private String sampleCode;
+    @Size(max = 100)
+    private String frozenTubeTypeCode;
+    @Size(max = 255)
+    private String frozenTubeTypeName;
+    @Size(max = 100)
+    private String sampleTypeCode;
+    @Size(max = 255)
+    private String sampleTypeName;
+    @Max(value = 20)
+    private Integer sampleUsedTimesMost;
+    @Max(value = 20)
+    private Integer sampleUsedTimes;
+    private Double frozenTubeVolumns;
+    private String frozenTubeVolumnsUnit;
+    private Double sampleVolumns;
+    @Size(max = 20)
+    private String errorType;
+    @Size(max = 20)
+    private String frozenTubeState;
+    private Long frozenTubeTypeId;
+    private Long sampleTypeId;
+    private Long sampleClassificationId;
+    private String sampleClassificationCode;
+    private String sampleClassificationName;
+
+    public String getFrozenTubeCode() {
+        return frozenTubeCode;
+    }
+
+    public void setFrozenTubeCode(String frozenTubeCode) {
+        this.frozenTubeCode = frozenTubeCode;
+    }
+
+    public String getSampleTempCode() {
+        return sampleTempCode;
+    }
+
+    public void setSampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
+    }
+
+    public String getSampleCode() {
+        return sampleCode;
+    }
+
+    public void setSampleCode(String sampleCode) {
+        this.sampleCode = sampleCode;
+    }
+
+    public String getFrozenTubeTypeCode() {
+        return frozenTubeTypeCode;
+    }
+
+    public void setFrozenTubeTypeCode(String frozenTubeTypeCode) {
+        this.frozenTubeTypeCode = frozenTubeTypeCode;
+    }
+
+    public String getFrozenTubeTypeName() {
+        return frozenTubeTypeName;
+    }
+
+    public void setFrozenTubeTypeName(String frozenTubeTypeName) {
+        this.frozenTubeTypeName = frozenTubeTypeName;
+    }
+
+    public String getSampleTypeCode() {
+        return sampleTypeCode;
+    }
+
+    public void setSampleTypeCode(String sampleTypeCode) {
+        this.sampleTypeCode = sampleTypeCode;
+    }
+
+    public String getSampleTypeName() {
+        return sampleTypeName;
+    }
+
+    public void setSampleTypeName(String sampleTypeName) {
+        this.sampleTypeName = sampleTypeName;
+    }
+
+    public Integer getSampleUsedTimesMost() {
+        return sampleUsedTimesMost;
+    }
+
+    public void setSampleUsedTimesMost(Integer sampleUsedTimesMost) {
+        this.sampleUsedTimesMost = sampleUsedTimesMost;
+    }
+
+    public Integer getSampleUsedTimes() {
+        return sampleUsedTimes;
+    }
+
+    public void setSampleUsedTimes(Integer sampleUsedTimes) {
+        this.sampleUsedTimes = sampleUsedTimes;
+    }
+
+    public Double getFrozenTubeVolumns() {
+        return frozenTubeVolumns;
+    }
+
+    public void setFrozenTubeVolumns(Double frozenTubeVolumns) {
+        this.frozenTubeVolumns = frozenTubeVolumns;
+    }
+
+    public String getFrozenTubeVolumnsUnit() {
+        return frozenTubeVolumnsUnit;
+    }
+
+    public void setFrozenTubeVolumnsUnit(String frozenTubeVolumnsUnit) {
+        this.frozenTubeVolumnsUnit = frozenTubeVolumnsUnit;
+    }
+
+    public Double getSampleVolumns() {
+        return sampleVolumns;
+    }
+
+    public void setSampleVolumns(Double sampleVolumns) {
+        this.sampleVolumns = sampleVolumns;
+    }
+
+    public String getErrorType() {
+        return errorType;
+    }
+
+    public void setErrorType(String errorType) {
+        this.errorType = errorType;
+    }
+
+    public String getFrozenTubeState() {
+        return frozenTubeState;
+    }
+
+    public void setFrozenTubeState(String frozenTubeState) {
+        this.frozenTubeState = frozenTubeState;
+    }
+
+    public Long getFrozenTubeTypeId() {
+        return frozenTubeTypeId;
+    }
+
+    public void setFrozenTubeTypeId(Long frozenTubeTypeId) {
+        this.frozenTubeTypeId = frozenTubeTypeId;
+    }
+
+    public Long getSampleTypeId() {
+        return sampleTypeId;
+    }
+
+    public void setSampleTypeId(Long sampleTypeId) {
+        this.sampleTypeId = sampleTypeId;
+    }
+
+    public Long getSampleClassificationId() {
+        return sampleClassificationId;
+    }
+
+    public void setSampleClassificationId(Long sampleClassificationId) {
+        this.sampleClassificationId = sampleClassificationId;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+    }
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+    }
 }

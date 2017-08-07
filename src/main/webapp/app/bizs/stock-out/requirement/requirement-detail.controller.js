@@ -146,6 +146,7 @@
         vm.projectConfig = {
             valueField:'id',
             labelField:'projectName',
+            searchField:'projectName',
             onInitialize: function(){
                 selector = arguments[0];
             },
@@ -321,6 +322,8 @@
         vm.sampleRequirementRevert = _fnSampleRequirementRevert;
         //判断是否都是核对完的列表
         vm.isApproval = _fnIsApproval;
+        //指定样本编码详情
+        vm.appointDescSample = _fnAppointDescSample;
 
         vm.dtOptions = BioBankDataTable.buildDTOption("BASIC")
             .withOption('createdRow', createdRow);
@@ -333,7 +336,7 @@
             DTColumnBuilder.newColumn('frozenTubeTypeName').withTitle('管类型'),
             DTColumnBuilder.newColumn('sex').withTitle('性别'),
             DTColumnBuilder.newColumn('diseaseTypeId').withTitle('疾病'),
-            DTColumnBuilder.newColumn('samples').withTitle('指定样本编码').withClass('text-ellipsis'),
+            DTColumnBuilder.newColumn('samples').withTitle('指定样本编码').withClass('text-ellipsis').renderWith(sampleOperateHtml),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "150").notSortable().renderWith(actionsHtml)
         ];
@@ -360,6 +363,14 @@
             $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
+        //指定样本编码
+        function sampleOperateHtml(data, type, full, meta) {
+            var html = '';
+            html =  '<a ng-click="vm.appointDescSample('+full.id+')">'+ full.samples +
+                    '</a>';
+            return html;
+        }
+        //操作
         function actionsHtml(data, type, full, meta) {
             return '<div ng-if="vm.status != 1103">'+
                     '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementRevert('+full.id+')">复原</a>&nbsp;' +
@@ -375,9 +386,6 @@
                 vm.file = "";
                 vm.sampleRequirement = data;
                 vm.addSampleModal(vm.sampleRequirement);
-                // if(vm.sampleRequirement.sampleTypeId && vm.projectIds){
-                //     _fuQuerySampleClass(vm.projectIds,vm.sampleRequirement.sampleTypeId);
-                // }
             }).error(function (data) {
             });
         }
@@ -414,7 +422,7 @@
             });
 
         }
-        //详情
+        //核对详情
         function _fnSampleRequirementDescModel(sampleRequirementId) {
             modalInstance = $uibModal.open({
                 animation: true,
@@ -456,6 +464,27 @@
                     vm.isVerifyFlag = false;
                 }
             }
+        }
+        //指定样本编码
+        function _fnAppointDescSample(requirementId) {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-appoint-sample-desc-modal.html',
+                controller: 'RequirementAppointSampleDescModalController',
+                controllerAs:'vm',
+                size:'lg',
+                resolve: {
+                    items: function () {
+                        return {
+                            sampleRequirementId:requirementId
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (data) {
+
+            });
         }
         //---------------------------弹出框--------------------------
 

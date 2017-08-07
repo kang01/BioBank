@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('EquipmentMovementController', EquipmentMovementController);
 
-    EquipmentMovementController.$inject = ['$scope','$compile','$state','$uibModal','$stateParams','hotRegisterer','toastr','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable','SampleUserService','RequirementService','BioBankBlockUi'];
+    EquipmentMovementController.$inject = ['$scope','$compile','$state','$uibModal','$stateParams','hotRegisterer','toastr','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable','SampleUserService','Principal','BioBankBlockUi'];
 
-    function EquipmentMovementController($scope,$compile,$state,$uibModal,$stateParams,hotRegisterer,toastr,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable,SampleUserService,RequirementService,BioBankBlockUi) {
+    function EquipmentMovementController($scope,$compile,$state,$uibModal,$stateParams,hotRegisterer,toastr,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable,SampleUserService,Principal,BioBankBlockUi) {
         var vm = this;
         vm.dtInstance = {};
         vm.selectedInstance = {};
@@ -50,6 +50,10 @@
                     vm.selected[equipment.id] = false;
                 });
             }
+            Principal.identity().then(function(account) {
+                vm.account = account;
+                vm.movement.operatorId1 = vm.account.id;
+            });
         }
         _init();
 
@@ -63,6 +67,7 @@
         vm.empty = _fnEmpty;
         vm.close = _fnClose;
         vm.closeMovement = _fnCloseMovement;
+
 
         function _fnSearch() {
             if(projectIds.length){
@@ -129,6 +134,7 @@
         function _fnCloseMovement() {
             vm.movementFlag = false;
         }
+
 
 
 

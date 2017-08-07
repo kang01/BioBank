@@ -1,0 +1,72 @@
+<div>
+    <h2 data-translate="bioBankApp.positionChange.home.title">Position Changes</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="position-change.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.positionChange.home.createLabel">
+                        Create new Position Change
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="changeReason"><span data-translate="bioBankApp.positionChange.changeReason">Change Reason</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="changeType"><span data-translate="bioBankApp.positionChange.changeType">Change Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="whetherFreezingAndThawing"><span data-translate="bioBankApp.positionChange.whetherFreezingAndThawing">Whether Freezing And Thawing</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="operatorId1"><span data-translate="bioBankApp.positionChange.operatorId1">Operator Id 1</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="operatorId2"><span data-translate="bioBankApp.positionChange.operatorId2">Operator Id 2</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.positionChange.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.positionChange.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="positionChange in vm.positionChanges track by positionChange.id">
+                    <td><a ui-sref="position-change-detail({id:positionChange.id})">{{positionChange.id}}</a></td>
+                    <td>{{positionChange.changeReason}}</td>
+                    <td>{{positionChange.changeType}}</td>
+                    <td>{{positionChange.whetherFreezingAndThawing}}</td>
+                    <td>{{positionChange.operatorId1}}</td>
+                    <td>{{positionChange.operatorId2}}</td>
+                    <td>{{positionChange.status}}</td>
+                    <td>{{positionChange.memo}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="position-change-detail({id:positionChange.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="position-change.edit({id:positionChange.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="position-change.delete({id:positionChange.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

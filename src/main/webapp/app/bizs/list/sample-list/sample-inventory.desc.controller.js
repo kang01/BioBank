@@ -42,15 +42,15 @@
             var status = "";
             var operateTime = moment(data.operateTime).format("YYYY-MM-DD");
             switch(data.type){
-                case 101 :
+                case "101" :
                     type = "转运" , status = "待入库"; break;
-                case 102 :
+                case "102" :
                     type = "入库", status = "已入库";break;
-                case 103 :
+                case "103" :
                     type = "出库", status = "已出库";break;
-                case 104 :
+                case "104" :
                     type = "交接", status = "已交接";break;
-                case 105 :
+                case "105" :
                     type = "移位", status = "已入库";break;
             }
             $('td:eq(0)', row).html(operateTime);

@@ -14,7 +14,7 @@
         $stateProvider
             .state('box-inventory', {
                 parent: 'bizs',
-                url: '/box-inventory?page&sort',
+                url: '/box-inventory',
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN']
                 },
@@ -26,22 +26,17 @@
                     }
                 },
                 params: {
-                    page: {
-                        value: '1',
-                        squash: true
-                    },
-                    sort: {
-                        value: 'id,asc',
-                        squash: true
-                    }
+                    equipmentId:null,
+                    areaId:null,
+                    shelvesId:null
                 },
                 resolve: {
                     pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                         return {
-                            page: PaginationUtil.parsePage($stateParams.page),
-                            sort: $stateParams.sort,
-                            predicate: PaginationUtil.parsePredicate($stateParams.sort),
-                            ascending: PaginationUtil.parseAscending($stateParams.sort)
+                            // page: PaginationUtil.parsePage($stateParams.page),
+                            // sort: $stateParams.sort,
+                            // predicate: PaginationUtil.parsePredicate($stateParams.sort),
+                            // ascending: PaginationUtil.parseAscending($stateParams.sort)
                         };
                     }],
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {

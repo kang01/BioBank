@@ -49,6 +49,13 @@
                                 .withOption('sorting', false)
                                 .withOption('searching', false);
                             break;
+                        case "SORTING":
+                            options.withOption('sorting', true)
+                                .withOption('paging', false)
+                                .withOption('info', false)
+                                .withOption('searching', false)
+                                .withPaginationType('full_numbers');
+                            break;
                     }
                 });
 
@@ -62,8 +69,11 @@
                         .withOption('pageLength', +pageLength);
                 }
 
-                if (dom){
+                if (dom != null){
                     options.withDOM(dom);
+                }else{
+                    dom = "<'row mt-0'<'col-xs-6 text-left pl-25' f> <'col-xs-6 text-right mb-5' TB> r> t <'row mt-0'<'col-xs-6'i> <'col-xs-6'p>>";
+                    options.withButtons([]).withDOM(dom);
                 }
 
                 if (scope){

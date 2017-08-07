@@ -1,0 +1,52 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
+    <h3 class="modal-title" id="modal-title">指定样本详情</h3>
+</div>
+<div class="modal-body add-sample-modal-body" id="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="no-padding">
+                <!--<table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance" class=" table table-striped table-bordered"></table>-->
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="col-md-6">样本编码</div>
+                                <div class="col-md-6">样本类型</div>
+                            </th>
+                            <th>
+                                <div class="col-md-6">样本编码</div>
+                                <div class="col-md-6">样本类型</div>
+                            </th>
+                            <th>
+                                <div class="col-md-6">样本编码</div>
+                                <div class="col-md-6">样本类型</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody >
+                        <tr  ng-repeat="item in vm.samples">
+                            <td ng-repeat="item1 in item">
+                                <div class="col-md-6">{{item1.sampleCode}}</div>
+                                <div class="col-md-6">{{item1.sampleType}}</div>
+                            </td>
+                            <!--<td>{{item1.sampleType}}</td>-->
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mt-20">共{{vm.queryCount}}条数据</div>
+                    </div>
+                    <div class="col-md-8 text-right">
+                        <uib-pagination total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()" items-per-page="vm.itemsPerPage" max-size="5" first-text="<<" previous-text="<" next-text=">" last-text=">>" boundary-links="true" boundary-link-numbers="true"></uib-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <!--<button class="btn btn-primary" type="button" ng-click="vm.ok()" >确定</button>-->
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+</div>

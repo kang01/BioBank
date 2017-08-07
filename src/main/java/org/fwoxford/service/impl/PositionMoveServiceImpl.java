@@ -121,99 +121,6 @@ public class PositionMoveServiceImpl implements PositionMoveService {
         positionMoveRepository.delete(id);
     }
 
-    /**
-     * 样本移位
-     *
-     * @param positionMoveDTO
-     * @return
-     */
-    @Override
-    public PositionMoveSampleDTO moveSamplePosition(PositionMoveSampleDTO positionMoveDTO) {
-        //保存移位数据
-        PositionMove positionMove = positionMoveMapper.positionMoveSampleDTOToPositionMove(positionMoveDTO);
-        checkUser(positionMoveDTO);
-        positionMove.setMoveType(Constants.MOVE_TYPE_1);
-        positionMove.setStatus(Constants.VALID);
-        positionMoveRepository.save(positionMove);
-        //保存移位记录详情数据
-        List<PositionMoveForBox> positionMoveForBoxes = positionMoveDTO.getPositionMoveForBoxList();
-        for (PositionMoveForBox p : positionMoveForBoxes) {
-            createMoveRecordDetail(p, positionMove);
-        }
-        positionMoveDTO.setId(positionMove.getId());
-        return positionMoveDTO;
-    }
-
-    @Override
-    public PositionMoveBoxDTO savePositionMoveForBox(PositionMoveBoxDTO positionMoveDTO) {
-        //保存移位数据
-        PositionMove positionMove = positionMoveMapper.positionMoveBoxDTOToPositionMove(positionMoveDTO);
-        checkUser(positionMoveDTO);
-        positionMove.setMoveType(Constants.MOVE_TYPE_2);
-        positionMove.setStatus(Constants.VALID);
-        positionMoveRepository.save(positionMove);
-        positionMoveDTO.setId(positionMove.getId());
-        List<PositionMoveForShelves> positionMoveForShelves = positionMoveDTO.getPositionMoveForShelves();
-        for(PositionMoveForShelves shelves:positionMoveForShelves){
-            if(shelves.getId() == null){
-                throw new BankServiceException("冻存架ID不能为空！");
-            }
-            SupportRack supportRack = supportRackRepository.findOne(shelves.getId());
-            if(supportRack == null) {
-                throw new BankServiceException("冻存架不存在！");
-            }
-            List<PositionMoveForBox> positionMoveForBoxes = shelves.getPositionMoveForBoxList();
-            for(PositionMoveForBox p : positionMoveForBoxes){
-                if(p.getId() == null){
-                    throw new BankServiceException("冻存盒ID不能为空！");
-                }
-                FrozenBox frozenBox = frozenBoxRepository.findOne(p.getId());
-                if(frozenBox == null || (frozenBox != null &&frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED))){
-                    throw new BankServiceException("冻存盒不存在！");
-                }
-                if(p.getRowsInShelf()== null || p.getColumnsInShelf() == null){
-                    throw new BankServiceException("未指定冻存盒位置！");
-                }
-                checkShelves(supportRack,p.getColumnsInShelf(),p.getRowsInShelf());
-                List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(p.getId());
-                 for(FrozenTube frozenTube:frozenTubeList){
-                     PositionMoveRecord positionMoveRecord = new PositionMoveRecord()
-                         .positionMove(positionMove)
-                         .moveType(Constants.MOVE_TYPE_2)
-                         .equipment(frozenTube.getFrozenBox().getEquipment())
-                         .equipmentCode(frozenTube.getFrozenBox().getEquipmentCode())
-                         .area(frozenTube.getFrozenBox().getArea())
-                         .areaCode(frozenTube.getFrozenBox().getAreaCode())
-                         .supportRack(frozenTube.getFrozenBox().getSupportRack())
-                         .supportRackCode(frozenTube.getFrozenBox().getSampleTypeCode())
-                         .columnsInShelf(frozenTube.getFrozenBox().getColumnsInShelf())
-                         .rowsInShelf(frozenTube.getFrozenBox().getRowsInShelf())
-                         .frozenBox(frozenTube.getFrozenBox())
-                         .frozenBoxCode(frozenTube.getFrozenBoxCode())
-                         .memo(frozenTube.getMemo())
-                         .project(frozenTube.getProject())
-                         .projectCode(frozenTube.getProjectCode())
-                         .projectSite(frozenTube.getProjectSite())
-                         .projectSiteCode(frozenTube.getProjectSiteCode())
-                         .whetherFreezingAndThawing(positionMove.isWhetherFreezingAndThawing())
-                         .status(frozenTube.getStatus())
-                         .tubeColumns(frozenTube.getTubeColumns())
-                         .tubeRows(frozenTube.getTubeRows());
-                     positionMoveRecordRepository.save(positionMoveRecord);
-                }
-                frozenBox =  frozenBox.equipment(supportRack.getArea().getEquipment()).equipmentCode(supportRack.getArea().getEquipmentCode())
-                    .area(supportRack.getArea())
-                    .areaCode(supportRack.getArea().getAreaCode())
-                    .supportRack(supportRack)
-                    .supportRackCode(supportRack.getSupportRackCode())
-                    .columnsInShelf(p.getColumnsInShelf())
-                    .rowsInShelf(p.getRowsInShelf());
-                frozenBoxRepository.save(frozenBox);
-            }
-        }
-        return positionMoveDTO;
-    }
-
     public void checkShelves(SupportRack supportRack, String columnsInShelf, String rowsInShelf) {
         FrozenBox frozenBox = frozenBoxRepository.findBySupportRackIdAndColumnsInShelfAndRowsInShelf(supportRack.getId(),columnsInShelf,rowsInShelf);
         if(frozenBox != null){
@@ -222,55 +129,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
     }
 
     @Override
-    public PositionMoveShelvesDTO savePositionMoveForShelf(PositionMoveShelvesDTO positionMoveDTO) {
-        //保存移位数据
-        PositionMove positionMove = positionMoveMapper.positionMoveShelvesDTOToPositionMove(positionMoveDTO);
-        checkUser(positionMoveDTO);
-        positionMove.setMoveType(Constants.MOVE_TYPE_3);
-        positionMove.setStatus(Constants.VALID);
-        positionMoveRepository.save(positionMove);
-        positionMoveDTO.setId(positionMove.getId());
-        List<PositionMoveForArea> positionMoveForAreas = positionMoveDTO.getPositionMoveForAreas();
-        for(PositionMoveForArea p:positionMoveForAreas){
-            if(p.getId() == null){
-                throw new BankServiceException("区域ID不能空！");
-            }
-            Area area = areaRepository.findOne(p.getId());
-            if(area == null){
-                throw new BankServiceException("区域不存在！");
-            }
-            List<PositionMoveForShelves> positionMoveForShelves = p.getPositionMoveForShelves();
-            for(PositionMoveForShelves shelve :positionMoveForShelves){
-                if(shelve.getId() == null){
-                    throw new BankServiceException("冻存架ID不能为空！");
-                }
-                SupportRack supportRack = supportRackRepository.findOne(shelve.getId());
-                if(supportRack == null){
-                    throw new BankServiceException("冻存架不存在！");
-                }
-                List<FrozenBox> frozenBoxList = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(supportRack.getArea().getEquipmentCode(),supportRack.getArea().getAreaCode(),supportRack.getSupportRackCode());
-                if(frozenBoxList.size()>=area.getFreezeFrameNumber()){
-                    throw new BankServiceException("该区域冻存架已满");
-                }
-                for(FrozenBox frozenBox:frozenBoxList){
-                   List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(p.getId());
-                   for(FrozenTube frozenTube:frozenTubeList){
-                       saveMoveDetail(positionMove,Constants.MOVE_TYPE_3,frozenTube);
-                   }
-                   frozenBox =  frozenBox.equipment(supportRack.getArea().getEquipment()).equipmentCode(supportRack.getArea().getEquipmentCode())
-                       .area(supportRack.getArea())
-                       .areaCode(supportRack.getArea().getAreaCode())
-                       .supportRack(supportRack)
-                       .supportRackCode(supportRack.getSupportRackCode());
-                   frozenBoxRepository.save(frozenBox);
-               }
-            }
-        }
-        return positionMoveDTO;
-    }
-
-    @Override
-    public PositionMoveDTO creataSamplePosition(PositionMoveDTO positionMoveDTO) {
+    public PositionMoveDTO createSamplePosition(PositionMoveDTO positionMoveDTO) {
         //保存移位数据
         PositionMove positionMove = positionMoveMapper.positionMoveDTOToPositionMove(positionMoveDTO);
         checkUser(positionMoveDTO);
@@ -341,18 +200,24 @@ public class PositionMoveServiceImpl implements PositionMoveService {
             if(frozenBoxListNew.size()>=area.getFreezeFrameNumber()){
                 throw new BankServiceException("该区域冻存架已满");
             }
+            List<FrozenBox> frozenBoxes = new ArrayList<>();
+            List<Long> frozenBoxIds = new ArrayList<Long>();
+
              for(FrozenBox frozenBox:frozenBoxList){
+                 frozenBoxIds.add(frozenBox.getId());
                  frozenBox =  frozenBox.equipment(supportRack.getArea().getEquipment()).equipmentCode(supportRack.getArea().getEquipmentCode())
                      .area(supportRack.getArea())
                      .areaCode(supportRack.getArea().getAreaCode())
                      .supportRack(supportRack)
                      .supportRackCode(supportRack.getSupportRackCode());
-                 frozenBoxRepository.save(frozenBox);
-                 List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(p.getId());
-                 for(FrozenTube frozenTube:frozenTubeList){
-                    saveMoveDetail(positionMove,Constants.MOVE_TYPE_3,frozenTube);
+                 if(frozenBoxes.size() == 5000){
+                     frozenBoxRepository.save(frozenBoxes);
+                     frozenBoxes = new ArrayList<FrozenBox>();
                  }
              }
+            frozenBoxRepository.save(frozenBoxes);
+            List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxIdIn(frozenBoxIds);
+            saveMoveDetail(positionMove,Constants.MOVE_TYPE_3,frozenTubeList);
         }
         return positionMoveDTO;
     }
@@ -416,9 +281,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
             .rowsInShelf(p.getRowsInShelf());
         frozenBoxRepository.save(frozenBox);
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(p.getFrozenBoxId());
-        for(FrozenTube frozenTube:frozenTubeList){
-            saveMoveDetail(positionMove,Constants.MOVE_TYPE_2,frozenTube);
-        }
+        saveMoveDetail(positionMove,Constants.MOVE_TYPE_2,frozenTubeList);
     }
 
 
@@ -457,36 +320,63 @@ public class PositionMoveServiceImpl implements PositionMoveService {
             frozenTube.setFrozenBox(frozenBox);
             frozenTube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             frozenTubeRepository.save(frozenTube);
-            saveMoveDetail(positionMove,Constants.MOVE_TYPE_1,frozenTube);
+            List<FrozenTube> frozenTubeListNew = new ArrayList<FrozenTube>(){{add(frozenTube);}};
+            saveMoveDetail(positionMove,Constants.MOVE_TYPE_1,frozenTubeListNew);
         }
     }
 
-    public void saveMoveDetail(PositionMove positionMove, String moveType, FrozenTube frozenTube) {
-        PositionMoveRecord positionMoveRecord = new PositionMoveRecord()
-            .sampleCode(StringUtils.isEmpty(frozenTube.getSampleCode())?frozenTube.getSampleTempCode():frozenTube.getSampleCode())
-            .positionMove(positionMove)
-            .frozenTube(frozenTube)
-            .moveType(moveType)
-            .equipment(frozenTube.getFrozenBox().getEquipment())
-            .equipmentCode(frozenTube.getFrozenBox().getEquipmentCode())
-            .area(frozenTube.getFrozenBox().getArea())
-            .areaCode(frozenTube.getFrozenBox().getAreaCode())
-            .supportRack(frozenTube.getFrozenBox().getSupportRack())
-            .supportRackCode(frozenTube.getFrozenBox().getSupportRackCode())
-            .columnsInShelf(frozenTube.getFrozenBox().getColumnsInShelf())
-            .rowsInShelf(frozenTube.getFrozenBox().getRowsInShelf())
-            .frozenBox(frozenTube.getFrozenBox())
-            .frozenBoxCode(frozenTube.getFrozenBoxCode())
-            .memo(frozenTube.getMemo())
-            .project(frozenTube.getProject())
-            .projectCode(frozenTube.getProjectCode())
-            .projectSite(frozenTube.getProjectSite())
-            .projectSiteCode(frozenTube.getProjectSiteCode())
-            .whetherFreezingAndThawing(positionMove.isWhetherFreezingAndThawing())
-            .status(frozenTube.getStatus())
-            .tubeColumns(frozenTube.getTubeColumns())
-            .tubeRows(frozenTube.getTubeRows());
-        positionMoveRecordRepository.save(positionMoveRecord);
+    public void saveMoveDetail(PositionMove positionMove, String moveType, List<FrozenTube> frozenTubeList) {
+        List<PositionMoveRecord> positionMoveRecordList = new ArrayList<PositionMoveRecord>();
+        for(FrozenTube frozenTube : frozenTubeList){
+            PositionMoveRecord positionMoveRecord = new PositionMoveRecord()
+                .sampleCode(StringUtils.isEmpty(frozenTube.getSampleCode())?frozenTube.getSampleTempCode():frozenTube.getSampleCode())
+                .positionMove(positionMove)
+                .frozenTube(frozenTube)
+                .moveType(moveType)
+                .equipment(frozenTube.getFrozenBox().getEquipment())
+                .equipmentCode(frozenTube.getFrozenBox().getEquipmentCode())
+                .area(frozenTube.getFrozenBox().getArea())
+                .areaCode(frozenTube.getFrozenBox().getAreaCode())
+                .supportRack(frozenTube.getFrozenBox().getSupportRack())
+                .supportRackCode(frozenTube.getFrozenBox().getSupportRackCode())
+                .columnsInShelf(frozenTube.getFrozenBox().getColumnsInShelf())
+                .rowsInShelf(frozenTube.getFrozenBox().getRowsInShelf())
+                .frozenBox(frozenTube.getFrozenBox())
+                .frozenBoxCode(frozenTube.getFrozenBoxCode())
+                .memo(frozenTube.getMemo())
+                .project(frozenTube.getProject())
+                .projectCode(frozenTube.getProjectCode())
+                .projectSite(frozenTube.getProjectSite())
+                .projectSiteCode(frozenTube.getProjectSiteCode())
+                .whetherFreezingAndThawing(positionMove.isWhetherFreezingAndThawing())
+                .status(frozenTube.getStatus())
+                .tubeColumns(frozenTube.getTubeColumns())
+                .tubeRows(frozenTube.getTubeRows())
+                .frozenTubeType(frozenTube.getFrozenTubeType())
+                .frozenTubeTypeCode(frozenTube.getFrozenTubeTypeCode())
+                .frozenTubeTypeName(frozenTube.getFrozenTubeTypeName())
+                .sampleType(frozenTube.getSampleType())
+                .sampleTypeCode(frozenTube.getSampleTypeCode())
+                .sampleTypeName(frozenTube.getSampleTypeName())
+                .sampleClassification(frozenTube.getSampleClassification())
+                .sampleClassificationCode(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getSampleClassificationCode():null)
+                .sampleClassificationName(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getSampleClassificationName():null)
+                .frozenTubeCode(frozenTube.getFrozenTubeCode())
+                .frozenTubeState(frozenTube.getFrozenTubeState())
+                .sampleTempCode(frozenTube.getSampleTempCode())
+                .sampleUsedTimes(frozenTube.getSampleUsedTimes())
+                .sampleUsedTimesMost(frozenTube.getSampleUsedTimesMost())
+                .frozenTubeVolumns(frozenTube.getFrozenTubeVolumns())
+                .frozenTubeVolumnsUnit(frozenTube.getFrozenTubeVolumnsUnit())
+                .sampleVolumns(frozenTube.getSampleVolumns())
+                .errorType(frozenTube.getErrorType());
+            positionMoveRecordList.add(positionMoveRecord);
+            if(positionMoveRecordList.size()==5000){
+                positionMoveRecordRepository.save(positionMoveRecordList);
+                positionMoveRecordList= new ArrayList<PositionMoveRecord>();
+            }
+        }
+        positionMoveRecordRepository.save(positionMoveRecordList);
     }
 
     public void createMoveRecordDetail(PositionMoveForBox p, PositionMove positionMove) {

@@ -1,5 +1,8 @@
 package org.fwoxford.service.impl;
 
+import org.apache.commons.beanutils.ConvertUtils;
+import org.fwoxford.config.Constants;
+import org.fwoxford.repository.StockOutRequiredSampleRepositories;
 import org.fwoxford.service.StockOutRequiredSampleService;
 import org.fwoxford.domain.StockOutRequiredSample;
 import org.fwoxford.repository.StockOutRequiredSampleRepository;
@@ -7,11 +10,16 @@ import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
 import org.fwoxford.service.mapper.StockOutRequiredSampleMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Convert;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,10 +32,12 @@ import java.util.stream.Collectors;
 public class StockOutRequiredSampleServiceImpl implements StockOutRequiredSampleService{
 
     private final Logger log = LoggerFactory.getLogger(StockOutRequiredSampleServiceImpl.class);
-    
+
     private final StockOutRequiredSampleRepository stockOutRequiredSampleRepository;
 
     private final StockOutRequiredSampleMapper stockOutRequiredSampleMapper;
+    @Autowired
+    private StockOutRequiredSampleRepositories stockOutRequiredSampleRepositories;
 
     public StockOutRequiredSampleServiceImpl(StockOutRequiredSampleRepository stockOutRequiredSampleRepository, StockOutRequiredSampleMapper stockOutRequiredSampleMapper) {
         this.stockOutRequiredSampleRepository = stockOutRequiredSampleRepository;
@@ -51,7 +61,7 @@ public class StockOutRequiredSampleServiceImpl implements StockOutRequiredSample
 
     /**
      *  Get all the stockOutRequiredSamples.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -87,5 +97,25 @@ public class StockOutRequiredSampleServiceImpl implements StockOutRequiredSample
     public void delete(Long id) {
         log.debug("Request to delete StockOutRequiredSample : {}", id);
         stockOutRequiredSampleRepository.delete(id);
+    }
+
+    @Override
+    public DataTablesOutput<StockOutRequiredSampleDTO> getPageStockOutRequiredSampleByRequired(DataTablesInput input, Long id) {
+        input.addColumn("stockOutRequirement.id",true,true,"+"+id);
+        Converter<StockOutRequiredSample, StockOutRequiredSampleDTO> userConverter = new Converter<StockOutRequiredSample, StockOutRequiredSampleDTO>() {
+            @Override
+            public StockOutRequiredSampleDTO convert(StockOutRequiredSample e) {
+                String sampleType = Constants.SAMPLE_TYPE_CODE_MAP.get(e.getSampleType());
+                return new StockOutRequiredSampleDTO(e.getId(),e.getSampleCode(),sampleType,e.getStatus(),e.getMemo(),e.getStockOutRequirement().getId());
+            }
+        };
+        DataTablesOutput<StockOutRequiredSampleDTO> dtoDataTablesOutput = stockOutRequiredSampleRepositories.findAll(input,userConverter);
+        return dtoDataTablesOutput;
+    }
+
+    @Override
+    public Page<StockOutRequiredSampleDTO> getAllStockOutRequiredSamplesByRequirementId(Pageable pageable, Long id) {
+        Page<StockOutRequiredSample> result = stockOutRequiredSampleRepository.findAllByStockOutRequirementId(id,pageable);
+        return result.map(stockOutRequiredSample -> stockOutRequiredSampleMapper.stockOutRequiredSampleToStockOutRequiredSampleDTO(stockOutRequiredSample));
     }
 }

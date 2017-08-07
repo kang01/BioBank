@@ -61,6 +61,97 @@ public class StockInBox extends AbstractAuditingEntity implements Serializable {
     @Column(name = "count_of_sample", nullable = false)
     private Integer countOfSample;
     /**
+     * 冻存盒类型编码
+     */
+    @Size(max = 100)
+    @Column(name = "frozen_box_type_code", length = 100)
+    private String frozenBoxTypeCode;
+    /**
+     * 冻存盒行数
+     */
+    @Size(max = 20)
+    @Column(name = "frozen_box_rows", length = 20)
+    private String frozenBoxTypeRows;
+    /**
+     * 冻存盒列数
+     */
+    @Size(max = 20)
+    @Column(name = "frozen_box_columns", length = 20)
+    private String frozenBoxTypeColumns;
+    /**
+     * 项目编码
+     */
+    @Size(max = 100)
+    @Column(name = "project_code", length = 100)
+    private String projectCode;
+    /**
+     * 项目名称
+     */
+    @Size(max = 255)
+    @Column(name = "project_name", length = 255)
+    private String projectName;
+    /**
+     * 项目点编码
+     */
+    @Size(max = 100)
+    @Column(name = "project_site_code", length = 100)
+    private String projectSiteCode;
+    /**
+     * 项目点名称
+     */
+    @Size(max = 255)
+    @Column(name = "project_site_name", length = 255)
+    private String projectSiteName;
+    /**
+     * 样本类型编码
+     */
+    @Size(max = 100)
+    @Column(name = "sample_type_code", length = 100)
+    private String sampleTypeCode;
+    /**
+     * 样本类型名称
+     */
+    @Size(max = 255)
+    @Column(name = "sample_type_name", length = 255)
+    private String sampleTypeName;
+    /**
+     * 样本分类编码
+     */
+    @Size(max = 100)
+    @Column(name = "sample_classification_code", length = 100)
+    private String sampleClassificationCode;
+    /**
+     * 样本分类名称
+     */
+    @Size(max = 255)
+    @Column(name = "sample_classification_name", length = 255)
+    private String sampleClassificationName;
+    /**
+     * 是否分装：1：是，0：否
+     */
+    @Column(name = "is_split", nullable = false)
+    private Integer isSplit;
+    /**
+     * 空管数
+     */
+    @Column(name = "empty_tube_number")
+    private Integer emptyTubeNumber;
+    /**
+     * 空孔数
+     */
+    @Column(name = "empty_hole_number")
+    private Integer emptyHoleNumber;
+    /**
+     * 错位数
+     */
+    @Column(name = "dislocation_number")
+    private Integer dislocationNumber;
+    /**
+     * 是否已导入样本数据：1：是，0：否
+     */
+    @Column(name = "is_real_data")
+    private Integer isRealData;
+    /**
      * 备注
      */
     @Size(max = 1024)
@@ -117,6 +208,20 @@ public class StockInBox extends AbstractAuditingEntity implements Serializable {
      */
     @ManyToOne
     private Area area;
+    @ManyToOne
+    private FrozenBoxType frozenBoxType;
+
+    @ManyToOne
+    private SampleType sampleType;
+
+    @ManyToOne
+    private SampleClassification sampleClassification;
+
+    @ManyToOne
+    private Project project;
+
+    @ManyToOne
+    private ProjectSite projectSite;
 
     public Long getId() {
         return id;
@@ -189,6 +294,182 @@ public class StockInBox extends AbstractAuditingEntity implements Serializable {
 
     public void setColumnsInShelf(String columnsInShelf) {
         this.columnsInShelf = columnsInShelf;
+    }
+
+    public String getFrozenBoxTypeCode() {
+        return frozenBoxTypeCode;
+    }
+    public StockInBox frozenBoxTypeCode(String frozenBoxTypeCode) {
+        this.frozenBoxTypeCode = frozenBoxTypeCode;
+        return this;
+    }
+    public void setFrozenBoxTypeCode(String frozenBoxTypeCode) {
+        this.frozenBoxTypeCode = frozenBoxTypeCode;
+    }
+
+    public String getFrozenBoxTypeRows() {
+        return frozenBoxTypeRows;
+    }
+    public StockInBox frozenBoxTypeRows(String frozenBoxTypeRows) {
+        this.frozenBoxTypeRows = frozenBoxTypeRows;
+        return this;
+    }
+    public void setFrozenBoxTypeRows(String frozenBoxTypeRows) {
+        this.frozenBoxTypeRows = frozenBoxTypeRows;
+    }
+
+    public String getFrozenBoxTypeColumns() {
+        return frozenBoxTypeColumns;
+    }
+    public StockInBox frozenBoxTypeColumns(String frozenBoxTypeColumns) {
+        this.frozenBoxTypeColumns = frozenBoxTypeColumns;
+        return this;
+    }
+    public void setFrozenBoxTypeColumns(String frozenBoxTypeColumns) {
+        this.frozenBoxTypeColumns = frozenBoxTypeColumns;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+    public StockInBox projectCode(String projectCode) {
+        this.projectCode = projectCode;
+        return this;
+    }
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+    public StockInBox projectName(String projectName) {
+        this.projectName = projectName;
+        return this;
+    }
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getProjectSiteCode() {
+        return projectSiteCode;
+    }
+    public StockInBox projectSiteCode(String projectSiteCode) {
+        this.projectSiteCode = projectSiteCode;
+        return this;
+    }
+    public void setProjectSiteCode(String projectSiteCode) {
+        this.projectSiteCode = projectSiteCode;
+    }
+
+    public String getProjectSiteName() {
+        return projectSiteName;
+    }
+    public StockInBox projectSiteName(String projectSiteName) {
+        this.projectSiteName = projectSiteName;
+        return this;
+    }
+    public void setProjectSiteName(String projectSiteName) {
+        this.projectSiteName = projectSiteName;
+    }
+
+    public String getSampleTypeCode() {
+        return sampleTypeCode;
+    }
+    public StockInBox sampleTypeCode(String sampleTypeCode) {
+        this.sampleTypeCode = sampleTypeCode;
+        return this;
+    }
+    public void setSampleTypeCode(String sampleTypeCode) {
+        this.sampleTypeCode = sampleTypeCode;
+    }
+
+    public String getSampleTypeName() {
+        return sampleTypeName;
+    }
+    public StockInBox sampleTypeName(String sampleTypeName) {
+        this.sampleTypeName = sampleTypeName;
+        return this;
+    }
+    public void setSampleTypeName(String sampleTypeName) {
+        this.sampleTypeName = sampleTypeName;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+    public StockInBox sampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+        return this;
+    }
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+    }
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+    public StockInBox sampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+        return this;
+    }
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+    }
+
+    public Integer getIsSplit() {
+        return isSplit;
+    }
+    public StockInBox isSplit(Integer isSplit) {
+        this.isSplit = isSplit;
+        return this;
+    }
+    public void setIsSplit(Integer isSplit) {
+        this.isSplit = isSplit;
+    }
+
+    public Integer getEmptyTubeNumber() {
+        return emptyTubeNumber;
+    }
+    public StockInBox emptyTubeNumber(Integer emptyTubeNumber) {
+        this.emptyTubeNumber = emptyTubeNumber;
+        return this;
+    }
+    public void setEmptyTubeNumber(Integer emptyTubeNumber) {
+        this.emptyTubeNumber = emptyTubeNumber;
+    }
+
+    public Integer getEmptyHoleNumber() {
+        return emptyHoleNumber;
+    }
+    public StockInBox emptyHoleNumber(Integer emptyHoleNumber) {
+        this.emptyHoleNumber = emptyHoleNumber;
+        return this;
+    }
+    public void setEmptyHoleNumber(Integer emptyHoleNumber) {
+        this.emptyHoleNumber = emptyHoleNumber;
+    }
+
+    public Integer getDislocationNumber() {
+        return dislocationNumber;
+    }
+    public StockInBox dislocationNumber(Integer dislocationNumber) {
+        this.dislocationNumber = dislocationNumber;
+        return this;
+    }
+    public void setDislocationNumber(Integer dislocationNumber) {
+        this.dislocationNumber = dislocationNumber;
+    }
+
+    public Integer getIsRealData() {
+        return isRealData;
+    }
+    public StockInBox isRealData(Integer isRealData) {
+        this.isRealData = isRealData;
+        return this;
+    }
+    public void setIsRealData(Integer isRealData) {
+        this.isRealData = isRealData;
     }
 
     public String getStockInCode() {
@@ -316,6 +597,61 @@ public class StockInBox extends AbstractAuditingEntity implements Serializable {
         this.area = area;
     }
 
+    public FrozenBoxType getFrozenBoxType() {
+        return frozenBoxType;
+    }
+    public StockInBox frozenBoxType(FrozenBoxType frozenBoxType) {
+        this.frozenBoxType = frozenBoxType;
+        return this;
+    }
+    public void setFrozenBoxType(FrozenBoxType frozenBoxType) {
+        this.frozenBoxType = frozenBoxType;
+    }
+
+    public SampleType getSampleType() {
+        return sampleType;
+    }
+    public StockInBox sampleType(SampleType sampleType) {
+        this.sampleType = sampleType;
+        return this;
+    }
+    public void setSampleType(SampleType sampleType) {
+        this.sampleType = sampleType;
+    }
+
+    public SampleClassification getSampleClassification() {
+        return sampleClassification;
+    }
+    public StockInBox sampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
+        return this;
+    }
+    public void setSampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+    public StockInBox project(Project project) {
+        this.project = project;
+        return this;
+    }
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public ProjectSite getProjectSite() {
+        return projectSite;
+    }
+    public StockInBox projectSite(ProjectSite projectSite) {
+        this.projectSite = projectSite;
+        return this;
+    }
+    public void setProjectSite(ProjectSite projectSite) {
+        this.projectSite = projectSite;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -340,15 +676,42 @@ public class StockInBox extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "StockInBox{" +
             "id=" + id +
-            ", equipmentCode='" + equipmentCode + "'" +
-            ", areaCode='" + areaCode + "'" +
-            ", supportRackCode='" + supportRackCode + "'" +
-            ", rowsInShelf='" + rowsInShelf + "'" +
-            ", columnsInShelf='" + columnsInShelf + "'" +
-            ", memo='" + memo + "'" +
-            ", status='" + status + "'" +
-            ", frozenBoxCode='" + frozenBoxCode + "'" +
-            ", stockInCode='" + stockInCode + "'" +
+            ", equipmentCode='" + equipmentCode + '\'' +
+            ", areaCode='" + areaCode + '\'' +
+            ", supportRackCode='" + supportRackCode + '\'' +
+            ", rowsInShelf='" + rowsInShelf + '\'' +
+            ", columnsInShelf='" + columnsInShelf + '\'' +
+            ", countOfSample=" + countOfSample +
+            ", frozenBoxTypeCode='" + frozenBoxTypeCode + '\'' +
+            ", frozenBoxTypeRows='" + frozenBoxTypeRows + '\'' +
+            ", frozenBoxTypeColumns='" + frozenBoxTypeColumns + '\'' +
+            ", projectCode='" + projectCode + '\'' +
+            ", projectName='" + projectName + '\'' +
+            ", projectSiteCode='" + projectSiteCode + '\'' +
+            ", projectSiteName='" + projectSiteName + '\'' +
+            ", sampleTypeCode='" + sampleTypeCode + '\'' +
+            ", sampleTypeName='" + sampleTypeName + '\'' +
+            ", sampleClassificationCode='" + sampleClassificationCode + '\'' +
+            ", sampleClassificationName='" + sampleClassificationName + '\'' +
+            ", isSplit=" + isSplit +
+            ", emptyTubeNumber=" + emptyTubeNumber +
+            ", emptyHoleNumber=" + emptyHoleNumber +
+            ", dislocationNumber=" + dislocationNumber +
+            ", isRealData=" + isRealData +
+            ", memo='" + memo + '\'' +
+            ", status='" + status + '\'' +
+            ", frozenBox=" + frozenBox +
+            ", frozenBoxCode='" + frozenBoxCode + '\'' +
+            ", stockInCode='" + stockInCode + '\'' +
+            ", stockIn=" + stockIn +
+            ", equipment=" + equipment +
+            ", supportRack=" + supportRack +
+            ", area=" + area +
+            ", frozenBoxType=" + frozenBoxType +
+            ", sampleType=" + sampleType +
+            ", sampleClassification=" + sampleClassification +
+            ", project=" + project +
+            ", projectSite=" + projectSite +
             '}';
     }
 }

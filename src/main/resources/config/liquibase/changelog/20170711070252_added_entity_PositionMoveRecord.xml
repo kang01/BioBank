@@ -127,5 +127,26 @@
         </createTable>
 
     </changeSet>
-
+    <changeSet id="20170711070252-3" author="jhipster">
+        <addColumn tableName="position_move_record">
+            <column name="frozen_tube_type_code" type="nvarchar(100)" remarks="冻存管类型编码"></column>
+            <column name="frozen_tube_type_name" type="nvarchar(255)" remarks="冻存管类型名称"></column>
+            <column name="sample_type_code" type="nvarchar(100)" remarks="样本类型编码"></column>
+            <column name="sample_type_name" type="nvarchar(255)" remarks="样本类型名称"></column>
+            <column name="sample_classification_code" type="nvarchar(100)" remarks="样本分类编码"></column>
+            <column name="sample_classification_name" type="nvarchar(100)" remarks="样本分类名称"></column>
+            <column name="frozen_tube_volumns" type="Double" remarks="冻存管容量值"></column>
+            <column name="frozen_tube_volumns_unit" type="nvarchar(20)" remarks="冻存管容量单位"></column>
+            <column name="frozen_tube_code" type="nvarchar(100)" remarks="冻存管编码"></column>
+            <column name="sample_temp_code" type="nvarchar(100)" remarks="样本临时编码"></column>
+            <column name="sample_used_times_most" type="integer" remarks="样本最多使用次数"></column>
+            <column name="sample_used_times" type="integer" remarks="样本已使用次数"></column>
+            <column name="sample_volumns" type="double" remarks="样本容量值"></column>
+            <column name="error_type" type="nvarchar(20)" remarks="错误类型：6001：位置错误，6002：样本类型错误，6003：其他"></column>
+            <column name="frozen_tube_state" type="nvarchar(20)" remarks="冻存管状态"></column>
+            <column name="frozen_tube_type_id" type="bigint" remarks="冻存管类型ID"></column>
+            <column name="sample_type_id" type="bigint" remarks="样本类型ID"></column>
+            <column name="sample_classification_id" type="bigint" remarks="样本分类ID"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -18,7 +18,6 @@ public class StockInBoxForIncomplete {
     private FrozenBoxTypeDTO frozenBoxType;
     private SampleClassificationDTO sampleClassification;
     private List<StockInTubeForBox> stockInFrozenTubeList;
-
     public Long getFrozenBoxId() {
         return frozenBoxId;
     }

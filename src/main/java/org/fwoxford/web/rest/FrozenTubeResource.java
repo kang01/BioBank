@@ -171,15 +171,37 @@ public class FrozenTubeResource {
     public ResponseEntity<List<FrozenTubeDTO>> getFrozenTubeBySampleCodeNadProjectAndSampleTypeAndSampleClassifacition(@PathVariable String sampleCode,@PathVariable String projectCode,@PathVariable Long sampleTypeId,
                                                                                                                        @PathVariable Long sampleClassificationId) {
         log.debug("REST request to get FrozenTube : {}", sampleCode);
-        List<FrozenTubeDTO> frozenTubeDTO = frozenTubeService.findFrozenTubeBySampleCodeNadProjectAndSampleTypeAndSampleClassifacition(sampleCode,projectCode,sampleTypeId,sampleClassificationId);
+        List<FrozenTubeDTO> frozenTubeDTO = frozenTubeService.findFrozenTubeBySampleCodeAndProjectAndSampleTypeAndSampleClassifacition(sampleCode,projectCode,sampleTypeId,sampleClassificationId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(frozenTubeDTO));
     }
 
+    /**
+     * 根据样本ID字符串获取样本信息
+     * @param ids
+     * @return
+     */
     @GetMapping("/frozen-tubes/ids/{ids}")
     @Timed
     public ResponseEntity<List<FrozenTubeDTO>> getFrozenTubeByIds(@PathVariable String ids) {
         log.debug("REST request to get FrozenTubeList : {}", ids);
         List<FrozenTubeDTO> frozenTubeDTO = frozenTubeService.getFrozenTubeByIds(ids);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(frozenTubeDTO));
+    }
+
+    /**
+     * 根据样本编码，项目编码，冻存盒ID，样本类型，样本分类查询样本信息
+     * @param sampleCode
+     * @param projectCode
+     * @param sampleTypeId
+     * @param sampleClassificationId
+     * @return
+     */
+    @GetMapping("/frozen-tubes/sample/{sampleCode}/project/{projectCode}/frozenBox/{frozenBoxId}/sampleType/{sampleTypeId}/sampleClassification/{sampleClassificationId}")
+    @Timed
+    public ResponseEntity<List<FrozenTubeDTO>> getFrozenTubeBySampleCodeAnddProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(@PathVariable String sampleCode,@PathVariable String projectCode,@PathVariable Long frozenBoxId,@PathVariable Long sampleTypeId,
+                                                                                                                       @PathVariable Long sampleClassificationId) {
+        log.debug("REST request to get FrozenTube : {}", sampleCode);
+        List<FrozenTubeDTO> frozenTubeDTO = frozenTubeService.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(sampleCode,projectCode,frozenBoxId,sampleTypeId,sampleClassificationId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(frozenTubeDTO));
     }
 }

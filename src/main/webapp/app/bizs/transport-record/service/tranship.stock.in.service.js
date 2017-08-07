@@ -1,6 +1,6 @@
 /**
  * Created by gaokangkang on 2017/4/11.
- * 入库
+ * 转运成功
  */
 (function () {
     'use strict';
@@ -25,20 +25,32 @@
             'update': { method:'PUT' },
             'delete':{ method:'DELETE'}
         });
-        service.saveStockIn = function(transhipCode,transportRecord){
-            var ajaxUrl = 'api/stock-in/tranship/' + transhipCode;
-
+        //转运完成
+        service.saveTransferFinish = function(transhipCode,transportRecord){
+            var ajaxUrl = 'api/tranships/'+transhipCode+'/completed';
             var req = {
-                method: 'POST',
+                method: 'PUT',
                 url: ajaxUrl,
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 data:{
-
                     receiveDate:transportRecord.receiveDate,
                     login:transportRecord.login,
                     password:transportRecord.password
+                }
+            };
+
+            return $http(req);
+        };
+        //开始入库
+        service.saveStockIn = function(transhipCodes){
+            var ajaxUrl = 'api/stock-in/tranship/codes/'+transhipCodes;
+            var req = {
+                method: 'POST',
+                url: ajaxUrl,
+                headers: {
+                    'Content-Type': 'application/json'
                 }
             };
 

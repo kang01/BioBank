@@ -124,7 +124,7 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
             return null;
         }
         if(positionDestroyDTO.getIds()==null ||positionDestroyDTO.getIds().length==0 ){
-            throw new BankServiceException("需要换位的ID不能为空！");
+            throw new BankServiceException("需要销毁的ID不能为空！");
         }
         checkUser(positionDestroyDTO);
         PositionDestroy positionDestroy = positionDestroyMapper.positionDestroyDTOToPositionDestroy(positionDestroyDTO);
@@ -149,7 +149,7 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findAll(frozenTubeIds);
         for(FrozenTube f:frozenTubeList){
             if(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKED)){
-                throw new BankServiceException("冻存管未入库，不能换位！");
+                throw new BankServiceException("冻存管未入库，不能销毁！");
             }
             f.setStatus(Constants.VALID);
         }

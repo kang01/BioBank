@@ -410,31 +410,34 @@
                         data[oData.name] = oData.value;
                     }
                     var jqDt = this;
-                    TranshipBoxByCodeService.queryByCodes(vm.transportRecord.transhipCode,data).then(function (res){
-                        var json = res.data;
-                        vm.boxLength = res.data.data.length;
-                        var error = json.error || json.sError;
-                        if ( error ) {
-                            jqDt._fnLog( oSettings, 0, error );
-                        }
-                        oSettings.json = json;
-                        fnCallback( json );
-                    }).catch(function(res){
-                        console.log(res);
-
-                        var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
-
-                        if ( $.inArray( true, ret ) === -1 ) {
-                            if ( error == "parsererror" ) {
-                                jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+                    if(vm.transportRecord.transhipCode){
+                        TranshipBoxByCodeService.queryByCodes(vm.transportRecord.transhipCode,data).then(function (res){
+                            var json = res.data;
+                            vm.boxLength = res.data.data.length;
+                            var error = json.error || json.sError;
+                            if ( error ) {
+                                jqDt._fnLog( oSettings, 0, error );
                             }
-                            else if ( res.readyState === 4 ) {
-                                jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
-                            }
-                        }
+                            oSettings.json = json;
+                            fnCallback( json );
+                        }).catch(function(res){
+                            console.log(res);
 
-                        jqDt._fnProcessingDisplay( oSettings, false );
-                    });
+                            var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+
+                            if ( $.inArray( true, ret ) === -1 ) {
+                                if ( error == "parsererror" ) {
+                                    jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+                                }
+                                else if ( res.readyState === 4 ) {
+                                    jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
+                                }
+                            }
+
+                            jqDt._fnProcessingDisplay( oSettings, false );
+                        });
+
+                    }
                 });
 
             function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
@@ -1372,66 +1375,25 @@
 
 
         //附件
-        vm.imagesArray = [];
-        vm.reader = new FileReader();   //创建一个FileReader接口
-        vm.thumb = {};
-        vm.img_upload = function(files) {       //单次提交图片的函数
-            vm.guid = (new Date()).valueOf();   //通过时间戳创建一个随机数，作为键名使用
-            vm.reader.readAsDataURL(files[0]);  //FileReader的方法，把图片转成base64
-            vm.reader.onload = function(ev) {
-                $scope.$apply(function(){
-                    vm.thumb = {
-                        imgSrc : ev.target.result ||  'content/images/timg.jpg' //接收base64
-                    };
+        vm.uploadFile = _fnUploadFile;
+        function _fnUploadFile() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/transport-record/modal/transport-record-upload-image-modal.html',
+                controller: 'transportUploadImageModalCtrl',
+                backdrop:'static',
+                controllerAs: 'vm',
+                resolve:{
+                    items:function () {
+                        return{};
+                    }
+                }
+            });
+            modalInstance.result.then(function () {
 
-                    var img = new Image();
-                    img.src = vm.thumb.imgSrc;
-                    var dataURL;
-                    img.onload = function(){
-                        var canvas = document.getElementById("canvas");
-                        var context = canvas.getContext("2d");
-                        var width = img.width;
-                        var height = img.height;
-                        var startWithPos;
-                        var startHeightPos;
-                        if(width - height > 0){
-                            var w = width*140/height;
-                            canvas.width = w;
-                            canvas.height = 140;
-                            startWithPos = (canvas.width-140)/2;
-                        }else{
-                            var h = height*140/width;
-                            canvas.width = 140;
-                            canvas.height = h;
-                            startHeightPos = (canvas.height-140)/2;
-                        }
-                        context.drawImage(img,0,0,canvas.width,canvas.height);
-                        dataURL  = canvas.toDataURL("image/png");
+            });
+        }
 
-                        if(dataURL){
-                            var img1 = new Image();
-                            img1.src = dataURL;
-                            img1.onload = function(){
-                                var canvas1 = document.getElementById("canvas1");
-                                canvas1.width = 140;
-                                canvas1.height = 140;
-                                var context1 = canvas1.getContext("2d");
-                                if(startWithPos){
-                                    context1.drawImage(img1,startWithPos,0,140,140,0,0,140,140);
-                                }else{
-                                    context1.drawImage(img1,0,startHeightPos,140,140,0,0,140,140);
-                                }
-                                var dataURL1  = canvas1.toDataURL("image/png");
-                                // console.log(dataURL1);
-                                // vm.imagesArray.push(dataURL1)
-                                vm.thumb.imgSrc = dataURL1 ;
-                            }
-                        }
-                    };
-                });
-
-            };
-        };
 
     }
     function BoxInstanceCtrl($uibModalInstance) {

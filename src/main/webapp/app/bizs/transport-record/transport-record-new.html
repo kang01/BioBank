@@ -431,8 +431,9 @@
                            <h4>附件</h4>
                        </div>
                        <div class="col-md-8 text-right" style="margin-top: 8px !important;">
-                           <input type="file" id="one-input" accept="image/*" file-model="vm.images"
-                                  onchange="angular.element(this).scope().vm.img_upload(this.files)"/>
+                           <button class="btn btn-default btn-xs" ng-click="vm.uploadFile()">上传附件</button>
+                           <!--<input type="file" id="one-input" accept="image/*" file-model="vm.images"-->
+                                  <!--onchange="angular.element(this).scope().vm.img_upload(this.files)"/>-->
 
                            <!--<div class="button" ngf-select ng-model="vm.file" name="file" ngf-pattern="'image/*'"-->
                                 <!--ngf-accept="'image/*'" ngf-max-size="2MB" ngf-min-height="100"-->
@@ -445,27 +446,6 @@
                 <div class="panel-body" >
                     <!--<img ng-src="{{vm.thumb.imgSrc}}" id="transportImage">-->
                     <div  id="dowebok" viewer images-data="vm.thumb.imgSrc"></div>
-                    <div class="">
-                        <canvas id="canvas" style="display: none">
-                            你的浏览器居然不支持Canvas？！赶快换一个吧！！
-                        </canvas>
-                    </div>
-                    <div style="margin-left: 10px">
-                        <canvas id="canvas1">
-                            你的浏览器居然不支持Canvas？！赶快换一个吧！！
-                        </canvas>
-                    </div>
-                    <!--<img-->
-                    <!--*ngf-src="{{vm.file}}"-->
-                    <!--*ngf-background="{{vm.file}}"-->
-                    <!--ngf-resize="{width: 20, height: 20, quality: 0.9}"-->
-                    <!--ngf-no-object-url="true or false"-->
-                    <!--/>-->
-                    <!--<div id="dowebok" viewer>-->
-                        <!--<img data-original="content/images/timg.jpg" src="content/images/timg.jpg" >-->
-                        <!--<img data-original="content/images/timg.jpg" src="content/images/timg.jpg" >-->
-                    <!--</div>-->
-
 
                 </div>
             </div>

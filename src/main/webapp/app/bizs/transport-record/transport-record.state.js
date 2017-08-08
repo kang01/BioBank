@@ -103,7 +103,7 @@
             })
             .state('transport-record-edit', {
                 parent: 'bizs',
-                url: '/transport-record/{id}/edit',
+                url: '/transport-record/{transhipId}/edit',
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: 'transportRecord.new.title'
@@ -121,7 +121,7 @@
                         return $translate.refresh();
                     }],
                     entity: ['$stateParams', 'TransportRecordService', function($stateParams, TransportRecordService) {
-                        return TransportRecordService.get({id : $stateParams.id}).$promise;
+                        return TransportRecordService.get({id : $stateParams.transhipId}).$promise;
                     }]
                 }
             });

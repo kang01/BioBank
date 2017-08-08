@@ -1,0 +1,68 @@
+<div class="modal-header">
+    <h3 class="modal-title">
+        上传附件
+    </h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>附件名称
+                    <span class="required-field"></span></label>
+                <input type="text" class="form-control" ng-model="vm.entity.fileTitle">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>
+                    附件描述
+                    <span class="required-field"></span>
+                </label>
+                <textarea rows="4" class="form-control resize-none" ng-model="vm.entity.description"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group self-upload">
+                <label>附件图片
+                    <span class="required-field"></span>
+                </label>
+                <!--<input type="file" id="one-input" accept="image/*" file-model="vm.images"-->
+                <!--onchange="angular.element(this).scope().vm.img_upload(this.files)"/>-->
+                <div class="input-group">
+                    <input type="text" class=" form-control" ng-model="vm.file.name" disabled>
+                    <div class="input-group-addon" style="cursor: pointer">
+                        <a href="javascript:;" name="file">
+                            <input type="file" accept="image/*" ngf-select ng-model="vm.file"
+                                   onchange="angular.element(this).scope().vm.img_upload(this.files)"/>上传
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="">
+                <canvas id="canvas" style="display: none">
+                    你的浏览器居然不支持Canvas？！赶快换一个吧！！
+                </canvas>
+            </div>
+            <div>
+                <canvas id="canvas1" style="display: none">
+                    你的浏览器居然不支持Canvas？！赶快换一个吧！！
+                </canvas>
+            </div>
+            <div>
+                <img src="{{vm.thumb.imgSrc}}" class="img-thumbnail" style="width: 140px;height: 140px">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+</div>

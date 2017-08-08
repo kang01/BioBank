@@ -148,7 +148,7 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
         }
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findAll(frozenTubeIds);
         for(FrozenTube f:frozenTubeList){
-            if(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_SPLITED)){
+            if(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKED)){
                 throw new BankServiceException("冻存管未入库，不能换位！");
             }
             f.setStatus(Constants.VALID);

@@ -24,6 +24,7 @@
         var projectIds = [];
 
         vm.dtInstance = {};
+        vm.selectedInstance = {};
         vm.search = _fnSearch;
         vm.searchShow = _fnSearchShow;
         vm.selectedShow = _fnSearchShow;
@@ -250,7 +251,11 @@
             };
         }
         _init();
-
+        function _fnReloadSelectedData() {
+            selectedBox = [];
+            vm.selectedLen = selectedBox.length;
+            vm.selectedOptions.withOption('data', selectedBox);
+        }
         function _fnSearchShow(status) {
             vm.status = status;
             vm.checked = true;
@@ -263,6 +268,7 @@
                 }
             }
             vm.checked = false;
+            _fnReloadSelectedData();
             vm.dtInstance.rerender();
         }
         function _fnMovement() {
@@ -293,6 +299,16 @@
         }
         function _fnExchangeDestroy(operateStatus) {
             // operateStatus:1.交换 2.销毁
+            if(operateStatus == 1){
+                //状态为已入库才能被销毁或换位
+                var putInStorageData = _.filter(selectedBox,{"status":"2004"});
+                if(putInStorageData.length != 2){
+                    toastr.error("冻存盒未入库，不能换位!");
+                    return;
+                }
+            }
+
+
             var ids =  _.map(selectedBox, 'id');
             modalInstance = $uibModal.open({
                 templateUrl: 'app/bizs/list/modal/list-exchange-destroy-modal.html',
@@ -315,6 +331,7 @@
                     delete obj.reason;
                     BoxInventoryService.changePosition(obj).success(function (data) {
                         toastr.success("换位成功!");
+                        _fnReloadSelectedData();
                         vm.dtInstance.rerender();
                     }).error(function (data) {
                         toastr.error(data.message);

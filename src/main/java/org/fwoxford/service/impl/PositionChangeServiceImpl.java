@@ -4,7 +4,11 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.PositionChangeService;
+import org.fwoxford.service.dto.FrozenBoxDTO;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.PositionChangeDTO;
+import org.fwoxford.service.mapper.FrozenBoxMapper;
+import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.PositionChangeMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
@@ -57,6 +61,10 @@ public class PositionChangeServiceImpl implements PositionChangeService{
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private FrozenTubeMapper frozenTubeMapper;
+    @Autowired
+    private FrozenBoxMapper frozenBoxMapper;
 
     public PositionChangeServiceImpl(PositionChangeRepository positionChangeRepository, PositionChangeMapper positionChangeMapper) {
         this.positionChangeRepository = positionChangeRepository;
@@ -161,14 +169,17 @@ public class PositionChangeServiceImpl implements PositionChangeService{
         //获取第一支样本
         Long sampleId1 = positionChangeDTO.getChangeId1();
         FrozenTube frozenTube1 = frozenTubeRepository.findOne(sampleId1);
-
+        FrozenTubeDTO frozenTubeDTO1 = frozenTubeMapper.frozenTubeToFrozenTubeDTO(frozenTube1);
         //获取第二支样本
         Long sampleId2 = positionChangeDTO.getChangeId2();
         FrozenTube frozenTube2 = frozenTubeRepository.findOne(sampleId2);
-        if(frozenTube1 == null || (frozenTube1!=null && !frozenTube1.getFrozenTubeState().equals(Constants.FROZEN_BOX_SPLITED))
-            ||frozenTube2 == null || (frozenTube2!=null && !frozenTube2.getFrozenTubeState().equals(Constants.FROZEN_BOX_SPLITED))){
+        FrozenTubeDTO frozenTubeDTO2 = frozenTubeMapper.frozenTubeToFrozenTubeDTO(frozenTube2);
+        if(frozenTube1 == null || (frozenTube1!=null && !frozenTube1.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKED))
+            ||frozenTube2 == null || (frozenTube2!=null && !frozenTube2.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKED))){
             throw new BankServiceException("冻存管未入库，不能换位！");
         }
+        FrozenBox frozenBox1 = frozenTube1.getFrozenBox();
+        FrozenBox frozenBox2 = frozenTube2.getFrozenBox();
         if(!frozenTube1.getProjectCode().equals(frozenTube2.getProjectCode())){
             throw new BankServiceException("两支样本所属项目不同，不能执行换位！");
         }
@@ -192,16 +203,16 @@ public class PositionChangeServiceImpl implements PositionChangeService{
             }
         }
 
-        frozenTube1.setFrozenBox(frozenTube2.getFrozenBox());
-        frozenTube1.setFrozenBoxCode(frozenTube2.getFrozenBoxCode());
-        frozenTube1.setTubeColumns(frozenTube2.getTubeColumns());
-        frozenTube1.setTubeRows(frozenTube2.getTubeRows());
+        frozenTube1.setFrozenBox(frozenBox2);
+        frozenTube1.setFrozenBoxCode(frozenTubeDTO2.getFrozenBoxCode());
+        frozenTube1.setTubeColumns(frozenTubeDTO2.getTubeColumns());
+        frozenTube1.setTubeRows(frozenTubeDTO2.getTubeRows());
         frozenTubeRepository.save(frozenTube1);
 
-        frozenTube2.setFrozenBox(frozenTube1.getFrozenBox());
-        frozenTube2.setFrozenBoxCode(frozenTube1.getFrozenBoxCode());
-        frozenTube2.setTubeColumns(frozenTube1.getTubeColumns());
-        frozenTube2.setTubeRows(frozenTube1.getTubeRows());
+        frozenTube2.setFrozenBox(frozenBox1);
+        frozenTube2.setFrozenBoxCode(frozenTubeDTO1.getFrozenBoxCode());
+        frozenTube2.setTubeColumns(frozenTubeDTO1.getTubeColumns());
+        frozenTube2.setTubeRows(frozenTubeDTO1.getTubeRows());
         frozenTubeRepository.save(frozenTube2);
         List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>(){{add(frozenTube1);add(frozenTube2);}};
         saveChangeDetail(positionChangeDTO,Constants.MOVE_TYPE_1,frozenTubeList);
@@ -269,26 +280,27 @@ public class PositionChangeServiceImpl implements PositionChangeService{
         //获取第一个冻存盒
         Long boxId1 = positionChangeDTO.getChangeId1();
         FrozenBox frozenBox1 = frozenBoxRepository.findOne(boxId1);
-
+        FrozenBoxDTO frozenBoxDTO1 = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox1);
         //获取第二个冻存盒
         Long boxId2 = positionChangeDTO.getChangeId2();
         FrozenBox frozenBox2 = frozenBoxRepository.findOne(boxId2);
+        FrozenBox frozenBoxOld2 = frozenBox2;
         if(frozenBox1 == null || (frozenBox1!=null && !frozenBox1.getStatus().equals(Constants.FROZEN_BOX_STOCKED))
             ||frozenBox2 == null || (frozenBox2!=null && !frozenBox2.getStatus().equals(Constants.FROZEN_BOX_STOCKED))){
             throw new BankServiceException("冻存盒未入库，不能换位！");
         }
 
-        frozenBox1.equipment(frozenBox2.getEquipment()).equipmentCode(frozenBox2.getEquipmentCode())
-            .area(frozenBox2.getArea()).areaCode(frozenBox2.getAreaCode())
-            .supportRack(frozenBox2.getSupportRack()).supportRackCode(frozenBox2.getSupportRackCode())
-            .rowsInShelf(frozenBox2.getRowsInShelf()).columnsInShelf(frozenBox2.getColumnsInShelf());
+        frozenBox1.equipment(frozenBoxOld2.getEquipment()).equipmentCode(frozenBoxOld2.getEquipmentCode())
+            .area(frozenBoxOld2.getArea()).areaCode(frozenBoxOld2.getAreaCode())
+            .supportRack(frozenBoxOld2.getSupportRack()).supportRackCode(frozenBoxOld2.getSupportRackCode())
+            .rowsInShelf(frozenBoxOld2.getRowsInShelf()).columnsInShelf(frozenBoxOld2.getColumnsInShelf());
         frozenBoxRepository.save(frozenBox1);
 
-
-        frozenBox2.equipment(frozenBox1.getEquipment()).equipmentCode(frozenBox1.getEquipmentCode())
-            .area(frozenBox1.getArea()).areaCode(frozenBox1.getAreaCode())
-            .supportRack(frozenBox1.getSupportRack()).supportRackCode(frozenBox1.getSupportRackCode())
-            .rowsInShelf(frozenBox1.getRowsInShelf()).columnsInShelf(frozenBox1.getColumnsInShelf());
+        FrozenBox frozenBoxOld1 = frozenBoxMapper.frozenBoxDTOToFrozenBox(frozenBoxDTO1);
+        frozenBox2.equipment(frozenBoxOld1.getEquipment()).equipmentCode(frozenBoxOld1.getEquipmentCode())
+            .area(frozenBoxOld1.getArea()).areaCode(frozenBoxOld1.getAreaCode())
+            .supportRack(frozenBoxOld1.getSupportRack()).supportRackCode(frozenBoxOld1.getSupportRackCode())
+            .rowsInShelf(frozenBoxOld1.getRowsInShelf()).columnsInShelf(frozenBoxOld1.getColumnsInShelf());
         frozenBoxRepository.save(frozenBox2);
 
         List<Long> frozenBoxIds = new ArrayList<Long>(){{add(boxId1);add(boxId2);}};

@@ -1,9 +1,10 @@
 
-  ${AnsiColor.RED}      _   ____________  ______  ${AnsiColor.GREEN}    ____  _       ____              __
-  ${AnsiColor.RED}     / | / / ____/ __ \/ ____/  ${AnsiColor.GREEN}   / __ )(_)___  / __ )____ _____  / /__
-  ${AnsiColor.RED}    /  |/ / /   / /_/ / /       ${AnsiColor.GREEN}  / __  / / __ \/ __  / __ `/ __ \/ //_/
-  ${AnsiColor.RED}   / /|  / /___/ _, _/ /___     ${AnsiColor.GREEN} / /_/ / / /_/ / /_/ / /_/ / / / / ,<
-  ${AnsiColor.RED}  /_/ |_/\____/_/ |_|\____/     ${AnsiColor.GREEN}/_____/_/\____/_____/\__,_/_/ /_/_/|_|
+  ${AnsiColor.RED}   _   _  _____   ${AnsiColor.GREEN} ____  ____   _____
+  ${AnsiColor.RED}  | \ | |/ ____|  ${AnsiColor.GREEN}|  _ \|  _ \ / ____|
+  ${AnsiColor.RED}  |  \| | |       ${AnsiColor.GREEN}| |_) | |_) | |
+  ${AnsiColor.RED}  | . ` | |       ${AnsiColor.GREEN}|  _ <|  _ <| |
+  ${AnsiColor.RED}  | |\  | |____   ${AnsiColor.GREEN}| |_) | |_) | |____
+  ${AnsiColor.RED}  |_| \_|\_____|  ${AnsiColor.GREEN}|____/|____/ \_____|
   ${AnsiColor.RED}
 
-${AnsiColor.BRIGHT_BLUE}:: NCRC BioBank :: Running Spring Boot ${spring-boot.version} ::
+${AnsiColor.BRIGHT_BLUE}:: NC BBC :: Running Spring Boot ${spring-boot.version} ::

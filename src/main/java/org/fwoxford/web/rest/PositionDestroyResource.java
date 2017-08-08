@@ -155,7 +155,7 @@ public class PositionDestroyResource {
      */
     @PostMapping("/position-destroys/forBox")
     @Timed
-    public ResponseEntity<PositionDestroyDTO> createPositionChangeForBox(@Valid @RequestBody PositionDestroyDTO positionDestroyDTO) throws URISyntaxException {
+    public ResponseEntity<PositionDestroyDTO> createPositionDestroyForBox(@Valid @RequestBody PositionDestroyDTO positionDestroyDTO) throws URISyntaxException {
         log.debug("REST request to save PositionChange : {}", positionDestroyDTO);
         if (positionDestroyDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionDestroy cannot already have an ID")).body(null);

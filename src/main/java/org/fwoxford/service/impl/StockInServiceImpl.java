@@ -676,10 +676,23 @@ public class StockInServiceImpl implements StockInService {
             //恢复盒子之前的状态，若历史信息最新一条是已入库，则是原盒入库，恢复为已入库，盒内新增样本置为无效，原盒样本为已出库，盒内原库存样本，更改为上一次的状态
             //若历史信息是已出库，则原盒已出库
             //若历史信息无更多历史，为新增的冻存盒，置为已作废
-            List<FrozenBox> frozenBoxes = frozenBoxService.findFrozenBoxHistory(s.getFrozenBox().getId());
-
+            String status = frozenBoxService.findFrozenBoxHistory(s.getFrozenBox().getId());
+            s.getFrozenBox().setStatus(status);
+            frozenBoxRepository.save(s.getFrozenBox());
             //恢复样本状态
-//            stockInTubeRepository.updateStatusByStockInBoxId(Constants.FROZEN_BOX_INVALID,s.getId());
+           List<StockInTube> stockInTubes = stockInTubeRepository.findByStockInBoxId(s.getId());
+           List<FrozenTube> frozenTubeList = new ArrayList<>();
+           for(StockInTube stockInTube:stockInTubes){
+               stockInTube.setStatus(Constants.FROZEN_BOX_INVALID);
+               if(stockInTube.getFrozenTube().getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)){
+                   stockInTube.getFrozenTube().setStatus(Constants.FROZEN_BOX_INVALID);
+                   frozenTubeList.add(stockInTube.getFrozenTube());
+               }
+           }
+           if(frozenTubeList.size()>0){
+               frozenTubeRepository.save(frozenTubeList);
+           }
+           stockInTubeRepository.save(stockInTubes);
         }
         return stockInMapper.stockInToStockInDTO(stockIn);
     }

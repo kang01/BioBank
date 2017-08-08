@@ -21,7 +21,7 @@
         function _fnQueryCurrentUser() {
             Principal.identity().then(function(account) {
                 vm.account = account;
-                vm.entity.userId = vm.account.id;
+                vm.entity.operatorId1 = vm.account.id + "";
             });
         }
         function _loadUser() {

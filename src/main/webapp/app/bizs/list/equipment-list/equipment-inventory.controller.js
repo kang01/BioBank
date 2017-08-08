@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('EquipmentInventoryController', EquipmentInventoryController);
 
-    EquipmentInventoryController.$inject = ['$scope','$compile','$state','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
+    EquipmentInventoryController.$inject = ['$scope','$compile','$state','$uibModal','DTColumnBuilder','toastr','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
 
-    function EquipmentInventoryController($scope,$compile,$state,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
+    function EquipmentInventoryController($scope,$compile,$state,$uibModal,DTColumnBuilder,toastr,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
         var vm = this;
         vm.checked = false;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
@@ -233,7 +233,6 @@
         function _fnExchangeDestroy(operateStatus) {
             // operateStatus:1.交换 2.销毁
             var ids =  _.map(selectedEquipment, 'id');
-            // console.log(JSON.stringify(ids));
             modalInstance = $uibModal.open({
                 templateUrl: 'app/bizs/list/modal/list-exchange-destroy-modal.html',
                 controller: 'ListExchangeDestroyModalController',
@@ -247,7 +246,22 @@
                 }
             });
             modalInstance.result.then(function (reson) {
-                console.log(reson)
+                var obj = reson;
+                if(operateStatus == '1'){
+                    var array = _.split(ids,',');
+                    obj.changeId1 = array[0];
+                    obj.changeId2 = array[1];
+                    obj.changeReason = obj.reason;
+                    delete obj.reason;
+                    EquipmentInventoryService.changePosition(obj).success(function (data) {
+                        toastr.success("换位成功!");
+                        vm.dtInstance.rerender();
+                    }).error(function (data) {
+                        toastr.error(data.message);
+                    });
+                }else{
+
+                }
             }, function () {
             });
 

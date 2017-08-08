@@ -1,8 +1,8 @@
 package org.fwoxford.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.minidev.json.JSONUtil;
-import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.commons.httpclient.params.HttpParams;
 import org.fwoxford.BioBankApp;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
@@ -10,36 +10,33 @@ import org.fwoxford.repository.*;
 import org.fwoxford.service.dto.response.GeocoderSearchAddressResponse;
 import org.fwoxford.service.dto.response.GeocoderSearchResponse;
 import org.fwoxford.service.mapper.*;
-import org.fwoxford.service.util.RandomUtil;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.fwoxford.web.rest.util.GeocoderReaderUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.XML;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StringUtils;
+import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.Date;
-
 import static org.assertj.core.api.Assertions.assertThat;
-
+import java.io.IOException;
 /**
  * Test class for the ImportSampleTest REST controller.
  *
@@ -1054,6 +1051,45 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             assertThat(sampleType97).isNotNull();
         }
     }
+
+
+    @Test
+    public void updateStockInBoxAndStockInTube() throws Exception {
+        List<StockInBox> stockInBoxes = stockInBoxRepository.findAll();
+        for(StockInBox stockInBox : stockInBoxes){
+            FrozenBox frozenBox = stockInBox.getFrozenBox();
+            stockInBox.sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
+                .sampleClassification(frozenBox.getSampleClassification())
+                .sampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null)
+                .sampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null)
+                .dislocationNumber(frozenBox.getDislocationNumber()).emptyHoleNumber(frozenBox.getEmptyHoleNumber()).emptyTubeNumber(frozenBox.getEmptyTubeNumber())
+                .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
+                .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
+                .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
+                .projectSiteName(frozenBox.getProjectSiteName());
+            List<StockInTube> stockInTubes = stockInTubeRepository.findByStockInBoxId(stockInBox.getId());
+            for(StockInTube stockInTube : stockInTubes){
+                FrozenTube tube = stockInTube.getFrozenTube();
+                stockInTube.status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
+                    .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox).errorType(tube.getErrorType())
+                    .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(tube.getFrozenTubeState())
+                    .frozenTubeType(tube.getFrozenTubeType()).frozenTubeTypeCode(tube.getFrozenTubeTypeCode())
+                    .frozenTubeTypeName(tube.getFrozenTubeTypeName()).frozenTubeVolumns(tube.getFrozenTubeVolumns())
+                    .frozenTubeVolumnsUnit(tube.getFrozenTubeVolumnsUnit()).sampleVolumns(tube.getSampleVolumns())
+                    .project(tube.getProject()).projectCode(tube.getProjectCode()).projectSite(tube.getProjectSite())
+                    .projectSiteCode(tube.getProjectSiteCode()).sampleClassification(tube.getSampleClassification())
+                    .sampleClassificationCode(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationCode():null)
+                    .sampleClassificationName(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationName():null)
+                    .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
+                    .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
+                    .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
+            }
+            stockInTubeRepository.save(stockInTubes);
+        }
+        stockInBoxRepository.save(stockInBoxes);
+    }
+
+
     @Test
     public  void createPositionInShelf()
     {
@@ -1191,4 +1227,31 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         System.out.print(hashSet.toString());
     }
 
+    @Test
+    public void getHttpClientInfo() {
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod("http://10.24.10.43:8080/biobank/specimens");
+//        getMethod.getParams().setParameter("fromdate","2017-01-01");
+//        getMethod.getParams().setParameter("todate","2017-02-01");
+        HttpMethodParams params = new HttpMethodParams();
+        params.setParameter("boxcode","650420093");
+        getMethod.setParams(params);
+        getMethod.setRequestHeader("X-Auth-Token", "d93925bc7axKfXc2A5WFJEzuPXYX4q");
+        try {
+            int statusCode = httpClient.executeMethod(getMethod);
+            if (statusCode != 200) {
+                System.err.println("Method failed: "
+                    + getMethod.getStatusLine());
+            }
+            byte[] responseBody = getMethod.getResponseBody();
+            System.out.println(new String(responseBody));
+        } catch (HttpException e) {
+            System.out.println("Please check your provided http address!");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            getMethod.releaseConnection();
+        }
+    }
 }

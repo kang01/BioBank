@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -824,9 +825,30 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         return frozenBoxDTO;
     }
 
+    /**
+     * 查询冻存盒的上一次状态
+     * @param id
+     * @return
+     */
     @Override
-    public List<FrozenBox> findFrozenBoxHistory(Long id) {
-
-        return null;
+    public String findFrozenBoxHistory(Long id) {
+        String status = Constants.FROZEN_BOX_INVALID;
+        FrozenBox frozenBox = new FrozenBox();
+        List<Object[]> positionHistory = frozenBoxRepository.findPositionHistory(id);
+        if(positionHistory.size()>0){
+            status = Constants.FROZEN_BOX_STOCKED;
+        }else{
+            List<Object[]> boxHistory = frozenBoxRepository.findFrozenBoxHistory(id);
+            for(Object[] objects:boxHistory){
+                String type = objects[25].toString();
+                if(type.equals("102")||type.equals(102)){
+                    status = Constants.FROZEN_BOX_STOCKED;
+                }
+                if(type.equals("103")||type.equals(103)){
+                    status = Constants.FROZEN_BOX_STOCK_OUT_COMPLETED;
+                }
+            }
+        }
+        return status;
     }
 }

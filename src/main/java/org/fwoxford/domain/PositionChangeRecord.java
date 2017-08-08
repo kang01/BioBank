@@ -74,8 +74,8 @@ public class PositionChangeRecord extends AbstractAuditingEntity implements Seri
 
     @NotNull
     @Size(max = 20)
-    @Column(name = "move_type", length = 20, nullable = false)
-    private String moveType;
+    @Column(name = "change_type", length = 20, nullable = false)
+    private String changeType;
 
     @NotNull
     @Size(max = 100)
@@ -348,15 +348,15 @@ public class PositionChangeRecord extends AbstractAuditingEntity implements Seri
         this.whetherFreezingAndThawing = whetherFreezingAndThawing;
     }
 
-    public String getMoveType() {
-        return moveType;
+    public String getChangeType() {
+        return changeType;
     }
-    public PositionChangeRecord moveType(String moveType) {
-        this.moveType = moveType;
+    public PositionChangeRecord changeType(String changeType) {
+        this.changeType = changeType;
         return this;
     }
-    public void setMoveType(String moveType) {
-        this.moveType = moveType;
+    public void setChangeType(String changeType) {
+        this.changeType = changeType;
     }
 
     public String getProjectCode() {
@@ -725,7 +725,7 @@ public class PositionChangeRecord extends AbstractAuditingEntity implements Seri
             ", tubeRows='" + tubeRows + '\'' +
             ", tubeColumns='" + tubeColumns + '\'' +
             ", whetherFreezingAndThawing=" + whetherFreezingAndThawing +
-            ", moveType='" + moveType + '\'' +
+            ", changeType='" + changeType + '\'' +
             ", projectCode='" + projectCode + '\'' +
             ", projectSiteCode='" + projectSiteCode + '\'' +
             ", status='" + status + '\'' +

@@ -131,9 +131,9 @@ public interface FrozenBoxService {
     List<StockInBoxForDataTable> frozenBoxesToStockInBoxForDataTables(List<FrozenBox> frozenBoxes);
 
     /**
-     * 查询冻存盒的历史
+     * 查询冻存盒的上一次状态
      * @param id
      * @return
      */
-    List<FrozenBox> findFrozenBoxHistory(Long id);
+    String findFrozenBoxHistory(Long id);
 }

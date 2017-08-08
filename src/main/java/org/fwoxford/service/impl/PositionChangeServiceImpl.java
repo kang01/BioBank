@@ -165,10 +165,33 @@ public class PositionChangeServiceImpl implements PositionChangeService{
         //获取第二支样本
         Long sampleId2 = positionChangeDTO.getChangeId2();
         FrozenTube frozenTube2 = frozenTubeRepository.findOne(sampleId2);
-        if(frozenTube1 == null || (frozenTube1!=null && frozenTube1.getStatus().equals(Constants.INVALID))
-            ||frozenTube2 == null || (frozenTube2!=null && frozenTube2.getStatus().equals(Constants.INVALID))){
-            throw new BankServiceException("冻存管无效！");
+        if(frozenTube1 == null || (frozenTube1!=null && !frozenTube1.getFrozenTubeState().equals(Constants.FROZEN_BOX_SPLITED))
+            ||frozenTube2 == null || (frozenTube2!=null && !frozenTube2.getFrozenTubeState().equals(Constants.FROZEN_BOX_SPLITED))){
+            throw new BankServiceException("冻存管未入库，不能换位！");
         }
+        if(!frozenTube1.getProjectCode().equals(frozenTube2.getProjectCode())){
+            throw new BankServiceException("两支样本所属项目不同，不能执行换位！");
+        }
+        if(!frozenTube1.getFrozenBox().getFrozenBoxTypeCode().equals(frozenTube2.getFrozenBox().getFrozenBoxTypeCode())){
+            throw new BankServiceException("两支样本所属冻存盒类型不同，不能执行换位！");
+        }
+        if(frozenTube1.getSampleType().getIsMixed().equals(Constants.NO)&&frozenTube2.getSampleType().getIsMixed().equals(Constants.NO)){
+            if(!frozenTube1.getSampleTypeCode().equals(frozenTube2.getSampleTypeCode())){
+                throw new BankServiceException("两支样本类型不同，不能执行换位！");
+            }
+            if(frozenTube1.getSampleClassification()!=null&&frozenTube2.getSampleClassification()!=null&&frozenTube1.getSampleClassification().getId()!=frozenTube2.getSampleClassification().getId()){
+                throw new BankServiceException("两支样本分类不同，不能执行换位！");
+            }
+        }
+        if(frozenTube1.getSampleType().getIsMixed().equals(Constants.YES)||frozenTube2.getSampleType().getIsMixed().equals(Constants.YES)){
+            if(frozenTube1.getSampleType().getIsMixed().equals(Constants.NO)&&!frozenTube2.getSampleTypeCode().equals(frozenTube1.getSampleTypeCode())){
+                throw new BankServiceException("两支样本类型不同，不能执行换位！");
+            }
+            if(frozenTube2.getSampleType().getIsMixed().equals(Constants.NO)&&!frozenTube2.getSampleTypeCode().equals(frozenTube1.getSampleTypeCode())){
+                throw new BankServiceException("两支样本类型不同，不能执行换位！");
+            }
+        }
+
         frozenTube1.setFrozenBox(frozenTube2.getFrozenBox());
         frozenTube1.setFrozenBoxCode(frozenTube2.getFrozenBoxCode());
         frozenTube1.setTubeColumns(frozenTube2.getTubeColumns());
@@ -192,7 +215,7 @@ public class PositionChangeServiceImpl implements PositionChangeService{
                 .sampleCode(StringUtils.isEmpty(frozenTube.getSampleCode())?frozenTube.getSampleTempCode():frozenTube.getSampleCode())
                 .positionChange(positionChange)
                 .frozenTube(frozenTube)
-                .moveType(changeType)
+                .changeType(changeType)
                 .equipment(frozenTube.getFrozenBox().getEquipment())
                 .equipmentCode(frozenTube.getFrozenBox().getEquipmentCode())
                 .area(frozenTube.getFrozenBox().getArea())
@@ -231,12 +254,15 @@ public class PositionChangeServiceImpl implements PositionChangeService{
                 .sampleVolumns(frozenTube.getSampleVolumns())
                 .errorType(frozenTube.getErrorType());
             positionChangeRecordList.add(positionChangeRecord);
-            if(positionChangeRecordList.size()==5000){
+            if(positionChangeRecordList.size()>=5000){
                 positionChangeRecordRepository.save(positionChangeRecordList);
                 positionChangeRecordList = new ArrayList<PositionChangeRecord>();
             }
         }
-        positionChangeRecordRepository.save(positionChangeRecordList);
+        if(positionChangeRecordList.size()>0){
+            positionChangeRecordRepository.save(positionChangeRecordList);
+            positionChangeRecordList = new ArrayList<PositionChangeRecord>();
+        }
     }
 
     public void createChangePositionForBox(PositionChangeDTO positionChangeDTO) {
@@ -247,9 +273,9 @@ public class PositionChangeServiceImpl implements PositionChangeService{
         //获取第二个冻存盒
         Long boxId2 = positionChangeDTO.getChangeId2();
         FrozenBox frozenBox2 = frozenBoxRepository.findOne(boxId2);
-        if(frozenBox1 == null || (frozenBox1!=null && frozenBox1.getStatus().equals(Constants.INVALID))
-            ||frozenBox2 == null || (frozenBox2!=null && frozenBox2.getStatus().equals(Constants.INVALID))){
-            throw new BankServiceException("冻存盒无效！");
+        if(frozenBox1 == null || (frozenBox1!=null && !frozenBox1.getStatus().equals(Constants.FROZEN_BOX_STOCKED))
+            ||frozenBox2 == null || (frozenBox2!=null && !frozenBox2.getStatus().equals(Constants.FROZEN_BOX_STOCKED))){
+            throw new BankServiceException("冻存盒未入库，不能换位！");
         }
 
         frozenBox1.equipment(frozenBox2.getEquipment()).equipmentCode(frozenBox2.getEquipmentCode())
@@ -303,13 +329,15 @@ public class PositionChangeServiceImpl implements PositionChangeService{
             frozenBox2.equipment(supportRack1.getArea().getEquipment()).equipmentCode(supportRack1.getArea().getEquipment().getEquipmentCode())
                 .area(supportRack1.getArea()).areaCode(supportRack1.getArea().getAreaCode())
                 .supportRack(supportRack1).supportRackCode(supportRack1.getSupportRackCode());
+            frozenBoxes.add(frozenBox2);
             if(frozenBoxes.size() == 5000){
                 frozenBoxRepository.save(frozenBoxes);
                 frozenBoxes = new ArrayList<FrozenBox>();
             }
         }
-
-        frozenBoxRepository.save(frozenBoxes);
+        if(frozenBoxes.size()>0){
+            frozenBoxRepository.save(frozenBoxes);
+        }
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxIdIn(frozenBoxIds);
         saveChangeDetail(positionChangeDTO,Constants.MOVE_TYPE_3,frozenTubeList);
     }

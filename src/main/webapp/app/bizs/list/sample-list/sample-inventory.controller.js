@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('SampleInventoryController', SampleInventoryController);
 
-    SampleInventoryController.$inject = ['$scope','$stateParams','$compile','$state','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService'];
+    SampleInventoryController.$inject = ['$scope','$stateParams','$compile','$state','$uibModal','DTColumnBuilder','toastr','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService'];
 
-    function SampleInventoryController($scope,$stateParams,$compile,$state,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService) {
+    function SampleInventoryController($scope,$stateParams,$compile,$state,$uibModal,DTColumnBuilder,toastr,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {
@@ -254,6 +254,7 @@
         function _fnExchangeDestroy(operateStatus) {
             // operateStatus:1.交换 2.销毁
             var ids =  _.map(selectedSample, 'id');
+            console.log(JSON.stringify(ids));
             modalInstance = $uibModal.open({
                 templateUrl: 'app/bizs/list/modal/list-exchange-destroy-modal.html',
                 controller: 'ListExchangeDestroyModalController',
@@ -267,7 +268,29 @@
                 }
             });
             modalInstance.result.then(function (reson) {
-                console.log(reson)
+                var obj = reson;
+                if(operateStatus == '1'){
+                    obj.changeId1 = ids[0];
+                    obj.changeId2 = ids[1];
+                    obj.changeReason = obj.reason;
+                    delete obj.reason;
+                    SampleInventoryService.changePosition(obj).success(function (data) {
+                        toastr.success("换位成功!");
+                        vm.dtInstance.rerender();
+                    }).error(function (data) {
+                        toastr.error(data.message);
+                    });
+                }else{
+                    obj.destroyReason = obj.reason;
+                    obj.ids = ids;
+                    delete obj.reason;
+                    SampleInventoryService.destroySample(obj).success(function (data) {
+                        toastr.success("销毁成功!");
+                        vm.dtInstance.rerender();
+                    }).error(function (data) {
+                        toastr.error(data.message);
+                    });
+                }
             }, function () {
             });
         }

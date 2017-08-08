@@ -453,6 +453,17 @@
             <version>2.4</version>
             <classifier>jdk15</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcomponents-client</artifactId>
+            <version>4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
     </dependencies>
     <build>
@@ -616,10 +627,13 @@
                     <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
                     <diffChangeLogFile>src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
                     <driver>oracle.jdbc.OracleDriver</driver>
+                    <!--<url>jdbc:oracle:thin:@10.24.10.247:1521:xe</url>-->
+                    <!--<defaultSchemaName></defaultSchemaName>-->
+                    <!--<username>biobank_p_20170719</username>-->
+                    <!--<password>eyuXotN6</password>-->
                     <url>jdbc:oracle:thin:@10.24.10.56:1521:xe</url>
-                    <!--<url>jdbc:oracle:thin:@101.201.69.125:1521:xe</url>-->
                     <defaultSchemaName></defaultSchemaName>
-                    <username>BIOBANK1</username>
+                    <username>biobank</username>
                     <password>root123</password>
                     <referenceUrl>hibernate:spring:org.fwoxford.domain?dialect=org.hibernate.dialect.Oracle12cDialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
                     <verbose>true</verbose>

@@ -6,37 +6,61 @@
     </h3>
 </div>
 <div class="modal-body">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="form-group">
-                <label>原因</label>
-                <textarea class="form-control resize-none" rows="3" ng-model="vm.entity.reason" focus-me></textarea>
+    <form name="inventoryForm" role="form" novalidate>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>原因
+                        <span class="required-field"></span>
+                    </label>
+                    <textarea class="form-control resize-none" rows="3" ng-model="vm.entity.reason" focus-me required></textarea>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label>操作员
-                    <span class="required-field"></span>
-                </label>
-                <selectize options='vm.userOptions' config="vm.userConfig"
-                           ng-model="vm.entity.userId"></selectize>
-                <input type="hidden" ng-model="vm.entity.userId" required>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>操作员1
+                        <span class="required-field"></span>
+                    </label>
+                    <selectize options='vm.userOptions' config="vm.userConfig"
+                               ng-model="vm.entity.operatorId1"></selectize>
+                    <input type="hidden" ng-model="vm.entity.operatorId1" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>密钥
+                        <span class="required-field"></span>
+                    </label>
+                    <input type="password" class="form-control" ng-model="vm.entity.password1" required>
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label>秘钥
-                    <span class="required-field"></span>
-                </label>
-                <input type="password" class="form-control" ng-model="vm.entity.password">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>操作员2
+                        <span class="required-field"></span>
+                    </label>
+                    <selectize options='vm.userOptions' config="vm.userConfig"
+                               ng-model="vm.entity.operatorId2"></selectize>
+                    <input type="hidden" ng-model="vm.entity.operatorId2" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>密钥
+                        <span class="required-field"></span>
+                    </label>
+                    <input type="password" class="form-control" ng-model="vm.entity.password2" required>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="!vm.entity.password || !vm.entity.userId">确定</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="inventoryForm.$invalid">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>

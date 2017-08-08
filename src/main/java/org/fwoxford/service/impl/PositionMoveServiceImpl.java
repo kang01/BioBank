@@ -215,7 +215,10 @@ public class PositionMoveServiceImpl implements PositionMoveService {
                      frozenBoxes = new ArrayList<FrozenBox>();
                  }
              }
-            frozenBoxRepository.save(frozenBoxes);
+             if(frozenBoxes.size()>0){
+                 frozenBoxRepository.save(frozenBoxes);
+             }
+
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxIdIn(frozenBoxIds);
             saveMoveDetail(positionMove,Constants.MOVE_TYPE_3,frozenTubeList);
         }
@@ -376,7 +379,9 @@ public class PositionMoveServiceImpl implements PositionMoveService {
                 positionMoveRecordList= new ArrayList<PositionMoveRecord>();
             }
         }
-        positionMoveRecordRepository.save(positionMoveRecordList);
+        if(positionMoveRecordList.size()>0){
+            positionMoveRecordRepository.save(positionMoveRecordList);
+        }
     }
 
     public void createMoveRecordDetail(PositionMoveForBox p, PositionMove positionMove) {

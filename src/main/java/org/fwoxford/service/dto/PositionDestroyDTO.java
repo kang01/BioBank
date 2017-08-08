@@ -30,7 +30,7 @@ public class PositionDestroyDTO extends AbstractAuditingDTO implements Serializa
     @Size(max = 1024)
     private String memo;
 
-    private List<Long> ids;
+    private Long[] ids;
     private String password1;
     private String password2;
 
@@ -84,13 +84,12 @@ public class PositionDestroyDTO extends AbstractAuditingDTO implements Serializa
         this.memo = memo;
     }
 
-    public List<Long> getIds() {
+    public Long[] getIds() {
         return ids;
     }
 
-    public PositionDestroyDTO setIds(List<Long> ids) {
+    public void setIds(Long[] ids) {
         this.ids = ids;
-        return this;
     }
 
     public String getPassword1() {

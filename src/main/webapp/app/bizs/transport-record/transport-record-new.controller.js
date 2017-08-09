@@ -69,6 +69,9 @@
             if(!vm.transportRecord.receiver){
                 _fnQueryUser();
             }
+            if(!vm.transportRecord.sampleSatisfaction){
+                vm.transportRecord.sampleSatisfaction = 8;
+            }
             vm.transportRecord.transhipBatch = +vm.transportRecord.transhipBatch;
             _fnQuerySampleType();
 
@@ -220,10 +223,11 @@
                         if(importBoxFlag){
                             modalInstance = $uibModal.open({
                                 animation: true,
-                                templateUrl: 'app/bizs/transport-record/frozen-storage-box-modal.html',
+                                templateUrl: 'app/bizs/transport-record/modal/frozen-storage-box-modal.html',
                                 controller: 'FrozenStorageBoxModalController',
                                 controllerAs:'vm',
                                 size:'lg w-1200',
+                                backdrop:'static',
                                 resolve: {
                                     items: function () {
                                         return {

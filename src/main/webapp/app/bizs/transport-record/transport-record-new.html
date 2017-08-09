@@ -204,7 +204,6 @@
                         <!--<selectize options='vm.satisfactionOptions' config="vm.satisfactionConfig"-->
                                    <!--ng-model="vm.transportRecord.sampleSatisfaction"></selectize>-->
                         <!--<input type="hidden" class="form-control" ng-model="vm.transportRecord.sampleSatisfaction">-->
-
                         <span ng-repeat="rating in vm.ratings">
                             <div star-rating rating-value="rating.current" max="rating.max"
                                 on-rating-selected="vm.getSelectedRating(rating)"

@@ -7,22 +7,31 @@
     angular
         .module('bioBankApp')
         .controller('FrozenStorageBoxModalController', FrozenStorageBoxModalController)
-        .controller('ModalInstanceCtrl', ModalInstanceCtrl);
+        .controller('ProgressBarModalController', ProgressBarModalController);
 
     FrozenStorageBoxModalController.$inject = ['$scope','toastr','$timeout','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService','blockUI','AreasByEquipmentIdService','EquipmentService','SampleTypeService'];
-    ModalInstanceCtrl.$inject = ['$uibModalInstance','$uibModal'];
+    ProgressBarModalController.$inject = ['$uibModalInstance','$uibModal'];
 
     function FrozenStorageBoxModalController($scope,toastr,$timeout,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService,blockUI,AreasByEquipmentIdService,EquipmentService,SampleTypeService) {
 
         var vm = this;
         vm.items = items;
         vm.sampleTypeFlag = false;
-        // vm.importSample = importSample;//导入样本数据
+        var modalInstance;
         vm.codeList = [];//扫码录入的盒号
         vm.obox = {
             transhipId:vm.items.transhipId,
             frozenBoxDTOList:[]
         };
+        //删除盒子
+        vm.delBox = _fnDelBox;
+        //导入样本数据
+        vm.importSample = _fnImportSample;
+        //停止
+        vm.stop = _fnStop;
+
+
+
         vm.sampleTypeOptions = items.sampleTypeOptions;
         vm.frozenBoxTypeOptions = items.frozenBoxTypeOptions;
         vm.frozenBox = {};
@@ -32,6 +41,7 @@
 
         if(vm.sampleTypeOptions.length){
             vm.frozenBox.sampleTypeId = vm.sampleTypeOptions[0].id;
+            vm.frozenBox.sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
             vm.isMixed = _.filter(vm.sampleTypeOptions,{'id':+vm.frozenBox.sampleTypeId})[0].isMixed;
             _fnQueryProjectSampleClass(vm.items.projectId,vm.frozenBox.sampleTypeId,vm.isMixed);
         }
@@ -120,6 +130,10 @@
             create: true,
             persist:false,
             createOnBlur:false,
+            onInitialize: function(selectize){
+                vm.boxCodeSelectize = selectize;
+                // receives the selectize object as an argument
+            },
             onChange: function(value){
                 clearTimeout(changeTableTimer);
                 changeTableTimer = setTimeout(function () {
@@ -134,14 +148,7 @@
                 },500);
             }
         };
-        this.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-        this.ok = function () {
-            blockUI.start("正在保存冻存盒中……");
-            TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
 
-        };
         //不同项目下的样本分类
         function _fnQueryProjectSampleClass(projectId,sampleTypeId,isMixed) {
 
@@ -150,8 +157,6 @@
                 if(vm.projectSampleTypeOptions.length){
                     vm.frozenBox.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
                     vm.frozenBox.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
-                }
-                if(vm.projectSampleTypeOptions.length){
                     if(isMixed == 1){
                         vm.sampleTypeFlag = false;
                     }else{
@@ -160,17 +165,12 @@
                 }else{
                     vm.sampleTypeFlag = false;
                 }
-                // if(isMixed == 1){
-                //     vm.sampleTypeFlag = true;
-                // }else{
-                //     vm.sampleTypeFlag = false;
-                //
-                // }
                 _fnInitBoxInfo();
 
 
             });
         }
+        //创建盒子
         function _fnCreateTempBox(code){
             var tubeList=[];
             var box = {
@@ -183,6 +183,7 @@
                 areaId:vm.frozenBox.areaId,
                 sampleClassificationId: vm.frozenBox.sampleClassificationId || undefined,
                 sampleClassificationCode: vm.frozenBox.sampleClassificationCode || undefined,
+                isRepeat:0,
                 frozenTubeDTOS:[]
             };
             for(var j = 0; j < vm.frozenBox.frozenBoxTypeRows;j++){
@@ -223,11 +224,46 @@
             }
             return box;
         }
+        //删除盒子
+        function _fnDelBox(item) {
+            _.remove(vm.obox.frozenBoxDTOList,{frozenBoxCode:item.frozenBoxCode});
+            _.pull(vm.arrayBoxCode,item.frozenBoxCode);
+            vm.boxCodeSelectize.removeOption(item.frozenBoxCode);
+        }
+        //导入数据
+        vm.progressFlag = false;
+        function _fnImportSample() {
+            vm.progressFlag = true;
+            vm.count = 50;
+            vm.obj = {
+                width:vm.count+'%'
+            };
+            // setTimeout(function () {
+            //
+            //     console.log(vm.count)
+            //     vm.obj.width = vm.count;
+            // },1000);
+            // modalInstance = $uibModal.open({
+            //     animation: true,
+            //     templateUrl: 'progressBar.html',
+            //     controller: 'ProgressBarModalController',
+            //     backdrop:'static',
+            //     controllerAs: 'vm',
+            //     size:'progress-bar'
+            // });
+            // modalInstance.result.then(function () {
+            // });
+        }
+
         function _fnInitBoxInfo() {
             vm.obox.frozenBoxDTOList = [];
             for(var i = 0; i < vm.codeList.length; i++){
                 vm.obox.frozenBoxDTOList.push(_fnCreateTempBox(vm.codeList[i]));
             }
+        }
+
+        function _fnStop() {
+            vm.progressFlag = false;
         }
         function onEquipmentTempSuccess(data) {
             vm.frozenBoxPlaceOptions = data;
@@ -244,8 +280,30 @@
             $uibModalInstance.close();
 
         }
+
+
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+        vm.ok = function () {
+            if(vm.frozenBox.sampleTypeCode == '99' &&  !vm.projectSampleTypeOptions.length){
+                toastr.error("样本类型为99时，无样本分类，不能入库！");
+                return;
+            }
+            blockUI.start("正在保存冻存盒中……");
+            TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
+        };
         function onError(data) {
             toastr.error(data.data.message);
+            var boxCodes = _.split(data.data.params[0], ',');
+            console.log(JSON.stringify(boxCodes));
+            for(var i = 0; i < vm.obox.frozenBoxDTOList.length;i++){
+                for(var j = 0; j < boxCodes.length;j++){
+                    if(vm.obox.frozenBoxDTOList[i].frozenBoxCode == boxCodes[j]){
+                        vm.obox.frozenBoxDTOList[i].isRepeat = 1;
+                    }
+                }
+            }
             $timeout(function () {
                 blockUI.stop();
             },1000);
@@ -253,12 +311,12 @@
         }
 
     }
-    function ModalInstanceCtrl($uibModalInstance,$uibModal) {
-        var ctrl = this;
-        ctrl.ok = function () {
+    function ProgressBarModalController($uibModalInstance,$uibModal) {
+        var vm = this;
+        vm.stop = function () {
             $uibModalInstance.close(true);
         };
-        ctrl.cancel = function () {
+        vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
     }

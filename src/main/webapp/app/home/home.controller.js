@@ -43,10 +43,10 @@
         }
 
         function onTranshipNewEmptyService(data) {
-            $state.go('transport-record-new',{transhipId : data.id,transhipCode : data.transhipCode});
+            $state.go('transport-record-edit',{transhipId : data.id,transhipCode : data.transhipCode});
         }
         function onError(error) {
-            toastr.error(error.data.message);
+            toastr.error(error.message);
         }
         vm.create = function () {
             vm.isActive = true;

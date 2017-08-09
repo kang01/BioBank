@@ -55,7 +55,11 @@
                 {value:"1",label:"4*6"},
                 {value:"2",label:"6*4"}
             ];
+            //样本状态
             vm.statusOptions = MasterData.frozenTubeStatus;
+            //库存状态
+            vm.frozenTubeStatusOptions = MasterData.frozenBoxStatus;
+            //疾病类型
             vm.diseaseTypeOptions = MasterData.diseaseType;
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
@@ -158,6 +162,13 @@
                 onChange:function(value){
                 }
             };
+            vm.frozenTubeStatusConfig = {
+                valueField:'value',
+                labelField:'label',
+                maxItems: 1,
+                onChange:function(value){
+                }
+            };
             vm.diseaseTypeConfig = {
                 valueField:'id',
                 labelField:'name',
@@ -216,7 +227,11 @@
             };
         }
         _init();
-
+        function _fnReloadSelectedData() {
+            selectedSample = [];
+            vm.selectedLen = selectedSample.length;
+            vm.selectedOptions.withOption('data', selectedSample);
+        }
         function _fnSearchShow(status) {
             vm.status = status;
             vm.checked = true;
@@ -235,6 +250,7 @@
                     vm.dto.projectCodeStr.push(projectCode)
                 }
             }
+            _fnReloadSelectedData();
             vm.checked = false;
             vm.dtInstance.rerender();
         }
@@ -253,6 +269,14 @@
         }
         function _fnExchangeDestroy(operateStatus) {
             // operateStatus:1.交换 2.销毁
+            if(operateStatus == 1){
+                //状态为已入库才能被销毁或换位
+                var putInStorageData = _.filter(selectedSample,{"frozenTubeState":"2004"});
+                if(putInStorageData.length != 2){
+                    toastr.error("样本未入库，不能换位!");
+                    return;
+                }
+            }
             var ids =  _.map(selectedSample, 'id');
             console.log(JSON.stringify(ids));
             modalInstance = $uibModal.open({
@@ -276,6 +300,7 @@
                     delete obj.reason;
                     SampleInventoryService.changePosition(obj).success(function (data) {
                         toastr.success("换位成功!");
+                        _fnReloadSelectedData();
                         vm.dtInstance.rerender();
                     }).error(function (data) {
                         toastr.error(data.message);
@@ -445,8 +470,9 @@
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "100"),
             DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "120"),
             DTColumnBuilder.newColumn('sex').withTitle('标签'),
-            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "60").withOption('searchable',false).notSortable().renderWith(actionsHtml)
+            DTColumnBuilder.newColumn('status').withTitle('样本状态').withOption("width", "60"),
+            DTColumnBuilder.newColumn('frozenTubeState').withTitle('库存状态').withOption("width", "60"),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "50").withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
             var len = _.filter(selectedSample,{id:full.id}).length;
@@ -487,9 +513,12 @@
                 tag += "脂肪血;";
             }
             var status = MasterData.getStatus(data.status);
+            var frozenTubeStatus = "";
+            frozenTubeStatus = MasterData.getFrozenBoxStatus(data.frozenTubeState);
             $('td:eq(5)', row).html(projectName);
             $('td:eq(8)', row).html(tag);
             $('td:eq(9)', row).html(status);
+            $('td:eq(10)', row).html(frozenTubeStatus);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

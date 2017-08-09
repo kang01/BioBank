@@ -28,7 +28,7 @@ spring:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:oracle:thin:@10.24.10.56:1521:xe
 #        url: jdbc:oracle:thin:@101.201.69.125:1521:xe
-        username: biobank1
+        username: BIOBANK1
         password: root123
     jpa:
         database-platform: org.hibernate.dialect.Oracle12cDialect

@@ -37,7 +37,7 @@
             TranshipNewEmptyService.save({},onTranshipNewEmptyService,onError);
         }
         function onTranshipNewEmptyService(data) {
-            $state.go('transport-record-new',{transhipId : data.id,transhipCode : data.transhipCode});
+            $state.go('transport-record-edit',{transhipId : data.id,transhipCode : data.transhipCode});
         }
         //开始入库
         function _fnStockIn() {
@@ -238,9 +238,17 @@
             vm.dtInstance.reloadData();
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-xs" ui-sref="transport-record-edit({id:'+ full.id +'})">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;';
+            var html = '';
+            if(full.transhipState == '1005'){
+                html = '<button type="button" class="btn btn-xs" ui-sref="transport-record-edit({transhipId:'+ full.id +'})">' +
+                    '   <i class="fa fa-eye"></i>' +
+                    '</button>&nbsp;';
+            }else{
+                html = '<button type="button" class="btn btn-xs" ui-sref="transport-record-edit({transhipId:'+ full.id +'})">' +
+                    '   <i class="fa fa-edit"></i>' +
+                    '</button>&nbsp;';
+            }
+            return html;
         }
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;

@@ -797,6 +797,10 @@ public class StockListServiceImpl implements StockListService {
                 Predicate p5 = cb.equal(root.get("sampleUsedTimes").as(Long.class), searchForm.getSampleUsedTimes());
                 predicate.add(p5);
             }
+            if (searchForm.getFrozenTubeState() != null) {
+                Predicate p5 = cb.equal(root.get("frozenTubeState").as(String.class), searchForm.getFrozenTubeState());
+                predicate.add(p5);
+            }
         }
         Predicate[] pre = new Predicate[predicate.size()];
         query.where(predicate.toArray(pre));

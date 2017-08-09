@@ -434,7 +434,11 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     border: 1px solid #ddd;
 }
 .dataTables_wrapper.no-footer .dataTables_scrollBody {
-    border-bottom: 0px solid #111;
+    border-bottom: 0 solid #111;
+}
+.dataTables_wrapper .dataTables_scroll{
+    border:1px solid #ddd;
+    border-top:none;
 }
 /*.transport-record-new .three-col{*/
     /*width: 33%;*/
@@ -919,6 +923,9 @@ ul.rating {
 .rating .filled {
     color: red;
 }
+.red-color{
+    color: red;
+}
 .stock-in-list .dataTables_wrapper .dataTables_scroll{
     margin-top: 10px;
     border-bottom: 1px solid #ccc;
@@ -998,5 +1005,24 @@ ul.rating {
     transition: all 0.2s linear;
     font-size: 20px;
     padding-top: 4px;
+}
+.modal-progress-bar{
+    margin-top: 14%;
+}
+.mask-layer{
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index: 1;
+    background-color: rgba(0,0,0,0.5);
+}
+.progress-body{
+    background-color: #fff;
+    margin-top: 16%;
+    margin-left: 26%;
+    width: 40%;
+    border-radius: 4px;
 }
 

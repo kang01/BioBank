@@ -62,6 +62,7 @@
                 "positionChangeRecord": "Position Change Record",
                 "positionDestroy": "Position Destroy",
                 "positionDestroyRecord": "Position Destroy Record",
+                "attachment": "Attachment",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

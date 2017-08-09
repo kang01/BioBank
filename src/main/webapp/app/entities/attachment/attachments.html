@@ -1,0 +1,76 @@
+<div>
+    <h2 data-translate="bioBankApp.attachment.home.title">Attachments</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="attachment.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="bioBankApp.attachment.home.createLabel">
+                        Create new Attachment
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="businessId"><span data-translate="bioBankApp.attachment.businessId">Business Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="businessType"><span data-translate="bioBankApp.attachment.businessType">Business Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="fileId1"><span data-translate="bioBankApp.attachment.fileId1">File Id 1</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="fileId2"><span data-translate="bioBankApp.attachment.fileId2">File Id 2</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="fileTitle"><span data-translate="bioBankApp.attachment.fileTitle">File Title</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="fileName"><span data-translate="bioBankApp.attachment.fileName">File Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="description"><span data-translate="bioBankApp.attachment.description">Description</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="bioBankApp.attachment.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="memo"><span data-translate="bioBankApp.attachment.memo">Memo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="attachment in vm.attachments track by attachment.id">
+                    <td><a ui-sref="attachment-detail({id:attachment.id})">{{attachment.id}}</a></td>
+                    <td>{{attachment.businessId}}</td>
+                    <td>{{attachment.businessType}}</td>
+                    <td>{{attachment.fileId1}}</td>
+                    <td>{{attachment.fileId2}}</td>
+                    <td>{{attachment.fileTitle}}</td>
+                    <td>{{attachment.fileName}}</td>
+                    <td>{{attachment.description}}</td>
+                    <td>{{attachment.status}}</td>
+                    <td>{{attachment.memo}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="attachment-detail({id:attachment.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="attachment.edit({id:attachment.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="attachment.delete({id:attachment.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

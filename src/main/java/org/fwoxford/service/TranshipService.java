@@ -1,6 +1,5 @@
 package org.fwoxford.service;
 
-import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
@@ -9,8 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Service Interface for managing Tranship.
@@ -84,4 +84,15 @@ public interface TranshipService {
      * @return
      */
     StockInForDataDetail completedTranship(String transhipCode, TranshipToStockInDTO transhipToStockInDTO);
+
+    /**
+     * 上传图片
+     *
+     * @param attachmentDTO
+     * @param transhipId
+     * @param file
+     * @param request
+     * @return
+     */
+    AttachmentDTO saveAndUploadTranship(AttachmentDTO attachmentDTO, Long transhipId, MultipartFile file, HttpServletRequest request);
 }

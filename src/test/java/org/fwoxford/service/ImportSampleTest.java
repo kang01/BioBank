@@ -1,8 +1,7 @@
 package org.fwoxford.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.httpclient.params.HttpClientParams;
-import org.apache.commons.httpclient.params.HttpParams;
+import org.apache.commons.httpclient.HttpException;
 import org.fwoxford.BioBankApp;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
@@ -21,14 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StringUtils;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
-import java.io.*;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -1226,15 +1223,14 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         randomSet(5000000,5001000,200,hashSet);
         System.out.print(hashSet.toString());
     }
-
     @Test
     public void getHttpClientInfo() {
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod("http://10.24.10.43:8080/biobank/specimens");
+        GetMethod getMethod = new GetMethod("http://10.24.10.43:8080/biobank/specimens?boxcode=00370100013");
 //        getMethod.getParams().setParameter("fromdate","2017-01-01");
 //        getMethod.getParams().setParameter("todate","2017-02-01");
         HttpMethodParams params = new HttpMethodParams();
-        params.setParameter("boxcode","650420093");
+//        params.setParameter("boxcode","650420093");
         getMethod.setParams(params);
         getMethod.setRequestHeader("X-Auth-Token", "d93925bc7axKfXc2A5WFJEzuPXYX4q");
         try {

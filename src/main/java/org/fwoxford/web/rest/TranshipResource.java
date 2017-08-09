@@ -4,8 +4,11 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
+import net.sf.json.JSONObject;
+import org.fwoxford.domain.Tranship;
 import org.fwoxford.service.TranshipService;
 import org.fwoxford.service.UserService;
+import org.fwoxford.service.dto.AttachmentDTO;
 import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.TranshipToStockInDTO;
@@ -26,8 +29,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
+import javax.xml.ws.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -202,6 +209,31 @@ public class TranshipResource {
         StockInForDataDetail result = transhipService.completedTranship(transhipCode,transhipToStockInDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * 上传文件
+     * @param transhipId
+     * @param attachment
+     * @param file
+     * @param request
+     * @return
+     * @throws URISyntaxException
+     */
+    @RequestMapping(value = "/tranships/{transhipId}/upload",method = RequestMethod.POST)
+    @Timed
+    public ResponseEntity<AttachmentDTO> saveAndUploadTranship(@PathVariable Long transhipId,
+                                                               @RequestParam(value = "attachment") String attachment,
+                                                               @RequestParam(value = "file",required = false) MultipartFile file,
+                                                               HttpServletRequest request) throws URISyntaxException {
+        JSONObject jsonObject = JSONObject.fromObject(attachment);
+        AttachmentDTO attachmentDTO = (AttachmentDTO) JSONObject.toBean(jsonObject, AttachmentDTO.class);
+        log.debug("REST request to upload tranship images : {}", attachmentDTO);
+        AttachmentDTO result = transhipService.saveAndUploadTranship( attachmentDTO,transhipId,file,request);
+
+        return ResponseEntity.created(new URI("/res/api/tranships/" + transhipId))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 }

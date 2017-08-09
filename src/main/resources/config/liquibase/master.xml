@@ -59,6 +59,7 @@
     <include file="classpath:config/liquibase/changelog/20170803012501_added_entity_PositionChangeRecord.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170803031005_added_entity_PositionDestroy.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170806064658_added_entity_PositionDestroyRecord.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170808050040_added_entity_Attachment.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20170316050525_added_entity_constraints_ProjectRelate.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317021528_added_entity_constraints_Equipment.xml" relativeToChangelogFile="false"/>

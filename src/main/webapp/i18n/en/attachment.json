@@ -1,0 +1,29 @@
+{
+    "bioBankApp": {
+        "attachment" : {
+            "home": {
+                "title": "Attachments",
+                "createLabel": "Create a new Attachment",
+                "createOrEditLabel": "Create or edit a Attachment"
+            },
+            "created": "A new Attachment is created with identifier {{ param }}",
+            "updated": "A Attachment is updated with identifier {{ param }}",
+            "deleted": "A Attachment is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Attachment {{ id }}?"
+            },
+            "detail": {
+                "title": "Attachment"
+            },
+            "businessId": "Business Id",
+            "businessType": "Business Type",
+            "fileId1": "File Id 1",
+            "fileId2": "File Id 2",
+            "fileTitle": "File Title",
+            "fileName": "File Name",
+            "description": "Description",
+            "status": "Status",
+            "memo": "Memo"
+        }
+    }
+}

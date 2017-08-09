@@ -8,6 +8,7 @@ import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
+import org.fwoxford.service.mapper.AttachmentMapper;
 import org.fwoxford.service.mapper.FrozenBoxMapper;
 import org.fwoxford.service.mapper.FrozenTubeMapper;
 import org.fwoxford.service.mapper.TranshipMapper;
@@ -17,17 +18,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
+import org.springframework.security.crypto.codec.Base64;
 /**
  * Service Implementation for managing Tranship.
  */
@@ -79,6 +80,15 @@ public class TranshipServiceImpl implements TranshipService{
     private  StockInRepository stockInRepository;
     @Autowired
     private TranshipTubeRepository transhipTubeRepository;
+    @Autowired
+    private StockOutFilesService stockOutFilesService;
+    @Autowired
+    private AttachmentRepository attachmentRepository;
+    @Autowired
+    private AttachmentMapper attachmentMapper;
+    @Autowired
+    private StockOutFilesRepository stockOutFilesRepository;
+
     public TranshipServiceImpl(TranshipRepository transhipRepository, TranshipMapper transhipMapper,TranshipRepositries transhipRepositries) {
         this.transhipRepository = transhipRepository;
         this.transhipMapper = transhipMapper;
@@ -243,6 +253,7 @@ public class TranshipServiceImpl implements TranshipService{
         return stockInForDataDetail;
     }
 
+
     /**
      *  Get all the tranships.
      *
@@ -341,7 +352,7 @@ public class TranshipServiceImpl implements TranshipService{
      * @param transhipDTO
      * @return
      */
-    private Boolean isCanTranship(TranshipDTO transhipDTO) {
+    public Boolean isCanTranship(TranshipDTO transhipDTO) {
         List<FrozenBoxDTO> frozenBoxDTOS = transhipDTO.getFrozenBoxDTOList();
         Boolean isCanTranship = true;
         //判断盒子位置有效性
@@ -398,5 +409,72 @@ public class TranshipServiceImpl implements TranshipService{
             frozenBoxRepository.save(frozenBox);
         }
         return transhipMapper.transhipToTranshipDTO(tranship);
+    }
+
+    @Override
+    public AttachmentDTO saveAndUploadTranship(AttachmentDTO attachmentDTO, Long transhipId, MultipartFile file, HttpServletRequest request) {
+
+        Attachment attachment = attachmentMapper.attachmentDTOToAttachment(attachmentDTO);
+        attachment.businessId(transhipId).businessType(Constants.SAMPLE_HISTORY_TRANSHIP).status(Constants.VALID);
+        String fileName= "";
+        String filetype= "";
+        if(!file.isEmpty()){
+            try {
+                    StockOutFiles bigFile = new StockOutFiles();
+                    fileName=file.getOriginalFilename().split("\\.")[0];//文件名
+                    filetype=file.getOriginalFilename().split("\\.")[1];//后缀
+                    UUID uuid = UUID.randomUUID();
+                    String uuidStr = uuid.toString();
+                    uuidStr = uuidStr.replaceAll("-", "");
+                    uuidStr="biobank"+uuidStr;
+                    uuidStr+="."+filetype;
+                    bigFile.setFileName(fileName);
+                    // 文件保存路径
+                    bigFile.setFilePath(uuidStr);
+
+                    bigFile.setFiles(file.getBytes());
+                    bigFile.setFilesContentType(null);
+                    bigFile.setFileSize((int)file.getSize());
+                    bigFile.setFileType(filetype);
+                    bigFile.setStatus(Constants.VALID);
+                    stockOutFilesRepository.save(bigFile);
+                    attachment.setFileId1(bigFile.getId());
+                    attachment.setFileName(fileName);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+        }else {
+            throw  new BankServiceException("文件不能为空！");
+        }
+
+        if(!StringUtils.isEmpty(attachmentDTO.getSmallImage())){
+            StockOutFiles smallFile = new StockOutFiles();
+            String smallBase64 = attachmentDTO.getSmallImage();
+            String smallFileData = smallBase64.substring(smallBase64.indexOf(",")+1);
+            UUID uuid = UUID.randomUUID();
+            String uuidStr = uuid.toString();
+            uuidStr = uuidStr.replaceAll("-", "");
+            uuidStr="biobank"+uuidStr;
+            uuidStr+="."+filetype;
+            // 接收base64文件字符串, 并对文件字符串进行解码
+            byte[] smallFileByte = Base64.decode(smallFileData.getBytes());
+            smallFile.setFileName(fileName);
+            // 文件保存路径
+            smallFile.setFilePath(uuidStr);
+            smallFile.setFiles(smallFileByte);
+            smallFile.setFilesContentType(null);
+            smallFile.setFileSize((int)file.getSize());
+            smallFile.setFileType(filetype);
+            smallFile.setStatus(Constants.VALID);
+            stockOutFilesRepository.save(smallFile);
+            attachment.setFileId2(smallFile.getId());
+        }
+        if(StringUtils.isEmpty(attachment.getFileTitle())){
+            attachment.setFileTitle(attachment.getFileName());
+        }
+        //保存附件
+        attachmentRepository.save(attachment);
+        attachmentDTO.setId(attachment.getId());
+        return attachmentDTO;
     }
 }

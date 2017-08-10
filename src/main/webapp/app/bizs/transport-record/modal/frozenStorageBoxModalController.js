@@ -53,13 +53,13 @@
             labelField:'sampleTypeName',
             maxItems: 1,
             onChange:function (value) {
+                vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
+                vm.frozenBox.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
                 vm.frozenBox.sampleTypeId = value;
-                vm.isMixed = _.filter(vm.sampleTypeOptions,{'id':+value})[0].isMixed;
-                var sampleCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleCode;
-                vm.frozenBox.sampleTypeCode = sampleCode;
-                if(sampleCode == 'RNA'){
+                if(vm.frozenBox.sampleTypeCode == 'RNA'){
                     vm.box.isSplit = 1;
                 }
+                _fnEditBoxInfo();
                 _fnQueryProjectSampleClass(vm.items.projectId,value,vm.isMixed);
 
             }
@@ -70,7 +70,7 @@
             maxItems: 1,
             onChange:function (value) {
                 vm.frozenBox.sampleClassificationId = value;
-                _fnInitBoxInfo();
+                // _fnInitBoxInfo();
             }
         };
         //盒类型
@@ -80,16 +80,19 @@
             maxItems: 1,
             onChange:function(value){
                 vm.frozenBox.frozenBoxTypeId  = value;
-                for(var i = 0; i < vm.frozenBoxTypeOptions.length; i++){
-                    if(vm.frozenBoxTypeOptions[i].id == value){
-                        vm.frozenBox.frozenBoxTypeRows = vm.frozenBoxTypeOptions[i].frozenBoxTypeRows;
-                        vm.frozenBox.frozenBoxTypeColumns = vm.frozenBoxTypeOptions[i].frozenBoxTypeColumns;
-                    }
-                }
-                _fnInitBoxInfo();
+                vm.frozenBox.frozenBoxTypeRows = _.find(vm.frozenBoxTypeOptions,{id:+value}).frozenBoxTypeRows;
+                vm.frozenBox.frozenBoxTypeColumns = _.find(vm.frozenBoxTypeOptions,{id:+value}).frozenBoxTypeColumns;
+                // for(var i = 0; i < vm.frozenBoxTypeOptions.length; i++){
+                //     if(vm.frozenBoxTypeOptions[i].id == value){
+                //         vm.frozenBox.frozenBoxTypeRows = vm.frozenBoxTypeOptions[i].frozenBoxTypeRows;
+                //         vm.frozenBox.frozenBoxTypeColumns = vm.frozenBoxTypeOptions[i].frozenBoxTypeColumns;
+                //     }
+                // }
+                _fnEditBoxInfo();
             }
         };
         //暂存区位置
+        //设备
         vm.frozenBoxPlaceConfigTemp = {
             valueField:'id',
             labelField:'equipmentCode',
@@ -106,49 +109,16 @@
                 }
             }
         };
+        //区域
         vm.frozenBoxAreaConfigTemp = {
             valueField:'id',
             labelField:'areaCode',
             maxItems: 1,
             onChange:function (value) {
                 vm.frozenBox.areaId  = value;
-                _fnInitBoxInfo();
+                _fnEditBoxInfo();
             }
         };
-
-        vm.dtOptions = DTOptionsBuilder.newOptions()
-            .withOption('searching', false)
-            .withOption('paging', false)
-            .withOption('sorting', false)
-            .withScroller()
-            .withOption('deferRender', true)
-            .withOption('scrollY', 200);
-
-        //录入冻存盒号
-        var changeTableTimer = null;
-        vm.boxCodeConfig = {
-            create: true,
-            persist:false,
-            createOnBlur:false,
-            onInitialize: function(selectize){
-                vm.boxCodeSelectize = selectize;
-                // receives the selectize object as an argument
-            },
-            onChange: function(value){
-                clearTimeout(changeTableTimer);
-                changeTableTimer = setTimeout(function () {
-                    vm.obox.frozenBoxDTOList = [];
-                    if(value.length){
-                        vm.codeList = value.reverse();
-                        _fnInitBoxInfo();
-                    }
-                    if ($scope.$digest()){
-                        $scope.$apply();
-                    }
-                },500);
-            }
-        };
-
         //不同项目下的样本分类
         function _fnQueryProjectSampleClass(projectId,sampleTypeId,isMixed) {
 
@@ -165,11 +135,51 @@
                 }else{
                     vm.sampleTypeFlag = false;
                 }
-                _fnInitBoxInfo();
+                // _fnInitBoxInfo();
 
 
             });
         }
+
+        vm.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('searching', false)
+            .withOption('paging', false)
+            .withOption('sorting', false)
+            .withScroller()
+            .withOption('deferRender', true)
+            .withOption('scrollY', 220);
+        vm.dtColumns = [
+            DTColumnBuilder.newColumn(0).withOption("width", "auto"),
+            DTColumnBuilder.newColumn(1).withOption("width", "80"),
+            DTColumnBuilder.newColumn(2).withOption("width", "auto"),
+            DTColumnBuilder.newColumn(3).withOption("width", "80"),
+            DTColumnBuilder.newColumn(4).withOption("width", "80"),
+            DTColumnBuilder.newColumn(5).withOption("width", "60")
+        ];
+        //录入冻存盒号
+        var changeTableTimer = null;
+        vm.boxCodeConfig = {
+            create: true,
+            persist:false,
+            createOnBlur:false,
+            onInitialize: function(selectize){
+                vm.boxCodeSelectize = selectize;
+            },
+            onChange: function(value){
+                clearTimeout(changeTableTimer);
+                changeTableTimer = setTimeout(function () {
+                    // vm.obox.frozenBoxDTOList = [];
+                    if(value.length){
+                        vm.codeList = value;
+                        _fnInitBoxInfo();
+                    }
+                    if ($scope.$digest()){
+                        $scope.$apply();
+                    }
+                },500);
+            }
+        };
+
         //创建盒子
         function _fnCreateTempBox(code){
             var tubeList=[];
@@ -238,6 +248,7 @@
             vm.obj = {
                 width:vm.count+'%'
             };
+            _fnEditBoxInfo();
             // setTimeout(function () {
             //
             //     console.log(vm.count)
@@ -256,30 +267,69 @@
         }
 
         function _fnInitBoxInfo() {
-            vm.obox.frozenBoxDTOList = [];
+            // vm.obox.frozenBoxDTOList = [];
             for(var i = 0; i < vm.codeList.length; i++){
-                vm.obox.frozenBoxDTOList.push(_fnCreateTempBox(vm.codeList[i]));
+                if(!vm.obox.frozenBoxDTOList.length){
+                    vm.obox.frozenBoxDTOList.push(_fnCreateTempBox(vm.codeList[i]));
+                }
+                var len = _.filter(vm.obox.frozenBoxDTOList,{frozenBoxCode:vm.codeList[i]}).length;
+                if(!len){
+                    vm.obox.frozenBoxDTOList.push(_fnCreateTempBox(vm.codeList[i]));
+                }
+                vm.obox.frozenBoxDTOList.reverse();
             }
+        }
+        function _fnEditBoxInfo() {
+            var tubeList=[];
+            for(var i = 0; i < vm.obox.frozenBoxDTOList.length; i++){
+                var boxes = vm.obox.frozenBoxDTOList[i];
+                boxes.sampleTypeId = vm.frozenBox.sampleTypeId;
+                boxes.sampleTypeCode = vm.frozenBox.sampleTypeCode;
+                boxes.frozenBoxTypeId = vm.frozenBox.frozenBoxTypeId;
+                boxes.frozenBoxTypeRows = vm.frozenBox.frozenBoxTypeRows;
+                boxes.frozenBoxTypeColumns = vm.frozenBox.frozenBoxTypeColumns;
+                boxes.equipmentId = vm.frozenBox.equipmentId;
+                boxes.areaId = vm.frozenBox.areaId;
+                boxes.frozenTubeDTOS = [];
+                for(var j = 0; j < vm.frozenBox.frozenBoxTypeRows;j++){
+                    tubeList[j] = [];
+                    var rowNO = j > 7 ? j+1 : j;
+                    rowNO = String.fromCharCode(rowNO+65);
+                    for(var k = 0; k < vm.frozenBox.frozenBoxTypeColumns; k++){
+                        tubeList[j][k] = {
+                            frozenBoxCode: boxes.frozenBoxCode,
+                            sampleCode: "",
+                            sampleTempCode: boxes.frozenBoxCode+"-"+rowNO+(k+1),
+                            sampleTypeId: boxes.sampleTypeId,
+                            sampleTypeCode: boxes.sampleTypeCode,
+                            sampleClassificationId:boxes.sampleClassificationId,
+                            sampleClassificationCode:boxes.sampleClassificationCode,
+                            status: "3001",
+                            tubeRows:rowNO,
+                            tubeColumns: k+1
+                        };
+                        if(boxes.isMixed == 1) {
+                            for (var l = 0; l < vm.projectSampleTypeOptions.length; l++) {
+                                if (vm.projectSampleTypeOptions[l].columnsNumber == k + 1) {
+                                    tubeList[j][k].sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
+                                    tubeList[j][k].sampleClassificationCode = vm.projectSampleTypeOptions[l].sampleClassificationCode;
+                                }
+                            }
+                        }
+
+                        boxes.frozenTubeDTOS.push(tubeList[j][k]);
+
+                    }
+                }
+            }
+            console.log(JSON.stringify(vm.obox.frozenBoxDTOList));
         }
 
         function _fnStop() {
             vm.progressFlag = false;
         }
-        function onEquipmentTempSuccess(data) {
-            vm.frozenBoxPlaceOptions = data;
-            // vm.frozenBox.equipmentId = vm.frozenBoxPlaceOptions[0].id;
-            // AreasByEquipmentIdService.query({id:vm.frozenBox.equipmentId},onAreaTempSuccess, onError);
-        }
-        function onAreaTempSuccess(data) {
-            vm.frozenBoxHoldAreaOptions = data;
-            vm.frozenBox.areaId = vm.frozenBoxHoldAreaOptions[0].id;
-            _fnInitBoxInfo();
-        }
-        function onSaveBoxSuccess(data) {
-            blockUI.stop();
-            $uibModalInstance.close();
 
-        }
+
 
 
         vm.cancel = function () {
@@ -293,10 +343,24 @@
             blockUI.start("正在保存冻存盒中……");
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
         };
+        function onEquipmentTempSuccess(data) {
+            vm.frozenBoxPlaceOptions = data;
+            // vm.frozenBox.equipmentId = vm.frozenBoxPlaceOptions[0].id;
+            // AreasByEquipmentIdService.query({id:vm.frozenBox.equipmentId},onAreaTempSuccess, onError);
+        }
+        function onAreaTempSuccess(data) {
+            vm.frozenBoxHoldAreaOptions = data;
+            vm.frozenBox.areaId = vm.frozenBoxHoldAreaOptions[0].id;
+            _fnEditBoxInfo();
+        }
+        function onSaveBoxSuccess(data) {
+            blockUI.stop();
+            $uibModalInstance.close();
+
+        }
         function onError(data) {
             toastr.error(data.data.message);
             var boxCodes = _.split(data.data.params[0], ',');
-            console.log(JSON.stringify(boxCodes));
             for(var i = 0; i < vm.obox.frozenBoxDTOList.length;i++){
                 for(var j = 0; j < boxCodes.length;j++){
                     if(vm.obox.frozenBoxDTOList[i].frozenBoxCode == boxCodes[j]){

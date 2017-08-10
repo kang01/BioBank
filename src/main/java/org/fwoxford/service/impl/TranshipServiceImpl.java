@@ -414,6 +414,10 @@ public class TranshipServiceImpl implements TranshipService{
     @Override
     public AttachmentDTO saveAndUploadTranship(AttachmentDTO attachmentDTO, Long transhipId, MultipartFile file, HttpServletRequest request) {
 
+        Tranship tranship = transhipRepository.findOne(transhipId);
+        if(tranship == null){
+            throw new BankServiceException("转运记录不存在！");
+        }
         Attachment attachment = attachmentMapper.attachmentDTOToAttachment(attachmentDTO);
         attachment.businessId(transhipId).businessType(Constants.SAMPLE_HISTORY_TRANSHIP).status(Constants.VALID);
         String fileName= "";

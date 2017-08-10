@@ -31,6 +31,7 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/moment/moment.js',
             'src/main/webapp/bower_components/numbro/numbro.js',
             'src/main/webapp/bower_components/pikaday/pikaday.js',
+            'src/main/webapp/bower_components/zeroclipboard/dist/ZeroClipboard.js',
             'src/main/webapp/bower_components/datatables/media/js/jquery.dataTables.js',
             'src/main/webapp/bower_components/select2/dist/js/select2.js',
             'src/main/webapp/bower_components/datatables-light-columnfilter/dist/dataTables.lightColumnFilter.js',

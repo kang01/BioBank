@@ -204,7 +204,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             throw new BankServiceException("请勿提交重复的冻存盒编码！",String.join(",",repeatCode));
         }
         frozenBoxCheckService.checkFrozenBoxCodeRepead(frozenBoxCodeMap);
-        List<TranshipTube> transhipTubeList = new ArrayList<TranshipTube>();
         for(FrozenBoxForSaveBatchDTO boxDTO : transhipBoxListDTO.getFrozenBoxDTOList()){
             FrozenBox box = frozenBoxMapper.frozenBoxForSaveBatchDTOToFrozenBox(boxDTO);
             box = createFrozenBox(tranship,box);
@@ -319,6 +318,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 tube.getSampleType().setSampleTypeCode(tube.getSampleTypeCode());
                 tube.getSampleType().setSampleTypeName(tube.getSampleTypeName());
             }
+        }
+        if(tube.getSampleType().getIsMixed().equals(Constants.YES) &&tube.getSampleClassification() == null){
+            throw new BankServiceException("混合类型的样本分类不能为空！");
         }
         if (tube.getSampleClassification() == null){
             tube.setSampleClassification(box.getSampleClassification());

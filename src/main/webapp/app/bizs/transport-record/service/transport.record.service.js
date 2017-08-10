@@ -47,7 +47,20 @@
             var orderBy = $filter('orderBy');
             return orderBy(properties, 'prefix');
         }
-
+        service.uploadTransportRecord = function (transhipId,file) {
+            var req = {
+                method: 'POST',
+                url: 'api/tranships/'+transhipId+'/upload',
+                headers: {
+                    'Content-Type': undefined
+                },
+                data: file
+            };
+            return $http(req);
+        };
+        service.queryTransportRecordFile = function (transportCode) {
+            return $http.get('api/attachments/transhipCode/'+transportCode);
+        };
         return service;
     }
 })();

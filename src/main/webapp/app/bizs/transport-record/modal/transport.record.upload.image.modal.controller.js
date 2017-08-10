@@ -8,15 +8,17 @@
         .module('bioBankApp')
         .controller('transportUploadImageModalCtrl', transportUploadImageModalCtrl);
 
-    transportUploadImageModalCtrl.$inject = ['$scope','$uibModalInstance','$uibModal'];
+    transportUploadImageModalCtrl.$inject = ['$scope','$uibModalInstance','$uibModal','toastr','items','TransportRecordService'];
 
-    function transportUploadImageModalCtrl($scope,$uibModalInstance,$uibModal) {
+    function transportUploadImageModalCtrl($scope,$uibModalInstance,$uibModal,toastr,items,TransportRecordService) {
         var vm = this;
-
+        var transportId = items.transportId;
         vm.imagesArray = [];
         vm.reader = new FileReader();   //创建一个FileReader接口
         vm.thumb = {};
-        vm.img_upload = function(files) {       //单次提交图片的函数
+        //单次提交图片的函数
+        vm.img_upload = function(files) {
+            vm.file = files;
             vm.guid = (new Date()).valueOf();   //通过时间戳创建一个随机数，作为键名使用
             vm.reader.readAsDataURL(files[0]);  //FileReader的方法，把图片转成base64
             vm.reader.onload = function(ev) {
@@ -63,7 +65,6 @@
                                     context1.drawImage(img1,0,startHeightPos,140,140,0,0,140,140);
                                 }
                                 var dataURL1  = canvas1.toDataURL("image/png");
-                                console.log(dataURL1);
                                 // vm.imagesArray.push(dataURL1)
                                 vm.thumb.imgSrc = dataURL1 ;
                             }
@@ -77,7 +78,22 @@
 
 
         vm.ok = function () {
-            $uibModalInstance.close();
+            if(vm.file){
+                var obj = {};
+                obj.fileTitle = vm.entity.fileTitle;
+                obj.smallImage = vm.thumb.imgSrc;
+                obj.description = vm.entity.description;
+                var fb = new FormData();
+                fb.append('attachment', angular.toJson(obj));
+                fb.append('file', vm.file);
+                TransportRecordService.uploadTransportRecord(transportId,fb).success(function (data) {
+                    toastr.success("上传成功!");
+                    $uibModalInstance.close();
+                }).error(function (data) {
+                    toastr.error(data.message);
+                });
+            }
+
         };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

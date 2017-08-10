@@ -67,7 +67,7 @@
         var vm = this;
         $scope.$watch('imagesData',function () {
             // console.log($scope.imagesData);
-            vm.image = $scope.imagesData
+            vm.transportRecordUploadInfo = $scope.imagesData
         });
 
     }

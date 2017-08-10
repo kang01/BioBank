@@ -1389,14 +1389,24 @@
                 controllerAs: 'vm',
                 resolve:{
                     items:function () {
-                        return{};
+                        return{
+                            transportId:vm.transportRecord.id
+                        };
                     }
                 }
             });
             modalInstance.result.then(function () {
-
+                _fnQueryTransportRecordFile();
             });
         }
+        function _fnQueryTransportRecordFile() {
+            TransportRecordService.queryTransportRecordFile(vm.transportRecord.transhipCode).success(function (data) {
+                vm.transportRecordUploadInfo = data;
+            }).error(function (data) {
+                toastr.error(data.message);
+            })
+        }
+        _fnQueryTransportRecordFile();
 
 
     }

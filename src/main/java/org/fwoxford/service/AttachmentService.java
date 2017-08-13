@@ -43,5 +43,18 @@ public interface AttachmentService {
      */
     void delete(Long id);
 
+    /**
+     *根据转运编码获取转运上传的图片
+     * @param code
+     * @param request
+     * @return
+     */
     List<AttachmentDTO> findFilesByTranshipCode(String code, HttpServletRequest request);
+
+    /**
+     * 修改附件的基本信息
+     * @param attachmentDTO
+     * @return
+     */
+    AttachmentDTO updateAttachment(AttachmentDTO attachmentDTO);
 }

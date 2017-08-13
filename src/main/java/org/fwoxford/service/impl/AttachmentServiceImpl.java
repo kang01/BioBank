@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.StockOutFiles;
 import org.fwoxford.domain.Tranship;
 import org.fwoxford.repository.StockOutFilesRepository;
@@ -98,7 +99,20 @@ public class AttachmentServiceImpl implements AttachmentService{
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Attachment : {}", id);
-        attachmentRepository.delete(id);
+        Attachment attachment = attachmentRepository.findOne(id);
+        if(attachment == null){
+            throw new BankServiceException("附件不存在！");
+        }
+        Long bigId = attachment.getFileId1();
+        Long smallId = attachment.getFileId2();
+        if(bigId!=null){
+            stockOutFilesRepository.updateStatusById(bigId);
+        }
+        if(smallId!=null){
+            stockOutFilesRepository.updateStatusById(smallId);
+        }
+        attachment.setStatus(Constants.INVALID);
+        attachmentRepository.save(attachment);
     }
 
     @Override
@@ -138,5 +152,25 @@ public class AttachmentServiceImpl implements AttachmentService{
             attachmentDTOS.add(attachmentDTO);
         }
         return attachmentDTOS;
+    }
+
+    /**
+     *
+     * @param attachmentDTO
+     * @return
+     */
+    @Override
+    public AttachmentDTO updateAttachment(AttachmentDTO attachmentDTO) {
+        if(attachmentDTO.getId() ==  null){
+            throw new BankServiceException("文件ID不能为空！");
+        }
+        Attachment attachment = attachmentRepository.findOne(attachmentDTO.getId());
+        if(attachment == null){
+            throw new BankServiceException("文件不存在！");
+        }
+        attachment.setFileTitle(attachmentDTO.getFileTitle());
+        attachment.setDescription(attachmentDTO.getDescription());
+        attachmentRepository.save(attachment);
+        return attachmentDTO;
     }
 }

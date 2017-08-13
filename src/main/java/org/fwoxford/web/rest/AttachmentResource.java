@@ -5,6 +5,7 @@ import org.fwoxford.domain.StockOutFiles;
 import org.fwoxford.service.AttachmentService;
 import org.fwoxford.service.StockOutFilesService;
 import org.fwoxford.service.dto.StockOutFilesDTO;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.AttachmentDTO;
@@ -72,8 +73,8 @@ public class AttachmentResource {
     }
 
     /**
-     * PUT  /attachments : Updates an existing attachment.
-     *
+     * 修改已经上传的文件
+     * 只能修改图片的title和description
      * @param attachmentDTO the attachmentDTO to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated attachmentDTO,
      * or with status 400 (Bad Request) if the attachmentDTO is not valid,
@@ -85,9 +86,9 @@ public class AttachmentResource {
     public ResponseEntity<AttachmentDTO> updateAttachment(@Valid @RequestBody AttachmentDTO attachmentDTO) throws URISyntaxException {
         log.debug("REST request to update Attachment : {}", attachmentDTO);
         if (attachmentDTO.getId() == null) {
-            return createAttachment(attachmentDTO);
+            throw new BankServiceException("文件ID不能为空");
         }
-        AttachmentDTO result = attachmentService.save(attachmentDTO);
+        AttachmentDTO result = attachmentService.updateAttachment(attachmentDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, attachmentDTO.getId().toString()))
             .body(result);
@@ -125,8 +126,7 @@ public class AttachmentResource {
     }
 
     /**
-     * DELETE  /attachments/:id : delete the "id" attachment.
-     *
+     * 删除上传的文件
      * @param id the id of the attachmentDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
@@ -137,6 +137,13 @@ public class AttachmentResource {
         attachmentService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    /**
+     * 根据转运编码查询上传的文件
+     * @param code
+     * @param request
+     * @return
+     */
     @GetMapping("/attachments/transhipCode/{code}")
     @Timed
     public ResponseEntity<List<AttachmentDTO>> getTranship(@PathVariable String code, HttpServletRequest request) {

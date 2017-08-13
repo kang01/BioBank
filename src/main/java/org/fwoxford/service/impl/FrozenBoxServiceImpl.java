@@ -833,7 +833,6 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
     @Override
     public String findFrozenBoxHistory(Long id) {
         String status = Constants.FROZEN_BOX_INVALID;
-        FrozenBox frozenBox = new FrozenBox();
         List<Object[]> positionHistory = frozenBoxRepository.findPositionHistory(id);
         if(positionHistory.size()>0){
             status = Constants.FROZEN_BOX_STOCKED;

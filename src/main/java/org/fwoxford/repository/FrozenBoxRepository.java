@@ -186,31 +186,65 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     @Modifying
     @Query("update FrozenBox b set b.status=?1 where b.frozenBoxCode in ?2 and b.status not in ('2005','0000')")
     void updateStatusByFrozenBoxCodes(String frozenBoxTranshipComplete, List<String> frozenBoxCodes);
-    @Query(value = "SELECT ROWNUM  as id,temp.* FROM" +
+    @Query(value = "SELECT ROWNUM  as id,cast(temp.equipment_code as varchar2(255)) as equipmentCode," +
+        " cast(temp.equipment_code as varchar2(255)) as equipment_code, " +
+        " cast(temp.area_code as varchar2(255)) as area_code, " +
+        " cast(temp.support_rack_code as varchar2(255)) as support_rack_code, " +
+        " cast(temp.rows_in_shelf as varchar2(255)) as rows_in_shelf, " +
+        " cast(temp.columns_in_shelf as varchar2(255)) as columns_in_shelf, " +
+        " equipment_id,area_id,support_rack_id, " +
+        " cast(temp.frozen_box_code as varchar2(255)) as frozen_box_code, " +
+        " frozen_box_id,project_id, " +
+        " cast(temp.project_code as varchar2(255)) as project_code, " +
+        " project_site_id,sample_type_id, " +
+        " cast(temp.sample_type_code as varchar2(255)) as sample_type_code, "+
+        " cast(temp.sample_type_name as varchar2(255)) as sample_type_name, "+
+        " sample_classification_id, " +
+        " cast(temp.sample_classification_code as varchar2(255)) as sample_classification_code, "+
+        " cast(temp.sample_classification_name as varchar2(255)) as sample_classification_name, "+
+        " created_date,type " +
+        " FROM" +
         "                (" +
-        "                    SELECT t.equipment_code,t.area_code,t.support_rack_code,t.ROWS_IN_SHELF,t.COLUMNS_IN_SHELF,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
+        "                    SELECT t.equipment_code,t.area_code,t.support_rack_code,t.rows_in_shelf,t.columns_in_shelf,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
         "                    t.project_id,t.project_code,t.project_site_id,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
         "                    ,t.created_date,104 as type" +
-        "                    FROM position_move_record t where t.move_type in (1,2) where frozen_box_id = ?1" +
+        "                    FROM position_move_record t where t.move_type in (1,2) and frozen_box_id = ?1" +
         "        " +
         "                    UNION" +
         "           " +
-        "                    SELECT t.equipment_code,t.area_code,t.support_rack_code,t.ROWS_IN_SHELF,t.COLUMNS_IN_SHELF,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
+        "                    SELECT t.equipment_code,t.area_code,t.support_rack_code,t.rows_in_shelf,t.columns_in_shelf,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
         "                    t.project_id,t.project_code,t.project_site_id,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
         "                    ,t.created_date,105 as type" +
-        "                    FROM position_change_record t where t.change_type in (1,2) where frozen_box_id = ?1" +
+        "                    FROM position_change_record t where t.change_type in (1,2) and frozen_box_id = ?1" +
         "            " +
         "                    UNION" +
         "            " +
-        "                    SELECT t.equipment_code,t.area_code,t.support_rack_code,t.ROWS_IN_SHELF,t.COLUMNS_IN_SHELF,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
+        "                    SELECT t.equipment_code,t.area_code,t.support_rack_code,t.rows_in_shelf,t.columns_in_shelf,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
         "                    t.project_id,t.project_code,t.project_site_id,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
         "                    ,t.created_date,106 as type" +
-        "                    FROM position_destroy_record t where t.destroy_type in (1,2) where frozen_box_id = ?1" +
+        "                    FROM position_destroy_record t where t.destroy_type in (1,2) and frozen_box_id = ?1" +
         "            " +
         "            ) temp ORDER BY created_date DESC",nativeQuery = true)
     List<Object[]> findPositionHistory(Long id);
 
-    @Query(value = "  SELECT ROWNUM  as id,temp.* FROM" +
+    @Query(value = "SELECT ROWNUM  as id,cast(temp.equipment_code as varchar2(255)) as equipmentCode," +
+        " cast(temp.equipment_code as varchar2(255)) as equipment_code, " +
+        " cast(temp.area_code as varchar2(255)) as area_code, " +
+        " cast(temp.support_rack_code as varchar2(255)) as support_rack_code, " +
+        " cast(temp.rows_in_shelf as varchar2(255)) as rows_in_shelf, " +
+        " cast(temp.columns_in_shelf as varchar2(255)) as columns_in_shelf, " +
+        " equipment_id,area_id,support_rack_id, " +
+        " cast(temp.frozen_box_code as varchar2(255)) as frozen_box_code, " +
+        " frozen_box_id,project_id, " +
+        " cast(temp.project_code as varchar2(255)) as project_code, " +
+        " project_site_id,sample_type_id, " +
+        " cast(temp.sample_type_code as varchar2(255)) as sample_type_code, "+
+        " cast(temp.sample_type_name as varchar2(255)) as sample_type_name, "+
+        " sample_classification_id, " +
+        " cast(temp.sample_classification_code as varchar2(255)) as sample_classification_code, "+
+        " cast(temp.sample_classification_name as varchar2(255)) as sample_classification_name, "+
+        " created_date,type " +
+        " FROM" +
         "                (" +
         "                    select t.equipment_code,t.area_code,t.support_rack_code,t.ROWS_IN_SHELF,t.COLUMNS_IN_SHELF,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
         "                    t.frozen_box_type_id,t.frozen_box_type_code," +

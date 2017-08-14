@@ -428,14 +428,15 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBoxNew.setSampleClassification(sampleClassification);
             frozenBoxNew.setColumnsInShelf(stockInBoxForDataSplit.getColumnsInShelf());
             frozenBoxNew.setRowsInShelf(stockInBoxForDataSplit.getRowsInShelf());
-            frozenBoxNew.setStatus(Constants.FROZEN_BOX_STOCKING);
+
             frozenBoxNew.setMemo(stockInBoxForDataSplit.getMemo());
             //验证盒子编码是否存在
             Map<String,Long> map = new HashMap<String,Long>();
             map.put(frozenBoxNew.getFrozenBoxCode(),frozenBoxNew.getId());
             frozenBoxCheckService.checkFrozenBoxCodeRepead(map);
-            frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
         }
+        frozenBoxNew.setStatus(Constants.FROZEN_BOX_STOCKING);
+        frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
         if(stockInBoxSplitIn.getId() == null){
             stockInBoxSplitIn.setStockIn(stockIn);
             stockInBoxSplitIn.setFrozenBox(frozenBoxNew);
@@ -850,7 +851,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 if(frozenTubeHistory != null &&
                     (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)
                         &&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER)
-                        &&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_TRANSHIP))){
+                        &&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_TRANSHIP)
+                        &&!frozenTubeHistory.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)
+                    )){
                     //原盒原库存
                     tubeflag = Constants.FROZEN_FLAG_2;
                 }else if(frozenTubeHistory != null && (frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)

@@ -619,8 +619,10 @@ public class StockListServiceImpl implements StockListService {
     }
 
     private CriteriaQuery<?> getSearchQueryForBox(Root<FrozenBoxListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, FrozenBoxListSearchForm searchForm) {
+        List<Predicate> predicate = new ArrayList<>();
+        Predicate p = cb.notEqual(root.get("status").as(String.class), Constants.INVALID);
+        predicate.add(p);
         if (searchForm != null) {
-            List<Predicate> predicate = new ArrayList<>();
             if (searchForm.getProjectCodeStr() != null && searchForm.getProjectCodeStr().length > 0) {
                 CriteriaBuilder.In<String> in = cb.in(root.get("projectCode"));
                 for (String projectCode : searchForm.getProjectCodeStr()) {

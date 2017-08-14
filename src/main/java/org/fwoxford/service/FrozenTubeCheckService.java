@@ -40,7 +40,10 @@ public class FrozenTubeCheckService {
             FrozenTube frozenTube = frozenTubeMap.get(sampleCode);
             if(frozenTube.getSampleClassification()!=null&&tube.getSampleClassification()!=null){
                 if((frozenTube.getId()==null && frozenTube.getSampleClassification().getId()==tube.getSampleClassification().getId())
-                    ||(frozenTube.getId()!=null && frozenTube.getSampleClassification().getId()!=tube.getSampleClassification().getId()
+                    ||(frozenTube.getId()!=null
+                    && frozenTube.getId()!=tube.getId()
+                    &&!frozenTube.getId().equals(tube.getId())
+                    &&frozenTube.getSampleClassification().getId()!=tube.getSampleClassification().getId()
                     &&!frozenTube.getSampleClassification().getId().equals(tube.getSampleClassification().getId()))){
                     repeatCode.add(sampleCode);
                 }

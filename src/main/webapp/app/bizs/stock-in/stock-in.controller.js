@@ -161,7 +161,7 @@
                 DTColumnBuilder.newColumn('projectCode').withTitle('项目编号').withOption('width','70'),
                 DTColumnBuilder.newColumn('recordDate').withTitle('创建日期').withOption('width','90'),
                 DTColumnBuilder.newColumn('stockInDate').withTitle('入库日期').withOption('width','90'),
-                DTColumnBuilder.newColumn('storeKeeper1').withTitle('库管员').withOption('width','90'),
+                DTColumnBuilder.newColumn('storeKeeper1').withTitle('库管员').withOption('width','100'),
                 DTColumnBuilder.newColumn('countOfSample').withTitle('样本数量').withOption('width','80'),
                 DTColumnBuilder.newColumn('countOfBox').withTitle('冻存盒数量').withOption('width','100'),
                 DTColumnBuilder.newColumn('status').withTitle('状态').withOption('width','80'),

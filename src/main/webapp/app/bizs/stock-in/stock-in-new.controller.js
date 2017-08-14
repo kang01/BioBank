@@ -262,7 +262,7 @@
             var status = '';
             var isSplit = data.isSplit || 0;
             // var sampleType = data.sampleType && data.sampleType.sampleTypeName || '';
-            // 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库
+            // 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2090：已作废，2006：已上架，2008：待出库，2009：已出库
             status = MasterData.getFrozenBoxStatus(data.status);
             if(data.status == '2002'){
                 if(isSplit){
@@ -276,7 +276,7 @@
             //     case '2002': isSplit ? status = '待分装' : status = '待入库'; break;
             //     case '2003': status = '已分装'; break;
             //     case '2004': status = '已入库'; break;
-            //     case '2005': status = '已作废'; break;
+            //     case '2090': status = '已作废'; break;
             //     case '2006': status = '已上架'; break;
             //     case '2008': status = '待出库'; break;
             //     case '2009': status = '已出库'; break;

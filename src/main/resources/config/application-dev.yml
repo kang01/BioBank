@@ -26,9 +26,11 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
+#        url: jdbc:oracle:thin:@10.24.10.247:1521:xe
+#        username: biobank_t_20170718
+#        password: eyuXotN6
         url: jdbc:oracle:thin:@10.24.10.56:1521:xe
-#        url: jdbc:oracle:thin:@101.201.69.125:1521:xe
-        username: BIOBANK1
+        username: gly
         password: root123
     jpa:
         database-platform: org.hibernate.dialect.Oracle12cDialect

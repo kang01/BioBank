@@ -372,7 +372,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBoxNew.setProjectSiteName(frozenBox.getProjectSiteName());
             frozenBoxNew.setProjectSiteCode(frozenBox.getProjectSiteCode());
 
-            frozenBoxNew.setStatus(Constants.FROZEN_BOX_STOCKING);
             frozenBoxNew.setDislocationNumber(0);
             frozenBoxNew.setEmptyHoleNumber(0);
             frozenBoxNew.setEmptyTubeNumber(0);
@@ -429,7 +428,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBoxNew.setSampleClassification(sampleClassification);
             frozenBoxNew.setColumnsInShelf(stockInBoxForDataSplit.getColumnsInShelf());
             frozenBoxNew.setRowsInShelf(stockInBoxForDataSplit.getRowsInShelf());
-
+            frozenBoxNew.setStatus(Constants.FROZEN_BOX_STOCKING);
             frozenBoxNew.setMemo(stockInBoxForDataSplit.getMemo());
             //验证盒子编码是否存在
             Map<String,Long> map = new HashMap<String,Long>();
@@ -1204,7 +1203,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             FrozenTubeHistory frozenTubeHistory =  allFrozenTubeHistories.get(f.getFrozenTube().getId());
             if(frozenTubeHistory != null &&
                 (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER)
-                    &&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_TRANSHIP))){
+                    &&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_TRANSHIP)
+                    &&!frozenTubeHistory.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING))){
                 stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_2);//原盒原库存
             }else if(frozenTubeHistory != null &&(frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)
                 || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
@@ -1258,7 +1258,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             FrozenTubeHistory frozenTubeHistory =  allFrozenTubeHistories.get(f.getFrozenTube().getId());
             if(frozenTubeHistory != null &&
                 (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER)
-                    &&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_TRANSHIP))){
+                    &&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_TRANSHIP)
+                    &&!frozenTubeHistory.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING))){
                 stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_2);//原盒原库存
             }else if(frozenTubeHistory != null &&(frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)
                 || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){

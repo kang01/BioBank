@@ -849,7 +849,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }else{
             List<Object[]> boxHistory = frozenBoxRepository.findFrozenBoxHistory(id);
             for(Object[] objects:boxHistory){
-                String type = objects[25].toString();
+                String type = objects[21].toString();
                 if(type.equals("102")||type.equals(102)){
                     status = Constants.FROZEN_BOX_STOCKED;
                 }

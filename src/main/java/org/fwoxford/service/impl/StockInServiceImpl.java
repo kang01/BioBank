@@ -683,11 +683,12 @@ public class StockInServiceImpl implements StockInService {
            List<StockInTube> stockInTubes = stockInTubeRepository.findByStockInBoxId(s.getId());
            List<FrozenTube> frozenTubeList = new ArrayList<>();
            for(StockInTube stockInTube:stockInTubes){
-               stockInTube.setStatus(Constants.FROZEN_BOX_INVALID);
+               stockInTube.setStatus(Constants.INVALID);
                if(stockInTube.getFrozenTube().getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)){
-                   stockInTube.getFrozenTube().setStatus(Constants.FROZEN_BOX_INVALID);
+                   stockInTube.getFrozenTube().setStatus(Constants.INVALID);
                    frozenTubeList.add(stockInTube.getFrozenTube());
                }
+               stockInTube.setFrozenTubeState(Constants.FROZEN_BOX_INVALID);
            }
            if(frozenTubeList.size()>0){
                frozenTubeRepository.save(frozenTubeList);

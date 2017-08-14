@@ -186,7 +186,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     @Modifying
     @Query("update FrozenBox b set b.status=?1 where b.frozenBoxCode in ?2 and b.status not in ('2090','0000')")
     void updateStatusByFrozenBoxCodes(String frozenBoxTranshipComplete, List<String> frozenBoxCodes);
-    @Query(value = "SELECT ROWNUM  as id,cast(temp.equipment_code as varchar2(255)) as equipmentCode," +
+    @Query(value = "SELECT ROWNUM  as id," +
         " cast(temp.equipment_code as varchar2(255)) as equipment_code, " +
         " cast(temp.area_code as varchar2(255)) as area_code, " +
         " cast(temp.support_rack_code as varchar2(255)) as support_rack_code, " +
@@ -227,7 +227,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         "            ) temp ORDER BY created_date DESC",nativeQuery = true)
     List<Object[]> findPositionHistory(Long id);
 
-    @Query(value = "SELECT ROWNUM  as id,cast(temp.equipment_code as varchar2(255)) as equipmentCode," +
+    @Query(value = "SELECT ROWNUM  as id," +
         " cast(temp.equipment_code as varchar2(255)) as equipment_code, " +
         " cast(temp.area_code as varchar2(255)) as area_code, " +
         " cast(temp.support_rack_code as varchar2(255)) as support_rack_code, " +

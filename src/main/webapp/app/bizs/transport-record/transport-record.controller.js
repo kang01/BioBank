@@ -192,7 +192,7 @@
                             {value:'1001',label:"进行中"},
                             {value:"1002",label:"待入库"},
                             {value:"1003",label:"已入库"},
-                            {value:"1004",label:"已作废"},
+                            {value:"1090",label:"已作废"},
                             {value:"1005",label:"转运完成"}
                             ]
                     }
@@ -218,7 +218,7 @@
                 case '1001': transhipState = '进行中';break;
                 case '1002': transhipState = '待入库';break;
                 case '1003': transhipState = '已入库';break;
-                case '1004': transhipState = '已作废';break;
+                case '1090': transhipState = '已作废';break;
                 case '1005': transhipState = '转运完成';break;
             }
             $('td:eq(9)', row).html(transhipState);

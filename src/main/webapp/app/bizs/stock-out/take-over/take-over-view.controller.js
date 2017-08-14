@@ -77,7 +77,7 @@
             // switch (data.status){
             //     case '1401': planStatus = '进行中';break;
             //     case '1402': planStatus = '已完成';break;
-            //     case '1403': planStatus = '已作废';break;
+            //     case '1490': planStatus = '已作废';break;
             // }
             $('td:eq(5)', row).html(sex);
             $compile(angular.element(row).contents())($scope);

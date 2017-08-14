@@ -305,7 +305,7 @@
                 case '1602': status = '进行中';break;
                 case '1603': status = '已出库';break;
                 case '1604': status = '异常出库';break;
-                case '1605': status = '已作废';break;
+                case '1690': status = '已作废';break;
             }
             $('td:eq(1)', row).html(status);
             $compile(angular.element(row).contents())($scope);

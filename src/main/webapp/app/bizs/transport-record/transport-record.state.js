@@ -93,7 +93,7 @@
                             transhipBatch: 1,
                             transhipDate:new Date(),
                             status: null,
-                            transhipState: '1001',//转运状态:1002待入库1003已入库1004已作废
+                            transhipState: '1001',//转运状态:1002待入库1003已入库1090已作废
                             transhipCode:null
 
                         };

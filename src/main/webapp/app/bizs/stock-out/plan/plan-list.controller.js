@@ -86,7 +86,7 @@
                     values: [
                         {value:'1401',label:"进行中"},
                         {value:"1402",label:"已完成"},
-                        {value:"1403",label:"已作废"}
+                        {value:"1490",label:"已作废"}
                     ]
                 },null]
             });
@@ -107,7 +107,7 @@
             switch (data.status){
                 case '1401': planStatus = '进行中';break;
                 case '1402': planStatus = '已完成';break;
-                case '1403': planStatus = '已作废';break;
+                case '1490': planStatus = '已作废';break;
             }
             $('td:eq(6)', row).html(planStatus);
             $compile(angular.element(row).contents())($scope);

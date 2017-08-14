@@ -142,7 +142,7 @@
                 {id:"1001",name:"进行中"},
                 {id:"1002",name:"待入库"},
                 {id:"1003",name:"已入库"},
-                {id:"1004",name:"已作废"}
+                {id:"1090",name:"已作废"}
             ];
             vm.statusConfig = {
                 valueField:'id',

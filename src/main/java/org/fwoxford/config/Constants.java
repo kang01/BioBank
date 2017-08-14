@@ -33,27 +33,28 @@ public final class Constants {
     public static final String VALID = "0001";
     public static final String INVALID = "0000";
     /**
-     * 转运状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废，1005:转运完成
+     * 转运状态：1001：进行中，1002：待入库，1003：已入库，1090：已作废，1005:转运完成
      */
     public static final String TRANSHIPE_IN_PENDING = "1001";
     public static final String TRANSHIPE_IN_STOCKING = "1002";
     public static final String TRANSHIPE_IN_STOCKED = "1003";
-    public static final String TRANSHIPE_IN_INVALID = "1004";
+    public static final String TRANSHIPE_IN_INVALID = "1090";
     public static final String TRANSHIPE_IN_COMPLETE = "1005";
     /**
-     * 冻存盒状态：2001：新建，2011：转运完成；2002：待入库，2003：已分装，2004：已入库，2005：已作废，2006：已上架，2008：待出库，2009：已出库，2010：已交接
+     * 冻存盒状态：2001：新建，2011：转运完成；2002：待入库，2003：已分装，2004：已入库，2090：已作废，2006：已上架，2008：待出库，2009：已出库，2010：已交接
      */
     public static final  String FROZEN_BOX_NEW = "2001" ;
     public static final  String FROZEN_BOX_TRANSHIP_COMPLETE = "2011" ;
     public static final  String FROZEN_BOX_STOCKING = "2002" ;
     public static final  String FROZEN_BOX_SPLITED = "2003" ;
     public static final  String FROZEN_BOX_STOCKED = "2004" ;
-    public static final  String FROZEN_BOX_INVALID = "2005" ;
+    public static final  String FROZEN_BOX_INVALID = "2090" ;
     public static final String FROZEN_BOX_PUT_SHELVES = "2006";
     public static final String FROZEN_BOX_SPLITING = "2007";
     public static final String FROZEN_BOX_STOCK_OUT_PENDING = "2008";
     public static final String FROZEN_BOX_STOCK_OUT_COMPLETED = "2009";
     public static final String FROZEN_BOX_STOCK_OUT_HANDOVER = "2010";
+    public static final String FROZEN_BOX_DESTROY = "2011";
     /**
      * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常
      */
@@ -61,6 +62,7 @@ public final class Constants {
     public static final  String FROZEN_TUBE_EMPTY = "3002" ;
     public static final  String FROZEN_TUBE_HOLE_EMPTY = "3003" ;
     public static final  String FROZEN_TUBE_ABNORMAL = "3004" ;
+    public static final  String FROZEN_TUBE_DESTROY = "3005" ;
     /**
      * 是：1，否：0
      */
@@ -68,13 +70,13 @@ public final class Constants {
     public static final Integer YES = 1;
     public static final List<String> LOGIN_NOT_STOCK_LIST = new ArrayList<String>(){{add("system");add("admin");add("user");add("anonymoususer");}};
     /**
-     * 出库状态：1101：进行中，1102：待批准，1103：已批准，1104：已拒绝批准，1105：已作废
+     * 出库状态：1101：进行中，1102：待批准，1103：已批准，1104：已拒绝批准，1190：已作废
      */
     public static final String STOCK_OUT_PENDING = "1101";
     public static final String STOCK_OUT_PENDING_APPROVAL = "1102";
     public static final String STOCK_OUT_APPROVED = "1103";
     public static final String STOCK_OUT_APPROVE_REFUSED = "1104";
-    public static final String STOCK_OUT_INVALID = "1105";
+    public static final String STOCK_OUT_INVALID = "1190";
     /**
      * 需求状态 ：1201：待核对，1202：库存不够，1203：库存满足"
      */
@@ -121,9 +123,9 @@ public final class Constants {
         put("isBloodLipid",5);
     }};
     /**
-     * 出库计划状态：1401:进行中，1402：已完成，1403：已作废
+     * 出库计划状态：1401:进行中，1402：已完成，1490：已作废
      */
-    public static final String STOCK_OUT_PLAN_INVALID = "1403";
+    public static final String STOCK_OUT_PLAN_INVALID = "1490";
     public static final String STOCK_OUT_PLAN_PENDING = "1401";
     public static final String STOCK_OUT_PLAN_COMPLETED = "1402";
     /**
@@ -133,13 +135,13 @@ public final class Constants {
     public static final String STOCK_OUT_PLAN_TUBE_CANCEL = "1502";
     public static final String STOCK_OUT_PLAN_TUBE_COMPLETED = "1503";
     /**
-     * 出库任务状态：1601：待出库，1602：进行中，1603：已出库，1604：异常出库，1605：已作废
+     * 出库任务状态：1601：待出库，1602：进行中，1603：已出库，1604：异常出库，1690：已作废
      */
     public static final String STOCK_OUT_TASK_NEW = "1601";
     public static final String STOCK_OUT_TASK_PENDING = "1602";
     public static final String STOCK_OUT_TASK_COMPLETED = "1603";
     public static final String STOCK_OUT_TASK_ABNORMAL = "1604";
-    public static final String STOCK_OUT_TASK_INVALID = "1605";
+    public static final String STOCK_OUT_TASK_INVALID = "1690";
     /**
      * 出库冻存盒状态：1701：待出库；1702：已出库；1703：已交接
      */
@@ -153,11 +155,11 @@ public final class Constants {
     public static final String STOCK_OUT_FROZEN_TUBE_CANCEL = "1802";
     public static final String STOCK_OUT_FROZEN_TUBE_COMPLETED = "1803";
     /**
-     * 出库交接状态：2101：进行中，2102：已交接,2103：已作废
+     * 出库交接状态：2101：进行中，2102：已交接,2190：已作废
      */
     public static final String STOCK_OUT_HANDOVER_PENDING = "2101";
     public static final String STOCK_OUT_HANDOVER_COMPLETED = "2102";
-    public static final String STOCK_OUT_HANDOVER_INVALID = "2103";
+    public static final String STOCK_OUT_HANDOVER_INVALID = "2190";
     /**
      * 冻存盒与冻存管的关系 2202：待出库;2203:取消出库，2204：已出库
      */

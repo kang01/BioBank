@@ -17,22 +17,22 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
-    @Query("select t from FrozenTube t where t.frozenBox.id = ?1 and t.status!='0000' and t.frozenBox.status !='2005'")
+    @Query("select t from FrozenTube t where t.frozenBox.id = ?1 and t.status!='0000' and t.frozenBox.status !='2090'")
     List<FrozenTube> findFrozenTubeListByBoxId(Long frozenBoxId);
 
-    @Query("select t from FrozenTube t where t.frozenBox.id in ?1 and t.status!='0000' and t.frozenBox.status !='2005'")
+    @Query("select t from FrozenTube t where t.frozenBox.id in ?1 and t.status!='0000' and t.frozenBox.status !='2090'")
     List<FrozenTube> findFrozenTubeListByBoxIdIn(List<Long> frozenBoxId);
 
-    @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000' and t.frozenBox.status !='2005'")
+    @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000' and t.frozenBox.status !='2090'")
     List<FrozenTube> findFrozenTubeListByBoxCode(String frozenBoxCode);
 
-    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000' and t.frozenBox.status !='2005'")
+    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000' and t.frozenBox.status !='2090'")
     Long countFrozenTubeListByBoxCode(String frozenBoxCode);
 
     List<FrozenTube> findFrozenTubeListByFrozenBoxCodeAndStatus(String frozenBoxCode, String status);
 
     @Query(value = "select t.frozen_box_code as frozenBoxCode,count(t.frozen_box_code) as sampleNumber \n" +
-        "from frozen_tube t where t.frozen_box_code in ?1 and t.status!='0000' and t.frozenBox.status !='2005' group by t.frozen_box_code \n" +
+        "from frozen_tube t where t.frozen_box_code in ?1 and t.status!='0000' and t.frozenBox.status !='2090' group by t.frozen_box_code \n" +
         " order by sampleNumber asc,t.frozen_box_code desc " ,nativeQuery = true)
     List<Object[]> countSampleNumberByfrozenBoxList(List<String> frozenBoxList);
 
@@ -100,7 +100,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query("update FrozenTube t set t.frozenTubeState = ?1  where t.frozenBoxCode in ?2 and t.status not in ('0000')")
     void updateFrozenTubeStateByFrozenBoxCodes(String status, List<String> frozenBoxCodes);
 
-    @Query(value = "select count(t.id) from frozen_tube t left join tranship_box b on t.frozen_box_id = b.frozen_box_id left join tranship s on s.id = b.tranship_id left join frozen_box x on x.id = t.id and x.status not in ('2005','0000')" +
+    @Query(value = "select count(t.id) from frozen_tube t left join tranship_box b on t.frozen_box_id = b.frozen_box_id left join tranship s on s.id = b.tranship_id left join frozen_box x on x.id = t.id and x.status not in ('2090','0000')" +
         "where s.tranship_code in ?1 and t.status!='0000' " ,nativeQuery = true)
     Long countByTranshipCodes(List<String> transhipCodeList);
 

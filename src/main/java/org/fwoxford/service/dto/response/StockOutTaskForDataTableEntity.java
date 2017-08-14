@@ -74,7 +74,7 @@ public class StockOutTaskForDataTableEntity {
     @Column(name = "purpose_of_sample")
     private String purposeOfSample;
     /**
-     * 出库任务状态：1601：待出库，1602：进行中，1603：已出库，1604：异常出库，1605：已作废
+     * 出库任务状态：1601：待出库，1602：进行中，1603：已出库，1604：异常出库，1690：已作废
      */
     @NotNull
     @JsonView(DataTablesOutput.View.class)

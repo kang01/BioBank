@@ -159,7 +159,7 @@ public class StockInForDataTableEntity {
     }
 
     /**
-     * 转运状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废
+     * 转运状态：1001：进行中，1002：待入库，1003：已入库，1090：已作废
      */
     public String getStatus() {
         return status;

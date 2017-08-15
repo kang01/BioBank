@@ -142,5 +142,5 @@ public interface FrozenBoxService {
      * @param frozenBoxCodeStr
      * @return
      */
-    List<FrozenBoxDTO> importFrozenBoxAndFrozenTube(String frozenBoxCodeStr);
+    List<FrozenBoxAndFrozenTubeResponse> importFrozenBoxAndFrozenTube(String frozenBoxCodeStr);
 }

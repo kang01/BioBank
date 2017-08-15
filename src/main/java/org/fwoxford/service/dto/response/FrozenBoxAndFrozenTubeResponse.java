@@ -358,4 +358,25 @@ public class FrozenBoxAndFrozenTubeResponse {
     public void setBackColor(String backColor) {
         this.backColor = backColor;
     }
+    /**
+     * 是否已导入样本数据：1：是，0：否
+     */
+    private Integer isRealData;
+    private Long countOfSample;
+
+    public Integer getIsRealData() {
+        return isRealData;
+    }
+
+    public void setIsRealData(Integer isRealData) {
+        this.isRealData = isRealData;
+    }
+
+    public Long getCountOfSample() {
+        return countOfSample;
+    }
+
+    public void setCountOfSample(Long countOfSample) {
+        this.countOfSample = countOfSample;
+    }
 }

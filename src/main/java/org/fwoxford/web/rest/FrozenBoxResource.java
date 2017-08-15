@@ -315,9 +315,9 @@ public class FrozenBoxResource {
 
     @GetMapping("/tranship-boxes/frozenBoxCode/{frozenBoxCodeStr}/import")
     @Timed
-    public ResponseEntity<List<FrozenBoxDTO>> importFrozenBoxAndFrozenTube(@PathVariable String frozenBoxCodeStr) {
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> importFrozenBoxAndFrozenTube(@PathVariable String frozenBoxCodeStr) {
         log.debug("REST request to import FrozenBox And FrozenTubeDTOs From project group: {}", frozenBoxCodeStr);
-        List<FrozenBoxDTO> res = frozenBoxService.importFrozenBoxAndFrozenTube(frozenBoxCodeStr);
+        List<FrozenBoxAndFrozenTubeResponse> res = frozenBoxService.importFrozenBoxAndFrozenTube(frozenBoxCodeStr);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

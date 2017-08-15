@@ -870,23 +870,49 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
      * @return
      */
     @Override
-    public List<FrozenBoxDTO> importFrozenBoxAndFrozenTube(String frozenBoxCodeStr) {
-        if(1==1){
-            throw new BankServiceException("导入失败啦！");
+    public List<FrozenBoxAndFrozenTubeResponse> importFrozenBoxAndFrozenTube(String frozenBoxCodeStr) {
+        List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTOList = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
+        try {
+        for(int i = 0;i<5;i++){
+            FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse = new FrozenBoxAndFrozenTubeResponse();
+
+            Thread.currentThread().sleep(5000);//毫秒
+            frozenBoxAndFrozenTubeResponse.setIsRealData(Constants.NO);
+            frozenBoxAndFrozenTubeResponse.setSampleTypeName("血浆");
+            frozenBoxAndFrozenTubeResponse.setFrozenBoxCode("123456789"+i);
+            frozenBoxAndFrozenTubeResponse.setStatus(Constants.FROZEN_BOX_NEW);
+            frozenBoxAndFrozenTubeResponse.setIsSplit(Constants.NO);
+            frozenBoxAndFrozenTubeResponse.setCountOfSample(100L);
+            frozenBoxDTOList.add(frozenBoxAndFrozenTubeResponse);
         }
-        String[] frozenBoxCode = frozenBoxCodeStr.split(",");
-        List<FrozenBoxDTO> frozenBoxDTOList = new ArrayList<FrozenBoxDTO>();
-        for(String code :frozenBoxCode){
-            FrozenBoxDTO frozenBoxDTO = new FrozenBoxDTO();
-            frozenBoxDTO = getSampleInfo(code);
-            frozenBoxDTOList.add(frozenBoxDTO);
+            for(int i = 0;i<5;i++){
+                FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse = new FrozenBoxAndFrozenTubeResponse();
+
+                Thread.currentThread().sleep(5000);//毫秒
+                frozenBoxAndFrozenTubeResponse.setIsRealData(Constants.YES);
+                frozenBoxAndFrozenTubeResponse.setSampleTypeName("白细胞");
+                frozenBoxAndFrozenTubeResponse.setFrozenBoxCode("987654321"+i);
+                frozenBoxAndFrozenTubeResponse.setStatus(Constants.FROZEN_BOX_NEW);
+                frozenBoxAndFrozenTubeResponse.setIsSplit(Constants.YES);
+                frozenBoxAndFrozenTubeResponse.setCountOfSample(100L);
+                frozenBoxDTOList.add(frozenBoxAndFrozenTubeResponse);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+//        String[] frozenBoxCode = frozenBoxCodeStr.split(",");
+//
+//        for(String code :frozenBoxCode){
+//            FrozenBoxAndFrozenTubeResponse frozenBoxDTO = new FrozenBoxAndFrozenTubeResponse();
+//            frozenBoxDTO = getSampleInfo(code);
+//            frozenBoxDTOList.add(frozenBoxDTO);
+//        }
 
         return frozenBoxDTOList;
     }
 
-    public FrozenBoxDTO getSampleInfo(String code) {
-        FrozenBoxDTO frozenBoxDTO = new FrozenBoxDTO();
+    public FrozenBoxAndFrozenTubeResponse getSampleInfo(String code) {
+        FrozenBoxAndFrozenTubeResponse frozenBoxDTO = new FrozenBoxAndFrozenTubeResponse();
         HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod("http://10.24.10.43:8080/biobank/specimens?boxcode="+code);
         HttpMethodParams params = new HttpMethodParams();

@@ -1,6 +1,6 @@
 package org.fwoxford.service.impl;
 
-import net.sf.json.JSONObject;
+import net.sf.json.JSONArray;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -8,7 +8,6 @@ import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.StockListService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
-import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.StockInTubeDTO;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.*;
@@ -24,7 +23,11 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -859,5 +862,59 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             }
         }
         return status;
+    }
+
+    /**
+     * 从项目组导入样本
+     * @param frozenBoxCodeStr
+     * @return
+     */
+    @Override
+    public List<FrozenBoxDTO> importFrozenBoxAndFrozenTube(String frozenBoxCodeStr) {
+        if(1==1){
+            throw new BankServiceException("导入失败啦！");
+        }
+        String[] frozenBoxCode = frozenBoxCodeStr.split(",");
+        List<FrozenBoxDTO> frozenBoxDTOList = new ArrayList<FrozenBoxDTO>();
+        for(String code :frozenBoxCode){
+            FrozenBoxDTO frozenBoxDTO = new FrozenBoxDTO();
+            frozenBoxDTO = getSampleInfo(code);
+            frozenBoxDTOList.add(frozenBoxDTO);
+        }
+
+        return frozenBoxDTOList;
+    }
+
+    public FrozenBoxDTO getSampleInfo(String code) {
+        FrozenBoxDTO frozenBoxDTO = new FrozenBoxDTO();
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod("http://10.24.10.43:8080/biobank/specimens?boxcode="+code);
+        HttpMethodParams params = new HttpMethodParams();
+//        params.setParameter("boxcode","650420093");
+        getMethod.setParams(params);
+        getMethod.setRequestHeader("X-Auth-Token", "d93925bc7axKfXc2A5WFJEzuPXYX4q");
+        try {
+            int statusCode = httpClient.executeMethod(getMethod);
+            if (statusCode != 200) {
+                System.err.println("Method failed: "
+                    + getMethod.getStatusLine());
+            }
+            byte[] responseBody = getMethod.getResponseBody();
+            String str = new String(responseBody);
+            JSONArray jsonArray = new JSONArray();
+            if(!StringUtils.isEmpty(str)){
+                jsonArray = JSONArray.fromObject(str);
+            }
+            List<FrozenTubeImportingForm> frozenTubeImportingForms = (List<FrozenTubeImportingForm>) JSONArray.toCollection(jsonArray,FrozenTubeImportingForm.class);
+
+        } catch (HttpException e) {
+            System.out.println("Please check your provided http address!");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            getMethod.releaseConnection();
+        }
+        return frozenBoxDTO;
     }
 }

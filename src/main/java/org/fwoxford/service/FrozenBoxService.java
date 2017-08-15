@@ -136,4 +136,11 @@ public interface FrozenBoxService {
      * @return
      */
     String findFrozenBoxHistory(Long id);
+
+    /**
+     * 从项目组导入样本
+     * @param frozenBoxCodeStr
+     * @return
+     */
+    List<FrozenBoxDTO> importFrozenBoxAndFrozenTube(String frozenBoxCodeStr);
 }

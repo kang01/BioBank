@@ -306,4 +306,18 @@ public class FrozenBoxResource {
         FrozenBoxDTO res = frozenBoxService.getBoxAndTubeByForzenBoxCode(frozenBoxCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
+
+    /**
+     * 从项目组导入样本
+     * @param frozenBoxCodeStr
+     * @return
+     */
+
+    @GetMapping("/tranship-boxes/frozenBoxCode/{frozenBoxCodeStr}/import")
+    @Timed
+    public ResponseEntity<List<FrozenBoxDTO>> importFrozenBoxAndFrozenTube(@PathVariable String frozenBoxCodeStr) {
+        log.debug("REST request to import FrozenBox And FrozenTubeDTOs From project group: {}", frozenBoxCodeStr);
+        List<FrozenBoxDTO> res = frozenBoxService.importFrozenBoxAndFrozenTube(frozenBoxCodeStr);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
 }

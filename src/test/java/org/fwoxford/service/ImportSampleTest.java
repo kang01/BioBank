@@ -1,11 +1,13 @@
 package org.fwoxford.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.sf.json.JSONArray;
 import org.apache.commons.httpclient.HttpException;
 import org.fwoxford.BioBankApp;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
+import org.fwoxford.service.dto.response.FrozenTubeImportingForm;
 import org.fwoxford.service.dto.response.GeocoderSearchAddressResponse;
 import org.fwoxford.service.dto.response.GeocoderSearchResponse;
 import org.fwoxford.service.mapper.*;
@@ -1226,7 +1228,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     @Test
     public void getHttpClientInfo() {
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod("http://10.24.10.43:8080/biobank/specimens?boxcode=00370100013");
+        GetMethod getMethod = new GetMethod("http://10.24.10.43:8080/biobank/specimens?fromdate=2017-01-01&todate=2017-02-01");
 //        getMethod.getParams().setParameter("fromdate","2017-01-01");
 //        getMethod.getParams().setParameter("todate","2017-02-01");
         HttpMethodParams params = new HttpMethodParams();
@@ -1240,7 +1242,10 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                     + getMethod.getStatusLine());
             }
             byte[] responseBody = getMethod.getResponseBody();
-            System.out.println(new String(responseBody));
+            String str = new String(responseBody);
+            JSONArray jsonArray = JSONArray.fromObject(str);
+            List<FrozenTubeImportingForm> frozenTubeImportingForms = (List<FrozenTubeImportingForm>) JSONArray.toCollection(jsonArray,FrozenTubeImportingForm.class);
+            System.out.println(frozenTubeImportingForms.toString());
         } catch (HttpException e) {
             System.out.println("Please check your provided http address!");
             e.printStackTrace();

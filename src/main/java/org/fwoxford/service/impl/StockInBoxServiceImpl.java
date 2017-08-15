@@ -745,8 +745,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         Boolean flag = checkFrozenCode(stockInBoxDTO,stockInCode);
         SampleType entity = sampleTypeRepository.findOne(stockInBoxDTO.getSampleTypeId());
         if(frozenBox.getId()==null){//新冻存盒
-            //保存冻存盒信息
-            frozenBox.setIsSplit(Constants.NO);
             //更改冻存盒的项目
             frozenBox = createFrozenBoxByStockInProject(frozenBox,stockInBoxDTO,stockIn);
             //冻存盒类型
@@ -760,14 +758,14 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBox = createFrozenBoxBySampleClass(frozenBox,stockInBoxDTO,entity);
             //冻存盒位置验证
             frozenBox = createFrozenBoxByPosition(frozenBox,stockInBoxDTO);
-            frozenBox.setStatus(Constants.FROZEN_BOX_STOCKING);
         }else{
             if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_PUT_SHELVES)){
                 throw new BankServiceException("冻存盒已上架，不能执行保存！");
             }
         }
-        frozenBox.setStatus(Constants.FROZEN_BOX_STOCKING);
         frozenBox.setMemo(stockInBoxDTO.getMemo());
+        //保存冻存盒信息
+        frozenBox.setIsSplit(stockInBoxDTO.getIsSplit());
         frozenBox = frozenBoxRepository.save(frozenBox);
         //保存入库冻存盒信息
         int countOfStockInTube = 0;

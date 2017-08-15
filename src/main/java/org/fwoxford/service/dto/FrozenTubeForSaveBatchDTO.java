@@ -148,4 +148,31 @@ public class FrozenTubeForSaveBatchDTO {
     public void setSampleClassificationId(Long sampleClassificationId) {
         this.sampleClassificationId = sampleClassificationId;
     }
+    private Boolean isHemolysis;
+    private Boolean isBloodLipid;
+    private Long patientId;
+
+    public Boolean getHemolysis() {
+        return isHemolysis;
+    }
+
+    public void setHemolysis(Boolean hemolysis) {
+        this.isHemolysis = hemolysis;
+    }
+
+    public Boolean getBloodLipid() {
+        return isBloodLipid;
+    }
+
+    public void setBloodLipid(Boolean bloodLipid) {
+        this.isBloodLipid = bloodLipid;
+    }
+
+    public Long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
+    }
 }

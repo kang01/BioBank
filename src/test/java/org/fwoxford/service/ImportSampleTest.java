@@ -1255,4 +1255,14 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             getMethod.releaseConnection();
         }
     }
+
+    @Test
+    public  void test() {
+        int i=1;
+        int j=2;
+        char c1=(char) (i+64);
+        char c2=(char) (j+64);
+        System.out.println(c1);
+        System.out.println(c2);
+    }
 }

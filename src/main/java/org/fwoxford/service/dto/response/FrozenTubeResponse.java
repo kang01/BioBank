@@ -286,4 +286,32 @@ public class FrozenTubeResponse {
     public void setBackColor(String backColor) {
         this.backColor = backColor;
     }
+
+    private Boolean isHemolysis;
+    private Boolean isBloodLipid;
+    private Long patientId;
+
+    public Boolean getHemolysis() {
+        return isHemolysis;
+    }
+
+    public void setHemolysis(Boolean hemolysis) {
+        this.isHemolysis = hemolysis;
+    }
+
+    public Boolean getBloodLipid() {
+        return isBloodLipid;
+    }
+
+    public void setBloodLipid(Boolean bloodLipid) {
+        this.isBloodLipid = bloodLipid;
+    }
+
+    public Long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
+    }
 }

@@ -362,7 +362,7 @@ public class FrozenBoxAndFrozenTubeResponse {
      * 是否已导入样本数据：1：是，0：否
      */
     private Integer isRealData;
-    private Long countOfSample;
+    private Integer countOfSample;
 
     public Integer getIsRealData() {
         return isRealData;
@@ -372,11 +372,11 @@ public class FrozenBoxAndFrozenTubeResponse {
         this.isRealData = isRealData;
     }
 
-    public Long getCountOfSample() {
+    public Integer getCountOfSample() {
         return countOfSample;
     }
 
-    public void setCountOfSample(Long countOfSample) {
+    public void setCountOfSample(Integer countOfSample) {
         this.countOfSample = countOfSample;
     }
 }

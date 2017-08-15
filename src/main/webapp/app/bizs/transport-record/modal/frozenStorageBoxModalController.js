@@ -168,7 +168,6 @@
             onChange: function(value){
                 clearTimeout(changeTableTimer);
                 changeTableTimer = setTimeout(function () {
-                    // vm.obox.frozenBoxDTOList = [];
                     if(value.length){
                         vm.codeList = value;
                         _fnInitBoxInfo();
@@ -177,6 +176,9 @@
                         $scope.$apply();
                     }
                 },500);
+            },
+            onItemRemove:function (value) {
+                _.remove(vm.obox.frozenBoxDTOList,{frozenBoxCode:value});
             }
         };
 
@@ -194,7 +196,8 @@
                 sampleClassificationId: vm.frozenBox.sampleClassificationId || undefined,
                 sampleClassificationCode: vm.frozenBox.sampleClassificationCode || undefined,
                 isRepeat:0,
-                frozenTubeDTOS:[]
+                frozenTubeDTOS:[],
+                createDate:new Date().getTime()
             };
             for(var j = 0; j < vm.frozenBox.frozenBoxTypeRows;j++){
                 tubeList[j] = [];
@@ -222,7 +225,6 @@
                         }
                     }
                     box.frozenTubeDTOS.push(tubeList[j][k]);
-
                 }
             }
             //是混合类型
@@ -267,18 +269,20 @@
         }
 
         function _fnInitBoxInfo() {
-            // vm.obox.frozenBoxDTOList = [];
             for(var i = 0; i < vm.codeList.length; i++){
+                var box = _fnCreateTempBox(vm.codeList[i]);
                 if(!vm.obox.frozenBoxDTOList.length){
-                    vm.obox.frozenBoxDTOList.push(_fnCreateTempBox(vm.codeList[i]));
+                    vm.obox.frozenBoxDTOList.push(box);
                 }
                 var len = _.filter(vm.obox.frozenBoxDTOList,{frozenBoxCode:vm.codeList[i]}).length;
                 if(!len){
-                    vm.obox.frozenBoxDTOList.push(_fnCreateTempBox(vm.codeList[i]));
+                    vm.obox.frozenBoxDTOList.push(box);
                 }
-                vm.obox.frozenBoxDTOList.reverse();
             }
+            var boxList = angular.copy(vm.obox.frozenBoxDTOList);
+            vm.obox.frozenBoxDTOList =  _.orderBy(boxList, ['createDate'], ['desc']);
         }
+
         function _fnEditBoxInfo() {
             var tubeList=[];
             for(var i = 0; i < vm.obox.frozenBoxDTOList.length; i++){

@@ -46,7 +46,7 @@
             $state.go('transport-record-edit',{transhipId : data.id,transhipCode : data.transhipCode});
         }
         function onError(error) {
-            toastr.error(error.message);
+            toastr.error(error.data.message);
         }
         vm.create = function () {
             vm.isActive = true;

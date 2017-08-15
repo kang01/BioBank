@@ -1,7 +1,11 @@
 <div class="img-show " ng-repeat="item in vm.transportRecordUploadInfo">
     <div class="img-operate">
-        <span><i class="fa fa-trash-o"></i></span>
-        <span><i class="fa fa-pencil"></i></span>
+        <span ng-click="vm.delUploadInfo(item)"><i class="fa fa-trash-o"></i></span>
+        <span ng-click="vm.uploadFile(2,item)"><i class="fa fa-pencil"></i></span>
+    </div>
+    <div class="img-content">
+        <h6 class="img-title text-ellipsis" title="{{item.fileTitle}}">{{item.fileTitle}}</h6>
+        <div class="img-description" title="{{item.description}}">{{item.description}}</div>
     </div>
     <img data-original="{{item.bigImage}}" ng-src="{{item.smallImage}}" style="width: 140px;height: 140px;" class="img-thumbnail">
 </div>

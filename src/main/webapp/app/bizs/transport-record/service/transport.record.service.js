@@ -61,6 +61,12 @@
         service.queryTransportRecordFile = function (transportCode) {
             return $http.get('api/attachments/transhipCode/'+transportCode);
         };
+        service.editTransportRecordFile = function (param) {
+            return $http.put('api/attachments/',param);
+        };
+        service.delTransportRecordFile = function (id) {
+            return $http.delete('api/attachments/'+id);
+        };
         return service;
     }
 })();

@@ -15,7 +15,12 @@
         var transportId = items.transportId;
         vm.imagesArray = [];
         vm.reader = new FileReader();   //创建一个FileReader接口
-        vm.thumb = {};
+        vm.thumb = {
+            imgSrc:'content/images/nosee.png'
+        };
+        vm.entity = angular.copy(items.imgData);
+        //1：新建 2：编辑
+        vm.status = items.status;
         //单次提交图片的函数
         vm.img_upload = function(files) {
             vm.file = files;
@@ -78,22 +83,32 @@
 
 
         vm.ok = function () {
-            if(vm.file){
-                var obj = {};
-                obj.fileTitle = vm.entity.fileTitle;
-                obj.smallImage = vm.thumb.imgSrc;
-                obj.description = vm.entity.description;
-                var fb = new FormData();
-                fb.append('attachment', angular.toJson(obj));
-                fb.append('file', vm.file);
-                TransportRecordService.uploadTransportRecord(transportId,fb).success(function (data) {
-                    toastr.success("上传成功!");
+            //新建
+            if(vm.status == '1'){
+                if(vm.file){
+                    var obj = {};
+                    obj.fileTitle = vm.entity.fileTitle;
+                    obj.smallImage = vm.thumb.imgSrc;
+                    obj.description = vm.entity.description;
+                    var fb = new FormData();
+                    fb.append('attachment', angular.toJson(obj));
+                    fb.append('file', vm.file);
+                    TransportRecordService.uploadTransportRecord(transportId,fb).success(function (data) {
+                        toastr.success("上传成功!");
+                        $uibModalInstance.close();
+                    }).error(function (data) {
+                        toastr.error(data.message);
+                    });
+                }
+            }else{
+                //编辑
+                TransportRecordService.editTransportRecordFile(vm.entity).success(function (data) {
+                    toastr.success("编辑成功!");
                     $uibModalInstance.close();
                 }).error(function (data) {
                     toastr.error(data.message);
                 });
             }
-
         };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

@@ -430,7 +430,7 @@
                            <h4>附件</h4>
                        </div>
                        <div class="col-md-8 text-right" style="margin-top: 8px !important;">
-                           <button class="btn btn-default btn-xs" ng-click="vm.uploadFile()">上传附件</button>
+                           <button class="btn btn-default btn-xs" ng-click="vm.uploadFile(1)">上传附件</button>
                            <!--<input type="file" id="one-input" accept="image/*" file-model="vm.images"-->
                                   <!--onchange="angular.element(this).scope().vm.img_upload(this.files)"/>-->
 
@@ -444,7 +444,11 @@
                </div>
                 <div class="panel-body" >
                     <!--<img ng-src="{{vm.thumb.imgSrc}}" id="transportImage">-->
-                    <div  id="dowebok" viewer images-data="vm.transportRecordUploadInfo"></div>
+                    <div  viewer
+                          images-data="vm.transportRecordUploadInfo"
+                          upload-file = "vm.uploadFile(status,imgData)"
+                          del-file = "vm.delUploadInfo(id)"
+                    ></div>
 
                 </div>
             </div>
@@ -470,6 +474,18 @@
     </div>
     <div class="modal-body">
         确定重新导入冻存盒数据？
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ctrl.ok()">确定</button>
+        <button class="btn btn-warning" type="button" ng-click="ctrl.cancel()">取消</button>
+    </div>
+</script>
+<script type="text/ng-template" id="removeImgModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">删除附件</h3>
+    </div>
+    <div class="modal-body">
+        确定删除附件？
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" type="button" ng-click="ctrl.ok()">确定</button>

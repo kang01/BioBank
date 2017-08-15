@@ -1379,8 +1379,20 @@
 
 
         //附件
+        function _fnQueryTransportRecordFile() {
+            TransportRecordService.queryTransportRecordFile(vm.transportRecord.transhipCode).success(function (data) {
+                vm.transportRecordUploadInfo = data;
+            }).error(function (data) {
+                toastr.error(data.message);
+            })
+        }
+        _fnQueryTransportRecordFile();
+
         vm.uploadFile = _fnUploadFile;
-        function _fnUploadFile() {
+        //删除附件
+        vm.delUploadInfo = _fnDelUploadInfo;
+        //上传
+        function _fnUploadFile(status,imgData) {
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/transport-record/modal/transport-record-upload-image-modal.html',
@@ -1390,23 +1402,42 @@
                 resolve:{
                     items:function () {
                         return{
-                            transportId:vm.transportRecord.id
+                            transportId:vm.transportRecord.id,
+                            status:status,
+                            imgData:imgData
                         };
                     }
                 }
             });
             modalInstance.result.then(function () {
                 _fnQueryTransportRecordFile();
+            },function (data) {
+                _fnQueryTransportRecordFile();
             });
         }
-        function _fnQueryTransportRecordFile() {
-            TransportRecordService.queryTransportRecordFile(vm.transportRecord.transhipCode).success(function (data) {
-                vm.transportRecordUploadInfo = data;
-            }).error(function (data) {
-                toastr.error(data.message);
-            })
+        //删除附件
+        function _fnDelUploadInfo(imgId) {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'removeImgModal.html',
+                controller: 'BoxInstanceCtrl',
+                backdrop:'static',
+                controllerAs: 'ctrl'
+            });
+            modalInstance.result.then(function () {
+                //删除
+                TransportRecordService.delTransportRecordFile(imgId).success(function (data) {
+                    toastr.success("删除成功!");
+                    _fnQueryTransportRecordFile();
+                }).error(function (data) {
+                    toastr.error(data.message);
+                });
+
+            },function (data) {
+                _fnQueryTransportRecordFile();
+            });
         }
-        _fnQueryTransportRecordFile();
+
 
 
     }

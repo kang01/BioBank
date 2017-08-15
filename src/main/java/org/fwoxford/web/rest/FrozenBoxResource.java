@@ -20,7 +20,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -319,5 +321,23 @@ public class FrozenBoxResource {
         log.debug("REST request to import FrozenBox And FrozenTubeDTOs From project group: {}", frozenBoxCodeStr);
         List<FrozenBoxAndFrozenTubeResponse> res = frozenBoxService.importFrozenBoxAndFrozenTube(frozenBoxCodeStr);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
+     * excel导入样本
+     * @param file
+     * @param request
+     * @return
+     * @throws URISyntaxException
+     */
+    @RequestMapping(value = "/tranship-boxes/frozenBoxCode/upload",method = RequestMethod.POST)
+    @Timed
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> saveAndUploadStockOutRequirement(
+                                                                                        @RequestParam(value = "file",required = false) MultipartFile file,
+                                                                                        HttpServletRequest request) throws URISyntaxException {
+        log.debug("REST request to save FrozenBoxAndFrozenTubeResponse : {}");
+        List<FrozenBoxAndFrozenTubeResponse> result = frozenBoxService.saveAndUploadFrozenBoxAndTube(file,request);
+
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 }

@@ -8,7 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -143,4 +145,12 @@ public interface FrozenBoxService {
      * @return
      */
     List<FrozenBoxAndFrozenTubeResponse> importFrozenBoxAndFrozenTube(String frozenBoxCodeStr);
+
+    /**
+     * excel导入样本
+     * @param file
+     * @param request
+     * @return
+     */
+    List<FrozenBoxAndFrozenTubeResponse> saveAndUploadFrozenBoxAndTube(MultipartFile file, HttpServletRequest request);
 }

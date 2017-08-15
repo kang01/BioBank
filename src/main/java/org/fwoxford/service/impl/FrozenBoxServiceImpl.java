@@ -1,6 +1,8 @@
 package org.fwoxford.service.impl;
 
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import net.sf.json.JSONArray;
+import org.apache.poi.ss.excelant.util.ExcelAntWorkbookUtil;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -13,6 +15,7 @@ import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.*;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
+import org.fwoxford.web.rest.util.ExcelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +29,9 @@ import org.springframework.util.StringUtils;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
 
@@ -336,7 +341,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         return stockInBoxForChangingPositionList;
     }
 
-    private StockInBoxForChangingPosition createStockInBoxForDataMoved(FrozenBox box, List<FrozenTube> frozenTubeList, int countOfSample) {
+    public StockInBoxForChangingPosition createStockInBoxForDataMoved(FrozenBox box, List<FrozenTube> frozenTubeList, int countOfSample) {
         StockInBoxForChangingPosition res = new StockInBoxForChangingPosition();
         res.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(box.getSampleType()));
         res.setCountOfSample(countOfSample);
@@ -1003,5 +1008,61 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             getMethod.releaseConnection();
         }
         return frozenBoxDTO;
+    }
+
+    @Override
+    public List<FrozenBoxAndFrozenTubeResponse> saveAndUploadFrozenBoxAndTube(MultipartFile file, HttpServletRequest request) {
+
+        List<FrozenBoxAndFrozenTubeResponse> frozenBoxAndFrozenTubeResponses = new ArrayList<>();
+        Map<String,List<FrozenTubeResponse>> map = new HashMap<String,List<FrozenTubeResponse>>();
+        try {
+            String filetype=file.getOriginalFilename().split("\\.")[1];//后缀
+            ArrayList<ArrayList<Object>> arrayLists = ExcelUtils.readExcel(filetype,file.getInputStream());
+            List<ArrayList<Object>>  arrayListArrayList = arrayLists.subList(1,arrayLists.size());
+            for(List arrayList :arrayListArrayList){
+                //todo 验证空值
+                String sampleCode = arrayList.get(3).toString();
+                String frozenBoxCode = arrayList.get(4).toString();
+                List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
+                //截取冻存盒编码获取类型
+                String sampleTypeCode = frozenBoxCode.substring(4,6);
+
+                if(sampleTypeCode.equals("99")){
+                    List<FrozenTubeResponse> frozenTubeResponseList = map.get(frozenBoxCode);
+                    int i = 0;
+                    if(frozenTubeResponseList==null || frozenTubeResponseList.size()==0){
+                        i=1;
+                    }else{
+                        i = frozenTubeResponseList.size()/10+1;
+                        if(i>=9){
+                            i++;
+                        }
+                    }
+                    char c1=(char) (i+64);
+
+                    for(int j = 1;j<=10;j++){
+                        FrozenTubeResponse frozenTubeResponse = new FrozenTubeResponse();
+                        frozenTubeResponse.setTubeRows(String.valueOf(c1));
+                        frozenTubeResponse.setTubeColumns(String.valueOf(j));
+                        frozenTubeResponses.add(frozenTubeResponse);
+                    }
+                }
+                List<FrozenTubeResponse> frozenTubeResponseList = map.get(frozenBoxCode);
+                if(frozenTubeResponseList!=null && frozenTubeResponseList.size()>0){
+                    frozenTubeResponseList.addAll(frozenTubeResponses);
+                    map.put(frozenBoxCode,frozenTubeResponseList);
+                }else{
+                    map.put(frozenBoxCode,frozenTubeResponses);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for(String key :map.keySet()){
+            FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse = new FrozenBoxAndFrozenTubeResponse();
+            frozenBoxAndFrozenTubeResponse.setFrozenTubeDTOS(map.get(key));
+            frozenBoxAndFrozenTubeResponses.add(frozenBoxAndFrozenTubeResponse);
+        }
+        return frozenBoxAndFrozenTubeResponses;
     }
 }

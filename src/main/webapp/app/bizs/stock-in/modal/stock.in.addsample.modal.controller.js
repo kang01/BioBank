@@ -12,12 +12,11 @@
 
     function StockInAddSampleModal($uibModalInstance,items,toastr,SampleTypeService,ProjectService,ProjectSitesByProjectIdService,MasterData,StockInInputService,DTColumnBuilder,BioBankDataTable) {
         var vm = this;
-
-        // vm.status = items.status;
         //库里已有的样本
         vm.tubes = items.tubes;
         //single:单次录入 multiple 批量录入
         vm.singleMultipleFlag = items.singleMultipleFlag;
+
         //是否出库再回来样本
         vm.originalSampleFlag = false;
         var sampleSelectedArray = items.sampleSelectedArray || [];
@@ -31,18 +30,26 @@
         vm.entity.projectSiteId = items.projectSiteId;
         vm.entity.sampleCode = items.sampleCode;
         vm.entity.frozenBoxId = items.frozenBoxId;
-
+        //冻存管状态
         vm.tubeStatusOptions = MasterData.frozenTubeStatus;
 
         vm.entity.status = vm.tubeStatusOptions[0].id;
+        //单次录入
+        if(vm.singleMultipleFlag == 'single' && sampleSelectedArray.length){
+            vm.entity.status = sampleSelectedArray[0].status;
+            vm.entity.sampleVolumns = sampleSelectedArray[0].sampleVolumns;
+            vm.entity.memo = sampleSelectedArray[0].memo;
+            vm.entity.projectSiteId = sampleSelectedArray[0].projectSiteId;
+            vm.entity.sampleTypeId = sampleSelectedArray[0].sampleTypeId;
+            vm.entity.sampleClassificationId = sampleSelectedArray[0].sampleClassificationId;
+        }
+
         _.forEach(sampleSelectedArray, function(sample) {
             sample.status = vm.entity.status;
         });
-
-        // vm.sampleTypeName = items.sampleTypeName;
         vm.sampleTypeCode = items.sampleTypeCode;
 
-        if(vm.sampleTypeCode != "98" || vm.sampleTypeCode != "97"){
+        if(vm.sampleTypeCode != "98" && vm.sampleTypeCode != "97"){
             vm.entity.sampleTypeId = items.sampleTypeId;
             vm.entity.sampleTypeCode = items.sampleTypeCode;
             vm.entity.sampleTypeName = items.sampleTypeName;
@@ -56,7 +63,6 @@
             vm.sampleClassificationCode = items.sampleClassificationCode;
 
         }
-        // var oldTube = items.oldTube;
         //从查询出来的样本中选出要入库的样本
         vm.sampleBoxSelect = _fnSampleBoxSelect;
         var tube;
@@ -125,7 +131,7 @@
                 _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
                 _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"});
                 _.remove(vm.sampleTypeOptions,{sampleTypeCode:"97"});
-                if(vm.sampleTypeCode == "98" || vm.sampleTypeCode == "97"){
+                if((vm.sampleTypeCode == "98" || vm.sampleTypeCode == "97") && !vm.entity.sampleTypeId){
                     vm.entity.sampleTypeId = vm.sampleTypeOptions[0].id;
                     vm.entity.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
                     vm.entity.sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
@@ -262,8 +268,6 @@
             // vm.clickFlag = true;
         }
 
-
-
         vm.sampleInstance = {};
         vm.sampleColumns = [
             DTColumnBuilder.newColumn('frozenBoxId').withOption("width", "50").notSortable().withOption('searchable',false).withTitle('序号'),
@@ -308,11 +312,11 @@
             });
             var array = [];
             if(vm.singleMultipleFlag === 'single'){
+                vm.entity.oldSampleCode = items.sampleCode;
                 array.push(vm.entity);
             }else{
                 array = sampleSelectedArray;
             }
-            //
             $uibModalInstance.close(array);
         };
     }

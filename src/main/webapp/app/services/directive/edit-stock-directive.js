@@ -83,7 +83,7 @@
                 wordWrap:true,
                 colWidths: 80,
                 rowHeaderWidth: 30,
-                editor: 'tubeInput',
+                editor: 'tube',
                 multiSelect: true,
                 comments: true,
                 renderer: myCustomRenderer,
@@ -766,14 +766,17 @@
                 toastr.error("请选择样本进行修改!");
                 return;
             }
+            //flag:2 原盒
             var len =  _.filter(aRemarkArray,{flag:"2"}).length;
             if(len){
                 toastr.error("选择的样本中不能包含原盒内样本!");
                 return;
             }
-            var singleMultipleFlag = "editSample";
+            var singleMultipleFlag = "multiple";
+            var sampleCode;
             if(aRemarkArray.length == 1){
                 singleMultipleFlag = "single";
+                sampleCode = aRemarkArray[0].sampleCode;
             }
             var selectedData = _.uniq(aRemarkArray);
             modalInstance = $uibModal.open({
@@ -788,9 +791,8 @@
                         return {
                             singleMultipleFlag:singleMultipleFlag,
                             sampleSelectedArray:selectedData,
-                            // tubes:stockInTubes,
-                            // sampleCode:oldTube.sampleCode,
-                            frozenBoxId:vm.obox.id,
+                            sampleCode:sampleCode,
+                            frozenBoxId:vm.obox.frozenBoxId,
                             projectSiteId:vm.entity.projectSiteId,
                             projectId:vm.entity.projectId,
                             projectCode:vm.entity.projectCode,
@@ -805,23 +807,44 @@
                 }
 
             });
-            modalInstance.result.then(function (tube) {
+            modalInstance.result.then(function (tubes) {
                 var tableCtrl = _getTableCtrl();
                 for(var i = 0; i < vm.frozenTubeArray.length; i++){
                     for(var j = 0; j < vm.frozenTubeArray[i].length; j++){
-                        if(vm.frozenTubeArray[i][j].sampleCode == tube.sampleCode){
-                            vm.frozenTubeArray[i][j].frozenTubeId = tube.frozenTubeId;
-                            vm.frozenTubeArray[i][j].memo = tube.memo;
-                            vm.frozenTubeArray[i][j].sampleTypeId = tube.sampleTypeId;
-                            vm.frozenTubeArray[i][j].sampleTypeName = tube.sampleTypeName;
-                            vm.frozenTubeArray[i][j].backColor = tube.backColor;
-                            vm.frozenTubeArray[i][j].sampleVolumns = tube.sampleVolumns;
-                            if(tube.sampleClassificationId){
-                                vm.frozenTubeArray[i][j].sampleClassificationId = tube.sampleClassificationId;
-                                vm.frozenTubeArray[i][j].sampleClassificationName = tube.sampleClassificationName;
-                                vm.frozenTubeArray[i][j].sampleClassitionCode = tube.sampleClassitionCode;
-                                vm.frozenTubeArray[i][j].backColorForClass = tube.backColorForClass;
+                        if(singleMultipleFlag == "single"){
+                            if(vm.frozenTubeArray[i][j].sampleCode == tubes[0].oldSampleCode){
+                                vm.frozenTubeArray[i][j].sampleCode = tubes[0].sampleCode;
+                                vm.frozenTubeArray[i][j].frozenTubeId = tubes[0].frozenTubeId;
+                                vm.frozenTubeArray[i][j].memo = tubes[0].memo;
+                                vm.frozenTubeArray[i][j].sampleTypeId = tubes[0].sampleTypeId;
+                                vm.frozenTubeArray[i][j].sampleTypeName = tubes[0].sampleTypeName;
+                                vm.frozenTubeArray[i][j].backColor = tubes[0].backColor;
+                                vm.frozenTubeArray[i][j].sampleVolumns = tubes[0].sampleVolumns;
+                                if(tubes[0].sampleClassificationId){
+                                    vm.frozenTubeArray[i][j].sampleClassificationId = tubes[0].sampleClassificationId;
+                                    vm.frozenTubeArray[i][j].sampleClassificationName = tubes[0].sampleClassificationName;
+                                    vm.frozenTubeArray[i][j].sampleClassitionCode = tubes[0].sampleClassitionCode;
+                                    vm.frozenTubeArray[i][j].backColorForClass = tubes[0].backColorForClass;
+                                }
                             }
+                        }else{
+                            for(var k = 0; k < tubes.length; k++){
+                                if(vm.frozenTubeArray[i][j].sampleCode == tubes[k].sampleCode){
+                                    vm.frozenTubeArray[i][j].frozenTubeId = tubes[k].frozenTubeId;
+                                    vm.frozenTubeArray[i][j].memo = tubes[k].memo;
+                                    vm.frozenTubeArray[i][j].sampleTypeId = tubes[k].sampleTypeId;
+                                    vm.frozenTubeArray[i][j].sampleTypeName = tubes[k].sampleTypeName;
+                                    vm.frozenTubeArray[i][j].backColor = tubes[k].backColor;
+                                    vm.frozenTubeArray[i][j].sampleVolumns = tubes[k].sampleVolumns;
+                                    if(tubes[k].sampleClassificationId){
+                                        vm.frozenTubeArray[i][j].sampleClassificationId = tubes[k].sampleClassificationId;
+                                        vm.frozenTubeArray[i][j].sampleClassificationName = tubes[k].sampleClassificationName;
+                                        vm.frozenTubeArray[i][j].sampleClassitionCode = tubes[k].sampleClassitionCode;
+                                        vm.frozenTubeArray[i][j].backColorForClass = tubes[k].backColorForClass;
+                                    }
+                                }
+                            }
+
                         }
                     }
                 }

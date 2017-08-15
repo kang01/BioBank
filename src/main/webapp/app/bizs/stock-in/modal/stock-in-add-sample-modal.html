@@ -115,7 +115,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>样本编码</label>
+                            <input type="text" class="form-control" ng-model="vm.entity.sampleCode">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>状态</label>
                             <selectize options='vm.tubeStatusOptions' config="vm.tubeStatusConfig"
@@ -123,7 +129,8 @@
                             ></selectize>
                         </div>
                     </div>
-                    <div class="col-md-3">
+
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>计量</label>
                             <input type="text" class="form-control" ng-model="vm.entity.sampleVolumns">

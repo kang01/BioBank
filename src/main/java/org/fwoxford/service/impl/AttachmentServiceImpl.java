@@ -127,7 +127,7 @@ public class AttachmentServiceImpl implements AttachmentService{
         }
         List<Attachment> attachmentList = attachmentRepository.findByBusinessId(tranship.getId());
         if(attachmentList == null || attachmentList.size()==0){
-            return null;
+            return new ArrayList<AttachmentDTO>();
         }
         for(Attachment attachment : attachmentList){
             AttachmentDTO attachmentDTO = attachmentMapper.attachmentToAttachmentDTO(attachment);

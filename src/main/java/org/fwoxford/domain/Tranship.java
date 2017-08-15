@@ -66,7 +66,7 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     @Column(name = "tranship_batch", length = 100, nullable = true)
     private String transhipBatch;
     /**
-     * 运单状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废
+     * 运单状态：1001：进行中，1002：待入库，1003：已入库，1090：已作废
      */
     @NotNull
     @Size(max = 20)

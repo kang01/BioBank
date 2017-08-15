@@ -133,7 +133,7 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @Column(name = "memo", length = 255)
     private String memo;
     /**
-     * 状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废，0000：无效
+     * 状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2090：已作废，0000：无效
      */
     @NotNull
     @Size(max = 20)

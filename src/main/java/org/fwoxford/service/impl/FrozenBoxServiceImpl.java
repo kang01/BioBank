@@ -740,6 +740,16 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 stockInTubeForBoxes.add(inTubeForBox);
             }
             for(StockInTube stockInTube : stockInTubes){
+                int flag = 0;
+                for(StockInTubeForBox stockInTubeForBox :stockInTubeForBoxes){
+                    if(stockInTubeForBox.getId()==stockInTube.getFrozenTube().getId()){
+                        flag =1;
+                        break;
+                    }
+                }
+                if(flag ==1){
+                    continue;
+                }
                 StockInTubeForBox inTubeForBox = new StockInTubeForBox();
                 inTubeForBox.setId(stockInTube.getFrozenTube().getId());
                 inTubeForBox.setFrozenBoxCode(stockInTube.getFrozenBoxCode());
@@ -839,7 +849,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }else{
             List<Object[]> boxHistory = frozenBoxRepository.findFrozenBoxHistory(id);
             for(Object[] objects:boxHistory){
-                String type = objects[25].toString();
+                String type = objects[21].toString();
                 if(type.equals("102")||type.equals(102)){
                     status = Constants.FROZEN_BOX_STOCKED;
                 }

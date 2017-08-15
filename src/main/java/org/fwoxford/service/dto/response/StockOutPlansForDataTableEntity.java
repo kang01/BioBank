@@ -68,7 +68,7 @@ public class StockOutPlansForDataTableEntity {
     @Column(name = "count_of_stock_out_task")
     private String countOfStockOutTask;
     /**
-     * 状态:1401:进行中，1402：已完成，1403：已作废
+     * 状态:1401:进行中，1402：已完成，1490：已作废
      */
     @NotNull
     @JsonView(DataTablesOutput.View.class)

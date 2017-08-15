@@ -74,8 +74,6 @@ public class StockInServiceImpl implements StockInService {
     @Autowired
     private TranshipStockInRepository transhipStockInRepository;
     @Autowired
-    private StockInTranshipBoxRepository stockInTranshipBoxRepository;
-    @Autowired
     private TranshipTubeRepository transhipTubeRepository;
     @Autowired
     private FrozenBoxService frozenBoxService;
@@ -438,7 +436,6 @@ public class StockInServiceImpl implements StockInService {
                     transhipStockIn.setStockInCode(stockInNew.getStockInCode());
                     transhipStockInRepository.save(transhipStockIn);
                 }
-
             }
         }
         return stockInMapper.stockInToStockInDetail(stockIn);
@@ -448,15 +445,18 @@ public class StockInServiceImpl implements StockInService {
     public StockInDTO getStockInById(Long id) {
         StockIn stockIn = stockInRepository.findOne(id);
         StockInDTO stockInForDataDetail = stockInMapper.stockInToStockInDTO(stockIn);
-        List<StockInTranshipBox> transhipStockIns = stockInTranshipBoxRepository.findByStockInCode(stockIn.getStockInCode());
+        List<TranshipStockIn> transhipStockInList = transhipStockInRepository.findByStockInCode(stockIn.getStockInCode());
+        List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(stockIn.getStockInCode());
         List<String> transhipCodes = new ArrayList<String>();
         List<String> projectSiteCode = new ArrayList<String>();
-        for(StockInTranshipBox transhipStockIn:transhipStockIns){
+        for(TranshipStockIn transhipStockIn:transhipStockInList){
             if(!transhipCodes.contains(transhipStockIn.getTranshipCode())){
                 transhipCodes.add(transhipStockIn.getTranshipCode());
             }
-            if(!projectSiteCode.contains(transhipStockIn.getTranshipBox().getProjectSiteCode())){
-                projectSiteCode.add(transhipStockIn.getTranshipBox().getProjectSiteCode());
+        }
+        for(StockInBox stockInBox:stockInBoxes){
+            if(!projectSiteCode.contains(stockInBox.getProjectSiteCode())){
+                projectSiteCode.add(stockInBox.getProjectSiteCode());
             }
         }
         stockInForDataDetail.setTranshipCode(String.join(", ",transhipCodes));
@@ -609,13 +609,13 @@ public class StockInServiceImpl implements StockInService {
                 .projectSiteName(frozenBox.getProjectSiteName()).countOfSample(countOfSample.intValue()).status(frozenBox.getStatus()).stockIn(stockIn).stockInCode(stockIn.getStockInCode())
                 .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBox(frozenBox);
             stockInBoxRepository.save(stockInBox);
-            StockInTranshipBox stockInTranshipBox = new StockInTranshipBox()
-                .transhipBox(transhipBox).stockIn(stockIn)
-                .frozenBoxCode(frozenBox.getFrozenBoxCode())
-                .stockInCode(stockIn.getStockInCode())
-                .status(Constants.FROZEN_BOX_STOCKING)
-                .transhipCode(transhipBox.getTranship().getTranshipCode());
-            stockInTranshipBoxRepository.save(stockInTranshipBox);
+//            StockInTranshipBox stockInTranshipBox = new StockInTranshipBox()
+//                .transhipBox(transhipBox).stockIn(stockIn)
+//                .frozenBoxCode(frozenBox.getFrozenBoxCode())
+//                .stockInCode(stockIn.getStockInCode())
+//                .status(Constants.FROZEN_BOX_STOCKING)
+//                .transhipCode(transhipBox.getTranship().getTranshipCode());
+//            stockInTranshipBoxRepository.save(stockInTranshipBox);
             //保存入库管子
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
             List<StockInTube> stockInTubes = new ArrayList<StockInTube>();
@@ -683,11 +683,12 @@ public class StockInServiceImpl implements StockInService {
            List<StockInTube> stockInTubes = stockInTubeRepository.findByStockInBoxId(s.getId());
            List<FrozenTube> frozenTubeList = new ArrayList<>();
            for(StockInTube stockInTube:stockInTubes){
-               stockInTube.setStatus(Constants.FROZEN_BOX_INVALID);
+               stockInTube.setStatus(Constants.INVALID);
                if(stockInTube.getFrozenTube().getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKING)){
-                   stockInTube.getFrozenTube().setStatus(Constants.FROZEN_BOX_INVALID);
+                   stockInTube.getFrozenTube().setStatus(Constants.INVALID);
                    frozenTubeList.add(stockInTube.getFrozenTube());
                }
+               stockInTube.setFrozenTubeState(Constants.FROZEN_BOX_INVALID);
            }
            if(frozenTubeList.size()>0){
                frozenTubeRepository.save(frozenTubeList);

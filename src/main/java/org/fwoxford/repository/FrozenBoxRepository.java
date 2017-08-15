@@ -13,17 +13,17 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
-    @Query(value = "select t.* from frozen_box t left join tranship_box p on t.id=p.frozen_box_id where p.tranship_id=?1 and t.status!='0000' and t.status!='2005'",nativeQuery = true)
+    @Query(value = "select t.* from frozen_box t left join tranship_box p on t.id=p.frozen_box_id where p.tranship_id=?1 and t.status!='0000' and t.status!='2090'",nativeQuery = true)
     List<FrozenBox> findAllFrozenBoxByTranshipId(Long transhipId);
 
-    @Query("select box from FrozenBox box where box.frozenBoxCode = ?1 and box.status!='0000' and box.status!='2005'" )
+    @Query("select box from FrozenBox box where box.frozenBoxCode = ?1 and box.status!='0000' and box.status!='2090'" )
     FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode);
 
     @Query(value = "select * from frozen_box box where box.equipment_id = ?1" +
         " and box.area_id = ?2 " +
         " and box.support_rack_id = ?3 " +
         " and box.columns_in_shelf = ?4 " +
-        " and box.rows_in_shelf = ?5 and box.status!='2005' and t.status!='0000'" , nativeQuery = true)
+        " and box.rows_in_shelf = ?5 and box.status!='2090' and t.status!='0000'" , nativeQuery = true)
     List<FrozenBox> findByEquipmentIdAndAreaIdAndSupportIdAndColumnAndRow(Long equipmentId, Long areaId, Long supportRackId, String column, String row);
 
     @Modifying
@@ -33,35 +33,35 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     @Query("select box from FrozenBox box where box.equipmentCode = ?1 and box.status in ('2004','2006') ")
     List<FrozenBox> findByEquipmentCode(String equipmentCode);
 
-    @Query("select box from FrozenBox box where box.equipmentCode = ?1 and box.areaCode = ?2 and box.status!='0000' and box.status!='2005'")
+    @Query("select box from FrozenBox box where box.equipmentCode = ?1 and box.areaCode = ?2 and box.status!='0000' and box.status!='2090'")
     List<FrozenBox> findByEquipmentCodeAndAreaCode(String equipmentCode, String areaCode);
 
-    @Query("select count(box) from FrozenBox box where box.equipmentCode = ?1 and box.areaCode = ?2 and box.status!='0000'  and box.status!='2005'")
+    @Query("select count(box) from FrozenBox box where box.equipmentCode = ?1 and box.areaCode = ?2 and box.status!='0000'  and box.status!='2090'")
     Long countByEquipmentCodeAndAreaCode(String equipmentCode, String areaCode);
 
     @Query("select box from FrozenBox box where box.equipmentCode = ?1 and box.areaCode = ?2  and box.supportRackCode = ?3 " +
         " and box.columnsInShelf = ?4 and box.rowsInShelf = ?5" +
-        " and box.status!='0000'and box.status!='2005'")
+        " and box.status!='0000'and box.status!='2090'")
     FrozenBox findByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(String equipmentCode, String areaCode, String shelfCode, String columnsInShelf, String rowsInShelf);
 
     @Query(value = "select f.* from frozen_box f where f.equipment_code = ?1 and f.area_code =?2" +
         " and f.support_rack_code = ?3" +
-        " and f.status!='0000'  and f.status!='2005'" ,nativeQuery = true)
+        " and f.status!='0000'  and f.status!='2090'" ,nativeQuery = true)
     List<FrozenBox> findByEquipmentCodeAndAreaCodeAndSupportRackCode(String equipmentCode, String areaCode, String shelfCode);
 
     @Query(value = "select count(f.id) from frozen_box f where f.equipment_code = ?1 and f.area_code =?2" +
         " and f.support_rack_code = ?3" +
-        " and f.status!='0000'and f.status!='2005'" ,nativeQuery = true)
+        " and f.status!='0000'and f.status!='2090'" ,nativeQuery = true)
     Long countByEquipmentCodeAndAreaCodeAndSupportRackCode(String equipmentCode, String areaCode, String shelfCode);
 
-    @Query(value = "select f.* from frozen_box f where f.project_code = ?1 and f.sample_type_code =?2 and f.status!='0000' and f.status!='2005'" ,nativeQuery = true)
+    @Query(value = "select f.* from frozen_box f where f.project_code = ?1 and f.sample_type_code =?2 and f.status!='0000' and f.status!='2090'" ,nativeQuery = true)
     List<FrozenBox> findByProjectCodeAndSampleTypeCode(String projectCode, String sampleTypeCode);
 
     List<FrozenBox> findByProjectCodeAndSampleTypeCodeAndStatus(String projectCode, String sampleTypeCode, String status);
 
     List<FrozenBox> findByFrozenBoxCodeInAndStatusIn(List<String> frozenBoxCodeStr, List<String> statusStr);
 
-    @Query(value = "select f.* from frozen_box f where f.frozen_box_code in ?1 and f.status!='0000' and f.status!='2005'" ,nativeQuery = true)
+    @Query(value = "select f.* from frozen_box f where f.frozen_box_code in ?1 and f.status!='0000' and f.status!='2090'" ,nativeQuery = true)
     List<FrozenBox> findByFrozenBoxCodeIn(List<String> frozenBoxCodeStr);
 
     List<FrozenBox> findByProjectCodeAndSampleTypeCodeAndStatusIn(String projectCode, String sampleTypeCode, List<String> statusList);
@@ -102,7 +102,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     List<FrozenBox> findIncompleteFrozenBoxBySampleTypeId(String frozenBoxCode, Long projectId, Long sampleTypeId, Long frozenBoxTypeId, String status, String stockInCode);
 
     @Query(value = "select box.id ,count(*) as num from frozen_box box  where box.frozen_box_code =?1" +
-        " and box.status not in ('2005','0000') group by box.id " , nativeQuery = true)
+        " and box.status not in ('2090','0000') group by box.id " , nativeQuery = true)
     List<Object[]> countByFrozenBoxCode(String frozenBoxCode);
 
     @Query(value = "select f.*,(select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000') as sampleNumber from frozen_box f left join stock_in_box s on f.id=s.frozen_box_id " +
@@ -180,13 +180,13 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
     @Query("select count(box) from FrozenBox box where box.equipmentCode = ?1 and box.areaCode = ?2  and box.supportRackCode = ?3 " +
         " and box.columnsInShelf = ?4 and box.rowsInShelf = ?5" +
-        " and box.status!='0000'and box.status!='2005'")
+        " and box.status!='0000'and box.status!='2090'")
     Long countByEquipmentCodeAndAreaCodeAndSupportRackCodeAndColumnsInShelfAndRowsInShelf(String equipmentCode, String areaCode, String shelfCode, String columnsInShelf, String rowsInShelf);
 
     @Modifying
-    @Query("update FrozenBox b set b.status=?1 where b.frozenBoxCode in ?2 and b.status not in ('2005','0000')")
+    @Query("update FrozenBox b set b.status=?1 where b.frozenBoxCode in ?2 and b.status not in ('2090','0000')")
     void updateStatusByFrozenBoxCodes(String frozenBoxTranshipComplete, List<String> frozenBoxCodes);
-    @Query(value = "SELECT ROWNUM  as id,cast(temp.equipment_code as varchar2(255)) as equipmentCode," +
+    @Query(value = "SELECT ROWNUM  as id," +
         " cast(temp.equipment_code as varchar2(255)) as equipment_code, " +
         " cast(temp.area_code as varchar2(255)) as area_code, " +
         " cast(temp.support_rack_code as varchar2(255)) as support_rack_code, " +
@@ -227,7 +227,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         "            ) temp ORDER BY created_date DESC",nativeQuery = true)
     List<Object[]> findPositionHistory(Long id);
 
-    @Query(value = "SELECT ROWNUM  as id,cast(temp.equipment_code as varchar2(255)) as equipmentCode," +
+    @Query(value = "SELECT ROWNUM  as id," +
         " cast(temp.equipment_code as varchar2(255)) as equipment_code, " +
         " cast(temp.area_code as varchar2(255)) as area_code, " +
         " cast(temp.support_rack_code as varchar2(255)) as support_rack_code, " +

@@ -40,7 +40,7 @@ public class FrozenBoxForSaveBatchDTO {
     @Size(max = 255)
     private String memo;
     /**
-     * 状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2005：已作废
+     * 状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2090：已作废
      */
     @Size(max = 20)
     private String status;

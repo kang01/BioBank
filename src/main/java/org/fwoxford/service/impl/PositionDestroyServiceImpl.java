@@ -151,7 +151,8 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
             if(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKED)){
                 throw new BankServiceException("冻存管未入库，不能销毁！");
             }
-            f.setStatus(Constants.VALID);
+            f.setStatus(Constants.FROZEN_TUBE_DESTROY);
+            f.setFrozenTubeState(Constants.FROZEN_BOX_DESTROY);
         }
         frozenTubeRepository.save(frozenTubeList);
         saveDestroyDetail(positionDestroyDTO,Constants.MOVE_TYPE_1,frozenTubeList);
@@ -167,7 +168,7 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
             if(!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED)){
                 throw new BankServiceException("冻存盒未入库，不能销毁！");
             }
-            frozenBox.setStatus(Constants.VALID);
+            frozenBox.setStatus(Constants.FROZEN_BOX_DESTROY);
         }
         frozenBoxRepository.save(frozenBoxList);
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxIdIn(boxIds);

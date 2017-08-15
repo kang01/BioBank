@@ -49,7 +49,7 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
     @Size(max = 100)
     private String transhipBatch;
     /**
-     * 运单状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废
+     * 运单状态：1001：进行中，1002：待入库，1003：已入库，1090：已作废
      */
     @Size(max = 20)
     private String transhipState;

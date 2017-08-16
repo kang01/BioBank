@@ -8,12 +8,12 @@
                 <button type="button" class="btn btn-primary" ng-click="vm.transferFinish()"
                         ng-disabled="!vm.boxLength || !vm.transportRecord.receiver ||
                         !vm.transportRecord.transhipDate || !vm.transportRecord.projectId ||
-                        !vm.transportRecord.projectSiteId|| !vm.transportRecord.receiveDate ||
+                        !vm.transportRecord.receiveDate ||
                         !vm.transportRecord.trackNumber"
                         ng-show="vm.transportRecord.transhipState == '1001'">转运完成
                 </button>
                 <button type="button" class="btn btn-default" ng-click="vm.saveRecord()"
-                        ng-disabled="!vm.transportRecord.transhipDate || !vm.transportRecord.projectId || !vm.transportRecord.projectSiteId"
+                        ng-disabled="!vm.transportRecord.transhipDate || !vm.transportRecord.projectId"
                         ng-show="vm.transportRecord.transhipState == '1001'">保存转运记录
                 </button>
                 <button type="button" class="btn btn-default" ng-click="vm.invalid()"
@@ -61,9 +61,7 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group three-col project-sites">
-                    <label class="col-md-4 control-label text-left">
-                        <span class="required-field"></span>
-                        项目点</label>
+                    <label class="col-md-4 control-label text-left">项目点</label>
                     <div class="col-md-8">
                         <selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"
                                    ng-model="vm.transportRecord.projectSiteId"></selectize>

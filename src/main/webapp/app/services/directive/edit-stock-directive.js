@@ -45,6 +45,9 @@
             _initBoxInfo();
 
         });
+        $scope.$watch('stockInInfo',function () {
+            vm.entity = $scope.stockInInfo;
+        });
         //重复的样本编码
         vm.repeatSampleArray = [];
         _initFrozenBoxPanel();

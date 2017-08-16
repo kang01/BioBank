@@ -65,6 +65,7 @@
                 }
             };
             vm.statusOptions = MasterData.frozenBoxStatus;
+            vm.statusOptions.push({value:"20022",label:"待分装"})
         }
         function _sampleTypeInit() {
             vm.noSampleClassFlag = false;
@@ -313,6 +314,15 @@
             var stockInBoxArray;
             var dataArray = [];
             var boxArray = [];
+            //待入库无带分装
+            if(searchObj.status == '2002'){
+                searchObj.isSplit = 0;
+            }
+            //待分装
+            if(searchObj.status == '20022'){
+                searchObj.isSplit = 1;
+                searchObj.status = '2002';
+            }
             stockInBoxArray = _.filter(stockInBoxList, searchObj);
             dataArray = _.filter(stockInBoxList, searchObj);
             //模糊搜索冻存盒编码
@@ -346,7 +356,7 @@
             }
 
             dataArray = _.uniq(dataArray);
-            // vm.stockInBox = dataArray;
+
             vm.dtOptions.withOption("data",dataArray).withOption('serverSide',false);
             vm.checked = false;
             vm.selectAll = false;
@@ -355,7 +365,7 @@
                 selected[full.frozenBoxCode] = false;
             });
             vm.selectedDataFlag = true;
-            vm.stockInBox = dataArray;
+            // vm.stockInBox = dataArray;
             _isStockInFinish();
         }
         function _fnEmpty() {
@@ -364,7 +374,9 @@
             vm.dto.sampleTypeCode = "";
             vm.dto.sampleTypeClassName = "";
             vm.dto.sampleTypeClassCode = "";
+            _initStockInBoxesTable();
         }
+
         _initStockInBoxesTable();
 
         function _initStockInBoxesTable(){
@@ -689,6 +701,7 @@
                 templateUrl: 'app/bizs/stock-in/box-putaway-modal.html',
                 controller: 'BoxPutAwayModalController',
                 controllerAs:'vm',
+                backdrop:'static',
                 // size:'lg',
                 size:'90',
                 resolve: {
@@ -716,7 +729,8 @@
                 animation: true,
                 templateUrl: 'app/bizs/stock-in/rescind-putaway-modal.html',
                 controller: 'RescindPutAwayModalController',
-                controllerAs:'vm'
+                controllerAs:'vm',
+                backdrop:'static'
             });
             modalInstance.result.then(function (data) {
                 RescindPutAwayService.rescindPutAway(vm.entity.stockInCode,boxCode).then(function (data) {
@@ -732,18 +746,10 @@
             //已上架
             var putInLen = _.filter(vm.stockInBox,{"status":"2006"}).length;
             if(putInLen){
-                vm.stockInflag = true;
+                vm.stockInFlag = true;
             }else{
-                vm.stockInflag = false;
+                vm.stockInFlag = false;
             }
-            // //去除分装的数据
-            // var stockInBox = angular.copy(vm.stockInBox);
-            // _.remove(stockInBox,{"status":"2003"});
-            // if(putInLen == stockInBox.length){
-            //     vm.stockInflag = true;
-            // }else{
-            //     vm.stockInflag = false;
-            // }
         }
 
 
@@ -751,9 +757,10 @@
         vm.saveStockIn = function () {
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/stock-in-info-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/stock-in-info-modal.html',
                 controller: 'StockInInfoModalController',
                 controllerAs:'vm',
+                backdrop:'static',
                 resolve: {
                     items: function () {
                         return {
@@ -761,8 +768,9 @@
                             stockInCode: vm.entity.stockInCode,
                             stockInDate: vm.entity.stockInDate,
                             storeKeeper1: vm.entity.storeKeeper1,
-                            storeKeeper2: vm.entity.storeKeeper2
-                        };
+                            storeKeeper2: vm.entity.storeKeeper2,
+                            stockInBox:vm.stockInBox
+                    };
                     }
                 }
             });
@@ -1263,7 +1271,8 @@
                     animation: true,
                     templateUrl: 'app/bizs/stock-in/stock-in-splittingBox-message-modal.html',
                     controller: 'SplittingBoxMessageController',
-                    controllerAs:'vm'
+                    controllerAs:'vm',
+                    backdrop:'static'
                 });
                 return;
             }
@@ -1408,6 +1417,7 @@
                 templateUrl: 'app/bizs/stock-in/stock-in-close-splittingBox-modal.html',
                 controller: 'CloseSplittingBoxController',
                 controllerAs:'vm',
+                backdrop:'static',
                 size:'sm',
                 resolve: {
                     items: function () {
@@ -1452,6 +1462,7 @@
                 controller: 'AddBoxModalController',
                 controllerAs:'vm',
                 size:'lg',
+                backdrop:'static',
                 resolve: {
                     items: function () {
                         return {

@@ -520,7 +520,12 @@
             //获取待出库样本
             var stockOutTubes = _.filter(vm.tubeList,{stockOutFlag:1});
             _.forEach(stockOutTubes, function(sample) {
-                sample.sampleCode = sample.sampleCode.toUpperCase();
+                if(sample.sampleCode){
+                    sample.sampleCode = sample.sampleCode.toUpperCase();
+                }else{
+                    sample.sampleCode = sample.sampleTempCode.toUpperCase();
+                }
+
             });
             //获取扫码取得样本
             var scanCodeTubes = _.filter(stockOutTubes,{"sampleCode": sampleCode});

@@ -15,8 +15,6 @@
         <div style="clear: both"></div>
     </div>
     <div class="row form-horizontal">
-        <!--<div class="col-md-1 text-right"><strong>入库单编号</strong></div>-->
-        <!--<div class="col-md-1">{{vm.entity.stockInCode}}</div>-->
         <div class="col-md-3">
             <div class="form-group ">
                 <label class="col-md-4 control-label">
@@ -26,23 +24,9 @@
                 <div class="col-md-8">
                     <selectize options='vm.projectOptions' config="vm.projectConfig"
                                ng-model="vm.entity.projectId" ng-disabled="vm.entity.id"></selectize>
-                    <!--<input type="text" class="form-control"  ng-model="vm.transportRecord.projectSiteCode">-->
                 </div>
             </div>
         </div>
-        <!--<div class="col-md-3">-->
-            <!--<div class="form-group three-col project-sites">-->
-                <!--<label class="col-md-4 control-label">-->
-                    <!--项目点</label>-->
-                <!--<div class="col-md-8">-->
-                    <!--<selectize options='vm.projectSitesOptions' config="vm.projectSitesConfig"-->
-                               <!--ng-model="vm.entity.projectSiteId"></selectize>-->
-                    <!--&lt;!&ndash;<input type="text" class="form-control"  ng-model="vm.transportRecord.projectCode">&ndash;&gt;-->
-                <!--</div>-->
-            <!--</div>-->
-
-        <!--</div>-->
-
     </div>
     <div class="row">
         <div class="col-md-12">

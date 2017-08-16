@@ -9,10 +9,10 @@
         .controller('FrozenStorageBoxModalController', FrozenStorageBoxModalController)
         .controller('ProgressBarModalController', ProgressBarModalController);
 
-    FrozenStorageBoxModalController.$inject = ['$scope','toastr','$timeout','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService','blockUI','AreasByEquipmentIdService','EquipmentService','SampleTypeService'];
+    FrozenStorageBoxModalController.$inject = ['$scope','$q','toastr','$timeout','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService','blockUI','blockUIConfig','AreasByEquipmentIdService','EquipmentService','SampleTypeService','TransportRecordService'];
     ProgressBarModalController.$inject = ['$uibModalInstance','$uibModal'];
 
-    function FrozenStorageBoxModalController($scope,toastr,$timeout,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService,blockUI,AreasByEquipmentIdService,EquipmentService,SampleTypeService) {
+    function FrozenStorageBoxModalController($scope,$q,toastr,$timeout,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService,blockUI,blockUIConfig,AreasByEquipmentIdService,EquipmentService,SampleTypeService,TransportRecordService) {
 
         var vm = this;
         vm.items = items;
@@ -27,6 +27,8 @@
         vm.delBox = _fnDelBox;
         //导入样本数据
         vm.importSample = _fnImportSample;
+        //导入单条数据
+        vm.reloadImport = _fnReloadImport;
         //停止
         vm.stop = _fnStop;
 
@@ -56,11 +58,8 @@
                 vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
                 vm.frozenBox.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
                 vm.frozenBox.sampleTypeId = value;
-                if(vm.frozenBox.sampleTypeCode == 'RNA'){
-                    vm.box.isSplit = 1;
-                }
-                _fnEditBoxInfo();
                 _fnQueryProjectSampleClass(vm.items.projectId,value,vm.isMixed);
+
 
             }
         };
@@ -135,9 +134,7 @@
                 }else{
                     vm.sampleTypeFlag = false;
                 }
-                // _fnInitBoxInfo();
-
-
+                _fnEditBoxInfo();
             });
         }
 
@@ -175,7 +172,7 @@
                     if ($scope.$digest()){
                         $scope.$apply();
                     }
-                },500);
+                },300);
             },
             onItemRemove:function (value) {
                 _.remove(vm.obox.frozenBoxDTOList,{frozenBoxCode:value});
@@ -197,7 +194,8 @@
                 sampleClassificationCode: vm.frozenBox.sampleClassificationCode || undefined,
                 isRepeat:0,
                 frozenTubeDTOS:[],
-                createDate:new Date().getTime()
+                createDate:new Date().getTime(),
+                isRealData:null
             };
             for(var j = 0; j < vm.frozenBox.frozenBoxTypeRows;j++){
                 tubeList[j] = [];
@@ -244,30 +242,86 @@
         }
         //导入数据
         vm.progressFlag = false;
+        var arrayPromise = [];
+        var canceller = null;
         function _fnImportSample() {
-            vm.progressFlag = true;
-            vm.count = 50;
             vm.obj = {
-                width:vm.count+'%'
+                width: 0
             };
-            _fnEditBoxInfo();
-            // setTimeout(function () {
-            //
-            //     console.log(vm.count)
-            //     vm.obj.width = vm.count;
-            // },1000);
-            // modalInstance = $uibModal.open({
-            //     animation: true,
-            //     templateUrl: 'progressBar.html',
-            //     controller: 'ProgressBarModalController',
-            //     backdrop:'static',
-            //     controllerAs: 'vm',
-            //     size:'progress-bar'
-            // });
-            // modalInstance.result.then(function () {
-            // });
-        }
+            vm.progressFlag = true;
+            vm.count = 0;
+            blockUIConfig.autoBlock = false;
+            arrayPromise = [];
+            canceller = $q.defer();
+            _.forEach(vm.codeList,function (code) {
+                var importData = TransportRecordService.importData(code, canceller);
+                arrayPromise.push(
+                    importData.then(function (response) {
+                        _.forEach(vm.obox.frozenBoxDTOList,function (box) {
+                           if(box.frozenBoxCode == code){
+                               box.sampleTypeName = response.data[0].sampleTypeName;
+                               box.isRealData = response.data[0].isRealData;
+                               box.countOfSample = response.data[0].countOfSample;
+                               box.isMixed = response.data[0].isMixed;
+                               box.status = response.status;
+                           }
+                        });
+                    },function (data) {
+                        var status = data.status;
+                        _.forEach(vm.obox.frozenBoxDTOList,function (box) {
+                            if(box.frozenBoxCode == code){
+                                box.status = status;
+                            }
 
+                        });
+                    })
+
+                    .finally(function (data) {
+                        vm.count++;
+                        var percentage = parseInt((vm.count/vm.codeList.length)*100);
+                        vm.obj.width = percentage+'%';
+                        if(vm.obj.width == '100%'){
+                            setTimeout(function () {
+                                vm.progressFlag = false;
+                                blockUIConfig.autoBlock = true;
+                            },500)
+                        }
+                    }).$promise
+                );
+
+            });
+            $q.all(arrayPromise).finally(function(data){
+
+            });
+        }
+        //单个reload导入数据
+        function _fnReloadImport(item) {
+            canceller = $q.defer();
+            TransportRecordService.importData(item.frozenBoxCode,canceller).then(function (response) {
+                _.forEach(vm.obox.frozenBoxDTOList,function (box) {
+                    if(box.frozenBoxCode == item.frozenBoxCode){
+                        box.sampleTypeName = response.data[0].sampleTypeName;
+                        box.isRealData = response.data[0].isRealData;
+                        box.countOfSample = response.data[0].countOfSample;
+                        box.isMixed = response.data[0].isMixed;
+                        box.status = response.status;
+                    }
+                });
+            },function (data) {
+                var status = data.status;
+                _.forEach(vm.obox.frozenBoxDTOList,function (box) {
+                    if(box.frozenBoxCode == item.frozenBoxCode){
+                        box.status = status;
+                    }
+                });
+            })
+        }
+        //中止导入数据
+        function _fnStop() {
+            if (canceller){
+                canceller.resolve();
+            }
+        }
         function _fnInitBoxInfo() {
             for(var i = 0; i < vm.codeList.length; i++){
                 var box = _fnCreateTempBox(vm.codeList[i]);
@@ -286,33 +340,36 @@
         function _fnEditBoxInfo() {
             var tubeList=[];
             for(var i = 0; i < vm.obox.frozenBoxDTOList.length; i++){
-                var boxes = vm.obox.frozenBoxDTOList[i];
-                boxes.sampleTypeId = vm.frozenBox.sampleTypeId;
-                boxes.sampleTypeCode = vm.frozenBox.sampleTypeCode;
-                boxes.frozenBoxTypeId = vm.frozenBox.frozenBoxTypeId;
-                boxes.frozenBoxTypeRows = vm.frozenBox.frozenBoxTypeRows;
-                boxes.frozenBoxTypeColumns = vm.frozenBox.frozenBoxTypeColumns;
-                boxes.equipmentId = vm.frozenBox.equipmentId;
-                boxes.areaId = vm.frozenBox.areaId;
-                boxes.frozenTubeDTOS = [];
+                var box = vm.obox.frozenBoxDTOList[i];
+                box.sampleTypeId = vm.frozenBox.sampleTypeId;
+                box.sampleTypeCode = vm.frozenBox.sampleTypeCode;
+                box.sampleClassificationId = vm.frozenBox.sampleClassificationId;
+                box.sampleClassificationCode = vm.frozenBox.sampleClassificationCode;
+                box.frozenBoxTypeId = vm.frozenBox.frozenBoxTypeId;
+                box.frozenBoxTypeRows = vm.frozenBox.frozenBoxTypeRows;
+                box.frozenBoxTypeColumns = vm.frozenBox.frozenBoxTypeColumns;
+                box.equipmentId = vm.frozenBox.equipmentId;
+                box.areaId = vm.frozenBox.areaId;
+                box.isMixed = vm.isMixed;
+                box.frozenTubeDTOS = [];
                 for(var j = 0; j < vm.frozenBox.frozenBoxTypeRows;j++){
                     tubeList[j] = [];
                     var rowNO = j > 7 ? j+1 : j;
                     rowNO = String.fromCharCode(rowNO+65);
                     for(var k = 0; k < vm.frozenBox.frozenBoxTypeColumns; k++){
                         tubeList[j][k] = {
-                            frozenBoxCode: boxes.frozenBoxCode,
+                            frozenBoxCode: box.frozenBoxCode,
                             sampleCode: "",
-                            sampleTempCode: boxes.frozenBoxCode+"-"+rowNO+(k+1),
-                            sampleTypeId: boxes.sampleTypeId,
-                            sampleTypeCode: boxes.sampleTypeCode,
-                            sampleClassificationId:boxes.sampleClassificationId,
-                            sampleClassificationCode:boxes.sampleClassificationCode,
+                            sampleTempCode: box.frozenBoxCode+"-"+rowNO+(k+1),
+                            sampleTypeId: box.sampleTypeId,
+                            sampleTypeCode: box.sampleTypeCode,
+                            sampleClassificationId:box.sampleClassificationId,
+                            sampleClassificationCode:box.sampleClassificationCode,
                             status: "3001",
                             tubeRows:rowNO,
                             tubeColumns: k+1
                         };
-                        if(boxes.isMixed == 1) {
+                        if(box.isMixed == 1) {
                             for (var l = 0; l < vm.projectSampleTypeOptions.length; l++) {
                                 if (vm.projectSampleTypeOptions[l].columnsNumber == k + 1) {
                                     tubeList[j][k].sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
@@ -320,21 +377,19 @@
                                 }
                             }
                         }
-
-                        boxes.frozenTubeDTOS.push(tubeList[j][k]);
+                        box.frozenTubeDTOS.push(tubeList[j][k]);
 
                     }
                 }
+                //是混合类型
+                if(box.isMixed == 1 || box.sampleTypeCode == 'RNA'){
+                    box.isSplit = 1;
+                    delete box.sampleClassificationId;
+                }else{
+                    box.isSplit = 0;
+                }
             }
-            console.log(JSON.stringify(vm.obox.frozenBoxDTOList));
         }
-
-        function _fnStop() {
-            vm.progressFlag = false;
-        }
-
-
-
 
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
@@ -347,6 +402,7 @@
             blockUI.start("正在保存冻存盒中……");
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
         };
+
         function onEquipmentTempSuccess(data) {
             vm.frozenBoxPlaceOptions = data;
             // vm.frozenBox.equipmentId = vm.frozenBoxPlaceOptions[0].id;
@@ -382,7 +438,7 @@
     function ProgressBarModalController($uibModalInstance,$uibModal) {
         var vm = this;
         vm.stop = function () {
-            $uibModalInstance.close(true);
+            $uibModalInstance.close();
         };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

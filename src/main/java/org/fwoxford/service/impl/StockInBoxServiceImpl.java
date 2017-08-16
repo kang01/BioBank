@@ -873,7 +873,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             //取原冻存管的患者信息
             StockInTubeDTO frozenTubeDTOForSave = new StockInTubeDTO();
             StockInTube stockInTube = null;
-            String tubeflag = tubeDTO.getFlag();//盒内新增
+            String tubeflag = tubeDTO.getFlag();
             if(tubeflag.equals(Constants.FROZEN_FLAG_2)){//原盒原库存
                 continue;
             }
@@ -913,7 +913,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenTubeDTOForSave.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             frozenTubeDTOForSave.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
             stockInTube = stockInTubeMapper.stockInTubeDTOToStockInTube(frozenTubeDTOForSave);
-            if(tubeDTO.getFrozenTubeId()==null){//没有冻存管ID为新增的冻存管
+
+            if(tubeflag.equals(Constants.FROZEN_FLAG_3)){//盒内新增样本可以编辑样本本身和入库冻存管
                 FrozenTube tube= createNewFrozenTube(frozenTubeDTOForSave,frozenBox);
                 stockInTube = new StockInTube();
                 stockInTube.status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
@@ -929,6 +930,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                     .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
                     .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
                     .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
+                stockInTube.setId(frozenTubeDTOForSave.getId());
             }
             stockInTubes.add(stockInTube);
             //保存入库样本表
@@ -961,6 +963,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             .sampleClassification(frozenTubeMapper.sampleClassificationFromId(frozenTubeDTOForSave.getSampleClassificationId()))
             .project(frozenTubeMapper.projectFromId(frozenTubeDTOForSave.getProjectId()))
             .projectSite(frozenTubeMapper.projectSiteFromId(frozenTubeDTOForSave.getProjectSiteId())).frozenBox(frozenBox).frozenTubeState(Constants.FROZEN_BOX_STOCKING);
+        tube.setId(frozenTubeDTOForSave.getFrozenTubeId());
         frozenTubeRepository.save(tube);
         return tube;
     }

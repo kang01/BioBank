@@ -69,7 +69,7 @@ public class ExcelUtils {
                     }
                     switch(cell.getCellType()){
                         case XSSFCell.CELL_TYPE_STRING:
-                            System.out.println(i + "行" + j + " 列 is String type");
+//                            System.out.println(i + "行" + j + " 列 is String type");
                             value = cell.getStringCellValue();
                             break;
                         case XSSFCell.CELL_TYPE_NUMERIC:
@@ -82,20 +82,20 @@ public class ExcelUtils {
                                 value = sdf.format(HSSFDateUtil.getJavaDate(cell
                                     .getNumericCellValue()));
                             }
-                            System.out.println(i + "行" + j
-                                + " 列 is Number type ; DateFormt:"
-                                + value.toString());
+//                            System.out.println(i + "行" + j
+//                                + " 列 is Number type ; DateFormt:"
+//                                + value.toString());
                             break;
                         case XSSFCell.CELL_TYPE_BOOLEAN:
-                            System.out.println(i + "行" + j + " 列 is Boolean type");
+//                            System.out.println(i + "行" + j + " 列 is Boolean type");
                             value = Boolean.valueOf(cell.getBooleanCellValue());
                             break;
                         case XSSFCell.CELL_TYPE_BLANK:
-                            System.out.println(i + "行" + j + " 列 is Blank type");
+//                            System.out.println(i + "行" + j + " 列 is Blank type");
                             value = "";
                             break;
                         default:
-                            System.out.println(i + "行" + j + " 列 is default type");
+//                            System.out.println(i + "行" + j + " 列 is default type");
                             value = cell.toString();
                     }// end switch
                     colList.add(value);
@@ -141,7 +141,7 @@ public class ExcelUtils {
                     }
                     switch(cell.getCellType()){
                         case XSSFCell.CELL_TYPE_STRING:
-                            System.out.println(i + "行" + j + " 列 is String type");
+//                            System.out.println(i + "行" + j + " 列 is String type");
                             value = cell.getStringCellValue();
                             break;
                         case XSSFCell.CELL_TYPE_NUMERIC:
@@ -154,20 +154,20 @@ public class ExcelUtils {
                                 value = sdf.format(HSSFDateUtil.getJavaDate(cell
                                     .getNumericCellValue()));
                             }
-                            System.out.println(i + "行" + j
-                                + " 列 is Number type ; DateFormt:"
-                                + value.toString());
+//                            System.out.println(i + "行" + j
+//                                + " 列 is Number type ; DateFormt:"
+//                                + value.toString());
                             break;
                         case XSSFCell.CELL_TYPE_BOOLEAN:
-                            System.out.println(i + "行" + j + " 列 is Boolean type");
+//                            System.out.println(i + "行" + j + " 列 is Boolean type");
                             value = Boolean.valueOf(cell.getBooleanCellValue());
                             break;
                         case XSSFCell.CELL_TYPE_BLANK:
-                            System.out.println(i + "行" + j + " 列 is Blank type");
+//                            System.out.println(i + "行" + j + " 列 is Blank type");
                             value = "";
                             break;
                         default:
-                            System.out.println(i + "行" + j + " 列 is default type");
+//                            System.out.println(i + "行" + j + " 列 is default type");
                             value = cell.toString();
                     }// end switch
                     colList.add(value);

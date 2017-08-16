@@ -165,10 +165,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
      * 创建项目点
      * @throws Exception
      */
-    /**
-     * 创建项目点
-     * @throws Exception
-     */
     @Test
     public void createProjectSite() throws Exception {
         Connection con = null;// 创建一个数据库连接
@@ -504,8 +500,8 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             }
         }
     }
-
-    private void createEquipmentForFOMA907() {
+    @Test
+    public void createEquipmentForFOMA907() {
         String[] equipmentCodeStr = new String[]{"F1-03","F1-04"};
         for(String equipmentCode:equipmentCodeStr){
             Equipment entity = equipmentRepository.findOneByEquipmentCode(equipmentCode);
@@ -545,8 +541,8 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             }
         }
     }
-
-    private void createEquipmentForColdRoom3() {
+    @Test
+    public void createEquipmentForColdRoom3() {
         String[] equipmentCodeStr = new String[]{"R4-03"};
         for(String equipmentCode:equipmentCodeStr){
             Equipment entity = equipmentRepository.findOneByEquipmentCode(equipmentCode);
@@ -672,8 +668,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             assertThat(sampleType6).isNotNull();
         }
     }
-    @Autowired
-    private SerialNoRepository serialNoRepository;
     /**
      * 导入冻存盒
      * @throws Exception
@@ -827,8 +821,8 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 if(projectSampleClass == null){
                     projectSampleClass = new ProjectSampleClass()
                         .project(project).projectCode("0037")
-                        .sampleClassification(projectSampleClassMapper.sampleClassificationFromId(sampleClassification.getId()))
-                        .sampleType(projectSampleClassMapper.sampleTypeFromId(sampleType.getId()))
+                        .sampleClassification(sampleClassification)
+                        .sampleType(sampleType).sampleClassificationCode(sampleClassification.getSampleClassificationCode()).sampleClassificationName(sampleClassification.getSampleClassificationName())
                         .columnsNumber("")
                         .status("0001");
                     projectSampleClassRepository.saveAndFlush(projectSampleClass);
@@ -917,17 +911,18 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             assertThat(frozenBox).isNotNull();
 
             //保存入库盒
-            StockInBox stockInBox = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockIn.getStockInCode(),key);
-            if(stockInBox == null){
-                 stockInBox = new StockInBox()
+            List<StockInBox> stockInBoxList = stockInBoxRepository.findByFrozenBoxCode(key);
+            StockInBox stockInBox = new StockInBox();
+            if(stockInBoxList == null || stockInBoxList.size()==0){
+                    stockInBox = new StockInBox()
                     .equipmentCode(equipmentCode)
                     .areaCode(areaCode)
                     .supportRackCode(supportCode)
                     .rowsInShelf(rowsInShelf)
                     .columnsInShelf(columnsInShelf)
                     .status(Constants.FROZEN_BOX_STOCKED).countOfSample(sampleList.size())
-                    .frozenBoxCode(key).frozenBox(frozenBox).stockIn(stockIn).stockInCode(stockInCodeNew).area(area).equipment(entity).supportRack(supportRack);
-                stockInBox.sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
+                    .frozenBoxCode(key).frozenBox(frozenBox).stockIn(stockIn).stockInCode(stockInCodeNew).area(area).equipment(entity).supportRack(supportRack)
+                    .sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
                     .sampleClassification(frozenBox.getSampleClassification())
                     .sampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null)
                     .sampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null)
@@ -938,16 +933,21 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                     .projectSiteName(frozenBox.getProjectSiteName());
                 stockInBoxRepository.saveAndFlush(stockInBox);
                 assertThat(stockInBox).isNotNull();
+            }else{
+                stockInBox = stockInBoxList.get(0);
             }
             //保存入库盒子位置
-            StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
-            stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_COMPLETE).memo(stockInBox.getMemo())
-                .equipment(stockInBox.getEquipment()).equipmentCode(stockInBox.getEquipmentCode())
-                .area(stockInBox.getArea()).areaCode(stockInBox.getAreaCode())
-                .supportRack(stockInBox.getSupportRack()).supportRackCode(stockInBox.getSupportRackCode())
-                .columnsInShelf(stockInBox.getColumnsInShelf()).rowsInShelf(stockInBox.getRowsInShelf())
-                .stockInBox(stockInBox);
-            stockInBoxPositionRepository.saveAndFlush(stockInBoxPosition);assertThat(stockInBoxPosition).isNotNull();
+            List<StockInBoxPosition> stockInBoxPositionList = stockInBoxPositionRepository.findByStockInBoxIdAndStatus(stockInBox.getId(),Constants.STOCK_IN_BOX_POSITION_COMPLETE);
+            if(stockInBoxPositionList==null || stockInBoxPositionList.size()==0){
+                StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
+                stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_COMPLETE).memo(stockInBox.getMemo())
+                    .equipment(stockInBox.getEquipment()).equipmentCode(stockInBox.getEquipmentCode())
+                    .area(stockInBox.getArea()).areaCode(stockInBox.getAreaCode())
+                    .supportRack(stockInBox.getSupportRack()).supportRackCode(stockInBox.getSupportRackCode())
+                    .columnsInShelf(stockInBox.getColumnsInShelf()).rowsInShelf(stockInBox.getRowsInShelf())
+                    .stockInBox(stockInBox);
+                stockInBoxPositionRepository.saveAndFlush(stockInBoxPosition);assertThat(stockInBoxPosition).isNotNull();
+            }
             //保存入库管子
             for(int i = 0 ; i<sampleList.size();i++){
                 if(sampleList.get(i).get("SAMPLE_CODE") ==null){
@@ -987,11 +987,20 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
 
                     StockInTube stockInTube = stockInTubeRepository.findByFrozenTubeId(tube.getId());
                     if(stockInTube == null){
-                        stockInTube = new StockInTube().status(tube.getStatus())
-                            .memo(memo)
-                            .frozenTube(tube)
-                            .tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
-                            .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox);
+                        stockInTube = new StockInTube()
+                            .status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
+                            .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox).errorType(tube.getErrorType())
+                            .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(tube.getFrozenTubeState())
+                            .frozenTubeType(tube.getFrozenTubeType()).frozenTubeTypeCode(tube.getFrozenTubeTypeCode())
+                            .frozenTubeTypeName(tube.getFrozenTubeTypeName()).frozenTubeVolumns(tube.getFrozenTubeVolumns())
+                            .frozenTubeVolumnsUnit(tube.getFrozenTubeVolumnsUnit()).sampleVolumns(tube.getSampleVolumns())
+                            .project(tube.getProject()).projectCode(tube.getProjectCode()).projectSite(tube.getProjectSite())
+                            .projectSiteCode(tube.getProjectSiteCode()).sampleClassification(tube.getSampleClassification())
+                            .sampleClassificationCode(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationCode():null)
+                            .sampleClassificationName(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationName():null)
+                            .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
+                            .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
+                            .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
                         stockInTubeRepository.saveAndFlush(stockInTube);assertThat(stockInTube).isNotNull();
                     }
                 }
@@ -1030,8 +1039,8 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType8.getId(),s.getId());;
             String columnNumber = Constants.COLUMNNUMBER_MAP.get(s.getSampleClassificationCode());
             if(projectSampleClass == null){
-                projectSampleClass
-                    .project(project).projectCode(project.getProjectCode())
+                projectSampleClass = new ProjectSampleClass()
+                    .project(project).projectCode(project.getProjectCode()).sampleType(sampleType8)
                     .columnsNumber(columnNumber).sampleClassificationCode(s.getSampleClassificationCode()).sampleClassificationName(s.getSampleClassificationName())
                     .status("0001");
                 projectSampleClassRepository.saveAndFlush(projectSampleClass);
@@ -1087,8 +1096,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
 
 
     @Test
-    public  void createPositionInShelf()
-    {
+    public  void createPositionInShelf(){
         String[] b=new String[]{"A","B","C","D","E"};  //定义数组b
         boolean flag = false;
         for(int j = 0;j<b.length;j++){
@@ -1267,13 +1275,13 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         this.createFrozenBoxForA02("HE_COL_10","E",dcgTube);
         this.createFrozenBoxForA02("HE_COL_11_RNA","RNA",rnaTube);
         this.createSampleTypeMix();
-//        this.createSampleTypeAndClassFor0038();// 需要在这里执行时去掉方法上的@Test
+        this.importLocationForProjectSite();
+        this.createSampleTypeAndClassFor0038();
 //        this.createSampleTypeAndClassFor0029();// 需要在这里执行时去掉方法上的@Test
     }
 
     private void createSampleTypeAndClassFor0029() {
     }
-
     @Test
     public void createSampleTypeAndClassFor0038() {
         Project project = projectRepository.findByProjectCode("0038");

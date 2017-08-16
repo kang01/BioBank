@@ -333,7 +333,7 @@ public class FrozenBoxResource {
     @RequestMapping(value = "/tranship-boxes/frozenBoxCode/upload",method = RequestMethod.POST)
     @Timed
     public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> saveAndUploadStockOutRequirement(
-                                                                                        @RequestParam(value = "file",required = false) MultipartFile file,
+                                                                                        @RequestParam(value = "file") MultipartFile file,
                                                                                         HttpServletRequest request) throws URISyntaxException {
         log.debug("REST request to save FrozenBoxAndFrozenTubeResponse : {}");
         List<FrozenBoxAndFrozenTubeResponse> result = frozenBoxService.saveAndUploadFrozenBoxAndTube(file,request);

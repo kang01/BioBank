@@ -57,6 +57,10 @@
                             <!--{{vm.sampleTypeOptions}}-->
                             <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
                                        ng-model="vm.obox.sampleTypeId"  ng-disabled="vm.editFlag"></selectize>
+                            <label class="checkbox-inline pb-10">
+                                <input type="checkbox" ng-model="vm.obox.isSplit"
+                                       ng-true-value="1" ng-false-value="0">是否分装
+                            </label>
                         </div>
                         <div class="form-group">
                             <label>样本分类</label>

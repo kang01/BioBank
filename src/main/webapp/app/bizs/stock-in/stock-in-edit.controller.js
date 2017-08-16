@@ -689,6 +689,7 @@
                 templateUrl: 'app/bizs/stock-in/box-putaway-modal.html',
                 controller: 'BoxPutAwayModalController',
                 controllerAs:'vm',
+                backdrop:'static',
                 // size:'lg',
                 size:'90',
                 resolve: {
@@ -716,7 +717,8 @@
                 animation: true,
                 templateUrl: 'app/bizs/stock-in/rescind-putaway-modal.html',
                 controller: 'RescindPutAwayModalController',
-                controllerAs:'vm'
+                controllerAs:'vm',
+                backdrop:'static'
             });
             modalInstance.result.then(function (data) {
                 RescindPutAwayService.rescindPutAway(vm.entity.stockInCode,boxCode).then(function (data) {
@@ -754,6 +756,7 @@
                 templateUrl: 'app/bizs/stock-in/stock-in-info-modal.html',
                 controller: 'StockInInfoModalController',
                 controllerAs:'vm',
+                backdrop:'static',
                 resolve: {
                     items: function () {
                         return {
@@ -1263,7 +1266,8 @@
                     animation: true,
                     templateUrl: 'app/bizs/stock-in/stock-in-splittingBox-message-modal.html',
                     controller: 'SplittingBoxMessageController',
-                    controllerAs:'vm'
+                    controllerAs:'vm',
+                    backdrop:'static'
                 });
                 return;
             }
@@ -1408,6 +1412,7 @@
                 templateUrl: 'app/bizs/stock-in/stock-in-close-splittingBox-modal.html',
                 controller: 'CloseSplittingBoxController',
                 controllerAs:'vm',
+                backdrop:'static',
                 size:'sm',
                 resolve: {
                     items: function () {
@@ -1452,6 +1457,7 @@
                 controller: 'AddBoxModalController',
                 controllerAs:'vm',
                 size:'lg',
+                backdrop:'static',
                 resolve: {
                     items: function () {
                         return {

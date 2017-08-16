@@ -21,7 +21,7 @@
         vm.codeList = [];//扫码录入的盒号
         vm.obox = {
             transhipId:vm.items.transhipId,
-            frozenBoxDTOList:[]
+            frozenBoxDTOList:[],
         };
         //删除盒子
         vm.delBox = _fnDelBox;
@@ -56,11 +56,8 @@
                 vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
                 vm.frozenBox.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
                 vm.frozenBox.sampleTypeId = value;
-                if(vm.frozenBox.sampleTypeCode == 'RNA'){
-                    vm.box.isSplit = 1;
-                }
-                _fnEditBoxInfo();
                 _fnQueryProjectSampleClass(vm.items.projectId,value,vm.isMixed);
+
 
             }
         };
@@ -135,9 +132,7 @@
                 }else{
                     vm.sampleTypeFlag = false;
                 }
-                // _fnInitBoxInfo();
-
-
+                _fnEditBoxInfo();
             });
         }
 
@@ -175,7 +170,7 @@
                     if ($scope.$digest()){
                         $scope.$apply();
                     }
-                },500);
+                },300);
             },
             onItemRemove:function (value) {
                 _.remove(vm.obox.frozenBoxDTOList,{frozenBoxCode:value});
@@ -286,33 +281,36 @@
         function _fnEditBoxInfo() {
             var tubeList=[];
             for(var i = 0; i < vm.obox.frozenBoxDTOList.length; i++){
-                var boxes = vm.obox.frozenBoxDTOList[i];
-                boxes.sampleTypeId = vm.frozenBox.sampleTypeId;
-                boxes.sampleTypeCode = vm.frozenBox.sampleTypeCode;
-                boxes.frozenBoxTypeId = vm.frozenBox.frozenBoxTypeId;
-                boxes.frozenBoxTypeRows = vm.frozenBox.frozenBoxTypeRows;
-                boxes.frozenBoxTypeColumns = vm.frozenBox.frozenBoxTypeColumns;
-                boxes.equipmentId = vm.frozenBox.equipmentId;
-                boxes.areaId = vm.frozenBox.areaId;
-                boxes.frozenTubeDTOS = [];
+                var box = vm.obox.frozenBoxDTOList[i];
+                box.sampleTypeId = vm.frozenBox.sampleTypeId;
+                box.sampleTypeCode = vm.frozenBox.sampleTypeCode;
+                box.sampleClassificationId = vm.frozenBox.sampleClassificationId;
+                box.sampleClassificationCode = vm.frozenBox.sampleClassificationCode;
+                box.frozenBoxTypeId = vm.frozenBox.frozenBoxTypeId;
+                box.frozenBoxTypeRows = vm.frozenBox.frozenBoxTypeRows;
+                box.frozenBoxTypeColumns = vm.frozenBox.frozenBoxTypeColumns;
+                box.equipmentId = vm.frozenBox.equipmentId;
+                box.areaId = vm.frozenBox.areaId;
+                box.isMixed = vm.isMixed;
+                box.frozenTubeDTOS = [];
                 for(var j = 0; j < vm.frozenBox.frozenBoxTypeRows;j++){
                     tubeList[j] = [];
                     var rowNO = j > 7 ? j+1 : j;
                     rowNO = String.fromCharCode(rowNO+65);
                     for(var k = 0; k < vm.frozenBox.frozenBoxTypeColumns; k++){
                         tubeList[j][k] = {
-                            frozenBoxCode: boxes.frozenBoxCode,
+                            frozenBoxCode: box.frozenBoxCode,
                             sampleCode: "",
-                            sampleTempCode: boxes.frozenBoxCode+"-"+rowNO+(k+1),
-                            sampleTypeId: boxes.sampleTypeId,
-                            sampleTypeCode: boxes.sampleTypeCode,
-                            sampleClassificationId:boxes.sampleClassificationId,
-                            sampleClassificationCode:boxes.sampleClassificationCode,
+                            sampleTempCode: box.frozenBoxCode+"-"+rowNO+(k+1),
+                            sampleTypeId: box.sampleTypeId,
+                            sampleTypeCode: box.sampleTypeCode,
+                            sampleClassificationId:box.sampleClassificationId,
+                            sampleClassificationCode:box.sampleClassificationCode,
                             status: "3001",
                             tubeRows:rowNO,
                             tubeColumns: k+1
                         };
-                        if(boxes.isMixed == 1) {
+                        if(box.isMixed == 1) {
                             for (var l = 0; l < vm.projectSampleTypeOptions.length; l++) {
                                 if (vm.projectSampleTypeOptions[l].columnsNumber == k + 1) {
                                     tubeList[j][k].sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
@@ -320,13 +318,18 @@
                                 }
                             }
                         }
-
-                        boxes.frozenTubeDTOS.push(tubeList[j][k]);
+                        box.frozenTubeDTOS.push(tubeList[j][k]);
 
                     }
                 }
+                //是混合类型
+                if(box.isMixed == 1 || box.sampleTypeCode == 'RNA'){
+                    box.isSplit = 1;
+                    delete box.sampleClassificationId;
+                }else{
+                    box.isSplit = 0;
+                }
             }
-            console.log(JSON.stringify(vm.obox.frozenBoxDTOList));
         }
 
         function _fnStop() {

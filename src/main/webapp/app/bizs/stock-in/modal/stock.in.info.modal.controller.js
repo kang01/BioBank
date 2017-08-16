@@ -18,6 +18,15 @@
 
         vm.loginName1 = vm.stockInInfo.storeKeeper1;
         vm.loginName2 = vm.stockInInfo.storeKeeper2;
+        vm.stockInBox = vm.stockInInfo.stockInBox;
+
+        var putInLen = _.filter(vm.stockInBox,{"status":"2006"}).length;
+        //全部已上架
+        if(putInLen == vm.stockInBox.length){
+            vm.allPutInFlag = true;
+        }else{
+            vm.allPutInFlag = false;
+        }
         //接收人
         vm.loginConfig = {
             valueField:'login',
@@ -33,6 +42,12 @@
         function onError(error) {
             toastr.error(error.message);
         }
+        vm.yes = function () {
+            vm.allPutInFlag = true;
+        };
+        vm.no = function () {
+            vm.cancel();
+        };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };

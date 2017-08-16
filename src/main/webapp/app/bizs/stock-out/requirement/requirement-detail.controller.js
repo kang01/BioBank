@@ -366,8 +366,11 @@
         //指定样本编码
         function sampleOperateHtml(data, type, full, meta) {
             var html = '';
-            html =  '<a ng-click="vm.appointDescSample('+full.id+')">'+ full.samples +
+            if(full.samples){
+                html =  '<a ng-click="vm.appointDescSample('+full.id+')">'+ full.samples +
                     '</a>';
+            }
+
             return html;
         }
         //操作

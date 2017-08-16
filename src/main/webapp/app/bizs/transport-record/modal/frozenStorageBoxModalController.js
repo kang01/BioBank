@@ -402,7 +402,7 @@
             blockUI.start("正在保存冻存盒中……");
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
         };
-        
+
         function onEquipmentTempSuccess(data) {
             vm.frozenBoxPlaceOptions = data;
             // vm.frozenBox.equipmentId = vm.frozenBoxPlaceOptions[0].id;

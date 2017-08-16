@@ -49,7 +49,6 @@ public class StockInBoxDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 状态
      */
-    @NotNull
     @Size(max = 20)
     private String status;
     /**

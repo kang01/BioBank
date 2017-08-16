@@ -1,9 +1,12 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
-    <h3 class="modal-title" id="modal-title">入库基本信息填写</h3>
+    <h3 class="modal-title" id="modal-title">入库</h3>
 </div>
 <div class="modal-body" id="modal-body">
-    <form class="form-horizontal">
+    <div ng-if="!vm.allPutInFlag">
+        <h4>有未上架的冻存盒，是否进行拆单？</h4>
+    </div>
+    <form class="form-horizontal" ng-if="vm.allPutInFlag">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -64,6 +67,9 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="!vm.loginName1 || !vm.loginName2 || !vm.password1 || !vm.password2 || !vm.stockInInfo.stockInDate">确定</button>
-    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.yes()" ng-if="!vm.allPutInFlag">是</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.no()"  ng-if="!vm.allPutInFlag">否</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()"  ng-if="vm.allPutInFlag"
+            ng-disabled="!vm.loginName1 || !vm.loginName2 || !vm.password1 || !vm.password2 || !vm.stockInInfo.stockInDate">确定</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()" ng-if="vm.allPutInFlag">取消</button>
 </div>

@@ -736,18 +736,10 @@
             //已上架
             var putInLen = _.filter(vm.stockInBox,{"status":"2006"}).length;
             if(putInLen){
-                vm.stockInflag = true;
+                vm.stockInFlag = true;
             }else{
-                vm.stockInflag = false;
+                vm.stockInFlag = false;
             }
-            // //去除分装的数据
-            // var stockInBox = angular.copy(vm.stockInBox);
-            // _.remove(stockInBox,{"status":"2003"});
-            // if(putInLen == stockInBox.length){
-            //     vm.stockInflag = true;
-            // }else{
-            //     vm.stockInflag = false;
-            // }
         }
 
 
@@ -755,7 +747,7 @@
         vm.saveStockIn = function () {
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/stock-in-info-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/stock-in-info-modal.html',
                 controller: 'StockInInfoModalController',
                 controllerAs:'vm',
                 backdrop:'static',
@@ -766,8 +758,9 @@
                             stockInCode: vm.entity.stockInCode,
                             stockInDate: vm.entity.stockInDate,
                             storeKeeper1: vm.entity.storeKeeper1,
-                            storeKeeper2: vm.entity.storeKeeper2
-                        };
+                            storeKeeper2: vm.entity.storeKeeper2,
+                            stockInBox:vm.stockInBox
+                    };
                     }
                 }
             });

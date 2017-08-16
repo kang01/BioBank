@@ -758,6 +758,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBox = createFrozenBoxBySampleClass(frozenBox,stockInBoxDTO,entity);
             //冻存盒位置验证
             frozenBox = createFrozenBoxByPosition(frozenBox,stockInBoxDTO);
+            frozenBox.setStatus(Constants.FROZEN_BOX_STOCKING);
+            frozenBox.setFrozenBoxCode(stockInBoxDTO.getFrozenBoxCode());
         }else{
             if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_PUT_SHELVES)){
                 throw new BankServiceException("冻存盒已上架，不能执行保存！");
@@ -935,6 +937,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBox.setCountOfSample(countOfStockInTube);
         stockInBoxRepository.save(stockInBox);
         stockInTubeRepository.save(stockInTubes);
+        stockInBoxDTO.setId(stockInBox.getId());
         return stockInBoxDTO;
     }
 

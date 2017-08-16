@@ -42,7 +42,7 @@
         vm.stockInFinish = function () {
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/stock-in-info-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/stock-in-info-modal.html',
                 controller: 'StockInInfoModalController',
                 controllerAs:'vm',
                 resolve: {

@@ -65,6 +65,7 @@
                 }
             };
             vm.statusOptions = MasterData.frozenBoxStatus;
+            vm.statusOptions.push({value:"20022",label:"待分装"})
         }
         function _sampleTypeInit() {
             vm.noSampleClassFlag = false;
@@ -313,6 +314,15 @@
             var stockInBoxArray;
             var dataArray = [];
             var boxArray = [];
+            //待入库无带分装
+            if(searchObj.status == '2002'){
+                searchObj.isSplit = 0;
+            }
+            //待分装
+            if(searchObj.status == '20022'){
+                searchObj.isSplit = 1;
+                searchObj.status = '2002';
+            }
             stockInBoxArray = _.filter(stockInBoxList, searchObj);
             dataArray = _.filter(stockInBoxList, searchObj);
             //模糊搜索冻存盒编码
@@ -346,7 +356,7 @@
             }
 
             dataArray = _.uniq(dataArray);
-            // vm.stockInBox = dataArray;
+
             vm.dtOptions.withOption("data",dataArray).withOption('serverSide',false);
             vm.checked = false;
             vm.selectAll = false;
@@ -355,7 +365,7 @@
                 selected[full.frozenBoxCode] = false;
             });
             vm.selectedDataFlag = true;
-            vm.stockInBox = dataArray;
+            // vm.stockInBox = dataArray;
             _isStockInFinish();
         }
         function _fnEmpty() {

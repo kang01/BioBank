@@ -36,8 +36,6 @@
         vm.initStockInBoxesTable = _initStockInBoxesTable;
         //作废
         vm.cancellation = _fnCancellation;
-
-
         //入库完成
         vm.stockInFinish = function () {
             modalInstance = $uibModal.open({
@@ -49,7 +47,8 @@
                     items: function () {
                         return {
                             id: vm.entity.id,
-                            stockInCode: vm.entity.stockInCode
+                            stockInCode: vm.entity.stockInCode,
+                            stockInBox:vm.stockInBox
                         };
                     }
                 }
@@ -365,12 +364,7 @@
 
             return columns;
         }
-
-        // function _splitABox(code){
-        //     _fnQuerySampleType();
-        //     _fnTubeByBoxCode(code);
-        //
-        // }
+        //上架
         function _putInShelf(boxIds){
             var boxes = [];
             var table = vm.dtInstance.DataTable;
@@ -423,6 +417,7 @@
                 vm.dtInstance.rerender();
             });
         }
+        //撤销上架
         function _rescindInShelf(boxCode) {
             modalInstance = $uibModal.open({
                 animation: true,

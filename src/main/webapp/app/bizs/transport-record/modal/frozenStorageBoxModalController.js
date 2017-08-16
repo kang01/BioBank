@@ -9,10 +9,10 @@
         .controller('FrozenStorageBoxModalController', FrozenStorageBoxModalController)
         .controller('ProgressBarModalController', ProgressBarModalController);
 
-    FrozenStorageBoxModalController.$inject = ['$scope','toastr','$timeout','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService','blockUI','AreasByEquipmentIdService','EquipmentService','SampleTypeService'];
+    FrozenStorageBoxModalController.$inject = ['$scope','$q','toastr','$timeout','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService','blockUI','blockUIConfig','AreasByEquipmentIdService','EquipmentService','SampleTypeService','TransportRecordService'];
     ProgressBarModalController.$inject = ['$uibModalInstance','$uibModal'];
 
-    function FrozenStorageBoxModalController($scope,toastr,$timeout,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService,blockUI,AreasByEquipmentIdService,EquipmentService,SampleTypeService) {
+    function FrozenStorageBoxModalController($scope,$q,toastr,$timeout,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService,blockUI,blockUIConfig,AreasByEquipmentIdService,EquipmentService,SampleTypeService,TransportRecordService) {
 
         var vm = this;
         vm.items = items;
@@ -21,12 +21,14 @@
         vm.codeList = [];//扫码录入的盒号
         vm.obox = {
             transhipId:vm.items.transhipId,
-            frozenBoxDTOList:[],
+            frozenBoxDTOList:[]
         };
         //删除盒子
         vm.delBox = _fnDelBox;
         //导入样本数据
         vm.importSample = _fnImportSample;
+        //导入单条数据
+        vm.reloadImport = _fnReloadImport;
         //停止
         vm.stop = _fnStop;
 
@@ -192,7 +194,8 @@
                 sampleClassificationCode: vm.frozenBox.sampleClassificationCode || undefined,
                 isRepeat:0,
                 frozenTubeDTOS:[],
-                createDate:new Date().getTime()
+                createDate:new Date().getTime(),
+                isRealData:null
             };
             for(var j = 0; j < vm.frozenBox.frozenBoxTypeRows;j++){
                 tubeList[j] = [];
@@ -239,30 +242,86 @@
         }
         //导入数据
         vm.progressFlag = false;
+        var arrayPromise = [];
+        var canceller = null;
         function _fnImportSample() {
-            vm.progressFlag = true;
-            vm.count = 50;
             vm.obj = {
-                width:vm.count+'%'
+                width: 0
             };
-            _fnEditBoxInfo();
-            // setTimeout(function () {
-            //
-            //     console.log(vm.count)
-            //     vm.obj.width = vm.count;
-            // },1000);
-            // modalInstance = $uibModal.open({
-            //     animation: true,
-            //     templateUrl: 'progressBar.html',
-            //     controller: 'ProgressBarModalController',
-            //     backdrop:'static',
-            //     controllerAs: 'vm',
-            //     size:'progress-bar'
-            // });
-            // modalInstance.result.then(function () {
-            // });
-        }
+            vm.progressFlag = true;
+            vm.count = 0;
+            blockUIConfig.autoBlock = false;
+            arrayPromise = [];
+            canceller = $q.defer();
+            _.forEach(vm.codeList,function (code) {
+                var importData = TransportRecordService.importData(code, canceller);
+                arrayPromise.push(
+                    importData.then(function (response) {
+                        _.forEach(vm.obox.frozenBoxDTOList,function (box) {
+                           if(box.frozenBoxCode == code){
+                               box.sampleTypeName = response.data[0].sampleTypeName;
+                               box.isRealData = response.data[0].isRealData;
+                               box.countOfSample = response.data[0].countOfSample;
+                               box.isMixed = response.data[0].isMixed;
+                               box.status = response.status;
+                           }
+                        });
+                    },function (data) {
+                        var status = data.status;
+                        _.forEach(vm.obox.frozenBoxDTOList,function (box) {
+                            if(box.frozenBoxCode == code){
+                                box.status = status;
+                            }
 
+                        });
+                    })
+
+                    .finally(function (data) {
+                        vm.count++;
+                        var percentage = parseInt((vm.count/vm.codeList.length)*100);
+                        vm.obj.width = percentage+'%';
+                        if(vm.obj.width == '100%'){
+                            setTimeout(function () {
+                                vm.progressFlag = false;
+                                blockUIConfig.autoBlock = true;
+                            },500)
+                        }
+                    }).$promise
+                );
+
+            });
+            $q.all(arrayPromise).finally(function(data){
+
+            });
+        }
+        //单个reload导入数据
+        function _fnReloadImport(item) {
+            canceller = $q.defer();
+            TransportRecordService.importData(item.frozenBoxCode,canceller).then(function (response) {
+                _.forEach(vm.obox.frozenBoxDTOList,function (box) {
+                    if(box.frozenBoxCode == item.frozenBoxCode){
+                        box.sampleTypeName = response.data[0].sampleTypeName;
+                        box.isRealData = response.data[0].isRealData;
+                        box.countOfSample = response.data[0].countOfSample;
+                        box.isMixed = response.data[0].isMixed;
+                        box.status = response.status;
+                    }
+                });
+            },function (data) {
+                var status = data.status;
+                _.forEach(vm.obox.frozenBoxDTOList,function (box) {
+                    if(box.frozenBoxCode == item.frozenBoxCode){
+                        box.status = status;
+                    }
+                });
+            })
+        }
+        //中止导入数据
+        function _fnStop() {
+            if (canceller){
+                canceller.resolve();
+            }
+        }
         function _fnInitBoxInfo() {
             for(var i = 0; i < vm.codeList.length; i++){
                 var box = _fnCreateTempBox(vm.codeList[i]);
@@ -332,13 +391,6 @@
             }
         }
 
-        function _fnStop() {
-            vm.progressFlag = false;
-        }
-
-
-
-
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
@@ -350,6 +402,7 @@
             blockUI.start("正在保存冻存盒中……");
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
         };
+        
         function onEquipmentTempSuccess(data) {
             vm.frozenBoxPlaceOptions = data;
             // vm.frozenBox.equipmentId = vm.frozenBoxPlaceOptions[0].id;
@@ -385,7 +438,7 @@
     function ProgressBarModalController($uibModalInstance,$uibModal) {
         var vm = this;
         vm.stop = function () {
-            $uibModalInstance.close(true);
+            $uibModalInstance.close();
         };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

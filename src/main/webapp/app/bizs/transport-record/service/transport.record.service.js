@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .factory('TransportRecordService', TransportRecordService);
 
-    TransportRecordService.$inject = ['$resource', '$http'];
+    TransportRecordService.$inject = ['$resource', '$http','$q'];
 
-    function TransportRecordService ($resource, $http) {
+    function TransportRecordService ($resource, $http,$q) {
         var service = $resource('api/tranships/id/:id', {}, {
             'query': {method: 'GET', isArray: true},
             'get': {
@@ -66,6 +66,13 @@
         };
         service.delTransportRecordFile = function (id) {
             return $http.delete('api/attachments/'+id);
+        };
+        service.importData = function (frozenBoxCodeStr,canceller) {
+            var opt =null;
+            if(canceller){
+                opt = {timeout: canceller.promise};
+            }
+            return $http.get('api/tranship-boxes/frozenBoxCode/'+frozenBoxCodeStr+'/import', opt);
         };
         return service;
     }

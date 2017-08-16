@@ -364,7 +364,9 @@
             vm.dto.sampleTypeCode = "";
             vm.dto.sampleTypeClassName = "";
             vm.dto.sampleTypeClassCode = "";
+            _initStockInBoxesTable();
         }
+
         _initStockInBoxesTable();
 
         function _initStockInBoxesTable(){

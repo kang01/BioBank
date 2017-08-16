@@ -314,7 +314,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }
         List<String> frozenBoxCodes = new ArrayList<>();
         for (FrozenBox box : unSplitedBoxList) {
-             frozenBoxCodes.add(box.getFrozenBoxCode());
+            frozenBoxCodes.add(box.getFrozenBoxCode());
         }
         List<Object[]> map = new ArrayList<>();
         if (unSplitedBoxList.size() > 0) {
@@ -997,6 +997,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                 frozenBoxDTO.setFrozenTubeDTOS(frozenTubeResponses);
                 frozenBoxDTO.setIsRealData(Constants.YES);
                 frozenBoxDTO.setCountOfSample(frozenTubeResponses.size());
+            }else{
+                throw new BankServiceException("导入失败！");
             }
 
         } catch (HttpException e) {

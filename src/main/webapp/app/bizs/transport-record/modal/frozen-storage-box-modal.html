@@ -81,16 +81,19 @@
                 <tbody >
                     <tr ng-repeat="item in vm.obox.frozenBoxDTOList" ng-if="item">
                         <td><span ng-class="{'red-color': item.isRepeat == 1}">{{item.frozenBoxCode}}</span></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
                         <td>
+                            <span ng-if="item.status == 400" class="red-color">导入失败</span>
+                            <span ng-if="item.status == -1">&nbsp;</span>
+                            <span ng-if="item.status == 200">导入成功</span>
                         </td>
+                        <td>{{item.sampleTypeName}}</td>
+                        <td>{{item.countOfSample}}</td>
+                        <td>{{item.isSplit == '1'? '是':'否'}}</td>
                         <td>
                             <button class="btn btn-default btn-xs" ng-click="vm.delBox(item)">
                                 <i class="fa fa-times"></i>
                             </button>
-                            <button class="btn btn-default btn-xs">
+                            <button class="btn btn-default btn-xs" ng-click="vm.reloadImport(item)">
                                 <i class="fa fa-rotate-right"></i>
                             </button>
                         </td>
@@ -141,7 +144,7 @@
             <div class="progress" style="margin: 20px;">
                 <div class="progress-bar" role="progressbar" aria-valuenow="vm.count" aria-valuemin="0"
                      aria-valuemax="100" ng-style="vm.obj">
-                    {{vm.count}}%
+                    {{vm.obj.width}}
                 </div>
 
             </div>

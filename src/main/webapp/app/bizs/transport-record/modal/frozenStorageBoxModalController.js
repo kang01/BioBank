@@ -27,6 +27,8 @@
         vm.delBox = _fnDelBox;
         //导入样本数据
         vm.importSample = _fnImportSample;
+        //上传样本数据
+        vm.uploadSample = _fnUploadSample;
         //导入单条数据
         vm.reloadImport = _fnReloadImport;
         //停止
@@ -240,11 +242,22 @@
             _.pull(vm.arrayBoxCode,item.frozenBoxCode);
             vm.boxCodeSelectize.removeOption(item.frozenBoxCode);
         }
+        //上传
+        function _fnUploadSample() {
+            TransportRecordService.uploadBox(vm.file).success(function (data) {
+                console.log(JSON.stringify(data));
+            }).error(function (data) {
+
+            })
+        }
         //导入数据
         vm.progressFlag = false;
         var arrayPromise = [];
         var canceller = null;
         function _fnImportSample() {
+            if(!vm.obox.frozenBoxDTOList.length){
+                return;
+            }
             vm.obj = {
                 width: 0
             };

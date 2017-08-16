@@ -56,7 +56,17 @@
             </div>
         </div>
         <div class="col-md-2 pull-right text-right">
-            <button class="btn btn-default" ng-click="vm.importSample()">导入样本数据</button>
+            <!--<input id="lefile" type="file" ng-file-select="vm.uploadSample($file)" ng-model="vm.file"-->
+                   <!--accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"-->
+            <!--&gt;-->
+            <!--<a class="btn btn-default" onclick="$('input[id=lefile]').click();">上传样本</a>-->
+
+            <div class="btn btn-default"  ng-model="vm.file" name="file" ngf-select="vm.uploadSample()"
+                 ngf-accept="'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel'"
+            >上传样本</div>
+
+
+            <button class="btn btn-default" ng-click="vm.importSample()">导入样本</button>
         </div>
     </div>
     <div class="row">

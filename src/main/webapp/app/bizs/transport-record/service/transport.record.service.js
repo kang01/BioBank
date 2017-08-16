@@ -74,6 +74,11 @@
             }
             return $http.get('api/tranship-boxes/frozenBoxCode/'+frozenBoxCodeStr+'/import', opt);
         };
+        service.uploadBox = function (file) {
+            var fb = new FormData();
+            fb.append('file',file);
+            return $http.post('api/tranship-boxes/frozenBoxCode/upload',fb);
+        };
         return service;
     }
 })();

@@ -417,7 +417,7 @@
 
 
 
-            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC", 200, 10)
+            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC", 320, 10)
                 // 设置Tool button
                 .withButtons([
                     {
@@ -638,7 +638,6 @@
         vm.editFlag = false;
         //编辑
         function _editBox(stockInBoxId) {
-
             vm.box = {};
             vm.splittingBox = false;
             StockInInputService.queryEditStockInBox(stockInBoxId).success(function (data) {
@@ -646,6 +645,9 @@
                 vm.editFlag = true;
                 vm.showFlag = true;
                 vm.dtInstance.rerender();
+                setTimeout(function () {
+                    document.body.scrollTop = document.body.scrollHeight  - window.innerHeight - 30;
+                },300);
             }).error(function (data) {
                 toastr.error(data.message);
             });
@@ -1247,10 +1249,12 @@
             //初始100个管子或者80个管子
             for(var i = 0; i < rowCount; i++){
                 tempTubeArray[i] = [];
+                var rowNO = i > 7 ? i+1 : i;
+                rowNO = String.fromCharCode(rowNO+65);
                 for(var j = 0;j < colCount; j++){
                     tempTubeArray[i][j] = {
                         tubeColumns: j+1,
-                        tubeRows: String.fromCharCode(i+65),
+                        tubeRows: rowNO,
                         frozenBoxCode:'',
                         selectTubeCode:vm.obox.frozenBoxCode
                     };

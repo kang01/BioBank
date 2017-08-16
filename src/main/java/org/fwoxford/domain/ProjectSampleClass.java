@@ -182,4 +182,36 @@ public class ProjectSampleClass extends AbstractAuditingEntity implements Serial
             ", columnsNumber='" + columnsNumber + "'" +
             '}';
     }
+
+    @Size(max = 255)
+    @Column(name = "sample_classification_name", length = 255, nullable = false)
+    private String sampleClassificationName;
+
+    @Size(max = 100)
+    @Column(name = "sample_classification_code", length = 100, nullable = false)
+    private String sampleClassificationCode;
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+
+    public ProjectSampleClass sampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+        return this;
+    }
+
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+    public ProjectSampleClass sampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+        return this;
+    }
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+    }
 }

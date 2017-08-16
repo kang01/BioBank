@@ -248,6 +248,18 @@ public final class Constants {
         put("10","10");
         put("11","");
     }};
+    public static final Map<String,String> SAMPLECLASS_MAP = new HashMap<String,String>(){{
+        put("1","01");
+        put("2","02");
+        put("3","03");
+        put("4","04");
+        put("5","05");
+        put("6","06");
+        put("7","07");
+        put("8","08");
+        put("9","09");
+        put("10","10");
+    }};
     public static final Map<String,String> SAMPLE_TYPE_MAP = new HashMap<String,String>(){{
         put("01","EDTA抗凝血浆1");
         put("02","EDTA抗凝血浆2");

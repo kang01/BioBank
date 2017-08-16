@@ -610,7 +610,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         FrozenBoxType frozenBoxType1 = frozenBoxTypeRepository.findByFrozenBoxTypeCode("DJH");
         if(frozenBoxType1 == null){
             frozenBoxType1 = new FrozenBoxType().frozenBoxTypeCode("DJH")
-                .frozenBoxTypeName("大橘盒(10*10)").frozenBoxTypeColumns("10").frozenBoxTypeRows("10").status("DJH");
+                .frozenBoxTypeName("大橘盒(10*10)").frozenBoxTypeColumns("10").frozenBoxTypeRows("10").status("0001");
             frozenBoxTypeRepository.saveAndFlush(frozenBoxType1);
         }
         //冻存盒类型
@@ -1006,7 +1006,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         }
         return map;
     }
-    @Test
     public void createSampleTypeMix() throws Exception {
         Project project = projectRepository.findByProjectCode("0037");
         SampleType sampleType7 = sampleTypeRepository.findBySampleTypeCode("98");
@@ -1031,11 +1030,9 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType8.getId(),s.getId());;
             String columnNumber = Constants.COLUMNNUMBER_MAP.get(s.getSampleClassificationCode());
             if(projectSampleClass == null){
-                projectSampleClass = new ProjectSampleClass()
+                projectSampleClass
                     .project(project).projectCode(project.getProjectCode())
-                    .sampleClassification(s)
-                    .sampleType(sampleType8)
-                    .columnsNumber(columnNumber)
+                    .columnsNumber(columnNumber).sampleClassificationCode(s.getSampleClassificationCode()).sampleClassificationName(s.getSampleClassificationName())
                     .status("0001");
                 projectSampleClassRepository.saveAndFlush(projectSampleClass);
                 assertThat(projectSampleClass).isNotNull();
@@ -1171,39 +1168,6 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             projectSiteRepository.saveAndFlush(p);
         }
     }
-    @Test
-    public void main() throws Exception {
-        this.createProject();
-        this.createProjectSite();
-        this.createProjectSiteForPeace3();
-        this.createSupportRackType();
-        this.createEquipmentGroup();
-        this.createEquipmentModel();
-        this.createEquipment();
-        this.createEquipmentForFOMA907();
-        this.createEquipmentForColdRoom3();
-        this.createFrozenTubeType();
-        this.createFrozenBoxType();
-        this.createSampleType();
-        FrozenTubeType rnaTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("RNA");
-        FrozenTubeType dcgTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("DCG");
-        if(rnaTube == null || dcgTube == null){
-            throw new BankServiceException("冻存管类型导入失败！");
-        }
-        this.createFrozenBoxForA02("HE_COL_01","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_02","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_03","W",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_04","R",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_05","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_06","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_07","F",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_08","F",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_09","E",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_10","E",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_11_RNA","RNA",rnaTube);
-        this.createSampleTypeMix();
-
-    }
     public static void randomSet(int min, int max, int n, HashSet<Integer> set) {
         if (n > (max - min + 1) || max < min) {
             return;
@@ -1258,11 +1222,123 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
 
     @Test
     public  void test() {
-        int i=1;
-        int j=2;
-        char c1=(char) (i+64);
-        char c2=(char) (j+64);
-        System.out.println(c1);
-        System.out.println(c2);
+//        int i=1;
+//        int j=2;
+//        char c1=(char) (i+64);
+//        char c2=(char) (j+64);
+//        System.out.println(c1);
+//        System.out.println(c2);
+        String c1="A";
+        String c2="B";
+        int i= c1.toCharArray()[0]-64;
+        int j = c2.toCharArray()[0]-64;
+        System.out.println(i);
+        System.out.println(j);
+    }
+
+    @Test
+    public void main() throws Exception {
+        this.createProject();
+        this.createProjectSite();//peace5项目点
+        this.createProjectSiteForPeace3();
+        this.createSupportRackType();
+        this.createEquipmentGroup();
+        this.createEquipmentModel();
+        this.createEquipment();
+        this.createEquipmentForFOMA907();
+        this.createEquipmentForColdRoom3();
+        this.createFrozenTubeType();
+        this.createFrozenBoxType();
+        this.createSampleType();
+        FrozenTubeType rnaTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("RNA");
+        FrozenTubeType dcgTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("DCG");
+        if(rnaTube == null || dcgTube == null){
+            throw new BankServiceException("冻存管类型导入失败！");
+        }
+        this.createFrozenBoxForA02("HE_COL_01","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_02","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_03","W",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_04","R",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_05","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_06","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_07","F",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_08","F",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_09","E",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_10","E",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_11_RNA","RNA",rnaTube);
+        this.createSampleTypeMix();
+//        this.createSampleTypeAndClassFor0038();// 需要在这里执行时去掉方法上的@Test
+//        this.createSampleTypeAndClassFor0029();// 需要在这里执行时去掉方法上的@Test
+    }
+
+    private void createSampleTypeAndClassFor0029() {
+    }
+
+    @Test
+    public void createSampleTypeAndClassFor0038() {
+        Project project = projectRepository.findByProjectCode("0038");
+        if(project == null){
+            throw new BankServiceException("项目查询失败！");
+        }
+        SampleType sampleType_A = sampleTypeRepository.findBySampleTypeCode("A");
+        SampleType sampleType_R = sampleTypeRepository.findBySampleTypeCode("R");
+        SampleType sampleType_E = sampleTypeRepository.findBySampleTypeCode("E");
+        SampleType sampleType_W = sampleTypeRepository.findBySampleTypeCode("W");
+        SampleClassification sampleClassification08W = sampleClassificationRepository.findBySampleClassificationCode("08");
+        if(sampleClassification08W == null){
+
+        }
+        ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType_W.getId(),sampleClassification08W.getId());
+        if(projectSampleClass == null){
+            projectSampleClass = new ProjectSampleClass()
+                .project(project).projectCode(project.getProjectCode())
+                .sampleClassification(sampleClassification08W)
+                .sampleType(sampleType_W)
+                .columnsNumber(null).sampleClassificationCode("08").sampleClassificationName("EDTA抗凝白细胞")
+                .status("0001");
+            projectSampleClassRepository.saveAndFlush(projectSampleClass);
+        }
+        SampleClassification sampleClassification05E = sampleClassificationRepository.findBySampleClassificationCode("05");
+        if(sampleClassification05E == null){
+
+        }
+        ProjectSampleClass projectSampleClass_E = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType_E.getId(),sampleClassification05E.getId());
+        if(projectSampleClass_E == null){
+            projectSampleClass_E = new ProjectSampleClass()
+                .project(project).projectCode(project.getProjectCode())
+                .sampleClassification(sampleClassification05E)
+                .sampleType(sampleType_E)
+                .columnsNumber(null).sampleClassificationCode("05").sampleClassificationName("尿")
+                .status("0001");
+            projectSampleClassRepository.saveAndFlush(projectSampleClass_E);
+        }
+        SampleClassification sampleClassification09R = sampleClassificationRepository.findBySampleClassificationCode("09");
+        if(sampleClassification09R == null){
+
+        }
+        ProjectSampleClass projectSampleClass_R = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType_R.getId(),sampleClassification09R.getId());
+        if(projectSampleClass_R == null){
+            projectSampleClass_R = new ProjectSampleClass()
+                .project(project).projectCode(project.getProjectCode())
+                .sampleClassification(sampleClassification09R)
+                .sampleType(sampleType_R)
+                .columnsNumber(null).sampleClassificationCode("09").sampleClassificationName("红细胞")
+                .status("0001");
+            projectSampleClassRepository.saveAndFlush(projectSampleClass_R);
+        }
+        SampleClassification sampleClassification01A = sampleClassificationRepository.findBySampleClassificationCode("01");
+        if(sampleClassification01A == null){
+
+        }
+        ProjectSampleClass projectSampleClass_A = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType_A.getId(),sampleClassification01A.getId());
+        if(projectSampleClass_A == null){
+            projectSampleClass_A = new ProjectSampleClass()
+                .project(project).projectCode(project.getProjectCode())
+                .sampleClassification(sampleClassification01A)
+                .sampleType(sampleType_A)
+                .columnsNumber(null).sampleClassificationCode("01").sampleClassificationName("EDTA抗凝血浆")
+                .status("0001");
+            projectSampleClassRepository.saveAndFlush(projectSampleClass_A);
+        }
     }
 }

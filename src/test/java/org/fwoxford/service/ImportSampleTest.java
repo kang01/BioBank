@@ -1040,7 +1040,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             String columnNumber = Constants.COLUMNNUMBER_MAP.get(s.getSampleClassificationCode());
             if(projectSampleClass == null){
                 projectSampleClass = new ProjectSampleClass()
-                    .project(project).projectCode(project.getProjectCode()).sampleType(sampleType8)
+                    .project(project).projectCode(project.getProjectCode()).sampleType(sampleType8).sampleClassification(s)
                     .columnsNumber(columnNumber).sampleClassificationCode(s.getSampleClassificationCode()).sampleClassificationName(s.getSampleClassificationName())
                     .status("0001");
                 projectSampleClassRepository.saveAndFlush(projectSampleClass);

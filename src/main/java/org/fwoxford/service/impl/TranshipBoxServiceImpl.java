@@ -279,7 +279,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
            frozenTubeRepository.save(frozenTubeListForDelete);
            List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>();
-           Map<String,FrozenTube> frozenTubeMap = new HashMap<String,FrozenTube>();
+           Map<List<String>,FrozenTube> frozenTubeMap = new HashMap<List<String>,FrozenTube>();
            List<String> sampleCodeStr = new ArrayList<String>();
            for(FrozenTubeForSaveBatchDTO tubeDTO : boxDTO.getFrozenTubeDTOS()){
                 FrozenTube tube = frozenTubeMapper.frozenTubeForSaveBatchDTOToFrozenTube(tubeDTO);
@@ -291,7 +291,13 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                 frozenTubeList.add(tube);
                 String sampleCode = tube.getSampleCode()!=null?tube.getSampleCode():tube.getSampleTempCode();
                 sampleCodeStr.add(sampleCode);
-               frozenTubeMap.put(sampleCode,tube);
+               List<String> stringList = new ArrayList<>();
+               String sampleClassificationCode = "-1";
+               if(tube.getSampleClassification()!=null){
+                   sampleClassificationCode = tube.getSampleClassification().getSampleClassificationCode();
+               }
+               stringList.add(0,sampleCode);stringList.add(1,sampleClassificationCode);
+               frozenTubeMap.put(stringList,tube);
             }
             frozenTubeCheckService.checkSampleCodeRepeat(sampleCodeStr,frozenTubeMap,box);
             frozenTubeRepository.save(frozenTubeList);

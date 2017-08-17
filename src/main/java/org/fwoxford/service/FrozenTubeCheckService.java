@@ -1,5 +1,7 @@
 package org.fwoxford.service;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.FrozenBoxRepository;
@@ -29,15 +31,21 @@ public class FrozenTubeCheckService {
     private final Logger log = LoggerFactory.getLogger(FrozenTubeCheckService.class);
 
 
-    public void checkSampleCodeRepeat(List<String> sampleCodeStr, Map<String, FrozenTube> frozenTubeMap,FrozenBox frozenBox) {
+    public void checkSampleCodeRepeat(List<String> sampleCodeStr, Map<List<String>, FrozenTube> frozenTubeMap,FrozenBox frozenBox) {
         if(sampleCodeStr.size()==0){
             return;
         }
-        ArrayList<String> repeatCode = new ArrayList<>();
+        List<FrozenTube> frozenTubeListForCheckRepeat = new ArrayList<FrozenTube>();
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCodeStr,frozenBox.getProjectCode(),frozenBox.getSampleType().getId(), Constants.INVALID);
         for(FrozenTube tube :frozenTubeList){
             String sampleCode = tube.getSampleCode()!=null?tube.getSampleCode():tube.getSampleTempCode();
-            FrozenTube frozenTube = frozenTubeMap.get(sampleCode);
+            List<String> stringList = new ArrayList<>();
+            String sampleClassificationCode = "-1";
+            if(tube.getSampleClassification()!=null){
+                sampleClassificationCode = tube.getSampleClassification().getSampleClassificationCode();
+            }
+            stringList.add(0,sampleCode);stringList.add(1,sampleClassificationCode);
+            FrozenTube frozenTube = frozenTubeMap.get(stringList);
             if(frozenTube.getSampleClassification()!=null&&tube.getSampleClassification()!=null){
                 if((frozenTube.getId()==null && frozenTube.getSampleClassification().getId()==tube.getSampleClassification().getId())
                     ||(frozenTube.getId()!=null
@@ -45,18 +53,27 @@ public class FrozenTubeCheckService {
                     &&!frozenTube.getId().equals(tube.getId())
                     &&frozenTube.getSampleClassification().getId()!=tube.getSampleClassification().getId()
                     &&!frozenTube.getSampleClassification().getId().equals(tube.getSampleClassification().getId()))){
-                    repeatCode.add(sampleCode);
+                    frozenTubeListForCheckRepeat.add(frozenTube);
                 }
-            }else{
+            }else{//在给项目必须配置样本分类以后不会出现这样情况
                 if(frozenTube.getId()==null
                     || (frozenTube.getId() != null && frozenTube.getId()!=tube.getId()
                     && !frozenTube.getId().equals(tube.getId()))){
-                    repeatCode.add(sampleCode);
+                    frozenTubeListForCheckRepeat.add(frozenTube);
                 }
             }
         }
-        if(repeatCode.size()>0){
-            throw new BankServiceException("请勿提交重复的样本编码！",String.join(",",repeatCode));
+        JSONArray jsonArray = new JSONArray();
+        for(FrozenTube f:frozenTubeListForCheckRepeat){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id",f.getId());
+                jsonObject.put("sampleCode",f.getSampleCode());
+                jsonObject.put("tubeColumns",f.getTubeColumns());
+                jsonObject.put("tubeRows",f.getTubeRows());
+                jsonArray.add(jsonObject);
+        }
+        if(frozenTubeListForCheckRepeat.size()>0){
+            throw new BankServiceException("请勿提交重复的样本编码！",jsonArray.toString());
         }
     }
 }

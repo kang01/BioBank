@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
-@Table(name = "view_stock_in_box")
+@Table(name = "view_stock_in_box_list")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockInBoxForDataTableEntity {
 

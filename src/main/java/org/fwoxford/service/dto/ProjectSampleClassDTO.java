@@ -125,4 +125,24 @@ public class ProjectSampleClassDTO extends AbstractAuditingDTO implements Serial
             ", columnsNumber='" + columnsNumber + "'" +
             '}';
     }
+
+    private String sampleClassificationName;
+
+    private String sampleClassificationCode;
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+
+    public void setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+
+    public void setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+    }
 }

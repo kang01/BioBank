@@ -6,7 +6,7 @@
     <!--
         Added the view for entity StockBoxList.
     -->
-    <changeSet id="20170520000000-2" author="jhipster">
+    <changeSet id="201708170000004-1" author="jhipster">
 
         <createView viewName="view_frozen_box_stock_list">
             SELECT

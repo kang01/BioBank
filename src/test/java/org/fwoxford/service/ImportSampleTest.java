@@ -1292,10 +1292,14 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         SampleType sampleType_R = sampleTypeRepository.findBySampleTypeCode("R");
         SampleType sampleType_E = sampleTypeRepository.findBySampleTypeCode("E");
         SampleType sampleType_W = sampleTypeRepository.findBySampleTypeCode("W");
-        SampleClassification sampleClassification08W = sampleClassificationRepository.findBySampleClassificationCode("08");
-        if(sampleClassification08W == null){
-
-        }
+        String frontColor = Constants.SAMPLECLASSIFICATION_COLOR_MAP.get("03").toString();
+        SampleClassification  sampleClassification08W = new SampleClassification()
+                .sampleClassificationCode("08")
+                .sampleClassificationName("EDTA抗凝白细胞")
+                .status("0001")
+                .backColor(frontColor)
+                .frontColor("black");
+            sampleClassificationRepository.saveAndFlush(sampleClassification08W);
         ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType_W.getId(),sampleClassification08W.getId());
         if(projectSampleClass == null){
             projectSampleClass = new ProjectSampleClass()
@@ -1306,10 +1310,14 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 .status("0001");
             projectSampleClassRepository.saveAndFlush(projectSampleClass);
         }
-        SampleClassification sampleClassification05E = sampleClassificationRepository.findBySampleClassificationCode("05");
-        if(sampleClassification05E == null){
-
-        }
+        String frontColorE = Constants.SAMPLECLASSIFICATION_COLOR_MAP.get("09").toString();
+        SampleClassification  sampleClassification05E = new SampleClassification()
+            .sampleClassificationCode("05")
+            .sampleClassificationName("尿")
+            .status("0001")
+            .backColor(frontColorE)
+            .frontColor("black");
+        sampleClassificationRepository.saveAndFlush(sampleClassification05E);
         ProjectSampleClass projectSampleClass_E = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType_E.getId(),sampleClassification05E.getId());
         if(projectSampleClass_E == null){
             projectSampleClass_E = new ProjectSampleClass()
@@ -1320,10 +1328,14 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 .status("0001");
             projectSampleClassRepository.saveAndFlush(projectSampleClass_E);
         }
-        SampleClassification sampleClassification09R = sampleClassificationRepository.findBySampleClassificationCode("09");
-        if(sampleClassification09R == null){
-
-        }
+        String frontColorR = Constants.SAMPLECLASSIFICATION_COLOR_MAP.get("04").toString();
+        SampleClassification  sampleClassification09R = new SampleClassification()
+            .sampleClassificationCode("09")
+            .sampleClassificationName("红细胞")
+            .status("0001")
+            .backColor(frontColorR)
+            .frontColor("black");
+        sampleClassificationRepository.saveAndFlush(sampleClassification09R);
         ProjectSampleClass projectSampleClass_R = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType_R.getId(),sampleClassification09R.getId());
         if(projectSampleClass_R == null){
             projectSampleClass_R = new ProjectSampleClass()
@@ -1334,10 +1346,14 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 .status("0001");
             projectSampleClassRepository.saveAndFlush(projectSampleClass_R);
         }
-        SampleClassification sampleClassification01A = sampleClassificationRepository.findBySampleClassificationCode("01");
-        if(sampleClassification01A == null){
-
-        }
+        String frontColorA = Constants.SAMPLECLASSIFICATION_COLOR_MAP.get("01").toString();
+        SampleClassification  sampleClassification01A = new SampleClassification()
+            .sampleClassificationCode("01")
+            .sampleClassificationName("EDTA抗凝血浆")
+            .status("0001")
+            .backColor(frontColorA)
+            .frontColor("black");
+        sampleClassificationRepository.saveAndFlush(sampleClassification01A);
         ProjectSampleClass projectSampleClass_A = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(),sampleType_A.getId(),sampleClassification01A.getId());
         if(projectSampleClass_A == null){
             projectSampleClass_A = new ProjectSampleClass()

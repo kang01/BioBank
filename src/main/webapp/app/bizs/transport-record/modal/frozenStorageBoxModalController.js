@@ -434,10 +434,15 @@
             $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
-            if(vm.frozenBox.sampleTypeCode == '99' &&  !vm.projectSampleTypeOptions.length){
-                toastr.error("样本类型为99时，无样本分类，不能入库！");
-                return;
+            //全部为成功的数据
+            var len = _.filter(vm.obox.frozenBoxDTOList,{status:200}).length;
+            if(len != vm.obox.frozenBoxDTOList.length){
+                if(vm.frozenBox.sampleTypeCode == '99' &&  !vm.projectSampleTypeOptions.length){
+                    toastr.error("样本类型为99时，无样本分类，不能入库！");
+                    return;
+                }
             }
+
             blockUI.start("正在保存冻存盒中……");
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
         };

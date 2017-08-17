@@ -92,9 +92,9 @@
                     <tr ng-repeat="item in vm.obox.frozenBoxDTOList" ng-if="item">
                         <td><span ng-class="{'red-color': item.isRepeat == 1}">{{item.frozenBoxCode}}</span></td>
                         <td>
-                            <span ng-if="item.status == 400" class="red-color">导入失败</span>
+                            <span ng-if="item.status == 400" class="red-color">加载失败</span>
                             <span ng-if="item.status == -1">&nbsp;</span>
-                            <span ng-if="item.status == 200">导入成功</span>
+                            <span ng-if="item.status == 200">加载成功</span>
                         </td>
                         <td>{{item.sampleTypeName}}</td>
                         <td>{{item.countOfSample}}</td>

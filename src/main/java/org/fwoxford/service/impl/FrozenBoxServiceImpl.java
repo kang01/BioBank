@@ -1014,7 +1014,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
     @Override
     public List<FrozenBoxAndFrozenTubeResponse> saveAndUploadFrozenBoxAndTube(MultipartFile file, HttpServletRequest request) {
-
+        if(file.isEmpty()){
+            throw new BankServiceException("文件不能为空！");
+        }
         FrozenBoxType frozenBoxType_DCH = frozenBoxTypeRepository.findByFrozenBoxTypeCode("DCH");
         if(frozenBoxType_DCH == null){
             throw new BankServiceException("查询冻存盒类型失败！");

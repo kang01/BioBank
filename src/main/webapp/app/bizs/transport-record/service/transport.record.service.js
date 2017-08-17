@@ -47,14 +47,14 @@
             var orderBy = $filter('orderBy');
             return orderBy(properties, 'prefix');
         }
-        service.uploadTransportRecord = function (transhipId,file) {
+        service.uploadTransportRecord = function (transhipId,fb) {
             var req = {
                 method: 'POST',
                 url: 'api/tranships/'+transhipId+'/upload',
                 headers: {
                     'Content-Type': undefined
                 },
-                data: file
+                data: fb
             };
             return $http(req);
         };
@@ -77,7 +77,15 @@
         service.uploadBox = function (file) {
             var fb = new FormData();
             fb.append('file',file);
-            return $http.post('api/tranship-boxes/frozenBoxCode/upload',fb);
+            var req = {
+                method: 'POST',
+                url: 'api/tranship-boxes/frozenBoxCode/upload',
+                headers: {
+                    'Content-Type': undefined
+                },
+                data: fb
+            };
+            return $http(req);
         };
         return service;
     }

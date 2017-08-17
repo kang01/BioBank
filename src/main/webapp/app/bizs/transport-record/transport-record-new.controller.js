@@ -513,6 +513,8 @@
         //初始化冻存管
         function _initFrozenBoxPanel(){
             vm.frozenTubeArray = [];//初始管子数据二位数组
+            //重复的样本编码
+            vm.repeatSampleArray = [];
             var remarkArray;//批注
             var domArray = [];//单元格操作的数据
             var operateColor;//单元格颜色
@@ -727,6 +729,12 @@
                     'word-wrap': 'break-word'
                 }).appendTo(td);
                 $div = $("<div id='microtubesStatus'/>").html(tube.status).hide().appendTo(td);
+                if(vm.repeatSampleArray.length){
+                    var len = _.filter(vm.repeatSampleArray,{sampleCode:tube.sampleCode}).length;
+                    if(len){
+                        $div = $("<div class='repeat-sample-class stockInAnimation'/>").appendTo(td);
+                    }
+                }
             }
 
             //修改样本状态正常、空管、空孔、异常
@@ -1274,7 +1282,7 @@
                 });
             }
 
-            vm.delBox = _fnDelBox;//删除盒子
+            vm.delBox = _fnDelBox;
             //删除盒子
             function _fnDelBox() {
                 modalInstance = $uibModal.open({
@@ -1364,6 +1372,7 @@
             vm.transportRecord.emptyHoleNumber = data.emptyHoleNumber;
         }
         function onError(error) {
+            vm.repeatSampleArray = JSON.parse(error.data.params[0]);
             BioBankBlockUi.blockUiStop();
             toastr.error(error.data.message);
         }

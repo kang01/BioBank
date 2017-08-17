@@ -196,8 +196,7 @@
                 sampleClassificationCode: vm.frozenBox.sampleClassificationCode || undefined,
                 isRepeat:0,
                 frozenTubeDTOS:[],
-                createDate:new Date().getTime(),
-                isRealData:null
+                createDate:new Date().getTime()
             };
             for(var j = 0; j < vm.frozenBox.frozenBoxTypeRows;j++){
                 tubeList[j] = [];
@@ -243,19 +242,47 @@
             vm.boxCodeSelectize.removeOption(item.frozenBoxCode);
         }
         //上传
-        function _fnUploadSample() {
-            TransportRecordService.uploadBox(vm.file).success(function (data) {
-                console.log(JSON.stringify(data));
-            }).error(function (data) {
+        function _fnUploadSample(file) {
+            if (file){
+                TransportRecordService.uploadBox(file).success(function (data) {
+                    _.forEach(data,function (box) {
+                       box.status = 200;
+                       box.createDate = new Date().getTime();
+                    });
+                    _fnFormatBoxData(data);
+                }).error(function (data) {
 
-            })
+                })
+            }
+        }
+        function _fnFormatBoxData(boxes) {
+            vm.obox.frozenBoxDTOList = boxes;
+            //只取盒子编码
+            var frozenBoxCodes = _.map(boxes, 'frozenBoxCode');
+            var boxCodeOption = [];
+            _.forEach(frozenBoxCodes,function (boxCode) {
+                var obj = {};
+                obj.text = boxCode;
+                obj.value = boxCode;
+                boxCodeOption.push(obj)
+            });
+            vm.boxCodeSelectize.addOption(boxCodeOption);
+            vm.boxCodeSelectize.setValue(frozenBoxCodes)
         }
         //导入数据
         vm.progressFlag = false;
         var arrayPromise = [];
         var canceller = null;
         function _fnImportSample() {
-            if(!vm.obox.frozenBoxDTOList.length){
+            var boxCodes = angular.copy(vm.codeList);
+            //导入成功的不再进行导入
+            _.forEach(vm.obox.frozenBoxDTOList,function (box) {
+               if(box.status == '200'){
+                   _.pull(boxCodes,box.frozenBoxCode)
+               }
+            });
+            //无冻存盒数据不能导入
+            if(!boxCodes.length){
                 return;
             }
             vm.obj = {
@@ -266,14 +293,13 @@
             blockUIConfig.autoBlock = false;
             arrayPromise = [];
             canceller = $q.defer();
-            _.forEach(vm.codeList,function (code) {
+            _.forEach(boxCodes,function (code) {
                 var importData = TransportRecordService.importData(code, canceller);
                 arrayPromise.push(
                     importData.then(function (response) {
                         _.forEach(vm.obox.frozenBoxDTOList,function (box) {
                            if(box.frozenBoxCode == code){
                                box.sampleTypeName = response.data[0].sampleTypeName;
-                               box.isRealData = response.data[0].isRealData;
                                box.countOfSample = response.data[0].countOfSample;
                                box.isMixed = response.data[0].isMixed;
                                box.status = response.status;
@@ -285,13 +311,12 @@
                             if(box.frozenBoxCode == code){
                                 box.status = status;
                             }
-
                         });
                     })
 
                     .finally(function (data) {
                         vm.count++;
-                        var percentage = parseInt((vm.count/vm.codeList.length)*100);
+                        var percentage = parseInt((vm.count/boxCodes.length)*100);
                         vm.obj.width = percentage+'%';
                         if(vm.obj.width == '100%'){
                             setTimeout(function () {
@@ -314,7 +339,6 @@
                 _.forEach(vm.obox.frozenBoxDTOList,function (box) {
                     if(box.frozenBoxCode == item.frozenBoxCode){
                         box.sampleTypeName = response.data[0].sampleTypeName;
-                        box.isRealData = response.data[0].isRealData;
                         box.countOfSample = response.data[0].countOfSample;
                         box.isMixed = response.data[0].isMixed;
                         box.status = response.status;
@@ -334,7 +358,9 @@
             if (canceller){
                 canceller.resolve();
             }
+            vm.progressFlag = false;
         }
+        //初始化冻存盒
         function _fnInitBoxInfo() {
             for(var i = 0; i < vm.codeList.length; i++){
                 var box = _fnCreateTempBox(vm.codeList[i]);
@@ -349,7 +375,7 @@
             var boxList = angular.copy(vm.obox.frozenBoxDTOList);
             vm.obox.frozenBoxDTOList =  _.orderBy(boxList, ['createDate'], ['desc']);
         }
-
+        //编辑冻存盒
         function _fnEditBoxInfo() {
             var tubeList=[];
             for(var i = 0; i < vm.obox.frozenBoxDTOList.length; i++){

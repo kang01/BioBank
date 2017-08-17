@@ -145,12 +145,4 @@ public interface FrozenBoxService {
      * @return
      */
     List<FrozenBoxAndFrozenTubeResponse> importFrozenBoxAndFrozenTube(String frozenBoxCodeStr);
-
-    /**
-     * excel导入样本
-     * @param file
-     * @param request
-     * @return
-     */
-    List<FrozenBoxAndFrozenTubeResponse> saveAndUploadFrozenBoxAndTube(MultipartFile file, HttpServletRequest request);
 }

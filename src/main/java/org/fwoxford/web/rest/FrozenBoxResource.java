@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
+import org.fwoxford.service.FrozenBoxImportService;
 import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.response.*;
@@ -11,6 +12,7 @@ import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -42,7 +44,8 @@ public class FrozenBoxResource {
     private static final String ENTITY_NAME = "frozenBox";
 
     private final FrozenBoxService frozenBoxService;
-
+    @Autowired
+    private FrozenBoxImportService frozenBoxImportService;
     public FrozenBoxResource(FrozenBoxService frozenBoxService) {
         this.frozenBoxService = frozenBoxService;
     }
@@ -330,13 +333,13 @@ public class FrozenBoxResource {
      * @return
      * @throws URISyntaxException
      */
-    @RequestMapping(value = "/tranship-boxes/frozenBoxCode/upload",method = RequestMethod.POST)
+    @RequestMapping(value = "/tranship-boxes/projectCode/{projectCode}/upload",method = RequestMethod.POST)
     @Timed
-    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> saveAndUploadStockOutRequirement(
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> saveAndUploadStockOutRequirement(@PathVariable String projectCode,
                                                                                         @RequestParam(value = "file") MultipartFile file,
                                                                                         HttpServletRequest request) throws URISyntaxException {
         log.debug("REST request to save FrozenBoxAndFrozenTubeResponse : {}");
-        List<FrozenBoxAndFrozenTubeResponse> result = frozenBoxService.saveAndUploadFrozenBoxAndTube(file,request);
+        List<FrozenBoxAndFrozenTubeResponse> result = frozenBoxImportService.saveAndUploadFrozenBoxAndTube(projectCode,file,request);
 
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }

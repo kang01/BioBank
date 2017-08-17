@@ -16,7 +16,7 @@ import java.io.Serializable;
  * Created by gengluying on 2017/5/23.
  */
 @Entity
-@Table(name = "view_frozen_box_for_out_task")
+@Table(name = "view_frozen_box_for_task")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockOutFrozenBoxForTaskDetailDataTableEntity extends StockOutFrozenBoxBaseDataTableEntity implements Serializable {
 

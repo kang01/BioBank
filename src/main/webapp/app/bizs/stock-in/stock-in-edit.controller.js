@@ -976,7 +976,10 @@
                 //去除全选
                 for(var i = 0; i < vm.frozenTubeArray.length; i++){
                     for(var j = 0; j < vm.frozenTubeArray[i].length;j++){
-                        vm.frozenTubeArray[i][j].selectedAll = false;
+                        if(vm.frozenTubeArray[i][j]){
+                            vm.frozenTubeArray[i][j].selectedAll = false;
+                        }
+
                     }
                 }
                 hotRegisterer.getInstance('my-handsontable').render();

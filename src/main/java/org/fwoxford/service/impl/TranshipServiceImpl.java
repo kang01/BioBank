@@ -423,6 +423,10 @@ public class TranshipServiceImpl implements TranshipService{
         String fileName= "";
         String filetype= "";
         if(!file.isEmpty()){
+            int size = (int)(file.getSize());
+            if(size>2*1048576){
+                throw new BankServiceException("文件最大不能超过2M！");
+            }
             try {
                     StockOutFiles bigFile = new StockOutFiles();
                     fileName=file.getOriginalFilename().split("\\.")[0];//文件名
@@ -438,7 +442,7 @@ public class TranshipServiceImpl implements TranshipService{
 
                     bigFile.setFiles(file.getBytes());
                     bigFile.setFilesContentType(null);
-                    bigFile.setFileSize((int)file.getSize());
+                    bigFile.setFileSize(size);
                     bigFile.setFileType(filetype);
                     bigFile.setStatus(Constants.VALID);
                     stockOutFilesRepository.save(bigFile);

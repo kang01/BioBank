@@ -225,7 +225,7 @@ public class TranshipResource {
     @Timed
     public ResponseEntity<AttachmentDTO> saveAndUploadTranship(@PathVariable Long transhipId,
                                                                @RequestParam(value = "attachment") String attachment,
-                                                               @RequestParam(value = "file",required = false) MultipartFile file,
+                                                               @RequestParam(value = "file") MultipartFile file,
                                                                HttpServletRequest request) throws URISyntaxException {
         JSONObject jsonObject = JSONObject.fromObject(attachment);
         AttachmentDTO attachmentDTO = (AttachmentDTO) JSONObject.toBean(jsonObject, AttachmentDTO.class);

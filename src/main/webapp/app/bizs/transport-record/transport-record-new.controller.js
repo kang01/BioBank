@@ -909,7 +909,7 @@
                     sampleCode: "",
                     sampleTempCode: "",
                     sampleTypeId: box.sampleType.id,
-                    frozenBoxId: box.frozenBoxType.id,
+                    frozenBoxId: "",
                     frozenBoxCode: box.frozenBoxCode,
                     status: "",
                     memo: "",
@@ -929,6 +929,7 @@
                     tube.sampleTypeCode = tubeInBox.sampleTypeCode;
                     tube.status = tubeInBox.status;
                     tube.memo = tubeInBox.memo;
+                    tube.frozenBoxId = tubeInBox.frozenBoxId;
                     if(tubeInBox.sampleClassification){
                         tube.sampleClassificationId = tubeInBox.sampleClassification.id;
                     }
@@ -967,9 +968,6 @@
                         if (colHeaders.length < settings.minCols){
                             colHeaders.push(pos.tubeColumns);
                         }
-
-
-
                         var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
                         var tube = _createTubeForTableCell(tubeInBox, box, i, j + 1, pos);
                         //混合类型

@@ -16,7 +16,7 @@
         vm.imagesArray = [];
         vm.reader = new FileReader();   //创建一个FileReader接口
         vm.thumb = {
-            imgSrc:'content/images/nosee.png'
+            imgSrc:'content/images/nosee1.png'
         };
         vm.entity = angular.copy(items.imgData);
         //1：新建 2：编辑

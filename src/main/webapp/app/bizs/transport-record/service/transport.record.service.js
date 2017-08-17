@@ -74,12 +74,12 @@
             }
             return $http.get('api/tranship-boxes/frozenBoxCode/'+frozenBoxCodeStr+'/import', opt);
         };
-        service.uploadBox = function (file) {
+        service.uploadBox = function (file,projectCode) {
             var fb = new FormData();
             fb.append('file',file);
             var req = {
                 method: 'POST',
-                url: 'api/tranship-boxes/frozenBoxCode/upload',
+                url: 'api/tranship-boxes/projectCode/'+projectCode+'/upload',
                 headers: {
                     'Content-Type': undefined
                 },

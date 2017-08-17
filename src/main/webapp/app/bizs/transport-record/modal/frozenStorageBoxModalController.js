@@ -244,14 +244,14 @@
         //上传
         function _fnUploadSample(file) {
             if (file){
-                TransportRecordService.uploadBox(file).success(function (data) {
+                TransportRecordService.uploadBox(file,vm.items.projectCode).success(function (data) {
                     _.forEach(data,function (box) {
                        box.status = 200;
                        box.createDate = new Date().getTime();
                     });
                     _fnFormatBoxData(data);
                 }).error(function (data) {
-
+                    toastr.error(data.message);
                 })
             }
         }

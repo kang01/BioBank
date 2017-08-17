@@ -233,6 +233,7 @@
                                         return {
                                             transhipId :vm.transportRecord.id,
                                             projectId :vm.transportRecord.projectId,
+                                            projectCode:vm.transportRecord.projectCode,
                                             frozenBoxTypeOptions:vm.frozenBoxTypeOptions,
                                             sampleTypeOptions:vm.sampleTypeOptions
                                         };
@@ -458,21 +459,6 @@
                 }
                 return nRow;
             }
-            // loadAll();
-            // function loadAll() {
-            //     loadBox();
-            // }
-            // function loadBox() {
-            //     if(vm.transportRecord.transhipCode){
-            //         // vm.dtInstance.rerender();
-            //         // TranshipBoxByCodeService.query({code:vm.transportRecord.transhipCode},onBoxSuccess,onError);
-            //     }
-            //     function onBoxSuccess(data) {
-            //         // vm.arrayBox =  _.orderBy(data, ['frozenBoxCode'], ['asc']);
-            //         // vm.boxLength = data.length;
-            //         // vm.dtOptions.withOption('data', vm.arrayBox);
-            //     }
-            // }
 
             //点击冻存盒行
             function someClickHandler(tr,boxInfo) {

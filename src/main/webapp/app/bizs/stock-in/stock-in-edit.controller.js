@@ -961,7 +961,7 @@
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
             rowHeaders : ['A','B','C','D','E','F','G','H','J','K'],
             minRows: 10,
-            minCols: 10,git 
+            minCols: 10,
             renderer:customRenderer,
             fillHandle:false,
             stretchH: 'all',

@@ -9,11 +9,11 @@
         .controller('StockInEditController', StockInEditController)
         .controller('RescindPutAwayModalController', RescindPutAwayModalController);
 
-    StockInEditController.$inject = ['$scope','EquipmentService','BioBankBlockUi','$state','SupportacksByAreaIdService', '$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
+    StockInEditController.$inject = ['$scope','blockUIConfig','EquipmentService','BioBankBlockUi','$state','SupportacksByAreaIdService', '$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
         'entity','AreasByEquipmentIdService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','ProjectSitesByProjectIdService',
         'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService','MasterData','ProjectService','SampleUserService','Principal','StockInInputService'];
     RescindPutAwayModalController.$inject = ['$uibModalInstance'];
-    function StockInEditController($scope,EquipmentService,BioBankBlockUi,$state,SupportacksByAreaIdService,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
+    function StockInEditController($scope,blockUIConfig,EquipmentService,BioBankBlockUi,$state,SupportacksByAreaIdService,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
                                   entity,AreasByEquipmentIdService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,ProjectSitesByProjectIdService,
                                   SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService,MasterData,ProjectService,SampleUserService,Principal,StockInInputService) {
         var vm = this;
@@ -793,7 +793,9 @@
         var htm;
         //根据盒子编码取管子
         function _fnTubeByBoxCode(stockInBoxId) {
+            blockUIConfig.autoBlock = false;
             StockInInputService.queryEditStockInBox(stockInBoxId).success(function (data) {
+                blockUIConfig.autoBlock = true;
                 vm.tableRender();
                 vm.box =  data;
                 if(!vm.box.frozenTubeDTOS.length){
@@ -916,7 +918,13 @@
                     'line-height': '20px',
                     'word-wrap': 'break-word'
                 }).appendTo(td);
-                $div = $("<div id='microtubesStatus'/>").html(value.status).hide().appendTo(td);
+                // $div = $("<div id='microtubesStatus'/>").html(value.status).hide().appendTo(td);
+                if(value.selectedAll){
+                    if(value.sampleCode || value.sampleTempCode) {
+                        selectList.push(value);
+                    }
+                    $('<div class="temp selected-sample-color"/>').appendTo(td);
+                }
             }else {
                 $(td).html("");
             }
@@ -964,8 +972,14 @@
             multiSelect: true,
             comments: true,
             onAfterSelectionEnd:function (row, col, row2, col2) {
+                //去除全选
+                for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                    for(var j = 0; j < vm.frozenTubeArray[i].length;j++){
+                        vm.frozenTubeArray[i][j].selectedAll = false;
+                    }
+                }
+                hotRegisterer.getInstance('my-handsontable').render();
                 var cell = this;
-
                 // vm.selectCell = $(this.getData(row,col,row2,col2));
                 selectedTubesArray = this.getData(row,col,row2,col2);
                 var selectTubeArrayIndex = this.getSelected();
@@ -976,20 +990,8 @@
                     $(".temp").remove();
                     selectList = [];
                     _fnSelectTubesData(cell,selectedTubesArray,selectTubeArrayIndex);
-
-
                 }
 
-
-
-
-                // for(var i = 0; i < vm.selectCell.length; i++ ){
-                //     for (var j = 0; j < vm.selectCell[i].length; j++){
-                //         if(vm.selectCell[i][j].sampleCode || vm.selectCell[i][j].sampleTempCode){
-                //             selectList.push(vm.selectCell[i][j]);
-                //         }
-                //     }
-                // }
             },
             enterMoves:function () {
                 var hotMoves = hotRegisterer.getInstance('my-handsontable');
@@ -1006,7 +1008,7 @@
         };
         //选择单元格数据
         function _fnSelectTubesData(td,selectedTubesArray,selectTubeArrayIndex) {
-            var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.2);"></div>';
+            var txt = '<div class="temp selected-sample-color"></div>';
             for(var m = 0; m < selectedTubesArray.length; m++){
                 for (var n = 0; n < selectedTubesArray[m].length; n++){
                     if(selectedTubesArray[m][n].sampleCode || selectedTubesArray[m][n].sampleTempCode) {
@@ -1130,6 +1132,7 @@
         }
 
         function onIncompleteBoxesSuccess(data) {
+            BioBankBlockUi.blockUiStop();
             if(data.length) {
                 for (var i = 0; i < data.length; i++) {
                     _.forEach(data[i].stockInFrozenTubeList, function (tube) {
@@ -1183,6 +1186,9 @@
                 obj[code] = _.orderBy(obj[code],'tubesLen','asc');
                 vm.incompleteBoxesList.push(obj[code][0])
             }
+            setTimeout(function () {
+                document.body.scrollTop = document.body.scrollHeight  - window.innerHeight;
+            },300);
         }
         function onError(error) {
             toastr.error(error.data.message);
@@ -1302,10 +1308,17 @@
                     }
                 }
             }
+            //去除全选
+            for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                for(var j = 0; j < vm.frozenTubeArray[i].length;j++){
+                    vm.frozenTubeArray[i][j].selectedAll = false;
+                }
+            }
             //清空被分装的盒子数
             for(var k = 0; k < selectList.length; k++){
                 vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";
             }
+
             hotRegisterer.getInstance('my-handsontable').render();
             //分装数据
             for(var i = 0; i < vm.obox.stockInFrozenTubeList.length; i++){
@@ -1388,7 +1401,6 @@
             // console.log(JSON.stringify(saveBoxList));
             BioBankBlockUi.blockUiStart();
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
-                BioBankBlockUi.blockUiStop();
                 toastr.success("分装成功!");
                 vm.dtOptions.isHeaderCompiled = false;
                 vm.dtInstance.rerender();
@@ -1443,6 +1455,16 @@
             },function () {
                 vm.tableRender();
             });
+        };
+        //全选
+        vm.selectSampleAll = function () {
+            for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                for(var j = 0; j < vm.frozenTubeArray[i].length;j++){
+                    vm.frozenTubeArray[i][j].selectedAll = true;
+                }
+            }
+            hotRegisterer.getInstance('my-handsontable').render();
+
         };
         //添加分装样本盒 1:第二个新盒子 2.新添第一个盒子
         vm.addBoxModal = function (box,status) {

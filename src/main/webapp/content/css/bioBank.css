@@ -1049,4 +1049,7 @@ ul.rating {
     width: 40%;
     border-radius: 4px;
 }
+.selected-sample-color{
+    position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.2);
+}
 

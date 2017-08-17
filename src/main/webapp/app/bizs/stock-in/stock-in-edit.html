@@ -136,7 +136,7 @@
             </div>
         </div>
     </pageslide>
-
+    <!--分装-->
     <div ng-if="vm.splittingBox">
         <div class="row split-box">
             <div class="col-md-9">
@@ -145,6 +145,7 @@
                         <h4>待分装样本盒{{vm.box.frozenBoxCode}}</h4>
                     </div>
                     <div class="col-md-7 text-right mb-10">
+                        <button type="button" class="btn btn-default" ng-click="vm.selectSampleAll()">全选</button>
                         <button type="button" class="btn btn-default" ng-click="vm.closeBox()">关闭</button>
                         <button type="button" class="btn btn-default" ng-click="vm.splitBox()">分装</button>
                         <button type="button" class="btn btn-default" ng-click="vm.recover()">复原</button>
@@ -185,6 +186,7 @@
             </div>
         </div>
     </div>
+    <!--编辑-->
     <div class="row" ng-if="vm.showFlag">
         <edit-stock-directive
             stock-in-info="vm.entity"

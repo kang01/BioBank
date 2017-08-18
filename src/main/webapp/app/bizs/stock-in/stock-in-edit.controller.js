@@ -417,7 +417,7 @@
 
 
 
-            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC", 320, 10)
+            vm.dtOptions = BioBankDataTable.buildDTOption("BASIC", 252, 10)
                 // 设置Tool button
                 .withButtons([
                     {
@@ -643,13 +643,14 @@
             vm.box = {};
             vm.splittingBox = false;
             StockInInputService.queryEditStockInBox(stockInBoxId).success(function (data) {
+                BioBankBlockUi.blockUiStop();
                 vm.box = data;
                 vm.editFlag = true;
                 vm.showFlag = true;
                 vm.dtInstance.rerender();
                 setTimeout(function () {
                     document.body.scrollTop = document.body.scrollHeight  - window.innerHeight - 30;
-                },300);
+                },500);
             }).error(function (data) {
                 toastr.error(data.message);
             });

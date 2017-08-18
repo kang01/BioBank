@@ -26,7 +26,7 @@
         }
 
         vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
-            .withOption('order', [['1', 'asc']])
+            .withOption('order', [['1', 'desc']])
             .withOption('serverSide', true)
             .withFnServerData(function (sSource, aoData, fnCallback, oSettings) {
                 var data = {};

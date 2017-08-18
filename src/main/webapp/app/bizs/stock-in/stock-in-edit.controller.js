@@ -635,7 +635,7 @@
             return columns;
         }
 
-        // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
+        // 冻存盒号是否可以编辑，编辑盒子时，盒子信息无法编辑，新增盒子，可以编辑
         vm.editFlag = false;
         //编辑
         function _editBox(stockInBoxId) {
@@ -720,9 +720,10 @@
             });
             modalInstance.result.then(function (data) {
                 _fnEmpty();
-                vm.dtOptions.isHeaderCompiled = false;
                 _fnSearch();
+                //编辑
                 vm.showFlag = false;
+                //分装
                 vm.splittingBox = false;
                 vm.dtInstance.rerender();
             });

@@ -6,7 +6,7 @@
     <div class="modal-body" id="modal-body">
         <div>
             <p>委托方:{{vm.requirement.applyPersonName}}，在{{vm.startTime}}至{{vm.endTime}}期间，申请出库样本{{vm.requirement.countOfStockOutSample}}只。</p>
-            <p>用于:{{vm.requirement.purposeOfSample}}</p>
+            <p ng-if="vm.requirement.purposeOfSample">用于:{{vm.requirement.purposeOfSample}}</p>
         </div>
         <div class="row ">
             <div class="col-md-12">
@@ -18,38 +18,25 @@
                 </div>
             </div>
         </div>
-        <div class="row form-horizontal mt-20">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="col-sm-4 control-label">审核人</label>
-                    <div class="col-sm-8">
-                        <selectize options='vm.approverOptions' config="vm.approverConfig"
-                                   ng-model="vm.approve.approverId"></selectize>
-                        <input type="hidden" ng-model="vm.approve.approverId" required>
-                    </div>
-                </div>
-
+        <div class="row  mt-20">
+            <div class="col-md-3">
+                <label>审核人<span class="required-field"></span></label>
+                <selectize options='vm.approverOptions' config="vm.approverConfig"
+                           ng-model="vm.approve.approverId"></selectize>
+                <input type="hidden" ng-model="vm.approve.approverId" required>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label  class="col-sm-4 control-label">密码</label>
-                    <div class="col-sm-8">
-                        <input type="password" class="form-control" ng-model="vm.approve.password" required>
-                    </div>
-                </div>
+            <div class="col-md-3">
+                <label >密码 <span class="required-field"></span></label>
+                <input type="password" class="form-control" ng-model="vm.approve.password" required>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label  class="col-sm-4 control-label">审核日期</label>
-                    <div class="col-sm-8">
-                        <div class="input-group">
-                            <input  type="text" class="form-control" name="approveTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.approve.recordTime" is-open="vm.datePickerOpenStatus.approveTime"
-                                    required  />
-                            <span class="input-group-btn">
+            <div class="col-md-3">
+                <label>审核日期<span class="required-field"></span></label>
+                <div class="input-group">
+                    <input  type="text" class="form-control" name="approveTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.approve.recordTime" is-open="vm.datePickerOpenStatus.approveTime"
+                            required  />
+                    <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="vm.openCalendar('approveTime')"><i class="glyphicon glyphicon-calendar"></i></button>
                             </span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

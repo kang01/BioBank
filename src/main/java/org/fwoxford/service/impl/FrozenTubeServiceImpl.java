@@ -222,6 +222,8 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
                 throw new BankServiceException("冻存管不存在！");
             }
             FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
+            String sampleCode = frozenTubeDTO.getSampleCode()!=null?frozenTubeDTO.getSampleCode():frozenTubeDTO.getSampleTempCode();
+            frozenTubeDTO.setSampleCode(sampleCode);
             frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
             frozenTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
             frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);

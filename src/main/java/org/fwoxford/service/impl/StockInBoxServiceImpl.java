@@ -890,6 +890,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 }
             }
             frozenTubeDTOForSave.setSampleCode(tubeDTO.getSampleCode());
+            frozenTubeDTOForSave.setSampleTempCode(tubeDTO.getSampleTempCode());
             frozenTubeDTOForSave.setStatus(tubeDTO.getStatus());
             if(!StringUtils.isEmpty(tubeDTO.getMemo())){
                 memoList.add(tubeDTO.getMemo());
@@ -946,7 +947,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     private FrozenTube createNewFrozenTube(StockInTubeDTO frozenTubeDTOForSave,FrozenBox frozenBox) {
         //保存冻存管
         FrozenTube tube = new FrozenTube().projectCode(frozenTubeDTOForSave.getProjectCode()).projectSiteCode(frozenTubeDTOForSave.getProjectSiteCode())
-            .sampleCode(frozenTubeDTOForSave.getSampleCode())
+            .sampleCode(frozenTubeDTOForSave.getSampleCode()).sampleTempCode(frozenTubeDTOForSave.getSampleTempCode())
             .frozenTubeTypeCode(frozenTubeDTOForSave.getFrozenTubeTypeCode())
             .frozenTubeTypeName(frozenTubeDTOForSave.getFrozenTubeTypeName())
             .sampleTypeCode(frozenTubeDTOForSave.getSampleTypeCode())

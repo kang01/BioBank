@@ -919,12 +919,12 @@
                     'word-wrap': 'break-word'
                 }).appendTo(td);
                 // $div = $("<div id='microtubesStatus'/>").html(value.status).hide().appendTo(td);
-                if(value.selectedAll){
-                    if(value.sampleCode || value.sampleTempCode) {
-                        selectList.push(value);
-                    }
-                    $('<div class="temp selected-sample-color"/>').appendTo(td);
-                }
+                // if(value.selectedAll){
+                //     if(value.sampleCode || value.sampleTempCode) {
+                //         selectList.push(value);
+                //     }
+                //     $('<div class="temp selected-sample-color"/>').appendTo(td);
+                // }
             }else {
                 $(td).html("");
             }
@@ -974,14 +974,14 @@
             comments: true,
             onAfterSelectionEnd:function (row, col, row2, col2) {
                 //去除全选
-                for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                    for(var j = 0; j < vm.frozenTubeArray[i].length;j++){
-                        if(vm.frozenTubeArray[i][j]){
-                            vm.frozenTubeArray[i][j].selectedAll = false;
-                        }
-
-                    }
-                }
+                // for(var i = 0; i < vm.frozenTubeArray.length; i++){
+                //     for(var j = 0; j < vm.frozenTubeArray[i].length;j++){
+                //         if(vm.frozenTubeArray[i][j]){
+                //             vm.frozenTubeArray[i][j].selectedAll = false;
+                //         }
+                //
+                //     }
+                // }
                 hotRegisterer.getInstance('my-handsontable').render();
                 var cell = this;
                 // vm.selectCell = $(this.getData(row,col,row2,col2));
@@ -1313,11 +1313,11 @@
                 }
             }
             //去除全选
-            for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                for(var j = 0; j < vm.frozenTubeArray[i].length;j++){
-                    vm.frozenTubeArray[i][j].selectedAll = false;
-                }
-            }
+            // for(var i = 0; i < vm.frozenTubeArray.length; i++){
+            //     for(var j = 0; j < vm.frozenTubeArray[i].length;j++){
+            //         vm.frozenTubeArray[i][j].selectedAll = false;
+            //     }
+            // }
             //清空被分装的盒子数
             for(var k = 0; k < selectList.length; k++){
                 vm.frozenTubeArray[getTubeRowIndex(selectList[k].tubeRows)][getTubeColumnIndex(selectList[k].tubeColumns)] = "";

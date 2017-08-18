@@ -179,7 +179,7 @@
             vm.saveRecordFlag = false;
             //保存记录
             vm.saveRecord = saveRecord;
-            //入库
+            //转运完成
             vm.transferFinish = function () {
                 modalInstance = $uibModal.open({
                     animation: true,

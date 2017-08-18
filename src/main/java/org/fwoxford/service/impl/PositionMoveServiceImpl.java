@@ -232,6 +232,9 @@ public class PositionMoveServiceImpl implements PositionMoveService {
         if(positionMoveDTO.getOperatorId1() == null || positionMoveDTO.getOperatorId2()==null){
             throw new BankServiceException("操作人不能为空！");
         }
+        if(positionMoveDTO.getOperatorId1() == positionMoveDTO.getOperatorId2()){
+            throw new BankServiceException("操作人不能为同一个人！");
+        }
         if(positionMoveDTO.getPassword1() == null || positionMoveDTO.getPassword2()==null){
             throw new BankServiceException("密码不能为空！");
         }
@@ -384,71 +387,6 @@ public class PositionMoveServiceImpl implements PositionMoveService {
         }
     }
 
-    public void createMoveRecordDetail(PositionMoveForBox p, PositionMove positionMove) {
-        if (p.getId() == null) {
-            throw new BankServiceException("冻存盒ID不能为空！");
-        }
-        FrozenBox frozenBox = frozenBoxRepository.findOne(p.getId());
-        if(frozenBox == null ||(frozenBox!= null && !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED))){
-            throw new BankServiceException("冻存盒不在库存中！");
-        }
-        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
-        List<Long> frozenTubeIds = new ArrayList<Long>();
-        for(FrozenTube f :frozenTubeList){
-            frozenTubeIds.add(f.getId());
-        }
-        List<PositionMoveForSample> sampleList = p.getFrozenTubeDTOS();
-        for (PositionMoveForSample s : sampleList) {
-            if (s.getId() == null) {
-                throw new BankServiceException("冻存管ID不能为空！");
-            }
-            FrozenTube frozenTube = frozenTubeRepository.findOne(s.getId());
-            if(frozenTube == null || (!frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKED))){
-                throw new BankServiceException("样本不在库存中！");
-            }
-            if(frozenTubeIds.contains(frozenTube.getId())){
-                continue;
-            }
-            String sampleCode = frozenTube.getSampleCode() != null ? frozenTube.getSampleCode() : frozenTube.getSampleTempCode();
-            //验证项目是否一致
-            checkProject(frozenBox, frozenTube);
-            //验证冻存盒类型与原冻存盒类型是否一样
-            checkFrozenBoxType(frozenBox, frozenTube);
-            //验证样本类型与盒子是否一致，盒子若有分类，验证与冻存管是否一致，冻存管若有分类，验证与冻存盒是否一致
-            checkSampleTypeAndClassification(frozenBox, frozenTube);
-            //验证盒内位置是否有效
-            checkPositionInBox(frozenBox,s.getTubeRows(),s.getTubeColumns(),sampleCode);
-            PositionMoveRecord positionMoveRecord = new PositionMoveRecord()
-                .positionMove(positionMove)
-                .moveType(Constants.MOVE_TYPE_1)
-                .equipment(frozenTube.getFrozenBox().getEquipment())
-                .equipmentCode(frozenTube.getFrozenBox().getEquipmentCode())
-                .area(frozenTube.getFrozenBox().getArea())
-                .areaCode(frozenTube.getFrozenBox().getAreaCode())
-                .supportRack(frozenTube.getFrozenBox().getSupportRack())
-                .supportRackCode(frozenTube.getFrozenBox().getSampleTypeCode())
-                .columnsInShelf(frozenTube.getFrozenBox().getColumnsInShelf())
-                .rowsInShelf(frozenTube.getFrozenBox().getRowsInShelf())
-                .frozenBox(frozenTube.getFrozenBox())
-                .frozenBoxCode(frozenTube.getFrozenBoxCode())
-                .memo(frozenTube.getMemo())
-                .project(frozenTube.getProject())
-                .projectCode(frozenTube.getProjectCode())
-                .projectSite(frozenTube.getProjectSite())
-                .projectSiteCode(frozenTube.getProjectSiteCode())
-                .whetherFreezingAndThawing(positionMove.isWhetherFreezingAndThawing())
-                .status(frozenTube.getStatus())
-                .tubeColumns(frozenTube.getTubeColumns())
-                .tubeRows(frozenTube.getTubeRows());
-            positionMoveRecordRepository.save(positionMoveRecord);
-            frozenTube.setTubeColumns(s.getTubeColumns());
-            frozenTube.setTubeRows(s.getTubeRows());
-            frozenTube.setFrozenBox(frozenBox);
-            frozenTube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-            frozenTubeRepository.save(frozenTube);
-        }
-
-    }
 
     public void checkFrozenBoxType(FrozenBox frozenBox, FrozenTube frozenTube) {
         String sampleCode = frozenTube.getSampleCode() != null ? frozenTube.getSampleCode() : frozenTube.getSampleTempCode();

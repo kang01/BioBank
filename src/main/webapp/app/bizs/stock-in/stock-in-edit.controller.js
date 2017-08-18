@@ -1366,21 +1366,21 @@
                 }
                 saveBoxList.push(objBox);
             }
-            console.log(JSON.stringify(saveBoxList));
-            // BioBankBlockUi.blockUiStart();
-            // SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
-            //     toastr.success("分装成功!");
-            //     vm.dtOptions.isHeaderCompiled = false;
-            //     vm.dtInstance.rerender();
-            //     _splitABox(vm.box.id);
-            //     vm.boxList = [];
-            //     vm.frozenBoxCode = "";
-            //     $(".box-selected").removeClass("box-selected");
-            // }).error(function (data) {
-            //     vm.recover();
-            //     BioBankBlockUi.blockUiStop();
-            //     toastr.error(data.message);
-            // });
+            // console.log(JSON.stringify(saveBoxList));
+            BioBankBlockUi.blockUiStart();
+            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
+                toastr.success("分装成功!");
+                vm.dtOptions.isHeaderCompiled = false;
+                vm.dtInstance.rerender();
+                _splitABox(vm.box.id);
+                vm.boxList = [];
+                vm.frozenBoxCode = "";
+                $(".box-selected").removeClass("box-selected");
+            }).error(function (data) {
+                vm.recover();
+                BioBankBlockUi.blockUiStop();
+                toastr.error(data.message);
+            });
         };
         //复原
         vm.recover = function () {

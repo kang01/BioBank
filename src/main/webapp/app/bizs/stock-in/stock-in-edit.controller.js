@@ -473,6 +473,7 @@
 
                 var json = res.data;
                 vm.stockInBox = res.data.data;
+                BioBankBlockUi.blockUiStop();
                 _isStockInFinish();
                 var error = json.error || json.sError;
                 if ( error ) {
@@ -638,6 +639,7 @@
         vm.editFlag = false;
         //编辑
         function _editBox(stockInBoxId) {
+            BioBankBlockUi.blockUiStart();
             vm.box = {};
             vm.splittingBox = false;
             StockInInputService.queryEditStockInBox(stockInBoxId).success(function (data) {
@@ -793,6 +795,7 @@
         var htm;
         //根据盒子编码取管子
         function _fnTubeByBoxCode(stockInBoxId) {
+            BioBankBlockUi.blockUiStart();
             blockUIConfig.autoBlock = false;
             StockInInputService.queryEditStockInBox(stockInBoxId).success(function (data) {
                 blockUIConfig.autoBlock = true;
@@ -842,53 +845,6 @@
                 //取未满盒子
                 _fnIncompleteBox();
             });
-            // function onFrozenSuccess(data) {
-            //     vm.box =  data;
-            //     if(!vm.box.frozenTubeDTOS.length){
-            //         vm.splittingBox = false;
-            //     }else{
-            //         vm.splittingBox = true;
-            //     }
-            //
-            //     //获取样本分类
-            //     _fnQueryProjectSampleClass(vm.entity.projectId,vm.box.sampleType.id,vm.box.sampleType.isMixed);
-            //     var settings = {
-            //         minCols: +vm.box.frozenBoxType.frozenBoxTypeColumns,
-            //         minRows: +vm.box.frozenBoxType.frozenBoxTypeRows
-            //     };
-            //     var tubesInTable = [];
-            //     var colHeaders = [];
-            //     var rowHeaders = [];
-            //     for(var i = 0; i < settings.minRows; i++){
-            //         var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
-            //         if(i > 7){
-            //             pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1);
-            //         }
-            //         rowHeaders.push(pos.tubeRows);
-            //         var tubes = [];
-            //         for(var j = 0; j < settings.minCols;j++){
-            //             pos.tubeColumns = j + 1 + "";
-            //             if (colHeaders.length < settings.minCols){
-            //                 colHeaders.push(pos.tubeColumns);
-            //             }
-            //             var tubeInBox = _.filter(vm.box.frozenTubeDTOS, pos)[0];
-            //             var tube = _createTubeForTableCell(tubeInBox, vm.box, pos);
-            //             tubes.push(tube);
-            //         }
-            //         tubesInTable.push(tubes);
-            //     }
-            //     vm.frozenTubeArray = tubesInTable;
-            //     settings.rowHeaders = rowHeaders;
-            //     settings.colHeaders = colHeaders;
-            //     setTimeout(function () {
-            //         hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
-            //         hotRegisterer.getInstance('my-handsontable').loadData(tubesInTable);
-            //         hotRegisterer.getInstance('my-handsontable').render();
-            //     },500);
-            //     //取未满盒子
-            //     _fnIncompleteBox();
-            // }
-
         }
         var customRenderer = function (hotInstance, td, row, col, prop, value, cellProperties) {
             if(value){
@@ -1367,8 +1323,16 @@
             var obox = angular.copy(vm.obox);
 
             // if(!vm.boxList.length){
-            vm.boxList.push(obox);
+                vm.boxList.push(obox);
             // }else{
+            //     _.forEach(vm.boxList,function (box) {
+            //         if(box.frozenBoxCode == obox.frozenBoxCode){
+            //             box.stockInFrozenTubeList = obox.stockInFrozenTubeList;
+            //         }else{
+            //             vm.boxList.push(obox)
+            //         }
+            //     })
+            // }
             //     for(var i = 0; i < vm.boxList.length; i++){
             //         if(obox.sampleClassification.id == vm.boxList[i].sampleClassification.id){
             //             if(vm.boxList.length > 1){
@@ -1402,21 +1366,21 @@
                 }
                 saveBoxList.push(objBox);
             }
-            // console.log(JSON.stringify(saveBoxList));
-            BioBankBlockUi.blockUiStart();
-            SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
-                toastr.success("分装成功!");
-                vm.dtOptions.isHeaderCompiled = false;
-                vm.dtInstance.rerender();
-                _splitABox(vm.box.id);
-                vm.boxList = [];
-                vm.frozenBoxCode = "";
-                $(".box-selected").removeClass("box-selected");
-            }).error(function (data) {
-                vm.recover();
-                BioBankBlockUi.blockUiStop();
-                toastr.error(data.message);
-            });
+            console.log(JSON.stringify(saveBoxList));
+            // BioBankBlockUi.blockUiStart();
+            // SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
+            //     toastr.success("分装成功!");
+            //     vm.dtOptions.isHeaderCompiled = false;
+            //     vm.dtInstance.rerender();
+            //     _splitABox(vm.box.id);
+            //     vm.boxList = [];
+            //     vm.frozenBoxCode = "";
+            //     $(".box-selected").removeClass("box-selected");
+            // }).error(function (data) {
+            //     vm.recover();
+            //     BioBankBlockUi.blockUiStop();
+            //     toastr.error(data.message);
+            // });
         };
         //复原
         vm.recover = function () {

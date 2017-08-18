@@ -29,7 +29,7 @@
             vm.reader.onload = function(ev) {
                 $scope.$apply(function(){
                     vm.thumb = {
-                        imgSrc : ev.target.result ||  'content/images/timg.jpg' //接收base64
+                        imgSrc : ev.target.result ||  'content/images/nosee1.png' //接收base64
                     };
 
                     var img = new Image();

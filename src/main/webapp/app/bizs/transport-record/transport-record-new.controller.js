@@ -1332,6 +1332,7 @@
                     // initFrozenTube(vm.box.frozenBoxType.frozenBoxTypeRows,vm.box.frozenBoxType.frozenBoxTypeColumns);
                     _reloadTubesForTable(vm.box);
                     vm.boxStr = JSON.stringify(vm.createBoxDataFromTubesTable());
+                    BioBankBlockUi.blockUiStop();
                 });
 
                 //统计样本数
@@ -1344,6 +1345,7 @@
             TransportRecordService.get({id : vm.transportRecord.id},onRecordSuccess,onError);
         }
         function onRecordSuccess(data) {
+            BioBankBlockUi.blockUiStop();
             //样本人份
             vm.transportRecord.sampleNumber = data.sampleNumber;
             //有效样本数
@@ -1369,7 +1371,6 @@
         vm.getSelectedRating = function (rating) {
             vm.transportRecord.sampleSatisfaction = rating;
         };
-
 
         //附件
         function _fnQueryTransportRecordFile() {
@@ -1430,9 +1431,6 @@
                 _fnQueryTransportRecordFile();
             });
         }
-
-
-
     }
     function BoxInstanceCtrl($uibModalInstance) {
         var ctrl = this;

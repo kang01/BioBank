@@ -1,13 +1,11 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="vm.cancel()"
             style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span>&times;</span></button>
-    <h3 class="modal-title" id="modal-title">入库操作</h3>
+    <h3 class="modal-title" id="modal-title">转运操作</h3>
 </div>
 <div class="modal-body" id="modal-body">
-    <div ng-if="!vm.stockInFlag">
-        <h4>入库操作，准备创建入库单？</h4>
-    </div>
-    <div ng-if="vm.stockInFlag">
+
+    <div >
         <form class="">
             <div class="row">
                 <div class="col-md-4">
@@ -50,54 +48,13 @@
                     </div>
                 </div>
             </div>
-
-
-            <!--<div class="form-group">-->
-            <!--<label class="col-md-2 control-label">-->
-            <!--<span class="required-field"></span>-->
-            <!--接收日期-->
-            <!--</label>-->
-            <!--<div class="col-md-6">-->
-            <!--<div class="input-group">-->
-            <!--<input  type="text" class="form-control" name="receiveDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"-->
-            <!--required  />-->
-            <!--<span class="input-group-btn">-->
-            <!--<button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i class="glyphicon glyphicon-calendar"></i></button>-->
-            <!--</span>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--<label class="col-md-2 control-label">-->
-            <!--<span class="required-field"></span>-->
-            <!--接收人-->
-            <!--</label>-->
-            <!--<div class="col-md-6">-->
-            <!--<selectize options='vm.receiverOptions' config="vm.receiverConfig"-->
-            <!--ng-model="vm.transportRecord.login"></selectize>-->
-            <!--<input type="hidden" class="form-control"   ng-model="vm.transportRecord.login">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--<label class="col-md-2 control-label">-->
-            <!--<span class="required-field"></span>-->
-            <!--密码-->
-            <!--</label>-->
-            <!--<div class="col-md-6">-->
-            <!--<input type="password" class="form-control"   ng-model="vm.transportRecord.password">-->
-            <!--</div>-->
-            <!--</div>-->
         </form>
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-if="!vm.stockInFlag" ng-click="vm.yes()">
-        是
-    </button>
-    <button class="btn btn-warning" type="button" ng-if="!vm.stockInFlag" ng-click="vm.cancel()">否</button>
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-if="vm.stockInFlag"
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()"
             ng-disabled="!vm.transportRecord.password || !vm.transportRecord.receiveDate || !vm.transportRecord.login">
         确定
     </button>
-    <button class="btn btn-warning" type="button" ng-if="vm.stockInFlag" ng-click="vm.cancel()">取消</button>
+    <button class="btn btn-warning" type="button"  ng-click="vm.cancel()">取消</button>
 </div>

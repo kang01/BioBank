@@ -19,6 +19,7 @@
         vm.transportRecord.login = items.receiver;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
+        vm.stockInFlag = false;
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }
@@ -37,6 +38,10 @@
         function onError(data) {
             toastr.error(data.message);
         }
+
+        vm.yes = function () {
+          vm.stockInFlag  = true;
+        };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };

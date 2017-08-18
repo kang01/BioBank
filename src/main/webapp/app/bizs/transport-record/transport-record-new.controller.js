@@ -183,7 +183,7 @@
             vm.transferFinish = function () {
                 modalInstance = $uibModal.open({
                     animation: true,
-                    templateUrl: 'app/bizs/transport-record/stock-in-affirm-modal.html',
+                    templateUrl: 'app/bizs/transport-record/modal/stock-in-affirm-modal.html',
                     controller: 'StockInAffirmModalController',
                     backdrop:'static',
                     controllerAs: 'vm',

@@ -482,7 +482,9 @@
                 vm.selected[full.id] = false;
             }
             var html = '';
-            html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
+            if(full.frozenTubeState == '2004'){
+                html = '<input type="checkbox" ng-model="vm.selected[' + full.id + ']" ng-click="vm.toggleOne(vm.selected)">';
+            }
             return html;
         }
         function createdRow(row, data, dataIndex) {

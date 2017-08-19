@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskDetailController', TaskDetailController);
 
-    TaskDetailController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','$timeout','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService','BioBankDataTable'];
+    TaskDetailController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','Principal','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService','BioBankDataTable'];
 
-    function TaskDetailController($scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,$timeout,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService,BioBankDataTable) {
+    function TaskDetailController($scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,Principal,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService,BioBankDataTable) {
         var vm = this;
         var modalInstance;
         vm.boxInstance = {};
@@ -52,6 +52,11 @@
                 vm.taskId = $stateParams.taskId;
                 TaskService.queryTaskDesc(vm.taskId).success(function (data) {
                     vm.task = data;
+                    if(!vm.task.stockOutHeadId1){
+                        if(vm.account.login != "admin"){
+                            vm.task.stockOutHeadId1 = vm.account.id;
+                        }
+                    }
                     vm.task.stockOutDate = new Date(data.stockOutDate);
                     vm.usedTime = (data.usedTime/60).toFixed(1);
                     if(vm.usedTime < 1){
@@ -73,6 +78,7 @@
 
             _fnQueryTaskBoxes();
             _fnQueryStockOutList();
+            _fnQueryUser();
         }
         function _fnQueryTaskBoxes() {
             //获取冻存盒列表
@@ -89,6 +95,11 @@
                 vm.stockOutLen = _.filter(vm.stockOutBoxList,{status:"1702"}).length;
                 vm.stockOutSampleOptions.withOption('data', vm.stockOutBoxList);
                 vm.stockOutSampleInstance.rerender();
+            });
+        }
+        function _fnQueryUser() {
+            Principal.identity().then(function(account) {
+                vm.account = account;
             });
         }
         _fnInitTask();
@@ -114,12 +125,12 @@
         vm.close = function () {
             $state.go('task-list');
         };
-        //保存任务
+        //保存任务信息
         function _fnSaveTask() {
             BioBankBlockUi.blockUiStart();
             TaskService.saveTaskBox(vm.task).success(function (data) {
                 BioBankBlockUi.blockUiStop();
-                if(!stockOutFlag){
+                if(!isStockOutFlag){
                     toastr.success("保存任务成功!");
                 }
             }).error(function (data) {
@@ -219,11 +230,11 @@
 
             });
         }
+        //扫码的数量
         var needScanTubesLen;
-
-        vm.tubeList = [];
         //加载管子表控件
         function _reloadTubesForTable(box){
+            vm.tubeList = [];
             var tableCtrl = _getSampleDetailsTableCtrl();
             var settings = {};
             var tubesInTable = [];
@@ -240,9 +251,7 @@
                 rowHeaders.push(pos.tubeRows);
                 for (var j = 0; j < col; ++j){
                     pos.tubeColumns = j + 1 + "";
-                    // if (colHeaders.length < settings.minCols){
                     colHeaders.push(pos.tubeColumns);
-                    // }
                     var tubeInBox = _.filter(box.frozenTubeDTOS, pos)[0];
                     var tube = _createTubeForTableCell(tubeInBox, i, j + 1, pos);
                     tubes.push(tube);
@@ -250,25 +259,28 @@
                 tubesInTable.push(tubes);
 
             }
+            //撤销时
             for(var m = 0; m < tubesInTable.length;m++){
                 for(var n = 0; n < tubesInTable[m].length;n++){
                     for(var k = 0; k < vm.boxInTubes.length; k++){
                         if(vm.boxInTubes[k].id == tubesInTable[m][n].id){
+                            //扫码标识
                             tubesInTable[m][n].scanCodeFlag = true;
+                            //扫码下标
                             tubesInTable[m][n].orderIndex = vm.boxInTubes[k].orderIndex;
                         }
                     }
-                    vm.tubeList.push(tubesInTable[m][n]);
+                    if(tubesInTable[m][n].sampleCode || tubesInTable[m][n].sampleTempCode){
+                        vm.tubeList.push(tubesInTable[m][n]);
+                    }
+
                 }
             }
             vm.tubes = tubesInTable;
-
-
-            //是否满盒出库
+            //是否满盒出库 stockOutFlag出库标识，1：要出库样本 0 不出库样本
             needScanTubesLen = _.filter(vm.tubeList,{stockOutFlag:1}).length;
             if(needScanTubesLen == vm.tubeList.length){
                 vm.boxInFullFlag = true;
-                vm.boxInTubes = vm.tubeList;
             }else{
                 vm.boxInFullFlag = false;
             }
@@ -327,7 +339,6 @@
                     }
                 }
             }
-
             return tube;
         }
 
@@ -491,19 +502,23 @@
             }
 
         }
-
+        /*----------------------扫码-------------------------*/
         //装盒的样本
         vm.boxInTubes = [];
-
         var scanCodeTimer;
+        //扫码操作
         vm.scanClick = function () {
             $("#focusTextarea").focus();
+            //操作按钮切换
             vm.flagStatus = true;
+            //定时器
             window.clearInterval(scanCodeTimer);
+
             scanCodeTimer = setInterval(function(){
                 _fnScanCode();
             },500);
         };
+        //取消扫码
         vm.scanCodeBlur = function () {
             vm.flagStatus = false;
             window.clearInterval(scanCodeTimer);
@@ -515,10 +530,10 @@
             }
             var tableCtrl = _getSampleDetailsTableCtrl();
             var sampleCode = vm.sampleCode.toUpperCase();
-            // var sampleCodeLower = vm.sampleCode.toLowerCase();
             vm.sampleCode = "";
             //获取待出库样本
             var stockOutTubes = _.filter(vm.tubeList,{stockOutFlag:1});
+
             _.forEach(stockOutTubes, function(sample) {
                 if(sample.sampleCode){
                     sample.sampleCode = sample.sampleCode.toUpperCase();
@@ -528,21 +543,21 @@
 
             });
             //获取扫码取得样本
-            var scanCodeTubes = _.filter(stockOutTubes,{"sampleCode": sampleCode});
-            if (!scanCodeTubes.length){
-                scanCodeTubes = _.filter(stockOutTubes,{"sampleTempCode": sampleCode});
+            var scanCodeTubes = _.find(stockOutTubes,{"sampleCode": sampleCode});
+            if (!scanCodeTubes){
+                scanCodeTubes = _.find(stockOutTubes,{"sampleTempCode": sampleCode});
             }
-            if(!scanCodeTubes.length) {
+            if(!scanCodeTubes) {
                 setTimeout(function(){
                     toastr.error("编码错误，请重新扫码!");
                 },100);
                 return;
             }
-            var row = scanCodeTubes[0].rowNO;
-            var col = scanCodeTubes[0].colNO;
-            var boxInTubes = vm.boxInTubes || [];
+            var row = scanCodeTubes.rowNO;
+            var col = scanCodeTubes.colNO;
+            var boxInTubes = angular.copy(vm.boxInTubes);
             //装盒样本
-            var len = _.filter(boxInTubes,{id: scanCodeTubes[0].id}).length;
+            var len = _.filter(boxInTubes,{id: scanCodeTubes.id}).length;
 
             // 样本是否已经扫码
             if(len){
@@ -551,9 +566,9 @@
                 },100);
                 return;
             }
-            scanCodeTubes[0].orderIndex = boxInTubes.length + 1;
+            scanCodeTubes.orderIndex = boxInTubes.length + 1;
             vm.tubes[row][col-1].orderIndex = boxInTubes.length + 1;
-            boxInTubes.push(scanCodeTubes[0]);
+            boxInTubes.push(scanCodeTubes);
             //判断是否都全部扫码
             vm.allInFlag = boxInTubes.length == stockOutTubes.length;
             //扫码标识
@@ -599,7 +614,7 @@
             });
         }
 
-        //1：未出库样本批注、2：已出库样本批注
+        //批注 1：未出库样本、2：已出库样本
         function _fnCommentModal(status,tempBoxId) {
             modalInstance = $uibModal.open({
                 animation: true,
@@ -675,7 +690,8 @@
         }
         //装盒
         function _fnBoxInModal() {
-            stockOutFlag = true;
+            isStockOutFlag = true;
+            //保存任务信息
             _fnSaveTask();
             modalInstance = $uibModal.open({
                 animation: true,
@@ -708,7 +724,7 @@
             vm.sampleDetailsTableCtrl = hotRegisterer.getInstance('sampleDetailsTable');
             return vm.sampleDetailsTableCtrl;
         }
-
+        /*----------------------扫码-------------------------*/
         vm.selected = {};
         vm.selectAll = false;
         // 处理盒子选中状态
@@ -803,9 +819,13 @@
         }
 
         //出库
-        var stockOutFlag = false;
+        var isStockOutFlag = false;
         function _fnTaskStockOutModal(frozenBoxIds) {
-            stockOutFlag = true;
+            if(vm.task.stockOutHeadId1 == vm.task.stockOutHeadId2){
+                toastr.error("出库负责人不能为同一人！");
+                return;
+            }
+            isStockOutFlag = true;
             _fnSaveTask();
             modalInstance = $uibModal.open({
                 animation: true,
@@ -826,7 +846,7 @@
             });
             modalInstance.result.then(function (data) {
                 _fnQueryStockOutList();
-                stockOutFlag = false;
+                isStockOutFlag = false;
             });
         }
         function onError(error) {

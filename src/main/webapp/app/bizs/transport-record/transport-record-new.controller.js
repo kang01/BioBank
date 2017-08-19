@@ -44,7 +44,9 @@
         function _fnQueryUser() {
             Principal.identity().then(function(account) {
                 vm.account = account;
-                vm.transportRecord.receiver = vm.account.login;
+                if(vm.account.login != "admin"){
+                    vm.transportRecord.receiver = vm.account.login;
+                }
             });
         }
         function _initTransportRecordPage(){

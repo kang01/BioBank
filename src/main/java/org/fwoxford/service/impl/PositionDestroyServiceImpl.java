@@ -242,6 +242,9 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
         if(positionDestroyDTO.getOperatorId1() == null || positionDestroyDTO.getOperatorId2()==null){
             throw new BankServiceException("操作人不能为空！");
         }
+        if(positionDestroyDTO.getOperatorId1() ==  positionDestroyDTO.getOperatorId2()){
+            throw new BankServiceException("操作人不能为同一个人！");
+        }
         if(positionDestroyDTO.getPassword1() == null || positionDestroyDTO.getPassword2()==null){
             throw new BankServiceException("密码不能为空！");
         }

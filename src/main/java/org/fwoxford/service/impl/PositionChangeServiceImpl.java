@@ -361,6 +361,9 @@ public class PositionChangeServiceImpl implements PositionChangeService{
         if(positionChangeDTO.getOperatorId1() == null || positionChangeDTO.getOperatorId2()==null){
             throw new BankServiceException("操作人不能为空！");
         }
+        if(positionChangeDTO.getOperatorId1() == positionChangeDTO.getOperatorId2()){
+            throw new BankServiceException("操作人不能为同一个人！");
+        }
         if(positionChangeDTO.getPassword1() == null || positionChangeDTO.getPassword2()==null){
             throw new BankServiceException("密码不能为空！");
         }

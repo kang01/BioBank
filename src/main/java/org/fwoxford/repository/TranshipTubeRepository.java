@@ -31,20 +31,8 @@ public interface TranshipTubeRepository extends JpaRepository<TranshipTube,Long>
         " left join frozen_tube f on t.frozen_tube_id = f.id " +
         " left join tranship_box tb on  t.tranship_box_id = tb.id " +
         " left join tranship s on  tb.tranship_id = s.id " +
-        " where s.tranship_code = ?1 and f.frozen_tube_state = '2002'",nativeQuery = true)
-    Long countUnStockInTubeByTranshipCode(String transhipCode);
-
-    @Query(value = "select count(distinct t.id) from tranship_tube t " +
-        " left join frozen_tube f on t.frozen_tube_id = f.id " +
-        " left join tranship_box tb on  t.tranship_box_id = ?1 " +
-        " where  f.frozen_tube_state = '2002'",nativeQuery = true)
-    Long countUnStockInTubeByTranshipBox(Long transhipBoxId);
-
-    @Query(value = "select count(distinct t.id) from tranship_tube t " +
-        " left join frozen_tube f on t.frozen_tube_id = f.id " +
-        " left join tranship_box tb on  t.tranship_box_id = tb.id " +
-        " left join tranship s on  tb.tranship_id = s.id " +
-        " where s.tranship_code = ?1 and f.frozen_tube_state = ?2",nativeQuery = true)
+        " left join stock_in_tube st on  st.frozen_tube_id = f.id " +
+        " where s.tranship_code = ?1 and st.frozen_tube_state = ?2",nativeQuery = true)
     Long countUnStockInTubeByTranshipCodeAndStatus(String transhipCode, String status);
 
     @Modifying

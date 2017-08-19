@@ -122,7 +122,7 @@ public class StockListServiceImpl implements StockListService {
                     e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getSampleTypeId(),e.getSampleClassificationId(),e.getFrozenBoxTypeId(),e.getMemo(),e.getProjectId());
             }
         };
-        Specification<FrozenBoxListAllDataTableEntity> specification = new Specification<FrozenBoxListAllDataTableEntity>() {
+        Specification<FrozenBoxListAllDataTableEntity> specification =  new Specification<FrozenBoxListAllDataTableEntity>() {
             @Override
             public Predicate toPredicate(Root<FrozenBoxListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 query = getSearchQueryForBox(root,query,cb,searchForm);
@@ -354,28 +354,39 @@ public class StockListServiceImpl implements StockListService {
                         break;
                     default:break;
                 }
-                Predicate p5 = null;
+                Predicate p11 = null;
+                Expression exp = root.get(searchValue).as(Long.class);
                 //1：大于，2：大于等于，3：等于，4：小于，5：小于等于
                 switch (searchForm.getCompareType()) {
                     case 1:
-                        p5 = cb.gt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            p11 = cb.ge(exp, 1);
+                        }else{
+                            p11 = cb.gt(exp, searchForm.getNumber());
+                        }
                         break;
                     case 2:
-                        p5 = cb.ge(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.ge(exp, searchForm.getNumber());
                         break;
                     case 3:
-                        p5 = cb.equal(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            Predicate p11_1 = cb.and(cb.gt(exp, -1));
+                            Predicate p11_2 = cb.and(cb.lt(exp, 1));
+                            p11 = cb.and(p11_1,p11_2);
+                        }else{
+                            p11 = cb.equal(exp, searchForm.getNumber());
+                        }
                         break;
                     case 4:
-                        p5 = cb.lt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.lt(exp, searchForm.getNumber());
                         break;
                     case 5:
-                        p5 = cb.le(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.le(exp, searchForm.getNumber());
                         break;
                     default:break;
                 }
                 if (searchForm.getSpaceType() != null && searchForm.getCompareType() != null && searchForm.getNumber() != null) {
-                    predicate.add(p5);
+                    predicate.add(p11);
                 }
             }
             Predicate[] pre = new Predicate[predicate.size()];
@@ -432,28 +443,39 @@ public class StockListServiceImpl implements StockListService {
                         break;
                     default:break;
                 }
-                Predicate p5 = null;
+                Predicate p11 = null;
+                Expression exp = root.get(searchValue).as(Long.class);
                 //1：大于，2：大于等于，3：等于，4：小于，5：小于等于
                 switch (searchForm.getCompareType()) {
                     case 1:
-                        p5 = cb.gt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            p11 = cb.ge(exp, 1);
+                        }else{
+                            p11 = cb.gt(exp, searchForm.getNumber());
+                        }
                         break;
                     case 2:
-                        p5 = cb.ge(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.ge(exp, searchForm.getNumber());
                         break;
                     case 3:
-                        p5 = cb.equal(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            Predicate p11_1 = cb.and(cb.gt(exp, -1));
+                            Predicate p11_2 = cb.and(cb.lt(exp, 1));
+                            p11 = cb.and(p11_1,p11_2);
+                        }else{
+                            p11 = cb.equal(exp, searchForm.getNumber());
+                        }
                         break;
                     case 4:
-                        p5 = cb.lt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.lt(exp, searchForm.getNumber());
                         break;
                     case 5:
-                        p5 = cb.le(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.le(exp, searchForm.getNumber());
                         break;
                     default:break;
                 }
                 if (searchForm.getSpaceType() != null && searchForm.getCompareType() != null && searchForm.getNumber() != null) {
-                    predicate.add(p5);
+                    predicate.add(p11);
                 }
             }
             Predicate[] pre = new Predicate[predicate.size()];
@@ -510,28 +532,39 @@ public class StockListServiceImpl implements StockListService {
                         break;
                     default:break;
                 }
-                Predicate p5 = null;
+                Predicate p11 = null;
+                Expression exp = root.get(searchValue).as(Long.class);
                 //1：大于，2：大于等于，3：等于，4：小于，5：小于等于
                 switch (searchForm.getCompareType()) {
                     case 1:
-                        p5 = cb.gt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            p11 = cb.ge(exp, 1);
+                        }else{
+                            p11 = cb.gt(exp, searchForm.getNumber());
+                        }
                         break;
                     case 2:
-                        p5 = cb.ge(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.ge(exp, searchForm.getNumber());
                         break;
                     case 3:
-                        p5 = cb.equal(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            Predicate p11_1 = cb.and(cb.gt(exp, -1));
+                            Predicate p11_2 = cb.and(cb.lt(exp, 1));
+                            p11 = cb.and(p11_1,p11_2);
+                        }else{
+                            p11 = cb.equal(exp, searchForm.getNumber());
+                        }
                         break;
                     case 4:
-                        p5 = cb.lt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.lt(exp, searchForm.getNumber());
                         break;
                     case 5:
-                        p5 = cb.le(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.le(exp, searchForm.getNumber());
                         break;
                     default:break;
                 }
                 if (searchForm.getSpaceType() != null && searchForm.getCompareType() != null && searchForm.getNumber() != null) {
-                    predicate.add(p5);
+                    predicate.add(p11);
                 }
             }
             Predicate[] pre = new Predicate[predicate.size()];
@@ -574,8 +607,8 @@ public class StockListServiceImpl implements StockListService {
                 predicate.add(p4);
             }
             if (searchForm.getShelvesId() != null) {
-                Predicate p5 = cb.equal(root.get("shelvesId").as(Long.class), searchForm.getShelvesId());
-                predicate.add(p5);
+                Predicate p6 = cb.equal(root.get("shelvesId").as(Long.class), searchForm.getShelvesId());
+                predicate.add(p6);
             }
             if (searchForm.getSpaceType() != null) {
                 String searchValue = "";
@@ -588,40 +621,50 @@ public class StockListServiceImpl implements StockListService {
                         break;
                     default:break;
                 }
-                Predicate p5 = null;
+                Predicate p11 = null;
+                Expression exp = root.get(searchValue).as(Long.class);
                 //1：大于，2：大于等于，3：等于，4：小于，5：小于等于
                 switch (searchForm.getCompareType()) {
                     case 1:
-                        p5 = cb.gt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            p11 = cb.ge(exp, 1);
+                        }else{
+                            p11 = cb.gt(exp, searchForm.getNumber());
+                        }
                         break;
                     case 2:
-                        p5 = cb.ge(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.ge(exp, searchForm.getNumber());
                         break;
                     case 3:
-                        p5 = cb.equal(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            Predicate p11_1 = cb.and(cb.gt(exp, -1));
+                            Predicate p11_2 = cb.and(cb.lt(exp, 1));
+                            p11 = cb.and(p11_1,p11_2);
+                        }else{
+                            p11 = cb.equal(exp, searchForm.getNumber());
+                        }
                         break;
                     case 4:
-                        p5 = cb.lt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.lt(exp, searchForm.getNumber());
                         break;
                     case 5:
-                        p5 = cb.le(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.le(exp, searchForm.getNumber());
                         break;
                     default:break;
                 }
                 if (searchForm.getSpaceType() != null && searchForm.getCompareType() != null && searchForm.getNumber() != null) {
-                    predicate.add(p5);
+                    predicate.add(p11);
                 }
             }
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));
         }
+
         return query;
     }
 
     private CriteriaQuery<?> getSearchQueryForBox(Root<FrozenBoxListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, FrozenBoxListSearchForm searchForm) {
         List<Predicate> predicate = new ArrayList<>();
-        Predicate p = cb.notEqual(root.get("status").as(String.class), Constants.INVALID);
-        predicate.add(p);
         if (searchForm != null) {
             if (searchForm.getProjectCodeStr() != null && searchForm.getProjectCodeStr().length > 0) {
                 CriteriaBuilder.In<String> in = cb.in(root.get("projectCode"));
@@ -654,24 +697,24 @@ public class StockListServiceImpl implements StockListService {
                 predicate.add(p5);
             }
             if (searchForm.getRowsInShelf() != null) {
-                Predicate p5 = cb.equal(root.get("rowsInShelf").as(String.class), searchForm.getRowsInShelf());
-                predicate.add(p5);
+                Predicate p6 = cb.equal(root.get("rowsInShelf").as(String.class), searchForm.getRowsInShelf());
+                predicate.add(p6);
             }
             if (searchForm.getColumnsInShelf() != null) {
-                Predicate p5 = cb.equal(root.get("columnsInShelf").as(String.class), searchForm.getColumnsInShelf());
-                predicate.add(p5);
+                Predicate p7 = cb.equal(root.get("columnsInShelf").as(String.class), searchForm.getColumnsInShelf());
+                predicate.add(p7);
             }
             if (searchForm.getSampleTypeId() != null) {
-                Predicate p5 = cb.equal(root.get("sampleTypeId").as(Long.class), searchForm.getSampleTypeId());
-                predicate.add(p5);
+                Predicate p8 = cb.equal(root.get("sampleTypeId").as(Long.class), searchForm.getSampleTypeId());
+                predicate.add(p8);
             }
             if (searchForm.getSampleClassificationId() != null) {
-                Predicate p5 = cb.equal(root.get("sampleClassificationId").as(Long.class), searchForm.getSampleClassificationId());
-                predicate.add(p5);
+                Predicate p9 = cb.equal(root.get("sampleClassificationId").as(Long.class), searchForm.getSampleClassificationId());
+                predicate.add(p9);
             }
             if (searchForm.getFrozenBoxTypeId() != null) {
-                Predicate p5 = cb.equal(root.get("frozenBoxTypeId").as(Long.class), searchForm.getFrozenBoxTypeId());
-                predicate.add(p5);
+                Predicate p10 = cb.equal(root.get("frozenBoxTypeId").as(Long.class), searchForm.getFrozenBoxTypeId());
+                predicate.add(p10);
             }
             if (searchForm.getSpaceType() != null) {
                 String searchValue = "";
@@ -684,33 +727,46 @@ public class StockListServiceImpl implements StockListService {
                         break;
                     default:break;
                 }
-                Predicate p5 = null;
+                Predicate p11 = null;
+                Expression exp = root.get(searchValue).as(Long.class);
                 //1：大于，2：大于等于，3：等于，4：小于，5：小于等于
                 switch (searchForm.getCompareType()) {
                     case 1:
-                        p5 = cb.gt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            p11 = cb.ge(exp, 1);
+                        }else{
+                            p11 = cb.gt(exp, searchForm.getNumber());
+                        }
                         break;
                     case 2:
-                        p5 = cb.ge(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.ge(exp, searchForm.getNumber());
                         break;
                     case 3:
-                        p5 = cb.equal(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            Predicate p11_1 = cb.and(cb.gt(exp, -1));
+                            Predicate p11_2 = cb.and(cb.lt(exp, 1));
+                            p11 = cb.and(p11_1,p11_2);
+                        }else{
+                            p11 = cb.equal(exp, searchForm.getNumber());
+                        }
                         break;
                     case 4:
-                        p5 = cb.lt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.lt(exp, searchForm.getNumber());
                         break;
                     case 5:
-                        p5 = cb.le(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.le(exp, searchForm.getNumber());
                         break;
                     default:break;
                 }
                 if (searchForm.getSpaceType() != null && searchForm.getCompareType() != null && searchForm.getNumber() != null) {
-                    predicate.add(p5);
+                    predicate.add(p11);
                 }
             }
-            Predicate[] pre = new Predicate[predicate.size()];
-            query.where(predicate.toArray(pre));
         }
+        Predicate p1 = cb.notEqual(root.get("status").as(String.class), Constants.INVALID);
+        predicate.add(p1);
+        Predicate[] pre = new Predicate[predicate.size()];
+        query.where(predicate.toArray(pre));
         return query;
     }
 
@@ -855,28 +911,39 @@ public class StockListServiceImpl implements StockListService {
                         break;
                     default:break;
                 }
-                Predicate p5 = null;
+                Predicate p11 = null;
+                Expression exp = root.get(searchValue).as(Long.class);
                 //1：大于，2：大于等于，3：等于，4：小于，5：小于等于
                 switch (searchForm.getCompareType()) {
                     case 1:
-                        p5 = cb.gt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            p11 = cb.ge(exp, 1);
+                        }else{
+                            p11 = cb.gt(exp, searchForm.getNumber());
+                        }
                         break;
                     case 2:
-                        p5 = cb.ge(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.ge(exp, searchForm.getNumber());
                         break;
                     case 3:
-                        p5 = cb.equal(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            Predicate p11_1 = cb.and(cb.gt(exp, -1));
+                            Predicate p11_2 = cb.and(cb.lt(exp, 1));
+                            p11 = cb.and(p11_1,p11_2);
+                        }else{
+                            p11 = cb.equal(exp, searchForm.getNumber());
+                        }
                         break;
                     case 4:
-                        p5 = cb.lt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.lt(exp, searchForm.getNumber());
                         break;
                     case 5:
-                        p5 = cb.le(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.le(exp, searchForm.getNumber());
                         break;
                     default:break;
                 }
                 if (searchForm.getSpaceType() != null && searchForm.getCompareType() != null && searchForm.getNumber() != null) {
-                    predicate.add(p5);
+                    predicate.add(p11);
                 }
             }
             Predicate[] pre = new Predicate[predicate.size()];
@@ -905,20 +972,20 @@ public class StockListServiceImpl implements StockListService {
                 predicate.add(p2);
             }
             if (searchForm.getStatus() != null) {
-                Predicate p3 = cb.equal(root.get("status").as(String.class), searchForm.getStatus());
-                predicate.add(p3);
+                Predicate p7 = cb.equal(root.get("status").as(String.class), searchForm.getStatus());
+                predicate.add(p7);
             }
             if (searchForm.getEquipmentId() != null) {
-                Predicate p3 = cb.equal(root.get("equipmentId").as(Long.class), searchForm.getEquipmentId());
-                predicate.add(p3);
+                Predicate p8 = cb.equal(root.get("equipmentId").as(Long.class), searchForm.getEquipmentId());
+                predicate.add(p8);
             }
             if (searchForm.getAreaId() != null) {
-                Predicate p4 = cb.equal(root.get("areaId").as(Long.class), searchForm.getAreaId());
-                predicate.add(p4);
+                Predicate p9 = cb.equal(root.get("areaId").as(Long.class), searchForm.getAreaId());
+                predicate.add(p9);
             }
             if (searchForm.getShelvesId() != null) {
-                Predicate p5 = cb.equal(root.get("shelvesId").as(Long.class), searchForm.getShelvesId());
-                predicate.add(p5);
+                Predicate p10 = cb.equal(root.get("shelvesId").as(Long.class), searchForm.getShelvesId());
+                predicate.add(p10);
             }
             if (searchForm.getSpaceType() != null) {
                 String searchValue = "";
@@ -931,28 +998,39 @@ public class StockListServiceImpl implements StockListService {
                         break;
                     default:break;
                 }
-                Predicate p5 = null;
+                Predicate p11 = null;
+                Expression exp = root.get(searchValue).as(Long.class);
                 //1：大于，2：大于等于，3：等于，4：小于，5：小于等于
                 switch (searchForm.getCompareType()) {
                     case 1:
-                        p5 = cb.gt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            p11 = cb.ge(exp, 1);
+                        }else{
+                            p11 = cb.gt(exp, searchForm.getNumber());
+                        }
                         break;
                     case 2:
-                        p5 = cb.ge(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.ge(exp, searchForm.getNumber());
                         break;
                     case 3:
-                        p5 = cb.equal(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        if(searchForm.getNumber()!=null && searchForm.getNumber()==0){
+                            Predicate p11_1 = cb.and(cb.gt(exp, -1));
+                            Predicate p11_2 = cb.and(cb.lt(exp, 1));
+                            p11 = cb.and(p11_1,p11_2);
+                        }else{
+                            p11 = cb.equal(exp, searchForm.getNumber());
+                        }
                         break;
                     case 4:
-                        p5 = cb.lt(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.lt(exp, searchForm.getNumber());
                         break;
                     case 5:
-                        p5 = cb.le(root.get(searchValue).as(Long.class), searchForm.getNumber());
+                        p11 = cb.le(exp, searchForm.getNumber());
                         break;
                     default:break;
                 }
                 if (searchForm.getSpaceType() != null && searchForm.getCompareType() != null && searchForm.getNumber() != null) {
-                    predicate.add(p5);
+                    predicate.add(p11);
                 }
             }
             Predicate[] pre = new Predicate[predicate.size()];

@@ -30,7 +30,7 @@
         vm.dtColumns = [
             DTColumnBuilder.newColumn('operateTime').withTitle('日期').withOption("width", "80"),
             DTColumnBuilder.newColumn('type').withTitle('变更').withOption("width", "50"),
-            DTColumnBuilder.newColumn('position').withTitle('冻存位置').withOption("width", "120"),
+            DTColumnBuilder.newColumn('position').withTitle('冻存位置').withOption("width", "140"),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "100"),
             DTColumnBuilder.newColumn('positionInBox').withTitle('盒内位置').withOption("width", "80"),
             DTColumnBuilder.newColumn('operator').withTitle('操作员').withOption("width", "80"),
@@ -52,6 +52,10 @@
                     type = "交接", status = "已交接";break;
                 case "105" :
                     type = "移位", status = "已入库";break;
+                case "106" :
+                    type = "换位", status = "已换位";break;
+                case "107" :
+                    type = "销毁", status = "已销毁";break;
             }
             $('td:eq(0)', row).html(operateTime);
             $('td:eq(1)', row).html(type);

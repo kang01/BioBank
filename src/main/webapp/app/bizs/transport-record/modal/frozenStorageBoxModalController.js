@@ -312,6 +312,7 @@
                                 box.status = status;
                             }
                         });
+                        vm.errorLen = _.filter(vm.obox.frozenBoxDTOList,{status:400}).length;
                     })
 
                     .finally(function (data) {

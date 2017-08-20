@@ -470,8 +470,8 @@
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "100"),
             DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "120"),
             DTColumnBuilder.newColumn('sex').withTitle('标签'),
-            DTColumnBuilder.newColumn('status').withTitle('样本状态').withOption("width", "60"),
-            DTColumnBuilder.newColumn('frozenTubeState').withTitle('库存状态').withOption("width", "60"),
+            DTColumnBuilder.newColumn('status').withTitle('样本状态').withOption("width", "80"),
+            DTColumnBuilder.newColumn('frozenTubeState').withTitle('库存状态').withOption("width", "80"),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "50").withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
         function _fnRowSelectorRender(data, type, full, meta) {

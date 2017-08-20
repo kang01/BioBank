@@ -129,27 +129,11 @@
         <button class="btn btn-warning" type="button" ng-click="ctrl.cancel()">取消</button>
     </div>
 </script>
-<script type="text/ng-template" id="progressBar.html">
-    <div class="row">
-        <div class="col-md-10 pl-0">
-            <div class="progress" style="margin: 20px">
-                <div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%;">
-                    80%
-                </div>
-
-            </div>
-        </div>
-        <div class="col-md-2" >
-            <button class="btn btn-default" style="margin: 12px" ng-click="vm.stop()">
-                <i class="fa fa-stop"></i>
-            </button>
-        </div>
-    </div>
-
-
-</script>
 <div class="mask-layer" ng-show="vm.progressFlag">
     <div class="row mr-0 progress-body">
+        <div class="col-md-12">
+            <h4>需要导入的样本数：{{vm.codeList.length}}，导入失败的冻存盒数为:<span class="red-color">{{vm.errorLen}}</span>。</h4>
+        </div>
         <div class="col-md-12 pl-0 pr-0">
             <div class="progress" style="margin: 20px;">
                 <div class="progress-bar" role="progressbar" aria-valuenow="vm.count" aria-valuemin="0"

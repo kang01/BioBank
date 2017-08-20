@@ -4,7 +4,7 @@
             <h2 style="margin: 0">样本清单</h2>
         </div>
         <div class="pull-right">
-            <button type="button" class="btn btn-primary" ng-click="vm.saveMovement()">保存</button>
+            <button type="button" class="btn btn-primary" ng-click="vm.saveMovement()" ng-disabled="vm.movement.moveReason">保存</button>
             <button type="button" class="btn btn-default" ng-click="vm.close()">关闭</button>
         </div>
     </div>

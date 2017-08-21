@@ -290,6 +290,7 @@
             };
             vm.progressFlag = true;
             vm.count = 0;
+            vm.errorLen = 0;
             blockUIConfig.autoBlock = false;
             arrayPromise = [];
             canceller = $q.defer();
@@ -312,7 +313,7 @@
                                 box.status = status;
                             }
                         });
-                        vm.errorLen = _.filter(vm.obox.frozenBoxDTOList,{status:400}).length;
+
                     })
 
                     .finally(function (data) {
@@ -325,6 +326,7 @@
                                 blockUIConfig.autoBlock = true;
                             },500)
                         }
+                        vm.errorLen = _.filter(vm.obox.frozenBoxDTOList,{status:400}).length;
                     }).$promise
                 );
 

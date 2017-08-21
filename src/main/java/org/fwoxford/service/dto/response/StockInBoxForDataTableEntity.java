@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
-@Table(name = "view_stock_in_box")
+@Table(name = "view_stock_in_box_list")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockInBoxForDataTableEntity {
 
@@ -81,6 +81,10 @@ public class StockInBoxForDataTableEntity {
     @Column(name="sample_classification_code")
     private String sampleClassificationCode;
 
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name="tranship_code")
+    private String transhipCode;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -116,6 +120,7 @@ public class StockInBoxForDataTableEntity {
             ", columnsInShelf='" + columnsInShelf + '\'' +
             ", sampleTypeCode='" + sampleTypeCode + '\'' +
             ", sampleClassificationCode='" + sampleClassificationCode + '\'' +
+            ", transhipCode='" + transhipCode + '\'' +
             '}';
     }
 
@@ -127,7 +132,7 @@ public class StockInBoxForDataTableEntity {
     public StockInBoxForDataTableEntity() {
     }
 
-    public StockInBoxForDataTableEntity(Long id, Integer countOfSample, String status, String frozenBoxCode, String sampleTypeName, String position, Integer isSplit, String sampleClassificationName, String stockInCode, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf, String sampleTypeCode, String sampleClassificationCode) {
+    public StockInBoxForDataTableEntity(Long id, Integer countOfSample, String status, String frozenBoxCode, String sampleTypeName, String position, Integer isSplit, String sampleClassificationName, String stockInCode, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf, String sampleTypeCode, String sampleClassificationCode, String transhipCode) {
         this.id = id;
         this.countOfSample = countOfSample;
         this.status = status;
@@ -144,6 +149,15 @@ public class StockInBoxForDataTableEntity {
         this.columnsInShelf = columnsInShelf;
         this.sampleTypeCode = sampleTypeCode;
         this.sampleClassificationCode = sampleClassificationCode;
+        this.transhipCode = transhipCode;
+    }
+
+    public String getTranshipCode() {
+        return transhipCode;
+    }
+
+    public void setTranshipCode(String transhipCode) {
+        this.transhipCode = transhipCode;
     }
 
     public Long getId() {

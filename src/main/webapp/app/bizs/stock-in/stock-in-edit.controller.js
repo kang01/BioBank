@@ -523,8 +523,8 @@
                 transportCode = null;
             }
             $('td:eq(2)', row).html(transportCode);
-            $('td:eq(6)', row).html(isSplit ? '需要分装' : '');
-            $('td:eq(7)', row).html(status);
+            $('td:eq(7)', row).html(isSplit ? '需要分装' : '');
+            $('td:eq(8)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function _fnActionButtonsRender(data, type, full, meta) {

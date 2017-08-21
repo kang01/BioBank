@@ -573,8 +573,8 @@
             vm.allInFlag = boxInTubes.length == stockOutTubes.length;
             //扫码标识
             vm.tubes[row][col-1].scanCodeFlag = true;
-            tableCtrl.loadData(vm.tubes);
             vm.boxInTubes = boxInTubes;
+            tableCtrl.loadData(vm.tubes);
         }
         vm.box = {};
         //撤销

@@ -528,6 +528,7 @@
                 multiSelect: true,
                 comments: true,
                 manualColumnResize:false,
+                outsideClickDeselects:true,
                 onAfterSelectionEnd:function (row, col, row2, col2) {
                     vm.remarkFlag = true;
                     var td = this;

@@ -287,7 +287,9 @@
         function _fnQueryUser() {
             Principal.identity().then(function(account) {
                 vm.account = account;
-                vm.entity.receiveName = vm.account.login;
+                if(vm.account.login != 'admin'){
+                    vm.entity.receiveName = vm.account.login;
+                }
             });
         }
 
@@ -773,7 +775,7 @@
                             id: vm.entity.id,
                             stockInCode: vm.entity.stockInCode,
                             stockInDate: vm.entity.stockInDate,
-                            storeKeeper1: vm.entity.storeKeeper1,
+                            storeKeeper1: vm.entity.receiveName,
                             storeKeeper2: vm.entity.storeKeeper2,
                             stockInBox:vm.stockInBox
                     };

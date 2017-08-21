@@ -54,14 +54,14 @@
         // var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.stockOutSampleColumns = [
             // DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
-            DTColumnBuilder.newColumn('id').notVisible(),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').withOption("width", "120"),
-            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "240"),
-            DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('交接时间').withOption("width", "80"),
-            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "60"),
-            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
-            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60"),
+            DTColumnBuilder.newColumn('id').notSortable().notVisible(),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').withOption("width", "120").notSortable(),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "120").notSortable(),
+            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "240").notSortable(),
+            DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('交接时间').withOption("width", "80").notSortable(),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "60").notSortable(),
+            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto").notSortable(),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "60").notSortable()
             // DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml),
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
@@ -81,15 +81,15 @@
         vm.boxOptions = BioBankDataTable.buildDTOption("BASIC", 250, null)
             .withOption('rowCallback', rowCallback);
         vm.boxColumns = [
-            DTColumnBuilder.newColumn('id').notVisible(),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "120"),
-            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "120"),
-            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('sampleClassificationName').withTitle('样本分类').withOption("width", "60"),
-            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "240"),
-            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "60"),
-            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
-            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
+            DTColumnBuilder.newColumn('id').notVisible().notSortable(),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "120").notSortable(),
+            DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "120").notSortable(),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "120").notSortable(),
+            DTColumnBuilder.newColumn('sampleClassificationName').withTitle('样本分类').withOption("width", "120").notSortable(),
+            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "240").notSortable(),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "60").notSortable(),
+            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto").notSortable(),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50").notSortable()
         ];
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
             $('td:eq(7)', nRow).html(MasterData.getFrozenBoxStatus(oData.status));

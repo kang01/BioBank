@@ -19,9 +19,8 @@
                 <div class="form-group">
                     <label>
                         附件描述
-                        <span class="required-field"></span>
                     </label>
-                    <textarea rows="4" class="form-control resize-none" ng-model="vm.entity.description" required></textarea>
+                    <textarea rows="4" class="form-control resize-none" ng-model="vm.entity.description" maxlength="1000"></textarea>
                 </div>
             </div>
         </div>
@@ -31,18 +30,21 @@
                 <div class="form-group self-upload">
                     <label>附件图片
                         <span class="required-field"></span>
+                        <small>(图片大小不能大于2M！)</small>
                     </label>
                     <!--<input type="file" id="one-input" accept="image/*" file-model="vm.images"-->
                     <!--onchange="angular.element(this).scope().vm.img_upload(this.files)"/>-->
                     <div class="input-group">
                         <input type="text" class=" form-control" ng-model="vm.file.name" disabled>
-                        <div class="input-group-addon" style="cursor: pointer">
-                            <a href="javascript:;" name="file">
-                                <input type="file" accept="image/*" ngf-select ng-model="vm.file"
-                                       onchange="angular.element(this).scope().vm.img_upload(this.files)"/>上传
-                            </a>
-                            <input type="hidden" ng-model="vm.file.name" required>
-                        </div>
+                        <div class="input-group-addon btn btn-default" ngf-select="vm.img_upload($file)"  ngf-accept="'image/*'" ngf-max-size="2MB">上传</div>
+                        <input type="hidden" ng-model="vm.file.name" required>
+
+                        <!--<div class="input-group-addon" style="cursor: pointer">-->
+                            <!--<a href="javascript:;" name="file">-->
+                                <!--<input type="file" accept="image/*"  ng-model="vm.file"-->
+                                       <!--onchange="angular.element(this).scope().vm.img_upload(this.files)"/>上传-->
+                            <!--</a>-->
+                        <!--</div>-->
                     </div>
                 </div>
             </div>

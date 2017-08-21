@@ -3,7 +3,7 @@
         <span ng-click="vm.delUploadInfo(item)"><i class="fa fa-trash-o"></i></span>
         <span ng-click="vm.uploadFile(2,item)"><i class="fa fa-pencil"></i></span>
     </div>
-    <div class="img-content">
+    <div class="img-content" onclick="$('img[class=img-thumbnail]').click();">
         <h5 class="img-title text-ellipsis mt-5 mb-5" title="{{item.fileTitle}}">{{item.fileTitle}}</h5>
         <div class="img-description" title="{{item.description}}">{{item.description}}</div>
     </div>

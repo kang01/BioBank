@@ -1017,8 +1017,9 @@ ul.rating {
     background-color: rgba(0,0,0,0.3);
     transition: all .5s ease;
 }
-.img-content h6{
+.img-content .img-title{
     margin: 5px 0;
+    font-size: 16px;
 }
 .img-content:hover{
     bottom: 0;

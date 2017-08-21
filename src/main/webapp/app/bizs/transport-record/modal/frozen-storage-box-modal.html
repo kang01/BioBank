@@ -132,13 +132,15 @@
 <div class="mask-layer" ng-show="vm.progressFlag">
     <div class="row mr-0 progress-body">
         <div class="col-md-12">
-            <h4>需要导入的样本数：{{vm.codeList.length}}，导入失败的冻存盒数为:<span class="red-color">{{vm.errorLen}}</span>。</h4>
+            <h4>需要导入的样本数：{{vm.codeList.length}}，导入失败的冻存盒数为：<span class="red-color">{{vm.errorLen}}</span>。</h4>
         </div>
         <div class="col-md-12 pl-0 pr-0">
-            <div class="progress" style="margin: 20px;">
+            <div class="progress text-center" style="margin: 20px;position: relative">
                 <div class="progress-bar" role="progressbar" aria-valuenow="vm.count" aria-valuemin="0"
                      aria-valuemax="100" ng-style="vm.obj">
-                    {{vm.obj.width}}
+                </div>
+                <div class="text-center " style="position: absolute;width: 100%">
+                    <h4 class="m-0">{{vm.obj.width}}</h4>
                 </div>
 
             </div>

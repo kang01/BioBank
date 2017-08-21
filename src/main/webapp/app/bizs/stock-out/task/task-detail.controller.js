@@ -582,6 +582,7 @@
         function _fnRepealModal() {
             var len = _.filter(vm.aRemarkArray,{stockOutFlag:1}).length;
             if(!len){
+                toastr.error("请选择要出库的样本！");
                 return;
             }
             modalInstance = $uibModal.open({
@@ -668,6 +669,10 @@
         }
         //异常
         function _fnAbnormal() {
+            if(!vm.aRemarkArray.length){
+                toastr.error("请选择样本!");
+                return;
+            }
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/task/modal/abnormal-recall-modal.html',

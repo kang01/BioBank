@@ -151,6 +151,7 @@
                 {value:"2006",label:"已上架"},
                 {value:"2008",label:"待出库"},
                 {value:"2009",label:"已出库"},
+                {value:"2010",label:"已交接"},
                 {value:"2011",label:"转运完成"}
             ];
             // 冻存管状态

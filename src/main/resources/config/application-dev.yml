@@ -30,7 +30,7 @@ spring:
 #        username: biobank_t_20170718
 #        password: eyuXotN6
         url: jdbc:oracle:thin:@10.24.10.56:1521:xe
-        username: gly
+        username: biobank1
         password: root123
     jpa:
         database-platform: org.hibernate.dialect.Oracle12cDialect

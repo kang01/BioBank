@@ -3,6 +3,7 @@
         "title": "Active sessions for [<b>{{username}}</b>]",
         "table": {
             "ipaddress": "IP address",
+            "userName": "User Name",
             "useragent": "User Agent",
             "date": "Date",
             "button": "Invalidate"

@@ -35,4 +35,7 @@ public class SessionEventListener implements HttpSessionListener {
             }
         });
     }
+    public static void removeSessionByUser(String userName){
+        userSessions.put(userName, null);
+    }
 }

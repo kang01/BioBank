@@ -3,6 +3,7 @@
         "title": "[<b>{{username}} 使用中的 Sessions</b>]",
         "table": {
             "ipaddress": "IP 位址",
+            "userName": "用户名",
             "useragent": "用户代理",
             "date": "日期",
             "button": "失效"

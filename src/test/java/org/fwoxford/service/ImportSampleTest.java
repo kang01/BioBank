@@ -218,6 +218,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             }
         }
     }
+    @Test
     public void createProjectSiteForPeace3() {
         Connection con = null;// 创建一个数据库连接
         PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement

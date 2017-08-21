@@ -154,4 +154,21 @@ public class StockOutHandoverSampleReportDTO {
     public void setStockOutHandoverId(Long stockOutHandoverId) {
         this.stockOutHandoverId = stockOutHandoverId;
     }
+
+    public StockOutHandoverSampleReportDTO() {
+    }
+
+    public StockOutHandoverSampleReportDTO(Long id, Long no, String boxCode, String location, String sampleCode, String sampleType, String sex, String age, String diseaseType, String projectCode, Long stockOutHandoverId) {
+        this.id = id;
+        this.no = no;
+        this.boxCode = boxCode;
+        this.location = location;
+        this.sampleCode = sampleCode;
+        this.sampleType = sampleType;
+        this.sex = sex;
+        this.age = age;
+        this.diseaseType = diseaseType;
+        this.projectCode = projectCode;
+        this.stockOutHandoverId = stockOutHandoverId;
+    }
 }

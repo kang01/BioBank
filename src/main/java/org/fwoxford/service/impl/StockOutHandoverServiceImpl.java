@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import liquibase.util.StringUtils;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -15,6 +16,7 @@ import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -261,7 +263,8 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         sample.setBoxCode(frozenTube.getFrozenBoxCode());
         sample.setDiseaseType(frozenTube.getDiseaseType());
         sample.setLocation(frozenTube.getTubeRows()+frozenTube.getTubeColumns());
-        sample.setSampleCode(frozenTube.getSampleCode());
+        String sampleCode = StringUtils.isEmpty(frozenTube.getSampleCode())?frozenTube.getSampleTempCode():frozenTube.getSampleCode();
+        sample.setSampleCode(sampleCode);
         sample.setSampleType(frozenTube.getSampleTypeName());
         sample.setSex(Constants.SEX_MAP.get(frozenTube.getGender())!=null?Constants.SEX_MAP.get(frozenTube.getGender()).toString():null);
         return sample;
@@ -296,6 +299,7 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
             //出库冻存盒的状态置为已交接
             StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findOne(id);
             if(stockOutFrozenBox != null){
+                stockOutFrozenBox.setFrozenBoxCode(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode());
                 stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_HANDOVER);
                 stockOutFrozenBoxRepository.save(stockOutFrozenBox);
                 FrozenBox frozenBox = stockOutFrozenBox.getFrozenBox();
@@ -376,6 +380,17 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     @Override
     public DataTablesOutput<StockOutHandoverSampleReportDTO> getPageStockOutHandoverSample(Long id, DataTablesInput input) {
         input.addColumn("stockOutHandoverId",true,true,id+"+");
-        return stockOutHandoverSampleRepositries.findAll(input);
+        Converter<StockOutHandoverSampleReportDTO, StockOutHandoverSampleReportDTO> converter = new Converter<StockOutHandoverSampleReportDTO, StockOutHandoverSampleReportDTO>() {
+            @Override
+            public StockOutHandoverSampleReportDTO convert(StockOutHandoverSampleReportDTO e) {
+                String sampleCode = e.getSampleCode();
+                if(StringUtils.isEmpty(sampleCode) || sampleCode.equals(null)){
+                    FrozenTube frozenTube = frozenTubeRepository.findOne(e.getId());
+                    sampleCode = frozenTube.getSampleTempCode();
+                }
+                return new StockOutHandoverSampleReportDTO(e.getId(),e.getNo(),e.getBoxCode(),e.getLocation(),sampleCode,e.getSampleType(),e.getSex(),e.getAge(),e.getDiseaseType(),e.getProjectCode(),e.getStockOutHandoverId());
+            }
+        };
+        return stockOutHandoverSampleRepositries.findAll(input,converter);
     }
 }

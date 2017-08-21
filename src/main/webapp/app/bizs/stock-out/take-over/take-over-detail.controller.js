@@ -10,10 +10,10 @@
         .controller('TakeOverDetailController', TakeOverDetailController)
         .controller('TakeOverCancellationModalController', TakeOverCancellationModalController);
 
-    TakeOverDetailController.$inject = ['$scope','$state','$stateParams','$uibModal','$compile','DTOptionsBuilder','DTColumnBuilder','toastr','BioBankDataTable',
+    TakeOverDetailController.$inject = ['$scope','$state','$stateParams','$uibModal','$compile','Principal','DTColumnBuilder','toastr','BioBankDataTable',
         'TakeOverService','SampleUserService','StockOutService','entity','MasterData'];
     TakeOverCancellationModalController.$inject = ['$uibModalInstance'];
-    function TakeOverDetailController($scope,$state,$stateParams,$uibModal,$compile,DTOptionsBuilder,DTColumnBuilder,toastr,BioBankDataTable,
+    function TakeOverDetailController($scope,$state,$stateParams,$uibModal,$compile,Principal,DTColumnBuilder,toastr,BioBankDataTable,
                                       TakeOverService,SampleUserService,StockOutService,entity,MasterData) {
         var vm = this;
         var modalInstance;
@@ -58,7 +58,7 @@
                 _fnGetTasks(entity.stockOutPlanId);
             }
         }
-
+        _fnQueryUser();
         _initTakeoverEditors();
         _initFrozenBoxTable();
         //出库计划
@@ -249,6 +249,18 @@
 
 
         }
+
+        function _fnQueryUser() {
+            Principal.identity().then(function(account) {
+                vm.account = account;
+                if(vm.account.login != "admin"){
+                    if(!vm.dto.handoverPersonId){
+                        vm.dto.handoverPersonId = vm.account.id;
+                    }
+                }
+            });
+        }
+
         var boxIds=[];
         var boxIdsStr;
         function _initFrozenBoxTable(){

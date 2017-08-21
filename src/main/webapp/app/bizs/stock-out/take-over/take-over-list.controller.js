@@ -25,6 +25,7 @@
         //     .withPaginationType('full_numbers')
         //     .withOption('serverSide',true)
         vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
+            .withOption('order', [[0, 'desc' ]])
             .withOption('serverSide',true)
             .withFnServerData(fnServerData)
             .withOption('createdRow', createdRow)

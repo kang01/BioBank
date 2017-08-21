@@ -849,7 +849,7 @@
         var customRenderer = function (hotInstance, td, row, col, prop, value, cellProperties) {
             if(value){
                 if(value.memo && value.memo != " "){
-                    cellProperties.comment = value.memo;
+                    cellProperties.comment = {value:value.memo};
                 }
                 if(value.sampleCode == null){
                     value.sampleCode = "";

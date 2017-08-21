@@ -411,13 +411,14 @@
                 var txt = "";
                 if(tube.memo && tube.memo != " "){
                     txt = tube.memo;
-
+                }else{
+                    tube.memo = ""
                 }
                 if(tube.repealReason && tube.repealReason != " "){
                     txt = tube.repealReason + tube.memo;
                 }
                 if(txt){
-                    cellProperties.comment = txt;
+                    cellProperties.comment = {value:txt};
 
                 }
                 //样本类型
@@ -579,6 +580,10 @@
         vm.box = {};
         //撤销
         function _fnRepealModal() {
+            var len = _.filter(vm.aRemarkArray,{stockOutFlag:1}).length;
+            if(!len){
+                return;
+            }
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/task/modal/abnormal-recall-modal.html',
@@ -635,8 +640,12 @@
                 // 1：未出库样本批注、2：已出库样本批注
                 if(status == 1){
                     for(var i = 0; i < vm.aRemarkArray.length; i++){
-                        if(vm.aRemarkArray[i].sampleCode){
-                            vm.aRemarkArray[i].memo = vm.aRemarkArray[i].memo + memo;
+                        if(vm.aRemarkArray[i].sampleCode || vm.aRemarkArray[i].sampleTempCode){
+                            if(vm.aRemarkArray[i].memo){
+                                vm.aRemarkArray[i].memo = vm.aRemarkArray[i].memo + memo;
+                            }else{
+                                vm.aRemarkArray[i].memo = memo;
+                            }
                         }
                     }
                     TaskService.fnNote(vm.aRemarkArray).success(function (data) {
@@ -676,13 +685,12 @@
 
             modalInstance.result.then(function (abnormalReason) {
                 for(var i = 0; i < vm.aRemarkArray.length; i++){
-                    if(vm.aRemarkArray[i].sampleCode){
+                    if(vm.aRemarkArray[i].sampleCode || vm.aRemarkArray[i].sampleTempCode){
                         vm.aRemarkArray[i].memo = vm.aRemarkArray[i].memo + abnormalReason;
                         vm.aRemarkArray[i].status = "3004";
                     }
                 }
-                TaskService.abnormal(vm.aRemarkArray).success(function (data) {
-                });
+                TaskService.abnormal(vm.aRemarkArray).success(function (data) {});
                 vm.aRemarkArray = [];
                 var tableCtrl = _getSampleDetailsTableCtrl();
                 tableCtrl.loadData(vm.tubes);

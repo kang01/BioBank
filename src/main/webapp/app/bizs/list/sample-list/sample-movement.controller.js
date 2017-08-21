@@ -664,7 +664,7 @@
                     $(td).removeClass('htReadOnly');
                 }
                 if(tube.memo && tube.memo != " "){
-                    cellProperties.comment = tube.memo;
+                    cellProperties.comment = {value:tube.memo};
                 }
                 // if(tube.sampleType){
                 //     td.style.backgroundColor = tube.sampleType.backColor;

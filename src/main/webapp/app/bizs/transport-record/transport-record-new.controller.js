@@ -695,7 +695,7 @@
                 td.style.position = 'relative';
 
                 if(tube.memo && tube.memo != " "){
-                    cellProperties.comment = tube.memo;
+                    cellProperties.comment = {value:tube.memo};
                 }
                 //样本类型
                 if(tube.sampleClassificationId){
@@ -725,7 +725,6 @@
                     }
                 }
             }
-
             //修改样本状态正常、空管、空孔、异常
             function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
 

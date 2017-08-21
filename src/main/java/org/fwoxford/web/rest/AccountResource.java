@@ -217,17 +217,28 @@ public class AccountResource {
 //                SessionEventListener.removeSessionByUser(u.getLogin());
 //            });
 
-        PersistentToken persistentToken = persistentTokenRepository.findOne(decodedSeries);
-        if (persistentToken != null){
-            User user = persistentToken.getUser();
-            persistentTokenRepository.delete(decodedSeries);
-            SessionEventListener.removeSession(user.getLogin());
-        }
+        userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(u -> {
+            if (u.getLogin().equals("admin")){
+                if (series.startsWith("$U:")){
+                    String userName = series.substring(3);
+                    SessionEventListener.removeSessionByUser(userName);
+                } else {
+                    PersistentToken persistentToken = persistentTokenRepository.findOne(decodedSeries);
+                    if (persistentToken != null){
+                        User user = persistentToken.getUser();
+                        persistentTokenRepository.delete(decodedSeries);
+                        SessionEventListener.removeSession(user.getLogin());
+                    }
+                }
+            } else {
+                persistentTokenRepository.findByUser(u).stream()
+                    .filter(persistentToken -> StringUtils.equals(persistentToken.getSeries(), decodedSeries))
+                    .findAny().ifPresent(t -> persistentTokenRepository.delete(decodedSeries));
+                SessionEventListener.removeSessionByUser(u.getLogin());
+            }
+        });
 
-        if (series.startsWith("$U:")){
-            String userName = series.substring(3);
-            SessionEventListener.removeSessionByUser(userName);
-        }
+
     }
 
     /**

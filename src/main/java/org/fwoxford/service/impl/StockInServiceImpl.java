@@ -344,68 +344,70 @@ public class StockInServiceImpl implements StockInService {
                 .parentStockInId(stockIn.getId()).countOfSample(0).stockInDate(null).storeKeeper1(null).storeKeeper2(null)
                 .storeKeeperId1(null).storeKeeperId2(null);
             stockInRepository.save(stockInNew);
-            int  countOfSample = 0;
-            for(StockInBox stockInBox :stockInBoxListForOnShelf){
-                //修改入库盒子
-                stockInBox.stockIn(stockInNew).stockInCode(stockInNew.getStockInCode()).status(Constants.FROZEN_BOX_STOCKED);
-                stockInBoxRepository.save(stockInBox);
-                frozenBoxRepository.updateStatusByFrozenBoxCode(stockInBox.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
-                //保存入库盒子位置
-                StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
-                stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_COMPLETE).memo(stockInBox.getMemo())
-                    .equipment(stockInBox.getEquipment()).equipmentCode(stockInBox.getEquipmentCode())
-                    .area(stockInBox.getArea()).areaCode(stockInBox.getAreaCode())
-                    .supportRack(stockInBox.getSupportRack()).supportRackCode(stockInBox.getSupportRackCode())
-                    .columnsInShelf(stockInBox.getColumnsInShelf()).rowsInShelf(stockInBox.getRowsInShelf())
-                    .stockInBox(stockInBox);
-                stockInBoxPositionRepository.save(stockInBoxPosition);
-                //保存入库管子
-                List<StockInTube> stockInTubes = stockInTubeRepository.findByStockInBoxId(stockInBox.getId());
-                List<FrozenTube> frozenTubeList = new ArrayList<>();
-                for(StockInTube stockInTube :stockInTubes){
-                    if(!stockInTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_PUT_SHELVES)){
-                        continue;
-                    }
-                    stockInTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKED);
-                    stockInTubeRepository.saveAndFlush(stockInTube);
-                    FrozenTube frozenTube = stockInTube.getFrozenTube();
-                    frozenTube.projectCode(stockInTube.getProjectCode()).projectSiteCode(stockInTube.getProjectSiteCode())
-                        .sampleCode(stockInTube.getSampleCode())
-                        .frozenTubeTypeCode(stockInTube.getFrozenTubeTypeCode())
-                        .frozenTubeTypeName(stockInTube.getFrozenTubeTypeName())
-                        .sampleTypeCode(stockInTube.getSampleTypeCode())
-                        .sampleTypeName(stockInTube.getSampleTypeName())
-                        .sampleUsedTimesMost(stockInTube.getSampleUsedTimesMost())
-                        .sampleUsedTimes(0)
-                        .frozenTubeVolumns(stockInTube.getFrozenTubeVolumns())
-                        .frozenTubeVolumnsUnit(stockInTube.getFrozenTubeVolumnsUnit())
-                        .tubeRows(stockInTube.getTubeRows())
-                        .tubeColumns(stockInTube.getTubeColumns())
-                        .status(stockInTube.getStatus()).memo(stockInTube.getMemo())
-                        .frozenBoxCode(stockInTube.getFrozenBoxCode()).frozenTubeType(stockInTube.getFrozenTubeType())
-                        .sampleType(stockInTube.getSampleType())
-                        .sampleClassification(stockInTube.getSampleClassification())
-                        .project(stockInTube.getProject())
-                        .projectSite(stockInTube.getProjectSite()).frozenBox(stockInTube.getStockInBox().getFrozenBox())
-                        .frozenTubeState(Constants.FROZEN_BOX_STOCKED);
-                    frozenTubeList.add(frozenTube);
-                }
-                frozenTubeRepository.save(frozenTubeList);
-                countOfSample+=stockInBox.getCountOfSample();
-            }
-            stockInNew.setCountOfSample(countOfSample);
-            stockInRepository.save(stockInNew);
         }else{
             stockIn.setStatus(Constants.STOCK_IN_COMPLETE);
+            stockInNew = stockIn;
         }
-
-        //修改盒子
-        int countOfSampleIn = 0;
-        for(StockInBox box: stockInBoxListForUnOnShelf){
-            countOfSampleIn+=box.getCountOfSample();
+        int  countOfSample = 0;
+        for(StockInBox stockInBox :stockInBoxListForOnShelf){
+            //修改入库盒子
+            stockInBox.stockIn(stockInNew).stockInCode(stockInNew.getStockInCode()).status(Constants.FROZEN_BOX_STOCKED);
+            stockInBoxRepository.save(stockInBox);
+            frozenBoxRepository.updateStatusByFrozenBoxCode(stockInBox.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
+            //保存入库盒子位置
+            StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
+            stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_COMPLETE).memo(stockInBox.getMemo())
+                .equipment(stockInBox.getEquipment()).equipmentCode(stockInBox.getEquipmentCode())
+                .area(stockInBox.getArea()).areaCode(stockInBox.getAreaCode())
+                .supportRack(stockInBox.getSupportRack()).supportRackCode(stockInBox.getSupportRackCode())
+                .columnsInShelf(stockInBox.getColumnsInShelf()).rowsInShelf(stockInBox.getRowsInShelf())
+                .stockInBox(stockInBox);
+            stockInBoxPositionRepository.save(stockInBoxPosition);
+            //保存入库管子
+            List<StockInTube> stockInTubes = stockInTubeRepository.findByStockInBoxId(stockInBox.getId());
+            List<FrozenTube> frozenTubeList = new ArrayList<>();
+            for(StockInTube stockInTube :stockInTubes){
+                if(!stockInTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_PUT_SHELVES)){
+                    continue;
+                }
+                stockInTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKED);
+                stockInTubeRepository.saveAndFlush(stockInTube);
+                FrozenTube frozenTube = stockInTube.getFrozenTube();
+                frozenTube.projectCode(stockInTube.getProjectCode()).projectSiteCode(stockInTube.getProjectSiteCode())
+                    .sampleCode(stockInTube.getSampleCode())
+                    .frozenTubeTypeCode(stockInTube.getFrozenTubeTypeCode())
+                    .frozenTubeTypeName(stockInTube.getFrozenTubeTypeName())
+                    .sampleTypeCode(stockInTube.getSampleTypeCode())
+                    .sampleTypeName(stockInTube.getSampleTypeName())
+                    .sampleUsedTimesMost(stockInTube.getSampleUsedTimesMost())
+                    .sampleUsedTimes(0)
+                    .frozenTubeVolumns(stockInTube.getFrozenTubeVolumns())
+                    .frozenTubeVolumnsUnit(stockInTube.getFrozenTubeVolumnsUnit())
+                    .tubeRows(stockInTube.getTubeRows())
+                    .tubeColumns(stockInTube.getTubeColumns())
+                    .status(stockInTube.getStatus()).memo(stockInTube.getMemo())
+                    .frozenBoxCode(stockInTube.getFrozenBoxCode()).frozenTubeType(stockInTube.getFrozenTubeType())
+                    .sampleType(stockInTube.getSampleType())
+                    .sampleClassification(stockInTube.getSampleClassification())
+                    .project(stockInTube.getProject())
+                    .projectSite(stockInTube.getProjectSite()).frozenBox(stockInTube.getStockInBox().getFrozenBox())
+                    .frozenTubeState(Constants.FROZEN_BOX_STOCKED);
+                frozenTubeList.add(frozenTube);
+            }
+            frozenTubeRepository.save(frozenTubeList);
+            countOfSample+=stockInBox.getCountOfSample();
+            stockInNew.setCountOfSample(countOfSample);
+            stockInRepository.save(stockInNew);
         }
-        stockIn.setCountOfSample(countOfSampleIn);
-        stockInRepository.save(stockIn);
+        if(stockInBoxListForUnOnShelf!=null && stockInBoxListForUnOnShelf.size()>0){
+            //修改盒子
+            int countOfSampleIn = 0;
+            for(StockInBox box: stockInBoxListForUnOnShelf){
+                countOfSampleIn+=box.getCountOfSample();
+            }
+            stockIn.setCountOfSample(countOfSampleIn);
+            stockInRepository.save(stockIn);
+        }
 
         //查询出入库单下的转运盒
         List<String> transhipCodes = new ArrayList<String>();

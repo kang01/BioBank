@@ -123,22 +123,26 @@
             }
             BioBankBlockUi.blockUiStart();
             vm.movement.positionMoveRecordDTOS = _.filter(vm.selectedBox, {isPutInShelf: true});
+            _.forEach(vm.movement.positionMoveRecordDTOS,function (box) {
+               box.supportRackId = vm.shelf.id;
+            });
             BoxInventoryService.saveMovement(vm.movement).success(function (data) {
                 vm.movement.id = data.id;
                 toastr.success("保存成功!");
                 BioBankBlockUi.blockUiStop();
-                vm.shelfInstance.rerender();
-                //判断是否可以关闭移位的提示消息
-                var selectedFinish =  _.filter(vm.selectedBox, {isPutInShelf: true});
-                for(var i = 0; i < selectedFinish.length;i++){
-                    selectedFinish[i].saveFinishFlag = true;
-                }
-                var len = _.filter(selectedFinish, {saveFinishFlag: true}).length;
-                if(len == vm.selectedBox.length){
-                    vm.closeFlag = true;
-                }else{
-                    vm.closeFlag = false;
-                }
+                $state.go("box-inventory");
+                // vm.shelfInstance.rerender();
+                // //判断是否可以关闭移位的提示消息
+                // var selectedFinish =  _.filter(vm.selectedBox, {isPutInShelf: true});
+                // for(var i = 0; i < selectedFinish.length;i++){
+                //     selectedFinish[i].saveFinishFlag = true;
+                // }
+                // var len = _.filter(selectedFinish, {saveFinishFlag: true}).length;
+                // if(len == vm.selectedBox.length){
+                //     vm.closeFlag = true;
+                // }else{
+                //     vm.closeFlag = false;
+                // }
             }).error(function (data) {
                 toastr.error(data.message);
                 BioBankBlockUi.blockUiStop();
@@ -373,9 +377,9 @@
 
                 " </div> " +
                 "</div>";
-            $('td:eq(4)', row).html(status);
             $('td:eq(2)', row).html(html);
             $('td:eq(3)', row).html(countOfRest);
+            $('td:eq(4)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
@@ -402,6 +406,7 @@
                 vm.shelf = data;
                 var boxList = _.filter(vm.selectedBox,{'moveFrozenBoxPosition':position});
                 for(var i = 0; i< boxList.length; i++){
+                    boxList[i].supportRackId = "";
                     vm.shelf.frozenBoxDTOList.push(boxList[i]);
                 }
                 _fnLoadHandSonTable(vm.shelf);
@@ -482,14 +487,14 @@
                                 if (cellData && cellData.isEmpty) {
                                     var rowsInShelf = box.rowsInShelf;
                                     var columnsInShelf = box.columnsInShelf;
-                                    var supportRackId = box.supportRackId;
+                                    // var supportRackId = box.supportRackId;
                                     // 单元格为空可以上架
                                     // 标记盒子已经上架
                                     vm.selected[i] = false;
                                     box.isPutInShelf = true;
                                     box.rowsInShelf = cellData.rowsInShelf;
                                     box.columnsInShelf = cellData.columnsInShelf;
-                                    box.supportRackId = cellData.supportRackId;
+                                    box.supportRackId = vm.shelf.id;
                                     box.moveFrozenBoxPosition = vm.shelf.position;
                                     box.frozenBoxId = box.id;
 
@@ -541,8 +546,7 @@
                 }
             }
 
-            // vm.selectedInstance.rerender();
-        }
+    }
         // 需要保存的盒子上架信息
         vm.putInShelfBoxes = {};
         function _fnLoadHandSonTable(shelf) {
@@ -646,7 +650,8 @@
                                     frozenBoxCode: "",
                                     columnsInShelf: String.fromCharCode(charCode + i),
                                     rowsInShelf: j + 1 + "",
-                                    isEmpty: true
+                                    isEmpty: true,
+                                    supportRackId:""
                                 };
                                 if (!emptyPos) {
                                     emptyPos = {row: j, col: i};
@@ -658,7 +663,7 @@
                         arrayBoxes[j][i].supportRackCode = shelf.supportRackCode;
                         arrayBoxes[j][i].areaCode = shelf.areaCode;
                         arrayBoxes[j][i].equipmentCode = shelf.equipmentCode;
-                        arrayBoxes[j][i].supportRackId = shelf.id;
+                        // arrayBoxes[j][i].supportRackId = shelf.id;
                         arrayBoxes[j][i].rowNO = j;
                         arrayBoxes[j][i].colNO = i;
                     }
@@ -769,7 +774,7 @@
                 var cellProperties = {};
                 var cellData = hot.getDataAtCell(row, col);
                 cellProperties.isEmpty = true;
-                if (cellData && cellData.frozenBoxCode) {
+                if (cellData && cellData.supportRackId) {
                     // 单元格有数据，并且有冻存盒ID，表示该单元格在库里有位置
                     // 该单元格不能被使用
                     cellProperties.isEmpty = false;

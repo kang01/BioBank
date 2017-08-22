@@ -57,13 +57,18 @@
         }
         _init();
 
-        //移入操作
+
         vm.searchArea = _fnSearchArea;
         vm.searchEquipment = _fnSearchEquipment;
+        //撤销
         vm.recover = _fnRecover;
+        //移入操作
         vm.putIn = _fnPutIn;
+        //保存移位
         vm.saveMovement = _fnSaveMovement;
+        //搜索架子
         vm.search = _fnSearch;
+        //清空
         vm.empty = _fnEmpty;
         vm.close = _fnClose;
         vm.closeMovement = _fnCloseMovement;
@@ -626,7 +631,7 @@
                 var cellData = hot.getDataAtCell(row, col);
                 cellProperties.flag = 0;
                 if (cellData && cellData.flag) {
-                    // 单元格有数据，并且有冻存盒ID，表示该单元格在库里有位置
+                    // 单元格有数据，并且有区域ID，表示该单元格在库里有位置
                     // 该单元格不能被使用
                     cellProperties.flag = 1;
                     // 该单元格不能编辑

@@ -505,7 +505,7 @@
         }
         function _fnCreatedRow(row, data, dataIndex) {
             var status = '';
-            var transportCode = '';
+            // var transportCode = '';
             var isSplit = data.isSplit || 0;
             // var sampleType = data.sampleType && data.sampleType.sampleTypeName || '';
             // 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2090：已作废，2006：已上架，2008：待出库，2009：已出库
@@ -517,14 +517,14 @@
                     status = "待入库";
                 }
             }
-            if(data.transhipCode){
-                transportCode = data.transhipCode;
-            }else{
-                transportCode = null;
-            }
-            $('td:eq(2)', row).html(transportCode);
-            $('td:eq(7)', row).html(isSplit ? '需要分装' : '');
-            $('td:eq(8)', row).html(status);
+            // if(data.transhipCode){
+            //     transportCode = data.transhipCode;
+            // }else{
+            //     transportCode = null;
+            // }
+            // $('td:eq(2)', row).html(transportCode);
+            $('td:eq(6)', row).html(isSplit ? '需要分装' : '');
+            $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function _fnActionButtonsRender(data, type, full, meta) {
@@ -616,7 +616,7 @@
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').withOption("width", "200"),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('转运编码'),
+                // DTColumnBuilder.newColumn('frozenBoxCode').withTitle('转运编码'),
                 DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
                 DTColumnBuilder.newColumn('sampleClassificationName').withOption("width", "120").withTitle('样本分类'),
                 DTColumnBuilder.newColumn('position').withOption("width", "auto").withTitle('冻存位置'),

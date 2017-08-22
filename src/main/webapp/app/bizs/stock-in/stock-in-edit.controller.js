@@ -701,7 +701,7 @@
 
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/box-putaway-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/box-putaway-modal.html',
                 controller: 'BoxPutAwayModalController',
                 controllerAs:'vm',
                 backdrop:'static',
@@ -731,7 +731,7 @@
         function _rescindInShelf(boxCode) {
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/rescind-putaway-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/rescind-putaway-modal.html',
                 controller: 'RescindPutAwayModalController',
                 controllerAs:'vm',
                 backdrop:'static'
@@ -755,7 +755,6 @@
                 vm.stockInFlag = false;
             }
         }
-
 
         //入库完成
         vm.saveStockIn = function () {
@@ -1209,6 +1208,16 @@
         };
         //分装操作
         vm.splitBox = function () {
+            if(vm.box.sampleClassification || vm.box.sampleType.sampleTypeCode == "99"){
+                if(vm.problemSamplyTypeCode != "97"){
+                    for(var i = 0; i< selectList.length; i++){
+                        if(vm.sampleTypeClassCode != selectList[i].sampleClassificationCode){
+                            toastr.error("被分装的样本分类必须跟要分装的盒子的分类要一致！");
+                            return;
+                        }
+                    }
+                }
+            }
             var rowCount = +vm.box.frozenBoxType.frozenBoxTypeRows;
             var colCount = +vm.box.frozenBoxType.frozenBoxTypeColumns;
             vm.obox.stockInFrozenTubeList = [];
@@ -1239,7 +1248,7 @@
             if(!selectList.length || !vm.frozenBoxCode ){
                 modalInstance = $uibModal.open({
                     animation: true,
-                    templateUrl: 'app/bizs/stock-in/stock-in-splittingBox-message-modal.html',
+                    templateUrl: 'app/bizs/stock-in/modal/stock-in-splittingBox-message-modal.html',
                     controller: 'SplittingBoxMessageController',
                     controllerAs:'vm',
                     backdrop:'static'
@@ -1398,7 +1407,7 @@
 
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/stock-in-close-splittingBox-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/stock-in-close-splittingBox-modal.html',
                 controller: 'CloseSplittingBoxController',
                 controllerAs:'vm',
                 backdrop:'static',
@@ -1452,7 +1461,7 @@
             }
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/add-box-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/add-box-modal.html',
                 controller: 'AddBoxModalController',
                 controllerAs:'vm',
                 size:'lg',

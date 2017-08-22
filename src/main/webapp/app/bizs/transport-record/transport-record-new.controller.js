@@ -844,8 +844,8 @@
                 if(aRemarkArray.length > 0){
                     modalInstance = $uibModal.open({
                         animation: true,
-                        templateUrl: 'app/bizs/transport-record/microtubes-remark-modal.html',
-                        controller: 'microtubesRemarkModalController',
+                        templateUrl: 'app/bizs/transport-record/modal/tubes-remark-modal.html',
+                        controller: 'TubesRemarkModalController',
                         backdrop:'static',
                         controllerAs: 'vm',
                         resolve: {
@@ -1273,7 +1273,7 @@
             function _fnDelBox() {
                 modalInstance = $uibModal.open({
                     animation: true,
-                    templateUrl: 'app/bizs/transport-record/frozen-box-delete-modal.html',
+                    templateUrl: 'app/bizs/transport-record/modal/frozen-box-delete-modal.html',
                     controller: 'FrozenBoxDeleteController',
                     backdrop:'static',
                     controllerAs: 'vm'

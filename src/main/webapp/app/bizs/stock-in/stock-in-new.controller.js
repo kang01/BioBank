@@ -149,8 +149,6 @@
                 vm.selectAll = true;
             };
 
-            vm.dtInstance = {};
-
             vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 6)
             // 设置Tool button
                 .withButtons([
@@ -397,7 +395,7 @@
 
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/box-putaway-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/box-putaway-modal.html',
                 controller: 'BoxPutAwayModalController',
                 controllerAs:'vm',
                 // size:'lg',
@@ -413,7 +411,6 @@
                 }
             });
             modalInstance.result.then(function (data) {
-                vm.dtOptions.isHeaderCompiled = false;
                 vm.dtInstance.rerender();
             });
         }
@@ -421,7 +418,7 @@
         function _rescindInShelf(boxCode) {
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/rescind-putaway-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/rescind-putaway-modal.html',
                 controller: 'RescindPutAwayModalController',
                 controllerAs:'vm'
             });

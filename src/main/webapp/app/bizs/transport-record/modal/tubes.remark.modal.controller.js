@@ -6,11 +6,11 @@
 
     angular
         .module('bioBankApp')
-        .controller('microtubesRemarkModalController', microtubesRemarkModalController);
+        .controller('TubesRemarkModalController', TubesRemarkModalController);
 
-    microtubesRemarkModalController.$inject = ['$scope','$uibModalInstance','$uibModal','items'];
+    TubesRemarkModalController.$inject = ['$scope','$uibModalInstance','$uibModal','items'];
 
-    function microtubesRemarkModalController($scope,$uibModalInstance,$uibModal,items) {
+    function TubesRemarkModalController($scope,$uibModalInstance,$uibModal,items) {
         var vm = this;
         vm.items = items;
         $("#tubeContent").focus();

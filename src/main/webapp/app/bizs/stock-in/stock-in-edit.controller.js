@@ -701,7 +701,7 @@
 
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/box-putaway-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/box-putaway-modal.html',
                 controller: 'BoxPutAwayModalController',
                 controllerAs:'vm',
                 backdrop:'static',
@@ -731,7 +731,7 @@
         function _rescindInShelf(boxCode) {
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/rescind-putaway-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/rescind-putaway-modal.html',
                 controller: 'RescindPutAwayModalController',
                 controllerAs:'vm',
                 backdrop:'static'
@@ -755,7 +755,6 @@
                 vm.stockInFlag = false;
             }
         }
-
 
         //入库完成
         vm.saveStockIn = function () {
@@ -874,6 +873,7 @@
                     'line-height': '20px',
                     'word-wrap': 'break-word'
                 }).appendTo(td);
+                $div = $("<div  class='tube-status'/>").html(value.status).appendTo(td);
                 // $div = $("<div id='microtubesStatus'/>").html(value.status).hide().appendTo(td);
                 // if(value.selectedAll){
                 //     if(value.sampleCode || value.sampleTempCode) {
@@ -892,26 +892,25 @@
         var operateColor;
         var selectedTubesArray = [];
         function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
-
-            operateColor = td.style.backgroundColor;
             //正常
             if(sampleStatus == 3001){
+                $(td).removeClass("error-tube-color");
             }
             //空管
             if(sampleStatus == 3002){
-                td.style.background = 'linear-gradient(to right,'+operateColor+',50%,black';
+                $(td).addClass("empty-tube-color");
             }
             //空孔
             if(sampleStatus == 3003){
-                td.style.background = '';
-                td.style.backgroundColor = '#ffffff';
-                td.style.color = '#ffffff';
+                $(td).removeClass("empty-tube-color");
+                $(td).addClass("empty-hole-color");
             }
             //异常
             if(sampleStatus == 3004){
-                td.style.backgroundColor = 'red';
-                td.style.border = '3px solid red;margin:-3px';
+                $(td).removeClass("empty-hole-color");
+                $(td).addClass("error-tube-color");
             }
+
         }
         vm.settings ={
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
@@ -1209,6 +1208,16 @@
         };
         //分装操作
         vm.splitBox = function () {
+            if(vm.box.sampleClassification || vm.box.sampleType.sampleTypeCode == "99"){
+                if(vm.problemSamplyTypeCode != "97"){
+                    for(var i = 0; i< selectList.length; i++){
+                        if(vm.sampleTypeClassCode != selectList[i].sampleClassificationCode){
+                            toastr.error("被分装的样本分类必须跟要分装的盒子的分类要一致！");
+                            return;
+                        }
+                    }
+                }
+            }
             var rowCount = +vm.box.frozenBoxType.frozenBoxTypeRows;
             var colCount = +vm.box.frozenBoxType.frozenBoxTypeColumns;
             vm.obox.stockInFrozenTubeList = [];
@@ -1239,7 +1248,7 @@
             if(!selectList.length || !vm.frozenBoxCode ){
                 modalInstance = $uibModal.open({
                     animation: true,
-                    templateUrl: 'app/bizs/stock-in/stock-in-splittingBox-message-modal.html',
+                    templateUrl: 'app/bizs/stock-in/modal/stock-in-splittingBox-message-modal.html',
                     controller: 'SplittingBoxMessageController',
                     controllerAs:'vm',
                     backdrop:'static'
@@ -1398,7 +1407,7 @@
 
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/stock-in-close-splittingBox-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/stock-in-close-splittingBox-modal.html',
                 controller: 'CloseSplittingBoxController',
                 controllerAs:'vm',
                 backdrop:'static',
@@ -1452,7 +1461,7 @@
             }
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/add-box-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/add-box-modal.html',
                 controller: 'AddBoxModalController',
                 controllerAs:'vm',
                 size:'lg',

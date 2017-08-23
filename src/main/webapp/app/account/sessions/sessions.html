@@ -13,6 +13,7 @@
             <thead>
                 <tr>
                     <th data-translate="sessions.table.ipaddress">IP Address</th>
+                    <th data-translate="sessions.table.userName">User Name</th>
                     <th data-translate="sessions.table.useragent">User agent</th>
                     <th data-translate="sessions.table.date">Date</th>
                     <th></th>
@@ -21,6 +22,7 @@
             <tbody>
                 <tr ng-repeat="session in vm.sessions">
                     <td>{{session.ipAddress}}</td>
+                    <td>{{session.userName}}</td>
                     <td>{{session.userAgent}}</td>
                     <td>{{session.tokenDate | date:'longDate'}}</td>
                     <td>

@@ -1,94 +1,83 @@
-<div class="row">
-    <div class="col-md-12">
-        <div class="pull-left">
-            <h2 style="margin: 0">冻存盒移位</h2>
-        </div>
-        <div class="pull-right">
-            <button type="button" class="btn btn-primary"  ng-click="vm.saveMovement()">保存</button>
-            <button type="button" class="btn btn-default"  ng-click="vm.close()">关闭</button>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-4 pr-0">
-        <div class="form-group">
-            <label>移位原因
-                <span class="required-field"></span>
-            </label>
-            <textarea type="text" class="form-control resize-none" rows="6" ng-model="vm.movement.moveReason"></textarea>
+<form name="boxMovementForm" novalidate>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="pull-left">
+                <h2 style="margin: 0">冻存盒移位</h2>
+            </div>
+            <div class="pull-right">
+                <button type="button" class="btn btn-primary"  ng-click="vm.saveMovement()" ng-disabled="boxMovementForm.$invalid">保存</button>
+                <button type="button" class="btn btn-default"  ng-click="vm.close()">关闭</button>
+            </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <label>移位影响评估</label>
-        <textarea type="text" class="form-control resize-none" rows="6" ng-model="vm.movement.moveAffect"></textarea>
-    </div>
-    <div class="col-md-4">
-        <div class="row ">
+    <div class="row">
+        <div class="col-md-4 pr-0">
+            <div class="form-group">
+                <label>移位原因
+                    <span class="required-field"></span>
+                </label>
+                <textarea type="text" class="form-control resize-none" rows="6" ng-model="vm.movement.moveReason" required></textarea>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label>移位影响评估</label>
+            <textarea type="text" class="form-control resize-none" rows="6" ng-model="vm.movement.moveAffect"></textarea>
+        </div>
+        <div class="col-md-4">
+            <div class="row ">
 
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>操作员1
-                        <span class="required-field"></span>
-                    </label>
-                    <selectize options='vm.userOptions' config="vm.userConfig"
-                               ng-model="vm.movement.operatorId1"></selectize>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>操作员1
+                            <span class="required-field"></span>
+                        </label>
+                        <selectize options='vm.userOptions' config="vm.userConfig"
+                                   ng-model="vm.movement.operatorId1"></selectize>
+                        <input type="hidden" ng-model="vm.movement.operatorId1" required>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>密码
-                        <span class="required-field"></span>
-                    </label>
-                    <input type="password" class="form-control" ng-model="vm.movement.password1">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>密码
+                            <span class="required-field"></span>
+                        </label>
+                        <input type="password" class="form-control" ng-model="vm.movement.password1" required>
+                    </div>
                 </div>
-            </div>
 
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>操作员2
-                        <span class="required-field"></span>
-                    </label>
-                    <selectize options='vm.userOptions' config="vm.userConfig"
-                               ng-model="vm.movement.operatorId2"></selectize>
-                    <label class="checkbox mt-0 ml-20" style="">
-                        <input type="checkbox" ng-model="vm.movement.whetherFreezingAndThawing" ng-true-value="true" ng-false-value="false">是否发生样本冻溶
-                    </label>
-                </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>密码
-                        <span class="required-field"></span>
-                    </label>
-                    <input type="password" class="form-control" ng-model="vm.movement.password2">
-                </div>
-            </div>
-        </div>
-        <!--<div class="row">-->
-            <!--<div class="col-md-12 pl-40">-->
-                <!--<label class="checkbox">-->
-                    <!--<input type="checkbox" ng-model="vm.movement.whetherFreezingAndThawing" ng-true-value="true" ng-false-value="false">是否发生样本冻溶-->
-                <!--</label>-->
-            <!--</div>-->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>操作员2
+                            <span class="required-field"></span>
+                        </label>
+                        <selectize options='vm.userOptions' config="vm.userConfig"
+                                   ng-model="vm.movement.operatorId2"></selectize>
+                        <input type="hidden" ng-model="vm.movement.operatorId2" required>
 
-        <!--</div>-->
+                        <label class="checkbox mt-0 ml-20" style="">
+                            <input type="checkbox" ng-model="vm.movement.whetherFreezingAndThawing" ng-true-value="true" ng-false-value="false">是否发生样本冻溶
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>密码
+                            <span class="required-field"></span>
+                        </label>
+                        <input type="password" class="form-control" ng-model="vm.movement.password2" required>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</form>
 <div class="row">
     <div class="col-md-4 pr-0">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4>移动冻存盒</h4>
-                <!--<div class="row">-->
-                    <!--<div class="col-md-4">-->
-                        <!--<h4>移动冻存盒</h4>-->
-                    <!--</div>-->
-                    <!--<div class="col-md-8 text-right" style="margin-top: 8px;">-->
-                        <!--<button class="btn btn-primary btn-xs"ng-click="vm.recover()">撤消</button>-->
-                    <!--</div>-->
-                <!--</div>-->
             </div>
             <div class="panel-body p-0">
                 <div class="no-padding">

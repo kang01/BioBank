@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 
+import org.fwoxford.config.listeners.SessionEventListener;
 import org.fwoxford.domain.PersistentToken;
 import org.fwoxford.domain.User;
 import org.fwoxford.repository.PersistentTokenRepository;
@@ -174,11 +175,19 @@ public class AccountResource {
     @GetMapping("/account/sessions")
     @Timed
     public ResponseEntity<List<PersistentToken>> getCurrentSessions() {
-        return userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin())
-            .map(user -> new ResponseEntity<>(
-                persistentTokenRepository.findByUser(user),
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+        String userName = SecurityUtils.getCurrentUserLogin();
+        List<PersistentToken> result = null;
+        if (userName.equals("admin")){
+            result = persistentTokenRepository.findAll();
+        } else {
+            User user = userRepository.findByLogin(userName);
+            if (user == null){
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            result = persistentTokenRepository.findByUser(user);
+        }
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
@@ -201,10 +210,35 @@ public class AccountResource {
     @Timed
     public void invalidateSession(@PathVariable String series) throws UnsupportedEncodingException {
         String decodedSeries = URLDecoder.decode(series, "UTF-8");
-        userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(u ->
-            persistentTokenRepository.findByUser(u).stream()
-                .filter(persistentToken -> StringUtils.equals(persistentToken.getSeries(), decodedSeries))
-                .findAny().ifPresent(t -> persistentTokenRepository.delete(decodedSeries)));
+//        userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(u -> {
+//                persistentTokenRepository.findByUser(u).stream()
+//                    .filter(persistentToken -> StringUtils.equals(persistentToken.getSeries(), decodedSeries))
+//                    .findAny().ifPresent(t -> persistentTokenRepository.delete(decodedSeries));
+//                SessionEventListener.removeSessionByUser(u.getLogin());
+//            });
+
+        userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(u -> {
+            if (u.getLogin().equals("admin")){
+                if (series.startsWith("$U:")){
+                    String userName = series.substring(3);
+                    SessionEventListener.removeSessionByUser(userName);
+                } else {
+                    PersistentToken persistentToken = persistentTokenRepository.findOne(decodedSeries);
+                    if (persistentToken != null){
+                        User user = persistentToken.getUser();
+                        persistentTokenRepository.delete(decodedSeries);
+                        SessionEventListener.removeSession(user.getLogin());
+                    }
+                }
+            } else {
+                persistentTokenRepository.findByUser(u).stream()
+                    .filter(persistentToken -> StringUtils.equals(persistentToken.getSeries(), decodedSeries))
+                    .findAny().ifPresent(t -> persistentTokenRepository.delete(decodedSeries));
+                SessionEventListener.removeSessionByUser(u.getLogin());
+            }
+        });
+
+
     }
 
     /**

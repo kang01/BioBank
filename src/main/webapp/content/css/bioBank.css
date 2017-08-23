@@ -1051,7 +1051,13 @@ ul.rating {
     border-radius: 4px;
 }
 .selected-sample-color{
-    position:absolute;top:0;bottom:0;left:0;right:0;border:1px dashed #5292F7;background-color: rgba(82,146,247,0.2);
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    border:1px dashed #5292F7;
+    background-color: rgba(82,146,247,0.2);
 }
 .tube-memo{
     position: absolute;
@@ -1062,4 +1068,31 @@ ul.rating {
 .htCommentCell:after{
     border-top-color:red !important;
 }
+.preassemble{
+    background-color: rgb(169, 241, 253) !important;
+}
+.tube-status{
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+
+}
+/*空孔*/
+.empty-hole-color .tube-status{
+    background-color: white;
+    border: 1px solid #000;
+}
+/*空管*/
+.empty-tube-color .tube-status{
+    background: linear-gradient(to right, #fff 5px , #000 5px);
+    border: 1px solid #000;
+}
+/*问题*/
+.error-tube-color .tube-status{
+    background-color: red;
+}
+
 

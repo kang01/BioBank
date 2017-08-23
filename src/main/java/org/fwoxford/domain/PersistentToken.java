@@ -31,7 +31,7 @@ public class PersistentToken implements Serializable {
     @NotNull
     @Column(name = "token_value", nullable = false)
     private String tokenValue;
-    
+
     @Column(name = "token_date")
     private LocalDate tokenDate;
 
@@ -46,6 +46,10 @@ public class PersistentToken implements Serializable {
     @JsonIgnore
     @ManyToOne
     private User user;
+
+    public String getUserName() {
+        return user.getLogin();
+    }
 
     public String getSeries() {
         return series;
@@ -126,6 +130,7 @@ public class PersistentToken implements Serializable {
     public String toString() {
         return "PersistentToken{" +
             "series='" + series + '\'' +
+            ", userName='" + user.getLogin() + '\'' +
             ", tokenValue='" + tokenValue + '\'' +
             ", tokenDate=" + tokenDate +
             ", ipAddress='" + ipAddress + '\'' +

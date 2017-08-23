@@ -19,9 +19,8 @@ public class SupportRack extends AbstractAuditingEntity implements Serializable 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_support_rack")
+    @SequenceGenerator(name = "seq_support_rack",sequenceName = "seq_support_rack",allocationSize = 1,initialValue = 1)
     private Long id;
     /**
      * 冻存架类型编码

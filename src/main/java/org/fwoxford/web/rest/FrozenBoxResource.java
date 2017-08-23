@@ -44,8 +44,7 @@ public class FrozenBoxResource {
     private static final String ENTITY_NAME = "frozenBox";
 
     private final FrozenBoxService frozenBoxService;
-    @Autowired
-    private FrozenBoxImportService frozenBoxImportService;
+
     public FrozenBoxResource(FrozenBoxService frozenBoxService) {
         this.frozenBoxService = frozenBoxService;
     }
@@ -310,37 +309,5 @@ public class FrozenBoxResource {
         log.debug("REST request to get FrozenTube : {}", frozenBoxCode);
         FrozenBoxDTO res = frozenBoxService.getBoxAndTubeByForzenBoxCode(frozenBoxCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
-    }
-
-    /**
-     * 从项目组导入样本
-     * @param frozenBoxCodeStr
-     * @return
-     */
-
-    @GetMapping("/tranship-boxes/frozenBoxCode/{frozenBoxCodeStr}/import")
-    @Timed
-    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> importFrozenBoxAndFrozenTube(@PathVariable String frozenBoxCodeStr) {
-        log.debug("REST request to import FrozenBox And FrozenTubeDTOs From project group: {}", frozenBoxCodeStr);
-        List<FrozenBoxAndFrozenTubeResponse> res = frozenBoxService.importFrozenBoxAndFrozenTube(frozenBoxCodeStr);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
-    }
-
-    /**
-     * excel导入样本
-     * @param file
-     * @param request
-     * @return
-     * @throws URISyntaxException
-     */
-    @RequestMapping(value = "/tranship-boxes/projectCode/{projectCode}/upload",method = RequestMethod.POST)
-    @Timed
-    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> saveAndUploadStockOutRequirement(@PathVariable String projectCode,
-                                                                                        @RequestParam(value = "file") MultipartFile file,
-                                                                                        HttpServletRequest request) throws URISyntaxException {
-        log.debug("REST request to save FrozenBoxAndFrozenTubeResponse : {}");
-        List<FrozenBoxAndFrozenTubeResponse> result = frozenBoxImportService.saveAndUploadFrozenBoxAndTube(projectCode,file,request);
-
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 }

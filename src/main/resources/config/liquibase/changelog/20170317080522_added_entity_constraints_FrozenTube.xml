@@ -42,6 +42,6 @@
                                  baseTableName="frozen_tube"
                                  constraintName="fk_frozen_tube_sample_class_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="sample_class"/>
+                                 referencedTableName="sample_classification"/>
     </changeSet>
 </databaseChangeLog>

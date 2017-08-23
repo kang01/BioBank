@@ -19,7 +19,7 @@
     -->
     <changeSet id="20170317065947-1" author="jhipster">
         <createTable tableName="tranship" remarks="转运表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="tranship_date" type="date" remarks="转运日期">
@@ -50,7 +50,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="tranship_state" type="nvarchar(20)" remarks="转运状态：1001：进行中，1002：待入库，1003：已入库，1004：已作废">
+            <column name="tranship_state" type="nvarchar(20)" remarks="转运状态">
                 <constraints nullable="false" />
             </column>
 

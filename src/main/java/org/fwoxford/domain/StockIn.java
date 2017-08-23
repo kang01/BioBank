@@ -20,9 +20,8 @@ public class StockIn extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_stock_in")
+    @SequenceGenerator(name = "seq_stock_in",sequenceName = "seq_stock_in",allocationSize = 1,initialValue = 1)
     private Long id;
     /**
      * 入库编码

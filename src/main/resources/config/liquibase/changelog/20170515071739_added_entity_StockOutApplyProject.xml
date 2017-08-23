@@ -19,7 +19,7 @@
     -->
     <changeSet id="20170515071739-1" author="jhipster">
         <createTable tableName="stock_out_apply_project" remarks="出库申请授权项目详情">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="status" type="nvarchar(20)" remarks="状态">

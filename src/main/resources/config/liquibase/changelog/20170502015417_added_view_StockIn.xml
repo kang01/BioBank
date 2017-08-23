@@ -12,8 +12,25 @@
             select
             s.id as id,
             (select count(*) from stock_in_box a where a.stock_in_code = s.stock_in_code and a.status!='2003') as count_Of_box ,
-            s.project_code as project_code,
-            s.project_site_code as project_site_code,
+            (
+            select LISTAGG(TO_CHAR(project_code),', ') WITHIN GROUP (ORDER BY project_code)
+            from
+            (
+            select distinct inbox.project_code from stock_in_box inbox where inbox.stock_in_id = s.id
+            union
+            select si.project_code from stock_in si where si.id = s.id
+            )
+            ) as project_code,
+            (
+            select
+            LISTAGG(TO_CHAR(project_site_code),', ') WITHIN GROUP (ORDER BY project_site_code)
+            from
+            (
+            select distinct inbox.project_site_code from stock_in_box inbox where inbox.stock_in_id = s.id
+            union
+            select si.project_site_code from stock_in si where si.id = s.id
+            )
+            ) as project_site_code,
             TO_CHAR(s.receive_date,'yyyy-MM-dd') as record_date,
             s.status as status,
             s.stock_in_code as stock_in_code,
@@ -21,8 +38,14 @@
             (select u.last_name||u.first_name from jhi_user u where u.id=s.store_keeper_id_1) as store_keeper_1,
             (select u.last_name||u.first_name from jhi_user u where u.id=s.store_keeper_id_2) as store_keeper_2,
             s.count_of_sample,
-            t.tranship_code
-            from stock_in s left join tranship t on s.tranship_id=t.id
+            (
+            select LISTAGG(TO_CHAR(tranship_code),', ') WITHIN GROUP (ORDER BY tranship_code)
+            from
+            (
+            select distinct t.tranship_code from tranship_stock_in t  where t.stock_in_id = s.id
+            )
+            )as tranship_code
+            from stock_in s
         </createView>
     </changeSet>
 

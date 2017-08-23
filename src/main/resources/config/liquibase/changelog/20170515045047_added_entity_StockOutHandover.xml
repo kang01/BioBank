@@ -18,7 +18,7 @@
     -->
     <changeSet id="20170515045047-1" author="jhipster">
         <createTable tableName="stock_out_handover" remarks="出库交接表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint" >
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="handover_code" type="nvarchar(100)" remarks="交接编码">

@@ -66,7 +66,6 @@ public class CacheConfiguration {
             cm.createCache(org.fwoxford.domain.StockInBox.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.FrozenTube.class.getName() + ".frozenBoxes", jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.FrozenBox.class.getName() + ".frozenTubes", jcacheConfiguration);
-            cm.createCache(org.fwoxford.domain.FrozenBoxPosition.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.SampleClassification.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.ProjectSampleClass.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.Delegate.class.getName(), jcacheConfiguration);
@@ -83,10 +82,9 @@ public class CacheConfiguration {
             cm.createCache(org.fwoxford.domain.StockOutHandover.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.StockOutHandoverDetails.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.StockOutFiles.class.getName(), jcacheConfiguration);
-            cm.createCache(org.fwoxford.domain.UserLoginHistory.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.TaskUserHistory.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.StockOutApplyProject.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.StockOutTaskFrozenTube.class.getName(), jcacheConfiguration);
-            cm.createCache(org.fwoxford.domain.BoxAndTube.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.StockOutBoxTube.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.TranshipTube.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.TranshipBoxPosition.class.getName(), jcacheConfiguration);

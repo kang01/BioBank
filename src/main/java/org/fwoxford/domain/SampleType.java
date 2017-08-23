@@ -19,9 +19,8 @@ public class SampleType extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_sample_type")
+    @SequenceGenerator(name = "seq_sample_type",sequenceName = "seq_sample_type",allocationSize = 1,initialValue = 1)
     private Long id;
     /**
      * 样本类型编码

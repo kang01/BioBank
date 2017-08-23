@@ -19,10 +19,10 @@ public class StockInTranshipBox extends AbstractAuditingEntity implements Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_stock_in_tranship_box")
+    @SequenceGenerator(name = "seq_stock_in_tranship_box",sequenceName = "seq_stock_in_tranship_box",allocationSize = 1,initialValue = 1)
     private Long id;
+
 
     @NotNull
     @Size(max = 100)

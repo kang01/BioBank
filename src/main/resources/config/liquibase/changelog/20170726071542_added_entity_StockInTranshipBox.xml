@@ -19,7 +19,7 @@
     -->
     <changeSet id="20170726071542-1" author="jhipster">
         <createTable tableName="stock_in_tranship_box" remarks="入库与转运盒关系表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="stock_in_code" type="nvarchar(100)" remarks="入库编码">

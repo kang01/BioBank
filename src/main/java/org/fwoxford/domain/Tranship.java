@@ -20,9 +20,8 @@ public class Tranship extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_tranship")
+    @SequenceGenerator(name = "seq_tranship",sequenceName = "seq_tranship",allocationSize = 1,initialValue = 1)
     private Long id;
     /**
      * 转运日期

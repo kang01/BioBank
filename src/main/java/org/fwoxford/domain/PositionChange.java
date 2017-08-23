@@ -19,9 +19,8 @@ public class PositionChange extends AbstractAuditingEntity implements Serializab
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_position_change")
+    @SequenceGenerator(name = "seq_position_change",sequenceName = "seq_position_change",allocationSize = 1,initialValue = 1)
     private Long id;
 
     @Size(max = 1024)

@@ -19,9 +19,8 @@ public class ProjectRelate extends AbstractAuditingEntity implements Serializabl
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_project_relate")
+    @SequenceGenerator(name = "seq_project_relate",sequenceName = "seq_project_relate",allocationSize = 1,initialValue = 1)
     private Long id;
     /**
      * 备注

@@ -65,7 +65,7 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     private StockOutTaskFrozenTubeRepository stockOutTaskFrozenTubeRepository;
 
     @Autowired
-    private UserLoginHistoryRepository userLoginHistoryRepository;
+    private TaskUserHistoryRepository taskUserHistoryRepository;
 
     @Autowired
     private StockOutTaskRepositories stockOutTaskRepositories;
@@ -292,35 +292,35 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         String login = SecurityUtils.getCurrentUserLogin();
         User user = userRepository.findByLogin(login);
         //获取访问历史数据
-        UserLoginHistory userLoginHistory = userLoginHistoryRepository.findByBusinessId(id);
+        TaskUserHistory taskUserHistory = taskUserHistoryRepository.findByBusinessId(id);
         ZonedDateTime time = ZonedDateTime.now();
-        if(userLoginHistory==null){//访问历史为空---首次开始任务
-            userLoginHistory = new UserLoginHistory();
+        if(taskUserHistory==null){//访问历史为空---首次开始任务
+            taskUserHistory = new TaskUserHistory();
             stockOutTask.setTaskStartTime(time);
             stockOutTask.setUsedTime(0);
             stockOutTask.setStatus(Constants.STOCK_OUT_TASK_PENDING);
 
             //记录访问历史
-            userLoginHistory.setStatus(Constants.VALID);
-            userLoginHistory.setBusinessName("TASK BEGIN");
+            taskUserHistory.setStatus(Constants.VALID);
+            taskUserHistory.setBusinessName("TASK BEGIN");
             ZonedDateTime invalidDate = time.plusMinutes(20);
-            userLoginHistory.setInvalidDate(invalidDate);
-            userLoginHistory.setLoginUserId(user.getId());
+            taskUserHistory.setInvalidDate(invalidDate);
+            taskUserHistory.setLoginUserId(user.getId());
         }else{
             //验证是否为同一个用户
-            if(userLoginHistory.getLoginUserId().equals(user.getId()) || userLoginHistory.getLoginUserId() == user.getId() ){
+            if(taskUserHistory.getLoginUserId().equals(user.getId()) || taskUserHistory.getLoginUserId() == user.getId() ){
                 //同一个用户--失效时间改为当前时间+20
                 ZonedDateTime invalidDate = time.plusMinutes(20);
-                userLoginHistory.setInvalidDate(invalidDate);
+                taskUserHistory.setInvalidDate(invalidDate);
 
             }else{
                 //验证是否失效
-                if(userLoginHistory.getInvalidDate().isBefore(time)){
+                if(taskUserHistory.getInvalidDate().isBefore(time)){
                     return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
                 }else{
-                    userLoginHistory.setLoginUserId(user.getId());
+                    taskUserHistory.setLoginUserId(user.getId());
                     ZonedDateTime invalidDate = time.plusMinutes(20);
-                    userLoginHistory.setInvalidDate(invalidDate);
+                    taskUserHistory.setInvalidDate(invalidDate);
                 }
             }
             ZonedDateTime lastTime = stockOutTask.getTaskEndTime();
@@ -340,9 +340,9 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             }
         }
         stockOutTask.setTaskEndTime(time);
-        userLoginHistory.setBusinessId(id);
+        taskUserHistory.setBusinessId(id);
         stockOutTaskRepository.save(stockOutTask);
-        userLoginHistoryRepository.save(userLoginHistory);
+        taskUserHistoryRepository.save(taskUserHistory);
         return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
     }
 

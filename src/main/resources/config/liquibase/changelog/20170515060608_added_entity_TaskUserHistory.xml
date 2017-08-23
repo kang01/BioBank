@@ -6,7 +6,6 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-
     <property name="now" value="now()" dbms="h2"/>
 
     <property name="now" value="sysdate" dbms="oracle"/>
@@ -15,29 +14,40 @@
     <property name="floatType" value="float4" dbms="postgresql, h2"/>
     <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
 
-
     <!--
-        Added the entity BoxAndTube.
+        Added the entity TaskUserHistory.
     -->
-    <changeSet id="20170530140539-1" author="jhipster">
-        <createTable tableName="box_and_tube" remarks="冻存盒与冻存管的关系">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+    <changeSet id="20170515060608-1" author="jhipster">
+        <createTable tableName="task_user_history" remarks="执行出库任务用户历史表">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="user_token" type="nvarchar(255)" remarks="用户token">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="login_user_id" type="bigint" remarks="用户ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="business_id" type="bigint" remarks="业务ID">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="business_name" type="nvarchar(255)" remarks="业务名称">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="invalid_date" type="timestamp" remarks="失效时间">
+                <constraints nullable="false" />
+            </column>
+
             <column name="status" type="nvarchar(20)" remarks="状态">
                 <constraints nullable="false" />
             </column>
 
             <column name="memo" type="nvarchar(1024)" remarks="备注">
                 <constraints nullable="true" />
-            </column>
-
-            <column name="frozen_box_id" type="bigint" remarks="冻存盒ID">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="frozen_tube_id" type="bigint" remarks="冻存管ID">
-                <constraints nullable="false" />
             </column>
 
             <column name="created_by" type="nvarchar(50)" remarks="创建人">
@@ -50,6 +60,7 @@
             <column name="last_modified_date" type="timestamp" remarks="修改时间"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
+        <dropDefaultValue tableName="task_user_history" columnName="invalid_date" columnDataType="datetime"/>
 
     </changeSet>
 </databaseChangeLog>

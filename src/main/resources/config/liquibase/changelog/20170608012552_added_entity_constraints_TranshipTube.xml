@@ -52,7 +52,7 @@
                                  baseTableName="tranship_tube"
                                  constraintName="tranship_tube_sample_class_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="sample_class"/>
+                                 referencedTableName="sample_classification"/>
 
     </changeSet>
 </databaseChangeLog>

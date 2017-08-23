@@ -19,7 +19,7 @@
     -->
     <changeSet id="20170317062302-1" author="jhipster">
         <createTable tableName="frozen_box" remarks="冻存盒表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="frozen_box_code" type="nvarchar(100)" remarks="冻存盒编码">

@@ -19,7 +19,7 @@
     -->
     <changeSet id="20170710080056-1" author="jhipster">
         <createTable tableName="serial_no" remarks="计数表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="serial_no" type="nvarchar(255)" remarks="流水号">

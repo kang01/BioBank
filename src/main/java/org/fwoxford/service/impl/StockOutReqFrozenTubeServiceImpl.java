@@ -152,15 +152,15 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         List<Long> projectIds = stockOutApplyProjectRepository.findProjectByStockRequirementId(stockOutRequirement.getId());
 
         Integer countOfSample = stockOutRequirement.getCountOfSample();
-        Long sampleTypeId = stockOutRequirement.getSampleType()!=null?stockOutRequirement.getSampleType().getId():null;
-        Long samplyClassificationId = stockOutRequirement.getSampleClassification()!=null?stockOutRequirement.getSampleClassification().getId():null;
-        Integer ageMin = stockOutRequirement.getAgeMin();
-        Integer ageMax = stockOutRequirement.getAgeMax();
+        Integer sampleTypeId = stockOutRequirement.getSampleType()!=null?stockOutRequirement.getSampleType().getId().intValue():0;
+        Integer samplyClassificationId = stockOutRequirement.getSampleClassification()!=null?stockOutRequirement.getSampleClassification().getId().intValue():0;
+        Integer ageMin = stockOutRequirement.getAgeMin()!=null?stockOutRequirement.getAgeMin().intValue():0;
+        Integer ageMax = stockOutRequirement.getAgeMax()!=null?stockOutRequirement.getAgeMax().intValue():0;
         String diseaseType =stockOutRequirement.getDiseaseType();
-        Long frozenTubeTypeId = stockOutRequirement.getFrozenTubeType()!=null?stockOutRequirement.getFrozenTubeType().getId():null;
+        Integer frozenTubeTypeId = stockOutRequirement.getFrozenTubeType()!=null?stockOutRequirement.getFrozenTubeType().getId().intValue():0;
         String sex = stockOutRequirement.getSex();
-        Boolean isBloodLipid = stockOutRequirement.isIsBloodLipid();
-        Boolean isHemolysis = stockOutRequirement.isIsHemolysis();
+        Integer isBloodLipid = stockOutRequirement.isIsBloodLipid()!=null&&stockOutRequirement.isIsBloodLipid().equals(true)?1:0;
+        Integer isHemolysis = stockOutRequirement.isIsHemolysis()!=null&&stockOutRequirement.isIsHemolysis().equals(true)?1:0;
 
 //        List<FrozenTube> frozenTubes = frozenTubeRepository.findByRequiremented(sampleTypeId,samplyClassificationId,
 //            frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis);

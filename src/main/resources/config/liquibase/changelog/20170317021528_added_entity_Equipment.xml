@@ -19,7 +19,7 @@
     -->
     <changeSet id="20170317021528-1" author="jhipster">
         <createTable tableName="equipment" remarks="设备表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="equipment_code" type="nvarchar(100)" remarks="设备编码">

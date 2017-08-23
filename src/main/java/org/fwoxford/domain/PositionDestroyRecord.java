@@ -20,9 +20,8 @@ public class PositionDestroyRecord extends AbstractAuditingEntity implements Ser
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_position_destroy_record")
+    @SequenceGenerator(name = "seq_position_destroy_record",sequenceName = "seq_position_destroy_record",allocationSize = 1,initialValue = 1)
     private Long id;
 
     @NotNull

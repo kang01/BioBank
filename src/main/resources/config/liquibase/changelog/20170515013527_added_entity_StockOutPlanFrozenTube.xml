@@ -18,7 +18,7 @@
     -->
     <changeSet id="20170515013527-1" author="jhipster">
         <createTable tableName="stock_out_plan_tube" remarks="出库计划与出库需求样本关系表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="status" type="nvarchar(20)" remarks="状态">

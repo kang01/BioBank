@@ -10,19 +10,18 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
- * A UserLoginHistory.
+ * A TaskUserHistory.
  */
 @Entity
-@Table(name = "user_login_history")
+@Table(name = "task_user_history")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class UserLoginHistory extends AbstractAuditingEntity implements Serializable {
+public class TaskUserHistory extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_task_user_history")
+    @SequenceGenerator(name = "seq_task_user_history",sequenceName = "seq_task_user_history",allocationSize = 1,initialValue = 1)
     private Long id;
 
     @Size(max = 255)
@@ -67,7 +66,7 @@ public class UserLoginHistory extends AbstractAuditingEntity implements Serializ
         return userToken;
     }
 
-    public UserLoginHistory userToken(String userToken) {
+    public TaskUserHistory userToken(String userToken) {
         this.userToken = userToken;
         return this;
     }
@@ -80,7 +79,7 @@ public class UserLoginHistory extends AbstractAuditingEntity implements Serializ
         return loginUserId;
     }
 
-    public UserLoginHistory loginUserId(Long loginUserId) {
+    public TaskUserHistory loginUserId(Long loginUserId) {
         this.loginUserId = loginUserId;
         return this;
     }
@@ -93,7 +92,7 @@ public class UserLoginHistory extends AbstractAuditingEntity implements Serializ
         return businessId;
     }
 
-    public UserLoginHistory businessId(Long businessId) {
+    public TaskUserHistory businessId(Long businessId) {
         this.businessId = businessId;
         return this;
     }
@@ -106,7 +105,7 @@ public class UserLoginHistory extends AbstractAuditingEntity implements Serializ
         return businessName;
     }
 
-    public UserLoginHistory businessName(String businessName) {
+    public TaskUserHistory businessName(String businessName) {
         this.businessName = businessName;
         return this;
     }
@@ -119,7 +118,7 @@ public class UserLoginHistory extends AbstractAuditingEntity implements Serializ
         return invalidDate;
     }
 
-    public UserLoginHistory invalidDate(ZonedDateTime invalidDate) {
+    public TaskUserHistory invalidDate(ZonedDateTime invalidDate) {
         this.invalidDate = invalidDate;
         return this;
     }
@@ -132,7 +131,7 @@ public class UserLoginHistory extends AbstractAuditingEntity implements Serializ
         return status;
     }
 
-    public UserLoginHistory status(String status) {
+    public TaskUserHistory status(String status) {
         this.status = status;
         return this;
     }
@@ -145,7 +144,7 @@ public class UserLoginHistory extends AbstractAuditingEntity implements Serializ
         return memo;
     }
 
-    public UserLoginHistory memo(String memo) {
+    public TaskUserHistory memo(String memo) {
         this.memo = memo;
         return this;
     }
@@ -162,11 +161,11 @@ public class UserLoginHistory extends AbstractAuditingEntity implements Serializ
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        UserLoginHistory userLoginHistory = (UserLoginHistory) o;
-        if (userLoginHistory.id == null || id == null) {
+        TaskUserHistory TaskUserHistory = (TaskUserHistory) o;
+        if (TaskUserHistory.id == null || id == null) {
             return false;
         }
-        return Objects.equals(id, userLoginHistory.id);
+        return Objects.equals(id, TaskUserHistory.id);
     }
 
     @Override
@@ -176,7 +175,7 @@ public class UserLoginHistory extends AbstractAuditingEntity implements Serializ
 
     @Override
     public String toString() {
-        return "UserLoginHistory{" +
+        return "TaskUserHistory{" +
             "id=" + id +
             ", userToken='" + userToken + "'" +
             ", loginUserId='" + loginUserId + "'" +

@@ -19,7 +19,7 @@
     -->
     <changeSet id="20170317051303-1" author="jhipster">
         <createTable tableName="sample_type" remarks="样本类型表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="sample_type_code" type="nvarchar(100)" remarks="样本类型编码">

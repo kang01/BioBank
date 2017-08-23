@@ -19,9 +19,8 @@ public class StockInBoxPosition extends AbstractAuditingEntity implements Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_stock_in_box_pos")
+    @SequenceGenerator(name = "seq_stock_in_box_pos",sequenceName = "seq_stock_in_box_pos",allocationSize = 1,initialValue = 1)
     private Long id;
 
     @Size(max = 100)

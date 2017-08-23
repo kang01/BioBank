@@ -19,7 +19,7 @@
     -->
     <changeSet id="20170316061812" author="jhipster">
         <createTable tableName="jhi_entity_audit_event">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="entity_id" type="bigint">

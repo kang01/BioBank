@@ -19,7 +19,7 @@
     -->
     <changeSet id="20170803012501-1" author="jhipster">
         <createTable tableName="position_change_record" remarks="换位记录表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="sample_code" type="nvarchar(100)" remarks="样本编码">

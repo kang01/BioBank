@@ -20,7 +20,7 @@
     <changeSet id="20170806064658-1" author="jhipster">
         <createTable tableName="position_destroy_record" remarks="销毁记录表">
 
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 

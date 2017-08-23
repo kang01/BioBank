@@ -19,9 +19,8 @@ public class Attachment extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_attachment")
+    @SequenceGenerator(name = "seq_attachment",sequenceName = "seq_attachment",allocationSize = 1,initialValue = 1)
     private Long id;
 
     @NotNull

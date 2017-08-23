@@ -19,9 +19,8 @@ public class FrozenBoxType extends AbstractAuditingEntity implements Serializabl
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_frozen_box_type")
+    @SequenceGenerator(name = "seq_frozen_box_type",sequenceName = "seq_frozen_box_type",allocationSize = 1,initialValue = 1)
     private Long id;
     /**
      * 冻存盒类型编码

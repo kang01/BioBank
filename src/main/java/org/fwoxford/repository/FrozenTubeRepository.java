@@ -71,6 +71,21 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         + " and (?9 is null or t.age <= ?9 )\n"
         + " order by t.frozenBox.frozenBoxCode asc\n"
     )
+//    @Query(value = "select frozentube0_.* from frozen_tube frozentube0_ left outer join frozen_box frozenbox1_ on frozentube0_.frozen_box_id=frozenbox1_.id " +
+//        " left outer join stock_out_req_frozen_tube stockoutre2_ on (frozentube0_.id=stockoutre2_.frozen_tube_id and stockoutre2_.status='1301') " +
+//        " where frozentube0_.status='3001' and (frozentube0_.frozen_box_id is not null)  " +
+//        " and frozenbox1_.status='2004' and frozentube0_.status<>'0000' " +
+//        " and (stockoutre2_.frozen_tube_id is null) " +
+//        " and (?1 is null or frozentube0_.sample_type_id=?1) " +
+//        " and (?2 is null or frozentube0_.sample_classification_id=?2)  " +
+//        " and (?3 is null or frozentube0_.frozen_tube_type_id=?3) " +
+//        " and (?4 is null or frozentube0_.disease_type=?4) " +
+//        " and (?5 is null or frozentube0_.gender=?5) " +
+//        " and (?6 is null or ?6=0 or frozentube0_.is_blood_lipid=?6) " +
+//        " and (?7 is null or ?7=0 or frozentube0_.is_hemolysis=?7) " +
+//        " and (?8 is null or frozentube0_.age>=?8) " +
+//        " and (?9 is null or frozentube0_.age<=?9) " +
+//        "order by frozenbox1_.frozen_box_code,frozentube0_.tube_rows,LPAD(frozentube0_.tube_columns,2) asc",nativeQuery = true)
     List<FrozenTube> findByRequirement(Long sampleTypeId, Long samplyClassificationId, Long frozenTubeTypeId,
                                        String diseaseType, String sex, Boolean isBloodLipid, Boolean isHemolysis, Integer ageMin, Integer ageMax);
 

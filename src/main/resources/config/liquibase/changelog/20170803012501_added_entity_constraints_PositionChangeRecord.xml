@@ -75,7 +75,7 @@
                                  baseTableName="position_change_record"
                                  constraintName="pos_change_sample_class_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="sample_class"/>
+                                 referencedTableName="sample_classification"/>
 
     </changeSet>
 </databaseChangeLog>

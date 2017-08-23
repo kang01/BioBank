@@ -19,7 +19,7 @@
     -->
     <changeSet id="20170515010614-1" author="jhipster">
         <createTable tableName="stock_out_req_frozen_tube" remarks="出库申请需求样本详情表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint" >
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="status" type="nvarchar(20)" remarks="状态">

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="11111111111111" author="jhipster" dbms="h2,postgresql,oracle">
+        <createSequence sequenceName="seq_jhi_entity_audit_event" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_project" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_project_site" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_project_relate" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_equipment_group" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_equipment_modle" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_equipment" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_area" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_support_rack_type" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_support_rack" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_sample_type" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_frozen_box_type" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_frozen_tube_type" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_frozen_box" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_tranship" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_frozen_tube" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_tranship_box" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_in" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_in_box" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_sample_classification" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_project_sample" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_delegate" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_apply" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_requirement" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_required_sample" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_req_frozen_tube" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_plan" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_plan_tube" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_task" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_box_position" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_box" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_tube" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_handover" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_handover_details" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_files" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_apply_project" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_task_tube" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_task_user_history" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_out_box_tube" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_tranship_tube" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_in_tube" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_tranship_box_pos" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_in_box_pos" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_serial_no" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_position_move_record" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_position_move" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_tranship_stock_in" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_stock_in_tranship_box" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_position_change" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_position_change_record" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_position_destroy" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_position_destroy_record" startValue="1" incrementBy="1"></createSequence>
+        <createSequence sequenceName="seq_attachment" startValue="1" incrementBy="1"></createSequence>
+
+    </changeSet>
+</databaseChangeLog>

@@ -19,9 +19,8 @@ public class PositionChangeRecord extends AbstractAuditingEntity implements Seri
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_position_change_record")
+    @SequenceGenerator(name = "seq_position_change_record",sequenceName = "seq_position_change_record",allocationSize = 1,initialValue = 1)
     private Long id;
 
     @NotNull

@@ -18,9 +18,8 @@ public class EntityAuditEvent implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_jhi_entity_audit_event")
+    @SequenceGenerator(name = "seq_jhi_entity_audit_event",sequenceName = "seq_jhi_entity_audit_event",allocationSize = 1,initialValue = 1)
     private Long id;
 
     @NotNull

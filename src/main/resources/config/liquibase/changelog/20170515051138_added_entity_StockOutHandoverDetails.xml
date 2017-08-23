@@ -19,7 +19,7 @@
     -->
     <changeSet id="20170515051138-1" author="jhipster">
         <createTable tableName="stock_out_handover_details" remarks="交接样本详情表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="status" type="nvarchar(20)" remarks="状态">

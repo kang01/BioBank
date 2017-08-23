@@ -17,8 +17,8 @@
         Added the entity SampleClassification.
     -->
     <changeSet id="20170503063650-1" author="jhipster">
-        <createTable tableName="sample_class" remarks="样本分类表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+        <createTable tableName="sample_classification" remarks="样本分类表">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="sample_classification_name" type="nvarchar(255)" remarks="样本分类名称">

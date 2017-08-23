@@ -7,9 +7,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * A DTO for the UserLoginHistory entity.
+ * A DTO for the TaskUserHistory entity.
  */
-public class UserLoginHistoryDTO extends AbstractAuditingDTO implements Serializable {
+public class TaskUserHistoryDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
@@ -92,9 +92,9 @@ public class UserLoginHistoryDTO extends AbstractAuditingDTO implements Serializ
             return false;
         }
 
-        UserLoginHistoryDTO userLoginHistoryDTO = (UserLoginHistoryDTO) o;
+        TaskUserHistoryDTO TaskUserHistoryDTO = (TaskUserHistoryDTO) o;
 
-        if ( ! Objects.equals(id, userLoginHistoryDTO.id)) { return false; }
+        if ( ! Objects.equals(id, TaskUserHistoryDTO.id)) { return false; }
 
         return true;
     }
@@ -106,7 +106,7 @@ public class UserLoginHistoryDTO extends AbstractAuditingDTO implements Serializ
 
     @Override
     public String toString() {
-        return "UserLoginHistoryDTO{" +
+        return "TaskUserHistoryDTO{" +
             "id=" + id +
             ", userToken='" + userToken + "'" +
             ", loginUserId='" + loginUserId + "'" +

@@ -19,7 +19,7 @@
     -->
     <changeSet id="20170712035218-1" author="jhipster">
         <createTable tableName="position_move"  remarks="移位表">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="move_reason" type="nvarchar(1024)" remarks="移位原因">
@@ -30,7 +30,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="whether_freezing_and_thawing" type="bit" remarks="是否冻融">
+            <column name="whether_freezing_and_thawing" type="bit" remarks="是否冻溶">
                 <constraints nullable="true" />
             </column>
 

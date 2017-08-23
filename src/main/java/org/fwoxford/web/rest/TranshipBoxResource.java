@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.fwoxford.service.FrozenBoxImportService;
 import org.fwoxford.service.TranshipBoxService;
 import org.fwoxford.service.dto.*;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -21,7 +23,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,6 +44,9 @@ public class TranshipBoxResource {
     private static final String ENTITY_NAME = "transhipBox";
 
     private final TranshipBoxService transhipBoxService;
+
+    @Autowired
+    private FrozenBoxImportService frozenBoxImportService;
 
     public TranshipBoxResource(TranshipBoxService transhipBoxService) {
         this.transhipBoxService = transhipBoxService;
@@ -196,5 +203,35 @@ public class TranshipBoxResource {
     @RequestMapping(value = "/res/tranship-boxes/transhipCode/{transhipCode}", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<FrozenBoxCodeForTranshipDTO> getFrozenBoxCodeByTranshipCode(@PathVariable String transhipCode, @RequestBody DataTablesInput input) {
         return transhipBoxService.getPageFrozenBoxCodeByTranshipCode(transhipCode,input);
+    }
+    /**
+     * 从项目组导入样本
+     * @param frozenBoxCodeStr
+     * @return
+     */
+
+    @GetMapping("/tranship-boxes/frozenBoxCode/{frozenBoxCodeStr}/import")
+    @Timed
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> importFrozenBoxAndFrozenTube(@PathVariable String frozenBoxCodeStr) {
+        log.debug("REST request to import FrozenBox And FrozenTubeDTOs From project group: {}", frozenBoxCodeStr);
+        List<FrozenBoxAndFrozenTubeResponse> res = frozenBoxImportService.importFrozenBoxAndFrozenTube(frozenBoxCodeStr);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+    /**
+     * excel导入样本
+     * @param file
+     * @param request
+     * @return
+     * @throws URISyntaxException
+     */
+    @RequestMapping(value = "/tranship-boxes/projectCode/{projectCode}/upload",method = RequestMethod.POST)
+    @Timed
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> saveAndUploadStockOutRequirement(@PathVariable String projectCode,
+                                                                                                 @RequestParam(value = "file") MultipartFile file,
+                                                                                                 HttpServletRequest request) throws URISyntaxException {
+        log.debug("REST request to save FrozenBoxAndFrozenTubeResponse : {}");
+        List<FrozenBoxAndFrozenTubeResponse> result = frozenBoxImportService.saveAndUploadFrozenBoxAndTube(projectCode,file,request);
+
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 }

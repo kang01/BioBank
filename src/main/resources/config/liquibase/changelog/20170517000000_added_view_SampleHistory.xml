@@ -8,11 +8,11 @@
     -->
     <changeSet id="20170517000000-2" author="jhipster">
 
-        <createView viewName="view_sample_history">
+        <createView viewName="view_samples_history">
             select ROWNUM  as id,temp.* from
             (
             select tranship.frozen_tube_id as frozen_tube_id,
-            tube.project_code,
+            tranship.project_code,
             tran.id as tranship_id,
             tran.tranship_code,
             null as stock_in_id,
@@ -21,18 +21,24 @@
             null as stock_out_task_code,
             null as handover_id,
             null as handover_code,
-            tube.sample_code,
+            tranship.sample_code,
             101 as type,
-            tranship.status,box.frozen_box_code,tranship.rows_in_tube as tube_rows,tranship.columns_in_tube as tube_columns
-            ,tran.tranship_date as operate_time,
+            tranship.status,box.id as frozen_box_id,box.frozen_box_code,tranship.rows_in_tube as tube_rows,tranship.columns_in_tube as tube_columns
+            ,tran.created_date as operate_time,
             (tbox.equipment_code||'.'||tbox.area_code||'.'||tbox.support_rack_code||'.'||tbox.columns_in_shelf||tbox.rows_in_shelf) as position,
             (tranship.ROWS_IN_TUBE||tranship.COLUMNS_IN_TUBE) as position_in_box,
             tbox.equipment_code,tbox.equipment_id,tbox.area_code,tbox.area_id,tbox.support_rack_code as shelves_code ,
             tbox.support_rack_id as shelves_id,
-            tbox.columns_in_shelf,tbox.rows_in_shelf,tranship.memo, u.last_name||u.first_name as operator
+            tbox.columns_in_shelf,tbox.rows_in_shelf,tranship.memo, u.last_name||u.first_name as operator,
+            tranship.sample_type_id,tranship.sample_type_code,tranship.sample_type_name,
+            tranship.frozen_tube_type_id,tranship.frozen_tube_type_code,tranship.frozen_tube_type_name,tranship.frozen_tube_volumns,tranship.frozen_tube_volumns_unit,
+            tranship.sample_used_times_most,tranship.sample_used_times,tranship.sample_volumns,
+            tranship.project_id,
+            tranship.project_site_id,tranship.project_site_code,
+            tranship.sample_classification_id,
+            tranship.frozen_tube_state
 
             from tranship_tube tranship
-            left join  frozen_tube tube on tranship.frozen_tube_id = tube.id
             left join tranship_box tbox on tranship.tranship_box_id = tbox.id
             left join  tranship tran on tbox.tranship_id = tran.id
             left join frozen_box box on tbox.frozen_box_id = box.id
@@ -40,7 +46,7 @@
 
             UNION
             select stockIn.frozen_tube_id as frozen_tube_id,
-            tube.project_code,
+            stockIn.project_code,
             null as tranship_id,
             null as tranship_code,
             s.id as stock_in_id,
@@ -49,18 +55,24 @@
             null as stock_out_task_code,
             null as handover_id,
             null as handover_code,
-            tube.sample_code,
+            stockIn.sample_code,
             102 as type,
-            stockIn.status,box.frozen_box_code,stockIn.tube_rows,stockIn.tube_columns
-            ,s.stock_in_date as operate_time,
+            stockIn.status,box.id as frozen_box_id,box.frozen_box_code,stockIn.tube_rows,stockIn.tube_columns
+            ,s.created_date as operate_time,
             (sbox.equipment_code||'.'||sbox.area_code||'.'||sbox.support_rack_code||'.'||sbox.columns_in_shelf||sbox.rows_in_shelf) as position,
             (stockIn.tube_rows||stockIn.tube_columns) as position_in_box,
             sbox.equipment_code,sbox.equipment_id,sbox.area_code,sbox.area_id,sbox.support_rack_code as shelves_code ,
             sbox.support_rack_id as shelves_id,
-            sbox.columns_in_shelf,sbox.rows_in_shelf,stockIn.memo, u.last_name||u.first_name||','||u2.last_name||u2.first_name as operator
+            sbox.columns_in_shelf,sbox.rows_in_shelf,stockIn.memo, u.last_name||u.first_name||','||u2.last_name||u2.first_name as operator,
+            stockIn.sample_type_id,stockIn.sample_type_code,stockIn.sample_type_name,
+            stockIn.frozen_tube_type_id,stockIn.frozen_tube_type_code,stockIn.frozen_tube_type_name,stockIn.frozen_tube_volumns,stockIn.frozen_tube_volumns_unit,
+            stockIn.sample_used_times_most,stockIn.sample_used_times,stockIn.sample_volumns,
+            stockIn.project_id,
+            stockIn.project_site_id,stockIn.project_site_code,
+            stockIn.sample_classification_id,
+            stockIn.frozen_tube_state
 
             from stock_in_tube stockIn
-            left join frozen_tube tube on stockIn.frozen_tube_id = tube.id
             left join stock_in_box sbox on stockIn.stock_in_box_id = sbox.id
             left join  stock_in s on sbox.stock_in_id = s.id
             left join frozen_box box on sbox.frozen_box_id = box.id
@@ -70,7 +82,7 @@
 
             UNION
             select stockOut.frozen_tube_id as frozen_tube_id,
-            tube.project_code,
+            stockOut.project_code,
             null as tranship_id,
             null as tranship_code,
             null as stock_in_id,
@@ -79,19 +91,24 @@
             task.stock_out_task_code,
             null as handover_id,
             null as handover_code,
-            tube.sample_code,
+            stockOut.sample_code,
             103 as type,
-            stockOut.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns
-            ,task.stock_out_date as operate_time,
+            stockOut.status,box.id as frozen_box_id,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns
+            ,task.created_date as operate_time,
             (soutbox.equipment_code||'.'||soutbox.area_code||'.'||soutbox.support_rack_code||'.'||soutbox.columns_in_shelf||soutbox.rows_in_shelf) as position,
             (stockOut.tube_rows||stockOut.tube_columns) as position_in_box,
             soutbox.equipment_code,soutbox.equipment_id,soutbox.area_code,soutbox.area_id,soutbox.support_rack_code as shelves_code ,
             soutbox.support_rack_id as shelves_id,
-            soutbox.columns_in_shelf,soutbox.rows_in_shelf,stockOut.memo,u.last_name||u.first_name||','||u2.last_name||u2.first_name as operator
-
+            soutbox.columns_in_shelf,soutbox.rows_in_shelf,stockOut.memo,u.last_name||u.first_name||','||u2.last_name||u2.first_name as operator,
+            stockOut.sample_type_id,stockOut.sample_type_code,stockOut.sample_type_name,
+            stockOut.frozen_tube_type_id,stockOut.frozen_tube_type_code,stockOut.frozen_tube_type_name,stockOut.frozen_tube_volumns,stockOut.frozen_tube_volumns_unit,
+            stockOut.sample_used_times_most,stockOut.sample_used_times,stockOut.sample_volumns,
+            stockOut.project_id,
+            stockOut.project_site_id,stockOut.project_site_code,
+            stockOut.sample_classification_id,
+            stockOut.frozen_tube_state
 
             from stock_out_box_tube stockOut
-            left join  frozen_tube tube on stockOut.frozen_tube_id = tube.id
             left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id
             left join frozen_box box on soutbox.frozen_box_id = box.id
             left join  stock_out_task task on soutbox.stock_out_task_id = task.id
@@ -100,7 +117,7 @@
 
             UNION
             select stockOut.frozen_tube_id as frozen_tube_id,
-            tube.project_code,
+            stockOut.project_code,
             null as tranship_id,
             null as tranship_code,
             null as stock_in_id,
@@ -109,26 +126,131 @@
             null as stock_out_task_code,
             handover.id as handover_id,
             handover.handover_code,
-            tube.sample_code,
+            stockOut.sample_code,
             104 as type,
-            hand.status,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns
+            stockOut.status,box.id as frozen_box_id,box.frozen_box_code,stockOut.tube_rows,stockOut.tube_columns
             ,handover.handover_time  as operate_time,
             (soutbox.equipment_code||'.'||soutbox.area_code||'.'||soutbox.support_rack_code||'.'||soutbox.columns_in_shelf||soutbox.rows_in_shelf) as position,
             (stockOut.tube_rows||stockOut.tube_columns) as position_in_box,
             soutbox.equipment_code,soutbox.equipment_id,soutbox.area_code,soutbox.area_id,soutbox.support_rack_code as shelves_code ,
             soutbox.support_rack_id as shelves_id,
-            soutbox.columns_in_shelf,soutbox.rows_in_shelf,hand.memo, u.last_name||u.first_name as operator
-
+            soutbox.columns_in_shelf,soutbox.rows_in_shelf,hand.memo, u.last_name||u.first_name as operator,
+            stockOut.sample_type_id,stockOut.sample_type_code,stockOut.sample_type_name,
+            stockOut.frozen_tube_type_id,stockOut.frozen_tube_type_code,stockOut.frozen_tube_type_name,stockOut.frozen_tube_volumns,stockOut.frozen_tube_volumns_unit,
+            stockOut.sample_used_times_most,stockOut.sample_used_times,stockOut.sample_volumns,
+            stockOut.project_id,
+            stockOut.project_site_id,stockOut.project_site_code,
+            stockOut.sample_classification_id,
+            stockOut.frozen_tube_state
 
             from stock_out_handover_details hand
             left join stock_out_box_tube stockOut on hand.stock_out_box_tube_id = stockOut.id
-            left join  frozen_tube tube on stockOut.frozen_tube_id = tube.id
             left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id
             left join frozen_box box on soutbox.frozen_box_id = box.id
             left join  stock_out_handover handover on hand.stock_out_handover_id = handover.id
             left join jhi_user u on  handover.handover_person_id = u.id
+
+            UNION
+            select m.frozen_tube_id as frozen_tube_id,
+            m.project_code,
+            null as tranship_id,
+            null as tranship_code,
+            null as stock_in_id,
+            null as stock_in_code,
+            null as stock_out_task_id,
+            null as stock_out_task_code,
+            null as handover_id,
+            null as handover_code,
+            m.sample_code,
+            105 as type,
+            m.status,m.frozen_box_id,m.frozen_box_code,m.tube_rows,m.tube_columns
+            ,m.created_date  as operate_time,
+            (m.equipment_code||'.'||m.area_code||'.'||m.support_rack_code||'.'||m.columns_in_shelf||m.rows_in_shelf) as position,
+            (m.tube_rows||m.tube_columns) as position_in_box,
+            m.equipment_code,m.equipment_id,m.area_code,m.area_id,m.support_rack_code as shelves_code ,
+            m.support_rack_id as shelves_id,
+            m.columns_in_shelf,m.rows_in_shelf,p.move_reason as memo ,u.last_name||u.first_name||','||u2.last_name||u2.first_name as operator,
+            m.sample_type_id,m.sample_type_code,m.sample_type_name,
+            m.frozen_tube_type_id,m.frozen_tube_type_code,m.frozen_tube_type_name,m.frozen_tube_volumns,m.frozen_tube_volumns_unit,
+            m.sample_used_times_most,m.sample_used_times,m.sample_volumns,
+            m.project_id,
+            m.project_site_id,m.project_site_code,
+            m.sample_classification_id,
+            m.frozen_tube_state
+
+            from position_move_record m
+            left join position_move p on m.position_move_id = p.id
+            left join jhi_user u on  p.operator_id_1 = u.id
+            left join jhi_user u2 on  p.operator_id_2 = u2.id
+
+            UNION
+            select m.frozen_tube_id as frozen_tube_id,
+            m.project_code,
+            null as tranship_id,
+            null as tranship_code,
+            null as stock_in_id,
+            null as stock_in_code,
+            null as stock_out_task_id,
+            null as stock_out_task_code,
+            null as handover_id,
+            null as handover_code,
+            m.sample_code,
+            106 as type,
+            m.status,m.frozen_box_id,m.frozen_box_code,m.tube_rows,m.tube_columns
+            ,m.created_date  as operate_time,
+            (m.equipment_code||'.'||m.area_code||'.'||m.support_rack_code||'.'||m.columns_in_shelf||m.rows_in_shelf) as position,
+            (m.tube_rows||m.tube_columns) as position_in_box,
+            m.equipment_code,m.equipment_id,m.area_code,m.area_id,m.support_rack_code as shelves_code ,
+            m.support_rack_id as shelves_id,
+            m.columns_in_shelf,m.rows_in_shelf,p.change_reason as memo ,u.last_name||u.first_name||','||u2.last_name||u2.first_name as operator,
+            m.sample_type_id,m.sample_type_code,m.sample_type_name,
+            m.frozen_tube_type_id,m.frozen_tube_type_code,m.frozen_tube_type_name,m.frozen_tube_volumns,m.frozen_tube_volumns_unit,
+            m.sample_used_times_most,m.sample_used_times,m.sample_volumns,
+            m.project_id,
+            m.project_site_id,m.project_site_code,
+            m.sample_classification_id,
+            m.frozen_tube_state
+
+            from position_change_record m
+            left join position_change p on m.position_change_id = p.id
+            left join jhi_user u on  p.operator_id_1 = u.id
+            left join jhi_user u2 on  p.operator_id_2 = u2.id
+
+            UNION
+            select m.frozen_tube_id as frozen_tube_id,
+            m.project_code,
+            null as tranship_id,
+            null as tranship_code,
+            null as stock_in_id,
+            null as stock_in_code,
+            null as stock_out_task_id,
+            null as stock_out_task_code,
+            null as handover_id,
+            null as handover_code,
+            m.sample_code,
+            107 as type,
+            m.status,m.frozen_box_id,m.frozen_box_code,m.tube_rows,m.tube_columns
+            ,m.created_date  as operate_time,
+            (m.equipment_code||'.'||m.area_code||'.'||m.support_rack_code||'.'||m.columns_in_shelf||m.rows_in_shelf) as position,
+            (m.tube_rows||m.tube_columns) as position_in_box,
+            m.equipment_code,m.equipment_id,m.area_code,m.area_id,m.support_rack_code as shelves_code ,
+            m.support_rack_id as shelves_id,
+            m.columns_in_shelf,m.rows_in_shelf,p.destroy_reason as memo ,u.last_name||u.first_name||','||u2.last_name||u2.first_name as operator,
+            m.sample_type_id,m.sample_type_code,m.sample_type_name,
+            m.frozen_tube_type_id,m.frozen_tube_type_code,m.frozen_tube_type_name,m.frozen_tube_volumns,m.frozen_tube_volumns_unit,
+            m.sample_used_times_most,m.sample_used_times,m.sample_volumns,
+            m.project_id,
+            m.project_site_id,m.project_site_code,
+            m.sample_classification_id,
+            m.frozen_tube_state
+
+            from position_destroy_record m
+            left join position_destroy p on m.position_destroy_id = p.id
+            left join jhi_user u on  p.operator_id_1 = u.id
+            left join jhi_user u2 on  p.operator_id_2 = u2.id
+
             ) temp
-            ORDER BY type desc,operate_time desc
+            ORDER BY operate_time desc
         </createView>
     </changeSet>
 </databaseChangeLog>

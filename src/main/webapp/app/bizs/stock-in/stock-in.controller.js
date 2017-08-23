@@ -158,7 +158,7 @@
                 DTColumnBuilder.newColumn('stockInCode').withTitle('入库编码').withOption('width','100'),
                 DTColumnBuilder.newColumn('transhipCode').withTitle('转运编码').withOption('width','auto'),
                 DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点').withOption('width','70'),
-                DTColumnBuilder.newColumn('projectCode').withTitle('项目编号').withOption('width','70'),
+                DTColumnBuilder.newColumn('projectCode').withTitle('项目编号').withOption('width','90'),
                 DTColumnBuilder.newColumn('recordDate').withTitle('创建日期').withOption('width','90'),
                 DTColumnBuilder.newColumn('stockInDate').withTitle('入库日期').withOption('width','90'),
                 DTColumnBuilder.newColumn('storeKeeper1').withTitle('库管员').withOption('width','100'),

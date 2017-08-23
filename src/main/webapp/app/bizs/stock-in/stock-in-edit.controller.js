@@ -505,6 +505,7 @@
         }
         function _fnCreatedRow(row, data, dataIndex) {
             var status = '';
+            // var transportCode = '';
             var isSplit = data.isSplit || 0;
             // var sampleType = data.sampleType && data.sampleType.sampleTypeName || '';
             // 冻存盒状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2090：已作废，2006：已上架，2008：待出库，2009：已出库
@@ -516,17 +517,12 @@
                     status = "待入库";
                 }
             }
-            // switch (data.status){
-            //     case '2001': status = '新建'; break;
-            //     case '2002': isSplit ? status = '待分装' : status = '待入库'; break;
-            //     case '2003': status = '已分装'; break;
-            //     case '2004': status = '已入库'; break;
-            //     case '2090': status = '已作废'; break;
-            //     case '2006': status = '已上架'; break;
-            //     case '2008': status = '待出库'; break;
-            //     case '2009': status = '已出库'; break;
+            // if(data.transhipCode){
+            //     transportCode = data.transhipCode;
+            // }else{
+            //     transportCode = null;
             // }
-            // $('td:eq(2)', row).html(sampleType);
+            // $('td:eq(2)', row).html(transportCode);
             $('td:eq(6)', row).html(isSplit ? '需要分装' : '');
             $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
@@ -556,7 +552,6 @@
                     '   <i class="fa fa-sitemap"></i> 撤销上架' +
                     '</button>';
             }
-
             return buttonHtml;
             // return '<button type="button" class="btn btn-xs btn-warning" ng-click="vm.splitIt(\''+ full.frozenBoxCode +'\')">' +
             //     '   <i class="fa fa-sitemap"></i> 分装' +
@@ -620,7 +615,8 @@
             var columns = [
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
+                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').withOption("width", "200"),
+                // DTColumnBuilder.newColumn('frozenBoxCode').withTitle('转运编码'),
                 DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
                 DTColumnBuilder.newColumn('sampleClassificationName').withOption("width", "120").withTitle('样本分类'),
                 DTColumnBuilder.newColumn('position').withOption("width", "auto").withTitle('冻存位置'),
@@ -705,7 +701,7 @@
 
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/box-putaway-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/box-putaway-modal.html',
                 controller: 'BoxPutAwayModalController',
                 controllerAs:'vm',
                 backdrop:'static',
@@ -735,7 +731,7 @@
         function _rescindInShelf(boxCode) {
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/rescind-putaway-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/rescind-putaway-modal.html',
                 controller: 'RescindPutAwayModalController',
                 controllerAs:'vm',
                 backdrop:'static'
@@ -759,7 +755,6 @@
                 vm.stockInFlag = false;
             }
         }
-
 
         //入库完成
         vm.saveStockIn = function () {
@@ -853,7 +848,7 @@
         var customRenderer = function (hotInstance, td, row, col, prop, value, cellProperties) {
             if(value){
                 if(value.memo && value.memo != " "){
-                    cellProperties.comment = value.memo;
+                    cellProperties.comment = {value:value.memo};
                 }
                 if(value.sampleCode == null){
                     value.sampleCode = "";
@@ -1213,6 +1208,16 @@
         };
         //分装操作
         vm.splitBox = function () {
+            if(vm.box.sampleClassification || vm.box.sampleType.sampleTypeCode == "99"){
+                if(vm.problemSamplyTypeCode != "97"){
+                    for(var i = 0; i< selectList.length; i++){
+                        if(vm.sampleTypeClassCode != selectList[i].sampleClassificationCode){
+                            toastr.error("被分装的样本分类必须跟要分装的盒子的分类要一致！");
+                            return;
+                        }
+                    }
+                }
+            }
             var rowCount = +vm.box.frozenBoxType.frozenBoxTypeRows;
             var colCount = +vm.box.frozenBoxType.frozenBoxTypeColumns;
             vm.obox.stockInFrozenTubeList = [];
@@ -1243,7 +1248,7 @@
             if(!selectList.length || !vm.frozenBoxCode ){
                 modalInstance = $uibModal.open({
                     animation: true,
-                    templateUrl: 'app/bizs/stock-in/stock-in-splittingBox-message-modal.html',
+                    templateUrl: 'app/bizs/stock-in/modal/stock-in-splittingBox-message-modal.html',
                     controller: 'SplittingBoxMessageController',
                     controllerAs:'vm',
                     backdrop:'static'
@@ -1402,7 +1407,7 @@
 
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/stock-in-close-splittingBox-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/stock-in-close-splittingBox-modal.html',
                 controller: 'CloseSplittingBoxController',
                 controllerAs:'vm',
                 backdrop:'static',
@@ -1456,7 +1461,7 @@
             }
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/add-box-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/add-box-modal.html',
                 controller: 'AddBoxModalController',
                 controllerAs:'vm',
                 size:'lg',

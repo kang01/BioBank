@@ -695,7 +695,7 @@
                 td.style.position = 'relative';
 
                 if(tube.memo && tube.memo != " "){
-                    cellProperties.comment = tube.memo;
+                    cellProperties.comment = {value:tube.memo};
                 }
                 //样本类型
                 if(tube.sampleClassificationId){
@@ -725,7 +725,6 @@
                     }
                 }
             }
-
             //修改样本状态正常、空管、空孔、异常
             function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
 
@@ -845,8 +844,8 @@
                 if(aRemarkArray.length > 0){
                     modalInstance = $uibModal.open({
                         animation: true,
-                        templateUrl: 'app/bizs/transport-record/microtubes-remark-modal.html',
-                        controller: 'microtubesRemarkModalController',
+                        templateUrl: 'app/bizs/transport-record/modal/tubes-remark-modal.html',
+                        controller: 'TubesRemarkModalController',
                         backdrop:'static',
                         controllerAs: 'vm',
                         resolve: {
@@ -1274,7 +1273,7 @@
             function _fnDelBox() {
                 modalInstance = $uibModal.open({
                     animation: true,
-                    templateUrl: 'app/bizs/transport-record/frozen-box-delete-modal.html',
+                    templateUrl: 'app/bizs/transport-record/modal/frozen-box-delete-modal.html',
                     controller: 'FrozenBoxDeleteController',
                     backdrop:'static',
                     controllerAs: 'vm'

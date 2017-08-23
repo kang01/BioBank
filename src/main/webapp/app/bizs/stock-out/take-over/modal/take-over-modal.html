@@ -3,13 +3,13 @@
     <h3 class="modal-title" id="modal-title">样本交接</h3>
 </div>
 <div class="modal-body" id="modal-body">
-    <form name="takeoverForm" class="form-horizontal">
-    <div class="row m-0">
+    <form name="takeoverForm" class="">
+    <div class="row">
         <div class="col-md-12">
             <p>接收方 {{vm.stockOutTakeOver.receiverOrganization}} {{vm.stockOutTakeOver.receiverName}}, 在 {{vm.stockOutTakeOver.handoverTime}} 取走样本 {{vm.countOfSamples}} 只, 详情见交接明细。</p>
             <p>接收人 {{vm.stockOutTakeOver.receiverName}}</p>
         </div>
-        <div class="col-md-12" style="padding-left: 30px">
+        <div class="col-md-12">
             <div class="form-group">
                 <label><input type="checkbox" ng-model="vm.isCheck1"> 已将样本交接单送达接收方</label>
             </div>
@@ -18,36 +18,29 @@
             </div>
         </div>
     </div>
-    <div class="row form-horizontal mt-20">
-        <div class="col-md-4">
+    <div class="row  mt-20">
+        <div class="col-md-3">
             <div class="form-group">
-                <label class="col-sm-4 control-label">交付人</label>
-                <div class="col-sm-8">
-                    <!--<input type="email" class="form-control" ng-model="vm.takeOver.handoverPersonName" ng-disabled="true">-->
-                    <selectize options='vm.loginOptions' config="vm.loginConfig"
-                               ng-model="vm.takeOver.handoverPersonId"></selectize>
-                </div>
+                <label>交付人</label>
+                <selectize options='vm.loginOptions' config="vm.loginConfig"
+                           ng-model="vm.takeOver.handoverPersonId"></selectize>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
-                <label class="col-sm-4 control-label">密码</label>
-                <div class="col-sm-8">
-                    <input type="password" class="form-control" ng-model="vm.takeOver.password">
-                </div>
+                <label >密码</label>
+                <input type="password" class="form-control" ng-model="vm.takeOver.password">
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
-                <label class="col-sm-4 control-label">交付日期</label>
-                <div class="col-sm-8">
-                    <div class="input-group">
-                        <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.takeOver.handoverTime" is-open="vm.datePickerOpenStatus.handoverTime"
-                                required/>
-                        <span class="input-group-btn">
+                <label >交付日期</label>
+                <div class="input-group">
+                    <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.takeOver.handoverTime" is-open="vm.datePickerOpenStatus.handoverTime"
+                            required/>
+                    <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="vm.openCalendar('handoverTime')"><i class="glyphicon glyphicon-calendar"></i></button>
                             </span>
-                    </div>
                 </div>
             </div>
         </div>

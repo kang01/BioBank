@@ -127,7 +127,7 @@
                     }
                     //管子
                     if(vm.flagStatus){
-                        if(vm.frozenTubeArray[row][col].sampleCode){
+                        if(vm.frozenTubeArray[row][col].sampleCode || vm.frozenTubeArray[row][col].sampleTempCode){
                             var tubeStatus = vm.frozenTubeArray[row][col].status;
                             if(tubeStatus == 3001){
                                 vm.frozenTubeArray[row][col].status = 3002;
@@ -425,7 +425,7 @@
                     $(td).removeClass('htReadOnly');
                 }
                 if(tube.memo && tube.memo != " "){
-                    cellProperties.comment = tube.memo;
+                    cellProperties.comment = {value:tube.memo};
                 }
                 //样本类型
                 if(tube.backColorForClass || tube.sampleClassificationId){
@@ -615,8 +615,8 @@
                 if(aRemarkArray.length > 0){
                     modalInstance = $uibModal.open({
                         animation: true,
-                        templateUrl: 'app/bizs/transport-record/microtubes-remark-modal.html',
-                        controller: 'microtubesRemarkModalController',
+                        templateUrl: 'app/bizs/transport-record/modal/tubes-remark-modal.html',
+                        controller: 'TubesRemarkModalController',
                         backdrop:'static',
                         controllerAs: 'vm',
                         resolve: {
@@ -638,6 +638,8 @@
                         aRemarkArray = [];
                         tableCtrl.render();
                     });
+                }else{
+                    toastr.error("请选择样本!");
                 }
             };
         }
@@ -1127,7 +1129,7 @@
         vm.closeBox = function () {
             modalInstance = $uibModal.open({
                 animation: true,
-                templateUrl: 'app/bizs/stock-in/stock-in-close-splittingBox-modal.html',
+                templateUrl: 'app/bizs/stock-in/modal/stock-in-close-splittingBox-modal.html',
                 controller: 'CloseSplittingBoxController',
                 controllerAs:'vm',
                 size:'sm',

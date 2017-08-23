@@ -111,20 +111,13 @@
             var projectCode = _.find(vm.projectOptions,{id:+vm.projectId}).projectCode;
             vm.dto.projectCodeStr = [];
             vm.dto.projectCodeStr.push(projectCode);
-            // if(projectIds.length){
-            //     for(var i = 0; i <projectIds.length; i++){
-            //         var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
-            //         vm.dto.projectCodeStr.push(projectCode)
-            //     }
-            // }
             vm.checked = false;
             vm.boxInstance.rerender();
         }
+
         function _fnEmpty() {
             vm.dto = {};
             vm.dto.projectCodeStr = [];
-            // projectIds = [];
-            // vm.projectCodeStr = [];
             vm.arrayBoxCode = [];
             vm.dto.spaceType = "2";
             vm.dto.compareType = "1";
@@ -444,19 +437,7 @@
             StockInBoxByCodeService.get({code:frozenBoxCode},onFrozenSuccess,onError);
         }
         function onFrozenSuccess(data) {
-            // var boxCode = data.frozenBoxCode;
-            // var tubeList = _.filter(vm.selectedSample,{'moveFrozenBoxCode':boxCode});
             vm.box = data;
-            // for(var i = 0; i < tubeList.length; i++){
-            //     tubeList[i].sampleType = {};
-            //     tubeList[i].sampleType.id = tubeList[i].sampleTypeId;
-            //     tubeList[i].sampleType.sampleTypeCode = tubeList[i].sampleTypeCode;
-            //     tubeList[i].sampleType.sampleTypeName = tubeList[i].sampleTypeName;
-            //     tubeList[i].sampleType.backColor = tubeList[i].backColor;
-            //     vm.box.frozenTubeDTOS.push(tubeList[i]);
-            // }
-
-            // _initSampleType();
             setTimeout(function () {
                 _reloadTubesForTable(vm.box);
             },500);
@@ -464,16 +445,21 @@
         //撤销
         function _fnRecover() {
             vm.selectAll = false;
-            var recoverData = totalRecoverDataArray.pop();
-            for(var i = 0; i < vm.selectedSample.length; i++){
-                for(var id in recoverData){
-                    if(vm.selectedSample[i].id == +id){
-                        vm.selectedSample[i] = recoverData[id];
+            if(totalRecoverDataArray.length){
+                var recoverData = totalRecoverDataArray.pop();
+                for(var i = 0; i < vm.selectedSample.length; i++){
+                    for(var id in recoverData){
+                        if(vm.selectedSample[i].id == +id){
+                            vm.selectedSample[i] = recoverData[id];
+                        }
                     }
                 }
+                vm.boxInstance.rerender();
+                _queryTubes(vm.box.frozenBoxCode);
+            }else{
+                toastr.error("无可撤消的内容!")
             }
-            vm.boxInstance.rerender();
-            // _queryTubes(vm.box.frozenBoxCode);
+
         }
         //移入
         function _fnPutIn(emptyPos) {
@@ -508,6 +494,7 @@
                 }
 
             }
+            //移入
             function _fnPutInOperate() {
                 for(var i in vm.selected){
                     if(vm.selected[i]){
@@ -542,13 +529,14 @@
                                 if (cellData && !cellData.isEmpty){
                                     var row =  tube.tubeRows;
                                     var col =  tube.tubeColumns;
-                                    var frozenBoxId =  tube.frozenBoxId;
+
                                     tube.isPutInShelf = true;
                                     tube.tubeRows = cellData.tubeRows;
                                     tube.tubeColumns = cellData.tubeColumns;
-                                    tube.frozenBoxId = cellData.frozenBoxId;
                                     tube.moveFrozenBoxCode = cellData.frozenBoxCode;
+                                    tube.frozenBoxId = vm.box.id;
                                     tube.frozenTubeId = tube.id;
+
                                     vm.selected[i] = false;
                                     // cellData.id = tube.id;
                                     cellData.sampleCode = tube.sampleCode;
@@ -568,7 +556,7 @@
                                     var obj = angular.copy(tube);
                                     obj.tubeRows  = row;
                                     obj.tubeColumns = col;
-                                    obj.frozenBoxId = frozenBoxId;
+
                                     obj.moveFrozenBoxCode = "";
                                     obj.isPutInShelf = false;
                                     //单次移入的数据
@@ -664,7 +652,7 @@
                     $(td).removeClass('htReadOnly');
                 }
                 if(tube.memo && tube.memo != " "){
-                    cellProperties.comment = tube.memo;
+                    cellProperties.comment = {value:tube.memo};
                 }
                 // if(tube.sampleType){
                 //     td.style.backgroundColor = tube.sampleType.backColor;
@@ -720,7 +708,7 @@
                 var cellProperties = {};
                 var cellData = hot.getDataAtCell(row, col);
                 cellProperties.isEmpty = true;
-                if (cellData && cellData.sampleTempCode || cellData.sampleCode) {
+                if (cellData && cellData.frozenBoxId) {
                     // 单元格有数据，并且有冻存盒ID，表示该单元格在库里有位置
                     // 该单元格不能被使用
                     cellProperties.isEmpty = false;
@@ -794,14 +782,13 @@
                 sampleTypeName: "",
                 sampleTypeCode: "",
                 backColor: "",
-
                 sampleClassificationId:"",
                 sampleClassificationName:"",
                 sampleClassificationCode:"",
                 backColorForClass:"",
                 frozenBoxTypeId:box.frozenBoxType.id,
-                frozenBoxId: box.id,
                 frozenBoxCode: box.frozenBoxCode,
+
                 status: "3001",
                 memo: "",
                 isEmpty: false,
@@ -817,6 +804,7 @@
                 tube.sampleTempCode = tubeInBox.sampleTempCode;
                 tube.status = tubeInBox.status;
                 tube.memo = tubeInBox.memo;
+                tube.frozenBoxId  = tubeInBox.frozenBoxId;
                 if(tubeInBox.sampleClassification){
                     tube.sampleClassificationId = tubeInBox.sampleClassification.id;
                     tube.sampleClassificationName = tubeInBox.sampleClassification.sampleClassificationName;
@@ -855,6 +843,7 @@
                 tubeList[i].sampleType.sampleTypeCode = tubeList[i].sampleTypeCode;
                 tubeList[i].sampleType.sampleTypeName = tubeList[i].sampleTypeName;
                 tubeList[i].sampleType.backColor = tubeList[i].backColor;
+                tubeList[i].frozenBoxId = "";
                 box.frozenTubeDTOS.push(tubeList[i]);
             }
             if(vm.moveOperateFlag){
@@ -963,18 +952,19 @@
                 vm.movement.id = data.id;
                 toastr.success("保存成功!");
                 BioBankBlockUi.blockUiStop();
-                vm.boxInstance.rerender();
-                //判断是否可以关闭移位的提示消息
-                var selectedFinish =  _.filter(vm.selectedSample, {isPutInShelf: true});
-                for(var i = 0; i < selectedFinish.length;i++){
-                    selectedFinish[i].saveFinishFlag = true;
-                }
-                var len = _.filter(selectedFinish, {saveFinishFlag: true}).length;
-                if(len == vm.selectedSample.length){
-                    vm.closeFlag = true;
-                }else{
-                    vm.closeFlag = false;
-                }
+                $state.go("sample-inventory");
+                // vm.boxInstance.rerender();
+                // //判断是否可以关闭移位的提示消息
+                // var selectedFinish =  _.filter(vm.selectedSample, {isPutInShelf: true});
+                // for(var i = 0; i < selectedFinish.length;i++){
+                //     selectedFinish[i].saveFinishFlag = true;
+                // }
+                // var len = _.filter(selectedFinish, {saveFinishFlag: true}).length;
+                // if(len == vm.selectedSample.length){
+                //     vm.closeFlag = true;
+                // }else{
+                //     vm.closeFlag = false;
+                // }
             }).error(function (data) {
                 toastr.error(data.message);
                 BioBankBlockUi.blockUiStop();

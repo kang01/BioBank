@@ -29,8 +29,8 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label class="col-md-4 control-label text-left">
-                        <span class="required-field"></span>
                         转运日期
+                        <span class="required-field"></span>
                     </label>
                     <div class="col-md-8">
                         <div class="input-group">
@@ -49,8 +49,8 @@
             <div class="col-md-3">
                 <div class="form-group ">
                     <label class="col-md-4 control-label text-left">
-                        <span class="required-field"></span>
                         项目编码
+                        <span class="required-field"></span>
                     </label>
                     <div class="col-md-8">
                         <selectize options='vm.projectOptions' config="vm.projectConfig"
@@ -73,8 +73,8 @@
             <div class="col-md-3">
                 <div class="form-group ">
                     <label class="col-md-4 control-label text-left">
-                        <span class="required-field"></span>
                         运单号
+                        <span class="required-field"></span>
                     </label>
                     <div class="col-md-8">
                         <input type="text" class="form-control" ng-model="vm.transportRecord.trackNumber">
@@ -106,8 +106,9 @@
                 <div class="form-group three-col">
 
                     <label class="col-md-4 control-label text-left">
+                        接收人
                         <span class="required-field"></span>
-                        接收人</label>
+                    </label>
                     <div class="col-md-8">
                         <selectize options='vm.receiverOptions' config="vm.receiverConfig"
                                    ng-model="vm.transportRecord.receiver"></selectize>
@@ -119,8 +120,8 @@
             <div class="col-md-3">
                 <div class="form-group ">
                     <label class="col-md-4 control-label text-left">
-                        <span class="required-field"></span>
                         接收日期
+                        <span class="required-field"></span>
                     </label>
                     <div class="col-md-8">
                         <div class="input-group">
@@ -258,7 +259,7 @@
                         <div class="col-md-3">
                             <h4>转运盒详情</h4>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <ul class="list-inline" style="margin-top: 9px">
                                 <li><span>样本数</span>
                                     <span>{{vm.normalCount}}</span></li>
@@ -273,7 +274,7 @@
                                 <li></li>
                             </ul>
                         </div>
-                        <div class="col-md-6 text-right mt-10 " ng-show="vm.transportRecord.transhipState == '1001'">
+                        <div class="col-md-5 text-right mt-10 " ng-show="vm.transportRecord.transhipState == '1001'">
                             <button type="button" class="btn btn-default btn-xs btn-primary" ng-click="vm.saveBox()" ng-disabled="!vm.box">
                                 保　　存
                             </button>

@@ -24,46 +24,52 @@
             templateUrl:'app/bizs/transport-record/template/viewer-images-template.html',
             link: function(scope, element, attrs) {
                 var viewer = null;
-                setTimeout(function (data) {
-                    var dom = element[0];
-                    viewer = new Viewer(dom, {
-                        url: 'data-original'
 
-                        // build: function() {
-                        //     alert('build');
-                        // },
-                        //
-                        // built: function() {
-                        //     alert('built');
-                        // },
-                        //
-                        // show: function() {
-                        //     alert('show');
-                        // },
-                        // shown: function() {
-                        //     alert('shown');
-                        // },
-                        //
-                        // hide: function() {
-                        //     alert('hide');
-                        // },
-                        //
-                        // hidden: function() {
-                        //     alert('hidden');
-                        // },
-                        //
-                        // view: function() {
-                        //     alert('view');
-                        // },
-                        //
-                        // viewed: function() {
-                        //     alert('viewed');
-                        // }
-                    });
-                },500);
                 scope.$watch('imagesData',function (newValue,oldValue) {
-                    if(viewer){
+                    if (!newValue || !newValue.length){
+                        return;
+                    }
+
+                    if(viewer && viewer.ready){
                         viewer.update();
+                    } else {
+                        setTimeout(function (data) {
+                            var dom = element[0];
+                            viewer = new Viewer(dom, {
+                                url: 'data-original'
+
+                                // build: function() {
+                                //     alert('build');
+                                // },
+                                //
+                                // built: function() {
+                                //     alert('built');
+                                // },
+                                //
+                                // show: function() {
+                                //     alert('show');
+                                // },
+                                // shown: function() {
+                                //     alert('shown');
+                                // },
+                                //
+                                // hide: function() {
+                                //     alert('hide');
+                                // },
+                                //
+                                // hidden: function() {
+                                //     alert('hidden');
+                                // },
+                                //
+                                // view: function() {
+                                //     alert('view');
+                                // },
+                                //
+                                // viewed: function() {
+                                //     alert('viewed');
+                                // }
+                            });
+                        },500);
                     }
                 });
             },

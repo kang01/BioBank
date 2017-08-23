@@ -127,6 +127,7 @@
     <include file="classpath:config/liquibase/changelog/20170725154317_updated_view_StockIn.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170806000000_updated_view_SampleHistory.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170816064727_updated_entity_ProjectSampleClass.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170821000000_updated_view_StockInBox.xml" relativeToChangelogFile="false"/>
 
     <!--<include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>-->
 

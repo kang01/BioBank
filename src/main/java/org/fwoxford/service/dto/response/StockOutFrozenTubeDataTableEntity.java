@@ -152,4 +152,20 @@ public class StockOutFrozenTubeDataTableEntity {
     public void setStockOutFrozenBoxId(Long stockOutFrozenBoxId) {
         this.stockOutFrozenBoxId = stockOutFrozenBoxId;
     }
+
+    public StockOutFrozenTubeDataTableEntity() {
+    }
+
+    public StockOutFrozenTubeDataTableEntity(Long id, String frozenBoxCode, String sampleTypeName, String sampleCode, String sex, Integer age, String diseaseTypeId, Boolean isHemolysis, Boolean isBloodLipid, Long stockOutFrozenBoxId) {
+        this.id = id;
+        this.frozenBoxCode = frozenBoxCode;
+        this.sampleTypeName = sampleTypeName;
+        this.sampleCode = sampleCode;
+        this.sex = sex;
+        this.age = age;
+        this.diseaseTypeId = diseaseTypeId;
+        this.isHemolysis = isHemolysis;
+        this.isBloodLipid = isBloodLipid;
+        this.stockOutFrozenBoxId = stockOutFrozenBoxId;
+    }
 }

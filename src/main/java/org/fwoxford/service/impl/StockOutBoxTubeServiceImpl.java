@@ -2,6 +2,7 @@ package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.repository.FrozenTubeRepository;
 import org.fwoxford.repository.StockOutTaskTubeByBoxRepositories;
 import org.fwoxford.service.StockOutBoxTubeService;
 import org.fwoxford.domain.StockOutBoxTube;
@@ -14,6 +15,7 @@ import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -21,6 +23,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -44,7 +47,8 @@ public class StockOutBoxTubeServiceImpl implements StockOutBoxTubeService{
 
     @Autowired
     private StockOutTaskTubeByBoxRepositories stockOutTaskTubeByBoxRepositories;
-
+    @Autowired
+    private FrozenTubeRepository frozenTubeRepository;
     public StockOutBoxTubeServiceImpl(StockOutBoxTubeRepository stockOutBoxTubeRepository, StockOutBoxTubeMapper stockOutBoxTubeMapper) {
         this.stockOutBoxTubeRepository = stockOutBoxTubeRepository;
         this.stockOutBoxTubeMapper = stockOutBoxTubeMapper;
@@ -144,7 +148,18 @@ public class StockOutBoxTubeServiceImpl implements StockOutBoxTubeService{
                 return query.getRestriction();
             }
         };
-        DataTablesOutput<StockOutFrozenTubeDataTableEntity> output = stockOutTaskTubeByBoxRepositories.findAll(input,specification);
+        Converter<StockOutFrozenTubeDataTableEntity, StockOutFrozenTubeDataTableEntity> converter = new Converter<StockOutFrozenTubeDataTableEntity, StockOutFrozenTubeDataTableEntity>() {
+            @Override
+            public StockOutFrozenTubeDataTableEntity convert(StockOutFrozenTubeDataTableEntity e) {
+                String sampleCode = e.getSampleCode();
+                if(StringUtils.isEmpty(sampleCode) || sampleCode.equals(null)){
+                    FrozenTube frozenTube = frozenTubeRepository.findOne(e.getId());
+                    sampleCode = frozenTube.getSampleTempCode();
+                }
+                return new StockOutFrozenTubeDataTableEntity(e.getId(),e.getFrozenBoxCode(),e.getSampleTypeName(),sampleCode,e.getSex(),e.getAge(),e.getDiseaseTypeId(),e.getHemolysis(),e.getBloodLipid(),e.getStockOutFrozenBoxId());
+            }
+        };
+        DataTablesOutput<StockOutFrozenTubeDataTableEntity> output = stockOutTaskTubeByBoxRepositories.findAll(input,specification,null,converter);
         return output;
     }
 }

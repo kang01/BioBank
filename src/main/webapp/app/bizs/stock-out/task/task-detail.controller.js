@@ -431,7 +431,7 @@
                 }
                 //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
                 if(tube.status){
-                    // changeSampleStatus(tube.status,td)
+                    changeSampleStatus(tube.status,td)
                 }
                 var code = tube.sampleCode && tube.sampleCode != " " ? tube.sampleCode : tube.sampleTempCode;
                 $(td).html("");
@@ -439,28 +439,25 @@
                     'line-height': '20px',
                     'word-wrap': 'break-word'
                 }).appendTo(td);
+                $div = $("<div  class='tube-status'/>").html(tube.status).appendTo(td);
                 //待出库样本
                 if(tube.stockOutFlag && tube.stockOutFlag == 1 && !tube.orderIndex){
-                    var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:1px solid green;font-size:40px;color:rgba(0,128,0,0.3);text-align: center;">' +
+                    var txt = '<div class="temp" style="position:absolute;top:0;bottom:0;left:0;right:0;border:2px solid green;font-size:40px;color:rgba(0,128,0,0.3);background-color: rgba(0,128,0,0.15);text-align: center;">' +
                         // '<i class="fa fa-question"></i>' +
                         '</div>';
-                    $(txt).appendTo($div);
+                    $(txt).appendTo(td);
                 }
                 //申请撤销的样本标识
                 if(tube.stockOutFlag && tube.stockOutFlag == 2){
                     $(".fa-question",td).remove();
                     var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;color:rgba(216,0,0,0.3);padding-left: 33%;font-size:42px"><i class="fa fa-close"></i></div>';
-                    $(txt).appendTo($div);
+                    $(txt).appendTo(td);
                 }
                 //已扫码样本
                 if(tube.scanCodeFlag){
                     $(".fa-question",td).remove();
-                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;border:1px solid green;padding-top:10px;color:rgba(0,128,0,0.6);text-align:center;font-size:42px">'+tube.orderIndex+'</div>';
-                    $(txt).appendTo($div);
-                }
-                if(tube.status == '3004'){
-                    var txt = '<div style="position: absolute;bottom:2px;right:2px;width:10px;height:10px;border-radius:50%;background-color: red;"></div>';
-                    $(txt).appendTo($div);
+                    var txt = '<div style="position: absolute;top:0;left:0;bottom:0;right:0;border:2px solid green;color:rgba(0,128,0,0.6);background-color: rgba(0,128,0,0.15);text-align:center;font-size:42px">'+tube.orderIndex+'</div>';
+                    $(txt).appendTo(td);
                 }
             }
             //备注 选择单元格数据
@@ -495,10 +492,23 @@
             }
             //修改样本状态正常、空管、空孔、异常
             function changeSampleStatus(sampleStatus,td) {
+                //正常
+                if(sampleStatus == 3001){
+                    $(td).removeClass("error-tube-color");
+                }
+                //空管
+                if(sampleStatus == 3002){
+                    $(td).addClass("empty-tube-color");
+                }
+                //空孔
+                if(sampleStatus == 3003){
+                    $(td).removeClass("empty-tube-color");
+                    $(td).addClass("empty-hole-color");
+                }
                 //异常
                 if(sampleStatus == 3004){
-                    td.style.backgroundColor = 'red';
-                    td.style.border = '3px solid red;margin:-3px';
+                    $(td).removeClass("empty-hole-color");
+                    $(td).addClass("error-tube-color");
                 }
             }
 

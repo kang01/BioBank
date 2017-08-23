@@ -95,6 +95,7 @@
                     </div>
                     <div class="pull-right">
                         <input type="text"  ng-model="vm.sampleCode">
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.selectTempBox()">选择临时盒</button>
                         <!--ng-click="focusInput=true"-->
                         <button class="mt-5 mb-5 btn btn-default btn-sm"  ng-click="vm.scanClick()"
                                 ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus" uib-btn-checkbox ng-disabled="!vm.frozenTubeDTOS.length">扫码取样
@@ -108,6 +109,10 @@
                     <div class="clear-both"></div>
                 </div>
                 <div class="panel-body tube p-0">
+                    <div>
+                        <span class="">图例说明：</span><span><img src="content/images/legend-for-stockout-tube.svg"
+                                                              height="30px"/></span>
+                    </div>
                     <hot-table hot-id="sampleDetailsTable" settings="vm.sampleDetailsTableSettings"></hot-table>
                 </div>
             </div>

@@ -357,11 +357,12 @@
             '</button>&nbsp;';
         }
         function _fnSearchEquipment(equipmentId,areaId) {
+            //是否列表移入
             vm.moveOperateFlag = false;
             vm.movementFlag = true;
             _queryAreaById(equipmentId,areaId);
         }
-        //列表移入操作
+        //moveOperateFlag true列表移入操作
         function _fnSearchArea(equipmentId,areaId) {
             vm.moveOperateFlag = true;
             _queryAreaById(equipmentId,areaId);
@@ -376,7 +377,7 @@
                         var position1 = equipmentList[i].moveShelfPosition+"."+equipmentList[i].supportRackCode;
                         var position2 = vm.rack.position+"."+vm.rack.supportRackDTOS[j].supportRackCode;
                         if(position1 == position2){
-                            vm.rack.supportRackDTOS[j].flag = 1;
+                            vm.rack.supportRackDTOS[j].flag = 2;
                         }
                     }
                 }
@@ -393,6 +394,7 @@
             var countOfRows = 1;
             // 架子上的列数
             var countOfCols = racks.length || 13;
+            //vm.moveOperateFlag为true的时候是列表移入
             if(vm.moveOperateFlag){
                 // 创建架子定位列表的定位数据
                 var arrayRack = [];
@@ -412,7 +414,7 @@
                 if(emptyPos){
                     _fnPutIn(emptyPos);
                 }else{
-                    toastr.error("无可移入的空位置!")
+                    toastr.error("无可移入的空位置!");
                 }
             }else{
                 // 架子定位列表的控制对象
@@ -466,6 +468,7 @@
             var cellCol;
             var countOfCols = vm.rack.supportRackDTOS.length;
             var countOfRows = 1;
+            //为true时，列表移入
             if(vm.moveOperateFlag){
                 cellRow = emptyPos.row;
                 cellCol = emptyPos.col;
@@ -474,10 +477,15 @@
             }else{
                 var tableCtrl = _getTableCtrl();
                 var startEmptyPos = tableCtrl.getSelected();
-                cellRow = startEmptyPos[0];
-                cellCol = startEmptyPos[1];
-                _fnPutInOperate();
-                tableCtrl.render();
+                if(startEmptyPos){
+                    cellRow = startEmptyPos[0];
+                    cellCol = startEmptyPos[1];
+                    _fnPutInOperate();
+                    tableCtrl.render();
+                }else{
+                    toastr.error("无可移入的空位置!");
+                }
+
             }
             function _fnPutInOperate() {
                 for (var i in vm.selected) {
@@ -508,7 +516,7 @@
                                     equipment.moveShelfPosition = vm.rack.position;
                                     equipment.supportRackOldId = equipment.id;
                                     equipment.supportRackCode = cellData.supportRackCode;
-                                    cellData.flag = 1;
+                                    cellData.flag = 2;
 
                                     //撤销操作
                                     var obj = angular.copy(equipment);
@@ -606,6 +614,11 @@
                     $(td).removeClass('htDimmed');
                     $(td).removeClass('htReadOnly');
                 }
+                if(cellProperties.flag == 2){
+                    $(td).addClass('preassemble');
+                }else{
+                    $(td).removeClass('preassemble');
+                }
 
                 var $div = $("<div/>").addClass(cellProperties && cellProperties.className ? cellProperties.className : "");
                 if (value){
@@ -630,7 +643,7 @@
                 var cellProperties = {};
                 var cellData = hot.getDataAtCell(row, col);
                 cellProperties.flag = 0;
-                if (cellData && cellData.flag) {
+                if (cellData && cellData.flag == 1) {
                     // 单元格有数据，并且有区域ID，表示该单元格在库里有位置
                     // 该单元格不能被使用
                     cellProperties.flag = 1;
@@ -644,7 +657,10 @@
                 } else {
                     cellProperties.flag = cellData && cellData.flag;
                 }
-
+                if (cellData && cellData.flag == 2) {
+                    cellProperties.flag = 2;
+                    cellProperties.className = 'a00';
+                }
                 return cellProperties;
             }
 

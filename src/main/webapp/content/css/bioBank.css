@@ -1062,4 +1062,7 @@ ul.rating {
 .htCommentCell:after{
     border-top-color:red !important;
 }
+.preassemble{
+    background-color: rgb(169, 241, 253) !important;
+}
 

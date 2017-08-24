@@ -7,6 +7,7 @@ import org.fwoxford.repository.AuthorityRepository;
 import org.fwoxford.repository.PersistentTokenRepository;
 import org.fwoxford.repository.UserRepository;
 import org.fwoxford.security.AuthoritiesConstants;
+import org.fwoxford.security.jwt.TokenProvider;
 import org.fwoxford.service.MailService;
 import org.fwoxford.service.UserService;
 import org.fwoxford.service.dto.UserDTO;
@@ -19,6 +20,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -65,16 +67,22 @@ public class AccountResourceIntTest {
 
     private MockMvc restMvc;
 
+    @Autowired
+    private TokenProvider tokenProvider;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         doNothing().when(mockMailService).sendActivationEmail(anyObject());
 
         AccountResource accountResource =
-            new AccountResource(userRepository, userService, mockMailService, persistentTokenRepository);
+            new AccountResource(userRepository, userService, mockMailService, persistentTokenRepository,tokenProvider,authenticationManager);
 
         AccountResource accountUserMockResource =
-            new AccountResource(userRepository, mockUserService, mockMailService, persistentTokenRepository);
+            new AccountResource(userRepository, mockUserService, mockMailService, persistentTokenRepository,tokenProvider,authenticationManager);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountUserMockResource).build();

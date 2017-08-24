@@ -112,10 +112,19 @@
         <yarn.version>v0.20.3</yarn.version>
         <jersey.version>2.19</jersey.version>
         <skipTests>true</skipTests>
+
+        <jjwt.version>0.7.0</jjwt.version>
     </properties>
 
 
     <dependencies>
+        <!-- JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/net.sf.barcode4j/barcode4j -->
         <dependency>
             <groupId>net.sf.barcode4j</groupId>

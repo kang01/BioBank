@@ -92,6 +92,12 @@ jhipster:
         remember-me:
             # security key (this key should be unique for your application, and kept secret)
             key: b7e96760be9f53eafd21e3a8cd7cf59cefa9eff5
+        authentication:
+            jwt:
+                secret: my-secret-token-to-change-in-production
+                # Token is valid 24 hours
+                token-validity-in-seconds: 86400
+                token-validity-in-seconds-for-remember-me: 2592000
     mail: # specific JHipster mail property, for standard properties see MailProperties
         from: BioBank@localhost
         base-url: http://127.0.0.1:8080

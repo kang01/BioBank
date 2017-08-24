@@ -8,6 +8,8 @@ import org.fwoxford.domain.User;
 import org.fwoxford.repository.PersistentTokenRepository;
 import org.fwoxford.repository.UserRepository;
 import org.fwoxford.security.SecurityUtils;
+import org.fwoxford.security.jwt.JWTConfigurer;
+import org.fwoxford.security.jwt.TokenProvider;
 import org.fwoxford.service.MailService;
 import org.fwoxford.service.UserService;
 import org.fwoxford.service.dto.UserDTO;
@@ -22,9 +24,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -47,13 +53,20 @@ public class AccountResource {
 
     private final PersistentTokenRepository persistentTokenRepository;
 
+    private final TokenProvider tokenProvider;
+
+    private final AuthenticationManager authenticationManager;
+
+
     public AccountResource(UserRepository userRepository, UserService userService,
-            MailService mailService, PersistentTokenRepository persistentTokenRepository) {
+                           MailService mailService, PersistentTokenRepository persistentTokenRepository, TokenProvider tokenProvider, AuthenticationManager authenticationManager) {
 
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
         this.persistentTokenRepository = persistentTokenRepository;
+        this.tokenProvider = tokenProvider;
+        this.authenticationManager = authenticationManager;
     }
 
     /**
@@ -120,10 +133,23 @@ public class AccountResource {
      */
     @GetMapping("/account")
     @Timed
-    public ResponseEntity<UserDTO> getAccount() {
-        return Optional.ofNullable(userService.getUserWithAuthorities())
-            .map(user -> new ResponseEntity<>(new UserDTO(user), HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+    public ResponseEntity<UserDTO> getAccount(HttpServletResponse response) {
+        response.setHeader(JWTConfigurer.AUTHORIZATION_HEADER, "");
+
+        return Optional.ofNullable(userService.getUserWithAuthorities()).map(u->{
+            UserDTO dto = new UserDTO(u);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Boolean rememberMe = true;
+
+            String jwt = tokenProvider.createToken(authentication, rememberMe);
+            dto.setJwt("Bearer " + jwt);
+            response.setHeader(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+
+//        return Optional.ofNullable(userService.getUserWithAuthorities())
+//            .map(user -> new ResponseEntity<>(new UserDTO(user), HttpStatus.OK))
+//            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     /**

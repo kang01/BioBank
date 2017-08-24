@@ -51,6 +51,17 @@ public class UserDTO {
 
     private Set<String> authorities;
 
+    public String getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
+    }
+
+    // JWT token
+    private String jwt;
+
     public UserDTO() {
         // Empty constructor needed for MapStruct.
     }
@@ -150,18 +161,20 @@ public class UserDTO {
     @Override
     public String toString() {
         return "UserDTO{" +
-            "login='" + login + '\'' +
+            "id=" + id +
+            ", login='" + login + '\'' +
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
             ", imageUrl='" + imageUrl + '\'' +
             ", activated=" + activated +
             ", langKey='" + langKey + '\'' +
-            ", createdBy=" + createdBy +
+            ", createdBy='" + createdBy + '\'' +
             ", createdDate=" + createdDate +
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
-            "}";
+            ", jwt='" + jwt + '\'' +
+            '}';
     }
 }

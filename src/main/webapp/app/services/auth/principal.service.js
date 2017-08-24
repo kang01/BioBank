@@ -5,9 +5,9 @@
         .module('bioBankApp')
         .factory('Principal', Principal);
 
-    Principal.$inject = ['$q', 'Account'];
+    Principal.$inject = ['$q', 'Account', '$cookies'];
 
-    function Principal ($q, Account) {
+    function Principal ($q, Account, $cookies) {
         var _identity,
             _authenticated = false;
 
@@ -78,6 +78,10 @@
             function getAccountThen (account) {
                 _identity = account.data;
                 _authenticated = true;
+                if (_identity.jwt){
+                    $cookies.put('Authorization', _identity.jwt);
+                }
+
                 deferred.resolve(_identity);
             }
 

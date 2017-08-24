@@ -98,10 +98,6 @@ public class ImportSampleTest {
     @Autowired
     StockInTubeService stockInTubeService;
     @Autowired
-    FrozenBoxPositionMapper frozenBoxPositionMapper;
-    @Autowired
-    FrozenBoxPositionRepository frozenBoxPositionRepository;
-    @Autowired
     ProjectRepository projectRepository;
     @Autowired
     ProjectSiteRepository projectSiteRepository;
@@ -1193,7 +1189,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         }
     }
     @Test
-    public void aa() throws Exception {
+    public void createRadomNumber() throws Exception {
         HashSet<Integer> hashSet = new HashSet<>();
         randomSet(5000000,5001000,200,hashSet);
         System.out.print(hashSet.toString());
@@ -1237,50 +1233,18 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
 //        char c2=(char) (j+64);
 //        System.out.println(c1);
 //        System.out.println(c2);
-        String c1="A";
-        String c2="B";
-        int i= c1.toCharArray()[0]-64;
-        int j = c2.toCharArray()[0]-64;
-        System.out.println(i);
-        System.out.println(j);
-    }
-
-    @Test
-    public void main() throws Exception {
-        this.createProject();
-        this.createProjectSite();//peace5项目点
-        this.createProjectSiteForPeace3();
-        this.createSupportRackType();
-        this.createEquipmentGroup();
-        this.createEquipmentModel();
-        this.createEquipment();
-        this.createEquipmentForFOMA907();
-        this.createEquipmentForColdRoom3();
-        this.createFrozenTubeType();
-        this.createFrozenBoxType();
-        this.createSampleType();
-        FrozenTubeType rnaTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("RNA");
-        FrozenTubeType dcgTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("DCG");
-        if(rnaTube == null || dcgTube == null){
-            throw new BankServiceException("冻存管类型导入失败！");
+//        String c1="A";
+//        String c2="B";
+//        int i= c1.toCharArray()[0]-64;
+//        int j = c2.toCharArray()[0]-64;
+//        System.out.println(i);
+//        System.out.println(j);
+        List<Project> projects = new ArrayList<>();
+        for(int i = 0 ;i<1000;i++){
+            Project project = new Project().projectCode("123").status("0001").projectName("3333");
+            projectRepository.saveAndFlush(project);
         }
-        this.createFrozenBoxForA02("HE_COL_01","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_02","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_03","W",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_04","R",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_05","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_06","A",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_07","F",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_08","F",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_09","E",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_10","E",dcgTube);
-        this.createFrozenBoxForA02("HE_COL_11_RNA","RNA",rnaTube);
-        this.createSampleTypeMix();
-        this.importLocationForProjectSite();
-        this.createSampleTypeAndClassFor0038();
-//        this.createSampleTypeAndClassFor0029();// 需要在这里执行时去掉方法上的@Test
     }
-
     private void createSampleTypeAndClassFor0029() {
     }
     @Test
@@ -1365,5 +1329,40 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 .status("0001");
             projectSampleClassRepository.saveAndFlush(projectSampleClass_A);
         }
+    }
+    @Test
+    public void main() throws Exception {
+        this.createProject();
+        this.createProjectSite();//peace5项目点
+        this.createProjectSiteForPeace3();
+        this.createSupportRackType();
+        this.createEquipmentGroup();
+        this.createEquipmentModel();
+        this.createEquipment();
+        this.createEquipmentForFOMA907();
+        this.createEquipmentForColdRoom3();
+        this.createFrozenTubeType();
+        this.createFrozenBoxType();
+        this.createSampleType();
+        FrozenTubeType rnaTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("RNA");
+        FrozenTubeType dcgTube = frozenTubeTypeRepository.findByFrozenTubeTypeCode("DCG");
+        if(rnaTube == null || dcgTube == null){
+            throw new BankServiceException("冻存管类型导入失败！");
+        }
+        this.createFrozenBoxForA02("HE_COL_01","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_02","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_03","W",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_04","R",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_05","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_06","A",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_07","F",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_08","F",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_09","E",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_10","E",dcgTube);
+        this.createFrozenBoxForA02("HE_COL_11_RNA","RNA",rnaTube);
+        this.createSampleTypeMix();
+        this.importLocationForProjectSite();
+        this.createSampleTypeAndClassFor0038();
+//        this.createSampleTypeAndClassFor0029();// 需要在这里执行时去掉方法上的@Test
     }
 }

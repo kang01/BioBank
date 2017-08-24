@@ -314,11 +314,7 @@ public class StockInServiceImpl implements StockInService {
         }
         User user1 = userRepository.findByLogin(loginName1);
         User user2 = userRepository.findByLogin(loginName2);
-        stockIn.setStoreKeeperId1(user1!=null?user1.getId():null);
-        stockIn.setStoreKeeperId2(user2!=null?user2.getId():null);
-        stockIn.setStoreKeeper1(loginName1);
-        stockIn.setStoreKeeper2(loginName2);
-        stockIn.setStockInDate(stockInDate);
+
         List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(stockInCode);
         //已上架的冻存盒列表
         List<StockInBox> stockInBoxListForOnShelf = new ArrayList<StockInBox>();
@@ -341,10 +337,15 @@ public class StockInServiceImpl implements StockInService {
             BeanUtils.copyProperties(stockIn,stockInNew);
             stockInNew.setId(null);
             stockInNew.stockInCode(bankUtil.getUniqueID("B")).status(Constants.STOCK_IN_COMPLETE)
-                .parentStockInId(stockIn.getId()).countOfSample(0).stockInDate(null).storeKeeper1(null).storeKeeper2(null)
-                .storeKeeperId1(null).storeKeeperId2(null);
+                .parentStockInId(stockIn.getId()).countOfSample(0).stockInDate(stockInDate).storeKeeper1(loginName1).storeKeeper2(loginName2)
+                .storeKeeperId1(user1!=null?user1.getId():null).storeKeeperId2(user2!=null?user2.getId():null);
             stockInRepository.save(stockInNew);
         }else{
+            stockIn.setStoreKeeperId1(user1!=null?user1.getId():null);
+            stockIn.setStoreKeeperId2(user2!=null?user2.getId():null);
+            stockIn.setStoreKeeper1(loginName1);
+            stockIn.setStoreKeeper2(loginName2);
+            stockIn.setStockInDate(stockInDate);
             stockIn.setStatus(Constants.STOCK_IN_COMPLETE);
             stockInNew = stockIn;
         }
@@ -464,11 +465,21 @@ public class StockInServiceImpl implements StockInService {
         stockInForDataDetail.setTranshipCode(String.join(", ",transhipCodes));
         stockInForDataDetail.setProjectSiteCode(String.join(", ",projectSiteCode));
         List<User> userList = userRepository.findAll();
-            for(User u :userList){
-                if(stockIn.getReceiveId()!=null&&stockIn.getReceiveId().equals(u.getId())){
-                    stockInForDataDetail.setReceiver(u.getLastName()+u.getFirstName());
-                }
+        for(User u :userList){
+            if(stockIn.getReceiveId()!=null&&stockIn.getReceiveId().equals(u.getId())){
+                stockInForDataDetail.setReceiver(u.getLastName()+u.getFirstName());
             }
+        }
+        for(User u :userList){
+            if(stockIn.getStoreKeeper1()!=null&&stockIn.getStoreKeeperId1().equals(u.getId())){
+                stockInForDataDetail.setStoreKeeper1(u.getLastName()+u.getFirstName());
+            }
+        }
+        for(User u :userList){
+            if(stockIn.getStoreKeeperId1()!=null&&stockIn.getStoreKeeper2().equals(u.getId())){
+                stockInForDataDetail.setStoreKeeper2(u.getLastName()+u.getFirstName());
+            }
+        }
         return stockInForDataDetail;
     }
 

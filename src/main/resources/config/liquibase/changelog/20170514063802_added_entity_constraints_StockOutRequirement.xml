@@ -24,7 +24,7 @@
                                  baseTableName="stock_out_requirement"
                                  constraintName="stock_out_req_sample_classi_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="sample_class"/>
+                                 referencedTableName="sample_classification"/>
 
         <addForeignKeyConstraint baseColumnNames="frozen_tube_type_id"
                                  baseTableName="stock_out_requirement"

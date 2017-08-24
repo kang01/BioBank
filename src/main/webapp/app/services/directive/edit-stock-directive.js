@@ -435,7 +435,7 @@
                 }
                 //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
                 if(tube.status){
-                    changeSampleStatus(tube.status,row,col,td,cellProperties);
+                    changeSampleStatus(tube.status,td);
                 }
 
                 var code = tube.sampleCode && tube.sampleCode != " " ? tube.sampleCode : tube.sampleTempCode;
@@ -444,8 +444,7 @@
                     'line-height': '20px',
                     'word-wrap': 'break-word'
                 }).appendTo(td);
-                // $div = $("<div id='microtubesStatus'/>").html(tube.status).hide().appendTo(td);
-
+                $div = $("<div  class='tube-status'/>").html(tube.status).appendTo(td);
                 if(vm.repeatSampleArray.length){
                     var len = _.filter(vm.repeatSampleArray,{sampleCode:tube.sampleCode}).length;
                     if(len){
@@ -457,27 +456,45 @@
 
             }
             //修改样本状态正常、空管、空孔、异常
-            function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
-
-                operateColor = td.style.backgroundColor;
+            function changeSampleStatus(sampleStatus,td) {
                 //正常
                 if(sampleStatus == 3001){
+                    $(td).removeClass("error-tube-color");
                 }
                 //空管
                 if(sampleStatus == 3002){
-                    td.style.background = 'linear-gradient(to right,'+operateColor+',50%,black';
+                    $(td).addClass("empty-tube-color");
                 }
                 //空孔
                 if(sampleStatus == 3003){
-                    td.style.background = '';
-                    td.style.backgroundColor = '#ffffff';
-                    td.style.color = '#ffffff';
+                    $(td).removeClass("empty-tube-color");
+                    $(td).addClass("empty-hole-color");
                 }
                 //异常
                 if(sampleStatus == 3004){
-                    td.style.backgroundColor = 'red';
-                    td.style.border = '3px solid red;margin:-3px';
+                    $(td).removeClass("empty-hole-color");
+                    $(td).addClass("error-tube-color");
                 }
+
+                // operateColor = td.style.backgroundColor;
+                // //正常
+                // if(sampleStatus == 3001){
+                // }
+                // //空管
+                // if(sampleStatus == 3002){
+                //     td.style.background = 'linear-gradient(to right,'+operateColor+',50%,black';
+                // }
+                // //空孔
+                // if(sampleStatus == 3003){
+                //     td.style.background = '';
+                //     td.style.backgroundColor = '#ffffff';
+                //     td.style.color = '#ffffff';
+                // }
+                // //异常
+                // if(sampleStatus == 3004){
+                //     td.style.backgroundColor = 'red';
+                //     td.style.border = '3px solid red;margin:-3px';
+                // }
             }
             // 修改单元格属性
             function _changeCellProperties(row, col, prop) {

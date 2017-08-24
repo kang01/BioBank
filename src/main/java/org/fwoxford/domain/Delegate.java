@@ -19,9 +19,8 @@ public class Delegate extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_delegate")
+    @SequenceGenerator(name = "seq_delegate",sequenceName = "seq_delegate",allocationSize = 1,initialValue = 1)
     private Long id;
 
     @NotNull

@@ -69,6 +69,6 @@
                                  baseTableName="stock_out_box"
                                  constraintName="out_box_sample_class_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="sample_class"/>
+                                 referencedTableName="sample_classification"/>
     </changeSet>
 </databaseChangeLog>

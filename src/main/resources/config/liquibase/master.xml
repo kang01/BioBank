@@ -5,6 +5,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <include file="classpath:config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/00000000000000_initial_sequence.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170316061812_added_entity_EntityAuditEvent.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170316011154_added_entity_Project.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170316030411_added_entity_ProjectSite.xml" relativeToChangelogFile="false"/>
@@ -24,7 +25,6 @@
     <include file="classpath:config/liquibase/changelog/20170317083114_added_entity_TranshipBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170317160203_added_entity_StockIn.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170319153727_added_entity_StockInBox.xml" relativeToChangelogFile="false"/>
-    <!--<include file="classpath:config/liquibase/changelog/20170419010458_added_entity_FrozenBoxPosition.xml" relativeToChangelogFile="false"/>-->
     <include file="classpath:config/liquibase/changelog/20170503063650_added_entity_SampleClassification.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170503064727_added_entity_ProjectSampleClass.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170514060212_added_entity_Delegate.xml" relativeToChangelogFile="false"/>
@@ -41,10 +41,9 @@
     <include file="classpath:config/liquibase/changelog/20170515045047_added_entity_StockOutHandover.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515051138_added_entity_StockOutHandoverDetails.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515055932_added_entity_StockOutFiles.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170515060608_added_entity_UserLoginHistory.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170515060608_added_entity_TaskUserHistory.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515071739_added_entity_StockOutApplyProject.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170527073600_added_entity_StockOutTaskFrozenTube.xml" relativeToChangelogFile="false"/>
-    <!--<include file="classpath:config/liquibase/changelog/20170530140539_added_entity_BoxAndTube.xml" relativeToChangelogFile="false"/>-->
     <include file="classpath:config/liquibase/changelog/20170530144129_added_entity_StockOutBoxTube.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170608012552_added_entity_TranshipTube.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170608013347_added_entity_TranshipBoxPosition.xml" relativeToChangelogFile="false"/>
@@ -88,7 +87,6 @@
     <include file="classpath:config/liquibase/changelog/20170515051138_added_entity_constraints_StockOutHandoverDetails.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515071739_added_entity_constraints_StockOutApplyProject.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170527073600_added_entity_constraints_StockOutTaskFrozenTube.xml" relativeToChangelogFile="false"/>
-    <!--<include file="classpath:config/liquibase/changelog/20170530140539_added_entity_constraints_BoxAndTube.xml" relativeToChangelogFile="false"/>-->
     <include file="classpath:config/liquibase/changelog/20170530144129_added_entity_constraints_StockOutBoxTube.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170608012552_added_entity_constraints_TranshipTube.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170608013347_added_entity_constraints_TranshipBoxPosition.xml" relativeToChangelogFile="false"/>
@@ -113,6 +111,7 @@
     <include file="classpath:config/liquibase/changelog/20170514000000_added_view_StockOutHandover.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515000000_added_view_StockOutHandoverSamples.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170516000000_added_view_StockOutRequirementSample.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170517000000_added_view_SampleHistory.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170518000000_added_view_FrozenPositionList.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170519000000_added_view_FrozenPositionByProject.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170520000000_added_view_FrozenBoxList.xml" relativeToChangelogFile="false"/>
@@ -122,12 +121,6 @@
     <include file="classpath:config/liquibase/changelog/20170524000000_added_view_AreasList.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170525000000_added_view_ShelvesList.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170526000000_added_view_AreasListByProject.xml" relativeToChangelogFile="false"/>
-
-    <include file="classpath:config/liquibase/changelog/20170725111003_updated_entity_StockIn.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170725154317_updated_view_StockIn.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170806000000_updated_view_SampleHistory.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170816064727_updated_entity_ProjectSampleClass.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170821000000_updated_view_StockInBox.xml" relativeToChangelogFile="false"/>
 
     <!--<include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>-->
 

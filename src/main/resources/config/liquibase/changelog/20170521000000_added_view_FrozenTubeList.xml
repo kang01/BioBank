@@ -23,7 +23,7 @@
             LEFT JOIN frozen_box box ON t.frozen_box_id = box.id
             LEFT JOIN project p ON p.id = t.project_id
             LEFT JOIN sample_type s ON s.id = t.sample_type_id
-            LEFT JOIN sample_class sc on  t.sample_classification_id = sc.id
+            LEFT JOIN sample_classification sc on  t.sample_classification_id = sc.id
         </createView>
 
     </changeSet>

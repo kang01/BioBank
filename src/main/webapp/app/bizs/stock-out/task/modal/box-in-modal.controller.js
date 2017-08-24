@@ -462,7 +462,7 @@
         vm.isBoxInFlag = false;
         vm.boxInOperate = function () {
             vm.isBoxInFlag = true;
-        }
+        };
         vm.yes = function () {
             vm.allInFlag = true;
         };

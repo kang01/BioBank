@@ -12,16 +12,15 @@ import java.util.Objects;
  * A SampleClassification.
  */
 @Entity
-@Table(name = "sample_class")
+@Table(name = "sample_classification")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class SampleClassification extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_sample_classification")
+    @SequenceGenerator(name = "seq_sample_classification",sequenceName = "seq_sample_classification",allocationSize = 1,initialValue = 1)
     private Long id;
 
     @NotNull

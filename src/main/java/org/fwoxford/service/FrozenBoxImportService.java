@@ -1,9 +1,15 @@
 package org.fwoxford.service;
 
+import net.sf.json.JSONArray;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenTubeImportingForm;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.ExcelUtils;
@@ -226,6 +232,7 @@ public class FrozenBoxImportService {
         }
 
         FrozenTubeResponse frozenTubeResponse = new FrozenTubeResponse();
+        frozenTubeResponse.setStatus(Constants.FROZEN_TUBE_NORMAL);
         frozenTubeResponse.setSampleCode(sampleCode);
         frozenTubeResponse.setFrozenTubeType(frozenTubeType);
         frozenTubeResponse.setFrozenBoxCode(frozenBoxCode);
@@ -294,4 +301,139 @@ public class FrozenBoxImportService {
         }
         return frozenTubeResponses;
     }
+
+    /**
+     * 从项目组导入样本
+     * @param frozenBoxCodeStr
+     * @return
+     */
+    public List<FrozenBoxAndFrozenTubeResponse> importFrozenBoxAndFrozenTube(String frozenBoxCodeStr) {
+        List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTOList = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
+        String[] frozenBoxCode = frozenBoxCodeStr.split(",");
+        for(String code :frozenBoxCode){
+            FrozenBoxAndFrozenTubeResponse frozenBoxDTO = new FrozenBoxAndFrozenTubeResponse();
+            frozenBoxDTO = getSampleInfo(code);
+            frozenBoxDTOList.add(frozenBoxDTO);
+        }
+        return frozenBoxDTOList;
+    }
+    public FrozenBoxAndFrozenTubeResponse getSampleInfo(String code) {
+        FrozenBoxAndFrozenTubeResponse frozenBoxDTO = new FrozenBoxAndFrozenTubeResponse();
+        frozenBoxDTO.setIsSplit(Constants.YES);
+        frozenBoxDTO.setIsRealData(Constants.NO);
+        frozenBoxDTO.setStatus(Constants.FROZEN_BOX_NEW);
+        frozenBoxDTO.setFrozenBoxCode(code);
+        FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findByFrozenBoxTypeCode("DCH");
+        if(frozenBoxType == null){
+            throw new BankServiceException("查询冻存盒类型失败！");
+        }
+        frozenBoxDTO.setFrozenBoxType(frozenBoxType);
+
+        frozenBoxDTO.setFrozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode());
+        frozenBoxDTO.setFrozenBoxTypeName(frozenBoxType.getFrozenBoxTypeName());
+        frozenBoxDTO.setFrozenBoxTypeId(frozenBoxType.getId());
+        frozenBoxDTO.setFrozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows());
+        frozenBoxDTO.setFrozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns());
+
+
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod("http://10.24.10.43:8080/biobank/specimens?boxcode="+code);
+        HttpMethodParams params = new HttpMethodParams();
+//        params.setParameter("boxcode","650420093");
+        getMethod.setParams(params);
+        getMethod.setRequestHeader("X-Auth-Token", "d93925bc7axKfXc2A5WFJEzuPXYX4q");
+        try {
+            int statusCode = httpClient.executeMethod(getMethod);
+            if (statusCode != 200) {
+                System.err.println("Method failed: "
+                    + getMethod.getStatusLine());
+            }
+            byte[] responseBody = getMethod.getResponseBody();
+            String str = new String(responseBody);
+            JSONArray jsonArray = new JSONArray();
+            if(!StringUtils.isEmpty(str)){
+                jsonArray = JSONArray.fromObject(str);
+            }
+            FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findTopOne();
+            if(frozenTubeType == null){
+                throw new BankServiceException("查询冻存管类型失败！");
+            }
+            List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
+            List<FrozenTubeImportingForm> frozenTubeImportingForms = (List<FrozenTubeImportingForm>) JSONArray.toCollection(jsonArray,FrozenTubeImportingForm.class);
+            Map<String,List<FrozenTubeResponse>> map = new HashMap<String,List<FrozenTubeResponse>>();
+            for(FrozenTubeImportingForm frozenTubeImportingForm : frozenTubeImportingForms){
+                FrozenTubeResponse frozenTubeResponse = new FrozenTubeResponse();
+                String status = frozenTubeImportingForm.getIsEmpty();
+                if(status.equals("2")){
+                    status = Constants.FROZEN_TUBE_NORMAL;
+                }else{
+                    status = Constants.FROZEN_TUBE_EMPTY;
+                }
+                frozenTubeResponse.setStatus(status);
+                frozenTubeResponse.setPatientId(Long.valueOf(frozenTubeImportingForm.getBloodCode().trim()));
+                frozenTubeResponse.setFrozenTubeType(frozenTubeType);
+                frozenTubeResponse.setFrozenBoxCode(code);
+                frozenTubeResponse.setSampleCode(frozenTubeImportingForm.getSpecimenCode());
+                Boolean ishemolysis = true; Boolean isbloodLipid = true;
+                String hemolysis = frozenTubeImportingForm.getIsHemolysis();
+                String bloodLipid  = frozenTubeImportingForm.getIsLipid();
+                if(hemolysis.equals("2")){
+                    ishemolysis = false;
+                }
+                if(bloodLipid.equals("2")){
+                    isbloodLipid = false;
+                }
+                frozenTubeResponse.setHemolysis(ishemolysis);
+                frozenTubeResponse.setBloodLipid(isbloodLipid);
+                String sampleTypeCode = frozenTubeImportingForm.getSpecimenType();
+                SampleType sampleType = sampleTypeRepository.findBySampleTypeCode(sampleTypeCode);
+                if(sampleType == null){
+                    throw new BankServiceException("样本类型不存在！");
+                }
+                frozenTubeResponse.setSampleType(sampleType);
+                frozenTubeResponse.setSampleTypeId(sampleType.getId());
+                frozenTubeResponse.setSampleTypeCode(sampleType.getSampleTypeCode());
+                frozenTubeResponse.setSampleTypeName(sampleType.getSampleTypeName());
+                frozenTubeResponse.setIsMixed(sampleType.getIsMixed());
+
+                frozenBoxDTO.setSampleType(sampleType);
+                frozenBoxDTO.setSampleTypeId(sampleType.getId());
+                frozenBoxDTO.setSampleTypeCode(sampleType.getSampleTypeCode());
+                frozenBoxDTO.setSampleTypeName(sampleType.getSampleTypeName());
+                frozenBoxDTO.setIsMixed(sampleType.getIsMixed());
+
+                frozenTubeResponse.setTubeColumns(frozenTubeImportingForm.getColOfSpecimenPos());
+                char rows=(char) (Integer.parseInt(frozenTubeImportingForm.getRowOfSpecimenPos())+64);
+                frozenTubeResponse.setTubeRows(String.valueOf(rows));
+                List<FrozenTubeResponse> frozenTubeList = map.get(sampleTypeCode);
+                if(frozenTubeList == null ||frozenTubeList.size()==0){
+                    List<FrozenTubeResponse> frozenTubeResponseList = new ArrayList<FrozenTubeResponse>();
+                    frozenTubeResponseList.add(frozenTubeResponse);
+                    map.put(sampleTypeCode,frozenTubeResponseList);
+                }else{
+                    List<FrozenTubeResponse> frozenTubeResponseList =  map.get(sampleTypeCode);
+                    frozenTubeResponseList.add(frozenTubeResponse);
+                    map.put(sampleTypeCode,frozenTubeResponseList);
+                }
+                frozenTubeResponses.add(frozenTubeResponse);
+            }
+            if(map.keySet().size()==1){
+                frozenBoxDTO.setFrozenTubeDTOS(frozenTubeResponses);
+                frozenBoxDTO.setIsRealData(Constants.YES);
+                frozenBoxDTO.setCountOfSample(frozenTubeResponses.size());
+            }else{
+                throw new BankServiceException("导入失败！");
+            }
+
+        } catch (HttpException e) {
+            System.out.println("Please check your provided http address!");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            getMethod.releaseConnection();
+        }
+        return frozenBoxDTO;
+    }
+
 }

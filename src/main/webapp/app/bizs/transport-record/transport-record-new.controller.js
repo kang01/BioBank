@@ -564,18 +564,20 @@
                     }
                     //管子
                     if(vm.flagStatus){
-                        var tubeStatus = $(this.getCell(row, col)).find("#microtubesStatus").text();
+                        var tubeStatus = $(this.getCell(row, col)).find(".tube-status").text();
+                        var cellData = vm.frozenTubeArray[row][col];
+
                         if(tubeStatus == 3001){
-                            vm.frozenTubeArray[row][col].status = 3002;
+                            cellData.status = 3002;
                         }
                         if(tubeStatus == 3002){
-                            vm.frozenTubeArray[row][col].status = 3003;
+                            cellData.status = 3003;
                         }
                         if(tubeStatus == 3003){
-                            vm.frozenTubeArray[row][col].status = 3004;
+                            cellData.status = 3004;
                         }
                         if(tubeStatus == 3004){
-                            vm.frozenTubeArray[row][col].status = 3001;
+                            cellData.status = 3001;
                         }
                         hotRegisterer.getInstance('my-handsontable').render();
                     }
@@ -717,7 +719,7 @@
                     'line-height': '20px',
                     'word-wrap': 'break-word'
                 }).appendTo(td);
-                $div = $("<div id='microtubesStatus'/>").html(tube.status).hide().appendTo(td);
+                $div = $("<div  class='tube-status'/>").html(tube.status).appendTo(td);
                 if(vm.repeatSampleArray.length){
                     var len = _.filter(vm.repeatSampleArray,{sampleCode:tube.sampleCode}).length;
                     if(len){
@@ -731,21 +733,27 @@
                 operateColor = td.style.backgroundColor;
                 //正常
                 if(sampleStatus == 3001){
+                    $(td).removeClass("error-tube-color");
                 }
                 //空管
                 if(sampleStatus == 3002){
-                    td.style.background = 'linear-gradient(to right,'+operateColor+',50%,black';
+                    $(td).addClass("empty-tube-color");
+                    // td.style.background = 'linear-gradient(to right,'+operateColor+',50%,black';
                 }
                 //空孔
                 if(sampleStatus == 3003){
-                    td.style.background = '';
-                    td.style.backgroundColor = '#ffffff';
-                    td.style.color = '#ffffff';
+                    $(td).removeClass("empty-tube-color");
+                    $(td).addClass("empty-hole-color");
+                    // td.style.background = '';
+                    // td.style.backgroundColor = '#ffffff';
+                    // td.style.color = '#ffffff';
                 }
                 //异常
                 if(sampleStatus == 3004){
-                    td.style.backgroundColor = 'red';
-                    td.style.border = '3px solid red;margin:-3px';
+                    $(td).removeClass("empty-hole-color");
+                    $(td).addClass("error-tube-color");
+                    // td.style.backgroundColor = 'red';
+                    // td.style.border = '3px solid red;margin:-3px';
                 }
             }
             var aRemarkArray = [];

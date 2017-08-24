@@ -20,7 +20,7 @@
     -->
     <changeSet id="20170530144129-1" author="jhipster">
         <createTable tableName="stock_out_box_tube" remarks="出库冻存盒与冻存管的关系">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="status" type="nvarchar(20)" remarks="状态">

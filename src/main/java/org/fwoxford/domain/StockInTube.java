@@ -19,9 +19,8 @@ public class StockInTube extends AbstractAuditingEntity implements Serializable 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_stock_in_tube")
+    @SequenceGenerator(name = "seq_stock_in_tube",sequenceName = "seq_stock_in_tube",allocationSize = 1,initialValue = 1)
     private Long id;
 
     @NotNull

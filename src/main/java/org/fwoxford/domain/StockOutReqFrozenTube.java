@@ -19,9 +19,8 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_stock_out_req_frozen_tube")
+    @SequenceGenerator(name = "seq_stock_out_req_frozen_tube",sequenceName = "seq_stock_out_req_frozen_tube",allocationSize = 1,initialValue = 1)
     private Long id;
 
     @NotNull

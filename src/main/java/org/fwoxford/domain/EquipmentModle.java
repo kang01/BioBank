@@ -19,9 +19,8 @@ public class EquipmentModle extends AbstractAuditingEntity implements Serializab
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_equipment_modle")
+    @SequenceGenerator(name = "seq_equipment_modle",sequenceName = "seq_equipment_modle",allocationSize = 1,initialValue = 1)
     private Long id;
     /**
      * 设备型号编码

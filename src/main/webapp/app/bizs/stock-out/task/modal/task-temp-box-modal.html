@@ -40,9 +40,10 @@
         </div>
         <div class="col-md-12">
             <form class="form-inline">
-                <div class="form-group">
+                <div class="form-group position-relative" >
                     <label>预装位置</label>
-                    <input type="text" class="form-control" ng-model="vm.pos" ng-blur="vm.posBlur()">
+                    <input type="text" class="form-control" ng-model="vm.pos" ng-click="vm.selectTubePos($event)"  readonly="readonly">
+                    <div class="pos-content"></div>
                 </div>
             </form>
         </div>

@@ -820,6 +820,9 @@
                 TaskService.saveTempBoxes(vm.taskId,tempBoxList).success(function (data) {
                     toastr.success("装盒成功!");
                     vm.boxInTubes = [];
+                    vm.tempBoxObj = {
+                        frozenTubeDTOS : []
+                    };
                     _fnInitTask();
                     var tableCtrl = _getSampleDetailsTableCtrl();
                     tableCtrl.loadData([[]]);

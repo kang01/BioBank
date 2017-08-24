@@ -435,7 +435,7 @@
                 }
                 //样本状态 status3001：正常，3002：空管，3003：空孔；3004：异常
                 if(tube.status){
-                    changeSampleStatus(tube.status,row,col,td,cellProperties);
+                    changeSampleStatus(tube.status,td);
                 }
 
                 var code = tube.sampleCode && tube.sampleCode != " " ? tube.sampleCode : tube.sampleTempCode;

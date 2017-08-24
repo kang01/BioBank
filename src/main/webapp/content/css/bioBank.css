@@ -736,6 +736,9 @@ tr.shown td .details-control {
 .no-padding .dataTables_wrapper{
     padding: 0;
 }
+.pt-0 .dataTables_wrapper{
+    padding-top: 0;
+}
 
 .panel-heading {
     padding: 3px 15px;

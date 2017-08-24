@@ -283,8 +283,10 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 frozenBox = frozenBoxRepository.findOne(box.getId())!=null?frozenBoxRepository.findOne(box.getId()):new FrozenBox();
             }
             FrozenBoxType boxType = new FrozenBoxType();
-            if (box.getFrozenBoxType() != null) {
-                int boxTypeIndex = boxTypes.indexOf(box.getFrozenBoxType());
+            if (box.getFrozenBoxTypeId() != null) {
+                FrozenBoxType frozenBoxType = new FrozenBoxType();
+                frozenBoxType.setId(box.getFrozenBoxTypeId());
+                int boxTypeIndex = boxTypes.indexOf(frozenBoxType);
                 if (boxTypeIndex >= 0) {
                     boxType = boxTypes.get(boxTypeIndex);
                     frozenBox.setFrozenBoxType(boxType);

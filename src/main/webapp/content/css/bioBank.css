@@ -1106,6 +1106,7 @@ ul.rating {
     height: 265px;
     border: 1px solid #aaa;
     background-color: #fff;
+    box-shadow: 1px 1px 5px #ccc;
     border-radius: 2px;
     padding: 4px;
 }
@@ -1120,6 +1121,7 @@ ul.rating {
     cursor: pointer;
     text-align: center;
     border-radius: 2px;
+    user-select:none
 }
 .pos-content li:hover{
     outline: 1px solid #87CEFA;

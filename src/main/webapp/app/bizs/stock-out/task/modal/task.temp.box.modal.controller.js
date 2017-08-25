@@ -31,6 +31,7 @@
             startPos:null,
             frozenTubeDTOS:[]
         };
+        vm.pos = "";
         //添加临时盒子
         vm.addNewTempBox = _fnAddNewTempBox;
         //选择管子位置
@@ -63,6 +64,7 @@
             function onFrozenBoxTypeSuccess(data) {
                 vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['asc']);
                 vm.box.frozenBoxTypeId = vm.frozenBoxTypeOptions[0].id;
+                vm.box.frozenBoxTypeName = vm.frozenBoxTypeOptions[0].frozenBoxTypeName;
                 vm.box.frozenBoxTypeRows = vm.frozenBoxTypeOptions[0].frozenBoxTypeRows;
                 vm.box.frozenBoxTypeColumns = vm.frozenBoxTypeOptions[0].frozenBoxTypeColumns;
             }
@@ -74,6 +76,7 @@
                 onChange:function(value){
                     var boxType = _.find(vm.frozenBoxTypeOptions, {id:+value});
                     vm.box.frozenBoxTypeId = value;
+                    vm.box.frozenBoxTypeName = boxType.frozenBoxTypeName;
                     vm.box.frozenBoxTypeRows = boxType.frozenBoxTypeRows;
                     vm.box.frozenBoxTypeColumns = boxType.frozenBoxTypeColumns;
                 }
@@ -94,7 +97,7 @@
                     vm.box.frozenBoxCode = vm.frozenBoxCode;
                     boxList.push(angular.copy(vm.box));
                     vm.tempBoxOptions.withOption('data', boxList);
-                    vm.tempBoxInstance.rerender();
+                    // vm.tempBoxInstance.rerender();
                     vm.frozenBoxCode = "";
                 }else{
                     toastr.error("冻存盒编码已存在!");
@@ -106,6 +109,9 @@
         //dom片段
         var fragment = document.createDocumentFragment();
         function _fnSelectTubePos(e) {
+            if(!vm.selectBox.frozenTubeDTOS.length){
+                return;
+            }
             //有子元素清空
             if( $(".pos-content li")){
                 $(".pos-content").empty();
@@ -169,12 +175,16 @@
                 $scope.$apply();
             });
 
+
         }
         //捕获body的点击事件
-        $(document).bind('click',function(){
-            $('.pos-content').css('display','none');
-        });
+        $(document).bind('click',function(e){
+            var className = $(e.target).attr("class");
+           if(className != 'pos-disabled'){
+               $('.pos-content').css('display','none');
+           }
 
+        });
 
 
         //临时盒子
@@ -183,7 +193,8 @@
             .withOption('createdRow', createdRow);
         vm.tempBoxColumns = [
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码'),
-            DTColumnBuilder.newColumn('sampleCount').withTitle('盒内样本数')
+            DTColumnBuilder.newColumn('sampleCount').withTitle('盒内样本数'),
+            DTColumnBuilder.newColumn('frozenBoxTypeName').withTitle('盒类型')
         ];
         var sampleTotalCount;
         function createdRow(row, data, dataIndex) {
@@ -194,6 +205,10 @@
             $compile(angular.element(row).contents())($scope);
         }
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
+            if (vm.selectBox && vm.selectBox.frozenBoxCode === oData.frozenBoxCode){
+                $(nRow).closest('table').find('.rowLight').removeClass("rowLight");
+                $(nRow).addClass('rowLight');
+            }
             $('td', nRow).unbind('click');
             $(nRow).bind('click', function() {
                 var tr = this;
@@ -201,13 +216,11 @@
             });
             return nRow;
         }
+
         function rowClickHandler(tr,data) {
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
             vm.selectBox = data;
-            // vm.box.frozenBoxTypeId = vm.selectBox.frozenBoxTypeId;
-            // vm.box.frozenBoxTypeRows = vm.selectBox.frozenBoxTypeRows;
-            // vm.box.frozenBoxTypeColumns = vm.selectBox.frozenBoxTypeColumns;
             var tubesInTable = [];
             _reloadTubesForTable(vm.selectBox);
             function _reloadTubesForTable(box){
@@ -259,7 +272,6 @@
                 });
             }
             $scope.$apply();
-
         }
 
         vm.ok = function () {

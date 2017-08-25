@@ -618,6 +618,12 @@ tr.shown td .details-control {
 .w-1200{
     width: 1200px;
 }
+/*出库任务扫码框*/
+.stock-out-task-scan{
+    display: inline-block;
+    vertical-align: middle;
+    width: 196px;
+}
 /*1440*/
 @media (min-width:1400px) {
     .transport-record-new .pipe-body .pipe-body-bottom .box-remark .col-sm-10 {
@@ -628,44 +634,23 @@ tr.shown td .details-control {
         width: 55%;
         margin-left: 41px;
     }
-    .transport-record-new .pipe-body .pipe-operate{
+    .transport-record-new .pipe-body .pipe-operate {
         margin-right: 59px;
     }
-    /*.project-sites .selectize-input > *{*/
-        /*width: 226px;*/
-    /*}*/
-    /*.transport-record-new .pipe-body .pipe-body-top .col-sm-2{*/
-        /*width: 21%;*/
-    /*}*/
-    /*.transport-record-new .pipe-body .pipe-body-top {*/
-        /*margin-left: -22px;*/
-    /*}*/
-    /*.transport-record-new .pipe-body .pipe-body-bottom .col-sm-8{*/
-        /*width: 48.4%;*/
-        /*margin-left: -11px;*/
-    /*}*/
-    /*.transport-record-new .pipe-body .pipe-table{*/
-        /*width: 67%;*/
-    /*}*/
-    /*.transport-record-new .three-col{*/
-        /*width: 32%;*/
-    /*}*/
     .transport-record-new .pipe-body .pipe-operate{
         margin-right: 0;
         width: 13%;
     }
-    /*.split-box .box-right{*/
-        /*width: 400px;*/
-    /*}*/
-    /*.project-sites .selectize-input > *{*/
-        /*width: 230px;*/
-    /*}*/
     .add-box-modal-body  .box-place,
     .add-box-modal-body  .box-memo{
         margin-left: -7.8%;
     }
     .add-box-modal-body .box-memo .col-sm-9 {
         width: 76%;
+    }
+    /*出库任务扫码框*/
+    .stock-out-task-scan{
+        width: 240px;
     }
 }
 /*1600*/

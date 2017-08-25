@@ -11,7 +11,7 @@
         .controller('AffirmModalController', AffirmModalController);
 
     TaskDetailController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','Principal','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService','BioBankDataTable'];
-    AffirmModalController.$inject = ['$uibModalInstance'];
+    AffirmModalController.$inject = ['$uibModalInstance','items'];
     function TaskDetailController($scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,Principal,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService,BioBankDataTable) {
         var vm = this;
         var modalInstance;
@@ -45,9 +45,11 @@
         //1未出库样本、2已出库样本批注
         vm.commentModal = _fnCommentModal;
         //装盒
-        vm.boxInModal = _fnBoxInModal;
-        //
-        vm.boxInOperate = _fnBoxInOperate;
+        // vm.boxInModal = _fnBoxInModal;
+        //装盒
+        // vm.boxInOperate = _fnBoxInOperate;
+        //冻存管装盒原盒出库 1.装盒 2.原盒
+        vm.tubeStockOutBox = _fnTubeStockOutBox;
         //预装位置
         vm.prePos = _fnPrePos;
         //出库
@@ -553,6 +555,11 @@
             if (!vm.sampleCode) {
                 return;
             }
+            //扫码的数量与临时盒的管子容量比较
+            if(vm.boxInTubes.length == vm.totalLen){
+                toastr.error("扫码失败，临时盒已满，请先出库！");
+                return
+            }
             var tableCtrl = _getSampleDetailsTableCtrl();
             var sampleCode = vm.sampleCode.toUpperCase();
             vm.sampleCode = "";
@@ -578,8 +585,7 @@
                 },100);
                 return;
             }
-            var row = scanCodeTubes.rowNO;
-            var col = scanCodeTubes.colNO;
+
             var boxInTubes = angular.copy(vm.boxInTubes);
             //装盒样本
             var len = _.filter(boxInTubes,{id: scanCodeTubes.id}).length;
@@ -592,6 +598,8 @@
                 return;
             }
             scanCodeTubes.orderIndex = boxInTubes.length + 1;
+            var row = scanCodeTubes.rowNO;
+            var col = scanCodeTubes.colNO;
             vm.tubes[row][col-1].orderIndex = boxInTubes.length + 1;
             boxInTubes.push(scanCodeTubes);
             //判断是否都全部扫码
@@ -796,8 +804,11 @@
                 tableCtrl.loadData([[]]);
             });
         }
-        //装盒操作
-        function _fnBoxInOperate() {
+        //管子出库操作 1.装盒 2.原盒
+        function _fnTubeStockOutBox(status) {
+            isStockOutFlag = true;
+            //保存任务信息
+            _fnSaveTask();
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'affirmModal.html',
@@ -807,26 +818,31 @@
                 resolve: {
                     items: function () {
                         return {
-
+                            status:status
                         };
                     }
                 }
             });
 
             modalInstance.result.then(function (data) {
-                var tempBoxList = [];
-                vm.tempBoxObj.frozenTubeDTOS = vm.boxInTubes;
-                tempBoxList.push(vm.tempBoxObj);
-                TaskService.saveTempBoxes(vm.taskId,tempBoxList).success(function (data) {
-                    toastr.success("装盒成功!");
-                    vm.boxInTubes = [];
-                    vm.tempBoxObj = {
-                        frozenTubeDTOS : []
-                    };
-                    _fnInitTask();
-                    var tableCtrl = _getSampleDetailsTableCtrl();
-                    tableCtrl.loadData([[]]);
-                });
+                if(status == 1){
+                    var tempBoxList = [];
+                    vm.tempBoxObj.frozenTubeDTOS = vm.boxInTubes;
+                    tempBoxList.push(vm.tempBoxObj);
+                    TaskService.saveTempBoxes(vm.taskId,tempBoxList).success(function (data) {
+                        toastr.success("装盒成功!");
+                        _fnInitial();
+                    });
+                }else{
+                    var selfBoxList = [];
+                    selfBoxList.push(frozenBox);
+                    TaskService.saveTempBoxes(vm.taskId,selfBoxList).success(function (data) {
+                        toastr.success("出库成功!");
+                        _fnInitial();
+                    });
+                }
+
+
             });
         }
         //预装位置
@@ -881,10 +897,20 @@
                 return true;
             }
         }
+        //初始化内容
+        function _fnInitial() {
+            vm.boxInTubes = [];
+            vm.tempBoxObj = {
+                frozenTubeDTOS : []
+            };
+            _fnInitTask();
+            var tableCtrl = _getSampleDetailsTableCtrl();
+            tableCtrl.loadData([[]]);
+        }
+
         //选择临时盒
         vm.tempBoxObj = {};
         function _fnSelectTempBox() {
-
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/task/modal/task-temp-box-modal.html',
@@ -903,6 +929,11 @@
 
             modalInstance.result.then(function (tempBox) {
                 vm.tempBoxObj = tempBox;
+                vm.totalLen = vm.tempBoxObj.frozenTubeDTOS.length;
+                var remainLen = _.filter(vm.tempBoxObj.frozenTubeDTOS,{sampleCode:"",sampleTempCode:""}).length;
+                //已有样本数
+                vm.sampleOutCount = vm.totalLen - remainLen;
+                //更换临时盒时，预装位置也要变更
                 if(vm.boxInTubes.length){
                     //预装位置
                     _fnPrePos();
@@ -1049,8 +1080,10 @@
         }
 
     }
-    function AffirmModalController($uibModalInstance) {
+    function AffirmModalController($uibModalInstance,items) {
         var vm = this;
+        //1.装盒 2.原盒
+        vm.status = items.status;
         vm.ok = function () {
             $uibModalInstance.close();
         };

@@ -834,8 +834,8 @@
             var startRow =  startPos.charAt(0);//行
             var startCol =  +startPos.substring(1);//列
             var pos={tubeRows:startRow,tubeColumns:startCol};
-            var countOfCols = +vm.boxInTubes.frozenBoxTypeRows;//总行数
-            var countOfRows = +vm.boxInTubes.frozenBoxTypeColumns;//总列数
+            var countOfCols = +frozenBox.frozenBoxTypeRows;//总行数
+            var countOfRows = +frozenBox.frozenBoxTypeColumns;//总列数
             var countOfSelect = vm.boxInTubes.length;
             for(var i = 0; i < countOfSelect; i++){
                 // 检查盒内位置是否已经有管子
@@ -886,6 +886,10 @@
         }
         //初始化内容
         function _fnInitial() {
+            //扫码的样本数
+            vm.sampleOutCount = "";
+            //临时盒总共的样本数
+            vm.totalLen = "";
             vm.boxInTubes = [];
             vm.tempBoxObj = {
                 frozenTubeDTOS : []

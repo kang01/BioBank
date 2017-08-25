@@ -97,8 +97,9 @@
                         <h4>待出库样本</h4>
                     </div>
                     <div class="col-md-10 pr-0 text-right">
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-if="vm.boxInFullFlag" ng-click="vm.tubeStockOutBox(2)">原盒出库</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.selectTempBox()" ng-disabled="!vm.frozenTubeDTOS.length">选择临时盒</button>
-                        <div style="display: inline-block;vertical-align: middle;width: 280px;">
+                        <div  class="stock-out-task-scan">
                             <div class="input-group">
                                 <input type="text" class="form-control" ng-model="vm.sampleCode" ng-disabled="!vm.tempBoxObj.frozenBoxCode">
                                 <div class="input-group-addon btn-sm" ng-click="vm.scanClick()"
@@ -107,25 +108,15 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!--<input type="text"  ng-model="vm.sampleCode">-->
-                        <!--ng-click="focusInput=true"-->
-                        <!--<button class="mt-5 mb-5 btn btn-default btn-sm"  ng-click="vm.scanClick()"-->
-                        <!--ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus" uib-btn-checkbox ng-disabled="!vm.frozenTubeDTOS.length">扫码取样-->
-                        <!--</button>-->
-                        <!--ng-disabled="!vm.boxInTubes.length"-->
-                        <!--<button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.boxInModal()" ng-disabled="!vm.boxInTubes.length">装盒</button>-->
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.boxInOperate()" ng-disabled="!vm.boxInTubes.length">装盒</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(1)" ng-disabled="!vm.boxInTubes.length">装盒出库</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()">异常</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealModal()">撤销申请</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.commentModal(1)">批注</button>
-                        <!--<button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.viewSampleDesc()">查看</button>-->
                         <span class="position-relative">
                             <button type="button" class="btn btn-default btn-sm" ng-click="vm.viewSampleDesc()" ng-disabled="!vm.boxInTubes.length">
                                 &nbsp;&nbsp;<i class="fa fa-shopping-cart"></i>&nbsp;&nbsp;
                                 <div class="circle" ng-if="vm.boxInTubes.length">{{vm.boxInTubes.length}}</div></button>
                         </span>
-
                     </div>
                     <div class="clear-both"></div>
                 </div>
@@ -136,7 +127,7 @@
                             <h4>
                                 &nbsp;&nbsp;临时盒编码:{{vm.tempBoxObj.frozenBoxCode}}
                                 装盒位置:{{vm.tempBoxObj.startPos}}
-                                已有样本数:<span ng-if="vm.tempBoxObj.frozenTubeDTOS.length">{{vm.tempBoxObj.frozenTubeDTOS.length}}/{{vm.tempBoxObj.frozenBoxTypeRows*vm.tempBoxObj.frozenBoxTypeColumns}}</span>
+                                已有样本数:<span ng-if="vm.totalLen">{{vm.sampleOutCount}}/{{vm.totalLen}}</span>
                                 将装盒样本数:{{vm.boxInTubes.length}}
                             </h4>
                         </div>
@@ -193,10 +184,13 @@
 </pageslide>
 <script type="text/ng-template" id="affirmModal.html">
     <div class="modal-header">
-        <h3 class="modal-title">装盒操作</h3>
+        <h3 class="modal-title">出库操作</h3>
     </div>
     <div class="modal-body">
-        <h4>确定装盒操作？</h4>
+        <h4>
+            <span ng-if="vm.status == '2'">确定原盒出库操作？</span>
+            <span ng-if="vm.status == '1'">确定装盒出库操作？</span>
+        </h4>
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>

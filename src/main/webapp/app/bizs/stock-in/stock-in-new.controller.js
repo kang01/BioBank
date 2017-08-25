@@ -10,12 +10,12 @@
         .controller('StockInNewModalController', StockInNewModalController)
         .controller('StockInCancellationModalController', StockInCancellationModalController);
 
-    StockInNewController.$inject = ['$timeout','BioBankBlockUi','$state','$stateParams', '$scope','$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
+    StockInNewController.$inject = ['$timeout','BioBankBlockUi','$state','$stateParams', '$scope','$compile','toastr','Principal','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
         'entity','StockInService','StockInBoxService','StockInBoxByCodeService','StockInInputService','ProjectService','ProjectSitesByProjectIdService',
         'SampleTypeService','SampleService','FrozenBoxTypesService','RescindPutAwayService','MasterData'];
     StockInNewModalController.$inject = ['$uibModalInstance'];
     StockInCancellationModalController.$inject = ['$uibModalInstance'];
-    function StockInNewController($timeout,BioBankBlockUi,$state,$stateParams,$scope,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
+    function StockInNewController($timeout,BioBankBlockUi,$state,$stateParams,$scope,$compile,toastr,Principal,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
                                    entity,StockInService,StockInBoxService,StockInBoxByCodeService,StockInInputService,ProjectService,ProjectSitesByProjectIdService,
                                    SampleTypeService,SampleService,FrozenBoxTypesService,RescindPutAwayService,MasterData) {
         var vm = this;
@@ -47,6 +47,7 @@
                     items: function () {
                         return {
                             id: vm.entity.id,
+                            storeKeeper1: vm.entity.receiveName,
                             stockInCode: vm.entity.stockInCode,
                             stockInBox:vm.stockInBox
                         };
@@ -210,7 +211,15 @@
 
             });
         }
-
+        function _fnQueryUser() {
+            Principal.identity().then(function(account) {
+                vm.account = account;
+                if(vm.account.login != 'admin'){
+                    vm.entity.receiveName = vm.account.login;
+                }
+            });
+        }
+        _fnQueryUser();
         _initStockInInfo();
         _initStockInBoxesTable();
 
@@ -412,6 +421,8 @@
             });
             modalInstance.result.then(function (data) {
                 vm.dtInstance.rerender();
+                //编辑区域关闭
+                vm.showFlag = false;
             });
         }
         //撤销上架

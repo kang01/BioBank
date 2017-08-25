@@ -251,6 +251,7 @@
                 templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-sample-edit-modal.html',
                 controller: 'RequirementSampleEditModalController',
                 controllerAs:'vm',
+                backdrop:'static',
                 size:'90',
                 resolve: {
                     items: function () {
@@ -417,7 +418,7 @@
 
             modalInstance.result.then(function (data) {
                 RequirementService.delSampleRequirement(sampleRequirementId).success(function (data) {
-                    toastr.success(data.message);
+                    toastr.success("删除成功!");
                     _loadRequirement();
                 }).error(function (data) {
                     toastr.error(data.message);

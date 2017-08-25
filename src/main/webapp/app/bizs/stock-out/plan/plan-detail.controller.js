@@ -378,7 +378,7 @@
                     vm.taskInstance.rerender();
                 });
             }else{
-                toastr.warning("请勾选申请出库的冻存盒!");
+                toastr.error("请勾选申请出库的冻存盒!");
             }
 
         }

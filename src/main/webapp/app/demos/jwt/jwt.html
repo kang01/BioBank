@@ -1,0 +1,14 @@
+<div class="transport-record-index">
+    <div>
+        <h2 class="pull-left">DEMO JWT</h2>
+        <h2 class="pull-right">
+            <button ng-click="vm.run()" class="btn btn-primary">RUN</button>
+        </h2>
+        <div class="clearfix"></div>
+    </div>
+    <div ng-repeat="p in vm.products">
+        <span>{{p.name}}</span>
+        <span>{{p.price}}</span>
+    </div>
+
+</div>

@@ -143,7 +143,9 @@
         };
         //保存任务信息
         function _fnSaveTask() {
-            BioBankBlockUi.blockUiStart();
+            if(!isStockOutFlag){
+                BioBankBlockUi.blockUiStart();
+            }
             TaskService.saveTaskBox(vm.task).success(function (data) {
                 BioBankBlockUi.blockUiStop();
                 if(!isStockOutFlag){
@@ -598,6 +600,7 @@
                 return;
             }
             scanCodeTubes.orderIndex = boxInTubes.length + 1;
+            scanCodeTubes.pos = "";
             var row = scanCodeTubes.rowNO;
             var col = scanCodeTubes.colNO;
             vm.tubes[row][col-1].orderIndex = boxInTubes.length + 1;
@@ -608,9 +611,11 @@
             vm.tubes[row][col-1].scanCodeFlag = true;
             vm.boxInTubes = boxInTubes;
             tableCtrl.loadData(vm.tubes);
-            //预装位置
-            _fnPrePos();
-        }
+            if(vm.tempBoxObj.frozenTubeDTOS.length){
+                //预装位置
+                _fnPrePos();
+            }
+           }
         //查看已扫码
         function _fnViewSampleDesc() {
             vm.checked = true;
@@ -624,30 +629,7 @@
             //预装位置
             _fnPrePos();
         }
-        //已扫码的样本
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 371)
-            .withOption('rowCallback', selectedSampleRowCallback);
-        vm.selectedColumns = [
-            DTColumnBuilder.newColumn('id').withOption("width", "40").notSortable().withOption('searchable',false).withTitle('序号'),
-            DTColumnBuilder.newColumn('sampleCode').withTitle('冻存盒编码').withOption("width", 'auto').notSortable(),
-            DTColumnBuilder.newColumn('pos').withTitle('预装位置').withOption("width", 'auto').notSortable(),
-            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "40").withOption('searchable',false).notSortable().renderWith(selectedSampleActionsHtml)
 
-        ];
-        function selectedSampleRowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull) {
-            $('td:first', nRow).html(iDisplayIndex+1);
-            if (oData.pos){
-                $('td:eq(2)', nRow).html(oData.pos.tubeRows+oData.pos.tubeColumns);
-            }
-            $compile(angular.element(nRow).contents())($scope);
-        }
-        function selectedSampleActionsHtml(data, type, full, meta) {
-            var html = '';
-            html = '<button type="button" class="btn btn-default btn-xs" ng-click="vm.delSelectedTube('+full.id+')">' +
-                '   <i class="fa fa-times"></i>' +
-                '</button>&nbsp;';
-            return html;
-        }
 
         vm.box = {};
         //撤销
@@ -893,7 +875,12 @@
                     tubeColumns: col
                 };
             }
-            function _checkPosition(){
+            function _checkPosition(pos){
+                pos.tubeColumns = pos.tubeColumns+"";
+               var tubeId =  _.find(vm.tempBoxObj.frozenTubeDTOS,pos).id;
+               if(tubeId){
+                   return false;
+               }
                 return true;
             }
         }
@@ -908,8 +895,35 @@
             tableCtrl.loadData([[]]);
         }
 
+        //已扫码的样本
+        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 371)
+            .withOption('rowCallback', selectedSampleRowCallback);
+        vm.selectedColumns = [
+            DTColumnBuilder.newColumn('id').withOption("width", "40").notSortable().withOption('searchable',false).withTitle('序号'),
+            DTColumnBuilder.newColumn('sampleCode').withTitle('冻存盒编码').withOption("width", 'auto').notSortable(),
+            DTColumnBuilder.newColumn('pos').withTitle('预装位置').withOption("width", 'auto').notSortable(),
+            DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "40").withOption('searchable',false).notSortable().renderWith(selectedSampleActionsHtml)
+
+        ];
+        function selectedSampleRowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull) {
+            $('td:first', nRow).html(iDisplayIndex+1);
+            if (oData.pos){
+                $('td:eq(2)', nRow).html(oData.pos.tubeRows+oData.pos.tubeColumns);
+            }
+            $compile(angular.element(nRow).contents())($scope);
+        }
+        function selectedSampleActionsHtml(data, type, full, meta) {
+            var html = '';
+            html = '<button type="button" class="btn btn-default btn-xs" ng-click="vm.delSelectedTube('+full.id+')">' +
+                '   <i class="fa fa-times"></i>' +
+                '</button>&nbsp;';
+            return html;
+        }
+
         //选择临时盒
-        vm.tempBoxObj = {};
+        vm.tempBoxObj = {
+            frozenTubeDTOS :[]
+        };
         function _fnSelectTempBox() {
             modalInstance = $uibModal.open({
                 animation: true,

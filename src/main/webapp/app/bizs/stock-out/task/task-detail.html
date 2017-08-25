@@ -97,26 +97,28 @@
                         <h4>待出库样本</h4>
                     </div>
                     <div class="col-md-10 pr-0 text-right">
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-if="vm.boxInFullFlag" ng-click="vm.tubeStockOutBox(2)">原盒出库</button>
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.selectTempBox()" ng-disabled="!vm.frozenTubeDTOS.length">选择临时盒</button>
                         <div  class="stock-out-task-scan">
                             <div class="input-group">
-                                <input type="text" class="form-control" ng-model="vm.sampleCode" ng-disabled="!vm.tempBoxObj.frozenBoxCode">
+                                <input type="text" class="form-control" ng-model="vm.sampleCode" >
                                 <div class="input-group-addon btn-sm" ng-click="vm.scanClick()"
-                                     ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus" uib-btn-checkbox ng-disabled="true">
+                                     ng-class="{true:'btn-primary',false:''}[vm.flagStatus]" ng-model="vm.flagStatus" uib-btn-checkbox >
                                     扫码取样
                                 </div>
+                                <div class="input-group-addon btn-sm position-relative" ng-click="vm.viewSampleDesc()" ng-disabled="!vm.boxInTubes.length">
+                                    &nbsp;&nbsp;<i class="fa fa-shopping-cart"></i>&nbsp;&nbsp;
+                                    <div class="circle2" ng-if="vm.boxInTubes.length == 100">{{vm.boxInTubes.length}}</div>
+                                    <div class="circle1" ng-if="vm.boxInTubes.length && vm.boxInTubes.length != 100">{{vm.boxInTubes.length}}</div>
+                                </div>
+
                             </div>
                         </div>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.selectTempBox()"    ng-disabled="!vm.frozenTubeDTOS.length">选择临时盒</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(2)" ng-disabled="!vm.boxInTubes.length" ng-if="vm.boxInFullFlag"  >原盒出库</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(1)" ng-disabled="!vm.boxInTubes.length">装盒出库</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()">异常</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealModal()">撤销申请</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.commentModal(1)">批注</button>
-                        <span class="position-relative">
-                            <button type="button" class="btn btn-default btn-sm" ng-click="vm.viewSampleDesc()" ng-disabled="!vm.boxInTubes.length">
-                                &nbsp;&nbsp;<i class="fa fa-shopping-cart"></i>&nbsp;&nbsp;
-                                <div class="circle" ng-if="vm.boxInTubes.length">{{vm.boxInTubes.length}}</div></button>
-                        </span>
+
                     </div>
                     <div class="clear-both"></div>
                 </div>

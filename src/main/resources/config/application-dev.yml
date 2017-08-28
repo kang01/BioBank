@@ -33,7 +33,8 @@ spring:
         username: biobank1
         password: root123
     jpa:
-        database-platform: org.hibernate.dialect.Oracle12cDialect
+#        database-platform: org.hibernate.dialect.Oracle12cDialect
+        database-platform: org.fwoxford.config.database.BBISOracle12cDialect
         database: ORACLE
         show-sql: true
         properties:

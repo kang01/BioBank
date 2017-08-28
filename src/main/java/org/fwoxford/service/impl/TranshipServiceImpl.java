@@ -5,6 +5,7 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
+import org.fwoxford.service.dto.response.SampleCountByTypeForm;
 import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
@@ -279,9 +280,22 @@ public class TranshipServiceImpl implements TranshipService{
     public TranshipDTO findOne(Long id) {
         log.debug("Request to get Tranship : {}", id);
         Tranship tranship = transhipRepository.findOne(id);
+        List<Object[]> alist = transhipRepository.countFrozenTubeGroupBySampleTypeAndClass(id);
+        List<SampleCountByTypeForm> sampleCountByTypeForms = new ArrayList<SampleCountByTypeForm>();
+        for(Object[] obj :alist ){
+            SampleCountByTypeForm sampleCountByTypeForm = new SampleCountByTypeForm();
+            sampleCountByTypeForm.setSampleTypeId(obj[0]!=null?Long.parseLong(obj[0].toString()):null);
+            sampleCountByTypeForm.setSampleClassificationId(obj[1]!=null?Long.parseLong(obj[1].toString()):null);
+            sampleCountByTypeForm.setSampleTypeName(obj[2]!=null?obj[2].toString():null);
+            sampleCountByTypeForm.setSampleClassificationName(obj[3]!=null?obj[3].toString():null);
+            sampleCountByTypeForm.setCountOfSample(obj[4]!=null?Long.parseLong(obj[4].toString()):null);
+            sampleCountByTypeForms.add(sampleCountByTypeForm);
+        }
         TranshipDTO transhipDTO = transhipMapper.transhipToTranshipDTO(tranship);
+        transhipDTO.setSampleCountByTypeForms(sampleCountByTypeForms);
         return transhipDTO;
     }
+
 
     /**
      *  Delete the  tranship by id.

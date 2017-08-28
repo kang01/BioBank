@@ -1,5 +1,7 @@
 package org.fwoxford.service.dto;
 
+import org.fwoxford.service.dto.response.SampleCountByTypeForm;
+
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -388,5 +390,15 @@ public class TranshipDTO extends AbstractAuditingDTO implements Serializable {
             ", tempEquipmentId='" + tempEquipmentId + "'" +
             ", tempAreaId='" + tempAreaId + "'" +
             '}';
+    }
+
+    private List<SampleCountByTypeForm> sampleCountByTypeForms ;
+
+    public List<SampleCountByTypeForm> getSampleCountByTypeForms() {
+        return sampleCountByTypeForms;
+    }
+
+    public void setSampleCountByTypeForms(List<SampleCountByTypeForm> sampleCountByTypeForms) {
+        this.sampleCountByTypeForms = sampleCountByTypeForms;
     }
 }

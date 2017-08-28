@@ -462,7 +462,7 @@
                     if(vm.selectAll){
                         for(var i = 0; i< vm.BoxData.length; i++){
                             var len = _.filter(selectedBox,{id:+vm.BoxData[i].id}).length;
-                            if(!len){
+                            if(!len && vm.BoxData[i].status == '2004'){
                                 selectedBox.push(vm.BoxData[i])
                             }
                         }

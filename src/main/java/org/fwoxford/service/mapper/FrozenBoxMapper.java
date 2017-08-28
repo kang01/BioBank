@@ -3,6 +3,7 @@ package org.fwoxford.service.mapper;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
@@ -107,12 +108,12 @@ public interface FrozenBoxMapper {
         return supportRack;
     }
 
-    default FrozenBoxAndFrozenTubeResponse forzenBoxAndTubeToResponse(FrozenBox frozenBox, List<FrozenTubeResponse> frozenTube){
+    default FrozenBoxAndFrozenTubeResponse forzenBoxAndTubeToResponse(FrozenBox frozenBox){
         if(frozenBox == null){
             return null;
         }
         FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
-        res.setFrozenTubeDTOS(frozenTube);
+
         res.setId(frozenBox.getId());
         res.setStatus(frozenBox.getStatus());
         res.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
@@ -157,62 +158,6 @@ public interface FrozenBoxMapper {
         return res;
     }
 
-    default  TranshipBoxDTO frozenBoxToTranshipBoxDTO(FrozenBoxDTO boxDTO){
-        if(boxDTO == null){
-            return null;
-        }
-        TranshipBoxDTO transhipBoxDTO = new TranshipBoxDTO();
-        transhipBoxDTO.setTranshipId(boxDTO.getTranshipId());
-        transhipBoxDTO.setEquipmentCode(boxDTO.getEquipmentCode());
-        transhipBoxDTO.setAreaCode(boxDTO.getAreaCode());
-        transhipBoxDTO.setFrozenBoxCode(boxDTO.getFrozenBoxCode());
-        transhipBoxDTO.setSupportRackCode(boxDTO.getSupportRackCode());
-        transhipBoxDTO.setCreatedBy(boxDTO.getCreatedBy());
-        transhipBoxDTO.setMemo(boxDTO.getMemo());
-        transhipBoxDTO.setCreatedDate(boxDTO.getCreatedDate());
-        transhipBoxDTO.setStatus(boxDTO.getStatus());
-        transhipBoxDTO.setLastModifiedBy(boxDTO.getLastModifiedBy());
-        transhipBoxDTO.setLastModifiedDate(boxDTO.getLastModifiedDate());
-        transhipBoxDTO.setFrozenBoxId(boxDTO.getId());
-        transhipBoxDTO.setColumnsInShelf(boxDTO.getColumnsInShelf());
-        transhipBoxDTO.setRowsInShelf(boxDTO.getRowsInShelf());
-        return transhipBoxDTO;
-    }
-
-    default List<FrozenBoxDTO> frozenTranshipAndBoxToFrozenBoxDTOList(List<FrozenBoxDTO> frozenBoxDTOList, Tranship tranship){
-        List<FrozenBoxDTO> frozenBoxDTOLists = new ArrayList<FrozenBoxDTO>();
-        for(FrozenBoxDTO box:frozenBoxDTOList){
-            box.setProjectId(tranship.getProject()!=null?tranship.getProject().getId(): null);
-            box.setProjectCode(tranship.getProjectCode());
-            box.setProjectName(tranship.getProjectName());
-            box.setProjectSiteId(tranship.getProjectSite() != null ? tranship.getProjectSite().getId() : null);
-            box.setProjectSiteCode(tranship.getProjectSiteCode());
-            box.setProjectSiteName(tranship.getProjectSiteName());
-
-            box.setEquipmentCode(box.getEquipmentCode());
-            box.setEquipmentId(box.getEquipmentId());
-
-            box.setAreaCode(box.getAreaCode());
-            box.setAreaId(box.getAreaId());
-
-            box.setSupportRackId(box.getSupportRackId());
-            box.setSupportRackCode(box.getSupportRackCode());
-            box.setRowsInShelf(box.getRowsInShelf());
-            box.setColumnsInShelf(box.getColumnsInShelf());
-
-            box.setDislocationNumber(box.getDislocationNumber() != null ? box.getDislocationNumber() : 0);
-            box.setEmptyHoleNumber(box.getEmptyHoleNumber() != null ? box.getEmptyHoleNumber() : 0);
-            box.setEmptyTubeNumber(box.getEmptyTubeNumber() != null ? box.getEmptyTubeNumber() : 0);
-            box.setIsRealData(box.getIsRealData() != null ? box.getIsRealData() : 0);
-            box.setIsSplit(box.getIsSplit() != null ? box.getIsSplit() : 0);
-
-            box.setStatus(box.getStatus() != null ? box.getStatus() : Constants.FROZEN_BOX_NEW);
-            box.setTranshipId(tranship.getId());
-            frozenBoxDTOLists.add(box);
-        }
-        return frozenBoxDTOLists;
-    }
-
     default FrozenBox frozenBoxForSaveBatchDTOToFrozenBox(FrozenBoxForSaveBatchDTO frozenBoxDTO){
         if ( frozenBoxDTO == null ) {
             return null;
@@ -245,24 +190,5 @@ public interface FrozenBoxMapper {
         SampleClassification sampleClassification = new SampleClassification();
         sampleClassification.setId(id);
         return sampleClassification;
-    }
-
-    default FrozenBoxAndFrozenTubeResponse forzenBoxDTOAndTubeToResponse(FrozenBoxDTO frozenBox, List<FrozenTubeResponse> frozenTube){
-        if(frozenBox == null){
-            return null;
-        }
-        FrozenBoxAndFrozenTubeResponse res = new FrozenBoxAndFrozenTubeResponse();
-        res.setFrozenTubeDTOS(frozenTube);
-        res.setId(frozenBox.getId());
-        res.setStatus(frozenBox.getStatus());
-        res.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-        res.setIsSplit(frozenBox.getIsSplit());
-        res.setMemo(frozenBox.getMemo());
-        res.setEquipmentId(frozenBox.getEquipmentId());
-        res.setAreaId(frozenBox.getAreaId());
-        res.setSupportRackId(frozenBox.getSupportRackId());
-        res.setColumnsInShelf(frozenBox.getColumnsInShelf());
-        res.setRowsInShelf(frozenBox.getRowsInShelf());
-        return res;
     }
 }

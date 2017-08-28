@@ -4,10 +4,10 @@
             <h2 style="margin: 0">样本清单</h2>
         </div>
         <div class="pull-right">
-            <span class="position-relative">
-            <button type="button" class="btn btn-default " ng-click="vm.selectedShow(1)" ng-disabled="!vm.selectedLen">
+            <span class="">
+            <button type="button" class="btn btn-default position-relative" ng-click="vm.selectedShow(1)" ng-disabled="!vm.selectedLen">
                 &nbsp;&nbsp;<i class="fa fa-shopping-cart"></i>&nbsp;&nbsp;
-                <div class="circle" ng-if="vm.selectedLen">{{vm.selectedLen}}</div>
+                <div class="circle1" ng-if="vm.selectedLen">{{vm.selectedLen}}</div>
             </button>
             </span>
             <button type="button" class="btn btn-default" ng-click="vm.exchangeDestroy(1)" ng-disabled="vm.selectedLen != 2">交换</button>

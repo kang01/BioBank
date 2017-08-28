@@ -622,7 +622,7 @@ tr.shown td .details-control {
 .stock-out-task-scan{
     display: inline-block;
     vertical-align: middle;
-    width: 196px;
+    width: 248px;
 }
 /*1440*/
 @media (min-width:1400px) {
@@ -650,7 +650,7 @@ tr.shown td .details-control {
     }
     /*出库任务扫码框*/
     .stock-out-task-scan{
-        width: 240px;
+        width: 286px;
     }
 }
 /*1600*/
@@ -792,17 +792,30 @@ body.ng-pageslide-body-closed::before {
 .position-relative{
     position: relative;
 }
-.circle{
+.circle1{
     width: 16px;
     height: 16px;
+    line-height: 16px;
     border-radius: 50%;
     background-color: red;
     font-size: 12px;
     color: white;
+    text-align: center;
 }
-.position-relative .circle{
-    top: -7px;
-    right: 5px;
+.circle2{
+    width: 26px;
+    height: 16px;
+    line-height: 16px;
+    border-radius: 50%;
+    background-color: red;
+    font-size: 12px;
+    color: white;
+    text-align: center;
+}
+.position-relative .circle1,
+.position-relative .circle2{
+    top: -1px;
+    right: 1px;
     position: absolute;
 }
 .text-left{
@@ -957,7 +970,8 @@ ul.rating {
 .sample-search .form-group{
     margin-bottom: 0;
 }
-.inventory .selected-content{
+
+.selected-content{
     position: absolute;
     top: 46px;
     bottom: 0;
@@ -1120,7 +1134,7 @@ ul.rating {
 }
 .pos-disabled{
     background-color: #ccc;
-
+    opacity: .65;
 }
 .pos-content .pos-disabled:hover{
     cursor: not-allowed;

@@ -92,6 +92,11 @@ public class TranshipResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(transhipByIdResponse));
     }
 
+    /**
+     * 根据转运ID查询转运详情
+     * @param id
+     * @return
+     */
     @GetMapping("/tranships/id/{id}")
     @Timed
     public ResponseEntity<TranshipDTO> getTranshipById(@PathVariable Long id) {

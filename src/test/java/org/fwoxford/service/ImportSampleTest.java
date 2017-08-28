@@ -1365,4 +1365,58 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
         this.createSampleTypeAndClassFor0038();
 //        this.createSampleTypeAndClassFor0029();// 需要在这里执行时去掉方法上的@Test
     }
+
+    @Test
+    public void createProjectSiteForPeace2() throws Exception {
+        Connection con = null;// 创建一个数据库连接
+        PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
+        ResultSet result = null;// 创建一个结果集对象
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        Long projectId = null;
+        try{
+            con = DBUtilForTemp.open();
+            System.out.println("连接成功！");
+            String sqlForSelect = "select * from LCC_170823";// 预编译语句
+            pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
+            result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
+            ResultSetMetaData rsMeta = result.getMetaData();
+            Map<String, Object> map = null;
+            while (result.next()){
+                map = this.Result2Map(result,rsMeta);
+                list.add(map);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                DBUtilForTemp.close(con);
+                System.out.println("数据库连接已关闭！");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        Project project = projectRepository.findByProjectCode("0029");
+        for(int i = 0 ;i<list.size();i++) {
+            String projectSiteCode = list.get(i).get("LCC_ID").toString();
+            ProjectSite projectSite = projectSiteRepository.findByProjectSiteCode(projectSiteCode);
+            if (projectSite == null) {
+                projectSite = new ProjectSite()
+                    .projectSiteCode(list.get(i).get("LCC_ID").toString())
+                    .projectSiteName(list.get(i).get("NAME").toString())
+                    .area(list.get(i).get("AREA").toString())
+                    .status("0001").detailedLocation(list.get(i).get("LOCATION") != null ? list.get(i).get("LOCATION").toString() : null)
+//                    .department(list.get(i).get("DEPARTMENT").toString())
+                    .detailedAddress(list.get(i).get("ADDRESS") != null ? list.get(i).get("ADDRESS").toString() : null)
+                    .zipCode(list.get(i).get("ZIP_CODE") != null ? list.get(i).get("ZIP_CODE").toString() : null)
+                    .username1(list.get(i).get("USER_1").toString()).username2(list.get(i).get("USER_2").toString())
+                    .phoneNumber1(list.get(i).get("PHONE_1").toString()).phoneNumber2(list.get(i).get("PHONE_2").toString());
+                projectSiteRepository.saveAndFlush(projectSite);
+                ProjectRelate projectRelate = projectRelateRepository.findByProjectIdAndProjectSiteId(project.getId(), projectSite.getId());
+                if (projectRelate == null) {
+                    projectRelate = new ProjectRelate().project(project).projectSite(projectSite).status("0001");
+                    projectRelateRepository.saveAndFlush(projectRelate);
+                }
+            }
+        }
+    }
 }

@@ -278,7 +278,7 @@
                 }
             }
             var ids =  _.map(selectedSample, 'id');
-            console.log(JSON.stringify(ids));
+
             modalInstance = $uibModal.open({
                 templateUrl: 'app/bizs/list/modal/list-exchange-destroy-modal.html',
                 controller: 'ListExchangeDestroyModalController',
@@ -435,7 +435,7 @@
                     if(vm.selectAll){
                         for(var i = 0; i< vm.sampleData.length; i++){
                             var len = _.filter(selectedSample,{id:+vm.sampleData[i].id}).length;
-                            if(!len){
+                            if(!len && vm.sampleData[i].frozenTubeState == '2004'){
                                 selectedSample.push(vm.sampleData[i])
                             }
                         }

@@ -6,6 +6,7 @@ import org.fwoxford.repository.*;
 import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.service.UserService;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
 import org.fwoxford.service.dto.StockOutTaskDTO;
 import org.fwoxford.service.dto.response.*;
@@ -333,7 +334,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutFrozenBoxRepository.save(stockOutFrozenBox);
 
             //保存出库盒与管之间的关系
-            for(FrozenTubeResponse f: box.getFrozenTubeDTOS()){
+            for(FrozenTubeDTO f: box.getFrozenTubeDTOS()){
                 StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutTaskAndFrozenTube(taskId,f.getId());
                 if(stockOutTaskFrozenTube == null){
                     continue;
@@ -389,7 +390,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 continue;
             }
             List<FrozenTubeResponse> frozenTubeResponse = frozenTubeMapper.frozenTubeToFrozenTubeResponse(frozenTubes);
-            FrozenBoxAndFrozenTubeResponse box = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox,frozenTubeResponse);
+            FrozenBoxAndFrozenTubeResponse box = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox);
             alist.add(box);
         }
         return alist;

@@ -8,6 +8,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
 import org.fwoxford.service.dto.response.FrozenTubeImportingForm;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
@@ -71,7 +72,7 @@ public class FrozenBoxImportService {
         List<SampleType> sampleTypeList = sampleTypeRepository.findAllSampleTypes();
         List<SampleClassification> sampleClassifications = sampleClassificationRepository.findAll();
         List<FrozenBoxAndFrozenTubeResponse> frozenBoxAndFrozenTubeResponses = new ArrayList<>();
-        Map<String,List<FrozenTubeResponse>> map = new HashMap<String,List<FrozenTubeResponse>>();
+        Map<String,List<FrozenTubeDTO>> map = new HashMap<String,List<FrozenTubeDTO>>();
         Map<String,FrozenBoxAndFrozenTubeResponse> boxMap = new HashMap<String,FrozenBoxAndFrozenTubeResponse>();
         try {
             String filetype=file.getOriginalFilename().split("\\.")[1];//后缀
@@ -110,7 +111,7 @@ public class FrozenBoxImportService {
                 frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeName(frozenBoxType.getFrozenBoxTypeName());
                 frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows());
                 frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns());
-                List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
+                List<FrozenTubeDTO> frozenTubeResponses = new ArrayList<FrozenTubeDTO>();
                 //截取冻存盒编码获取类型
                 String sampleClassificationTypeCode = frozenBoxCode.substring(4,6);
                 ProjectSampleClass projectSampleClass = new ProjectSampleClass();
@@ -163,7 +164,7 @@ public class FrozenBoxImportService {
                     default:break;
                 }
 
-                List<FrozenTubeResponse> frozenTubeResponseList = map.get(frozenBoxCode);
+                List<FrozenTubeDTO> frozenTubeResponseList = map.get(frozenBoxCode);
                 if(frozenTubeResponseList!=null && frozenTubeResponseList.size()>0){
                     frozenTubeResponseList.addAll(frozenTubeResponses);
                     map.put(frozenBoxCode,frozenTubeResponseList);
@@ -188,7 +189,7 @@ public class FrozenBoxImportService {
         return frozenBoxAndFrozenTubeResponses;
     }
 
-    public List<FrozenTubeResponse> createSample(Map<String, List<FrozenTubeResponse>> map, String frozenBoxCode, SampleType sampleType, ProjectSampleClass projectSampleClass, FrozenBoxAndFrozenTubeResponse boxAndFrozenTubeResponse, FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse, FrozenTubeType frozenTubeType, String sampleCode) {
+    public List<FrozenTubeDTO> createSample(Map<String, List<FrozenTubeDTO>> map, String frozenBoxCode, SampleType sampleType, ProjectSampleClass projectSampleClass, FrozenBoxAndFrozenTubeResponse boxAndFrozenTubeResponse, FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse, FrozenTubeType frozenTubeType, String sampleCode) {
         frozenBoxAndFrozenTubeResponse.setIsSplit(Constants.NO);
         frozenBoxAndFrozenTubeResponse.setSampleClassification(projectSampleClass.getSampleClassification());
         frozenBoxAndFrozenTubeResponse.setSampleClassificationId(projectSampleClass.getSampleClassification().getId());
@@ -197,13 +198,13 @@ public class FrozenBoxImportService {
         frozenBoxAndFrozenTubeResponse.setBackColorForClass(projectSampleClass.getSampleClassification().getBackColor());
         frozenBoxAndFrozenTubeResponse.setFrontColorForClass(projectSampleClass.getSampleClassification().getFrontColor());
 
-        List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
-        List<FrozenTubeResponse> frozenTubeResponseList = map.get(frozenBoxCode)!=null?map.get(frozenBoxCode):new ArrayList<FrozenTubeResponse>();
+        List<FrozenTubeDTO> frozenTubeResponses = new ArrayList<FrozenTubeDTO>();
+        List<FrozenTubeDTO> frozenTubeResponseList = map.get(frozenBoxCode)!=null?map.get(frozenBoxCode):new ArrayList<FrozenTubeDTO>();
         int i = 0;
         String rowsInTube = "";
         String columnsInTube = "";
-        Map<String,FrozenTubeResponse> posMap = new HashMap<>();
-        for(FrozenTubeResponse tube :frozenTubeResponseList){
+        Map<String,FrozenTubeDTO> posMap = new HashMap<>();
+        for(FrozenTubeDTO tube :frozenTubeResponseList){
             String rows = tube.getTubeRows();
             String columns = tube.getTubeColumns();
             posMap.put(rows+columns,tube);
@@ -231,18 +232,15 @@ public class FrozenBoxImportService {
             }
         }
 
-        FrozenTubeResponse frozenTubeResponse = new FrozenTubeResponse();
+        FrozenTubeDTO frozenTubeResponse = new FrozenTubeDTO();
         frozenTubeResponse.setStatus(Constants.FROZEN_TUBE_NORMAL);
         frozenTubeResponse.setSampleCode(sampleCode);
-        frozenTubeResponse.setFrozenTubeType(frozenTubeType);
         frozenTubeResponse.setFrozenBoxCode(frozenBoxCode);
         frozenTubeResponse.setTubeRows(rowsInTube);
         frozenTubeResponse.setTubeColumns(columnsInTube);
-        frozenTubeResponse.setSampleType(sampleType);
         frozenTubeResponse.setSampleTypeId(sampleType.getId());
         frozenTubeResponse.setSampleTypeName(sampleType.getSampleTypeName());
         frozenTubeResponse.setSampleTypeCode(sampleType.getSampleTypeCode());
-        frozenTubeResponse.setSampleClassification(projectSampleClass.getSampleClassification());
         frozenTubeResponse.setSampleClassificationId(projectSampleClass.getSampleClassification().getId());
         frozenTubeResponse.setSampleClassificationCode(projectSampleClass.getSampleClassificationCode());
         frozenTubeResponse.setSampleClassificationName(projectSampleClass.getSampleClassificationName());
@@ -255,11 +253,11 @@ public class FrozenBoxImportService {
         return frozenTubeResponses;
     }
 
-    public List<FrozenTubeResponse> create99Sample(Map<String, List<FrozenTubeResponse>> map, String frozenBoxCode, SampleType sampleType, List<ProjectSampleClass> projectSampleClasses, FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse, FrozenTubeType frozenTubeType, String sampleCode) {
+    public List<FrozenTubeDTO> create99Sample(Map<String, List<FrozenTubeDTO>> map, String frozenBoxCode, SampleType sampleType, List<ProjectSampleClass> projectSampleClasses, FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse, FrozenTubeType frozenTubeType, String sampleCode) {
         frozenBoxAndFrozenTubeResponse.setIsSplit(Constants.YES);
         //从map中获取冻存盒，取盒内的位置
-        List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
-        List<FrozenTubeResponse> frozenTubeResponseList = map.get(frozenBoxCode);
+        List<FrozenTubeDTO> frozenTubeResponses = new ArrayList<FrozenTubeDTO>();
+        List<FrozenTubeDTO> frozenTubeResponseList = map.get(frozenBoxCode);
         int i = 0;
         if(frozenTubeResponseList==null || frozenTubeResponseList.size()==0){
             i=1;
@@ -272,14 +270,12 @@ public class FrozenBoxImportService {
         char c1=(char) (i+64);
 
         for(int j = 1;j<=10;j++){
-            FrozenTubeResponse frozenTubeResponse = new FrozenTubeResponse();
+            FrozenTubeDTO frozenTubeResponse = new FrozenTubeDTO();
             frozenTubeResponse.setStatus(Constants.FROZEN_TUBE_NORMAL);
             frozenTubeResponse.setSampleCode(sampleCode);
-            frozenTubeResponse.setFrozenTubeType(frozenTubeType);
             frozenTubeResponse.setTubeRows(String.valueOf(c1));
             frozenTubeResponse.setTubeColumns(String.valueOf(j));
             frozenTubeResponse.setFrozenBoxCode(frozenBoxCode);
-            frozenTubeResponse.setSampleType(sampleType);
             frozenTubeResponse.setSampleTypeId(sampleType.getId());
             frozenTubeResponse.setSampleTypeName(sampleType.getSampleTypeName());
             frozenTubeResponse.setSampleTypeCode(sampleType.getSampleTypeCode());
@@ -288,7 +284,6 @@ public class FrozenBoxImportService {
                 throw new BankServiceException("样本分类获取失败！");
             }
             ProjectSampleClass projectSampleClass =projectSampleClasses.stream().filter(s->s.getSampleClassificationCode().equals(sampleClass)).findFirst().orElse(null);
-            frozenTubeResponse.setSampleClassification(projectSampleClass.getSampleClassification());
             frozenTubeResponse.setSampleClassificationId(projectSampleClass.getSampleClassification().getId());
             frozenTubeResponse.setSampleClassificationCode(projectSampleClass.getSampleClassificationCode());
             frozenTubeResponse.setSampleClassificationName(projectSampleClass.getSampleClassificationName());
@@ -358,11 +353,11 @@ public class FrozenBoxImportService {
             if(frozenTubeType == null){
                 throw new BankServiceException("查询冻存管类型失败！");
             }
-            List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
+            List<FrozenTubeDTO> frozenTubeResponses = new ArrayList<FrozenTubeDTO>();
             List<FrozenTubeImportingForm> frozenTubeImportingForms = (List<FrozenTubeImportingForm>) JSONArray.toCollection(jsonArray,FrozenTubeImportingForm.class);
-            Map<String,List<FrozenTubeResponse>> map = new HashMap<String,List<FrozenTubeResponse>>();
+            Map<String,List<FrozenTubeDTO>> map = new HashMap<String,List<FrozenTubeDTO>>();
             for(FrozenTubeImportingForm frozenTubeImportingForm : frozenTubeImportingForms){
-                FrozenTubeResponse frozenTubeResponse = new FrozenTubeResponse();
+                FrozenTubeDTO frozenTubeResponse = new FrozenTubeDTO();
                 String status = frozenTubeImportingForm.getIsEmpty();
                 if(status.equals("2")){
                     status = Constants.FROZEN_TUBE_NORMAL;
@@ -371,7 +366,12 @@ public class FrozenBoxImportService {
                 }
                 frozenTubeResponse.setStatus(status);
                 frozenTubeResponse.setPatientId(Long.valueOf(frozenTubeImportingForm.getBloodCode().trim()));
-                frozenTubeResponse.setFrozenTubeType(frozenTubeType);
+                frozenTubeResponse.setFrozenTubeTypeId(frozenTubeType.getId());
+                frozenTubeResponse.setFrozenTubeTypeCode(frozenTubeType.getFrozenTubeTypeCode());
+                frozenTubeResponse.setFrozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName());
+                frozenTubeResponse.setFrozenTubeVolumns(frozenTubeType.getFrozenTubeVolumn());
+                frozenTubeResponse.setFrozenTubeVolumnsUnit(frozenTubeType.getFrozenTubeVolumnUnit());
+                frozenTubeResponse.setSampleUsedTimesMost(frozenTubeType.getSampleUsedTimesMost());
                 frozenTubeResponse.setFrozenBoxCode(code);
                 frozenTubeResponse.setSampleCode(frozenTubeImportingForm.getSpecimenCode());
                 Boolean ishemolysis = true; Boolean isbloodLipid = true;
@@ -390,7 +390,7 @@ public class FrozenBoxImportService {
                 if(sampleType == null){
                     throw new BankServiceException("样本类型不存在！");
                 }
-                frozenTubeResponse.setSampleType(sampleType);
+
                 frozenTubeResponse.setSampleTypeId(sampleType.getId());
                 frozenTubeResponse.setSampleTypeCode(sampleType.getSampleTypeCode());
                 frozenTubeResponse.setSampleTypeName(sampleType.getSampleTypeName());
@@ -405,13 +405,13 @@ public class FrozenBoxImportService {
                 frozenTubeResponse.setTubeColumns(frozenTubeImportingForm.getColOfSpecimenPos());
                 char rows=(char) (Integer.parseInt(frozenTubeImportingForm.getRowOfSpecimenPos())+64);
                 frozenTubeResponse.setTubeRows(String.valueOf(rows));
-                List<FrozenTubeResponse> frozenTubeList = map.get(sampleTypeCode);
+                List<FrozenTubeDTO> frozenTubeList = map.get(sampleTypeCode);
                 if(frozenTubeList == null ||frozenTubeList.size()==0){
-                    List<FrozenTubeResponse> frozenTubeResponseList = new ArrayList<FrozenTubeResponse>();
+                    List<FrozenTubeDTO> frozenTubeResponseList = new ArrayList<FrozenTubeDTO>();
                     frozenTubeResponseList.add(frozenTubeResponse);
                     map.put(sampleTypeCode,frozenTubeResponseList);
                 }else{
-                    List<FrozenTubeResponse> frozenTubeResponseList =  map.get(sampleTypeCode);
+                    List<FrozenTubeDTO> frozenTubeResponseList =  map.get(sampleTypeCode);
                     frozenTubeResponseList.add(frozenTubeResponse);
                     map.put(sampleTypeCode,frozenTubeResponseList);
                 }

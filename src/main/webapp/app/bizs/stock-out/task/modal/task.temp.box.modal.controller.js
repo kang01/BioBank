@@ -17,6 +17,8 @@
         var tempBox = items.tempBox;
         //临时盒list
         var boxList = [];
+        //临时管子
+        var tubesTempInTable = [];
         vm.tempBoxInstance = {};
         vm.selectBox = {
             frozenTubeDTOS:[]
@@ -119,7 +121,6 @@
             var $posContent = $(".pos-content");
             $posContent.css({"display":"block"});
             //遍历冻存盒的盒类型，生成二维的位置矩阵
-
             for(var i = 0, row = vm.selectBox.frozenBoxTypeRows; i < row; i++){
                 var rowIndex = String.fromCharCode('A'.charCodeAt(0) + i);
                 var $div = fragment.appendChild(document.createElement('div'));
@@ -129,11 +130,12 @@
                 for(var j = 0, col = vm.selectBox.frozenBoxTypeColumns; j < col; j++){
                     var $li = $("<li class='allow-pos'/>");
                     var colIndex = j+1;
+
                     //给每个li赋值行列的数值
                     $li.text(rowIndex+colIndex);
+
                     //选择的临时的盒子，临时盒中管子中的位置不能再被选择
                     if(vm.selectBox.frozenTubeDTOS.length){
-
                         var len =  _.filter(vm.selectBox.frozenTubeDTOS,{pos:$li.text()}).length;
                         var tubeId =  _.find(vm.selectBox.frozenTubeDTOS,{pos:$li.text()}).id;
                         if(len && tubeId){
@@ -149,17 +151,20 @@
 
                 }
             }
+
             $posContent.append(fragment);
+
             //每个li的宽度、高度
             var liW = $(".pos-content li:first").outerWidth()+4;
             var liH = $(".pos-content li:first").outerHeight()+4;
+
             //动态的给层赋值宽高
             $posContent.width(liW*vm.selectBox.frozenBoxTypeColumns);
             $posContent.height(liH*vm.selectBox.frozenBoxTypeRows);
+
             //让容器出现在框的上面
             var h = $posContent.outerHeight();
             $posContent.css({top:-h});
-
             //防止冒泡
             stopPropagation(e);
             function stopPropagation(e) {
@@ -192,9 +197,9 @@
             .withOption('rowCallback', rowCallback)
             .withOption('createdRow', createdRow);
         vm.tempBoxColumns = [
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码'),
-            DTColumnBuilder.newColumn('sampleCount').withTitle('盒内样本数'),
-            DTColumnBuilder.newColumn('frozenBoxTypeName').withTitle('盒类型')
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').notSortable(),,
+            DTColumnBuilder.newColumn('sampleCount').withTitle('盒内样本数').notSortable(),,
+            DTColumnBuilder.newColumn('frozenBoxTypeName').withTitle('盒类型').notSortable()
         ];
         var sampleTotalCount;
         function createdRow(row, data, dataIndex) {
@@ -221,7 +226,7 @@
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
             vm.selectBox = data;
-            var tubesInTable = [];
+            tubesTempInTable = [];
             _reloadTubesForTable(vm.selectBox);
             function _reloadTubesForTable(box){
                 var row = +box.frozenBoxTypeRows;
@@ -238,9 +243,9 @@
                         var tube = _createTubeForTableCell(tubeInBox, i, j + 1, pos);
                         tubes.push(tube);
                     }
-                    tubesInTable.push(tubes);
+                    tubesTempInTable.push(tubes);
                 }
-                vm.selectBox.frozenTubeDTOS =  _.flatten(tubesInTable);
+                vm.selectBox.frozenTubeDTOS =  _.flatten(tubesTempInTable);
 
             }
             function _createTubeForTableCell(tubeInBox, rowNO, colNO, pos){

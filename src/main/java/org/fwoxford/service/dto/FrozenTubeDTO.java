@@ -1,6 +1,8 @@
 package org.fwoxford.service.dto;
 
 
+import io.swagger.models.auth.In;
+
 import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -642,5 +644,30 @@ public class FrozenTubeDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setFlag(String flag) {
         this.flag = flag;
+    }
+
+    /**
+     * 出库标识:1:出库,2:取消出库
+     */
+    private Integer stockOutFlag;
+    /**
+     * 取消出库的原因
+     */
+    private String repealReason;
+
+    public Integer getStockOutFlag() {
+        return stockOutFlag;
+    }
+
+    public void setStockOutFlag(Integer stockOutFlag) {
+        this.stockOutFlag = stockOutFlag;
+    }
+
+    public String getRepealReason() {
+        return repealReason;
+    }
+
+    public void setRepealReason(String repealReason) {
+        this.repealReason = repealReason;
     }
 }

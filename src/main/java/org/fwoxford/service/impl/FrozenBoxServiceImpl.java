@@ -176,7 +176,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         List<FrozenTube> frozenTube = frozenTubeService.findFrozenTubeListByBoxId(frozenBoxId);
         List<FrozenTubeResponse> frozenTubeResponses = frozenTubeMapping.frozenTubeToFrozenTubeResponse(frozenTube);
 
-        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox, frozenTubeResponses);
+        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox);
 
         return res;
     }
@@ -201,9 +201,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         //查询冻存管列表信息
         List<FrozenTube> frozenTube = frozenTubeService.findFrozenTubeListByBoxCode(frozenBoxCode);
 
-        List<FrozenTubeResponse> frozenTubeResponses = frozenTubeMapping.frozenTubeToFrozenTubeResponse(frozenTube);
-
-        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox, frozenTubeResponses);
+        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox);
 
         return res;
     }
@@ -284,7 +282,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
         //根据转运code查询冻存盒列表
         List<FrozenBox> frozenBoxes = frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship != null ? tranship.getId() : null);
-//        List<FrozenBox> frozenBoxes = frozenBoxRepository.findFrozenBoxByTranshipCode(transhipCode);
+
         for (FrozenBox box : frozenBoxes) {
 
             //查询冻存管列表信息
@@ -292,7 +290,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
             List<FrozenTubeResponse> frozenTubeResponses = frozenTubeMapping.frozenTubeToFrozenTubeResponse(frozenTube);
 
-            FrozenBoxAndFrozenTubeResponse tempRes = frozenBoxMapper.forzenBoxAndTubeToResponse(box, frozenTubeResponses);
+            FrozenBoxAndFrozenTubeResponse tempRes = frozenBoxMapper.forzenBoxAndTubeToResponse(box);
 
             res.add(tempRes);
         }

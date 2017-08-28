@@ -531,44 +531,31 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         }
         //查询转运盒的位置
         TranshipBoxPosition transhipBoxPosition = transhipBoxPositionRepository.findByTranshipBoxIdLast(transhipBox.getId());
-        FrozenBoxDTO frozenBoxDTO  = frozenBoxMapper.frozenBoxToFrozenBoxDTO(frozenBox);;
         if(transhipBoxPosition != null){
-            frozenBoxDTO.setEquipmentId(transhipBoxPosition.getEquipment()!=null?transhipBoxPosition.getEquipment().getId():null);
-            frozenBoxDTO.setEquipmentCode(transhipBoxPosition.getEquipmentCode());
-            frozenBoxDTO.setAreaId(transhipBoxPosition.getArea()!=null?transhipBoxPosition.getArea().getId():null);
-            frozenBoxDTO.setAreaCode(transhipBoxPosition.getAreaCode());
-            frozenBoxDTO.setSupportRackId(transhipBoxPosition.getSupportRack()!=null?transhipBoxPosition.getSupportRack().getId():null);
-            frozenBoxDTO.setSupportRackCode(transhipBoxPosition.getSupportRackCode());
-            frozenBoxDTO.setRowsInShelf(transhipBoxPosition.getRowsInShelf());
-            frozenBoxDTO.setColumnsInShelf(transhipBoxPosition.getColumnsInShelf());
+            frozenBox.setEquipment(transhipBoxPosition.getEquipment()!=null?transhipBoxPosition.getEquipment():null);
+            frozenBox.setEquipmentCode(transhipBoxPosition.getEquipmentCode());
+            frozenBox.setArea(transhipBoxPosition.getArea()!=null?transhipBoxPosition.getArea():null);
+            frozenBox.setAreaCode(transhipBoxPosition.getAreaCode());
+            frozenBox.setSupportRack(transhipBoxPosition.getSupportRack()!=null?transhipBoxPosition.getSupportRack():null);
+            frozenBox.setSupportRackCode(transhipBoxPosition.getSupportRackCode());
+            frozenBox.setRowsInShelf(transhipBoxPosition.getRowsInShelf());
+            frozenBox.setColumnsInShelf(transhipBoxPosition.getColumnsInShelf());
         }
-        //查询冻存管列表信息
-        List<FrozenTube> frozenTube = new ArrayList<FrozenTube>();
-        List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
-
         //查询转运冻存管
         List<TranshipTube> transhipTubeList = transhipTubeRepository.findByTranshipBoxIdLast(transhipBox.getId());
-        for(TranshipTube inTube : transhipTubeList){
-            FrozenTubeResponse tubeResponse = new FrozenTubeResponse();
-            FrozenTube tube = inTube.getFrozenTube();
-            tubeResponse.setId(tube.getId());
-            tubeResponse.setFrozenTubeType(tube.getFrozenTubeType());
-            tubeResponse.setMemo(tube.getMemo());
-            tubeResponse.setSampleCode(tube.getSampleCode());
-            tubeResponse.setSampleTempCode(tube.getSampleTempCode());
-            tubeResponse.setSampleType(tube.getSampleType());
-            tubeResponse.setSampleClassification(tube.getSampleClassification());
-            tubeResponse.setStatus(tube.getStatus());
-            tubeResponse.setTubeColumns(inTube.getColumnsInTube());
-            tubeResponse.setTubeRows(inTube.getRowsInTube());
-            tubeResponse.setFrozenBoxCode(tube.getFrozenBoxCode());
-            tubeResponse.setFrozenBoxId(tube.getFrozenBox().getId());
-            frozenTubeResponses.add(tubeResponse);
+        List<FrozenTubeDTO> frozenTubeDTOS = new ArrayList<FrozenTubeDTO>();
+        for(TranshipTube f: transhipTubeList){
+            FrozenTube frozenTube = f.getFrozenTube();
+            FrozenTubeDTO frozenTubeDTO = frozenTubeMapper.frozenTubeToFrozenTubeDTO(frozenTube);
+            frozenTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
+            frozenTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
+            frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
+            frozenTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
+            frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
+            frozenTubeDTOS.add(frozenTubeDTO);
         }
-        res = frozenBoxMapper.forzenBoxDTOAndTubeToResponse(frozenBoxDTO, frozenTubeResponses);
-        res.setFrozenBoxType(frozenBox.getFrozenBoxType());
-        res.setSampleType(frozenBox.getSampleType());
-        res.setSampleClassification(frozenBox.getSampleClassification());
+        res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox);
+        res.setFrozenTubeDTOS(frozenTubeDTOS);
         return res;
     }
 

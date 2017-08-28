@@ -2,8 +2,10 @@ package org.fwoxford.service.dto.response;
 
 
 import org.fwoxford.domain.FrozenBoxType;
+import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.SampleClassification;
 import org.fwoxford.domain.SampleType;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -71,7 +73,7 @@ public class FrozenBoxAndFrozenTubeResponse {
     /**
      * 冻存管列表
      */
-    private List<FrozenTubeResponse> frozenTubeDTOS;
+    private List<FrozenTubeDTO> frozenTubeDTOS;
 
     public Long getId() {
         return id;
@@ -113,11 +115,11 @@ public class FrozenBoxAndFrozenTubeResponse {
         this.status = status;
     }
 
-    public List<FrozenTubeResponse> getFrozenTubeDTOS() {
+    public List<FrozenTubeDTO> getFrozenTubeDTOS() {
         return frozenTubeDTOS;
     }
 
-    public void setFrozenTubeDTOS(List<FrozenTubeResponse> frozenTubeDTOS) {
+    public void setFrozenTubeDTOS(List<FrozenTubeDTO> frozenTubeDTOS) {
         this.frozenTubeDTOS = frozenTubeDTOS;
     }
 

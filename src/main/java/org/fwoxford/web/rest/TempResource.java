@@ -194,7 +194,7 @@ public class TempResource {
         res.setIsSplit(0);
         res.setFrozenTubeDTOS(new ArrayList<>());
         for(int i = 0; i<countOfSample; ++i){
-            FrozenTubeResponse tube = new FrozenTubeResponse();
+            FrozenTubeDTO tube = new FrozenTubeDTO();
             tube.setId((id - 1) * 100 + i);
             tube.setStatus("3001");
 

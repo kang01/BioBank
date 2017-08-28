@@ -161,13 +161,13 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
         FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse = new FrozenBoxAndFrozenTubeResponse();
         FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
 
-        List<FrozenTubeResponse> frozenTubeResponses = new ArrayList<FrozenTubeResponse>();
+        List<FrozenTubeDTO> frozenTubeResponses = new ArrayList<FrozenTubeDTO>();
         //根据冻存盒编码查询冻存管
         List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
         //根据冻存盒查询要出库的样本
         List<StockOutTaskFrozenTube> stockOutFrozenTubes = stockOutTaskFrozenTubeRepository.findByFrozenBoxAndTask(frozenBoxCode,id);
         for(FrozenTube f:frozenTubes){
-            FrozenTubeResponse frozenTubeResponse = frozenTubeMapper.frozenTubeToFrozenTubeResponses(f);
+            FrozenTubeDTO frozenTubeResponse = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
             for(StockOutTaskFrozenTube s :stockOutFrozenTubes){
                 if(s.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube().getId().equals(f.getId())){
                     if(s.getStatus().equals(Constants.STOCK_OUT_FROZEN_TUBE_CANCEL)){
@@ -181,7 +181,8 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
             }
             frozenTubeResponses.add(frozenTubeResponse);
         }
-        frozenBoxAndFrozenTubeResponse = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox,frozenTubeResponses);
+        frozenBoxAndFrozenTubeResponse = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox);
+        frozenBoxAndFrozenTubeResponse.setFrozenTubeDTOS(frozenTubeResponses);
         //构造返回结果
         return frozenBoxAndFrozenTubeResponse;
     }

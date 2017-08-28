@@ -552,6 +552,8 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             frozenTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
             frozenTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
             frozenTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
+            frozenTubeDTO.setSampleClassificationCode(f.getSampleClassificationCode());
+            frozenTubeDTO.setSampleClassificationName(f.getSampleClassificationName());
             frozenTubeDTOS.add(frozenTubeDTO);
         }
         res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox);

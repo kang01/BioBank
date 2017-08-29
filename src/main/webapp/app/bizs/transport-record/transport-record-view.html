@@ -7,7 +7,7 @@
                         <small>&nbsp;{{vm.transportRecord.transhipCode}}</small>
                     </h4>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-8" style="margin-top: 3px;">
                     <div class="form-group">
                         <div class="text-right">
                             <button type="button" class="btn btn-default" ui-sref="transport-record">关闭</button>
@@ -192,7 +192,11 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h4>冻存盒</h4>
+            <div class="row">
+                <div class="col-md-4"> <h4>冻存盒</h4></div>
+                <div class="col-md-8 text-right mt-10" style="cursor: pointer;"><span ng-click=" vm.packUp()">全部收起</span></div>
+            </div>
+
         </div>
         <div class="panel-body">
             <!--盒子信息-->

@@ -19,6 +19,7 @@
         vm.transportRecord = entity; //转运记录
         vm.boxList = [];
         init();
+
         function init() {
             //转运状态
             vm.transportStatus = MasterData.getStatus(vm.transportRecord.transhipState);
@@ -44,6 +45,7 @@
                                 return res;
 
                             });
+                            vm.boxList = boxesDetail;
                             createBoxDom(boxesDetail)
                         });
                         querys = [];
@@ -51,11 +53,11 @@
                 }
             }
             //画盒子
+
             function createBoxDom(boxes) {
                 //dom片段
                 var fragment = document.createDocumentFragment();
                 var $boxes = $(".transport-boxes");
-
                 _.forEach(boxes,function (box) {
                     //盒子dom
                     var $box = $("<div class='transport-box'/>");
@@ -76,34 +78,34 @@
                     $title.appendTo($box);
                     $boxBody.appendTo($box);
                     fragment.appendChild($box[0]);
-
+                    //收起、展开
                     $boxTitleRight.click(function () {
                         var className = $boxTitleRight.children("i").attr("name");
+                        $boxTitleRight.empty();
+                        $box.children(".transport-box-body").remove();
+                        var $boxDetailBox = _fnOperate(className);
+                        $boxDetailBox.appendTo($box);
+                        $box.width($boxDetailBox.outerWidth());
+                    });
+                    function _fnOperate(className) {
+                        var $boxDetailBox;
                         //展开
                         if(className == "extend"){
-                            $boxTitleRight.empty();
                             $iconCompress.appendTo($boxTitleRight);
-                            $box.children(".transport-box-body").remove();
-                            var $boxDetailBox = drawTube(box,2);
-                            $boxDetailBox.appendTo($box);
-                            $box.width($boxDetailBox.outerWidth());
-
+                            $boxDetailBox = drawTube(box,2);
                             setTimeout(function () {
                                 var offsetTop = $box[0].offsetTop;
                                 document.body.scrollTop =  offsetTop;
                             },500);
                         }else{
-                            $boxTitleRight.empty();
+                            //合起
                             $iconExpand.appendTo($boxTitleRight);
                             //盒子dom
-                            $box.children(".transport-box-body").remove();
-                            // $box.css({"marginLeft":"10"});
-                            var $boxDetailBox = drawTube(box,1);
-                            $boxDetailBox.appendTo($box);
-                            $box.width($boxDetailBox.outerWidth());
-                        }
-                    });
+                            $boxDetailBox = drawTube(box,1);
 
+                        }
+                        return $boxDetailBox;
+                    }
                 });
                 $boxes.append(fragment);
 
@@ -218,9 +220,6 @@
                         if(!len){
                             $li.text("");
                             $li.css({"background":"#ffffff"});
-                            // var $delDiv = $("<span class='del-div red-color'><i class='fa fa-times'></i></span>");
-                            // $delDiv.appendTo($li);
-                            // $li.addClass("pos-disabled");
                         }
                         $li.appendTo($divRow);
                     }
@@ -232,15 +231,56 @@
                 return $boxBody;
             }
 
-            function onError(error) {
-                toastr.error(error.data.message);
+            //全部收起
+            vm.packUp = function () {
+                var $boxTitleRight = $(".box-title-right");
+                for(var i = 0; i < $boxTitleRight.length;i++){
+                    var className = $($boxTitleRight[i]).children("i").attr("name");
+                    //展开的
+                    if(className == 'compress'){
+                        //icon图标
+                        var $iconExpand = $("<i name='extend' class='fa fa-expand'></i>");
+                        //展开的盒子
+                        var compressBox = {};
+                        var $box = $($boxTitleRight[i]).closest(".transport-box");
+                        var boxCode = $box.children('.transport-box-title').text();
+                        compressBox = _.find(vm.boxList,{"frozenBoxCode":boxCode});
+                        $($boxTitleRight[i]).empty();
+                        $iconExpand.appendTo($boxTitleRight[i]);
+                        $box.children(".transport-box-body").remove();
+                        var $boxDetailBox = drawTube(compressBox,1);
+                        $boxDetailBox.appendTo($box);
+                        $box.width($boxDetailBox.outerWidth());
+
+                    }
+                }
+
+
+                // console.log(JSON.stringify(compressBox))
+                // var className = $boxTitleRight.children("i").attr("name");
+                // _.forEach(compressBox,function (box) {
+                //     var $boxDetailBox = drawTube(box,1);
+                //     $box.width($boxDetailBox.outerWidth());
+                // });
+                //     var $box = $("<div class='transport-box'/>");
+                //     var $boxTitleRight = $("<div class='col-md-8 box-title-right pr-0 text-right'></div>");
+                //     var $iconExpand = $("<i name='extend' class='fa fa-expand'></i>");
+                //     var className = $boxTitleRight.children("i").attr("name");
+                //     $boxTitleRight.empty();
+                //     $box.children(".transport-box-body").remove();
+                //     //合起
+                //     $iconExpand.appendTo($boxTitleRight);
+                //     //盒子dom
+                //     var $boxDetailBox = drawTube(box,1);
+                //     $boxDetailBox.appendTo($box);
+                //     $box.width($boxDetailBox.outerWidth());
+                //     $boxes.append(fragment);
+                // });
+
             }
 
         }
 
-        vm.packUp = function () {
 
-            // drawTube(box,1)
-        }
     }
 })();

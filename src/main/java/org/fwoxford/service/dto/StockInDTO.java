@@ -357,13 +357,21 @@ public class StockInDTO extends AbstractAuditingDTO implements Serializable {
     }
 
 
-    private List<SampleCountByTypeForm> sampleCountByTypeForms ;
-
+    private List<SampleCountByTypeForm> sampleCountByTypeForms;
+    private String projectName;
     public List<SampleCountByTypeForm> getSampleCountByTypeForms() {
         return sampleCountByTypeForms;
     }
 
     public void setSampleCountByTypeForms(List<SampleCountByTypeForm> sampleCountByTypeForms) {
         this.sampleCountByTypeForms = sampleCountByTypeForms;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 }

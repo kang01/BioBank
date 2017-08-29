@@ -5,6 +5,7 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.*;
 import org.fwoxford.service.dto.*;
+import org.fwoxford.service.dto.response.SampleCountByTypeForm;
 import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.response.StockInForDataTableEntity;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
@@ -480,6 +481,18 @@ public class StockInServiceImpl implements StockInService {
                 stockInForDataDetail.setStoreKeeper2(u.getLastName()+u.getFirstName());
             }
         }
+        List<Object[]> alist = stockInRepository.countFrozenTubeGroupBySampleTypeAndClass(id);
+        List<SampleCountByTypeForm> sampleCountByTypeForms = new ArrayList<SampleCountByTypeForm>();
+        for(Object[] obj :alist ){
+            SampleCountByTypeForm sampleCountByTypeForm = new SampleCountByTypeForm();
+            sampleCountByTypeForm.setSampleTypeId(obj[0]!=null?Long.parseLong(obj[0].toString()):null);
+            sampleCountByTypeForm.setSampleClassificationId(obj[1]!=null?Long.parseLong(obj[1].toString()):null);
+            sampleCountByTypeForm.setSampleTypeName(obj[2]!=null?obj[2].toString():null);
+            sampleCountByTypeForm.setSampleClassificationName(obj[3]!=null?obj[3].toString():null);
+            sampleCountByTypeForm.setCountOfSample(obj[4]!=null?Long.parseLong(obj[4].toString()):null);
+            sampleCountByTypeForms.add(sampleCountByTypeForm);
+        }
+        stockInForDataDetail.setSampleCountByTypeForms(sampleCountByTypeForms);
         return stockInForDataDetail;
     }
 

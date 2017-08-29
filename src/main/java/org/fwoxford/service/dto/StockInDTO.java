@@ -1,11 +1,13 @@
 package org.fwoxford.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.fwoxford.service.dto.response.SampleCountByTypeForm;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -352,5 +354,16 @@ public class StockInDTO extends AbstractAuditingDTO implements Serializable {
             ", memo='" + memo + "'" +
             ", status='" + status + "'" +
             '}';
+    }
+
+
+    private List<SampleCountByTypeForm> sampleCountByTypeForms ;
+
+    public List<SampleCountByTypeForm> getSampleCountByTypeForms() {
+        return sampleCountByTypeForms;
+    }
+
+    public void setSampleCountByTypeForms(List<SampleCountByTypeForm> sampleCountByTypeForms) {
+        this.sampleCountByTypeForms = sampleCountByTypeForms;
     }
 }

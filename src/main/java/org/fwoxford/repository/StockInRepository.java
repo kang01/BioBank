@@ -21,4 +21,13 @@ public interface StockInRepository extends JpaRepository<StockIn,Long> {
 
     @Query("select count(s) from StockIn s where s.tranship.transhipCode=?1")
     int countByTranshipCode(String transhipCode);
+
+    @Query(value = "select t.sample_type_id as sampleTypeId,t.sample_classification_id as sampleClassificationId," +
+        " t.sample_type_name  as sampleTypeName," +
+        " t.sample_classification_name as sampleClassificationName," +
+        "count(t.id) as countOfTube from stock_in_tube t " +
+        " left join stock_in_box b on t.stock_in_box_id = b.id " +
+        " where b.stock_in_id = ?1 and t.status!='0000'" +
+        " group by t.sample_type_id,t.sample_classification_id,t.sample_type_name,t.sample_classification_name",nativeQuery = true)
+    List<Object[]> countFrozenTubeGroupBySampleTypeAndClass(Long id);
 }

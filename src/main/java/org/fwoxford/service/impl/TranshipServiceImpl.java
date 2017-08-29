@@ -293,6 +293,12 @@ public class TranshipServiceImpl implements TranshipService{
         }
         TranshipDTO transhipDTO = transhipMapper.transhipToTranshipDTO(tranship);
         transhipDTO.setSampleCountByTypeForms(sampleCountByTypeForms);
+        List<User> userList = userRepository.findAll();
+        for(User u :userList){
+            if(transhipDTO.getReceiverId()!=null&&transhipDTO.getReceiverId().equals(u.getId())){
+                transhipDTO.setReceiver(u.getLastName()+u.getFirstName());
+            }
+        }
         return transhipDTO;
     }
 

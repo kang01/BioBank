@@ -474,13 +474,11 @@ public class StockInServiceImpl implements StockInService {
             if(stockIn.getReceiveId()!=null&&stockIn.getReceiveId().equals(u.getId())){
                 stockInForDataDetail.setReceiver(u.getLastName()+u.getFirstName());
             }
-        }
-        for(User u :userList){
+
             if(stockIn.getStoreKeeper1()!=null&&stockIn.getStoreKeeperId1().equals(u.getId())){
                 stockInForDataDetail.setStoreKeeper1(u.getLastName()+u.getFirstName());
             }
-        }
-        for(User u :userList){
+
             if(stockIn.getStoreKeeper2()!=null&&stockIn.getStoreKeeperId2().equals(u.getId())){
                 stockInForDataDetail.setStoreKeeper2(u.getLastName()+u.getFirstName());
             }

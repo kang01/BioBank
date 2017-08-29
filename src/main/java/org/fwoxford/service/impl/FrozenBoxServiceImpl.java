@@ -672,11 +672,12 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             FrozenBox boxIn = inBox.getFrozenBox();
             if(boxIn.getFrozenBoxTypeCode().equals(frozenBox.getFrozenBoxTypeCode())
                 &&boxIn.getId()!=frozenBox.getId()&&boxIn.getIsSplit().equals(Constants.NO)){
-                Long frozenTube = frozenTubeRepository.countFrozenTubeListByBoxCode(boxIn.getFrozenBoxCode());
+                Long countOfSampleOriginal = frozenTubeRepository.countByFrozenBoxCodeAndFrozenTubeState(boxIn.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
+                Long countOfSampleCurrent = stockInTubeRepository.countByFrozenBoxCodeAndStockInCode(boxIn.getFrozenBoxCode(),stockInCode);
                 String columns = boxIn.getFrozenBoxTypeColumns()!=null?boxIn.getFrozenBoxTypeColumns():new String("0");
                 String rows = boxIn.getFrozenBoxTypeRows()!=null?boxIn.getFrozenBoxTypeRows():new String("0");
                 int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
-                if(frozenTube.intValue()==allCounts){
+                if((countOfSampleOriginal.intValue()+countOfSampleCurrent.intValue())==allCounts){
                     continue;
                 }
                 Long key = null;

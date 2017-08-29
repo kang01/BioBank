@@ -154,7 +154,17 @@ public class StockInBoxResource {
         DataTablesOutput<StockInBoxForDataTableEntity> result = stockInBoxService.getPageStockInBoxes(stockInCode,input);
         return result;
     }
-
+    /**
+     * 根据入库单编码，查询入库单的盒子（不分页）
+     * @param stockInCode
+     * @return
+     */
+    @GetMapping("/stock-in-boxes/stock-in/{stockInCode}")
+    @Timed
+    public List<StockInBoxForDataTableEntity> getStockInBoxList(@PathVariable String stockInCode) {
+        List<StockInBoxForDataTableEntity> result = stockInBoxService.getStockInBoxList(stockInCode);
+        return result;
+    }
     /**
      * 输入入库单编码和盒子编码，返回该入库单的某个盒子的信息
      * @param stockInCode

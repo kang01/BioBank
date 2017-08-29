@@ -2,7 +2,6 @@ package org.fwoxford.service.impl;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.poi.util.ArrayUtil;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -14,6 +13,7 @@ import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.BankUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
@@ -167,7 +167,12 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return stockInBoxMapper.stockInBoxesToStockInBoxDTOs(stockInBoxesList);
     }
 
-
+    /**
+     * 根据入库单查询入库冻存盒（分页）
+     * @param stockInCode
+     * @param input
+     * @return
+     */
     @Override
     public DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(String stockInCode, DataTablesInput input) {
         input.addColumn("stockInCode",true, true, stockInCode+"+");
@@ -198,34 +203,12 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return output;
     }
 
-
-
-    public String toStockInBoxPosition(StockInBox stockInBox) {
-        String position = "";
-
-        if(stockInBox == null){
-            return null;
-        }
-        ArrayList<String> positions = new ArrayList<>();
-        if (stockInBox.getEquipmentCode() != null && stockInBox.getEquipmentCode().length() > 0){
-            positions.add(stockInBox.getEquipmentCode());
-        }
-
-        if (stockInBox.getAreaCode() != null && stockInBox.getAreaCode().length() > 0) {
-            positions.add(stockInBox.getAreaCode());
-        }
-
-        if (stockInBox.getSupportRackCode() != null && stockInBox.getSupportRackCode().length() > 0){
-            positions.add(stockInBox.getSupportRackCode());
-        }
-
-        if (stockInBox.getRowsInShelf() != null && stockInBox.getRowsInShelf().length() > 0 && stockInBox.getColumnsInShelf() != null && stockInBox.getColumnsInShelf().length() > 0){
-            positions.add(stockInBox.getColumnsInShelf()+stockInBox.getRowsInShelf());
-        }
-
-        return String.join(".", positions);
-    }
-
+    /**
+     * 输入入库单编码和盒子编码，返回该入库单的某个盒子的信息
+     * @param stockInCode
+     * @param boxCode
+     * @return
+     */
     @Override
     public StockInBoxDetail getStockInBoxDetail(String stockInCode, String boxCode) {
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
@@ -485,8 +468,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 continue;
             }
             countOfSample++;
-            Long count = frozenTubeRepository.countFrozenTubeListByBoxCode(tube.getFrozenBoxCode());
-            if(count.intValue()==100){
+            Long countOfSampleOriginal = frozenTubeRepository.countByFrozenBoxCodeAndFrozenTubeState(tube.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
+            Long countOfSampleCurrent = stockInTubeRepository.countByFrozenBoxCodeAndStockInCode(tube.getFrozenBoxCode(),stockInCode);
+            if((countOfSampleOriginal.intValue()+countOfSampleCurrent.intValue())==allCounts){
                 throw new BankServiceException("冻存盒已满，不能继续分装！");
             }
 
@@ -944,7 +928,13 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return stockInBoxDTO;
     }
 
-    private FrozenTube createNewFrozenTube(StockInTubeDTO frozenTubeDTOForSave,FrozenBox frozenBox) {
+    /**
+     * 创建入库盒----创建冻存管
+     * @param frozenTubeDTOForSave
+     * @param frozenBox
+     * @return
+     */
+    public FrozenTube createNewFrozenTube(StockInTubeDTO frozenTubeDTOForSave,FrozenBox frozenBox) {
         //保存冻存管
         FrozenTube tube = new FrozenTube().projectCode(frozenTubeDTOForSave.getProjectCode()).projectSiteCode(frozenTubeDTOForSave.getProjectSiteCode())
             .sampleCode(frozenTubeDTOForSave.getSampleCode()).sampleTempCode(frozenTubeDTOForSave.getSampleTempCode())
@@ -968,7 +958,12 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenTubeRepository.save(tube);
         return tube;
     }
-
+    /**
+     * 创建入库盒----根据盒子的项目和项目点，创建入库管的项目和项目点
+     * @param frozenBox
+     * @param tubeDTO
+     * @return
+     */
     public StockInTubeDTO createFrozenTubeByProject(FrozenBox frozenBox, StockInTubeDTO tubeDTO) {
         if(tubeDTO.getProjectId()==null){
             tubeDTO.setProjectId(frozenBox.getProject()!=null?frozenBox.getProject().getId():null);
@@ -1026,7 +1021,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return flag;
     }
 
-
+    /**
+     * 创建入库盒----创建入库管的样本类型
+     * @param tubeDTO
+     * @return
+     */
     public StockInTubeDTO createFrozenTubeBySampleType(StockInTubeDTO tubeDTO) {
         if(tubeDTO == null){
             return  tubeDTO;
@@ -1042,7 +1041,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         tubeDTO.setSampleTypeName(entity.getSampleTypeName());
         return tubeDTO;
     }
-
+    /**
+     * 创建入库盒----初始化冻存管类型
+     * @param tubeDTO
+     * @return
+     */
     public StockInTubeDTO createFrozenTubeTypeInit(StockInTubeDTO tubeDTO) {
         //如果冻存管类型未选择，默认第一条
         if(tubeDTO == null){
@@ -1235,6 +1238,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         return frozenBoxDTO;
     }
 
+    /**
+     * 根据入库冻存盒ID查询冻存盒和冻存管的信息（包含盒内已入库的）
+     * @param id
+     * @return
+     */
     @Override
     public StockInBoxDTO getBoxAndStockTubeByStockInBoxId(Long id) {
         //查询冻存盒信息
@@ -1290,5 +1298,24 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxDTO.setSampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null);
 
         return stockInBoxDTO;
+    }
+
+    /**
+     * 根据入库单查找入库冻存盒（不分页）
+     * @param stockInCode
+     * @return
+     */
+    @Override
+    public List<StockInBoxForDataTableEntity> getStockInBoxList(String stockInCode) {
+        List<StockInBoxForDataTableEntity> result = new ArrayList<StockInBoxForDataTableEntity>();
+        List<StockInBoxForDataTableEntity> stockInBoxForDataTableEntities = stockInBoxRepositries.findByStockInCode(stockInCode);
+        for(StockInBoxForDataTableEntity source :stockInBoxForDataTableEntities){
+            StockInBoxForDataTableEntity stockInBoxForDataTableEntity = new StockInBoxForDataTableEntity();
+            BeanUtils.copyProperties(source,stockInBoxForDataTableEntity);
+            String position = BankUtil.getPositionString(source.getEquipmentCode(),source.getAreaCode(),source.getSupportRackCode(),source.getColumnsInShelf(),source.getRowsInShelf(),null,null);
+            stockInBoxForDataTableEntity.setPosition(position);
+            result.add(stockInBoxForDataTableEntity);
+        }
+        return result;
     }
 }

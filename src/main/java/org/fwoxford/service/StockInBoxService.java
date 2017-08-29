@@ -85,4 +85,11 @@ public interface StockInBoxService {
      * @return
      */
     StockInBoxDTO getBoxAndStockTubeByStockInBoxId(Long id);
+
+    /**
+     * 根据入库单查找入库冻存盒（不分页）
+     * @param stockInCode
+     * @return
+     */
+    List<StockInBoxForDataTableEntity> getStockInBoxList(String stockInCode);
 }

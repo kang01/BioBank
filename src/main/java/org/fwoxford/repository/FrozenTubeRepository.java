@@ -119,4 +119,6 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         "where s.tranship_code in ?1 and t.status!='0000' " ,nativeQuery = true)
     Long countByTranshipCodes(List<String> transhipCodeList);
 
+    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000' and t.frozenBox.status !='2090' and t.frozenTubeState=?2")
+    Long countByFrozenBoxCodeAndFrozenTubeState(String frozenBoxCode,String frozenTubeState);
 }

@@ -28,4 +28,8 @@ public interface StockInTubeRepository extends JpaRepository<StockInTube,Long> {
     @Modifying
     @Query("update StockInTube b set b.status=?1 where b.stockInBox.id = ?2")
     void updateStatusByStockInBoxId(String status, Long id);
+
+    @Query("select count(t) from StockInTube t where t.frozenBoxCode = ?1 and  t.status!='0000' and t.stockInBox.stockIn.stockInCode =?2")
+    Long countByFrozenBoxCodeAndStockInCode(String frozenBoxCode, String stockInCode);
+
 }

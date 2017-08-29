@@ -40,7 +40,10 @@
 
             return $http(req);
         };
-
+        //不分页的盒子集合
+        service.getBoxesNoPage = function (stockInCode) {
+            return $http.get('api/stock-in-boxes/stock-in/' + stockInCode);
+        };
         service.getStockInBoxByCodes = function(codes){
             var url = "api/stock-in-boxes/boxCodes/" + codes.join(',');
             return $http.get(url);

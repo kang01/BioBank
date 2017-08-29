@@ -125,6 +125,30 @@
                         return StockInService.get({id : $stateParams.id}).$promise;
                     }]
                 }
+            })
+            .state('stock-in-view', {
+                parent: 'bizs',
+                url: '/stock-in/{id}/view',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
+                    pageTitle: 'stockIn.edit.title'
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/stock-in/stock-in-view.html',
+                        controller: 'StockInViewController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        $translatePartialLoader.addPart('stock-in-record');
+                        return $translate.refresh();
+                    }],
+                    entity: ['$stateParams', 'StockInService', function($stateParams, StockInService) {
+                        return StockInService.get({id : $stateParams.id}).$promise;
+                    }]
+                }
             });
     }
 })();

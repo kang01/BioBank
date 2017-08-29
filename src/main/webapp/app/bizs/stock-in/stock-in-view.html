@@ -1,0 +1,96 @@
+<div class="transport-record-view">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 >入库记录信息
+                        <small>&nbsp;{{vm.stockIn.stockInCode}}</small>
+                    </h4>
+                </div>
+                <div class="col-md-8" style="margin-top: 3px;">
+                    <div class="form-group">
+                        <div class="text-right">
+                            <button type="button" class="btn btn-default" ui-sref="stock-in">关闭</button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-md-1 control-label text-left">
+                                转运编码:
+                            </label>
+                            <div class="col-md-11">
+                                <p class="form-control-static">{{vm.stockIn.transhipCode}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label class="col-md-4 control-label text-left">项目编码:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.stockIn.projectCode}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label class="col-md-4 control-label text-left">接收日期:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.stockIn.receiveDate}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group three-col">
+
+                            <label class="col-md-4 control-label text-left">
+                                接收人:
+                            </label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.stockIn.receiveName}}</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-3" ng-repeat="item in vm.stockIn.sampleCountByTypeForms">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label text-left">{{item.sampleClassificationName ? item.sampleClassificationName : item.sampleTypeName}}:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{item.countOfSample}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-4"> <h4>冻存盒</h4></div>
+                <div class="col-md-8 text-right mt-10" style="cursor: pointer;"><span ng-click=" vm.packUp()">全部收起</span></div>
+            </div>
+
+        </div>
+        <div class="panel-body">
+            <!--盒子信息-->
+            <div class="transport-boxes" ></div>
+            <div class="hoverdiv" style="border:1px solid #aaa;background-color: #ffffff;border-radius: 2px;padding: 2px;width:180px;height:180px;display: none"></div>
+        </div>
+        <div class="panel-footer">
+
+        </div>
+    </div>
+</div>

@@ -1,28 +1,27 @@
 /**
- * Created by gaokangkang on 2017/8/25.
+ * Created by gaokangkang on 2017/8/29.
  */
 (function() {
     'use strict';
 
     angular
         .module('bioBankApp')
-        .controller('TransportRecordViewController', TransportRecordViewController);
+        .controller('StockInViewController', StockInViewController);
 
-    TransportRecordViewController.$inject = ['$q','MasterData','entity','TranshipBoxByCodeService','frozenBoxByCodeService'];
-    function TransportRecordViewController($q,MasterData,entity,TranshipBoxByCodeService,frozenBoxByCodeService) {
+    StockInViewController.$inject = ['$scope','$q','MasterData','StockInBoxService','StockInInputService','entity'];
+    function StockInViewController($scope,$q,MasterData,StockInBoxService,StockInInputService,entity) {
 
         var vm = this;
-        vm.transportRecord = entity; //转运记录
+        vm.stockIn = entity;
         vm.boxList = [];
         init();
 
         function init() {
-            //转运状态
-            vm.transportStatus = MasterData.getStatus(vm.transportRecord.transhipState);
+
             _fnLoadBox();
             //获取盒子
             function _fnLoadBox() {
-                TranshipBoxByCodeService.queryBoxDetail(vm.transportRecord.transhipCode).then(function (res) {
+                StockInBoxService.getBoxesNoPage(vm.stockIn.stockInCode).then(function (res) {
                     _fnQueryBoxes(res.data)
                 });
             }
@@ -30,7 +29,7 @@
             function _fnQueryBoxes(boxes) {
                 var querys = [];
                 for(var i = 0 , len = boxes.length; i < len; i++){
-                    var queryBox = frozenBoxByCodeService.get({code:boxes[i].frozenBoxCode}).$promise;
+                    var queryBox =  StockInInputService.queryEditStockInBox(boxes[i].id)
                     querys.push(queryBox);
                     if (querys.length >= 10 || len == i + 1){
                         $q.all(querys).then(function(datas){
@@ -49,7 +48,6 @@
                 }
             }
             //画盒子
-
             function createBoxDom(boxes) {
                 //dom片段
                 var fragment = document.createDocumentFragment();
@@ -126,9 +124,8 @@
                         var pos = rowIndex+colIndex;
                         //详情
                         if(status == '2'){
-                            $li.css({"width":"122","height":"44","line-height":"20px"});
-                            var liW = Math.floor((document.body.clientWidth-104)/colCount);
-                            $li.width(liW);
+                            var liW = Math.floor((document.body.clientWidth-104)/colCount) -2;
+                            $li.css({"width":liW,"height":"44","line-height":"20px"});
                         }else{
                             $li.width(30);
                             //给每个li赋值行列的数值
@@ -172,16 +169,16 @@
                                         }else{
                                             pageX =offsetLeft;
                                         }
-                                        // $(e.target)[0].offsetParent
                                         var pageY = $(this)[0].offsetTop ;//pageY() 属性是鼠标指针的位置，相对于文档的上边缘。
                                         $(".hoverdiv").text(tube.memo);
                                         $(".hoverdiv").css({
-                                                            "position":"absolute",
-                                                            "z-index":"1",
-                                                            "display": "block",
-                                                            "left": pageX,
-                                                            "top": pageY
-                                                        });
+                                            "position":"absolute",
+                                            "z-index":"1",
+                                            "display": "block",
+                                            "cursor":"pointer",
+                                            "left": pageX,
+                                            "top": pageY
+                                        });
                                     });
                                     $li.mouseout(function (e) {
                                         $(".hoverdiv").css({"display":"none"});
@@ -200,7 +197,9 @@
                                     $sampleCode.attr({"title":sampleCode});
                                     $sampleTypeName.text(sampleTypeName).appendTo($li);
                                     var liH = $li.outerHeight()+4;
+                                    var liW = $li.outerWidth()+4;
                                     $boxBody.height(liH*rowCount+6);
+                                    $boxBody.width(liW*colCount+4);
 
                                 }
 

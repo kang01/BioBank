@@ -124,6 +124,30 @@
                         return TransportRecordService.get({id : $stateParams.transhipId}).$promise;
                     }]
                 }
+            })
+            .state('transport-record-view', {
+                parent: 'bizs',
+                url: '/transport-record/{transhipId}/view',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
+                    pageTitle: 'transportRecord.new.title'
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/transport-record/transport-record-view.html',
+                        controller: 'TransportRecordViewController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        $translatePartialLoader.addPart('transport-record');
+                        return $translate.refresh();
+                    }],
+                    entity: ['$stateParams', 'TransportRecordService', function($stateParams, TransportRecordService) {
+                        return TransportRecordService.get({id : $stateParams.transhipId}).$promise;
+                    }]
+                }
             });
     }
 })();

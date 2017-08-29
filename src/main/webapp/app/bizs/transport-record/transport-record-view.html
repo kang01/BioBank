@@ -1,0 +1,206 @@
+<div class="transport-record-view">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 >转运记录信息
+                        <small>&nbsp;{{vm.transportRecord.transhipCode}}</small>
+                    </h4>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <div class="text-right">
+                            <button type="button" class="btn btn-default" ui-sref="transport-record">关闭</button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label text-left">
+                                转运日期:
+                            </label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.transhipDate}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label class="col-md-4 control-label text-left">
+                                项目编码:
+                            </label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.projectCode}};{{vm.transportRecord.projectName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group three-col project-sites">
+                            <label class="col-md-4 control-label text-left">项目点:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static"><span ng-if="vm.transportRecord.projectSiteName">{{vm.transportRecord.projectSiteCode}};{{vm.transportRecord.projectSiteName}}</span></p>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label class="col-md-4 control-label text-left">
+                                运单号:
+                            </label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.trackNumber}}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label class="col-md-4 control-label text-left">转运批次:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.transhipBatch}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label class="col-md-4 control-label text-left">状态:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportStatus}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group three-col">
+
+                            <label class="col-md-4 control-label text-left">
+                                接收人:
+                                <span class="required-field"></span>
+                            </label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.receiver}}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label class="col-md-4 control-label text-left">
+                                接收日期:
+                            </label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.receiveDate}}</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group three-col">
+                            <label class="col-md-4 control-label text-left">冻存盒数:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.frozenBoxNumber}}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label class="col-md-4 control-label text-left">样本满意度:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.sampleSatisfaction}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label text-left">备注:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.memo}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label text-left">样本人份:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.sampleNumber}}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label text-left">有效样本数:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.effectiveSampleNumber}}</p>
+
+                                <!--<input type="number" class="form-control" ng-model="vm.transportRecord.effectiveSampleNumber">-->
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label class="col-md-4 control-label text-left">空管数:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.emptyTubeNumber}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label class="col-md-4 control-label text-left">空孔数:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.transportRecord.emptyHoleNumber}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-3" ng-repeat="item in vm.transportRecord.sampleCountByTypeForms">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label text-left">{{item.sampleClassificationName ? item.sampleClassificationName : item.sampleTypeName}}:</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{item.countOfSample}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>冻存盒</h4>
+        </div>
+        <div class="panel-body">
+            <!--盒子信息-->
+            <div class="transport-boxes" ></div>
+            <div class="hoverdiv" style="border:1px solid #aaa;background-color: #ffffff;border-radius: 2px;padding: 2px;width:180px;height:180px;display: none"></div>
+        </div>
+        <div class="panel-footer">
+
+        </div>
+    </div>
+</div>

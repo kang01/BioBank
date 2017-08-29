@@ -10,11 +10,11 @@
         .controller('TransportRecordNewController', TransportRecordNewController)
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
-    TransportRecordNewController.$inject = ['$scope','blockUI','$timeout','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TransportRecordService','TranshipSaveService','TranshipBoxService',
+    TransportRecordNewController.$inject = ['$scope','blockUI','MasterData','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TransportRecordService','TranshipSaveService','TranshipBoxService',
         'SampleTypeService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService',
     'BioBankBlockUi','Principal'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
-    function TransportRecordNewController($scope,blockUI,$timeout,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TransportRecordService,TranshipSaveService,TranshipBoxService,
+    function TransportRecordNewController($scope,blockUI,MasterData,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TransportRecordService,TranshipSaveService,TranshipBoxService,
                                           SampleTypeService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService,
                                           BioBankBlockUi,Principal) {
 
@@ -140,12 +140,7 @@
             };
 
             //转运状态
-            vm.statusOptions = [
-                {id:"1001",name:"进行中"},
-                {id:"1002",name:"待入库"},
-                {id:"1003",name:"已入库"},
-                {id:"1090",name:"已作废"}
-            ];
+            vm.statusOptions = MasterData.transportStatus;
             vm.statusConfig = {
                 valueField:'id',
                 labelField:'name',

@@ -13,10 +13,14 @@
 
     function TranshipBoxByCodeService ($resource,$http) {
         var service = {
-            queryByCodes:_fnQueryByCodes
+            queryByCodes:_fnQueryByCodes,
+            queryBoxDetail:_fnQueryBoxDetail
         };
         function _fnQueryByCodes(transhipCode,data) {
             return $http.post('api/res/tranship-boxes/transhipCode/'+transhipCode,data);
+        }
+        function _fnQueryBoxDetail(transhipCode,data) {
+            return $http.get('api/tranship-boxes/transhipCode/'+transhipCode);
         }
         // var service = $resource('api/tranship-boxes/transhipCode/:code', {}, {
         //     'query': {method: 'GET', isArray: true},

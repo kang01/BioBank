@@ -28,7 +28,7 @@ public interface TranshipRepository extends JpaRepository<Tranship,Long> {
         " t.sample_classification_name as sampleClassificationName," +
         "count(t.id) as countOfTube from tranship_tube t " +
         " left join tranship_box b on t.tranship_box_id = b.id " +
-        " where b.tranship_id = ?1 " +
+        " where b.tranship_id = ?1 and t.status!='0000'" +
         " group by t.sample_type_id,t.sample_classification_id,t.sample_type_name,t.sample_classification_name",nativeQuery = true)
     List<Object[]> countFrozenTubeGroupBySampleTypeAndClass(Long id);
 }

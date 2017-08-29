@@ -114,6 +114,14 @@
                     name:"不祥"
                 }
             ];
+            //转运状态
+            var _transportStatus = [
+                {id:"1001",name:"进行中"},
+                {id:"1002",name:"待入库"},
+                {id:"1003",name:"已入库"},
+                {id:"1005",name:"转运完成"},
+                {id:"1190",name:"已作废"}
+            ];
             //申请状态
             var _requirementStatus = [
                 {id:"1101",name:"进行中"},
@@ -166,6 +174,7 @@
             function _getStatus(statusCode){
                 if (!allStatus){
                     allStatus = _.union(
+                        _transportStatus,
                         _requirementStatus,
                         _taskStatus,
                         _takeOverStatus,
@@ -186,6 +195,7 @@
             var masterData = {
                 sexDict :_sexDict,
                 diseaseType :_diseaseType,
+                transportStatus :_transportStatus,
                 requirementStatus :_requirementStatus,
                 taskStatus :_taskStatus,
                 takeOverStatus :_takeOverStatus,

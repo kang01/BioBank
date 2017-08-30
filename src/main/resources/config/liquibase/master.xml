@@ -37,7 +37,7 @@
     <include file="classpath:config/liquibase/changelog/20170515014750_added_entity_StockOutTask.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515015924_added_entity_StockOutBoxPosition.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515022141_added_entity_StockOutFrozenBox.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170515022954_added_entity_StockOutFrozenTube.xml" relativeToChangelogFile="false"/>
+    <!--<include file="classpath:config/liquibase/changelog/20170515022954_added_entity_StockOutFrozenTube.xml" relativeToChangelogFile="false"/>-->
     <include file="classpath:config/liquibase/changelog/20170515045047_added_entity_StockOutHandover.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515051138_added_entity_StockOutHandoverDetails.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515055932_added_entity_StockOutFiles.xml" relativeToChangelogFile="false"/>

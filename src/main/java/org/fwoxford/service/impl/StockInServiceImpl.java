@@ -562,6 +562,11 @@ public class StockInServiceImpl implements StockInService {
         return stockInMapper.stockInToStockInDTO(stockIn);
     }
 
+    /**
+     * 根据多个转运创建入库单
+     * @param transhipCode
+     * @return
+     */
     @Override
     public StockInDTO createStockInByTranshipCodes(String transhipCode) {
         if(StringUtils.isEmpty(transhipCode)){
@@ -638,13 +643,6 @@ public class StockInServiceImpl implements StockInService {
                 .projectSiteName(frozenBox.getProjectSiteName()).countOfSample(countOfSample.intValue()).status(frozenBox.getStatus()).stockIn(stockIn).stockInCode(stockIn.getStockInCode())
                 .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBox(frozenBox);
             stockInBoxRepository.save(stockInBox);
-//            StockInTranshipBox stockInTranshipBox = new StockInTranshipBox()
-//                .transhipBox(transhipBox).stockIn(stockIn)
-//                .frozenBoxCode(frozenBox.getFrozenBoxCode())
-//                .stockInCode(stockIn.getStockInCode())
-//                .status(Constants.FROZEN_BOX_STOCKING)
-//                .transhipCode(transhipBox.getTranship().getTranshipCode());
-//            stockInTranshipBoxRepository.save(stockInTranshipBox);
             //保存入库管子
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
             List<StockInTube> stockInTubes = new ArrayList<StockInTube>();

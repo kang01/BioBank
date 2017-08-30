@@ -314,7 +314,7 @@ public class StockOutFrozenBoxResource {
 
 
     /**
-     * 查询已交接冻存盒
+     * 查询已交接冻存盒---暂时不用，查询的表已删除，用时，需要验证
      * @param input
      * @return
      */

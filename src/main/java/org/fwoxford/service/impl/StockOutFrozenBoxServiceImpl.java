@@ -46,7 +46,6 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     private final Logger log = LoggerFactory.getLogger(StockOutFrozenBoxServiceImpl.class);
 
     private final StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
-    private final StockOutFrozenTubeRepository stockOutFrozenTubeRepository;
 
     private final StockOutFrozenBoxMapper stockOutFrozenBoxMapper;
 
@@ -117,11 +116,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     StockOutFrozenBoxInTaskRepositries stockOutFrozenBoxInTaskRepositries;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
-            , StockOutFrozenBoxMapper stockOutFrozenBoxMapper
-            , StockOutFrozenTubeRepository stockOutFrozenTubeRepository) {
+            , StockOutFrozenBoxMapper stockOutFrozenBoxMapper) {
         this.stockOutFrozenBoxRepository = stockOutFrozenBoxRepository;
         this.stockOutFrozenBoxMapper = stockOutFrozenBoxMapper;
-        this.stockOutFrozenTubeRepository = stockOutFrozenTubeRepository;
     }
 
     /**
@@ -389,8 +386,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             if(frozenTubes.size()==allCounts){
                 continue;
             }
-            List<FrozenTubeResponse> frozenTubeResponse = frozenTubeMapper.frozenTubeToFrozenTubeResponse(frozenTubes);
+            List<FrozenTubeDTO> frozenTubeResponse = frozenTubeMapper.frozenTubesToFrozenTubeDTOs(frozenTubes);
             FrozenBoxAndFrozenTubeResponse box = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox);
+            box.setFrozenTubeDTOS(frozenTubeResponse);
             alist.add(box);
         }
         return alist;
@@ -681,8 +679,8 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             String position = BankUtil.getPositionString(stockOutFrozenBox.getEquipmentCode(),stockOutFrozenBox.getAreaCode(),
                 stockOutFrozenBox.getSupportRackCode(),stockOutFrozenBox.getColumnsInShelf(),stockOutFrozenBox.getRowsInShelf(),null,null);
             dto.setPosition(position);
-            Long count = stockOutFrozenTubeRepository.countByFrozenBox(stockOutFrozenBox.getId());
-            dto.setCountOfSample(count);
+//            Long count = stockOutFrozenTubeRepository.countByFrozenBox(stockOutFrozenBox.getId());
+//            dto.setCountOfSample(count);
 
             return dto;
         });

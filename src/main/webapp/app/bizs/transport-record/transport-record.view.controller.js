@@ -36,12 +36,14 @@
                         $q.all(querys).then(function(datas){
                             var boxesDetail = _.map(datas, function(res){
                                 if(res.data){
+                                    vm.boxList.push(res.data);
                                     return res.data;
                                 }
+                                vm.boxList.push(res);
                                 return res;
 
                             });
-                            vm.boxList = boxesDetail;
+
                             createBoxDom(boxesDetail)
                         });
                         querys = [];
@@ -126,9 +128,9 @@
                         var pos = rowIndex+colIndex;
                         //详情
                         if(status == '2'){
-                            $li.css({"width":"122","height":"44","line-height":"20px"});
-                            var liW = Math.floor((document.body.clientWidth-104)/colCount);
-                            $li.width(liW);
+                            var liW = Math.floor((document.body.clientWidth-104)/colCount) -2;
+                            $li.css({"width":liW,"height":"44","line-height":"20px"});
+
                         }else{
                             $li.width(30);
                             //给每个li赋值行列的数值
@@ -215,6 +217,7 @@
                         }
                         $li.appendTo($divRow);
                     }
+
                     $divRow.appendTo($boxBody);
 
                 }

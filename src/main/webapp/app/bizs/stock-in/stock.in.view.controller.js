@@ -35,8 +35,10 @@
                         $q.all(querys).then(function(datas){
                             var boxesDetail = _.map(datas, function(res){
                                 if(res.data){
+                                    vm.boxList.push(res.data);
                                     return res.data;
                                 }
+                                vm.boxList.push(res);
                                 return res;
 
                             });

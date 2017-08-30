@@ -53,10 +53,22 @@
                         <div class="form-group three-col">
 
                             <label class="col-md-4 control-label text-left">
-                                接收人:
+                                操作员1:
                             </label>
                             <div class="col-md-8">
-                                <p class="form-control-static">{{vm.stockIn.receiveName}}</p>
+                                <p class="form-control-static">{{vm.stockIn.storeKeeper1}}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group three-col">
+
+                            <label class="col-md-4 control-label text-left">
+                                操作员2:
+                            </label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">{{vm.stockIn.storeKeeper2}}</p>
                             </div>
                         </div>
 
@@ -80,7 +92,7 @@
         <div class="panel-heading">
             <div class="row">
                 <div class="col-md-4"> <h4>冻存盒</h4></div>
-                <div class="col-md-8 text-right mt-10" style="cursor: pointer;"><span ng-click=" vm.packUp()">全部收起</span></div>
+                <div class="col-md-8 text-right" style="cursor: pointer;margin-top: 3px"><button class="btn btn-default" ng-click=" vm.packUp()">全部收起</button></div>
             </div>
 
         </div>

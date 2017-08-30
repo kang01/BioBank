@@ -130,7 +130,7 @@
                 url: '/transport-record/{transhipId}/view',
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN'],
-                    pageTitle: 'transportRecord.new.title'
+                    pageTitle: '查看转运记录信息'
                 },
                 views: {
                     'content@': {

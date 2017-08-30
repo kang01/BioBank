@@ -1181,7 +1181,7 @@ ul.rating {
     margin-left: 4px;
     margin-top:4px;
     text-align: center;
-    transition: all .5s ease;
+    /*transition: all .5s ease;*/
     overflow: hidden;
 }
 .transport-tube:first-child{

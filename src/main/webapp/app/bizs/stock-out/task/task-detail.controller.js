@@ -676,6 +676,12 @@
 
         //批注 1：未出库样本、2：已出库样本
         function _fnCommentModal(status,tempBoxId) {
+            if(status == 1){
+                if(!vm.aRemarkArray.length){
+                    toastr.error("请选择样本!");
+                    return;
+                }
+            }
             modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/bizs/stock-out/task/modal/comment-modal.html',
@@ -904,7 +910,7 @@
             .withOption('rowCallback', selectedSampleRowCallback);
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('id').withOption("width", "40").notSortable().withOption('searchable',false).withTitle('序号'),
-            DTColumnBuilder.newColumn('sampleCode').withTitle('冻存盒编码').withOption("width", 'auto').notSortable(),
+            DTColumnBuilder.newColumn('sampleCode').withTitle('冻存管编码').withOption("width", 'auto').notSortable(),
             DTColumnBuilder.newColumn('pos').withTitle('预装位置').withOption("width", 'auto').notSortable(),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "40").withOption('searchable',false).notSortable().renderWith(selectedSampleActionsHtml)
 

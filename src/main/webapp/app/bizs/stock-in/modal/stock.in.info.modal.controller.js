@@ -20,6 +20,8 @@
         vm.loginName2 = vm.stockInInfo.storeKeeper2;
         vm.stockInBox = vm.stockInInfo.stockInBox;
 
+        //去除已分装
+        _.remove(vm.stockInBox,{"status":"2003"});
         var putInLen = _.filter(vm.stockInBox,{"status":"2006"}).length;
         //全部已上架
         if(putInLen == vm.stockInBox.length){

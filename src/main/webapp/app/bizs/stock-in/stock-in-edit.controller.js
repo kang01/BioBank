@@ -928,13 +928,6 @@
             multiSelect: true,
             comments: true,
             onAfterSelectionEnd:function (row, col, row2, col2) {
-                //是否全选（左上角）
-                if(vm.selectAllFlag){
-                    row = 0;
-                    col = 0;
-                    row2 = this.countRows()-1;
-                    col2 = this.countCols()-1;
-                }
                 var pos = {row :row,col:col,row2:row2,col2:col2};
                 //ctrl键
                 if(window.event && window.event.ctrlKey){
@@ -957,11 +950,14 @@
             cells: function (row, col, prop) {
                 var cellProperties = {};
             },
-            beforeOnCellMouseDown: function () {
-               if( arguments[1].row == "-1" && arguments[1].col == "-1"){
-                   vm.selectAllFlag = true;
-               }else{
-                   vm.selectAllFlag = false;
+            beforeOnCellMouseDown: function (event, coords, element) {
+               var self = this;
+               if(coords.row == "-1" && coords.col == "-1" && $(element).is("th")){
+                   var row2 = this.countRows()-1;
+                   var col2 = this.countCols()-1;
+                   setTimeout(function(){
+                       self.selectCell(0,0,row2,col2,true,true);
+                   },200);
                }
             }
 

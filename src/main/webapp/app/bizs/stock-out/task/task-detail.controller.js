@@ -419,6 +419,16 @@
 
                     }
                 },
+                beforeOnCellMouseDown: function (event, coords, element) {
+                    var self = this;
+                    if(coords.row == "-1" && coords.col == "-1" && $(element).is("th")){
+                        var row2 = this.countRows()-1;
+                        var col2 = this.countCols()-1;
+                        setTimeout(function(){
+                            self.selectCell(0,0,row2,col2,true,true);
+                        },200);
+                    }
+                },
                 // 单元格的渲染函数
                 renderer: _customRenderer
             };

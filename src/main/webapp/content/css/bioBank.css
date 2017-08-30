@@ -1152,7 +1152,7 @@ ul.rating {
     vertical-align: top;
     margin-left: 10px;
     margin-top: 10px;
-    transition: all .5s ease;
+    transition: all .1s ease;
 }
 /*.transport-box:first-child{*/
     /*margin-left: 0;*/
@@ -1181,7 +1181,7 @@ ul.rating {
     margin-left: 4px;
     margin-top:4px;
     text-align: center;
-    /*transition: all .5s ease;*/
+    transition: all .5s ease;
     overflow: hidden;
 }
 .transport-tube:first-child{

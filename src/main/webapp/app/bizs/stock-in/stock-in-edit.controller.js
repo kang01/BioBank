@@ -1581,27 +1581,6 @@
             });
         };
 
-        // document.addEventListener('click', hideBox, false);
-        // function hideBox(e,type,func) {
-        //     if($(e.target).className == 'relative'){
-        //
-        //     }
-        //     console.log($(e.target))
-        // }
-
-        //单击事件
-        Handsontable.hooks.add('afterOnCellMouseDown',callBack,vm.settings);
-        //单击事件的回调函数
-        function callBack(event,coords,td){
-            var row = coords.row;
-            var col = coords.col;
-            if(row!=0 && col!=0){
-                var ss = vm.settings.getCell(row,col,true);//取出点击Cell
-                var currVal = $(ss).html();//取出点击Cell的内容
-                vm.settings.setDataAtCell(row,col,"修改cell内容","edit");//设置cell的新内容
-            }
-        }
-
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }

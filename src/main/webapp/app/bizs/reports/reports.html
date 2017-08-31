@@ -1,0 +1,56 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <!--折线-->
+               <grid-multiple-chart legend="vm.legend" item="vm.item" data="vm.data"></grid-multiple-chart>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <!--地图-->
+                <scatter-map-chart></scatter-map-chart>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="row">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!--项目点样本分布-->
+                            <bar-project-sites-chart></bar-project-sites-chart>
+                            <!--样本类型样本分布-->
+                            <bar-sample-type-chart></bar-sample-type-chart>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!--性别-->
+                            <pie-sex-chart></pie-sex-chart>
+                        </div>
+                        <div class="col-md-6">
+                            <!--疾病-->
+                            <pie-disease-chart></pie-disease-chart>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <!--年龄段样本分布-->
+                <bar-age-chart></bar-age-chart>
+            </div>
+        </div>
+    </div>
+</div>

@@ -928,29 +928,15 @@
             multiSelect: true,
             comments: true,
             onAfterSelectionEnd:function (row, col, row2, col2) {
-                //去除全选
-                // for(var i = 0; i < vm.frozenTubeArray.length; i++){
-                //     for(var j = 0; j < vm.frozenTubeArray[i].length;j++){
-                //         if(vm.frozenTubeArray[i][j]){
-                //             vm.frozenTubeArray[i][j].selectedAll = false;
-                //         }
-                //
-                //     }
-                // }
-                hotRegisterer.getInstance('my-handsontable').render();
-                var cell = this;
-                // vm.selectCell = $(this.getData(row,col,row2,col2));
-                selectedTubesArray = this.getData(row,col,row2,col2);
-                var selectTubeArrayIndex = this.getSelected();
+                var pos = {row :row,col:col,row2:row2,col2:col2};
+                //ctrl键
                 if(window.event && window.event.ctrlKey){
-                    _fnSelectTubesData(cell,selectedTubesArray,selectTubeArrayIndex);
+                    _fnSelectTubesData(this,pos);
                 }else{
-                    //备注
                     $(".temp").remove();
                     selectList = [];
-                    _fnSelectTubesData(cell,selectedTubesArray,selectTubeArrayIndex);
+                    _fnSelectTubesData(this,pos);
                 }
-
             },
             enterMoves:function () {
                 var hotMoves = hotRegisterer.getInstance('my-handsontable');
@@ -963,33 +949,48 @@
             },
             cells: function (row, col, prop) {
                 var cellProperties = {};
+            },
+            beforeOnCellMouseDown: function (event, coords, element) {
+               var self = this;
+               if(coords.row == "-1" && coords.col == "-1" && $(element).is("th")){
+                   var row2 = this.countRows()-1;
+                   var col2 = this.countCols()-1;
+                   setTimeout(function(){
+                       self.selectCell(0,0,row2,col2,true,true);
+                   },200);
+               }
             }
+
         };
         //选择单元格数据
-        function _fnSelectTubesData(td,selectedTubesArray,selectTubeArrayIndex) {
-            var txt = '<div class="temp selected-sample-color"></div>';
+        function _fnSelectTubesData(td,pos) {
+            selectedTubesArray = td.getData(pos.row,pos.col,pos.row2,pos.col2);
             for(var m = 0; m < selectedTubesArray.length; m++){
                 for (var n = 0; n < selectedTubesArray[m].length; n++){
                     if(selectedTubesArray[m][n].sampleCode || selectedTubesArray[m][n].sampleTempCode) {
                         selectList.push(selectedTubesArray[m][n]);
                     }
-
                 }
             }
+            var txt = '<div class="temp selected-sample-color"></div>';
             var start1,end1,start2,end2;
-            if(selectTubeArrayIndex[0] > selectTubeArrayIndex[2]){
-                start1 = selectTubeArrayIndex[2];
-                end1 = selectTubeArrayIndex[0];
+            var row = pos.row;
+            var row2 = pos.row2;
+            var col = pos.col;
+            var col2 = pos.col2;
+            if(row >= row2){
+                start1 = row2;
+                end1 = row;
             }else{
-                start1 = selectTubeArrayIndex[0];
-                end1 = selectTubeArrayIndex[2];
+                start1 = row;
+                end1 = row2;
             }
-            if(selectTubeArrayIndex[1] > selectTubeArrayIndex[3]){
-                start2 = selectTubeArrayIndex[3];
-                end2 = selectTubeArrayIndex[1];
+            if(col >= col2){
+                start2 = col2;
+                end2 = col;
             }else{
-                start2 = selectTubeArrayIndex[1];
-                end2 = selectTubeArrayIndex[3];
+                start2 = col;
+                end2 = col2;
             }
             for(var i = start1;i <= end1; i++){
                 for(var j = start2;  j <= end2;j++) {
@@ -998,6 +999,28 @@
                     }
                 }
             }
+            // var start1,end1,start2,end2;
+            // if(selectTubeArrayIndex[0] > selectTubeArrayIndex[2]){
+            //     start1 = selectTubeArrayIndex[2];
+            //     end1 = selectTubeArrayIndex[0];
+            // }else{
+            //     start1 = selectTubeArrayIndex[0];
+            //     end1 = selectTubeArrayIndex[2];
+            // }
+            // if(selectTubeArrayIndex[1] > selectTubeArrayIndex[3]){
+            //     start2 = selectTubeArrayIndex[3];
+            //     end2 = selectTubeArrayIndex[1];
+            // }else{
+            //     start2 = selectTubeArrayIndex[1];
+            //     end2 = selectTubeArrayIndex[3];
+            // }
+            // for(var i = start1;i <= end1; i++){
+            //     for(var j = start2;  j <= end2;j++) {
+            //         if($(td.getCell(i,j))[0].childElementCount !=3){
+            //             $(td.getCell(i,j)).append(txt);
+            //         }
+            //     }
+            // }
 
         }
         // 创建一个对象用于管子Table的控件
@@ -1557,6 +1580,7 @@
                 // },500);
             });
         };
+
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }

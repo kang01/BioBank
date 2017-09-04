@@ -35,27 +35,27 @@
             DTColumnBuilder.newColumn('positionInBox').withTitle('盒内位置').withOption("width", "80").notSortable(),
             DTColumnBuilder.newColumn('operator').withTitle('操作员').withOption("width", "80").notSortable(),
             DTColumnBuilder.newColumn('memo').withTitle('批注').withOption("width", "auto").notSortable(),
-            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "80").notSortable()
+            DTColumnBuilder.newColumn('frozenTubeState').withTitle('状态').withOption("width", "80").notSortable()
         ];
         function createdRow(row, data, dataIndex) {
             var type = "";
-            var status = "";
+            var status = MasterData.getFrozenBoxStatus(data.frozenTubeState);
             var operateTime = moment(data.operateTime).format("YYYY-MM-DD");
             switch(data.type){
                 case "101" :
-                    type = "转运" , status = "待入库"; break;
+                    type = "转运"; break;
                 case "102" :
-                    type = "入库", status = "已入库";break;
+                    type = "入库";break;
                 case "103" :
-                    type = "出库", status = "已出库";break;
+                    type = "出库";break;
                 case "104" :
-                    type = "交接", status = "已交接";break;
+                    type = "交接";break;
                 case "105" :
-                    type = "移位", status = "已入库";break;
+                    type = "移位";break;
                 case "106" :
-                    type = "换位", status = "已换位";break;
+                    type = "换位";break;
                 case "107" :
-                    type = "销毁", status = "已销毁";break;
+                    type = "销毁";break;
             }
             $('td:eq(0)', row).html(operateTime);
             $('td:eq(1)', row).html(type);

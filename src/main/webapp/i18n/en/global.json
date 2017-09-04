@@ -63,6 +63,7 @@
                 "positionDestroy": "Position Destroy",
                 "positionDestroyRecord": "Position Destroy Record",
                 "attachment": "Attachment",
+                "coordinate": "Coordinate",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

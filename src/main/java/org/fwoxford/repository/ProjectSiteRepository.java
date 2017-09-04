@@ -15,4 +15,7 @@ public interface ProjectSiteRepository extends JpaRepository<ProjectSite,Long> {
     List<ProjectSite> findAllProjectSitesByProjectId(Long projectId);
 
     ProjectSite findByProjectSiteCode(String projectSiteCode);
+
+    @Query("select t.province,t.city from ProjectSite t group by t.province,t.city")
+    List<Object[]> findAllGroupByProvinceAndCity();
 }

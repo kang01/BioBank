@@ -43,14 +43,9 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     private final StockOutTaskRepository stockOutTaskRepository;
     private final StockOutPlanRepository stockOutPlanRepository;
     private final FrozenBoxRepository frozenBoxRepository;
-    private final StockOutFrozenBoxRepository stockOutFrozenBoxRepository;
-    private final StockOutBoxPositionRepository stockOutBoxPositionRepository;
 
     @Autowired
     private StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository;
-
-    @Autowired
-    private StockOutFrozenTubeRepository stockOutFrozenTubeRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -79,12 +74,10 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     private final StockOutTaskMapper stockOutTaskMapper;
 
 
-    public StockOutTaskServiceImpl(StockOutTaskRepository stockOutTaskRepository, StockOutPlanRepository stockOutPlanRepository, FrozenBoxRepository frozenBoxRepository, StockOutFrozenBoxRepository stockOutFrozenBoxRepository, StockOutBoxPositionRepository stockOutBoxPositionRepository, StockOutTaskMapper stockOutTaskMapper) {
+    public StockOutTaskServiceImpl(StockOutTaskRepository stockOutTaskRepository, StockOutPlanRepository stockOutPlanRepository, FrozenBoxRepository frozenBoxRepository, StockOutTaskMapper stockOutTaskMapper) {
         this.stockOutTaskRepository = stockOutTaskRepository;
         this.stockOutPlanRepository = stockOutPlanRepository;
         this.frozenBoxRepository = frozenBoxRepository;
-        this.stockOutFrozenBoxRepository = stockOutFrozenBoxRepository;
-        this.stockOutBoxPositionRepository = stockOutBoxPositionRepository;
         this.stockOutTaskMapper = stockOutTaskMapper;
     }
 

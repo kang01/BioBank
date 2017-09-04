@@ -62,4 +62,7 @@
         <createSequence sequenceName="seq_attachment" startValue="1" incrementBy="1"></createSequence>
 
     </changeSet>
+    <changeSet id="11111111111111-1" author="jhipster" dbms="h2,postgresql,oracle">
+        <createSequence sequenceName="seq_coordinate" startValue="1" incrementBy="1"></createSequence>
+    </changeSet>
 </databaseChangeLog>

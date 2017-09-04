@@ -1,0 +1,26 @@
+{
+    "bioBankApp": {
+        "coordinate" : {
+            "home": {
+                "title": "Coordinates",
+                "createLabel": "Create a new Coordinate",
+                "createOrEditLabel": "Create or edit a Coordinate"
+            },
+            "created": "A new Coordinate is created with identifier {{ param }}",
+            "updated": "A Coordinate is updated with identifier {{ param }}",
+            "deleted": "A Coordinate is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Coordinate {{ id }}?"
+            },
+            "detail": {
+                "title": "Coordinate"
+            },
+            "province": "Province",
+            "city": "City",
+            "longitude": "Longitude",
+            "latitude": "Latitude",
+            "status": "Status",
+            "memo": "Memo"
+        }
+    }
+}

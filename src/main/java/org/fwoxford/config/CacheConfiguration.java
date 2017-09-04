@@ -100,6 +100,7 @@ public class CacheConfiguration {
             cm.createCache(org.fwoxford.domain.PositionDestroy.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.PositionDestroyRecord.class.getName(), jcacheConfiguration);
             cm.createCache(org.fwoxford.domain.Attachment.class.getName(), jcacheConfiguration);
+            cm.createCache(org.fwoxford.domain.Coordinate.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

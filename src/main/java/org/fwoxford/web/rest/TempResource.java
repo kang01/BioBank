@@ -7,6 +7,9 @@ import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.Area;
 import org.fwoxford.domain.Equipment;
+import org.fwoxford.domain.FrozenTube;
+import org.fwoxford.domain.StockInTube;
+import org.fwoxford.repository.FrozenTubeHistoryRepositories;
 import org.fwoxford.service.ProjectService;
 import org.fwoxford.service.SampleTypeService;
 import org.fwoxford.service.TranshipService;
@@ -24,12 +27,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -1439,4 +1450,38 @@ public class TempResource {
         result.setRecordsTotal(dataList.size() * 10);
         return result;
     }
+
+    @Autowired
+    FrozenTubeHistoryRepositories frozenTubeHistoryRepositories;
+
+    @Autowired
+    EntityManager entityManager;
+
+    @GetMapping("/report")
+    @Timed
+    public List<SampleReportForStockInAndOut> getStockKist() {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<FrozenTubeHistory> criteriaQuery = cb.createQuery(FrozenTubeHistory.class);
+//        CriteriaQuery<SampleReportForStockInAndOut> criteriaQuery = cb.createQuery(SampleReportForStockInAndOut.class);
+
+
+//        Root<StockInTube> register = criteriaQuery.from(StockInTube.class);
+
+        // 过滤条件
+//        Predicate[] predicates = createPredicate( cb, register);
+//        criteriaQuery.where(predicates);
+
+//        TypedQuery<SampleReportForStockInAndOut> typedQuery = entityManager.createQuery(criteriaQuery);
+
+        Query typedQuery = entityManager.createNativeQuery("select s.stock_in_date,count(st.id) as countOfSample from stock_in_tube st \n" +
+            "left join stock_in_box sb  on st.stock_in_box_id=sb.id \n" +
+            "left join stock_in s on s.id=sb.stock_in_id \n" +
+            "where st.status!='0000' and s.status = '7002' and st.frozen_tube_state = '2004'\n" +
+            "and s.stock_in_date between to_date('2017/01/01','yyyy/mm/dd') and to_date('2017/10/10','yyyy/mm/dd')\n" +
+            "group by s.stock_in_date",SampleReportForStockInAndOut.class);
+
+        List<SampleReportForStockInAndOut> list = typedQuery.getResultList();
+        return list;
+    }
+
 }

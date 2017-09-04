@@ -1115,7 +1115,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     @Test
     public  void getLocation() throws IOException, JSONException {
         //这里调用百度的ip定位api服务 详见 http://api.map.baidu.com/lbsapi/cloud/ip-location-api.htm
-        JSONObject json = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?address=","曲沃县医院");
+        JSONObject json = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?address=","内蒙古\"和林县疾控中心\"");
         ObjectMapper objectMapper=new ObjectMapper();
         GeocoderSearchResponse response = objectMapper.readValue(json.getString("GeocoderSearchResponse"),GeocoderSearchResponse.class);
         BigDecimal lat = response.getResult().getLocation().getLat();
@@ -1136,10 +1136,11 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             }else{
                 projectSiteId = projectSiteCode.substring(0,4);
             }
-            if(StringUtils.isEmpty(p.getProjectSiteName())){
+            String name = p.getDetailedAddress()==null?p.getProjectSiteName():p.getDetailedAddress();
+            if(StringUtils.isEmpty(name)){
                 throw new BankServiceException("项目点名称异常"+p.toString());
             }
-            JSONObject json = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?address=",p.getProjectSiteName().replaceAll("\r|\n", "").replaceAll(" +",""));
+            JSONObject json = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?address=",name.replaceAll("\r|\n", "").replaceAll(" +",""));
             ObjectMapper objectMapper=new ObjectMapper();
             System.out.print(json.toString());
             if(json.length()==0||json == null || json.getString("GeocoderSearchResponse") == null ){
@@ -1191,7 +1192,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     @Test
     public void createRadomNumber() throws Exception {
         HashSet<Integer> hashSet = new HashSet<>();
-        randomSet(5000000,5001000,200,hashSet);
+        randomSet(2001000,2002000,200,hashSet);
         System.out.print(hashSet.toString());
     }
     @Test
@@ -1418,5 +1419,138 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
                 }
             }
         }
+    }
+
+    @Test
+    public void updateProjectSiteForPeace3(){
+        Connection con = null;// 创建一个数据库连接
+        PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
+        ResultSet result = null;// 创建一个结果集对象
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> listAll = new ArrayList<Map<String, Object>>();
+        Long projectId = null;
+        try{
+            con = DBUtilForTemp.open();
+            System.out.println("连接成功！");
+            String sqlForSelect = "select * from LCC_0038";// 预编译语句
+            pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
+            result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
+            ResultSetMetaData rsMeta = result.getMetaData();
+            Map<String, Object> map = null;
+            while (result.next()){
+                map = this.Result2Map(result,rsMeta);
+                list.add(map);
+            }
+            String sqlForSelectAllLcc = "select * from LCC_0038";// 预编译语句
+            PreparedStatement pres = con.prepareStatement(sqlForSelectAllLcc);// 实例化预编译语句
+            ResultSet result2 = pres.executeQuery();// 执行查询，注意括号中不需要再加参数
+            ResultSetMetaData rsMetas2 = result2.getMetaData();
+            Map<String, Object> mapForAll = null;
+            while (result2.next()){
+                mapForAll = this.Result2Map(result2,rsMetas2);
+                listAll.add(mapForAll);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                DBUtilForTemp.close(con);
+                System.out.println("数据库连接已关闭！");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        Project project = projectRepository.findByProjectCode("0038");
+        List<ProjectSite> projectSiteList = projectSiteRepository.findAllProjectSitesByProjectId(project.getId());
+        for(int i = 0 ;i<list.size();i++) {
+            Object projectSiteCodeObj = list.get(i).get("LCC_ID");
+            if(projectSiteCodeObj == null){
+                continue;
+            }
+            String projectSiteCode = list.get(i).get("LCC_ID").toString();
+            Object names = list.get(i).get("COMPANY");
+            if(names == null){
+                continue;
+            }
+            String name = list.get(i).get("COMPANY").toString();
+            if(projectSiteCode.length()<4){
+                throw new BankServiceException("项目点异常:"+projectSiteCode);
+            }
+            String projectSiteId =  projectSiteCode.substring(0,4);
+            String area = null;
+            for(int j = 0 ;j<listAll.size();j++){
+                String lcc = listAll.get(j).get("LCC_ID").toString();
+                if(projectSiteId .equals( lcc)){
+                    area = listAll.get(j).get("PROVINCE").toString();
+                }
+            }
+            ProjectSite projectSite = new ProjectSite();
+            for(ProjectSite p:projectSiteList){
+                if(p.getProjectSiteCode().equals(projectSiteCode)){
+                    projectSite = p;
+                }
+            }
+
+            projectSite =projectSite.projectSiteCode(list.get(i).get("LCC_ID").toString())
+                    .projectSiteName(name)
+                    .area(area)
+                    .status("0001").memo(list.get(i).get("MEMO") != null ? list.get(i).get("MEMO").toString() : null)
+                    .detailedLocation(list.get(i).get("POST_ADDRESS") != null ? list.get(i).get("POST_ADDRESS").toString(): null)
+                    .department(list.get(i).get("ADDRESS") != null ? list.get(i).get("ADDRESS").toString(): null)
+                    .detailedAddress(list.get(i).get("POST_ADDRESS") != null ? list.get(i).get("POST_ADDRESS").toString(): null)
+                    .zipCode(list.get(i).get("ZIP_CODE") != null ? list.get(i).get("ZIP_CODE").toString():null)
+                    .username1(list.get(i).get("USER_1") != null ? list.get(i).get("USER_1").toString():null)
+                    .username2(list.get(i).get("USER_2") != null ? list.get(i).get("USER_2").toString():null)
+                    .phoneNumber1(list.get(i).get("PHONE_1") != null ? list.get(i).get("PHONE_1").toString():null)
+                    .phoneNumber2(list.get(i).get("PHONE_2") != null ? list.get(i).get("PHONE_2").toString():null);
+                projectSiteRepository.saveAndFlush(projectSite);
+                ProjectRelate projectRelate = projectRelateRepository.findByProjectIdAndProjectSiteId(project.getId(), projectSite.getId());
+                if (projectRelate == null) {
+                    projectRelate = new ProjectRelate().project(project).projectSite(projectSite).status("0001");
+                    projectRelateRepository.saveAndFlush(projectRelate);
+                }
+            }
+        }
+    @Autowired CoordinateRepository coordinateRepository;
+    @Test
+    public void createCoordinate() throws IOException, JSONException{
+        List<Object[]> projectSites = projectSiteRepository.findAllGroupByProvinceAndCity();
+        List<Coordinate> coordinates = new ArrayList<Coordinate>();
+        for(Object[] projectSite : projectSites){
+            String province = projectSite[0]!=null?projectSite[0].toString():null;
+            String area = projectSite[1]!=null?projectSite[1].toString():null;
+            if(province==null){
+                continue;
+            }
+            Coordinate coordinate = coordinateRepository.findByProvinceAndCity(province,area);
+            if(coordinate == null)
+            {
+                coordinate = new Coordinate();
+            }
+
+            coordinate.setProvince(province);
+            coordinate.setCity(area);
+            coordinate.setStatus(Constants.VALID);
+            String name = province+" "+area;
+            JSONObject json = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?address=",name.replaceAll("\r|\n", "").replaceAll(" +",""));
+            ObjectMapper objectMapper=new ObjectMapper();
+            System.out.print(json.toString());
+            if(json.length()==0||json == null || json.getString("GeocoderSearchResponse") == null ){
+                throw new BankServiceException("获取坐标失败！");
+            }else{
+                if(json.getJSONObject("GeocoderSearchResponse").get("status").equals("OK")) {
+                    GeocoderSearchResponse response = objectMapper.readValue(json.getString("GeocoderSearchResponse"), GeocoderSearchResponse.class);
+                    if (response != null && response.getStatus().equals("OK")) {
+                        BigDecimal lat = response.getResult().getLocation().getLat();
+                        BigDecimal lng = response.getResult().getLocation().getLng();
+                        coordinate.setLatitude(lat);
+                        coordinate.setLongitude(lng);
+                    }
+                }
+            }
+            coordinates.add(coordinate);
+        }
+        coordinateRepository.save(coordinates);
     }
 }

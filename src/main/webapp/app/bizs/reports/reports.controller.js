@@ -9,13 +9,284 @@
         .module('bioBankApp')
         .controller('ReportsController', ReportsController);
 
-    ReportsController.$inject = ['$scope'];
+    ReportsController.$inject = ['$scope','ReportService','ProjectService','EquipmentService','MasterData','AreasByEquipmentIdService','SampleTypeService','SupportacksByAreaIdService','RequirementService'];
 
-    function ReportsController($scope) {
+    function ReportsController($scope,ReportService,ProjectService,EquipmentService,MasterData,AreasByEquipmentIdService,SampleTypeService,SupportacksByAreaIdService,RequirementService) {
         var vm = this;
 
-        // vm.legend = ["2015"];
-        // vm.item = ['XX企业','XX企业','XX企业','XX企业','XX企业','XX企业','XX企业'];
+        vm.searchShow = _fnSearchShow;
+        vm.close = _fnClose;
+        vm.empty = _fnEmpty;
+        //样本流向
+        function _fnQueryEveyDaySampleCount(beginDate,endDate,searchType){
+            ReportService.queryEveyDaySampleCount(beginDate,endDate,searchType).success(function (data) {
+                vm.daySampleCountData = data;
+            })
+        }
+        //全国样本分布
+        function _fnQueryNationwideSampleCount(){
+            ReportService.queryCitySampleCount().success(function (data) {
+                vm.citySampleCountData = data;
+            })
+        }
+        //项目点样本分布
+        function _fnQueryProjectSiteSampleCount(){
+            ReportService.queryProjectSiteSampleCount().success(function (data) {
+                vm.projectSiteSampleCountData = data;
+            })
+        }
+        //样本类型样本分布
+        function _fnQuerySampleTypeCount(){
+            ReportService.querySampleTypeCount().success(function (data) {
+                vm.sampleTypeSampleCountData = data;
+            })
+        }
+        //根据性别统计样本量
+        function _fnQuerySexSampleCount(){
+            ReportService.querySexSampleCount().success(function (data) {
+                vm.sexSampleCountData = data;
+            })
+        }
+        //根据疾病类型统计样本量
+        function _fnQueryDiseaseTypeSampleCount(){
+            ReportService.queryDiseaseTypeSampleCount().success(function (data) {
+                vm.diseaseTypeSampleCountData = data;
+            })
+        }
+        //根据年龄统计不同年龄段的样本量
+        function _fnQueryAgeSampleCount(){
+            ReportService.queryAgeSampleCount().success(function (data) {
+                vm.ageSampleCountData = data;
+            })
+        }
+        var preThreeMonthDate = moment().subtract(3, 'months').format("YYYY-MM-DD");
+        var nowDate = moment().format("YYYY-MM-DD");
+        vm.type = 'M';
+        vm.typeContent = '月视图';
+        function _init() {
+            _fnQueryEveyDaySampleCount(preThreeMonthDate,nowDate,vm.type);
+            _fnQueryNationwideSampleCount();
+            _fnQueryProjectSiteSampleCount();
+            _fnQuerySampleTypeCount();
+            _fnQuerySexSampleCount();
+            _fnQueryDiseaseTypeSampleCount();
+            _fnQueryAgeSampleCount();
+        }
+        _init();
+        function _searchCondition() {
+            //获取项目
+            ProjectService.query({},onProjectSuccess, onError);
+            function onProjectSuccess(data) {
+                vm.projectOptions = data;
+            }
+            //设备
+            EquipmentService.query({},onEquipmentSuccess, onError);
+            function onEquipmentSuccess(data) {
+                vm.frozenBoxPlaceOptions = data;
+            }
+            vm.equipmentOptions = [
+                {value:"1",label:"冰箱"},
+                {value:"2",label:"液氮罐"}
+            ];
+            vm.shelvesOptions = [
+                {value:"1",label:"4*6"},
+                {value:"2",label:"6*4"}
+            ];
+            //样本状态
+            vm.statusOptions = MasterData.frozenTubeStatus;
+            //库存状态
+            vm.frozenTubeStatusOptions = MasterData.frozenBoxStatus;
+            //疾病类型
+            vm.diseaseTypeOptions = MasterData.diseaseType;
+            SampleTypeService.querySampleType().success(function (data) {
+                vm.sampleTypeOptions = _.orderBy(data,['sampleTypeName','asc']);
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
+            });
+            vm.sexOptions = MasterData.sexDict;
+            var projectIdStr,projectIds;
+            vm.projectConfig = {
+                valueField:'id',
+                labelField:'projectName',
+                searchField:'projectName',
+                onChange:function(value){
+                    projectIdStr = _.join(value, ',');
+                    projectIds = value;
+                    if(vm.dto.sampleTypeId){
+                        _fnQueryProjectSampleClass(projectIdStr,vm.dto.sampleTypeId);
+                    }
+                }
+            };
+            //盒子位置
+            vm.frozenBoxPlaceConfig = {
+                valueField:'id',
+                labelField:'equipmentCode',
+                maxItems: 1,
+                onChange:function (value) {
+                    if(value){
+                        AreasByEquipmentIdService.query({id:value},onAreaSuccess, onError);
+                    }else{
+                        vm.frozenBoxAreaOptions = [
+                            {id:"",areaCode:""}
+                        ];
+                        vm.dto.areaId = "";
+                        vm.frozenBoxShelfOptions = [
+                            {id:"",supportRackCode:""}
+                        ];
+                        vm.dto.shelvesId = "";
+                        $scope.$apply();
+                    }
+                }
+            };
+            function onAreaSuccess(data) {
+                vm.frozenBoxAreaOptions = data;
+                vm.frozenBoxAreaOptions.push({id:"",areaCode:""});
+                if(vm.frozenBoxAreaOptions.length){
+                    vm.dto.areaId = "";
+                    vm.dto.shelvesId = "";
+                    // vm.dto.areaId = vm.frozenBoxAreaOptions[0].id;
+                    SupportacksByAreaIdService.query({id:vm.dto.areaId},onShelfSuccess, onError);
+                }
+            }
+            vm.frozenBoxAreaConfig = {
+                valueField:'id',
+                labelField:'areaCode',
+                maxItems: 1,
+                onChange:function (value) {
+                    if(value){
+                        SupportacksByAreaIdService.query({id:value},onShelfSuccess, onError);
+                    }else{
+                        vm.frozenBoxShelfOptions = [
+                            {id:"",supportRackCode:""}
+                        ];
+                        vm.dto.shelvesId = "";
+                        $scope.$apply();
+                    }
+                }
+            };
+            //架子
+            function onShelfSuccess(data) {
+                vm.frozenBoxShelfOptions = data;
+                vm.frozenBoxShelfOptions.push({id:"",supportRackCode:""});
+                vm.dto.shelvesId = "";
+            }
+            vm.frozenBoxShelfConfig = {
+                valueField:'id',
+                labelField:'supportRackCode',
+                maxItems: 1,
+                onChange:function (value) {
+                }
+            };
+            //设备类型
+            vm.equipmentConfig = {
+                valueField:'value',
+                labelField:'label',
+                maxItems: 1,
+                onChange:function(value){
+                }
+            };
+            //架子类型
+            vm.shelvesConfig = {
+                valueField:'value',
+                labelField:'label',
+                maxItems: 1,
+                onChange:function(value){
+                }
+            };
+            vm.statusConfig = {
+                valueField:'id',
+                labelField:'name',
+                maxItems: 1,
+                onChange:function(value){
+                }
+            };
+            vm.frozenTubeStatusConfig = {
+                valueField:'value',
+                labelField:'label',
+                maxItems: 1,
+                onChange:function(value){
+                }
+            };
+            vm.diseaseTypeConfig = {
+                valueField:'id',
+                labelField:'name',
+                maxItems: 1,
+                onChange:function (value) {
+                }
+            };
+            vm.boxCodeConfig = {
+                create: true,
+                persist:false,
+                onChange: function(value){
+                    vm.dto.frozenBoxCodeStr = value;
+                }
+            };
+            vm.sampleCodeConfig = {
+                create: true,
+                persist:false,
+                onChange: function(value){
+                    vm.dto.sampleCodeStr = value;
+                }
+            };
+            //样本类型
+            vm.sampleTypeConfig = {
+                valueField:'id',
+                labelField:'sampleTypeName',
+                maxItems: 1,
+                onChange:function (value) {
+                    if(projectIdStr){
+                        _fnQueryProjectSampleClass(projectIdStr,value);
+                    }
+                }
+            };
+            vm.sexConfig = {
+                valueField:'type',
+                labelField:'name',
+                maxItems: 1,
+                onChange:function (value) {
+
+                }
+            };
+            //样本分类
+            function _fnQueryProjectSampleClass(projectIds,sampleTypeId) {
+                RequirementService.queryRequirementSampleClasses(projectIds,sampleTypeId).success(function (data) {
+                    vm.sampleClassOptions = data;
+                    if(vm.sampleClassOptions.length){
+                        vm.dto.sampleClassificationId = vm.sampleClassOptions[0].sampleClassificationId;
+                    }
+                });
+            }
+            vm.sampleClassConfig = {
+                valueField:'sampleClassificationId',
+                labelField:'sampleClassificationName',
+                maxItems: 1,
+                onChange:function (value) {
+                }
+            };
+
+            function onError() {
+
+            }
+        }
+        _searchCondition();
+        //切换类型
+        vm.searchType = function (searchType) {
+            _fnQueryEveyDaySampleCount(preThreeMonthDate,nowDate,vm.type);
+        };
+        //搜索
+        function _fnSearchShow() {
+            vm.checked = true;
+        }
+        function _fnClose() {
+            vm.checked = false;
+        }
+        function _fnEmpty() {
+            vm.dto = {};
+            vm.dto.frozenBoxCodeStr = [];
+            vm.dto.projectCodeStr = [];
+            vm.arrayBoxCode = [];
+            vm.arraySampleCode = [];
+            vm.projectCodeStr = [];
+        }
 
         var timeData = [
             '2009/6/12 2:00', '2009/6/12 3:00', '2009/6/12 4:00', '2009/6/12 5:00', '2009/6/12 6:00', '2009/6/12 7:00', '2009/6/12 8:00', '2009/6/12 9:00', '2009/6/12 10:00', '2009/6/12 11:00', '2009/6/12 12:00', '2009/6/12 13:00', '2009/6/12 14:00', '2009/6/12 15:00', '2009/6/12 16:00', '2009/6/12 17:00', '2009/6/12 18:00', '2009/6/12 19:00', '2009/6/12 20:00', '2009/6/12 21:00', '2009/6/12 22:00', '2009/6/12 23:00',

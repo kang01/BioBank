@@ -1,0 +1,27 @@
+
+<div class="project-management">
+    <div class='breadcrumbs'>
+        <div class='inner'>
+            <ul>
+                <li ng-repeat="item in vm.titles track by $index">
+                    <a ng-class="item.className">
+                        <h4>Step {{item.id}}</h4>
+                        <h4>{{item.name}}</h4>
+                    </a>
+                </li>
+                <div class="clear-both"></div>
+            </ul>
+        </div>
+    </div>
+    <div class="text-right">
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default" ng-click="vm.preStep()">上一步</button>
+            <button type="button" class="btn btn-default" ng-click="vm.nextStep()">下一步</button>
+        </div>
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-info">完成</button>
+            <button type="button" class="btn btn-danger">取消</button>
+        </div>
+    </div>
+
+</div>

@@ -1,56 +1,196 @@
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <!--折线-->
-               <grid-multiple-chart legend="vm.legend" item="vm.item" data="vm.data"></grid-multiple-chart>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <!--地图-->
-                <scatter-map-chart></scatter-map-chart>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
+<div class="panel panel-default">
+    <div class="panel-heading">
         <div class="row">
-
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <!--项目点样本分布-->
-                            <bar-project-sites-chart></bar-project-sites-chart>
-                            <!--样本类型样本分布-->
-                            <bar-sample-type-chart></bar-sample-type-chart>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <!--性别-->
-                            <pie-sex-chart></pie-sex-chart>
-                        </div>
-                        <div class="col-md-6">
-                            <!--疾病-->
-                            <pie-disease-chart></pie-disease-chart>
-                        </div>
+            <div class="col-md-4">
+                <h4>
+                    样本清单
+                </h4>
+            </div>
+            <div class="col-md-8 text-right">
+                <button class="btn btn-default" style="margin-top: 3px" ng-click="vm.searchShow()">搜索</button>
+                <!--<button class="btn btn-default">关闭</button>-->
+            </div>
+        </div>
+    </div>
+    <div class="panel-body p-5">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <!--折线-->
+                        <grid-multiple-chart  type="vm.type" type-content="vm.typeContent" data="vm.daySampleCountData" reload-data = "vm.searchType()"></grid-multiple-chart>
                     </div>
                 </div>
             </div>
-
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <!--年龄段样本分布-->
-                <bar-age-chart></bar-age-chart>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <!--城市的样本量统计-->
+                        <scatter-map-chart data="vm.citySampleCountData"></scatter-map-chart>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!--项目点样本分布-->
+                                    <bar-project-sites-chart data="vm.projectSiteSampleCountData"></bar-project-sites-chart>
+                                    <!--样本类型样本分布-->
+                                    <bar-sample-type-chart data="vm.sampleTypeSampleCountData"></bar-sample-type-chart>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <!--性别-->
+                                    <pie-sex-chart data="vm.sexSampleCountData"></pie-sex-chart>
+                                </div>
+                                <div class="col-md-6">
+                                    <!--疾病-->
+                                    <pie-disease-chart data="vm.diseaseTypeSampleCountData"></pie-disease-chart>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <!--年龄段样本分布-->
+                        <bar-age-chart data="vm.ageSampleCountData"></bar-age-chart>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<pageslide ps-open="vm.checked" ps-body-class="true">
+    <div class="inventory">
+        <div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-4 pr-0">
+                            <h4>搜索条件</h4>
+                        </div>
+                        <div class="col-md-8 pl-0 text-right">
+                            <button type="submit" class="btn btn-default btn-primary" ng-click="vm.search()">搜索</button>
+                            <button type="submit" class="btn btn-default" ng-click="vm.empty()">清空</button>
+                            <button type="submit" class="btn btn-default" ng-click="vm.close()">关闭</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body sample-search">
+                    <div class="form-group">
+                        <label>样本编码</label>
+                        <selectize placeholder='' options='vm.myOptions' config="vm.sampleCodeConfig" ng-model="vm.arraySampleCode" ng-disabled='disable' required='true'></selectize>
+
+                    </div>
+                    <div class="form-group">
+                        <label>盒子编码</label>
+                        <selectize placeholder='' options='vm.myOptions' config="vm.boxCodeConfig" ng-model="vm.arrayBoxCode" ng-disabled='disable' required='true'></selectize>
+
+                    </div>
+                    <div class="form-group">
+                        <label>项目编码</label>
+                        <selectize options='vm.projectOptions' config="vm.projectConfig"
+                                   ng-model="vm.projectCodeStr"></selectize>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>样本类型</label>
+                            <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                                       ng-model="vm.dto.sampleTypeId"></selectize>
+
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>样本分类</label>
+                            <selectize options='vm.sampleClassOptions' config="vm.sampleClassConfig"
+                                       ng-model="vm.dto.sampleClassificationId"
+                            ></selectize>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div>
+                                    <label>位置</label>
+                                </div>
+                                <div class="pull-left">
+                                    <selectize options='vm.frozenBoxPlaceOptions' config="vm.frozenBoxPlaceConfig"
+                                               style="width:85px"
+                                               ng-model="vm.dto.equipmentId"></selectize>
+                                </div>
+                                <div class="pull-left pl-5">
+                                    <selectize options='vm.frozenBoxAreaOptions' config="vm.frozenBoxAreaConfig"
+                                               style="width:85px"
+                                               ng-model="vm.dto.areaId" ></selectize>
+                                </div>
+                                <div class="pull-left pl-5">
+                                    <selectize options='vm.frozenBoxShelfOptions' config="vm.frozenBoxShelfConfig"
+                                               style="width:85px"
+                                               ng-model="vm.dto.shelvesId"></selectize>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>样本状态</label>
+                            <selectize options='vm.statusOptions' config="vm.statusConfig"
+                                       ng-model="vm.dto.status"></selectize>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>库存状态</label>
+                            <selectize options='vm.frozenTubeStatusOptions' config="vm.frozenTubeStatusConfig"
+                                       ng-model="vm.dto.frozenTubeState"></selectize>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>性别</label>
+                            <selectize options='vm.sexOptions' config="vm.sexConfig"
+                                       ng-model="vm.dto.sex"></selectize>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>年龄</label>
+                            <input type="text" class="form-control" ng-model="vm.dto.age">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>疾病类型</label>
+                            <selectize options='vm.diseaseTypeOptions' config="vm.diseaseTypeConfig"
+                                       ng-model="vm.dto.diseaseTypeId"></selectize>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>使用次数</label>
+                            <input type="text" class="form-control" ng-model="vm.dto.sampleUsedTimes">
+                        </div>
+                    </div>
+
+
+
+
+                    <!--<div class="form-group">-->
+                    <!--<label>&nbsp;</label>-->
+                    <!--<button type="submit" class="btn btn-default btn-primary" ng-click="vm.search()">搜索</button>-->
+                    <!--</div>-->
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+</pageslide>
+

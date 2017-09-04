@@ -26,40 +26,55 @@
         return  directive;
 
         function  linkFunc(scope,  element,  attrs)  {
-
-            var option = {
-                title : {
-                    text: '',
-                    subtext: '',
-                    x:'center'
-                },
-                tooltip : {
-                    trigger: 'item',
-                    formatter: "{a} <br/>{b} : {c} ({d}%)"
-                },
-                series : [
-                    {
-                        name: '访问来源',
-                        type: 'pie',
-                        radius : '55%',
-                        center: ['50%', '60%'],
-                        data:[
-                            {value:335, name:'AMI'},
-                            {value:310, name:'PCI'},
-                            {value:234, name:'不详'}
-                        ],
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+            scope.$watch('data',function (newValue,oldValue) {
+                if (!newValue || !newValue.length){
+                    return;
+                }
+                var diseaseTypeData = [];
+                _.forEach(scope.data,function (data) {
+                    diseaseTypeData.push({value:data.countOfSample,name:data.diseaseType});
+                });
+                var option = {
+                    title : {
+                        text: '样本疾病分布',
+                        // subtext: '样本疾病分布',
+                        x:'center'
+                    },
+                    tooltip : {
+                        trigger: 'item',
+                        formatter: "{b} : {c} ({d}%)"
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        data: ['PCI','AMI','不详']
+                    },
+                    series : [
+                        {
+                            name: '疾病类型',
+                            type: 'pie',
+                            radius : '55%',
+                            center: ['50%', '60%'],
+                            data:diseaseTypeData,
+                            itemStyle: {
+                                emphasis: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
                             }
                         }
-                    }
-                ]
-            };
-            var myChart = echarts.init(document.getElementById('pie2'));
-            myChart.setOption(option);
+                    ]
+                };
+                var myChart = echarts.init(document.getElementById('pie2'));
+                myChart.setOption(option);
+            });
+
 
         }
     }

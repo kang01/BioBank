@@ -27,26 +27,26 @@
             //根据年龄统计不同年龄段的样本量
             queryAgeSampleCount:_fnQueryAgeSampleCount
         };
-        function _fnQueryCitySampleCount() {
-            return $http.get(API_HOST+'/sample-flowing-report/project-site-location-samples/city');
+        function _fnQueryCitySampleCount(params) {
+            return $http.post(API_HOST+'/sample-flowing-report/project-site-location-samples/city?searchForm='+params);
         }
-        function _fnQueryProjectSiteSampleCount() {
-            return $http.get(API_HOST+'/sample-flowing-report/project-site-samples');
+        function _fnQueryProjectSiteSampleCount(params) {
+            return $http.post(API_HOST+'/sample-flowing-report/project-site-samples?searchForm='+params);
         }
         function _fnQueryEveyDaySampleCount(beginDate,endDate,searchType) {
-            return $http.get(API_HOST+'/sample-flowing-report/stock-in-out/'+beginDate+'/'+endDate+'/searchType/'+searchType);
+            return $http.post(API_HOST+'/sample-flowing-report/stock-in-out/'+beginDate+'/'+endDate+'/searchType/'+searchType);
         }
-        function _fnQuerySampleTypeCount() {
-            return $http.get(API_HOST+'/sample-flowing-report/sample-type');
+        function _fnQuerySampleTypeCount(params) {
+            return $http.post(API_HOST+'/sample-flowing-report/sample-type?searchForm='+params);
         }
-        function _fnQuerySexSampleCount() {
-            return $http.get(API_HOST+'/sample-flowing-report/gender');
+        function _fnQuerySexSampleCount(params) {
+            return $http.post(API_HOST+'/sample-flowing-report/gender?searchForm='+params);
         }
-        function _fnQueryDiseaseTypeSampleCount() {
-            return $http.get(API_HOST+'/sample-flowing-report/disease-type');
+        function _fnQueryDiseaseTypeSampleCount(params) {
+            return $http.post(API_HOST+'/sample-flowing-report/disease-type?searchForm='+params);
         }
-        function _fnQueryAgeSampleCount() {
-            return $http.get(API_HOST+'/sample-flowing-report/age');
+        function _fnQueryAgeSampleCount(params) {
+            return $http.post(API_HOST+'/sample-flowing-report/age?searchForm='+params);
         }
         return service;
     }

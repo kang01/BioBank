@@ -13,10 +13,16 @@
 
     function ReportsController($scope,ReportService,ProjectService,EquipmentService,MasterData,AreasByEquipmentIdService,SampleTypeService,SupportacksByAreaIdService,RequirementService) {
         var vm = this;
+        vm.dto = {
+            frozenBoxCodeStr:[]
+        };
+        var projectIds = [];
+        var projectIdStr = "";
 
         vm.searchShow = _fnSearchShow;
         vm.close = _fnClose;
         vm.empty = _fnEmpty;
+        vm.search = _fnSearch;
         //样本流向
         function _fnQueryEveyDaySampleCount(beginDate,endDate,searchType){
             ReportService.queryEveyDaySampleCount(beginDate,endDate,searchType).success(function (data) {
@@ -24,38 +30,38 @@
             })
         }
         //全国样本分布
-        function _fnQueryNationwideSampleCount(){
-            ReportService.queryCitySampleCount().success(function (data) {
+        function _fnQueryCitySampleCount(){
+            ReportService.queryCitySampleCount(searchForm).success(function (data) {
                 vm.citySampleCountData = data;
             })
         }
         //项目点样本分布
         function _fnQueryProjectSiteSampleCount(){
-            ReportService.queryProjectSiteSampleCount().success(function (data) {
+            ReportService.queryProjectSiteSampleCount(searchForm).success(function (data) {
                 vm.projectSiteSampleCountData = data;
             })
         }
         //样本类型样本分布
         function _fnQuerySampleTypeCount(){
-            ReportService.querySampleTypeCount().success(function (data) {
+            ReportService.querySampleTypeCount(searchForm).success(function (data) {
                 vm.sampleTypeSampleCountData = data;
             })
         }
         //根据性别统计样本量
         function _fnQuerySexSampleCount(){
-            ReportService.querySexSampleCount().success(function (data) {
+            ReportService.querySexSampleCount(searchForm).success(function (data) {
                 vm.sexSampleCountData = data;
             })
         }
         //根据疾病类型统计样本量
         function _fnQueryDiseaseTypeSampleCount(){
-            ReportService.queryDiseaseTypeSampleCount().success(function (data) {
+            ReportService.queryDiseaseTypeSampleCount(searchForm).success(function (data) {
                 vm.diseaseTypeSampleCountData = data;
             })
         }
         //根据年龄统计不同年龄段的样本量
         function _fnQueryAgeSampleCount(){
-            ReportService.queryAgeSampleCount().success(function (data) {
+            ReportService.queryAgeSampleCount(searchForm).success(function (data) {
                 vm.ageSampleCountData = data;
             })
         }
@@ -63,13 +69,22 @@
         var nowDate = moment().format("YYYY-MM-DD");
         vm.type = 'M';
         vm.typeContent = '月视图';
+        var searchForm;
         function _init() {
+            searchForm = angular.toJson(vm.dto);
+            //每天的出入库样本量
             _fnQueryEveyDaySampleCount(preThreeMonthDate,nowDate,vm.type);
-            _fnQueryNationwideSampleCount();
+            //全国样本分布
+            _fnQueryCitySampleCount();
+            //项目点样本分布
             _fnQueryProjectSiteSampleCount();
+            //样本类型样本量分布
             _fnQuerySampleTypeCount();
+            //按性别样本量分布
             _fnQuerySexSampleCount();
+            //按疾病类型的样本量分布
             _fnQueryDiseaseTypeSampleCount();
+            //按年龄段的样本量分布
             _fnQueryAgeSampleCount();
         }
         _init();
@@ -103,7 +118,6 @@
                 _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
             });
             vm.sexOptions = MasterData.sexDict;
-            var projectIdStr,projectIds;
             vm.projectConfig = {
                 valueField:'id',
                 labelField:'projectName',
@@ -287,7 +301,17 @@
             vm.arraySampleCode = [];
             vm.projectCodeStr = [];
         }
-
+        function _fnSearch() {
+            vm.dto.projectCodeStr = [];
+            if(projectIds.length){
+                for(var i = 0; i < projectIds.length; i++){
+                    var projectCode = _.find(vm.projectOptions,{id:+projectIds[i]}).projectCode;
+                    vm.dto.projectCodeStr.push(projectCode)
+                }
+            }
+            vm.checked = false;
+            _init();
+        }
         var timeData = [
             '2009/6/12 2:00', '2009/6/12 3:00', '2009/6/12 4:00', '2009/6/12 5:00', '2009/6/12 6:00', '2009/6/12 7:00', '2009/6/12 8:00', '2009/6/12 9:00', '2009/6/12 10:00', '2009/6/12 11:00', '2009/6/12 12:00', '2009/6/12 13:00', '2009/6/12 14:00', '2009/6/12 15:00', '2009/6/12 16:00', '2009/6/12 17:00', '2009/6/12 18:00', '2009/6/12 19:00', '2009/6/12 20:00', '2009/6/12 21:00', '2009/6/12 22:00', '2009/6/12 23:00',
             '2009/6/13 0:00', '2009/6/13 1:00', '2009/6/13 2:00', '2009/6/13 3:00', '2009/6/13 4:00', '2009/6/13 5:00', '2009/6/13 6:00', '2009/6/13 7:00', '2009/6/13 8:00', '2009/6/13 9:00', '2009/6/13 10:00', '2009/6/13 11:00', '2009/6/13 12:00', '2009/6/13 13:00', '2009/6/13 14:00', '2009/6/13 15:00', '2009/6/13 16:00', '2009/6/13 17:00', '2009/6/13 18:00', '2009/6/13 19:00', '2009/6/13 20:00', '2009/6/13 21:00', '2009/6/13 22:00', '2009/6/13 23:00',

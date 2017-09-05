@@ -16,6 +16,7 @@
             restrict:  'EA',
             scope  :  {
                 reloadData: "&",
+                enlarged: "&",
                 data: "=",
                 type: "=",
                 typeContent: "="
@@ -57,13 +58,8 @@
                         data:['入库样本','出库样本'],
                         x: 'left'
                     },
-                    toolbox: { //工具栏。内置有导出图片，数据视图，动态类型切换，数据区域缩放，重置五个工具。
-                        feature: { //各工具配置项。
-                            dataZoom: {//数据区域缩放。目前只支持直角坐标系的缩放。
-                                yAxisIndex: 'false'
-                            },
-                            restore: {},//配置项还原
-                            saveAsImage: {},
+                    toolbox: {
+                        feature: {
                             myMonth: {
                                 show: true,
                                 title: '月视图',
@@ -139,7 +135,21 @@
                                     scope.$apply();
                                     scope.reloadData();
                                 }
-                            }
+                            },
+                            myZoom: {
+                                show: true,
+                                title: '日视图',
+                                icon: "<i class='fa fa-expand'></i>",
+                                onclick: function (){
+                                    scope.enlarged();
+                                }
+                            },
+                            dataZoom: {
+                                yAxisIndex: 'false'
+                            },
+                            restore: {},//配置项还原
+                            saveAsImage: {}
+
                         }
                     },
 

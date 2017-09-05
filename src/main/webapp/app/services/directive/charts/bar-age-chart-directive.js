@@ -78,7 +78,7 @@
                             label: {
                                 normal: {
                                     show: true,
-                                    position: 'insideRight'
+                                    position: 'insideBottomRight'
                                 }
                             },
                             data: ageData

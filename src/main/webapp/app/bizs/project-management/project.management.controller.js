@@ -15,7 +15,7 @@
         vm.addProjectManagement = _fnAddProjectManagement;
 
         function _fnAddProjectManagement() {
-            $state.go("project-management-add")
+            $state.go("project-management-info")
         }
     }
 })();

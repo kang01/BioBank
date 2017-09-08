@@ -44,6 +44,7 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/datatables-buttons/js/buttons.print.js',
             'src/main/webapp/bower_components/ion.rangeSlider/js/ion.rangeSlider.js',
             'src/main/webapp/bower_components/copycss/jquery.copycss.js',
+            'src/main/webapp/bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js',
             'src/main/webapp/bower_components/angular/angular.js',
             'src/main/webapp/bower_components/angular-aria/angular-aria.js',
             'src/main/webapp/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',

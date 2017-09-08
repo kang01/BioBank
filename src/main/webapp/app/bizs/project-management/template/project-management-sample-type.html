@@ -1,0 +1,70 @@
+<form>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h4>
+                            样本分类
+                        </h4>
+                    </div>
+                    <div class="col-md-8 text-right">
+                        <button class="btn btn-default" style="margin-top: 3px" ng-click="vm.createSampleType()">创建</button>
+                    </div>
+                </div>
+
+                </div>
+                <div class="panel-body">
+                    <div class="row" ng-repeat="item in vm.sampleTypeItem track by $index">
+                        <form class="form-inline">
+                            <div class="col-md-4">
+                                <input type="text" class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" >
+                                        <div class="input-group-addon" colorpicker  ng-model="vm.color"  class="color-picker-style" ng-click="vm.changeColor(vm.color)"
+                                             ng-style="vm.obj">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-default">&times;</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h4>
+                                99样本
+                                <label class="checkbox-inline">
+                                    <input type="checkbox">启用
+                                </label>
+                            </h4>
+                        </div>
+                        <div class="col-md-8 text-right">
+                            <button class="btn btn-default" style="margin-top: 3px" ng-click="vm.createSampleType()">创建</button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel-body">
+                    <hot-table hot-id="tube" settings="vm.settings" class="tube"
+                               style="width: 100%; padding: 0;margin: 0;"></hot-table>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

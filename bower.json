@@ -47,7 +47,8 @@
     "copycss": "*",
     "angular-pageslide-directive": "^2.1.4",
     "handsontable": "^0.33.0",
-    "echarts": "^3.7.0"
+    "echarts": "^3.7.0",
+    "angular-bootstrap-colorpicker": "^3.0.31"
   },
   "devDependencies": {
     "angular-mocks": "1.5.8"

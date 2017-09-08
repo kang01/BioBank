@@ -33,8 +33,8 @@
         function _fnQueryProjectSiteSampleCount(params) {
             return $http.post(API_HOST+'/sample-flowing-report/project-site-samples?searchForm='+params);
         }
-        function _fnQueryEveyDaySampleCount(beginDate,endDate,searchType) {
-            return $http.post(API_HOST+'/sample-flowing-report/stock-in-out/'+beginDate+'/'+endDate+'/searchType/'+searchType);
+        function _fnQueryEveyDaySampleCount(beginDate,endDate,searchType,params) {
+            return $http.post(API_HOST+'/sample-flowing-report/stock-in-out/'+beginDate+'/'+endDate+'/searchType/'+searchType+'?searchForm='+params);
         }
         function _fnQuerySampleTypeCount(params) {
             return $http.post(API_HOST+'/sample-flowing-report/sample-type?searchForm='+params);

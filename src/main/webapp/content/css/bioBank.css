@@ -1282,7 +1282,30 @@ ul.rating {
 .project-management .breadcrumbs a:after {
     border-left-color: #f5f5f5;
 }
+.colorpicker-circle,
+.colorpicker-circle .circle-inner{
+    border-radius: inherit;
+}
 
+/*报表高度*/
+.height200{
+    height: 200px;
+}
+.height450{
+    height: 450px;
+}
+.height600{
+    height: 600px;
+}
+.disNone{
+    display: none;
+}
+.disBlock{
+    display: block;
+}
+.color-picker-style{
+    width: 32px;height: 32px;border:1px solid #ccc;
+}
 
 
 

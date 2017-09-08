@@ -19,9 +19,10 @@
                 enlarged: "&",
                 data: "=",
                 type: "=",
-                typeContent: "="
+                typeContent: "=",
+                heightStyle: "="
             },
-            template: '<div id="line" style="width:100%;height: 350px"></div>',
+            template: '<div id="line" style="width:100%;height: 350px;" ></div>',
             link:  linkFunc
         };
 
@@ -32,7 +33,15 @@
                 if (!newValue || !newValue.length){
                     return;
                 }
-
+                var gridHeight = 100;
+                var gridTop1 = 60;
+                var gridTop2 = 188;
+                if(scope.heightStyle == 'height450'){
+                    gridHeight = (window.innerHeight -200)/3;
+                    var gridTop1 = "10%";
+                    var gridTop2 = (window.innerHeight -200)/2-4;
+                    $("#line").height(window.innerHeight -200);
+                }
                 var daySampleData = scope.data;
                 var timeData = [];
                 var countOfInSample = [];
@@ -60,6 +69,14 @@
                     },
                     toolbox: {
                         feature: {
+                            myEnlarged: {
+                                show: true,
+                                title: '放大',
+                                icon: "path://M947.509543 898.852403 726.787249 678.130109c55.154992-64.569202 88.411712-148.273808 88.411712-239.653043 0-203.735785-165.77196-369.507745-369.507745-369.507745s-369.507745 165.77196-369.507745 369.507745 165.77196 369.610073 369.507745 369.610073c91.379235 0 175.083841-33.359049 239.653043-88.411712l220.722294 220.722294c5.730389 5.730389 13.20036 8.595583 20.772659 8.595583 7.469971 0 15.04227-2.865194 20.772659-8.595583C958.970321 928.834616 958.970321 910.313181 947.509543 898.852403zM134.817628 438.477066c0-171.40002 139.473569-310.873588 310.873588-310.873588S756.564805 267.077046 756.564805 438.477066c0 171.40002-139.473569 310.873588-310.873588 310.873588S134.817628 609.877086 134.817628 438.477066z",
+                                onclick: function (){
+                                    scope.enlarged();
+                                }
+                            },
                             myMonth: {
                                 show: true,
                                 title: '月视图',
@@ -136,14 +153,6 @@
                                     scope.reloadData();
                                 }
                             },
-                            myZoom: {
-                                show: true,
-                                title: '日视图',
-                                icon: "<i class='fa fa-expand'></i>",
-                                onclick: function (){
-                                    scope.enlarged();
-                                }
-                            },
                             dataZoom: {
                                 yAxisIndex: 'false'
                             },
@@ -172,14 +181,14 @@
                     grid: [{
                         left: 60,
                         right: 40,
-                        top:60,
-                        height: 100
+                        top:gridTop1,
+                        height: gridHeight
 
                     }, {
                         left: 60,
                         right: 40,
-                        top: 188,
-                        height: 100
+                        top: gridTop2,
+                        height: gridHeight
                     }],
                     xAxis : [ //直角坐标系 grid 中的 x 轴
                         {
@@ -199,15 +208,15 @@
                     ],
                     yAxis : [
                         {
-                            name : '百支',
-                            type : 'value',
+                            name : '支',
+                            type : 'value'
                             // max : 20000
                         },
                         {
                             gridIndex: 1,//y 轴所在的 grid 的索引
-                            name : '百支',
+                            name : '支',
                             type : 'value',
-                            inverse: true, //是否是反向坐标轴，
+                            inverse: true //是否是反向坐标轴，
                             // max : 20000
                         }
                     ],
@@ -227,11 +236,18 @@
                             symbolSize: 8,
                             hoverAnimation: false,
                             data:countOfOutSample
+
                         }
                     ]
                 };
-                var myChart = echarts.init(document.getElementById('line'),'macarons');
-                myChart.setOption(option);
+                if(scope.heightStyle == 'height450'){
+                    option.toolbox.feature.myEnlarged.show = false;
+                }
+                setTimeout(function () {
+                    var myChart = echarts.init(document.getElementById('line'),'macarons');
+                    myChart.setOption(option);
+                },100);
+
             });
 
         }

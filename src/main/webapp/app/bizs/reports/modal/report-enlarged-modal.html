@@ -1,0 +1,32 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.cancel()"
+            style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span>&times;</span></button>
+    <h3 class="modal-title" id="modal-title">样本报表</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div ng-if="vm.status == '1'">
+        <grid-multiple-chart  type="vm.type" enlarged = "vm.enlarged(1)" type-content="vm.typeContent" data="vm.reportData" reload-data = "vm.searchType()" height-style="vm.heightStyle"></grid-multiple-chart>
+    </div>
+    <div ng-if="vm.status == '2'">
+        <scatter-map-chart data="vm.reportData"  left="vm.left" zoom="vm.zoom"></scatter-map-chart>
+    </div>
+    <div ng-if="vm.status == '3'">
+        <bar-project-sites-chart data="vm.reportData"  height-style="vm.heightStyle"></bar-project-sites-chart>
+    </div>
+    <div ng-if="vm.status == '4'">
+        <!--样本类型样本分布-->
+        <bar-sample-type-chart data="vm.reportData" height-style="vm.heightStyle"></bar-sample-type-chart>
+    </div>
+    <div ng-if="vm.status == '5'">
+        <!--性别-->
+        <pie-sex-chart data="vm.reportData"  height-style="vm.heightStyle"></pie-sex-chart>
+    </div>
+    <div ng-if="vm.status == '6'">
+        <!--疾病-->
+        <pie-disease-chart data="vm.reportData" height-style="vm.heightStyle"></pie-disease-chart>
+    </div>
+    <div ng-if="vm.status == '7'">
+        <!--年龄段样本分布-->
+        <bar-age-chart data="vm.reportData" height-style="vm.screenSize"></bar-age-chart>
+    </div>
+</div>

@@ -15,9 +15,12 @@
         var  directive  =  {
             restrict:  'EA',
             scope  :  {
-                data: "="
+                data: "=",
+                left: "=",
+                zoom: "=",
+                enlarged: "&"
             },
-            template: '<div id="map" style="width:100%;height: 600px"></div>',
+            template: '<div id="map" style="width:100%;height:600px"></div>',
             link:  linkFunc
         };
 
@@ -28,6 +31,8 @@
                 if (!newValue || !newValue.length){
                     return;
                 }
+
+
                 var geoCoordMap = {
                     '呼伦贝尔':[119.753086,49.218492],
                     '海门':[121.15,31.89],
@@ -256,7 +261,7 @@
                 var option = {
                     backgroundColor: '#fff',
                     title: {
-                        text: '全国样本分布图',
+                        text: '全国样本分布',
                         subtext: '',
                         sublink: '',
                         left: 'center',
@@ -283,6 +288,14 @@
                     },
                     toolbox: {
                         feature: {
+                            myEnlarged: {
+                                show: true,
+                                title: '放大',
+                                icon: "path://M947.509543 898.852403 726.787249 678.130109c55.154992-64.569202 88.411712-148.273808 88.411712-239.653043 0-203.735785-165.77196-369.507745-369.507745-369.507745s-369.507745 165.77196-369.507745 369.507745 165.77196 369.610073 369.507745 369.610073c91.379235 0 175.083841-33.359049 239.653043-88.411712l220.722294 220.722294c5.730389 5.730389 13.20036 8.595583 20.772659 8.595583 7.469971 0 15.04227-2.865194 20.772659-8.595583C958.970321 928.834616 958.970321 910.313181 947.509543 898.852403zM134.817628 438.477066c0-171.40002 139.473569-310.873588 310.873588-310.873588S756.564805 267.077046 756.564805 438.477066c0 171.40002-139.473569 310.873588-310.873588 310.873588S134.817628 609.877086 134.817628 438.477066z",
+                                onclick: function (){
+                                    scope.enlarged();
+                                }
+                            },
                             restore: {},
                             saveAsImage: {}
                         }
@@ -304,8 +317,8 @@
                                 areaColor: '#FDDD31'
                             }
                         },
-                        zoom:1.8,//当前视角的缩放比例。
-                        left:-100//组件离容器左侧的距离。
+                        zoom:scope.zoom,
+                        left:scope.left
                     },
                     series : [ //系列
                         {
@@ -378,7 +391,10 @@
                         }
                     ]
                 };
-
+                if(scope.zoom == 1.2){
+                    $("#map").height(window.innerHeight -200);
+                    option.toolbox.feature.myEnlarged.show = false;
+                }
                 var myChart = echarts.init(document.getElementById('map'));
                 myChart.setOption(option);
 

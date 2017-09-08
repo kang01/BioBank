@@ -15,11 +15,11 @@
         var  directive  =  {
             restrict:  'EA',
             scope  :  {
-                legend: "=",
-                item: "=",
-                data: "="
+                heightStyle: "=",
+                data: "=",
+                enlarged: "&"
             },
-            template: '<div id="bar2" style="width:100%;height: 200px"></div>',
+            template: '<div id="bar2" style="width:100%;height: 200px;"></div>',
             link:  linkFunc
         };
 
@@ -31,6 +31,7 @@
                 if (!newValue || !newValue.length){
                     return;
                 }
+
                 var sampleTypeSampleCountData = scope.data;
                 var sampleCountData = [];
                 var dataAxis = [];
@@ -62,6 +63,14 @@
                     },
                     toolbox: {
                         feature: {
+                            myEnlarged: {
+                                show: true,
+                                title: '放大',
+                                icon: "path://M947.509543 898.852403 726.787249 678.130109c55.154992-64.569202 88.411712-148.273808 88.411712-239.653043 0-203.735785-165.77196-369.507745-369.507745-369.507745s-369.507745 165.77196-369.507745 369.507745 165.77196 369.610073 369.507745 369.610073c91.379235 0 175.083841-33.359049 239.653043-88.411712l220.722294 220.722294c5.730389 5.730389 13.20036 8.595583 20.772659 8.595583 7.469971 0 15.04227-2.865194 20.772659-8.595583C958.970321 928.834616 958.970321 910.313181 947.509543 898.852403zM134.817628 438.477066c0-171.40002 139.473569-310.873588 310.873588-310.873588S756.564805 267.077046 756.564805 438.477066c0 171.40002-139.473569 310.873588-310.873588 310.873588S134.817628 609.877086 134.817628 438.477066z",
+                                onclick: function (){
+                                    scope.enlarged();
+                                }
+                            },
                             restore: {},
                             saveAsImage: {}
                         }
@@ -146,18 +155,25 @@
                     }
 
                 };
-                var myChart = echarts.init(document.getElementById('bar2'));
-                myChart.setOption(option);
-                // Enable data zoom when user click bar.
-                var zoomSize = 6;
-                myChart.on('click', function (params) {
-                    console.log(dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)]);
-                    myChart.dispatchAction({
-                        type: 'dataZoom',
-                        startValue: dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)],
-                        endValue: dataAxis[Math.min(params.dataIndex + zoomSize / 2, sampleCountData.length - 1)]
+                if(scope.heightStyle == 'height450'){
+                    $("#bar2").height(window.innerHeight -200);
+                    option.toolbox.feature.myEnlarged.show = false;
+                }
+                setTimeout(function () {
+                    var myChart = echarts.init(document.getElementById('bar2'));
+                    myChart.setOption(option);
+                    // Enable data zoom when user click bar.
+                    var zoomSize = 6;
+                    myChart.on('click', function (params) {
+                        console.log(dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)]);
+                        myChart.dispatchAction({
+                            type: 'dataZoom',
+                            startValue: dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)],
+                            endValue: dataAxis[Math.min(params.dataIndex + zoomSize / 2, sampleCountData.length - 1)]
+                        });
                     });
-                });
+                },100);
+
 
             })
 

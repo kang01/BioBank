@@ -30,7 +30,8 @@
             'blockUI',
             'toastr',
             'angularMoment',
-            'pageslide-directive'
+            'pageslide-directive',
+            'colorpicker.module'
         ])
         .run(run);
 

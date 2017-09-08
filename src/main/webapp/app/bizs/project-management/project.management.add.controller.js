@@ -8,15 +8,16 @@
         .module('bioBankApp')
         .controller('ProjectManagementAddController', ProjectManagementAddController);
 
-    ProjectManagementAddController.$inject = ['$scope'];
+    ProjectManagementAddController.$inject = ['$scope','$state'];
 
-    function ProjectManagementAddController($scope) {
+    function ProjectManagementAddController($scope,$state) {
         var vm = this;
         vm.titles = [
             {id:1,name:"项目信息",className:"active"},
             {id:2,name:"项目样本分类",className:""},
             {id:3,name:"项目点",className:""}
         ];
+        vm.color = "#fff";
         vm.nextStep = _fnNextStep;
         vm.preStep = _fnPreStep;
         //下一步
@@ -31,9 +32,19 @@
 
                 }
                 if(title.id == id){
-                    title.className = 'active'
+                    title.className = 'active';
+                    if(title.id == 1){
+                        $state.go("project-management-info")
+                    }
+                    if(title.id == 2){
+                        $state.go("project-management-sample-type")
+                    }
+                    if(title.id == 3){
+                        $state.go("project-management-sites")
+                    }
                 }
-            })
+            });
+
         }
         //上一步
         function _fnPreStep() {
@@ -43,6 +54,15 @@
                     title.className = 'active';
                     var titles1 = _.orderBy(vm.titles,'id','asc');
                     titles1[title.id].className = '';
+                    if(title.id == 1){
+                        $state.go("project-management-info")
+                    }
+                    if(title.id == 2){
+                        $state.go("project-management-sample-type")
+                    }
+                    if(title.id == 3){
+                        $state.go("project-management-sites")
+                    }
                     return false;
                 }
             });

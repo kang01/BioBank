@@ -56,5 +56,71 @@
 
                 }
             })
+            .state('project-management-info', {
+                parent: 'project-management-add',
+                url: '/info',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
+                    pageTitle: '项目信息'
+                },
+                views: {
+                    'projectManagementContent': {
+                        templateUrl: 'app/bizs/project-management/template/project-management-info.html',
+                        controller: 'ProjectManagementInfoController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+
+                        return $translate.refresh();
+                    }]
+
+                }
+            })
+            .state('project-management-sample-type', {
+                parent: 'project-management-add',
+                url: '/sample-type',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
+                    pageTitle: '样本分类'
+                },
+                views: {
+                    'projectManagementContent': {
+                        templateUrl: 'app/bizs/project-management/template/project-management-sample-type.html',
+                        controller: 'ProjectManagementSampleTypeController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+
+                        return $translate.refresh();
+                    }]
+
+                }
+            })
+            .state('project-management-sites', {
+                parent: 'project-management-add',
+                url: '/sites',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
+                    pageTitle: '项目点'
+                },
+                views: {
+                    'projectManagementContent': {
+                        templateUrl: 'app/bizs/project-management/template/project-management-sites.html',
+                        controller: 'ProjectManagementInfoController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+
+                        return $translate.refresh();
+                    }]
+
+                }
+            })
     }
 })();

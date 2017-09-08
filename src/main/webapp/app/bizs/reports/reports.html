@@ -18,7 +18,13 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <!--折线-->
-                        <grid-multiple-chart  type="vm.type" type-content="vm.typeContent" data="vm.daySampleCountData" reload-data = "vm.searchType()"></grid-multiple-chart>
+                        <div ng-if="vm.citySampleCountFlag" class="text-center">
+                            <h4 style="font-weight: bolder;">样本流向图</h4>
+                            <img src="content/images/nodata1.png" style="height:350px;width: 500px;" alt="样本流向图">
+                        </div>
+                        <div ng-if="!vm.citySampleCountFlag">
+                        <grid-multiple-chart  type="vm.type" enlarged = "vm.enlarged(1)" type-content="vm.typeContent" data="vm.daySampleCountData" reload-data = "vm.searchType()" height-style="vm.heightStyle" ></grid-multiple-chart>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -28,7 +34,13 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <!--城市的样本量统计-->
-                        <scatter-map-chart data="vm.citySampleCountData"></scatter-map-chart>
+                        <div ng-if="vm.citySampleCountFlag" class="text-center">
+                            <h4 style="font-weight: bolder;">城市的样本量</h4>
+                            <img src="content/images/nodata1.png" style="height:561px;width: 100%;" alt="城市的样本量">
+                        </div>
+                        <div ng-if="!vm.citySampleCountFlag">
+                            <scatter-map-chart data="vm.citySampleCountData" enlarged = "vm.enlarged(2)" left="vm.left" zoom="vm.zoom"></scatter-map-chart>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -40,19 +52,43 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <!--项目点样本分布-->
-                                    <bar-project-sites-chart data="vm.projectSiteSampleCountData"></bar-project-sites-chart>
+                                    <div ng-if="!vm.projectSiteSampleCountFlag" class="text-center" >
+                                        <h4 style="font-weight: bolder;">项目点样本分布</h4>
+                                        <img src="content/images/nodata1.png" style="height: 164px"  alt="项目点样本分布">
+                                    </div>
+                                    <div ng-if="vm.projectSiteSampleCountFlag">
+                                        <bar-project-sites-chart data="vm.projectSiteSampleCountData" enlarged = "vm.enlarged(3)" height-style="vm.screenSize"></bar-project-sites-chart>
+                                    </div>
+                                    <div ng-if="!vm.sampleTypeSampleCountFlag" class="text-center" >
+                                        <h4 style="font-weight: bolder;">样本类型分布</h4>
+                                        <img src="content/images/nodata1.png" style="height: 160px" alt="样本类型分布">
+                                    </div>
                                     <!--样本类型样本分布-->
-                                    <bar-sample-type-chart data="vm.sampleTypeSampleCountData"></bar-sample-type-chart>
+                                    <div ng-if="vm.sampleTypeSampleCountFlag">
+                                        <bar-sample-type-chart data="vm.sampleTypeSampleCountData" enlarged = "vm.enlarged(4)" height-style="vm.screenSize"></bar-sample-type-chart>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <!--性别-->
-                                    <pie-sex-chart data="vm.sexSampleCountData"></pie-sex-chart>
+                                    <div ng-if="!vm.sexSampleCountFlag" class="text-center">
+                                        <h4 style="font-weight: bolder;">样本性别</h4>
+                                        <img src="content/images/nodata1.png" style="height: 160px"  alt="样本性别">
+                                    </div>
+                                    <div ng-if="vm.sexSampleCountFlag" >
+                                        <pie-sex-chart data="vm.sexSampleCountData" enlarged = "vm.enlarged(5)" height-style="vm.heightStyle"></pie-sex-chart>
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
                                     <!--疾病-->
-                                    <pie-disease-chart data="vm.diseaseTypeSampleCountData"></pie-disease-chart>
+                                    <div ng-if="!vm.diseaseTypeSampleCountFlag" class="text-center"  >
+                                        <h4 style="font-weight: bolder;">样本疾病</h4>
+                                        <img src="content/images/nodata1.png" style="height: 160px"  alt="样本疾病">
+                                    </div>
+                                    <div ng-if="vm.diseaseTypeSampleCountFlag" >
+                                        <pie-disease-chart data="vm.diseaseTypeSampleCountData" enlarged = "vm.enlarged(6)" height-style="vm.heightStyle"></pie-disease-chart>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +100,13 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <!--年龄段样本分布-->
-                        <bar-age-chart data="vm.ageSampleCountData"></bar-age-chart>
+                        <div ng-if="vm.ageSampleCountFlag" class="text-center">
+                            <h4 style="font-weight: bolder;">样本年龄</h4>
+                            <img src="content/images/nodata1.png" style="height:561px;width: 100%;" alt="样本年龄">
+                        </div>
+                        <div ng-if="!vm.ageSampleCountFlag">
+                            <bar-age-chart data="vm.ageSampleCountData" enlarged = "vm.enlarged(7)"  height-style="vm.screenSize"></bar-age-chart>
+                        </div>
                     </div>
                 </div>
             </div>

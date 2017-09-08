@@ -64,6 +64,7 @@
                 "positionDestroyRecord": "Position Destroy Record",
                 "attachment": "Attachment",
                 "coordinate": "Coordinate",
+                "province": "Province",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
                 "transportrecord":"转运记录"
             },

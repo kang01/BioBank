@@ -1,0 +1,39 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.province.detail.title">Province</span> {{vm.province.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.province.name">Name</span></dt>
+        <dd>
+            <span>{{vm.province.name}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.province.code">Code</span></dt>
+        <dd>
+            <span>{{vm.province.code}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.province.longitude">Longitude</span></dt>
+        <dd>
+            <span>{{vm.province.longitude}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.province.latitude">Latitude</span></dt>
+        <dd>
+            <span>{{vm.province.latitude}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.province.status">Status</span></dt>
+        <dd>
+            <span>{{vm.province.status}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="province-detail.edit({id:vm.province.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

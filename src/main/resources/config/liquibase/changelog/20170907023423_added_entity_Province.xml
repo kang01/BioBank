@@ -14,18 +14,18 @@
     <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
 
     <!--
-        Added the entity Coordinate.
+        Added the entity Province.
     -->
-    <changeSet id="20170904070135-1" author="jhipster">
-        <createTable tableName="coordinate" remarks="坐标表">
+    <changeSet id="20170907023423-1" author="jhipster">
+        <createTable tableName="province" remarks="省信息表">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="province" type="nvarchar(100)" remarks="省">
+            <column name="name" type="nvarchar(100)" remarks="名称">
                 <constraints nullable="false" />
             </column>
 
-            <column name="city" type="nvarchar(100)" remarks="市">
+            <column name="code" type="nvarchar(100)" remarks="编码">
                 <constraints nullable="false" />
             </column>
 
@@ -39,10 +39,6 @@
 
             <column name="status" type="nvarchar(20)" remarks="状态">
                 <constraints nullable="false" />
-            </column>
-
-            <column name="memo" type="nvarchar(1024)" remarks="备注">
-                <constraints nullable="true" />
             </column>
 
             <column name="created_by" type="nvarchar(50)" remarks="创建人">

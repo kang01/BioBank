@@ -1115,7 +1115,7 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
     @Test
     public  void getLocation() throws IOException, JSONException {
         //这里调用百度的ip定位api服务 详见 http://api.map.baidu.com/lbsapi/cloud/ip-location-api.htm
-        JSONObject json = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?address=","内蒙古\"和林县疾控中心\"");
+        JSONObject json = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?address=","陕西省西安");
         ObjectMapper objectMapper=new ObjectMapper();
         GeocoderSearchResponse response = objectMapper.readValue(json.getString("GeocoderSearchResponse"),GeocoderSearchResponse.class);
         BigDecimal lat = response.getResult().getLocation().getLat();
@@ -1552,5 +1552,59 @@ private final Logger log = LoggerFactory.getLogger(ImportSampleTest.class);
             coordinates.add(coordinate);
         }
         coordinateRepository.save(coordinates);
+    }
+    @Autowired ProvinceRepository provinceRepository;
+    @Test
+    public void createProvince() throws IOException, JSONException{
+        Connection con = null;// 创建一个数据库连接
+        PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
+        ResultSet result = null;// 创建一个结果集对象
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        try{
+            con = DBUtilForTemp.open();
+            System.out.println("连接成功！");
+            String sqlForSelect = "select * from PROVINCE";// 预编译语句
+            pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
+            result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
+            ResultSetMetaData rsMeta = result.getMetaData();
+            Map<String, Object> map = null;
+            while (result.next()){
+                map = this.Result2Map(result,rsMeta);
+                list.add(map);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                DBUtilForTemp.close(con);
+                System.out.println("数据库连接已关闭！");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        List<Province> alist = new ArrayList<Province>();
+       for(int i =0;i<list.size();i++){
+           Province province = new Province();
+            String name = list.get(i).get("NAME").toString();
+           String code = list.get(i).get("CODE").toString();
+           String city = list.get(i).get("CITY").toString();
+           province.setName(name);province.setCode(code);province.setStatus(Constants.VALID);
+           JSONObject json = GeocoderReaderUtils.readJsonFromUrl("http://api.map.baidu.com/geocoder?address=",(name+city).replaceAll("\r|\n", "").replaceAll(" +",""));
+           ObjectMapper objectMapper=new ObjectMapper();
+           System.out.print(json.toString());
+           if(json.length()==0||json == null || json.getString("GeocoderSearchResponse") == null ){
+               throw new BankServiceException("获取坐标失败！");
+           }else{
+               if(json.getJSONObject("GeocoderSearchResponse").get("status").equals("OK")) {
+                   GeocoderSearchResponse response = objectMapper.readValue(json.getString("GeocoderSearchResponse"), GeocoderSearchResponse.class);
+                   if (response != null && response.getStatus().equals("OK")) {
+                       BigDecimal lat = response.getResult().getLocation().getLat();
+                       BigDecimal lng = response.getResult().getLocation().getLng();
+                       province.setLongitude(lng);province.setLatitude(lat);alist.add(province);
+                   }
+               }
+           }
+       }
+        provinceRepository.save(alist);
     }
 }

@@ -19,7 +19,7 @@ public class DBUtilForTemp {
     static {
         driver="oracle.jdbc.driver.OracleDriver";//需要的数据库驱动
         url="jdbc:oracle:" + "thin:@10.24.10.56:1521:xe";//数据库名路径
-        username="biobank_temp_01";
+        username="biobank_temp_0825";
         password="root123";
     }
     public static Connection open()

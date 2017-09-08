@@ -18,7 +18,9 @@
                 data: "=",
                 left: "=",
                 zoom: "=",
-                enlarged: "&"
+                mapStatus: "=",
+                enlarged: "&",
+                querySampleCount: "&"
             },
             template: '<div id="map" style="width:100%;height:600px"></div>',
             link:  linkFunc
@@ -228,11 +230,32 @@
                 };
                 var citySampleCountdata = scope.data;
                 var cityData = [];
-                _.forEach(citySampleCountdata,function (data) {
-                   data.city = _.replace(data.city, '市', '');
-                    cityData.push( _.pick(data, ['longitude', 'latitude','city']));
-                });
-                var geoCityMap =  _.groupBy(cityData,"city");
+                var geoCityMap;
+                //城市
+                if(scope.mapStatus == "市"){
+                    _.forEach(citySampleCountdata,function (data) {
+                        data.city = _.replace(data.city, '市', '');
+                        cityData.push( _.pick(data, ['longitude', 'latitude','city']));
+                    });
+                    geoCityMap =  _.groupBy(cityData,"city");
+                }
+                //省份
+                if(scope.mapStatus == "省"){
+                    _.forEach(citySampleCountdata,function (data) {
+                        data.province = _.replace(data.province, '市', '');
+                        data.province = _.replace(data.province, '省', '');
+                        cityData.push( _.pick(data, ['longitude', 'latitude','province']));
+                    });
+                    geoCityMap =  _.groupBy(cityData,"province");
+                }
+                //项目点
+                if(scope.mapStatus == "项目点"){
+                    _.forEach(citySampleCountdata,function (data) {
+                        cityData.push( _.pick(data, ['longitude', 'latitude','projectSiteName']));
+                    });
+                    geoCityMap =  _.groupBy(cityData,"projectSiteName");
+                }
+
                 for(var city in geoCityMap){
                     var geoCoord = geoCoordMap[city];
                         if (!geoCoord) {
@@ -245,23 +268,46 @@
 
                 var convertData = function (data) {
                     var res = [];
-                    for (var i = 0; i < data.length; i++) {
-                        var geoCoord = geoCoordMap[data[i].city];
-                        if (geoCoord) {
-                            res.push({
-                                name: data[i].city,
-                                value: geoCoord.concat(data[i].countOfSample)
-                            });
+                    if(scope.mapStatus === "市"){
+                        for (var i = 0; i < data.length; i++) {
+                            var geoCoord = geoCoordMap[data[i].city];
+                            if (geoCoord) {
+                                res.push({
+                                    name: data[i].city,
+                                    value: geoCoord.concat(data[i].countOfSample)
+                                });
+                            }
                         }
                     }
-
+                    if(scope.mapStatus === "省"){
+                        for (var j = 0; j < data.length; j++) {
+                            var geoCoord = geoCoordMap[data[j].province];
+                            if (geoCoord) {
+                                res.push({
+                                    name: data[j].province,
+                                    value: geoCoord.concat(data[j].countOfSample)
+                                });
+                            }
+                        }
+                    }
+                    if( scope.mapStatus === "项目点"){
+                        for (var k = 0; k < data.length; k++) {
+                            var geoCoord = geoCoordMap[data[k].projectSiteName];
+                            if (geoCoord) {
+                                res.push({
+                                    name: data[k].projectSiteName,
+                                    value: geoCoord.concat(data[k].countOfSample)
+                                });
+                            }
+                        }
+                    }
                     return res;
                 };
 
                 var option = {
                     backgroundColor: '#fff',
                     title: {
-                        text: '全国样本分布',
+                        text: '全国('+scope.mapStatus+')样本分布',
                         subtext: '',
                         sublink: '',
                         left: 'center',
@@ -288,6 +334,39 @@
                     },
                     toolbox: {
                         feature: {
+                            myProvince: {
+                                show: true,
+                                title: '省会',
+                                icon: "path://M284.768 481.872c149.376-29.6832 267.6576-62.0288 354.8448-97.0304l18.7488 31.4048c-62.4992 23.4368-141.488 46.7232-236.9536 69.8432h274.4544v256.4064h-34.688v-20.624h-263.4368v21.5616h-34.688v-243.5168a8138.112 8138.112 0 0 1-65.6256 14.2944c-3.4368-10.3072-7.6576-21.088-12.656-32.3392z m144.3744-168.7488l25.7824 27.6576a2343.76 2343.76 0 0 1-135.936 98.9056 2287.2736 2287.2736 0 0 0-22.032-30.4672c48.4352-30.9408 92.496-62.9696 132.1856-96.096z m232.032 204.8416h-263.4368v36.5632h263.4368v-36.5632z m-263.4368 104.064h263.4368v-36.5632h-263.4368v36.5632z m0 67.968h263.4368v-37.0304h-263.4368v37.0304z m100.7808-404.5312h35.6256v128.4384h-35.6256V285.4656z m93.7504 54.8448l19.2192-27.6576a2694.4832 2694.4832 0 0 1 138.2816 80.624l-22.4992 32.8128c-41.568-29.0624-86.5632-57.6544-135.0016-85.7792z",
+                                onclick: function (){
+                                    scope.mapStatus = "省";
+                                    scope.$apply();
+                                    scope.querySampleCount();
+
+                                }
+                            },
+                            myCity: {
+                                show: true,
+                                title: '城市',
+                                icon: "path://M44.032 179.2l451.584 0q-14.336-29.696-32.256-59.904t-35.328-59.904l71.68-35.84q23.552 32.768 42.496 64t33.28 64l-63.488 27.648 472.064 0 0 76.8-432.128 0 0 131.072 348.16 0 0 356.352q3.072 63.488-27.136 95.232t-96.768 28.672l-128 0-16.384-71.68 48.128 0q20.48 3.072 38.912 3.584t32.768 0.512q78.848 6.144 72.704-68.608l0-271.36-272.384 0 0 523.264-79.872 0 0-523.264-268.288 0 0 423.936-75.776 0 0-496.64 344.064 0 0-131.072-428.032 0 0-76.8z",
+                                onclick: function (){
+                                    scope.mapStatus = "市";
+                                    scope.$apply();
+                                    scope.querySampleCount();
+                                }
+                            },
+
+                            myProjectSites: {
+                                show: true,
+                                title: '项目点',
+                                icon: "path://M140.288 684.032l0-360.448 300.032 0 0-300.032 108.544 0 0 96.256 427.008 0 0 99.328-427.008 0 0 104.448 343.04 0 0 360.448-751.616 0zM251.904 423.936l0 159.744 528.384 0 0-159.744-528.384 0zM132.096 979.968l-103.424-36.864 15.36-27.648q32.768-57.344 54.784-102.4t33.28-77.824l104.448 24.576q-12.288 26.624-30.72 68.096t-45.056 95.744zM888.832 967.68q-9.216-23.552-27.648-59.904t-45.056-88.576q-8.192-20.48-16.896-35.84t-14.848-23.552l104.448-31.744 44.032 83.968 59.392 115.712zM356.352 963.584q-6.144-49.152-35.84-151.552l-16.384-52.224 104.448-12.288 27.648 100.352 27.648 99.328zM608.256 955.392q-9.216-38.912-25.088-87.552t-42.496-112.128l103.424-16.384 20.48 52.224 52.224 140.288z",
+                                onclick: function (){
+                                    scope.mapStatus = "项目点";
+                                    scope.$apply();
+                                    scope.querySampleCount();
+
+                                }
+                            },
                             myEnlarged: {
                                 show: true,
                                 title: '放大',

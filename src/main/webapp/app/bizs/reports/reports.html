@@ -39,7 +39,7 @@
                             <img src="content/images/nodata1.png" style="height:561px;width: 100%;" alt="城市的样本量">
                         </div>
                         <div ng-if="!vm.citySampleCountFlag">
-                            <scatter-map-chart data="vm.citySampleCountData" enlarged = "vm.enlarged(2)" left="vm.left" zoom="vm.zoom"></scatter-map-chart>
+                            <scatter-map-chart data="vm.citySampleCountData" enlarged = "vm.enlarged(2)"  query-sample-count = "vm.querySampleCount()" left="vm.left" map-status="vm.mapStatus" zoom="vm.zoom"></scatter-map-chart>
                         </div>
                     </div>
                 </div>

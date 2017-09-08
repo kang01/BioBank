@@ -12,8 +12,10 @@
     function ReportService($http) {
         var API_HOST = "http://10.24.200.13:8601/api";
         var service = {
-            //获取全国样本分布
+            //获取全国城市样本分布
             queryCitySampleCount:_fnQueryCitySampleCount,
+            //获取全国省份样本分布
+            queryProvinceSampleCount:_fnQueryProvinceSampleCount,
             //项目点样本分布
             queryProjectSiteSampleCount:_fnQueryProjectSiteSampleCount,
             //每天的样本流向
@@ -29,6 +31,9 @@
         };
         function _fnQueryCitySampleCount(params) {
             return $http.post(API_HOST+'/sample-flowing-report/project-site-location-samples/city?searchForm='+params);
+        }
+        function _fnQueryProvinceSampleCount(params) {
+            return $http.post(API_HOST+'/sample-flowing-report/project-site-location-samples/province?searchForm='+params);
         }
         function _fnQueryProjectSiteSampleCount(params) {
             return $http.post(API_HOST+'/sample-flowing-report/project-site-samples?searchForm='+params);

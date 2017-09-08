@@ -44,6 +44,8 @@
         vm.diseaseTypeSampleCountFlag = false;
         vm.daySampleCountFlag = false;
         vm.citySampleCountFlag = false;
+        vm.mapStatus = "市";
+
 
         function _init() {
 
@@ -59,7 +61,7 @@
                     }
                 })
             }
-            //全国样本分布
+            //全国城市样本分布
             function _fnQueryCitySampleCount(){
                 ReportService.queryCitySampleCount(searchForm).success(function (data) {
                     vm.citySampleCountData = data;
@@ -71,10 +73,23 @@
                     }
                 })
             }
+            //全国省份样本分布
+            function _fnQueryProvinceSampleCount() {
+                ReportService.queryProvinceSampleCount(searchForm).success(function (data) {
+                    vm.citySampleCountData = data;
+                    // var len = _.filter(vm.citySampleCountData,{countOfSample:0}).length;
+                    // if(len == vm.citySampleCountData.length){
+                    //     vm.citySampleCountFlag = true;
+                    // }else{
+                    //     vm.citySampleCountFlag = false;
+                    // }
+                })
+            }
             //项目点样本分布
             function _fnQueryProjectSiteSampleCount(){
                 ReportService.queryProjectSiteSampleCount(searchForm).success(function (data) {
                     vm.projectSiteSampleCountData = data;
+                    vm.citySampleCountData = data;
                     if(vm.projectSiteSampleCountData.length){
                         vm.projectSiteSampleCountFlag = true;
                     }else{
@@ -133,6 +148,8 @@
             _fnQueryEveyDaySampleCount();
             //全国样本分布
             _fnQueryCitySampleCount();
+            //全国样本分布
+            _fnQueryProvinceSampleCount();
             //项目点样本分布
             _fnQueryProjectSiteSampleCount();
             //样本类型样本量分布
@@ -148,6 +165,17 @@
             vm.searchType = function () {
                 _fnQueryEveyDaySampleCount();
             };
+
+            vm.querySampleCount = function () {
+                if(vm.mapStatus === "市"){
+                    _fnQueryCitySampleCount();
+                }else if(vm.mapStatus === "省"){
+                    _fnQueryProvinceSampleCount();
+                }else if(vm.mapStatus === "项目点"){
+                    _fnQueryProjectSiteSampleCount();
+                }
+
+            }
         }
         function _searchCondition() {
             //获取项目
@@ -421,9 +449,11 @@
 
         vm.reportData = items.reportData;
         vm.status = items.status;
-
-
-
+        vm.dto = {
+            frozenBoxCodeStr:[]
+        };
+        var searchForm = angular.toJson(vm.dto);
+        vm.mapStatus = "市";
         //切换类型
         vm.searchType = function () {
             _fnQueryEveyDaySampleCount();
@@ -434,6 +464,35 @@
                 vm.reportData = data;
             })
         }
+        //全国城市样本分布
+        function _fnQueryCitySampleCount(){
+            ReportService.queryCitySampleCount(searchForm).success(function (data) {
+                vm.reportData = data;
+            })
+        }
+        //全国省份样本分布
+        function _fnQueryProvinceSampleCount() {
+            ReportService.queryProvinceSampleCount(searchForm).success(function (data) {
+                vm.reportData = data;
+            })
+        }
+        //项目点样本分布
+        function _fnQueryProjectSiteSampleCount(){
+            ReportService.queryProjectSiteSampleCount(searchForm).success(function (data) {
+                vm.reportData = data;
+            })
+        }
+
+        vm.querySampleCount = function () {
+            if(vm.mapStatus == "市"){
+                _fnQueryCitySampleCount();
+            }else if(vm.mapStatus == "省"){
+                _fnQueryProvinceSampleCount();
+            }else if(vm.mapStatus == "项目点"){
+                _fnQueryProjectSiteSampleCount();
+            }
+
+        };
 
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

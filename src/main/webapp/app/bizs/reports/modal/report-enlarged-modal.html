@@ -8,7 +8,7 @@
         <grid-multiple-chart  type="vm.type" enlarged = "vm.enlarged(1)" type-content="vm.typeContent" data="vm.reportData" reload-data = "vm.searchType()" height-style="vm.heightStyle"></grid-multiple-chart>
     </div>
     <div ng-if="vm.status == '2'">
-        <scatter-map-chart data="vm.reportData"  query-sample-count = "vm.querySampleCount()" map-status="vm.mapStatus" left="vm.left" zoom="vm.zoom"></scatter-map-chart>
+        <scatter-map-chart data="vm.reportData"  query-sample-count = "vm.querySampleCount()" geo-index = "vm.geoIndex" map-status="vm.mapStatus" left="vm.left" zoom="vm.zoom"></scatter-map-chart>
     </div>
     <div ng-if="vm.status == '3'">
         <bar-project-sites-chart data="vm.reportData"  height-style="vm.heightStyle"></bar-project-sites-chart>

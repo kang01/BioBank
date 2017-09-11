@@ -19,7 +19,8 @@
                     <div class="row" ng-repeat="item in vm.sampleTypeItem track by $index">
                         <form class="form-inline">
                             <div class="col-md-4">
-                                <input type="text" class="form-control">
+                                <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
+                                           ng-model="vm.box.sampleTypeId"+item.id></selectize>
                             </div>
                             <div class="col-md-2">
                                 <input type="text" class="form-control">
@@ -27,7 +28,8 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" >
+                                        <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
+                                                   ng-model="vm.box.sampleClassificationId"></selectize>
                                         <div class="input-group-addon" colorpicker  ng-model="vm.color"  class="color-picker-style" ng-click="vm.changeColor(vm.color)"
                                              ng-style="vm.obj">
                                         </div>
@@ -61,6 +63,39 @@
 
                 </div>
                 <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-1" style="margin-left: 52px;">
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="col-md-1" style="margin-left: 7px;">
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="col-md-1" style="margin-left: 10px;">
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="col-md-1" style="margin-left: 10px;">
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="col-md-1" style="margin-left: 10px;">
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="col-md-1" style="margin-left: 10px;">
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="col-md-1" style="margin-left: 10px;">
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="col-md-1" style="margin-left: 10px;">
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="col-md-1" style="margin-left: 10px;">
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="col-md-1" style="margin-left: 10px;">
+                            <input type="text" class="form-control">
+                        </div>
+
+                    </div>
                     <hot-table hot-id="tube" settings="vm.settings" class="tube"
                                style="width: 100%; padding: 0;margin: 0;"></hot-table>
                 </div>

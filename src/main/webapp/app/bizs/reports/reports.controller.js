@@ -45,6 +45,7 @@
         vm.daySampleCountFlag = false;
         vm.citySampleCountFlag = false;
         vm.mapStatus = "市";
+        vm.geoIndex = 10;
 
 
         function _init() {
@@ -454,13 +455,14 @@
         };
         var searchForm = angular.toJson(vm.dto);
         vm.mapStatus = "市";
+        vm.geoIndex = 10;
         //切换类型
         vm.searchType = function () {
             _fnQueryEveyDaySampleCount();
         };
         //样本流向
         function _fnQueryEveyDaySampleCount(){
-            ReportService.queryEveyDaySampleCount(preThreeMonthDate,nowDate,vm.type).success(function (data) {
+            ReportService.queryEveyDaySampleCount(preThreeMonthDate,nowDate,vm.type,searchForm).success(function (data) {
                 vm.reportData = data;
             })
         }

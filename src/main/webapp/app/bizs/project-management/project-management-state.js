@@ -110,7 +110,29 @@
                 views: {
                     'projectManagementContent': {
                         templateUrl: 'app/bizs/project-management/template/project-management-sites.html',
-                        controller: 'ProjectManagementInfoController',
+                        controller: 'ProjectManagementSitesController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+
+                        return $translate.refresh();
+                    }]
+
+                }
+            })
+            .state('project-management-equipment', {
+                parent: 'project-management-add',
+                url: '/equipment',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN'],
+                    pageTitle: '设备'
+                },
+                views: {
+                    'projectManagementContent': {
+                        templateUrl: 'app/bizs/project-management/template/project-management-equipment.html',
+                        controller: 'ProjectManagementEquipmentController',
                         controllerAs: 'vm'
                     }
                 },

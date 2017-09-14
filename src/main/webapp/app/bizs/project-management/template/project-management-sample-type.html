@@ -15,91 +15,77 @@
                 </div>
 
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" style="height: 540px;">
                     <div class="row" ng-repeat="item in vm.sampleTypeItem track by $index">
                         <form class="form-inline">
                             <div class="col-md-4">
                                 <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                           ng-model="vm.box.sampleTypeId"+item.id></selectize>
+                                           ng-model="item.sampleTypeId"></selectize>
                             </div>
                             <div class="col-md-2">
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control"  ng-model="item.num" onkeyup="this.value=this.value.replace(/[^\d]/g,'');" maxlength="2">
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <div class="input-group">
-                                        <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
-                                                   ng-model="vm.box.sampleClassificationId"></selectize>
-                                        <div class="input-group-addon" colorpicker  ng-model="vm.color"  class="color-picker-style" ng-click="vm.changeColor(vm.color)"
-                                             ng-style="vm.obj">
-                                        </div>
-                                    </div>
+                                    <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
+                                               ng-model="item.sampleClassificationId"></selectize>
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <button class="btn btn-default">&times;</button>
+                                <div colorpicker  ng-model="item.color"  class="color-picker-style" style="float:left;"
+                                     ng-style="{'background-color':item.color}">
+                                </div>
+                                <button class="btn btn-default" style="margin-left: 4px" ng-if="$index != 0" ng-click="vm.removeSampleType($index)">&times;</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8 pl-0" >
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
-                        <div class="col-md-4">
-                            <h4>
-                                99样本
-                                <label class="checkbox-inline">
-                                    <input type="checkbox">启用
-                                </label>
-                            </h4>
-                        </div>
-                        <div class="col-md-8 text-right">
-                            <button class="btn btn-default" style="margin-top: 3px" ng-click="vm.createSampleType()">创建</button>
+                        <div class="col-md-8">
+                            <div style="float: left">
+                                <h4>
+                                    99样本
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" ng-model="vm.startUseFlag" ng-true-value="true" ng-false-value="false">启用
+                                    </label>
+
+                                </h4>
+                            </div>
+
+                            <div style="float: left;margin-left: 10px;margin-top: 3px;">
+                                <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
+                                           ng-model="vm.box.frozenBoxTypeId" style="width: 150px;" ng-disabled="!vm.startUseFlag"></selectize>
+                            </div>
+
                         </div>
                     </div>
 
                 </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-1" style="margin-left: 52px;">
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="col-md-1" style="margin-left: 7px;">
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="col-md-1" style="margin-left: 10px;">
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="col-md-1" style="margin-left: 10px;">
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="col-md-1" style="margin-left: 10px;">
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="col-md-1" style="margin-left: 10px;">
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="col-md-1" style="margin-left: 10px;">
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="col-md-1" style="margin-left: 10px;">
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="col-md-1" style="margin-left: 10px;">
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="col-md-1" style="margin-left: 10px;">
-                            <input type="text" class="form-control">
+                <div class="panel-body sample-type-num p-0" style="height: 534px;">
+                    <div class="row pt-10 pb-10">
+                        <div class="col-md-1" ng-repeat="item in vm.nums track by $index" >
+                            <input type="text" class="form-control" ng-model="item" ng-blur="vm.changeSampleTypeColor($index,item)" ng-disabled="!vm.startUseFlag">
                         </div>
 
                     </div>
-                    <hot-table hot-id="tube" settings="vm.settings" class="tube"
+                    <button id="tableHeader" ng-click="vm.changeSampleTypeColor(index)"></button>
+                    <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"
                                style="width: 100%; padding: 0;margin: 0;"></hot-table>
                 </div>
             </div>
         </div>
     </div>
 </form>
+
+<div id="div" style="width: 100px;
+  height: 100px;
+  background: #f00;
+  cursor: pointer;
+  position: absolute;
+  left: 0;
+  top: 0;"></div>

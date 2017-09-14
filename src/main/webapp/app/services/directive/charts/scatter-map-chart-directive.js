@@ -230,6 +230,7 @@
                     '大庆':[125.03,46.58]
                 };
                 var citySampleCountdata = scope.data;
+
                 var cityData = [];
                 var geoCityMap;
                 //城市
@@ -239,6 +240,7 @@
                         cityData.push( _.pick(data, ['longitude', 'latitude','city']));
                     });
                     geoCityMap =  _.groupBy(cityData,"city");
+
                 }
                 //省份
                 if(scope.mapStatus == "省"){
@@ -266,20 +268,19 @@
                             geoCoordMap[city] =  array;
                         }
                 }
+                var cityColorData = [];
+                _.forEach(citySampleCountdata,function (city) {
+                    var obj = {};
+                    obj.name = city.province;
+                    obj.value = city.countOfSample;
+                    if(obj.value){
+                        cityColorData.push(obj);
+                    }
+
+                });
 
                 var convertData = function (data) {
                     var res = [];
-                    if(scope.mapStatus === "市"){
-                        for (var i = 0; i < data.length; i++) {
-                            var geoCoord = geoCoordMap[data[i].city];
-                            if (geoCoord) {
-                                res.push({
-                                    name: data[i].city,
-                                    value: geoCoord.concat(data[i].countOfSample)
-                                });
-                            }
-                        }
-                    }
                     if(scope.mapStatus === "省"){
                         for (var j = 0; j < data.length; j++) {
                             var geoCoord = geoCoordMap[data[j].province];
@@ -287,6 +288,17 @@
                                 res.push({
                                     name: data[j].province,
                                     value: geoCoord.concat(data[j].countOfSample)
+                                });
+                            }
+                        }
+                    }
+                    if(scope.mapStatus === "市"){
+                        for (var i = 0; i < data.length; i++) {
+                            var geoCoord = geoCoordMap[data[i].city];
+                            if (geoCoord) {
+                                res.push({
+                                    name: data[i].city,
+                                    value: geoCoord.concat(data[i].countOfSample)
                                 });
                             }
                         }
@@ -302,6 +314,7 @@
                             }
                         }
                     }
+                    // console.log(JSON.stringify(res));
                     return res;
                 };
                 function randomValue() {
@@ -387,7 +400,7 @@
                     },
                     visualMap: {
                         min: 0,
-                        max: 1500,
+                        max: 15000,
                         seriesIndex: [0],
                         inRange: {
                             color: ['#e0ffff', '#006edd']
@@ -415,6 +428,7 @@
                             normal: {
                                 areaColor: '#CCCCCC',
                                 borderColor: '#aaa'
+
                             },
                             emphasis: {
                                 areaColor: '#FDDD31'
@@ -429,42 +443,7 @@
                             type: 'map',
                             geoIndex: scope.geoIndex ,
                             tooltip: {show: false},
-                            data:[
-                                {name: '北京', value: randomValue()},
-                                {name: '天津', value: randomValue()},
-                                {name: '上海', value: randomValue()},
-                                {name: '重庆', value: randomValue()},
-                                {name: '河北', value: randomValue()},
-                                {name: '河南', value: randomValue()},
-                                {name: '云南', value: randomValue()},
-                                {name: '辽宁', value: randomValue()},
-                                {name: '黑龙江', value: randomValue()},
-                                {name: '湖南', value: randomValue()},
-                                {name: '安徽', value: randomValue()},
-                                {name: '山东', value: randomValue()},
-                                {name: '新疆', value: randomValue()},
-                                {name: '江苏', value: randomValue()},
-                                {name: '浙江', value: randomValue()},
-                                {name: '江西', value: randomValue()},
-                                {name: '湖北', value: randomValue()},
-                                {name: '广西', value: randomValue()},
-                                {name: '甘肃', value: randomValue()},
-                                {name: '山西', value: randomValue()},
-                                {name: '内蒙古', value: randomValue()},
-                                {name: '陕西', value: randomValue()},
-                                {name: '吉林', value: randomValue()},
-                                {name: '福建', value: randomValue()},
-                                {name: '贵州', value: randomValue()},
-                                {name: '广东', value: randomValue()},
-                                {name: '青海', value: randomValue()},
-                                {name: '西藏', value: randomValue()},
-                                {name: '四川', value: randomValue()},
-                                {name: '宁夏', value: randomValue()},
-                                {name: '海南', value: randomValue()},
-                                {name: '台湾', value: randomValue()},
-                                {name: '香港', value: randomValue()},
-                                {name: '澳门', value: randomValue()}
-                            ]
+                            data:cityColorData
                         },
                         {
                             name: '样本量',

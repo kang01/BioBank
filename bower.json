@@ -48,7 +48,8 @@
     "angular-pageslide-directive": "^2.1.4",
     "handsontable": "^0.33.0",
     "echarts": "^3.7.0",
-    "angular-bootstrap-colorpicker": "^3.0.31"
+    "angular-bootstrap-colorpicker": "^3.0.31",
+    "konva": "^1.6.8"
   },
   "devDependencies": {
     "angular-mocks": "1.5.8"
@@ -78,6 +79,19 @@
       "main": [
         "dist/css/bootstrap.css"
       ]
+    },
+    "echarts": {
+      "main": [
+        "dist/echarts.js",
+        "map/js/china.js"
+      ]
+    },
+    "angular-bootstrap-colorpicker": {
+      "dependencies": {
+        "angular": ">=1.4.0",
+        "jquery": ">=1.9.0",
+        "bootstrap": ">=2.3.2"
+      }
     }
   },
   "resolutions": {

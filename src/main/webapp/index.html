@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css">
     <link rel="stylesheet" href="bower_components/ion.rangeSlider/css/ion.rangeSlider.css">
     <link rel="stylesheet" href="bower_components/ion.rangeSlider/css/ion.rangeSlider.skinFlat.css">
-    <link rel="stylesheet" href="bower_components/angular-bootstrap-colorpicker/css/colorpicker.css">
     <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css">
     <link rel="stylesheet" href="bower_components/angular-datatables/dist/css/angular-datatables.css">
     <link rel="stylesheet" href="bower_components/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css">
@@ -26,6 +25,7 @@
     <link rel="stylesheet" href="bower_components/selectize/dist/css/selectize.css">
     <link rel="stylesheet" href="bower_components/angular-block-ui/dist/angular-block-ui.css">
     <link rel="stylesheet" href="bower_components/angular-toastr/dist/angular-toastr.css">
+    <link rel="stylesheet" href="bower_components/angular-bootstrap-colorpicker/css/colorpicker.css">
     <!-- endinject -->
     <!-- endbuild -->
     <!--<link rel="stylesheet" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />-->
@@ -87,8 +87,8 @@
     <script src="bower_components/datatables-buttons/js/buttons.print.js"></script>
     <script src="bower_components/ion.rangeSlider/js/ion.rangeSlider.js"></script>
     <script src="bower_components/copycss/jquery.copycss.js"></script>
+    <script src="bower_components/konva/konva.min.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js"></script>
     <script src="bower_components/angular-aria/angular-aria.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/angular-cache-buster/angular-cache-buster.js"></script>
@@ -127,6 +127,9 @@
     <script src="bower_components/angular-toastr/dist/angular-toastr.tpls.js"></script>
     <script src="bower_components/angular-moment/angular-moment.js"></script>
     <script src="bower_components/angular-pageslide-directive/dist/angular-pageslide-directive.js"></script>
+    <script src="bower_components/echarts/dist/echarts.js"></script>
+    <script src="bower_components/echarts/map/js/china.js"></script>
+    <script src="bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js"></script>
     <script src="bower_components/ngHandsontable/dist/ngHandsontable.js"></script>
     <script src="bower_components/angular-selectize2/dist/angular-selectize.js"></script>
     <!-- endinject -->
@@ -135,8 +138,6 @@
     <script src="app/components/util/jquery.handsontable-custom-editor.js"></script>
     <script src="app/components/util/jquery.handsontable-tubeinput-editor.js"></script>
     <script src="content/js/viewerjs/dist/viewer.js"></script>
-    <script src="bower_components/echarts/dist/echarts.js"></script>
-    <script src="app/services/directive/charts/china.js"></script>
     <!--<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>-->
     <!--<script src="https://cdn.bootcss.com/angular-block-ui/0.2.2/angular-block-ui.js"></script>-->
     <!--<script src="https://unpkg.com/angular-toastr/dist/angular-toastr.tpls.js"></script>-->
@@ -148,6 +149,7 @@
     <script src="app/services/profiles/page-ribbon.directive.js"></script>
     <script src="app/services/directive/viewer.directive.js"></script>
     <script src="app/services/directive/star.directive.js"></script>
+    <script src="app/services/directive/konva.equipment.directive.js"></script>
     <script src="app/services/directive/focus-Input.directive.js"></script>
     <script src="app/services/directive/edit-stock-directive.js"></script>
     <script src="app/services/directive/charts/scatter-map-chart-directive.js"></script>
@@ -663,8 +665,10 @@
     <script src="app/bizs/reports/service/reports.service.js"></script>
     <script src="app/bizs/reports/reports-state.js"></script>
     <script src="app/bizs/reports/reports.controller.js"></script>
+    <script src="app/bizs/project-management/template/project.management.sites.controller.js"></script>
     <script src="app/bizs/project-management/template/project.management.sample.type.controller.js"></script>
     <script src="app/bizs/project-management/template/project.management.info.controller.js"></script>
+    <script src="app/bizs/project-management/template/project.management.equipment.controller.js"></script>
     <script src="app/bizs/project-management/project-management-state.js"></script>
     <script src="app/bizs/project-management/project.management.controller.js"></script>
     <script src="app/bizs/project-management/project.management.add.controller.js"></script>
@@ -682,6 +686,8 @@
     <script src="app/bizs/list/box-list/box-movement.controller.js"></script>
     <script src="app/bizs/list/box-list/box-inventory.state.js"></script>
     <script src="app/bizs/list/box-list/box-inventory.controller.js"></script>
+    <script src="app/bizs/equipment-management/equipment-management-state.js"></script>
+    <script src="app/bizs/equipment-management/equipment.management.controller.js"></script>
     <script src="app/bizs/bizs.state.js"></script>
     <script src="app/app.state.js"></script>
     <script src="app/app.constants.js"></script>

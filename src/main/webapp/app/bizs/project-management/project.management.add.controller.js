@@ -15,7 +15,8 @@
         vm.titles = [
             {id:1,name:"项目信息",className:"active"},
             {id:2,name:"项目样本分类",className:""},
-            {id:3,name:"项目点",className:""}
+            {id:3,name:"项目点",className:""},
+            {id:4,name:"设备",className:""}
         ];
         vm.color = "#fff";
         vm.nextStep = _fnNextStep;
@@ -24,7 +25,7 @@
         function _fnNextStep() {
             var id = 0;
             _.forEach(vm.titles,function (title) {
-                if(title.id != 3){
+                if(title.id != vm.titles.length){
                     if(title.className == "active"){
                         title.className = "finish";
                         id = title.id +1;
@@ -41,6 +42,9 @@
                     }
                     if(title.id == 3){
                         $state.go("project-management-sites")
+                    }
+                    if(title.id == 4){
+                        $state.go("project-management-equipment")
                     }
                 }
             });
@@ -62,6 +66,9 @@
                     }
                     if(title.id == 3){
                         $state.go("project-management-sites")
+                    }
+                    if(title.id == 4){
+                        $state.go("project-management-equipment")
                     }
                     return false;
                 }

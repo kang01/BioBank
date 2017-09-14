@@ -150,7 +150,7 @@
             //全国样本分布
             _fnQueryCitySampleCount();
             //全国样本分布
-            _fnQueryProvinceSampleCount();
+            // _fnQueryProvinceSampleCount();
             //项目点样本分布
             _fnQueryProjectSiteSampleCount();
             //样本类型样本量分布
@@ -447,8 +447,6 @@
         //城市样本分布图
         vm.left = "25%";
         vm.zoom = 1.2;
-
-        vm.reportData = items.reportData;
         vm.status = items.status;
         vm.dto = {
             frozenBoxCodeStr:[]
@@ -456,6 +454,8 @@
         var searchForm = angular.toJson(vm.dto);
         vm.mapStatus = "市";
         vm.geoIndex = 10;
+        vm.reportData = items.reportData;
+
         //切换类型
         vm.searchType = function () {
             _fnQueryEveyDaySampleCount();

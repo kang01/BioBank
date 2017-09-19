@@ -306,11 +306,11 @@ public class StockListServiceImpl implements StockListService {
         }
         for(Long key:map.keySet()){
             List<FrozenTubeHistory> frozenTubeList = map.get(key);
-            Collections.sort(frozenTubeList,new Comparator<FrozenTubeHistory>(){
-                public int compare(FrozenTubeHistory arg1, FrozenTubeHistory arg0) {
-                    return arg0.getOperateTime().compareTo(arg1.getOperateTime());
-                }
-            });
+//            Collections.sort(frozenTubeList,new Comparator<FrozenTubeHistory>(){
+//                public int compare(FrozenTubeHistory arg1, FrozenTubeHistory arg0) {
+//                    return arg0.getOperateTime().compareTo(arg1.getOperateTime());
+//                }
+//            });
             tubeMap.put(key,frozenTubeList.get(0));
         }
         return tubeMap;

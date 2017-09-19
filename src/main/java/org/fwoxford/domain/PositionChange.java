@@ -6,6 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -40,6 +41,9 @@ public class PositionChange extends AbstractAuditingEntity implements Serializab
 
     @Column(name = "operator_id_2")
     private Long operatorId2;
+
+    @Column(name = "position_change_date")
+    private LocalDate positionChangeDate;
 
     @NotNull
     @Size(max = 20)
@@ -123,6 +127,17 @@ public class PositionChange extends AbstractAuditingEntity implements Serializab
         this.operatorId2 = operatorId2;
     }
 
+    public LocalDate getPositionChangeDate() {
+        return positionChangeDate;
+    }
+    public PositionChange positionChangeDate(LocalDate positionChangeDate) {
+        this.positionChangeDate = positionChangeDate;
+        return this;
+    }
+    public void setPositionChangeDate(LocalDate positionChangeDate) {
+        this.positionChangeDate = positionChangeDate;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -178,6 +193,7 @@ public class PositionChange extends AbstractAuditingEntity implements Serializab
             ", whetherFreezingAndThawing='" + whetherFreezingAndThawing + "'" +
             ", operatorId1='" + operatorId1 + "'" +
             ", operatorId2='" + operatorId2 + "'" +
+            ", positionChangeDate='" + positionChangeDate + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             '}';

@@ -84,7 +84,7 @@
     <include file="classpath:config/liquibase/changelog/20170515014750_added_entity_constraints_StockOutTask.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515015924_added_entity_constraints_StockOutBoxPosition.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515022141_added_entity_constraints_StockOutFrozenBox.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20170515022954_added_entity_constraints_StockOutFrozenTube.xml" relativeToChangelogFile="false"/>
+    <!--<include file="classpath:config/liquibase/changelog/20170515022954_added_entity_constraints_StockOutFrozenTube.xml" relativeToChangelogFile="false"/>-->
     <include file="classpath:config/liquibase/changelog/20170515045047_added_entity_constraints_StockOutHandover.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515051138_added_entity_constraints_StockOutHandoverDetails.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170515071739_added_entity_constraints_StockOutApplyProject.xml" relativeToChangelogFile="false"/>
@@ -100,6 +100,11 @@
     <include file="classpath:config/liquibase/changelog/20170726071542_added_entity_constraints_StockInTranshipBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170803012501_added_entity_constraints_PositionChangeRecord.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+    <include file="classpath:config/liquibase/changelog/20170915035218_added_column_PositionMove.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170915011622_added_column_PositionChange.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170915031005_added_column_PositionDestroy.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170825080522_added_column_FrozenTube.xml" relativeToChangelogFile="false"/>
+
     <include file="classpath:config/liquibase/changelog/20170502015417_added_view_StockIn.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170505000000_added_view_StockInBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170506000000_added_view_StockOutApply.xml" relativeToChangelogFile="false"/>
@@ -123,7 +128,6 @@
     <include file="classpath:config/liquibase/changelog/20170524000000_added_view_AreasList.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170525000000_added_view_ShelvesList.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170526000000_added_view_AreasListByProject.xml" relativeToChangelogFile="false"/>
-
     <!--<include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>-->
 
 </databaseChangeLog>

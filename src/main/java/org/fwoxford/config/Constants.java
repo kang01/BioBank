@@ -27,6 +27,8 @@ public final class Constants {
      * 入库类型：8001：首次入库
      */
     public static final String STORANGE_IN_TYPE_1ST = "8001";
+    public static final String STORANGE_IN_TYPE_MOVE = "8002";
+    public static final String STORANGE_IN_TYPE_REVERT = "8003";
     /**
      * 数据状态：0000：无效，0001：有效
      */
@@ -83,13 +85,15 @@ public final class Constants {
     public static final String STOCK_OUT_REQUIREMENT_CKECKING = "1201";
     public static final String STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT = "1202";
     public static final String STOCK_OUT_REQUIREMENT_CHECKED_PASS = "1203";
-    public static final  Map SEX_MAP = new HashMap(){{
+    public static final  Map<String,String> SEX_MAP = new HashMap(){{
         put("f","女");
         put("m","男");
         put("n","不详");
         put("F","女");
         put("M","男");
         put("N","不详");
+        put("2","F");
+        put("1","M");
     }};
     /**
      * 需求样本，已被使用：1301，释放样本：1302
@@ -212,7 +216,10 @@ public final class Constants {
     public static final Map<String,Long> RECEIVER_MAP =  new HashMap<String,Long>(){{
         put("钟慧",5L);
         put("张丽萍",6L);
+        put("丽萍",6L);
         put("王铁柱",7L);
+        put("铁柱",7L);
+        put("1王铁柱",7L);
         put("王东",8L);
         put("王思铭",9L);
         put("王莹",10L);
@@ -225,10 +232,15 @@ public final class Constants {
         put("杨博彦",17L);
         put("周欣月",18L);
         put("何炜",19L);
+        put("1何炜",19L);
         put("朱志鸿",20L);
         put("戴浩",21L);
         put("NA",22L);
         put("连向华",23L);
+        put("向华",23L);
+        put("1连向华",23L);
+        put("萨尹晰",24L);
+        put("刘元东",25L);
     }};
 
     public static final  Map<String,String> STOCK_IN_TYPE_MAP = new HashMap<String,String>(){{

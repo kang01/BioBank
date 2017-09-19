@@ -115,7 +115,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         for(StockOutRequiredSample s :stockOutRequiredSamples){
             String appointedSampleCode = s.getSampleCode();
             String appointedSampleType = s.getSampleType();
-            List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndSampleTypeCode(appointedSampleCode,appointedSampleType,s.getStockOutRequirement().getId(),projectIds);
+            List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndSampleTypeCodeAndRequirementAndProject(appointedSampleCode,appointedSampleType,s.getStockOutRequirement().getId(),projectIds);
             if(frozenTubeList == null || frozenTubeList.size() ==0){
                 status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
                 continue;

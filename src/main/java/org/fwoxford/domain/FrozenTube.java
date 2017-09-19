@@ -772,4 +772,18 @@ public class FrozenTube extends AbstractAuditingEntity implements Serializable {
             ", sampleStage='" + sampleStage + "'" +
             '}';
     }
+    @Size(max = 20)
+    @Column(name = "nation", length = 20)
+    private String nation;
+
+    public String getNation() {
+        return nation;
+    }
+    public FrozenTube nation(String nation) {
+        this.nation = nation;
+        return this;
+    }
+    public void setNation(String nation) {
+        this.nation = nation;
+    }
 }

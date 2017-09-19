@@ -128,8 +128,8 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     /**
      * 备注
      */
-    @Size(max = 255)
-    @Column(name = "memo", length = 255)
+    @Size(max = 1024)
+    @Column(name = "memo", length = 1024)
     private String memo;
     /**
      * 状态：2001：新建，2002：待入库，2003：已分装，2004：已入库，2090：已作废，0000：无效

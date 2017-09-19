@@ -6,6 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -37,6 +38,9 @@ public class PositionDestroy extends AbstractAuditingEntity implements Serializa
 
     @Column(name = "operator_id_2")
     private Long operatorId2;
+
+    @Column(name = "position_destroy_date")
+    private LocalDate positionDestroyDate;
 
     @NotNull
     @Size(max = 20)
@@ -107,6 +111,17 @@ public class PositionDestroy extends AbstractAuditingEntity implements Serializa
         this.operatorId2 = operatorId2;
     }
 
+    public LocalDate getPositionDestroyDate() {
+        return positionDestroyDate;
+    }
+    public PositionDestroy positionDestroyDate(LocalDate positionDestroyDate) {
+        this.positionDestroyDate = positionDestroyDate;
+        return this;
+    }
+    public void setPositionDestroyDate(LocalDate positionDestroyDate) {
+        this.positionDestroyDate = positionDestroyDate;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -161,6 +176,7 @@ public class PositionDestroy extends AbstractAuditingEntity implements Serializa
             ", destroyType='" + destroyType + "'" +
             ", operatorId1='" + operatorId1 + "'" +
             ", operatorId2='" + operatorId2 + "'" +
+            ", positionDestroyDate='" + positionDestroyDate + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             '}';

@@ -32,4 +32,8 @@ public interface StockInTubeRepository extends JpaRepository<StockInTube,Long> {
     @Query("select count(t) from StockInTube t where t.frozenBoxCode = ?1 and  t.status!='0000' and t.stockInBox.stockIn.stockInCode =?2")
     Long countByFrozenBoxCodeAndStockInCode(String frozenBoxCode, String stockInCode);
 
+    @Query(value = " select * from (" +
+        "   select row_number() over(partition by frozen_tube_id order by CREATED_DATE desc) rn, a.* from  stock_in_tube a where sample_code = ?1 and sample_type_code = ?2 and status !='0000'" +
+        ") where rn = 1 " , nativeQuery = true)
+    StockInTube findBySampleCodeLast(String sampleCode, String sampleTypeCode);
 }

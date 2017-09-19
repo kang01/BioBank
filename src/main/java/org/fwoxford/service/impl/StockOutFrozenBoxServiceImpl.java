@@ -342,7 +342,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 frozenTube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
                 frozenTube.setTubeColumns(f.getTubeColumns());
                 frozenTube.setTubeRows(f.getTubeRows());
-                frozenTubeRepository.saveAndFlush(frozenTube);
+                frozenTubeRepository.save(frozenTube);
                 StockOutBoxTube  stockOutBoxTube = stockOutBoxTubeRepository.findByStockOutTaskFrozenTubeId(stockOutTaskFrozenTube.getId());
                 if(stockOutBoxTube == null){
                     stockOutBoxTube = new StockOutBoxTube();

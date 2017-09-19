@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -147,6 +148,7 @@ public class PositionChangeServiceImpl implements PositionChangeService{
         PositionChange positionChange = positionChangeMapper.positionChangeDTOToPositionChange(positionChangeDTO);
         positionChange.setChangeType(moveType);
         positionChange.setStatus(Constants.VALID);
+        positionChange.setPositionChangeDate(LocalDate.now());
         positionChangeRepository.save(positionChange);
         positionChangeDTO.setId(positionChange.getId());
         switch (moveType){

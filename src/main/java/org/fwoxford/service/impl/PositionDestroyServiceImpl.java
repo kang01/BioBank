@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -130,6 +132,7 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
         PositionDestroy positionDestroy = positionDestroyMapper.positionDestroyDTOToPositionDestroy(positionDestroyDTO);
         positionDestroy.setDestroyType(type);
         positionDestroy.setStatus(Constants.VALID);
+        positionDestroy.setPositionDestroyDate(LocalDate.now());
         positionDestroyRepository.save(positionDestroy);
         positionDestroyDTO.setId(positionDestroy.getId());
         switch (type){
@@ -173,7 +176,8 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
         frozenBoxRepository.save(frozenBoxList);
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxIdIn(boxIds);
         for(FrozenTube f:frozenTubeList){
-            f.setStatus(Constants.VALID);
+            f.setStatus(Constants.FROZEN_TUBE_DESTROY);
+            f.setFrozenTubeState(Constants.FROZEN_BOX_DESTROY);
         }
         frozenTubeRepository.save(frozenTubeList);
         saveDestroyDetail(positionDestroyDTO,Constants.MOVE_TYPE_2,frozenTubeList);

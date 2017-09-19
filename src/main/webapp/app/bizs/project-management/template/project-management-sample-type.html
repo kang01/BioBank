@@ -27,8 +27,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
-                                               ng-model="item.sampleClassificationId"></selectize>
+                                    <input type="text" class="form-control" ng-model="item.sampleClassificationCode">
+                                    <!--<selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"-->
+                                               <!--ng-model="item.sampleClassificationId"></selectize>-->
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -81,11 +82,3 @@
         </div>
     </div>
 </form>
-
-<div id="div" style="width: 100px;
-  height: 100px;
-  background: #f00;
-  cursor: pointer;
-  position: absolute;
-  left: 0;
-  top: 0;"></div>

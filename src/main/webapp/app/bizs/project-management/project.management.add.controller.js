@@ -15,8 +15,7 @@
         vm.titles = [
             {id:1,name:"项目信息",className:"active"},
             {id:2,name:"项目样本分类",className:""},
-            {id:3,name:"项目点",className:""},
-            {id:4,name:"设备",className:""}
+            {id:3,name:"项目点",className:""}
         ];
         vm.color = "#fff";
         vm.nextStep = _fnNextStep;

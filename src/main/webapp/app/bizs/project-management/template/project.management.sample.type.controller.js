@@ -47,23 +47,23 @@
                 //     }
                 // }
             // }
-            // var tableCtrl = _getTableCtrl();
-            // var countCols = tableCtrl.countCols();
-            // var index = _.lastIndexOf(colIndexs, colIndex);
-            //
-            // if(!item){
-            //     if(index != -1){
-            //         colIndexs.splice(index,1);
-            //     }
-            // }else{
-            //     if(index == -1){
-            //         colIndexs.push(colIndex);
-            //     }
-            // }
+            var tableCtrl = _getTableCtrl();
+            var countCols = tableCtrl.countCols();
+            var index = _.lastIndexOf(colIndexs, colIndex);
 
-            // console.log(colIndex);
-            // console.log(item);
-            // tableCtrl.render();
+            if(!item){
+                if(index != -1){
+                    colIndexs.splice(index,1);
+                }
+            }else{
+                if(index == -1){
+                    colIndexs.push(colIndex);
+                }
+            }
+
+            console.log(colIndex);
+            console.log(item);
+            tableCtrl.render();
         }
         function _fnRemoveSampleType(index) {
             vm.sampleTypeItem.splice(index,1);
@@ -119,6 +119,8 @@
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['asc']);
                 _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"});
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"97"});
             });
         }
         function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
@@ -239,35 +241,7 @@
             return vm.tableCtrl;
         }
 
-        $('#div').mousedown(function(e){
-            // e.pageX
-            var positionDiv = $(this).offset();
-            var distenceX = e.pageX - positionDiv.left;
-            var distenceY = e.pageY - positionDiv.top;
-            //alert(distenceX)
-            // alert(positionDiv.left);
-            $(document).mousemove(function(e){
-                var x = e.pageX - distenceX;
-                var y = e.pageY - distenceY;
-                if(x<0){
-                    x=0;
-                }else if(x>$(document).width()-$('#div').outerWidth(true)){
-                    x = $(document).width()-$('#div').outerWidth(true);
-                }
-                if(y<0){
-                    y=0;
-                }else if(y>$(document).height()-$('#div').outerHeight(true)){
-                    y = $(document).height()-$('#div').outerHeight(true);
-                }
-                $('#div').css({
-                    'left':x+'px',
-                    'top':y+'px'
-                });
-            });
-            $(document).mouseup(function(){
-                $(document).off('mousemove');
-            });
-        });
+
 
     }
 })();

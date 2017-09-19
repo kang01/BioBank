@@ -25,227 +25,283 @@
 
         function  linkFunc(scope,  element,  attrs)  {
             var width = window.innerWidth;
-            var height = window.innerHeight;
+            var height = 600;
+            //舞台
             var stage = new Konva.Stage({
                 container: 'container1',
                 width: width,
                 height: height
             });
-            var layer = new Konva.Layer();
-            //矩形
-            var rect = new Konva.Rect({
-                x: 500,
-                y: 200,
-                width: 100,
-                height: 50,
-                fill: 'red',
-                stroke: 'black',
-                strokeWidth: 4,
-                draggable: true
+            //背景层
+            var backgroundLayer = new Konva.Layer();
+            //区域层
+            var areaLayer = new Konva.Layer();
+            //拖拽层
+            var dragLayer = new Konva.Layer();
+            dragLayer.x(stage.getWidth() / 4);
+            dragLayer.y(-200);
+            dragLayer.red("rgba(0,0,0,0.5)");
+            var listLayer = new Konva.Layer();
 
+            //组
+            var group = new Konva.Group({
+                width: 80,
+                height: 80
             });
-            // add cursor styling
-            rect.on('mouseover', function() {
-                document.body.style.cursor = 'pointer';
-            });
-            rect.on('mouseout', function() {
-                document.body.style.cursor = 'default';
-            });
-            //圆形
-            var circle = new Konva.Circle({
-                x: stage.getWidth() / 2,
-                y: stage.getHeight() / 2,
-                radius: 70,
-                fill: 'red',
-                stroke: 'black',
-                strokeWidth: 4
-            });
-            //文本
-            var simpleText = new Konva.Text({
-                x: stage.getWidth() / 2,
-                y: 15,
-                text: 'Simple Text',
-                fontSize: 30,
-                fontFamily: 'Calibri',
-                fill: 'green'
-            });
-            simpleText.setOffset({
-                x: simpleText.getWidth() / 2
-            });
-            var complexText = new Konva.Text({
-                x: 20,
-                y: 60,
-                text: 'COMPLEX TEXT\n\nAll the world\'s a stage, and all the men and women merely players. They have their exits and their entrances.',
-                fontSize: 18,
-                fontFamily: 'Calibri',
-                fill: '#555',
-                width: 300,
-                padding: 20,
-                align: 'center'
-            });
-            var rect1 = new Konva.Rect({
-                x: 20,
-                y: 60,
-                stroke: '#555',
-                strokeWidth: 5,
-                fill: '#ddd',
-                width: 300,
-                height: complexText.getHeight(),
-                shadowColor: 'black',
-                shadowBlur: 10,
-                shadowOffset: [10, 10],
-                shadowOpacity: 0.2,
-                cornerRadius: 10
-            });
+            var areaLeft = stage.getWidth() / 2 -100;
 
-            var textpath = new Konva.TextPath({
-                x: 100,
-                y: 200,
-                fill: '#333',
-                fontSize: 16,
-                fontFamily: 'Arial',
-                text: 'All the world\'s a stage, and all the men and women merely players.',
-                data: 'M10,10 C0,0 10,150 100,100 S300,150 400,50'
-            });
-            var text = new Konva.Text({
-                text: 'Text Shadow!',
-                fontFamily: 'Calibri',
-                fontSize: 40,
-                x: 20,
-                y: 20,
-                stroke: 'red',
-                strokeWidth: 2,
-                shadowColor: 'black',
-                shadowBlur: 0,
-                shadowOffset: {x : 10, y : 10},
-                shadowOpacity: 0.5
-            });
+            var areaData = [
+                {
+                    width:100,
+                    height:100,
+                    left:10,
+                    top:100
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:110,
+                    top:100
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:210,
+                    top:100
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:310,
+                    top:100
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:10,
+                    top:210
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:110,
+                    top:210
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:210,
+                    top:210
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:310,
+                    top:210
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:areaLeft,
+                    top:100
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:areaLeft+110,
+                    top:100
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:areaLeft+210,
+                    top:100
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:areaLeft+310,
+                    top:100
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:areaLeft,
+                    top:210
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:areaLeft+110,
+                    top:210
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:areaLeft+210,
+                    top:210
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:areaLeft+310,
+                    top:210
+                }
+            ];
 
-            var star;
-            for (var i = 0; i < 10; i++) {
-                star = new Konva.Star({
-                    x : stage.width() * Math.random(),
-                    y : stage.height() * Math.random(),
-                    fill : "blue",
-                    numPoints :10,
-                    innerRadius : 20,
-                    outerRadius : 25,
-                    draggable: true,
-                    name : 'star ' + i,
-                    shadowOffsetX : 5,
-                    shadowOffsetY : 5
+            //区域
+            function addArea(layer,data) {
+                var rect = new Konva.Rect({
+                    x: data.left,
+                    y: data.top,
+                    // stroke: '#555',
+                    // strokeWidth: 2,
+                    // fill: '#ddd',
+                    width: data.width,
+                    height: data.height
+                    // shadowColor: 'black',
+                    // shadowBlur: 0,
+                    // shadowOffset: [10, 10],
+                    // shadowOpacity: 0.8,
+                    // cornerRadius: 10
                 });
-                layer.add(star);
-            }
-            layer.draw();
 
-            var tween = null;
-            function addStar(layer, stage) {
-                var scale = Math.random();
-                var star1 = new Konva.Star({
-                    x: Math.random() * stage.getWidth(),
-                    y: Math.random() * stage.getHeight(),
-                    numPoints: 5,
-                    innerRadius: 30,
-                    outerRadius: 50,
-                    fill: '#89b717',
-                    opacity: 0.8,
-                    draggable: true,
-                    scale: {
-                        x : scale,
-                        y : scale
-                    },
-                    rotation: Math.random() * 180,
+
+                var imageObj = new Image();
+                imageObj.src = 'https://www.w3.org/Icons/SVG/svg-logo.svg';
+                imageObj.onload = function() {
+                    var image = new Konva.Image({
+                        x:  data.left,
+                        y: data.top,
+                        image: imageObj,
+                        width: data.width,
+                        height: data.height
+                    });
+                    image.moveTo(group);
+                    group.add(rect);
+
+                    areaLayer.add(group);
+                    areaLayer.batchDraw();
+                };
+            }
+            for(var n = 0; n < areaData.length; n++) {
+                addArea(areaLayer,areaData[n]);
+            }
+
+
+            //设备
+            function addEquipment(layer,stage,left) {
+                var equipment = new Konva.Rect({
+                    x: left,
+                    y: stage.getHeight() / 2,
+                    stroke: '#555',
+                    strokeWidth: 0,
+                    fill: 'red',
+                    width: 40,
+                    height: 40,
                     shadowColor: 'black',
                     shadowBlur: 10,
-                    shadowOffset: {
-                        x : 5,
-                        y : 5
-                    },
-                    shadowOpacity: 0.6,
-                    startScale: scale
+                    shadowOffset: [10, 10],
+                    shadowOpacity: 0.2,
+                    cornerRadius: 2,
+                    draggable: true
                 });
-                layer.add(star1);
+                layer.add(equipment);
+
+
+                var startPos = {};
+                equipment.on('dragstart', function(evt) {
+                    if (!startPos.x){
+                        startPos = evt.target.getClientRect();
+                    }
+                });
+
+                equipment.on('dragmove',function (evt) {
+                    group.find('Rect').each(function( rect, index ){
+                        rect.fill('rgba(0,0,0,0)')
+                    });
+
+                    var mousePos = stage.getPointerPosition();
+                    var shape = areaLayer.getIntersection(mousePos);
+                    if(shape && shape.className == 'Rect'){
+                        shape.fill('rgba(0,0,0,0.3)');
+                    }
+                    areaLayer.batchDraw();
+                });
+
+                equipment.on('dragend', function(evt) {
+                    var endPos = {};
+                    var mousePos = stage.getPointerPosition();
+                    var shape = areaLayer.getIntersection(mousePos);
+
+                    if(!shape){
+                        endPos = evt.target.getClientRect();
+
+                        var rangeX1 = startPos.x;
+                        var rangeY1 = startPos.y;
+
+                        var rangeX2 = endPos.x;
+                        var rangeY2 = endPos.y;
+
+                        var offsetPos = {x:rangeX1 -rangeX2,y:rangeY1 - rangeY2};
+                        var self = this;
+                        self.move(offsetPos);
+                    }else{
+
+                        endPos = evt.target.getClientRect();
+                        var offsetPos = shape.getClientRect();
+                        var rangeX1 = offsetPos.x+offsetPos.width / 2.0;
+                        var rangeY1 = offsetPos.y+offsetPos.height / 2.0;
+                        var rangeX2 = endPos.x+endPos.width / 2.0;
+                        var rangeY2 = endPos.y+endPos.height / 2.0;
+                        var offsetPos1 = {x:rangeX1 -rangeX2,y:rangeY1 - rangeY2};
+                        startPos = {x:rangeX1-endPos.width/2.0,y:rangeY1 - endPos.height / 2.0};
+                        this.move(offsetPos1)
+                    }
+                    group.find('Rect').each(function( rect, index ){
+                        rect.fill('rgba(0,0,0,0)')
+                    });
+                    dragLayer.batchDraw();
+                    areaLayer.batchDraw();
+                });
             }
-            var dragLayer = new Konva.Layer();
-            for(var n = 0; n < 10; n++) {
-                addStar(layer, stage);
+            var equipmentLeft = stage.getWidth() / 2;
+            for(var m = 0; m < 5; m++) {
+                addEquipment(dragLayer, stage,equipmentLeft);
+                 equipmentLeft += 45;
             }
 
 
-
-            layer.add(rect);
-            layer.add(circle);
-            layer.add(simpleText);
-            layer.add(rect1);
-            layer.add(complexText);
-            layer.add(textpath);
-            layer.add(text);
+            //区域层
+            areaLayer.add(group);
 
 
-            stage.add(layer);
+            stage.add(areaLayer);
             stage.add(dragLayer);
 
 
-            stage.on('mousedown', function(evt) {
-                var shape = evt.target;
-                shape.moveTo(dragLayer);
-                stage.draw();
-                shape.startDrag();
-            });
-            stage.on('mouseup', function(evt) {
-                var shape = evt.target;
-                shape.moveTo(layer);
-                stage.draw();
-            });
-            stage.on('dragstart', function(evt) {
-                var shape = evt.target;
-                if (tween) {
-                    tween.pause();
-                }
-                shape.setAttrs({
-                    shadowOffset: {
-                        x: 15,
-                        y: 15
-                    },
-                    scale: {
-                        x: shape.getAttr('startScale') * 1.2,
-                        y: shape.getAttr('startScale') * 1.2
-                    }
-                });
-            });
-            stage.on('dragend', function(evt) {
-                var shape = evt.target;
-                tween = new Konva.Tween({
-                    node: shape,
-                    duration: 0.5,
-                    easing: Konva.Easings.ElasticEaseOut,
-                    scaleX: shape.getAttr('startScale'),
-                    scaleY: shape.getAttr('startScale'),
-                    shadowOffsetX: 5,
-                    shadowOffsetY: 5
-                });
-                tween.play();
-            });
 
 
-            var scaleBy = 1.01;
-            window.addEventListener('wheel', function(e) {
-                e.preventDefault();
-            var oldScale = stage.scaleX();
-            var mousePointTo = {
-                x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
-                y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale,
-            };
-            var newScale = e.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-            stage.scale({ x: newScale, y: newScale });
-            var newPos = {
-                x: -(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale,
-                y: -(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale
-            };
-            stage.position(newPos);
-            stage.batchDraw();
-        });
-        }
+
+
+            // var scaleBy = 1.25;
+            // window.addEventListener('wheel', function (e) {
+            //     e.preventDefault();
+            //     var oldScale = stage.scaleX();
+            //     var mousePointTo = {
+            //         x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
+            //         y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale
+            //     };
+            //     var newScale = e.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+            //     stage.scale({x: newScale, y: newScale});
+            //     var newPos = {
+            //         x: -(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale,
+            //         y: -(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale
+            //     };
+            //     stage.position(newPos);
+            //     stage.batchDraw();
+            // });
+
+    }
     }
 })();

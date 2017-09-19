@@ -8,10 +8,13 @@
     angular
         .module('bioBankApp')
         .controller('ReportsController', ReportsController)
-        .controller('ReportEnlargedModalController', ReportEnlargedModalController);
+        .controller('SelectDateModalController', SelectDateModalController)
+        .controller('ReportEnlargedModalController', ReportEnlargedModalController)
+        .controller('SelectDateModalController', SelectDateModalController);
 
     ReportsController.$inject = ['$scope','$uibModal','ReportService','ProjectService','EquipmentService','MasterData','AreasByEquipmentIdService','SampleTypeService','SupportacksByAreaIdService','RequirementService'];
-    ReportEnlargedModalController.$inject = ['$uibModalInstance','items','ReportService'];
+    ReportEnlargedModalController.$inject = ['$uibModalInstance','$uibModal','items','ReportService'];
+    SelectDateModalController.$inject = ['$uibModalInstance'];
     function ReportsController($scope,$uibModal,ReportService,ProjectService,EquipmentService,MasterData,AreasByEquipmentIdService,SampleTypeService,SupportacksByAreaIdService,RequirementService) {
         var vm = this;
         vm.dto = {
@@ -28,8 +31,8 @@
         //放大
         vm.enlarged = _fnEnlarged;
 
-        var preThreeMonthDate = moment().subtract(3, 'months').format("YYYY-MM-DD");
-        var nowDate = moment().format("YYYY-MM-DD");
+        var startDate = moment().subtract(3, 'months').format("YYYY-MM-DD");
+        var endDate = moment().format("YYYY-MM-DD");
         vm.type = 'M';
         vm.typeContent = '月视图';
         vm.heightStyle = "height200";
@@ -38,12 +41,12 @@
         vm.zoom = 1.8;
         var searchForm;
 
-        vm.projectSiteSampleCountFlag = false;
-        vm.sampleTypeSampleCountFlag = false;
-        vm.sexSampleCountFlag = false;
-        vm.diseaseTypeSampleCountFlag = false;
-        vm.daySampleCountFlag = false;
-        vm.citySampleCountFlag = false;
+        // vm.projectSiteSampleCountFlag = false;
+        // vm.sampleTypeSampleCountFlag = false;
+        // vm.sexSampleCountFlag = false;
+        // vm.diseaseTypeSampleCountFlag = false;
+        // vm.daySampleCountFlag = false;
+        // vm.citySampleCountFlag = false;
         vm.mapStatus = "市";
         vm.geoIndex = 10;
 
@@ -52,10 +55,10 @@
 
             //样本流向
             function _fnQueryEveyDaySampleCount(){
-                ReportService.queryEveyDaySampleCount(preThreeMonthDate,nowDate,vm.type,searchForm).success(function (data) {
+                ReportService.queryEveyDaySampleCount(startDate,endDate,vm.type,searchForm).success(function (data) {
                     vm.daySampleCountData = data;
                     var len = _.filter(vm.daySampleCountData,{countOfInSample:0,countOfOutSample:0}).length;
-                    if(len == vm.daySampleCountData.length){
+                    if(len == vm.daySampleCountData.length || !vm.daySampleCountData.length){
                         vm.daySampleCountFlag = true;
                     }else{
                         vm.daySampleCountFlag = false;
@@ -87,10 +90,13 @@
                 })
             }
             //项目点样本分布
-            function _fnQueryProjectSiteSampleCount(){
+            function _fnQueryProjectSiteSampleCount(mapStatus){
                 ReportService.queryProjectSiteSampleCount(searchForm).success(function (data) {
                     vm.projectSiteSampleCountData = data;
-                    vm.citySampleCountData = data;
+                    if(mapStatus){
+                        vm.citySampleCountData = data;
+                    }
+
                     if(vm.projectSiteSampleCountData.length){
                         vm.projectSiteSampleCountFlag = true;
                     }else{
@@ -161,10 +167,31 @@
             _fnQueryDiseaseTypeSampleCount();
             //按年龄段的样本量分布
             _fnQueryAgeSampleCount();
-
+            vm.selectDate = function () {
+                vm.typeContent = '日期';
+                vm.searchType();
+            };
             //切换类型
             vm.searchType = function () {
-                _fnQueryEveyDaySampleCount();
+                if(vm.typeContent == '日期'){
+                    modalInstance = $uibModal.open({
+                        animation: true,
+                        templateUrl: 'selectDateModal.html',
+                        controller: 'SelectDateModalController',
+                        backdrop:'static',
+                        controllerAs: 'vm',
+                        size:'sm'
+                    });
+                    modalInstance.result.then(function (stockInOut) {
+                        startDate = moment(stockInOut.startDate).format("YYYY-MM-DD");
+                        endDate = moment(stockInOut.endDate).format("YYYY-MM-DD");
+                        vm.typeContent = startDate + "到"+ endDate;
+                        _fnQueryEveyDaySampleCount();
+                    });
+                }else{
+                    _fnQueryEveyDaySampleCount();
+                }
+
             };
 
             vm.querySampleCount = function () {
@@ -173,7 +200,7 @@
                 }else if(vm.mapStatus === "省"){
                     _fnQueryProvinceSampleCount();
                 }else if(vm.mapStatus === "项目点"){
-                    _fnQueryProjectSiteSampleCount();
+                    _fnQueryProjectSiteSampleCount(vm.mapStatus);
                 }
 
             }
@@ -435,15 +462,16 @@
 
 
     }
-    function ReportEnlargedModalController($uibModalInstance,items,ReportService) {
+    function ReportEnlargedModalController($uibModalInstance,$uibModal,items,ReportService) {
         var vm = this;
         //样本流向分布图
-        var preThreeMonthDate = moment().subtract(3, 'months').format("YYYY-MM-DD");
-        var nowDate = moment().format("YYYY-MM-DD");
+        var startDate = moment().subtract(3, 'months').format("YYYY-MM-DD");
+        var endDate = moment().format("YYYY-MM-DD");
         vm.type = 'M';
         vm.typeContent = '月视图';
         vm.heightStyle = "height450";
         vm.screenSize = "big";
+        var modalInstance;
         //城市样本分布图
         vm.left = "25%";
         vm.zoom = 1.2;
@@ -458,11 +486,28 @@
 
         //切换类型
         vm.searchType = function () {
-            _fnQueryEveyDaySampleCount();
+            if(vm.typeContent == '日期'){
+                modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'selectDateModal.html',
+                    controller: 'SelectDateModalController',
+                    backdrop:'static',
+                    controllerAs: 'vm',
+                    size:'sm'
+                });
+                modalInstance.result.then(function (stockInOut) {
+                    startDate = moment(stockInOut.startDate).format("YYYY-MM-DD");
+                    endDate = moment(stockInOut.endDate).format("YYYY-MM-DD");
+                    vm.typeContent = startDate + "到"+ endDate;
+                    _fnQueryEveyDaySampleCount();
+                });
+            }else{
+                _fnQueryEveyDaySampleCount();
+            }
         };
         //样本流向
         function _fnQueryEveyDaySampleCount(){
-            ReportService.queryEveyDaySampleCount(preThreeMonthDate,nowDate,vm.type,searchForm).success(function (data) {
+            ReportService.queryEveyDaySampleCount(startDate,endDate,vm.type,searchForm).success(function (data) {
                 vm.reportData = data;
             })
         }
@@ -501,6 +546,25 @@
         };
         vm.ok = function () {
             $uibModalInstance.close();
+        };
+    }
+    function SelectDateModalController($uibModalInstance) {
+        var vm = this;
+        vm.stockInOut = {
+            startDate:new Date(moment().subtract(3, 'months')),
+            endDate:new Date()
+        };
+        vm.datePickerOpenStatus = {};
+        vm.openCalendar = openCalendar; //时间
+        function openCalendar (date) {
+            vm.datePickerOpenStatus[date] = true;
+        }
+
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+        vm.ok = function () {
+            $uibModalInstance.close(vm.stockInOut);
         };
     }
 })();

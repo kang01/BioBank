@@ -783,6 +783,9 @@ tr.shown td .details-control {
 .modal-90 {
     width: 90%;
 }
+.modal-40 {
+    width: 40%;
+}
 
 .htReadOnly {
     background: transparent !important;

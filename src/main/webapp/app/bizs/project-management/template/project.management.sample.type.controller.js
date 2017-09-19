@@ -47,23 +47,26 @@
                 //     }
                 // }
             // }
-            var tableCtrl = _getTableCtrl();
-            var countCols = tableCtrl.countCols();
-            var index = _.lastIndexOf(colIndexs, colIndex);
 
-            if(!item){
-                if(index != -1){
-                    colIndexs.splice(index,1);
-                }
-            }else{
-                if(index == -1){
-                    colIndexs.push(colIndex);
-                }
-            }
 
-            console.log(colIndex);
-            console.log(item);
-            tableCtrl.render();
+
+            // var tableCtrl = _getTableCtrl();
+            // var countCols = tableCtrl.countCols();
+            // var index = _.lastIndexOf(colIndexs, colIndex);
+            //
+            // if(!item){
+            //     if(index != -1){
+            //         colIndexs.splice(index,1);
+            //     }
+            // }else{
+            //     if(index == -1){
+            //         colIndexs.push(colIndex);
+            //     }
+            // }
+            //
+            // console.log(colIndex);
+            // console.log(item);
+            // tableCtrl.render();
         }
         function _fnRemoveSampleType(index) {
             vm.sampleTypeItem.splice(index,1);

@@ -18,11 +18,12 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <!--折线-->
-                        <div ng-if="vm.citySampleCountFlag" class="text-center">
+                        <div ng-if="vm.daySampleCountFlag" class="text-center" style="position: relative">
                             <h4 style="font-weight: bolder;">样本流向图</h4>
+                            <img src="content/images/calendar.svg" style="position:absolute;right:0;top:0;height:22px;width: 22px;" alt="选择日期" ng-click="vm.selectDate()">
                             <img src="content/images/nodata1.png" style="height:350px;width: 500px;" alt="样本流向图">
                         </div>
-                        <div ng-if="!vm.citySampleCountFlag">
+                        <div ng-if="!vm.daySampleCountFlag">
                         <grid-multiple-chart  type="vm.type" enlarged = "vm.enlarged(1)" type-content="vm.typeContent" data="vm.daySampleCountData" reload-data = "vm.searchType()" height-style="vm.heightStyle" ></grid-multiple-chart>
                         </div>
                     </div>
@@ -235,4 +236,46 @@
         </div>
     </div>
 </pageslide>
-
+<script type="text/ng-template" id="selectDateModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">选择日期</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>开始时间</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="startDate"
+                               uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockInOut.startDate"
+                               is-open="vm.datePickerOpenStatus.startDate"
+                               required/>
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="vm.openCalendar('startDate')"><i
+                                    class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>结束时间</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="endDate"
+                               uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockInOut.endDate"
+                               is-open="vm.datePickerOpenStatus.endDate"
+                               required/>
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="vm.openCalendar('endDate')"><i
+                                    class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="vm.ok()">确定</button>
+        <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+    </div>
+</script>

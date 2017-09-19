@@ -31,7 +31,7 @@
                 if (!newValue || !newValue.length){
                     return;
                 }
-                var projectSitesData = scope.data;
+                var projectSitesData = _.orderBy(scope.data, ['projectSiteCode'], ['asc']);
                 var dataAxis = [];
                 var projectSitesSampleCount = [];
                 for(var i = 0; i < projectSitesData.length;i++){
@@ -137,7 +137,7 @@
                         }
                     ],
                     grid:{
-                        x:40,
+                        x:80,
                         y:45,
                         x2:5,
                         y2:20

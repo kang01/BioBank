@@ -10,7 +10,7 @@
 
     ReportService.$inject = ['$http'];
     function ReportService($http) {
-        var API_HOST = "http://10.24.200.13:8601/api";
+        var API_HOST = "http://10.24.200.38:8601/api";
         var service = {
             //获取全国城市样本分布
             queryCitySampleCount:_fnQueryCitySampleCount,

@@ -279,6 +279,7 @@
 
                 });
 
+                var averageValue = 1;
                 var convertData = function (data) {
                     var res = [];
                     if(scope.mapStatus === "省"){
@@ -314,19 +315,21 @@
                             }
                         }
                     }
-                    // console.log(JSON.stringify(res));
+
+                    averageValue = _.meanBy(res, function(o) { return o.value[2]; });
                     return res;
                 };
                 function randomValue() {
                     return Math.round(Math.random()*1000);
                 }
+                var myChart = echarts.init(document.getElementById('map'));
                 var option = {
                     backgroundColor: '#fff',
                     title: {
                         text: '全国('+scope.mapStatus+')样本分布',
                         subtext: '',
                         sublink: '',
-                        left: 'center',
+                        left: 'left',
                         textStyle: {
                             color: '#333'
                         }
@@ -400,7 +403,7 @@
                     },
                     visualMap: {
                         min: 0,
-                        max: 15000,
+                        max: 1500000,
                         seriesIndex: [0],
                         inRange: {
                             color: ['#e0ffff', '#006edd']
@@ -451,9 +454,12 @@
                             coordinateSystem: 'geo',//使用地理坐标系 cartesian2d使用二维的直角坐标系 polar使用极坐标系
                             data: convertData(citySampleCountdata),
                             symbolSize: function (val) { //标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。
-                                var num = val[2] / 200;
-                                if(num < 10 && num != 0){
-                                    num = 10
+
+                                var num = val[2] / averageValue * 20;
+                                if(num < 5 && num != 0){
+                                    num = 5;
+                                }else if(num > 40){
+                                    num = 40;
                                 }
                                 return num;
                             },
@@ -481,9 +487,11 @@
                                 return b.countOfSample - a.countOfSample;
                             }).slice(0, 5)),
                             symbolSize: function (val) {
-                                var num = val[2] / 200;
-                                if(num < 10 && num != 0){
-                                    num = 10
+                                var num = val[2] / averageValue * 20;
+                                if(num < 5 && num != 0){
+                                    num = 5;
+                                }else if(num > 40){
+                                    num = 40;
                                 }
                                 return num;
 
@@ -522,7 +530,6 @@
                 if(scope.geoIndex == 0){
                     option.geo.label.normal.show = true;
                 }
-                var myChart = echarts.init(document.getElementById('map'));
                 myChart.setOption(option);
 
 

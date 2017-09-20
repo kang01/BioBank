@@ -329,8 +329,7 @@ public class StockListServiceImpl implements StockListService {
             histroy.stream().collect(Collectors.groupingBy(w ->Long.valueOf(w[0].toString())));
 
         Map<Long,FrozenTubeHistory> tubeMap = new HashMap();
-        List<FrozenTubeHistory> frozenTubeHistoryList = new ArrayList<FrozenTubeHistory>();
-        for(Long tubeId :histroyMap.keySet()){
+       for(Long tubeId :histroyMap.keySet()){
             List<Object[]> tubeList = histroyMap.get(tubeId);
             TreeMap<String,List<Object[]>> listTreeMap = new TreeMap<>(Collections.reverseOrder());
             Map<String, List<Object[]>> map =
@@ -347,6 +346,7 @@ public class StockListServiceImpl implements StockListService {
                 e[30],e[31],e[32],e[33],e[34],e[35],e[36],e[37],e[38],e[39],
                 e[40],e[41],e[42],e[43],e[44],e[45],e[46]
             );
+           tubeMap.put(tubeId,frozenTubeHistory);
         }
 
         return tubeMap;

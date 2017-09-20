@@ -21,7 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockList.
@@ -173,19 +176,46 @@ public class StockListServiceImpl implements StockListService {
      */
     @Override
     public List<FrozenTubeHistory> findFrozenTubeHistoryDetail(Long frozenTubeId) {
-        List<FrozenTubeHistory> frozenTubeHistories = frozenTubeHistoryRepositories.findByFrozenTubeIdAndStatusNot(frozenTubeId,Constants.INVALID);
+        List<Long> ids = new ArrayList<Long>(){{add(frozenTubeId);}};
+        List<Object[]> histroy = new ArrayList<>();
+        //查詢转运历史
+        List<Object[]> transhipHistory = frozenTubeHistoryRepositories.findTranshipHistoryBySamples(ids);
+        //查詢入库历史
+        List<Object[]> stockInHistory = frozenTubeHistoryRepositories.findStockInHistoryBySamples(ids);
+        //查询出库历史
+        List<Object[]> stockOutHistory = frozenTubeHistoryRepositories.findStockOutHistoryBySamples(ids);
+        //查询交接历史
+        List<Object[]> handOverHistory = frozenTubeHistoryRepositories.findHandOverHistoryBySamples(ids);
+        //查询移位历史
+        List<Object[]> moveHistory = frozenTubeHistoryRepositories.findMoveHistoryBySamples(ids);
+        //查询换位历史
+        List<Object[]> changeHistory = frozenTubeHistoryRepositories.findChangeHistoryBySamples(ids);
+        //查询销毁历史
+        List<Object[]> destroyHistory = frozenTubeHistoryRepositories.findDestroyHistoryBySamples(ids);
+        histroy.addAll(transhipHistory); histroy.addAll(stockInHistory);
+        histroy.addAll(stockOutHistory); histroy.addAll(handOverHistory);
+        histroy.addAll(moveHistory); histroy.addAll(changeHistory);
+        histroy.addAll(destroyHistory);
+        Map<String, List<Object[]>> histroyMap =
+            histroy.stream().collect(Collectors.groupingBy(w ->(w[17]!=null?w[17].toString():null)+"&"+w[46].toString()));
+        TreeMap<String,List<Object[]>> listTreeMap = new TreeMap<>(Collections.reverseOrder());
+        listTreeMap.putAll(histroyMap);
+
         List<FrozenTubeHistory> frozenTubeHistoryList = new ArrayList<FrozenTubeHistory>();
-        for (FrozenTubeHistory e :frozenTubeHistories){
-            String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
-            FrozenTubeHistory frozenTubeHistory = new FrozenTubeHistory(e.getId(),e.getTranshipId(),e.getTranshipCode(),e.getStockInId(),e.getStockInCode(),e.getStockOutTaskId(),
-                e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),
-                position,e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),
-                e.getAreaId(),e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId(),e.getMemo(),e.getOperator()
-              ,e.getSampleTypeId(),e.getSampleTypeCode(),e.getSampleTypeName(),e.getFrozenTubeTypeId(),e.getFrozenTubeTypeCode(),e.getFrozenTubeTypeName(),e.getFrozenTubeVolumns(),
-                e.getFrozenTubeVolumnsUnit(),e.getSampleUsedTimesMost(),e.getSampleUsedTimes(),e.getSampleVolumns(),e.getProjectId(),e.getProjectSiteId(),e.getFrozenSiteCode(),
-                e.getFrozenTubeState(),e.getSampleClassificationId(),e.getFrozenBoxId()
-            );
-            frozenTubeHistoryList.add(frozenTubeHistory);
+        for (String date :listTreeMap.keySet()){
+           List<Object[] > tubeList = listTreeMap.get(date);
+            for(Object[] e :tubeList){
+                String position = BankUtil.getPositionString(e[20],e[22],e[24],e[26],e[27],null,null);
+                FrozenTubeHistory frozenTubeHistory = new FrozenTubeHistory(
+
+                    e[0],e[1],e[2],e[3],e[4],e[5],e[6],e[7],e[8],e[9],
+                    e[10],e[11],e[12],e[13],e[14],e[15],e[16],e[17],position,e[19],
+                    e[20],e[21],e[22],e[23],e[24],e[25],e[26],e[27],e[28],e[29],
+                    e[30],e[31],e[32],e[33],e[34],e[35],e[36],e[37],e[38],e[39],
+                    e[40],e[41],e[42],e[43],e[44],e[45],e[46]
+                );
+                frozenTubeHistoryList.add(frozenTubeHistory);
+            }
         }
         return frozenTubeHistoryList;
     }
@@ -276,43 +306,49 @@ public class StockListServiceImpl implements StockListService {
 
     @Override
     public Map<Long,FrozenTubeHistory> findFrozenTubeHistoryDetailByIds(List<Long> ids) {
-        List<FrozenTubeHistory> frozenTubeHistories = frozenTubeHistoryRepositories.findByFrozenTubeIdInAndOperateTimeNotNullAndStatusNot(ids,Constants.INVALID);
+        //查詢转运历史
+        List<Object[]> transhipHistory = frozenTubeHistoryRepositories.findTranshipHistoryBySamples(ids);
+        //查詢入库历史
+        List<Object[]> stockInHistory = frozenTubeHistoryRepositories.findStockInHistoryBySamples(ids);
+        //查询出库历史
+        List<Object[]> stockOutHistory = frozenTubeHistoryRepositories.findStockOutHistoryBySamples(ids);
+        //查询交接历史
+        List<Object[]> handOverHistory = frozenTubeHistoryRepositories.findHandOverHistoryBySamples(ids);
+        //查询移位历史
+        List<Object[]> moveHistory = frozenTubeHistoryRepositories.findMoveHistoryBySamples(ids);
+        //查询换位历史
+        List<Object[]> changeHistory = frozenTubeHistoryRepositories.findChangeHistoryBySamples(ids);
+        //查询销毁历史
+        List<Object[]> destroyHistory = frozenTubeHistoryRepositories.findDestroyHistoryBySamples(ids);
+        List<Object[]> histroy = new ArrayList<>();
+        histroy.addAll(transhipHistory); histroy.addAll(stockInHistory);
+        histroy.addAll(stockOutHistory); histroy.addAll(handOverHistory);
+        histroy.addAll(moveHistory); histroy.addAll(changeHistory);
+        histroy.addAll(destroyHistory);
+        Map<Long, List<Object[]>> histroyMap =
+            histroy.stream().collect(Collectors.groupingBy(w ->Long.valueOf(w[0].toString())));
+
+        Map<Long,FrozenTubeHistory> tubeMap = new HashMap();
         List<FrozenTubeHistory> frozenTubeHistoryList = new ArrayList<FrozenTubeHistory>();
-        Map<Long,List<FrozenTubeHistory>> map = new HashMap<Long,List<FrozenTubeHistory>>();
-        Map<Long,FrozenTubeHistory> tubeMap = new HashMap<Long,FrozenTubeHistory>();
-        for (FrozenTubeHistory e :frozenTubeHistories){
-            String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
-            FrozenTubeHistory frozenTubeHistory = new FrozenTubeHistory(e.getId(),e.getTranshipId(),e.getTranshipCode(),e.getStockInId(),e.getStockInCode(),e.getStockOutTaskId(),
-                e.getStockOutTaskCode(),e.getHandoverId(),e.getHandoverCode(),e.getProjectCode(),e.getSampleCode(),e.getType(),e.getStatus(),e.getFrozenBoxCode(),
-                position,e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),e.getPositionInBox(),e.getEquipmentId(),
-                e.getAreaId(),e.getShelvesId(),e.getTubeRows(),e.getTubeColumns(),e.getOperateTime(),e.getFrozenTubeId(),e.getMemo(),e.getOperator()
-                ,e.getSampleTypeId(),
-                e.getSampleTypeCode(),e.getSampleTypeName(),e.getFrozenTubeTypeId(),e.getFrozenTubeTypeCode(),e.getFrozenTubeTypeName(),e.getFrozenTubeVolumns(),
-                e.getFrozenTubeVolumnsUnit(),e.getSampleUsedTimesMost(),e.getSampleUsedTimes(),e.getSampleVolumns(),e.getProjectId(),e.getProjectSiteId(),e.getFrozenSiteCode(),
-                e.getFrozenTubeState(),e.getSampleClassificationId(),e.getFrozenBoxId()
+        for(Long tubeId :histroyMap.keySet()){
+            List<Object[]> tubeList = histroyMap.get(tubeId);
+            TreeMap<String,List<Object[]>> listTreeMap = new TreeMap<>(Collections.reverseOrder());
+            Map<String, List<Object[]>> map =
+                tubeList.stream().collect(Collectors.groupingBy(w ->(w[17]!=null?w[17].toString():null)+"&"+w[46].toString()));
+            listTreeMap.putAll(map);
+            Object[] e = listTreeMap.get(listTreeMap.firstKey()).get(0);
+
+            String position = BankUtil.getPositionString(e[20],e[22],e[24],e[26],e[27],null,null);
+            FrozenTubeHistory frozenTubeHistory = new FrozenTubeHistory(
+
+                e[0],e[1],e[2],e[3],e[4],e[5],e[6],e[7],e[8],e[9],
+                e[10],e[11],e[12],e[13],e[14],e[15],e[16],e[17],position,e[19],
+                e[20],e[21],e[22],e[23],e[24],e[25],e[26],e[27],e[28],e[29],
+                e[30],e[31],e[32],e[33],e[34],e[35],e[36],e[37],e[38],e[39],
+                e[40],e[41],e[42],e[43],e[44],e[45],e[46]
             );
-            frozenTubeHistoryList.add(frozenTubeHistory);
         }
-        for (FrozenTubeHistory e :frozenTubeHistories){
-            List<FrozenTubeHistory> list = new ArrayList<FrozenTubeHistory>();
-            list = map.get(e.getFrozenTubeId());
-            if(list != null && list.size()>0){
-                list.add(e);
-            }else{
-                list = new ArrayList<FrozenTubeHistory>();
-            }
-            list.add(e);
-            map.put(e.getFrozenTubeId(),list);
-        }
-        for(Long key:map.keySet()){
-            List<FrozenTubeHistory> frozenTubeList = map.get(key);
-//            Collections.sort(frozenTubeList,new Comparator<FrozenTubeHistory>(){
-//                public int compare(FrozenTubeHistory arg1, FrozenTubeHistory arg0) {
-//                    return arg0.getOperateTime().compareTo(arg1.getOperateTime());
-//                }
-//            });
-            tubeMap.put(key,frozenTubeList.get(0));
-        }
+
         return tubeMap;
     }
 

@@ -7,7 +7,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 /**
  * Created by gengluying on 2017/6/19.
@@ -17,8 +22,14 @@ import java.time.ZonedDateTime;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class FrozenTubeHistory {
     //样本ID
+
     @Id
-    private Long id ;
+    @Column(name = "frozen_tube_id")
+    private Long frozenTubeId;
+
+    //项目编码
+    @Column(name = "project_code")
+    private String projectCode;
     //转运ID
     @Column(name = "tranship_id")
     private Long transhipId ;
@@ -43,9 +54,7 @@ public class FrozenTubeHistory {
     //交接编码
     @Column(name = "handover_code")
     private String handoverCode;
-    //项目编码
-    @Column(name = "project_code")
-    private String projectCode;
+
     //样本编码
     @Column(name = "sample_code")
     private String  sampleCode;
@@ -57,120 +66,170 @@ public class FrozenTubeHistory {
     //样本状态
     @Column(name = "status")
     private String status;
+
+    @Column(name = "frozen_box_id")
+    private Long frozenBoxId;
     //冻存盒编码
     @Column(name = "frozen_box_code")
     private String frozenBoxCode;
-
-    @Column(name ="position")
-    private String position;
-
-    @Column(name ="equipment_code")
-    private String equipmentCode;
-
-    @Column(name ="area_code")
-    private String areaCode;
-
-    @Column(name ="shelves_code")
-    private String shelvesCode;
-
-    @Column(name ="rows_in_shelf")
-    private String rowsInShelf;
-
-    @Column(name ="columns_in_shelf")
-    private String columnsInShelf;
-
-    @Column(name ="position_in_box")
-    private String positionInBox;
-
-    @Column(name ="equipment_id")
-    private Long equipmentId;
-
-    @Column(name ="area_id")
-    private Long areaId;
-
-    @Column(name ="shelves_id")
-    private Long shelvesId;
     //盒内行数
     @Column(name = "tube_rows")
     private String tubeRows;
     //盒内列数
     @Column(name = "tube_columns")
     private String tubeColumns;
-//    操作时间
+
+    //操作时间
     @Column(name = "operate_time")
     private ZonedDateTime operateTime;
 
-    @Column(name = "frozen_tube_id")
-    private Long frozenTubeId;
+    @Column(name ="position")
+    private String position;
+
+    @Column(name ="position_in_box")
+    private String positionInBox;
+
+    @Column(name ="equipment_code")
+    private String equipmentCode;
+
+    @Column(name ="equipment_id")
+    private Long equipmentId;
+
+    @Column(name ="area_code")
+    private String areaCode;
+    @Column(name ="area_id")
+
+    private Long areaId;
+
+    @Column(name ="shelves_code")
+    private String shelvesCode;
+
+    @Column(name ="shelves_id")
+    private Long shelvesId;
+
+    @Column(name ="columns_in_shelf")
+    private String columnsInShelf;
+
+    @Column(name ="rows_in_shelf")
+    private String rowsInShelf;
 
     @Column(name = "memo")
     private String memo;
 
     @Column(name = "operator")
     private String operator;
+    @Column(name = "sample_type_id")
+    private Long sampleTypeId;
+    @Column(name = "sample_type_code")
+    private String sampleTypeCode;
+    @Column(name = "sample_type_name")
+    private String sampleTypeName;
+    @Column(name = "frozen_tube_type_id")
+    private Long frozenTubeTypeId;
+    @Column(name = "frozen_tube_type_code")
+    private String frozenTubeTypeCode;
+    @Column(name = "frozen_tube_type_name")
+    private String frozenTubeTypeName;
+    @Column(name = "frozen_tube_volumns")
+    private Double frozenTubeVolumns;
+    @Column(name = "frozen_tube_volumns_unit")
+    private String frozenTubeVolumnsUnit;
+    @Column(name = "sample_used_times_most")
+    private Integer sampleUsedTimesMost;
+    @Column(name = "sample_used_times")
+    private Integer sampleUsedTimes;
+    @Column(name = "sample_volumns")
+    private Double sampleVolumns;
+    @Column(name = "project_id")
+    private Long projectId;
+    @Column(name = "project_site_id")
+    private Long projectSiteId;
+    @Column(name = "project_site_code")
+    private String frozenSiteCode;
+    @Column(name = "frozen_tube_state")
+    private String frozenTubeState;
+    @Column(name = "sample_classification_id")
+    private Long sampleClassificationId;
+
+    @Column(name = "created_date")
+    private ZonedDateTime createdDate;
 
     public FrozenTubeHistory() {
     }
 
+    public FrozenTubeHistory(Object frozenTubeId, Object projectCode, Object transhipId, Object transhipCode, Object stockInId, Object stockInCode,
+                             Object stockOutTaskId, Object stockOutTaskCode, Object handoverId, Object handoverCode, Object sampleCode, Object type,
+                             Object status, Object frozenBoxId, Object frozenBoxCode, Object tubeRows, Object tubeColumns, Object operateTime,
+                             Object position, Object positionInBox, Object equipmentCode, Object equipmentId, Object areaCode, Object areaId, Object shelvesCode,
+                             Object shelvesId, Object columnsInShelf, Object rowsInShelf, Object memo, Object operator, Object sampleTypeId, Object sampleTypeCode,
+                             Object sampleTypeName, Object frozenTubeTypeId, Object frozenTubeTypeCode, Object frozenTubeTypeName, Object frozenTubeVolumns,
+                             Object frozenTubeVolumnsUnit, Object sampleUsedTimesMost, Object sampleUsedTimes, Object sampleVolumns, Object projectId,
+                             Object projectSiteId, Object frozenSiteCode,  Object sampleClassificationId,Object frozenTubeState, Object createdDate) {
+        this.frozenTubeId = frozenTubeId!=null?Long.valueOf(frozenTubeId.toString()):null;
+        this.projectCode = projectCode!=null?projectCode.toString():null;
+        this.transhipId = transhipId!=null?Long.valueOf(transhipId.toString()):null;
+        this.transhipCode = transhipCode!=null?transhipCode.toString():null;
+        this.stockInId = stockInId!=null?Long.valueOf(stockInId.toString()):null;
+        this.stockInCode = stockInCode!=null?stockInCode.toString():null;
+        this.stockOutTaskId = stockOutTaskId!=null?Long.valueOf(stockOutTaskId.toString()):null;
+        this.stockOutTaskCode = stockOutTaskCode!=null?stockOutTaskCode.toString():null;
+        this.handoverId = handoverId!=null?Long.valueOf(handoverId.toString()):null;
+        this.handoverCode = handoverCode!=null?handoverCode.toString():null;
+        this.sampleCode = sampleCode!=null?sampleCode.toString():null;
+        this.type = type!=null?type.toString():null;
+        this.status = status!=null?status.toString():null;
+        this.frozenBoxId = frozenBoxId!=null?Long.valueOf(frozenBoxId.toString()):null;
+        this.frozenBoxCode =frozenBoxCode!=null?frozenBoxCode.toString():null;
+        this.tubeRows = tubeRows!=null?tubeRows.toString():null;
 
-    public FrozenTubeHistory(Long id, Long transhipId, String transhipCode, Long stockInId, String stockInCode, Long stockOutTaskId, String stockOutTaskCode, Long handoverId, String handoverCode, String projectCode, String sampleCode, String type, String status, String frozenBoxCode, String position, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String positionInBox, Long equipmentId, Long areaId, Long shelvesId, String tubeRows, String tubeColumns, ZonedDateTime operateTime, Long frozenTubeId, String memo, String operator
-        , Long sampleTypeId, String sampleTypeCode, String sampleTypeName, Long frozenTubeTypeId, String frozenTubeTypeCode, String frozenTubeTypeName, Double frozenTubeVolumns, String frozenTubeVolumnsUnit, Integer sampleUsedTimesMost, Integer sampleUsedTimes, Double sampleVolumns, Long projectId, Long projectSiteId, String frozenSiteCode, String frozenTubeState, Long sampleClassificationId, Long frozenBoxId
-    ) {
-        this.id = id;
-        this.transhipId = transhipId;
-        this.transhipCode = transhipCode;
-        this.stockInId = stockInId;
-        this.stockInCode = stockInCode;
-        this.stockOutTaskId = stockOutTaskId;
-        this.stockOutTaskCode = stockOutTaskCode;
-        this.handoverId = handoverId;
-        this.handoverCode = handoverCode;
-        this.projectCode = projectCode;
-        this.sampleCode = sampleCode;
-        this.type = type;
-        this.status = status;
-        this.frozenBoxCode = frozenBoxCode;
-        this.position = position;
-        this.equipmentCode = equipmentCode;
-        this.areaCode = areaCode;
-        this.shelvesCode = shelvesCode;
-        this.rowsInShelf = rowsInShelf;
-        this.columnsInShelf = columnsInShelf;
-        this.positionInBox = positionInBox;
-        this.equipmentId = equipmentId;
-        this.areaId = areaId;
-        this.shelvesId = shelvesId;
-        this.tubeRows = tubeRows;
-        this.tubeColumns = tubeColumns;
-        this.operateTime = operateTime;
-        this.frozenTubeId = frozenTubeId;
-        this.memo = memo;
-        this.operator = operator;
-        this.sampleTypeId = sampleTypeId;
-        this.sampleTypeCode = sampleTypeCode;
-        this.sampleTypeName = sampleTypeName;
-        this.frozenTubeTypeId = frozenTubeTypeId;
-        this.frozenTubeTypeCode = frozenTubeTypeCode;
-        this.frozenTubeTypeName = frozenTubeTypeName;
-        this.frozenTubeVolumns = frozenTubeVolumns;
-        this.frozenTubeVolumnsUnit = frozenTubeVolumnsUnit;
-        this.sampleUsedTimesMost = sampleUsedTimesMost;
-        this.sampleUsedTimes = sampleUsedTimes;
-        this.sampleVolumns = sampleVolumns;
-        this.projectId = projectId;
-        this.projectSiteId = projectSiteId;
-        this.frozenSiteCode = frozenSiteCode;
-        this.frozenTubeState = frozenTubeState;
-        this.sampleClassificationId = sampleClassificationId;
-        this.frozenBoxId = frozenBoxId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.tubeColumns = tubeColumns!=null?tubeColumns.toString():null;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(operateTime!=null){
+            try {
+                Date date=format.parse(operateTime.toString());
+                ZonedDateTime createDate = date.toInstant().atZone(ZoneId.systemDefault());
+                this.operateTime = createDate;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        this.position =position!=null?position.toString():null;
+        this.positionInBox =positionInBox!=null?positionInBox.toString():null;
+        this.equipmentCode = equipmentCode!=null?equipmentCode.toString():null;
+        this.equipmentId = equipmentId!=null?Long.valueOf(equipmentId.toString()):null;
+        this.areaCode = areaCode!=null?areaCode.toString():null;
+        this.areaId =areaId!=null?Long.valueOf(areaId.toString()):null;
+        this.shelvesCode = shelvesCode!=null?shelvesCode.toString():null;
+        this.shelvesId = shelvesId!=null?Long.valueOf(shelvesId.toString()):null;
+        this.columnsInShelf = columnsInShelf!=null?columnsInShelf.toString():null;
+        this.rowsInShelf = rowsInShelf!=null?rowsInShelf.toString():null;
+        this.memo = memo!=null?memo.toString():null;
+        this.operator = operator!=null?operator.toString():null;
+        this.sampleTypeId = sampleTypeId!=null?Long.valueOf(sampleTypeId.toString()):null;
+        this.sampleTypeCode = sampleTypeCode!=null?sampleTypeCode.toString():null;
+        this.sampleTypeName = sampleTypeName!=null?sampleTypeName.toString():null;
+        this.frozenTubeTypeId = frozenTubeTypeId!=null?Long.valueOf(frozenTubeTypeId.toString()):null;
+        this.frozenTubeTypeCode = frozenTubeTypeCode!=null?frozenTubeTypeCode.toString():null;
+        this.frozenTubeTypeName = frozenTubeTypeName!=null?frozenTubeTypeName.toString():null;
+        this.frozenTubeVolumns = frozenTubeVolumns!=null?Double.valueOf(frozenTubeVolumns.toString()):null;
+        this.frozenTubeVolumnsUnit = frozenTubeVolumnsUnit!=null?frozenTubeVolumnsUnit.toString():null;
+        this.sampleUsedTimesMost =sampleUsedTimesMost!=null?Integer.valueOf(sampleUsedTimesMost.toString()):null;
+        this.sampleUsedTimes =  sampleUsedTimes!=null?Integer.valueOf(sampleUsedTimes.toString()):null;
+        this.sampleVolumns = sampleVolumns!=null?Double.valueOf(sampleVolumns.toString()):null;
+        this.projectId = projectId!=null?Long.valueOf(projectId.toString()):null;
+        this.projectSiteId = projectSiteId!=null?Long.valueOf(projectSiteId.toString()):null;
+        this.frozenSiteCode = frozenSiteCode!=null?frozenSiteCode.toString():null;
+        this.frozenTubeState = frozenTubeState!=null?frozenTubeState.toString():null;
+        this.sampleClassificationId = sampleClassificationId!=null?Long.valueOf(sampleClassificationId.toString()):null;
+        if(createdDate!=null){
+            try {
+                Date date=format.parse(createdDate.toString());
+                ZonedDateTime zonedDateTime = date.toInstant().atZone(ZoneId.systemDefault());
+                this.createdDate = zonedDateTime;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public Long getTranshipId() {
@@ -404,40 +463,7 @@ public class FrozenTubeHistory {
     public void setOperator(String operator) {
         this.operator = operator;
     }
-    @Column(name = "sample_type_id")
-    private Long sampleTypeId;
-    @Column(name = "sample_type_code")
-    private String sampleTypeCode;
-    @Column(name = "sample_type_name")
-    private String sampleTypeName;
-    @Column(name = "frozen_tube_type_id")
-    private Long frozenTubeTypeId;
-    @Column(name = "frozen_tube_type_code")
-    private String frozenTubeTypeCode;
-    @Column(name = "frozen_tube_type_name")
-    private String frozenTubeTypeName;
-    @Column(name = "frozen_tube_volumns")
-    private Double frozenTubeVolumns;
-    @Column(name = "frozen_tube_volumns_unit")
-    private String frozenTubeVolumnsUnit;
-    @Column(name = "sample_used_times_most")
-    private Integer sampleUsedTimesMost;
-    @Column(name = "sample_used_times")
-    private Integer sampleUsedTimes;
-    @Column(name = "sample_volumns")
-    private Double sampleVolumns;
-    @Column(name = "project_id")
-    private Long projectId;
-    @Column(name = "project_site_id")
-    private Long projectSiteId;
-    @Column(name = "project_site_code")
-    private String frozenSiteCode;
-    @Column(name = "frozen_tube_state")
-    private String frozenTubeState;
-    @Column(name = "sample_classification_id")
-    private Long sampleClassificationId;
-    @Column(name = "frozen_box_id")
-    private Long frozenBoxId;
+
     public Long getSampleTypeId() {
         return sampleTypeId;
     }
@@ -572,5 +598,13 @@ public class FrozenTubeHistory {
 
     public void setFrozenBoxId(Long frozenBoxId) {
         this.frozenBoxId = frozenBoxId;
+    }
+
+    public ZonedDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(ZonedDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 }

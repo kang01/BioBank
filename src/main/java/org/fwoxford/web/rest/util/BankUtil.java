@@ -133,27 +133,27 @@ public class BankUtil{
         return String.join(".", positions);
     }
 
-    public static  String getPositionString(String equipmentCode,String areaCode,String supportCode,String columnsInshelf,String rowsInshelf,String tubeRows,String tubeColumns) {
+    public static  String getPositionString(Object equipmentCode,Object areaCode,Object supportCode,Object columnsInshelf,Object rowsInshelf,Object tubeRows,Object tubeColumns) {
         String position = "";
         ArrayList<String> positions = new ArrayList<>();
-        if (equipmentCode != null && equipmentCode.length() > 0){
-            positions.add(equipmentCode);
+        if (equipmentCode != null && equipmentCode.toString().length() > 0){
+            positions.add(equipmentCode.toString());
         }
 
-        if (areaCode != null && areaCode.length() > 0) {
-            positions.add(areaCode);
+        if (areaCode != null && areaCode.toString().length() > 0) {
+            positions.add(areaCode.toString());
         }
 
-        if (supportCode != null && supportCode.length() > 0){
-            positions.add(supportCode);
+        if (supportCode != null && supportCode.toString().length() > 0){
+            positions.add(supportCode.toString());
         }
 
-        if (rowsInshelf != null && rowsInshelf.length() > 0 && columnsInshelf != null && columnsInshelf.length() > 0){
-            positions.add(columnsInshelf+rowsInshelf);
+        if (rowsInshelf != null && rowsInshelf.toString().length() > 0 && columnsInshelf != null && columnsInshelf.toString().length() > 0){
+            positions.add(columnsInshelf.toString()+rowsInshelf.toString());
         }
 
-        if (tubeRows != null && tubeRows.length() > 0 && tubeColumns != null && tubeColumns.length() > 0){
-            positions.add(tubeRows+tubeColumns);
+        if (tubeRows != null && tubeRows.toString().toString().length() > 0 && tubeColumns != null && tubeColumns.toString().length() > 0){
+            positions.add(tubeRows.toString()+tubeColumns.toString());
         }
 
         return String.join(".", positions);

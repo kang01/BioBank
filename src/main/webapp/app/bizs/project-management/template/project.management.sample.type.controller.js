@@ -13,64 +13,51 @@
     function ProjectManagementSampleTypeController($scope,$state,hotRegisterer,SampleTypeService,FrozenBoxTypesService) {
         var vm = this;
         vm.sampleTypeItem = [
-            {id:1,sampleTypeId:"",num:"",sampleClassificationId:"",color:""}
+            {id:1,sampleTypeCode:"",num:"",sampleClassificationId:"",color:""}
         ];
         vm.box = {};
-        vm.nums = [];
+        //
         vm.createSampleType = _fnCreateSampleType;
-        vm.changeColor = _fnChangeColor;
-        vm.changeSampleTypeColor = _fnChangeSampleTypeColor;
+        //
         vm.removeSampleType = _fnRemoveSampleType;
+        //是否启用
+        vm.isEnabled = _fnIsEnabled;
 
-        function _fnChangeColor(color) {
-            vm.obj = {
-                "background-color" : color
-            };
-        }
+
         function _fnCreateSampleType() {
+            // console.log(JSON.stringify(vm.sampleTypeItem));
+            // _.forEach(vm.sampleTypeItem,function (item) {
+            //     _.remove(vm.sampleTypeOptions,{sampleTypeCode:item.sampleTypeCode});
+            // });
+
             if(vm.sampleTypeItem.length < 11){
-                vm.sampleTypeItem.push({id:vm.sampleTypeItem.length,sampleTypeId:"",sampleClassificationId:"",color:""});
+                vm.sampleTypeItem.push({id:vm.sampleTypeItem.length,sampleTypeCode:"",sampleClassificationId:"",color:""});
             }
 
-        }
-        var colIndexs = [];
-        function _fnChangeSampleTypeColor(colIndex,item) {
-            console.log($("#tableHeader"));
-            // var tags = $(".column_name_edit");
-            // console.log($("#tableHeader").getAttribute("index"));
-            // for(var i in tags){
-            //     console.log(tags[i].getAttribute("index"));
-                // if(tags[i].nodeType==1){
-                //     if(tags[i].getAttribute("index") == classnames){ //如果某元素的class值为所需要
-                //         objArray[index]=tags[i];
-                //         index++;
-                //     }
-                // }
-            // }
-
-
-
-            // var tableCtrl = _getTableCtrl();
-            // var countCols = tableCtrl.countCols();
-            // var index = _.lastIndexOf(colIndexs, colIndex);
-            //
-            // if(!item){
-            //     if(index != -1){
-            //         colIndexs.splice(index,1);
-            //     }
-            // }else{
-            //     if(index == -1){
-            //         colIndexs.push(colIndex);
-            //     }
-            // }
-            //
-            // console.log(colIndex);
-            // console.log(item);
-            // tableCtrl.render();
         }
         function _fnRemoveSampleType(index) {
             vm.sampleTypeItem.splice(index,1);
         }
+        function _fnQuerySampleType() {
+            SampleTypeService.querySampleType().success(function (data) {
+                vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['asc']);
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"});
+                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"97"});
+            });
+        }
+        _fnQuerySampleType();
+        vm.sampleTypeConfig = {
+            valueField:'sampleTypeCode',
+            labelField:'sampleTypeName',
+            maxItems: 1,
+            onChange:function (value) {
+                // var len = _.filter(vm.sampleTypeItem,{sampleTypeCode:value}).length;
+                // console.log(len);
+            }
+        };
+
+        //99样本
         function _initFrozenTube() {
 
             vm.settings = {
@@ -81,21 +68,30 @@
                 stretchH: 'all',
                 colWidths: 80,
                 rowHeaderWidth: 30,
-                rowHeaderHeight: 20,
+                editor: false,
                 data:vm.tubeList,
-                colHeaders : function(index) {
-                    // console.log(index);
-                    // document.getElementById("tableHeader").setAttribute("index",index);
-                    var html = "<input type='text' class='column_name_edit form-control' style='width: 78%' onblur='document.getElementById(\"tableHeader\").setAttribute(\"index\","+index+");document.getElementById(\"tableHeader\").click()'>";
-                    return html;
+                colHeaders : function() {
+                    return  "<input type='text' class='column_name_edit form-control' style='width: 78%' disabled>";
                 },
-                renderer: function(hotInstance, td, row, col, prop, value, cellProperties) {
-                    for(var i = 0; i < colIndexs.length;i++){
-                        if(col == colIndexs[i]){
-                            td.style.backgroundColor = 'blue';
-                        }
+                renderer:function (hotInstance, td, row, col, prop, value, cellProperties) {
+                    return "";
+                },
+                afterGetColHeader:function (col, TH) {
+                    if(vm.startUseFlag){
+                        $(TH).find(".column_name_edit").attr({"disabled":false});
                     }
-                    var countCols = hotInstance.countCols();
+
+                    $(TH).find(".column_name_edit").blur(function () {
+                        var hot = _getTableCtrl();
+                        var countRows = hot.countRows();
+                        for(var i = 0; i < countRows;i++){
+                            if($(this)[0].value){
+                                hot.getCell(i,col).style.backgroundColor = "#eee";
+                            }else{
+                                hot.getCell(i,col).style.backgroundColor = "#fff";
+                            }
+                        }
+                    })
                 }
 
 
@@ -103,34 +99,18 @@
             };
         }
         _initFrozenTube();
-        _fnQuerySampleType();
         _fnQueryBoxType();
-       function _fnQueryBoxType() {
+        function _fnQueryBoxType() {
            //盒子类型
            FrozenBoxTypesService.query({},function (data) {
                vm.frozenBoxTypeOptions = _.orderBy(data, ['id'], ['asc']);
                vm.box.frozenBoxTypeId = vm.frozenBoxTypeOptions[0].id;
                vm.box.frozenBoxTypeColumns = vm.frozenBoxTypeOptions[0].frozenBoxTypeColumns;
-               for(var i = 0; i < vm.box.frozenBoxTypeColumns;i++){
-                   vm.nums.push("");
-               }
            }, function (data) {
 
            });
        }
-        function _fnQuerySampleType() {
-            SampleTypeService.querySampleType().success(function (data) {
-                vm.sampleTypeOptions = _.orderBy(data, ['sampleTypeId'], ['asc']);
-                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
-                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"98"});
-                _.remove(vm.sampleTypeOptions,{sampleTypeCode:"97"});
-            });
-        }
-        function _fnQueryProjectSampleClass(projectId,sampleTypeId) {
-            SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
-                vm.projectSampleTypeOptions = data;
-            });
-        }
+
         // 创建一个对象用于管子Table的控件
         function _createTubeForTableCell(tubeInBox, box, rowNO, colNO, pos){
             var tube = {
@@ -184,21 +164,6 @@
             tableCtrl.updateSettings(settings);
             tableCtrl.loadData(tubesInTable);
         }
-        vm.sampleTypeConfig = {
-            valueField:'id',
-            labelField:'sampleTypeName',
-            maxItems: 1,
-            onChange:function (value) {
-                _fnQueryProjectSampleClass('31',value)
-            }
-        };
-        vm.projectSampleTypeConfig = {
-            valueField:'sampleClassificationId',
-            labelField:'sampleClassificationName',
-            maxItems: 1,
-            onChange:function (value) {
-            }
-        };
         //盒子类型
         vm.boxTypeConfig = {
             valueField:'id',
@@ -213,11 +178,6 @@
                 vm.box.frozenBoxTypeRows = boxType.frozenBoxTypeRows;
                 vm.box.frozenBoxTypeColumns = boxType.frozenBoxTypeColumns;
                 vm.box.frozenTubeDTOS = [];
-                vm.nums = [];
-                for(var i = 0; i < vm.box.frozenBoxTypeColumns;i++){
-
-                    vm.nums.push("");
-                }
                 var tubeList = [];
                 for (var i = 0; i < vm.box.frozenBoxTypeRows; i++) {
                     tubeList[i] = [];
@@ -237,6 +197,11 @@
                 hotRegisterer.getInstance('my-handsontable').render();
             }
         };
+
+        function _fnIsEnabled() {
+           var hot =  _getTableCtrl();
+           hot.render();
+        }
 
         // 获取上架位置列表的控制实体
         function _getTableCtrl() {

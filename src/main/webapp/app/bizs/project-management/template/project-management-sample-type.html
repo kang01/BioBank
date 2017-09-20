@@ -20,7 +20,7 @@
                         <form class="form-inline">
                             <div class="col-md-4">
                                 <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
-                                           ng-model="item.sampleTypeId"></selectize>
+                                           ng-model="item.sampleTypeCode"></selectize>
                             </div>
                             <div class="col-md-2">
                                 <input type="text" class="form-control"  ng-model="item.num" onkeyup="this.value=this.value.replace(/[^\d]/g,'');" maxlength="2">
@@ -52,7 +52,7 @@
                                 <h4>
                                     99样本
                                     <label class="checkbox-inline">
-                                        <input type="checkbox" ng-model="vm.startUseFlag" ng-true-value="true" ng-false-value="false">启用
+                                        <input type="checkbox" ng-model="vm.startUseFlag" ng-true-value="true" ng-false-value="false" ng-click="vm.isEnabled()">启用
                                     </label>
 
                                 </h4>
@@ -62,19 +62,11 @@
                                 <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
                                            ng-model="vm.box.frozenBoxTypeId" style="width: 150px;" ng-disabled="!vm.startUseFlag"></selectize>
                             </div>
-
                         </div>
                     </div>
 
                 </div>
                 <div class="panel-body sample-type-num p-0" style="height: 534px;">
-                    <div class="row pt-10 pb-10">
-                        <div class="col-md-1" ng-repeat="item in vm.nums track by $index" >
-                            <input type="text" class="form-control" ng-model="item" ng-blur="vm.changeSampleTypeColor($index,item)" ng-disabled="!vm.startUseFlag">
-                        </div>
-
-                    </div>
-                    <button id="tableHeader" ng-click="vm.changeSampleTypeColor(index)">按钮</button>
                     <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"
                                style="width: 100%; padding: 0;margin: 0;"></hot-table>
                 </div>

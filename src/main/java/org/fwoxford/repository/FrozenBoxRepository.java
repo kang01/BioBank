@@ -158,7 +158,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " and f.status=?5" +
         " and (select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000')<(f.frozen_box_columns*f.frozen_box_rows) " +
         " and f.is_split = 0 " +
-        " order by sampleNumber asc",nativeQuery = true)
+        " order by sampleNumber asc FETCH FIRST 10 ROWS ONLY",nativeQuery = true)
     List<FrozenBox> findIncompleteFrozenBoxBySampleClassificationIdInAllStock(String frozenBoxCode, Long projectId,
                                                                               List<Long> sampleClassificationIdStr, Long frozenBoxTypeId, String status, String stockInCode);
 
@@ -171,7 +171,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " and f.status=?5" +
         " and (select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code and tube.status!='0000')<(f.frozen_box_columns*f.frozen_box_rows) " +
         " and f.is_split = 0 " +
-        " order by sampleNumber asc",nativeQuery = true)
+        " order by sampleNumber asc FETCH FIRST 10 ROWS ONLY",nativeQuery = true)
     List<FrozenBox> findIncompleteFrozenBoxBySampleTypeIdInAllStock(String frozenBoxCode, Long projectId, Long sampleTypeId, Long frozenBoxTypeId, String status, String stockInCode);
 
     FrozenBox findBySupportRackIdAndColumnsInShelfAndRowsInShelf(Long id, String columnsInShelf, String rowsInShelf);

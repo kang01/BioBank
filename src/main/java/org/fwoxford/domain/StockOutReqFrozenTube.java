@@ -28,7 +28,6 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
-    @Size(max = 1024)
     @Column(name = "memo", length = 1024)
     private String memo;
 

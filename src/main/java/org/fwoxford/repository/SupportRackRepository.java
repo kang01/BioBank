@@ -23,6 +23,7 @@ public interface SupportRackRepository extends JpaRepository<SupportRack,Long> {
     @Query("select r from SupportRack r where r.area.equipment.id =?1")
     List<SupportRack> findByEquipmentId(Long id);
 
+    @Query(value = "select * from support_rack where area_id = ?1 and support_rack_code = ?2 and rownum=1",nativeQuery = true)
     SupportRack findByAreaIdAndSupportRackCode(Long id, String supportRackCode);
 
     Long countSupportRackByAreaId(Long id);

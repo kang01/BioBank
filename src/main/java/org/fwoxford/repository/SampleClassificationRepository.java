@@ -13,4 +13,5 @@ import java.util.List;
 public interface SampleClassificationRepository extends JpaRepository<SampleClassification,Long> {
 
     SampleClassification findBySampleClassificationCode(String sampleClassTypeCode);
+
 }

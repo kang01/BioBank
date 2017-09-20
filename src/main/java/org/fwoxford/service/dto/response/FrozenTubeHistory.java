@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
  * Created by gengluying on 2017/6/19.
  */
 @Entity
-@Table(name = "view_samples_history")
+@Table(name = "view_frozen_tube_history")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class FrozenTubeHistory {
     //样本ID

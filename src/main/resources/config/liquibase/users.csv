@@ -20,5 +20,7 @@ id;login;password_hash;first_name;last_name;email;image_url;activated;lang_key;c
 19;hewei;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;炜;何;hewei@localhost;;true;zh-cn;system;system
 20;zhuzhihong;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;志鸿;朱;zhuzhihong@localhost;;true;zh-cn;system;system
 21;daihao;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;浩;戴;daihao@localhost;;true;zh-cn;system;system
-22;NA;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;NA;;na@localhost;;true;zh-cn;system;system
+22;NA;$2a$10$VEjxo0jq2YG9Rbk2HmX9S;NA;;na@localhost;;true;zh-cn;system;system
 23;lianxianghua;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;向华;连;lianxianghua@localhost;;true;zh-cn;system;system
+24;sayinxi;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;尹晰;萨;sayinxi@localhost;;true;zh-cn;system;system
+25;liuyuandong;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;元东;刘;liuyuandong@localhost;;true;zh-cn;system;system

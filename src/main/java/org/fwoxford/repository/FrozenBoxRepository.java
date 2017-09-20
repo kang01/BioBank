@@ -265,5 +265,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         "                    FROM stock_out_box t where frozen_box_id = ?1" +
         "            ) temp ORDER BY created_date DESC",nativeQuery = true)
     List<Object[]> findFrozenBoxHistory(Long id);
+
+    FrozenBox findByFrozenBoxCodeAndSampleTypeCode(String boxCode, String sampleTypeCode);
 }
 

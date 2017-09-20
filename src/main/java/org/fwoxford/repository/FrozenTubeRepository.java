@@ -53,7 +53,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " and t.id not in (select f.frozen_tube_id from stock_out_req_frozen_tube f where f.stock_out_requirement_id =?3 and f.status='1301')" +
         " and t.project_id in ?4 and ROWNUM <=1"
         ,nativeQuery = true)
-    List<FrozenTube> findBySampleCodeAndSampleTypeCode(String appointedSampleCode, String appointedSampleType, Long id, List<Long> projectIds);
+    List<FrozenTube> findBySampleCodeAndSampleTypeCodeAndRequirementAndProject(String appointedSampleCode, String appointedSampleType, Long id, List<Long> projectIds);
 
 //    @Query("select t from FrozenTube t\n" +
 //        "  left join t.frozenBox \n"
@@ -121,4 +121,8 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000' and t.frozenBox.status !='2090' and t.frozenTubeState=?2")
     Long countByFrozenBoxCodeAndFrozenTubeState(String frozenBoxCode,String frozenTubeState);
+
+    FrozenTube findBySampleCodeAndSampleTypeCode(String sampleCode, String sampleTypeCode);
+
+    List<FrozenTube> findByFrozenTubeState(String status);
 }

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -135,6 +136,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
         checkUser(positionMoveDTO);
         positionMove.setMoveType(Constants.MOVE_TYPE_1);
         positionMove.setStatus(Constants.VALID);
+        positionMove.setPositionMoveDate(LocalDate.now());
         positionMoveRepository.save(positionMove);
         //保存移位记录详情数据
         List<PositionMoveRecordDTO> positionMoveForBoxes = positionMoveDTO.getPositionMoveRecordDTOS();
@@ -152,6 +154,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
         checkUser(positionMoveDTO);
         positionMove.setMoveType(Constants.MOVE_TYPE_2);
         positionMove.setStatus(Constants.VALID);
+        positionMove.setPositionMoveDate(LocalDate.now());
         positionMoveRepository.save(positionMove);
         List<PositionMoveRecordDTO> positionMoveForBoxes = positionMoveDTO.getPositionMoveRecordDTOS();
         for (PositionMoveRecordDTO p : positionMoveForBoxes) {
@@ -168,6 +171,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
         checkUser(positionMoveDTO);
         positionMove.setMoveType(Constants.MOVE_TYPE_3);
         positionMove.setStatus(Constants.VALID);
+        positionMove.setPositionMoveDate(LocalDate.now());
         positionMoveRepository.save(positionMove);
         positionMoveDTO.setId(positionMove.getId());
         List<PositionMoveRecordDTO> positionMoveForAreas = positionMoveDTO.getPositionMoveRecordDTOS();

@@ -230,4 +230,19 @@ public class BankUtil{
         }
         return fourRandom;
     }
+
+    public String getUniqueIDByDate(String flag,Date date) {
+        String time = "";
+        String timeServerUrl = "ntp5.aliyun.com";
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        String dateTime = dateFormat.format(date);
+        Instant instant = date.toInstant();
+        ZoneId zone = ZoneId.systemDefault();
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
+        LocalDate localDate = localDateTime.toLocalDate();
+        String fourRandom = getSerialRandom(flag,localDate);
+        time = flag +dateTime+fourRandom;
+        return time;
+    }
+
 }

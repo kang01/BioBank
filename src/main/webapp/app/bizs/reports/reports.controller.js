@@ -52,7 +52,9 @@
 
 
         function _init() {
-
+            vm.daySampleCountFlag = true;
+            vm.citySampleCountFlag = true;
+            vm.ageSampleCountFlag = true;
             //样本流向
             function _fnQueryEveyDaySampleCount(){
                 ReportService.queryEveyDaySampleCount(startDate,endDate,vm.type,searchForm).success(function (data) {

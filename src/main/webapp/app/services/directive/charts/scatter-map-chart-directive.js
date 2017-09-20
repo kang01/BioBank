@@ -438,6 +438,10 @@
                             }
                         },
                         zoom:scope.zoom,
+                        scaleLimit:{
+                            min:1.2,
+                            max:12
+                        },
                         left:scope.left
                     },
                     series : [

@@ -8,9 +8,10 @@
         .module('bioBankApp')
         .controller('ProjectManagementSitesController', ProjectManagementSitesController);
 
-    ProjectManagementSitesController.$inject = ['$scope'];
+    ProjectManagementSitesController.$inject = ['$scope','$stateParams'];
 
-    function ProjectManagementSitesController($scope) {
+    function ProjectManagementSitesController($scope,$stateParams) {
+        console.log($stateParams.status);
         var vm = this;
     }
 })();

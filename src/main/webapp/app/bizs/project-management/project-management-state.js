@@ -9,7 +9,6 @@
         .config(stateConfig);
 
     stateConfig.$inject = ['$stateProvider'];
-
     function stateConfig($stateProvider) {
         $stateProvider
             .state('project-management', {
@@ -58,7 +57,8 @@
             })
             .state('project-management-info', {
                 parent: 'project-management-add',
-                url: '/info',
+                url: '/info/{status}',
+                params:{status : null},
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: '项目信息'
@@ -80,7 +80,8 @@
             })
             .state('project-management-sample-type', {
                 parent: 'project-management-add',
-                url: '/sample-type',
+                url: '/sample-type/{status}',
+                params:{status : null},
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: '样本分类'
@@ -102,7 +103,8 @@
             })
             .state('project-management-sites', {
                 parent: 'project-management-add',
-                url: '/sites',
+                url: '/sites/{status}',
+                params:{status : null},
                 data: {
                     authorities: ['ROLE_USER','ROLE_ADMIN'],
                     pageTitle: '项目点'

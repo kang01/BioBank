@@ -1,17 +1,30 @@
 /**
- * Created by gaokangkang on 2017/9/5.
+ * Created by gaokangkang on 2017/9/21.
  */
-(function () {
+(function() {
     'use strict';
 
     angular
         .module('bioBankApp')
-        .controller('EquipmentManagementController', EquipmentManagementController);
+        .controller('DemoEquipmentController', DemoEquipmentController);
 
-    EquipmentManagementController.$inject = ['$scope'];
+    DemoEquipmentController.$inject = ['$scope', '$compile', 'Principal', 'StockInService', 'ParseLinks', 'AlertService', '$state'];
 
-    function EquipmentManagementController($scope) {
+    function DemoEquipmentController($scope, $compile, Principal, StockInService, ParseLinks, AlertService, $state) {
         var vm = this;
+        vm.xy ={
+            position:0
+        };
+        vm.posList = [];
+
+        $scope.$watch('vm.xy.position',function (newValue,oldValue) {
+            vm.posList.push(vm.xy.position);
+        });
+        vm.empty = function () {
+            vm.posList = [];
+        };
+
+
         function _fnInitWH() {
             //获取左侧区域
             var $areaList = $(".area-demo");
@@ -22,7 +35,8 @@
             //获取左侧区域宽度，永远不变
             var leftWidth = $areaPanel.outerWidth();
             function _fnSetWH(){
-                //window高
+                //window宽高
+                var winWidth = window.innerWidth;
                 var winHeight = $(window).height();
                 //设置区域高度
                 $areaList.css("height",winHeight- 190);
@@ -42,7 +56,5 @@
             });
         }
         _fnInitWH();
-
-
     }
 })();

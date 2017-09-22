@@ -8,9 +8,10 @@
         .module('bioBankApp')
         .controller('ProjectManagementInfoController', ProjectManagementInfoController);
 
-    ProjectManagementInfoController.$inject = ['$scope'];
+    ProjectManagementInfoController.$inject = ['$scope','$stateParams'];
 
-    function ProjectManagementInfoController($scope) {
+    function ProjectManagementInfoController($scope,$stateParams) {
+        console.log($stateParams.status);
         var vm = this;
 
     }

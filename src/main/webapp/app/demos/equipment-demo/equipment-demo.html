@@ -4,7 +4,7 @@
             <h5 >区域</h5>
         </div>
         <div class="panel-body area-demo">
-            <konva-equipment></konva-equipment>
+            <konva-equipment-demo xy="vm.xy"></konva-equipment-demo>
         </div>
     </div>
     <div class="panel panel-default equipment-panel" >
@@ -20,18 +20,16 @@
 
         </div>
         <div class="panel-body equipment-list">
-            <div class="equipment-list-header"></div>
-            <div class="equipment-list-body">
-            <ul>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <div class="clear-both"></div>
-            </ul>
-        </div>
+            <div>
+                <ul>
+                    <li style="float: left;width: 110px;margin-top: 5px;" ng-repeat="item in vm.posList track by $index" ng-if="item">&nbsp;<span class="red-color">{{$index}}</span>&nbsp;&nbsp;{{item}}</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
+
+
+
+
+

@@ -8,9 +8,10 @@
         .module('bioBankApp')
         .controller('ProjectManagementSampleTypeController', ProjectManagementSampleTypeController);
 
-    ProjectManagementSampleTypeController.$inject = ['$scope','$state','hotRegisterer','SampleTypeService','FrozenBoxTypesService'];
+    ProjectManagementSampleTypeController.$inject = ['$scope','$state','$stateParams','hotRegisterer','SampleTypeService','FrozenBoxTypesService'];
 
-    function ProjectManagementSampleTypeController($scope,$state,hotRegisterer,SampleTypeService,FrozenBoxTypesService) {
+    function ProjectManagementSampleTypeController($scope,$state,$stateParams,hotRegisterer,SampleTypeService,FrozenBoxTypesService) {
+        console.log($stateParams);
         var vm = this;
         vm.sampleTypeItem = [
             {id:1,sampleTypeCode:"",num:"",sampleClassificationId:"",color:""}
@@ -68,10 +69,11 @@
                 stretchH: 'all',
                 colWidths: 80,
                 rowHeaderWidth: 30,
+                columnHeaderHeight:30,
                 editor: false,
                 data:vm.tubeList,
                 colHeaders : function() {
-                    return  "<input type='text' class='column_name_edit form-control' style='width: 78%' disabled>";
+                    return  "<input type='text' class='column_name_edit form-control' style='width: 78%;margin-top: 3px;padding: 0 12px;' disabled>";
                 },
                 renderer:function (hotInstance, td, row, col, prop, value, cellProperties) {
                     return "";

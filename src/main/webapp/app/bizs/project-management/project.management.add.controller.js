@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('ProjectManagementAddController', ProjectManagementAddController);
 
-    ProjectManagementAddController.$inject = ['$scope','$state'];
+    ProjectManagementAddController.$inject = ['$scope','$state','$stateParams'];
 
-    function ProjectManagementAddController($scope,$state) {
+    function ProjectManagementAddController($scope,$state,$stateParams) {
         var vm = this;
         vm.titles = [
             {id:1,name:"项目信息",className:"active"},
@@ -34,13 +34,13 @@
                 if(title.id == id){
                     title.className = 'active';
                     if(title.id == 1){
-                        $state.go("project-management-info")
+                        $state.go("project-management-info",{status:1})
                     }
                     if(title.id == 2){
-                        $state.go("project-management-sample-type")
+                        $state.go("project-management-sample-type",{status:2})
                     }
                     if(title.id == 3){
-                        $state.go("project-management-sites")
+                        $state.go("project-management-sites",{status:3})
                     }
                     if(title.id == 4){
                         $state.go("project-management-equipment")
@@ -58,13 +58,13 @@
                     var titles1 = _.orderBy(vm.titles,'id','asc');
                     titles1[title.id].className = '';
                     if(title.id == 1){
-                        $state.go("project-management-info")
+                        $state.go("project-management-info",{status:1})
                     }
                     if(title.id == 2){
-                        $state.go("project-management-sample-type")
+                        $state.go("project-management-sample-type",{status:2})
                     }
                     if(title.id == 3){
-                        $state.go("project-management-sites")
+                        $state.go("project-management-sites",{status:3})
                     }
                     if(title.id == 4){
                         $state.go("project-management-equipment")

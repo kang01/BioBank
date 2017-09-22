@@ -46,4 +46,10 @@ public interface EquipmentService {
      * @return
      */
     List<EquipmentDTO> findAllEquipments();
+
+    /**
+     * 获取未满冻存设备
+     * @return
+     */
+    List<EquipmentDTO> findAllUnFullEquipment();
 }

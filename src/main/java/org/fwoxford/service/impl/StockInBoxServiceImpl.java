@@ -798,15 +798,18 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }
         }
         stockInTubeRepository.save(stockInfrozenTubesForDelete);
-        Map<Long,FrozenTubeHistory> mapOld = stockListService.findFrozenTubeHistoryDetailByIds(oldFrozenTubeIds);
-        for(FrozenTube tube:OldFrozenTubeList){
-            FrozenTubeHistory frozenTubeHistory = mapOld.get(tube.getId());
-            if(frozenTubeHistory==null||(frozenTubeHistory!=null&&frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_TRANSHIP))){
-                tube.setStatus(Constants.INVALID);
+        if(oldFrozenTubeIds.size()>0){
+            Map<Long,FrozenTubeHistory> mapOld = stockListService.findFrozenTubeHistoryDetailByIds(oldFrozenTubeIds);
+            for(FrozenTube tube:OldFrozenTubeList){
+                FrozenTubeHistory frozenTubeHistory = mapOld.get(tube.getId());
+                if(frozenTubeHistory==null||(frozenTubeHistory!=null&&frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_TRANSHIP))){
+                    tube.setStatus(Constants.INVALID);
+                }
             }
+            frozenTubeRepository.save(OldFrozenTubeList);
         }
-        frozenTubeRepository.save(OldFrozenTubeList);
-        Map<Long,FrozenTubeHistory> map = stockListService.findFrozenTubeHistoryDetailByIds(frozenTubeIds);
+
+        Map<Long,FrozenTubeHistory> map = frozenTubeIds.size()>0?stockListService.findFrozenTubeHistoryDetailByIds(frozenTubeIds):new HashMap<>();
         //验证冻存管编码是否重复
         for(StockInTubeDTO tubeDTO :stockInTubeDTOList){
             //验证冻存管是否重复
@@ -1202,7 +1205,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         for(StockInTube s :stockInTubes){
             ids.add(s.getFrozenTube().getId());
         }
-        Map<Long,FrozenTubeHistory> allFrozenTubeHistories = stockListService.findFrozenTubeHistoryDetailByIds(ids);
+        Map<Long,FrozenTubeHistory> allFrozenTubeHistories = ids.size()>0?stockListService.findFrozenTubeHistoryDetailByIds(ids):new HashMap<>();
         for(StockInTube f: stockInTubes){
             StockInTubeDTO stockInTubeDTO = stockInTubeMapper.stockInTubeToStockInTubeDTO(f);
             stockInTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
@@ -1259,7 +1262,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         for(StockInTube s :stockInTubes){
             ids.add(s.getFrozenTube().getId());
         }
-        Map<Long,FrozenTubeHistory> allFrozenTubeHistories = stockListService.findFrozenTubeHistoryDetailByIds(ids);
+        Map<Long,FrozenTubeHistory> allFrozenTubeHistories = ids.size()>0?stockListService.findFrozenTubeHistoryDetailByIds(ids):null;
         for(StockInTube f: stockInTubes){
             StockInTubeDTO stockInTubeDTO = stockInTubeMapper.stockInTubeToStockInTubeDTO(f);
             stockInTubeDTO.setFrozenTubeType(f.getFrozenTubeType());

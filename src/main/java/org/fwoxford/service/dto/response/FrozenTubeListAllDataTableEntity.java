@@ -124,10 +124,13 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
     @Column(name ="position_in_box")
     private String positionInBox;
 
+    @Column(name = "sample_temp_code", length = 100)
+    private String sampleTempCode;
+
     public FrozenTubeListAllDataTableEntity() {
     }
 
-    public FrozenTubeListAllDataTableEntity(Long id, String position, String frozenBoxCode, String sampleCode, String projectCode, String projectName, String sampleType, String sampleClassification, String sex, Integer age, String diseaseType, Boolean isHemolysis, Boolean isBloodLipid, Long sampleUsedTimes, String status, String frozenTubeState, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String tubeRows, String tubeColumns, Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId,String positionInBox) {
+    public FrozenTubeListAllDataTableEntity(Long id, String position, String frozenBoxCode, String sampleCode, String projectCode, String projectName, String sampleType, String sampleClassification, String sex, Integer age, String diseaseType, Boolean isHemolysis, Boolean isBloodLipid, Long sampleUsedTimes, String status, String frozenTubeState, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String tubeRows, String tubeColumns, Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId, String positionInBox, String sampleTempCode) {
         this.id = id;
         this.position = position;
         this.frozenBoxCode = frozenBoxCode;
@@ -157,6 +160,7 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
         this.sampleTypeId = sampleTypeId;
         this.sampleClassificationId = sampleClassificationId;
         this.positionInBox = positionInBox;
+        this.sampleTempCode = sampleTempCode;
     }
 
     public Long getId() {
@@ -389,5 +393,13 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
 
     public void setPositionInBox(String positionInBox) {
         this.positionInBox = positionInBox;
+    }
+
+    public String getSampleTempCode() {
+        return sampleTempCode;
+    }
+
+    public void setSampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
     }
 }

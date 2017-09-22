@@ -84,23 +84,21 @@ public class EquipmentResource {
             .body(result);
     }
 
-    /**
-     * GET  /equipment : get all the equipment.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of equipment in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
     @GetMapping("/equipment")
     @Timed
-    public ResponseEntity<List<EquipmentDTO>> getAllEquipment(@ApiParam Pageable pageable)
+//    public ResponseEntity<List<EquipmentDTO>> getAllEquipment(@ApiParam Pageable pageable)
+//        throws URISyntaxException {
+//        log.debug("REST request to get a page of Equipment");
+//        Page<EquipmentDTO> page = equipmentService.findAll(pageable);
+//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/equipment");
+//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+//    }
+    public ResponseEntity<List<EquipmentDTO>> getAllEquipment()
         throws URISyntaxException {
         log.debug("REST request to get a page of Equipment");
-        Page<EquipmentDTO> page = equipmentService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/equipment");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        List<EquipmentDTO> page = equipmentService.findAllUnFullEquipment();
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
-
     /**
      * GET  /equipment/:id : get the "id" equipment.
      *

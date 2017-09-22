@@ -817,7 +817,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             throw new BankServiceException("冻存盒已满！");
         }
         List<StockInTubeDTO> frozenTubeDTOS = new ArrayList<StockInTubeDTO>();
-        Map<Long,FrozenTubeHistory> allFrozenTubeHistories = stockListService.findFrozenTubeHistoryDetailByIds(ids);
+        Map<Long,FrozenTubeHistory> allFrozenTubeHistories = ids.size()>0?stockListService.findFrozenTubeHistoryDetailByIds(ids):null;
         for(StockInTube f: stockInTubes){
             StockInTubeDTO stockInTubeDTO = stockInTubeMapper.stockInTubeToStockInTubeDTO(f);
             stockInTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);

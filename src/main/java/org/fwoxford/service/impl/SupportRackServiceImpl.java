@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -131,7 +132,12 @@ public class SupportRackServiceImpl implements SupportRackService{
             throw new BankServiceException("设备不存在！");
         }
         List<SupportRack> supportRacks = supportRackRepository.findByEquipmentId(equipment.getId());
+//        List<SupportRack> UnFullsupportRacks = supportRackRepository.findUnFullSupportRackByEquipmentId(equipment.getId());
+//        Map<Long,List<SupportRack>> shelvesOfEquipmentMap = supportRacks.stream().collect(Collectors.groupingBy(s->s.getArea().getId()));
+
         List<FrozenBox> frozenBoxes = frozenBoxRepository.findByEquipmentCode(equipmentCode);
+//        Map<Long,List<FrozenBox>> frozenBoxOfShelf = frozenBoxes.stream().collect(Collectors.groupingBy(f->f.getSupportRack().getId()));
+
         List<SupportRack> supportRackList = new ArrayList<SupportRack>();
         for(SupportRack rack :supportRacks){
             SupportRackType supportRackType = rack.getSupportRackType();

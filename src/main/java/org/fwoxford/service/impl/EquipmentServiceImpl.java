@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -89,6 +90,7 @@ public class EquipmentServiceImpl implements EquipmentService{
     @Transactional(readOnly = true)
     public Page<EquipmentDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Equipment");
+
         Page<Equipment> result = equipmentRepository.findAllUnFullEquipment(pageable);
         Iterator<Equipment> it = result.iterator();
         while(it.hasNext()){
@@ -100,7 +102,20 @@ public class EquipmentServiceImpl implements EquipmentService{
         }
         return result.map(equipment -> equipmentMapper.equipmentToEquipmentDTO(equipment));
     }
+    public List<EquipmentDTO> findAllUnFullEquipment() {
+        log.debug("Request to get all Equipment");
 
+        List<Equipment> equipments = equipmentRepository.findAllEquipments();
+        Iterator<Equipment> it = equipments.iterator();
+        while(it.hasNext()){
+            Equipment equipment = it.next();
+            List<SupportRackDTO> supportRackDTOList = supportRackService.getIncompleteShelves(equipment.getEquipmentCode());
+            if(supportRackDTOList==null || supportRackDTOList.size()==0){
+                it.remove();
+            }
+        }
+        return equipmentMapper.equipmentToEquipmentDTOs(equipments);
+    }
     /**
      *  Get one equipment by id.
      *

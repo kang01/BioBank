@@ -71,10 +71,10 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 //        + " and (?9 is null or t.age <= ?9 )\n"
 //        + " order by t.frozenBox.frozenBoxCode asc\n"
 //    )
-    @Query(value = "select frozentube0_.* from frozen_tube frozentube0_ left outer join frozen_box frozenbox1_ on frozentube0_.frozen_box_id=frozenbox1_.id " +
+    @Query(value = "select frozentube0_.* from frozen_tube frozentube0_  " +
         " left outer join stock_out_req_frozen_tube stockoutre2_ on (frozentube0_.id=stockoutre2_.frozen_tube_id and stockoutre2_.status='1301') " +
         " where frozentube0_.status='3001' and (frozentube0_.frozen_box_id is not null)  " +
-        " and frozenbox1_.status='2004' and frozentube0_.status<>'0000' " +
+        " and frozentube0_.frozen_tube_state='2004'  " +
         " and (stockoutre2_.frozen_tube_id is null) " +
         " and (?1 = 0 or frozentube0_.sample_type_id=?1) " +
         " and (?2 = 0 or frozentube0_.sample_classification_id=?2)  " +
@@ -85,8 +85,27 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " and (?7 = 0 or frozentube0_.is_hemolysis=?7) " +
         " and (?8 = 0 or frozentube0_.age>=?8) " +
         " and (?9 = 0 or frozentube0_.age<=?9) " +
-        "order by frozenbox1_.frozen_box_code,frozentube0_.tube_rows,LPAD(frozentube0_.tube_columns,2) asc",nativeQuery = true)
+        " order by frozentube0_.frozen_box_code,frozentube0_.tube_rows,LPAD(frozentube0_.tube_columns,2) asc",nativeQuery = true)
     List<FrozenTube> findByRequirement(Integer sampleTypeId, Integer samplyClassificationId, Integer frozenTubeTypeId,
+                                       String diseaseType, String sex, Integer isBloodLipid, Integer isHemolysis, Integer ageMin, Integer ageMax);
+
+    @Query(value = "SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt " +
+        " LEFT OUTER JOIN STOCK_OUT_PLAN_TUBE pt ON pt.STOCK_OUT_REQ_FROZEN_TUBE_ID = rt.id AND pt.STATUS='1503'" +
+        " WHERE pt.id IS NULL",nativeQuery = true)
+    List<Object[]> findAllStockOutFrozenTube();
+
+    @Query(value = "select t.id,t.project_id,t.frozen_box_id,t.tube_rows,t.tube_columns from frozen_tube t   " +
+        " where (?1 = 0 or t.sample_type_id=?1) " +
+        " and (?2 = 0 or t.sample_classification_id=?2)  " +
+        " and (?3 = 0 or t.frozen_tube_type_id=?3) " +
+        " and (?4 is null or t.disease_type=?4) " +
+        " and (?5 is null or t.gender=?5) " +
+        " and (?6 = 0 or t.is_blood_lipid=?6) " +
+        " and (?7 = 0 or t.is_hemolysis=?7) " +
+        " and (?8 = 0 or t.age>=?8) " +
+        " and (?9 = 0 or t.age<=?9) " +
+        " and t.frozen_tube_state='2004' and t.status='3001' " ,nativeQuery = true)
+    List<Object[]> findByRequirements(Integer sampleTypeId, Integer samplyClassificationId, Integer frozenTubeTypeId,
                                        String diseaseType, String sex, Integer isBloodLipid, Integer isHemolysis, Integer ageMin, Integer ageMax);
 
     @Query("select t from FrozenTube t where (t.sampleCode in ?1 or t.sampleTempCode in ?1) and t.project.projectCode = ?2 and t.sampleType.id = ?3 and t.status != ?4")

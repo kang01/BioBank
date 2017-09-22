@@ -147,16 +147,15 @@ public class StockListServiceImpl implements StockListService {
         Converter<FrozenTubeListAllDataTableEntity, FrozenTubeListAllDataTableEntity> convert = new Converter<FrozenTubeListAllDataTableEntity, FrozenTubeListAllDataTableEntity>() {
             @Override
             public FrozenTubeListAllDataTableEntity convert(FrozenTubeListAllDataTableEntity e) {
-                FrozenTube frozenTube = frozenTubeRepository.findOne(e.getId());
-                String sampleCode = StringUtils.isEmpty(frozenTube.getSampleCode())?frozenTube.getSampleTempCode():frozenTube.getSampleCode();
+                String sampleCode = StringUtils.isEmpty(e.getSampleCode())?e.getSampleTempCode():e.getSampleCode();
                 String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
                 String positionInBox = e.getTubeRows()+e.getTubeColumns();
                 return new FrozenTubeListAllDataTableEntity(
                     e.getId(),position,e.getFrozenBoxCode(),sampleCode,e.getProjectCode(),e.getProjectName(),e.getSampleType(),
                     e.getSampleClassification(),e.getSex(),e.getAge(),e.getDiseaseType(),e.getHemolysis(),e.getBloodLipid(),e.getSampleUsedTimes(),
                     e.getStatus(),e.getFrozenTubeState(),e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),
-                    e.getTubeRows(),e.getTubeColumns(),e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getSampleTypeId(),e.getSampleClassificationId(),positionInBox
-                );
+                    e.getTubeRows(),e.getTubeColumns(),e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getSampleTypeId(),e.getSampleClassificationId(),positionInBox,
+                e.getSampleTempCode());
             }
         };
         Specification<FrozenTubeListAllDataTableEntity> specification = new Specification<FrozenTubeListAllDataTableEntity>() {

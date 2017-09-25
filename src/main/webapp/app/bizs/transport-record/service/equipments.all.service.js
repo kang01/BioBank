@@ -1,17 +1,17 @@
 /**
- * Created by gaokangkang on 2017/3/28.
- * 所有未满设备列表
+ * Created by gaokangkang on 2017/9/25.
+ * 所有设备列表
  */
 (function() {
     'use strict';
     angular
         .module('bioBankApp')
-        .factory('EquipmentService', EquipmentService);
+        .factory('EquipmentAllService', EquipmentAllService);
 
-    EquipmentService.$inject = ['$resource'];
+    EquipmentAllService.$inject = ['$resource'];
 
-    function EquipmentService ($resource) {
-        var resourceUrl =  'api/equipment/:id';
+    function EquipmentAllService ($resource) {
+        var resourceUrl =  'api/equipment/all/:id';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},

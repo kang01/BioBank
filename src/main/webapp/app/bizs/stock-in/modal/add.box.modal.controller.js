@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('AddBoxModalController', AddBoxModalController);
 
-    AddBoxModalController.$inject = ['$scope','$uibModalInstance','$uibModal','items','AlertService','FrozenBoxTypesService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxCodeIsRepeatService','SampleTypeService'];
+    AddBoxModalController.$inject = ['$scope','$uibModalInstance','$uibModal','items','AlertService','FrozenBoxTypesService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxCodeIsRepeatService','SampleTypeService'];
 
-    function AddBoxModalController($scope,$uibModalInstance,$uibModal,items,AlertService,FrozenBoxTypesService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxCodeIsRepeatService,SampleTypeService) {
+    function AddBoxModalController($scope,$uibModalInstance,$uibModal,items,AlertService,FrozenBoxTypesService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxCodeIsRepeatService,SampleTypeService) {
         var vm = this;
         vm.createBoxflag = false;
         var boxes = items.incompleteBoxes;

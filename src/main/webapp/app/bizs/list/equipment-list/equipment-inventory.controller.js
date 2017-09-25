@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('EquipmentInventoryController', EquipmentInventoryController);
 
-    EquipmentInventoryController.$inject = ['$scope','$compile','$state','$uibModal','DTColumnBuilder','toastr','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
+    EquipmentInventoryController.$inject = ['$scope','$compile','$state','$uibModal','DTColumnBuilder','toastr','ProjectService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable'];
 
-    function EquipmentInventoryController($scope,$compile,$state,$uibModal,DTColumnBuilder,toastr,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
+    function EquipmentInventoryController($scope,$compile,$state,$uibModal,DTColumnBuilder,toastr,ProjectService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable) {
         var vm = this;
         vm.checked = false;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
@@ -151,7 +151,7 @@
                 vm.projectOptions = data;
             }
             //设备
-            EquipmentService.query({},onEquipmentSuccess, onError);
+            EquipmentAllService.query({},onEquipmentSuccess, onError);
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = data;
             }

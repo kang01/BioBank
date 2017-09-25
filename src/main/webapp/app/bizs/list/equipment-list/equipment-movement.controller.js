@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('EquipmentMovementController', EquipmentMovementController);
 
-    EquipmentMovementController.$inject = ['$scope','$compile','$state','$uibModal','$stateParams','hotRegisterer','toastr','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable','SampleUserService','Principal','BioBankBlockUi'];
+    EquipmentMovementController.$inject = ['$scope','$compile','$state','$uibModal','$stateParams','hotRegisterer','toastr','DTColumnBuilder','ProjectService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','EquipmentInventoryService','BioBankDataTable','SampleUserService','Principal','BioBankBlockUi'];
 
-    function EquipmentMovementController($scope,$compile,$state,$uibModal,$stateParams,hotRegisterer,toastr,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable,SampleUserService,Principal,BioBankBlockUi) {
+    function EquipmentMovementController($scope,$compile,$state,$uibModal,$stateParams,hotRegisterer,toastr,DTColumnBuilder,ProjectService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,EquipmentInventoryService,BioBankDataTable,SampleUserService,Principal,BioBankBlockUi) {
         var vm = this;
         vm.dtInstance = {};
         vm.selectedInstance = {};
@@ -211,7 +211,7 @@
                 vm.projectOptions = data;
             }
             //设备编码
-            EquipmentService.query({},onEquipmentSuccess, onError);
+            EquipmentAllService.query({},onEquipmentSuccess, onError);
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = data;
             }

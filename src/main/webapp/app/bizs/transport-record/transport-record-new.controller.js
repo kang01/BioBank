@@ -11,11 +11,11 @@
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
     TransportRecordNewController.$inject = ['$scope','blockUI','MasterData','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TransportRecordService','TranshipSaveService','TranshipBoxService',
-        'SampleTypeService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService',
+        'SampleTypeService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService',
     'BioBankBlockUi','Principal'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
     function TransportRecordNewController($scope,blockUI,MasterData,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TransportRecordService,TranshipSaveService,TranshipBoxService,
-                                          SampleTypeService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService,
+                                          SampleTypeService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService,
                                           BioBankBlockUi,Principal) {
 
         var modalInstance;
@@ -502,7 +502,7 @@
             var domArray = [];//单元格操作的数据
             var operateColor;//单元格颜色
 
-            EquipmentService.query({},onEquipmentSuccess, onError);//设备
+            EquipmentAllService.query({},onEquipmentSuccess, onError);//设备
 
             initFrozenTube(10,10);
             vm.nextFlag = true;

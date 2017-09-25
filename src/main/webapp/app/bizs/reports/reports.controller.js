@@ -12,10 +12,10 @@
         .controller('ReportEnlargedModalController', ReportEnlargedModalController)
         .controller('SelectDateModalController', SelectDateModalController);
 
-    ReportsController.$inject = ['$scope','$uibModal','ReportService','ProjectService','EquipmentService','MasterData','AreasByEquipmentIdService','SampleTypeService','SupportacksByAreaIdService','RequirementService'];
+    ReportsController.$inject = ['$scope','$uibModal','ReportService','ProjectService','EquipmentAllService','MasterData','AreasByEquipmentIdService','SampleTypeService','SupportacksByAreaIdService','RequirementService'];
     ReportEnlargedModalController.$inject = ['$uibModalInstance','$uibModal','items','ReportService'];
     SelectDateModalController.$inject = ['$uibModalInstance'];
-    function ReportsController($scope,$uibModal,ReportService,ProjectService,EquipmentService,MasterData,AreasByEquipmentIdService,SampleTypeService,SupportacksByAreaIdService,RequirementService) {
+    function ReportsController($scope,$uibModal,ReportService,ProjectService,EquipmentAllService,MasterData,AreasByEquipmentIdService,SampleTypeService,SupportacksByAreaIdService,RequirementService) {
         var vm = this;
         vm.dto = {
             frozenBoxCodeStr:[]
@@ -214,7 +214,7 @@
                 vm.projectOptions = data;
             }
             //设备
-            EquipmentService.query({},onEquipmentSuccess, onError);
+            EquipmentAllService.query({},onEquipmentSuccess, onError);
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = data;
             }

@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('TaskStockOutModalController', TaskStockOutModalController);
 
-    TaskStockOutModalController.$inject = ['$scope','$compile','$uibModalInstance','$uibModal','items','TaskService','DTOptionsBuilder','DTColumnBuilder','toastr','EquipmentService','AreasByEquipmentIdService','BioBankBlockUi','BioBankDataTable'];
+    TaskStockOutModalController.$inject = ['$scope','$compile','$uibModalInstance','$uibModal','items','TaskService','DTOptionsBuilder','DTColumnBuilder','toastr','EquipmentAllService','AreasByEquipmentIdService','BioBankBlockUi','BioBankDataTable'];
 
-    function TaskStockOutModalController($scope,$compile,$uibModalInstance,$uibModal,items,TaskService,DTOptionsBuilder,DTColumnBuilder,toastr,EquipmentService,AreasByEquipmentIdService,BioBankBlockUi,BioBankDataTable) {
+    function TaskStockOutModalController($scope,$compile,$uibModalInstance,$uibModal,items,TaskService,DTOptionsBuilder,DTColumnBuilder,toastr,EquipmentAllService,AreasByEquipmentIdService,BioBankBlockUi,BioBankDataTable) {
         var vm = this;
         vm.dtInstance = {};
         vm.stockOut = {};
@@ -22,7 +22,7 @@
 
 
         //设备
-        EquipmentService.query({},onEquipmentSuccess, onError);
+        EquipmentAllService.query({},onEquipmentSuccess, onError);
         function onEquipmentSuccess(data) {
             vm.frozenBoxPlaceOptions = data;
         }

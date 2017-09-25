@@ -8,10 +8,10 @@
         .module('bioBankApp')
         .controller('SampleMovementController', SampleMovementController);
 
-    SampleMovementController.$inject = ['$scope','hotRegisterer','$compile','$state','$stateParams','$uibModal','toastr','DTColumnBuilder','ProjectService','EquipmentService',
+    SampleMovementController.$inject = ['$scope','hotRegisterer','$compile','$state','$stateParams','$uibModal','toastr','DTColumnBuilder','ProjectService','EquipmentAllService',
         'SampleTypeService','MasterData','BoxInventoryService','BioBankDataTable','StockInBoxByCodeService','SampleService','FrozenBoxTypesService','RequirementService','SampleInventoryService','SampleUserService','BioBankBlockUi','Principal'];
 
-    function SampleMovementController($scope,hotRegisterer,$compile,$state,$stateParams,$uibModal,toastr,DTColumnBuilder,ProjectService,EquipmentService,
+    function SampleMovementController($scope,hotRegisterer,$compile,$state,$stateParams,$uibModal,toastr,DTColumnBuilder,ProjectService,EquipmentAllService,
                                       SampleTypeService,MasterData,BoxInventoryService,BioBankDataTable,StockInBoxByCodeService,SampleService,FrozenBoxTypesService,RequirementService,SampleInventoryService,SampleUserService,BioBankBlockUi,Principal) {
         var vm = this;
         vm.boxInstance = {};
@@ -183,7 +183,7 @@
                 vm.projectOptions = data;
             }
             //设备
-            EquipmentService.query({},onEquipmentSuccess, onError);
+            EquipmentAllService.query({},onEquipmentSuccess, onError);
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = data;
             }

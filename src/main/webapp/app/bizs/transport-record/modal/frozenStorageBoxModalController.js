@@ -9,10 +9,10 @@
         .controller('FrozenStorageBoxModalController', FrozenStorageBoxModalController)
         .controller('ProgressBarModalController', ProgressBarModalController);
 
-    FrozenStorageBoxModalController.$inject = ['$scope','$q','toastr','$timeout','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService','blockUI','blockUIConfig','AreasByEquipmentIdService','EquipmentService','SampleTypeService','TransportRecordService'];
+    FrozenStorageBoxModalController.$inject = ['$scope','$q','toastr','$timeout','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','items','TranshipBoxService','blockUI','blockUIConfig','AreasByEquipmentIdService','EquipmentAllService','SampleTypeService','TransportRecordService'];
     ProgressBarModalController.$inject = ['$uibModalInstance','$uibModal'];
 
-    function FrozenStorageBoxModalController($scope,$q,toastr,$timeout,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService,blockUI,blockUIConfig,AreasByEquipmentIdService,EquipmentService,SampleTypeService,TransportRecordService) {
+    function FrozenStorageBoxModalController($scope,$q,toastr,$timeout,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,items,TranshipBoxService,blockUI,blockUIConfig,AreasByEquipmentIdService,EquipmentAllService,SampleTypeService,TransportRecordService) {
 
         var vm = this;
         vm.items = items;
@@ -50,7 +50,7 @@
             _fnQueryProjectSampleClass(vm.items.projectId,vm.frozenBox.sampleTypeId,vm.isMixed);
         }
         //设备
-        EquipmentService.query({},onEquipmentTempSuccess, onError);
+        EquipmentAllService.query({},onEquipmentTempSuccess, onError);
         //样本类型
         vm.sampleTypeConfig = {
             valueField:'id',

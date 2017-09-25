@@ -9,11 +9,11 @@
         .controller('StockInEditController', StockInEditController)
         .controller('RescindPutAwayModalController', RescindPutAwayModalController);
 
-    StockInEditController.$inject = ['$scope','blockUIConfig','EquipmentService','BioBankBlockUi','$state','SupportacksByAreaIdService', '$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
+    StockInEditController.$inject = ['$scope','blockUIConfig','EquipmentAllService','BioBankBlockUi','$state','SupportacksByAreaIdService', '$compile','toastr','hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModal','BioBankDataTable',
         'entity','AreasByEquipmentIdService','StockInBoxService','StockInBoxByCodeService','SplitedBoxService','ProjectSitesByProjectIdService',
         'SampleTypeService','SampleService','IncompleteBoxService','RescindPutAwayService','MasterData','ProjectService','SampleUserService','Principal','StockInInputService'];
     RescindPutAwayModalController.$inject = ['$uibModalInstance'];
-    function StockInEditController($scope,blockUIConfig,EquipmentService,BioBankBlockUi,$state,SupportacksByAreaIdService,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
+    function StockInEditController($scope,blockUIConfig,EquipmentAllService,BioBankBlockUi,$state,SupportacksByAreaIdService,$compile,toastr,hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModal,BioBankDataTable,
                                   entity,AreasByEquipmentIdService,StockInBoxService,StockInBoxByCodeService,SplitedBoxService,ProjectSitesByProjectIdService,
                                   SampleTypeService,SampleService,IncompleteBoxService,RescindPutAwayService,MasterData,ProjectService,SampleUserService,Principal,StockInInputService) {
         var vm = this;
@@ -144,7 +144,7 @@
             var areaCode;
             var supportRackCode;
             //设备
-            EquipmentService.query({},onEquipmentSuccess, onError);
+            EquipmentAllService.query({},onEquipmentSuccess, onError);
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = data;
             }

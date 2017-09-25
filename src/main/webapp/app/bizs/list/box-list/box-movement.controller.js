@@ -9,11 +9,11 @@
         .controller('BoxMovementController', BoxMovementController)
         .controller('ModalInstanceCtrl', ModalInstanceCtrl);
 
-    BoxMovementController.$inject = ['$scope','hotRegisterer','$timeout','$compile','toastr','$state','$stateParams','$uibModal','DTColumnBuilder','ProjectService','EquipmentService','AreasByEquipmentIdService',
+    BoxMovementController.$inject = ['$scope','hotRegisterer','$timeout','$compile','toastr','$state','$stateParams','$uibModal','DTColumnBuilder','ProjectService','EquipmentAllService','AreasByEquipmentIdService',
         'SupportacksByAreaIdService','Principal','BioBankDataTable','SampleUserService','BoxInventoryService','BioBankBlockUi'];
     ModalInstanceCtrl.$inject = ['$uibModalInstance'];
 
-    function BoxMovementController($scope,hotRegisterer,$timeout,$compile,toastr,$state,$stateParams,$uibModal,DTColumnBuilder,ProjectService,EquipmentService,AreasByEquipmentIdService,
+    function BoxMovementController($scope,hotRegisterer,$timeout,$compile,toastr,$state,$stateParams,$uibModal,DTColumnBuilder,ProjectService,EquipmentAllService,AreasByEquipmentIdService,
                                    SupportacksByAreaIdService,Principal,BioBankDataTable,SampleUserService,BoxInventoryService,BioBankBlockUi) {
         var vm = this;
         vm.shelfInstance = {};
@@ -221,7 +221,7 @@
                 vm.projectOptions = data;
             }
             //设备
-            EquipmentService.query({}, onEquipmentSuccess, onError);
+            EquipmentAllService.query({}, onEquipmentSuccess, onError);
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = data;
             }

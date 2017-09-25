@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('SampleInventoryController', SampleInventoryController);
 
-    SampleInventoryController.$inject = ['$scope','$stateParams','$compile','$state','$uibModal','DTColumnBuilder','toastr','ProjectService','EquipmentService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService'];
+    SampleInventoryController.$inject = ['$scope','$stateParams','$compile','$state','$uibModal','DTColumnBuilder','toastr','ProjectService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','SampleInventoryService','BioBankDataTable','MasterData','SampleTypeService','RequirementService'];
 
-    function SampleInventoryController($scope,$stateParams,$compile,$state,$uibModal,DTColumnBuilder,toastr,ProjectService,EquipmentService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService) {
+    function SampleInventoryController($scope,$stateParams,$compile,$state,$uibModal,DTColumnBuilder,toastr,ProjectService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,SampleInventoryService,BioBankDataTable,MasterData,SampleTypeService,RequirementService) {
         var vm = this;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         vm.dto = {
@@ -43,7 +43,7 @@
                 vm.projectOptions = data;
             }
             //设备
-            EquipmentService.query({},onEquipmentSuccess, onError);
+            EquipmentAllService.query({},onEquipmentSuccess, onError);
             function onEquipmentSuccess(data) {
                 vm.frozenBoxPlaceOptions = data;
             }

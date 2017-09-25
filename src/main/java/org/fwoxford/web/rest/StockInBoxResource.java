@@ -287,7 +287,7 @@ public class StockInBoxResource {
     }
 
     /**
-     * 根据入库冻存盒ID查询冻存盒和冻存管的信息（包含盒内已入库的）
+     * 根据入库冻存盒ID查询冻存盒和冻存管的信息（包含盒内已入库的）(为在编辑入库盒时使用)
      * @param id
      * @return
      */
@@ -296,6 +296,19 @@ public class StockInBoxResource {
     public ResponseEntity<StockInBoxDTO> getBoxAndTubeByStockInBox(@PathVariable Long id) {
         log.debug("REST request to get Box and Tube : {}", id);
         StockInBoxDTO res = stockInBoxService.getBoxAndStockTubeByStockInBoxId(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
+    /**
+     * 根据入库盒查询入库样本(当前的)
+     * @param id
+     * @return
+     */
+    @GetMapping("/stock-in-boxes/stockInBoxId/{id}/forBoxDetail")
+    @Timed
+    public ResponseEntity<StockInBoxDTO> getStockInTubeByStockInBox(@PathVariable Long id) {
+        log.debug("REST request to get Box and Tube : {}", id);
+        StockInBoxDTO res = stockInBoxService.getStockInTubeByStockInBox(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

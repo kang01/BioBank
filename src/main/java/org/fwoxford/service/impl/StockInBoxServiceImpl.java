@@ -1321,4 +1321,41 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
         return result;
     }
+
+    @Override
+    public StockInBoxDTO getStockInTubeByStockInBox(Long id) {
+        //查询冻存盒信息
+        StockInBox stockInBox = stockInBoxRepository.findOne(id);
+        if(stockInBox == null){
+            throw new BankServiceException("入库冻存盒不存在！");
+        }
+        FrozenBox frozenBox = stockInBox.getFrozenBox();
+        List<StockInTube> stockInTubes = stockInTubeRepository.findByStockInBoxId(id);
+        List<StockInTubeDTO> frozenTubeDTOS = new ArrayList<StockInTubeDTO>();
+      for(StockInTube f: stockInTubes){
+            StockInTubeDTO stockInTubeDTO = stockInTubeMapper.stockInTubeToStockInTubeDTO(f);
+            stockInTubeDTO.setFrozenTubeType(f.getFrozenTubeType());
+            stockInTubeDTO.setSampleType(f.getSampleType());
+            stockInTubeDTO.setSampleClassification(f.getSampleClassification());
+            stockInTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
+            stockInTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
+            stockInTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
+            stockInTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
+            stockInTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
+            frozenTubeDTOS.add(stockInTubeDTO);
+        }
+        StockInBoxDTO stockInBoxDTO = stockInBoxMapper.stockInBoxToStockInBoxDTO(stockInBox);
+        stockInBoxDTO.setSampleClassification(frozenBox.getSampleClassification());
+        stockInBoxDTO.setSampleType(frozenBox.getSampleType());
+        stockInBoxDTO.setFrozenBoxType(frozenBox.getFrozenBoxType());
+        stockInBoxDTO.setFrozenTubeDTOS(frozenTubeDTOS);
+        stockInBoxDTO.setFrontColor(frozenBox.getSampleType()!=null?frozenBox.getSampleType().getFrontColor():null);
+        stockInBoxDTO.setFrontColorForClass(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getFrontColor():null);
+        stockInBoxDTO.setBackColor(frozenBox.getSampleType()!=null?frozenBox.getSampleType().getBackColor():null);
+        stockInBoxDTO.setBackColorForClass(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getBackColor():null);
+        stockInBoxDTO.setIsMixed(frozenBox.getSampleType()!=null?frozenBox.getSampleType().getIsMixed():null);
+        stockInBoxDTO.setSampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null);
+        stockInBoxDTO.setSampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null);
+        return stockInBoxDTO;
+    }
 }

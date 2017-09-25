@@ -203,6 +203,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
         res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox);
 
+        res.setFrozenTubeDTOS(frozenTubeMapping.frozenTubesToFrozenTubeDTOs(frozenTube));
         return res;
     }
 

@@ -807,7 +807,6 @@ public class StockListServiceImpl implements StockListService {
 
     private CriteriaQuery<?> getSearchQueryForTube(Root<FrozenTubeListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, FrozenTubeListSearchForm searchForm) {
         List<Predicate> predicate = new ArrayList<>();
-        query.distinct(true);
         Predicate p = cb.notEqual(root.get("status").as(String.class), Constants.INVALID);
         predicate.add(p);
 //        Predicate pred = cb.equal(root.get("frozenTubeState").as(String.class), Constants.FROZEN_BOX_STOCKED);

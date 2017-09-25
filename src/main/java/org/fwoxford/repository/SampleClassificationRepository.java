@@ -11,7 +11,11 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface SampleClassificationRepository extends JpaRepository<SampleClassification,Long> {
-
+    /**
+     * 不能使用此方法
+     * @param sampleClassTypeCode
+     * @return
+     */
     SampleClassification findBySampleClassificationCode(String sampleClassTypeCode);
 
 }

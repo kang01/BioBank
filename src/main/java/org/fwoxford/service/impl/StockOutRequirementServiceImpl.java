@@ -175,6 +175,8 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         StockOutRequirement requirement = new StockOutRequirement();
         if(stockOutRequirement.getId()!=null){
             requirement.setId(stockOutRequirement.getId());
+            //删除核对过的样本
+            stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(requirement.getId());
         }
         requirement.setStatus(Constants.STOCK_OUT_REQUIREMENT_CKECKING);
         requirement.setStockOutApply(stockOutApply);
@@ -228,6 +230,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         }
         stockOutRequirementRepository.save(requirement);
         stockOutRequirement.setId(requirement.getId());
+
         return stockOutRequirement;
     }
     @Override
@@ -344,9 +347,6 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
      */
     @Override
     public StockOutRequirementForApply checkStockOutRequirement(Long id) {
-        //删除核对过的样本
-        stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
-
         StockOutRequirementForApply stockOutRequirementForApply = new StockOutRequirementForApply();
         StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
         if(stockOutRequirement == null){

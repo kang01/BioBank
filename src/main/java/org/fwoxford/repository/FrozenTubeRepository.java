@@ -1,15 +1,10 @@
 package org.fwoxford.repository;
 
-import io.swagger.models.auth.In;
-import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
 
-import org.fwoxford.service.dto.response.FrozenTubeHistory;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Spring Data JPA repository for the FrozenTube entity.
@@ -73,7 +68,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 //    )
     @Query(value = "select frozentube0_.* from frozen_tube frozentube0_  " +
         " left outer join stock_out_req_frozen_tube stockoutre2_ on (frozentube0_.id=stockoutre2_.frozen_tube_id and stockoutre2_.status='1301') " +
-        " where frozentube0_.status='3001' and (frozentube0_.frozen_box_id is not null)  " +
+        " where frozentube0_.status='3001'" +
         " and frozentube0_.frozen_tube_state='2004'  " +
         " and (stockoutre2_.frozen_tube_id is null) " +
         " and (?1 = 0 or frozentube0_.sample_type_id=?1) " +
@@ -94,7 +89,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " WHERE pt.id IS NULL",nativeQuery = true)
     List<Object[]> findAllStockOutFrozenTube();
 
-    @Query(value = "select t.id,t.project_id,t.frozen_box_id,t.tube_rows,t.tube_columns from frozen_tube t   " +
+    @Query(value = "select t.id,t.project_id,t.frozen_box_id,t.tube_rows,LPAD(t.tube_columns,2) as tube_columns,memo from frozen_tube t   " +
         " where (?1 = 0 or t.sample_type_id=?1) " +
         " and (?2 = 0 or t.sample_classification_id=?2)  " +
         " and (?3 = 0 or t.frozen_tube_type_id=?3) " +
@@ -104,9 +99,23 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " and (?7 = 0 or t.is_hemolysis=?7) " +
         " and (?8 = 0 or t.age>=?8) " +
         " and (?9 = 0 or t.age<=?9) " +
-        " and t.frozen_tube_state='2004' and t.status='3001' " ,nativeQuery = true)
+        " and t.frozen_tube_state='2004' and t.status='3001' "+
+        " order by t.frozen_box_code,t.tube_rows,LPAD(t.tube_columns,2) asc offset ?10 rows fetch next 1000 rows only",nativeQuery = true)
     List<Object[]> findByRequirements(Integer sampleTypeId, Integer samplyClassificationId, Integer frozenTubeTypeId,
-                                       String diseaseType, String sex, Integer isBloodLipid, Integer isHemolysis, Integer ageMin, Integer ageMax);
+                                       String diseaseType, String sex, Integer isBloodLipid, Integer isHemolysis, Integer ageMin, Integer ageMax,Integer count);
+    @Query(value = "select count(*) from frozen_tube t   " +
+        " where (?1 = 0 or t.sample_type_id=?1) " +
+        " and (?2 = 0 or t.sample_classification_id=?2)  " +
+        " and (?3 = 0 or t.frozen_tube_type_id=?3) " +
+        " and (?4 is null or t.disease_type=?4) " +
+        " and (?5 is null or t.gender=?5) " +
+        " and (?6 = 0 or t.is_blood_lipid=?6) " +
+        " and (?7 = 0 or t.is_hemolysis=?7) " +
+        " and (?8 = 0 or t.age>=?8) " +
+        " and (?9 = 0 or t.age<=?9) " +
+        " and t.frozen_tube_state='2004' and t.status='3001' ",nativeQuery = true)
+    Long countByRequirements(Integer sampleTypeId, Integer samplyClassificationId, Integer frozenTubeTypeId,
+                                      String diseaseType, String sex, Integer isBloodLipid, Integer isHemolysis, Integer ageMin, Integer ageMax);
 
     @Query("select t from FrozenTube t where (t.sampleCode in ?1 or t.sampleTempCode in ?1) and t.project.projectCode = ?2 and t.sampleType.id = ?3 and t.status != ?4")
     List<FrozenTube> findBySampleCodeInAndProjectCodeAndSampleTypeIdAndStatusNot(List<String> sampleCode, String projectCode, Long sampleTypeId,String status);

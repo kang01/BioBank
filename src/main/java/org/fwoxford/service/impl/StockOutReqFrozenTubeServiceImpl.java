@@ -18,9 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockOutReqFrozenTube.
@@ -161,42 +160,54 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         String sex = stockOutRequirement.getSex();
         Integer isBloodLipid = stockOutRequirement.isIsBloodLipid()!=null&&stockOutRequirement.isIsBloodLipid().equals(true)?1:0;
         Integer isHemolysis = stockOutRequirement.isIsHemolysis()!=null&&stockOutRequirement.isIsHemolysis().equals(true)?1:0;
-
-//        List<FrozenTube> frozenTubes = frozenTubeRepository.findByRequiremented(sampleTypeId,samplyClassificationId,
-//            frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis);
-
-        List<FrozenTube> frozenTubes = frozenTubeRepository.findByRequirement(sampleTypeId,samplyClassificationId,
+        //查询已经出库的样本
+        List<Object[]> outTubeList = frozenTubeRepository.findAllStockOutFrozenTube();
+        Long allCountOfFrozenTube = frozenTubeRepository.countByRequirements(sampleTypeId,samplyClassificationId,
             frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis,ageMin,ageMax);
-        if(projectIds != null && projectIds.size() > 0){
-            Iterator<FrozenTube> it = frozenTubes.iterator();
-            while(it.hasNext()){
-                FrozenTube f = it.next();
-                if(f.getProject() == null ||!projectIds.contains(f.getProject().getId())){
-                    it.remove();
-                }
-            }
+        List<Object[]> checkedFrozenTubeList = new ArrayList<Object[]>();
+        for(int i=0;;i+=1000){
+            //查询全部的样本--先取1000条
+            List<Object[]> frozenTubeList = frozenTubeRepository.findByRequirements(sampleTypeId,samplyClassificationId,
+                frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis,ageMin,ageMax,i);
+            //排除不符合条件的---不在项目里,不是已经出库的
+            frozenTubeList.removeIf(t->{
+                return outTubeList.contains(t[0])||!projectIds.contains(Long.valueOf(t[1].toString()));
+            });
+
+           if(frozenTubeList.size()<countOfSample){
+               checkedFrozenTubeList.addAll(frozenTubeList);
+               countOfSample=countOfSample-frozenTubeList.size();
+               continue;
+           }
+           checkedFrozenTubeList.addAll(frozenTubeList.subList(0,countOfSample));
+           break;
         }
-        if(frozenTubes.size()<countOfSample){
+        if(checkedFrozenTubeList.size()<countOfSample){
             status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
         }
-        int i = 0;
-        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = new ArrayList<StockOutReqFrozenTube>();
-        for(FrozenTube frozenTube :frozenTubes){
+
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubes = new ArrayList<StockOutReqFrozenTube>();
+        int i=0;
+        for(Object[] t :checkedFrozenTubeList){
             StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
             stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE);
             stockOutReqFrozenTube.setStockOutRequirement(stockOutRequirement);
-            stockOutReqFrozenTube.setMemo(frozenTube!=null?frozenTube.getMemo():null);
-            stockOutReqFrozenTube.setFrozenBox(frozenTube!=null?frozenTube.getFrozenBox():null);
-            stockOutReqFrozenTube.setFrozenTube(frozenTube!=null?frozenTube:null);
-            stockOutReqFrozenTube.setTubeColumns(frozenTube!=null?frozenTube.getTubeColumns():null);
-            stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
-            if(i<countOfSample){
-                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
-                stockOutReqFrozenTubes.add(stockOutReqFrozenTube);
+            stockOutReqFrozenTube.setMemo(t[5]!=null?t[5].toString():null);
+            stockOutReqFrozenTube.setFrozenBox(stockOutReqFrozenTubeMapper.frozenBoxFromId(Long.valueOf(t[2].toString())));
+            stockOutReqFrozenTube.setFrozenTube(stockOutReqFrozenTubeMapper.frozenTubeFromId(Long.valueOf(t[0].toString())));
+            stockOutReqFrozenTube.setTubeColumns(t[4].toString());
+            stockOutReqFrozenTube.setTubeRows(t[3].toString());
+            stockOutReqFrozenTubes.add(stockOutReqFrozenTube);
+            if(stockOutReqFrozenTubes.size()==2000){
+                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
+                stockOutReqFrozenTubes = new ArrayList<StockOutReqFrozenTube>();
             }
             i++;
         }
-        stockOutRequirement.setCountOfSampleReal(stockOutReqFrozenTubes.size());
+        if(stockOutReqFrozenTubes.size()>0){
+            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
+        }
+        stockOutRequirement.setCountOfSampleReal(i);
         return status;
     }
 }

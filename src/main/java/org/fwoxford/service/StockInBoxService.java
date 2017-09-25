@@ -92,4 +92,11 @@ public interface StockInBoxService {
      * @return
      */
     List<StockInBoxForDataTableEntity> getStockInBoxList(String stockInCode);
+
+    /**
+     * 根据入库盒查询入库样本(当前的)
+     * @param id
+     * @return
+     */
+    StockInBoxDTO getStockInTubeByStockInBox(Long id);
 }

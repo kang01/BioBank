@@ -177,7 +177,6 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         List<FrozenTubeResponse> frozenTubeResponses = frozenTubeMapping.frozenTubeToFrozenTubeResponse(frozenTube);
 
         res = frozenBoxMapper.forzenBoxAndTubeToResponse(frozenBox);
-
         return res;
     }
 

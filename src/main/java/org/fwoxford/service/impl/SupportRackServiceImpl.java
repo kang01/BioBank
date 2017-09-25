@@ -132,10 +132,25 @@ public class SupportRackServiceImpl implements SupportRackService{
             throw new BankServiceException("设备不存在！");
         }
         List<SupportRack> supportRacks = supportRackRepository.findByEquipmentId(equipment.getId());
+        List<Long> supportRackIds = new ArrayList<>();
+        List<Object[]> countOfBoxOnShelfList = new ArrayList<>();
+        for(SupportRack s:supportRacks){
+            if(supportRackIds.size()==1000){
+                List<Object[]> countOfBoxOnShelfTop1000 = frozenBoxRepository.findFrozenBoxGroupBySupportRack(supportRackIds);
+                countOfBoxOnShelfList.addAll(countOfBoxOnShelfTop1000);
+                supportRackIds = new ArrayList<>();
+            }else{
+                supportRackIds.add(s.getId());
+            }
+        }
+       if(supportRackIds.size()>0){
+           List<Object[]> countOfBoxOnShelf = frozenBoxRepository.findFrozenBoxGroupBySupportRack(supportRackIds);
+           countOfBoxOnShelfList.addAll(countOfBoxOnShelf);
+       }
 //        List<SupportRack> UnFullsupportRacks = supportRackRepository.findUnFullSupportRackByEquipmentId(equipment.getId());
 //        Map<Long,List<SupportRack>> shelvesOfEquipmentMap = supportRacks.stream().collect(Collectors.groupingBy(s->s.getArea().getId()));
-
-        List<FrozenBox> frozenBoxes = frozenBoxRepository.findByEquipmentCode(equipmentCode);
+        //取所有架子上的盒子数量
+//        List<FrozenBox> frozenBoxes = frozenBoxRepository.findByEquipmentCode(equipmentCode);
 //        Map<Long,List<FrozenBox>> frozenBoxOfShelf = frozenBoxes.stream().collect(Collectors.groupingBy(f->f.getSupportRack().getId()));
 
         List<SupportRack> supportRackList = new ArrayList<SupportRack>();
@@ -145,13 +160,13 @@ public class SupportRackServiceImpl implements SupportRackService{
             String colomns = supportRackType.getSupportRackColumns();
             int countShelves = Integer.parseInt(rows)*Integer.parseInt(colomns);
             int count = 0;
-            for(FrozenBox box :frozenBoxes){
-                if(!box.getStatus().equals(Constants.FROZEN_BOX_INVALID )
-                    && box.getSupportRack()!=null
-                    && rack.getId().equals(box.getSupportRack().getId())){
-                    count++;
+            for(Object[] obj:countOfBoxOnShelfList){
+                Long supportRackId = Long.valueOf(obj[0].toString());
+                if(rack.getId()==supportRackId){
+                    count=Long.valueOf(obj[1].toString()).intValue();
                 }
             }
+
             if(countShelves > count){
                 supportRackList.add(rack);
             }

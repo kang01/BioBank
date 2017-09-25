@@ -19,14 +19,6 @@ public interface EquipmentService {
     EquipmentDTO save(EquipmentDTO equipmentDTO);
 
     /**
-     *  Get all the equipment.
-     *
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    Page<EquipmentDTO> findAll(Pageable pageable);
-
-    /**
      *  Get the "id" equipment.
      *
      *  @param id the id of the entity

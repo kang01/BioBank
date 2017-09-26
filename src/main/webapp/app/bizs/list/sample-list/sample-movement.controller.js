@@ -183,10 +183,10 @@
                 vm.projectOptions = data;
             }
             //设备
-            EquipmentAllService.query({},onEquipmentSuccess, onError);
-            function onEquipmentSuccess(data) {
-                vm.frozenBoxPlaceOptions = data;
-            }
+            // EquipmentAllService.query({},onEquipmentSuccess, onError);
+            // function onEquipmentSuccess(data) {
+            //     vm.frozenBoxPlaceOptions = data;
+            // }
             //盒类型
             FrozenBoxTypesService.query({},onFrozenBoxTypeSuccess, onError);
             function onFrozenBoxTypeSuccess(data) {
@@ -315,7 +315,7 @@
             }
             vm.selectAll = true;
         }
-        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 600, 10)
+        vm.selectedOptions = BioBankDataTable.buildDTOption("NORMALLY", 438, 10)
             .withOption('order', [[1,'asc']])
             .withOption('info', false)
             .withOption('paging', false)
@@ -463,6 +463,7 @@
         }
         //移入
         function _fnPutIn(emptyPos) {
+
             singleRecoverDataArray = [];
             var cellRow;
             var cellCol;
@@ -811,10 +812,10 @@
                     tube.sampleClassificationCode = tubeInBox.sampleClassification.sampleClassificationCode;
                     tube.backColorForClass = tubeInBox.sampleClassification.backColor;
                 }
-                tube.sampleTypeId = tubeInBox.sampleType.id;
-                tube.sampleTypeCode = tubeInBox.sampleType.sampleTypeCode;
-                tube.sampleTypeName = tubeInBox.sampleType.sampleTypeName;
-                tube.backColor = tubeInBox.sampleType.backColor;
+                tube.sampleTypeId = tubeInBox.sampleTypeId;
+                tube.sampleTypeCode = tubeInBox.sampleTypeCode;
+                tube.sampleTypeName = tubeInBox.sampleTypeName;
+                tube.backColor = tubeInBox.backColor;
                 if(tube.sampleCode || tube.sampleTempCode){
                     tube.isEmpty = true;
                 }

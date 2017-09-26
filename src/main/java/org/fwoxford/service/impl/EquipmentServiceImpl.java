@@ -79,42 +79,20 @@ public class EquipmentServiceImpl implements EquipmentService{
         EquipmentDTO result = equipmentMapper.equipmentToEquipmentDTO(equipment);
         return result;
     }
-
-    /**
-     *  Get all the equipment.
-     *
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Page<EquipmentDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all Equipment");
-
-        Page<Equipment> result = equipmentRepository.findAllUnFullEquipment(pageable);
-        Iterator<Equipment> it = result.iterator();
-        while(it.hasNext()){
-            Equipment equipment = it.next();
-            List<SupportRackDTO> supportRackDTOList = supportRackService.getIncompleteShelves(equipment.getEquipmentCode());
-            if(supportRackDTOList==null || supportRackDTOList.size()==0){
-                it.remove();
-            }
-        }
-        return result.map(equipment -> equipmentMapper.equipmentToEquipmentDTO(equipment));
-    }
     public List<EquipmentDTO> findAllUnFullEquipment() {
         log.debug("Request to get all Equipment");
 
-        List<Equipment> equipments = equipmentRepository.findAllEquipments();
-        Iterator<Equipment> it = equipments.iterator();
-        while(it.hasNext()){
-            Equipment equipment = it.next();
-            List<SupportRackDTO> supportRackDTOList = supportRackService.getIncompleteShelves(equipment.getEquipmentCode());
-            if(supportRackDTOList==null || supportRackDTOList.size()==0){
-                it.remove();
-            }
-        }
-        return equipmentMapper.equipmentToEquipmentDTOs(equipments);
+        List<Object[]> equipments = equipmentRepository.findAllUnFullEquipment();
+        List<EquipmentDTO> equipmentDTOS = new ArrayList<EquipmentDTO>();
+       for(Object[] o:equipments){
+           EquipmentDTO equipmentDTO = new EquipmentDTO();
+           if(o[6]!=null&&Integer.valueOf(o[6].toString())>0){
+               equipmentDTO.setId(Long.valueOf(o[0].toString()));
+               equipmentDTO.setEquipmentCode(o[1].toString());
+               equipmentDTOS.add(equipmentDTO);
+           }
+       }
+        return equipmentDTOS;
     }
     /**
      *  Get one equipment by id.

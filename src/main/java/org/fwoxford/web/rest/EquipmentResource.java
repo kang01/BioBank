@@ -86,13 +86,6 @@ public class EquipmentResource {
 
     @GetMapping("/equipment")
     @Timed
-//    public ResponseEntity<List<EquipmentDTO>> getAllEquipment(@ApiParam Pageable pageable)
-//        throws URISyntaxException {
-//        log.debug("REST request to get a page of Equipment");
-//        Page<EquipmentDTO> page = equipmentService.findAll(pageable);
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/equipment");
-//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-//    }
     public ResponseEntity<List<EquipmentDTO>> getAllEquipment()
         throws URISyntaxException {
         log.debug("REST request to get a page of Equipment");

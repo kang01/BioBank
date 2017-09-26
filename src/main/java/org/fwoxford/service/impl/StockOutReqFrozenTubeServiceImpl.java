@@ -162,8 +162,6 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         Integer isHemolysis = stockOutRequirement.isIsHemolysis()!=null&&stockOutRequirement.isIsHemolysis().equals(true)?1:0;
         //查询已经出库的样本
         List<Object[]> outTubeList = frozenTubeRepository.findAllStockOutFrozenTube();
-        Long allCountOfFrozenTube = frozenTubeRepository.countByRequirements(sampleTypeId,samplyClassificationId,
-            frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis,ageMin,ageMax);
         List<Object[]> checkedFrozenTubeList = new ArrayList<Object[]>();
         for(int i=0;;i+=1000){
             //查询全部的样本--先取1000条

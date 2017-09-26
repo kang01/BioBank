@@ -267,5 +267,10 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     List<Object[]> findFrozenBoxHistory(Long id);
 
     FrozenBox findByFrozenBoxCodeAndSampleTypeCode(String boxCode, String sampleTypeCode);
+
+    @Query(value = " select support_rack_id,count(*) as noo from frozen_box where status in ('2004','2006')" +
+        " and support_rack_id in ?1 " +
+        " group by support_rack_id ",nativeQuery = true)
+    List<Object[]> findFrozenBoxGroupBySupportRack(List<Long> supportRackIds);
 }
 

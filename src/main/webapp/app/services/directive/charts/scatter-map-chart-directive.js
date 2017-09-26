@@ -280,6 +280,7 @@
                 });
 
                 var averageValue = 1;
+                var maxValue = 1;
                 var convertData = function (data) {
                     var res = [];
                     if(scope.mapStatus === "省"){
@@ -317,6 +318,8 @@
                     }
 
                     averageValue = _.meanBy(res, function(o) { return o.value[2]; });
+                    maxValue = (_.maxBy(res, function(o) { return o.value[2]; })).value[2];
+                    console.log(maxValue);
                     return res;
                 };
                 function randomValue() {
@@ -534,6 +537,7 @@
                 if(scope.geoIndex == 0){
                     option.geo.label.normal.show = true;
                 }
+                option.visualMap.max = maxValue;
                 myChart.setOption(option);
 
 

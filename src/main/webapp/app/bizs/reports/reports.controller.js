@@ -430,6 +430,7 @@
             _init();
         }
         function _fnEnlarged(status) {
+            console.log(vm.mapStatus);
             var reportData;
             switch (status){
                 case 1: reportData = vm.daySampleCountData;break;
@@ -451,7 +452,8 @@
                     items:function () {
                         return{
                             reportData:reportData,
-                            status:status
+                            status:status,
+                            mapStatus : vm.mapStatus || null
                         };
                     }
                 }
@@ -484,6 +486,7 @@
         var searchForm = angular.toJson(vm.dto);
         vm.mapStatus = "市";
         vm.geoIndex = 10;
+        vm.mapStatus = items.mapStatus;
         vm.reportData = items.reportData;
 
         //切换类型

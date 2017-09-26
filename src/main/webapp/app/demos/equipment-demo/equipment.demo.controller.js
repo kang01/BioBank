@@ -33,7 +33,7 @@
             var $equipmentList = $(".equipment-list");
             var $equipmentPanel = $(".equipment-panel");
             //获取左侧区域宽度，永远不变
-            var leftWidth = $areaPanel.outerWidth();
+            vm.areaWidth = $areaPanel.outerWidth();
             function _fnSetWH(){
                 //window宽高
                 var winWidth = window.innerWidth;
@@ -41,12 +41,12 @@
                 //设置区域高度
                 $areaList.css("height",winHeight- 190);
                 //获取区域宽高
-                var leftHeight = $areaList.outerHeight();
+                vm.areaHeight = $areaList.outerHeight();
+                $equipmentList.css("height",vm.areaHeight);
 
                 //设置右侧区域宽高
                 // var rightWidth = winWidth - leftWidth - 40;
                 // console.log(leftWidth,rightWidth,winWidth,winHeight);
-                $equipmentList.css("height",leftHeight);
                 // $equipmentPanel.css("width",rightWidth);
             }
             _fnSetWH();

@@ -8,8 +8,8 @@
         .module('bioBankApp')
         .controller('StockInViewController', StockInViewController);
 
-    StockInViewController.$inject = ['$scope','$q','MasterData','StockInBoxService','StockInInputService','entity'];
-    function StockInViewController($scope,$q,MasterData,StockInBoxService,StockInInputService,entity) {
+    StockInViewController.$inject = ['$scope','$q','MasterData','StockInBoxService','StockInInputService','entity','StockInService'];
+    function StockInViewController($scope,$q,MasterData,StockInBoxService,StockInInputService,entity,StockInService) {
 
         var vm = this;
         vm.stockIn = entity;
@@ -29,8 +29,12 @@
             function _fnQueryBoxes(boxes) {
                 var querys = [];
                 for(var i = 0 , len = boxes.length; i < len; i++){
-                    var queryBox =  StockInInputService.queryEditStockInBox(boxes[i].id)
+                     // =  StockInInputService.queryEditStockInBox(boxes[i].id)
+                    var queryBox = StockInService.getStockInView(boxes[i].id);
                     querys.push(queryBox);
+
+
+                    console.log(JSON.stringify(querys));
                     if (querys.length >= 10 || len == i + 1){
                         $q.all(querys).then(function(datas){
                             var boxesDetail = _.map(datas, function(res){

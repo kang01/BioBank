@@ -21,7 +21,7 @@
                     <input type="text" class=" form-control" ng-model="vm.file.name" disabled>
                     <div class="input-group-addon" style="cursor: pointer">
                         <a href="javascript:;" name="file">
-                            <input type="file" ngf-select ng-model="vm.file" />上传
+                            <input type="file" ngf-select ng-model="vm.file" accept="application/vnd.ms-excel"/>上传
                         </a>
                     </div>
                 </div>
@@ -79,6 +79,7 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.saveSampleRequirement(vm.file)" ng-disabled="!vm.sampleRequirement.requirementName || !vm.sampleRequirement.countOfSample">确定</button>
+    <button class="btn btn-primary" type="button" ng-if="vm.file" ng-click="vm.saveSampleRequirement(vm.file)" ng-disabled="!vm.sampleRequirement.requirementName">确定</button>
+    <button class="btn btn-primary" type="button" ng-if="!vm.file" ng-click="vm.saveSampleRequirement(vm.file)" ng-disabled="!vm.sampleRequirement.requirementName || !vm.sampleRequirement.countOfSample">确定</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
 </div>

@@ -174,7 +174,9 @@
 
                 },
                 afterChange:function (change,source) {
-
+                    if(vm.singleMultipleFlag != "single"){
+                        return;
+                    }
                     var tableCtrl = _getTableCtrl();
                     if(source == 'edit'){
                         for (var i=0; i<change.length; ++i){
@@ -370,11 +372,7 @@
                         var col = item[1];
                         var oldTube = item[2];
                         var newTube = item[3];
-                        //     if(newTube === ""){
-                        //         // changes[row][col] = {};
-                        //     }
-                        //
-                        // }
+
                         if(!delFlag){
                             if(oldTube.sampleCode){
                                 for(var i = 0; i < vm.frozenTubeArray.length; i++){

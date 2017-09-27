@@ -454,10 +454,7 @@
 
         //添加冻存盒
         function _fnActionAddBoxButton() {
-            //显示冻存盒信息
-            vm.showFlag = true;
-            // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
-            vm.editFlag = false;
+
             //已入库
             if(vm.entity.status == '7002'){
                 return;
@@ -471,12 +468,20 @@
                 modalInstance.result.then(function () {
                     vm.saveStockInFlag = true;
                     _saveStockIn();
+                    //显示冻存盒信息
+                    vm.showFlag = true;
+                    // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
+                    vm.editFlag = false;
                 }, function () {
                 });
             }else{
                 vm.saveStockInFlag = true;
                 _saveStockIn();
                 vm.box = {};
+                //显示冻存盒信息
+                vm.showFlag = true;
+                // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
+                vm.editFlag = false;
 
             }
         }

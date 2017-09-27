@@ -153,4 +153,26 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     FrozenTube findBySampleCodeAndSampleTypeCode(String sampleCode, String sampleTypeCode);
 
     List<FrozenTube> findByFrozenTubeState(String status);
+
+    @Query(value = "select * from frozen_tube t where t.frozen_tube_state = '2004' and t.status='3001' and (t.sample_code in ?1 or t.sample_temp_code in ?1) " +
+        " and t.project_id in ?3 and t.sample_type_code in ?2 "
+        ,nativeQuery = true)
+    List<FrozenTube> findBySampleCodeInAndSampleTypeCodeInAndRequirementAndProject(List<String> sampleCodeList,
+                                                                                   List<String> sampleTypeCodeList, List<Long> projectIds);
+
+    @Query(value = "select t.* from frozen_tube t " +
+        " where t.frozen_tube_state = '2004' and t.status ='3001' and (t.sample_code = ?1 or t.sample_temp_code =?1) " +
+        " and t.sample_type_code=?2 " +
+        " and t.project_id in ?3 and ROWNUM <=1"
+        ,nativeQuery = true)
+    List<FrozenTube> findBySampleCodeAndSampleTypeCodeAndProject(String appointedSampleCode, String appointedSampleType,  List<Long> projectIds);
+
+    @Query(value = "select * from frozen_tube t where t.frozen_tube_state = '2004' and t.status='3001'" +
+        " and (t.sample_code in ?1 or t.sample_temp_code in ?1) " +
+        " and t.project_id in ?3 and t.sample_type_code = ?2"
+        ,nativeQuery = true)
+    List<FrozenTube> findBySampleCodeInAndSampleTypeCodeAndProjectIn(List<String> sampleCodeList,
+                                                                 String appointedSampleType, List<Long> projectIds);
+
+
 }

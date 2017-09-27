@@ -752,6 +752,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         frozenBox.setMemo(stockInBoxDTO.getMemo());
         //保存冻存盒信息
         frozenBox.setIsSplit(stockInBoxDTO.getIsSplit());
+        frozenBox.setStatus(Constants.FROZEN_BOX_STOCKING);
         frozenBox = frozenBoxRepository.save(frozenBox);
         //保存入库冻存盒信息
         int countOfStockInTube = 0;

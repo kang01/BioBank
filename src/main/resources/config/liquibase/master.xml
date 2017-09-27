@@ -128,6 +128,9 @@
     <include file="classpath:config/liquibase/changelog/20170524000000_added_view_AreasList.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170525000000_added_view_ShelvesList.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170526000000_added_view_AreasListByProject.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170526000000_added_view_AreasListByProject.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170521000000_updated_view_FrozenTubeList.xml" relativeToChangelogFile="false"/>
+
     <!--<include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>-->
 
 </databaseChangeLog>

@@ -17,7 +17,7 @@ import java.io.Serializable;
  * Created by gengluying on 2017/6/22.
  */
 @Entity
-@Table(name = "view_frozen_tube_list")
+@Table(name = "view_sample_list")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class FrozenTubeListAllDataTableEntity implements Serializable {
     @Id

@@ -13,4 +13,6 @@ import java.util.List;
 public interface StockOutApplyRepository extends JpaRepository<StockOutApply,Long> {
 
     Long countByParentApplyId(Long id);
+
+    StockOutApply findByApplyCode(String applyCode);
 }

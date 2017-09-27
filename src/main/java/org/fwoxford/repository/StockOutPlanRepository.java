@@ -15,4 +15,6 @@ public interface StockOutPlanRepository extends JpaRepository<StockOutPlan,Long>
     Long countByStockOutApplyId(Long applyId, Long excludeId);
 
     List<StockOutPlan> findAllByStockOutApplyId(Long applyId);
+
+    StockOutPlan findByStockOutPlanCode(String stockOutPlanCode);
 }

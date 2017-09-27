@@ -160,4 +160,12 @@
                                  referencedColumnNames="event_id"
                                  referencedTableName="jhi_persistent_audit_event"/>
     </changeSet>
+    <changeSet id="00000000000002" author="jhipster">
+       <loadData encoding="UTF-8"
+                  file="config/liquibase/users_add.csv"
+                  separator=";"
+                  tableName="jhi_user">
+            <column name="activated" type="boolean"/>
+        </loadData>
+    </changeSet>
 </databaseChangeLog>

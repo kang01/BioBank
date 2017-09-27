@@ -17,4 +17,6 @@ public interface StockOutTaskRepository extends JpaRepository<StockOutTask,Long>
     Page<StockOutTask> findAllByStockOutPlanId(Long id, Pageable pageable);
 
     List<StockOutTask> findByStockOutPlanId(Long id);
+
+    StockOutTask findByStockOutTaskCode(String stockOutTaskCode);
 }

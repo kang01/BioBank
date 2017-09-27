@@ -64,8 +64,8 @@
             DTColumnBuilder.newColumn('sampleType').withTitle('类型').withOption('width', '80'),
             DTColumnBuilder.newColumn('sex').withTitle('性别').withOption('width', '50'),
             DTColumnBuilder.newColumn('age').withTitle('年龄').withOption('width', '50'),
-            DTColumnBuilder.newColumn('diseaseType').withTitle('疾病').withOption('width', '200'),
-            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption('width', 'auto')
+            DTColumnBuilder.newColumn('diseaseType').withTitle('疾病').withOption('width', 'auto'),
+            // DTColumnBuilder.newColumn('memo').withTitle('备注').withOption('width', 'auto')
         ];
         function createdRow(row, data, dataIndex) {
             var sex = '';

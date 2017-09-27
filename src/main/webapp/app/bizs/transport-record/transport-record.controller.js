@@ -9,9 +9,9 @@
         .controller('TransportRecordController', TransportRecordController)
         .controller('StartStockInModalController', StartStockInModalController);
 
-    TransportRecordController.$inject = ['$scope', '$compile', 'Principal','$uibModal', 'TransportRecordService', 'TranshipStockInService', 'toastr', '$state', 'pagingParams', 'paginationConstants', 'JhiLanguageService','DTOptionsBuilder','DTColumnBuilder','TranshipNewEmptyService'];
+    TransportRecordController.$inject = ['$scope', '$compile', 'BioBankDataTable','Principal','$uibModal', 'TransportRecordService', 'TranshipStockInService', 'toastr', '$state', 'pagingParams', 'paginationConstants', 'JhiLanguageService','DTOptionsBuilder','DTColumnBuilder','TranshipNewEmptyService'];
     StartStockInModalController.$inject = ['$uibModalInstance'];
-    function TransportRecordController($scope, $compile, Principal, $uibModal,TransportRecordService, TranshipStockInService, toastr, $state, pagingParams, paginationConstants, JhiLanguageService,DTOptionsBuilder,DTColumnBuilder,TranshipNewEmptyService) {
+    function TransportRecordController($scope, $compile, BioBankDataTable,Principal, $uibModal,TransportRecordService, TranshipStockInService, toastr, $state, pagingParams, paginationConstants, JhiLanguageService,DTOptionsBuilder,DTColumnBuilder,TranshipNewEmptyService) {
         var vm = this;
 
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
@@ -93,9 +93,8 @@
             }
             vm.selectAll = true;
         };
-        vm.dtOptions = DTOptionsBuilder.newOptions()
+        vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
             .withOption('order', [[1, 'desc' ]])
-            .withOption('processing',true)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 vm.selectAll = false;
@@ -131,7 +130,6 @@
                     jqDt._fnProcessingDisplay( oSettings, false );
                 });
             })
-            .withPaginationType('full_numbers')
             .withOption('createdRow', createdRow)
             .withOption('headerCallback', function(header) {
                 $compile(angular.element(header).contents())($scope);

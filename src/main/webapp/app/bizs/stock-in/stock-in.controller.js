@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('StockInController', StockInController);
 
-    StockInController.$inject = ['$scope', '$compile', 'Principal', 'StockInService', 'ParseLinks', 'AlertService', '$state', 'pagingParams', 'paginationConstants', 'JhiLanguageService','DTOptionsBuilder','DTColumnBuilder'];
+    StockInController.$inject = ['$scope', '$compile', 'Principal','BioBankDataTable', 'StockInService', 'ParseLinks', 'AlertService', '$state', 'pagingParams', 'paginationConstants', 'JhiLanguageService','DTOptionsBuilder','DTColumnBuilder'];
 
-    function StockInController($scope, $compile, Principal, StockInService, ParseLinks, AlertService, $state, pagingParams, paginationConstants, JhiLanguageService,DTOptionsBuilder,DTColumnBuilder) {
+    function StockInController($scope, $compile, Principal,BioBankDataTable, StockInService, ParseLinks, AlertService, $state, pagingParams, paginationConstants, JhiLanguageService,DTOptionsBuilder,DTColumnBuilder) {
         var vm = this;
         vm.addRecord = _fnAddRecord;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
@@ -34,7 +34,7 @@
                     .draw();
             };
 
-            vm.dtOptions = DTOptionsBuilder.fromSource({"url": 'api/temp/res/stock-in',"dataSrc": "data"})
+            vm.dtOptions =  BioBankDataTable.buildDTOption("NORMALLY", null, 10)
                 .withOption('order', [[0, 'desc' ]])
                 .withOption('sServerMethod','POST')
                 .withOption('processing',true)

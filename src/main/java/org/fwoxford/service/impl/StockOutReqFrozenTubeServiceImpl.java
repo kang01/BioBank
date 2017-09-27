@@ -157,41 +157,33 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         }
         System.out.print("----entTime:"+new Date());
         List<StockOutReqFrozenTube> stockOutReqFrozenTubeList = new ArrayList<>();
-        for(StockOutRequiredSample s :stockOutRequiredSamples){
-//            String appointedSampleCode = s.getSampleCode();
-//            String appointedSampleType = s.getSampleType();
-//            List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndSampleTypeCodeAndProject(appointedSampleCode,appointedSampleType,projectIds);
-//
-//            frozenTubeList.removeIf(t->{
-//                    return outTubeList.contains(t.getId());
-//                });
-//            if(frozenTubeList == null || frozenTubeList.size() ==0){
-//                status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
-//                continue;
-//            }
-//            System.out.print("核对第"+i+"个样本，编码为："+appointedSampleCode+"核对结果："+status);
-            for(FrozenTube frozenTube : frozenTubeListLast){
-                StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
-                stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE);
-                stockOutReqFrozenTube.setStockOutRequirement(stockOutRequirement);
-                stockOutReqFrozenTube.setMemo(frozenTube!=null?frozenTube.getMemo():null);
-                stockOutReqFrozenTube.setFrozenBox(frozenTube!=null?frozenTube.getFrozenBox():null);
-                stockOutReqFrozenTube.setFrozenTube(frozenTube!=null?frozenTube:null);
-                stockOutReqFrozenTube.setImportingSampleId(s.getId());
-                stockOutReqFrozenTube.setTubeColumns(frozenTube!=null?frozenTube.getTubeColumns():null);
-                stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
-                stockOutReqFrozenTubeList.add(stockOutReqFrozenTube);
-                if(stockOutReqFrozenTubeList.size()==1000){
-                    stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubeList);
-                    stockOutReqFrozenTubeList = new ArrayList<>();
+
+        for(FrozenTube frozenTube : frozenTubeListLast){
+            StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
+            stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE);
+            stockOutReqFrozenTube.setStockOutRequirement(stockOutRequirement);
+            stockOutReqFrozenTube.setMemo(frozenTube!=null?frozenTube.getMemo():null);
+            stockOutReqFrozenTube.setFrozenBox(frozenTube!=null?frozenTube.getFrozenBox():null);
+            stockOutReqFrozenTube.setFrozenTube(frozenTube!=null?frozenTube:null);
+            Long importSampleId = null;
+            for(StockOutRequiredSample s :stockOutRequiredSamples){
+                if(s.getSampleType().equals(frozenTube.getSampleTypeCode())
+                    &&(s.getSampleCode().equals(frozenTube.getSampleCode())||s.getSampleCode().equals(frozenTube.getSampleTempCode()))){
+                    importSampleId = s.getId();
                 }
-//                i++;
+            }
+            stockOutReqFrozenTube.setImportingSampleId(importSampleId);
+            stockOutReqFrozenTube.setTubeColumns(frozenTube!=null?frozenTube.getTubeColumns():null);
+            stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
+            stockOutReqFrozenTubeList.add(stockOutReqFrozenTube);
+            if(stockOutReqFrozenTubeList.size()>=1000){
+                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubeList);
+                stockOutReqFrozenTubeList = new ArrayList<>();
             }
         }
         if(stockOutReqFrozenTubeList.size()>0){
             stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubeList);
         }
-        stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubeList);
         stockOutRequirement.setCountOfSampleReal(frozenTubeListLast.size());
         return status;
     }

@@ -1136,6 +1136,21 @@
                     vm.obox.frozenTubeDTOS.push(tubeList[i]);
                 }
             }
+            if(vm.obox.sampleTypeCode == '97' ){
+                var len = _.filter(vm.obox.frozenTubeDTOS,{"sampleTypeCode":"97"}).length;
+                if(len){
+                    toastr.error("冻存盒中样本类型不能为97类型，请修改为其他样本类型！");
+                    return
+                }
+            }
+            if(vm.obox.sampleTypeCode == '98' ){
+                var len = _.filter(vm.obox.frozenTubeDTOS,{"sampleTypeCode":"98"}).length;
+                if(len){
+                    toastr.error("冻存盒中样本类型不能为98类型，请修改为其他样本类型！");
+                    return
+                }
+            }
+
             StockInInputService.saveStockInBox(vm.entity.stockInCode,vm.obox).success(function (data) {
                 toastr.success("保存冻存盒成功！");
                 $scope.reloadData();

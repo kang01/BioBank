@@ -103,6 +103,12 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         stockOutReqFrozenTubeRepository.delete(id);
     }
 
+    /**
+     * 核对指定样本
+     * @param stockOutRequiredSamples
+     * @param stockOutRequirement
+     * @return
+     */
     @Override
     public String checkStockOutSampleByAppointedSample(List<StockOutRequiredSample> stockOutRequiredSamples, StockOutRequirement stockOutRequirement) {
         if(stockOutRequirement == null){
@@ -111,29 +117,82 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         List<Long> projectIds = stockOutApplyProjectRepository.findProjectByStockRequirementId(stockOutRequirement.getId());
         String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
         int i = 0;
-        for(StockOutRequiredSample s :stockOutRequiredSamples){
-            String appointedSampleCode = s.getSampleCode();
-            String appointedSampleType = s.getSampleType();
-            List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndSampleTypeCodeAndRequirementAndProject(appointedSampleCode,appointedSampleType,s.getStockOutRequirement().getId(),projectIds);
-            if(frozenTubeList == null || frozenTubeList.size() ==0){
-                status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
-                continue;
+        List<Object[]> outTubeList = frozenTubeRepository.findAllStockOutFrozenTube();
+        Map<String,List<StockOutRequiredSample>> requirementGroupBySampleType =
+            stockOutRequiredSamples.stream().collect(Collectors.groupingBy(w -> w.getSampleType()));
+        List<FrozenTube> frozenTubeListLast = new ArrayList<FrozenTube>();
+        System.out.print("----beginTime:"+new Date());
+        for(String sampleType:requirementGroupBySampleType.keySet()){
+
+            List<StockOutRequiredSample> stockOutRequiredSampleList = requirementGroupBySampleType.get(sampleType);
+            //每次取1000支
+            List<String> sampleCodeList = new ArrayList<>();
+            List<String> sampleTypeCodeList = new ArrayList<>();
+            for(StockOutRequiredSample s :stockOutRequiredSamples){
+                String appointedSampleCode = s.getSampleCode();
+                String appointedSampleType = s.getSampleType();
+                if(sampleCodeList.size()==1000){
+                    List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndSampleTypeCodeAndProjectIn(sampleCodeList,sampleType,projectIds);
+
+                    frozenTubeList.removeIf(t->{
+                        return outTubeList.contains(t.getId());
+                    });
+                    sampleCodeList = new ArrayList<>();
+                    sampleTypeCodeList = new ArrayList<>();
+                    frozenTubeList = frozenTubeList.size()>1000?frozenTubeList.subList(0,1000):frozenTubeList;
+                    frozenTubeListLast.addAll(frozenTubeList);
+                }
+
+                sampleCodeList.add(appointedSampleCode);
+                sampleTypeCodeList.add(appointedSampleType);
             }
-            for(FrozenTube frozenTube : frozenTubeList){
+            if(sampleCodeList.size()>0){
+                List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndSampleTypeCodeAndProjectIn(sampleCodeList,sampleType,projectIds);
+                frozenTubeList = frozenTubeList.size()>sampleCodeList.size()?frozenTubeList.subList(0,sampleCodeList.size()):frozenTubeList;
+                frozenTubeListLast.addAll(frozenTubeList);
+            }
+        }
+        if(frozenTubeListLast.size()<stockOutRequiredSamples.size()){
+            status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
+        }
+        System.out.print("----entTime:"+new Date());
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubeList = new ArrayList<>();
+        for(StockOutRequiredSample s :stockOutRequiredSamples){
+//            String appointedSampleCode = s.getSampleCode();
+//            String appointedSampleType = s.getSampleType();
+//            List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeAndSampleTypeCodeAndProject(appointedSampleCode,appointedSampleType,projectIds);
+//
+//            frozenTubeList.removeIf(t->{
+//                    return outTubeList.contains(t.getId());
+//                });
+//            if(frozenTubeList == null || frozenTubeList.size() ==0){
+//                status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
+//                continue;
+//            }
+//            System.out.print("核对第"+i+"个样本，编码为："+appointedSampleCode+"核对结果："+status);
+            for(FrozenTube frozenTube : frozenTubeListLast){
                 StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
                 stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE);
-                stockOutReqFrozenTube.setStockOutRequirement(s.getStockOutRequirement());
+                stockOutReqFrozenTube.setStockOutRequirement(stockOutRequirement);
                 stockOutReqFrozenTube.setMemo(frozenTube!=null?frozenTube.getMemo():null);
                 stockOutReqFrozenTube.setFrozenBox(frozenTube!=null?frozenTube.getFrozenBox():null);
                 stockOutReqFrozenTube.setFrozenTube(frozenTube!=null?frozenTube:null);
                 stockOutReqFrozenTube.setImportingSampleId(s.getId());
                 stockOutReqFrozenTube.setTubeColumns(frozenTube!=null?frozenTube.getTubeColumns():null);
                 stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
-                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
-                i++;
+                stockOutReqFrozenTubeList.add(stockOutReqFrozenTube);
+                if(stockOutReqFrozenTubeList.size()==1000){
+                    stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubeList);
+                    stockOutReqFrozenTubeList = new ArrayList<>();
+                }
+//                i++;
             }
         }
-        stockOutRequirement.setCountOfSampleReal(i);
+        if(stockOutReqFrozenTubeList.size()>0){
+            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubeList);
+        }
+        stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubeList);
+        stockOutRequirement.setCountOfSampleReal(frozenTubeListLast.size());
         return status;
     }
 

@@ -9,10 +9,10 @@
         .controller('BoxPutAwayModalController', BoxPutAwayModalController);
 
     BoxPutAwayModalController.$inject = ['hotRegisterer','DTOptionsBuilder','DTColumnBuilder','$uibModalInstance','$uibModal','AlertService','$q','$timeout','items',
-        'frozenBoxByCodeService', 'FrozenPosService','AreasByEquipmentIdService','EquipmentService','SupportRackType','StockInBoxService'];
+        'frozenBoxByCodeService', 'FrozenPosService','AreasByEquipmentIdService','EquipmentService','SupportRackType','StockInBoxService','EquipmentAllService'];
 
     function BoxPutAwayModalController(hotRegisterer,DTOptionsBuilder,DTColumnBuilder,$uibModalInstance,$uibModal,AlertService,$q,$timeout,items,
-        frozenBoxByCodeService,FrozenPosService,AreasByEquipmentIdService,EquipmentService,SupportRackType,StockInBoxService) {
+        frozenBoxByCodeService,FrozenPosService,AreasByEquipmentIdService,EquipmentService,SupportRackType,StockInBoxService,EquipmentAllService) {
 
         var vm = this;
 
@@ -44,8 +44,8 @@
                 vm.shelfTypes = data;
             }, onError).$promise;
             // 获取所有冻存设备
-            var promiseForEquipment = EquipmentService.query({}, function(data){
-                vm.equipmentsOptions = data;
+            var promiseForEquipment = EquipmentAllService.query({}, function(data){
+                vm.equipmentsOptions = _.orderBy(data,['equipmentCode'],['asc']);
             }, onError).$promise;
 
             // vm.frozenBoxes = items.boxes;
@@ -116,7 +116,11 @@
             };
 
             vm.dtShelvesListOptions = DTOptionsBuilder.newOptions()
-                .withDOM("t").withScroller().withOption('scrollY', 338);
+                .withOption('info', false)
+                .withOption('paging', false)
+                .withOption('sorting', false)
+                .withOption('searching', false)
+                .withScroller().withOption('scrollY', 338);
 
             // 选中一个冻存架
             function _selectShelf($event, shelf){

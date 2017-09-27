@@ -1552,6 +1552,12 @@ ul.rating {
 .equipment-selected{
     border:1px solid red;
 }
+.equipment-box{
+    width: 300px;
+    height: 300px;
+    float: left;
+    border:1px solid red;
+}
 
 
 

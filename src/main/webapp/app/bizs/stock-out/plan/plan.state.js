@@ -87,6 +87,25 @@
                         return $translate.refresh();
                     }]
                 }
+            })
+            .state('plan-view', {
+                parent: 'bizs',
+                url: '/plan-list/{planId}/view',
+                data: {
+                    authorities: ['ROLE_USER','ROLE_ADMIN']
+                },
+                views: {
+                    'content@': {
+                        templateUrl: 'app/bizs/stock-out/plan/plan-view.html',
+                        controller: 'PlanViewController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        return $translate.refresh();
+                    }]
+                }
             });
     }
 })();

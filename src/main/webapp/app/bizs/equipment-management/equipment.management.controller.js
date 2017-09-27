@@ -43,9 +43,17 @@
         }
         _fnInitWH();
         $(".equipment-ul").delegate("li","click",function(){
+            $(".equipment-ul li").removeClass("equipment-selected");
             console.log(this);
-            $(this).css({"border":"4px solid #aaa"});
+            // $(this).css({"border":"4px solid #aaa"});
             // $(this).slideToggle();
+            // $(this).toggle(function () {
+            //     $(this).css({"border":"4px solid #aaa"});
+            // },function () {
+            //     $(this).css({"border":"0 solid #aaa"});
+            // });
+            $(this).addClass("equipment-selected");
+
         });
 
     }

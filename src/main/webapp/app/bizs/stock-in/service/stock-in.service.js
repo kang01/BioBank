@@ -38,6 +38,9 @@
 
             return $http(req);
         };
+        service.getStockInView = function(boxId){
+            return $http.get('api/stock-in-boxes/stockInBoxId/'+boxId+'/forBoxDetail');
+        };
 
         return service;
     }

@@ -19,7 +19,11 @@
         vm.loginName1 = vm.stockInInfo.storeKeeper1;
         vm.loginName2 = vm.stockInInfo.storeKeeper2;
         vm.stockInBox = vm.stockInInfo.stockInBox;
-
+        vm.datePickerOpenStatus = {};
+        vm.openCalendar = openCalendar;
+        function openCalendar (date) {
+            vm.datePickerOpenStatus[date] = true;
+        }
         //去除已分装
         _.remove(vm.stockInBox,{"status":"2003"});
         var putInLen = _.filter(vm.stockInBox,{"status":"2006"}).length;

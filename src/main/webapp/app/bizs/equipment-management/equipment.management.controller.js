@@ -42,7 +42,11 @@
             });
         }
         _fnInitWH();
-
+        $(".equipment-ul").delegate("li","click",function(){
+            console.log(this);
+            $(this).css({"border":"4px solid #aaa"});
+            // $(this).slideToggle();
+        });
 
     }
 })();

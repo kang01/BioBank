@@ -905,7 +905,7 @@
             //扫码的样本数
             vm.sampleOutCount = "";
             //临时盒总共的样本数
-            vm.totalLen = "";
+            vm.totalLen = undefined;
             vm.boxInTubes = [];
             vm.tempBoxObj = {
                 frozenTubeDTOS : []

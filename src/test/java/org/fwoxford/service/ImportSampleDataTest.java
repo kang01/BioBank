@@ -2780,9 +2780,6 @@ public class ImportSampleDataTest {
                     tubeRows = stockInTube.getTubeRows();
                     tubeColumns = stockInTube.getTubeColumns();
                 } else {
-                    if( inBoxList.get(j).get("POS_IN_TUBE")==null){
-                        String posInTube = "D1";
-                    }
                     String posInTube = inBoxList.get(j).get("POS_IN_TUBE").toString();
                     tubeRows = posInTube.substring(0, 1);
                     tubeColumns = posInTube.substring(1);

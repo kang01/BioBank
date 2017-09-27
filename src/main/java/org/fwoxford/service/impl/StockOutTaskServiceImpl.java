@@ -281,7 +281,11 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             throw new BankServiceException("任务ID不能为空！");
         }
         StockOutTask stockOutTask = stockOutTaskRepository.findOne(id);
-
+        if(stockOutTask.getStatus().equals(Constants.STOCK_OUT_TASK_COMPLETED)
+            ||stockOutTask.getStatus().equals(Constants.STOCK_OUT_TASK_ABNORMAL)
+            ||stockOutTask.getStatus().equals(Constants.STOCK_OUT_TASK_INVALID)){
+            return new StockOutTaskDTO();
+        }
         String login = SecurityUtils.getCurrentUserLogin();
         User user = userRepository.findByLogin(login);
         //获取访问历史数据

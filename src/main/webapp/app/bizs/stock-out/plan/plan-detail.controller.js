@@ -313,7 +313,7 @@
         function actionsHtml(data, type, full, meta) {
             return  '<button  class="btn btn-xs" ng-click="vm.taskDescModal('+full.id+')"><i class="fa fa-eye"></i></button>&nbsp;' +
                     '<button class="btn btn-xs" ng-if="'+full.status+'==1601" ng-click="vm.taskDelModal('+full.id+')"><i class="fa  fa-trash-o"></i></button>&nbsp;'+
-                    '<button class="btn btn-xs" ng-click="vm.startTask('+full.id+')"><i class="fa fa-play"></i></button>'
+                    '<button class="btn btn-xs" ng-if="'+full.status+'==1601" ng-click="vm.startTask('+full.id+')"><i class="fa fa-play"></i></button>'
         }
         //样本需求
         vm.demand = [];

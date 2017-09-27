@@ -128,12 +128,11 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             //每次取1000支
             List<String> sampleCodeList = new ArrayList<>();
             List<String> sampleTypeCodeList = new ArrayList<>();
-            for(StockOutRequiredSample s :stockOutRequiredSamples){
+            for(StockOutRequiredSample s :stockOutRequiredSampleList){
                 String appointedSampleCode = s.getSampleCode();
                 String appointedSampleType = s.getSampleType();
                 if(sampleCodeList.size()==1000){
                     List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndSampleTypeCodeAndProjectIn(sampleCodeList,sampleType,projectIds);
-
                     frozenTubeList.removeIf(t->{
                         return outTubeList.contains(t.getId());
                     });
@@ -148,6 +147,9 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             }
             if(sampleCodeList.size()>0){
                 List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndSampleTypeCodeAndProjectIn(sampleCodeList,sampleType,projectIds);
+                frozenTubeList.removeIf(t->{
+                    return outTubeList.contains(t.getId());
+                });
                 frozenTubeList = frozenTubeList.size()>sampleCodeList.size()?frozenTubeList.subList(0,sampleCodeList.size()):frozenTubeList;
                 frozenTubeListLast.addAll(frozenTubeList);
             }

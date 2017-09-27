@@ -26,25 +26,23 @@
         return  directive;
 
         function  linkFunc(scope,  element,  attrs)  {
-            // var height = 3310;
-            var height = $("#container1").height();
-            var width = $("#container1").width();
+            var height = 3310;
+            // var height = $("#container1").height();
+            // var width = $("#container1").width();
             console.log(scope.wh,scope.ht);
             //舞台
             var stage = new Konva.Stage({
                 container: 'container1',
-                width: scope.wh,
-                height: scope.ht,
+                // width: scope.wh,
+                // height: scope.ht,
+                width: 943,
+                height: height,
                 stroke: '#666',
                 fill: '#ddd',
                 strokeWidth: 2
             });
-            stage.transformsEnabled('all');
             //背景层
-            var backgroundLayer = new Konva.Layer({
-                draggable: true,
-                skiptransform:false
-            });
+            var backgroundLayer = new Konva.Layer();
 
             // 区域层
             var areaLayer = new Konva.Layer();

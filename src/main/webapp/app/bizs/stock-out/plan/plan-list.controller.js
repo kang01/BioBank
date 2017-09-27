@@ -114,9 +114,17 @@
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;';
+            var html;
+            if(full.status == '1401'){
+                html = '<button type="button" class="btn btn-xs" ui-sref="plan-edit({planId:'+ full.id +'})">' +
+                    '   <i class="fa fa-edit"></i>' +
+                    '</button>&nbsp;';
+            }else{
+                html = '<button type="button" class="btn btn-xs" ui-sref="plan-view({planId:'+ full.id +'})">' +
+                    '   <i class="fa fa-eye"></i>' +
+                    '</button>&nbsp;';
+            }
+            return html;
         }
     }
 })();

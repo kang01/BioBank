@@ -32,6 +32,10 @@
             });
             //背景层
             var backgroundLayer = new Konva.Layer();
+            //区域层
+            var areaLayer = new Konva.Layer();
+            //拖拽层
+            var dragLayer = new Konva.Layer();
 
             //样本库平面图1
             var imageObj1 = new Image();
@@ -45,6 +49,7 @@
                     width: width,
                     height: 3600
                 });
+
                 backgroundLayer.add(image1);
                 stage.add(backgroundLayer);
             };
@@ -54,23 +59,19 @@
                 // backgroundLayer.draw();
                 stage.batchDraw();
             }
-            stage.on('click', function() {
-                // var mousePos = stage.getPointerPosition();
-                // var x = mousePos.x;
-                // var y = mousePos.y;
-                // scope.xy.position = x + "," + y;
-                // scope.$apply();
-                // console.log(scope.xy);
-            });
-            stage.on('mouseout', function() {
-                writeMessage('Mouseout triangle');
-            });
-            stage.on('mousemove', function() {
-                var mousePos = stage.getPointerPosition();
-                var x = mousePos.x;
-                var y = mousePos.y;
-                writeMessage('x: ' + x + ', y: ' + y);
-            });
+
+            // stage.on('mouseout', function() {
+            //     writeMessage('Mouseout triangle');
+            // });
+            // stage.on('mousemove', function() {
+            //     var mousePos = stage.getPointerPosition();
+            //     var x = mousePos.x;
+            //     var y = mousePos.y;
+            //     writeMessage('x: ' + x + ', y: ' + y);
+            //     // equipment.x(x-15);
+            //     // equipment.y(y-15);
+            // });
+
             var text = new Konva.Text({
                 x: 10,
                 y: 10,
@@ -80,16 +81,98 @@
                 fill: 'black'
             });
             backgroundLayer.add(text);
+            var equipment = new Konva.Rect({
+                x: 0,
+                y: 0,
+                stroke: '#555',
+                strokeWidth: 0,
+                fill: 'red',
+                width: 30,
+                height: 30,
+                shadowColor: 'black',
+                shadowBlur: 10,
+                shadowOffset: [10, 10],
+                shadowOpacity: 0.2,
+                cornerRadius: 2,
+                draggable: true
+            });
+            dragLayer.add(equipment);
+            equipment.on('dragmove',function (evt) {
+                console.log(evt);
+                group.find('Rect').each(function( rect, index ){
+                    rect.fill('rgba(0,0,0,0)')
+                });
+
+                var mousePos = stage.getPointerPosition();
+                var shape = areaLayer.getIntersection(mousePos);
+                if(shape && shape.className == 'Rect'){
+                    shape.fill('rgba(0,0,0,0.3)');
+                }
+                areaLayer.batchDraw();
+            });
+
+            //组
+            var group = new Konva.Group({
+                width: 80,
+                height: 80
+            });
+            var areaData = [
+                {
+                    width:100,
+                    height:100,
+                    left:10,
+                    top:100
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:110,
+                    top:100
+                },
+                {
+                    width:100,
+                    height:100,
+                    left:210,
+                    top:100
+                }
+            ];
+
+            //区域
+            function addArea(data) {
+                var rect = new Konva.Rect({
+                    x: data.left,
+                    y: data.top,
+                    width: data.width,
+                    height: data.height
+                });
+
+
+                var imageObj = new Image();
+                imageObj.src = 'https://www.w3.org/Icons/SVG/svg-logo.svg';
+                imageObj.onload = function() {
+                    var image = new Konva.Image({
+                        x:  data.left,
+                        y: data.top,
+                        image: imageObj,
+                        width: data.width,
+                        height: data.height
+                    });
+                    image.moveTo(group);
+                    group.add(rect);
+
+                    areaLayer.add(group);
+                    areaLayer.batchDraw();
+                };
+            }
+            for(var n = 0; n < areaData.length; n++) {
+                addArea(areaData[n]);
+            }
 
 
 
 
-
-
-
-
-
-
+            stage.add(dragLayer);
+            stage.add(areaLayer);
 
 
 

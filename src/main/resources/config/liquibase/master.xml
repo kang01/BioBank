@@ -133,6 +133,12 @@
     <include file="classpath:config/liquibase/changelog/20170526000000_added_view_AreasListByProject.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170521000000_updated_view_FrozenTubeList.xml" relativeToChangelogFile="false"/>
 
+
+    <include file="classpath:config/liquibase/changelog/20170928143801_added_entity_StockOutReqFrozenTube.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170928143802_added_entity_constraints_StockOutReqFrozenTube.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170928151201_added_entity_StockOutHandoverDetails.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170928151202_added_entity_constraints_StockOutHandoverDetails.xml" relativeToChangelogFile="false"/>
+
     <!--<include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>-->
 
 </databaseChangeLog>

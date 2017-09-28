@@ -203,4 +203,15 @@ public class StockOutFiles extends AbstractAuditingEntity implements Serializabl
             ", memo='" + memo + "'" +
             '}';
     }
+
+    @Column(name = "file_content")
+    private String fileContent;
+
+    public String getFileContent() {
+        return fileContent;
+    }
+
+    public void setFileContent(String fileContent) {
+        this.fileContent = fileContent;
+    }
 }

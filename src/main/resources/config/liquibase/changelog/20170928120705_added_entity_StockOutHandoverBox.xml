@@ -77,6 +77,7 @@
         </createTable>
 
     </changeSet>
+
     <changeSet id="20170928120705-3" author="jhipster">
         <addColumn tableName="stock_out_handover_box">
             <column name="frozen_box_type_code" type="nvarchar(100)" remarks="冻存盒类型编码"></column>

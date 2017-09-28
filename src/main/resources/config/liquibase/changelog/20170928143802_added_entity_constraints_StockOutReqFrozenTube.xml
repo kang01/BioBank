@@ -10,13 +10,13 @@
 
         <addForeignKeyConstraint baseColumnNames="stock_out_frozen_box_id"
                                  baseTableName="stock_out_req_frozen_tube"
-                                 constraintName="stock_out_frozen_box_id"
+                                 constraintName="stock_out_req_frozen_box"
                                  referencedColumnNames="id"
-                                 referencedTableName="stock_out_frozen_box"/>
+                                 referencedTableName="stock_out_box"/>
 
         <addForeignKeyConstraint baseColumnNames="stock_out_task_id"
                                  baseTableName="stock_out_req_frozen_tube"
-                                 constraintName="stock_out_task_id"
+                                 constraintName="stock_out_req_tube_task"
                                  referencedColumnNames="id"
                                  referencedTableName="stock_out_task"/>
 
@@ -24,31 +24,31 @@
 
         <addForeignKeyConstraint baseColumnNames="frozen_tube_type_id"
                                  baseTableName="stock_out_req_frozen_tube"
-                                 constraintName="out_tube_type_id"
+                                 constraintName="req_out_tube_type_id"
                                  referencedColumnNames="id"
                                  referencedTableName="frozen_tube_type"/>
 
         <addForeignKeyConstraint baseColumnNames="sample_type_id"
                                  baseTableName="stock_out_req_frozen_tube"
-                                 constraintName="out_tube_sample_type_id"
+                                 constraintName="req_out_tube_sample_type_id"
                                  referencedColumnNames="id"
                                  referencedTableName="sample_type"/>
 
         <addForeignKeyConstraint baseColumnNames="project_id"
                                  baseTableName="stock_out_req_frozen_tube"
-                                 constraintName="out_tube_project_id"
+                                 constraintName="req_out_tube_project_id"
                                  referencedColumnNames="id"
                                  referencedTableName="project"/>
 
         <addForeignKeyConstraint baseColumnNames="project_site_id"
                                  baseTableName="stock_out_req_frozen_tube"
-                                 constraintName="out_tube_project_site_id"
+                                 constraintName="req_out_tube_project_site_id"
                                  referencedColumnNames="id"
                                  referencedTableName="project_site"/>
 
         <addForeignKeyConstraint baseColumnNames="sample_classification_id"
                                  baseTableName="stock_out_req_frozen_tube"
-                                 constraintName="out_tube_sample_class_id"
+                                 constraintName="req_out_tube_sample_class_id"
                                  referencedColumnNames="id"
                                  referencedTableName="sample_classification"/>
 

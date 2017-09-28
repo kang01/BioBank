@@ -66,4 +66,9 @@
         </createTable>
 
     </changeSet>
+    <changeSet id="20170928055932-3" author="jhipster">
+        <addColumn tableName="stock_out_files">
+            <column name="file_content" type="clob" remarks="文件内容"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

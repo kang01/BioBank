@@ -273,11 +273,9 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     }
 
     @ManyToOne(optional = false)
-    @NotNull
     private StockOutFrozenBox stockOutFrozenBox;
 
     @ManyToOne(optional = false)
-    @NotNull
     private StockOutTask stockOutTask;
 
     @NotNull

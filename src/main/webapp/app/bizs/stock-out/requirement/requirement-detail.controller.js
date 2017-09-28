@@ -22,6 +22,8 @@
         vm.requirement = entity;
         //判断是否需求保存
         vm.sampleflag = false;
+        //是否可以核对
+        vm.allowCheckFlag = false;
 
         //批准
         vm.approvalModal = _fnApprovalModal;
@@ -270,13 +272,24 @@
                 vm.sampleflag = false;
             });
         };
-        function _fnSaveRequirement() {
+        function _fnSaveRequirement(sampleRequirementId) {
             delete vm.requirement.stockOutRequirement;
             BioBankBlockUi.blockUiStart();
             RequirementService.saveRequirementInfo(vm.requirement).success(function (data) {
                 BioBankBlockUi.blockUiStop();
                 if(!vm.sampleflag){
                     toastr.success("保存申请记录成功！");
+                }
+                if(vm.allowCheckFlag){
+                    RequirementService.checkSampleRequirement(sampleRequirementId).success(function (data) {
+                        _loadRequirement();
+                        vm.allowCheckFlag = false;
+                        vm.sampleflag = false;
+                    }).error(function (data) {
+                        toastr.error(data.message);
+                        vm.allowCheckFlag = false;
+                        vm.sampleflag = false;
+                    });
                 }
             }).error(function (data) {
                 BioBankBlockUi.blockUiStop();
@@ -395,10 +408,10 @@
         }
         //核对
         function _fnSampleRequirementCheck(sampleRequirementId) {
-            RequirementService.checkSampleRequirement(sampleRequirementId).success(function (data) {
-                _loadRequirement();
-            }).error(function (data) {
-            });
+            vm.allowCheckFlag = true;
+            vm.sampleflag = true;
+            _fnSaveRequirement(sampleRequirementId);
+
         }
         //复原
         function _fnSampleRequirementRevert(sampleRequirementId) {

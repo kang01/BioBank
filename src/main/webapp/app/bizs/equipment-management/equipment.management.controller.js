@@ -45,15 +45,18 @@
         $(".equipment-ul").delegate("li","click",function(){
             $(".equipment-ul li").removeClass("equipment-selected");
             console.log(this);
-            // $(this).css({"border":"4px solid #aaa"});
-            // $(this).slideToggle();
-            // $(this).toggle(function () {
-            //     $(this).css({"border":"4px solid #aaa"});
-            // },function () {
-            //     $(this).css({"border":"0 solid #aaa"});
-            // });
             $(this).addClass("equipment-selected");
 
+        });
+        vm.equipmentType = {
+            code:""
+        };
+        $(".equipment-list-body").delegate(".equipment-box","click",function () {
+            $(".equipment-list-body .equipment-box").removeClass("equipment-selected");
+            $(this).addClass("equipment-selected");
+
+            vm.equipmentType.code = "1";
+            $scope.$apply();
         });
 
     }

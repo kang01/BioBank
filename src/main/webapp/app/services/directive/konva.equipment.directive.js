@@ -14,7 +14,7 @@
         var  directive  =  {
             restrict:  'EA',
             scope  :  {
-                data: "="
+                equipmentType: "="
             },
             template: '<div id="container1"></div>',
             link:  linkFunc
@@ -23,11 +23,14 @@
         return  directive;
 
         function  linkFunc(scope,  element,  attrs)  {
-            var height = 3310;
+            scope.$watch('equipmentType',function (newValue,oldValue) {
+                console.log(newValue);
+            });
+            var height = 4310;
             //舞台
             var stage = new Konva.Stage({
                 container: 'container1',
-                width: 943,
+                width: 1033,
                 height: height
             });
             //背景层
@@ -41,17 +44,18 @@
             var imageObj1 = new Image();
             imageObj1.src = 'content/images/样本库平面图-1.svg';
             imageObj1.onload = function() {
-                var width = (3600*imageObj1.width)/imageObj1.height;
+                var width = (3600*(imageObj1.width+500))/imageObj1.height;
                 var image1 = new Konva.Image({
-                    x:  0,
+                    x:  -155,
                     y: -90,
                     image: imageObj1,
                     width: width,
-                    height: 3600
+                    height: 4600
                 });
-
+                dragLayer.add(equipment);
                 backgroundLayer.add(image1);
                 stage.add(backgroundLayer);
+                stage.add(dragLayer);
             };
 
             function writeMessage(message) {
@@ -73,11 +77,11 @@
             // });
 
             var text = new Konva.Text({
-                x: 10,
-                y: 10,
+                x: 132,
+                y: 4130,
                 fontFamily: 'Calibri',
-                fontSize: 24,
-                text: '',
+                fontSize: 12,
+                text: 'F1011',
                 fill: 'black'
             });
             backgroundLayer.add(text);
@@ -86,7 +90,7 @@
                 y: 0,
                 stroke: '#555',
                 strokeWidth: 0,
-                fill: 'red',
+                fill: 'green',
                 width: 30,
                 height: 30,
                 shadowColor: 'black',
@@ -96,9 +100,14 @@
                 cornerRadius: 2,
                 draggable: true
             });
-            dragLayer.add(equipment);
+            var startPos = {};
+            equipment.on('dragstart', function(evt) {
+                if (!startPos.x){
+                    startPos = evt.target.getClientRect();
+                }
+            });
             equipment.on('dragmove',function (evt) {
-                console.log(evt);
+                // console.log(evt);
                 group.find('Rect').each(function( rect, index ){
                     rect.fill('rgba(0,0,0,0)')
                 });
@@ -110,35 +119,92 @@
                 }
                 areaLayer.batchDraw();
             });
+            equipment.on('dragend', function(evt) {
+                var endPos = {};
+                var mousePos = stage.getPointerPosition();
+                var shape = areaLayer.getIntersection(mousePos);
+
+                if(!shape){
+                    endPos = evt.target.getClientRect();
+
+                    var rangeX1 = startPos.x;
+                    var rangeY1 = startPos.y;
+
+                    var rangeX2 = endPos.x;
+                    var rangeY2 = endPos.y;
+
+                    var offsetPos = {x:rangeX1 -rangeX2,y:rangeY1 - rangeY2};
+                    var self = this;
+                    self.move(offsetPos);
+                }else{
+
+                    endPos = evt.target.getClientRect();
+                    var offsetPos = shape.getClientRect();
+                    var rangeX1 = offsetPos.x+offsetPos.width / 2.0;
+                    var rangeY1 = offsetPos.y+offsetPos.height / 2.0;
+                    var rangeX2 = endPos.x+endPos.width / 2.0;
+                    var rangeY2 = endPos.y+endPos.height / 2.0;
+                    var offsetPos1 = {x:rangeX1 -rangeX2,y:rangeY1 - rangeY2};
+                    startPos = {x:rangeX1-endPos.width/2.0,y:rangeY1 - endPos.height / 2.0};
+                    this.move(offsetPos1)
+                }
+                group.find('Rect').each(function( rect, index ){
+                    rect.fill('rgba(0,0,0,0)')
+                });
+                dragLayer.batchDraw();
+                areaLayer.batchDraw();
+            });
 
             //组
             var group = new Konva.Group({
                 width: 80,
                 height: 80
             });
-            var areaData = [
+            //冻存罐
+            var areaJar = [
                 {
-                    width:100,
-                    height:100,
-                    left:10,
-                    top:100
+                    width:80,
+                    height:80,
+                    left:54,
+                    top:146
                 },
                 {
-                    width:100,
-                    height:100,
-                    left:110,
-                    top:100
+                    width:80,
+                    height:80,
+                    left:252,
+                    top:185
                 },
                 {
-                    width:100,
-                    height:100,
-                    left:210,
-                    top:100
+                    width:80,
+                    height:80,
+                    left:252,
+                    top:264
+                }
+            ];
+            //冰箱
+            var areaRefrigerator = [
+                {
+                    width:45,
+                    height:58,
+                    left:454,
+                    top:150
+                },
+                {
+                    width:45,
+                    height:58,
+                    left:454,
+                    top:210
+                },
+                {
+                    width:45,
+                    height:58,
+                    left:454,
+                    top:270
                 }
             ];
 
-            //区域
-            function addArea(data) {
+            //罐子
+            function addJar(data) {
                 var rect = new Konva.Rect({
                     x: data.left,
                     y: data.top,
@@ -148,7 +214,7 @@
 
 
                 var imageObj = new Image();
-                imageObj.src = 'https://www.w3.org/Icons/SVG/svg-logo.svg';
+                imageObj.src = 'content/images/冻存罐.svg';
                 imageObj.onload = function() {
                     var image = new Konva.Image({
                         x:  data.left,
@@ -164,14 +230,44 @@
                     areaLayer.batchDraw();
                 };
             }
-            for(var n = 0; n < areaData.length; n++) {
-                addArea(areaData[n]);
+            for(var n = 0; n < areaJar.length; n++) {
+                addJar(areaJar[n]);
+            }
+
+            function addRefrigerator(data) {
+                var rect = new Konva.Rect({
+                    x: data.left,
+                    y: data.top,
+                    width: data.width,
+                    height: data.height
+                });
+
+
+                var imageObj = new Image();
+                imageObj.src = 'content/images/冰箱.svg';
+                imageObj.onload = function() {
+                    var image = new Konva.Image({
+                        x:  data.left,
+                        y: data.top,
+                        image: imageObj,
+                        width: data.width,
+                        height: data.height
+                    });
+                    image.moveTo(group);
+                    group.add(rect);
+
+                    areaLayer.add(group);
+                    areaLayer.batchDraw();
+                };
+            }
+            for(var m = 0; m < areaRefrigerator.length; m++) {
+                addRefrigerator(areaRefrigerator[m]);
             }
 
 
 
 
-            stage.add(dragLayer);
+
             stage.add(areaLayer);
 
 

@@ -213,7 +213,8 @@
             //设备编码
             EquipmentAllService.query({},onEquipmentSuccess, onError);
             function onEquipmentSuccess(data) {
-                vm.frozenBoxPlaceOptions = data;
+                vm.frozenBoxPlaceOptions = _.orderBy(data,['equipmentCode'],['asc']);
+                // vm.frozenBoxPlaceOptions = data;
             }
             //设备编码
             vm.frozenBoxPlaceConfig = {

@@ -193,6 +193,7 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             .stockOutDate(LocalDate.now());
 
         stockOutTask = stockOutTaskRepository.save(stockOutTask);
+        List<StockOutTaskFrozenTube> tubes = new ArrayList<StockOutTaskFrozenTube>();
         for(Long id : boxIds){
             FrozenBox box = frozenBoxRepository.findOne(id);
             if (box == null){
@@ -200,15 +201,21 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
             }
             List<StockOutPlanFrozenTube> stockOutPlanFrozenTubes = stockOutPlanFrozenTubeRepository.findByStockOutPlanIdAndFrozenBoxId(planId,id);
             //保存出库任务样本
-            List<StockOutTaskFrozenTube> tubes = new ArrayList<StockOutTaskFrozenTube>();
+
             for(StockOutPlanFrozenTube t: stockOutPlanFrozenTubes){
                 StockOutTaskFrozenTube tube = new StockOutTaskFrozenTube();
                 tube.status(Constants.STOCK_OUT_FROZEN_TUBE_NEW).stockOutTask(stockOutTask).stockOutPlanFrozenTube(t);
                 tubes.add(tube);
             }
-            stockOutTaskFrozenTubeRepository.save(tubes);
+            if(tubes.size()>=1000){
+                stockOutTaskFrozenTubeRepository.save(tubes);
+                tubes = new ArrayList<StockOutTaskFrozenTube>();
+            }
         }
-
+        if(tubes.size()>=0){
+            stockOutTaskFrozenTubeRepository.save(tubes);
+            tubes = new ArrayList<StockOutTaskFrozenTube>();
+        }
         StockOutTaskDTO result = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
         return result;
     }

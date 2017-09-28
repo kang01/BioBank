@@ -133,7 +133,7 @@ public final class Constants {
     public static final String STOCK_OUT_PLAN_PENDING = "1401";
     public static final String STOCK_OUT_PLAN_COMPLETED = "1402";
     /**
-     * 出库计划样本状态：1501：新建,1502：撤销出库
+     * 出库计划样本状态：1501：新建,1502：撤销出库,1503：已出库
      */
     public static final String STOCK_OUT_PLAN_TUBE_PENDING = "1501";
     public static final String STOCK_OUT_PLAN_TUBE_CANCEL = "1502";

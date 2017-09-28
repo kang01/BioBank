@@ -17,11 +17,15 @@ public class EntityAuditEventListener extends AuditingEntityListener {
 
     private static BeanFactory beanFactory;
 
+    /**
+     * 由于在执行大数据量的CREATE,UPDATE,DELETE操作时，审计日志耗时很长，所以暂时注释掉
+     * @param target
+     */
     @PostPersist
     public void onPostCreate(Object target) {
         try {
             AsyncEntityAuditEventWriter asyncEntityAuditEventWriter = beanFactory.getBean(AsyncEntityAuditEventWriter.class);
-            asyncEntityAuditEventWriter.writeAuditEvent(target, EntityAuditAction.CREATE);
+//            asyncEntityAuditEventWriter.writeAuditEvent(target, EntityAuditAction.CREATE);
         } catch (NoSuchBeanDefinitionException e) {
             log.error("No bean found for AsyncEntityAuditEventWriter");
         } catch (Exception e) {
@@ -33,7 +37,7 @@ public class EntityAuditEventListener extends AuditingEntityListener {
     public void onPostUpdate(Object target) {
         try {
             AsyncEntityAuditEventWriter asyncEntityAuditEventWriter = beanFactory.getBean(AsyncEntityAuditEventWriter.class);
-            asyncEntityAuditEventWriter.writeAuditEvent(target, EntityAuditAction.UPDATE);
+//            asyncEntityAuditEventWriter.writeAuditEvent(target, EntityAuditAction.UPDATE);
         } catch (NoSuchBeanDefinitionException e) {
             log.error("No bean found for AsyncEntityAuditEventWriter");
         } catch (Exception e) {
@@ -45,7 +49,7 @@ public class EntityAuditEventListener extends AuditingEntityListener {
     public void onPostRemove(Object target) {
         try {
             AsyncEntityAuditEventWriter asyncEntityAuditEventWriter = beanFactory.getBean(AsyncEntityAuditEventWriter.class);
-            asyncEntityAuditEventWriter.writeAuditEvent(target, EntityAuditAction.DELETE);
+//            asyncEntityAuditEventWriter.writeAuditEvent(target, EntityAuditAction.DELETE);
         } catch (NoSuchBeanDefinitionException e) {
             log.error("No bean found for AsyncEntityAuditEventWriter");
         } catch (Exception e) {

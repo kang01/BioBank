@@ -212,59 +212,65 @@
             //保存记录
             function saveRecord(transportRecord) {
                 vm.saveRecordFlag = true;
-                vm.saveBox(function(){
+                //导入冻存盒
+                if(!importBoxFlag){
                     BioBankBlockUi.blockUiStart();
-                    TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError);
-                    function onSaveTranshipRecordSuccess(data) {
-                        //导入冻存盒
-                        if(importBoxFlag){
-                            modalInstance = $uibModal.open({
-                                animation: true,
-                                templateUrl: 'app/bizs/transport-record/modal/frozen-storage-box-modal.html',
-                                controller: 'FrozenStorageBoxModalController',
-                                controllerAs:'vm',
-                                size:'lg w-1200',
-                                backdrop:'static',
-                                resolve: {
-                                    items: function () {
-                                        return {
-                                            transhipId :vm.transportRecord.id,
-                                            projectId :vm.transportRecord.projectId,
-                                            projectCode:vm.transportRecord.projectCode,
-                                            frozenBoxTypeOptions:vm.frozenBoxTypeOptions,
-                                            sampleTypeOptions:vm.sampleTypeOptions
-                                        };
-                                    }
-                                }
+                }
 
-                            });
-                            modalInstance.result.then(function (data) {
-                                vm.queryTransportRecord();
-                                vm.dtInstance.rerender();
-                                importBoxFlag = false;
-                            },function () {
-                                importBoxFlag = false;
-                            })
-                        }
-                        vm.saveRecordFlag = false;
-                        BioBankBlockUi.blockUiStop();
-                        if(vm.saveStockInFlag){
-                            TranshipStockInService.saveTransferFinish(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
-                                BioBankBlockUi.blockUiStop();
-                                toastr.success("转运成功！");
-                                vm.saveStockInFlag = false;
-                                $state.go('transport-record');
-                            }).error(function (data) {
-                                BioBankBlockUi.blockUiStop();
-                                toastr.error(data.message+"转运失败！");
-                            });
-                        }
-                        if(!vm.saveStockInFlag && !importBoxFlag){
-                            toastr.success("保存转运记录成功");
+                TranshipSaveService.update(vm.transportRecord,onSaveTranshipRecordSuccess,onError);
+                function onSaveTranshipRecordSuccess(data) {
+                    //导入冻存盒
+                    if(importBoxFlag){
+                        modalInstance = $uibModal.open({
+                            animation: true,
+                            templateUrl: 'app/bizs/transport-record/modal/frozen-storage-box-modal.html',
+                            controller: 'FrozenStorageBoxModalController',
+                            controllerAs:'vm',
+                            size:'lg w-1200',
+                            backdrop:'static',
+                            resolve: {
+                                items: function () {
+                                    return {
+                                        transhipId :vm.transportRecord.id,
+                                        projectId :vm.transportRecord.projectId,
+                                        projectCode:vm.transportRecord.projectCode,
+                                        frozenBoxTypeOptions:vm.frozenBoxTypeOptions,
+                                        sampleTypeOptions:vm.sampleTypeOptions,
+                                        frozenBoxPlaceOptions:vm.frozenBoxPlaceOptions
+                                    };
+                                }
+                            }
+
+                        });
+                        modalInstance.result.then(function (data) {
                             vm.queryTransportRecord();
-                        }
+                            vm.dtInstance.rerender();
+                            importBoxFlag = false;
+                        },function () {
+                            importBoxFlag = false;
+                        })
                     }
-                });
+                    vm.saveRecordFlag = false;
+                    BioBankBlockUi.blockUiStop();
+                    if(vm.saveStockInFlag){
+                        TranshipStockInService.saveTransferFinish(vm.transportRecord.transhipCode,transportRecord).success(function (data) {
+                            BioBankBlockUi.blockUiStop();
+                            toastr.success("转运成功！");
+                            vm.saveStockInFlag = false;
+                            $state.go('transport-record');
+                        }).error(function (data) {
+                            BioBankBlockUi.blockUiStop();
+                            toastr.error(data.message+"转运失败！");
+                        });
+                    }
+                    if(!vm.saveStockInFlag && !importBoxFlag){
+                        toastr.success("保存转运记录成功");
+                        vm.queryTransportRecord();
+                    }
+                }
+                // vm.saveBox(function(){
+                //
+                // });
             }
 
             function openCalendar (date) {
@@ -1142,7 +1148,7 @@
 
             //设备
             function onEquipmentSuccess(data) {
-                vm.frozenBoxPlaceOptions = data;
+                vm.frozenBoxPlaceOptions = _.orderBy(data,['equipmentCode'],['asc']);
             }
             //盒子位置
             vm.frozenBoxPlaceConfig = {

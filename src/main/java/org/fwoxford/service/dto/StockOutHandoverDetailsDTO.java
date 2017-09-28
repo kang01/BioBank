@@ -25,6 +25,26 @@ public class StockOutHandoverDetailsDTO extends AbstractAuditingDTO implements S
 
     private Long stockOutBoxTubeId;
 
+    private Long stockOutReqFrozenTubeId;
+
+    private Long stockOutHandoverBoxId;
+
+    public Long getStockOutReqFrozenTubeId() {
+        return stockOutReqFrozenTubeId;
+    }
+
+    public void setStockOutReqFrozenTubeId(Long stockOutReqFrozenTubeId) {
+        this.stockOutReqFrozenTubeId = stockOutReqFrozenTubeId;
+    }
+
+    public Long getStockOutHandoverBoxId() {
+        return stockOutHandoverBoxId;
+    }
+
+    public void setStockOutHandoverBoxId(Long stockOutHandoverBoxId) {
+        this.stockOutHandoverBoxId = stockOutHandoverBoxId;
+    }
+
     public Long getId() {
         return id;
     }

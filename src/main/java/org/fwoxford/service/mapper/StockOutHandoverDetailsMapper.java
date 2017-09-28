@@ -14,12 +14,16 @@ public interface StockOutHandoverDetailsMapper {
 
     @Mapping(source = "stockOutHandover.id", target = "stockOutHandoverId")
     @Mapping(source = "stockOutBoxTube.id", target = "stockOutBoxTubeId")
+    @Mapping(source = "stockOutReqFrozenTube.id", target = "stockOutReqFrozenTubeId")
+    @Mapping(source = "stockOutHandoverBox.id", target = "stockOutHandoverBoxId")
     StockOutHandoverDetailsDTO stockOutHandoverDetailsToStockOutHandoverDetailsDTO(StockOutHandoverDetails stockOutHandoverDetails);
 
     List<StockOutHandoverDetailsDTO> stockOutHandoverDetailsToStockOutHandoverDetailsDTOs(List<StockOutHandoverDetails> stockOutHandoverDetails);
 
     @Mapping(source = "stockOutHandoverId", target = "stockOutHandover")
     @Mapping(source = "stockOutBoxTubeId", target = "stockOutBoxTube")
+    @Mapping(source = "stockOutReqFrozenTubeId", target = "stockOutReqFrozenTube")
+    @Mapping(source = "stockOutHandoverBoxId", target = "stockOutHandoverBox")
     StockOutHandoverDetails stockOutHandoverDetailsDTOToStockOutHandoverDetails(StockOutHandoverDetailsDTO stockOutHandoverDetailsDTO);
 
     List<StockOutHandoverDetails> stockOutHandoverDetailsDTOsToStockOutHandoverDetails(List<StockOutHandoverDetailsDTO> stockOutHandoverDetailsDTOs);
@@ -40,5 +44,23 @@ public interface StockOutHandoverDetailsMapper {
         StockOutBoxTube stockOutBoxTube = new StockOutBoxTube();
         stockOutBoxTube.setId(id);
         return stockOutBoxTube;
+    }
+
+    default StockOutReqFrozenTube stockOutReqFrozenTubeFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
+        stockOutReqFrozenTube.setId(id);
+        return stockOutReqFrozenTube;
+    }
+
+    default StockOutHandoverBox stockOutHandoverBoxFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        StockOutHandoverBox stockOutHandoverBox = new StockOutHandoverBox();
+        stockOutHandoverBox.setId(id);
+        return stockOutHandoverBox;
     }
 }

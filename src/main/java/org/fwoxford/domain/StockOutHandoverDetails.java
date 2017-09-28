@@ -40,6 +40,31 @@ public class StockOutHandoverDetails extends AbstractAuditingEntity implements S
     @NotNull
     private StockOutBoxTube stockOutBoxTube;
 
+    @ManyToOne(optional = false)
+    @NotNull
+    private StockOutReqFrozenTube stockOutReqFrozenTube;
+
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private StockOutHandoverBox stockOutHandoverBox;
+
+    public StockOutHandoverBox getStockOutHandoverBox() {
+        return stockOutHandoverBox;
+    }
+
+    public void setStockOutHandoverBox(StockOutHandoverBox stockOutHandoverBox) {
+        this.stockOutHandoverBox = stockOutHandoverBox;
+    }
+
+    public StockOutReqFrozenTube getStockOutReqFrozenTube() {
+        return stockOutReqFrozenTube;
+    }
+
+    public void setStockOutReqFrozenTube(StockOutReqFrozenTube stockOutReqFrozenTube) {
+        this.stockOutReqFrozenTube = stockOutReqFrozenTube;
+    }
+
     public Long getId() {
         return id;
     }
@@ -124,8 +149,12 @@ public class StockOutHandoverDetails extends AbstractAuditingEntity implements S
     public String toString() {
         return "StockOutHandoverDetails{" +
             "id=" + id +
-            ", status='" + status + "'" +
-            ", memo='" + memo + "'" +
+            ", status='" + status + '\'' +
+            ", memo='" + memo + '\'' +
+            ", stockOutHandover=" + stockOutHandover +
+            ", stockOutBoxTube=" + stockOutBoxTube +
+            ", stockOutReqFrozenTube=" + stockOutReqFrozenTube +
+            ", stockOutHandoverBox=" + stockOutHandoverBox +
             '}';
     }
 }

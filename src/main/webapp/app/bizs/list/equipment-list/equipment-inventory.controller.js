@@ -153,7 +153,8 @@
             //设备
             EquipmentAllService.query({},onEquipmentSuccess, onError);
             function onEquipmentSuccess(data) {
-                vm.frozenBoxPlaceOptions = data;
+                // vm.frozenBoxPlaceOptions = data;
+                vm.frozenBoxPlaceOptions = _.orderBy(data,['equipmentCode'],['asc']);
             }
             vm.equipmentOptions = [
                 {value:"1",label:"冰箱"},

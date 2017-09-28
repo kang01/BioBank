@@ -89,22 +89,54 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " WHERE pt.id IS NULL",nativeQuery = true)
     List<Object[]> findAllStockOutFrozenTube();
 
-    @Query(value = "select t.id,t.project_id,t.frozen_box_id,t.tube_rows,LPAD(t.tube_columns,2) as tube_columns,memo from frozen_tube t   " +
-        " where (?1 = 0 or t.sample_type_id=?1) " +
-        " and (?2 = 0 or t.sample_classification_id=?2)  " +
-        " and (?3 = 0 or t.frozen_tube_type_id=?3) " +
-        " and (?4 is null or t.disease_type=?4) " +
-        " and (?5 is null or t.gender=?5) " +
-        " and (?6 = 0 or t.is_blood_lipid=?6) " +
-        " and (?7 = 0 or t.is_hemolysis=?7) " +
-        " and (?8 = 0 or t.age>=?8) " +
-        " and (?9 = 0 or t.age<=?9) " +
-        " and t.frozen_tube_state='2004' and t.status='3001' "+
-        " order by t.frozen_box_code,t.tube_rows,LPAD(t.tube_columns,2) asc offset ?10 rows fetch next 1000 rows only",nativeQuery = true)
+//    @Query(value = "select t.id,t.project_id,t.frozen_box_id,t.tube_rows,LPAD(t.tube_columns,2) as tube_columns,memo from frozen_tube t   " +
+//        " LEFT OUTER JOIN ( " +
+//        "  SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt  " +
+//        "  LEFT OUTER JOIN STOCK_OUT_PLAN_TUBE pt ON pt.STOCK_OUT_REQ_FROZEN_TUBE_ID = rt.id AND pt.STATUS='1503' " +
+//        "  WHERE pt.id IS NULL " +
+//        ") vpt ON t.id = vpt.FROZEN_TUBE_ID"+
+//        " where t.frozen_tube_state='2004' and t.status='3001' and vpt.FROZEN_TUBE_ID IS NULL"+
+//        " and t.project_id in ?10 "+
+//        " and (?1 = 0 or t.sample_type_id=?1) " +
+//        " and (?2 = 0 or t.sample_classification_id=?2)  " +
+//        " and (?3 = 0 or t.frozen_tube_type_id=?3) " +
+//        " and (?4 is null or t.disease_type=?4) " +
+//        " and (?5 is null or t.gender=?5) " +
+//        " and (?6 = 0 or t.is_blood_lipid=?6) " +
+//        " and (?7 = 0 or t.is_hemolysis=?7) " +
+//        " and (?8 = 0 or t.age>=?8) " +
+//        " and (?9 = 0 or t.age<=?9) " +
+//        " order by t.frozen_box_code,t.tube_rows,LPAD(t.tube_columns,2) asc offset ?11 rows fetch next ?12 rows only",nativeQuery = true)
+@Query(value = "select t.id,t.project_id,t.frozen_box_id,t.tube_rows,LPAD(t.tube_columns,2) as tube_columns,memo from frozen_tube t   " +
+    "  LEFT OUTER JOIN ( " +
+    "  SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt  " +
+    "  LEFT OUTER JOIN STOCK_OUT_PLAN_TUBE pt ON pt.STOCK_OUT_REQ_FROZEN_TUBE_ID = rt.id AND pt.STATUS='1503' " +
+    "  WHERE pt.id IS NULL " +
+    ") vpt ON t.id = vpt.FROZEN_TUBE_ID"+
+    " where t.frozen_tube_state='2004' and t.status='3001' and vpt.FROZEN_TUBE_ID IS NULL " +
+    " and t.project_id in ?10 "+
+    " and (?1 = 0 or t.sample_type_id=?1) " +
+    " and (?2 = 0 or t.sample_classification_id=?2)  " +
+    " and (?3 = 0 or t.frozen_tube_type_id=?3) " +
+    " and (?4 is null or t.disease_type=?4) " +
+    " and (?5 is null or t.gender=?5) " +
+    " and (?6 = 0 or t.is_blood_lipid=?6) " +
+    " and (?7 = 0 or t.is_hemolysis=?7) " +
+    " and (?8 = 0 or t.age>=?8) " +
+    " and (?9 = 0 or t.age<=?9) " +
+    " order by t.frozen_box_code,t.tube_rows,LPAD(t.tube_columns,2) asc offset ?11 rows fetch next ?12 rows only",nativeQuery = true)
+
     List<Object[]> findByRequirements(Integer sampleTypeId, Integer samplyClassificationId, Integer frozenTubeTypeId,
-                                       String diseaseType, String sex, Integer isBloodLipid, Integer isHemolysis, Integer ageMin, Integer ageMax,Integer count);
-    @Query(value = "select count(*) from frozen_tube t   " +
-        " where (?1 = 0 or t.sample_type_id=?1) " +
+                                      String diseaseType, String sex, Integer isBloodLipid, Integer isHemolysis, Integer ageMin, Integer ageMax,  List<Long> projectIds,Integer startPos,Integer length);
+    @Query(value = "select count(t.id) from frozen_tube t   " +
+        " LEFT OUTER JOIN ( " +
+        "  SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt  " +
+        "  LEFT OUTER JOIN STOCK_OUT_PLAN_TUBE pt ON pt.STOCK_OUT_REQ_FROZEN_TUBE_ID = rt.id AND pt.STATUS='1503' " +
+        "  WHERE pt.id IS NULL " +
+        ") vpt ON t.id = vpt.FROZEN_TUBE_ID"+
+        " where t.frozen_tube_state='2004' and t.status='3001' and vpt.FROZEN_TUBE_ID IS NULL"+
+        " and t.project_id in ?10 "+
+        " and (?1 = 0 or t.sample_type_id=?1) " +
         " and (?2 = 0 or t.sample_classification_id=?2)  " +
         " and (?3 = 0 or t.frozen_tube_type_id=?3) " +
         " and (?4 is null or t.disease_type=?4) " +
@@ -112,10 +144,9 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " and (?6 = 0 or t.is_blood_lipid=?6) " +
         " and (?7 = 0 or t.is_hemolysis=?7) " +
         " and (?8 = 0 or t.age>=?8) " +
-        " and (?9 = 0 or t.age<=?9) " +
-        " and t.frozen_tube_state='2004' and t.status='3001' ",nativeQuery = true)
+        " and (?9 = 0 or t.age<=?9) ",nativeQuery = true)
     Long countByRequirements(Integer sampleTypeId, Integer samplyClassificationId, Integer frozenTubeTypeId,
-                                      String diseaseType, String sex, Integer isBloodLipid, Integer isHemolysis, Integer ageMin, Integer ageMax);
+                                      String diseaseType, String sex, Integer isBloodLipid, Integer isHemolysis, Integer ageMin, Integer ageMax, List<Long> projectIds);
 
     @Query("select t from FrozenTube t where (t.sampleCode in ?1 or t.sampleTempCode in ?1) and t.project.projectCode = ?2 and t.sampleType.id = ?3 and t.status != ?4")
     List<FrozenTube> findBySampleCodeInAndProjectCodeAndSampleTypeIdAndStatusNot(List<String> sampleCode, String projectCode, Long sampleTypeId,String status);
@@ -173,6 +204,4 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         ,nativeQuery = true)
     List<FrozenTube> findBySampleCodeInAndSampleTypeCodeAndProjectIn(List<String> sampleCodeList,
                                                                  String appointedSampleType, List<Long> projectIds);
-
-
 }

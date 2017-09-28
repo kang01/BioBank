@@ -213,18 +213,21 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         String sex = stockOutRequirement.getSex();
         Integer isBloodLipid = stockOutRequirement.isIsBloodLipid()!=null&&stockOutRequirement.isIsBloodLipid().equals(true)?1:0;
         Integer isHemolysis = stockOutRequirement.isIsHemolysis()!=null&&stockOutRequirement.isIsHemolysis().equals(true)?1:0;
+        Long countOfStockInTube = frozenTubeRepository.countByRequirements(sampleTypeId,samplyClassificationId,
+            frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis,ageMin,ageMax,projectIds);
+        if(countOfStockInTube.intValue()<countOfSample){
+            throw new BankServiceException("库存不足！满足需求的样本量有"+countOfStockInTube+"支,请修改需求！");
+        }
         //查询已经出库的样本
-        List<Object[]> outTubeList = frozenTubeRepository.findAllStockOutFrozenTube();
         List<Object[]> checkedFrozenTubeList = new ArrayList<Object[]>();
         for(int i=0;;i+=1000){
             //查询全部的样本--先取1000条
+            int length = 1000;
+            if(countOfSample<1000){
+                length=countOfSample;
+            }
             List<Object[]> frozenTubeList = frozenTubeRepository.findByRequirements(sampleTypeId,samplyClassificationId,
-                frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis,ageMin,ageMax,i);
-            //排除不符合条件的---不在项目里,不是已经出库的
-            frozenTubeList.removeIf(t->{
-                return outTubeList.contains(t[0])||!projectIds.contains(Long.valueOf(t[1].toString()));
-            });
-
+                    frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis,ageMin,ageMax,projectIds,i,length);
            if(frozenTubeList.size()<countOfSample){
                checkedFrozenTubeList.addAll(frozenTubeList);
                countOfSample=countOfSample-frozenTubeList.size();

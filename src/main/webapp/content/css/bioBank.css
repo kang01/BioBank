@@ -1517,11 +1517,11 @@ ul.rating {
 /*}*/
 .equipment-management{
     position:relative;
-    padding-left: 955px;
+    padding-left: 1043px;
 }
 .area-panel{
     position:absolute;
-    width:945px;
+    width:1033px;
     left: 0
 }
 .area-demo{
@@ -1550,13 +1550,30 @@ ul.rating {
     margin-top: 10px;
 }
 .equipment-selected{
-    border:1px solid red;
+    border:1px solid red !important;
 }
 .equipment-box{
-    width: 300px;
-    height: 300px;
+    width: 240px;
+    height: 104px;
     float: left;
-    border:1px solid red;
+    border: 1px solid #ccc;
+    margin-left: 4px;
+    margin-top: 4px;
+}
+.equipment-box .equipment-left,
+.equipment-box .equipment-right{
+    float: left;
+}
+.equipment-box .equipment-left{
+    width: 30%;
+}
+.equipment-box .equipment-left img{
+    width: 71px;
+    height:102px;
+}
+.equipment-box .equipment-right{
+    width: 70%;
+    padding-top: 10px;
 }
 
 

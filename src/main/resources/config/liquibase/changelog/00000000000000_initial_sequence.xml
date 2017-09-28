@@ -68,4 +68,7 @@
     <changeSet id="11111111111111-2" author="jhipster" dbms="h2,postgresql,oracle">
         <createSequence sequenceName="seq_province" startValue="1" incrementBy="1"></createSequence>
     </changeSet>
+    <changeSet id="11111111111111-3" author="jhipster" dbms="h2,postgresql,oracle">
+        <createSequence sequenceName="seq_stock_out_handover_box" startValue="1" incrementBy="1"></createSequence>
+    </changeSet>
 </databaseChangeLog>

@@ -44,7 +44,9 @@
 
             function authThen () {
                 var isAuthenticated = Principal.isAuthenticated();
-
+                if(!isAuthenticated && $rootScope.toState.name != 'register'){
+                    LoginService.open();
+                }
                 // an authenticated user can't access to login and register pages
                 if (isAuthenticated && $rootScope.toState.parent === 'account' && ($rootScope.toState.name === 'login' || $rootScope.toState.name === 'register')) {
                     $state.go('home');

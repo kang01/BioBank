@@ -38,6 +38,7 @@
 
         vm.sampleTypeOptions = items.sampleTypeOptions;
         vm.frozenBoxTypeOptions = items.frozenBoxTypeOptions;
+        vm.frozenBoxPlaceOptions = items.frozenBoxPlaceOptions;
         vm.frozenBox = {};
         vm.frozenBox.frozenBoxTypeId = vm.frozenBoxTypeOptions[0].id;
         vm.frozenBox.frozenBoxTypeRows = vm.frozenBoxTypeOptions[0].frozenBoxTypeRows;
@@ -50,7 +51,7 @@
             _fnQueryProjectSampleClass(vm.items.projectId,vm.frozenBox.sampleTypeId,vm.isMixed);
         }
         //设备
-        EquipmentAllService.query({},onEquipmentTempSuccess, onError);
+        // EquipmentAllService.query({},onEquipmentTempSuccess, onError);
         //样本类型
         vm.sampleTypeConfig = {
             valueField:'id',
@@ -450,11 +451,11 @@
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
         };
 
-        function onEquipmentTempSuccess(data) {
-            vm.frozenBoxPlaceOptions = data;
+        // function onEquipmentTempSuccess(data) {
+            // vm.frozenBoxPlaceOptions = _.orderBy(data,['equipmentCode'],['asc']);
             // vm.frozenBox.equipmentId = vm.frozenBoxPlaceOptions[0].id;
             // AreasByEquipmentIdService.query({id:vm.frozenBox.equipmentId},onAreaTempSuccess, onError);
-        }
+        // }
         function onAreaTempSuccess(data) {
             vm.frozenBoxHoldAreaOptions = data;
             vm.frozenBox.areaId = vm.frozenBoxHoldAreaOptions[0].id;

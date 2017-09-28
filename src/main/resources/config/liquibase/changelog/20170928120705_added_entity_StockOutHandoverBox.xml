@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="sysdate" dbms="oracle"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity StockOutHandoverBox.
+    -->
+    <changeSet id="20170928120705-1" author="jhipster">
+        <createTable tableName="stock_out_handover_box" remarks="交接冻存盒">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="equipment_code" type="nvarchar(100)" remarks="设备编码">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="area_code" type="nvarchar(100)" remarks="区域编码">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="support_rack_code" type="nvarchar(100)" remarks="冻存架编码">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="rows_in_shelf" type="nvarchar(20)" remarks="所在架子行号">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="columns_in_shelf" type="nvarchar(20)" remarks="所在架子列号">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="status" type="nvarchar(20)" remarks="状态">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="memo" type="nvarchar(1024)" remarks="备注">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="equipment_id" type="bigint" remarks="设备ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="area_id" type="bigint" remarks="区域ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="support_rack_id" type="bigint" remarks="冻存架ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="stock_out_frozen_box_id" type="bigint" remarks="出库盒ID">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="created_by" type="nvarchar(50)" remarks="创建人">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}" remarks="创建时间">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="nvarchar(50)" remarks="修改人"/>
+            <column name="last_modified_date" type="timestamp" remarks="修改时间"/>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+        </createTable>
+
+    </changeSet>
+    <changeSet id="20170928120705-3" author="jhipster">
+        <addColumn tableName="stock_out_handover_box">
+            <column name="frozen_box_type_code" type="nvarchar(100)" remarks="冻存盒类型编码"></column>
+            <column name="frozen_box_rows" type="nvarchar(20)" remarks="冻存盒行数"></column>
+            <column name="frozen_box_columns" type="nvarchar(20)" remarks="冻存盒列数"></column>
+            <column name="project_code" type="nvarchar(100)" remarks="项目编码"></column>
+            <column name="project_name" type="nvarchar(255)" remarks="项目名称"></column>
+            <column name="project_site_code" type="nvarchar(100)" remarks="项目点编码"></column>
+            <column name="project_site_name" type="nvarchar(255)" remarks="项目点名称"></column>
+            <column name="sample_type_code" type="nvarchar(100)" remarks="样本类型编码"></column>
+            <column name="sample_type_name" type="nvarchar(255)" remarks="样本类型名称 "></column>
+            <column name="sample_classification_code" type="nvarchar(100)" remarks="样本分类编码"></column>
+            <column name="sample_classification_name" type="nvarchar(255)" remarks="样本分类名称"></column>
+            <column name="is_split" type="integer" remarks="是否分装：1：是，0：否"></column>
+            <column name="empty_tube_number" type="integer" remarks="空管数"></column>
+            <column name="empty_hole_number" type="integer" remarks="空孔数"></column>
+            <column name="dislocation_number" type="integer" remarks="错位数"></column>
+            <column name="is_real_data" type="integer" remarks="是否已导入样本数据：1：是，0：否"></column>
+            <column name="frozen_box_type_id" type="bigint" remarks="冻存盒类型ID"></column>
+            <column name="sample_type_id" type="bigint" remarks="样本类型ID"></column>
+            <column name="sample_classification_id" type="bigint" remarks="样本分类ID"></column>
+            <column name="project_id" type="bigint" remarks="项目ID"></column>
+            <column name="project_site_id" type="bigint" remarks="项目点ID"></column>
+
+            <column name="frozen_box_code_1d" type="nvarchar(100)" remarks="一维冻存盒编码"></column>
+
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

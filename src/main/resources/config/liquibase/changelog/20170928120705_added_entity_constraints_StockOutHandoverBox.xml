@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity StockOutHandoverBox.
+    -->
+    <changeSet id="20170928120705-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="equipment_id"
+                                 baseTableName="stock_out_handover_box"
+                                 constraintName="handover_box_eq_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="equipment"/>
+
+        <addForeignKeyConstraint baseColumnNames="area_id"
+                                 baseTableName="stock_out_handover_box"
+                                 constraintName="handover_box_area_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="area"/>
+
+        <addForeignKeyConstraint baseColumnNames="support_rack_id"
+                                 baseTableName="stock_out_handover_box"
+                                 constraintName="handover_box_support_rack_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="support_rack"/>
+
+        <addForeignKeyConstraint baseColumnNames="stock_out_frozen_box_id"
+                                 baseTableName="stock_out_handover_box"
+                                 constraintName="handover_box_out_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock_out_box"/>
+
+    </changeSet>
+    <changeSet id="20170928120705-4" author="jhipster">
+        <addForeignKeyConstraint baseColumnNames="frozen_box_type_id"
+                                 baseTableName="stock_out_handover_box"
+                                 constraintName="handover_box_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="frozen_box_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="sample_type_id"
+                                 baseTableName="stock_out_handover_box"
+                                 constraintName="handover_box_sample_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_id"
+                                 baseTableName="stock_out_handover_box"
+                                 constraintName="handover_box_project_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_site_id"
+                                 baseTableName="stock_out_handover_box"
+                                 constraintName="handover_box_project_site_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project_site"/>
+
+        <addForeignKeyConstraint baseColumnNames="sample_classification_id"
+                                 baseTableName="stock_out_handover_box"
+                                 constraintName="handover_box_sample_class_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sample_classification"/>
+    </changeSet>
+</databaseChangeLog>

@@ -619,4 +619,19 @@ public class StockOutHandoverBox extends AbstractAuditingEntity implements Seria
     public void setFrozenBoxCode1D(String frozenBoxCode1D) {
         this.frozenBoxCode1D = frozenBoxCode1D;
     }
+    @ManyToOne
+    private StockOutHandover stockOutHandover;
+
+    public StockOutHandover getStockOutHandover() {
+        return stockOutHandover;
+    }
+
+    public StockOutHandoverBox stockOutHandover(StockOutHandover stockOutHandover) {
+        this.stockOutHandover = stockOutHandover;
+        return this;
+    }
+
+    public void setStockOutHandover(StockOutHandover stockOutHandover) {
+        this.stockOutHandover = stockOutHandover;
+    }
 }

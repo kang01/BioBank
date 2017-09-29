@@ -106,4 +106,9 @@
 
         </addColumn>
     </changeSet>
+    <changeSet id="20170929120705-2" author="jhipster">
+        <addColumn tableName="stock_out_handover_box">
+            <column name="stock_out_handover_id" type="bigint" remarks="交接ID"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

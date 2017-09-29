@@ -64,4 +64,12 @@
                                  referencedColumnNames="id"
                                  referencedTableName="sample_classification"/>
     </changeSet>
+
+    <changeSet id="20170929120705-6" author="jhipster">
+        <addForeignKeyConstraint baseColumnNames="stock_out_handover_id"
+                                 baseTableName="stock_out_handover_box"
+                                 constraintName="stock_out_handover_box_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock_out_handover"/>
+    </changeSet>
 </databaseChangeLog>

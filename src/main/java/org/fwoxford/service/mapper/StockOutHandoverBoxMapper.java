@@ -21,6 +21,7 @@ public interface StockOutHandoverBoxMapper {
     @Mapping(source = "sampleClassification.id", target = "sampleClassificationId")
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "projectSite.id", target = "projectSiteId")
+    @Mapping(source = "stockOutHandover.id", target = "stockOutHandoverId")
     StockOutHandoverBoxDTO stockOutHandoverBoxToStockOutHandoverBoxDTO(StockOutHandoverBox stockOutHandoverBox);
 
     List<StockOutHandoverBoxDTO> stockOutHandoverBoxesToStockOutHandoverBoxDTOs(List<StockOutHandoverBox> stockOutHandoverBoxes);
@@ -34,6 +35,7 @@ public interface StockOutHandoverBoxMapper {
     @Mapping(source = "sampleClassificationId", target = "sampleClassification")
     @Mapping(source = "projectId", target = "project")
     @Mapping(source = "projectSiteId", target = "projectSite")
+    @Mapping(source = "stockOutHandoverId", target = "stockOutHandover")
     StockOutHandoverBox stockOutHandoverBoxDTOToStockOutHandoverBox(StockOutHandoverBoxDTO stockOutHandoverBoxDTO);
 
     List<StockOutHandoverBox> stockOutHandoverBoxDTOsToStockOutHandoverBoxes(List<StockOutHandoverBoxDTO> stockOutHandoverBoxDTOs);
@@ -116,5 +118,13 @@ public interface StockOutHandoverBoxMapper {
         SampleClassification sampleClassification = new SampleClassification();
         sampleClassification.setId(id);
         return sampleClassification;
+    }
+    default StockOutHandover stockOutHandoverFromId(Long id){
+        if (id == null) {
+            return null;
+        }
+        StockOutHandover stockOutHandover = new StockOutHandover();
+        stockOutHandover.setId(id);
+        return stockOutHandover;
     }
 }

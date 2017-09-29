@@ -449,4 +449,14 @@ public class StockOutHandoverBoxDTO extends AbstractAuditingDTO implements Seria
     public void setFrozenBoxCode1D(Long frozenBoxCode1D) {
         this.frozenBoxCode1D = frozenBoxCode1D;
     }
+
+    private Long stockOutHandoverId;
+
+    public Long getStockOutHandoverId() {
+        return stockOutHandoverId;
+    }
+
+    public void setStockOutHandoverId(Long stockOutHandoverId) {
+        this.stockOutHandoverId = stockOutHandoverId;
+    }
 }

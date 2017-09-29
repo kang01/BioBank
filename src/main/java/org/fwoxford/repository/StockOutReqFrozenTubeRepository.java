@@ -44,4 +44,6 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     List<Object[]> countByTaskGroupByBox(Long taskId);
 
     List<StockOutReqFrozenTube> findByStockOutTaskIdAndFrozenBoxId(Long stockOutTaskId, Long frozenBoxId);
+
+    List<StockOutReqFrozenTube> findByStockOutTaskIdAndFrozenTubeIdInAndStatusNot(Long taskId, List<Long> frozenTubeIds, String stauts);
 }

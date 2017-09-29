@@ -27,4 +27,7 @@ public interface StockOutRequirementRepository extends JpaRepository<StockOutReq
     List<StockOutRequirement> findByStockOutApplyIdAndStatus(Long id, String status);
 
     StockOutRequirement findByRequirementCode(String requirementCode);
+
+    @Query("select t.id from StockOutRequirement t where t.stockOutApply.id = ?1")
+    List<Long> findRequirementByStockOutApplyId(Long id);
 }

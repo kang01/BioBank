@@ -7,13 +7,13 @@
         Added the view for entity StockOutFrozenBoxForWaitingDataTableEntity.
     -->
 
-    <changeSet id="20170928000000-2" author="jhipster">
+    <changeSet id="20170929000001-2" author="jhipster">
         <createView viewName="view_plan_box_for_stock_out">
             select a.frozen_box_code,a.id,a.sample_type_name,a.status,a.memo,a.project_code,a.project_name,count_of_sample,
             a.equipment_code,a.area_code,a.support_rack_code,a.columns_in_shelf,a.rows_in_shelf,
             (a.equipment_code||'.'||a.area_code||'.'||a.support_rack_code ||'.'||a.columns_in_shelf || lpad(a.rows_in_shelf,2,0)) as position,
             sc.sample_classification_name,temp.stock_out_requirement_id from(
-            select stock_out_requirement_id,frozen_box_id,count(1) as count_of_sample from stock_out_req_frozen_tube rt    group by stock_out_requirement_id,frozen_box_id) temp
+            select stock_out_requirement_id,frozen_box_id,count(1) as count_of_sample from stock_out_req_frozen_tube rt where rt.stock_out_task_id is null   group by stock_out_requirement_id,frozen_box_id) temp
             left join frozen_box a on temp.frozen_box_id = a.id
             left join sample_classification sc on a.sample_classification_id = sc.id
         </createView>

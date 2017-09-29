@@ -278,14 +278,12 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     @ManyToOne(optional = false)
     private StockOutTask stockOutTask;
 
-    @NotNull
     @Size(max = 100)
-    @Column(name = "frozen_box_code", length = 100, nullable = false)
+    @Column(name = "frozen_box_code", length = 100)
     private String frozenBoxCode;
 
-    @NotNull
     @Size(max = 100)
-    @Column(name = "frozen_box_code_1d", length = 100, nullable = false)
+    @Column(name = "frozen_box_code_1d", length = 100)
     private String frozenBoxCode1D;
 
     /**

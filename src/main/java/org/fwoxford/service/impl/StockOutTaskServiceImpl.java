@@ -392,21 +392,21 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     public DataTablesOutput<StockOutTaskForPlanDataTableEntity> getPageStockOutTaskByPlan(Long id, DataTablesInput input) {
         input.addColumn("stockOutPlanId",true,true,id+"+");
         DataTablesOutput<StockOutTaskForPlanDataTableEntity> output =stockOutTaskByPlanRepositories.findAll(input);
-        List<StockOutTaskForPlanDataTableEntity> alist = new ArrayList<StockOutTaskForPlanDataTableEntity>();
-        output.getData().forEach(o->{
-            StockOutTaskForPlanDataTableEntity rowData = new StockOutTaskForPlanDataTableEntity();
-            rowData.setId(o.getId());
-            rowData.setStatus(o.getStatus());
-            rowData.setStockOutTaskCode(o.getStockOutTaskCode());
-            rowData.setMemo(o.getMemo());
-            rowData.setCreateDate(o.getCreateDate());
-            rowData.setStockOutDate(o.getStockOutDate());
-            Long countOfBox = stockOutTaskFrozenTubeRepository.countFrozenBoxByStockOutTaskId(o.getId());
-            rowData.setCountOfSample(o.getCountOfSample());
-            rowData.setCountOfFrozenBox(countOfBox);
-            alist.add(rowData);
-        });
-        output.setData(alist);
+//        List<StockOutTaskForPlanDataTableEntity> alist = new ArrayList<StockOutTaskForPlanDataTableEntity>();
+//        output.getData().forEach(o->{
+//            StockOutTaskForPlanDataTableEntity rowData = new StockOutTaskForPlanDataTableEntity();
+//            rowData.setId(o.getId());
+//            rowData.setStatus(o.getStatus());
+//            rowData.setStockOutTaskCode(o.getStockOutTaskCode());
+//            rowData.setMemo(o.getMemo());
+//            rowData.setCreateDate(o.getCreateDate());
+//            rowData.setStockOutDate(o.getStockOutDate());
+//            Long countOfBox = stockOutTaskFrozenTubeRepository.countFrozenBoxByStockOutTaskId(o.getId());
+//            rowData.setCountOfSample(o.getCountOfSample());
+//            rowData.setCountOfFrozenBox(countOfBox);
+//            alist.add(rowData);
+//        });
+//        output.setData(alist);
         return output;
     }
 

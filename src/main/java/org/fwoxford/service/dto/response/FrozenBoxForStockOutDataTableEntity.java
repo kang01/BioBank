@@ -13,7 +13,7 @@ import java.io.Serializable;
  * Created by gengluying on 2017/5/23.
  */
 @Entity
-@Table(name = "view_frozen_box_for_stock_out")
+@Table(name = "view_plan_box_for_stock_out")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class FrozenBoxForStockOutDataTableEntity  extends StockOutFrozenBoxBaseDataTableEntity implements Serializable {
     @Id
@@ -69,8 +69,6 @@ public class FrozenBoxForStockOutDataTableEntity  extends StockOutFrozenBoxBaseD
     @Column(name ="stock_out_requirement_id")
     private Long stockOutRequirementId;
 
-    @Column(name ="stock_out_plan_frozen_tube_id")
-    private Long stockOutPlanFrozenTubeId;
     @Column(name ="equipment_code")
     private String equipmentCode;
 
@@ -89,7 +87,7 @@ public class FrozenBoxForStockOutDataTableEntity  extends StockOutFrozenBoxBaseD
     public FrozenBoxForStockOutDataTableEntity() {
     }
 
-    public FrozenBoxForStockOutDataTableEntity(Long id, String frozenBoxCode, String position, Long countOfSample, String sampleTypeName, String status, String memo, String sampleClassificationName, String projectName, String projectCode, Long stockOutRequirementId, Long stockOutPlanFrozenTubeId, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf) {
+    public FrozenBoxForStockOutDataTableEntity(Long id, String frozenBoxCode, String position, Long countOfSample, String sampleTypeName, String status, String memo, String sampleClassificationName, String projectName, String projectCode, Long stockOutRequirementId, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf) {
         this.id = id;
         this.frozenBoxCode = frozenBoxCode;
         this.position = position;
@@ -101,7 +99,6 @@ public class FrozenBoxForStockOutDataTableEntity  extends StockOutFrozenBoxBaseD
         this.projectName = projectName;
         this.projectCode = projectCode;
         this.stockOutRequirementId = stockOutRequirementId;
-        this.stockOutPlanFrozenTubeId = stockOutPlanFrozenTubeId;
         this.equipmentCode = equipmentCode;
         this.areaCode = areaCode;
         this.supportRackCode = supportRackCode;
@@ -196,15 +193,6 @@ public class FrozenBoxForStockOutDataTableEntity  extends StockOutFrozenBoxBaseD
     public void setStockOutRequirementId(Long stockOutRequirementId) {
         this.stockOutRequirementId = stockOutRequirementId;
     }
-
-    public Long getStockOutPlanFrozenTubeId() {
-        return stockOutPlanFrozenTubeId;
-    }
-
-    public void setStockOutPlanFrozenTubeId(Long stockOutPlanFrozenTubeId) {
-        this.stockOutPlanFrozenTubeId = stockOutPlanFrozenTubeId;
-    }
-
     public String getEquipmentCode() {
         return equipmentCode;
     }

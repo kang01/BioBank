@@ -695,8 +695,8 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     }
 
     /**
-     * 分页查询根据需求查询x需要出库的冻存盒
-     * @param ids
+     * 分页查询根据需求查询需要出库的冻存盒
+     * @param ids 需求ID串
      * @param input
      * @return
      */
@@ -722,15 +722,13 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         output.getData().forEach(s->{
             if(!boxCodes.contains(s.getFrozenBoxCode())){
                 boxCodes.add(s.getFrozenBoxCode());
-                Long countOfSample = stockOutPlanFrozenTubeRepository.countByFrozenBoxIdAndRequirement(ids,s.getId());
                 FrozenBoxForStockOutDataTableEntity dto = new FrozenBoxForStockOutDataTableEntity();
                 dto.setId(s.getId());
                 dto.setFrozenBoxCode(s.getFrozenBoxCode());
                 dto.setSampleTypeName(s.getSampleTypeName());
-                FrozenBox frozenBox = frozenBoxRepository.findOne(s.getId());
-                String position =  BankUtil.getPositionString(frozenBox);
+                String position =  BankUtil.getPositionString(s.getEquipmentCode(),s.getAreaCode(),s.getSupportRackCode(),s.getColumnsInShelf(),s.getRowsInShelf(),null,null);
                 dto.setPosition(position);
-                dto.setCountOfSample(countOfSample);
+                dto.setCountOfSample(s.getCountOfSample());
                 alist.add(dto);
             }else{
                 long filterRecord = output.getRecordsFiltered()-1;

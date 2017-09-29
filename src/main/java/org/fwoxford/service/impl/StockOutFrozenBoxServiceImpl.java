@@ -755,15 +755,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             dto.setId(s.getId());
             dto.setFrozenBoxCode(s.getFrozenBoxCode());
             dto.setSampleTypeName(s.getSampleTypeName());
-            FrozenBox frozenBox = frozenBoxRepository.findOne(s.getId());
-            String position =  BankUtil.getPositionString(frozenBox);
+            String position =  BankUtil.getPositionString(s.getEquipmentCode(),s.getAreaCode(),s.getSupportRackCode(),s.getColumnsInShelf(),s.getRowsInShelf(),null,null);
             dto.setPosition(position);
-            Long countOfSample = stockOutTaskFrozenTubeRepository.countSampleByFrozenBoxAndTask(s.getId(),id);
-            dto.setCountOfSample(countOfSample);
+            dto.setCountOfSample(s.getCountOfSample());
             alist.add(dto);
         });
         output.setData(alist);
-
         return output;
     }
 }

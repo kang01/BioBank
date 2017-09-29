@@ -115,6 +115,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     @Autowired
     StockOutFrozenBoxInTaskRepositries stockOutFrozenBoxInTaskRepositries;
 
+    @Autowired
+    StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
+
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper) {
         this.stockOutFrozenBoxRepository = stockOutFrozenBoxRepository;
@@ -226,7 +229,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     public List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId) {
         List<StockOutFrozenBoxForTaskDataTableEntity> alist = new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
         List<FrozenBox> boxes =  frozenBoxRepository.findByStockOutTaskId(taskId);
-        List<Object[]> countOfSampleGroupByBox = stockOutTaskFrozenTubeRepository.countByTaskGroupByBox(taskId);
+        List<Object[]> countOfSampleGroupByBox = stockOutReqFrozenTubeRepository.countByTaskGroupByBox(taskId);
         for(FrozenBox frozenBox :boxes){
             StockOutFrozenBoxForTaskDataTableEntity box = new StockOutFrozenBoxForTaskDataTableEntity();
             if(frozenBox ==null){continue;}

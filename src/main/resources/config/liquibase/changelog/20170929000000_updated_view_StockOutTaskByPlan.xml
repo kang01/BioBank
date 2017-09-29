@@ -9,7 +9,7 @@
     <changeSet id="20170929125900-2" author="jhipster">
         <createView viewName="view_stock_out_task_for_plan">
             SELECT t.id,t.stock_out_task_code,
-            (SELECT count(tb.id) FROM stock_out_req_frozen_tube tb  where tb.stock_out_task_id = t.id and tb.status !='1802' group by tb.frozen_box_id) as count_of_frozen_box ,
+            (SELECT count(DISTINCT tb.frozen_box_id) FROM stock_out_req_frozen_tube tb  where tb.stock_out_task_id = t.id and tb.status !='1802' group by tb.frozen_box_id) as count_of_frozen_box ,
             (SELECT count(tb.id) FROM stock_out_req_frozen_tube tb where tb.stock_out_task_id = t.id and tb.status !='1802') as count_of_sample ,
             t.created_date , t.stock_out_date,t.status,t.memo,t.stock_out_plan_id,t.stock_out_head_id_1,t.stock_out_head_id_2,
             (u1.last_name||u1.first_name||'.'|| u2.last_name||u2.first_name)  operators

@@ -32,13 +32,13 @@ public class StockOutHandoverDetails extends AbstractAuditingEntity implements S
     @Column(name = "memo", length = 1024)
     private String memo;
 
-    @ManyToOne(optional = false)
-    @NotNull
-    private StockOutHandover stockOutHandover;
+//    @ManyToOne(optional = false)
+//    @NotNull
+//    private StockOutHandover stockOutHandover;
 
-    @ManyToOne(optional = false)
-    @NotNull
-    private StockOutBoxTube stockOutBoxTube;
+//    @ManyToOne(optional = false)
+//    @NotNull
+//    private StockOutBoxTube stockOutBoxTube;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -56,6 +56,10 @@ public class StockOutHandoverDetails extends AbstractAuditingEntity implements S
     public void setStockOutHandoverBox(StockOutHandoverBox stockOutHandoverBox) {
         this.stockOutHandoverBox = stockOutHandoverBox;
     }
+    public StockOutHandoverDetails stockOutHandoverBox(StockOutHandoverBox stockOutHandoverBox) {
+        this.stockOutHandoverBox = stockOutHandoverBox;
+        return this;
+    }
 
     public StockOutReqFrozenTube getStockOutReqFrozenTube() {
         return stockOutReqFrozenTube;
@@ -63,6 +67,10 @@ public class StockOutHandoverDetails extends AbstractAuditingEntity implements S
 
     public void setStockOutReqFrozenTube(StockOutReqFrozenTube stockOutReqFrozenTube) {
         this.stockOutReqFrozenTube = stockOutReqFrozenTube;
+    }
+    public StockOutHandoverDetails stockOutReqFrozenTube(StockOutReqFrozenTube stockOutReqFrozenTube) {
+        this.stockOutReqFrozenTube = stockOutReqFrozenTube;
+        return this;
     }
 
     public Long getId() {
@@ -99,31 +107,31 @@ public class StockOutHandoverDetails extends AbstractAuditingEntity implements S
         this.memo = memo;
     }
 
-    public StockOutHandover getStockOutHandover() {
-        return stockOutHandover;
-    }
-
-    public StockOutHandoverDetails stockOutHandover(StockOutHandover stockOutHandover) {
-        this.stockOutHandover = stockOutHandover;
-        return this;
-    }
-
-    public void setStockOutHandover(StockOutHandover stockOutHandover) {
-        this.stockOutHandover = stockOutHandover;
-    }
-
-    public StockOutBoxTube getStockOutBoxTube() {
-        return stockOutBoxTube;
-    }
-
-    public StockOutHandoverDetails stockOutBoxTube(StockOutBoxTube stockOutBoxTube) {
-        this.stockOutBoxTube = stockOutBoxTube;
-        return this;
-    }
-
-    public void setStockOutBoxTube(StockOutBoxTube stockOutBoxTube) {
-        this.stockOutBoxTube = stockOutBoxTube;
-    }
+//    public StockOutHandover getStockOutHandover() {
+//        return stockOutHandover;
+//    }
+//
+//    public StockOutHandoverDetails stockOutHandover(StockOutHandover stockOutHandover) {
+//        this.stockOutHandover = stockOutHandover;
+//        return this;
+//    }
+//
+//    public void setStockOutHandover(StockOutHandover stockOutHandover) {
+//        this.stockOutHandover = stockOutHandover;
+//    }
+//
+//    public StockOutBoxTube getStockOutBoxTube() {
+//        return stockOutBoxTube;
+//    }
+//
+//    public StockOutHandoverDetails stockOutBoxTube(StockOutBoxTube stockOutBoxTube) {
+//        this.stockOutBoxTube = stockOutBoxTube;
+//        return this;
+//    }
+//
+//    public void setStockOutBoxTube(StockOutBoxTube stockOutBoxTube) {
+//        this.stockOutBoxTube = stockOutBoxTube;
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -151,8 +159,6 @@ public class StockOutHandoverDetails extends AbstractAuditingEntity implements S
             "id=" + id +
             ", status='" + status + '\'' +
             ", memo='" + memo + '\'' +
-            ", stockOutHandover=" + stockOutHandover +
-            ", stockOutBoxTube=" + stockOutBoxTube +
             ", stockOutReqFrozenTube=" + stockOutReqFrozenTube +
             ", stockOutHandoverBox=" + stockOutHandoverBox +
             '}';

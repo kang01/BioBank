@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import com.google.common.collect.Lists;
 import liquibase.util.StringUtils;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
@@ -25,9 +26,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.Null;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockOutHandover.
@@ -47,6 +51,9 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
 
     @Autowired
     private StockOutBoxTubeRepository stockOutBoxTubeRepository;
+
+    @Autowired
+    private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
 
     @Autowired
     private StockOutHandoverDetailsRepository stockOutHandoverDetailsRepository;
@@ -76,6 +83,10 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     private FrozenTubeRepository frozenTubeRepository;
     @Autowired
     private BankUtil bankUtil;
+
+    @Autowired
+    private StockOutHandoverBoxRepository stockOutHandoverBoxRepository;
+
     public StockOutHandoverServiceImpl(StockOutHandoverRepository stockOutHandoverRepository, StockOutHandoverMapper stockOutHandoverMapper) {
         this.stockOutHandoverRepository = stockOutHandoverRepository;
         this.stockOutHandoverMapper = stockOutHandoverMapper;
@@ -251,11 +262,11 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
     }
 
     private StockOutHandoverSampleReportDTO createStockOutHandOverSampleReportDTO(StockOutHandoverDetails s) {
-        if(s==null || s.getStockOutBoxTube() == null || s.getStockOutBoxTube().getFrozenTube()==null){
+        if(s==null || s.getStockOutReqFrozenTube() == null || s.getStockOutReqFrozenTube().getFrozenTube()==null){
             return null;
         }
         StockOutHandoverSampleReportDTO sample = new StockOutHandoverSampleReportDTO();
-        FrozenTube frozenTube = s.getStockOutBoxTube().getFrozenTube();
+        FrozenTube frozenTube = s.getStockOutReqFrozenTube().getFrozenTube();
 
         sample.setId(s.getId());
         sample.setProjectCode(frozenTube.getProjectCode());
@@ -275,10 +286,6 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         if(handOverId == null){
             throw new BankServiceException("交接ID不能为空！");
         }
-        StockOutHandover stockOutHandover = stockOutHandoverRepository.findOne(handOverId);
-        if(stockOutHandover == null){
-            throw new BankServiceException("未查询到交接单！");
-        }
         //验证交付人用户密码
         Long handoverPersonId = stockOutHandoverDTO.getHandoverPersonId();
         String password = stockOutHandoverDTO.getPassword();
@@ -289,34 +296,141 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         if(!passwordEncoder.matches(password,user.getPassword())){
             throw new BankServiceException("用户名与密码不一致！");
         }
+
+        StockOutHandover stockOutHandover = stockOutHandoverRepository.findOne(handOverId);
+        if(stockOutHandover == null){
+            throw new BankServiceException("未查询到交接单！");
+        }
+
+        if (Constants.STOCK_OUT_HANDOVER_PENDING.equals(stockOutHandover.getStatus())){
+            throw new BankServiceException("该交接单未处于进行中，不能完成交接。");
+        }
+
         stockOutHandover.setHandoverPersonId(handoverPersonId);
         stockOutHandover.setHandoverTime(stockOutHandoverDTO.getHandoverTime());
         stockOutHandover.setStatus(Constants.STOCK_OUT_HANDOVER_COMPLETED);
         stockOutHandoverRepository.save(stockOutHandover);
-        for(Long id : ids){
-            //查询要出库的样本
-            List<StockOutBoxTube> stockOutBoxTubes = stockOutBoxTubeRepository.findByStockOutFrozenBoxId(id);
-            //出库冻存盒的状态置为已交接
-            StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findOne(id);
-            if(stockOutFrozenBox != null){
-                stockOutFrozenBox.setFrozenBoxCode(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode());
-                stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_HANDOVER);
-                stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+
+        // 将盒ID按照长度10进行分组
+        List<List<Long>> arrIds = Lists.partition(ids, 10);
+        for(List<Long> boxIds : arrIds){
+
+            // 找到指定出库盒中的管子
+            List<StockOutReqFrozenTube> tubes = stockOutReqFrozenTubeRepository.findByStockOutFrozenBoxId(
+                boxIds.stream().filter(i -> i != null).collect(Collectors.toList()),
+                null);
+
+            // 根据出库盒对管子进行分组
+            Map<Long, List<StockOutReqFrozenTube>> tubesGroupByBox = tubes.stream().collect(
+                Collectors.groupingBy(t -> t.getStockOutFrozenBox().getId()));
+
+            for(List<StockOutReqFrozenTube> boxTubes: tubesGroupByBox.values()){
+                StockOutHandoverBox stockOutHandoverBox = new StockOutHandoverBox();
+                StockOutFrozenBox stockOutFrozenBox = boxTubes.get(0).getStockOutFrozenBox();
                 FrozenBox frozenBox = stockOutFrozenBox.getFrozenBox();
+                stockOutFrozenBox.setFrozenBoxCode(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode());
+                // 修改出库盒状态
+                stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_HANDOVER);
+                // 修改冻存盒状态
                 frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
+
+                stockOutHandoverBox.stockOutHandover(stockOutHandover)
+                    .supportRackCode(stockOutFrozenBox.getSupportRackCode())
+                    .equipmentCode(stockOutFrozenBox.getEquipmentCode())
+                    .areaCode(stockOutFrozenBox.getAreaCode())
+                    .supportRackCode(stockOutFrozenBox.getSupportRackCode())
+                    .rowsInShelf(stockOutFrozenBox.getRowsInShelf())
+                    .columnsInShelf(stockOutFrozenBox.getColumnsInShelf())
+                    .status(Constants.FROZEN_BOX_STOCKED)
+//                    .countOfSample(sampleList.size())
+                    .frozenBoxCode(stockOutFrozenBox.getFrozenBoxCode())
+                    .frozenBoxCode1D(stockOutFrozenBox.getFrozenBoxCode1D())
+//                    .frozenBox(frozenBox)
+//                    .stockIn(stockIn)
+//                    .stockInCode(stockInCodeNew)
+                    .area(stockOutFrozenBox.getArea())
+                    .equipment(stockOutFrozenBox.getEquipment())
+                    .supportRack(stockOutFrozenBox.getSupportRack())
+                    .sampleTypeCode(stockOutFrozenBox.getSampleTypeCode())
+                    .sampleType(stockOutFrozenBox.getSampleType())
+                    .sampleTypeName(stockOutFrozenBox.getSampleTypeName())
+                    .sampleClassification(stockOutFrozenBox.getSampleClassification())
+                    .sampleClassificationCode(stockOutFrozenBox.getSampleClassification() != null ? stockOutFrozenBox.getSampleClassification().getSampleClassificationCode() : null)
+                    .sampleClassificationName(stockOutFrozenBox.getSampleClassification() != null ? stockOutFrozenBox.getSampleClassification().getSampleClassificationName() : null)
+                    .dislocationNumber(stockOutFrozenBox.getDislocationNumber())
+                    .emptyHoleNumber(stockOutFrozenBox.getEmptyHoleNumber())
+                    .emptyTubeNumber(stockOutFrozenBox.getEmptyTubeNumber())
+                    .frozenBoxType(stockOutFrozenBox.getFrozenBoxType())
+                    .frozenBoxTypeCode(stockOutFrozenBox.getFrozenBoxTypeCode())
+                    .frozenBoxTypeColumns(stockOutFrozenBox.getFrozenBoxTypeColumns())
+                    .frozenBoxTypeRows(stockOutFrozenBox.getFrozenBoxTypeRows())
+                    .isRealData(stockOutFrozenBox.getIsRealData())
+                    .isSplit(stockOutFrozenBox.getIsSplit())
+                    .project(stockOutFrozenBox.getProject())
+                    .projectCode(stockOutFrozenBox.getProjectCode())
+                    .projectName(stockOutFrozenBox.getProjectName())
+                    .projectSite(stockOutFrozenBox.getProjectSite())
+                    .projectSiteCode(stockOutFrozenBox.getProjectSiteCode())
+                    .projectSiteName(stockOutFrozenBox.getProjectSiteName())
+
+                    .stockOutFrozenBox(stockOutFrozenBox)
+                    .memo(stockOutFrozenBox.getMemo())
+                    .status(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
+
+                // 保存交接盒
+                stockOutHandoverBox = stockOutHandoverBoxRepository.save(stockOutHandoverBox);
+                // 保存出库盒
+                stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+                // 保存库存盒
                 frozenBoxRepository.save(frozenBox);
+
+                List<StockOutHandoverDetails> handoverTubes = new ArrayList<>();
+                List<FrozenTube> frozenTubes = new ArrayList<>();
+                StockOutHandoverBox finalStockOutHandoverBox = stockOutHandoverBox;
+                boxTubes.forEach(t->{
+                    // 生成交接管子
+                    handoverTubes.add(new StockOutHandoverDetails()
+                        .status(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)
+                        .memo(t.getMemo())
+                        .stockOutReqFrozenTube(t)
+                        .stockOutHandoverBox(finalStockOutHandoverBox));
+                    // 修改冻存管状态
+                    frozenTubes.add(t.getFrozenTube().frozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER));
+                });
+                // 保存交接管
+                stockOutHandoverDetailsRepository.save(handoverTubes);
+                stockOutHandoverDetailsRepository.flush();
+                // 保存库存管
+                frozenTubeRepository.save(frozenTubes);
+                frozenTubeRepository.flush();
+
+
             }
-            for(StockOutBoxTube b :stockOutBoxTubes){
-                //保存交接详情
-                StockOutHandoverDetails stockOutHandoverDetails = new StockOutHandoverDetails();
-                stockOutHandoverDetails.status(Constants.STOCK_OUT_HANDOVER_COMPLETED)
-                    .stockOutBoxTube(b)
-                    .stockOutHandover(stockOutHandover);
-                stockOutHandoverDetailsRepository.save(stockOutHandoverDetails);
-                FrozenTube frozenTube = stockOutHandoverDetails.getStockOutBoxTube().getFrozenTube();
-                frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
-                frozenTubeRepository.save(frozenTube);
-            }
+
+//
+//            //查询要出库的样本
+//            List<StockOutBoxTube> stockOutBoxTubes = stockOutBoxTubeRepository.findByStockOutFrozenBoxId(id);
+//            //出库冻存盒的状态置为已交接
+//            StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findOne(id);
+//            if(stockOutFrozenBox != null){
+//                stockOutFrozenBox.setFrozenBoxCode(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode());
+//                stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_HANDOVER);
+//                stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+//                FrozenBox frozenBox = stockOutFrozenBox.getFrozenBox();
+//                frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
+//                frozenBoxRepository.save(frozenBox);
+//            }
+//            for(StockOutBoxTube b :stockOutBoxTubes){
+//                //保存交接详情
+//                StockOutHandoverDetails stockOutHandoverDetails = new StockOutHandoverDetails();
+//                stockOutHandoverDetails.status(Constants.STOCK_OUT_HANDOVER_COMPLETED)
+//                    .stockOutBoxTube(b)
+//                    .stockOutHandover(stockOutHandover);
+//                stockOutHandoverDetailsRepository.save(stockOutHandoverDetails);
+//                FrozenTube frozenTube = stockOutHandoverDetails.getStockOutBoxTube().getFrozenTube();
+//                frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
+//                frozenTubeRepository.save(frozenTube);
+//            }
         }
         return stockOutHandoverDTO;
     }

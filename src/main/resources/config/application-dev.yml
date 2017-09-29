@@ -46,8 +46,8 @@ spring:
             hibernate.jdbc.batch_size: 1000
             hibernate.jdbc.fetch_size: 100
             hibernate.jdbc.batch_versioned_data: true
-            hibernate.order_inserts: true
-            hibernate.order_updates: true
+#            hibernate.order_inserts: true
+#            hibernate.order_updates: true
     mail:
         host: localhost
         port: 25

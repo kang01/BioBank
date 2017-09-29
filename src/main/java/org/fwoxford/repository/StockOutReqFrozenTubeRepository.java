@@ -36,4 +36,12 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     StockOutReqFrozenTube findByFrozenTubeIdAndStatus(Long id, String status);
 
     int countByStockOutRequirementId(Long id);
+
+    // 根据出库盒ID读取出库样本
+    @Query("SELECT s FROM StockOutReqFrozenTube s WHERE s.stockOutFrozenBox.id = ?1 AND (?2 IS NULL OR s.status=?2)")
+    List<StockOutReqFrozenTube> findByStockOutFrozenBoxId(Long boxId, String status);
+
+    // 根据多个出库盒ID读取出库样本
+    @Query("SELECT s FROM StockOutReqFrozenTube s WHERE s.stockOutFrozenBox.id IN ?1 AND (?2 IS NULL OR s.status=?2)")
+    List<StockOutReqFrozenTube> findByStockOutFrozenBoxId(List<Long> boxIds, String status);
 }

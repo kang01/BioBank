@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutApply.
+    -->
+    <changeSet id="201709292121-1" author="jhipster">
+        <dropView viewName="view_stock_out_handover_tube"/>
+        <createView viewName="view_stock_out_handover_tube">
+            SELECT t.id,t.frozen_box_code,ROWNUM as no,
+            (t.tube_rows||t.tube_columns) as location,
+            t.sample_code,t.sample_type_name,t.gender,t.age,t.disease_type,t.project_code,
+            hd.stock_out_handover_id
+            FROM  stock_out_handover_details hd
+            LEFT OUTER JOIN stock_out_req_frozen_tube bt
+            ON hd.stock_out_box_tube_id = bt.id
+            LEFT OUTER JOIN frozen_tube t
+            ON bt.frozen_tube_id = t.id
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

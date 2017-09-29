@@ -48,4 +48,11 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     List<StockOutReqFrozenTube> findByStockOutTaskIdAndFrozenTubeIdInAndStatusNot(Long taskId, List<Long> frozenTubeIds, String stauts);
 
     Long countByStockOutFrozenBoxId(Long id);
+
+    List<StockOutReqFrozenTube> findByStockOutFrozenBoxIdIn(List<Long> frozenBoxIds);
+
+    Long countByStockOutTaskIdAndStatusNotIn(Long taskId, List<String> statusList);
+
+    @Query("select count(t) from StockOutReqFrozenTube t where t.stockOutTask.id=?1 and t.frozenTube.frozenTubeState = '2009' and t.frozenTube.status != '3001'")
+    Long countAbnormalTubeByStockOutTaskId(Long taskId);
 }

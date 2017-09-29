@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import com.google.common.collect.Lists;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -472,13 +473,10 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         if(loginName2!=null&&password2!=null){
             userService.isCorrectUser(loginName2,password2);
         }
-
-        for(Long id:frozenBoxIds){
-
-            StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findOne(id);
-            if(stockOutFrozenBox == null){
-                continue;
-            }
+        List<FrozenBox> frozenBoxList = new ArrayList<>();
+        List<StockOutBoxPosition> stockOutBoxPositionList = new ArrayList<StockOutBoxPosition>();
+        List<StockOutFrozenBox> stockOutFrozenBoxes = stockOutFrozenBoxRepository.findByIdIn(frozenBoxIds);
+        for(StockOutFrozenBox stockOutFrozenBox : stockOutFrozenBoxes){
             FrozenBox frozenBox = stockOutFrozenBox.getFrozenBox();
             //保存出库冻存盒
             stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_COMPLETED);
@@ -495,61 +493,65 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
                 .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
                 .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
-                .projectSiteName(frozenBox.getProjectSiteName());
-            stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+                .projectSiteName(frozenBox.getProjectSiteName()).memo(frozenBox.getMemo());
             //保存冻存盒位置
             StockOutBoxPosition stockOutBoxPosition = new StockOutBoxPosition();
-
             stockOutBoxPosition.setStockOutFrozenBox(stockOutFrozenBox);
             stockOutBoxPosition.setEquipment(equipment);
             stockOutBoxPosition.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
             stockOutBoxPosition.setArea(area);
             stockOutBoxPosition.setAreaCode(area!=null?area.getAreaCode():null);
             stockOutBoxPosition.setStatus(Constants.VALID);
-            stockOutBoxPositionRepository.save(stockOutBoxPosition);
+            stockOutBoxPositionList.add(stockOutBoxPosition);
             //保存冻存盒的位置和状态
             frozenBox.setEquipment(equipment);
             frozenBox.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
             frozenBox.setArea(area);
             frozenBox.setAreaCode(area!=null?area.getAreaCode():null);
             frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
-            frozenBoxRepository.save(frozenBox);
-            //保存出库盒与冻存管的关系
-            stockOutBoxTubeRepository.updateByStockOutFrozenBox(id);
-            //样本使用次数加1
-            List<StockOutBoxTube> stockOutBoxTubes = stockOutBoxTubeRepository.findByStockOutFrozenBoxId(id);
-            for(StockOutBoxTube s:stockOutBoxTubes){
-                FrozenTube frozenTube = s.getFrozenTube();
-                frozenTube.setSampleUsedTimes(frozenTube.getSampleUsedTimes()!=null?frozenTube.getSampleUsedTimes():0+1);
-                frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
-                frozenTubeRepository.save(frozenTube);
-            }
-            List<Long> planTubes = stockOutBoxTubeRepository.findPlanFrozenTubeByStockOutFrozenBoxId(id);
-            List<Long> taskTubes = stockOutBoxTubeRepository.findTaskFrozenTubeByStockOutFrozenBoxId(id);
-            stockOutTaskFrozenTubeRepository.updateByStockOutFrozenTubeIds(taskTubes);
-            stockOutPlanFrozenTubeRepository.updateByStockOutFrozenTubeIds(planTubes);
+            frozenBoxList.add(frozenBox);
+        }
+        stockOutFrozenBoxRepository.save(stockOutFrozenBoxes);
+        stockOutBoxPositionRepository.save(stockOutBoxPositionList);
+        frozenBoxRepository.save(frozenBoxList);
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutFrozenBoxIdIn(frozenBoxIds);
+       List<FrozenTube> frozenTubeList = new ArrayList<>();
+        for(StockOutReqFrozenTube s: stockOutReqFrozenTubes){
+            FrozenTube frozenTube = s.getFrozenTube();
+            frozenTube.setSampleUsedTimes(frozenTube.getSampleUsedTimes()!=null?frozenTube.getSampleUsedTimes():0+1);
+            frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
+            s.setStatus(Constants.STOCK_OUT_SAMPLE_COMPLETED);
+            frozenTubeList.add(frozenTube);
+        }
+        List<List<StockOutReqFrozenTube>> stockOutReqTubeList = Lists.partition(stockOutReqFrozenTubes, 1000);
+        for(List<StockOutReqFrozenTube> f:stockOutReqTubeList){
+            stockOutReqFrozenTubeRepository.save(f);
+        }
+        List<List<FrozenTube>> frozenTubes = Lists.partition(frozenTubeList, 1000);
+        for(List<FrozenTube> f:frozenTubes){
+            frozenTubeRepository.save(frozenTubeList);
         }
 
-        Long planId = stockOutTask.getStockOutPlan().getId();
-        List<String> taskStatus = new ArrayList<>();
-        taskStatus.add(Constants.STOCK_OUT_FROZEN_TUBE_COMPLETED);
-        taskStatus.add(Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+        List<String> statusList = new ArrayList<>();
+        statusList.add(Constants.STOCK_OUT_SAMPLE_CANCEL);
+        statusList.add(Constants.STOCK_OUT_SAMPLE_COMPLETED);
+
         //任务未出库样本量
-        Long countOfTaskTube = stockOutTaskFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(taskId,taskStatus);
-        //计划未出库样本量
-        List<String> planStatus = new ArrayList<>();
-        planStatus.add(Constants.STOCK_OUT_PLAN_TUBE_COMPLETED);
-        taskStatus.add(Constants.STOCK_OUT_PLAN_TUBE_CANCEL);
-        Long countOfPlanTube = stockOutPlanFrozenTubeRepository.countByStockOutPlanIdAndStatusNotIn(planId,planStatus);
+        Long countOfTaskTube = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(taskId,statusList);
         //异常出库样本量
-        Long abNormalTube = stockOutBoxTubeRepository.countAbnormalTubeByStockOutTaskId(taskId);
+        Long abNormalTube = stockOutReqFrozenTubeRepository.countAbnormalTubeByStockOutTaskId(taskId);
         if(abNormalTube.intValue()==0){
             stockOutTask.setStatus(Constants.STOCK_OUT_TASK_ABNORMAL);
         }else if(countOfTaskTube.intValue()==0){
             stockOutTask.setStatus(Constants.STOCK_OUT_TASK_COMPLETED);
         }
         stockOutTaskRepository.save(stockOutTask);
-        if(countOfPlanTube.intValue()==0){
+        List<String> statusList_ = new ArrayList<>();
+        statusList_.add(Constants.STOCK_OUT_TASK_NEW);
+        statusList_.add(Constants.STOCK_OUT_TASK_PENDING);
+
+        Long countOfUnCompleteTask = stockOutTaskRepository.countByStockOutPlanIdAndStatusIn(stockOutTask.getStockOutPlan().getId(),statusList_);
+        if(countOfUnCompleteTask.intValue()==0){
             StockOutPlan stockOutPlan = stockOutTask.getStockOutPlan();
             stockOutPlan.setStatus(Constants.STOCK_OUT_PLAN_COMPLETED);
             stockOutPlanRepository.save(stockOutPlan);

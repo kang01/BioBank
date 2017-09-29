@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
  * Created by gengluying on 2017/5/31.
  */
 @Entity
-@Table(name = "view_stock_out_task_tube")
+@Table(name = "view_stock_out_tube")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockOutFrozenTubeDataTableEntity {
     @Id
@@ -37,6 +37,11 @@ public class StockOutFrozenTubeDataTableEntity {
     @JsonView(DataTablesOutput.View.class)
     @Column(name = "sample_code")
     private String sampleCode;
+
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "sample_temp_code")
+    private String sampleTempCode;
 
     @NotNull
     @JsonView(DataTablesOutput.View.class)
@@ -103,6 +108,14 @@ public class StockOutFrozenTubeDataTableEntity {
 
     public void setSampleCode(String sampleCode) {
         this.sampleCode = sampleCode;
+    }
+
+    public String getSampleTempCode() {
+        return sampleTempCode;
+    }
+
+    public void setSampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
     }
 
     public String getSex() {

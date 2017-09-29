@@ -19,4 +19,6 @@ public interface StockOutTaskRepository extends JpaRepository<StockOutTask,Long>
     List<StockOutTask> findByStockOutPlanId(Long id);
 
     StockOutTask findByStockOutTaskCode(String stockOutTaskCode);
+
+    Long countByStockOutPlanIdAndStatusIn(Long id, List<String> statusList_);
 }

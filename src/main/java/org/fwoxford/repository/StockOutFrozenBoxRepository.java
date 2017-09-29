@@ -36,4 +36,6 @@ public interface StockOutFrozenBoxRepository extends JpaRepository<StockOutFroze
     Page<StockOutFrozenBox> findBoxesByApplyAndStatus(Long id, String status, Pageable pageRequest);
 
     List<StockOutFrozenBox> findByStockOutTaskIdAndStatus(Long taskId, String status);
+
+    List<StockOutFrozenBox> findByIdIn(List<Long> frozenBoxIds);
 }

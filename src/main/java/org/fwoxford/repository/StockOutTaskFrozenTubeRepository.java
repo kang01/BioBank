@@ -59,9 +59,7 @@ public interface StockOutTaskFrozenTubeRepository extends JpaRepository<StockOut
 
      @Query(value = " select  a.id,count(1) from frozen_box a" +
          "        left join   stock_out_req_frozen_tube c on c.frozen_box_id = a.id " +
-         "        left join stock_out_plan_tube b on b.stock_out_req_frozen_tube_id =c.id  " +
-         "        left join stock_out_task_tube e on e.stock_out_plan_frozen_tube_id =b.id  " +
-         "        where e.stock_out_task_id =?1 and e.status = '1801' and a.status !='2008'" +
+         "        where c.stock_out_task_id =?1 and a.status = '1301' and a.status!='2008' " +
          "        group by a.id" ,nativeQuery = true)
     List<Object[]> countByTaskGroupByBox(Long taskId);
 

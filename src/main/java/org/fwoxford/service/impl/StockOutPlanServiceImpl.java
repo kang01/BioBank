@@ -78,6 +78,50 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
      * @return the persisted entity
      */
     @Override
+//    public StockOutPlanDTO save(Long applyId) {
+//        log.debug("Request to save StockOutPlan : {}", applyId);
+//        StockOutApply apply = stockOutApplyRepository.findOne(applyId);
+//        if(!apply.getStatus().equals(Constants.STOCK_OUT_APPROVED)){
+//            throw new BankServiceException("申请未批准，不能创建计划！");
+//        }
+//        List<StockOutPlan> stockOutPlans = stockOutPlanRepository.findAllByStockOutApplyId(applyId);
+//
+//        if (stockOutPlans!=null && stockOutPlans.size() > 0){
+//            StockOutPlanDTO stockOutPlanDTO = stockOutPlanMapper.stockOutPlanToStockOutPlanDTO(stockOutPlans.get(0));
+//            return stockOutPlanDTO;
+//        }
+//
+//        StockOutPlan stockOutPlan = new StockOutPlan();
+//        stockOutPlan.status(Constants.STOCK_OUT_PLAN_PENDING)
+//            .stockOutPlanCode(bankUtil.getUniqueID("E"))
+//            .applyNumber(apply.getApplyCode())
+//            .stockOutApply(apply);
+//        stockOutPlan = stockOutPlanRepository.save(stockOutPlan);
+//
+//        List<StockOutPlanFrozenTube> planTubes = new ArrayList<>();
+//        List<StockOutReqFrozenTube> reqTubes = stockOutReqFrozenTubeRepository.findAllByStockOutApplyId(applyId);
+//        StockOutPlan finalStockOutPlan = stockOutPlan;
+//
+//        reqTubes.forEach(t -> {
+//            StockOutPlanFrozenTube planTube = new StockOutPlanFrozenTube();
+//            planTube.status(Constants.STOCK_OUT_PLAN_TUBE_PENDING)
+//                .stockOutPlan(finalStockOutPlan)
+//                .stockOutReqFrozenTube(t);
+//            planTubes.add(planTube);
+//            if (planTubes.size() >= 1000){
+//                stockOutPlanFrozenTubeRepository.save(planTubes);
+//                planTubes.clear();
+//            }
+//        });
+//        if (planTubes.size() > 0){
+//            stockOutPlanFrozenTubeRepository.save(planTubes);
+//            planTubes.clear();
+//        }
+//
+//
+//        StockOutPlanDTO result = stockOutPlanMapper.stockOutPlanToStockOutPlanDTO(stockOutPlan);
+//        return result;
+//    }
     public StockOutPlanDTO save(Long applyId) {
         log.debug("Request to save StockOutPlan : {}", applyId);
         StockOutApply apply = stockOutApplyRepository.findOne(applyId);
@@ -97,28 +141,6 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
             .applyNumber(apply.getApplyCode())
             .stockOutApply(apply);
         stockOutPlan = stockOutPlanRepository.save(stockOutPlan);
-
-        List<StockOutPlanFrozenTube> planTubes = new ArrayList<>();
-        List<StockOutReqFrozenTube> reqTubes = stockOutReqFrozenTubeRepository.findAllByStockOutApplyId(applyId);
-        StockOutPlan finalStockOutPlan = stockOutPlan;
-
-        reqTubes.forEach(t -> {
-            StockOutPlanFrozenTube planTube = new StockOutPlanFrozenTube();
-            planTube.status(Constants.STOCK_OUT_PLAN_TUBE_PENDING)
-                .stockOutPlan(finalStockOutPlan)
-                .stockOutReqFrozenTube(t);
-            planTubes.add(planTube);
-            if (planTubes.size() >= 1000){
-                stockOutPlanFrozenTubeRepository.save(planTubes);
-                planTubes.clear();
-            }
-        });
-        if (planTubes.size() > 0){
-            stockOutPlanFrozenTubeRepository.save(planTubes);
-            planTubes.clear();
-        }
-
-
         StockOutPlanDTO result = stockOutPlanMapper.stockOutPlanToStockOutPlanDTO(stockOutPlan);
         return result;
     }

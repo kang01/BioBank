@@ -138,6 +138,10 @@
     <include file="classpath:config/liquibase/changelog/20170928143802_added_entity_constraints_StockOutReqFrozenTube.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170928151201_added_entity_StockOutHandoverDetails.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170928151202_added_entity_constraints_StockOutHandoverDetails.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170929000000_updated_view_StockOutPlan.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170929000000_updated_view_FrozenBoxForStockOut.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170929000000_updated_view_StockOutTaskByPlan.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170929000000_updated_view_StockOutFrozenBoxInTask.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170929211301_added_view_StockOutHandoverFrozenBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170929212101_added_view_StockOutHandoverSamples.xml" relativeToChangelogFile="false"/>
 

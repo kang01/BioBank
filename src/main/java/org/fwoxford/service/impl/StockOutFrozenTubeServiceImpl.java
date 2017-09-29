@@ -125,7 +125,8 @@ public class StockOutFrozenTubeServiceImpl implements StockOutFrozenTubeService{
 
     @Override
     public List<StockOutFrozenTubeForPlan> getStockOutFrozenTubeForPlanByRequirementAndBox( List<Long> requirementIds, Long frozenBoxId) {
-        List<StockOutReqFrozenTube> stockOutReqFrozenTube = stockOutReqFrozenTubeRepository.findAllByStockOutRequirementIdInAndFrozenBoxId(requirementIds,frozenBoxId);
+        List<Long> frozenBoxIds = new ArrayList<Long>(){{add(frozenBoxId);}};
+        List<StockOutReqFrozenTube> stockOutReqFrozenTube = stockOutReqFrozenTubeRepository.findAllByStockOutRequirementIdInAndFrozenBoxIdIn(requirementIds,frozenBoxIds);
         List<StockOutFrozenTubeForPlan> result = new ArrayList<StockOutFrozenTubeForPlan>();
         for(StockOutReqFrozenTube s :stockOutReqFrozenTube){
             StockOutFrozenTubeForPlan tube = new StockOutFrozenTubeForPlan();

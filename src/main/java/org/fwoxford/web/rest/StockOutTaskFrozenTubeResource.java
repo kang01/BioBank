@@ -152,11 +152,11 @@ public class StockOutTaskFrozenTubeResource {
      * @return
      * @throws URISyntaxException
      */
-    @PutMapping("/stock-out-task-frozen-tubes/repeal")
+    @PutMapping("/stock-out-task-frozen-tubes/repeal/task/{taskId}")
     @Timed
-    public ResponseEntity<List<FrozenTubeResponse>> repealStockOutTaskFrozenTube(@Valid @RequestBody List<FrozenTubeResponse> frozenTubeDTOS) throws URISyntaxException {
+    public ResponseEntity<List<FrozenTubeResponse>> repealStockOutTaskFrozenTube(@Valid @RequestBody List<FrozenTubeResponse> frozenTubeDTOS,@PathVariable Long taskId) throws URISyntaxException {
         log.debug("REST request to repeal StockOutTaskFrozenTube : {}", frozenTubeDTOS);
-        List<FrozenTubeResponse> result = stockOutTaskFrozenTubeService.repealStockOutTaskFrozenTube(frozenTubeDTOS);
+        List<FrozenTubeResponse> result = stockOutTaskFrozenTubeService.repealStockOutTaskFrozenTube(frozenTubeDTOS,taskId);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, frozenTubeDTOS.toString()))
             .body(result);

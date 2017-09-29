@@ -68,6 +68,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
         return stockOutFrozenBox;
     }
 
+    public StockOutReqFrozenTube stockOutFrozenBox(StockOutFrozenBox stockOutFrozenBox) {
+        this.stockOutFrozenBox = stockOutFrozenBox;
+        return this;
+    }
     public void setStockOutFrozenBox(StockOutFrozenBox stockOutFrozenBox) {
         this.stockOutFrozenBox = stockOutFrozenBox;
     }
@@ -76,6 +80,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
         return stockOutTask;
     }
 
+    public StockOutReqFrozenTube stockOutTask(StockOutTask stockOutTask) {
+        this.stockOutTask = stockOutTask;
+        return this;
+    }
     public void setStockOutTask(StockOutTask stockOutTask) {
         this.stockOutTask = stockOutTask;
     }
@@ -83,7 +91,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getFrozenBoxCode() {
         return frozenBoxCode;
     }
-
+    public StockOutReqFrozenTube frozenBoxCode(String frozenBoxCode) {
+        this.frozenBoxCode = frozenBoxCode;
+        return this;
+    }
     public void setFrozenBoxCode(String frozenBoxCode) {
         this.frozenBoxCode = frozenBoxCode;
     }
@@ -92,6 +103,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
         return projectCode;
     }
 
+    public StockOutReqFrozenTube projectCode(String projectCode) {
+        this.projectCode = projectCode;
+        return this;
+    }
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
     }
@@ -99,7 +114,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getProjectSiteCode() {
         return projectSiteCode;
     }
-
+    public StockOutReqFrozenTube projectSiteCode(String projectSiteCode) {
+        this.projectSiteCode = projectSiteCode;
+        return this;
+    }
     public void setProjectSiteCode(String projectSiteCode) {
         this.projectSiteCode = projectSiteCode;
     }
@@ -107,7 +125,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getFrozenTubeCode() {
         return frozenTubeCode;
     }
-
+    public StockOutReqFrozenTube frozenTubeCode(String frozenTubeCode) {
+        this.frozenTubeCode = frozenTubeCode;
+        return this;
+    }
     public void setFrozenTubeCode(String frozenTubeCode) {
         this.frozenTubeCode = frozenTubeCode;
     }
@@ -115,7 +136,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getSampleTempCode() {
         return sampleTempCode;
     }
-
+    public StockOutReqFrozenTube sampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
+        return this;
+    }
     public void setSampleTempCode(String sampleTempCode) {
         this.sampleTempCode = sampleTempCode;
     }
@@ -123,7 +147,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getSampleCode() {
         return sampleCode;
     }
-
+    public StockOutReqFrozenTube sampleCode(String sampleCode) {
+        this.sampleCode = sampleCode;
+        return this;
+    }
     public void setSampleCode(String sampleCode) {
         this.sampleCode = sampleCode;
     }
@@ -131,7 +158,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getFrozenTubeTypeCode() {
         return frozenTubeTypeCode;
     }
-
+    public StockOutReqFrozenTube frozenTubeTypeCode(String frozenTubeTypeCode) {
+        this.frozenTubeTypeCode = frozenTubeTypeCode;
+        return this;
+    }
     public void setFrozenTubeTypeCode(String frozenTubeTypeCode) {
         this.frozenTubeTypeCode = frozenTubeTypeCode;
     }
@@ -139,7 +169,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getFrozenTubeTypeName() {
         return frozenTubeTypeName;
     }
-
+    public StockOutReqFrozenTube frozenTubeTypeName(String frozenTubeTypeName) {
+        this.frozenTubeTypeName = frozenTubeTypeName;
+        return this;
+    }
     public void setFrozenTubeTypeName(String frozenTubeTypeName) {
         this.frozenTubeTypeName = frozenTubeTypeName;
     }
@@ -147,7 +180,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getSampleTypeCode() {
         return sampleTypeCode;
     }
-
+    public StockOutReqFrozenTube sampleTypeCode(String sampleTypeCode) {
+        this.sampleTypeCode = sampleTypeCode;
+        return this;
+    }
     public void setSampleTypeCode(String sampleTypeCode) {
         this.sampleTypeCode = sampleTypeCode;
     }
@@ -155,7 +191,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getSampleTypeName() {
         return sampleTypeName;
     }
-
+    public StockOutReqFrozenTube sampleTypeName(String sampleTypeName) {
+        this.sampleTypeName = sampleTypeName;
+        return this;
+    }
     public void setSampleTypeName(String sampleTypeName) {
         this.sampleTypeName = sampleTypeName;
     }
@@ -163,7 +202,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getSampleClassificationCode() {
         return sampleClassificationCode;
     }
-
+    public StockOutReqFrozenTube sampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+        return this;
+    }
     public void setSampleClassificationCode(String sampleClassificationCode) {
         this.sampleClassificationCode = sampleClassificationCode;
     }
@@ -171,7 +213,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getSampleClassificationName() {
         return sampleClassificationName;
     }
-
+    public StockOutReqFrozenTube sampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+        return this;
+    }
     public void setSampleClassificationName(String sampleClassificationName) {
         this.sampleClassificationName = sampleClassificationName;
     }
@@ -179,7 +224,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public Integer getSampleUsedTimesMost() {
         return sampleUsedTimesMost;
     }
-
+    public StockOutReqFrozenTube sampleUsedTimesMost(Integer sampleUsedTimesMost) {
+        this.sampleUsedTimesMost = sampleUsedTimesMost;
+        return this;
+    }
     public void setSampleUsedTimesMost(Integer sampleUsedTimesMost) {
         this.sampleUsedTimesMost = sampleUsedTimesMost;
     }
@@ -187,7 +235,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public Integer getSampleUsedTimes() {
         return sampleUsedTimes;
     }
-
+    public StockOutReqFrozenTube sampleUsedTimes(Integer sampleUsedTimes) {
+        this.sampleUsedTimes = sampleUsedTimes;
+        return this;
+    }
     public void setSampleUsedTimes(Integer sampleUsedTimes) {
         this.sampleUsedTimes = sampleUsedTimes;
     }
@@ -195,7 +246,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public Double getFrozenTubeVolumns() {
         return frozenTubeVolumns;
     }
-
+    public StockOutReqFrozenTube frozenTubeVolumns(Double frozenTubeVolumns) {
+        this.frozenTubeVolumns = frozenTubeVolumns;
+        return this;
+    }
     public void setFrozenTubeVolumns(Double frozenTubeVolumns) {
         this.frozenTubeVolumns = frozenTubeVolumns;
     }
@@ -203,7 +257,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public Double getSampleVolumns() {
         return sampleVolumns;
     }
-
+    public StockOutReqFrozenTube sampleVolumns(Double sampleVolumns) {
+        this.sampleVolumns = sampleVolumns;
+        return this;
+    }
     public void setSampleVolumns(Double sampleVolumns) {
         this.sampleVolumns = sampleVolumns;
     }
@@ -211,7 +268,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getFrozenTubeVolumnsUnit() {
         return frozenTubeVolumnsUnit;
     }
-
+    public StockOutReqFrozenTube frozenTubeVolumnsUnit(String frozenTubeVolumnsUnit) {
+        this.frozenTubeVolumnsUnit = frozenTubeVolumnsUnit;
+        return this;
+    }
     public void setFrozenTubeVolumnsUnit(String frozenTubeVolumnsUnit) {
         this.frozenTubeVolumnsUnit = frozenTubeVolumnsUnit;
     }
@@ -219,7 +279,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getErrorType() {
         return errorType;
     }
-
+    public StockOutReqFrozenTube errorType(String errorType) {
+        this.errorType = errorType;
+        return this;
+    }
     public void setErrorType(String errorType) {
         this.errorType = errorType;
     }
@@ -227,7 +290,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public String getFrozenTubeState() {
         return frozenTubeState;
     }
-
+    public StockOutReqFrozenTube frozenTubeState(String frozenTubeState) {
+        this.frozenTubeState = frozenTubeState;
+        return this;
+    }
     public void setFrozenTubeState(String frozenTubeState) {
         this.frozenTubeState = frozenTubeState;
     }
@@ -235,7 +301,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public FrozenTubeType getFrozenTubeType() {
         return frozenTubeType;
     }
-
+    public StockOutReqFrozenTube frozenTubeType(FrozenTubeType frozenTubeType) {
+        this.frozenTubeType = frozenTubeType;
+        return this;
+    }
     public void setFrozenTubeType(FrozenTubeType frozenTubeType) {
         this.frozenTubeType = frozenTubeType;
     }
@@ -243,7 +312,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public SampleType getSampleType() {
         return sampleType;
     }
-
+    public StockOutReqFrozenTube sampleType(SampleType sampleType) {
+        this.sampleType = sampleType;
+        return this;
+    }
     public void setSampleType(SampleType sampleType) {
         this.sampleType = sampleType;
     }
@@ -251,7 +323,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public SampleClassification getSampleClassification() {
         return sampleClassification;
     }
-
+    public StockOutReqFrozenTube sampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
+        return this;
+    }
     public void setSampleClassification(SampleClassification sampleClassification) {
         this.sampleClassification = sampleClassification;
     }
@@ -259,7 +334,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public Project getProject() {
         return project;
     }
-
+    public StockOutReqFrozenTube project(Project project) {
+        this.project = project;
+        return this;
+    }
     public void setProject(Project project) {
         this.project = project;
     }
@@ -267,7 +345,10 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     public ProjectSite getProjectSite() {
         return projectSite;
     }
-
+    public StockOutReqFrozenTube projectSite(ProjectSite projectSite) {
+        this.projectSite = projectSite;
+        return this;
+    }
     public void setProjectSite(ProjectSite projectSite) {
         this.projectSite = projectSite;
     }

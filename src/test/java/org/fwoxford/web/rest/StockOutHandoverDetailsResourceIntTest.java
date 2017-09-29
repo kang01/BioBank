@@ -97,12 +97,12 @@ public class StockOutHandoverDetailsResourceIntTest {
         StockOutHandover stockOutHandover = StockOutHandoverResourceIntTest.createEntity(em);
         em.persist(stockOutHandover);
         em.flush();
-        stockOutHandoverDetails.setStockOutHandover(stockOutHandover);
+//        stockOutHandoverDetails.setStockOutHandover(stockOutHandover);
         // Add required entity
         StockOutBoxTube stockOutBoxTube = StockOutBoxTubeResourceIntTest.createEntity(em);
         em.persist(stockOutBoxTube);
         em.flush();
-        stockOutHandoverDetails.setStockOutBoxTube(stockOutBoxTube);
+//        stockOutHandoverDetails.setStockOutBoxTube(stockOutBoxTube);
         return stockOutHandoverDetails;
     }
 

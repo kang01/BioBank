@@ -664,35 +664,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
      */
     @Override
     public Page<StockOutFrozenBoxForDataTableEntity> getPageHandoverStockOutFrozenBoxes(Long id, Pageable pageRequest) {
-        StockOutHandover stockOutHandover = stockOutHandoverRepository.findOne(id);
-        if(stockOutHandover == null){
-            throw new BankServiceException("未查询到交接单");
-        }
-        Page<StockOutFrozenBox> result = stockOutFrozenBoxRepository.findBoxesByHandOverAndStatus(id,Constants.STOCK_OUT_FROZEN_BOX_HANDOVER, pageRequest);
-        return result.map(stockOutFrozenBox -> {
-            StockOutFrozenBoxForDataTableEntity dto = new StockOutFrozenBoxForDataTableEntity();
-            dto.setId(stockOutFrozenBox.getId());
-            dto.setFrozenBoxCode(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode());
-            dto.setSampleTypeName(stockOutFrozenBox.getFrozenBox().getSampleTypeName());
-            dto.setStatus(stockOutFrozenBox.getStatus());
-            dto.setApplyId(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getId():null);
-            dto.setApplyCode(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getApplyCode():null);
-            dto.setPlanId(stockOutHandover.getStockOutPlan()!=null?stockOutHandover.getStockOutPlan().getId():null);
-            dto.setPlanCode(stockOutHandover.getStockOutPlan()!=null?stockOutHandover.getStockOutPlan().getStockOutPlanCode():null);
-            dto.setTaskId(stockOutHandover.getStockOutTask()!=null?stockOutHandover.getStockOutTask().getId():null);
-            dto.setTaskCode(stockOutHandover.getStockOutTask()!=null?stockOutHandover.getStockOutTask().getStockOutTaskCode():null);
-            dto.setStatus(stockOutFrozenBox.getStatus());
-            dto.setDelegateId(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getDelegate().getId():null);
-            dto.setDelegate(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getApplyPersonName():null);
-            dto.setMemo(stockOutFrozenBox.getMemo());
-            String position = BankUtil.getPositionString(stockOutFrozenBox.getEquipmentCode(),stockOutFrozenBox.getAreaCode(),
-                stockOutFrozenBox.getSupportRackCode(),stockOutFrozenBox.getColumnsInShelf(),stockOutFrozenBox.getRowsInShelf(),null,null);
-            dto.setPosition(position);
-//            Long count = stockOutFrozenTubeRepository.countByFrozenBox(stockOutFrozenBox.getId());
-//            dto.setCountOfSample(count);
-
-            return dto;
-        });
+      return null;
     }
 
     /**

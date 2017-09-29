@@ -2570,9 +2570,9 @@ public class ImportSampleDataTest {
                     stockOutBoxTubeRepository.saveAndFlush(stockOutBoxTube);
                     //保存交接详情
                     StockOutHandoverDetails stockOutHandoverDetails = new StockOutHandoverDetails();
-                    stockOutHandoverDetails = stockOutHandoverDetails.status(Constants.STOCK_OUT_HANDOVER_COMPLETED)
-                        .stockOutBoxTube(stockOutBoxTube)
-                        .stockOutHandover(stockOutHandover);
+                    stockOutHandoverDetails = stockOutHandoverDetails.status(Constants.STOCK_OUT_HANDOVER_COMPLETED);
+//                        .stockOutBoxTube(stockOutBoxTube)
+//                        .stockOutHandover(stockOutHandover);
                     stockOutHandoverDetails.setCreatedDate(overdateTime);
                     stockOutHandoverDetailsRepository.saveAndFlush(stockOutHandoverDetails);
                 }

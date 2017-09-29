@@ -49,15 +49,11 @@ public interface StockOutHandoverService {
 
     StockOutHandoverDTO saveByTask(Long taskId);
 
-    Page<StockOutHandoverForDataTableEntity> getPageStockOutHandOver(Pageable pageRequest);
-
     ByteArrayOutputStream printStockOutHandover(Long id);
 
     StockOutHandoverDTO completeStockOutHandover(List<Long> ids, StockOutHandoverDTO stockOutHandoverDTO);
 
     StockOutHandoverDTO getStockOutHandoverDetail(Long id);
-
-    Page<StockOutHandoverSampleReportDTO> getStockOutHandoverSamples(Long id, Pageable pageable);
 
     /**
      * 作废交接

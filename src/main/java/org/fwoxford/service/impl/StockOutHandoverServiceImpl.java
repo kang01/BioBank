@@ -188,30 +188,6 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         return stockOutHandoverMapper.stockOutHandOverToStockOutHandOverDTO(stockOutHandover);
     }
 
-    @Override
-    public Page<StockOutHandoverForDataTableEntity> getPageStockOutHandOver(Pageable pageable) {
-        Page<StockOutHandover> result = stockOutHandoverRepository.findAll(pageable);
-
-        return result.map(handover -> {
-            StockOutHandoverForDataTableEntity dto = new StockOutHandoverForDataTableEntity();
-            dto.setId(handover.getId());
-            dto.setStatus(handover.getStatus());
-            dto.setHandoverCode(handover.getHandoverCode());
-            dto.setUsage(handover.getStockOutApply()!=null?handover.getStockOutApply().getPurposeOfSample():null);
-            dto.setApplyCode(handover.getStockOutApply()!=null?handover.getStockOutApply().getApplyCode():null);
-            Long personId = handover.getHandoverPersonId();
-            if(personId!=null){
-                User user = userRepository.findOne(personId);
-                dto.setDeliverName(user!=null?user.getLastName()+user.getFirstName():null);
-            }
-            dto.setReceiver(handover.getReceiverName());
-            dto.setReceiveDate(handover.getHandoverTime());
-            Long count= stockOutHandoverDetailsRepository.countByStockOutHandoverId(handover.getId());
-            dto.setCountOfSample(count);
-            return dto;
-        });
-    }
-
     /**
      * 打印交接单
      * @param id
@@ -457,15 +433,6 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         stockOutHandoverDTO.setHandoverFrozenTubes(stockOutHandoverSampleReportDTOS);
         stockOutHandoverDTO.setCountOfSample(stockOutHandoverSampleReportDTOS.size());
         return stockOutHandoverDTO;
-    }
-
-    @Override
-    public Page<StockOutHandoverSampleReportDTO> getStockOutHandoverSamples(Long id, Pageable pageable) {
-        Page<StockOutHandoverDetails> result = stockOutHandoverDetailsRepository.findPageByStockOutHandoverId(id, pageable);
-        return result.map(sample -> {
-            StockOutHandoverSampleReportDTO dto = createStockOutHandOverSampleReportDTO(sample);
-            return dto;
-        });
     }
 
     /**

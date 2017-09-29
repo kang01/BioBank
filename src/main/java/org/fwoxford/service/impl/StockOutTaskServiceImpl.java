@@ -258,57 +258,7 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         return result;
     }
 
-    @Override
-    public Page<StockOutTaskForPlanDataTableEntity> findAllByPlan(Long id, Pageable pageable) {
-        Page<StockOutTask> result = stockOutTaskRepository.findAllByStockOutPlanId(id, pageable);
 
-        return result.map(o -> {
-            StockOutTaskForPlanDataTableEntity rowData = new StockOutTaskForPlanDataTableEntity();
-            rowData.setId(o.getId());
-            rowData.setStatus(o.getStatus());
-            rowData.setStockOutTaskCode(o.getStockOutTaskCode());
-            rowData.setMemo(o.getMemo());
-            rowData.setCountOfFrozenBox(1L);
-            rowData.setCreateDate(o.getCreatedDate().toLocalDate());
-            rowData.setStockOutDate(o.getStockOutDate());
-            ArrayList<String> operators = new ArrayList<>();
-            if(o.getStockOutHeadId1()!=null){
-                User user = userRepository.findOne(o.getStockOutHeadId1());
-                operators.add(user!=null?user.getLastName()+user.getFirstName():null);
-            }
-            if(o.getStockOutHeadId2()!=null){
-                User user = userRepository.findOne(o.getStockOutHeadId2());
-                operators.add(user!=null?user.getLastName()+user.getFirstName():null);
-            }
-            rowData.setOperators(String.join(".", operators));
-            Long count = stockOutTaskFrozenTubeRepository.countByStockOutTaskId(o.getId());
-            Long countOfBox = stockOutTaskFrozenTubeRepository.countFrozenBoxByStockOutTaskId(o.getId());
-            rowData.setCountOfSample(count);
-            rowData.setCountOfFrozenBox(countOfBox);
-            return rowData;
-        });
-    }
-
-    @Override
-    public Page<StockOutTaskForDataTableEntity> getDataTableStockOutTask(Pageable pageRequest) {
-        Page<StockOutTask> result = stockOutTaskRepository.findAll(pageRequest);
-        return result.map(o -> {
-            StockOutTaskForDataTableEntity rowData = new StockOutTaskForDataTableEntity();
-            rowData.setId(o.getId());
-            rowData.setStatus(o.getStatus());
-            rowData.setStockOutTaskCode(o.getStockOutTaskCode());
-            rowData.setStockOutPlanCode(o.getStockOutPlan().getStockOutPlanCode());
-            rowData.setStockOutDate(o.getStockOutDate());
-            rowData.setPurposeOfSample(o.getStockOutPlan().getStockOutApply().getPurposeOfSample());
-            Long count = stockOutTaskFrozenTubeRepository.countByStockOutTaskId(o.getId());
-            Long countOfhandOver = stockOutHandoverDetailsRepository.countByStockOutTaskId(o.getId());
-            Long countTimes = stockOutHandoverRepository.countByStockOutTaskId(o.getId());
-            rowData.setCountOfStockOutSample(count);//任务样本量
-            rowData.setCountOfHandOverSample(countOfhandOver);//已交接样本
-            rowData.setHandOverTimes(countTimes);//交接次数
-            return rowData;
-        });
-    }
 
     @Override
     public List<StockOutTaskDTO> getAllStockOutTasksByPlanId(Long id) {

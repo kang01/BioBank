@@ -359,6 +359,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             for(FrozenTubeDTO f: box.getFrozenTubeDTOS()){
                 for(StockOutReqFrozenTube s:stockOutReqFrozenTubes){
                     if(f.getId().equals(s.getFrozenTube().getId())){
+                        s.setStockOutFrozenBox(stockOutFrozenBox);
                         s.setStatus(Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
                         FrozenTube frozenTube =s.getFrozenTube();
                         frozenTube.setFrozenBox(frozenBox);
@@ -413,7 +414,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             box.setSampleTypeName(frozenBox.getSampleTypeName());
             String position = BankUtil.getPositionString(f.getEquipmentCode(),f.getAreaCode(),f.getSupportRackCode(),f.getColumnsInShelf(),f.getRowsInShelf(),null,null);
             box.setPosition(position);
-            Long count = stockOutBoxTubeRepository.countByStockOutFrozenBoxId(f.getId());
+            Long count = stockOutReqFrozenTubeRepository.countByStockOutFrozenBoxId(f.getId());
             box.setCountOfSample(count);
             box.setMemo(f.getMemo());
             box.setStatus(f.getStatus());

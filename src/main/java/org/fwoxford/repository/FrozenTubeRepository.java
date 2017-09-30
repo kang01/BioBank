@@ -107,11 +107,10 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 //        " and (?8 = 0 or t.age>=?8) " +
 //        " and (?9 = 0 or t.age<=?9) " +
 //        " order by t.frozen_box_code,t.tube_rows,LPAD(t.tube_columns,2) asc offset ?11 rows fetch next ?12 rows only",nativeQuery = true)
-@Query(value = "select t.id,t.project_id,t.frozen_box_id,t.tube_rows,LPAD(t.tube_columns,2) as tube_columns,memo from frozen_tube t   " +
+@Query(value = "select t from frozen_tube t   " +
     "  LEFT OUTER JOIN ( " +
     "  SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt  " +
-    "  LEFT OUTER JOIN STOCK_OUT_PLAN_TUBE pt ON pt.STOCK_OUT_REQ_FROZEN_TUBE_ID = rt.id AND pt.STATUS='1503' " +
-    "  WHERE pt.id IS NULL " +
+    "  WHERE  rt.STATUS ='1303' AND pt.id IS NULL " +
     ") vpt ON t.id = vpt.FROZEN_TUBE_ID"+
     " where t.frozen_tube_state='2004' and t.status='3001' and vpt.FROZEN_TUBE_ID IS NULL " +
     " and t.project_id in ?10 "+
@@ -126,7 +125,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     " and (?9 = 0 or t.age<=?9) " +
     " order by t.frozen_box_code,t.tube_rows,LPAD(t.tube_columns,2) asc offset ?11 rows fetch next ?12 rows only",nativeQuery = true)
 
-    List<Object[]> findByRequirements(Integer sampleTypeId, Integer samplyClassificationId, Integer frozenTubeTypeId,
+    List<FrozenTube> findByRequirements(Integer sampleTypeId, Integer samplyClassificationId, Integer frozenTubeTypeId,
                                       String diseaseType, String sex, Integer isBloodLipid, Integer isHemolysis, Integer ageMin, Integer ageMax,  List<Long> projectIds,Integer startPos,Integer length);
     @Query(value = "select count(t.id) from frozen_tube t   " +
         " LEFT OUTER JOIN ( " +

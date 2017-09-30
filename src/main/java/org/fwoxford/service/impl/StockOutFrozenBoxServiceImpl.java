@@ -540,10 +540,11 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         Long countOfTaskTube = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(taskId,statusList);
         //异常出库样本量
         Long abNormalTube = stockOutReqFrozenTubeRepository.countAbnormalTubeByStockOutTaskId(taskId);
-        if(abNormalTube.intValue()==0){
-            stockOutTask.setStatus(Constants.STOCK_OUT_TASK_ABNORMAL);
-        }else if(countOfTaskTube.intValue()==0){
+        if(countOfTaskTube.intValue()==0) {
             stockOutTask.setStatus(Constants.STOCK_OUT_TASK_COMPLETED);
+            if (abNormalTube.intValue() != 0) {
+                stockOutTask.setStatus(Constants.STOCK_OUT_TASK_ABNORMAL);
+            }
         }
         stockOutTaskRepository.save(stockOutTask);
         List<String> statusList_ = new ArrayList<>();

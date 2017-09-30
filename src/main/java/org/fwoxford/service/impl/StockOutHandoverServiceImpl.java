@@ -278,7 +278,7 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
             throw new BankServiceException("未查询到交接单！");
         }
 
-        if (Constants.STOCK_OUT_HANDOVER_PENDING.equals(stockOutHandover.getStatus())){
+        if (!Constants.STOCK_OUT_HANDOVER_PENDING.equals(stockOutHandover.getStatus())){
             throw new BankServiceException("该交接单未处于进行中，不能完成交接。");
         }
 
@@ -354,11 +354,11 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                     .status(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
 
                 // 保存交接盒
-                stockOutHandoverBox = stockOutHandoverBoxRepository.save(stockOutHandoverBox);
+                stockOutHandoverBox = stockOutHandoverBoxRepository.saveAndFlush(stockOutHandoverBox);
                 // 保存出库盒
-                stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+                stockOutFrozenBoxRepository.saveAndFlush(stockOutFrozenBox);
                 // 保存库存盒
-                frozenBoxRepository.save(frozenBox);
+                frozenBoxRepository.saveAndFlush(frozenBox);
 
                 List<StockOutHandoverDetails> handoverTubes = new ArrayList<>();
                 List<FrozenTube> frozenTubes = new ArrayList<>();
@@ -469,7 +469,7 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                     FrozenTube frozenTube = frozenTubeRepository.findOne(e.getId());
                     sampleCode = frozenTube.getSampleTempCode();
                 }
-                return new StockOutHandoverSampleReportDTO(e.getId(),e.getNo(),e.getBoxCode(),e.getLocation(),sampleCode,e.getSampleType(),e.getSex(),e.getAge(),e.getDiseaseType(),e.getProjectCode(),e.getStockOutHandoverId());
+                return new StockOutHandoverSampleReportDTO(e.getId(),e.getNo(),e.getBoxCode(),e.getLocation(),sampleCode,e.getSampleType(),e.getSex(),e.getAge(),e.getDiseaseType(),e.getProjectCode());//,e.getStockOutHandoverId());
             }
         };
         return stockOutHandoverSampleRepositries.findAll(input,converter);

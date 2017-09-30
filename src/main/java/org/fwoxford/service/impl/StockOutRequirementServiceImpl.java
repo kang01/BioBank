@@ -492,7 +492,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         query.setParameter("1", id).executeUpdate();
 //        entityManager.flush();
 
-        int a = 1/0;
+//        int a = 1/0;
         stockOutRequirementForApply.setId(id);
         stockOutRequirementForApply.setStatus(stockOutRequirement.getStatus());
         return stockOutRequirementForApply;

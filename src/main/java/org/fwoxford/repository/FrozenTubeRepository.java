@@ -203,4 +203,32 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         ,nativeQuery = true)
     List<FrozenTube> findBySampleCodeInAndSampleTypeCodeAndProjectIn(List<String> sampleCodeList,
                                                                  String appointedSampleType, List<Long> projectIds);
+
+    @Query(value = "select * from frozen_tube t where t.frozen_tube_state = '2004' and t.status='3001'" +
+        " and (t.sample_code in ?3" +
+        " or t.sample_code in ?4" +
+        " or t.sample_code in ?5" +
+        " or t.sample_code in ?6" +
+        " or t.sample_code in ?7" +
+        " or t.sample_code in ?8" +
+        " or t.sample_code in ?9" +
+        " or t.sample_code in ?10" +
+        " or t.sample_code in ?11" +
+        " or t.sample_code in ?12" +
+        " ) " +
+        " and t.project_id in ?2 and t.sample_type_code = ?1"
+        ,nativeQuery = true)
+    List<FrozenTube> findBySampleCodeInAndSampleTypeCodeAndProjectIn(
+                                                                     String appointedSampleType, List<Long> projectIds
+        , List<String> sampleCodeList1
+        , List<String> sampleCodeList2
+        , List<String> sampleCodeList3
+        , List<String> sampleCodeList4
+        , List<String> sampleCodeList5
+        , List<String> sampleCodeList6
+        , List<String> sampleCodeList7
+        , List<String> sampleCodeList8
+        , List<String> sampleCodeList9
+        , List<String> sampleCodeList10
+    );
 }

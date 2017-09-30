@@ -298,59 +298,64 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
         this.frozenTubeState = frozenTubeState;
     }
 
-    public FrozenTubeType getFrozenTubeType() {
-        return frozenTubeType;
+    public Long getFrozenTubeTypeId() {
+        return frozenTubeTypeId;
     }
-    public StockOutReqFrozenTube frozenTubeType(FrozenTubeType frozenTubeType) {
-        this.frozenTubeType = frozenTubeType;
+    public StockOutReqFrozenTube frozenTubeTypeId(Long frozenTubeTypeId) {
+        this.frozenTubeTypeId = frozenTubeTypeId;
         return this;
     }
-    public void setFrozenTubeType(FrozenTubeType frozenTubeType) {
-        this.frozenTubeType = frozenTubeType;
+    public StockOutReqFrozenTube setFrozenTubeTypeId(Long frozenTubeTypeId) {
+        this.frozenTubeTypeId = frozenTubeTypeId;
+        return this;
     }
 
-    public SampleType getSampleType() {
-        return sampleType;
+    public Long getSampleTypeId() {
+        return sampleTypeId;
     }
-    public StockOutReqFrozenTube sampleType(SampleType sampleType) {
-        this.sampleType = sampleType;
+    public StockOutReqFrozenTube sampleTypeId(Long sampleTypeId) {
+        this.sampleTypeId = sampleTypeId;
         return this;
     }
-    public void setSampleType(SampleType sampleType) {
-        this.sampleType = sampleType;
+    public StockOutReqFrozenTube setSampleTypeId(Long sampleTypeId) {
+        this.sampleTypeId = sampleTypeId;
+        return this;
     }
 
-    public SampleClassification getSampleClassification() {
-        return sampleClassification;
+    public Long getSampleClassificationId() {
+        return sampleClassificationId;
     }
-    public StockOutReqFrozenTube sampleClassification(SampleClassification sampleClassification) {
-        this.sampleClassification = sampleClassification;
+    public StockOutReqFrozenTube sampleClassificationId(Long sampleClassificationId) {
+        this.sampleClassificationId = sampleClassificationId;
         return this;
     }
-    public void setSampleClassification(SampleClassification sampleClassification) {
-        this.sampleClassification = sampleClassification;
+    public StockOutReqFrozenTube setSampleClassificationId(Long sampleClassificationId) {
+        this.sampleClassificationId = sampleClassificationId;
+        return this;
     }
 
-    public Project getProject() {
-        return project;
+    public Long getProjectId() {
+        return projectId;
     }
-    public StockOutReqFrozenTube project(Project project) {
-        this.project = project;
+    public StockOutReqFrozenTube projectId(Long projectId) {
+        this.projectId = projectId;
         return this;
     }
-    public void setProject(Project project) {
-        this.project = project;
+    public StockOutReqFrozenTube setProjectId(Long projectId) {
+        this.projectId = projectId;
+        return this;
     }
 
-    public ProjectSite getProjectSite() {
-        return projectSite;
+    public Long getProjectSiteId() {
+        return projectSiteId;
     }
-    public StockOutReqFrozenTube projectSite(ProjectSite projectSite) {
-        this.projectSite = projectSite;
+    public StockOutReqFrozenTube projectSiteId(Long projectSiteId) {
+        this.projectSiteId = projectSiteId;
         return this;
     }
-    public void setProjectSite(ProjectSite projectSite) {
-        this.projectSite = projectSite;
+    public StockOutReqFrozenTube setProjectSiteId(Long projectSiteId) {
+        this.projectSiteId = projectSiteId;
+        return this;
     }
 
     @ManyToOne(optional = false)
@@ -480,28 +485,28 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
     /**
      * 冻存管类型
      */
-    @ManyToOne(optional = false)
-    private FrozenTubeType frozenTubeType;
+    @Column(name = "frozen_tube_type_id")
+    private Long frozenTubeTypeId;
     /**
      * 样本类型
      */
-    @ManyToOne(optional = false)
-    private SampleType sampleType;
+    @Column(name = "sample_type_id")
+    private Long sampleTypeId;
     /**
      * 样本分类
      */
-    @ManyToOne
-    private SampleClassification sampleClassification;
+    @Column(name = "sample_classification_id")
+    private Long sampleClassificationId;
     /**
      * 项目
      */
-    @ManyToOne
-    private Project project;
+    @Column(name = "project_id")
+    private Long projectId;
     /**
      * 项目点
      */
-    @ManyToOne
-    private ProjectSite projectSite;
+    @Column(name = "project_site_id")
+    private Long projectSiteId;
 
     public String getFrozenBoxCode1D() {
         return frozenBoxCode1D;
@@ -691,11 +696,11 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
             ", frozenTubeVolumnsUnit='" + frozenTubeVolumnsUnit + '\'' +
             ", errorType='" + errorType + '\'' +
             ", frozenTubeState='" + frozenTubeState + '\'' +
-            ", frozenTubeType=" + frozenTubeType +
-            ", sampleType=" + sampleType +
-            ", sampleClassification=" + sampleClassification +
-            ", project=" + project +
-            ", projectSite=" + projectSite +
+            ", frozenTubeTypeId =" + frozenTubeTypeId +
+            ", sampleTypeId =" + sampleTypeId +
+            ", sampleClassificationId =" + sampleClassificationId  +
+            ", projectId =" + projectId  +
+            ", projectSiteId =" + projectSiteId  +
             '}';
     }
 }

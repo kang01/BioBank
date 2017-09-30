@@ -469,7 +469,7 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                     FrozenTube frozenTube = frozenTubeRepository.findOne(e.getId());
                     sampleCode = frozenTube.getSampleTempCode();
                 }
-                return new StockOutHandoverSampleReportDTO(e.getId(),e.getNo(),e.getBoxCode(),e.getLocation(),sampleCode,e.getSampleType(),e.getSex(),e.getAge(),e.getDiseaseType(),e.getProjectCode());//,e.getStockOutHandoverId());
+                return new StockOutHandoverSampleReportDTO(e.getId(),e.getNo(),e.getBoxCode(),e.getLocation(),sampleCode,e.getSampleType(),e.getSex(),e.getAge(),e.getDiseaseType(),e.getProjectCode(),e.getStockOutHandoverId());
             }
         };
         return stockOutHandoverSampleRepositries.findAll(input,converter);

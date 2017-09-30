@@ -64,8 +64,8 @@ public class StockOutHandoverSampleReportDTO {
     @Column(name = "project_code")
     private String projectCode;
 
-//    @Column(name = "stock_out_handover_id")
-//    private Long stockOutHandoverId;
+    @Column(name = "stock_out_handover_id")
+    private Long stockOutHandoverId;
 
     public Long getId() {
         return id;
@@ -147,18 +147,18 @@ public class StockOutHandoverSampleReportDTO {
         this.projectCode = projectCode;
     }
 
-//    public Long getStockOutHandoverId() {
-//        return stockOutHandoverId;
-//    }
-//
-//    public void setStockOutHandoverId(Long stockOutHandoverId) {
-//        this.stockOutHandoverId = stockOutHandoverId;
-//    }
+    public Long getStockOutHandoverId() {
+        return stockOutHandoverId;
+    }
+
+    public void setStockOutHandoverId(Long stockOutHandoverId) {
+        this.stockOutHandoverId = stockOutHandoverId;
+    }
 
     public StockOutHandoverSampleReportDTO() {
     }
 
-    public StockOutHandoverSampleReportDTO(Long id, Long no, String boxCode, String location, String sampleCode, String sampleType, String sex, String age, String diseaseType, String projectCode){//, Long stockOutHandoverId) {
+    public StockOutHandoverSampleReportDTO(Long id, Long no, String boxCode, String location, String sampleCode, String sampleType, String sex, String age, String diseaseType, String projectCode, Long stockOutHandoverId) {
         this.id = id;
         this.no = no;
         this.boxCode = boxCode;
@@ -169,6 +169,6 @@ public class StockOutHandoverSampleReportDTO {
         this.age = age;
         this.diseaseType = diseaseType;
         this.projectCode = projectCode;
-//        this.stockOutHandoverId = stockOutHandoverId;
+        this.stockOutHandoverId = stockOutHandoverId;
     }
 }

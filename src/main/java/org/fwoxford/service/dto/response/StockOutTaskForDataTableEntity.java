@@ -16,7 +16,7 @@ import java.time.LocalDate;
  * Created by gengluying on 2017/5/26.
  */
 @Entity
-@Table(name = "view_stock_out_task")
+@Table(name = "view_stock_out_task_list")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockOutTaskForDataTableEntity {
 

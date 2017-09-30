@@ -174,10 +174,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_PENDING)&&!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVE_REFUSED)){
             throw new BankServiceException("申请单的状态不能新增需求！",stockOutApply.getStatus());
         }
-
         StockOutRequirement requirement = new StockOutRequirement();
         if(stockOutRequirement.getId()!=null){
-            requirement.setId(stockOutRequirement.getId());
+            requirement  = stockOutRequirementRepository.findOne(stockOutRequirement.getId());
             //删除核对过的样本
             stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(requirement.getId());
         }
@@ -255,10 +254,11 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         //保存附件
 //        StockOutFiles stockOutFiles = stockOutFilesService.saveFiles(file,request);
         StockOutRequirement requirement = new StockOutRequirement();
-//        if(stockOutRequirement.getId()!=null){
-//            requirement.setId(stockOutRequirement.getId());
-//            stockOutRequiredSampleRepository.deleteByStockOutRequirementId(stockOutRequirement.getId());
-//        }
+
+        if(stockOutRequirement.getId()!=null){
+            requirement.setId(stockOutRequirement.getId());
+            stockOutRequiredSampleRepository.deleteByStockOutRequirementId(stockOutRequirement.getId());
+        }
         List<StockOutRequiredSample> stockOutRequiredSamples = new ArrayList<StockOutRequiredSample>();
         List<StockOutRequiredSample> stockOutRequiredSamplesList = new ArrayList<StockOutRequiredSample>();
         Map<String,String> map = new HashMap<>();

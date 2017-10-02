@@ -67,6 +67,7 @@
     }
 
     // zhuyu added for: Fix handsontable Comments plugin, mouseover bug, and classList property to document object.
+    //noinspection JSAnnotator
     document.classList = {
         contains: function (className){
             return false;

@@ -65,4 +65,20 @@
         //     return returnValue;
         // });
     }
+
+    // zhuyu added for: Fix handsontable Comments plugin, mouseover bug, and classList property to document object.
+    document.classList = {
+        contains: function (className){
+            return false;
+        }
+    };
+    window.hasClass = function _hasClass(element, className) {
+        var createClassNameRegExp = function createClassNameRegExp(className) {
+            return new RegExp('(\\s|^)' + className + '(\\s|$)');
+        };
+
+        // http://snipplr.com/view/3561/addclass-removeclass-hasclass/
+        return !!element.className.match(createClassNameRegExp(className));
+    };
+    // end
 })();

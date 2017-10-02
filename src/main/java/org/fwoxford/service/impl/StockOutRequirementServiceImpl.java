@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -84,6 +86,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
     @Autowired
     private BankUtil bankUtil;
+
+    @Autowired
+    EntityManager entityManager;
 
     public StockOutRequirementServiceImpl(StockOutRequirementRepository stockOutRequirementRepository, StockOutRequirementMapper stockOutRequirementMapper) {
         this.stockOutRequirementRepository = stockOutRequirementRepository;
@@ -479,8 +484,15 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         stockOutRequirement.setCountOfSampleReal(0);
         stockOutRequirementRepository.save(stockOutRequirement);
         //删除核对通过的样本
-        stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
+//        stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
+        StringBuffer sql = new StringBuffer();
+        sql.append("delete from stock_out_req_frozen_tube where stock_out_requirement_id = ?1");
 
+        Query query = entityManager.createNativeQuery(sql.toString());
+        query.setParameter("1", id).executeUpdate();
+//        entityManager.flush();
+
+//        int a = 1/0;
         stockOutRequirementForApply.setId(id);
         stockOutRequirementForApply.setStatus(stockOutRequirement.getStatus());
         return stockOutRequirementForApply;

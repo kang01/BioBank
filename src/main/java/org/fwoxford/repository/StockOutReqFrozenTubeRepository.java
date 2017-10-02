@@ -21,7 +21,9 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     List<StockOutReqFrozenTube> findAllByStockOutApplyId(Long id);
 
 
-    void deleteByStockOutRequirementId(Long id);
+    default void deleteByStockOutRequirementId(Long id) {
+
+    };
 
     @Query("SELECT count(s) FROM StockOutReqFrozenTube s WHERE s.stockOutRequirement.stockOutApply.id = ?1 AND s.status = '1301'")
     Long countByApply(Long id);
@@ -63,4 +65,6 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     // 根据多个出库盒ID读取出库样本
     @Query("SELECT s FROM StockOutReqFrozenTube s WHERE s.stockOutFrozenBox.id IN ?1 AND (?2 IS NULL OR s.status=?2)")
     List<StockOutReqFrozenTube> findByStockOutFrozenBoxId(List<Long> boxIds, String status);
+
+    void deleteInBatchByStockOutRequirementId(Long id);
 }

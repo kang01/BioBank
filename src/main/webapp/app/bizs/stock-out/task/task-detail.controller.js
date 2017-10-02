@@ -672,7 +672,7 @@
                         repealList.push(vm.aRemarkArray[i]);
                     }
                 }
-                TaskService.repeal(repealList).success(function (data) {
+                TaskService.repeal(vm.taskId,repealList).success(function (data) {
                     toastr.success("申请撤销样本成功!");
                     _fnQueryTaskBoxes();
                     _fnLoadTubes();

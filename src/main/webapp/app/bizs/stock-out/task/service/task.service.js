@@ -68,8 +68,8 @@
         function _fnAbnormal(param) {
             return $http.put('api/stock-out-task-frozen-tubes/abnormal',param);
         }
-        function _fnRepeal(param) {
-            return $http.put('api/stock-out-task-frozen-tubes/repeal',param);
+        function _fnRepeal(taskId,param) {
+            return $http.put('api/stock-out-task-frozen-tubes/repeal/task/'+taskId,param);
         }
         function _fnNote(param) {
             return $http.put('api/stock-out-task-frozen-tubes/note',param);

@@ -8,11 +8,12 @@
         .module('bioBankApp')
         .controller('StockInController', StockInController);
 
-    StockInController.$inject = ['$scope', '$compile', 'Principal','BioBankDataTable', 'StockInService', 'ParseLinks', 'AlertService', '$state', 'pagingParams', 'paginationConstants', 'JhiLanguageService','DTOptionsBuilder','DTColumnBuilder'];
+    StockInController.$inject = ['$scope', '$compile', 'Principal','BioBankDataTable', 'StockInService', 'ParseLinks', 'AlertService', '$uibModal', '$state', 'pagingParams', 'paginationConstants', 'JhiLanguageService','DTOptionsBuilder','DTColumnBuilder'];
 
-    function StockInController($scope, $compile, Principal,BioBankDataTable, StockInService, ParseLinks, AlertService, $state, pagingParams, paginationConstants, JhiLanguageService,DTOptionsBuilder,DTColumnBuilder) {
+    function StockInController($scope, $compile, Principal,BioBankDataTable, StockInService, ParseLinks, AlertService, $uibModal, $state, pagingParams, paginationConstants, JhiLanguageService,DTOptionsBuilder,DTColumnBuilder) {
         var vm = this;
         vm.addRecord = _fnAddRecord;
+        vm.newRecord = _fnNewRecord;
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
         // vm.transition = transition;
 
@@ -176,6 +177,22 @@
 
         function _fnAddRecord() {
             $state.go("stock-in-new")
+        }
+
+        // Add by zhuyu. For new stock
+        function _fnNewRecord(){
+            var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-in/modal/stock-in-new-modal.html',
+                controller: 'StockInNewModalController',
+                controllerAs:'vm',
+                resolve: {
+                    items:{}
+                }
+            });
+            modalInstance.result.then(function (data) {
+                $state.go("stock-in-add-box-edit", {id: data});
+            });
         }
 
 

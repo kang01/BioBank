@@ -1,0 +1,26 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
+    <h3 class="modal-title" id="modal-title">选择项目</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group ">
+                    <label class="col-md-4 control-label">
+                        <span class="required-field"></span>
+                        项目编码
+                    </label>
+                    <div class="col-md-8">
+                        <selectize options='vm.projectOptions' config="vm.projectConfig"
+                                   ng-model="vm.projectId"></selectize>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" ng-disabled="!vm.projectId">确定</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">取消</button>
+</div>

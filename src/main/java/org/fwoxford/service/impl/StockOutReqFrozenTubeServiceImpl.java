@@ -161,7 +161,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
                         , Arrays.asList(s9)
                         , Arrays.asList(s10)
                     );
-                if (frozenTubeList.size()==0 || frozenTubeList.stream().anyMatch(ft->outTubeList.contains(ft.getId()))) {
+                if (frozenTubeList.stream().anyMatch(ft->outTubeList.contains(ft.getId()))) {
                     throw new BankServiceException("请求的样本不在库存。");
                 }
 
@@ -180,7 +180,9 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
 //                frozenTubeListLast.addAll(frozenTubeList);
 //            }
         }
-
+        if(frozenTubeListLast.size()==0){
+            throw new BankServiceException("请求的样本不在库存。");
+        }
         System.out.print("----entTime:"+new Date());
         List<StockOutReqFrozenTube> stockOutReqFrozenTubeList = new ArrayList<>();
 

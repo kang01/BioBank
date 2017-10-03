@@ -317,7 +317,6 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                     .supportRackCode(stockOutFrozenBox.getSupportRackCode())
                     .rowsInShelf(stockOutFrozenBox.getRowsInShelf())
                     .columnsInShelf(stockOutFrozenBox.getColumnsInShelf())
-                    .status(Constants.FROZEN_BOX_STOCKED)
 //                    .countOfSample(sampleList.size())
                     .frozenBoxCode(stockOutFrozenBox.getFrozenBoxCode())
                     .frozenBoxCode1D(stockOutFrozenBox.getFrozenBoxCode1D())

@@ -148,6 +148,8 @@
     <include file="classpath:config/liquibase/changelog/20170930093900_updated_column_StockOutHandoverDetails.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170930100901_added_view_StockOutHandover.xml" relativeToChangelogFile="false"/>
 
+    <include file="classpath:config/liquibase/changelog/20170929104889_updated_view_StockOutTaskTubeByBox.xml" relativeToChangelogFile="false"/>
+
     <!--<include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>-->
 
 </databaseChangeLog>

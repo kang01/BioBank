@@ -27,7 +27,7 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:oracle:thin:@10.24.10.247:1521:xe
-        username: biobank_t_01
+        username: biobank_p_20171003
         password: eyuXotN6
 #        url: jdbc:oracle:thin:@10.24.10.56:1521:xe
 #        username: biobank1

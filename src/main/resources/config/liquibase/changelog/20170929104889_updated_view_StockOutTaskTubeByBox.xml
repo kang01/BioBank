@@ -6,15 +6,15 @@
     <!--
         Added the view for entity StockOutFrozenBoxForTaskDetailDataTableEntity.
     -->
-    <changeSet id="20170513000000-2" author="jhipster">
-        <createView viewName="view_stock_out_task_tube">
+
+    <changeSet id="20170929212600-2" author="jhipster">
+        <createView viewName="view_stock_out_tube">
             SELECT p.id,p.frozen_box_code,p.sample_type_name
             ,p.sample_code,p.gender,p.age,p.disease_type,
             p.is_hemolysis,p.is_blood_lipid,
-            t.stock_out_frozen_box_id
-            FROM stock_out_box_tube t
+            t.stock_out_frozen_box_id,p.sample_temp_code
+            FROM stock_out_req_frozen_tube t
             LEFT OUTER JOIN frozen_tube p ON t.frozen_tube_id = p.id
         </createView>
     </changeSet>
-
 </databaseChangeLog>

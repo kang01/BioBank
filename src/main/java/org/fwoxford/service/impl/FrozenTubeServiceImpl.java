@@ -181,6 +181,9 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
         List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndFrozenBoxId(id,frozenBox.getId());
 //        List<StockOutTaskFrozenTube> stockOutFrozenTubes = stockOutTaskFrozenTubeRepository.findByFrozenBoxAndTask(frozenBoxCode,id);
         for(FrozenTube f:frozenTubes){
+            if(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKED)){
+                continue;
+            }
             FrozenTubeDTO frozenTubeResponse = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
             for(StockOutReqFrozenTube s :stockOutReqFrozenTubes){
                 if(s.getFrozenTube().getId().equals(f.getId())){

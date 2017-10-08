@@ -1474,9 +1474,9 @@ public class ImportSampleDataTest {
     @Test
     public void importOptRecordForPeace2() {
         importBoxRecordForPeace2("A_RECORD", "A");
-//        importBoxRecordForPeace2("E_RECORD", "E");
-//        importBoxRecordForPeace2("W_RECORD", "W");
-//        importBoxRecordForPeace2("R_RECORD", "R");
+        importBoxRecordForPeace2("E_RECORD", "E");
+        importBoxRecordForPeace2("W_RECORD", "W");
+        importBoxRecordForPeace2("R_RECORD", "R");
     }
 
     /**
@@ -2246,7 +2246,9 @@ public class ImportSampleDataTest {
                 e.printStackTrace();
             }
             peopleMemo = new ArrayList<>();
-
+            if(map.get("TASK_CODE").toString().equals("NA")){
+                continue;
+            }
             applyCode = map.get("TASK_CODE") != null && !map.get("TASK_CODE").toString().equals("NA") ? map.get("TASK_CODE").toString() : applyCode;
             if(StringUtils.isEmpty(applyCode)){
                 applyCode = bankUtil.getUniqueIDByDate("C",date);
@@ -2327,6 +2329,7 @@ public class ImportSampleDataTest {
             //创建出库需求
             String requirementCode = bankUtil.getUniqueIDByDate("D", stockOutDate);
             StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findByRequirementCode(requirementCode);
+            StockOutPlan stockOutPlan = new StockOutPlan();
             if(stockOutRequirement == null) {
                 stockOutRequirement = new StockOutRequirement()
                     .applyCode(code).requirementCode(requirementCode).requirementName("出库"+alist.size()+"支样本")
@@ -2334,17 +2337,16 @@ public class ImportSampleDataTest {
                     .countOfSample(alist.size()).countOfSampleReal(alist.size());
                 stockOutRequirement.setCreatedDate(createDate);
                 stockOutRequirementRepository.saveAndFlush(stockOutRequirement);
-            }
-            //创建出库计划
-            String stockOutPlanCode = bankUtil.getUniqueIDByDate("E", stockOutDate);
-            StockOutPlan stockOutPlan = stockOutPlanRepository.findByStockOutPlanCode(stockOutPlanCode);
-            if(stockOutPlan == null){
-                stockOutPlan = new StockOutPlan().stockOutPlanCode(stockOutPlanCode).stockOutApply(stockOutApply)
-                    .status(Constants.STOCK_OUT_PLAN_COMPLETED)
-                    .applyNumber(stockOutApply.getApplyCode())
-                    .stockOutApply(stockOutApply);
-                stockOutPlan.setCreatedDate(createDate);
-                stockOutPlan = stockOutPlanRepository.saveAndFlush(stockOutPlan);
+                //创建出库计划
+                String stockOutPlanCode = bankUtil.getUniqueIDByDate("E", stockOutDate);
+                stockOutPlan = stockOutPlanRepository.findByStockOutPlanCode(stockOutPlanCode);
+                if(stockOutPlan == null){
+                    stockOutPlan = new StockOutPlan().stockOutPlanCode(stockOutPlanCode).stockOutApply(stockOutApply)
+                        .status(Constants.STOCK_OUT_PLAN_COMPLETED).stockOutPlanDate(date)
+                        .applyNumber(stockOutApply.getApplyCode())
+                        .stockOutApply(stockOutApply);
+                    stockOutPlan = stockOutPlanRepository.saveAndFlush(stockOutPlan);
+                }
             }
             //创建出库任务
             String taskCode =  bankUtil.getUniqueIDByDate("F", stockOutDate);
@@ -3266,7 +3268,78 @@ public class ImportSampleDataTest {
 
     @Test
     public void importBoxCode1ForAllFrozenBox(){
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findAll();
+        List<StockInBox> stockInBoxes = stockInBoxRepository.findAll();
+        List<StockOutFrozenBox> stockOutFrozenBoxes = stockOutFrozenBoxRepository.findAll();
+        List<StockOutHandoverBox> stockOutHandoverBoxes = stockOutHandoverBoxRepository.findAll();
+        Connection con = null;// 创建一个数据库连接
+        PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
+        ResultSet result = null;// 创建一个结果集对象
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        try {
+            con = DBUtilForTemp.open();
+            System.out.println("连接成功！");
+            String sqlForSelect = "select * from FIRST_STOCK_IN";// 预编译语句
+            pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
+            result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
+            ResultSetMetaData rsMeta = result.getMetaData();
+            Map<String, Object> map = null;
+            while (result.next()) {
+                map = this.Result2Map(result, rsMeta);
+                list.add(map);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                DBUtilForTemp.close(con);
+                System.out.println("数据库连接已关闭！");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
+        for(FrozenBox frozenBox : frozenBoxList){
+            for(Map<String, Object> boxMap:list){
+                String boxCode = boxMap.get("BOX_CODE").toString().trim();
+                String boxCode1 = boxMap.get("BOX_CODE_2").toString().trim();
+                if(frozenBox.getFrozenBoxCode().equals(boxCode)){
+                    frozenBox.setFrozenBoxCode1D(boxCode1);
+                }
+            }
+        }
+        frozenBoxRepository.save(frozenBoxList);
+
+        for(StockInBox stockInBox :stockInBoxes){
+            for(Map<String, Object> boxMap:list){
+                String boxCode = boxMap.get("BOX_CODE").toString().trim();
+                String boxCode1 = boxMap.get("BOX_CODE_2").toString().trim();
+                if(stockInBox.getFrozenBoxCode().equals(boxCode)){
+                    stockInBox.setFrozenBoxCode1D(boxCode1);
+                }
+            }
+        }
+        stockInBoxRepository.save(stockInBoxes);
+        for(StockOutFrozenBox box :stockOutFrozenBoxes){
+            for(Map<String, Object> boxMap:list){
+                String boxCode = boxMap.get("BOX_CODE").toString().trim();
+                String boxCode1 = boxMap.get("BOX_CODE_2").toString().trim();
+                if(box.getFrozenBoxCode().equals(boxCode)){
+                    box.setFrozenBoxCode1D(boxCode1);
+                }
+            }
+        }
+        stockOutFrozenBoxRepository.save(stockOutFrozenBoxes);
+        for(StockOutHandoverBox box :stockOutHandoverBoxes){
+            for(Map<String, Object> boxMap:list){
+                String boxCode = boxMap.get("BOX_CODE").toString().trim();
+                String boxCode1 = boxMap.get("BOX_CODE_2").toString().trim();
+                if(box.getFrozenBoxCode().equals(boxCode)){
+                    box.setFrozenBoxCode1D(boxCode1);
+                }
+            }
+        }
+        stockOutHandoverBoxRepository.save(stockOutHandoverBoxes);
     }
 }
 

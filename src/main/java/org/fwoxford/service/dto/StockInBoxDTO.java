@@ -641,4 +641,13 @@ public class StockInBoxDTO extends AbstractAuditingDTO implements Serializable {
         this.sampleType = sampleType;
         return this;
     }
+    private String frozenBoxCode1D;
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
+    }
 }

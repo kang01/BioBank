@@ -4,12 +4,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <!--
-        Added the view for entity StockOutApply.
+        Added the view for entity StockOutPlansForDataTableEntity.
     -->
     <changeSet id="20170929000000-2" author="jhipster">
 
         <createView viewName="view_stock_out_plan_list">
-            SELECT p.id,p.apply_number,p.stock_out_plan_code,p.created_date as plan_date,a.purpose_of_sample,
+            SELECT p.id,p.apply_number,p.stock_out_plan_code,p.stock_out_plan_date as plan_date,a.purpose_of_sample,
                 (select count(t.id) from stock_out_req_frozen_tube t
                     left join stock_out_requirement r on t.stock_out_requirement_id = r.id
                     where r.stock_out_apply_id = a.id ) as count_of_stock_out_plan_sample,

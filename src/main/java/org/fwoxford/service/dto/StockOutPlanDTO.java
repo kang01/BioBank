@@ -3,6 +3,7 @@ package org.fwoxford.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -105,5 +106,14 @@ public class StockOutPlanDTO extends AbstractAuditingDTO implements Serializable
             ", memo='" + memo + "'" +
             ", applyNumber='" + applyNumber + "'" +
             '}';
+    }
+    private LocalDate stockOutPlanDate;
+
+    public LocalDate getStockOutPlanDate() {
+        return stockOutPlanDate;
+    }
+
+    public void setStockOutPlanDate(LocalDate stockOutPlanDate) {
+        this.stockOutPlanDate = stockOutPlanDate;
     }
 }

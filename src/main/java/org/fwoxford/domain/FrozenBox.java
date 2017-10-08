@@ -1,6 +1,5 @@
 package org.fwoxford.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -637,5 +636,20 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
             ", dislocationNumber='" + dislocationNumber + "'" +
             ", isRealData='" + isRealData + "'" +
             '}';
+    }
+
+    @Size(max = 100)
+    @Column(name = "frozen_box_code_1d", length = 100)
+    private String frozenBoxCode1D;
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+    public FrozenBox frozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
+        return this;
+    }
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
     }
 }

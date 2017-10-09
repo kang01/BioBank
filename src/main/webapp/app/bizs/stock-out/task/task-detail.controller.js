@@ -102,6 +102,7 @@
                 vm.stockOutbox = data;
                 vm.boxOptions.withOption('data', data);
                 // vm.boxInstance.rerender();
+                startTimer();
             });
         }
         function _fnQueryStockOutList() {
@@ -133,7 +134,7 @@
                 });
             },90000);
         }
-        startTimer();
+
 
         $scope.$on('$destroy',function(event,toState,toParams,fromState,fromParams){
             window.clearInterval(taskTimer);

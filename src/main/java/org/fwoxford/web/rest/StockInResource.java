@@ -107,9 +107,9 @@ public class StockInResource {
     @Timed
     public ResponseEntity<StockInDTO> updateStockIn(@Valid @RequestBody StockInDTO stockInDTO) throws URISyntaxException {
         log.debug("REST request to update StockIn : {}", stockInDTO);
-//        if (stockInDTO.getId() == null) {
-//            return createStockIn(stockInDTO);
-//        }
+        if (stockInDTO.getId() == null) {
+            return createStockIn(stockInDTO);
+        }
         StockInDTO result = stockInService.save(stockInDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockInDTO.getId().toString()))

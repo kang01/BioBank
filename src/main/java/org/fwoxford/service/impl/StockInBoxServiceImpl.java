@@ -1141,6 +1141,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(countOfSampleClass>0&&entity.getIsMixed().equals(Constants.NO)&&stockInBoxDTO.getSampleClassificationId()==null){
             throw new BankServiceException("该项目下已经配置样本分类，样本分类不能为空！");
         }
+        frozenBox.setSampleClassification(frozenBoxMapper.sampleClassificationFromId(stockInBoxDTO.getSampleClassificationId()));
         return frozenBox;
     }
 

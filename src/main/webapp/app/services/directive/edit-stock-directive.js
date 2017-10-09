@@ -1041,10 +1041,13 @@
                                 vm.frozenTubeArray[i][j].sampleClassificationName = "";
                                 vm.frozenTubeArray[i][j].sampleClassificationCode = "";
                                 vm.frozenTubeArray[i][j].backColorForClass = "";
-                                vm.frozenTubeArray[i][j].sampleTypeId = vm.obox.sampleTypeId;
-                                vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).sampleTypeName;
-                                vm.frozenTubeArray[i][j].sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).sampleTypeCode;
-                                vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).backColor;
+                                if(!vm.frozenTubeArray[i][j].sampleTypeId){
+                                    vm.frozenTubeArray[i][j].sampleTypeId = vm.obox.sampleTypeId;
+                                    vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).sampleTypeName;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).sampleTypeCode;
+                                    vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).backColor;
+                                }
+
                             }
                         }
                     }
@@ -1111,16 +1114,32 @@
                                 vm.frozenTubeArray[i][j].sampleClassificationName = "";
                                 vm.frozenTubeArray[i][j].sampleClassificationCode = "";
                                 vm.frozenTubeArray[i][j].backColorForClass = "";
-                                vm.frozenTubeArray[i][j].sampleClassificationId = vm.obox.sampleClassificationId;
-                                vm.frozenTubeArray[i][j].sampleClassificationName = vm.obox.sampleClassificationName;
-                                vm.frozenTubeArray[i][j].sampleClassificationCode = vm.obox.sampleClassificationCode;
-                                vm.frozenTubeArray[i][j].backColorForClass = vm.obox.backColorForClass;
+                                if(!vm.frozenTubeArray[i][j].sampleClassificationId){
+                                    vm.frozenTubeArray[i][j].sampleClassificationId = vm.obox.sampleClassificationId;
+                                    vm.frozenTubeArray[i][j].sampleClassificationName = vm.obox.sampleClassificationName;
+                                    vm.frozenTubeArray[i][j].sampleClassificationCode = vm.obox.sampleClassificationCode;
+                                    vm.frozenTubeArray[i][j].backColorForClass = vm.obox.backColorForClass;
+                                }
+
                             }
+                        }else{
+                            vm.frozenTubeArray[i][j].sampleClassificationId = "";
+                            vm.frozenTubeArray[i][j].sampleClassificationName = "";
+                            vm.frozenTubeArray[i][j].sampleClassificationCode = "";
+                            vm.frozenTubeArray[i][j].backColorForClass = "";
                         }
-                        vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
-                        vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
-                        vm.frozenTubeArray[i][j].sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeCode;
-                        vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).backColor;
+                        vm.frozenTubeArray[i][j].sampleTypeId = "";
+                        vm.frozenTubeArray[i][j].sampleTypeName = "";
+                        vm.frozenTubeArray[i][j].sampleTypeCode = "";
+                        vm.frozenTubeArray[i][j].backColor = "";
+                        if(!vm.frozenTubeArray[i][j].sampleTypeId){
+
+                            vm.frozenTubeArray[i][j].sampleTypeId = sampleTypeId;
+                            vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeName;
+                            vm.frozenTubeArray[i][j].sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).sampleTypeCode;
+                            vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+sampleTypeId}).backColor;
+                        }
+
                     }
                 }
 

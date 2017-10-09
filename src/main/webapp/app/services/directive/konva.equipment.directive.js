@@ -23,9 +23,6 @@
         return  directive;
 
         function  linkFunc(scope,  element,  attrs)  {
-            scope.$watch('equipmentType',function (newValue,oldValue) {
-                console.log(newValue);
-            });
             var height = 4310;
             //舞台
             var stage = new Konva.Stage({
@@ -52,29 +49,11 @@
                     width: width,
                     height: 4600
                 });
-                dragLayer.add(equipment);
+
                 backgroundLayer.add(image1);
                 stage.add(backgroundLayer);
                 stage.add(dragLayer);
             };
-
-            function writeMessage(message) {
-                text.setText(message);
-                // backgroundLayer.draw();
-                stage.batchDraw();
-            }
-
-            // stage.on('mouseout', function() {
-            //     writeMessage('Mouseout triangle');
-            // });
-            // stage.on('mousemove', function() {
-            //     var mousePos = stage.getPointerPosition();
-            //     var x = mousePos.x;
-            //     var y = mousePos.y;
-            //     writeMessage('x: ' + x + ', y: ' + y);
-            //     // equipment.x(x-15);
-            //     // equipment.y(y-15);
-            // });
 
             var text = new Konva.Text({
                 x: 132,
@@ -85,78 +64,13 @@
                 fill: 'black'
             });
             backgroundLayer.add(text);
-            var equipment = new Konva.Rect({
-                x: 0,
-                y: 0,
-                stroke: '#555',
-                strokeWidth: 0,
-                fill: 'green',
-                width: 30,
-                height: 30,
-                shadowColor: 'black',
-                shadowBlur: 10,
-                shadowOffset: [10, 10],
-                shadowOpacity: 0.2,
-                cornerRadius: 2,
-                draggable: true
+
+            //区域组
+            var areaGroup = new Konva.Group({
+                width: 80,
+                height: 80
             });
-            var startPos = {};
-            equipment.on('dragstart', function(evt) {
-                if (!startPos.x){
-                    startPos = evt.target.getClientRect();
-                }
-            });
-            equipment.on('dragmove',function (evt) {
-                // console.log(evt);
-                group.find('Rect').each(function( rect, index ){
-                    rect.fill('rgba(0,0,0,0)')
-                });
-
-                var mousePos = stage.getPointerPosition();
-                var shape = areaLayer.getIntersection(mousePos);
-                if(shape && shape.className == 'Rect'){
-                    shape.fill('rgba(0,0,0,0.3)');
-                }
-                areaLayer.batchDraw();
-            });
-            equipment.on('dragend', function(evt) {
-                var endPos = {};
-                var mousePos = stage.getPointerPosition();
-                var shape = areaLayer.getIntersection(mousePos);
-
-                if(!shape){
-                    endPos = evt.target.getClientRect();
-
-                    var rangeX1 = startPos.x;
-                    var rangeY1 = startPos.y;
-
-                    var rangeX2 = endPos.x;
-                    var rangeY2 = endPos.y;
-
-                    var offsetPos = {x:rangeX1 -rangeX2,y:rangeY1 - rangeY2};
-                    var self = this;
-                    self.move(offsetPos);
-                }else{
-
-                    endPos = evt.target.getClientRect();
-                    var offsetPos = shape.getClientRect();
-                    var rangeX1 = offsetPos.x+offsetPos.width / 2.0;
-                    var rangeY1 = offsetPos.y+offsetPos.height / 2.0;
-                    var rangeX2 = endPos.x+endPos.width / 2.0;
-                    var rangeY2 = endPos.y+endPos.height / 2.0;
-                    var offsetPos1 = {x:rangeX1 -rangeX2,y:rangeY1 - rangeY2};
-                    startPos = {x:rangeX1-endPos.width/2.0,y:rangeY1 - endPos.height / 2.0};
-                    this.move(offsetPos1)
-                }
-                group.find('Rect').each(function( rect, index ){
-                    rect.fill('rgba(0,0,0,0)')
-                });
-                dragLayer.batchDraw();
-                areaLayer.batchDraw();
-            });
-
-            //组
-            var group = new Konva.Group({
+            var equipmentGroup = new Konva.Group({
                 width: 80,
                 height: 80
             });
@@ -223,10 +137,10 @@
                         width: data.width,
                         height: data.height
                     });
-                    image.moveTo(group);
-                    group.add(rect);
+                    image.moveTo(areaGroup);
+                    areaGroup.add(rect);
 
-                    areaLayer.add(group);
+                    areaLayer.add(areaGroup);
                     areaLayer.batchDraw();
                 };
             }
@@ -253,10 +167,10 @@
                         width: data.width,
                         height: data.height
                     });
-                    image.moveTo(group);
-                    group.add(rect);
+                    image.moveTo(areaGroup);
+                    areaGroup.add(rect);
 
-                    areaLayer.add(group);
+                    areaLayer.add(areaGroup);
                     areaLayer.batchDraw();
                 };
             }
@@ -264,11 +178,173 @@
                 addRefrigerator(areaRefrigerator[m]);
             }
 
+            var equipment = new Konva.Rect({
+                x: 0,
+                y: 0,
+                stroke: 'transparent',
+                strokeWidth: 0,
+                fill: 'transparent',
+                width: 30,
+                height: 30,
+                shadowColor: 'transparent',
+                shadowBlur: 10,
+                shadowOffset: [10, 10],
+                shadowOpacity: 0.2,
+                cornerRadius: 2,
+                draggable: true
+            });
 
+            var startPos = {};
 
 
 
             stage.add(areaLayer);
+
+            scope.$watch('equipmentType',function (newValue,oldValue) {
+                console.log(scope.equipmentType);
+
+                if(scope.equipmentType.code == '1'){
+                //冰箱
+                    equipmentGroup.destroy();
+                    var imageObj = new Image();
+                    imageObj.src = 'content/images/冰箱.svg';
+                    imageObj.onload = function() {
+                        var image = new Konva.Image({
+                            x:  0,
+                            y: 0,
+                            image: imageObj,
+                            width: 30,
+                            height: 40
+                        });
+                        equipmentGroup.add(equipment);
+                        image.moveTo(equipmentGroup);
+
+                        // console.log(equipmentGroup);
+                        equipmentGroup.on('dragstart', function(evt) {
+                            console.log(evt);
+                            if (!startPos.x){
+                                startPos = evt.target.getClientRect();
+                            }
+                        });
+                        equipmentGroup.on('dragmove',function (evt) {
+                            console.log(evt);
+                            areaGroup.find('Rect').each(function( rect, index ){
+                                rect.fill('rgba(0,0,0,0)')
+                            });
+
+                            var mousePos = stage.getPointerPosition();
+                            var shape = areaLayer.getIntersection(mousePos);
+                            if(shape && shape.className == 'Rect'){
+                                shape.fill('rgba(0,0,0,0.3)');
+                            }
+                            areaLayer.batchDraw();
+                        });
+                        equipmentGroup.on('dragend', function(evt) {
+                            console.log(evt);
+                            var endPos = {};
+                            var mousePos = stage.getPointerPosition();
+                            var shape = areaLayer.getIntersection(mousePos);
+
+                            if(!shape){
+                                endPos = evt.target.getClientRect();
+
+                                var rangeX1 = startPos.x;
+                                var rangeY1 = startPos.y;
+
+                                var rangeX2 = endPos.x;
+                                var rangeY2 = endPos.y;
+
+                                var offsetPos = {x:rangeX1 -rangeX2,y:rangeY1 - rangeY2};
+                                var self = this;
+                                self.move(offsetPos);
+                            }else{
+
+                                endPos = evt.target.getClientRect();
+                                var offsetPos = shape.getClientRect();
+                                var rangeX1 = offsetPos.x+offsetPos.width / 2.0;
+                                var rangeY1 = offsetPos.y+offsetPos.height / 2.0;
+                                var rangeX2 = endPos.x+endPos.width / 2.0;
+                                var rangeY2 = endPos.y+endPos.height / 2.0;
+                                var offsetPos1 = {x:rangeX1 -rangeX2,y:rangeY1 - rangeY2};
+                                startPos = {x:rangeX1-endPos.width/2.0,y:rangeY1 - endPos.height / 2.0};
+                                this.move(offsetPos1)
+                            }
+                            areaGroup.find('Rect').each(function( rect, index ){
+                                rect.fill('rgba(0,0,0,0)')
+                            });
+                            dragLayer.batchDraw();
+                            areaLayer.batchDraw();
+                        });
+
+                        dragLayer.add(equipmentGroup);
+
+                        dragLayer.batchDraw();
+                    };
+                }else if(scope.equipmentType.code == '2'){
+                //冻存罐
+                    equipmentGroup.destroy();
+                    var imageObj = new Image();
+                    imageObj.src = 'content/images/冻存罐.svg';
+                    imageObj.onload = function() {
+                        var image = new Konva.Image({
+                            x:  0,
+                            y: 0,
+                            image: imageObj,
+                            width: 30,
+                            height: 40
+                        });
+                        equipmentGroup.add(equipment);
+                        image.moveTo(equipmentGroup);
+
+
+                        dragLayer.add(equipmentGroup);
+                        dragLayer.batchDraw();
+                    };
+                }else if(scope.equipmentType.code == '3'){
+                    //冰柜
+                    equipmentGroup.destroy();
+                    var imageObj = new Image();
+                    imageObj.src = 'content/images/冰柜.svg';
+                    imageObj.onload = function() {
+                        var image = new Konva.Image({
+                            x:  0,
+                            y: 0,
+                            image: imageObj,
+                            width: 40,
+                            height: 30
+                        });
+                        equipmentGroup.add(equipment);
+                        image.moveTo(equipmentGroup);
+
+
+                        dragLayer.add(equipmentGroup);
+                        dragLayer.batchDraw();
+                    };
+                }
+
+
+                function writeMessage(message) {
+                    text.setText(message);
+                    // backgroundLayer.draw();
+                    stage.batchDraw();
+                }
+
+                // stage.on('mouseout', function() {
+                //     writeMessage('Mouseout triangle');
+                // });
+                // stage.on('mousemove', function() {
+                //     var mousePos = stage.getPointerPosition();
+                //     var x = mousePos.x;
+                //     var y = mousePos.y;
+                //     writeMessage('x: ' + x + ', y: ' + y);
+                //     // equipment.x(x-15);
+                //     // equipment.y(y-15);
+                // });
+
+
+
+            },true);
+
 
 
 

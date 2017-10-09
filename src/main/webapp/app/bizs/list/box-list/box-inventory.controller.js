@@ -289,7 +289,7 @@
             vm.dto.spaceType = "1";
             vm.dto.compareType = "1";
             // vm.checked = false;
-            vm.dtInstance.rerender();
+            // vm.dtInstance.rerender();
         }
         function _fnSearchSample(frozenBoxCode) {
             var obj = {

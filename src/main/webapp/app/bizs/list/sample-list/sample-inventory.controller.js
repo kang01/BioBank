@@ -266,7 +266,7 @@
             vm.arraySampleCode = [];
             vm.projectCodeStr = [];
             // vm.checked = false;
-            vm.dtInstance.rerender();
+            // vm.dtInstance.rerender();
         }
         function _fnExchangeDestroy(operateStatus) {
             // operateStatus:1.交换 2.销毁

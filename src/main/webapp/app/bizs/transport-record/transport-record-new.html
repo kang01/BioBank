@@ -301,6 +301,14 @@
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-6">
+                                    <label><span class="required-field"></span>一维编码</label>
+                                    <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode1D" disabled required
+                                           style="min-width:130px;">
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="form-group col-md-6">
                                     <label><span class="required-field"></span>样本类型</label>
                                     <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
                                                ng-model="vm.box.sampleTypeId" ng-disabled="!vm.box"></selectize>
@@ -351,7 +359,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <label>备注</label>
-                                    <textarea name="memo" class="form-control" rows="10" style="resize: none;ime-mode:disabled"
+                                    <textarea name="memo" class="form-control" rows="7" style="resize: none;ime-mode:disabled"
                                               ng-model="vm.box.memo" ng-disabled="!vm.box" onfocus=" this.style.imeMode='disabled' "></textarea>
                                 </div>
                             </div>

@@ -44,16 +44,26 @@
                 <div class="col-md-2 pr-0 pl-20">
                     <form>
                         <div class="form-group">
-                            <label>冻存盒号</label>
+                            <label>冻存盒号
+                                <span class="required-field"></span>
+                            </label>
                             <input type="text" class="form-control"  ng-model="vm.obox.frozenBoxCode" ng-disabled="vm.editFlag" ng-blur="vm.frozenBoxForStockIn()" focus-me>
                         </div>
                         <div class="form-group">
-                            <label>盒类型</label>
+                            <label>一维编码</label>
+                            <input type="text" class="form-control"  ng-model="vm.obox.frozenBoxCode1D" ng-disabled="vm.editFlag">
+                        </div>
+                        <div class="form-group">
+                            <label>盒类型
+                                <span class="required-field"></span>
+                            </label>
                             <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
                                        ng-model="vm.obox.frozenBoxTypeId"  ng-disabled="vm.editFlag"></selectize>
                         </div>
                         <div class="form-group">
-                            <label>样本类型</label>
+                            <label>样本类型
+                                <span class="required-field"></span>
+                            </label>
                             <!--{{vm.sampleTypeOptions}}-->
                             <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
                                        ng-model="vm.obox.sampleTypeId"  ng-disabled="vm.editFlag"></selectize>
@@ -63,14 +73,16 @@
                             </label>
                         </div>
                         <div class="form-group">
-                            <label>样本分类</label>
+                            <label>样本分类
+
+                            </label>
                             <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
                                        ng-model="vm.obox.sampleClassificationId"  ng-disabled="vm.editFlag"
                             ></selectize>
                         </div>
                         <div class="form-group">
                             <label>备注</label>
-                            <textarea  class="form-control resize-none" rows="9" ng-model="vm.obox.memo"></textarea>
+                            <textarea  class="form-control resize-none" rows="4" ng-model="vm.obox.memo"></textarea>
                         </div>
                     </form>
                 </div>

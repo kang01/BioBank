@@ -2443,7 +2443,7 @@ public class ImportSampleDataTest {
                 frozenBoxRepository.saveAndFlush(frozenBox);
                 //保存出库盒
                 StockOutFrozenBox stockOutFrozenBox = new StockOutFrozenBox();
-                stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_HANDOVER);
+                stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_COMPLETED);
                 stockOutFrozenBox.setFrozenBox(frozenBox);
                 stockOutFrozenBox.setStockOutTask(stockOutTask);
                 stockOutFrozenBox = stockOutFrozenBox.frozenBoxCode(frozenBox.getFrozenBoxCode()).sampleTypeCode(frozenBox.getSampleTypeCode())

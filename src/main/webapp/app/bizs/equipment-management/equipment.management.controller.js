@@ -42,20 +42,22 @@
             });
         }
         _fnInitWH();
-        $(".equipment-ul").delegate("li","click",function(){
-            $(".equipment-ul li").removeClass("equipment-selected");
-            console.log(this);
-            $(this).addClass("equipment-selected");
 
-        });
         vm.equipmentType = {
             code:""
         };
         $(".equipment-list-body").delegate(".equipment-box","click",function () {
             $(".equipment-list-body .equipment-box").removeClass("equipment-selected");
             $(this).addClass("equipment-selected");
+            var equipmentName = $(this).find(".equipment-name")[0].innerText;
+            if(equipmentName == '冰箱'){
+                vm.equipmentType.code = "1";
+            }else if(equipmentName == '冻存罐'){
+                vm.equipmentType.code = "2";
+            }else{
+                vm.equipmentType.code = "3";
+            }
 
-            vm.equipmentType.code = "1";
             $scope.$apply();
         });
 

@@ -272,13 +272,21 @@
                 DTColumnBuilder.newColumn(3).withOption("width", "auto")
             ];
             vm.dtBoxesListOptions = DTOptionsBuilder.newOptions()
-                .withDOM("t").withOption('paging', false).withOption('order', [[1, 'asc' ]]).withScroller().withOption('scrollY', 338);
+                .withOption('info', false)
+                .withOption('paging', false)
+                .withOption('sorting', false)
+                .withOption('searching', false)
+                .withScroller().withOption('scrollY', 338);
+
+
+                // DTOptionsBuilder.newOptions()
+                // .withDOM("t").withOption('paging', false).withOption('order', [[1, 'asc' ]]).withScroller().withOption('scrollY', 338);
             vm.dtBoxesListInstance = {};
-            $timeout(function(){
-                if (vm.dtBoxesListInstance.rerender){
-                    vm.dtBoxesListInstance.rerender();
-                }
-            },200);
+            // $timeout(function(){
+            //     if (vm.dtBoxesListInstance.rerender){
+            //         vm.dtBoxesListInstance.rerender();
+            //     }
+            // },200);
         }
         // 初始化冻存架上架位置的列表控件
         function _initShelfDetailsTable(){

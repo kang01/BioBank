@@ -220,8 +220,8 @@
             vm.dto.compareType= "1";
             vm.projectCodeStr = [];
             projectIds = [];
-            vm.checked = false;
-            vm.dtInstance.rerender();
+            // vm.checked = false;
+            // vm.dtInstance.rerender();
         }
         function _fnSearchBox(equipmentId,areaId,shelvesId) {
             var obj = {

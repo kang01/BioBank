@@ -6,6 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -149,5 +150,24 @@ public class StockOutPlan extends AbstractAuditingEntity implements Serializable
             ", memo='" + memo + "'" +
             ", applyNumber='" + applyNumber + "'" +
             '}';
+    }
+
+    /**
+     * 出库计划时间
+     */
+    @Column(name = "stock_out_plan_date", nullable = true)
+    private LocalDate stockOutPlanDate;
+
+    public LocalDate getStockOutPlanDate() {
+        return stockOutPlanDate;
+    }
+
+    public void setStockOutPlanDate(LocalDate stockOutPlanDate) {
+        this.stockOutPlanDate = stockOutPlanDate;
+    }
+
+    public StockOutPlan stockOutPlanDate(LocalDate stockOutPlanDate) {
+        this.stockOutPlanDate = stockOutPlanDate;
+        return this;
     }
 }

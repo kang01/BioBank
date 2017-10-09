@@ -73,6 +73,11 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
 
     private final StockOutTaskMapper stockOutTaskMapper;
 
+    @Autowired
+    private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
+
+    @Autowired
+    private StockOutRequirementRepository stockOutRequirementRepository;
 
     public StockOutTaskServiceImpl(StockOutTaskRepository stockOutTaskRepository, StockOutPlanRepository stockOutPlanRepository, FrozenBoxRepository frozenBoxRepository, StockOutTaskMapper stockOutTaskMapper) {
         this.stockOutTaskRepository = stockOutTaskRepository;
@@ -179,6 +184,46 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
      * @return the persisted entity
      */
     @Override
+//    public StockOutTaskDTO save(Long planId, List<Long> boxIds) {
+//        log.debug("Request to save StockOutTask : {} {}", planId, boxIds);
+//
+//        StockOutPlan stockOutPlan = stockOutPlanRepository.findOne(planId);
+//        if(stockOutPlan == null){
+//            throw new BankServiceException("查询计划失败！");
+//        }
+//        StockOutTask stockOutTask = new StockOutTask();
+//        stockOutTask.status(Constants.STOCK_OUT_TASK_NEW)
+//            .stockOutTaskCode(bankUtil.getUniqueID("F"))
+//            .stockOutPlan(stockOutPlan).usedTime(0)
+//            .stockOutDate(LocalDate.now());
+//
+//        stockOutTask = stockOutTaskRepository.save(stockOutTask);
+//        List<StockOutTaskFrozenTube> tubes = new ArrayList<StockOutTaskFrozenTube>();
+//        for(Long id : boxIds){
+//            FrozenBox box = frozenBoxRepository.findOne(id);
+//            if (box == null){
+//                continue;
+//            }
+//            List<StockOutPlanFrozenTube> stockOutPlanFrozenTubes = stockOutPlanFrozenTubeRepository.findByStockOutPlanIdAndFrozenBoxId(planId,id);
+//            //保存出库任务样本
+//
+//            for(StockOutPlanFrozenTube t: stockOutPlanFrozenTubes){
+//                StockOutTaskFrozenTube tube = new StockOutTaskFrozenTube();
+//                tube.status(Constants.STOCK_OUT_FROZEN_TUBE_NEW).stockOutTask(stockOutTask).stockOutPlanFrozenTube(t);
+//                tubes.add(tube);
+//            }
+//            if(tubes.size()>=1000){
+//                stockOutTaskFrozenTubeRepository.save(tubes);
+//                tubes = new ArrayList<StockOutTaskFrozenTube>();
+//            }
+//        }
+//        if(tubes.size()>=0){
+//            stockOutTaskFrozenTubeRepository.save(tubes);
+//            tubes = new ArrayList<StockOutTaskFrozenTube>();
+//        }
+//        StockOutTaskDTO result = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
+//        return result;
+//    }
     public StockOutTaskDTO save(Long planId, List<Long> boxIds) {
         log.debug("Request to save StockOutTask : {} {}", planId, boxIds);
 
@@ -194,83 +239,26 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
 
         stockOutTask = stockOutTaskRepository.save(stockOutTask);
         List<StockOutTaskFrozenTube> tubes = new ArrayList<StockOutTaskFrozenTube>();
-        for(Long id : boxIds){
-            FrozenBox box = frozenBoxRepository.findOne(id);
-            if (box == null){
-                continue;
-            }
-            List<StockOutPlanFrozenTube> stockOutPlanFrozenTubes = stockOutPlanFrozenTubeRepository.findByStockOutPlanIdAndFrozenBoxId(planId,id);
-            //保存出库任务样本
-
-            for(StockOutPlanFrozenTube t: stockOutPlanFrozenTubes){
-                StockOutTaskFrozenTube tube = new StockOutTaskFrozenTube();
-                tube.status(Constants.STOCK_OUT_FROZEN_TUBE_NEW).stockOutTask(stockOutTask).stockOutPlanFrozenTube(t);
-                tubes.add(tube);
-            }
-            if(tubes.size()>=1000){
-                stockOutTaskFrozenTubeRepository.save(tubes);
-                tubes = new ArrayList<StockOutTaskFrozenTube>();
+        //查询出计划下的所有需求
+        List<Long> stockOutRequirementIds =stockOutRequirementRepository.findRequirementByStockOutApplyId(stockOutPlan.getStockOutApply().getId());
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findAllByStockOutRequirementIdInAndFrozenBoxIdIn(stockOutRequirementIds,boxIds);
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubesLast = new ArrayList<>();
+        for(StockOutReqFrozenTube s:stockOutReqFrozenTubes){
+           s.setStockOutTask(stockOutTask);
+            stockOutReqFrozenTubesLast.add(s);
+            if(stockOutReqFrozenTubesLast.size()>=1000){
+                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
+                stockOutReqFrozenTubesLast = new ArrayList<StockOutReqFrozenTube>();
             }
         }
-        if(tubes.size()>=0){
-            stockOutTaskFrozenTubeRepository.save(tubes);
-            tubes = new ArrayList<StockOutTaskFrozenTube>();
+        if(stockOutReqFrozenTubesLast.size()>0){
+            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
         }
         StockOutTaskDTO result = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
         return result;
     }
 
-    @Override
-    public Page<StockOutTaskForPlanDataTableEntity> findAllByPlan(Long id, Pageable pageable) {
-        Page<StockOutTask> result = stockOutTaskRepository.findAllByStockOutPlanId(id, pageable);
 
-        return result.map(o -> {
-            StockOutTaskForPlanDataTableEntity rowData = new StockOutTaskForPlanDataTableEntity();
-            rowData.setId(o.getId());
-            rowData.setStatus(o.getStatus());
-            rowData.setStockOutTaskCode(o.getStockOutTaskCode());
-            rowData.setMemo(o.getMemo());
-            rowData.setCountOfFrozenBox(1L);
-            rowData.setCreateDate(o.getCreatedDate().toLocalDate());
-            rowData.setStockOutDate(o.getStockOutDate());
-            ArrayList<String> operators = new ArrayList<>();
-            if(o.getStockOutHeadId1()!=null){
-                User user = userRepository.findOne(o.getStockOutHeadId1());
-                operators.add(user!=null?user.getLastName()+user.getFirstName():null);
-            }
-            if(o.getStockOutHeadId2()!=null){
-                User user = userRepository.findOne(o.getStockOutHeadId2());
-                operators.add(user!=null?user.getLastName()+user.getFirstName():null);
-            }
-            rowData.setOperators(String.join(".", operators));
-            Long count = stockOutTaskFrozenTubeRepository.countByStockOutTaskId(o.getId());
-            Long countOfBox = stockOutTaskFrozenTubeRepository.countFrozenBoxByStockOutTaskId(o.getId());
-            rowData.setCountOfSample(count);
-            rowData.setCountOfFrozenBox(countOfBox);
-            return rowData;
-        });
-    }
-
-    @Override
-    public Page<StockOutTaskForDataTableEntity> getDataTableStockOutTask(Pageable pageRequest) {
-        Page<StockOutTask> result = stockOutTaskRepository.findAll(pageRequest);
-        return result.map(o -> {
-            StockOutTaskForDataTableEntity rowData = new StockOutTaskForDataTableEntity();
-            rowData.setId(o.getId());
-            rowData.setStatus(o.getStatus());
-            rowData.setStockOutTaskCode(o.getStockOutTaskCode());
-            rowData.setStockOutPlanCode(o.getStockOutPlan().getStockOutPlanCode());
-            rowData.setStockOutDate(o.getStockOutDate());
-            rowData.setPurposeOfSample(o.getStockOutPlan().getStockOutApply().getPurposeOfSample());
-            Long count = stockOutTaskFrozenTubeRepository.countByStockOutTaskId(o.getId());
-            Long countOfhandOver = stockOutHandoverDetailsRepository.countByStockOutTaskId(o.getId());
-            Long countTimes = stockOutHandoverRepository.countByStockOutTaskId(o.getId());
-            rowData.setCountOfStockOutSample(count);//任务样本量
-            rowData.setCountOfHandOverSample(countOfhandOver);//已交接样本
-            rowData.setHandOverTimes(countTimes);//交接次数
-            return rowData;
-        });
-    }
 
     @Override
     public List<StockOutTaskDTO> getAllStockOutTasksByPlanId(Long id) {
@@ -354,21 +342,21 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     public DataTablesOutput<StockOutTaskForPlanDataTableEntity> getPageStockOutTaskByPlan(Long id, DataTablesInput input) {
         input.addColumn("stockOutPlanId",true,true,id+"+");
         DataTablesOutput<StockOutTaskForPlanDataTableEntity> output =stockOutTaskByPlanRepositories.findAll(input);
-        List<StockOutTaskForPlanDataTableEntity> alist = new ArrayList<StockOutTaskForPlanDataTableEntity>();
-        output.getData().forEach(o->{
-            StockOutTaskForPlanDataTableEntity rowData = new StockOutTaskForPlanDataTableEntity();
-            rowData.setId(o.getId());
-            rowData.setStatus(o.getStatus());
-            rowData.setStockOutTaskCode(o.getStockOutTaskCode());
-            rowData.setMemo(o.getMemo());
-            rowData.setCreateDate(o.getCreateDate());
-            rowData.setStockOutDate(o.getStockOutDate());
-            Long countOfBox = stockOutTaskFrozenTubeRepository.countFrozenBoxByStockOutTaskId(o.getId());
-            rowData.setCountOfSample(o.getCountOfSample());
-            rowData.setCountOfFrozenBox(countOfBox);
-            alist.add(rowData);
-        });
-        output.setData(alist);
+//        List<StockOutTaskForPlanDataTableEntity> alist = new ArrayList<StockOutTaskForPlanDataTableEntity>();
+//        output.getData().forEach(o->{
+//            StockOutTaskForPlanDataTableEntity rowData = new StockOutTaskForPlanDataTableEntity();
+//            rowData.setId(o.getId());
+//            rowData.setStatus(o.getStatus());
+//            rowData.setStockOutTaskCode(o.getStockOutTaskCode());
+//            rowData.setMemo(o.getMemo());
+//            rowData.setCreateDate(o.getCreateDate());
+//            rowData.setStockOutDate(o.getStockOutDate());
+//            Long countOfBox = stockOutTaskFrozenTubeRepository.countFrozenBoxByStockOutTaskId(o.getId());
+//            rowData.setCountOfSample(o.getCountOfSample());
+//            rowData.setCountOfFrozenBox(countOfBox);
+//            alist.add(rowData);
+//        });
+//        output.setData(alist);
         return output;
     }
 

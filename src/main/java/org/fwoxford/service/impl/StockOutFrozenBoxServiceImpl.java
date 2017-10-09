@@ -1,8 +1,10 @@
 package org.fwoxford.service.impl;
 
+import com.google.common.collect.Lists;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
+import org.fwoxford.service.FrozenBoxCheckService;
 import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutFrozenBoxService;
 import org.fwoxford.service.UserService;
@@ -34,7 +36,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service Implementation for managing StockOutFrozenBox.
@@ -114,6 +118,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
     @Autowired
     StockOutFrozenBoxInTaskRepositries stockOutFrozenBoxInTaskRepositries;
+
+    @Autowired
+    StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
+
+    @Autowired
+    private FrozenBoxCheckService frozenBoxCheckService;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper) {
@@ -226,6 +236,10 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     public List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId) {
         List<StockOutFrozenBoxForTaskDataTableEntity> alist = new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
         List<FrozenBox> boxes =  frozenBoxRepository.findByStockOutTaskId(taskId);
+<<<<<<< HEAD
+=======
+        List<Object[]> countOfSampleGroupByBox = stockOutReqFrozenTubeRepository.countByTaskGroupByBox(taskId);
+>>>>>>> c3bed972e57f70897ec9a85c53bdf2692eb998be
         for(FrozenBox frozenBox :boxes){
             StockOutFrozenBoxForTaskDataTableEntity box = new StockOutFrozenBoxForTaskDataTableEntity();
             if(frozenBox ==null){continue;}
@@ -266,16 +280,19 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 throw new BankServiceException("冻存盒编码不能为空！");
             }
             //验证盒子编码是否存在
-
-            List<Object[]> obj = frozenBoxRepository.countByFrozenBoxCode(box.getFrozenBoxCode());
-            for(Object[] o:obj){
-                String frozenBoxId = o[0].toString();
-                if(box.getId()==null){
-                    throw new BankServiceException("冻存盒编码已存在！",box.getFrozenBoxCode());
-                }else if(box.getId()!=null&&!box.getId().toString().equals(frozenBoxId)){
-                    throw new BankServiceException("冻存盒编码已存在！",box.getFrozenBoxCode());
-                }
-            }
+            Map<String,Long> map = new HashMap<String,Long>();
+            Long id = box.getId()==null?-1:box.getId();
+            map.put(box.getFrozenBoxCode(),id);
+            frozenBoxCheckService.checkFrozenBoxCodeRepead(map);
+//            List<Object[]> obj = frozenBoxRepository.countByFrozenBoxCode(box.getFrozenBoxCode());
+//            for(Object[] o:obj){
+//                String frozenBoxId = o[0].toString();
+//                if(box.getId()==null){
+//                    throw new BankServiceException("冻存盒编码已存在！",box.getFrozenBoxCode());
+//                }else if(box.getId()!=null&&!box.getId().toString().equals(frozenBoxId)){
+//                    throw new BankServiceException("冻存盒编码已存在！",box.getFrozenBoxCode());
+//                }
+//            }
             FrozenBox frozenBox = new FrozenBox();
             if(box.getId()!=null){
                 frozenBox = frozenBoxRepository.findOne(box.getId())!=null?frozenBoxRepository.findOne(box.getId()):new FrozenBox();
@@ -327,45 +344,32 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
                 .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
                 .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
-                .projectSiteName(frozenBox.getProjectSiteName());
+                .projectSiteName(frozenBox.getProjectSiteName()).memo(frozenBox.getMemo());
             stockOutFrozenBoxRepository.save(stockOutFrozenBox);
-
-            //保存出库盒与管之间的关系
+            List<Long> frozenTubeIds = new ArrayList<>();
             for(FrozenTubeDTO f: box.getFrozenTubeDTOS()){
-                StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutTaskAndFrozenTube(taskId,f.getId());
-                if(stockOutTaskFrozenTube == null){
-                    continue;
-                }
-
-                FrozenTube frozenTube = stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube();
-                frozenTube.setFrozenBox(frozenBox);
-                frozenTube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-                frozenTube.setTubeColumns(f.getTubeColumns());
-                frozenTube.setTubeRows(f.getTubeRows());
-                frozenTubeRepository.save(frozenTube);
-                StockOutBoxTube  stockOutBoxTube = stockOutBoxTubeRepository.findByStockOutTaskFrozenTubeId(stockOutTaskFrozenTube.getId());
-                if(stockOutBoxTube == null){
-                    stockOutBoxTube = new StockOutBoxTube();
-                }
-                stockOutBoxTube.setStockOutFrozenBox(stockOutFrozenBox);
-                stockOutBoxTube.setStockOutTaskFrozenTube(stockOutTaskFrozenTube);
-                FrozenTube tube = stockOutTaskFrozenTube.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube();
-                stockOutBoxTube.status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(f.getTubeColumns()).tubeRows(f.getTubeRows())
-                    .frozenBoxCode(tube.getFrozenBoxCode()).errorType(tube.getErrorType())
-                    .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_PENDING)
-                    .frozenTubeType(tube.getFrozenTubeType()).frozenTubeTypeCode(tube.getFrozenTubeTypeCode())
-                    .frozenTubeTypeName(tube.getFrozenTubeTypeName()).frozenTubeVolumns(tube.getFrozenTubeVolumns())
-                    .frozenTubeVolumnsUnit(tube.getFrozenTubeVolumnsUnit()).sampleVolumns(tube.getSampleVolumns())
-                    .project(tube.getProject()).projectCode(tube.getProjectCode()).projectSite(tube.getProjectSite())
-                    .projectSiteCode(tube.getProjectSiteCode()).sampleClassification(tube.getSampleClassification())
-                    .sampleClassificationCode(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationCode():null)
-                    .sampleClassificationName(tube.getSampleClassification()!=null?tube.getSampleClassification().getSampleClassificationName():null)
-                    .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
-                    .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
-                    .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
-                stockOutBoxTubeRepository.save(stockOutBoxTube);
+                frozenTubeIds.add(f.getId());
             }
-
+            //查询要出库的样本
+            List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndFrozenTubeIdInAndStatusNot(taskId,frozenTubeIds,Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
+            List<FrozenTube> frozenTubeList = new ArrayList<>();
+            for(FrozenTubeDTO f: box.getFrozenTubeDTOS()){
+                for(StockOutReqFrozenTube s:stockOutReqFrozenTubes){
+                    if(f.getId().equals(s.getFrozenTube().getId())){
+                        s.setStockOutFrozenBox(stockOutFrozenBox);
+                        s.setStatus(Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
+                        FrozenTube frozenTube =s.getFrozenTube();
+                        frozenTube.setFrozenBox(frozenBox);
+                        frozenTube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+                        frozenTube.setTubeColumns(f.getTubeColumns());
+                        frozenTube.setTubeRows(f.getTubeRows());
+                        frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
+                        frozenTubeList.add(frozenTube);
+                    }
+                }
+            }
+            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
+            frozenTubeRepository.save(frozenTubeList);
         }
         return frozenBoxDTO;
     }
@@ -407,7 +411,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             box.setSampleTypeName(frozenBox.getSampleTypeName());
             String position = BankUtil.getPositionString(f.getEquipmentCode(),f.getAreaCode(),f.getSupportRackCode(),f.getColumnsInShelf(),f.getRowsInShelf(),null,null);
             box.setPosition(position);
-            Long count = stockOutBoxTubeRepository.countByStockOutFrozenBoxId(f.getId());
+            Long count = stockOutReqFrozenTubeRepository.countByStockOutFrozenBoxId(f.getId());
             box.setCountOfSample(count);
             box.setMemo(f.getMemo());
             box.setStatus(f.getStatus());
@@ -465,13 +469,10 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         if(loginName2!=null&&password2!=null){
             userService.isCorrectUser(loginName2,password2);
         }
-
-        for(Long id:frozenBoxIds){
-
-            StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findOne(id);
-            if(stockOutFrozenBox == null){
-                continue;
-            }
+        List<FrozenBox> frozenBoxList = new ArrayList<>();
+        List<StockOutBoxPosition> stockOutBoxPositionList = new ArrayList<StockOutBoxPosition>();
+        List<StockOutFrozenBox> stockOutFrozenBoxes = stockOutFrozenBoxRepository.findByIdIn(frozenBoxIds);
+        for(StockOutFrozenBox stockOutFrozenBox : stockOutFrozenBoxes){
             FrozenBox frozenBox = stockOutFrozenBox.getFrozenBox();
             //保存出库冻存盒
             stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_COMPLETED);
@@ -488,61 +489,66 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
                 .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
                 .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
-                .projectSiteName(frozenBox.getProjectSiteName());
-            stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+                .projectSiteName(frozenBox.getProjectSiteName()).memo(frozenBox.getMemo());
             //保存冻存盒位置
             StockOutBoxPosition stockOutBoxPosition = new StockOutBoxPosition();
-
             stockOutBoxPosition.setStockOutFrozenBox(stockOutFrozenBox);
             stockOutBoxPosition.setEquipment(equipment);
             stockOutBoxPosition.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
             stockOutBoxPosition.setArea(area);
             stockOutBoxPosition.setAreaCode(area!=null?area.getAreaCode():null);
             stockOutBoxPosition.setStatus(Constants.VALID);
-            stockOutBoxPositionRepository.save(stockOutBoxPosition);
+            stockOutBoxPositionList.add(stockOutBoxPosition);
             //保存冻存盒的位置和状态
             frozenBox.setEquipment(equipment);
             frozenBox.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
             frozenBox.setArea(area);
             frozenBox.setAreaCode(area!=null?area.getAreaCode():null);
             frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
-            frozenBoxRepository.save(frozenBox);
-            //保存出库盒与冻存管的关系
-            stockOutBoxTubeRepository.updateByStockOutFrozenBox(id);
-            //样本使用次数加1
-            List<StockOutBoxTube> stockOutBoxTubes = stockOutBoxTubeRepository.findByStockOutFrozenBoxId(id);
-            for(StockOutBoxTube s:stockOutBoxTubes){
-                FrozenTube frozenTube = s.getFrozenTube();
-                frozenTube.setSampleUsedTimes(frozenTube.getSampleUsedTimes()!=null?frozenTube.getSampleUsedTimes():0+1);
-                frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
-                frozenTubeRepository.save(frozenTube);
-            }
-            List<Long> planTubes = stockOutBoxTubeRepository.findPlanFrozenTubeByStockOutFrozenBoxId(id);
-            List<Long> taskTubes = stockOutBoxTubeRepository.findTaskFrozenTubeByStockOutFrozenBoxId(id);
-            stockOutTaskFrozenTubeRepository.updateByStockOutFrozenTubeIds(taskTubes);
-            stockOutPlanFrozenTubeRepository.updateByStockOutFrozenTubeIds(planTubes);
+            frozenBoxList.add(frozenBox);
+        }
+        stockOutFrozenBoxRepository.save(stockOutFrozenBoxes);
+        stockOutBoxPositionRepository.save(stockOutBoxPositionList);
+        frozenBoxRepository.save(frozenBoxList);
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutFrozenBoxIdIn(frozenBoxIds);
+       List<FrozenTube> frozenTubeList = new ArrayList<>();
+        for(StockOutReqFrozenTube s: stockOutReqFrozenTubes){
+            FrozenTube frozenTube = s.getFrozenTube();
+            frozenTube.setSampleUsedTimes(frozenTube.getSampleUsedTimes()!=null?frozenTube.getSampleUsedTimes():0+1);
+            frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
+            s.setStatus(Constants.STOCK_OUT_SAMPLE_COMPLETED);
+            frozenTubeList.add(frozenTube);
+        }
+        List<List<StockOutReqFrozenTube>> stockOutReqTubeList = Lists.partition(stockOutReqFrozenTubes, 1000);
+        for(List<StockOutReqFrozenTube> f:stockOutReqTubeList){
+            stockOutReqFrozenTubeRepository.save(f);
+        }
+        List<List<FrozenTube>> frozenTubes = Lists.partition(frozenTubeList, 1000);
+        for(List<FrozenTube> f:frozenTubes){
+            frozenTubeRepository.save(frozenTubeList);
         }
 
-        Long planId = stockOutTask.getStockOutPlan().getId();
-        List<String> taskStatus = new ArrayList<>();
-        taskStatus.add(Constants.STOCK_OUT_FROZEN_TUBE_COMPLETED);
-        taskStatus.add(Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+        List<String> statusList = new ArrayList<>();
+        statusList.add(Constants.STOCK_OUT_SAMPLE_CANCEL);
+        statusList.add(Constants.STOCK_OUT_SAMPLE_COMPLETED);
+
         //任务未出库样本量
-        Long countOfTaskTube = stockOutTaskFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(taskId,taskStatus);
-        //计划未出库样本量
-        List<String> planStatus = new ArrayList<>();
-        planStatus.add(Constants.STOCK_OUT_PLAN_TUBE_COMPLETED);
-        taskStatus.add(Constants.STOCK_OUT_PLAN_TUBE_CANCEL);
-        Long countOfPlanTube = stockOutPlanFrozenTubeRepository.countByStockOutPlanIdAndStatusNotIn(planId,planStatus);
-        //异常出库样本量
-        Long abNormalTube = stockOutBoxTubeRepository.countAbnormalTubeByStockOutTaskId(taskId);
-        if(abNormalTube.intValue()==0){
-            stockOutTask.setStatus(Constants.STOCK_OUT_TASK_ABNORMAL);
-        }else if(countOfTaskTube.intValue()==0){
+        Long countOfTaskTube = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(taskId,statusList);
+        if(countOfTaskTube.intValue()==0) {
+            //异常出库样本量
+            Long abNormalTube = stockOutReqFrozenTubeRepository.countAbnormalTubeByStockOutTaskId(taskId);
+            if (abNormalTube.intValue() != 0) {
+                stockOutTask.setStatus(Constants.STOCK_OUT_TASK_ABNORMAL);
+            }
             stockOutTask.setStatus(Constants.STOCK_OUT_TASK_COMPLETED);
         }
         stockOutTaskRepository.save(stockOutTask);
-        if(countOfPlanTube.intValue()==0){
+        List<String> statusList_ = new ArrayList<>();
+        statusList_.add(Constants.STOCK_OUT_TASK_NEW);
+        statusList_.add(Constants.STOCK_OUT_TASK_PENDING);
+
+        Long countOfUnCompleteTask = stockOutTaskRepository.countByStockOutPlanIdAndStatusIn(stockOutTask.getStockOutPlan().getId(),statusList_);
+        if(countOfUnCompleteTask.intValue()==0){
             StockOutPlan stockOutPlan = stockOutTask.getStockOutPlan();
             stockOutPlan.setStatus(Constants.STOCK_OUT_PLAN_COMPLETED);
             stockOutPlanRepository.save(stockOutPlan);
@@ -655,40 +661,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
      */
     @Override
     public Page<StockOutFrozenBoxForDataTableEntity> getPageHandoverStockOutFrozenBoxes(Long id, Pageable pageRequest) {
-        StockOutHandover stockOutHandover = stockOutHandoverRepository.findOne(id);
-        if(stockOutHandover == null){
-            throw new BankServiceException("未查询到交接单");
-        }
-        Page<StockOutFrozenBox> result = stockOutFrozenBoxRepository.findBoxesByHandOverAndStatus(id,Constants.STOCK_OUT_FROZEN_BOX_HANDOVER, pageRequest);
-        return result.map(stockOutFrozenBox -> {
-            StockOutFrozenBoxForDataTableEntity dto = new StockOutFrozenBoxForDataTableEntity();
-            dto.setId(stockOutFrozenBox.getId());
-            dto.setFrozenBoxCode(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode());
-            dto.setSampleTypeName(stockOutFrozenBox.getFrozenBox().getSampleTypeName());
-            dto.setStatus(stockOutFrozenBox.getStatus());
-            dto.setApplyId(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getId():null);
-            dto.setApplyCode(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getApplyCode():null);
-            dto.setPlanId(stockOutHandover.getStockOutPlan()!=null?stockOutHandover.getStockOutPlan().getId():null);
-            dto.setPlanCode(stockOutHandover.getStockOutPlan()!=null?stockOutHandover.getStockOutPlan().getStockOutPlanCode():null);
-            dto.setTaskId(stockOutHandover.getStockOutTask()!=null?stockOutHandover.getStockOutTask().getId():null);
-            dto.setTaskCode(stockOutHandover.getStockOutTask()!=null?stockOutHandover.getStockOutTask().getStockOutTaskCode():null);
-            dto.setStatus(stockOutFrozenBox.getStatus());
-            dto.setDelegateId(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getDelegate().getId():null);
-            dto.setDelegate(stockOutHandover.getStockOutApply()!=null?stockOutHandover.getStockOutApply().getApplyPersonName():null);
-            dto.setMemo(stockOutFrozenBox.getMemo());
-            String position = BankUtil.getPositionString(stockOutFrozenBox.getEquipmentCode(),stockOutFrozenBox.getAreaCode(),
-                stockOutFrozenBox.getSupportRackCode(),stockOutFrozenBox.getColumnsInShelf(),stockOutFrozenBox.getRowsInShelf(),null,null);
-            dto.setPosition(position);
-//            Long count = stockOutFrozenTubeRepository.countByFrozenBox(stockOutFrozenBox.getId());
-//            dto.setCountOfSample(count);
-
-            return dto;
-        });
+      return null;
     }
 
     /**
-     * 分页查询根据需求查询x需要出库的冻存盒
-     * @param ids
+     * 分页查询根据需求查询需要出库的冻存盒
+     * @param ids 需求ID串
      * @param input
      * @return
      */
@@ -714,15 +692,13 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         output.getData().forEach(s->{
             if(!boxCodes.contains(s.getFrozenBoxCode())){
                 boxCodes.add(s.getFrozenBoxCode());
-                Long countOfSample = stockOutPlanFrozenTubeRepository.countByFrozenBoxIdAndRequirement(ids,s.getId());
                 FrozenBoxForStockOutDataTableEntity dto = new FrozenBoxForStockOutDataTableEntity();
                 dto.setId(s.getId());
                 dto.setFrozenBoxCode(s.getFrozenBoxCode());
                 dto.setSampleTypeName(s.getSampleTypeName());
-                FrozenBox frozenBox = frozenBoxRepository.findOne(s.getId());
-                String position =  BankUtil.getPositionString(frozenBox);
+                String position =  BankUtil.getPositionString(s.getEquipmentCode(),s.getAreaCode(),s.getSupportRackCode(),s.getColumnsInShelf(),s.getRowsInShelf(),null,null);
                 dto.setPosition(position);
-                dto.setCountOfSample(countOfSample);
+                dto.setCountOfSample(s.getCountOfSample());
                 alist.add(dto);
             }else{
                 long filterRecord = output.getRecordsFiltered()-1;
@@ -749,15 +725,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             dto.setId(s.getId());
             dto.setFrozenBoxCode(s.getFrozenBoxCode());
             dto.setSampleTypeName(s.getSampleTypeName());
-            FrozenBox frozenBox = frozenBoxRepository.findOne(s.getId());
-            String position =  BankUtil.getPositionString(frozenBox);
+            String position =  BankUtil.getPositionString(s.getEquipmentCode(),s.getAreaCode(),s.getSupportRackCode(),s.getColumnsInShelf(),s.getRowsInShelf(),null,null);
             dto.setPosition(position);
-            Long countOfSample = stockOutTaskFrozenTubeRepository.countSampleByFrozenBoxAndTask(s.getId(),id);
-            dto.setCountOfSample(countOfSample);
+            dto.setCountOfSample(s.getCountOfSample());
             alist.add(dto);
         });
         output.setData(alist);
-
         return output;
     }
 }

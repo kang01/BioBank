@@ -107,11 +107,10 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 //        " and (?8 = 0 or t.age>=?8) " +
 //        " and (?9 = 0 or t.age<=?9) " +
 //        " order by t.frozen_box_code,t.tube_rows,LPAD(t.tube_columns,2) asc offset ?11 rows fetch next ?12 rows only",nativeQuery = true)
-@Query(value = "select t.id,t.project_id,t.frozen_box_id,t.tube_rows,LPAD(t.tube_columns,2) as tube_columns,memo from frozen_tube t   " +
+@Query(value = "select t from frozen_tube t   " +
     "  LEFT OUTER JOIN ( " +
     "  SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt  " +
-    "  LEFT OUTER JOIN STOCK_OUT_PLAN_TUBE pt ON pt.STOCK_OUT_REQ_FROZEN_TUBE_ID = rt.id AND pt.STATUS='1503' " +
-    "  WHERE pt.id IS NULL " +
+    "  WHERE  rt.STATUS ='1303' AND pt.id IS NULL " +
     ") vpt ON t.id = vpt.FROZEN_TUBE_ID"+
     " where t.frozen_tube_state='2004' and t.status='3001' and vpt.FROZEN_TUBE_ID IS NULL " +
     " and t.project_id in ?10 "+
@@ -126,7 +125,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     " and (?9 = 0 or t.age<=?9) " +
     " order by t.frozen_box_code,t.tube_rows,LPAD(t.tube_columns,2) asc offset ?11 rows fetch next ?12 rows only",nativeQuery = true)
 
-    List<Object[]> findByRequirements(Integer sampleTypeId, Integer samplyClassificationId, Integer frozenTubeTypeId,
+    List<FrozenTube> findByRequirements(Integer sampleTypeId, Integer samplyClassificationId, Integer frozenTubeTypeId,
                                       String diseaseType, String sex, Integer isBloodLipid, Integer isHemolysis, Integer ageMin, Integer ageMax,  List<Long> projectIds,Integer startPos,Integer length);
     @Query(value = "select count(t.id) from frozen_tube t   " +
         " LEFT OUTER JOIN ( " +
@@ -204,4 +203,32 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         ,nativeQuery = true)
     List<FrozenTube> findBySampleCodeInAndSampleTypeCodeAndProjectIn(List<String> sampleCodeList,
                                                                  String appointedSampleType, List<Long> projectIds);
+
+    @Query(value = "select * from frozen_tube t where t.frozen_tube_state = '2004' and t.status='3001'" +
+        " and (t.sample_code in ?3" +
+        " or t.sample_code in ?4" +
+        " or t.sample_code in ?5" +
+        " or t.sample_code in ?6" +
+        " or t.sample_code in ?7" +
+        " or t.sample_code in ?8" +
+        " or t.sample_code in ?9" +
+        " or t.sample_code in ?10" +
+        " or t.sample_code in ?11" +
+        " or t.sample_code in ?12" +
+        " ) " +
+        " and t.project_id in ?2 and t.sample_type_code = ?1"
+        ,nativeQuery = true)
+    List<FrozenTube> findBySampleCodeInAndSampleTypeCodeAndProjectIn(
+                                                                     String appointedSampleType, List<Long> projectIds
+        , List<String> sampleCodeList1
+        , List<String> sampleCodeList2
+        , List<String> sampleCodeList3
+        , List<String> sampleCodeList4
+        , List<String> sampleCodeList5
+        , List<String> sampleCodeList6
+        , List<String> sampleCodeList7
+        , List<String> sampleCodeList8
+        , List<String> sampleCodeList9
+        , List<String> sampleCodeList10
+    );
 }

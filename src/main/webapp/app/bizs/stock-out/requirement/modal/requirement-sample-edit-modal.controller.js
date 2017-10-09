@@ -149,6 +149,7 @@
             if(file){
                 var obj = {};
                 obj.requirementName = vm.sampleRequirement.requirementName;
+                obj.id = vm.sampleRequirement.id;
                 var fb = new FormData();
                 fb.append('stockOutRequirement', angular.toJson(obj));
                 fb.append('file', file);

@@ -4,11 +4,9 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.StockOutTaskFrozenTubeService;
-import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.StockOutTaskFrozenTubeDTO;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.mapper.StockOutTaskFrozenTubeMapper;
-import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockOutTaskFrozenTube.
@@ -108,6 +105,7 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
 
     @Override
     public List<FrozenTubeResponse> abnormalStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS) {
+        List<FrozenTube> frozenTubeList = new ArrayList<>();
         for(FrozenTubeResponse tube :frozenTubeDTOS){
             if(tube.getId() == null){
                 continue;
@@ -118,42 +116,36 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
             }
             frozenTube.setStatus(Constants.FROZEN_TUBE_ABNORMAL);
             frozenTube.setMemo(tube.getMemo());
-            frozenTubeRepository.save(frozenTube);
+            frozenTubeList.add(frozenTube);
         }
+        frozenTubeRepository.save(frozenTubeList);
         return frozenTubeDTOS;
     }
 
     @Override
-    public List<FrozenTubeResponse> repealStockOutTaskFrozenTube( List<FrozenTubeResponse> frozenTubeDTOS) {
+    public List<FrozenTubeResponse> repealStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS, Long taskId) {
+        List<Long> frozenTubeIds = new ArrayList<>();
         for(FrozenTubeResponse tube :frozenTubeDTOS){
-            if(tube.getId() == null){
-                continue;
-            }
-            //需求样本撤销
-            StockOutReqFrozenTube stockOutReqFrozenTube = stockOutReqFrozenTubeRepository.findByFrozenTubeIdAndStatus(tube.getId(),Constants.STOCK_OUT_SAMPLE_IN_USE);
-            if(stockOutReqFrozenTube != null){
-                stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
-                stockOutReqFrozenTube.setRepealReason(tube.getRepealReason());
-                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTube);
-                //计划出库样本
-                StockOutPlanFrozenTube stockOutPlanFrozenTube = stockOutPlanFrozenTubeRepository.findByStockOutReqFrozenTubeId(stockOutReqFrozenTube.getId());
-                if(stockOutPlanFrozenTube != null){
-                    stockOutPlanFrozenTube.setStatus(Constants.STOCK_OUT_PLAN_TUBE_CANCEL);
-                    stockOutPlanFrozenTubeRepository.save(stockOutPlanFrozenTube);
-                    //任务出库样本
-                    StockOutTaskFrozenTube stockOutTaskFrozenTube = stockOutTaskFrozenTubeRepository.findByStockOutPlanFrozenTubeId(stockOutPlanFrozenTube.getId());
-                    if(stockOutTaskFrozenTube != null){
-                        stockOutTaskFrozenTube.setStatus(Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
-                        stockOutTaskFrozenTubeRepository.save(stockOutTaskFrozenTube);
-                    }
+            frozenTubeIds.add(tube.getId());
+        }
+        //需求样本撤销
+        List<StockOutReqFrozenTube>   stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndFrozenTubeIdInAndStatusNot(taskId,frozenTubeIds,Constants.STOCK_OUT_SAMPLE_CANCEL);
+        for(StockOutReqFrozenTube stockOutReqFrozenTube: stockOutReqFrozenTubes){
+            for(FrozenTubeResponse tube :frozenTubeDTOS) {
+                if(tube.getId().equals(stockOutReqFrozenTube.getFrozenTube().getId())){
+                    stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
+                    stockOutReqFrozenTube.setRepealReason(tube.getRepealReason());
                 }
             }
         }
+        stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
         return frozenTubeDTOS;
     }
 
     @Override
     public List<FrozenTubeResponse> noteStockOutTaskFrozenTube( List<FrozenTubeResponse> frozenTubeDTOS) {
+
+        List<FrozenTube> frozenTubeList = new ArrayList<>();
         for(FrozenTubeResponse tube :frozenTubeDTOS){
             if(tube.getId() == null){
                 continue;
@@ -163,8 +155,9 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
                 continue;
             }
             frozenTube.setMemo(tube.getMemo());
-            frozenTubeRepository.save(frozenTube);
+            frozenTubeList.add(frozenTube);
         }
+        frozenTubeRepository.save(frozenTubeList);
         return frozenTubeDTOS;
     }
 }

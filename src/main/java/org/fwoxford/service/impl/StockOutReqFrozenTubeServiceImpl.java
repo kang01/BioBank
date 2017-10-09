@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import com.google.common.collect.Lists;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.FrozenTubeRepository;
@@ -117,45 +118,70 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         List<Long> projectIds = stockOutApplyProjectRepository.findProjectByStockRequirementId(stockOutRequirement.getId());
         String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
         int i = 0;
+        // All stock out samples
         List<Object[]> outTubeList = frozenTubeRepository.findAllStockOutFrozenTube();
+        // required sample group by sample type
         Map<String,List<StockOutRequiredSample>> requirementGroupBySampleType =
             stockOutRequiredSamples.stream().collect(Collectors.groupingBy(w -> w.getSampleType()));
+
         List<FrozenTube> frozenTubeListLast = new ArrayList<FrozenTube>();
         System.out.print("----beginTime:"+new Date());
+
         for(String sampleType:requirementGroupBySampleType.keySet()){
 
             List<StockOutRequiredSample> stockOutRequiredSampleList = requirementGroupBySampleType.get(sampleType);
             //每次取1000支
             List<String> sampleCodeList = new ArrayList<>();
             List<String> sampleTypeCodeList = new ArrayList<>();
-            for(StockOutRequiredSample s :stockOutRequiredSampleList){
-                String appointedSampleCode = s.getSampleCode();
-                String appointedSampleType = s.getSampleType();
-                if(sampleCodeList.size()==1000){
-                    List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndSampleTypeCodeAndProjectIn(sampleCodeList,sampleType,projectIds);
-                    frozenTubeList.removeIf(t->{
-                        return outTubeList.contains(t.getId());
-                    });
-                    sampleCodeList = new ArrayList<>();
-                    sampleTypeCodeList = new ArrayList<>();
-                    frozenTubeList = frozenTubeList.size()>1000?frozenTubeList.subList(0,1000):frozenTubeList;
-                    frozenTubeListLast.addAll(frozenTubeList);
+            List<List<StockOutRequiredSample>> arrReqSamples = Lists.partition(stockOutRequiredSampleList, 1000);
+
+            for(int index = 0; index < arrReqSamples.size(); index += 10){
+                int start = index;
+                String[] s1 = arrReqSamples.size() <= start ? new String[]{"N/A"} : arrReqSamples.get(start++).stream().map(d->d.getSampleCode()).toArray(s->new String[s]);
+                String[] s2 = arrReqSamples.size() <= start ? new String[]{"N/A"} : arrReqSamples.get(start++).stream().map(d->d.getSampleCode()).toArray(s->new String[s]);
+                String[] s3 = arrReqSamples.size() <= start ? new String[]{"N/A"} : arrReqSamples.get(start++).stream().map(d->d.getSampleCode()).toArray(s->new String[s]);
+                String[] s4 = arrReqSamples.size() <= start ? new String[]{"N/A"} : arrReqSamples.get(start++).stream().map(d->d.getSampleCode()).toArray(s->new String[s]);
+                String[] s5 = arrReqSamples.size() <= start ? new String[]{"N/A"} : arrReqSamples.get(start++).stream().map(d->d.getSampleCode()).toArray(s->new String[s]);
+                String[] s6 = arrReqSamples.size() <= start ? new String[]{"N/A"} : arrReqSamples.get(start++).stream().map(d->d.getSampleCode()).toArray(s->new String[s]);
+                String[] s7 = arrReqSamples.size() <= start ? new String[]{"N/A"} : arrReqSamples.get(start++).stream().map(d->d.getSampleCode()).toArray(s->new String[s]);
+                String[] s8 = arrReqSamples.size() <= start ? new String[]{"N/A"} : arrReqSamples.get(start++).stream().map(d->d.getSampleCode()).toArray(s->new String[s]);
+                String[] s9 = arrReqSamples.size() <= start ? new String[]{"N/A"} : arrReqSamples.get(start++).stream().map(d->d.getSampleCode()).toArray(s->new String[s]);
+                String[] s10 = arrReqSamples.size() <= start ? new String[]{"N/A"} : arrReqSamples.get(start++).stream().map(d->d.getSampleCode()).toArray(s->new String[s]);
+                List<FrozenTube> frozenTubeList = frozenTubeRepository.
+                    findBySampleCodeInAndSampleTypeCodeAndProjectIn(
+                        sampleType,projectIds
+                        , Arrays.asList(s1)
+                        , Arrays.asList(s2)
+                        , Arrays.asList(s3)
+                        , Arrays.asList(s4)
+                        , Arrays.asList(s5)
+                        , Arrays.asList(s6)
+                        , Arrays.asList(s7)
+                        , Arrays.asList(s8)
+                        , Arrays.asList(s9)
+                        , Arrays.asList(s10)
+                    );
+                if (frozenTubeList.stream().anyMatch(ft->outTubeList.contains(ft.getId()))) {
+                    throw new BankServiceException("请求的样本不在库存。");
                 }
 
-                sampleCodeList.add(appointedSampleCode);
-                sampleTypeCodeList.add(appointedSampleType);
-            }
-            if(sampleCodeList.size()>0){
-                List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndSampleTypeCodeAndProjectIn(sampleCodeList,sampleType,projectIds);
-                frozenTubeList.removeIf(t->{
-                    return outTubeList.contains(t.getId());
-                });
-                frozenTubeList = frozenTubeList.size()>sampleCodeList.size()?frozenTubeList.subList(0,sampleCodeList.size()):frozenTubeList;
                 frozenTubeListLast.addAll(frozenTubeList);
             }
+//            for(List<StockOutRequiredSample> s :arrReqSamples){
+//                List<FrozenTube> frozenTubeList = frozenTubeRepository.
+//                    findBySampleCodeInAndSampleTypeCodeAndProjectIn(
+//                        s.stream().map(d->d.getSampleCode()).collect(Collectors.toList()),
+//                        sampleType,projectIds);
+//
+//                if (frozenTubeList.stream().anyMatch(ft->outTubeList.contains(ft.getId()))) {
+//                    throw new BankServiceException("请求的样本不在库存。");
+//                }
+//
+//                frozenTubeListLast.addAll(frozenTubeList);
+//            }
         }
-        if(frozenTubeListLast.size()<stockOutRequiredSamples.size()){
-            status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
+        if(frozenTubeListLast.size()==0){
+            throw new BankServiceException("请求的样本不在库存。");
         }
         System.out.print("----entTime:"+new Date());
         List<StockOutReqFrozenTube> stockOutReqFrozenTubeList = new ArrayList<>();
@@ -167,16 +193,27 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             stockOutReqFrozenTube.setMemo(frozenTube!=null?frozenTube.getMemo():null);
             stockOutReqFrozenTube.setFrozenBox(frozenTube!=null?frozenTube.getFrozenBox():null);
             stockOutReqFrozenTube.setFrozenTube(frozenTube!=null?frozenTube:null);
-            Long importSampleId = null;
-            for(StockOutRequiredSample s :stockOutRequiredSamples){
-                if(s.getSampleType().equals(frozenTube.getSampleTypeCode())
-                    &&(s.getSampleCode().equals(frozenTube.getSampleCode())||s.getSampleCode().equals(frozenTube.getSampleTempCode()))){
-                    importSampleId = s.getId();
-                }
-            }
-            stockOutReqFrozenTube.setImportingSampleId(importSampleId);
+
             stockOutReqFrozenTube.setTubeColumns(frozenTube!=null?frozenTube.getTubeColumns():null);
             stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
+            /////////////
+
+            stockOutReqFrozenTube
+                .frozenBoxCode(frozenTube.getFrozenBoxCode()).errorType(frozenTube.getErrorType())
+                .frozenTubeCode(frozenTube.getFrozenTubeCode()).frozenTubeState(frozenTube.getFrozenTubeState())
+                .frozenTubeTypeId(frozenTube.getFrozenTubeType().getId()).frozenTubeTypeCode(frozenTube.getFrozenTubeTypeCode())
+                .frozenTubeTypeName(frozenTube.getFrozenTubeTypeName()).frozenTubeVolumns(frozenTube.getFrozenTubeVolumns())
+                .frozenTubeVolumnsUnit(frozenTube.getFrozenTubeVolumnsUnit()).sampleVolumns(frozenTube.getSampleVolumns())
+                .projectId(frozenTube.getProject()!=null?frozenTube.getProject().getId():null).projectCode(frozenTube.getProjectCode())
+                .projectSiteId(frozenTube.getProjectSite()!=null?frozenTube.getProjectSite().getId():null)
+                .projectSiteCode(frozenTube.getProjectSiteCode()).sampleClassificationId(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getId():null)
+                .sampleClassificationCode(frozenTube.getSampleClassification() != null ? frozenTube.getSampleClassification().getSampleClassificationCode() : null)
+                .sampleClassificationName(frozenTube.getSampleClassification() != null ? frozenTube.getSampleClassification().getSampleClassificationName() : null)
+                .sampleCode(frozenTube.getSampleCode()).sampleTempCode(frozenTube.getSampleTempCode())
+                .sampleTypeId(frozenTube.getSampleType()!=null?frozenTube.getSampleType().getId():null)
+                .sampleTypeCode(frozenTube.getSampleTypeCode()).sampleTypeName(frozenTube.getSampleTypeName()).sampleUsedTimes(frozenTube.getSampleUsedTimes())
+                .sampleUsedTimesMost(frozenTube.getSampleUsedTimesMost());
+
             stockOutReqFrozenTubeList.add(stockOutReqFrozenTube);
             if(stockOutReqFrozenTubeList.size()>=1000){
                 stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubeList);
@@ -218,15 +255,14 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         if(countOfStockInTube.intValue()<countOfSample){
             throw new BankServiceException("库存不足！满足需求的样本量有"+countOfStockInTube+"支,请修改需求！");
         }
-        //查询已经出库的样本
-        List<Object[]> checkedFrozenTubeList = new ArrayList<Object[]>();
+        List<FrozenTube> checkedFrozenTubeList = new ArrayList<FrozenTube>();
         for(int i=0;;i+=1000){
             //查询全部的样本--先取1000条
             int length = 1000;
             if(countOfSample<1000){
                 length=countOfSample;
             }
-            List<Object[]> frozenTubeList = frozenTubeRepository.findByRequirements(sampleTypeId,samplyClassificationId,
+            List<FrozenTube> frozenTubeList = frozenTubeRepository.findByRequirements(sampleTypeId,samplyClassificationId,
                     frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis,ageMin,ageMax,projectIds,i,length);
            if(frozenTubeList.size()<countOfSample){
                checkedFrozenTubeList.addAll(frozenTubeList);
@@ -242,24 +278,41 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
 
         List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubes = new ArrayList<StockOutReqFrozenTube>();
         int i=0;
-        for(Object[] t :checkedFrozenTubeList){
+        for(FrozenTube frozenTube :checkedFrozenTubeList){
             StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube();
             stockOutReqFrozenTube.setStatus(Constants.STOCK_OUT_SAMPLE_IN_USE);
             stockOutReqFrozenTube.setStockOutRequirement(stockOutRequirement);
-            stockOutReqFrozenTube.setMemo(t[5]!=null?t[5].toString():null);
-            stockOutReqFrozenTube.setFrozenBox(stockOutReqFrozenTubeMapper.frozenBoxFromId(Long.valueOf(t[2].toString())));
-            stockOutReqFrozenTube.setFrozenTube(stockOutReqFrozenTubeMapper.frozenTubeFromId(Long.valueOf(t[0].toString())));
-            stockOutReqFrozenTube.setTubeColumns(t[4].toString());
-            stockOutReqFrozenTube.setTubeRows(t[3].toString());
+            stockOutReqFrozenTube.setMemo(frozenTube.getMemo());
+            stockOutReqFrozenTube.setFrozenBox(frozenTube.getFrozenBox());
+            stockOutReqFrozenTube.setFrozenTube(frozenTube);
+            stockOutReqFrozenTube.setTubeColumns(frozenTube.getTubeColumns());
+            stockOutReqFrozenTube.setTubeRows(frozenTube.getTubeRows());
+            stockOutReqFrozenTube
+                .frozenBoxCode(frozenTube.getFrozenBoxCode()).errorType(frozenTube.getErrorType())
+                .frozenTubeCode(frozenTube.getFrozenTubeCode()).frozenTubeState(frozenTube.getFrozenTubeState())
+                .frozenTubeTypeId(frozenTube.getFrozenTubeType().getId()).frozenTubeTypeCode(frozenTube.getFrozenTubeTypeCode())
+                .frozenTubeTypeName(frozenTube.getFrozenTubeTypeName()).frozenTubeVolumns(frozenTube.getFrozenTubeVolumns())
+                .frozenTubeVolumnsUnit(frozenTube.getFrozenTubeVolumnsUnit()).sampleVolumns(frozenTube.getSampleVolumns())
+                .projectId(frozenTube.getProject()!=null?frozenTube.getProject().getId():null).projectCode(frozenTube.getProjectCode())
+                .projectSiteId(frozenTube.getProjectSite()!=null?frozenTube.getProjectSite().getId():null)
+                .projectSiteCode(frozenTube.getProjectSiteCode()).sampleClassificationId(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getId():null)
+                .sampleClassificationCode(frozenTube.getSampleClassification() != null ? frozenTube.getSampleClassification().getSampleClassificationCode() : null)
+                .sampleClassificationName(frozenTube.getSampleClassification() != null ? frozenTube.getSampleClassification().getSampleClassificationName() : null)
+                .sampleCode(frozenTube.getSampleCode()).sampleTempCode(frozenTube.getSampleTempCode())
+                .sampleTypeId(frozenTube.getSampleType()!=null?frozenTube.getSampleType().getId():null)
+                .sampleTypeCode(frozenTube.getSampleTypeCode()).sampleTypeName(frozenTube.getSampleTypeName()).sampleUsedTimes(frozenTube.getSampleUsedTimes())
+                .sampleUsedTimesMost(frozenTube.getSampleUsedTimesMost());
             stockOutReqFrozenTubes.add(stockOutReqFrozenTube);
             if(stockOutReqFrozenTubes.size()==2000){
                 stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
+//                stockOutReqFrozenTubeRepository.flush();
                 stockOutReqFrozenTubes = new ArrayList<StockOutReqFrozenTube>();
             }
             i++;
         }
         if(stockOutReqFrozenTubes.size()>0){
             stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
+//            stockOutReqFrozenTubeRepository.flush();
         }
         stockOutRequirement.setCountOfSampleReal(i);
         return status;

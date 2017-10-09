@@ -335,7 +335,8 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
                 stockOutRequirementForApplyTable.setAge(requirement.getAgeMin()+"-"+requirement.getAgeMax()+"岁");
             }
             stockOutRequirementForApplyTables.add(stockOutRequirementForApplyTable);
-            countOfSampleAll +=requirement.getCountOfSample();
+            Long countOfSample = requirement.getCountOfSample()!=null?requirement.getCountOfSample():0L;
+            countOfSampleAll +=countOfSample;
         }
         res.setStockOutRequirement(stockOutRequirementForApplyTables);
         res.setCountOfStockOutSample(countOfStockOutSample);

@@ -370,7 +370,7 @@
                         var item = changes[i];
                         var row = item[0];
                         var col = item[1];
-                        var oldTube = item[2];
+                        var oldTube = item[2] || {};
                         var newTube = item[3];
 
                         if(!delFlag){

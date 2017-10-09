@@ -112,7 +112,7 @@ public interface FrozenTubeHistoryRepositories extends DataTablesRepository<Froz
         "            stockOut.sample_classification_id,\n" +
         "            stockOut.frozen_tube_state,stockOut.CREATED_DATE\n" +
         "\n" +
-        "            from (select * from stock_out_box_tube  where frozen_tube_id in ?1 and status!='0000') stockOut" +
+        "            from (select * from stock_out_req_frozen_tube  where frozen_tube_id in ?1 and status!='0000') stockOut" +
         "            left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id\n" +
         "            left join frozen_box box on soutbox.frozen_box_id = box.id\n" +
         "            left join  stock_out_task task on soutbox.stock_out_task_id = task.id\n" +
@@ -146,11 +146,12 @@ public interface FrozenTubeHistoryRepositories extends DataTablesRepository<Froz
         "            stockOut.sample_classification_id,\n" +
         "            hand.status as frozen_tube_state,handover.CREATED_DATE\n" +
         "\n" +
-        "            from (select * from  stock_out_box_tube stockOut where frozen_tube_id in ?1 and status!='0000') stockOut\n" +
-        "            inner join stock_out_handover_details hand on hand.stock_out_box_tube_id = stockOut.id\n" +
-        "            left join stock_out_box soutbox on stockOut.stock_out_frozen_box_id = soutbox.id\n" +
-        "            left join frozen_box box on soutbox.frozen_box_id = box.id\n" +
-        "            left join  stock_out_handover handover on hand.stock_out_handover_id = handover.id\n" +
+        "            from (select * from  stock_out_req_frozen_tube stockOut where frozen_tube_id in ?1 and status!='0000') stockOut\n" +
+        "            inner join stock_out_handover_details hand on hand.stock_out_req_frozen_tube_id = stockOut.id\n" +
+        "            left join stock_out_handover_box soutbox on hand.stock_out_handover_box_id = soutbox.id\n" +
+        "            left join stock_out_box outbox on soutbox.stock_out_frozen_box_id = outbox.id\n" +
+        "            left join frozen_box box on outbox.frozen_box_id = box.id\n" +
+        "            left join  stock_out_handover handover on soutbox.stock_out_handover_id = handover.id\n" +
         "            left join jhi_user u on  handover.handover_person_id = u.id\n",nativeQuery = true)
     List<Object[]> findHandOverHistoryBySamples(List<Long> ids);
     @Query(value = "select m.frozen_tube_id as frozen_tube_id,\n" +

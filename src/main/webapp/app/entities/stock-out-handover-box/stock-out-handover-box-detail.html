@@ -1,0 +1,63 @@
+
+<div>
+    <h2><span data-translate="bioBankApp.stockOutHandoverBox.detail.title">Stock Out Handover Box</span> {{vm.stockOutHandoverBox.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="bioBankApp.stockOutHandoverBox.equipmentCode">Equipment Code</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandoverBox.equipmentCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandoverBox.areaCode">Area Code</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandoverBox.areaCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandoverBox.supportRackCode">Support Rack Code</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandoverBox.supportRackCode}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandoverBox.rowsInShelf">Rows In Shelf</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandoverBox.rowsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandoverBox.columnsInShelf">Columns In Shelf</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandoverBox.columnsInShelf}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandoverBox.status">Status</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandoverBox.status}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandoverBox.memo">Memo</span></dt>
+        <dd>
+            <span>{{vm.stockOutHandoverBox.memo}}</span>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandoverBox.equipment">Equipment</span></dt>
+        <dd>
+            <a ui-sref="equipment-detail({id:vm.stockOutHandoverBox.equipmentId})">{{vm.stockOutHandoverBox.equipmentId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandoverBox.area">Area</span></dt>
+        <dd>
+            <a ui-sref="area-detail({id:vm.stockOutHandoverBox.areaId})">{{vm.stockOutHandoverBox.areaId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandoverBox.supportRack">Support Rack</span></dt>
+        <dd>
+            <a ui-sref="support-rack-detail({id:vm.stockOutHandoverBox.supportRackId})">{{vm.stockOutHandoverBox.supportRackId}}</a>
+        </dd>
+        <dt><span data-translate="bioBankApp.stockOutHandoverBox.stockOutFrozenBox">Stock Out Frozen Box</span></dt>
+        <dd>
+            <a ui-sref="stock-out-frozen-box-detail({id:vm.stockOutHandoverBox.stockOutFrozenBoxId})">{{vm.stockOutHandoverBox.stockOutFrozenBoxId}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="stock-out-handover-box-detail.edit({id:vm.stockOutHandoverBox.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -48,10 +48,6 @@ public interface StockOutTaskService {
 
     StockOutTaskDTO save(Long planId, List<Long> boxIds);
 
-    Page<StockOutTaskForPlanDataTableEntity> findAllByPlan(Long id, Pageable pageRequest);
-
-    Page<StockOutTaskForDataTableEntity> getDataTableStockOutTask(Pageable pageRequest);
-
     List<StockOutTaskDTO> getAllStockOutTasksByPlanId(Long id);
 
     StockOutTaskDTO startStockOutTask(Long id);

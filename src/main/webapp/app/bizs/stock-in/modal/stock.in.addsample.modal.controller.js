@@ -197,12 +197,16 @@
                                 });
                             }
                         }else{
-                            vm.entity.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+vm.entity.sampleClassificationId}).backColor;
+                            // zhuyu for fixed null project sample
+                            var obj = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+vm.entity.sampleClassificationId})||{};
+                            vm.entity.backColorForClass = obj.backColor;
                             _.forEach(sampleSelectedArray, function(sample) {
                                 // sample.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
                                 // sample.sampleClassificationName = vm.projectSampleTypeOptions[0].sampleClassificationName;
                                 // sample.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
-                                sample.backColorForClass = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+vm.entity.sampleClassificationId}).backColor;
+
+                                var obj = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+vm.entity.sampleClassificationId})||{};
+                                sample.backColorForClass = obj.backColor;
                             });
                         }
                     }

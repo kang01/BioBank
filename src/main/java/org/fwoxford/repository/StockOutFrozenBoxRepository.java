@@ -26,14 +26,11 @@ public interface StockOutFrozenBoxRepository extends JpaRepository<StockOutFroze
 
     StockOutFrozenBox findByFrozenBoxId(Long id);
 
-    @Query("SELECT s FROM StockOutFrozenBox s left join StockOutBoxTube t on s.id =t.stockOutFrozenBox.id " +
-        " left join StockOutHandoverDetails h on t.id = h.stockOutBoxTube.id" +
-        " WHERE h.stockOutHandover.id =?1 and s.status = ?2")
-    Page<StockOutFrozenBox> findBoxesByHandOverAndStatus(Long id, String status, Pageable pageRequest);
-
     @Query("SELECT s FROM StockOutFrozenBox s  " +
         " WHERE s.stockOutTask.stockOutPlan.stockOutApply.id =?1 and s.status = ?2")
     Page<StockOutFrozenBox> findBoxesByApplyAndStatus(Long id, String status, Pageable pageRequest);
 
     List<StockOutFrozenBox> findByStockOutTaskIdAndStatus(Long taskId, String status);
+
+    List<StockOutFrozenBox> findByIdIn(List<Long> frozenBoxIds);
 }

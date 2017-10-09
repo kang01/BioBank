@@ -153,8 +153,7 @@ public class StockOutBoxTubeServiceImpl implements StockOutBoxTubeService{
             public StockOutFrozenTubeDataTableEntity convert(StockOutFrozenTubeDataTableEntity e) {
                 String sampleCode = e.getSampleCode();
                 if(StringUtils.isEmpty(sampleCode) || sampleCode.equals(null)){
-                    FrozenTube frozenTube = frozenTubeRepository.findOne(e.getId());
-                    sampleCode = frozenTube.getSampleTempCode();
+                    sampleCode = e.getSampleTempCode();
                 }
                 return new StockOutFrozenTubeDataTableEntity(e.getId(),e.getFrozenBoxCode(),e.getSampleTypeName(),sampleCode,e.getSex(),e.getAge(),e.getDiseaseTypeId(),e.getHemolysis(),e.getBloodLipid(),e.getStockOutFrozenBoxId());
             }

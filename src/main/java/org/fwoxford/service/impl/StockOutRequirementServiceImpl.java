@@ -1,5 +1,7 @@
 package org.fwoxford.service.impl;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -25,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -82,6 +86,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
     @Autowired
     private BankUtil bankUtil;
+
+    @Autowired
+    EntityManager entityManager;
 
     public StockOutRequirementServiceImpl(StockOutRequirementRepository stockOutRequirementRepository, StockOutRequirementMapper stockOutRequirementMapper) {
         this.stockOutRequirementRepository = stockOutRequirementRepository;
@@ -172,10 +179,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         if(!stockOutApply.getStatus().equals(Constants.STOCK_OUT_PENDING)&&!stockOutApply.getStatus().equals(Constants.STOCK_OUT_APPROVE_REFUSED)){
             throw new BankServiceException("申请单的状态不能新增需求！",stockOutApply.getStatus());
         }
-
         StockOutRequirement requirement = new StockOutRequirement();
         if(stockOutRequirement.getId()!=null){
-            requirement.setId(stockOutRequirement.getId());
+            requirement  = stockOutRequirementRepository.findOne(stockOutRequirement.getId());
             //删除核对过的样本
             stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(requirement.getId());
         }
@@ -251,11 +257,63 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             throw new BankServiceException("申请单的状态不能新增需求！",stockOutApply.getStatus());
         }
         //保存附件
-        StockOutFiles stockOutFiles = stockOutFilesService.saveFiles(file,request);
+//        StockOutFiles stockOutFiles = stockOutFilesService.saveFiles(file,request);
         StockOutRequirement requirement = new StockOutRequirement();
+
         if(stockOutRequirement.getId()!=null){
             requirement.setId(stockOutRequirement.getId());
             stockOutRequiredSampleRepository.deleteByStockOutRequirementId(stockOutRequirement.getId());
+        }
+        List<StockOutRequiredSample> stockOutRequiredSamples = new ArrayList<StockOutRequiredSample>();
+        List<StockOutRequiredSample> stockOutRequiredSamplesList = new ArrayList<StockOutRequiredSample>();
+        Map<String,String> map = new HashMap<>();
+        JSONArray jsonArray = new JSONArray();
+        try {
+            InputStream stream = file.getInputStream(); HashSet<String[]> hashSet =  reportExportingService.readRequiredSamplesFromExcelFile(stream);
+            for(String[] s : hashSet){
+                String code = s[0];
+                String type = s[1];
+                if(map.get(code)!=null){
+                    continue;
+                }
+                map.put(code,type);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("code",code);
+                jsonObject.put("type",type);
+                jsonArray.add(jsonObject);
+//                StockOutRequiredSample stockOutRequiredSample = new StockOutRequiredSample();
+//                stockOutRequiredSample.setStatus(Constants.VALID);
+//                stockOutRequiredSample.setSampleCode(code);
+//                stockOutRequiredSample.setSampleType(type);
+//                stockOutRequiredSample.setStockOutRequirement(requirement);
+//                stockOutRequiredSamples.add(stockOutRequiredSample);
+//                stockOutRequiredSamplesList.add(stockOutRequiredSample);
+//                if(stockOutRequiredSamples.size()>=1000){
+//                    stockOutRequiredSampleRepository.save(stockOutRequiredSamples);
+//                    stockOutRequiredSamples.clear();
+//                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        StockOutFiles stockOutFiles = new StockOutFiles();
+        if (!file.isEmpty()) {
+            try {
+                stockOutFiles.setFileName(file.getOriginalFilename());
+                // 文件保存路径
+                String filePath = request.getSession().getServletContext().getRealPath("/") + "upload/"
+                    + file.getOriginalFilename();
+                stockOutFiles.setFilePath(filePath);
+                stockOutFiles.setFiles(file.getBytes());
+                stockOutFiles.setFilesContentType(file.getContentType());
+                stockOutFiles.setFileSize((int)file.getSize());
+                stockOutFiles.setFileType(file.getContentType());
+                stockOutFiles.setStatus(Constants.VALID);
+                stockOutFiles.setFileContent(jsonArray.toString());
+                stockOutFilesRepository.save(stockOutFiles);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         requirement.setStatus(Constants.STOCK_OUT_REQUIREMENT_CKECKING);
         requirement.setStockOutApply(stockOutApply);
@@ -263,44 +321,17 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         requirement.setRequirementCode(bankUtil.getUniqueID("D"));
         requirement.setApplyCode(stockOutApply.getApplyCode());
         requirement.setMemo(stockOutRequirement.getMemo());
+        requirement.setCountOfSample(jsonArray.size());
         requirement.setImportingFileId(stockOutFiles!=null?stockOutFiles.getId():null);
         stockOutRequirementRepository.save(requirement);
-
-        List<StockOutRequiredSample> stockOutRequiredSamples = new ArrayList<StockOutRequiredSample>();
-        List<StockOutRequiredSample> stockOutRequiredSamplesList = new ArrayList<StockOutRequiredSample>();
-        Map<String,String> map = new HashMap<>();
-        try {
-            InputStream stream = file.getInputStream(); HashSet<String[]> hashSet =  reportExportingService.readRequiredSamplesFromExcelFile(stream);
-            for(String[] s : hashSet){
-                StockOutRequiredSample stockOutRequiredSample = new StockOutRequiredSample();
-                String code = s[0];
-                String type = s[1];
-                stockOutRequiredSample.setStatus(Constants.VALID);
-                stockOutRequiredSample.setSampleCode(code);
-                stockOutRequiredSample.setSampleType(type);
-                stockOutRequiredSample.setStockOutRequirement(requirement);
-                if(map.get(code)!=null){
-                    continue;
-                }
-                map.put(code,type);
-                stockOutRequiredSamples.add(stockOutRequiredSample);
-                stockOutRequiredSamplesList.add(stockOutRequiredSample);
-                if(stockOutRequiredSamples.size()>=1000){
-                    stockOutRequiredSampleRepository.save(stockOutRequiredSamples);
-                    stockOutRequiredSamples.clear();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (stockOutRequiredSamples.size() > 0){
-            stockOutRequiredSampleRepository.save(stockOutRequiredSamples);
-            stockOutRequiredSamples.clear();
-        }
-
-        requirement.setCountOfSample(stockOutRequiredSamplesList.size());
-        stockOutRequirement.setCountOfSample(stockOutRequiredSamplesList.size());
-        stockOutRequirementRepository.save(requirement);
+//        if (stockOutRequiredSamples.size() > 0){
+//            stockOutRequiredSampleRepository.save(stockOutRequiredSamples);
+//            stockOutRequiredSamples.clear();
+//        }
+//
+//        requirement.setCountOfSample(stockOutRequiredSamplesList.size());
+//        stockOutRequirement.setCountOfSample(stockOutRequiredSamplesList.size());
+//        stockOutRequirementRepository.save(requirement);
         stockOutRequirementForApply.setId(requirement.getId());
         stockOutRequirementForApply.setCountOfSample(requirement.getCountOfSample());
         stockOutRequirementForApply.setRequirementName(requirement.getRequirementName());
@@ -355,8 +386,18 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         }
         String status = Constants.STOCK_OUT_REQUIREMENT_CKECKING;
         //获取指定样本
-        List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(id);
-        if(stockOutRequiredSamples.size()>0){
+        if(stockOutRequirement.getImportingFileId()!=null){
+            List<StockOutRequiredSample> stockOutRequiredSamples = new ArrayList<>();
+//            List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(id);
+            StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(stockOutRequirement.getImportingFileId());
+            String fileContent = stockOutFiles.getFileContent();
+            List<JSONObject> jsonArray = JSONArray.fromObject(fileContent);
+            for(int i=0;i<jsonArray.size();i++){
+                StockOutRequiredSample stockOutRequiredSample = new StockOutRequiredSample();
+                stockOutRequiredSample.setSampleCode(jsonArray.get(i).getString("code"));
+                stockOutRequiredSample.setSampleType(jsonArray.get(i).getString("type"));
+                stockOutRequiredSamples.add(stockOutRequiredSample);
+            }
             //核对导入指定样本
             status = stockOutReqFrozenTubeService.checkStockOutSampleByAppointedSample(stockOutRequiredSamples,stockOutRequirement);
         }else{
@@ -443,8 +484,15 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         stockOutRequirement.setCountOfSampleReal(0);
         stockOutRequirementRepository.save(stockOutRequirement);
         //删除核对通过的样本
-        stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
+//        stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
+        StringBuffer sql = new StringBuffer();
+        sql.append("delete from stock_out_req_frozen_tube where stock_out_requirement_id = ?1");
 
+        Query query = entityManager.createNativeQuery(sql.toString());
+        query.setParameter("1", id).executeUpdate();
+//        entityManager.flush();
+
+//        int a = 1/0;
         stockOutRequirementForApply.setId(id);
         stockOutRequirementForApply.setStatus(stockOutRequirement.getStatus());
         return stockOutRequirementForApply;

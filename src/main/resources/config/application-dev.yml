@@ -26,12 +26,12 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-#        url: jdbc:oracle:thin:@10.24.10.247:1521:xe
-#        username: biobank_t_20170718
-#        password: eyuXotN6
-        url: jdbc:oracle:thin:@10.24.10.56:1521:xe
-        username: biobank1
-        password: root123
+        url: jdbc:oracle:thin:@10.24.10.247:1521:xe
+        username: biobank_p_20171007
+        password: eyuXotN6
+#        url: jdbc:oracle:thin:@10.24.10.56:1521:xe
+#        username: biobank1
+#        password: root123
     jpa:
 #        database-platform: org.hibernate.dialect.Oracle12cDialect
         database-platform: org.fwoxford.config.database.BBISOracle12cDialect
@@ -43,6 +43,11 @@ spring:
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: true
             hibernate.cache.region.factory_class: io.github.jhipster.config.jcache.NoDefaultJCacheRegionFactory
+            hibernate.jdbc.batch_size: 1000
+            hibernate.jdbc.fetch_size: 100
+            hibernate.jdbc.batch_versioned_data: true
+#            hibernate.order_inserts: true
+#            hibernate.order_updates: true
     mail:
         host: localhost
         port: 25

@@ -179,11 +179,7 @@ public class StockOutRequirementResource {
         JSONObject jsonObject = JSONObject.fromObject(stockOutRequirement);
         StockOutRequirementForApply requirement = (StockOutRequirementForApply) JSONObject.toBean(jsonObject, StockOutRequirementForApply.class);
         log.debug("REST request to save StockOutRequirement : {}", requirement);
-        if (requirement.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new stockOutRequirement cannot already have an ID")).body(null);
-        }
         StockOutRequirementForApply result = stockOutRequirementService.saveAndUploadStockOutRequirement(requirement, stockOutApplyId,file,request);
-
         return ResponseEntity.created(new URI("/api/stock-out-requirements/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

@@ -17,4 +17,5 @@ public interface StockOutPlanRepository extends JpaRepository<StockOutPlan,Long>
     List<StockOutPlan> findAllByStockOutApplyId(Long applyId);
 
     StockOutPlan findByStockOutPlanCode(String stockOutPlanCode);
+
 }

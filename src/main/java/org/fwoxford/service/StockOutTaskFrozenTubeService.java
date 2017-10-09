@@ -1,6 +1,5 @@
 package org.fwoxford.service;
 
-import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.StockOutTaskFrozenTubeDTO;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.springframework.data.domain.Page;
@@ -45,7 +44,7 @@ public interface StockOutTaskFrozenTubeService {
 
     List<FrozenTubeResponse> abnormalStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS);
 
-    List<FrozenTubeResponse> repealStockOutTaskFrozenTube( List<FrozenTubeResponse> frozenTubeDTOS);
+    List<FrozenTubeResponse> repealStockOutTaskFrozenTube(List<FrozenTubeResponse> frozenTubeDTOS, Long taskId);
 
     List<FrozenTubeResponse> noteStockOutTaskFrozenTube( List<FrozenTubeResponse> frozenTubeDTOS);
 }

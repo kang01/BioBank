@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity StockOutHandoverDetails.
+    -->
+    <changeSet id="201709281512-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="stock_out_req_frozen_tube_id"
+                                 baseTableName="stock_out_handover_details"
+                                 constraintName="handover_out_req_tube"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock_out_req_frozen_tube"/>
+
+        <addForeignKeyConstraint baseColumnNames="stock_out_handover_box_id"
+                                 baseTableName="stock_out_handover_details"
+                                 constraintName="handover_out_req_box"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock_out_handover_box"/>
+
+    </changeSet>
+</databaseChangeLog>

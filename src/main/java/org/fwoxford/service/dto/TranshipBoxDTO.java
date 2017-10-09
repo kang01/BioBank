@@ -522,4 +522,13 @@ public class TranshipBoxDTO extends AbstractAuditingDTO implements Serializable 
             ", frozenTubeDTOList=" + frozenTubeDTOList +
             '}';
     }
+    private String frozenBoxCode1D;
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
+    }
 }

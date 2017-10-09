@@ -156,6 +156,8 @@ public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Seriali
 
     private Long stockOutTaskId;
 
+    private String frozenBoxCode1D;
+
     public Long getId() {
         return id;
     }
@@ -436,6 +438,14 @@ public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Seriali
         this.stockOutTaskId = stockOutTaskId;
     }
 
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -495,6 +505,7 @@ public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Seriali
             ", supportRackId=" + supportRackId +
             ", areaId=" + areaId +
             ", stockOutTaskId=" + stockOutTaskId +
+            ", frozenBoxCode1D="+ frozenBoxCode1D+
             '}';
     }
 }

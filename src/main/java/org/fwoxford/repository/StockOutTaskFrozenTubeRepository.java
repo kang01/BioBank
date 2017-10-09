@@ -57,6 +57,15 @@ public interface StockOutTaskFrozenTubeRepository extends JpaRepository<StockOut
         " and t.stockOutTask.id = ?2 and t.status='1801' and t.stockOutPlanFrozenTube.stockOutReqFrozenTube.frozenTube.frozenBox.status !='2008'")
     Long countByFrozenBoxAndTask(Long id, Long taskId);
 
+<<<<<<< HEAD
+=======
+     @Query(value = " select  a.id,count(1) from frozen_box a" +
+         "        left join   stock_out_req_frozen_tube c on c.frozen_box_id = a.id " +
+         "        where c.stock_out_task_id =?1 and a.status = '1301' and a.status!='2008' " +
+         "        group by a.id" ,nativeQuery = true)
+    List<Object[]> countByTaskGroupByBox(Long taskId);
+
+>>>>>>> c3bed972e57f70897ec9a85c53bdf2692eb998be
     @Modifying
     @Query("update StockOutTaskFrozenTube t set t.status = '1803' where t.id in ?1")
     void updateByStockOutFrozenTubeIds(List<Long> taskTubes);

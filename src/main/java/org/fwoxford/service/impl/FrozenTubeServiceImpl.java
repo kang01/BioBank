@@ -4,8 +4,10 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenBox;
+import org.fwoxford.domain.StockOutReqFrozenTube;
 import org.fwoxford.domain.StockOutTaskFrozenTube;
 import org.fwoxford.repository.FrozenBoxRepository;
+import org.fwoxford.repository.StockOutReqFrozenTubeRepository;
 import org.fwoxford.repository.StockOutTaskFrozenTubeRepository;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.domain.FrozenTube;
@@ -52,6 +54,9 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
 
     @Autowired
     private FrozenBoxMapper frozenBoxMapper;
+
+    @Autowired
+    private StockOutReqFrozenTubeRepository stockOutReqFrozenTubeRepository;
 
     public FrozenTubeServiceImpl(FrozenTubeRepository frozenTubeRepository, FrozenTubeMapper frozenTubeMapper) {
         this.frozenTubeRepository = frozenTubeRepository;
@@ -156,23 +161,35 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
         return frozenTubesList;
     }
 
+    /**
+     * 根据冻存盒编码和任务ID查询出库样本
+     * @param frozenBoxCode
+     * @param id
+     * @return
+     */
     @Override
     public FrozenBoxAndFrozenTubeResponse getFrozenTubeByFrozenBoxCode(String frozenBoxCode,Long id) {
         FrozenBoxAndFrozenTubeResponse frozenBoxAndFrozenTubeResponse = new FrozenBoxAndFrozenTubeResponse();
         FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
-
+        if(frozenBox == null){
+            throw new BankServiceException("冻存盒不存在！");
+        }
         List<FrozenTubeDTO> frozenTubeResponses = new ArrayList<FrozenTubeDTO>();
         //根据冻存盒编码查询冻存管
         List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
         //根据冻存盒查询要出库的样本
-        List<StockOutTaskFrozenTube> stockOutFrozenTubes = stockOutTaskFrozenTubeRepository.findByFrozenBoxAndTask(frozenBoxCode,id);
+        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndFrozenBoxId(id,frozenBox.getId());
+//        List<StockOutTaskFrozenTube> stockOutFrozenTubes = stockOutTaskFrozenTubeRepository.findByFrozenBoxAndTask(frozenBoxCode,id);
         for(FrozenTube f:frozenTubes){
+            if(!f.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKED)){
+                continue;
+            }
             FrozenTubeDTO frozenTubeResponse = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
-            for(StockOutTaskFrozenTube s :stockOutFrozenTubes){
-                if(s.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getFrozenTube().getId().equals(f.getId())){
+            for(StockOutReqFrozenTube s :stockOutReqFrozenTubes){
+                if(s.getFrozenTube().getId().equals(f.getId())){
                     if(s.getStatus().equals(Constants.STOCK_OUT_FROZEN_TUBE_CANCEL)){
                         frozenTubeResponse.setStockOutFlag(Constants.TUBE_CANCEL);
-                        frozenTubeResponse.setRepealReason(s.getStockOutPlanFrozenTube().getStockOutReqFrozenTube().getRepealReason());
+                        frozenTubeResponse.setRepealReason(s.getRepealReason());
                     }else{
                         frozenTubeResponse.setStockOutFlag(Constants.YES);
                     }

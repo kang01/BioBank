@@ -65,6 +65,7 @@
                 "attachment": "Attachment",
                 "coordinate": "Coordinate",
                 "province": "Province",
+                "stockOutHandoverBox": "Stock Out Handover Box",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

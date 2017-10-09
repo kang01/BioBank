@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="sysdate" dbms="oracle"/>
+    <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity StockOutReqFrozenTube.
+    -->
+    <changeSet id="20170928143801-1" author="jhipster">
+        <addColumn tableName="stock_out_req_frozen_tube">
+            <column name="frozen_box_code" type="nvarchar(100)" remarks="冻存盒编码"></column>
+            <column name="frozen_tube_type_code" type="nvarchar(100)" remarks="冻存管类型编码"></column>
+            <column name="frozen_tube_type_name" type="nvarchar(255)" remarks="冻存管类型名称"></column>
+            <column name="sample_type_code" type="nvarchar(100)" remarks="样本类型编码"></column>
+            <column name="sample_type_name" type="nvarchar(255)" remarks="样本类型名称"></column>
+            <column name="sample_classification_code" type="nvarchar(100)" remarks="样本分类编码"></column>
+            <column name="sample_classification_name" type="nvarchar(100)" remarks="样本分类名称"></column>
+            <column name="frozen_tube_volumns" type="Double" remarks="冻存管容量值"></column>
+            <column name="frozen_tube_volumns_unit" type="nvarchar(20)" remarks="冻存管容量单位"></column>
+            <column name="project_code" type="nvarchar(100)" remarks="项目编码"></column>
+            <column name="project_site_code" type="nvarchar(100)" remarks="项目点编码"></column>
+            <column name="frozen_tube_code" type="nvarchar(100)" remarks="冻存管编码"></column>
+            <column name="sample_temp_code" type="nvarchar(100)" remarks="样本临时编码"></column>
+            <column name="sample_code" type="nvarchar(100)" remarks="样本编码"></column>
+            <column name="sample_used_times_most" type="integer" remarks="样本最多使用次数"></column>
+            <column name="sample_used_times" type="integer" remarks="样本已使用次数"></column>
+            <column name="sample_volumns" type="double" remarks="样本容量值"></column>
+            <column name="error_type" type="nvarchar(20)" remarks="错误类型：6001：位置错误，6002：样本类型错误，6003：其他"></column>
+            <column name="frozen_tube_state" type="nvarchar(20)" remarks="冻存管状态"></column>
+            <column name="frozen_tube_type_id" type="bigint" remarks="冻存管类型ID"></column>
+            <column name="sample_type_id" type="bigint" remarks="样本类型ID"></column>
+            <column name="sample_classification_id" type="bigint" remarks="样本分类ID"></column>
+            <column name="project_id" type="bigint" remarks="项目ID"></column>
+            <column name="project_site_id" type="bigint" remarks="项目点ID"></column>
+
+            <column name="stock_out_frozen_box_id" type="bigint" remarks="出库盒ID(原盒/临时盒)"></column>
+            <column name="stock_out_task_id" type="bigint" remarks="出库任务ID"></column>
+            <column name="frozen_box_code_1d" type="nvarchar(100)" remarks="冻存盒编码"></column>
+
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

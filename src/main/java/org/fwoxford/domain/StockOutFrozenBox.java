@@ -627,5 +627,18 @@ public class StockOutFrozenBox extends AbstractAuditingEntity implements Seriali
     public void setProjectSite(ProjectSite projectSite) {
         this.projectSite = projectSite;
     }
+    @Size(max = 100)
+    @Column(name = "frozen_box_code_1d", length = 100)
+    private String frozenBoxCode1D;
 
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+    public StockOutFrozenBox frozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
+        return this;
+    }
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
+    }
 }

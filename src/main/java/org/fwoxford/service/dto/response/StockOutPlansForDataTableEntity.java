@@ -18,7 +18,7 @@ import java.time.LocalDate;
  */
 
 @Entity
-@Table(name = "view_stock_out_plan")
+@Table(name = "view_stock_out_plan_list")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class StockOutPlansForDataTableEntity {
     @Id

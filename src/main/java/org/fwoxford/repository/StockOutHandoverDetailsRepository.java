@@ -12,22 +12,16 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface StockOutHandoverDetailsRepository extends JpaRepository<StockOutHandoverDetails,Long> {
-    @Query("select count(t) from StockOutHandoverDetails t where t.stockOutHandover.stockOutTask.id=?1")
-    Long countByStockOutTaskId(Long id);
 
+    @Query("select count(t.id) from StockOutHandoverDetails t where t.stockOutHandoverBox.stockOutHandover.id = ?1")
     Long countByStockOutHandoverId(Long id);
 
+    @Query(value = "select t.* from stock_out_handover_details t left join stock_out_handover_box b on t.stock_out_handover_box_id=b.id where b.stock_out_handover_id = ?1", nativeQuery = true)
     List<StockOutHandoverDetails> findByStockOutHandoverId(Long id);
 
-    @Query(value = "select count(count(stockoutha0_.id)) as col_0_0_ from stock_out_handover_details stockoutha0_ " +
-        " cross join stock_out_box_tube stockoutbo1_ " +
-        " where stockoutha0_.stock_out_box_tube_id=stockoutbo1_.id " +
-        " and stockoutha0_.stock_out_handover_id = ?1" +
-        " group by stockoutbo1_.stock_out_frozen_box_id" ,nativeQuery = true)
+    @Query(value = "select count(b.id) from stock_out_handover_box b where b.id =?1" ,nativeQuery = true)
     Integer countFrozenBoxByStockOutHandoverId(Long id);
 
-    Page<StockOutHandoverDetails> findPageByStockOutHandoverId(Long id, Pageable pageable);
-
-    @Query("select count(t) from StockOutHandoverDetails t where t.stockOutHandover.stockOutApply.id=?1")
+    @Query("select count(t) from StockOutHandoverDetails t where t.stockOutHandoverBox.stockOutHandover.stockOutApply.id=?1")
     Long countByStockOutApply(Long id);
 }

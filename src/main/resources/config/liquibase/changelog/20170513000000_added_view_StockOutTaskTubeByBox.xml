@@ -16,4 +16,5 @@
             LEFT OUTER JOIN frozen_tube p ON t.frozen_tube_id = p.id
         </createView>
     </changeSet>
+
 </databaseChangeLog>

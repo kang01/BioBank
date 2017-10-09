@@ -236,10 +236,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     public List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId) {
         List<StockOutFrozenBoxForTaskDataTableEntity> alist = new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
         List<FrozenBox> boxes =  frozenBoxRepository.findByStockOutTaskId(taskId);
-<<<<<<< HEAD
-=======
+
         List<Object[]> countOfSampleGroupByBox = stockOutReqFrozenTubeRepository.countByTaskGroupByBox(taskId);
->>>>>>> c3bed972e57f70897ec9a85c53bdf2692eb998be
+
         for(FrozenBox frozenBox :boxes){
             StockOutFrozenBoxForTaskDataTableEntity box = new StockOutFrozenBoxForTaskDataTableEntity();
             if(frozenBox ==null){continue;}

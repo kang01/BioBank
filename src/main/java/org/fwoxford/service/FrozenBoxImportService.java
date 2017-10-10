@@ -402,7 +402,7 @@ public class FrozenBoxImportService {
         }
 
         if(frozenTubeImportingForms.size() == 0){
-            throw new BankServiceException("冻存盒导入失败！没有冻存管数据。");
+            throw new BankServiceException("冻存盒导入失败！" + frozenBoxDTO.getFrozenBoxCode1D() + "没有冻存管数据。");
         }
 
         // 获取冻存盒的样本类型
@@ -443,6 +443,10 @@ public class FrozenBoxImportService {
             frozenTubeResponse.setFrozenTubeVolumnsUnit(frozenTubeType.getFrozenTubeVolumnUnit());
             frozenTubeResponse.setSampleUsedTimesMost(frozenTubeType.getSampleUsedTimesMost());
 
+            frozenTubeResponse.setTubeColumns(t.getColOfSpecimenPos());
+            char rows=(char) (Integer.parseInt(t.getRowOfSpecimenPos())+64);
+            frozenTubeResponse.setTubeRows(String.valueOf(rows));
+
             frozenTubeResponse.setSampleTypeId(sampleType.getId());
             frozenTubeResponse.setSampleTypeCode(sampleType.getSampleTypeCode());
             frozenTubeResponse.setSampleTypeName(sampleType.getSampleTypeName());
@@ -451,6 +455,9 @@ public class FrozenBoxImportService {
             return frozenTubeResponse;
         }).filter(t -> t != null).collect(Collectors.toList());
 
+        if(frozenTubeResponses.size() == 0){
+            throw new BankServiceException("冻存盒导入失败！没有指定样本类型(" + frozenBoxDTO.getSampleTypeCode() + ")的冻存管数据。");
+        }
 
         return frozenTubeResponses;
     }

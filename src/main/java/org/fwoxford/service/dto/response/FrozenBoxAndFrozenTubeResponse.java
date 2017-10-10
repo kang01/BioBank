@@ -24,6 +24,12 @@ public class FrozenBoxAndFrozenTubeResponse {
     @Size(max = 100)
     private String frozenBoxCode;
     /**
+     * 原盒编码
+     */
+    @NotNull
+    @Size(max = 100)
+    private String frozenBoxCode1D;
+    /**
      * 是否分装（1：是；0：否）
      */
     private Integer isSplit;
@@ -75,117 +81,6 @@ public class FrozenBoxAndFrozenTubeResponse {
      */
     private List<FrozenTubeDTO> frozenTubeDTOS;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFrozenBoxCode() {
-        return frozenBoxCode;
-    }
-
-    public void setFrozenBoxCode(String frozenBoxCode) {
-        this.frozenBoxCode = frozenBoxCode;
-    }
-
-    public Integer getIsSplit() {
-        return isSplit;
-    }
-
-    public void setIsSplit(Integer isSplit) {
-        this.isSplit = isSplit;
-    }
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public List<FrozenTubeDTO> getFrozenTubeDTOS() {
-        return frozenTubeDTOS;
-    }
-
-    public void setFrozenTubeDTOS(List<FrozenTubeDTO> frozenTubeDTOS) {
-        this.frozenTubeDTOS = frozenTubeDTOS;
-    }
-
-    public Long getEquipmentId() {
-        return equipmentId;
-    }
-
-    public void setEquipmentId(Long equipmentId) {
-        this.equipmentId = equipmentId;
-    }
-
-    public Long getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(Long areaId) {
-        this.areaId = areaId;
-    }
-
-    public Long getSupportRackId() {
-        return supportRackId;
-    }
-
-    public void setSupportRackId(Long supportRackId) {
-        this.supportRackId = supportRackId;
-    }
-
-    public String getRowsInShelf() {
-        return rowsInShelf;
-    }
-
-    public void setRowsInShelf(String rowsInShelf) {
-        this.rowsInShelf = rowsInShelf;
-    }
-
-    public String getColumnsInShelf() {
-        return columnsInShelf;
-    }
-
-    public void setColumnsInShelf(String columnsInShelf) {
-        this.columnsInShelf = columnsInShelf;
-    }
-
-    public FrozenBoxType getFrozenBoxType() {
-        return frozenBoxType;
-    }
-
-    public void setFrozenBoxType(FrozenBoxType frozenBoxType) {
-        this.frozenBoxType = frozenBoxType;
-    }
-
-    public SampleClassification getSampleClassification() {
-        return sampleClassification;
-    }
-
-    public void setSampleClassification(SampleClassification sampleClassification) {
-        this.sampleClassification = sampleClassification;
-    }
-
-    public SampleType getSampleType() {
-        return sampleType;
-    }
-
-    public void setSampleType(SampleType sampleType) {
-        this.sampleType = sampleType;
-    }
     private Long projectId;
     private String projectCode;
     private String projectName;
@@ -209,176 +104,375 @@ public class FrozenBoxAndFrozenTubeResponse {
     private String frontColor;
     private String backColor;
 
-    public Long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getProjectCode() {
-        return projectCode;
-    }
-
-    public void setProjectCode(String projectCode) {
-        this.projectCode = projectCode;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public Long getFrozenBoxTypeId() {
-        return frozenBoxTypeId;
-    }
-
-    public void setFrozenBoxTypeId(Long frozenBoxTypeId) {
-        this.frozenBoxTypeId = frozenBoxTypeId;
-    }
-
-    public String getFrozenBoxTypeName() {
-        return frozenBoxTypeName;
-    }
-
-    public void setFrozenBoxTypeName(String frozenBoxTypeName) {
-        this.frozenBoxTypeName = frozenBoxTypeName;
-    }
-
-    public String getFrozenBoxTypeCode() {
-        return frozenBoxTypeCode;
-    }
-
-    public void setFrozenBoxTypeCode(String frozenBoxTypeCode) {
-        this.frozenBoxTypeCode = frozenBoxTypeCode;
-    }
-
-    public String getFrozenBoxTypeRows() {
-        return frozenBoxTypeRows;
-    }
-
-    public void setFrozenBoxTypeRows(String frozenBoxTypeRows) {
-        this.frozenBoxTypeRows = frozenBoxTypeRows;
-    }
-
-    public String getFrozenBoxTypeColumns() {
-        return frozenBoxTypeColumns;
-    }
-
-    public void setFrozenBoxTypeColumns(String frozenBoxTypeColumns) {
-        this.frozenBoxTypeColumns = frozenBoxTypeColumns;
-    }
-
-    public Long getSampleClassificationId() {
-        return sampleClassificationId;
-    }
-
-    public void setSampleClassificationId(Long sampleClassificationId) {
-        this.sampleClassificationId = sampleClassificationId;
-    }
-
-    public String getSampleClassificationName() {
-        return sampleClassificationName;
-    }
-
-    public void setSampleClassificationName(String sampleClassificationName) {
-        this.sampleClassificationName = sampleClassificationName;
-    }
-
-    public String getSampleClassificationCode() {
-        return sampleClassificationCode;
-    }
-
-    public void setSampleClassificationCode(String sampleClassificationCode) {
-        this.sampleClassificationCode = sampleClassificationCode;
-    }
-
-    public String getFrontColorForClass() {
-        return frontColorForClass;
-    }
-
-    public void setFrontColorForClass(String frontColorForClass) {
-        this.frontColorForClass = frontColorForClass;
-    }
-
-    public String getBackColorForClass() {
-        return backColorForClass;
-    }
-
-    public void setBackColorForClass(String backColorForClass) {
-        this.backColorForClass = backColorForClass;
-    }
-
-    public Long getSampleTypeId() {
-        return sampleTypeId;
-    }
-
-    public void setSampleTypeId(Long sampleTypeId) {
-        this.sampleTypeId = sampleTypeId;
-    }
-
-    public String getSampleTypeCode() {
-        return sampleTypeCode;
-    }
-
-    public void setSampleTypeCode(String sampleTypeCode) {
-        this.sampleTypeCode = sampleTypeCode;
-    }
-
-    public String getSampleTypeName() {
-        return sampleTypeName;
-    }
-
-    public void setSampleTypeName(String sampleTypeName) {
-        this.sampleTypeName = sampleTypeName;
-    }
-
-    public Integer getIsMixed() {
-        return isMixed;
-    }
-
-    public void setIsMixed(Integer isMixed) {
-        this.isMixed = isMixed;
-    }
-
-    public String getFrontColor() {
-        return frontColor;
-    }
-
-    public void setFrontColor(String frontColor) {
-        this.frontColor = frontColor;
-    }
-
-    public String getBackColor() {
-        return backColor;
-    }
-
-    public void setBackColor(String backColor) {
-        this.backColor = backColor;
-    }
     /**
      * 是否已导入样本数据：1：是，0：否
      */
     private Integer isRealData;
     private Integer countOfSample;
 
+    public Long getId() {
+        return id;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getFrozenBoxCode() {
+        return frozenBoxCode;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setFrozenBoxCode(String frozenBoxCode) {
+        this.frozenBoxCode = frozenBoxCode;
+        return this;
+    }
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
+        return this;
+    }
+
+    public Integer getIsSplit() {
+        return isSplit;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setIsSplit(Integer isSplit) {
+        this.isSplit = isSplit;
+        return this;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setMemo(String memo) {
+        this.memo = memo;
+        return this;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setStatus(String status) {
+        this.status = status;
+        return this;
+    }
+
+    public FrozenBoxType getFrozenBoxType() {
+        return frozenBoxType;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setFrozenBoxType(FrozenBoxType frozenBoxType) {
+        this.frozenBoxType = frozenBoxType;
+        return this;
+    }
+
+    public SampleClassification getSampleClassification() {
+        return sampleClassification;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setSampleClassification(SampleClassification sampleClassification) {
+        this.sampleClassification = sampleClassification;
+        return this;
+    }
+
+    public SampleType getSampleType() {
+        return sampleType;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setSampleType(SampleType sampleType) {
+        this.sampleType = sampleType;
+        return this;
+    }
+
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+        return this;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setAreaId(Long areaId) {
+        this.areaId = areaId;
+        return this;
+    }
+
+    public Long getSupportRackId() {
+        return supportRackId;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setSupportRackId(Long supportRackId) {
+        this.supportRackId = supportRackId;
+        return this;
+    }
+
+    public String getRowsInShelf() {
+        return rowsInShelf;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setRowsInShelf(String rowsInShelf) {
+        this.rowsInShelf = rowsInShelf;
+        return this;
+    }
+
+    public String getColumnsInShelf() {
+        return columnsInShelf;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setColumnsInShelf(String columnsInShelf) {
+        this.columnsInShelf = columnsInShelf;
+        return this;
+    }
+
+    public List<FrozenTubeDTO> getFrozenTubeDTOS() {
+        return frozenTubeDTOS;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setFrozenTubeDTOS(List<FrozenTubeDTO> frozenTubeDTOS) {
+        this.frozenTubeDTOS = frozenTubeDTOS;
+        return this;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setProjectId(Long projectId) {
+        this.projectId = projectId;
+        return this;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
+        return this;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setProjectName(String projectName) {
+        this.projectName = projectName;
+        return this;
+    }
+
+    public Long getFrozenBoxTypeId() {
+        return frozenBoxTypeId;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setFrozenBoxTypeId(Long frozenBoxTypeId) {
+        this.frozenBoxTypeId = frozenBoxTypeId;
+        return this;
+    }
+
+    public String getFrozenBoxTypeName() {
+        return frozenBoxTypeName;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setFrozenBoxTypeName(String frozenBoxTypeName) {
+        this.frozenBoxTypeName = frozenBoxTypeName;
+        return this;
+    }
+
+    public String getFrozenBoxTypeCode() {
+        return frozenBoxTypeCode;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setFrozenBoxTypeCode(String frozenBoxTypeCode) {
+        this.frozenBoxTypeCode = frozenBoxTypeCode;
+        return this;
+    }
+
+    public String getFrozenBoxTypeRows() {
+        return frozenBoxTypeRows;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setFrozenBoxTypeRows(String frozenBoxTypeRows) {
+        this.frozenBoxTypeRows = frozenBoxTypeRows;
+        return this;
+    }
+
+    public String getFrozenBoxTypeColumns() {
+        return frozenBoxTypeColumns;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setFrozenBoxTypeColumns(String frozenBoxTypeColumns) {
+        this.frozenBoxTypeColumns = frozenBoxTypeColumns;
+        return this;
+    }
+
+    public Long getSampleClassificationId() {
+        return sampleClassificationId;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setSampleClassificationId(Long sampleClassificationId) {
+        this.sampleClassificationId = sampleClassificationId;
+        return this;
+    }
+
+    public String getSampleClassificationName() {
+        return sampleClassificationName;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setSampleClassificationName(String sampleClassificationName) {
+        this.sampleClassificationName = sampleClassificationName;
+        return this;
+    }
+
+    public String getSampleClassificationCode() {
+        return sampleClassificationCode;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setSampleClassificationCode(String sampleClassificationCode) {
+        this.sampleClassificationCode = sampleClassificationCode;
+        return this;
+    }
+
+    public String getFrontColorForClass() {
+        return frontColorForClass;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setFrontColorForClass(String frontColorForClass) {
+        this.frontColorForClass = frontColorForClass;
+        return this;
+    }
+
+    public String getBackColorForClass() {
+        return backColorForClass;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setBackColorForClass(String backColorForClass) {
+        this.backColorForClass = backColorForClass;
+        return this;
+    }
+
+    public Long getSampleTypeId() {
+        return sampleTypeId;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setSampleTypeId(Long sampleTypeId) {
+        this.sampleTypeId = sampleTypeId;
+        return this;
+    }
+
+    public String getSampleTypeCode() {
+        return sampleTypeCode;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setSampleTypeCode(String sampleTypeCode) {
+        this.sampleTypeCode = sampleTypeCode;
+        return this;
+    }
+
+    public String getSampleTypeName() {
+        return sampleTypeName;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setSampleTypeName(String sampleTypeName) {
+        this.sampleTypeName = sampleTypeName;
+        return this;
+    }
+
+    public Integer getIsMixed() {
+        return isMixed;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setIsMixed(Integer isMixed) {
+        this.isMixed = isMixed;
+        return this;
+    }
+
+    public String getFrontColor() {
+        return frontColor;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setFrontColor(String frontColor) {
+        this.frontColor = frontColor;
+        return this;
+    }
+
+    public String getBackColor() {
+        return backColor;
+    }
+
+    public FrozenBoxAndFrozenTubeResponse setBackColor(String backColor) {
+        this.backColor = backColor;
+        return this;
+    }
+
     public Integer getIsRealData() {
         return isRealData;
     }
 
-    public void setIsRealData(Integer isRealData) {
+    public FrozenBoxAndFrozenTubeResponse setIsRealData(Integer isRealData) {
         this.isRealData = isRealData;
+        return this;
     }
 
     public Integer getCountOfSample() {
         return countOfSample;
     }
 
-    public void setCountOfSample(Integer countOfSample) {
+    public FrozenBoxAndFrozenTubeResponse setCountOfSample(Integer countOfSample) {
         this.countOfSample = countOfSample;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "FrozenBoxAndFrozenTubeResponse{" +
+            "id=" + id +
+            ", frozenBoxCode='" + frozenBoxCode + '\'' +
+            ", frozenBoxCode1D='" + frozenBoxCode1D + '\'' +
+            ", isSplit=" + isSplit +
+            ", memo='" + memo + '\'' +
+            ", status='" + status + '\'' +
+            ", frozenBoxType=" + frozenBoxType +
+            ", sampleClassification=" + sampleClassification +
+            ", sampleType=" + sampleType +
+            ", equipmentId=" + equipmentId +
+            ", areaId=" + areaId +
+            ", supportRackId=" + supportRackId +
+            ", rowsInShelf='" + rowsInShelf + '\'' +
+            ", columnsInShelf='" + columnsInShelf + '\'' +
+            ", frozenTubeDTOS=" + frozenTubeDTOS +
+            ", projectId=" + projectId +
+            ", projectCode='" + projectCode + '\'' +
+            ", projectName='" + projectName + '\'' +
+            ", frozenBoxTypeId=" + frozenBoxTypeId +
+            ", frozenBoxTypeName='" + frozenBoxTypeName + '\'' +
+            ", frozenBoxTypeCode='" + frozenBoxTypeCode + '\'' +
+            ", frozenBoxTypeRows='" + frozenBoxTypeRows + '\'' +
+            ", frozenBoxTypeColumns='" + frozenBoxTypeColumns + '\'' +
+            ", sampleClassificationId=" + sampleClassificationId +
+            ", sampleClassificationName='" + sampleClassificationName + '\'' +
+            ", sampleClassificationCode='" + sampleClassificationCode + '\'' +
+            ", frontColorForClass='" + frontColorForClass + '\'' +
+            ", backColorForClass='" + backColorForClass + '\'' +
+            ", sampleTypeId=" + sampleTypeId +
+            ", sampleTypeCode='" + sampleTypeCode + '\'' +
+            ", sampleTypeName='" + sampleTypeName + '\'' +
+            ", isMixed=" + isMixed +
+            ", frontColor='" + frontColor + '\'' +
+            ", backColor='" + backColor + '\'' +
+            ", isRealData=" + isRealData +
+            ", countOfSample=" + countOfSample +
+            '}';
     }
 }

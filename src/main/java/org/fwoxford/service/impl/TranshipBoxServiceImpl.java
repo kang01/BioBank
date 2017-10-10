@@ -626,7 +626,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         Converter<TranshipBox, FrozenBoxCodeForTranshipDTO> convert = new Converter<TranshipBox, FrozenBoxCodeForTranshipDTO>() {
             @Override
             public FrozenBoxCodeForTranshipDTO convert(TranshipBox e) {
-                return new FrozenBoxCodeForTranshipDTO(e.getFrozenBox().getId(),e.getFrozenBoxCode());
+                return new FrozenBoxCodeForTranshipDTO(e.getFrozenBox().getId(),e.getFrozenBoxCode(), e.getFrozenBoxCode1D());
             }
         };
         Specification<TranshipBox> specification = new Specification<TranshipBox>() {

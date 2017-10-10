@@ -210,11 +210,11 @@ public class TranshipBoxResource {
      * @return
      */
 
-    @GetMapping("/tranship-boxes/frozenBoxCode/{frozenBoxCodeStr}/import")
+    @GetMapping("/tranship-boxes/frozenBoxCode/{frozenBoxCodeStr}/{sampleType}/{boxType}/import")
     @Timed
-    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> importFrozenBoxAndFrozenTube(@PathVariable String frozenBoxCodeStr) {
+    public ResponseEntity<List<FrozenBoxAndFrozenTubeResponse>> importFrozenBoxAndFrozenTube(@PathVariable String frozenBoxCodeStr, @PathVariable Long sampleType, @PathVariable Long boxType) {
         log.debug("REST request to import FrozenBox And FrozenTubeDTOs From project group: {}", frozenBoxCodeStr);
-        List<FrozenBoxAndFrozenTubeResponse> res = frozenBoxImportService.importFrozenBoxAndFrozenTube(frozenBoxCodeStr);
+        List<FrozenBoxAndFrozenTubeResponse> res = frozenBoxImportService.importFrozenBoxAndFrozenTube(frozenBoxCodeStr, sampleType, boxType);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
     /**

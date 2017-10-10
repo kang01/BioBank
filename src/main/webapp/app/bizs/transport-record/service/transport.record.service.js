@@ -67,12 +67,12 @@
         service.delTransportRecordFile = function (id) {
             return $http.delete('api/attachments/'+id);
         };
-        service.importData = function (frozenBoxCodeStr,canceller) {
+        service.importData = function (frozenBoxCodeStr, sampleType, boxType, canceller) {
             var opt =null;
             if(canceller){
                 opt = {timeout: canceller.promise};
             }
-            return $http.get('api/tranship-boxes/frozenBoxCode/'+frozenBoxCodeStr+'/import', opt);
+            return $http.get('api/tranship-boxes/frozenBoxCode/'+frozenBoxCodeStr+'/' + sampleType +'/' + boxType +'/import', opt);
         };
         service.uploadBox = function (file,projectCode) {
             var fb = new FormData();

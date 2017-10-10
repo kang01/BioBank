@@ -296,7 +296,7 @@
             arrayPromise = [];
             canceller = $q.defer();
             _.forEach(boxCodes,function (code) {
-                var importData = TransportRecordService.importData(code, canceller);
+                var importData = TransportRecordService.importData(code, vm.frozenBox.sampleTypeId, vm.frozenBox.frozenBoxTypeId, canceller);
                 arrayPromise.push(
                     importData.then(function (response) {
                         _.forEach(vm.obox.frozenBoxDTOList,function (box) {
@@ -339,7 +339,7 @@
         //单个reload导入数据
         function _fnReloadImport(item) {
             canceller = $q.defer();
-            TransportRecordService.importData(item.frozenBoxCode,canceller).then(function (response) {
+            TransportRecordService.importData(item.frozenBoxCode, vm.frozenBox.sampleTypeId, vm.frozenBox.frozenBoxTypeId,canceller).then(function (response) {
                 _.forEach(vm.obox.frozenBoxDTOList,function (box) {
                     if(box.frozenBoxCode == item.frozenBoxCode){
                         box.sampleTypeName = response.data[0].sampleTypeName;

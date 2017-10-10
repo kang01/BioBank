@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import net.sf.json.JSONArray;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -24,10 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by gengluying on 2017/8/17.
@@ -103,22 +103,14 @@ public class FrozenBoxImportService {
                 }else{
                     throw new BankServiceException("从EXCEL中未获取到冻存盒编码");
                 }
-                frozenBoxAndFrozenTubeResponse.setIsRealData(Constants.YES);
-                frozenBoxAndFrozenTubeResponse.setFrozenBoxCode(frozenBoxCode);
-                frozenBoxAndFrozenTubeResponse.setFrozenBoxType(frozenBoxType);
-                frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeId(frozenBoxType.getId());
-                frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode());
-                frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeName(frozenBoxType.getFrozenBoxTypeName());
-                frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows());
-                frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns());
-                List<FrozenTubeDTO> frozenTubeResponses = new ArrayList<FrozenTubeDTO>();
+
                 //截取冻存盒编码获取类型
                 String sampleClassificationTypeCode = frozenBoxCode.substring(4,6);
-                ProjectSampleClass projectSampleClass = new ProjectSampleClass();
                 String pCode = frozenBoxCode.substring(0,4);
                 if(!pCode.equals(projectCode)){
                     throw new BankServiceException("转运单的项目与冻存盒所属项目不一致，导入失败！");
                 }
+                ProjectSampleClass projectSampleClass = new ProjectSampleClass();
                 Project project = projectRepository.findByProjectCode(projectCode);
                 SampleType sampleType = new SampleType();
                 if(project == null){
@@ -143,6 +135,17 @@ public class FrozenBoxImportService {
                     projectSampleClass = projectSampleClasses.get(0);
                     sampleType = projectSampleClass.getSampleType();
                 }
+
+                frozenBoxAndFrozenTubeResponse.setIsRealData(Constants.YES);
+                frozenBoxAndFrozenTubeResponse.setFrozenBoxCode(frozenBoxCode);
+                frozenBoxAndFrozenTubeResponse.setFrozenBoxType(frozenBoxType);
+                frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeId(frozenBoxType.getId());
+                frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode());
+                frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeName(frozenBoxType.getFrozenBoxTypeName());
+                frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows());
+                frozenBoxAndFrozenTubeResponse.setFrozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns());
+
+
                 frozenBoxAndFrozenTubeResponse.setProjectId(project.getId());
                 frozenBoxAndFrozenTubeResponse.setProjectCode(project.getProjectCode());
                 frozenBoxAndFrozenTubeResponse.setProjectName(project.getProjectName());
@@ -155,6 +158,7 @@ public class FrozenBoxImportService {
                 frozenBoxAndFrozenTubeResponse.setBackColor(sampleType.getBackColor());
                 frozenBoxAndFrozenTubeResponse.setFrontColor(sampleType.getFrontColor());
                 String sampleTypeCode = sampleType.getSampleTypeCode();
+                List<FrozenTubeDTO> frozenTubeResponses = new ArrayList<FrozenTubeDTO>();
                 switch (sampleTypeCode){
                     case "99":frozenTubeResponses =  create99Sample(map,frozenBoxCode,sampleType,projectSampleClasses,frozenBoxAndFrozenTubeResponse,frozenTubeType,sampleCode);break;
                     case "A":frozenTubeResponses =  createSample(map,frozenBoxCode,sampleType,projectSampleClass,frozenBoxAndFrozenTubeResponse,frozenBoxAndFrozenTubeResponse,frozenTubeType,sampleCode);break;
@@ -302,138 +306,153 @@ public class FrozenBoxImportService {
      * @param frozenBoxCodeStr
      * @return
      */
-    public List<FrozenBoxAndFrozenTubeResponse> importFrozenBoxAndFrozenTube(String frozenBoxCodeStr) {
+    public List<FrozenBoxAndFrozenTubeResponse> importFrozenBoxAndFrozenTube(String frozenBoxCodeStr, Long sampleTypeId, Long boxTypeId) {
         List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTOList = new ArrayList<FrozenBoxAndFrozenTubeResponse>();
         String[] frozenBoxCode = frozenBoxCodeStr.split(",");
+
+        FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findOne(boxTypeId);
+        if(frozenBoxType == null || frozenBoxType.getStatus() == null || !frozenBoxType.getStatus().equals(Constants.VALID)){
+            throw new BankServiceException("指定的冻存盒类型无效！");
+        }
+        // 根据冻存盒类型选择冻存管类型
+        List<FrozenTubeType> frozenTubeTypes = frozenTubeTypeRepository.findAll();
+        if (frozenTubeTypes == null){
+            frozenTubeTypes = new ArrayList<>();
+        }
+        frozenTubeTypes = frozenTubeTypes.stream().filter(d-> d.getStatus() != null && Constants.VALID.equals(d.getStatus())).collect(Collectors.toList());
+        Map<String, FrozenTubeType> frozenTubeTypeMap = new HashMap<>();
+        frozenTubeTypeMap.put("DCH", frozenTubeTypes.stream().filter(d->d.getFrozenTubeTypeCode() != null && "DCG".equals(d.getFrozenTubeTypeCode())).findFirst().get());
+        frozenTubeTypeMap.put("DJH", frozenTubeTypes.stream().filter(d->d.getFrozenTubeTypeCode() != null && "RNA".equals(d.getFrozenTubeTypeCode())).findFirst().get());
+        frozenTubeTypeMap.put("96KB", frozenTubeTypes.stream().filter(d->d.getFrozenTubeTypeCode() != null && "2DDCG".equals(d.getFrozenTubeTypeCode())).findFirst().get());
+        FrozenTubeType frozenTubeType = frozenTubeTypeMap.get(frozenBoxType.getFrozenBoxTypeCode());
+        if(frozenTubeType == null){
+            throw new BankServiceException("查询冻存管类型失败！");
+        }
+
+        SampleType sampleType = sampleTypeRepository.findOne(sampleTypeId);
+        if(sampleType == null || sampleType.getStatus() == null || !sampleType.getStatus().equals(Constants.VALID)){
+            throw new BankServiceException("指定的样本类型无效！");
+        }
+
         for(String code :frozenBoxCode){
             FrozenBoxAndFrozenTubeResponse frozenBoxDTO = new FrozenBoxAndFrozenTubeResponse();
-            frozenBoxDTO = getSampleInfo(code);
+            frozenBoxDTO.setIsSplit(Constants.YES);
+            frozenBoxDTO.setIsRealData(Constants.NO);
+            frozenBoxDTO.setStatus(Constants.FROZEN_BOX_NEW);
+
+            frozenBoxDTO.setFrozenBoxCode(code);
+            frozenBoxDTO.setFrozenBoxCode1D(code);
+
+            frozenBoxDTO.setFrozenBoxType(frozenBoxType);
+
+            frozenBoxDTO.setFrozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode());
+            frozenBoxDTO.setFrozenBoxTypeName(frozenBoxType.getFrozenBoxTypeName());
+            frozenBoxDTO.setFrozenBoxTypeId(frozenBoxType.getId());
+            frozenBoxDTO.setFrozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows());
+            frozenBoxDTO.setFrozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns());
+
+            frozenBoxDTO.setSampleType(sampleType);
+            frozenBoxDTO.setSampleTypeId(sampleType.getId());
+            frozenBoxDTO.setSampleTypeCode(sampleType.getSampleTypeCode());
+            frozenBoxDTO.setSampleTypeName(sampleType.getSampleTypeName());
+            frozenBoxDTO.setIsMixed(sampleType.getIsMixed());
+            List<FrozenTubeDTO> frozenTubeResponses = getSampleInfo(frozenBoxDTO, frozenTubeType);
+            frozenBoxDTO.setFrozenTubeDTOS(frozenTubeResponses);
+            frozenBoxDTO.setIsRealData(Constants.YES);
+            frozenBoxDTO.setCountOfSample(frozenTubeResponses.size());
             frozenBoxDTOList.add(frozenBoxDTO);
         }
         return frozenBoxDTOList;
     }
-    public FrozenBoxAndFrozenTubeResponse getSampleInfo(String code) {
-        FrozenBoxAndFrozenTubeResponse frozenBoxDTO = new FrozenBoxAndFrozenTubeResponse();
-        frozenBoxDTO.setIsSplit(Constants.YES);
-        frozenBoxDTO.setIsRealData(Constants.NO);
-        frozenBoxDTO.setStatus(Constants.FROZEN_BOX_NEW);
-        frozenBoxDTO.setFrozenBoxCode(code);
-        FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findByFrozenBoxTypeCode("DCH");
-        if(frozenBoxType == null){
-            throw new BankServiceException("查询冻存盒类型失败！");
-        }
-        frozenBoxDTO.setFrozenBoxType(frozenBoxType);
+    public List<FrozenTubeDTO> getSampleInfo(FrozenBoxAndFrozenTubeResponse frozenBoxDTO, FrozenTubeType frozenTubeType) {
 
-        frozenBoxDTO.setFrozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode());
-        frozenBoxDTO.setFrozenBoxTypeName(frozenBoxType.getFrozenBoxTypeName());
-        frozenBoxDTO.setFrozenBoxTypeId(frozenBoxType.getId());
-        frozenBoxDTO.setFrozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows());
-        frozenBoxDTO.setFrozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns());
+        String code = frozenBoxDTO.getFrozenBoxCode1D();
+        SampleType sampleType = frozenBoxDTO.getSampleType();
 
-
+        // 配置导入API
         HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod("http://10.24.10.43:8080/biobank/specimens?boxcode="+code);
         HttpMethodParams params = new HttpMethodParams();
-//        params.setParameter("boxcode","650420093");
         getMethod.setParams(params);
         getMethod.setRequestHeader("X-Auth-Token", "d93925bc7axKfXc2A5WFJEzuPXYX4q");
-        try {
+        // 接口的返回结果
+        List<FrozenTubeImportingForm> frozenTubeImportingForms = new ArrayList<>();
+        try{
+            // 调用导入API
             int statusCode = httpClient.executeMethod(getMethod);
             if (statusCode != 200) {
-                System.err.println("Method failed: "
+                log.error("Method failed: "
                     + getMethod.getStatusLine());
-            }
-            byte[] responseBody = getMethod.getResponseBody();
-            String str = new String(responseBody);
-            JSONArray jsonArray = new JSONArray();
-            if(!StringUtils.isEmpty(str)){
-                jsonArray = JSONArray.fromObject(str);
-            }
-            FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findTopOne();
-            if(frozenTubeType == null){
-                throw new BankServiceException("查询冻存管类型失败！");
-            }
-            List<FrozenTubeDTO> frozenTubeResponses = new ArrayList<FrozenTubeDTO>();
-            List<FrozenTubeImportingForm> frozenTubeImportingForms = (List<FrozenTubeImportingForm>) JSONArray.toCollection(jsonArray,FrozenTubeImportingForm.class);
-            Map<String,List<FrozenTubeDTO>> map = new HashMap<String,List<FrozenTubeDTO>>();
-            for(FrozenTubeImportingForm frozenTubeImportingForm : frozenTubeImportingForms){
-                FrozenTubeDTO frozenTubeResponse = new FrozenTubeDTO();
-                String status = frozenTubeImportingForm.getIsEmpty();
-                if(status.equals("2")){
-                    status = Constants.FROZEN_TUBE_NORMAL;
-                }else{
-                    status = Constants.FROZEN_TUBE_EMPTY;
+                // ????导入失败后还要继续？
+            } else {
+                byte[] responseBody = getMethod.getResponseBody();
+                String str = new String(responseBody);
+                JSONArray jsonArray = new JSONArray();
+                if(!StringUtils.isEmpty(str)){
+                    jsonArray = JSONArray.fromObject(str);
                 }
-                frozenTubeResponse.setStatus(status);
-                frozenTubeResponse.setPatientId(Long.valueOf(frozenTubeImportingForm.getBloodCode().trim()));
-                frozenTubeResponse.setFrozenTubeTypeId(frozenTubeType.getId());
-                frozenTubeResponse.setFrozenTubeTypeCode(frozenTubeType.getFrozenTubeTypeCode());
-                frozenTubeResponse.setFrozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName());
-                frozenTubeResponse.setFrozenTubeVolumns(frozenTubeType.getFrozenTubeVolumn());
-                frozenTubeResponse.setFrozenTubeVolumnsUnit(frozenTubeType.getFrozenTubeVolumnUnit());
-                frozenTubeResponse.setSampleUsedTimesMost(frozenTubeType.getSampleUsedTimesMost());
-                frozenTubeResponse.setFrozenBoxCode(code);
-                frozenTubeResponse.setSampleCode(frozenTubeImportingForm.getSpecimenCode());
-                Boolean ishemolysis = true; Boolean isbloodLipid = true;
-                String hemolysis = frozenTubeImportingForm.getIsHemolysis();
-                String bloodLipid  = frozenTubeImportingForm.getIsLipid();
-                if(hemolysis.equals("2")){
-                    ishemolysis = false;
-                }
-                if(bloodLipid.equals("2")){
-                    isbloodLipid = false;
-                }
-                frozenTubeResponse.setHemolysis(ishemolysis);
-                frozenTubeResponse.setBloodLipid(isbloodLipid);
-                String sampleTypeCode = frozenTubeImportingForm.getSpecimenType();
-                SampleType sampleType = sampleTypeRepository.findBySampleTypeCode(sampleTypeCode);
-                if(sampleType == null){
-                    throw new BankServiceException("样本类型不存在！");
-                }
-
-                frozenTubeResponse.setSampleTypeId(sampleType.getId());
-                frozenTubeResponse.setSampleTypeCode(sampleType.getSampleTypeCode());
-                frozenTubeResponse.setSampleTypeName(sampleType.getSampleTypeName());
-                frozenTubeResponse.setIsMixed(sampleType.getIsMixed());
-
-                frozenBoxDTO.setSampleType(sampleType);
-                frozenBoxDTO.setSampleTypeId(sampleType.getId());
-                frozenBoxDTO.setSampleTypeCode(sampleType.getSampleTypeCode());
-                frozenBoxDTO.setSampleTypeName(sampleType.getSampleTypeName());
-                frozenBoxDTO.setIsMixed(sampleType.getIsMixed());
-
-                frozenTubeResponse.setTubeColumns(frozenTubeImportingForm.getColOfSpecimenPos());
-                char rows=(char) (Integer.parseInt(frozenTubeImportingForm.getRowOfSpecimenPos())+64);
-                frozenTubeResponse.setTubeRows(String.valueOf(rows));
-                List<FrozenTubeDTO> frozenTubeList = map.get(sampleTypeCode);
-                if(frozenTubeList == null ||frozenTubeList.size()==0){
-                    List<FrozenTubeDTO> frozenTubeResponseList = new ArrayList<FrozenTubeDTO>();
-                    frozenTubeResponseList.add(frozenTubeResponse);
-                    map.put(sampleTypeCode,frozenTubeResponseList);
-                }else{
-                    List<FrozenTubeDTO> frozenTubeResponseList =  map.get(sampleTypeCode);
-                    frozenTubeResponseList.add(frozenTubeResponse);
-                    map.put(sampleTypeCode,frozenTubeResponseList);
-                }
-                frozenTubeResponses.add(frozenTubeResponse);
+                frozenTubeImportingForms = (List<FrozenTubeImportingForm>) JSONArray.toCollection(jsonArray,FrozenTubeImportingForm.class);
             }
-            if(map.keySet().size()==1){
-                frozenBoxDTO.setFrozenTubeDTOS(frozenTubeResponses);
-                frozenBoxDTO.setIsRealData(Constants.YES);
-                frozenBoxDTO.setCountOfSample(frozenTubeResponses.size());
-            }else{
-                throw new BankServiceException("导入失败！");
-            }
-
         } catch (HttpException e) {
-            System.out.println("Please check your provided http address!");
-            e.printStackTrace();
+            log.error("冻存盒导入失败", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("冻存盒导入失败", e);
         } finally {
             getMethod.releaseConnection();
         }
-        return frozenBoxDTO;
+
+        if(frozenTubeImportingForms.size() == 0){
+            throw new BankServiceException("冻存盒导入失败！没有冻存管数据。");
+        }
+
+        // 获取冻存盒的样本类型
+        String sampleTypeCode = sampleType.getSampleTypeCode();
+        List<FrozenTubeDTO> frozenTubeResponses = frozenTubeImportingForms.stream().map(t -> {
+            if (!sampleTypeCode.equals(t.getSpecimenType())){
+                return null;
+            }
+            String status = t.getIsEmpty();
+            if(status.equals("2")){
+                status = Constants.FROZEN_TUBE_NORMAL;
+            }else{
+                status = Constants.FROZEN_TUBE_EMPTY;
+            }
+            Long patientId = Long.valueOf(t.getBloodCode().trim());
+            Boolean ishemolysis = true; Boolean isbloodLipid = true;
+            String hemolysis = t.getIsHemolysis();
+            String bloodLipid  = t.getIsLipid();
+            if(hemolysis.equals("2")){
+                ishemolysis = false;
+            }
+            if(bloodLipid.equals("2")){
+                isbloodLipid = false;
+            }
+
+            FrozenTubeDTO frozenTubeResponse = new FrozenTubeDTO();
+            frozenTubeResponse.setStatus(status);
+            frozenTubeResponse.setPatientId(patientId);
+            frozenTubeResponse.setFrozenBoxCode(frozenBoxDTO.getFrozenBoxCode());
+            frozenTubeResponse.setSampleCode(t.getSpecimenCode());
+
+            frozenTubeResponse.setHemolysis(ishemolysis);
+            frozenTubeResponse.setBloodLipid(isbloodLipid);
+            frozenTubeResponse.setFrozenTubeTypeId(frozenTubeType.getId());
+            frozenTubeResponse.setFrozenTubeTypeCode(frozenTubeType.getFrozenTubeTypeCode());
+            frozenTubeResponse.setFrozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName());
+            frozenTubeResponse.setFrozenTubeVolumns(frozenTubeType.getFrozenTubeVolumn());
+            frozenTubeResponse.setFrozenTubeVolumnsUnit(frozenTubeType.getFrozenTubeVolumnUnit());
+            frozenTubeResponse.setSampleUsedTimesMost(frozenTubeType.getSampleUsedTimesMost());
+
+            frozenTubeResponse.setSampleTypeId(sampleType.getId());
+            frozenTubeResponse.setSampleTypeCode(sampleType.getSampleTypeCode());
+            frozenTubeResponse.setSampleTypeName(sampleType.getSampleTypeName());
+            frozenTubeResponse.setIsMixed(sampleType.getIsMixed());
+
+            return frozenTubeResponse;
+        }).filter(t -> t != null).collect(Collectors.toList());
+
+
+        return frozenTubeResponses;
     }
 
 }

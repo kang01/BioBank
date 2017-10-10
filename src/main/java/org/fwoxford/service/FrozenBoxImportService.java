@@ -445,6 +445,10 @@ public class FrozenBoxImportService {
 
             frozenTubeResponse.setTubeColumns(t.getColOfSpecimenPos());
             char rows=(char) (Integer.parseInt(t.getRowOfSpecimenPos())+64);
+            //去掉行号I，向后累加
+            if (Integer.parseInt(t.getRowOfSpecimenPos())>= 9) {
+                rows = (char) (Integer.parseInt(t.getRowOfSpecimenPos()) + 65);
+            }
             frozenTubeResponse.setTubeRows(String.valueOf(rows));
 
             frozenTubeResponse.setSampleTypeId(sampleType.getId());

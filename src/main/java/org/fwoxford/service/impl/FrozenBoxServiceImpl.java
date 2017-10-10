@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing FrozenBox.
@@ -471,8 +472,8 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             stockInBoxDetail.setMemo(frozenBox.getMemo());
             // stockInBoxDetail.setStockInCode("");
-            List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
-            stockInBoxDetail.setCountOfSample(frozenTubes.size());
+            int countOfSample = frozenTubeRepository.countByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
+            stockInBoxDetail.setCountOfSample(countOfSample);
             stockInBoxDetail.setEquipment(equipmentMapper.equipmentToEquipmentDTO(frozenBox.getEquipment()));
             stockInBoxDetail.setArea(areaMapper.areaToAreaDTO(frozenBox.getArea()));
             stockInBoxDetail.setShelf(supportRackMapper.supportRackToSupportRackDTO(frozenBox.getSupportRack()));
@@ -857,19 +858,46 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
     @Override
     public String findFrozenBoxHistory(Long id) {
         String status = Constants.FROZEN_BOX_INVALID;
-        List<Object[]> positionHistory = frozenBoxRepository.findPositionHistory(id);
-        if(positionHistory.size()>0){
-            status = Constants.FROZEN_BOX_STOCKED;
-        }else{
-            List<Object[]> boxHistory = frozenBoxRepository.findFrozenBoxHistory(id);
-            for(Object[] objects:boxHistory){
-                String type = objects[21].toString();
-                if(type.equals("102")||type.equals(102)){
-                    status = Constants.FROZEN_BOX_STOCKED;
-                }
-                if(type.equals("103")||type.equals(103)){
-                    status = Constants.FROZEN_BOX_STOCK_OUT_COMPLETED;
-                }
+        List<Object[]> histroy = new ArrayList<>();
+        //查詢转运历史
+        List<Object[]> transhipHistory = frozenBoxRepository.findFrozenBoxTranshipHistory(id);
+        //查詢入库历史
+        List<Object[]> stockInHistory = frozenBoxRepository.findFrozenBoxStockInHistory(id);
+        //查询出库历史
+        List<Object[]> stockOutHistory = frozenBoxRepository.findFrozenBoxStockOutHistory(id);
+        //查询交接历史
+        List<Object[]> handOverHistory = frozenBoxRepository.findFrozenBoxStockOutHandOverHistory(id);
+        //查询移位历史
+        List<Object[]> moveHistory = frozenBoxRepository.findFrozenBoxMoveHistory(id);
+        //查询换位历史
+        List<Object[]> changeHistory = frozenBoxRepository.findFrozenBoxChangeHistory(id);
+        //查询销毁历史
+        List<Object[]> destroyHistory = frozenBoxRepository.findFrozenBoxDestoryHistory(id);
+        histroy.addAll(transhipHistory); histroy.addAll(stockInHistory);
+        histroy.addAll(stockOutHistory); histroy.addAll(handOverHistory);
+        histroy.addAll(moveHistory); histroy.addAll(changeHistory);
+        histroy.addAll(destroyHistory);
+        Map<String, List<Object[]>> histroyMap =
+            histroy.stream().collect(Collectors.groupingBy(w ->(w[20]!=null?w[20].toString():null)));
+        TreeMap<String,List<Object[]>> listTreeMap = new TreeMap<>(Collections.reverseOrder());
+        listTreeMap.putAll(histroyMap);
+        for(String key  : histroyMap.keySet()){
+            List<Object[]> boxHistroyList = histroyMap.get(key);
+            String type = boxHistroyList.get(0)[21].toString();
+            if(type.equals("101")||type.equals(101)){
+                status = Constants.FROZEN_BOX_STOCKING;
+            } else if(type.equals("102")||type.equals(102)){
+                status = Constants.FROZEN_BOX_STOCKED;
+            }else if(type.equals("103")||type.equals(103)){
+                status = Constants.FROZEN_BOX_STOCK_OUT_COMPLETED;
+            }else if(type.equals("104")||type.equals(104)){
+                status = Constants.FROZEN_BOX_STOCKED;
+            }else if(type.equals("105")||type.equals(105)){
+                status = Constants.FROZEN_BOX_STOCKED;
+            }else if(type.equals("106")||type.equals(106)){
+                status = Constants.FROZEN_BOX_DESTROY;
+            }else if(type.equals("107")||type.equals(107)){
+                status = Constants.FROZEN_BOX_STOCK_OUT_HANDOVER;
             }
         }
         return status;

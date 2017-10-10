@@ -31,6 +31,7 @@ public interface StockInBoxRepository extends JpaRepository<StockInBox,Long> {
 
     Long countByStockInCode(String stockInCode);
 
+    @Query("select t from StockInBox t where t.frozenBoxCode =  ?1 and t.status = '2004'")
     List<StockInBox> findByFrozenBoxCode(String frozenBoxCode);
 
     Long countStockInBoxByStockInCodeAndFrozenBoxCode(String stockInCode, String frozenBoxCode);

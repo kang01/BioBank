@@ -275,9 +275,54 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
     FrozenBox findByFrozenBoxCodeAndSampleTypeCode(String boxCode, String sampleTypeCode);
 
-    @Query(value = " select support_rack_id,count(*) as noo from frozen_box where status in ('2004','2006')" +
+    @Query(value = " select support_rack_id,count(support_rack_id) as noo from frozen_box where status in ('2004','2006')" +
         " and support_rack_id in ?1 " +
         " group by support_rack_id ",nativeQuery = true)
     List<Object[]> findFrozenBoxGroupBySupportRack(List<Long> supportRackIds);
+
+    @Query(value = "SELECT t.equipment_code,t.area_code,t.support_rack_code,t.ROWS_IN_SHELF,t.COLUMNS_IN_SHELF,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,b.frozen_box_id ," +
+        "                    t.frozen_box_type_id,t.frozen_box_type_code," +
+        "                    t.project_id,t.project_code,t.project_name,t.project_site_id,t.project_site_name,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
+        "                    ,t.created_date ,107 as type" +
+        "                    FROM stock_out_handover_box t " +
+        "                    LEFT JOIN stock_out_box b on t.stock_out_frozen_box_id = b.id" +
+        "                    where b.frozen_box_id = ?1" ,nativeQuery = true)
+    List<Object[]> findFrozenBoxStockOutHandOverHistory(Long id);
+    @Query(value = "SELECT t.equipment_code,t.area_code,t.support_rack_code,t.ROWS_IN_SHELF,t.COLUMNS_IN_SHELF,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
+        "                    t.frozen_box_type_id,t.frozen_box_type_code," +
+        "                    t.project_id,t.project_code,t.project_name,t.project_site_id,t.project_site_name,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
+        "                    ,t.created_date ,103 as type" +
+        "                    FROM stock_out_box t where t.frozen_box_id = ?1" ,nativeQuery = true)
+    List<Object[]> findFrozenBoxStockOutHistory(Long id);
+    @Query(value = "SELECT t.equipment_code,t.area_code,t.support_rack_code,t.ROWS_IN_SHELF,t.COLUMNS_IN_SHELF,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
+        "                    t.frozen_box_type_id,t.frozen_box_type_code," +
+        "                    t.project_id,t.project_code,t.project_name,t.project_site_id,t.project_site_name,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
+        "                    ,t.created_date ,102 as type" +
+        "                    FROM stock_in_box t where t.frozen_box_id = ?1 and t.status = '2004'" ,nativeQuery = true)
+    List<Object[]> findFrozenBoxStockInHistory(Long id);
+    @Query(value = "select t.equipment_code,t.area_code,t.support_rack_code,t.ROWS_IN_SHELF,t.COLUMNS_IN_SHELF,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
+        "                    t.frozen_box_type_id,t.frozen_box_type_code," +
+        "                    t.project_id,t.project_code,t.project_name,t.project_site_id,t.project_site_name,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
+        "                    ,t.created_date ,101 as type" +
+        "                    from tranship_box t where frozen_box_id = ?1" ,nativeQuery = true)
+    List<Object[]> findFrozenBoxTranshipHistory(Long id);
+
+    @Query(value = "SELECT t.equipment_code,t.area_code,t.support_rack_code,t.rows_in_shelf,t.columns_in_shelf,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
+        "                    t.project_id,t.project_code,t.project_site_id,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
+        "                    ,t.created_date,104 as type" +
+        "                    FROM position_move_record t where t.move_type in (1,2) and frozen_box_id = ?1" ,nativeQuery = true)
+    List<Object[]> findFrozenBoxMoveHistory(Long id);
+
+    @Query(value = "SELECT t.equipment_code,t.area_code,t.support_rack_code,t.rows_in_shelf,t.columns_in_shelf,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
+        "                    t.project_id,t.project_code,t.project_site_id,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
+        "                    ,t.created_date,105 as type" +
+        "                    FROM position_change_record t where t.change_type in (1,2) and frozen_box_id = ?1" ,nativeQuery = true)
+    List<Object[]> findFrozenBoxChangeHistory(Long id);
+
+    @Query(value = "SELECT t.equipment_code,t.area_code,t.support_rack_code,t.rows_in_shelf,t.columns_in_shelf,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
+        "                    t.project_id,t.project_code,t.project_site_id,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
+        "                    ,t.created_date,106 as type" +
+        "                    FROM position_destroy_record t where t.destroy_type in (1,2) and frozen_box_id = ?1" ,nativeQuery = true)
+    List<Object[]> findFrozenBoxDestoryHistory(Long id);
 }
 

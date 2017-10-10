@@ -715,7 +715,7 @@ public class StockInServiceImpl implements StockInService {
                    stockInTube.getFrozenTube().setStatus(Constants.INVALID);
                    frozenTubeList.add(stockInTube.getFrozenTube());
                }
-               stockInTube.setFrozenTubeState(Constants.FROZEN_BOX_INVALID);
+               stockInTube.setFrozenTubeState(status);
            }
            if(frozenTubeList.size()>0){
                frozenTubeRepository.save(frozenTubeList);

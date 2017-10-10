@@ -244,6 +244,9 @@
         function _queryTube() {
             StockInInputService.queryTube(vm.entity.sampleCode,vm.entity.projectCode,vm.entity.frozenBoxId,vm.entity.sampleTypeId,vm.entity.sampleClassificationId).success(function (data) {
                 vm.tubes = data;
+                if(vm.tubes.length == 1){
+                    vm.entity = vm.tubes[0]
+                }
             }).error(function (data) {
                 toastr.error(data.message);
                 vm.errorFlag = true;

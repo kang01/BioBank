@@ -37,7 +37,7 @@
         var modalInstance;
         vm.obox = $scope.stockInBox;
         vm.entity = $scope.stockInInfo;
-
+        var strBox = JSON.stringify($scope.stockInBox);
         $scope.$watch('stockInBox',function () {
             vm.obox = $scope.stockInBox;
             vm.editFlag = Boolean($scope.editFlag);
@@ -769,6 +769,9 @@
                             if (vm.projectSampleTypeOptions[l].columnsNumber == pos.tubeColumns) {
                                 if(!tube.sampleClassificationId){
                                     tube.sampleClassificationId = vm.projectSampleTypeOptions[l].sampleClassificationId;
+                                    tube.sampleClassificationName = vm.projectSampleTypeOptions[l].sampleClassificationName;
+                                    tube.sampleClassificationCode = vm.projectSampleTypeOptions[l].sampleClassificationCode;
+                                    tube.backColorForClass = vm.projectSampleTypeOptions[l].backColorForClass;
                                 }
 
                             }
@@ -933,38 +936,41 @@
             maxItems: 1,
             onChange:function (value) {
                 vm.obox.sampleClassificationId = "";
-                vm.obox.sampleTypeId = value;
-                vm.obox.sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeName;
-                vm.obox.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
-                vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
-                //是否混合类型 1：是混合类型 不能添加99类型的的盒子只能添加97类型98类型
-                if(vm.isMixed == 1){
-                    vm.projectSampleTypeOptions = [];
-                    vm.projectSampleTypeOptions.push({sampleClassificationId:"",sampleClassificationName:""});
-                    vm.obox.sampleClassificationId = "";
-                    vm.obox.sampleClassificationName = "";
-                    vm.obox.sampleClassificationCode = "";
-                    vm.obox.backColorForClass = "";
-                    $scope.$apply();
-                    //混合型无分类
-                    for (var i = 0; i < vm.frozenTubeArray.length; i++) {
-                        for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
-                            if(!vm.frozenTubeArray[i][j].sampleCode){
-                                vm.frozenTubeArray[i][j].sampleClassificationId = "";
-                                vm.frozenTubeArray[i][j].sampleClassificationName = "";
-                                vm.frozenTubeArray[i][j].sampleClassificationCode = "";
-                                vm.frozenTubeArray[i][j].backColorForClass = "";
-                                vm.frozenTubeArray[i][j].sampleTypeId = vm.obox.sampleTypeId;
-                                vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).sampleTypeName;
-                                vm.frozenTubeArray[i][j].sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).sampleTypeCode;
-                                vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).backColor;
+                if(value){
+                    vm.obox.sampleTypeId = value;
+                    vm.obox.sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeName;
+                    vm.obox.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
+                    vm.isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
+                    //是否混合类型 1：是混合类型 不能添加99类型的的盒子只能添加97类型98类型
+                    if(vm.isMixed == 1){
+                        vm.projectSampleTypeOptions = [];
+                        vm.projectSampleTypeOptions.push({sampleClassificationId:"",sampleClassificationName:""});
+                        vm.obox.sampleClassificationId = "";
+                        vm.obox.sampleClassificationName = "";
+                        vm.obox.sampleClassificationCode = "";
+                        vm.obox.backColorForClass = "";
+                        $scope.$apply();
+                        //混合型无分类
+                        for (var i = 0; i < vm.frozenTubeArray.length; i++) {
+                            for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
+                                if(!vm.frozenTubeArray[i][j].sampleCode){
+                                    vm.frozenTubeArray[i][j].sampleClassificationId = "";
+                                    vm.frozenTubeArray[i][j].sampleClassificationName = "";
+                                    vm.frozenTubeArray[i][j].sampleClassificationCode = "";
+                                    vm.frozenTubeArray[i][j].backColorForClass = "";
+                                    vm.frozenTubeArray[i][j].sampleTypeId = vm.obox.sampleTypeId;
+                                    vm.frozenTubeArray[i][j].sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).sampleTypeName;
+                                    vm.frozenTubeArray[i][j].sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).sampleTypeCode;
+                                    vm.frozenTubeArray[i][j].backColor = _.find(vm.sampleTypeOptions,{'id':+vm.obox.sampleTypeId}).backColor;
+                                }
                             }
                         }
+                        hotRegisterer.getInstance('my-handsontable').render();
+                    }else{
+                        _fnQueryProjectSampleClass(vm.entity.projectId,vm.obox.sampleTypeId);
                     }
-                    hotRegisterer.getInstance('my-handsontable').render();
-                }else{
-                    _fnQueryProjectSampleClass(vm.entity.projectId,vm.obox.sampleTypeId);
                 }
+
             }
         };
         vm.projectSampleTypeConfig = {
@@ -1004,12 +1010,6 @@
                     vm.reloadTubesForTable(vm.obox);
                 },500);
             }
-
-            // setTimeout(function () {
-            // console.log(JSON.stringify(vm.obox));
-            //
-            // },500);
-
         }
 
         function _initSampleType() {
@@ -1022,6 +1022,7 @@
                     vm.obox.sampleTypeId = vm.sampleTypeOptions[0].id;
                     vm.obox.sampleTypeName = vm.sampleTypeOptions[0].sampleTypeName;
                     vm.obox.sampleTypeCode = vm.sampleTypeOptions[0].sampleTypeCode;
+                    vm.obox.backColor = vm.sampleTypeOptions[0].backColor;
                 }
                 vm.isMixed = _.find(vm.sampleTypeOptions,{'sampleTypeCode':vm.obox.sampleTypeCode}).isMixed;
                 //是否混合类型 1：是混合类型 不能添加99类型的的盒子只能添加97类型98类型
@@ -1146,8 +1147,20 @@
                 hotRegisterer.getInstance('my-handsontable').render();
             });
         }
-        //保存冻存盒
-        function _fnSaveBox() {
+        //格式化数据
+        function _fnChangeData() {
+            if(!vm.obox.sampleClassificationCode){
+                vm.obox.sampleClassificationCode = null;
+            }
+            if(!vm.obox.sampleClassificationId){
+                vm.obox.sampleClassificationId = null;
+            }
+            if(!vm.obox.sampleClassificationName){
+                vm.obox.sampleClassificationName = null;
+            }
+            if(!vm.obox.backColorForClass){
+                vm.obox.backColorForClass = null;
+            }
             vm.obox.frozenTubeDTOS = [];
             var tubeList = _.flatten(vm.frozenTubeArray);
             for(var i = 0; i< tubeList.length; i++){
@@ -1155,6 +1168,10 @@
                     vm.obox.frozenTubeDTOS.push(tubeList[i]);
                 }
             }
+        }
+        //保存冻存盒
+        function _fnSaveBox() {
+            _fnChangeData();
             if(vm.obox.sampleTypeCode == '97' ){
                 var len = _.filter(vm.obox.frozenTubeDTOS,{"sampleTypeCode":"97"}).length;
                 if(len){
@@ -1169,14 +1186,16 @@
                     return
                 }
             }
-
             StockInInputService.saveStockInBox(vm.entity.stockInCode,vm.obox).success(function (data) {
                 toastr.success("保存冻存盒成功！");
                 $scope.reloadData();
-                $scope.showFlag = false;
+                // $scope.showFlag = false;
+                vm.editFlag = true;
+                strBox = JSON.stringify(vm.obox);
             }).error(function (data) {
                 toastr.error(data.message);
                 $scope.reloadData();
+                vm.editFlag = false;
                 vm.repeatSampleArray = JSON.parse(data.params[0]);
                 var tableCtrl = _getTableCtrl();
                 tableCtrl.render();
@@ -1186,28 +1205,36 @@
         }
         //关闭
         vm.closeBox = function () {
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-in/modal/stock-in-close-splittingBox-modal.html',
-                controller: 'CloseSplittingBoxController',
-                controllerAs:'vm',
-                size:'sm',
-                resolve: {
-                    items: function () {
-                        return {
-                            status :1
-                        };
-                    }
-                }
-            });
-            modalInstance.result.then(function (flag) {
-                if(flag){
-                    _fnSaveBox();
-                }
+            _fnChangeData();
+            var boxStr = JSON.stringify(vm.obox);
+            if(strBox == boxStr){
                 $scope.showFlag = false;
                 vm.saveStockInFlag = false;
-                $scope.reloadData();
-            });
+            }else{
+                modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/bizs/stock-in/modal/stock-in-close-splittingBox-modal.html',
+                    controller: 'CloseSplittingBoxController',
+                    controllerAs:'vm',
+                    size:'sm',
+                    resolve: {
+                        items: function () {
+                            return {
+                                status :1
+                            };
+                        }
+                    }
+                });
+                modalInstance.result.then(function (flag) {
+                    if(flag){
+                        _fnSaveBox();
+                    }
+                    $scope.showFlag = false;
+                    vm.saveStockInFlag = false;
+                    $scope.reloadData();
+                });
+            }
+
         };
 
         function onError(error) {

@@ -159,6 +159,8 @@
     <include file="classpath:config/liquibase/changelog/20171010000000_updated_view_FrozenBoxForStockOut.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20171010000000_added_view_StockOutHandoverFrozenBox.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20171010210700_updated_view_FrozenTubeList.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20171010220200_updated_view_FrozenBoxList.xml" relativeToChangelogFile="false"/>
+
     <!--<include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>-->
 
 </databaseChangeLog>

@@ -117,6 +117,7 @@ public interface FrozenBoxMapper {
         res.setId(frozenBox.getId());
         res.setStatus(frozenBox.getStatus());
         res.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        res.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
         res.setFrozenBoxType(frozenBox.getFrozenBoxType());
         res.setIsSplit(frozenBox.getIsSplit());
         res.setMemo(frozenBox.getMemo());
@@ -171,6 +172,7 @@ public interface FrozenBoxMapper {
         frozenBox.setSampleClassification(sampleClassificationFromId(frozenBoxDTO.getSampleClassificationId()));
         frozenBox.setId( frozenBoxDTO.getId() );
         frozenBox.setFrozenBoxCode( frozenBoxDTO.getFrozenBoxCode() );
+        frozenBox.setFrozenBoxCode1D( frozenBoxDTO.getFrozenBoxCode1D() );
         frozenBox.setIsSplit( frozenBoxDTO.getIsSplit()!=null?frozenBoxDTO.getIsSplit():0 );
         frozenBox.setMemo( frozenBoxDTO.getMemo() );
         frozenBox.setStatus( frozenBoxDTO.getStatus() );

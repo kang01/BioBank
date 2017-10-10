@@ -15,7 +15,12 @@ public class FrozenBoxForSaveBatchDTO {
      */
     @NotNull
     @Size(max = 100)
-    private String frozenBoxCode;
+    private String frozenBoxCode;/**
+     * 冻存盒编码
+     */
+    @NotNull
+    @Size(max = 100)
+    private String frozenBoxCode1D;
     /**
      * 样本数量
      */
@@ -104,6 +109,14 @@ public class FrozenBoxForSaveBatchDTO {
 
     public void setFrozenBoxCode(String frozenBoxCode) {
         this.frozenBoxCode = frozenBoxCode;
+    }
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
     }
 
     public Integer getSampleNumber() {

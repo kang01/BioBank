@@ -235,17 +235,11 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     @Override
     public List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId) {
         List<StockOutFrozenBoxForTaskDataTableEntity> alist = new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
-        List<FrozenBox> boxes =  frozenBoxRepository.findByStockOutTaskId(taskId);
-
-        List<Object[]> countOfSampleGroupByBox = stockOutReqFrozenTubeRepository.countByTaskGroupByBox(taskId);
+        List<FrozenBox> boxes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndStatus(taskId,Constants.STOCK_OUT_SAMPLE_IN_USE);
 
         for(FrozenBox frozenBox :boxes){
             StockOutFrozenBoxForTaskDataTableEntity box = new StockOutFrozenBoxForTaskDataTableEntity();
-            if(frozenBox ==null){continue;}
-            Long count = stockOutTaskFrozenTubeRepository.countByFrozenBoxAndTask(frozenBox.getId(),taskId);
-            if(count.intValue()==0){
-                continue;
-            }
+            Long count = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndFrozenBoxIdAndStatus(taskId,frozenBox.getId(),Constants.STOCK_OUT_SAMPLE_IN_USE);
             box.setId(frozenBox.getId());
             box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             box.setSampleTypeName(frozenBox.getSampleTypeName());

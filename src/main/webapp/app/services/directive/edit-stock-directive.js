@@ -1226,31 +1226,34 @@
         }
         //关闭
         vm.closeBox = function () {
-            for(var i = 0; i < stockInBox1.frozenTubeDTOS.length;i++){
-                delete stockInBox1.frozenTubeDTOS[i].createdBy;
-                delete stockInBox1.frozenTubeDTOS[i].createdDate;
-                delete stockInBox1.frozenTubeDTOS[i].lastModifiedBy;
-                delete stockInBox1.frozenTubeDTOS[i].lastModifiedDate;
-                delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeCode;
-                delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeName;
-                delete stockInBox1.frozenTubeDTOS[i].sampleUsedTimesMost;
-                delete stockInBox1.frozenTubeDTOS[i].sampleUsedTimes;
-                delete stockInBox1.frozenTubeDTOS[i].frozenTubeVolumns;
-                delete stockInBox1.frozenTubeDTOS[i].frozenTubeVolumnsUnit;
-                delete stockInBox1.frozenTubeDTOS[i].errorType;
-                delete stockInBox1.frozenTubeDTOS[i].frozenTubeState;
-                delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeId;
-                delete stockInBox1.frozenTubeDTOS[i].frozenTubeType;
-                delete stockInBox1.frozenTubeDTOS[i].sampleType;
-                delete stockInBox1.frozenTubeDTOS[i].projectCode;
-                delete stockInBox1.frozenTubeDTOS[i].frozenTubeCode;
-                delete stockInBox1.frozenTubeDTOS[i].projectSiteCode;
-                delete stockInBox1.frozenTubeDTOS[i].stockInBoxId;
-                delete stockInBox1.frozenTubeDTOS[i].isMixed;
-                delete stockInBox1.frozenTubeDTOS[i].frontColorForClass;
-                delete stockInBox1.frozenTubeDTOS[i].frontColor;
-                delete stockInBox1.frozenTubeDTOS[i].sampleClassification;
+            if(stockInBox1.frozenTubeDTOS){
+                for(var i = 0; i < stockInBox1.frozenTubeDTOS.length;i++){
+                    delete stockInBox1.frozenTubeDTOS[i].createdBy;
+                    delete stockInBox1.frozenTubeDTOS[i].createdDate;
+                    delete stockInBox1.frozenTubeDTOS[i].lastModifiedBy;
+                    delete stockInBox1.frozenTubeDTOS[i].lastModifiedDate;
+                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeCode;
+                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeName;
+                    delete stockInBox1.frozenTubeDTOS[i].sampleUsedTimesMost;
+                    delete stockInBox1.frozenTubeDTOS[i].sampleUsedTimes;
+                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeVolumns;
+                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeVolumnsUnit;
+                    delete stockInBox1.frozenTubeDTOS[i].errorType;
+                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeState;
+                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeId;
+                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeType;
+                    delete stockInBox1.frozenTubeDTOS[i].sampleType;
+                    delete stockInBox1.frozenTubeDTOS[i].projectCode;
+                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeCode;
+                    delete stockInBox1.frozenTubeDTOS[i].projectSiteCode;
+                    delete stockInBox1.frozenTubeDTOS[i].stockInBoxId;
+                    delete stockInBox1.frozenTubeDTOS[i].isMixed;
+                    delete stockInBox1.frozenTubeDTOS[i].frontColorForClass;
+                    delete stockInBox1.frozenTubeDTOS[i].frontColor;
+                    delete stockInBox1.frozenTubeDTOS[i].sampleClassification;
+                }
             }
+
             var strBox = JSON.stringify(stockInBox1);
             _fnChangeData();
             // angular.extend(stockInBox2,vm.obox);
@@ -1260,28 +1263,35 @@
                 vm.saveStockInFlag = false;
                 $scope.reloadData();
             }else{
-                modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'app/bizs/stock-in/modal/stock-in-close-splittingBox-modal.html',
-                    controller: 'CloseSplittingBoxController',
-                    controllerAs:'vm',
-                    size:'sm',
-                    resolve: {
-                        items: function () {
-                            return {
-                                status :1
-                            };
+                if(vm.obox.frozenBoxCode && vm.obox.sampleTypeId && vm.obox.frozenBoxTypeId){
+                    modalInstance = $uibModal.open({
+                        animation: true,
+                        templateUrl: 'app/bizs/stock-in/modal/stock-in-close-splittingBox-modal.html',
+                        controller: 'CloseSplittingBoxController',
+                        controllerAs:'vm',
+                        size:'sm',
+                        resolve: {
+                            items: function () {
+                                return {
+                                    status :1
+                                };
+                            }
                         }
-                    }
-                });
-                modalInstance.result.then(function (flag) {
-                    if(flag){
-                        _fnSaveBox();
-                    }
+                    });
+                    modalInstance.result.then(function (flag) {
+                        if(flag){
+                            _fnSaveBox();
+                        }
+                        $scope.showFlag = false;
+                        vm.saveStockInFlag = false;
+                        $scope.reloadData();
+                    });
+                }else{
                     $scope.showFlag = false;
                     vm.saveStockInFlag = false;
                     $scope.reloadData();
-                });
+                }
+
             }
 
         };

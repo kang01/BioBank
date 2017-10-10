@@ -237,7 +237,7 @@
         }
         function actionsHtml(data, type, full, meta) {
             var html = '';
-            if(full.transhipState == '1003' || full.transhipState == '1005'){
+            if(full.transhipState != '1001'){
                 html = '<button type="button" class="btn btn-xs" ui-sref="transport-record-view({transhipId:'+ full.id +'})">' +
                     '   <i class="fa fa-eye"></i>' +
                     '</button>&nbsp;';

@@ -14,10 +14,10 @@
         var vm = this;
         vm.stockIn = entity;
         vm.boxList = [];
+
         init();
-
         function init() {
-
+            vm.searchBox = _fnSearchBox;
             _fnLoadBox();
             //获取盒子
             function _fnLoadBox() {
@@ -33,8 +33,6 @@
                     var queryBox = StockInService.getStockInView(boxes[i].id);
                     querys.push(queryBox);
 
-
-                    console.log(JSON.stringify(querys));
                     if (querys.length >= 10 || len == i + 1){
                         $q.all(querys).then(function(datas){
                             var boxesDetail = _.map(datas, function(res){
@@ -46,15 +44,38 @@
                                 return res;
 
                             });
-                            vm.boxList = boxesDetail;
+                            // vm.boxList = boxesDetail;
                             createBoxDom(boxesDetail)
                         });
                         querys = [];
                     }
                 }
+
+            }
+            //搜索冻存盒
+            function _fnSearchBox() {
+
+                if(!vm.boxCode){
+                    $(".transport-boxes").empty();
+                    createBoxDom(vm.boxList)
+                }else{
+                    //盒号长度大于3时，开始搜索
+                    if(vm.boxCode.length > 3){
+                        $(".transport-boxes").empty();
+                        var box = _.filter(vm.boxList,function (data) {
+                            if(_.startsWith(data.frozenBoxCode, vm.boxCode)){
+                                return data;
+                            }
+                        });
+                        createBoxDom(box)
+                    }
+
+                }
+
             }
             //画盒子
             function createBoxDom(boxes) {
+                vm.boxes = boxes;
                 //dom片段
                 var fragment = document.createDocumentFragment();
                 var $boxes = $(".transport-boxes");

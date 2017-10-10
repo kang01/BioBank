@@ -14,6 +14,10 @@
         var vm = this;
         vm.taskInstance = {};
         vm.plan = {};
+        var modalInstance;
+        //查看出库任务列表详情
+        vm.taskDescModal = _fnTaskDescModal;
+
 
         if($stateParams.planId){
             vm.planId = $stateParams.planId;
@@ -90,9 +94,31 @@
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {
-            return  '<button  class="btn btn-xs" ng-click="vm.taskDescModal('+full.id+')"><i class="fa fa-eye"></i></button>&nbsp;' +
-                '<button class="btn btn-xs" ng-if="'+full.status+'==1601" ng-click="vm.taskDelModal('+full.id+')"><i class="fa  fa-trash-o"></i></button>&nbsp;'+
-                '<button class="btn btn-xs" ng-if="'+full.status+'==1601" ng-click="vm.startTask('+full.id+')"><i class="fa fa-play"></i></button>'
+            return  '<button  class="btn btn-xs" ng-click="vm.taskDescModal('+full.id+')"><i class="fa fa-eye"></i></button>&nbsp;'
+        }
+
+
+
+        //查看
+        function _fnTaskDescModal(taskId) {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-out/plan/modal/plan-task-desc-modal.html',
+                controller: 'PlanTaskDescModalController',
+                controllerAs:'vm',
+                size:'lg',
+                resolve: {
+                    items: function () {
+                        return {
+                            taskId:taskId
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (data) {
+
+            });
         }
 
     }

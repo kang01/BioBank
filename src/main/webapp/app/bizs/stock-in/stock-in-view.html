@@ -92,7 +92,15 @@
         <div class="panel-heading">
             <div class="row">
                 <div class="col-md-4"> <h4>冻存盒</h4></div>
-                <div class="col-md-8 text-right" style="cursor: pointer;margin-top: 3px"><button class="btn btn-default" ng-click=" vm.packUp()">全部收起</button></div>
+                <div class="col-md-8 text-right" style="cursor: pointer;margin-top: 3px">
+                    <div style="float: right">
+                        &nbsp;&nbsp;
+                        <button class="btn btn-default" ng-click=" vm.packUp()">全部收起</button>
+                    </div>
+                    <div class="" style="float: right">
+                        <input type="text" class="form-control" placeholder="搜索冻存盒号"  ng-keyup = "vm.searchBox()" ng-model="vm.boxCode">
+                    </div>
+                </div>
             </div>
 
         </div>

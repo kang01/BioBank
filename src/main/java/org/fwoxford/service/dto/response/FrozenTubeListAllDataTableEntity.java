@@ -33,6 +33,10 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
     private String frozenBoxCode;
 
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="frozen_box_code_1d")
+    private String frozenBoxCode1D;
+
+    @JsonView(DataTablesOutput.View.class)
     @Column(name ="sample_code")
     private String sampleCode;
 
@@ -130,10 +134,11 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
     public FrozenTubeListAllDataTableEntity() {
     }
 
-    public FrozenTubeListAllDataTableEntity(Long id, String position, String frozenBoxCode, String sampleCode, String projectCode, String projectName, String sampleType, String sampleClassification, String sex, Integer age, String diseaseType, Boolean isHemolysis, Boolean isBloodLipid, Long sampleUsedTimes, String status, String frozenTubeState, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String tubeRows, String tubeColumns, Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId, String positionInBox, String sampleTempCode) {
+    public FrozenTubeListAllDataTableEntity(Long id, String position, String frozenBoxCode, String frozenBoxCode1D, String sampleCode, String projectCode, String projectName, String sampleType, String sampleClassification, String sex, Integer age, String diseaseType, Boolean isHemolysis, Boolean isBloodLipid, Long sampleUsedTimes, String status, String frozenTubeState, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String tubeRows, String tubeColumns, Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId, String positionInBox, String sampleTempCode) {
         this.id = id;
         this.position = position;
         this.frozenBoxCode = frozenBoxCode;
+        this.frozenBoxCode1D = frozenBoxCode1D;
         this.sampleCode = sampleCode;
         this.projectCode = projectCode;
         this.projectName = projectName;
@@ -185,6 +190,14 @@ public class FrozenTubeListAllDataTableEntity implements Serializable {
 
     public void setFrozenBoxCode(String frozenBoxCode) {
         this.frozenBoxCode = frozenBoxCode;
+    }
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
     }
 
     public String getSampleCode() {

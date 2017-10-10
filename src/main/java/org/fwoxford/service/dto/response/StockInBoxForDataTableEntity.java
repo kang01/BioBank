@@ -37,6 +37,11 @@ public class StockInBoxForDataTableEntity {
     @Column(name="frozen_box_code")
     private String frozenBoxCode;
 
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name="frozen_box_code_1d")
+    private String frozenBoxCode1D;
+
     @Column(name="sample_type_name")
     @JsonView(DataTablesOutput.View.class)
     private String sampleTypeName;
@@ -132,11 +137,12 @@ public class StockInBoxForDataTableEntity {
     public StockInBoxForDataTableEntity() {
     }
 
-    public StockInBoxForDataTableEntity(Long id, Integer countOfSample, String status, String frozenBoxCode, String sampleTypeName, String position, Integer isSplit, String sampleClassificationName, String stockInCode, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf, String sampleTypeCode, String sampleClassificationCode, String transhipCode) {
+    public StockInBoxForDataTableEntity(Long id, Integer countOfSample, String status, String frozenBoxCode, String frozenBoxCode1D, String sampleTypeName, String position, Integer isSplit, String sampleClassificationName, String stockInCode, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf, String sampleTypeCode, String sampleClassificationCode, String transhipCode) {
         this.id = id;
         this.countOfSample = countOfSample;
         this.status = status;
         this.frozenBoxCode = frozenBoxCode;
+        this.frozenBoxCode1D = frozenBoxCode1D;
         this.sampleTypeName = sampleTypeName;
         this.position = position;
         this.isSplit = isSplit;
@@ -190,6 +196,14 @@ public class StockInBoxForDataTableEntity {
 
     public void setFrozenBoxCode(String frozenBoxCode) {
         this.frozenBoxCode = frozenBoxCode;
+    }
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
     }
 
     public String getSampleTypeName() {

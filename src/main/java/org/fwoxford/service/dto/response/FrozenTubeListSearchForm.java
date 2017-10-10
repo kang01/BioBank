@@ -6,6 +6,7 @@ package org.fwoxford.service.dto.response;
 public class FrozenTubeListSearchForm {
     private String position;
     private String[] frozenBoxCodeStr;
+    private String[] frozenBoxCode1DStr;
     private String[] sampleCodeStr;
     private String[] projectCodeStr;
     private String projectName;
@@ -43,6 +44,15 @@ public class FrozenTubeListSearchForm {
 
     public void setFrozenBoxCodeStr(String[] frozenBoxCodeStr) {
         this.frozenBoxCodeStr = frozenBoxCodeStr;
+    }
+
+    public String[] getFrozenBoxCode1DStr() {
+        return frozenBoxCode1DStr;
+    }
+
+    public FrozenTubeListSearchForm setFrozenBoxCode1DStr(String[] frozenBoxCode1DStr) {
+        this.frozenBoxCode1DStr = frozenBoxCode1DStr;
+        return this;
     }
 
     public String[] getSampleCodeStr() {

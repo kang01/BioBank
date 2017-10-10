@@ -25,6 +25,7 @@ public class FrozenBoxListSearchForm {
      */
     private Long number;
     private String[] frozenBoxCodeStr;
+    private String[] frozenBoxCode1DStr;
     private String columnsInShelf;
     private String rowsInShelf;
     private String status;
@@ -73,6 +74,14 @@ public class FrozenBoxListSearchForm {
 
     public void setFrozenBoxCodeStr(String[] frozenBoxCodeStr) {
         this.frozenBoxCodeStr = frozenBoxCodeStr;
+    }
+
+    public String[] getFrozenBoxCode1DStr() {
+        return frozenBoxCode1DStr;
+    }
+
+    public void setFrozenBoxCode1DStr(String[] frozenBoxCode1DStr) {
+        this.frozenBoxCode1DStr = frozenBoxCode1DStr;
     }
 
     public String getColumnsInShelf() {

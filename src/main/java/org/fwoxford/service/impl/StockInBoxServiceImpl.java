@@ -194,7 +194,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             public StockInBoxForDataTableEntity convert(StockInBoxForDataTableEntity source) {
                 String position = BankUtil.getPositionString(source.getEquipmentCode(),source.getAreaCode(),source.getSupportRackCode(),source.getColumnsInShelf(),source.getRowsInShelf(),null,null);
                 return new StockInBoxForDataTableEntity(source.getId(),source.getCountOfSample(),source.getStatus(),
-                    source.getFrozenBoxCode(),source.getSampleTypeName(),position,source.getIsSplit(),
+                    source.getFrozenBoxCode(),source.getFrozenBoxCode1D(),source.getSampleTypeName(),position,source.getIsSplit(),
                     source.getSampleClassificationName(),source.getStockInCode(),source.getEquipmentCode(),
                     source.getAreaCode(),source.getSupportRackCode(),source.getRowsInShelf(),source.getColumnsInShelf(),source.getSampleTypeCode(),source.getSampleClassificationCode(),source.getTranshipCode());
             }

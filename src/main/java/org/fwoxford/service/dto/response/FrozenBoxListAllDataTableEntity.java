@@ -29,6 +29,10 @@ public class FrozenBoxListAllDataTableEntity  implements Serializable {
     private String frozenBoxCode;
 
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="frozen_box_code_1d")
+    private String frozenBoxCode1D;
+
+    @JsonView(DataTablesOutput.View.class)
     @Column(name ="equipment_code")
     private String equipmentCode;
 
@@ -117,9 +121,10 @@ public class FrozenBoxListAllDataTableEntity  implements Serializable {
     public FrozenBoxListAllDataTableEntity() {
     }
 
-    public FrozenBoxListAllDataTableEntity(Long id, String frozenBoxCode, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String position, String sampleType, String sampleClassification, String frozenBoxType, Long countOfUsed, Long countOfRest, String status, String projectName, String projectCode, Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId, Long frozenBoxTypeId, String memo, Long projectId) {
+    public FrozenBoxListAllDataTableEntity(Long id, String frozenBoxCode, String frozenBoxCode1D, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String position, String sampleType, String sampleClassification, String frozenBoxType, Long countOfUsed, Long countOfRest, String status, String projectName, String projectCode, Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId, Long frozenBoxTypeId, String memo, Long projectId) {
         this.id = id;
         this.frozenBoxCode = frozenBoxCode;
+        this.frozenBoxCode1D = frozenBoxCode1D;
         this.equipmentCode = equipmentCode;
         this.areaCode = areaCode;
         this.shelvesCode = shelvesCode;
@@ -334,5 +339,13 @@ public class FrozenBoxListAllDataTableEntity  implements Serializable {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
+    }
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
     }
 }

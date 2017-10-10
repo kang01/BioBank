@@ -24,7 +24,7 @@
         //设备
         EquipmentAllService.query({},onEquipmentSuccess, onError);
         function onEquipmentSuccess(data) {
-            vm.frozenBoxPlaceOptions = data;
+            vm.frozenBoxPlaceOptions =_.orderBy(data,['equipmentCode'],['asc']);
         }
         vm.frozenBoxPlaceConfig = {
             valueField:'id',

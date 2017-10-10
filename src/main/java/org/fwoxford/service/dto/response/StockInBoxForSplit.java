@@ -13,6 +13,7 @@ public class StockInBoxForSplit {
     private Long supportRackId;
     private Long frozenBoxId;
     private String frozenBoxCode;
+    private String frozenBoxCode1D;
     private Long frozenBoxTypeId;
     private Long sampleTypeId;
     private Long sampleClassificationId;
@@ -116,5 +117,13 @@ public class StockInBoxForSplit {
 
     public void setStockInFrozenTubeList(List<StockInTubeDTO> stockInFrozenTubeList) {
         this.stockInFrozenTubeList = stockInFrozenTubeList;
+    }
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
     }
 }

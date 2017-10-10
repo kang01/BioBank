@@ -30,6 +30,11 @@ public class StockOutFrozenBoxForDataTableEntity {
 
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="frozen_box_code_1d")
+    private String frozenBoxCode1D;
+
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     @Column(name ="position")
     private String position;
 
@@ -111,9 +116,10 @@ public class StockOutFrozenBoxForDataTableEntity {
     public StockOutFrozenBoxForDataTableEntity() {
     }
 
-    public StockOutFrozenBoxForDataTableEntity(Long id, String frozenBoxCode, String position, Long countOfSample, String sampleTypeName, Long applyId, String applyCode, Long planId, String planCode, Long taskId, String taskCode, Long delegateId, String delegate, String memo, String status, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf) {
+    public StockOutFrozenBoxForDataTableEntity(Long id, String frozenBoxCode, String frozenBoxCode1D, String position, Long countOfSample, String sampleTypeName, Long applyId, String applyCode, Long planId, String planCode, Long taskId, String taskCode, Long delegateId, String delegate, String memo, String status, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf) {
         this.id = id;
         this.frozenBoxCode = frozenBoxCode;
+        this.frozenBoxCode1D = frozenBoxCode1D;
         this.position = position;
         this.countOfSample = countOfSample;
         this.sampleTypeName = sampleTypeName;
@@ -292,5 +298,13 @@ public class StockOutFrozenBoxForDataTableEntity {
 
     public void setColumnsInShelf(String columnsInShelf) {
         this.columnsInShelf = columnsInShelf;
+    }
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
     }
 }

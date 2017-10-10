@@ -204,6 +204,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             StockOutFrozenBoxForTaskDataTableEntity dto = new StockOutFrozenBoxForTaskDataTableEntity();
             dto.setId(box.getId());
             dto.setFrozenBoxCode(box.getFrozenBoxCode());
+            dto.setFrozenBoxCode1D(box.getFrozenBoxCode1D());
             dto.setSampleTypeName(box.getSampleTypeName());
             String position =  BankUtil.getPositionString(box);
             dto.setPosition(position);
@@ -222,6 +223,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             StockOutFrozenBoxForTaskDataTableEntity dto = new StockOutFrozenBoxForTaskDataTableEntity();
             dto.setId(frozenBox.getId());
             dto.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            dto.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
             dto.setSampleTypeName(frozenBox.getSampleTypeName());
             String position =  BankUtil.getPositionString(frozenBox);
             dto.setPosition(position);
@@ -242,6 +244,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             Long count = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndFrozenBoxIdAndStatus(taskId,frozenBox.getId(),Constants.STOCK_OUT_SAMPLE_IN_USE);
             box.setId(frozenBox.getId());
             box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            box.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
             box.setSampleTypeName(frozenBox.getSampleTypeName());
             box.setMemo(frozenBox.getMemo());
             box.setSampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null);
@@ -317,6 +320,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             }
 
             frozenBox.setFrozenBoxCode(box.getFrozenBoxCode());
+            frozenBox.setFrozenBoxCode1D(box.getFrozenBoxCode1D());
 //            frozenBox.setSampleNumber(box.getFrozenTubeDTOS().size());
             frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
             frozenBoxRepository.save(frozenBox);
@@ -401,6 +405,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             if(frozenBox ==null){continue;}
             box.setId(f.getId());
             box.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            box.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
             box.setSampleTypeName(frozenBox.getSampleTypeName());
             String position = BankUtil.getPositionString(f.getEquipmentCode(),f.getAreaCode(),f.getSupportRackCode(),f.getColumnsInShelf(),f.getRowsInShelf(),null,null);
             box.setPosition(position);
@@ -474,7 +479,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutFrozenBox.setEquipmentCode(equipment!=null?equipment.getEquipmentCode():null);
             stockOutFrozenBox.setArea(area);
             stockOutFrozenBox.setAreaCode(area!=null?area.getAreaCode():null);
-            stockOutFrozenBox.frozenBoxCode(frozenBox.getFrozenBoxCode()).sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
+            stockOutFrozenBox.frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
                 .sampleClassification(frozenBox.getSampleClassification())
                 .sampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null)
                 .sampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null)
@@ -629,6 +634,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             dataTableEntity.setId(entity.getId());
             dataTableEntity.setPlanCode(entity.getPlanCode());
             dataTableEntity.setFrozenBoxCode(entity.getFrozenBoxCode());
+            dataTableEntity.setFrozenBoxCode1D(entity.getFrozenBoxCode1D());
             dataTableEntity.setPlanId(entity.getId());
             dataTableEntity.setApplyCode(entity.getApplyCode());
             dataTableEntity.setApplyId(entity.getApplyId());
@@ -688,6 +694,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 FrozenBoxForStockOutDataTableEntity dto = new FrozenBoxForStockOutDataTableEntity();
                 dto.setId(s.getId());
                 dto.setFrozenBoxCode(s.getFrozenBoxCode());
+                dto.setFrozenBoxCode1D(s.getFrozenBoxCode1D());
                 dto.setSampleTypeName(s.getSampleTypeName());
                 String position =  BankUtil.getPositionString(s.getEquipmentCode(),s.getAreaCode(),s.getSupportRackCode(),s.getColumnsInShelf(),s.getRowsInShelf(),null,null);
                 dto.setPosition(position);
@@ -717,6 +724,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             StockOutFrozenBoxForTaskDetailDataTableEntity dto = new StockOutFrozenBoxForTaskDetailDataTableEntity();
             dto.setId(s.getId());
             dto.setFrozenBoxCode(s.getFrozenBoxCode());
+            dto.setFrozenBoxCode1D(s.getFrozenBoxCode1D());
             dto.setSampleTypeName(s.getSampleTypeName());
             String position =  BankUtil.getPositionString(s.getEquipmentCode(),s.getAreaCode(),s.getSupportRackCode(),s.getColumnsInShelf(),s.getRowsInShelf(),null,null);
             dto.setPosition(position);

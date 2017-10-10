@@ -25,7 +25,9 @@ public class StockInBoxForDataTable {
     private String status;
     @NotNull
     @JsonView(DataTablesOutput.View.class)
-    private String frozenBoxCode;
+    private String frozenBoxCode;@NotNull
+    @JsonView(DataTablesOutput.View.class)
+    private String frozenBoxCode1D;
     @JsonView(DataTablesOutput.View.class)
     private String sampleTypeName;
     @NotNull
@@ -136,5 +138,13 @@ public class StockInBoxForDataTable {
 
     public void setSampleClassificationName(String sampleClassificationName) {
         this.sampleClassificationName = sampleClassificationName;
+    }
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
     }
 }

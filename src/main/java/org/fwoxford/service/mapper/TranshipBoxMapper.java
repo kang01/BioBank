@@ -108,6 +108,7 @@ public interface TranshipBoxMapper {
         transhipBox.setLastModifiedDate( box.getLastModifiedDate() );
         transhipBox.setId( box.getId() );
         transhipBox.setFrozenBoxCode( box.getFrozenBoxCode() );
+        transhipBox.setFrozenBoxCode1D( box.getFrozenBoxCode1D() );
         transhipBox.setEquipmentCode( box.getEquipmentCode());
         transhipBox.setAreaCode( box.getAreaCode());
         transhipBox.setSupportRackCode( box.getSupportRackCode() );

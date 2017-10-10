@@ -242,6 +242,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             transhipBox.setStatus(box.getStatus());
             transhipBox.setMemo(box.getMemo());
             transhipBox.setFrozenBoxCode(box.getFrozenBoxCode());
+            transhipBox.setFrozenBoxCode1D(box.getFrozenBoxCode1D());
             transhipBox.setFrozenBox(box);
             transhipBox.setTranship(tranship);
             transhipBox.setCountOfSample(countOfSample);
@@ -607,6 +608,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             FrozenBoxCodeForTranshipDTO frozenBoxCodeForTranshipDTO = new FrozenBoxCodeForTranshipDTO();
             frozenBoxCodeForTranshipDTO.setFrozenBoxId(t.getFrozenBox()!=null?t.getFrozenBox().getId():null);
             frozenBoxCodeForTranshipDTO.setFrozenBoxCode(t.getFrozenBoxCode());
+            frozenBoxCodeForTranshipDTO.setFrozenBoxCode1D(t.getFrozenBoxCode1D());
             frozenBoxCodeForTranshipDTOS.add(frozenBoxCodeForTranshipDTO);
         }
         return frozenBoxCodeForTranshipDTOS;

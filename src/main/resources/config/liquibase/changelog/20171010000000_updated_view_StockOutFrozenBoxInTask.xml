@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutFrozenBoxForTaskDetailDataTableEntity.
+    -->
+    <changeSet id="20171010000000-5" author="jhipster">
+        <dropView viewName="view_box_list_for_task"/>
+        <createView viewName="view_box_list_for_task">
+            SELECT a.frozen_box_code,a.frozen_box_code_1d,
+            a.id,a.sample_type_name,a.status,a.memo,a.project_code,a.project_name,count_of_sample,
+            a.equipment_code,a.area_code,a.support_rack_code,a.columns_in_shelf,a.rows_in_shelf,
+            (a.equipment_code||'.'||a.area_code||'.'||a.support_rack_code ||'.'||a.columns_in_shelf || lpad(a.rows_in_shelf,2,0)) as position,
+            sc.sample_classification_name,temp.stock_out_task_id
+            FROM
+            (
+            select rt.stock_out_task_id,frozen_box_id,count(1) as count_of_sample from stock_out_req_frozen_tube rt where rt.stock_out_task_id is not null   group by rt.stock_out_task_id,frozen_box_id
+            ) temp
+            LEFT JOIN frozen_box a ON temp.frozen_box_id = a.id
+            LEFT JOIN sample_classification sc ON a.sample_classification_id = sc.id
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

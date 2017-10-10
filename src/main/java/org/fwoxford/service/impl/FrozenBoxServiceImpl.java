@@ -386,6 +386,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
             stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
             stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            stockInBoxDetail.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
             stockInBoxDetail.setMemo(frozenBox.getMemo());
             // stockInBoxDetail.setStockInCode("");
             List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
@@ -429,6 +430,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
             stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
             stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            stockInBoxDetail.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
             stockInBoxDetail.setMemo(frozenBox.getMemo());
             // stockInBoxDetail.setStockInCode("");
             List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
@@ -469,6 +471,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
             stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
             stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            stockInBoxDetail.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
             stockInBoxDetail.setMemo(frozenBox.getMemo());
             // stockInBoxDetail.setStockInCode("");
             List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
@@ -503,6 +506,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
         stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
         stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        stockInBoxDetail.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
         stockInBoxDetail.setMemo(frozenBox.getMemo());
         List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByFrozenBoxCodeAndStatus(frozenBox.getFrozenBoxCode(), Constants.FROZEN_TUBE_NORMAL);
         stockInBoxDetail.setCountOfSample(frozenTubes.size());
@@ -551,6 +555,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         stockInBoxForDataTable.setCountOfSample(countOfSample.intValue());
         stockInBoxForDataTable.setId(box.getId());
         stockInBoxForDataTable.setFrozenBoxCode(box.getFrozenBoxCode());
+        stockInBoxForDataTable.setFrozenBoxCode1D(box.getFrozenBoxCode1D());
         String position = BankUtil.getPositionString(box);
         stockInBoxForDataTable.setPosition(position);
         stockInBoxForDataTable.setSampleTypeName(box.getSampleTypeName());
@@ -563,6 +568,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
         stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
         stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        stockInBoxDetail.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
         stockInBoxDetail.setMemo(frozenBox.getMemo());
         stockInBoxDetail.setStockInCode(stockInCode);
         List<StockInTube> frozenTubes = stockInTubeRepository.findByStockInBoxId(frozenBox.getId());
@@ -739,6 +745,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             StockInBoxForIncomplete stockInBoxForIncomplete = new StockInBoxForIncomplete();
             stockInBoxForIncomplete.setFrozenBoxId(f.getId());
             stockInBoxForIncomplete.setFrozenBoxCode(f.getFrozenBoxCode());
+            stockInBoxForIncomplete.setFrozenBoxCode1D(f.getFrozenBoxCode1D());
             stockInBoxForIncomplete.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(f.getFrozenBoxType()));
             stockInBoxForIncomplete.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(f.getSampleType()));
             stockInBoxForIncomplete.setSampleClassification(sampleClassificationMapper.sampleClassificationToSampleClassificationDTO(f.getSampleClassification()));

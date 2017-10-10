@@ -13,6 +13,7 @@ import java.util.List;
 public class StockInBoxForIncomplete {
     private Long frozenBoxId;
     private String frozenBoxCode;
+    private String frozenBoxCode1D;
     private Integer countOfSample;
     private SampleTypeDTO sampleType;
     private FrozenBoxTypeDTO frozenBoxType;
@@ -72,5 +73,13 @@ public class StockInBoxForIncomplete {
 
     public void setStockInFrozenTubeList(List<StockInTubeForBox> stockInFrozenTubeList) {
         this.stockInFrozenTubeList = stockInFrozenTubeList;
+    }
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
     }
 }

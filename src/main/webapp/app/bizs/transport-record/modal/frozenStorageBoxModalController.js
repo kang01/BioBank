@@ -299,11 +299,14 @@
                 var importData = TransportRecordService.importData(code, vm.frozenBox.sampleTypeId, vm.frozenBox.frozenBoxTypeId, canceller);
                 arrayPromise.push(
                     importData.then(function (response) {
+                        console.log(JSON.stringify(response));
                         _.forEach(vm.obox.frozenBoxDTOList,function (box) {
                            if(box.frozenBoxCode == code){
                                box.sampleTypeName = response.data[0].sampleTypeName;
                                box.countOfSample = response.data[0].countOfSample;
                                box.isMixed = response.data[0].isMixed;
+                               box.frozenBoxCode1D = response.data[0].frozenBoxCode1D;
+                               box.frozenTubeDTOS = response.data[0].frozenTubeDTOS;
                                box.status = response.status;
                            }
                         });
@@ -345,6 +348,8 @@
                         box.sampleTypeName = response.data[0].sampleTypeName;
                         box.countOfSample = response.data[0].countOfSample;
                         box.isMixed = response.data[0].isMixed;
+                        box.frozenBoxCode1D = response.data[0].frozenBoxCode1D;
+                        box.frozenTubeDTOS = response.data[0].frozenTubeDTOS;
                         box.status = response.status;
                     }
                 });
@@ -451,11 +456,6 @@
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
         };
 
-        // function onEquipmentTempSuccess(data) {
-            // vm.frozenBoxPlaceOptions = _.orderBy(data,['equipmentCode'],['asc']);
-            // vm.frozenBox.equipmentId = vm.frozenBoxPlaceOptions[0].id;
-            // AreasByEquipmentIdService.query({id:vm.frozenBox.equipmentId},onAreaTempSuccess, onError);
-        // }
         function onAreaTempSuccess(data) {
             vm.frozenBoxHoldAreaOptions = data;
             vm.frozenBox.areaId = vm.frozenBoxHoldAreaOptions[0].id;

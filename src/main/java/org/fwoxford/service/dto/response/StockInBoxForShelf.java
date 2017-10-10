@@ -13,6 +13,7 @@ import java.util.List;
 public class StockInBoxForShelf {
     private Long frozenBoxId;
     private String frozenBoxCode;
+    private String frozenBoxCode1D;
     private Integer isSplit;
     private String status;
 
@@ -167,5 +168,13 @@ public class StockInBoxForShelf {
 
     public void setFrozenBoxType(FrozenBoxTypeDTO frozenBoxType) {
         this.frozenBoxType = frozenBoxType;
+    }
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
     }
 }

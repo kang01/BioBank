@@ -890,7 +890,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         listTreeMap.putAll(histroyMap);
         for(String key  : histroyMap.keySet()){
             List<Object[]> boxHistroyList = histroyMap.get(key);
-            String type = boxHistroyList.get(0)[21].toString();
+            String type = boxHistroyList.get(boxHistroyList.size()-1)[24].toString();
             if(type.equals("101")||type.equals(101)){
                 status = Constants.FROZEN_BOX_STOCKING;
             } else if(type.equals("102")||type.equals(102)){

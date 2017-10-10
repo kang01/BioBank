@@ -37,7 +37,8 @@
         var modalInstance;
         vm.obox = $scope.stockInBox;
         vm.entity = $scope.stockInInfo;
-        var strBox = JSON.stringify($scope.stockInBox);
+        var stockInBox1 = angular.copy($scope.stockInBox);
+        var stockInBox2 = angular.copy($scope.stockInBox);
         $scope.$watch('stockInBox',function () {
             vm.obox = $scope.stockInBox;
             vm.editFlag = Boolean($scope.editFlag);
@@ -672,27 +673,29 @@
         function _createTubeForTableCell(tubeInBox, box, rowNO, colNO, pos){
             var tube = {
                 id: null,
-                sampleCode: "",
-                sampleTempCode: "",
-                sampleTypeId: "",
-                sampleTypeCode: "",
-                sampleTypeName: "",
-                sampleClassificationId:"",
-                sampleClassificationCode:"",
-                sampleClassificationName:"",
-                frozenBoxId: box.frozenBoxTypeId,
-                frozenBoxCode: box.frozenBoxCode,
-                status: "3001",
-                memo: "",
                 tubeRows: pos.tubeRows,
                 tubeColumns: pos.tubeColumns,
-                rowNO: rowNO,
-                colNO: colNO,
+                status: "3001",
+                memo: null,
+                // frozenBoxId: box.frozenBoxTypeId,
+                frozenBoxCode: box.frozenBoxCode,
+                sampleTempCode: null,
+                sampleCode: null,
+                sampleTypeCode: null,
+                sampleTypeName: null,
+                sampleVolumns :null, //计量
+                sampleTypeId: null,
+                sampleClassificationId:null,
+                sampleClassificationCode:null,
+                sampleClassificationName:null,
                 projectId:vm.entity.projectId,
                 projectSiteId:vm.entity.projectSiteId,
-                sampleVolumns :"", //计量
+                frozenTubeId:vm.obox.frozenTubeId,
+                backColorForClass:null,
+                backColor:null,
                 flag:"",
-                frozenTubeId:vm.obox.frozenTubeId
+                rowNO: rowNO,
+                colNO: colNO
             };
 
             if (tubeInBox){
@@ -1164,10 +1167,28 @@
             vm.obox.frozenTubeDTOS = [];
             var tubeList = _.flatten(vm.frozenTubeArray);
             for(var i = 0; i< tubeList.length; i++){
+                delete tubeList[i].rowNO;
+                delete tubeList[i].colNO;
                 if(tubeList[i].sampleCode|| tubeList[i].sampleTempCode){
+                    if(!tubeList[i].sampleClassificationCode){
+                        tubeList[i].sampleClassificationCode = null;
+                    }
+                    if(!tubeList[i].sampleClassificationId){
+                        tubeList[i].sampleClassificationId = null;
+                    }
+                    if(!tubeList[i].sampleClassificationName){
+                        tubeList[i].sampleClassificationName = null;
+                    }
+                    if(!tubeList[i].backColorForClass){
+                        tubeList[i].backColorForClass = null;
+                    }
+                    if(!tubeList[i].projectSiteId){
+                        tubeList[i].projectSiteId = null;
+                    }
                     vm.obox.frozenTubeDTOS.push(tubeList[i]);
                 }
             }
+
         }
         //保存冻存盒
         function _fnSaveBox() {
@@ -1191,7 +1212,7 @@
                 $scope.reloadData();
                 // $scope.showFlag = false;
                 vm.editFlag = true;
-                strBox = JSON.stringify(vm.obox);
+                // strBox = JSON.stringify(vm.obox);
             }).error(function (data) {
                 toastr.error(data.message);
                 $scope.reloadData();
@@ -1205,11 +1226,39 @@
         }
         //关闭
         vm.closeBox = function () {
+            for(var i = 0; i < stockInBox1.frozenTubeDTOS.length;i++){
+                delete stockInBox1.frozenTubeDTOS[i].createdBy;
+                delete stockInBox1.frozenTubeDTOS[i].createdDate;
+                delete stockInBox1.frozenTubeDTOS[i].lastModifiedBy;
+                delete stockInBox1.frozenTubeDTOS[i].lastModifiedDate;
+                delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeCode;
+                delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeName;
+                delete stockInBox1.frozenTubeDTOS[i].sampleUsedTimesMost;
+                delete stockInBox1.frozenTubeDTOS[i].sampleUsedTimes;
+                delete stockInBox1.frozenTubeDTOS[i].frozenTubeVolumns;
+                delete stockInBox1.frozenTubeDTOS[i].frozenTubeVolumnsUnit;
+                delete stockInBox1.frozenTubeDTOS[i].errorType;
+                delete stockInBox1.frozenTubeDTOS[i].frozenTubeState;
+                delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeId;
+                delete stockInBox1.frozenTubeDTOS[i].frozenTubeType;
+                delete stockInBox1.frozenTubeDTOS[i].sampleType;
+                delete stockInBox1.frozenTubeDTOS[i].projectCode;
+                delete stockInBox1.frozenTubeDTOS[i].frozenTubeCode;
+                delete stockInBox1.frozenTubeDTOS[i].projectSiteCode;
+                delete stockInBox1.frozenTubeDTOS[i].stockInBoxId;
+                delete stockInBox1.frozenTubeDTOS[i].isMixed;
+                delete stockInBox1.frozenTubeDTOS[i].frontColorForClass;
+                delete stockInBox1.frozenTubeDTOS[i].frontColor;
+                delete stockInBox1.frozenTubeDTOS[i].sampleClassification;
+            }
+            var strBox = JSON.stringify(stockInBox1);
             _fnChangeData();
+            // angular.extend(stockInBox2,vm.obox);
             var boxStr = JSON.stringify(vm.obox);
             if(strBox == boxStr){
                 $scope.showFlag = false;
                 vm.saveStockInFlag = false;
+                $scope.reloadData();
             }else{
                 modalInstance = $uibModal.open({
                     animation: true,

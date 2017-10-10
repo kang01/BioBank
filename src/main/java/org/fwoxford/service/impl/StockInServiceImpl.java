@@ -239,6 +239,7 @@ public class StockInServiceImpl implements StockInService {
         inBox.setRowsInShelf(box.getRowsInShelf());
         inBox.setColumnsInShelf(box.getColumnsInShelf());
         inBox.setFrozenBoxCode(box.getFrozenBoxCode());
+        inBox.setFrozenBoxCode1D(box.getFrozenBoxCode1D());
         inBox.setStockIn(stockIn);
         inBox.setStockInCode(stockIn.getStockInCode());
         Long countOfSample = frozenTubeRepository.countFrozenTubeListByBoxCode(box.getFrozenBoxCode());
@@ -641,7 +642,7 @@ public class StockInServiceImpl implements StockInService {
                 .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
                 .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
                 .projectSiteName(frozenBox.getProjectSiteName()).countOfSample(countOfSample.intValue()).status(frozenBox.getStatus()).stockIn(stockIn).stockInCode(stockIn.getStockInCode())
-                .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBox(frozenBox);
+                .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).frozenBox(frozenBox);
             stockInBoxRepository.save(stockInBox);
             //保存入库管子
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBox.getFrozenBoxCode());
@@ -655,7 +656,7 @@ public class StockInServiceImpl implements StockInService {
                 frozenTubes.add(tube);
                 StockInTube stockInTube = new StockInTube();
                 stockInTube.status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
-                    .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox).errorType(tube.getErrorType())
+                    .frozenBoxCode(tube.getFrozenBoxCode()).frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox).errorType(tube.getErrorType())
                     .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(Constants.FROZEN_BOX_STOCKING)
                     .frozenTubeType(tube.getFrozenTubeType()).frozenTubeTypeCode(tube.getFrozenTubeTypeCode())
                     .frozenTubeTypeName(tube.getFrozenTubeTypeName()).frozenTubeVolumns(tube.getFrozenTubeVolumns())

@@ -220,7 +220,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
         stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
         stockInBoxDetail.setFrozenBoxId(frozenBox.getId());
-        stockInBoxDetail.setFrozenBoxCode(boxCode);
+        stockInBoxDetail.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        stockInBoxDetail.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
         stockInBoxDetail.setMemo(frozenBox.getMemo());
         stockInBoxDetail.setStockInCode(stockInCode);
         int number = frozenTubeRepository.countByFrozenBoxCodeAndStatus(boxCode, Constants.FROZEN_TUBE_NORMAL);
@@ -348,6 +349,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(frozenBoxNew.getId()== null){
             //盒ID为空，表示新增的冻存盒---保存冻存盒，保存入库盒
             frozenBoxNew.setFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
+            frozenBoxNew.setFrozenBoxCode1D(stockInBoxForDataSplit.getFrozenBoxCode1D());
             frozenBoxNew.setProject(frozenBox.getProject());
             frozenBoxNew.setProjectCode(frozenBox.getProjectCode());
             frozenBoxNew.setProjectName(frozenBox.getProjectName());
@@ -424,6 +426,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             stockInBoxSplitIn.setStockIn(stockIn);
             stockInBoxSplitIn.setFrozenBox(frozenBoxNew);
             stockInBoxSplitIn.setFrozenBoxCode(frozenBoxNew.getFrozenBoxCode());
+            stockInBoxSplitIn.setFrozenBoxCode1D(frozenBoxNew.getFrozenBoxCode1D());
             stockInBoxSplitIn.setStockInCode(stockInCode);
             stockInBoxSplitIn.setEquipment(frozenBoxNew.getEquipment()!=null&&frozenBoxNew.getEquipment().getId()!=null?frozenBoxNew.getEquipment():null);
             stockInBoxSplitIn.setEquipmentCode(frozenBoxNew.getEquipment()!=null?frozenBoxNew.getEquipment().getEquipmentCode():null);
@@ -744,6 +747,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBox = createFrozenBoxByPosition(frozenBox,stockInBoxDTO);
             frozenBox.setStatus(Constants.FROZEN_BOX_STOCKING);
             frozenBox.setFrozenBoxCode(stockInBoxDTO.getFrozenBoxCode());
+            frozenBox.setFrozenBoxCode1D(stockInBoxDTO.getFrozenBoxCode1D());
         }else{
             if(frozenBox.getStatus().equals(Constants.FROZEN_BOX_PUT_SHELVES)){
                 throw new BankServiceException("冻存盒已上架，不能执行保存！");
@@ -757,6 +761,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         //保存入库冻存盒信息
         int countOfStockInTube = 0;
         stockInBox.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        stockInBox.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
         stockInBox.setStockIn(stockIn);
         stockInBox.setStockInCode(stockIn.getStockInCode());
         stockInBox.setMemo(frozenBox.getMemo());

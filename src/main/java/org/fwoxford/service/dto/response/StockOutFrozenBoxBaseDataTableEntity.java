@@ -30,6 +30,11 @@ public abstract  class StockOutFrozenBoxBaseDataTableEntity implements Serializa
 
     @NotNull
     @JsonView(DataTablesOutput.View.class)
+    @Column(name ="frozen_box_code_1d")
+    private String frozenBoxCode1D;
+
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
     @Column(name ="position")
     private String position;
 
@@ -152,4 +157,11 @@ public abstract  class StockOutFrozenBoxBaseDataTableEntity implements Serializa
         this.projectCode = projectCode;
     }
 
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
+    }
 }

@@ -305,6 +305,7 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                 StockOutFrozenBox stockOutFrozenBox = boxTubes.get(0).getStockOutFrozenBox();
                 FrozenBox frozenBox = stockOutFrozenBox.getFrozenBox();
                 stockOutFrozenBox.setFrozenBoxCode(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode());
+                stockOutFrozenBox.setFrozenBoxCode1D(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode1D());
                 // 修改出库盒状态
                 stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_HANDOVER);
                 // 修改冻存盒状态

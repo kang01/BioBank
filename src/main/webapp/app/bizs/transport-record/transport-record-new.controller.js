@@ -401,7 +401,7 @@
 
             vm.dtColumns = [
                 DTColumnBuilder.newColumn('frozenBoxId').withOption("width", "50").notSortable().withOption('searchable',false).withTitle('序号'),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
+                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').renderWith(_fnRowRender)
             ];
             vm.dtOptions = DTOptionsBuilder.newOptions()
                 .withOption('order', [[1,'asc']])
@@ -495,6 +495,10 @@
                     }, function () {
                     });
                 }
+
+            }
+
+            function _fnRowRender() {
 
             }
 

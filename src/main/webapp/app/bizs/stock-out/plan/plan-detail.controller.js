@@ -179,7 +179,8 @@
                 // DTColumnBuilder.newColumn('id').notVisible(),
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "90"),
-                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "90"),
+                DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "90"),
+                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "60"),
                 DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
                 DTColumnBuilder.newColumn('countOfSample').withTitle('出库样本数量').withOption("width", "100").notSortable()
             ];

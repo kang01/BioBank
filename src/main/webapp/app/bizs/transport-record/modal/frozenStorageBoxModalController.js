@@ -150,11 +150,12 @@
             .withOption('scrollY', 220);
         vm.dtColumns = [
             DTColumnBuilder.newColumn(0).withOption("width", "auto"),
-            DTColumnBuilder.newColumn(1).withOption("width", "80"),
-            DTColumnBuilder.newColumn(2).withOption("width", "auto"),
+            DTColumnBuilder.newColumn(1).withOption("width", "auto"),
+            DTColumnBuilder.newColumn(2).withOption("width", "80"),
             DTColumnBuilder.newColumn(3).withOption("width", "80"),
             DTColumnBuilder.newColumn(4).withOption("width", "80"),
-            DTColumnBuilder.newColumn(5).withOption("width", "60")
+            DTColumnBuilder.newColumn(5).withOption("width", "60"),
+            DTColumnBuilder.newColumn(6).withOption("width", "60")
         ];
         //录入冻存盒号
         var changeTableTimer = null;
@@ -299,7 +300,6 @@
                 var importData = TransportRecordService.importData(code, vm.frozenBox.sampleTypeId, vm.frozenBox.frozenBoxTypeId, canceller);
                 arrayPromise.push(
                     importData.then(function (response) {
-                        console.log(JSON.stringify(response));
                         _.forEach(vm.obox.frozenBoxDTOList,function (box) {
                            if(box.frozenBoxCode == code){
                                box.sampleTypeName = response.data[0].sampleTypeName;

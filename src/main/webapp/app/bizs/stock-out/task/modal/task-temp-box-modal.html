@@ -8,29 +8,33 @@
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <form class="form-inline">
-                <div class="form-group">
-                    <label class="control-label">
-                        <span class="required-field"></span>
-                        临时盒编码
-                    </label>
-                    <input type="text" class="form-control" ng-model="vm.frozenBoxCode" style="width: 160px">
-                </div>
-                <div class="form-group ">
-                    <label class=" control-label">
-                        <span class="required-field"></span>
-                        盒类型
-                    </label>
-                    <div class="input-group">
-                        <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"  style="width: 160px"
-                                   ng-model="vm.box.frozenBoxTypeId"></selectize>
-                    </div>
-                </div>
+            <div class="form-group col-md-3 pl-0 pr-0">
+                <label>
+                    <span class="required-field"></span>
+                    临时盒编码
+                </label>
+                <input type="text" class="form-control" ng-model="vm.frozenBoxCode">
+            </div>
+            <div class="form-group col-md-4 pr-0">
+                <label>
+                    一维编码
+                </label>
+                <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode1D" >
+            </div>
+            <div class="form-group col-md-3 pr-0">
+                <label>
+                    <span class="required-field"></span>
+                    盒类型
+                </label>
+                <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
+                           ng-model="vm.box.frozenBoxTypeId"></selectize>
+            </div>
+            <div class="col-md-2" style="margin-top: 26px">
                 <button type="button" class="btn btn-default" ng-click="vm.addNewTempBox()"
-                        ng-disabled="!vm.frozenBoxCode">添加新盒
+                        ng-disabled="!vm.frozenBoxCode || !vm.box.frozenBoxTypeId">添加新盒
                 </button>
+            </div>
 
-            </form>
         </div>
     </div>
     <div class="row">

@@ -186,6 +186,7 @@
                 templateUrl: 'app/bizs/stock-in/modal/stock-in-new-modal.html',
                 controller: 'StockInNewModalController',
                 controllerAs:'vm',
+                backdrop:'static',
                 resolve: {
                     items:{}
                 }

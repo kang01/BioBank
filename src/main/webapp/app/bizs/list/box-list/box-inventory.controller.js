@@ -212,6 +212,15 @@
                     vm.dto.frozenBoxCodeStr = value;
                 }
             };
+            //一维编码
+            vm.boxCode1DConfig = {
+                create: true,
+                persist:false,
+                onChange: function(value){
+                    vm.dto.frozenBoxCode1DStr = value;
+
+                }
+            };
             //样本类型
             vm.sampleTypeConfig = {
                 valueField:'id',
@@ -286,6 +295,7 @@
             projectIds = [];
             vm.projectCodeStr = [];
             vm.arrayBoxCode = [];
+            vm.arrayBoxCode1D = [];
             vm.dto.spaceType = "1";
             vm.dto.compareType = "1";
             // vm.checked = false;
@@ -494,8 +504,9 @@
                 .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('position').withTitle('位置').withOption("width", "140"),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "110").renderWith(_fnRowBoxCodeRender),
+            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "110"),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目名称').withOption("width", "180"),
-            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "100"),
+            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "80"),
             DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "120"),
             DTColumnBuilder.newColumn('frozenBoxType').withTitle('盒类型').withOption("width", "120"),
             DTColumnBuilder.newColumn('countOfUsed').withTitle('已用').withOption("width", "60"),
@@ -531,8 +542,8 @@
             }
             var status = "";
             status = MasterData.getFrozenBoxStatus(data.status);
-            $('td:eq(3)', row).html(projectName);
-            $('td:eq(10)', row).html(status);
+            $('td:eq(4)', row).html(projectName);
+            $('td:eq(11)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

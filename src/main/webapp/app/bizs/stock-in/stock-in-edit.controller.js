@@ -523,8 +523,8 @@
             //     transportCode = null;
             // }
             // $('td:eq(2)', row).html(transportCode);
-            $('td:eq(6)', row).html(isSplit ? '需要分装' : '');
-            $('td:eq(7)', row).html(status);
+            $('td:eq(7)', row).html(isSplit ? '需要分装' : '');
+            $('td:eq(8)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function _fnActionButtonsRender(data, type, full, meta) {
@@ -615,7 +615,8 @@
             var columns = [
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').withOption("width", "200"),
+                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').withOption("width", "150"),
+                DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "150"),
                 // DTColumnBuilder.newColumn('frozenBoxCode').withTitle('转运编码'),
                 DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
                 DTColumnBuilder.newColumn('sampleClassificationName').withOption("width", "120").withTitle('样本分类'),
@@ -1389,6 +1390,7 @@
                 var objBox = {};
                 objBox.frozenBoxId = vm.boxList[i].frozenBoxId;
                 objBox.frozenBoxCode = vm.boxList[i].frozenBoxCode;
+                objBox.frozenBoxCode1D = vm.boxList[i].frozenBoxCode1D;
                 objBox.sampleTypeId = vm.boxList[i].sampleTypeId || vm.boxList[i].sampleType.id;
                 objBox.frozenBoxTypeId = vm.boxList[i].frozenBoxTypeId || vm.boxList[i].frozenBoxType.id;
                 objBox.memo = vm.boxList[i].memo;

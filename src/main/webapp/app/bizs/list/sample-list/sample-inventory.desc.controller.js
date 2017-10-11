@@ -33,7 +33,7 @@
             DTColumnBuilder.newColumn('position').withTitle('冻存位置').withOption("width", "140").notSortable(),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "100").notSortable(),
             DTColumnBuilder.newColumn('positionInBox').withTitle('盒内位置').withOption("width", "80").notSortable(),
-            DTColumnBuilder.newColumn('operator').withTitle('操作员').withOption("width", "80").notSortable(),
+            DTColumnBuilder.newColumn('operator').withTitle('操作员').withOption("width", "100").notSortable(),
             DTColumnBuilder.newColumn('memo').withTitle('批注').withOption("width", "auto").notSortable(),
             DTColumnBuilder.newColumn('frozenTubeState').withTitle('状态').withOption("width", "80").notSortable()
         ];

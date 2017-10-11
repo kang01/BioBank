@@ -184,6 +184,13 @@
                     vm.dto.frozenBoxCodeStr = value;
                 }
             };
+            vm.boxCode1DConfig = {
+                create: true,
+                persist:false,
+                onChange: function(value){
+                    vm.dto.frozenBoxCode1DStr = value;
+                }
+            };
             vm.sampleCodeConfig = {
                 create: true,
                 persist:false,
@@ -263,6 +270,7 @@
             vm.dto.frozenBoxCodeStr = [];
             vm.dto.projectCodeStr = [];
             vm.arrayBoxCode = [];
+            vm.arrayBoxCode1D = [];
             vm.arraySampleCode = [];
             vm.projectCodeStr = [];
             // vm.checked = false;
@@ -325,7 +333,7 @@
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),
             DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "60"),
-            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "60"),
+            DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "60")
             // DTColumnBuilder.newColumn('status').withTitle('状态'),
 
         ];
@@ -465,12 +473,13 @@
                 .withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('position').withTitle('定位').withOption("width", "140"),
             DTColumnBuilder.newColumn('positionInBox').withTitle('盒内位置').withOption("width", "80"),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "120"),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "100"),
+            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "100"),
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码').withOption("width", "130"),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码'),
-            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "100"),
+            DTColumnBuilder.newColumn('sampleType').withTitle('样本类型').withOption("width", "80"),
             DTColumnBuilder.newColumn('sampleClassification').withTitle('样本分类').withOption("width", "120"),
-            DTColumnBuilder.newColumn('sex').withTitle('标签'),
+            DTColumnBuilder.newColumn('sex').withTitle('标签').withOption("width", "80"),
             DTColumnBuilder.newColumn('status').withTitle('样本状态').withOption("width", "80"),
             DTColumnBuilder.newColumn('frozenTubeState').withTitle('库存状态').withOption("width", "80"),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption("width", "50").withOption('searchable',false).notSortable().renderWith(actionsHtml)
@@ -518,10 +527,10 @@
             var status = MasterData.getStatus(data.status);
             var frozenTubeStatus = "";
             frozenTubeStatus = MasterData.getFrozenBoxStatus(data.frozenTubeState);
-            $('td:eq(5)', row).html(projectName);
-            $('td:eq(8)', row).html(tag);
-            $('td:eq(9)', row).html(status);
-            $('td:eq(10)', row).html(frozenTubeStatus);
+            $('td:eq(6)', row).html(projectName);
+            $('td:eq(9)', row).html(tag);
+            $('td:eq(10)', row).html(status);
+            $('td:eq(11)', row).html(frozenTubeStatus);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

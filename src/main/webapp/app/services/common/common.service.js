@@ -155,11 +155,12 @@
                 {value:"2002",label:"待入库"},
                 {value:"2003",label:"已分装"},
                 {value:"2004",label:"已入库"},
-                {value:"2090",label:"已作废"},
                 {value:"2006",label:"已上架"},
                 {value:"2008",label:"待出库"},
                 {value:"2009",label:"已出库"},
                 {value:"2010",label:"已交接"},
+                {value:"2011",label:"转运完成"},
+                {value:"2090",label:"已作废"},
                 {value:"2101",label:"交接进行中"},
                 {value:"2102",label:"交接完成"},
                 {value:"2190",label:"交接已作废"}

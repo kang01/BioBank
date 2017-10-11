@@ -209,6 +209,7 @@
             .withOption('rowCallback', rowCallback);
         vm.boxColumns = [
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "100").notSortable(),
+            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "100").notSortable(),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('类型').withOption("width", "60").notSortable(),
             DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "auto").notSortable(),
             DTColumnBuilder.newColumn('countOfSample').withTitle('数量').withOption("width", "50").notSortable()
@@ -1033,6 +1034,7 @@
         vm.stockOutSampleColumns = [
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').withOption("width", "100").notSortable(),
+            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "100").notSortable(),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "80").notSortable(),
             DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "220").notSortable(),
             DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('交接时间').withOption("width", "80").notSortable(),
@@ -1058,7 +1060,7 @@
                 case '1702': status = '已出库';break;
                 case '1703': status = '已交接';break;
             }
-            $('td:eq(7)', row).html(status);
+            $('td:eq(8)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

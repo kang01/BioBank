@@ -58,6 +58,12 @@
 
                         </div>
                         <div class="form-group">
+                            <label>一维编码</label>
+                            <selectize placeholder='' options='vm.myOptions' config="vm.boxCode1DConfig"
+                                       ng-model="vm.arrayBoxCode1D" ng-disabled='disable' required='true'></selectize>
+
+                        </div>
+                        <div class="form-group">
                             <label>项目编码</label>
                             <selectize options='vm.projectOptions' config="vm.projectConfig"
                                        ng-model="vm.projectCodeStr"></selectize>

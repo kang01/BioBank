@@ -80,7 +80,7 @@
             //     case '1402': planStatus = '已完成';break;
             //     case '1490': planStatus = '已作废';break;
             // }
-            $('td:eq(5)', row).html(sex);
+            $('td:eq(6)', row).html(sex);
             $compile(angular.element(row).contents())($scope);
         }
 

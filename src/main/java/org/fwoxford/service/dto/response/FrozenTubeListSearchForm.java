@@ -50,9 +50,8 @@ public class FrozenTubeListSearchForm {
         return frozenBoxCode1DStr;
     }
 
-    public FrozenTubeListSearchForm setFrozenBoxCode1DStr(String[] frozenBoxCode1DStr) {
+    public void setFrozenBoxCode1DStr(String[] frozenBoxCode1DStr) {
         this.frozenBoxCode1DStr = frozenBoxCode1DStr;
-        return this;
     }
 
     public String[] getSampleCodeStr() {

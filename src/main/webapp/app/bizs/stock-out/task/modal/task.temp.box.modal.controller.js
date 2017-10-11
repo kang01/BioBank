@@ -101,6 +101,7 @@
                     vm.tempBoxOptions.withOption('data', boxList);
                     // vm.tempBoxInstance.rerender();
                     vm.frozenBoxCode = "";
+                    vm.box.frozenBoxCode1D = "";
                 }else{
                     toastr.error("冻存盒编码已存在!");
                 }
@@ -112,6 +113,7 @@
         var fragment = document.createDocumentFragment();
         function _fnSelectTubePos(e) {
             if(!vm.selectBox.frozenTubeDTOS.length){
+                toastr.error("请选择一临时盒!");
                 return;
             }
             //有子元素清空
@@ -193,12 +195,13 @@
 
 
         //临时盒子
-        vm.tempBoxOptions = BioBankDataTable.buildDTOption("BASIC", 280)
+        vm.tempBoxOptions = BioBankDataTable.buildDTOption("BASIC", 240)
             .withOption('rowCallback', rowCallback)
             .withOption('createdRow', createdRow);
         vm.tempBoxColumns = [
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').notSortable(),,
-            DTColumnBuilder.newColumn('sampleCount').withTitle('盒内样本数').notSortable(),,
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').notSortable(),
+            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').notSortable(),
+            DTColumnBuilder.newColumn('sampleCount').withTitle('盒内样本数').notSortable(),
             DTColumnBuilder.newColumn('frozenBoxTypeName').withTitle('盒类型').notSortable()
         ];
         var sampleTotalCount;
@@ -206,7 +209,7 @@
             sampleTotalCount =  data.frozenBoxTypeRows * data.frozenBoxTypeColumns;
             var sampleOutCount = data.frozenTubeDTOS.length - (_.filter(data.frozenTubeDTOS,{sampleTempCode:""}).length);
             var str = sampleOutCount+"/"+sampleTotalCount;
-            $('td:eq(1)', row).html(str);
+            $('td:eq(2)', row).html(str);
             $compile(angular.element(row).contents())($scope);
         }
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {

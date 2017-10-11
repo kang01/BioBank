@@ -914,8 +914,11 @@ public class StockListServiceImpl implements StockListService {
     }
 
     private CriteriaQuery<?> getSearchQuery(Root<FrozenPositionListAllDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, FrozenPositionListSearchForm searchForm) {
+        List<Predicate> predicate = new ArrayList<>();
+        Predicate pre = cb.isNotNull(root.get("id").as(Long.class));
+        predicate.add(pre);
         if (searchForm != null) {
-            List<Predicate> predicate = new ArrayList<>();
+
             query.distinct(true);
             if (searchForm.getProjectCodeStr() != null && searchForm.getProjectCodeStr().length > 0) {
                 CriteriaBuilder.In<String> in = cb.in(root.get("projectCode"));
@@ -994,15 +997,17 @@ public class StockListServiceImpl implements StockListService {
                     predicate.add(p11);
                 }
             }
-            Predicate[] pre = new Predicate[predicate.size()];
-            query.where(predicate.toArray(pre));
         }
+        Predicate[] pres = new Predicate[predicate.size()];
+        query.where(predicate.toArray(pres));
         return query;
     }
 
     private CriteriaQuery<?> getSearchQueryExceptProject(Root<FrozenPositionListDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, FrozenPositionListSearchForm searchForm) {
+        List<Predicate> predicate = new ArrayList<>();
+        Predicate pre = cb.isNotNull(root.get("id").as(Long.class));
+        predicate.add(pre);
         if (searchForm != null) {
-            List<Predicate> predicate = new ArrayList<>();
             query.distinct(true);
             if (searchForm.getProjectCodeStr() != null && searchForm.getProjectCodeStr().length > 0) {
                 CriteriaBuilder.In<String> in = cb.in(root.get("projectCode"));
@@ -1081,9 +1086,9 @@ public class StockListServiceImpl implements StockListService {
                     predicate.add(p11);
                 }
             }
-            Predicate[] pre = new Predicate[predicate.size()];
-            query.where(predicate.toArray(pre));
         }
+        Predicate[] pres = new Predicate[predicate.size()];
+        query.where(predicate.toArray(pres));
         return query;
     }
 }

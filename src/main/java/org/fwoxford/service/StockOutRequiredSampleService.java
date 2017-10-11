@@ -1,5 +1,6 @@
 package org.fwoxford.service;
 
+import net.sf.json.JSONArray;
 import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,4 +48,6 @@ public interface StockOutRequiredSampleService {
     DataTablesOutput<StockOutRequiredSampleDTO> getPageStockOutRequiredSampleByRequired(DataTablesInput input, Long id);
 
     Page<StockOutRequiredSampleDTO> getAllStockOutRequiredSamplesByRequirementId(Pageable pageable, Long id);
+
+    JSONArray getRequiredSamples(Long id);
 }

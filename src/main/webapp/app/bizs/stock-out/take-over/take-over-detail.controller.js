@@ -337,6 +337,7 @@
             vm.dtColumns = [
                 DTColumnBuilder.newColumn('').withTitle(titleHtml).withOption("width", "30").notSortable().renderWith(_fnActionsSelectHtml),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').withOption("width", 120),
+                DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", 120),
                 DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", 50),
                 DTColumnBuilder.newColumn('position').withTitle('暂存区').withOption("width", 120),
                 DTColumnBuilder.newColumn('applyCode').withTitle('出库申请').withOption("width", 120),
@@ -366,8 +367,8 @@
                 var status = MasterData.getStatus(data.status);
                 var samplQty = ' / 100';
                 samplQty = (data.countOfSample || 0) + samplQty;
-                $('td:eq(2)', row).html(status);
-                $('td:eq(6)', row).html(samplQty);
+                $('td:eq(3)', row).html(status);
+                $('td:eq(7)', row).html(samplQty);
                 $compile(angular.element(row).contents())($scope);
             }
             function _fnActionsHtml(data, type, full, meta) {
@@ -445,7 +446,7 @@
                 table
                     .column(1)
                     .search(boxCode||'')
-                    .column(3)
+                    .column(4)
                     .search(pos||'')
                     .draw();
 

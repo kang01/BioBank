@@ -352,8 +352,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         result.setStatus(stockOutRequirement.getStatus());
         result.setCountOfSample(stockOutRequirement.getCountOfSample());
         result.setMemo(stockOutRequirement.getMemo());
-        //获取指定样本
-        List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(id);
+
         if(stockOutRequirement.getImportingFileId()!=null){
             StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(stockOutRequirement.getImportingFileId());
             result.setSamples(stockOutFiles!=null?stockOutFiles.getFileName():null);

@@ -138,4 +138,6 @@ public interface FrozenBoxService {
      * @return
      */
     String findFrozenBoxHistory(Long id);
+
+    String makeNewFrozenBoxCode(Long projectId, Long sampleId, Long sampleClassId);
 }

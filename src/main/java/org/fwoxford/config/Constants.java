@@ -289,9 +289,11 @@ public final class Constants {
         put("10","尿2");
         put("11","RNA");
     }};
-    public static final String MOVE_TYPE_1 = "1";
-    public static final String MOVE_TYPE_2 = "2";
-    public static final String MOVE_TYPE_3 = "3";
+    public static final String MOVE_TYPE_FOR_TUBE = "1";
+    public static final String MOVE_TYPE_FOR_BOX = "2";
+    public static final String MOVE_TYPE_FOR_SHELF = "3";
+    public static final String DESTROY_TYPE_FOR_TUBE = "1";
+    public static final String DESTROY_TYPE_FOR_BOX = "2";
 
 
     public static final String SAMPLE_HISTORY_TRANSHIP = "101";

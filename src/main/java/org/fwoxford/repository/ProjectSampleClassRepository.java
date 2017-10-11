@@ -1,6 +1,8 @@
 package org.fwoxford.repository;
 
 import org.fwoxford.domain.ProjectSampleClass;
+import org.fwoxford.domain.SampleClassification;
+import org.fwoxford.domain.SampleType;
 import org.fwoxford.service.dto.ProjectSampleTypeDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +22,7 @@ public interface ProjectSampleClassRepository extends JpaRepository<ProjectSampl
     ProjectSampleClass findByProjectIdAndSampleTypeIdAndSampleClassificationId(Long projectId, Long sampleTypeId, Long sampleClassificationId);
 
     List<ProjectSampleClass> findByProjectIdAndSampleTypeId(Long projectId, Long sampleTypeId);
+    List<ProjectSampleClass> findByProjectIdAndSampleClassificationId(Long projectId, Long sampleClassId);
 
     int countByProjectIdAndSampleTypeId(Long projectId, Long sampleTypeId);
 

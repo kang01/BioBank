@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing PositionChange.
@@ -142,7 +140,7 @@ public class PositionChangeResource {
         if (positionChangeDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionMove cannot already have an ID")).body(null);
         }
-        PositionChangeDTO result = positionChangeService.createChangePosition(positionChangeDTO, Constants.MOVE_TYPE_1);
+        PositionChangeDTO result = positionChangeService.createChangePosition(positionChangeDTO, Constants.MOVE_TYPE_FOR_TUBE);
         return ResponseEntity.created(new URI("/api/position-changes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -161,7 +159,7 @@ public class PositionChangeResource {
         if (positionChangeDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionMove cannot already have an ID")).body(null);
         }
-        PositionChangeDTO result = positionChangeService.createChangePosition(positionChangeDTO, Constants.MOVE_TYPE_2);
+        PositionChangeDTO result = positionChangeService.createChangePosition(positionChangeDTO, Constants.MOVE_TYPE_FOR_BOX);
         return ResponseEntity.created(new URI("/api/position-changes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -180,7 +178,7 @@ public class PositionChangeResource {
         if (positionChangeDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionMove cannot already have an ID")).body(null);
         }
-        PositionChangeDTO result = positionChangeService.createChangePosition(positionChangeDTO, Constants.MOVE_TYPE_3);
+        PositionChangeDTO result = positionChangeService.createChangePosition(positionChangeDTO, Constants.MOVE_TYPE_FOR_SHELF);
         return ResponseEntity.created(new URI("/api/position-changes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

@@ -310,4 +310,18 @@ public class FrozenBoxResource {
         FrozenBoxDTO res = frozenBoxService.getBoxAndTubeByForzenBoxCode(frozenBoxCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
+
+    /**
+     * 生成一个未被使用的新冻存盒编码
+     * @param projectId
+     * @param sampleTypeId
+     * @param sampleClassId
+     * @return
+     */
+    @GetMapping("/frozen-boxes/{projectId}/{sampleTypeId}/{sampleClassId}/makeNewBoxCode")
+    public ResponseEntity getNewBoxCode(@PathVariable Long projectId, @PathVariable Long sampleTypeId, @PathVariable Long sampleClassId) {
+        log.debug("REST request to get newest frozen box code : {}", projectId + "/" + sampleTypeId + "/" + sampleClassId);
+        String res = frozenBoxService.makeNewFrozenBoxCode(projectId, sampleTypeId, sampleClassId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
 }

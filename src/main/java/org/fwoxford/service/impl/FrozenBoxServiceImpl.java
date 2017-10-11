@@ -910,4 +910,66 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }
         return status;
     }
+
+    @Override
+    public String makeNewFrozenBoxCode(Long projectId, Long sampleTypeId, Long sampleClassId) {
+        String newBoxCode = "";
+        if (projectId == null || (sampleTypeId == null && sampleClassId == null)){
+            throw new BankServiceException("必须指定项目，样本类型或者样本分类。");
+        }
+
+        List<ProjectSampleClass> projectSampleClass = null;
+        SampleClassification sampleClassification = null;
+        SampleType sampleType = null;
+        String projectCode = null;
+        String sampleClassCode = null;
+        if (sampleClassId != null) {
+            sampleClassification = sampleClassificationRepository.findOne(sampleClassId);
+            projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleClassificationId(projectId, sampleClassId);
+            if (projectSampleClass.size() == 0){
+                throw new BankServiceException("指定的项目和样本分类无效。");
+            }
+            sampleType = projectSampleClass.get(0).getSampleType();
+        } else if (sampleTypeId != null){
+            sampleType = sampleTypeRepository.findOne(sampleTypeId);
+            projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeId(projectId, sampleTypeId);
+            if (projectSampleClass.size() == 0 ){
+                throw new BankServiceException("指定的项目和样本类型无效。");
+            } else if (projectSampleClass.size() >= 1 ){
+                throw new BankServiceException("指定的项目和样本类型有多个样本分类，必须指定其中一个样本分类。");
+            }
+            sampleClassification = projectSampleClass.get(0).getSampleClassification();
+        }
+
+        projectCode = projectSampleClass.get(0).getProjectCode();
+        sampleClassCode = sampleClassification.getSampleClassificationCode();
+        final String boxCodePrefix = projectCode + sampleClassCode;
+        int codeLength = boxCodePrefix.length() + 5;
+
+        TreeSet<String> boxCode = new TreeSet<>();
+        List<String> boxCodeInTranship = frozenBoxRepository.findAllTranshipFrozenBoxCode(projectId, sampleType.getId(), sampleClassification.getId());
+        List<String> boxCodeInStockIn = frozenBoxRepository.findAllStockInFrozenBoxCode(projectId, sampleType.getId(), sampleClassification.getId());
+        List<String> boxCodeInDestroy = frozenBoxRepository.findAllDestroyFrozenBoxCode(projectId, sampleType.getId(), sampleClassification.getId());
+        boxCode.addAll(boxCodeInTranship.stream().filter(code-> code.length() >= codeLength && code.startsWith(boxCodePrefix)).collect(Collectors.toList()));
+        boxCode.addAll(boxCodeInStockIn.stream().filter(code-> code.length() >= codeLength && code.startsWith(boxCodePrefix)).collect(Collectors.toList()));
+        boxCode.addAll(boxCodeInDestroy.stream().filter(code-> code.length() >= codeLength && code.startsWith(boxCodePrefix)).collect(Collectors.toList()));
+
+        if (boxCode.size() == 0){
+            newBoxCode = boxCodePrefix + "00001";
+        } else {
+            newBoxCode = boxCode.last().substring(boxCodePrefix.length(), codeLength);
+            Long no;
+            try{
+                no = Long.parseLong(newBoxCode);
+            } catch (Exception e){
+                throw new BankServiceException("库存中冻存盒编码规则有误无法自动创建。");
+            }
+            if (no == 99999){
+                throw new BankServiceException("库存中冻存盒编码达到最大限额无法自动创建。");
+            }
+            newBoxCode = String.format("%s%05d", boxCodePrefix, no+1);
+        }
+
+        return newBoxCode;
+    }
 }

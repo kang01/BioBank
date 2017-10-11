@@ -58,7 +58,7 @@ public class ExcelUtils {
                 }else{
                     rowCount++;
                 }
-                for( int j = row.getFirstCellNum() ; j <= row.getLastCellNum() ;j++){
+                for( int j = 0 ; j <= row.getLastCellNum() ;j++){
                     cell = row.getCell(j);
                     if(cell == null || cell.getCellType() == HSSFCell.CELL_TYPE_BLANK){
                         //当该单元格为空
@@ -130,7 +130,7 @@ public class ExcelUtils {
                 }else{
                     rowCount++;
                 }
-                for( int j = row.getFirstCellNum() ; j <= row.getLastCellNum() ;j++){
+                for( int j = 0 ; j <= row.getLastCellNum() ;j++){
                     cell = row.getCell(j);
                     if(cell == null || cell.getCellType() == HSSFCell.CELL_TYPE_BLANK){
                         //当该单元格为空

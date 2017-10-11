@@ -56,12 +56,10 @@ public class FrozenPositionListAllDataTableEntity   implements Serializable {
     @Column(name ="status")
     private String status;
 
-    @NotNull
     @JsonView(DataTablesOutput.View.class)
     @Column(name ="project_name")
     private String projectName;
 
-    @NotNull
     @JsonView(DataTablesOutput.View.class)
     @Column(name ="project_code")
     private String projectCode;

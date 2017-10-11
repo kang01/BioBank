@@ -153,11 +153,11 @@ public class StockOutRequiredSampleResource {
     }
 
     /**
-     * 获取上传的出库需求详情
+     * 获取上传的出库需求详情--返回类型是JSONArray
      * @param requirementId 需求ID
      * @return
      */
-    @GetMapping("/stock-out-requirements/getRequiredSamples/{requirementId}")
+    @GetMapping("/stock-out-required-samples/requirement/{requirementId}")
     @Timed
     public JSONArray getRequiredSamples(@PathVariable Long requirementId) {
         return stockOutRequiredSampleService.getRequiredSamples(requirementId);

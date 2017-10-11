@@ -9,9 +9,9 @@
         .module('bioBankApp')
         .controller('RequirementAppointSampleDescModalController', RequirementAppointSampleDescModalController);
 
-    RequirementAppointSampleDescModalController.$inject = ['$scope','$uibModalInstance','toastr','items','PaginationUtil','paginationConstants','DTColumnBuilder','RequirementAppointSampleDescService','BioBankDataTable'];
+    RequirementAppointSampleDescModalController.$inject = ['$scope','$uibModalInstance','toastr','items','PaginationUtil','paginationConstants','DTColumnBuilder','RequirementService','BioBankDataTable'];
 
-    function RequirementAppointSampleDescModalController($scope,$uibModalInstance,toastr,items,PaginationUtil,paginationConstants,DTColumnBuilder,RequirementAppointSampleDescService,BioBankDataTable) {
+    function RequirementAppointSampleDescModalController($scope,$uibModalInstance,toastr,items,PaginationUtil,paginationConstants,DTColumnBuilder,RequirementService,BioBankDataTable) {
         var vm = this;
         vm.transition = transition;
         //样本需求ID
@@ -23,16 +23,24 @@
 
         //加载指定样本详情
         function loadSample() {
-            RequirementAppointSampleDescService.query({
-                requirementId:sampleRequirementId,
-                page:vm.page-1,
-                size: vm.itemsPerPage
-            }, onSuccess, onError);
-            function onSuccess(data,headers) {
-                vm.totalItems = headers('X-Total-Count');
-                vm.queryCount = vm.totalItems;
-                vm.samples = _.chunk(data,3);
-            }
+            RequirementService.assignSampleDes(sampleRequirementId).success(function (data) {
+                for(var i =0; i < data.length; i++){
+                    data[i].id = i+1;
+                }
+                vm.samples = _.chunk(data,2);
+            }).error(function (data) {
+
+            });
+            // RequirementAppointSampleDescService.query({
+            //     requirementId:sampleRequirementId,
+            //     page:vm.page-1,
+            //     size: vm.itemsPerPage
+            // }, onSuccess, onError);
+            // function onSuccess(data,headers) {
+            //     vm.totalItems = headers('X-Total-Count');
+            //     vm.queryCount = vm.totalItems;
+            //     vm.samples = _.chunk(data,3);
+            // }
         }
         loadSample();
         //每次分页都需要请求数据

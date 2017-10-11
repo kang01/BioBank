@@ -27,7 +27,9 @@
             //编辑保存盒子
             saveEditStockInBox:_fnSaveEditStockInBox,
             //作废
-            stockInCancellation:_fnStockInCancellation
+            stockInCancellation:_fnStockInCancellation,
+            //生成冻存盒号
+            makeNewBoxCode:_fnMakeNewBoxCode
 
 
         };
@@ -73,10 +75,19 @@
         function _fnSaveEditStockInBox(stockInBoxCode,param) {
             return $http.put('api/stock-in-boxes/stockInCode/'+stockInBoxCode,param);
         }
-        //作废
         function _fnStockInCancellation(stockInCode) {
             return $http.put('api/stock-in/invalid/'+stockInCode);
         }
+        function _fnMakeNewBoxCode(projectId,sampleTypeId,sampleClassId) {
+            var http;
+            if(sampleClassId){
+                http = 'api/frozen-boxes/'+projectId+'/'+sampleTypeId+'/'+sampleClassId+'/makeNewBoxCode';
+            }else{
+                http = 'api/frozen-boxes/'+projectId+'/'+sampleTypeId+'/makeNewBoxCode';
+            }
+            return $http.get(http)
+        }
+
         return service;
     }
 })();

@@ -284,7 +284,6 @@
 
                 </div>
                 <div class="panel-body p-0">
-
                     <div class="row">
                         <div class="col-md-3 pr-0 pl-20">
                             <div class="row">
@@ -295,9 +294,11 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label><span class="required-field"></span>冻存盒号</label>
-                                    <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode"   ng-disabled="!vm.box" required>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode"   ng-disabled="!vm.box" required>
+                                        <div class="input-group-addon" ng-click="vm.makeNewBoxCode()">生成</div>
+                                    </div>
                                 </div>
-
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-6 pr-0">

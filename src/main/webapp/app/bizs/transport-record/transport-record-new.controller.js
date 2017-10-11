@@ -11,16 +11,30 @@
         .controller('BoxInstanceCtrl',BoxInstanceCtrl);
 
     TransportRecordNewController.$inject = ['$scope','blockUI','MasterData','hotRegisterer','SampleService','TranshipInvalidService','DTOptionsBuilder','DTColumnBuilder','$uibModal','$state','$stateParams','toastr','entity','frozenBoxByCodeService','TransportRecordService','TranshipSaveService','TranshipBoxService',
-        'SampleTypeService','FrozenBoxTypesService','FrozenBoxByIdService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService',
+        'SampleTypeService','FrozenBoxTypesService','StockInInputService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','ProjectService','ProjectSitesByProjectIdService','TranshipBoxByCodeService','TranshipStockInService','FrozenBoxDelService','SampleUserService','TrackNumberService',
     'BioBankBlockUi','Principal'];
     BoxInstanceCtrl.$inject = ['$uibModalInstance'];
     function TransportRecordNewController($scope,blockUI,MasterData,hotRegisterer,SampleService,TranshipInvalidService,DTOptionsBuilder,DTColumnBuilder,$uibModal,$state,$stateParams,toastr,entity,frozenBoxByCodeService,TransportRecordService,TranshipSaveService,TranshipBoxService,
-                                          SampleTypeService,FrozenBoxTypesService,FrozenBoxByIdService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService,
+                                          SampleTypeService,FrozenBoxTypesService,StockInInputService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,ProjectService,ProjectSitesByProjectIdService,TranshipBoxByCodeService,TranshipStockInService,FrozenBoxDelService,SampleUserService,TrackNumberService,
                                           BioBankBlockUi,Principal) {
 
         var modalInstance;
         var vm = this;
         vm.transportRecord = entity; //转运记录
+        //生成新的冻存盒号
+        vm.makeNewBoxCode = _fnMakeNewBoxCode;
+
+        function _fnMakeNewBoxCode() {
+            if(!vm.box){
+                return;
+            }
+            StockInInputService.makeNewBoxCode(vm.transportRecord.projectId,vm.box.sampleTypeId,vm.box.sampleClassificationId).success(function (data) {
+                vm.box.frozenBoxCode = data.code;
+            }).error(function (data) {
+                toastr.error(data.message);
+            })
+        }
+
         _initTransportRecordPage();
         _initFrozenBoxesTable();
         _initFrozenBoxPanel();

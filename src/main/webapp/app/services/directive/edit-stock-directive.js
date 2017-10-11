@@ -62,7 +62,16 @@
         vm.frozenBoxForStockIn =_fnFrozenBoxForStockIn;
         //保存冻存盒
         vm.saveBox = _fnSaveBox;
+        //生成新的冻存盒号
+        vm.makeNewBoxCode = _fnMakeNewBoxCode;
 
+        function _fnMakeNewBoxCode() {
+            StockInInputService.makeNewBoxCode(vm.entity.projectId,vm.obox.sampleTypeId,vm.obox.sampleClassificationId).success(function (data) {
+                vm.obox.frozenBoxCode = data.code;
+            }).error(function (data) {
+                toastr.error(data.message);
+            })
+        }
         //初始化冻存管
         var aRemarkArray = [];
         var domArray = [];//单元格操作的数据
@@ -1295,6 +1304,7 @@
             }
 
         };
+
 
         function onError(error) {
             toastr.error(error.data.message);

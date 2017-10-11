@@ -56,6 +56,7 @@
             // DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
             DTColumnBuilder.newColumn('id').notSortable().notVisible(),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').withOption("width", "120").notSortable(),
+            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "120").notSortable(),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "120").notSortable(),
             DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "240").notSortable(),
             DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('交接时间').withOption("width", "80").notSortable(),
@@ -73,7 +74,7 @@
         }
         function createdRow(row, data, dataIndex) {
             var status = MasterData.getStatus(data.status);
-            $('td:eq(6)', row).html(status);
+            $('td:eq(7)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
 
@@ -83,6 +84,7 @@
         vm.boxColumns = [
             DTColumnBuilder.newColumn('id').notVisible().notSortable(),
             DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "120").notSortable(),
+            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "120").notSortable(),
             DTColumnBuilder.newColumn('projectCode').withTitle('项目编码').withOption("width", "120").notSortable(),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "120").notSortable(),
             DTColumnBuilder.newColumn('sampleClassificationName').withTitle('样本分类').withOption("width", "120").notSortable(),
@@ -92,7 +94,7 @@
             DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50").notSortable()
         ];
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
-            $('td:eq(7)', nRow).html(MasterData.getFrozenBoxStatus(oData.status));
+            $('td:eq(8)', nRow).html(MasterData.getFrozenBoxStatus(oData.status));
             $compile(angular.element(nRow).contents())($scope);
         }
 

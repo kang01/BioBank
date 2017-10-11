@@ -23,9 +23,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing PositionChange.
@@ -217,7 +215,7 @@ public class PositionChangeServiceImpl implements PositionChangeService{
         frozenTube2.setTubeRows(frozenTubeDTO1.getTubeRows());
         frozenTubeRepository.save(frozenTube2);
         List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>(){{add(frozenTube1);add(frozenTube2);}};
-        saveChangeDetail(positionChangeDTO,Constants.MOVE_TYPE_1,frozenTubeList);
+        saveChangeDetail(positionChangeDTO,Constants.MOVE_TYPE_FOR_TUBE,frozenTubeList);
     }
 
     public void saveChangeDetail(PositionChangeDTO positionChangeDTO, String changeType, List<FrozenTube> frozenTubeList) {
@@ -307,7 +305,7 @@ public class PositionChangeServiceImpl implements PositionChangeService{
 
         List<Long> frozenBoxIds = new ArrayList<Long>(){{add(boxId1);add(boxId2);}};
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxIdIn(frozenBoxIds);
-        saveChangeDetail(positionChangeDTO,Constants.MOVE_TYPE_2,frozenTubeList);
+        saveChangeDetail(positionChangeDTO,Constants.MOVE_TYPE_FOR_BOX,frozenTubeList);
     }
     public void createChangePositionForShelf(PositionChangeDTO positionChangeDTO) {
         //获取第一个冻存架
@@ -353,7 +351,7 @@ public class PositionChangeServiceImpl implements PositionChangeService{
             frozenBoxRepository.save(frozenBoxes);
         }
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxIdIn(frozenBoxIds);
-        saveChangeDetail(positionChangeDTO,Constants.MOVE_TYPE_3,frozenTubeList);
+        saveChangeDetail(positionChangeDTO,Constants.MOVE_TYPE_FOR_SHELF,frozenTubeList);
     }
 
     public void checkUser(PositionChangeDTO positionChangeDTO) {

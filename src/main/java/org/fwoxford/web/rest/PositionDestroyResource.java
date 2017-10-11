@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing PositionDestroy.
@@ -141,7 +139,7 @@ public class PositionDestroyResource {
         if (positionDestroyDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionDestroy cannot already have an ID")).body(null);
         }
-        PositionDestroyDTO result = positionDestroyService.createDestroyPosition(positionDestroyDTO, Constants.MOVE_TYPE_1);
+        PositionDestroyDTO result = positionDestroyService.createDestroyPosition(positionDestroyDTO, Constants.MOVE_TYPE_FOR_TUBE);
         return ResponseEntity.created(new URI("/api/position-destroys/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -160,7 +158,7 @@ public class PositionDestroyResource {
         if (positionDestroyDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new positionDestroy cannot already have an ID")).body(null);
         }
-        PositionDestroyDTO result = positionDestroyService.createDestroyPosition(positionDestroyDTO, Constants.MOVE_TYPE_2);
+        PositionDestroyDTO result = positionDestroyService.createDestroyPosition(positionDestroyDTO, Constants.MOVE_TYPE_FOR_BOX);
         return ResponseEntity.created(new URI("/api/position-destroys/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

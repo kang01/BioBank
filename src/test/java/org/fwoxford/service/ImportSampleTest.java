@@ -7,7 +7,6 @@ import org.fwoxford.BioBankApp;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
-import org.fwoxford.service.dto.response.FrozenTubeHistory;
 import org.fwoxford.service.dto.response.FrozenTubeImportingForm;
 import org.fwoxford.service.dto.response.GeocoderSearchAddressResponse;
 import org.fwoxford.service.dto.response.GeocoderSearchResponse;
@@ -2336,10 +2335,10 @@ public class ImportSampleTest {
         if (frozenBox == null) {
             return;
         }
-        String type = Constants.MOVE_TYPE_1;
+        String type = Constants.MOVE_TYPE_FOR_TUBE;
         //整盒销毁
         if (boxCode1.equals(boxCode)) {
-            type = Constants.MOVE_TYPE_2;
+            type = Constants.MOVE_TYPE_FOR_BOX;
         }
         Date date = null;
         try {
@@ -2376,7 +2375,7 @@ public class ImportSampleTest {
         positionDestroy.setCreatedDate(createDate);
         positionDestroyRepository.save(positionDestroy);
         //移位入库详情
-        if (type.equals(Constants.MOVE_TYPE_2)) {
+        if (type.equals(Constants.MOVE_TYPE_FOR_BOX)) {
             //先查询到盒子的首次入库记录
 
             //
@@ -2397,7 +2396,7 @@ public class ImportSampleTest {
                 f.setFrozenTubeState(Constants.FROZEN_BOX_DESTROY);
                 frozenTubeRepository.saveAndFlush(f);
             }
-            saveDestroyDetail(positionDestroy, Constants.MOVE_TYPE_2, frozenTubeList);
+            saveDestroyDetail(positionDestroy, Constants.MOVE_TYPE_FOR_BOX, frozenTubeList);
         } else {
             FrozenTube frozenTube = frozenTubeRepository.findBySampleCodeAndSampleTypeCode(boxCode, sampleType);
             frozenTube.setStatus(Constants.FROZEN_TUBE_DESTROY);
@@ -2406,7 +2405,7 @@ public class ImportSampleTest {
             List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>() {{
                 add(frozenTube);
             }};
-            saveDestroyDetail(positionDestroy, Constants.MOVE_TYPE_2, frozenTubeList);
+            saveDestroyDetail(positionDestroy, Constants.MOVE_TYPE_FOR_BOX, frozenTubeList);
         }
 
     }
@@ -2504,7 +2503,7 @@ public class ImportSampleTest {
         }
         //移位
         PositionMove positionMove = new PositionMove();
-        positionMove = positionMove.moveAffect("无").moveReason("无").moveType(Constants.MOVE_TYPE_2)
+        positionMove = positionMove.moveAffect("无").moveReason("无").moveType(Constants.MOVE_TYPE_FOR_BOX)
             .memo(String.join(",", remark))
             .whetherFreezingAndThawing(false).positionMoveDate(date)
             .status(Constants.VALID).operatorId1(opt_user_id).operatorId2(opt_user_id_2);
@@ -2558,7 +2557,7 @@ public class ImportSampleTest {
         frozenBox.setMemo(memoLast);
         frozenBoxRepository.saveAndFlush(frozenBox);
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(frozenBox.getId());
-        saveMoveDetail(positionMove, Constants.MOVE_TYPE_2, frozenTubeList);
+        saveMoveDetail(positionMove, Constants.MOVE_TYPE_FOR_BOX, frozenTubeList);
     }
 
     public void saveMoveDetail(PositionMove positionMove, String moveType, List<FrozenTube> frozenTubeList) {
@@ -3899,7 +3898,7 @@ public class ImportSampleTest {
         }
         //移位
         PositionMove positionMove = new PositionMove();
-        positionMove = positionMove.moveAffect("无").moveReason("无").moveType(Constants.MOVE_TYPE_2)
+        positionMove = positionMove.moveAffect("无").moveReason("无").moveType(Constants.MOVE_TYPE_FOR_BOX)
             .memo(memo)
             .whetherFreezingAndThawing(false).positionMoveDate(date)
             .status(Constants.VALID).operatorId1(opt_user_id).operatorId2(opt_user_id_2);
@@ -3958,7 +3957,7 @@ public class ImportSampleTest {
         frozenBox.setMemo(memoLast);
         frozenBoxRepository.saveAndFlush(frozenBox);
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(frozenBox.getId());
-        saveMoveDetail(positionMove, Constants.MOVE_TYPE_2, frozenTubeList);
+        saveMoveDetail(positionMove, Constants.MOVE_TYPE_FOR_BOX, frozenTubeList);
 
     }
 

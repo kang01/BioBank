@@ -3,6 +3,7 @@ package org.fwoxford.service;
 import org.fwoxford.domain.StockOutRequiredSample;
 import org.fwoxford.domain.StockOutRequirement;
 import org.fwoxford.service.dto.StockOutReqFrozenTubeDTO;
+import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -43,7 +44,7 @@ public interface StockOutReqFrozenTubeService {
      */
     void delete(Long id);
 
-    String checkStockOutSampleByAppointedSample(List<StockOutRequiredSample> stockOutRequiredSamples, StockOutRequirement stockOutRequirement);
+    String checkStockOutSampleByAppointedSample(List<StockOutRequiredSampleDTO> stockOutRequiredSamples, StockOutRequirement stockOutRequirement);
 
     String checkStockOutSampleByRequirement(StockOutRequirement stockOutRequirement);
 }

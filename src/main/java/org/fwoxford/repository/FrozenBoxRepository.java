@@ -1,5 +1,6 @@
 package org.fwoxford.repository;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenBox;
 
 import org.springframework.data.domain.Page;
@@ -322,7 +323,20 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     @Query(value = "SELECT t.equipment_code,t.area_code,t.support_rack_code,t.rows_in_shelf,t.columns_in_shelf,t.equipment_id,t.area_id,t.support_rack_id,t.frozen_box_code,t.frozen_box_id ," +
         "                    t.project_id,t.project_code,t.project_site_id,t.sample_type_id,t.sample_type_code,t.sample_type_name,t.sample_classification_id,t.sample_classification_code,t.sample_classification_name" +
         "                    ,t.created_date,106 as type" +
-        "                    FROM position_destroy_record t where t.destroy_type in (1,2) and frozen_box_id = ?1" ,nativeQuery = true)
+        "                    FROM position_destroy_record t where t.destroy_type in ("+ Constants.DESTROY_TYPE_FOR_TUBE+","+Constants.DESTROY_TYPE_FOR_BOX+") and frozen_box_id = ?1" ,nativeQuery = true)
     List<Object[]> findFrozenBoxDestoryHistory(Long id);
+
+
+    @Query(value = "select t.frozen_box_code from tranship_box t where t.status != '"+Constants.FROZEN_BOX_INVALID+"' and t.status != '"+Constants.INVALID+"' " +
+        " and (?1 is null or t.project_id=?1) and (?2 is null or t.sample_type_id=?2) and (?3 is null or t.sample_classification_id=?3)" ,nativeQuery = true)
+    List<String> findAllTranshipFrozenBoxCode(Long projectId, Long sampleTypeId, Long sampleClassId);
+
+    @Query(value = "select t.frozen_box_code from stock_in_box t where t.status != '"+Constants.FROZEN_BOX_INVALID+"' and t.status != '"+Constants.INVALID+"' " +
+        " and (?1 is null or t.project_id=?1) and (?2 is null or t.sample_type_id=?2) and (?3 is null or t.sample_classification_id=?3)" ,nativeQuery = true)
+    List<String> findAllStockInFrozenBoxCode(Long projectId, Long sampleTypeId, Long sampleClassId);
+
+    @Query(value = "select t.frozen_box_code from position_destroy_record t where t.status != '"+Constants.FROZEN_BOX_INVALID+"' and t.status != '"+Constants.INVALID+"' and t.destroy_type='"+Constants.DESTROY_TYPE_FOR_BOX+"' " +
+        " and (?1 is null or t.project_id=?1) and (?2 is null or t.sample_type_id=?2) and (?3 is null or t.sample_classification_id=?3)" ,nativeQuery = true)
+    List<String> findAllDestroyFrozenBoxCode(Long projectId, Long sampleTypeId, Long sampleClassId);
 }
 

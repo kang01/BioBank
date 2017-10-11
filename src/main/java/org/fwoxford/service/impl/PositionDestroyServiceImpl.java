@@ -4,7 +4,6 @@ import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.PositionDestroyService;
-import org.fwoxford.service.dto.PositionChangeDTO;
 import org.fwoxford.service.dto.PositionDestroyDTO;
 import org.fwoxford.service.mapper.PositionDestroyMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
@@ -19,11 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing PositionDestroy.
@@ -158,7 +154,7 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
             f.setFrozenTubeState(Constants.FROZEN_BOX_DESTROY);
         }
         frozenTubeRepository.save(frozenTubeList);
-        saveDestroyDetail(positionDestroyDTO,Constants.MOVE_TYPE_1,frozenTubeList);
+        saveDestroyDetail(positionDestroyDTO,Constants.MOVE_TYPE_FOR_TUBE,frozenTubeList);
     }
     private void createDestroyPositionForBox(PositionDestroyDTO positionDestroyDTO) {
         Long[] ids =positionDestroyDTO.getIds();
@@ -180,7 +176,7 @@ public class PositionDestroyServiceImpl implements PositionDestroyService{
             f.setFrozenTubeState(Constants.FROZEN_BOX_DESTROY);
         }
         frozenTubeRepository.save(frozenTubeList);
-        saveDestroyDetail(positionDestroyDTO,Constants.MOVE_TYPE_2,frozenTubeList);
+        saveDestroyDetail(positionDestroyDTO,Constants.MOVE_TYPE_FOR_BOX,frozenTubeList);
     }
 
     public void saveDestroyDetail(PositionDestroyDTO positionDestroyDTO, String type, List<FrozenTube> frozenTubeList) {

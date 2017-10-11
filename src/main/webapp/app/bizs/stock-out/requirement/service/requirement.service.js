@@ -59,7 +59,9 @@
             //保存计划
             savePlan:_savePlan,
             //作废
-            invalidPlan:_invalidPlan
+            invalidPlan:_invalidPlan,
+            //查看指定样本详情
+            assignSampleDes:_assignSampleDes
 
         };
         function _queryDemo(data,oSettings) {
@@ -152,10 +154,13 @@
             return $http.put('/api/stock-out-applies/revert/'+applyId);
         }
         function _savePlan(applyId) {
-            return $http.post('/api/stock-out-plans/'+applyId);
+            return $http.post('api/stock-out-plans/'+applyId);
         }
         function _invalidPlan(applyId,param) {
-            return $http.put('/api/stock-out-applies/'+applyId+'/invalid',param);
+            return $http.put('api/stock-out-applies/'+applyId+'/invalid',param);
+        }
+        function _assignSampleDes(requirementId) {
+            return $http.get('api/stock-out-required-samples/requirement/'+requirementId);
         }
 
         return service;

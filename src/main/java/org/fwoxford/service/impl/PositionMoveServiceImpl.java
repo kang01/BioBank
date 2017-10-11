@@ -6,7 +6,6 @@ import org.fwoxford.repository.*;
 import org.fwoxford.service.PositionMoveService;
 import org.fwoxford.service.dto.PositionMoveDTO;
 import org.fwoxford.service.dto.PositionMoveRecordDTO;
-import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.PositionMoveMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
@@ -21,9 +20,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing PositionMove.
@@ -134,7 +131,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
         //保存移位数据
         PositionMove positionMove = positionMoveMapper.positionMoveDTOToPositionMove(positionMoveDTO);
         checkUser(positionMoveDTO);
-        positionMove.setMoveType(Constants.MOVE_TYPE_1);
+        positionMove.setMoveType(Constants.MOVE_TYPE_FOR_TUBE);
         positionMove.setStatus(Constants.VALID);
         positionMove.setPositionMoveDate(LocalDate.now());
         positionMoveRepository.save(positionMove);
@@ -152,7 +149,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
         //保存移位数据
         PositionMove positionMove = positionMoveMapper.positionMoveDTOToPositionMove(positionMoveDTO);
         checkUser(positionMoveDTO);
-        positionMove.setMoveType(Constants.MOVE_TYPE_2);
+        positionMove.setMoveType(Constants.MOVE_TYPE_FOR_BOX);
         positionMove.setStatus(Constants.VALID);
         positionMove.setPositionMoveDate(LocalDate.now());
         positionMoveRepository.save(positionMove);
@@ -169,7 +166,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
         //保存移位数据
         PositionMove positionMove = positionMoveMapper.positionMoveDTOToPositionMove(positionMoveDTO);
         checkUser(positionMoveDTO);
-        positionMove.setMoveType(Constants.MOVE_TYPE_3);
+        positionMove.setMoveType(Constants.MOVE_TYPE_FOR_SHELF);
         positionMove.setStatus(Constants.VALID);
         positionMove.setPositionMoveDate(LocalDate.now());
         positionMoveRepository.save(positionMove);
@@ -224,7 +221,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
              }
 
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxIdIn(frozenBoxIds);
-            saveMoveDetail(positionMove,Constants.MOVE_TYPE_3,frozenTubeList);
+            saveMoveDetail(positionMove,Constants.MOVE_TYPE_FOR_SHELF,frozenTubeList);
         }
         return positionMoveDTO;
     }
@@ -291,7 +288,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
             .rowsInShelf(p.getRowsInShelf());
         frozenBoxRepository.save(frozenBox);
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(p.getFrozenBoxId());
-        saveMoveDetail(positionMove,Constants.MOVE_TYPE_2,frozenTubeList);
+        saveMoveDetail(positionMove,Constants.MOVE_TYPE_FOR_BOX,frozenTubeList);
     }
 
 
@@ -331,7 +328,7 @@ public class PositionMoveServiceImpl implements PositionMoveService {
             frozenTube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             frozenTubeRepository.save(frozenTube);
             List<FrozenTube> frozenTubeListNew = new ArrayList<FrozenTube>(){{add(frozenTube);}};
-            saveMoveDetail(positionMove,Constants.MOVE_TYPE_1,frozenTubeListNew);
+            saveMoveDetail(positionMove,Constants.MOVE_TYPE_FOR_TUBE,frozenTubeListNew);
         }
     }
 

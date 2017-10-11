@@ -9,6 +9,7 @@ import org.fwoxford.repository.StockOutRequirementRepository;
 import org.fwoxford.service.StockOutReqFrozenTubeService;
 import org.fwoxford.repository.StockOutReqFrozenTubeRepository;
 import org.fwoxford.service.dto.StockOutReqFrozenTubeDTO;
+import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
 import org.fwoxford.service.mapper.StockOutReqFrozenTubeMapper;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
@@ -111,7 +112,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
      * @return
      */
     @Override
-    public String checkStockOutSampleByAppointedSample(List<StockOutRequiredSample> stockOutRequiredSamples, StockOutRequirement stockOutRequirement) {
+    public String checkStockOutSampleByAppointedSample(List<StockOutRequiredSampleDTO> stockOutRequiredSamples, StockOutRequirement stockOutRequirement) {
         if(stockOutRequirement == null){
             throw new BankServiceException("需求不能为空！");
         }
@@ -121,7 +122,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         // All stock out samples
         List<Object[]> outTubeList = frozenTubeRepository.findAllStockOutFrozenTube();
         // required sample group by sample type
-        Map<String,List<StockOutRequiredSample>> requirementGroupBySampleType =
+        Map<String,List<StockOutRequiredSampleDTO>> requirementGroupBySampleType =
             stockOutRequiredSamples.stream().collect(Collectors.groupingBy(w -> w.getSampleType()));
 
         List<FrozenTube> frozenTubeListLast = new ArrayList<FrozenTube>();
@@ -129,11 +130,11 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
 
         for(String sampleType:requirementGroupBySampleType.keySet()){
 
-            List<StockOutRequiredSample> stockOutRequiredSampleList = requirementGroupBySampleType.get(sampleType);
+            List<StockOutRequiredSampleDTO> stockOutRequiredSampleList = requirementGroupBySampleType.get(sampleType);
             //每次取1000支
             List<String> sampleCodeList = new ArrayList<>();
             List<String> sampleTypeCodeList = new ArrayList<>();
-            List<List<StockOutRequiredSample>> arrReqSamples = Lists.partition(stockOutRequiredSampleList, 1000);
+            List<List<StockOutRequiredSampleDTO>> arrReqSamples = Lists.partition(stockOutRequiredSampleList, 1000);
 
             for(int index = 0; index < arrReqSamples.size(); index += 10){
                 int start = index;

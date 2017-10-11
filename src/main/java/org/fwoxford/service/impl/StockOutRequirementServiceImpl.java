@@ -10,6 +10,7 @@ import org.fwoxford.service.ReportExportingService;
 import org.fwoxford.service.StockOutFilesService;
 import org.fwoxford.service.StockOutReqFrozenTubeService;
 import org.fwoxford.service.StockOutRequirementService;
+import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
 import org.fwoxford.service.dto.StockOutRequirementDTO;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.StockOutRequirementMapper;
@@ -278,9 +279,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             ArrayList<ArrayList<Object>> arrayLists = ExcelUtils.readExcel(filetype,file.getInputStream());
             List<ArrayList<Object>>  arrayListArrayList = arrayLists.subList(1,arrayLists.size());
             for(List arrayList :arrayListArrayList){
-                Object boxCode =  arrayList.get(1);
-                Object sampleCode =  arrayList.get(2);
-                Object sampleType =  arrayList.get(3);
+                Object boxCode =  arrayList.get(0);
+                Object sampleCode =  arrayList.get(1);
+                Object sampleType =  arrayList.get(2);
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("frozenBoxCode1D",boxCode);
                 jsonObject.put("code",sampleCode);
@@ -394,36 +395,37 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         String status = Constants.STOCK_OUT_REQUIREMENT_CKECKING;
         //获取指定样本
         if(stockOutRequirement.getImportingFileId()!=null){
-            List<StockOutRequiredSample> stockOutRequiredSamples = new ArrayList<>();
+            List<StockOutRequiredSampleDTO> stockOutRequiredSamples = new ArrayList<StockOutRequiredSampleDTO>();
 //            List<StockOutRequiredSample> stockOutRequiredSamples = stockOutRequiredSampleRepository.findByStockOutRequirementId(id);
             StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(stockOutRequirement.getImportingFileId());
             String fileContent = stockOutFiles.getFileContent();
             List<JSONObject> jsonArray = JSONArray.fromObject(fileContent);
-            List<StockOutRequiredSample> stockOutRequiredSampleList = new ArrayList<>();
+            List<StockOutRequiredSampleDTO> stockOutRequiredSampleList = new ArrayList<>();
             for(int i=0;i<jsonArray.size();i++){
-                StockOutRequiredSample stockOutRequiredSample = new StockOutRequiredSample();
+                StockOutRequiredSampleDTO stockOutRequiredSample = new StockOutRequiredSampleDTO();
                 String boxCode1D = jsonArray.get(i).getString("frozenBoxCode1D");
                 stockOutRequiredSample.setFrozenBoxCode1D(boxCode1D);
                 String type = jsonArray.get(i).getString("type");
+                stockOutRequiredSample.setSampleCode(jsonArray.get(i).getString("code"));
+                stockOutRequiredSample.setSampleType(type);
                 if(!StringUtils.isEmpty(boxCode1D)){
                     stockOutRequiredSampleList.add(stockOutRequiredSample);
                 }else {
-                    stockOutRequiredSample.setSampleCode(jsonArray.get(i).getString("code"));
-                    stockOutRequiredSample.setSampleType(type);
+
                     stockOutRequiredSamples.add(stockOutRequiredSample);
                 }
             }
-            Map<String, List<StockOutRequiredSample>> boxListGroupByType =
+            Map<String, List<StockOutRequiredSampleDTO>> boxListGroupByType =
                 stockOutRequiredSampleList.stream().collect(Collectors.groupingBy(w -> w.getSampleType()));
             for(String type :boxListGroupByType.keySet()){
-                List<StockOutRequiredSample> boxCodeListGroupByType = boxListGroupByType.get(type);
+                List<StockOutRequiredSampleDTO> boxCodeListGroupByType = boxListGroupByType.get(type);
                 List<String> codeList = new ArrayList<>();
                 boxCodeListGroupByType.forEach(s->codeList.add(s.getFrozenBoxCode1D()));
                 List<List<String>> boxCodeListEach1000 = Lists.partition(codeList, 1000);
                 for( List<String> code : boxCodeListEach1000){
                     List<Object[]> sampleList = frozenTubeRepository.findByFrozenBoxCode1DIn(code,type);
                     for(Object[] obj :sampleList){
-                        StockOutRequiredSample stockOutRequiredSample = new StockOutRequiredSample();
+                        StockOutRequiredSampleDTO stockOutRequiredSample = new StockOutRequiredSampleDTO();
                         if(obj[0] != null){
                             stockOutRequiredSample.setSampleCode(obj[0].toString());
                             stockOutRequiredSample.setSampleType(type);

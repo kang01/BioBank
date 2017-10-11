@@ -161,8 +161,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         if(!stockOutRequirement.getStockOutApply().getStatus().equals(Constants.STOCK_OUT_PENDING)){
             throw new BankServiceException("由于申请的状态已不在进行中，需求不能删除！");
         }
-        //删除需求的样本
-        stockOutRequiredSampleRepository.deleteByStockOutRequirementId(id);
+        if(stockOutRequirement.getImportingFileId()!=null){
+            stockOutFilesRepository.delete(stockOutRequirement.getImportingFileId());
+        }
         //删除核对通过的样本
         stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
 
@@ -263,15 +264,12 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             throw new BankServiceException("申请单的状态不能新增需求！",stockOutApply.getStatus());
         }
         //保存附件
-//        StockOutFiles stockOutFiles = stockOutFilesService.saveFiles(file,request);
         StockOutRequirement requirement = new StockOutRequirement();
 
         if(stockOutRequirement.getId()!=null){
             requirement.setId(stockOutRequirement.getId());
             stockOutRequiredSampleRepository.deleteByStockOutRequirementId(stockOutRequirement.getId());
         }
-        List<StockOutRequiredSample> stockOutRequiredSamples = new ArrayList<StockOutRequiredSample>();
-        List<StockOutRequiredSample> stockOutRequiredSamplesList = new ArrayList<StockOutRequiredSample>();
         Map<String,String> map = new HashMap<>();
         JSONArray jsonArray = new JSONArray();
         try {
@@ -282,26 +280,15 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 Object boxCode =  arrayList.get(0);
                 Object sampleCode =  arrayList.get(1);
                 Object sampleType =  arrayList.get(2);
+                if(sampleType == null){
+                   throw new BankServiceException("冻存盒编码为："+boxCode+"，样本编码为：sampleCode。未指定样本类型！不能上传！");
+                }
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("frozenBoxCode1D",boxCode);
                 jsonObject.put("code",sampleCode);
                 jsonObject.put("type",sampleType);
                 jsonArray.add(jsonObject);
             }
-
-//            InputStream stream = file.getInputStream(); HashSet<String[]> hashSet =  reportExportingService.readRequiredSamplesFromExcelFile(stream);
-//            for(String[] s : hashSet){
-//                String code = s[0];
-//                String type = s[1];
-//                if(map.get(code)!=null){
-//                    continue;
-//                }
-//                map.put(code,type);
-//                JSONObject jsonObject = new JSONObject();
-//                jsonObject.put("code",code);
-//                jsonObject.put("type",type);
-//                jsonArray.add(jsonObject);
-//            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -324,23 +311,36 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 e.printStackTrace();
             }
         }
+        int countOfSample = 0;
+        List<JSONObject> boxCodeList = new ArrayList<JSONObject>();
+
+        for(int i = 0 ; i < jsonArray.size() ; i++){
+            if(jsonArray.get(1)!=null){
+                countOfSample ++ ;
+            }else{
+                boxCodeList.addAll(jsonArray);
+            }
+        }
+        Map<String,List<JSONObject>> mapGroupByType = boxCodeList.stream().collect(Collectors.groupingBy(w->w.getString("type")));
+        for(String key :mapGroupByType.keySet()){
+            List<JSONObject> boxList= mapGroupByType.get(key);
+            List<String> boxCode1DList = new ArrayList<>();
+            boxList.forEach(s->boxCode1DList.add(s.getString("frozenBoxCode1D")));
+            List<List<String>> boxCode1DListEach1000 = Lists.partition(boxCode1DList,1000);
+            for(List<String> code:boxCode1DListEach1000){
+                Long count = frozenTubeRepository.countByFrozenBoxCode1DInAndSampleType(code,key);
+                countOfSample+=count.intValue();
+            }
+        }
         requirement.setStatus(Constants.STOCK_OUT_REQUIREMENT_CKECKING);
         requirement.setStockOutApply(stockOutApply);
         requirement.setRequirementName(stockOutRequirement.getRequirementName());
         requirement.setRequirementCode(bankUtil.getUniqueID("D"));
         requirement.setApplyCode(stockOutApply.getApplyCode());
         requirement.setMemo(stockOutRequirement.getMemo());
-        requirement.setCountOfSample(jsonArray.size());
+        requirement.setCountOfSample(countOfSample);
         requirement.setImportingFileId(stockOutFiles!=null?stockOutFiles.getId():null);
         stockOutRequirementRepository.save(requirement);
-//        if (stockOutRequiredSamples.size() > 0){
-//            stockOutRequiredSampleRepository.save(stockOutRequiredSamples);
-//            stockOutRequiredSamples.clear();
-//        }
-//
-//        requirement.setCountOfSample(stockOutRequiredSamplesList.size());
-//        stockOutRequirement.setCountOfSample(stockOutRequiredSamplesList.size());
-//        stockOutRequirementRepository.save(requirement);
         stockOutRequirementForApply.setId(requirement.getId());
         stockOutRequirementForApply.setCountOfSample(requirement.getCountOfSample());
         stockOutRequirementForApply.setRequirementName(requirement.getRequirementName());
@@ -406,12 +406,12 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 String boxCode1D = jsonArray.get(i).getString("frozenBoxCode1D");
                 stockOutRequiredSample.setFrozenBoxCode1D(boxCode1D);
                 String type = jsonArray.get(i).getString("type");
-                stockOutRequiredSample.setSampleCode(jsonArray.get(i).getString("code"));
+                String sampleCode = jsonArray.get(i).getString("code");
+                stockOutRequiredSample.setSampleCode(sampleCode);
                 stockOutRequiredSample.setSampleType(type);
-                if(!StringUtils.isEmpty(boxCode1D)){
+                if(!StringUtils.isEmpty(boxCode1D) && StringUtils.isEmpty(sampleCode)){
                     stockOutRequiredSampleList.add(stockOutRequiredSample);
                 }else {
-
                     stockOutRequiredSamples.add(stockOutRequiredSample);
                 }
             }
@@ -423,7 +423,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
                 boxCodeListGroupByType.forEach(s->codeList.add(s.getFrozenBoxCode1D()));
                 List<List<String>> boxCodeListEach1000 = Lists.partition(codeList, 1000);
                 for( List<String> code : boxCodeListEach1000){
-                    List<Object[]> sampleList = frozenTubeRepository.findByFrozenBoxCode1DIn(code,type);
+                    List<Object[]> sampleList = frozenTubeRepository.findByFrozenBoxCode1DInAndSampleType(code,type);
                     for(Object[] obj :sampleList){
                         StockOutRequiredSampleDTO stockOutRequiredSample = new StockOutRequiredSampleDTO();
                         if(obj[0] != null){

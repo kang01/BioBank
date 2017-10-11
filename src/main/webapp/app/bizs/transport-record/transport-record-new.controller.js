@@ -400,7 +400,7 @@
 
 
             vm.dtColumns = [
-                DTColumnBuilder.newColumn('frozenBoxId').withOption("width", "50").notSortable().withOption('searchable',false).withTitle('序号'),
+                DTColumnBuilder.newColumn('frozenBoxId').withOption("width", "50").notSortable().withOption('searchable',false).withTitle('#'),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').renderWith(_fnRowRender)
             ];
             vm.dtOptions = DTOptionsBuilder.newOptions()
@@ -498,8 +498,14 @@
 
             }
 
-            function _fnRowRender() {
-
+            function _fnRowRender(data, type, full, meta) {
+                var frozenBoxCode = '';
+                if(full.frozenBoxCode1D){
+                    frozenBoxCode = "1D:"+full.frozenBoxCode1D;
+                }else{
+                    frozenBoxCode = "2D:"+full.frozenBoxCode;
+                }
+                return frozenBoxCode;
             }
 
         }

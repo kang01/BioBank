@@ -48,7 +48,7 @@
             }
         };
         //样本列表
-        vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", 248, 8)
+        vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", 240, 8)
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
                 var data = {};

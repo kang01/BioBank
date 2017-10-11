@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import com.google.common.collect.Lists;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
@@ -34,6 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockOutRequirement.
@@ -89,6 +91,9 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
     @Autowired
     EntityManager entityManager;
+
+    @Autowired
+    FrozenTubeRepository frozenTubeRepository;
 
     public StockOutRequirementServiceImpl(StockOutRequirementRepository stockOutRequirementRepository, StockOutRequirementMapper stockOutRequirementMapper) {
         this.stockOutRequirementRepository = stockOutRequirementRepository;
@@ -269,30 +274,33 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         Map<String,String> map = new HashMap<>();
         JSONArray jsonArray = new JSONArray();
         try {
-            InputStream stream = file.getInputStream(); HashSet<String[]> hashSet =  reportExportingService.readRequiredSamplesFromExcelFile(stream);
-            for(String[] s : hashSet){
-                String code = s[0];
-                String type = s[1];
-                if(map.get(code)!=null){
-                    continue;
-                }
-                map.put(code,type);
+            String filetype=file.getOriginalFilename().split("\\.")[1];//后缀
+            ArrayList<ArrayList<Object>> arrayLists = ExcelUtils.readExcel(filetype,file.getInputStream());
+            List<ArrayList<Object>>  arrayListArrayList = arrayLists.subList(1,arrayLists.size());
+            for(List arrayList :arrayListArrayList){
+                Object boxCode =  arrayList.get(1);
+                Object sampleCode =  arrayList.get(2);
+                Object sampleType =  arrayList.get(3);
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("code",code);
-                jsonObject.put("type",type);
+                jsonObject.put("frozenBoxCode1D",boxCode);
+                jsonObject.put("code",sampleCode);
+                jsonObject.put("type",sampleType);
                 jsonArray.add(jsonObject);
-//                StockOutRequiredSample stockOutRequiredSample = new StockOutRequiredSample();
-//                stockOutRequiredSample.setStatus(Constants.VALID);
-//                stockOutRequiredSample.setSampleCode(code);
-//                stockOutRequiredSample.setSampleType(type);
-//                stockOutRequiredSample.setStockOutRequirement(requirement);
-//                stockOutRequiredSamples.add(stockOutRequiredSample);
-//                stockOutRequiredSamplesList.add(stockOutRequiredSample);
-//                if(stockOutRequiredSamples.size()>=1000){
-//                    stockOutRequiredSampleRepository.save(stockOutRequiredSamples);
-//                    stockOutRequiredSamples.clear();
-//                }
             }
+
+//            InputStream stream = file.getInputStream(); HashSet<String[]> hashSet =  reportExportingService.readRequiredSamplesFromExcelFile(stream);
+//            for(String[] s : hashSet){
+//                String code = s[0];
+//                String type = s[1];
+//                if(map.get(code)!=null){
+//                    continue;
+//                }
+//                map.put(code,type);
+//                JSONObject jsonObject = new JSONObject();
+//                jsonObject.put("code",code);
+//                jsonObject.put("type",type);
+//                jsonArray.add(jsonObject);
+//            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -391,11 +399,38 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(stockOutRequirement.getImportingFileId());
             String fileContent = stockOutFiles.getFileContent();
             List<JSONObject> jsonArray = JSONArray.fromObject(fileContent);
+            List<StockOutRequiredSample> stockOutRequiredSampleList = new ArrayList<>();
             for(int i=0;i<jsonArray.size();i++){
                 StockOutRequiredSample stockOutRequiredSample = new StockOutRequiredSample();
-                stockOutRequiredSample.setSampleCode(jsonArray.get(i).getString("code"));
-                stockOutRequiredSample.setSampleType(jsonArray.get(i).getString("type"));
-                stockOutRequiredSamples.add(stockOutRequiredSample);
+                String boxCode1D = jsonArray.get(i).getString("frozenBoxCode1D");
+                stockOutRequiredSample.setFrozenBoxCode1D(boxCode1D);
+                String type = jsonArray.get(i).getString("type");
+                if(!StringUtils.isEmpty(boxCode1D)){
+                    stockOutRequiredSampleList.add(stockOutRequiredSample);
+                }else {
+                    stockOutRequiredSample.setSampleCode(jsonArray.get(i).getString("code"));
+                    stockOutRequiredSample.setSampleType(type);
+                    stockOutRequiredSamples.add(stockOutRequiredSample);
+                }
+            }
+            Map<String, List<StockOutRequiredSample>> boxListGroupByType =
+                stockOutRequiredSampleList.stream().collect(Collectors.groupingBy(w -> w.getSampleType()));
+            for(String type :boxListGroupByType.keySet()){
+                List<StockOutRequiredSample> boxCodeListGroupByType = boxListGroupByType.get(type);
+                List<String> codeList = new ArrayList<>();
+                boxCodeListGroupByType.forEach(s->codeList.add(s.getFrozenBoxCode1D()));
+                List<List<String>> boxCodeListEach1000 = Lists.partition(codeList, 1000);
+                for( List<String> code : boxCodeListEach1000){
+                    List<Object[]> sampleList = frozenTubeRepository.findByFrozenBoxCode1DIn(code,type);
+                    for(Object[] obj :sampleList){
+                        StockOutRequiredSample stockOutRequiredSample = new StockOutRequiredSample();
+                        if(obj[0] != null){
+                            stockOutRequiredSample.setSampleCode(obj[0].toString());
+                            stockOutRequiredSample.setSampleType(type);
+                            stockOutRequiredSamples.add(stockOutRequiredSample);
+                        }
+                    }
+                }
             }
             //核对导入指定样本
             status = stockOutReqFrozenTubeService.checkStockOutSampleByAppointedSample(stockOutRequiredSamples,stockOutRequirement);

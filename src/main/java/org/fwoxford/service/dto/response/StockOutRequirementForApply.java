@@ -61,7 +61,7 @@ public class StockOutRequirementForApply {
      */
     private Long frozenTubeTypeId;
     /**
-     * 指定的样本：code+类型，如：1234567890-血浆，1234567891-血清
+     * 指定的样本：code+类型，如：1234567890-A，1234567891-F
      */
     private String samples;
 

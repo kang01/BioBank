@@ -163,7 +163,7 @@ public class StockOutRequirementResource {
     }
 
     /**
-     * 导入样本
+     * 上传出库需求样本
      * @param stockOutApplyId
      * @param stockOutRequirement
      * @param file

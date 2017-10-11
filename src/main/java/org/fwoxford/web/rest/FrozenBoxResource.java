@@ -29,6 +29,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -321,7 +322,9 @@ public class FrozenBoxResource {
     @GetMapping("/frozen-boxes/{projectId}/{sampleTypeId}/{sampleClassId}/makeNewBoxCode")
     public ResponseEntity getNewBoxCode(@PathVariable Long projectId, @PathVariable Long sampleTypeId, @PathVariable Long sampleClassId) {
         log.debug("REST request to get newest frozen box code : {}", projectId + "/" + sampleTypeId + "/" + sampleClassId);
-        String res = frozenBoxService.makeNewFrozenBoxCode(projectId, sampleTypeId, sampleClassId);
+        String newCode = frozenBoxService.makeNewFrozenBoxCode(projectId, sampleTypeId, sampleClassId);
+        HashMap<String, String> res = new HashMap<>();
+        res.put("code", newCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 
@@ -334,7 +337,10 @@ public class FrozenBoxResource {
     @GetMapping("/frozen-boxes/{projectId}/{sampleTypeId}/makeNewBoxCode")
     public ResponseEntity getNewBoxCode(@PathVariable Long projectId, @PathVariable Long sampleTypeId) {
         log.debug("REST request to get newest frozen box code : {}", projectId + "/" + sampleTypeId);
-        String res = frozenBoxService.makeNewFrozenBoxCode(projectId, sampleTypeId, null);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+        String newCode = frozenBoxService.makeNewFrozenBoxCode(projectId, sampleTypeId, null);
+        HashMap<String, String> res = new HashMap<>();
+        res.put("code", newCode);
+        return ResponseEntity.ok(res);
+//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 }

@@ -2,6 +2,7 @@ package org.fwoxford.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
+import net.sf.json.JSONArray;
 import org.fwoxford.service.StockOutRequiredSampleService;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
@@ -149,5 +150,16 @@ public class StockOutRequiredSampleResource {
         input.addColumn("id",true,true,null);
         input.addOrder("id",true);
         return stockOutRequiredSampleService.getPageStockOutRequiredSampleByRequired(input,id);
+    }
+
+    /**
+     * 获取上传的出库需求详情
+     * @param requirementId 需求ID
+     * @return
+     */
+    @GetMapping("/stock-out-requirements/getRequiredSamples/{requirementId}")
+    @Timed
+    public JSONArray getRequiredSamples(@PathVariable Long requirementId) {
+        return stockOutRequiredSampleService.getRequiredSamples(requirementId);
     }
 }

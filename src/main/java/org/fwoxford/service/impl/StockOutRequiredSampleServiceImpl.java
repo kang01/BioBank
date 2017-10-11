@@ -1,13 +1,19 @@
 package org.fwoxford.service.impl;
 
+import net.sf.json.JSONArray;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.fwoxford.config.Constants;
+import org.fwoxford.domain.StockOutFiles;
+import org.fwoxford.domain.StockOutRequirement;
+import org.fwoxford.repository.StockOutFilesRepository;
 import org.fwoxford.repository.StockOutRequiredSampleRepositories;
+import org.fwoxford.repository.StockOutRequirementRepository;
 import org.fwoxford.service.StockOutRequiredSampleService;
 import org.fwoxford.domain.StockOutRequiredSample;
 import org.fwoxford.repository.StockOutRequiredSampleRepository;
 import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
 import org.fwoxford.service.mapper.StockOutRequiredSampleMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +44,11 @@ public class StockOutRequiredSampleServiceImpl implements StockOutRequiredSample
     private final StockOutRequiredSampleMapper stockOutRequiredSampleMapper;
     @Autowired
     private StockOutRequiredSampleRepositories stockOutRequiredSampleRepositories;
+
+    @Autowired
+    private StockOutRequirementRepository stockOutRequirementRepository;
+    @Autowired
+    private StockOutFilesRepository stockOutFilesRepository;
 
     public StockOutRequiredSampleServiceImpl(StockOutRequiredSampleRepository stockOutRequiredSampleRepository, StockOutRequiredSampleMapper stockOutRequiredSampleMapper) {
         this.stockOutRequiredSampleRepository = stockOutRequiredSampleRepository;
@@ -117,5 +128,21 @@ public class StockOutRequiredSampleServiceImpl implements StockOutRequiredSample
     public Page<StockOutRequiredSampleDTO> getAllStockOutRequiredSamplesByRequirementId(Pageable pageable, Long id) {
         Page<StockOutRequiredSample> result = stockOutRequiredSampleRepository.findAllByStockOutRequirementId(id,pageable);
         return result.map(stockOutRequiredSample -> stockOutRequiredSampleMapper.stockOutRequiredSampleToStockOutRequiredSampleDTO(stockOutRequiredSample));
+    }
+
+    @Override
+    public JSONArray getRequiredSamples(Long id) {
+        JSONArray jsonArray = new JSONArray();
+        StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(id);
+        if(stockOutRequirement == null){
+            throw new BankServiceException("未查询到需求！");
+        }
+
+        if(stockOutRequirement.getImportingFileId()!=null) {
+            StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(stockOutRequirement.getImportingFileId());
+            String fileContent = stockOutFiles.getFileContent();
+            jsonArray = JSONArray.fromObject(fileContent);
+        }
+        return jsonArray;
     }
 }

@@ -271,7 +271,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             stockOutRequiredSampleRepository.deleteByStockOutRequirementId(stockOutRequirement.getId());
         }
         Map<String,String> map = new HashMap<>();
-        JSONArray jsonArray = new JSONArray();
+        List<JSONObject> jsonArray = new ArrayList<>();
         try {
             String filetype=file.getOriginalFilename().split("\\.")[1];//后缀
             ArrayList<ArrayList<Object>> arrayLists = ExcelUtils.readExcel(filetype,file.getInputStream());
@@ -315,10 +315,10 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         List<JSONObject> boxCodeList = new ArrayList<JSONObject>();
 
         for(int i = 0 ; i < jsonArray.size() ; i++){
-            if(jsonArray.get(1)!=null){
+            if(jsonArray.get(i).get("code")!=null&&!jsonArray.get(i).get("code").equals("")){
                 countOfSample ++ ;
             }else{
-                boxCodeList.addAll(jsonArray);
+                boxCodeList.add(jsonArray.get(i));
             }
         }
         Map<String,List<JSONObject>> mapGroupByType = boxCodeList.stream().collect(Collectors.groupingBy(w->w.getString("type")));
@@ -455,11 +455,12 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             throw new BankServiceException("未查询到样本需求！");
         }
 //        List<StockOutReqFrozenTube> stockOutRequiredSamples = stockOutReqFrozenTubeRepository.findByStockOutRequirementId(id);
-        int countOfStockOutSample = stockOutReqFrozenTubeRepository.countByStockOutRequirementId(id);
+//        int countOfStockOutSample = stockOutReqFrozenTubeRepository.countByStockOutRequirementId(id);
 
         details.setId(id);
         details.setSex(stockOutRequirement.getSex());
-        details.setCountOfStockOutSample(countOfStockOutSample);
+//        details.setCountOfStockOutSample(countOfStockOutSample);
+        details.setCountOfStockOutSample(stockOutRequirement.getCountOfSampleReal());
         details.setCountOfSample(stockOutRequirement.getCountOfSample());
         details.setMemo(stockOutRequirement.getMemo());
         if(stockOutRequirement.getAgeMin() != null)

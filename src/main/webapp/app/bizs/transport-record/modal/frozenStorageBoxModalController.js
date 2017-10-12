@@ -147,7 +147,7 @@
             .withOption('sorting', false)
             .withScroller()
             .withOption('deferRender', true)
-            .withOption('scrollY', 220);
+            .withOption('scrollY', 260);
         vm.dtColumns = [
             DTColumnBuilder.newColumn(0).withOption("width", "auto"),
             DTColumnBuilder.newColumn(1).withOption("width", "auto"),

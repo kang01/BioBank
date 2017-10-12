@@ -8,9 +8,9 @@
         .module('bioBankApp')
         .controller('AddBoxModalController', AddBoxModalController);
 
-    AddBoxModalController.$inject = ['$scope','$uibModalInstance','$uibModal','items','AlertService','FrozenBoxTypesService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxCodeIsRepeatService','SampleTypeService'];
+    AddBoxModalController.$inject = ['$scope','$uibModalInstance','toastr','StockInInputService','items','AlertService','FrozenBoxTypesService','EquipmentAllService','AreasByEquipmentIdService','SupportacksByAreaIdService','BoxCodeIsRepeatService','SampleTypeService'];
 
-    function AddBoxModalController($scope,$uibModalInstance,$uibModal,items,AlertService,FrozenBoxTypesService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxCodeIsRepeatService,SampleTypeService) {
+    function AddBoxModalController($scope,$uibModalInstance,toastr,StockInInputService,items,AlertService,FrozenBoxTypesService,EquipmentAllService,AreasByEquipmentIdService,SupportacksByAreaIdService,BoxCodeIsRepeatService,SampleTypeService) {
         var vm = this;
         vm.createBoxflag = false;
         var boxes = items.incompleteBoxes;
@@ -501,6 +501,18 @@
         vm.no = function () {
             $uibModalInstance.dismiss('cancel');
         };
+
+        //生成新的冻存盒号
+        vm.makeNewBoxCode = _fnMakeNewBoxCode;
+
+        function _fnMakeNewBoxCode() {
+            StockInInputService.makeNewBoxCode(projectId,vm.box.sampleTypeId,vm.box.sampleClassificationId).success(function (data) {
+                vm.box.frozenBoxCode = data.code;
+            }).error(function (data) {
+                toastr.error(data.message);
+                vm.box.frozenBoxCode = "";
+            })
+        }
 
     }
 })();

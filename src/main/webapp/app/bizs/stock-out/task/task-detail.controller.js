@@ -10,9 +10,9 @@
         .controller('TaskDetailController', TaskDetailController)
         .controller('AffirmModalController', AffirmModalController);
 
-    TaskDetailController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','Principal','DTOptionsBuilder','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService','BioBankDataTable'];
+    TaskDetailController.$inject = ['$scope','$state','$compile','$stateParams','$uibModal','hotRegisterer','Principal','$interval','DTColumnBuilder','TaskService','SampleUserService','MasterData','BioBankBlockUi','toastr','SampleService','BioBankDataTable'];
     AffirmModalController.$inject = ['$uibModalInstance','items'];
-    function TaskDetailController($scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,Principal,DTOptionsBuilder,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService,BioBankDataTable) {
+    function TaskDetailController($scope,$state,$compile,$stateParams,$uibModal,hotRegisterer,Principal,$interval,DTColumnBuilder,TaskService,SampleUserService,MasterData,BioBankBlockUi,toastr,SampleService,BioBankDataTable) {
         var vm = this;
         var modalInstance;
         vm.boxInstance = {};
@@ -123,7 +123,7 @@
         //开始任务计时器
         var taskTimer;
         function startTimer() {
-             taskTimer = setInterval(function(){
+            taskTimer = $interval(function() {
                 TaskService.taskTimer(vm.taskId).then(function (res) {
                     vm.usedTime = (res.data.usedTime/60).toFixed(1);
                     if(vm.usedTime < 1){
@@ -132,12 +132,23 @@
                         vm.usedTime = vm.usedTime + "小时"
                     }
                 });
-            },90000);
+            }, 90000);
+            //  taskTimer = setInterval(function(){
+            //     TaskService.taskTimer(vm.taskId).then(function (res) {
+            //         vm.usedTime = (res.data.usedTime/60).toFixed(1);
+            //         if(vm.usedTime < 1){
+            //             vm.usedTime = "小于1小时"
+            //         }else{
+            //             vm.usedTime = vm.usedTime + "小时"
+            //         }
+            //     });
+            // },90000);
         }
 
 
         $scope.$on('$destroy',function(event,toState,toParams,fromState,fromParams){
-            window.clearInterval(taskTimer);
+            // window.clearInterval(taskTimer);
+            $interval.cancel(taskTimer);
         });
         vm.close = function () {
             $state.go('task-list');

@@ -81,7 +81,7 @@
             });
         }
         function _fnCreatedRow(row, data, dataIndex) {
-            var transportCodes = _.replace(data.transhipCode, /,/g, ', ');;
+            var transportCodes = _.replace(data.transhipCode, /,/g, ', ');
 
             var status = '';
             switch (data.status){
@@ -90,7 +90,9 @@
                 case '7090': status = '已作废'; break;
             }
             $('td:eq(1)', row).html(transportCodes);
-            $("td:eq(6)", row).text([data.storeKeeper1, data.storeKeeper2].join("; "));
+            if(data.storeKeeper2){
+                $("td:eq(6)", row).text([data.storeKeeper1, data.storeKeeper2].join(";"));
+            }
             $('td:eq(9)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }

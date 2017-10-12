@@ -5,35 +5,35 @@
 <div class="modal-body add-sample-modal-body" id="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <div class="no-padding">
+            <div class="no-padding" style="height: 400px;overflow: auto">
                 <!--<table datatable="" dt-options="vm.dtOptions" dt-columns="vm.dtColumns" dt-instance="vm.dtInstance" class=" table table-striped table-bordered"></table>-->
-                <table class="table table-bordered table-striped mb-0">
+                <table class="table table-bordered table-striped mb-0 sample-desc">
                     <thead>
                         <tr>
                             <th>
-                                <div class="col-md-3">序号</div>
-                                <div class="col-md-3">冻存盒编码</div>
+                                <div class="col-md-2">#</div>
+                                <div class="col-md-3 pl-0">冻存盒编码</div>
                                 <div class="col-md-3">样本编码</div>
                                 <div class="col-md-3">样本类型</div>
                             </th>
                             <th>
-                                <div class="col-md-3">序号</div>
-                                <div class="col-md-3">冻存盒编码</div>
+                                <div class="col-md-2">#</div>
+                                <div class="col-md-3 pl-0">冻存盒编码</div>
                                 <div class="col-md-3">样本编码</div>
                                 <div class="col-md-3">样本类型</div>
                             </th>
                         </tr>
                     </thead>
                     <tbody >
-                        <tr  ng-repeat="item in vm.samples">
-                            <td ng-repeat="item1 in item  ">
-                                <div class="col-md-3">{{item1.id}}</div>
-                                <div class="col-md-3">{{item1.code}}</div>
-                                <div class="col-md-3">{{item1.frozenBoxCode1D}}</div>
-                                <div class="col-md-3">{{item1.type}}</div>
-                            </td>
-                            <!--<td>{{item1.sampleType}}</td>-->
-                        </tr>
+                        <!--<tr  ng-repeat="item in vm.samples">-->
+                            <!--<td ng-repeat="item1 in item  ">-->
+                                <!--<div class="col-md-3">{{item1.id}}</div>-->
+                                <!--<div class="col-md-3">{{item1.code}}</div>-->
+                                <!--<div class="col-md-3">{{item1.frozenBoxCode1D}}</div>-->
+                                <!--<div class="col-md-3">{{item1.type}}</div>-->
+                            <!--</td>-->
+                            <!--&lt;!&ndash;<td>{{item1.sampleType}}</td>&ndash;&gt;-->
+                        <!--</tr>-->
                     </tbody>
                 </table>
                 <!--<div class="row">-->

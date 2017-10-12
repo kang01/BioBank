@@ -28,6 +28,30 @@
                     data[i].id = i+1;
                 }
                 vm.samples = _.chunk(data,2);
+
+                for(var m = 0; m < vm.samples.length; m++){
+                    var $tr = $("<tr>");
+
+                    for(var n = 0; n < vm.samples[m].length; n++){
+                        var $td = $("<td>");
+                        var $id = $('<div class="col-md-2"></div>');
+                        var $code = $('<div class="col-md-3 pl-0"></div>');
+                        var $frozenBoxCode1D = $('<div class="col-md-3"></div>');
+                        var $type = $('<div class="col-md-3"></div>');
+                        $id.text(vm.samples[m][n].id);
+                        $code.text(vm.samples[m][n].code);
+                        $frozenBoxCode1D.text(vm.samples[m][n].frozenBoxCode1D);
+                        $type.text(vm.samples[m][n].type);
+                        $id.appendTo($td);
+                        $code.appendTo($td);
+                        $frozenBoxCode1D.appendTo($td);
+                        $type.appendTo($td);
+                        $td.appendTo($tr);
+                    }
+
+                    $(".sample-desc tbody").append($tr);
+                }
+
             }).error(function (data) {
 
             });

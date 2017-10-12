@@ -22,7 +22,8 @@
             //获取盒子
             function _fnLoadBox() {
                 StockInBoxService.getBoxesNoPage(vm.stockIn.stockInCode).then(function (res) {
-                    _fnQueryBoxes(res.data)
+                    var boxArray = _.orderBy(res.data, ['status'], ['desc']);
+                    _fnQueryBoxes(boxArray)
                 });
             }
             //获取盒子跟管子
@@ -45,6 +46,7 @@
 
                             });
                             // vm.boxList = boxesDetail;
+
                             createBoxDom(boxesDetail)
                         });
                         querys = [];

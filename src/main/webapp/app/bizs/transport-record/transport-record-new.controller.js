@@ -21,15 +21,18 @@
         var modalInstance;
         var vm = this;
         vm.transportRecord = entity; //转运记录
+        vm.box = {};
         //生成新的冻存盒号
         vm.makeNewBoxCode = _fnMakeNewBoxCode;
-
+        //
+        vm.makeNewBoxCodeFlag = false;
         function _fnMakeNewBoxCode() {
             if(!vm.box){
                 return;
             }
             StockInInputService.makeNewBoxCode(vm.transportRecord.projectId,vm.box.sampleTypeId,vm.box.sampleClassificationId).success(function (data) {
                 vm.box.frozenBoxCode = data.code;
+                vm.makeNewBoxCodeFlag = true;
             }).error(function (data) {
                 toastr.error(data.message);
             })
@@ -326,6 +329,9 @@
             function _fnQueryProjectSampleClass(projectId,sampleTypeId,isMixed) {
                 SampleTypeService.queryProjectSampleClasses(projectId,sampleTypeId).success(function (data) {
                     vm.projectSampleTypeOptions = data;
+                    vm.box.sampleClassificationId = null;
+                    vm.box.sampleClassificationCode = null;
+                    vm.box.sampleClassificationName = null;
                     //是否混合类型 1：是混合类型
                     if(isMixed == 1){
                         vm.box.isSplit = 1;
@@ -364,6 +370,8 @@
 
                         if(vm.projectSampleTypeOptions.length){
                             vm.box.sampleClassificationId = vm.projectSampleTypeOptions[0].sampleClassificationId;
+                            vm.box.sampleClassificationCode = vm.projectSampleTypeOptions[0].sampleClassificationCode;
+                            vm.box.sampleClassificationName = vm.projectSampleTypeOptions[0].sampleClassificationName;
                             vm.box.sampleClassification = vm.projectSampleTypeOptions[0];
                         }
                         for (var i = 0; i < vm.frozenTubeArray.length; i++) {
@@ -472,7 +480,7 @@
                         someClickHandler(tr,oData);
                     });
                 });
-                if (vm.box && vm.box.frozenBoxCode == oData.frozenBoxCode){
+                if (vm.rowBoxCode == oData.frozenBoxCode){
                     $(nRow).addClass('rowLight');
                 }
                 return nRow;
@@ -480,6 +488,7 @@
 
             //点击冻存盒行
             function someClickHandler(tr,boxInfo) {
+                vm.makeNewBoxCodeFlag = false;
                 vm.flagStatus = false;
                 vm.rowBoxCode = boxInfo.frozenBoxCode;
                 vm.strbox = JSON.stringify(vm.createBoxDataFromTubesTable());
@@ -1135,6 +1144,7 @@
                 onChange:function (value) {
                     vm.box.sampleTypeId = value;
                     vm.box.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
+                    vm.box.sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeName;
                     var isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
                     var sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
                     vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value,isMixed);
@@ -1159,13 +1169,15 @@
                 maxItems: 1,
                 onChange:function (value) {
                     vm.box.sampleClassificationId = value;
+                    vm.box.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{"sampleClassificationId":+value}).sampleClassificationCode;
+                    vm.box.sampleClassificationName = _.find(vm.projectSampleTypeOptions,{"sampleClassificationId":+value}).sampleClassificationName;
                     for (var i = 0; i < vm.frozenTubeArray.length; i++) {
                         for (var j = 0; j < vm.frozenTubeArray[i].length; j++) {
                             vm.frozenTubeArray[i][j].sampleClassificationId = vm.box.sampleClassificationId;
                         }
                     }
                     for(var m = 0; m < vm.box.frozenTubeDTOS.length; m++){
-                        vm.box.frozenTubeDTOS[m].sampleClassification.id = vm.box.sampleClassificationId;
+                        vm.box.frozenTubeDTOS[m].sampleClassificationId = vm.box.sampleClassificationId;
                     }
                     hotRegisterer.getInstance('my-handsontable').render();
                 }
@@ -1279,10 +1291,15 @@
                 function onSaveBoxSuccess(res) {
                     if(!vm.saveStockInFlag && !vm.saveRecordFlag){
                         toastr.success("保存盒子成功！");
+                        vm.dtInstance.rerender();
+                        if(vm.makeNewBoxCodeFlag){
+                            vm.rowBoxCode = vm.box.frozenBoxCode;
+                        }
                         if(vm.rowBoxCode){
                             frozenBoxByCodeService.get({code:vm.rowBoxCode},vm.onFrozenSuccess,onError);
                         }
                         vm.queryTransportRecord();
+
 
                     }
                     BioBankBlockUi.blockUiStop();

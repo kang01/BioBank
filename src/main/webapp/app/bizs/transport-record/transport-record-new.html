@@ -259,7 +259,7 @@
                             </ul>
                         </div>
                         <div class="col-md-5 text-right mt-10 " ng-show="vm.transportRecord.transhipState == '1001'">
-                            <button type="button" class="btn btn-default btn-xs btn-primary" ng-click="vm.saveBox()" ng-disabled="!vm.box.frozenBoxCode || !vm.box.frozenBoxTypeId || !vm.box.sampleTypeId || !vm.box.sampleClassificationId">
+                            <button type="button" class="btn btn-default btn-xs btn-primary" ng-click="vm.saveBox()" ng-disabled="!vm.box.frozenBoxCode || !vm.box.frozenBoxTypeId || !vm.box.sampleTypeId">
                                 保　　存
                             </button>
                             <button type="button" class="btn btn-default btn-xs btn-danger" ng-click="vm.delBox()" ng-disabled="!vm.box">
@@ -319,7 +319,7 @@
                                     </label>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label>样本分类<span class="required-field"></span></label>
+                                    <label>样本分类</label>
                                     <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
                                                ng-model="vm.box.sampleClassificationId"
                                                ng-disabled="!vm.box || vm.sampleClassFlag"></selectize>

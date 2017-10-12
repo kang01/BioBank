@@ -445,6 +445,9 @@
                 .withOption('createdRow', _fnCreatedRow)
                 .withOption('headerCallback', function(header) {
                     $compile(angular.element(header).contents())($scope);
+                })
+                .withOption('drawCallback',function () {
+                    $(".dataTables_scrollBody")[0].style.height = 'auto';
                 });
 
 
@@ -1108,7 +1111,7 @@
                 hotRegisterer.getInstance('my-handsontable').render();
             });
         }
-        //取未装满的盒子
+        //未满冻存盒
         function _fnIncompleteBox() {
             vm.incompleteBoxesList = [];
             IncompleteBoxService.query({frozenBoxCode:vm.box.frozenBoxCode,stockInCode:vm.entity.stockInCode},onIncompleteBoxesSuccess,onError);
@@ -1169,6 +1172,7 @@
                 obj[code] = _.orderBy(obj[code],'tubesLen','asc');
                 vm.incompleteBoxesList.push(obj[code][0])
             }
+            vm.incompleteBoxesList  = _.orderBy(vm.incompleteBoxesList, ['sampleTypeCode'], ['asc']);
             setTimeout(function () {
                 document.body.scrollTop = document.body.scrollHeight  - window.innerHeight;
             },300);
@@ -1565,6 +1569,7 @@
                         tubeList = [];
                         vm.frozenBoxCode = "";
                         $(".box-selected").removeClass("box-selected");
+                        vm.incompleteBoxesList  = _.orderBy(vm.incompleteBoxesList, ['sampleTypeCode'], ['asc']);
                     }
                 }else{
 

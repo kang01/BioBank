@@ -178,7 +178,7 @@
             }
             if(vm.selectBox.frozenTubeDTOS.length){
                 var len = vm.selectBox.frozenTubeDTOS.length-1;
-                _.orderBy(vm.selectBox.frozenTubeDTOS, ['tubeRows'], ['esc']);
+                _.orderBy(vm.selectBox.frozenTubeDTOS, ['tubeRows'], ['asc']);
                 vm.pos = vm.selectBox.frozenTubeDTOS[len].tubeRows + (+vm.selectBox.frozenTubeDTOS[len].tubeColumns+1);
             }else{
                 vm.pos = "A1";

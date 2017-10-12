@@ -1,13 +1,17 @@
 package org.fwoxford.service.impl;
 
 import org.fwoxford.config.Constants;
+import org.fwoxford.domain.StockOutRequirement;
+import org.fwoxford.repository.StockOutRequirementRepository;
 import org.fwoxford.service.StockOutFilesService;
 import org.fwoxford.domain.StockOutFiles;
 import org.fwoxford.repository.StockOutFilesRepository;
 import org.fwoxford.service.dto.StockOutFilesDTO;
 import org.fwoxford.service.mapper.StockOutFilesMapper;
+import org.fwoxford.web.rest.errors.BankServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +36,9 @@ public class StockOutFilesServiceImpl implements StockOutFilesService{
     private final StockOutFilesRepository stockOutFilesRepository;
 
     private final StockOutFilesMapper stockOutFilesMapper;
+
+    @Autowired
+    StockOutRequirementRepository stockOutRequirementRepository;
 
     public StockOutFilesServiceImpl(StockOutFilesRepository stockOutFilesRepository, StockOutFilesMapper stockOutFilesMapper) {
         this.stockOutFilesRepository = stockOutFilesRepository;
@@ -114,5 +121,20 @@ public class StockOutFilesServiceImpl implements StockOutFilesService{
             }
         }
         return stockOutFiles;
+    }
+
+    @Override
+    public StockOutFilesDTO findByRequirement(Long requirementId) {
+        StockOutFilesDTO stockOutFilesDTO = new StockOutFilesDTO();
+        StockOutRequirement stockOutRequirement = stockOutRequirementRepository.findOne(requirementId);
+        if(stockOutRequirement == null){
+            throw new BankServiceException("未查询到需求！");
+        }
+
+        if(stockOutRequirement.getImportingFileId()!=null) {
+            StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(stockOutRequirement.getImportingFileId());
+            stockOutFilesDTO = stockOutFilesMapper.stockOutFilesToStockOutFilesDTO(stockOutFiles);
+        }
+        return stockOutFilesDTO;
     }
 }

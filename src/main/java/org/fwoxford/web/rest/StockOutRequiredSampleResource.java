@@ -3,7 +3,10 @@ package org.fwoxford.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import net.sf.json.JSONArray;
+import org.fwoxford.domain.StockOutFiles;
+import org.fwoxford.service.StockOutFilesService;
 import org.fwoxford.service.StockOutRequiredSampleService;
+import org.fwoxford.service.dto.StockOutFilesDTO;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.fwoxford.service.dto.StockOutRequiredSampleDTO;
@@ -11,6 +14,7 @@ import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -22,8 +26,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +50,9 @@ public class StockOutRequiredSampleResource {
     private static final String ENTITY_NAME = "stockOutRequiredSample";
 
     private final StockOutRequiredSampleService stockOutRequiredSampleService;
+
+    @Autowired
+    StockOutFilesService stockOutFilesService;
 
     public StockOutRequiredSampleResource(StockOutRequiredSampleService stockOutRequiredSampleService) {
         this.stockOutRequiredSampleService = stockOutRequiredSampleService;
@@ -157,9 +169,33 @@ public class StockOutRequiredSampleResource {
      * @param requirementId 需求ID
      * @return
      */
-    @GetMapping("/stock-out-required-samples/requirement/{requirementId}")
+    @RequestMapping(value = "/stock-out-required-samples/requirement/{requirementId}",method = RequestMethod.GET,
+        produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+//    public JSONArray getRequiredSamples(@PathVariable Long requirementId) {
+//        return stockOutRequiredSampleService.getRequiredSamples(requirementId);
+//    }
     @Timed
-    public JSONArray getRequiredSamples(@PathVariable Long requirementId) {
-        return stockOutRequiredSampleService.getRequiredSamples(requirementId);
+    public ResponseEntity getRequiredSamples(@PathVariable Long requirementId) throws URISyntaxException {
+
+        try {
+            StockOutFilesDTO stockOutFiles = stockOutFilesService.findByRequirement(requirementId);
+            byte[] fileInByte = stockOutFiles.getFiles();
+            final HttpHeaders headers = new HttpHeaders();
+            String fileReportName = stockOutFiles.getFileName();
+            headers.setContentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.set("Content-disposition", "attachment; filename="+ URLEncoder.encode(fileReportName, "UTF-8"));
+
+//            File dir = new File(".");
+//            OutputStream ofs = null;
+//            ofs = new FileOutputStream(dir.getCanonicalPath() + "/" + result.hashCode() + ".xlsx");
+//            result.writeTo(ofs);
+//
+//            ofs.close();
+
+            return new ResponseEntity(fileInByte, headers, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

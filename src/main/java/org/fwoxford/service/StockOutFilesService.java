@@ -46,4 +46,6 @@ public interface StockOutFilesService {
     void delete(Long id);
 
     StockOutFiles saveFiles(MultipartFile file, HttpServletRequest request);
+
+    StockOutFilesDTO findByRequirement(Long requirementId);
 }

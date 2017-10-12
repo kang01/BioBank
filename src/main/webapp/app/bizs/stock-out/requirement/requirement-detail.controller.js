@@ -484,24 +484,25 @@
         }
         //指定样本编码
         function _fnAppointDescSample(requirementId) {
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-appoint-sample-desc-modal.html',
-                controller: 'RequirementAppointSampleDescModalController',
-                controllerAs:'vm',
-                size:'lg',
-                resolve: {
-                    items: function () {
-                        return {
-                            sampleRequirementId:requirementId
-                        };
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (data) {
-
-            });
+            window.open ('api/stock-out-required-samples/requirement/'+requirementId);
+            // modalInstance = $uibModal.open({
+            //     animation: true,
+            //     templateUrl: 'app/bizs/stock-out/requirement/modal/requirement-appoint-sample-desc-modal.html',
+            //     controller: 'RequirementAppointSampleDescModalController',
+            //     controllerAs:'vm',
+            //     size:'lg',
+            //     resolve: {
+            //         items: function () {
+            //             return {
+            //                 sampleRequirementId:requirementId
+            //             };
+            //         }
+            //     }
+            // });
+            //
+            // modalInstance.result.then(function (data) {
+            //
+            // });
         }
         //---------------------------弹出框--------------------------
 

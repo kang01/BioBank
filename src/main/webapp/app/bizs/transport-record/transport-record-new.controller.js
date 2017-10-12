@@ -212,6 +212,7 @@
                     vm.saveStockInFlag = true;
                     importBoxFlag = false;
                     vm.saveRecord(transportRecord);
+                    vm.saveBox();
 
                 });
 

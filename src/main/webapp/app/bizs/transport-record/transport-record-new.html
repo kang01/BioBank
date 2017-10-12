@@ -259,7 +259,7 @@
                             </ul>
                         </div>
                         <div class="col-md-5 text-right mt-10 " ng-show="vm.transportRecord.transhipState == '1001'">
-                            <button type="button" class="btn btn-default btn-xs btn-primary" ng-click="vm.saveBox()" ng-disabled="!vm.box">
+                            <button type="button" class="btn btn-default btn-xs btn-primary" ng-click="vm.saveBox()" ng-disabled="!vm.box.frozenBoxCode || !vm.box.frozenBoxTypeId || !vm.box.sampleTypeId || !vm.box.sampleClassificationId">
                                 保　　存
                             </button>
                             <button type="button" class="btn btn-default btn-xs btn-danger" ng-click="vm.delBox()" ng-disabled="!vm.box">
@@ -288,12 +288,12 @@
                         <div class="col-md-3 pr-0 pl-20">
                             <div class="row">
                                 <div class="form-group col-md-6 pr-0">
-                                    <label><span class="required-field"></span>一维编码</label>
+                                    <label>一维编码</label>
                                     <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode1D"   ng-disabled="!vm.box" required
                                     >
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label><span class="required-field"></span>冻存盒号</label>
+                                    <label>冻存盒号<span class="required-field"></span></label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" ng-model="vm.box.frozenBoxCode"   ng-disabled="!vm.box" required>
                                         <div class="input-group-addon" ng-click="vm.makeNewBoxCode()">生成</div>
@@ -302,7 +302,7 @@
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-6 pr-0">
-                                    <label><span class="required-field"></span>盒类型</label>
+                                    <label>盒类型<span class="required-field"></span></label>
                                     <selectize options='vm.frozenBoxTypeOptions' config="vm.boxTypeConfig"
                                                ng-model="vm.box.frozenBoxTypeId" ng-disabled="!vm.box"></selectize>
                                 </div>
@@ -310,7 +310,7 @@
                             <div class="row">
 
                                 <div class="form-group col-md-6 pr-0">
-                                    <label><span class="required-field"></span>样本类型</label>
+                                    <label>样本类型<span class="required-field"></span></label>
                                     <selectize options='vm.sampleTypeOptions' config="vm.sampleTypeConfig"
                                                ng-model="vm.box.sampleTypeId" ng-disabled="!vm.box"></selectize>
                                     <label class="checkbox-inline pb-10">
@@ -319,7 +319,7 @@
                                     </label>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label><span class="required-field"></span>样本分类</label>
+                                    <label>样本分类<span class="required-field"></span></label>
                                     <selectize options='vm.projectSampleTypeOptions' config="vm.projectSampleTypeConfig"
                                                ng-model="vm.box.sampleClassificationId"
                                                ng-disabled="!vm.box || vm.sampleClassFlag"></selectize>
@@ -329,7 +329,7 @@
                             <div class="row">
                                 <div class="form-group col-md-12">
                                     <label class="control-label">
-                                        <span class="required-field"></span>
+
                                         存储位置
                                     </label>
                                     <div class="">

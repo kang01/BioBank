@@ -165,7 +165,12 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             stockOutFilesRepository.delete(stockOutRequirement.getImportingFileId());
         }
         //删除核对通过的样本
-        stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
+//        stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
+        StringBuffer sql = new StringBuffer();
+        sql.append("delete from stock_out_req_frozen_tube where stock_out_requirement_id = ?1");
+
+        Query query = entityManager.createNativeQuery(sql.toString());
+        query.setParameter("1", id).executeUpdate();
 
         stockOutRequirementRepository.delete(id);
 

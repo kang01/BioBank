@@ -232,10 +232,16 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     List<FrozenTube> findByFrozenBoxCodeAndFrozenTubeState(String frozenBoxCode, String frozenTubeState);
 
-    @Query(value = "select t.sample_code,t.sample_type_code from frozen_tube t left join frozen_box b on t.frozen_box_id = b.id where b.frozen_box_code_1d in ?1 and t.sample_type_code = ?2",nativeQuery = true)
+    @Query(value = "select t.sample_code,t.sample_type_code from frozen_tube t left join frozen_box b on t.frozen_box_id = b.id " +
+        " where (b.frozen_box_code_1d in ?1 " +
+        " or b.frozen_box_code in ?1)" +
+        "and t.sample_type_code = ?2",nativeQuery = true)
     List<Object[]> findByFrozenBoxCode1DInAndSampleType(List<String> boxCodeListEach1000, String type);
 
-    @Query(value = "select count(t.sample_code) from frozen_tube t left join frozen_box b on t.frozen_box_id = b.id where b.frozen_box_code_1d in ?1 and t.sample_type_code = ?2",nativeQuery = true)
+    @Query(value = "select count(1) from frozen_tube t left join frozen_box b on t.frozen_box_id = b.id " +
+        " where (b.frozen_box_code_1d in ?1 " +
+        " or b.frozen_box_code in ?1 )" +
+        "and t.sample_type_code = ?2",nativeQuery = true)
     Long countByFrozenBoxCode1DInAndSampleType(List<String> boxCodeListEach1000, String type);
 
 }

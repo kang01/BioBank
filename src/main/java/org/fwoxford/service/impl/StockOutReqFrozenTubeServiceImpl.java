@@ -126,7 +126,6 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             stockOutRequiredSamples.stream().collect(Collectors.groupingBy(w -> w.getSampleType()));
 
         List<FrozenTube> frozenTubeListLast = new ArrayList<FrozenTube>();
-        System.out.print("----beginTime:"+new Date());
 
         for(String sampleType:requirementGroupBySampleType.keySet()){
 
@@ -168,23 +167,11 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
 
                 frozenTubeListLast.addAll(frozenTubeList);
             }
-//            for(List<StockOutRequiredSample> s :arrReqSamples){
-//                List<FrozenTube> frozenTubeList = frozenTubeRepository.
-//                    findBySampleCodeInAndSampleTypeCodeAndProjectIn(
-//                        s.stream().map(d->d.getSampleCode()).collect(Collectors.toList()),
-//                        sampleType,projectIds);
-//
-//                if (frozenTubeList.stream().anyMatch(ft->outTubeList.contains(ft.getId()))) {
-//                    throw new BankServiceException("请求的样本不在库存。");
-//                }
-//
-//                frozenTubeListLast.addAll(frozenTubeList);
-//            }
         }
-        if(frozenTubeListLast.size()==0){
-            throw new BankServiceException("请求的样本不在库存。");
+        stockOutRequirement.setCountOfSampleReal(frozenTubeListLast.size());
+        if(frozenTubeListLast.size()<stockOutRequiredSamples.size()){
+            return Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
         }
-        System.out.print("----entTime:"+new Date());
         List<StockOutReqFrozenTube> stockOutReqFrozenTubeList = new ArrayList<>();
 
         for(FrozenTube frozenTube : frozenTubeListLast){
@@ -224,7 +211,6 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         if(stockOutReqFrozenTubeList.size()>0){
             stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubeList);
         }
-        stockOutRequirement.setCountOfSampleReal(frozenTubeListLast.size());
         return status;
     }
 
@@ -253,8 +239,10 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
         Integer isHemolysis = stockOutRequirement.isIsHemolysis()!=null&&stockOutRequirement.isIsHemolysis().equals(true)?1:0;
         Long countOfStockInTube = frozenTubeRepository.countByRequirements(sampleTypeId,samplyClassificationId,
             frozenTubeTypeId,diseaseType,sex,isBloodLipid,isHemolysis,ageMin,ageMax,projectIds);
+        stockOutRequirement.setCountOfSampleReal(countOfStockInTube.intValue());
         if(countOfStockInTube.intValue()<countOfSample){
-            throw new BankServiceException("库存不足！满足需求的样本量有"+countOfStockInTube+"支,请修改需求！");
+            return Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
+//            throw new BankServiceException("库存不足！满足需求的样本量有"+countOfStockInTube+"支,请修改需求！");
         }
         List<FrozenTube> checkedFrozenTubeList = new ArrayList<FrozenTube>();
         for(int i=0;;i+=1000){
@@ -273,10 +261,6 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
            checkedFrozenTubeList.addAll(frozenTubeList.subList(0,countOfSample));
            break;
         }
-        if(checkedFrozenTubeList.size()<countOfSample){
-            status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
-        }
-
         List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubes = new ArrayList<StockOutReqFrozenTube>();
         int i=0;
         for(FrozenTube frozenTube :checkedFrozenTubeList){

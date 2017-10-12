@@ -1,4 +1,6 @@
-
+.form-control{
+    padding: 6px 8px;
+}
 .selectize-control .selectize-input.disabled {
     background-color: #eee;
     opacity: 1;

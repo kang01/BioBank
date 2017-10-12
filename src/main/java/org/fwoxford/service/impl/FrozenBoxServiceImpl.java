@@ -935,21 +935,23 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeId(projectId, sampleTypeId);
             if (projectSampleClass.size() == 0 ){
                 throw new BankServiceException("指定的项目和样本类型无效。");
-            } else if (projectSampleClass.size() >= 1 ){
+            } else if (sampleType.getIsMixed() != 1 && projectSampleClass.size() >= 1 ){
                 throw new BankServiceException("指定的项目和样本类型有多个样本分类，必须指定其中一个样本分类。");
             }
             sampleClassification = projectSampleClass.get(0).getSampleClassification();
         }
 
         projectCode = projectSampleClass.get(0).getProjectCode();
-        sampleClassCode = sampleClassification.getSampleClassificationCode();
+        sampleClassCode = sampleType.getIsMixed() == 1 ? sampleType.getSampleTypeCode() : sampleClassification.getSampleClassificationCode();
         final String boxCodePrefix = projectCode + sampleClassCode;
         int codeLength = boxCodePrefix.length() + 5;
+        sampleTypeId = sampleType.getId();
+        sampleClassId = sampleType.getIsMixed() == 1 ? 0 : sampleClassification.getId();
 
         TreeSet<String> boxCode = new TreeSet<>();
-        List<String> boxCodeInTranship = frozenBoxRepository.findAllTranshipFrozenBoxCode(projectId, sampleType.getId(), sampleClassification.getId());
-        List<String> boxCodeInStockIn = frozenBoxRepository.findAllStockInFrozenBoxCode(projectId, sampleType.getId(), sampleClassification.getId());
-        List<String> boxCodeInDestroy = frozenBoxRepository.findAllDestroyFrozenBoxCode(projectId, sampleType.getId(), sampleClassification.getId());
+        List<String> boxCodeInTranship = frozenBoxRepository.findAllTranshipFrozenBoxCode(projectId, sampleTypeId, sampleClassId);
+        List<String> boxCodeInStockIn = frozenBoxRepository.findAllStockInFrozenBoxCode(projectId, sampleTypeId, sampleClassId);
+        List<String> boxCodeInDestroy = frozenBoxRepository.findAllDestroyFrozenBoxCode(projectId, sampleTypeId, sampleClassId);
         boxCode.addAll(boxCodeInTranship.stream().filter(code-> code.length() >= codeLength && code.startsWith(boxCodePrefix)).collect(Collectors.toList()));
         boxCode.addAll(boxCodeInStockIn.stream().filter(code-> code.length() >= codeLength && code.startsWith(boxCodePrefix)).collect(Collectors.toList()));
         boxCode.addAll(boxCodeInDestroy.stream().filter(code-> code.length() >= codeLength && code.startsWith(boxCodePrefix)).collect(Collectors.toList()));

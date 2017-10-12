@@ -355,6 +355,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                     if(f.getId().equals(s.getFrozenTube().getId())){
                         s.setStockOutFrozenBox(stockOutFrozenBox);
                         s.setStatus(Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
+                        s.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
                         FrozenTube frozenTube =s.getFrozenTube();
                         frozenTube.setFrozenBox(frozenBox);
                         frozenTube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
@@ -514,6 +515,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             FrozenTube frozenTube = s.getFrozenTube();
             frozenTube.setSampleUsedTimes(frozenTube.getSampleUsedTimes()!=null?frozenTube.getSampleUsedTimes():0+1);
             frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
+            s.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
             s.setStatus(Constants.STOCK_OUT_SAMPLE_COMPLETED);
             frozenTubeList.add(frozenTube);
         }
@@ -542,10 +544,11 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         }
         stockOutTaskRepository.save(stockOutTask);
         List<String> statusList_ = new ArrayList<>();
-        statusList_.add(Constants.STOCK_OUT_TASK_NEW);
-        statusList_.add(Constants.STOCK_OUT_TASK_PENDING);
+        statusList_.add(Constants.STOCK_OUT_SAMPLE_IN_USE);
+        statusList_.add(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
 
-        Long countOfUnCompleteTask = stockOutTaskRepository.countByStockOutPlanIdAndStatusIn(stockOutTask.getStockOutPlan().getId(),statusList_);
+        Long countOfUnCompleteTask = stockOutReqFrozenTubeRepository.countUnCompleteSampleByStockOutApplyAndStatusIn(stockOutTask.getStockOutPlan().getStockOutApply().getId(),statusList_);
+//        Long countOfUnCompleteTask = stockOutTaskRepository.countByStockOutPlanIdAndStatusIn(stockOutTask.getStockOutPlan().getId(),statusList_);
         if(countOfUnCompleteTask.intValue()==0){
             StockOutPlan stockOutPlan = stockOutTask.getStockOutPlan();
             stockOutPlan.setStatus(Constants.STOCK_OUT_PLAN_COMPLETED);

@@ -139,7 +139,7 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
         stockOutPlan.status(Constants.STOCK_OUT_PLAN_PENDING)
             .stockOutPlanCode(bankUtil.getUniqueID("E"))
             .applyNumber(apply.getApplyCode())
-            .stockOutApply(apply);
+            .stockOutApply(apply).stockOutPlanDate(LocalDate.now());
         stockOutPlan = stockOutPlanRepository.save(stockOutPlan);
         StockOutPlanDTO result = stockOutPlanMapper.stockOutPlanToStockOutPlanDTO(stockOutPlan);
         return result;

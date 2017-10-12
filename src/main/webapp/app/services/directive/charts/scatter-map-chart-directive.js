@@ -442,7 +442,7 @@
                         },
                         zoom:scope.zoom,
                         scaleLimit:{
-                            min:1.2,
+                            min:1,
                             max:12
                         },
                         left:scope.left
@@ -530,9 +530,15 @@
                         }
                     ]
                 };
-                if(scope.zoom == 1.2){
+                if(scope.zoom == 1){
                     $("#map").height(window.innerHeight -200);
                     option.toolbox.feature.myEnlarged.show = false;
+                    if(document.body.clientWidth > 1900){
+                        option.geo.top = 40;
+                    }else{
+                        option.geo.top = -30;
+                    }
+
                 }
                 if(scope.geoIndex == 0){
                     option.geo.label.normal.show = true;

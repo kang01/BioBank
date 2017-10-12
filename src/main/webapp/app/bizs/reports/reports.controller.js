@@ -478,7 +478,7 @@
         var modalInstance;
         //城市样本分布图
         vm.left = "25%";
-        vm.zoom = 1.2;
+        vm.zoom = 1;
         vm.status = items.status;
         vm.dto = {
             frozenBoxCodeStr:[]

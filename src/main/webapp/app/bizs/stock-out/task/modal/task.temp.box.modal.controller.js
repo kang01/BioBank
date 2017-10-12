@@ -94,6 +94,9 @@
                     vm.frozenBoxCode = "";
                     return;
                 }
+                if(!vm.box.frozenBoxCode1D){
+                    vm.box.frozenBoxCode1D = null;
+                }
                 var len = _.filter(boxList,{frozenBoxCode:vm.frozenBoxCode}).length;
                 if(len === 0){
                     vm.box.frozenBoxCode = vm.frozenBoxCode;

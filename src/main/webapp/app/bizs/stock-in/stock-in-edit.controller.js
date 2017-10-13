@@ -448,6 +448,7 @@
                 })
                 .withOption('drawCallback',function () {
                     $(".dataTables_scrollBody")[0].style.height = 'auto';
+                    $(".dataTables_scrollBody")[0].style.maxHeight = '400px';
                 });
 
 
@@ -1505,7 +1506,7 @@
                             sampleTypeId:box.sampleTypeId,
                             sampleTypeCode:box.sampleTypeCode,
                             sampleTypeClassId:vm.sampleTypeClassId || vm.box.sampleClassificationId,
-                            sampleTypeClassCode:vm.sampleTypeClassCode || vm.box.sampleClassificationId,
+                            sampleTypeClassCode:vm.sampleTypeClassCode || vm.box.sampleClassificationCode,
                             frozenBoxTypeId:box.frozenBoxTypeId,
                             frozenBoxType:vm.box.frozenBoxType,
                             status:status || "2"

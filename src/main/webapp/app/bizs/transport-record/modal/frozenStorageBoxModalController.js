@@ -72,7 +72,8 @@
             maxItems: 1,
             onChange:function (value) {
                 vm.frozenBox.sampleClassificationId = value;
-                // _fnInitBoxInfo();
+                vm.frozenBox.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationCode;
+                _fnInitBoxInfo();
             }
         };
         //盒类型
@@ -451,7 +452,6 @@
                     return;
                 }
             }
-
             blockUI.start("正在保存冻存盒中……");
             TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
         };

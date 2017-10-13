@@ -70,7 +70,7 @@ public class FrozenTubeCheckService {
         for(FrozenTube f:frozenTubeListForCheckRepeat){
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("id",f.getId());
-                jsonObject.put("sampleCode",f.getSampleCode());
+                jsonObject.put("sampleCode",f.getSampleCode()!=null?f.getSampleCode():f.getSampleTempCode());
                 jsonObject.put("tubeColumns",f.getTubeColumns());
                 jsonObject.put("tubeRows",f.getTubeRows());
                 jsonArray.add(jsonObject);

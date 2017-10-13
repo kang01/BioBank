@@ -506,6 +506,7 @@
                         controllerAs: 'ctrl'
                     });
                     modalInstance.result.then(function (flag) {
+                        vm.repeatSampleArray = [];
                         $(tr).closest('table').find('.rowLight').removeClass("rowLight");
                         $(tr).addClass('rowLight');
                         //true:保存 false:不保存
@@ -1428,7 +1429,6 @@
         function onError(error) {
             toastr.error(error.data.message);
             BioBankBlockUi.blockUiStop();
-            console.log(error);
             vm.repeatSampleArray = JSON.parse(error.data.params[0]);
             hotRegisterer.getInstance('my-handsontable').render();
         }

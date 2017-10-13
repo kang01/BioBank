@@ -1517,11 +1517,14 @@
 
             modalInstance.result.then(function (data) {
                 if(data){
+                    if(!data.sampleTypeCode){
+                        data.sampleTypeCode = data.sampleType.sampleTypecode;
+                    }
                     // selectList = [];
                     //添加分装后的冻存盒，没有添加新的，有的话再添加相同的盒子，相同的最多添加2个
                     var index;
                     if(data.sampleClassificationCode){
-                        index = _.findIndex(vm.incompleteBoxesList,{sampleTypeCode:+data.sampleClassificationCode});
+                        index = _.findIndex(vm.incompleteBoxesList,{sampleTypeCode:data.sampleClassificationCode});
                     }else{
                         index = _.findIndex(vm.incompleteBoxesList,{sampleTypeCode:data.sampleTypeCode});
                     }

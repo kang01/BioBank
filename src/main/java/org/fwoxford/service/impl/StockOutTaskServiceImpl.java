@@ -173,7 +173,19 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
                 throw new BankServiceException("任务已经开始，不能删除");
             }
             //根据出库盒ID查询出库样本ID
-            stockOutTaskFrozenTubeRepository.deleteByStockOutTaskId(stockOutTask.getId());
+            List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskId(id);
+            List<StockOutReqFrozenTube> stockOutReqFrozenTubesLast = new ArrayList<>();
+            for(StockOutReqFrozenTube s:stockOutReqFrozenTubes){
+                s.setStockOutTask(null);
+                stockOutReqFrozenTubesLast.add(s);
+                if(stockOutReqFrozenTubesLast.size()>=1000){
+                    stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
+                    stockOutReqFrozenTubesLast = new ArrayList<StockOutReqFrozenTube>();
+                }
+            }
+            if(stockOutReqFrozenTubesLast.size()>0){
+                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
+            }
             stockOutTaskRepository.delete(id);
         }
     }

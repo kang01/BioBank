@@ -73,7 +73,8 @@
             onChange:function (value) {
                 vm.frozenBox.sampleClassificationId = value;
                 vm.frozenBox.sampleClassificationCode = _.find(vm.projectSampleTypeOptions,{sampleClassificationId:+value}).sampleClassificationCode;
-                _fnInitBoxInfo();
+                // _fnInitBoxInfo();
+                _fnEditBoxInfo();
             }
         };
         //盒类型

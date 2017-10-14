@@ -59,7 +59,7 @@ public class FrozenTubeCheckService {
                         frozenTubeListForCheckRepeat.add(frozenTube);
                     }
                 }else{//无分类  在给项目必须配置样本分类以后不会出现这样情况
-                    if(frozenTube.getId()==null || (frozenTube.getId() != null && frozenTube.getId()!=tube.getId())){
+                    if(frozenTube.getId()==null || (!frozenTube.getId().equals(null )&& !frozenTube.getId().equals(tube.getId()))){
                         frozenTubeListForCheckRepeat.add(frozenTube);
                     }
                 }

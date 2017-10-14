@@ -80,7 +80,7 @@ public final class Constants {
     public static final String STOCK_OUT_APPROVE_REFUSED = "1104";
     public static final String STOCK_OUT_INVALID = "1190";
     /**
-     * 需求状态 ：1201：待核对，1202：库存不够，1203：库存满足"
+     * 需求状态 ：1201：待核对，1202：库存不够，1203：库存满足
      */
     public static final String STOCK_OUT_REQUIREMENT_CKECKING = "1201";
     public static final String STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT = "1202";

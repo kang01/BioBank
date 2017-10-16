@@ -296,7 +296,8 @@ public class TranshipServiceImpl implements TranshipService{
         List<User> userList = userRepository.findAll();
         for(User u :userList){
             if(transhipDTO.getReceiverId()!=null&&transhipDTO.getReceiverId().equals(u.getId())){
-                transhipDTO.setReceiver(u.getLastName()+u.getFirstName());
+                String name = (u.getLastName()!=null?u.getLastName():"")+(u.getFirstName()!=null?u.getFirstName():"");
+                transhipDTO.setReceiver(name);
             }
         }
         return transhipDTO;

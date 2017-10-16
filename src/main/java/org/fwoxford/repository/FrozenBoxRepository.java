@@ -31,7 +31,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     @Query("update FrozenBox b set b.status=?2 where b.frozenBoxCode=?1")
     void updateStatusByFrozenBoxCode(String frozenBoxCode, String status);
 
-    @Query("select box from FrozenBox box where box.equipmentCode = ?1 and box.status in ('2004','2006') ")
+    @Query("select box from FrozenBox box where box.equipmentCode = ?1 and box.status in ('"+Constants.FROZEN_BOX_STOCKED+"','"+Constants.FROZEN_BOX_PUT_SHELVES+"') ")
     List<FrozenBox> findByEquipmentCode(String equipmentCode);
 
     @Query("select box from FrozenBox box where box.equipmentCode = ?1 and box.areaCode = ?2 and box.status not in ('0000','2003','2090','2009','2010')")

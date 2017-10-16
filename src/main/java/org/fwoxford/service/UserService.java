@@ -256,6 +256,9 @@ public class UserService {
         List<User> userList = userRepository.findAllByLoginNotIn(loginList);
         List<StockInUserDTO> stockInUsers = new ArrayList<>();
         for(User u:userList){
+            if(u.getLogin().equals("NA")){
+                continue;
+            }
             StockInUserDTO stockInUserDTO = new StockInUserDTO();
             stockInUserDTO.setId(u.getId());
             stockInUserDTO.setLogin(u.getLogin());

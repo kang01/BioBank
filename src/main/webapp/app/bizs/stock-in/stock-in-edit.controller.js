@@ -448,6 +448,7 @@
                 })
                 .withOption('drawCallback',function () {
                     $(".dataTables_scrollBody")[0].style.height = 'auto';
+                    $(".dataTables_scrollBody")[0].style.maxHeight = '400px';
                 });
 
 
@@ -1505,7 +1506,7 @@
                             sampleTypeId:box.sampleTypeId,
                             sampleTypeCode:box.sampleTypeCode,
                             sampleTypeClassId:vm.sampleTypeClassId || vm.box.sampleClassificationId,
-                            sampleTypeClassCode:vm.sampleTypeClassCode || vm.box.sampleClassificationId,
+                            sampleTypeClassCode:vm.sampleTypeClassCode || vm.box.sampleClassificationCode,
                             frozenBoxTypeId:box.frozenBoxTypeId,
                             frozenBoxType:vm.box.frozenBoxType,
                             status:status || "2"
@@ -1516,13 +1517,16 @@
 
             modalInstance.result.then(function (data) {
                 if(data){
+                    if(!data.sampleTypeCode){
+                        data.sampleTypeCode = data.sampleType.sampleTypecode;
+                    }
                     // selectList = [];
                     //添加分装后的冻存盒，没有添加新的，有的话再添加相同的盒子，相同的最多添加2个
                     var index;
-                    if(data.sampleClassificationId){
-                        index = _.findIndex(vm.incompleteBoxesList,{sampleTypeId:+data.sampleClassificationId});
+                    if(data.sampleClassificationCode){
+                        index = _.findIndex(vm.incompleteBoxesList,{sampleTypeCode:data.sampleClassificationCode});
                     }else{
-                        index = _.findIndex(vm.incompleteBoxesList,{sampleTypeId:data.sampleTypeId});
+                        index = _.findIndex(vm.incompleteBoxesList,{sampleTypeCode:data.sampleTypeCode});
                     }
                     if(index == -1){
                         var boxTempList  = [];

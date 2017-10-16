@@ -41,7 +41,6 @@ public class StockOutFrozenBoxDTO extends AbstractAuditingDTO implements Seriali
     /**
      * 冻存盒编码
      */
-    @NotNull
     @Size(max = 100)
     private String frozenBoxCode;
     /**

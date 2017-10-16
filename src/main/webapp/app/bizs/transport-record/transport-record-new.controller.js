@@ -506,6 +506,7 @@
                         controllerAs: 'ctrl'
                     });
                     modalInstance.result.then(function (flag) {
+                        vm.repeatSampleArray = [];
                         $(tr).closest('table').find('.rowLight').removeClass("rowLight");
                         $(tr).addClass('rowLight');
                         //true:保存 false:不保存
@@ -766,7 +767,12 @@
                 }).appendTo(td);
                 $div = $("<div  class='tube-status'/>").html(tube.status).appendTo(td);
                 if(vm.repeatSampleArray.length){
-                    var len = _.filter(vm.repeatSampleArray,{sampleCode:tube.sampleCode}).length;
+                    var len;
+                    if(tube.sampleCode){
+                        len = _.filter(vm.repeatSampleArray,{sampleCode:tube.sampleCode}).length;
+                    }else{
+                        len = _.filter(vm.repeatSampleArray,{sampleCode:tube.sampleTempCode}).length;
+                    }
                     if(len){
                         $div = $("<div class='repeat-sample-class stockInAnimation'/>").appendTo(td);
                     }
@@ -1421,9 +1427,10 @@
             vm.transportRecord.emptyHoleNumber = data.emptyHoleNumber;
         }
         function onError(error) {
-            vm.repeatSampleArray = JSON.parse(error.data.params[0]);
-            BioBankBlockUi.blockUiStop();
             toastr.error(error.data.message);
+            BioBankBlockUi.blockUiStop();
+            vm.repeatSampleArray = JSON.parse(error.data.params[0]);
+            hotRegisterer.getInstance('my-handsontable').render();
         }
         //滿意程度
         vm.rating = 0;

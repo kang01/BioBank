@@ -185,12 +185,12 @@ public class ImportSampleDataTest {
             Delegate delegate = delegateRepository.findByDelegateName(delegateName);
             if (delegate == null) {
                 delegate = new Delegate().delegateCode("D_0000" + (i + 1)).delegateName(delegateName).status("0001");
-                delegateRepository.saveAndFlush(delegate);
+                delegateRepository.save(delegate);
             }
             Project project = projectRepository.findByProjectCode(projectCode);
             if (project == null) {
                 project = new Project().projectCode(projectCode).projectName(projectName).status("0001").delegate(delegate);
-                projectRepository.saveAndFlush(project);
+                projectRepository.save(project);
             }
         }
     }
@@ -244,11 +244,11 @@ public class ImportSampleDataTest {
                     .zipCode(list.get(i).get("ZIP_CODE") != null ? list.get(i).get("ZIP_CODE").toString() : null)
                     .username1(list.get(i).get("USER_1").toString()).username2(list.get(i).get("USER_2").toString())
                     .phoneNumber1(list.get(i).get("PHONE_1").toString()).phoneNumber2(list.get(i).get("PHONE_2").toString());
-                projectSiteRepository.saveAndFlush(projectSite);
+                projectSiteRepository.save(projectSite);
                 ProjectRelate projectRelate = projectRelateRepository.findByProjectIdAndProjectSiteId(project.getId(), projectSite.getId());
                 if (projectRelate == null) {
                     projectRelate = new ProjectRelate().project(project).projectSite(projectSite).status("0001");
-                    projectRelateRepository.saveAndFlush(projectRelate);
+                    projectRelateRepository.save(projectRelate);
                 }
             }
         }
@@ -329,11 +329,11 @@ public class ImportSampleDataTest {
 //                    .zipCode(list.get(i).get("ZIP_CODE") != null ? list.get(i).get("ZIP_CODE").toString() : null)
 //                    .username1(list.get(i).get("USER_1").toString()).username2(list.get(i).get("USER_2").toString())
 //                    .phoneNumber1(list.get(i).get("PHONE_1").toString()).phoneNumber2(list.get(i).get("PHONE_2").toString());
-                projectSiteRepository.saveAndFlush(projectSite);
+                projectSiteRepository.save(projectSite);
                 ProjectRelate projectRelate = projectRelateRepository.findByProjectIdAndProjectSiteId(project.getId(), projectSite.getId());
                 if (projectRelate == null) {
                     projectRelate = new ProjectRelate().project(project).projectSite(projectSite).status("0001");
-                    projectRelateRepository.saveAndFlush(projectRelate);
+                    projectRelateRepository.save(projectRelate);
                 }
             }
         }
@@ -357,7 +357,7 @@ public class ImportSampleDataTest {
             supportRackType.setSupportRackColumns("5");
             supportRackType.setStatus("0001");
             supportRackType.setMemo("宽");
-            supportRackTypeRepository.saveAndFlush(supportRackType);
+            supportRackTypeRepository.save(supportRackType);
             assertThat(supportRackType).isNotNull();
         }
         SupportRackType supportRackType55 = supportRackTypeRepository.findBySupportRackTypeCode("B5x5");
@@ -369,7 +369,7 @@ public class ImportSampleDataTest {
             supportRackType55.setSupportRackColumns("5");
             supportRackType55.setStatus("0001");
             supportRackType55.setMemo("窄");
-            supportRackTypeRepository.saveAndFlush(supportRackType55);
+            supportRackTypeRepository.save(supportRackType55);
         }
         //冻存架类型
         SupportRackType supportRackType1 = supportRackTypeRepository.findBySupportRackTypeCode("B5x4");
@@ -381,7 +381,7 @@ public class ImportSampleDataTest {
             supportRackType1.setSupportRackColumns("4");
             supportRackType1.setStatus("0001");
             supportRackType1.setMemo("宽");
-            supportRackTypeRepository.saveAndFlush(supportRackType1);
+            supportRackTypeRepository.save(supportRackType1);
             assertThat(supportRackType1).isNotNull();
         }
         //冻存架类型
@@ -394,7 +394,7 @@ public class ImportSampleDataTest {
             supportRackType2.setSupportRackColumns("4");
             supportRackType2.setStatus("0001");
             supportRackType2.setMemo("窄");
-            supportRackTypeRepository.saveAndFlush(supportRackType2);
+            supportRackTypeRepository.save(supportRackType2);
         }
     }
 
@@ -409,31 +409,31 @@ public class ImportSampleDataTest {
         FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findByFrozenTubeTypeCode("DCG");
         if (frozenTubeType == null) {
             frozenTubeType = new FrozenTubeType().frozenTubeTypeCode("DCG").frozenTubeTypeName("冻存管(1ml)").sampleUsedTimesMost(10).frozenTubeVolumn(2.0).frozenTubeVolumnUnit("ml").status("0001");
-            frozenTubeTypeRepository.saveAndFlush(frozenTubeType);
+            frozenTubeTypeRepository.save(frozenTubeType);
             assertThat(frozenTubeType).isNotNull();
         }
         FrozenTubeType frozenTubeType1 = frozenTubeTypeRepository.findByFrozenTubeTypeCode("2DDCG");
         if (frozenTubeType1 == null) {
             frozenTubeType1 = new FrozenTubeType().frozenTubeTypeCode("2DDCG").frozenTubeTypeName("2D冻存管(0.5ml)").sampleUsedTimesMost(10).frozenTubeVolumn(0.5).frozenTubeVolumnUnit("ml").status("0001");
-            frozenTubeTypeRepository.saveAndFlush(frozenTubeType1);
+            frozenTubeTypeRepository.save(frozenTubeType1);
             assertThat(frozenTubeType1).isNotNull();
         }
         FrozenTubeType frozenTubeType2 = frozenTubeTypeRepository.findByFrozenTubeTypeCode("6CXG");
         if (frozenTubeType2 == null) {
             frozenTubeType2 = new FrozenTubeType().frozenTubeTypeCode("6CXG").frozenTubeTypeName("采血管(6ml)").sampleUsedTimesMost(10).frozenTubeVolumn(6.0).frozenTubeVolumnUnit("ml").status("0001");
-            frozenTubeTypeRepository.saveAndFlush(frozenTubeType2);
+            frozenTubeTypeRepository.save(frozenTubeType2);
             assertThat(frozenTubeType2).isNotNull();
         }
         FrozenTubeType frozenTubeType3 = frozenTubeTypeRepository.findByFrozenTubeTypeCode("RNA");
         if (frozenTubeType3 == null) {
             frozenTubeType3 = new FrozenTubeType().frozenTubeTypeCode("RNA").frozenTubeTypeName("RNA管(9ml)").sampleUsedTimesMost(10).frozenTubeVolumn(9.0).frozenTubeVolumnUnit("ml").status("0001");
-            frozenTubeTypeRepository.saveAndFlush(frozenTubeType3);
+            frozenTubeTypeRepository.save(frozenTubeType3);
             assertThat(frozenTubeType3).isNotNull();
         }
         FrozenTubeType frozenTubeType4 = frozenTubeTypeRepository.findByFrozenTubeTypeCode("9CXG");
         if (frozenTubeType4 == null) {
             frozenTubeType4 = new FrozenTubeType().frozenTubeTypeCode("9CXG").frozenTubeTypeName("采血管(9ml)").sampleUsedTimesMost(10).frozenTubeVolumn(9.0).frozenTubeVolumnUnit("ml").status("0001");
-            frozenTubeTypeRepository.saveAndFlush(frozenTubeType4);
+            frozenTubeTypeRepository.save(frozenTubeType4);
             assertThat(frozenTubeType4).isNotNull();
         }
     }
@@ -456,7 +456,7 @@ public class ImportSampleDataTest {
                 .equipmentGroupAddress("样本中心D座")
                 .status("0001");
             equipmentGroup.setCreatedBy("admin");
-            equipmentGroupRepository.saveAndFlush(equipmentGroup);
+            equipmentGroupRepository.save(equipmentGroup);
             assertThat(equipmentGroup).isNotNull();
         }
     }
@@ -502,7 +502,7 @@ public class ImportSampleDataTest {
                     .areaNumber(area)
                     .shelveNumberInArea(0)
                     .status("0001");
-                equipmentModleRepository.saveAndFlush(equipmentModle);
+                equipmentModleRepository.save(equipmentModle);
             }
         }
     }
@@ -585,7 +585,7 @@ public class ImportSampleDataTest {
                     .equipmentModle(equipmentModle).temperature(0).ampoulesMax(0).ampoulesMin(0).status("0001").memo(String.join(",", arrayList));
             }
             //设备
-            equipmentRepository.saveAndFlush(entity);
+            equipmentRepository.save(entity);
             //查询区域
             List<Map<String, Object>> areaList = modelMap.get(model);
             for (Map<String, Object> key : areaList) {
@@ -596,7 +596,7 @@ public class ImportSampleDataTest {
                 if (area == null) {
                     area = new Area().areaCode(areaCode).equipment(areaMapper.equipmentFromId(entity.getId())).freezeFrameNumber(count).equipmentCode(entity.getEquipmentCode())
                         .status("0001");
-                    areaRepository.saveAndFlush(area);
+                    areaRepository.save(area);
                 }
                 List<String> supportCodeStr = new ArrayList<>();
                 for (int i = 0; i < count; i++) {
@@ -610,7 +610,7 @@ public class ImportSampleDataTest {
                     if (supportRack == null) {
                         supportRack = new SupportRack().status("0001").supportRackCode(supportCode).supportRackType(supportRackType).supportRackTypeCode(supportRackType.getSupportRackTypeCode())
                             .area(supportRackMapper.areaFromId(area.getId()));
-                        supportRackRepository.saveAndFlush(supportRack);
+                        supportRackRepository.save(supportRack);
                     }
                 }
             }
@@ -630,21 +630,21 @@ public class ImportSampleDataTest {
             frozenBoxType = new FrozenBoxType().frozenBoxTypeCode("DCH")
                 .frozenBoxTypeName("冻存盒(10*10)").frozenBoxTypeColumns("10").frozenBoxTypeRows("10").status("0001");
             frozenBoxType.setCreatedBy("admin");
-            frozenBoxTypeRepository.saveAndFlush(frozenBoxType);
+            frozenBoxTypeRepository.save(frozenBoxType);
         }
         //冻存盒类型
         FrozenBoxType frozenBoxType1 = frozenBoxTypeRepository.findByFrozenBoxTypeCode("DJH");
         if (frozenBoxType1 == null) {
             frozenBoxType1 = new FrozenBoxType().frozenBoxTypeCode("DJH")
                 .frozenBoxTypeName("大橘盒(10*10)").frozenBoxTypeColumns("10").frozenBoxTypeRows("10").status("0001");
-            frozenBoxTypeRepository.saveAndFlush(frozenBoxType1);
+            frozenBoxTypeRepository.save(frozenBoxType1);
         }
         //冻存盒类型
         FrozenBoxType frozenBoxType2 = frozenBoxTypeRepository.findByFrozenBoxTypeCode("96KB");
         if (frozenBoxType2 == null) {
             frozenBoxType2 = new FrozenBoxType().frozenBoxTypeCode("96KB")
                 .frozenBoxTypeName("96孔板(8*12)").frozenBoxTypeColumns("12").frozenBoxTypeRows("8").status("0001");
-            frozenBoxTypeRepository.saveAndFlush(frozenBoxType2);
+            frozenBoxTypeRepository.save(frozenBoxType2);
         }
     }
 
@@ -660,42 +660,42 @@ public class ImportSampleDataTest {
         if (sampleType1 == null) {
             sampleType1 = new SampleType().sampleTypeCode("A").sampleTypeName("血浆")
                 .status("0001").isMixed(0).frontColor("black").backColor("rgb(240,224,255)");
-            sampleTypeRepository.saveAndFlush(sampleType1);
+            sampleTypeRepository.save(sampleType1);
             assertThat(sampleType1).isNotNull();
         }
         SampleType sampleType2 = sampleTypeRepository.findBySampleTypeCode("W");
         if (sampleType2 == null) {
             sampleType2 = new SampleType().sampleTypeCode("W").sampleTypeName("白细胞")
                 .status("0001").isMixed(0).frontColor("black").backColor("rgb(255,255,255)");
-            sampleTypeRepository.saveAndFlush(sampleType2);
+            sampleTypeRepository.save(sampleType2);
             assertThat(sampleType2).isNotNull();
         }
         SampleType sampleType3 = sampleTypeRepository.findBySampleTypeCode("F");
         if (sampleType3 == null) {
             sampleType3 = new SampleType().sampleTypeCode("F").sampleTypeName("血清")
                 .status("0001").isMixed(0).frontColor("black").backColor("rgb(255,179,179)");
-            sampleTypeRepository.saveAndFlush(sampleType3);
+            sampleTypeRepository.save(sampleType3);
             assertThat(sampleType3).isNotNull();
         }
         SampleType sampleType4 = sampleTypeRepository.findBySampleTypeCode("E");
         if (sampleType4 == null) {
             sampleType4 = new SampleType().sampleTypeCode("E").sampleTypeName("尿")
                 .status("0001").isMixed(0).frontColor("black").backColor("rgb(255,255,179)");
-            sampleTypeRepository.saveAndFlush(sampleType4);
+            sampleTypeRepository.save(sampleType4);
             assertThat(sampleType4).isNotNull();
         }
         SampleType sampleType5 = sampleTypeRepository.findBySampleTypeCode("R");
         if (sampleType5 == null) {
             sampleType5 = new SampleType().sampleTypeCode("R").sampleTypeName("红细胞")
                 .status("0001").isMixed(0).frontColor("black").backColor("rgb(236,236,236)");
-            sampleTypeRepository.saveAndFlush(sampleType5);
+            sampleTypeRepository.save(sampleType5);
             assertThat(sampleType5).isNotNull();
         }
         SampleType sampleType6 = sampleTypeRepository.findBySampleTypeCode("RNA");
         if (sampleType6 == null) {
             sampleType6 = new SampleType().sampleTypeCode("RNA").sampleTypeName("RNA")
                 .status("0001").isMixed(0).frontColor("black").backColor("rgb(255,220,165)");
-            sampleTypeRepository.saveAndFlush(sampleType6);
+            sampleTypeRepository.save(sampleType6);
             assertThat(sampleType6).isNotNull();
         }
     }
@@ -718,7 +718,7 @@ public class ImportSampleDataTest {
                 .status("0001")
                 .backColor(frontColor)
                 .frontColor("black");
-            sampleClassificationRepository.saveAndFlush(sampleClassification01A);
+            sampleClassificationRepository.save(sampleClassification01A);
             SampleType sampleType = null;
             switch (i) {
                 case 1:
@@ -765,7 +765,7 @@ public class ImportSampleDataTest {
                     .sampleType(sampleType)
                     .columnsNumber(null).sampleClassificationCode(String.format("%0" + 2 + "d", i)).sampleClassificationName(Constants.SAMPLE_TYPE_MAP.get(String.format("%0" + 2 + "d", i)))
                     .status("0001");
-                projectSampleClassRepository.saveAndFlush(projectSampleClass);
+                projectSampleClassRepository.save(projectSampleClass);
             }
         }
 
@@ -775,14 +775,14 @@ public class ImportSampleDataTest {
         if (sampleType7 == null) {
             sampleType7 = new SampleType().sampleTypeCode("98").sampleTypeName("98")
                 .status("0001").isMixed(1).frontColor("black").backColor("rgb(169,241,253)");
-            sampleTypeRepository.saveAndFlush(sampleType7);
+            sampleTypeRepository.save(sampleType7);
             assertThat(sampleType7).isNotNull();
         }
         SampleType sampleType8 = sampleTypeRepository.findBySampleTypeCode("99");
         if (sampleType8 == null) {
             sampleType8 = new SampleType().sampleTypeCode("99").sampleTypeName("99")
                 .status("0001").isMixed(1).frontColor("black").backColor("rgb(169,241,253)");
-            sampleTypeRepository.saveAndFlush(sampleType8);
+            sampleTypeRepository.save(sampleType8);
             assertThat(sampleType8).isNotNull();
         }
         for (SampleClassification s : sampleClassifications) {
@@ -797,7 +797,7 @@ public class ImportSampleDataTest {
                     .project(project).projectCode(project.getProjectCode()).sampleType(sampleType8).sampleClassification(s)
                     .columnsNumber(columnNumber).sampleClassificationCode(s.getSampleClassificationCode()).sampleClassificationName(s.getSampleClassificationName())
                     .status("0001");
-                projectSampleClassRepository.saveAndFlush(projectSampleClass);
+                projectSampleClassRepository.save(projectSampleClass);
                 assertThat(projectSampleClass).isNotNull();
             }
         }
@@ -806,7 +806,7 @@ public class ImportSampleDataTest {
         if (sampleType97 == null) {
             sampleType97 = new SampleType().sampleTypeCode("97").sampleTypeName("97")
                 .status("0001").isMixed(1).frontColor("black").backColor("rgb(255, 0, 0)");
-            sampleTypeRepository.saveAndFlush(sampleType97);
+            sampleTypeRepository.save(sampleType97);
             assertThat(sampleType97).isNotNull();
         }
 
@@ -894,13 +894,13 @@ public class ImportSampleDataTest {
                                 p.setDistrict(res.getResult().getAddressComponent().getDistrict());
                                 p.setStreet(res.getResult().getAddressComponent().getStreet());
                             }
-                            projectSiteRepository.saveAndFlush(p);
+                            projectSiteRepository.save(p);
                         }
                     }
                 }
             }
             p.setProjectSiteId(projectSiteId);
-            projectSiteRepository.saveAndFlush(p);
+            projectSiteRepository.save(p);
         }
     }
 
@@ -921,7 +921,7 @@ public class ImportSampleDataTest {
             .status("0001")
             .backColor(frontColor)
             .frontColor("black");
-        sampleClassificationRepository.saveAndFlush(sampleClassification08W);
+        sampleClassificationRepository.save(sampleClassification08W);
         ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(), sampleType_W.getId(), sampleClassification08W.getId());
         if (projectSampleClass == null) {
             projectSampleClass = new ProjectSampleClass()
@@ -930,7 +930,7 @@ public class ImportSampleDataTest {
                 .sampleType(sampleType_W)
                 .columnsNumber(null).sampleClassificationCode("08").sampleClassificationName("W-白细胞")
                 .status("0001");
-            projectSampleClassRepository.saveAndFlush(projectSampleClass);
+            projectSampleClassRepository.save(projectSampleClass);
         }
         String frontColorE = Constants.SAMPLECLASSIFICATION_COLOR_MAP.get("09").toString();
         SampleClassification sampleClassification05E = new SampleClassification()
@@ -939,7 +939,7 @@ public class ImportSampleDataTest {
             .status("0001")
             .backColor(frontColorE)
             .frontColor("black");
-        sampleClassificationRepository.saveAndFlush(sampleClassification05E);
+        sampleClassificationRepository.save(sampleClassification05E);
         ProjectSampleClass projectSampleClass_E = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(), sampleType_E.getId(), sampleClassification05E.getId());
         if (projectSampleClass_E == null) {
             projectSampleClass_E = new ProjectSampleClass()
@@ -948,7 +948,7 @@ public class ImportSampleDataTest {
                 .sampleType(sampleType_E)
                 .columnsNumber(null).sampleClassificationCode("05").sampleClassificationName("E-尿")
                 .status("0001");
-            projectSampleClassRepository.saveAndFlush(projectSampleClass_E);
+            projectSampleClassRepository.save(projectSampleClass_E);
         }
         String frontColorR = Constants.SAMPLECLASSIFICATION_COLOR_MAP.get("04").toString();
         SampleClassification sampleClassification09R = new SampleClassification()
@@ -957,7 +957,7 @@ public class ImportSampleDataTest {
             .status("0001")
             .backColor(frontColorR)
             .frontColor("black");
-        sampleClassificationRepository.saveAndFlush(sampleClassification09R);
+        sampleClassificationRepository.save(sampleClassification09R);
         ProjectSampleClass projectSampleClass_R = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(), sampleType_R.getId(), sampleClassification09R.getId());
         if (projectSampleClass_R == null) {
             projectSampleClass_R = new ProjectSampleClass()
@@ -966,7 +966,7 @@ public class ImportSampleDataTest {
                 .sampleType(sampleType_R)
                 .columnsNumber(null).sampleClassificationCode("09").sampleClassificationName("R-红细胞")
                 .status("0001");
-            projectSampleClassRepository.saveAndFlush(projectSampleClass_R);
+            projectSampleClassRepository.save(projectSampleClass_R);
         }
         String frontColorA = Constants.SAMPLECLASSIFICATION_COLOR_MAP.get("01").toString();
         SampleClassification sampleClassification01A = new SampleClassification()
@@ -975,7 +975,7 @@ public class ImportSampleDataTest {
             .status("0001")
             .backColor(frontColorA)
             .frontColor("black");
-        sampleClassificationRepository.saveAndFlush(sampleClassification01A);
+        sampleClassificationRepository.save(sampleClassification01A);
         ProjectSampleClass projectSampleClass_A = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(), sampleType_A.getId(), sampleClassification01A.getId());
         if (projectSampleClass_A == null) {
             projectSampleClass_A = new ProjectSampleClass()
@@ -984,7 +984,7 @@ public class ImportSampleDataTest {
                 .sampleType(sampleType_A)
                 .columnsNumber(null).sampleClassificationCode("01").sampleClassificationName("A-血浆")
                 .status("0001");
-            projectSampleClassRepository.saveAndFlush(projectSampleClass_A);
+            projectSampleClassRepository.save(projectSampleClass_A);
         }
     }
 
@@ -1005,7 +1005,7 @@ public class ImportSampleDataTest {
             .status("0001")
             .backColor(frontColor)
             .frontColor("black");
-        sampleClassificationRepository.saveAndFlush(sampleClassification08W);
+        sampleClassificationRepository.save(sampleClassification08W);
         ProjectSampleClass projectSampleClass = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(), sampleType_W.getId(), sampleClassification08W.getId());
         if (projectSampleClass == null) {
             projectSampleClass = new ProjectSampleClass()
@@ -1014,7 +1014,7 @@ public class ImportSampleDataTest {
                 .sampleType(sampleType_W)
                 .columnsNumber(null).sampleClassificationCode("08").sampleClassificationName("EDTA抗凝白细胞")
                 .status("0001");
-            projectSampleClassRepository.saveAndFlush(projectSampleClass);
+            projectSampleClassRepository.save(projectSampleClass);
         }
         String frontColorE = Constants.SAMPLECLASSIFICATION_COLOR_MAP.get("09").toString();
         SampleClassification sampleClassification05E = new SampleClassification()
@@ -1023,7 +1023,7 @@ public class ImportSampleDataTest {
             .status("0001")
             .backColor(frontColorE)
             .frontColor("black");
-        sampleClassificationRepository.saveAndFlush(sampleClassification05E);
+        sampleClassificationRepository.save(sampleClassification05E);
         ProjectSampleClass projectSampleClass_E = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(), sampleType_E.getId(), sampleClassification05E.getId());
         if (projectSampleClass_E == null) {
             projectSampleClass_E = new ProjectSampleClass()
@@ -1032,7 +1032,7 @@ public class ImportSampleDataTest {
                 .sampleType(sampleType_E)
                 .columnsNumber(null).sampleClassificationCode("05").sampleClassificationName("尿")
                 .status("0001");
-            projectSampleClassRepository.saveAndFlush(projectSampleClass_E);
+            projectSampleClassRepository.save(projectSampleClass_E);
         }
         String frontColorR = Constants.SAMPLECLASSIFICATION_COLOR_MAP.get("04").toString();
         SampleClassification sampleClassification09R = new SampleClassification()
@@ -1041,7 +1041,7 @@ public class ImportSampleDataTest {
             .status("0001")
             .backColor(frontColorR)
             .frontColor("black");
-        sampleClassificationRepository.saveAndFlush(sampleClassification09R);
+        sampleClassificationRepository.save(sampleClassification09R);
         ProjectSampleClass projectSampleClass_R = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(), sampleType_R.getId(), sampleClassification09R.getId());
         if (projectSampleClass_R == null) {
             projectSampleClass_R = new ProjectSampleClass()
@@ -1050,7 +1050,7 @@ public class ImportSampleDataTest {
                 .sampleType(sampleType_R)
                 .columnsNumber(null).sampleClassificationCode("09").sampleClassificationName("红细胞")
                 .status("0001");
-            projectSampleClassRepository.saveAndFlush(projectSampleClass_R);
+            projectSampleClassRepository.save(projectSampleClass_R);
         }
         String frontColorA = Constants.SAMPLECLASSIFICATION_COLOR_MAP.get("01").toString();
         SampleClassification sampleClassification01A = new SampleClassification()
@@ -1059,7 +1059,7 @@ public class ImportSampleDataTest {
             .status("0001")
             .backColor(frontColorA)
             .frontColor("black");
-        sampleClassificationRepository.saveAndFlush(sampleClassification01A);
+        sampleClassificationRepository.save(sampleClassification01A);
         ProjectSampleClass projectSampleClass_A = projectSampleClassRepository.findByProjectIdAndSampleTypeIdAndSampleClassificationId(project.getId(), sampleType_A.getId(), sampleClassification01A.getId());
         if (projectSampleClass_A == null) {
             projectSampleClass_A = new ProjectSampleClass()
@@ -1068,7 +1068,7 @@ public class ImportSampleDataTest {
                 .sampleType(sampleType_A)
                 .columnsNumber(null).sampleClassificationCode("01").sampleClassificationName("EDTA抗凝血浆")
                 .status("0001");
-            projectSampleClassRepository.saveAndFlush(projectSampleClass_A);
+            projectSampleClassRepository.save(projectSampleClass_A);
         }
     }
     @Test
@@ -1115,11 +1115,11 @@ public class ImportSampleDataTest {
                     .zipCode(list.get(i).get("ZIP_CODE") != null ? list.get(i).get("ZIP_CODE").toString() : null)
                     .username1(list.get(i).get("USER_1").toString()).username2(list.get(i).get("USER_2").toString())
                     .phoneNumber1(list.get(i).get("PHONE_1").toString()).phoneNumber2(list.get(i).get("PHONE_2").toString());
-                projectSiteRepository.saveAndFlush(projectSite);
+                projectSiteRepository.save(projectSite);
                 ProjectRelate projectRelate = projectRelateRepository.findByProjectIdAndProjectSiteId(project.getId(), projectSite.getId());
                 if (projectRelate == null) {
                     projectRelate = new ProjectRelate().project(project).projectSite(projectSite).status("0001");
-                    projectRelateRepository.saveAndFlush(projectRelate);
+                    projectRelateRepository.save(projectRelate);
                 }
             }
         }
@@ -1208,11 +1208,11 @@ public class ImportSampleDataTest {
                 .username2(list.get(i).get("USER_2") != null ? list.get(i).get("USER_2").toString() : null)
                 .phoneNumber1(list.get(i).get("PHONE_1") != null ? list.get(i).get("PHONE_1").toString() : null)
                 .phoneNumber2(list.get(i).get("PHONE_2") != null ? list.get(i).get("PHONE_2").toString() : null);
-            projectSiteRepository.saveAndFlush(projectSite);
+            projectSiteRepository.save(projectSite);
             ProjectRelate projectRelate = projectRelateRepository.findByProjectIdAndProjectSiteId(project.getId(), projectSite.getId());
             if (projectRelate == null) {
                 projectRelate = new ProjectRelate().project(project).projectSite(projectSite).status("0001");
-                projectRelateRepository.saveAndFlush(projectRelate);
+                projectRelateRepository.save(projectRelate);
             }
         }
     }
@@ -1255,7 +1255,7 @@ public class ImportSampleDataTest {
                     }
                 }
             }
-            coordinateRepository.saveAndFlush(coordinate);
+            coordinateRepository.save(coordinate);
         }
 
     }
@@ -1313,7 +1313,7 @@ public class ImportSampleDataTest {
                         BigDecimal lng = response.getResult().getLocation().getLng();
                         province.setLongitude(lng);
                         province.setLatitude(lat);
-                        provinceRepository.saveAndFlush(province);
+                        provinceRepository.save(province);
                     }
                 }
             }
@@ -1373,7 +1373,7 @@ public class ImportSampleDataTest {
                 if (area == null) {
                     area = new Area().areaCode(areaCode).equipment(areaMapper.equipmentFromId(equipment.getId())).freezeFrameNumber(freezeFrameNumber).equipmentCode(equipment.getEquipmentCode())
                         .status("0001");
-                    areaRepository.saveAndFlush(area);
+                    areaRepository.save(area);
                 }
                 String[] supportCodeStr = new String[]{};
                 if (areaCode.equals("S01") || areaCode.equals("S02") || areaCode.equals("S03") || areaCode.equals("S04")) {
@@ -1389,7 +1389,7 @@ public class ImportSampleDataTest {
                     if (supportRack == null) {
                         supportRack = new SupportRack().status("0001").supportRackCode(supportCode).supportRackType(supportRackType).supportRackTypeCode(supportRackType.getSupportRackTypeCode())
                             .area(supportRackMapper.areaFromId(area.getId()));
-                        supportRackRepository.saveAndFlush(supportRack);
+                        supportRackRepository.save(supportRack);
                     }
                 }
             }
@@ -1474,12 +1474,14 @@ public class ImportSampleDataTest {
      */
     @Test
     public void importOptRecordForPeace2() {
-        importBoxRecordForPeace2("A_RECORD", "A");
-        importBoxRecordForPeace2("E_RECORD", "E");
-        importBoxRecordForPeace2("W_RECORD", "W");
+//        importBoxRecordForPeace2("A_RECORD", "A");
+//        importBoxRecordForPeace2("E_RECORD", "E");
+//        importBoxRecordForPeace2("W_RECORD", "W");
         importBoxRecordForPeace2("R_RECORD", "R");
     }
 
+    private Integer allOperations=0;
+    final Integer[] executedOperations = {0};
     /**
      * 导入操作记录的具体实现
      *
@@ -1487,6 +1489,8 @@ public class ImportSampleDataTest {
      * @param type
      */
     private void importBoxRecordForPeace2(String tableName, String type) {
+        allOperations=0;
+        executedOperations[0] = 0;
         //从视图中查询所有的操作记录
         Connection con = null;// 创建一个数据库连接
         PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
@@ -1494,7 +1498,8 @@ public class ImportSampleDataTest {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         try {
             con = DBUtilForTemp.open();
-            System.out.println("连接成功！");
+//            System.out.println("连接成功！");
+            log.info("链接成功！");
             String sqlForSelect = "select * from " + tableName + " a order by a.OPT_YEAR, a.OLD_DATE, a.OPT_PERSON_1, a.OPT_PERSON_2, a.BOX_CODE_1, a.BOX_CODE";// 预编译语句
             pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
             result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
@@ -1510,7 +1515,7 @@ public class ImportSampleDataTest {
         } finally {
             try {
                 DBUtilForTemp.close(con);
-                System.out.println("数据库连接已关闭！");
+                log.info("数据库连接已关闭！");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1521,6 +1526,7 @@ public class ImportSampleDataTest {
 
         TreeMap<String, List<Map<String, Object>>> mapGroupByDateAndOptionType = new TreeMap<>();
         mapGroupByDateAndOptionType.putAll(listGroupByDateAndOptionType);
+        allOperations = list.size();
         for (String optionType : mapGroupByDateAndOptionType.keySet()) {
             List<Map<String, Object>> opts1 = mapGroupByDateAndOptionType.get(optionType);
             Map<String, List<Map<String, Object>>> listGroupByTask = null;
@@ -1529,11 +1535,19 @@ public class ImportSampleDataTest {
             switch (optionType) {
                 case "移位":
                     // 不分组直接导入
-                    opts1.forEach(o -> this.importMoveBoxForPeace2(o, type));
+                    opts1.forEach(o -> {
+                        this.importMoveBoxForPeace2(o, type);
+                        executedOperations[0]++;
+                        log.info("Finished:(%d/%d)", executedOperations[0], allOperations);
+                    });
                     break;
                 case "销毁":
                     // 不分组直接导入
-                    opts1.forEach(o -> this.importDestroyRecord(o));
+                    opts1.forEach(o -> {
+                        this.importDestroyRecord(o);
+                        executedOperations[0]++;
+                        log.info("Finished:(%d/%d)", executedOperations[0], allOperations);
+                    });
                     break;
                 case "出库":
                 case "出库2":
@@ -1650,19 +1664,19 @@ public class ImportSampleDataTest {
             }
             frozenBox.setMemo(memoLast);
             frozenBox.setStatus(Constants.FROZEN_BOX_DESTROY);
-            frozenBoxRepository.saveAndFlush(frozenBox);
+            frozenBoxRepository.save(frozenBox);
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(frozenBox.getId());
             for (FrozenTube f : frozenTubeList) {
                 f.setStatus(Constants.FROZEN_TUBE_DESTROY);
                 f.setFrozenTubeState(Constants.FROZEN_BOX_DESTROY);
-                frozenTubeRepository.saveAndFlush(f);
+                frozenTubeRepository.save(f);
             }
             saveDestroyDetail(positionDestroy, Constants.MOVE_TYPE_FOR_BOX, frozenTubeList);
         } else {
             FrozenTube frozenTube = frozenTubeRepository.findBySampleCodeAndSampleTypeCode(boxCode, sampleType);
             frozenTube.setStatus(Constants.FROZEN_TUBE_DESTROY);
             frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_DESTROY);
-            frozenTubeRepository.saveAndFlush(frozenTube);
+            frozenTubeRepository.save(frozenTube);
             List<FrozenTube> frozenTubeList = new ArrayList<FrozenTube>() {{
                 add(frozenTube);
             }};
@@ -1729,7 +1743,7 @@ public class ImportSampleDataTest {
     //保存移位记录
     public void importMoveBoxForPeace2(Map<String, Object> map, String sampleTypeCode) {
         String boxCode = map.get("BOX_CODE").toString();
-        System.out.print(boxCode);
+        log.info(boxCode);
         FrozenBox frozenBox = frozenBoxRepository.findByFrozenBoxCodeAndSampleTypeCode(boxCode, sampleTypeCode);
 
         if (frozenBox == null) {
@@ -1828,6 +1842,7 @@ public class ImportSampleDataTest {
     }
 
     public void saveMoveDetail(PositionMove positionMove, String moveType, List<FrozenTube> frozenTubeList) {
+//        List<PositionMoveRecord> positionMoveRecordList = new ArrayList<>();
         for (FrozenTube frozenTube : frozenTubeList) {
             PositionMoveRecord positionMoveRecord = new PositionMoveRecord()
                 .sampleCode(StringUtils.isEmpty(frozenTube.getSampleCode()) ? frozenTube.getSampleTempCode() : frozenTube.getSampleCode())
@@ -1871,10 +1886,10 @@ public class ImportSampleDataTest {
                 .frozenTubeVolumnsUnit(frozenTube.getFrozenTubeVolumnsUnit())
                 .sampleVolumns(frozenTube.getSampleVolumns())
                 .errorType(frozenTube.getErrorType());
-            positionMoveRecord.setCreatedDate(positionMove.getCreatedDate());
-
-            positionMoveRecordRepository.save(positionMoveRecord);
+            positionMoveRecordRepository.saveAndFlush(positionMoveRecord);
+//            positionMoveRecordList.add(positionMoveRecord);
         }
+
     }
 
     //首次入库保存
@@ -2034,7 +2049,7 @@ public class ImportSampleDataTest {
                 .memo("PEACE2 项目" + LocalDate.now() + "数据导入")
                 .status(Constants.STOCK_IN_COMPLETE);
             stockIn.setCreatedDate(createDate);
-            stockInRepository.saveAndFlush(stockIn);
+            stockInRepository.save(stockIn);
 
             //保存盒子以及盒内样本
             for (int j = 0; j < boxList.size(); j++) {
@@ -2063,7 +2078,7 @@ public class ImportSampleDataTest {
                 if (area == null) {
                     area = new Area().areaCode(areaCode).equipment(areaMapper.equipmentFromId(entity.getId())).freezeFrameNumber(0).equipmentCode(equipmentCode)
                         .status("0001");
-                    areaRepository.saveAndFlush(area);
+                    areaRepository.save(area);
                 }
                 //冻存架
                 SupportRack supportRack = supportRackRepository.findByAreaIdAndSupportRackCode(area.getId(),supportCode);
@@ -2071,7 +2086,7 @@ public class ImportSampleDataTest {
                     SupportRackType supportRackType = supportRackTypeRepository.findBySupportRackTypeCode("B5x5");
                     supportRack = new SupportRack().status("0001").supportRackCode(supportCode).supportRackType(supportRackType).supportRackTypeCode(supportRackType.getSupportRackTypeCode())
                         .area(supportRackMapper.areaFromId(area.getId()));
-                    supportRackRepository.saveAndFlush(supportRack);
+                    supportRackRepository.save(supportRack);
                 }
                 String posInShelf = null;
 
@@ -2110,7 +2125,7 @@ public class ImportSampleDataTest {
                         .isRealData(1).frozenBoxType(frozenBoxType).sampleType(sampleType).sampleClassification(sampleClassification).equipment(entity).area(area)
                         .supportRack(supportRack)
                         .columnsInShelf(columnsInShelf).rowsInShelf(rowsInShelf).project(project).projectSite(projectSite);
-                    frozenBoxRepository.saveAndFlush(frozenBox);
+                    frozenBoxRepository.save(frozenBox);
                 }
                 List<Map<String, Object>> tubeList = sampleMap.get(boxList.get(j).get("BOX_CODE_2").toString().substring(0, boxList.get(j).get("BOX_CODE_2").toString().length() - 1));
 
@@ -2133,7 +2148,7 @@ public class ImportSampleDataTest {
                     .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
                     .projectSiteName(frozenBox.getProjectSiteName());
                 stockInBox.setCreatedDate(createDate);
-                stockInBoxRepository.saveAndFlush(stockInBox);
+                stockInBoxRepository.save(stockInBox);
 
                 //保存入库盒子位置
                 StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
@@ -2144,7 +2159,7 @@ public class ImportSampleDataTest {
                     .columnsInShelf(stockInBox.getColumnsInShelf()).rowsInShelf(stockInBox.getRowsInShelf())
                     .stockInBox(stockInBox);
                 stockInBoxPosition.setCreatedDate(createDate);
-                stockInBoxPositionRepository.saveAndFlush(stockInBoxPosition);
+                stockInBoxPositionRepository.save(stockInBoxPosition);
 
                 //保存入库管子\
                 for (int m = 0; m < tubeList.size(); m++) {
@@ -2189,7 +2204,7 @@ public class ImportSampleDataTest {
                         .frozenBoxCode(boxCode).frozenTubeType(frozenTubeType).sampleType(sampleType).sampleClassification(sampleClassification)
                         .project(project).projectSite(projectSite).frozenBox(frozenBox).frozenTubeState("2004");
                     tube.setCreatedDate(createDate);
-                    frozenTubeRepository.saveAndFlush(tube);
+                    frozenTubeRepository.save(tube);
 
 
                     StockInTube stockInTube = new StockInTube()
@@ -2207,7 +2222,7 @@ public class ImportSampleDataTest {
                         .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
                         .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
                     stockInTube.setCreatedDate(createDate);
-                    stockInTubeRepository.saveAndFlush(stockInTube);
+                    stockInTubeRepository.save(stockInTube);
                 }
             }
         }
@@ -2313,28 +2328,32 @@ public class ImportSampleDataTest {
             //创建出库申请
             String code = key.get(0);
             StockOutApply stockOutApply = stockOutApplyRepository.findByApplyCode(code);
-            String stockOutPlanCode = bankUtil.getUniqueIDByDate("E", stockOutDate);
+            String stockOutPlanCode = "";
+            if(code.length()>10){
+                stockOutPlanCode = bankUtil.getUniqueIDByDate("E", stockOutDate);
+            }else{
+                stockOutPlanCode = "E"+code;
+            }
             StockOutPlan stockOutPlan = stockOutPlanRepository.findByStockOutPlanCode(stockOutPlanCode);
             if(stockOutApply == null){
                 stockOutApply = new StockOutApply()
                     .status(Constants.STOCK_OUT_APPROVED).applyCode(code)
                     .applyDate(date).applyPersonName(null).delegate(delegate)
                     .approverId(opt_user_id).approveTime(date)
-                    .endTime(null).startTime(date).purposeOfSample(null).recordId(opt_user_id).recordTime(date);
-                stockOutApply.setCreatedDate(createDate);
+                    .endTime(null).startTime(null).purposeOfSample(null).recordId(opt_user_id).recordTime(date);
                 stockOutApplyRepository.saveAndFlush(stockOutApply);
                 StockOutApplyProject stockOutApplyProject = new StockOutApplyProject().project(project).stockOutApply(stockOutApply).status(Constants.VALID);
-                stockOutApplyProject.setCreatedDate(createDate);
-                stockOutApplyProjectRepository.saveAndFlush(stockOutApplyProject);
-                //创建出库计划
 
-                if(stockOutPlan == null){
-                    stockOutPlan = new StockOutPlan().stockOutPlanCode(stockOutPlanCode).stockOutApply(stockOutApply)
-                        .status(Constants.STOCK_OUT_PLAN_COMPLETED).stockOutPlanDate(date)
-                        .applyNumber(stockOutApply.getApplyCode())
-                        .stockOutApply(stockOutApply);
-                    stockOutPlan = stockOutPlanRepository.saveAndFlush(stockOutPlan);
-                }
+                stockOutApplyProjectRepository.saveAndFlush(stockOutApplyProject);
+            }
+            //创建出库计划
+
+            if(stockOutPlan == null){
+                stockOutPlan = new StockOutPlan().stockOutPlanCode(stockOutPlanCode).stockOutApply(stockOutApply)
+                    .status(Constants.STOCK_OUT_PLAN_COMPLETED).stockOutPlanDate(date)
+                    .applyNumber(stockOutApply.getApplyCode())
+                    .stockOutApply(stockOutApply);
+                stockOutPlan = stockOutPlanRepository.saveAndFlush(stockOutPlan);
             }
             //创建出库需求
             String requirementCode = bankUtil.getUniqueIDByDate("D", stockOutDate);
@@ -2345,7 +2364,7 @@ public class ImportSampleDataTest {
                     .applyCode(code).requirementCode(requirementCode).requirementName("出库"+alist.size()+"支样本")
                     .status(Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS).stockOutApply(stockOutApply)
                     .countOfSample(alist.size()).countOfSampleReal(alist.size());
-                stockOutRequirement.setCreatedDate(createDate);
+
                 stockOutRequirementRepository.saveAndFlush(stockOutRequirement);
             }
             //创建出库任务
@@ -2356,7 +2375,6 @@ public class ImportSampleDataTest {
                 .stockOutPlan(stockOutPlan).usedTime(0)
                 .stockOutDate(date).stockOutHeadId1(opt_user_id).stockOutHeadId2(opt_user_id_2)
                 .taskStartTime(createDate).taskEndTime(createDate).memo(String.join(",", peopleMemo));
-            stockOutTask.setCreatedDate(createDate);
             stockOutTaskRepository.saveAndFlush(stockOutTask);
 
             Map<String, List<Map<String, Object>>> resultMap = new HashMap<>();
@@ -2420,7 +2438,9 @@ public class ImportSampleDataTest {
                 stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_COMPLETED);
                 stockOutFrozenBox.setFrozenBox(frozenBox);
                 stockOutFrozenBox.setStockOutTask(stockOutTask);
-                stockOutFrozenBox = stockOutFrozenBox.frozenBoxCode(frozenBox.getFrozenBoxCode()).sampleTypeCode(frozenBox.getSampleTypeCode())
+                stockOutFrozenBox = stockOutFrozenBox.frozenBoxCode(frozenBox.getFrozenBoxCode())
+                    .frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).
+                    sampleTypeCode(frozenBox.getSampleTypeCode())
                     .sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
                     .sampleClassification(frozenBox.getSampleClassification())
                     .sampleClassificationCode(frozenBox.getSampleClassification() != null ? frozenBox.getSampleClassification().getSampleClassificationCode() : null)
@@ -2432,7 +2452,6 @@ public class ImportSampleDataTest {
                     .areaCode(areaCode).area(area).equipment(equipment).equipmentCode(equipmentCode)
                     .supportRack(null).supportRackCode(null).columnsInShelf(null).rowsInShelf(null)
                     .projectSiteName(frozenBox.getProjectSiteName());
-                stockOutFrozenBox.setCreatedDate(createDate);
                 stockOutFrozenBoxRepository.saveAndFlush(stockOutFrozenBox);
                 //保存冻存盒位置
                 StockOutBoxPosition stockOutBoxPosition = new StockOutBoxPosition();
@@ -2444,7 +2463,7 @@ public class ImportSampleDataTest {
                 stockOutBoxPosition.setAreaCode(area != null ? area.getAreaCode() : null);
                 stockOutBoxPosition.setStatus(Constants.VALID);
                 stockOutBoxPosition.setCreatedDate(createDate);
-                stockOutBoxPositionRepository.saveAndFlush(stockOutBoxPosition);
+                stockOutBoxPositionRepository.save(stockOutBoxPosition);
                 String handOverTime = tubeListResult.get(0).get("HAND_OVER_DATE").toString();
                 Date handOverDate = null;
                 try {
@@ -2461,7 +2480,7 @@ public class ImportSampleDataTest {
                     .stockOutApply(stockOutTask.getStockOutPlan().getStockOutApply())
                     .stockOutPlan(stockOutTask.getStockOutPlan())
                     .status(Constants.STOCK_OUT_HANDOVER_COMPLETED).handoverPersonId(over_person_id).handoverTime(overdate);
-                stockOutHandover.setCreatedDate(createDate);
+
                 stockOutHandoverRepository.saveAndFlush(stockOutHandover);
                 StockOutHandoverBox stockOutHandoverBox = new StockOutHandoverBox().stockOutHandover(stockOutHandover)
                     .supportRackCode(stockOutFrozenBox.getSupportRackCode())
@@ -2503,6 +2522,8 @@ public class ImportSampleDataTest {
                 stockOutHandoverBoxRepository.saveAndFlush(stockOutHandoverBox);
                 Map<String, String> posMap = new HashMap<>();
 
+                List<StockOutReqFrozenTube> stockOutReqFrozenTubes = new ArrayList<>();
+                List<FrozenTube> frozenTubeList = new ArrayList<>();
                 for (Map<String, Object> map : tubeListResult) {
                     String sampleCode = map.get("BOX_CODE").toString();
                     //出库需求样本
@@ -2520,7 +2541,7 @@ public class ImportSampleDataTest {
                         .tubeRows(frozenTube.getTubeRows()).stockOutFrozenBox(stockOutFrozenBox).stockOutTask(stockOutTask);
                     stockOutReqFrozenTube = stockOutReqFrozenTube
                         .frozenBoxCode(frozenTube.getFrozenBoxCode()).errorType(frozenTube.getErrorType())
-                        .frozenTubeCode(frozenTube.getFrozenTubeCode()).frozenTubeState(frozenTube.getFrozenTubeState())
+                        .frozenTubeCode(frozenTube.getFrozenTubeCode()).frozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
                         .frozenTubeTypeId(frozenTube.getFrozenTubeType().getId()).frozenTubeTypeCode(frozenTube.getFrozenTubeTypeCode())
                         .frozenTubeTypeName(frozenTube.getFrozenTubeTypeName()).frozenTubeVolumns(frozenTube.getFrozenTubeVolumns())
                         .frozenTubeVolumnsUnit(frozenTube.getFrozenTubeVolumnsUnit()).sampleVolumns(frozenTube.getSampleVolumns())
@@ -2595,6 +2616,8 @@ public class ImportSampleDataTest {
                         .stockOutHandoverBox(stockOutHandoverBox); stockOutHandoverDetails.setMemo(String.join(",", memoList));
                     stockOutHandoverDetailsRepository.saveAndFlush(stockOutHandoverDetails);
                 }
+                executedOperations[0]++;
+                log.info("Finished:(%d/%d)", executedOperations[0], allOperations);
             }
         }
     }
@@ -2638,7 +2661,6 @@ public class ImportSampleDataTest {
             .stockInDate(date)
             .countOfSample(0).stockInCode(stockInCode).project(project).projectSite(null)
             .status(Constants.STOCK_IN_COMPLETE);
-        stockIn.setCreatedDate(createDate);
         stockInRepository.saveAndFlush(stockIn);
         Map<String, List<Map<String, Object>>> listGroupByTask =
             inBoxAllList.stream().collect(Collectors.groupingBy(w -> w.get("BOX_CODE").toString()));
@@ -2740,7 +2762,6 @@ public class ImportSampleDataTest {
                         .isRealData(1).frozenBoxType(frozenBoxType).sampleType(sampleType).sampleClassification(sampleClassification).equipment(entity).area(area)
                         .supportRack(supportRack)
                         .columnsInShelf(columnsInShelf).rowsInShelf(rowsInShelf).project(project).projectSite(null);
-                    frozenBox.setCreatedDate(createDate);
                 }
             } else {
                 String sampleCode = inBoxList.get(0).get("BOX_CODE_1").toString();
@@ -2771,7 +2792,7 @@ public class ImportSampleDataTest {
                 .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
                 .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
                 .projectSiteName(frozenBox.getProjectSiteName());
-            stockInBox.setCreatedDate(createDate);
+
             stockInBoxRepository.saveAndFlush(stockInBox);
             countOfSample+=stockInBox.getCountOfSample();
             //保存入库盒子位置
@@ -2782,12 +2803,11 @@ public class ImportSampleDataTest {
                 .supportRack(stockInBox.getSupportRack()).supportRackCode(stockInBox.getSupportRackCode())
                 .columnsInShelf(stockInBox.getColumnsInShelf()).rowsInShelf(stockInBox.getRowsInShelf())
                 .stockInBox(stockInBox);
-            stockInBoxPosition.setCreatedDate(createDate);
             stockInBoxPositionRepository.saveAndFlush(stockInBoxPosition);
             //保存盒子以及盒内样本
             for (int j = 0; j < inBoxList.size(); j++) {
                 String sampleCode = inBoxList.get(j).get("BOX_CODE_1").toString();
-                System.out.print(sampleCode+":"+inBoxList.get(j).get("POS_IN_TUBE"));
+                log.info(sampleCode+":"+inBoxList.get(j).get("POS_IN_TUBE"));
                 FrozenTube tube = frozenTubeRepository.findBySampleCodeAndSampleTypeCode(sampleCode, sampleTypeCode);
                 if (tube == null) {
                     continue;
@@ -2825,6 +2845,9 @@ public class ImportSampleDataTest {
                     .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
                     .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
                 stockInTubeRepository.saveAndFlush(stockInTube);
+
+                executedOperations[0]++;
+                log.info("Finished:(%d/%d)", executedOperations[0], allOperations);
             }
         }
         stockIn.setCountOfSample(countOfSample);stockInRepository.saveAndFlush(stockIn);
@@ -2939,7 +2962,7 @@ public class ImportSampleDataTest {
             .whetherFreezingAndThawing(false).positionMoveDate(date)
             .status(Constants.VALID).operatorId1(opt_user_id).operatorId2(opt_user_id_2);
         positionMove.setCreatedDate(createDate);
-        positionMoveRepository.saveAndFlush(positionMove);
+        positionMoveRepository.save(positionMove);
 
         //移位入库详情
         //先查询到盒子的首次入库记录
@@ -2967,7 +2990,7 @@ public class ImportSampleDataTest {
             supportRack = new SupportRack().status("0001").supportRackCode(supportCode).supportRackType(supportRackType)
                 .supportRackTypeCode(supportRackType.getSupportRackTypeCode())
                 .area(supportRackMapper.areaFromId(area.getId()));
-            supportRackRepository.saveAndFlush(supportRack);
+            supportRackRepository.save(supportRack);
         }
         String posInShelf = map.get("POS_IN_SHELF") != null ? map.get("POS_IN_SHELF").toString() : null;
         if (posInShelf == null || posInShelf.equals("NA")) {
@@ -2991,7 +3014,7 @@ public class ImportSampleDataTest {
             memoLast = memoOld + "," + memo;
         }
         frozenBox.setMemo(memoLast);
-        frozenBoxRepository.saveAndFlush(frozenBox);
+        frozenBoxRepository.save(frozenBox);
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(frozenBox.getId());
         saveMoveDetail(positionMove, Constants.MOVE_TYPE_FOR_BOX, frozenTubeList);
 
@@ -3074,7 +3097,7 @@ public class ImportSampleDataTest {
                 .countOfSample(boxList.size()).stockInCode(stockInCode).project(project).projectSite(projectSite)
                 .memo("PEACE5 项目" + LocalDate.now() + "数据导入")
                 .status(Constants.STOCK_IN_COMPLETE);
-            stockInRepository.saveAndFlush(stockIn);
+            stockInRepository.save(stockIn);
         }
         Map<String, List<Map<String, Object>>> tubeForBoxMap = boxList.stream().collect(Collectors.groupingBy(s -> s.get("BOX_CODE").toString()));
         for (String box : tubeForBoxMap.keySet()) {
@@ -3164,7 +3187,7 @@ public class ImportSampleDataTest {
                     .supportRack(supportRack)
                     .columnsInShelf(columnsInShelf).rowsInShelf(rowsInShelf).project(project).projectSite(projectSite);
             }
-            frozenBoxRepository.saveAndFlush(frozenBox);
+            frozenBoxRepository.save(frozenBox);
             assertThat(frozenBox).isNotNull();
 
             //保存入库盒
@@ -3188,7 +3211,7 @@ public class ImportSampleDataTest {
                     .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
                     .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
                     .projectSiteName(frozenBox.getProjectSiteName());
-                stockInBoxRepository.saveAndFlush(stockInBox);
+                stockInBoxRepository.save(stockInBox);
                 assertThat(stockInBox).isNotNull();
             } else {
                 stockInBox = stockInBoxList.get(0);
@@ -3203,7 +3226,7 @@ public class ImportSampleDataTest {
                     .supportRack(stockInBox.getSupportRack()).supportRackCode(stockInBox.getSupportRackCode())
                     .columnsInShelf(stockInBox.getColumnsInShelf()).rowsInShelf(stockInBox.getRowsInShelf())
                     .stockInBox(stockInBox);
-                stockInBoxPositionRepository.saveAndFlush(stockInBoxPosition);
+                stockInBoxPositionRepository.save(stockInBoxPosition);
                 assertThat(stockInBoxPosition).isNotNull();
             }
             //保存入库管子
@@ -3239,7 +3262,7 @@ public class ImportSampleDataTest {
                     .status(status).memo(memo).sampleStage(times)
                     .frozenBoxCode(boxCode).frozenTubeType(frozenTubeType).sampleType(sampleType).sampleClassification(sampleClassification)
                     .project(project).projectSite(projectSite).frozenBox(frozenBox).frozenTubeState("2004");
-                frozenTubeRepository.saveAndFlush(tube);
+                frozenTubeRepository.save(tube);
 
                 StockInTube stockInTube = new StockInTube()
                     .status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
@@ -3255,7 +3278,7 @@ public class ImportSampleDataTest {
                     .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
                     .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
                     .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
-                stockInTubeRepository.saveAndFlush(stockInTube);
+                stockInTubeRepository.save(stockInTube);
             }
         }
     }
@@ -3508,7 +3531,7 @@ public class ImportSampleDataTest {
                 if (area == null) {
                     area = new Area().areaCode(areaCode).equipment(areaMapper.equipmentFromId(entity.getId())).freezeFrameNumber(0).equipmentCode(equipmentCode)
                         .status("0001");
-                    areaRepository.saveAndFlush(area);
+                    areaRepository.save(area);
                 }
                 //冻存架
                 SupportRack supportRack = supportRackRepository.findByAreaIdAndSupportRackCode(area.getId(),supportCode);
@@ -3516,7 +3539,7 @@ public class ImportSampleDataTest {
                     SupportRackType supportRackType = supportRackTypeRepository.findBySupportRackTypeCode("B5x5");
                     supportRack = new SupportRack().status("0001").supportRackCode(supportCode).supportRackType(supportRackType).supportRackTypeCode(supportRackType.getSupportRackTypeCode())
                         .area(supportRackMapper.areaFromId(area.getId()));
-                    supportRackRepository.saveAndFlush(supportRack);
+                    supportRackRepository.save(supportRack);
                 }
                 String posInShelf = boxMap.get("POS")!=null?boxMap.get("POS").toString().trim():"NA";
                 String columnsInShelf = posInShelf != null ? posInShelf.substring(0, 1) : null;

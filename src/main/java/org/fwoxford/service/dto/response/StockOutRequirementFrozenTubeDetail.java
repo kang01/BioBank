@@ -72,6 +72,15 @@ public class StockOutRequirementFrozenTubeDetail {
     @Column(name = "stock_out_requirement_id")
     private Long stockOutRequirementId;
 
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "frozen_box_code_1d")
+    private String frozenBoxCode1D;
+    @Column(name = "frozen_box_code")
+    private String frozenBoxCode;
+    @Column(name = "frozen_box_id")
+    private Long frozenBoxId;
+
     public Long getId() {
         return id;
     }
@@ -174,5 +183,29 @@ public class StockOutRequirementFrozenTubeDetail {
 
     public void setStockOutRequirementId(Long stockOutRequirementId) {
         this.stockOutRequirementId = stockOutRequirementId;
+    }
+
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
+    }
+
+    public String getFrozenBoxCode() {
+        return frozenBoxCode;
+    }
+
+    public void setFrozenBoxCode(String frozenBoxCode) {
+        this.frozenBoxCode = frozenBoxCode;
+    }
+
+    public Long getFrozenBoxId() {
+        return frozenBoxId;
+    }
+
+    public void setFrozenBoxId(Long frozenBoxId) {
+        this.frozenBoxId = frozenBoxId;
     }
 }

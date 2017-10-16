@@ -356,6 +356,8 @@
                                 vm.box.sampleType = vm.problemOptions[0];
                                 if(vm.box.sampleTypeCode != "97"){
                                     _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
+                                }else{
+                                    vm.noSampleClassFlag = true;
                                 }
                             }else{
                                 vm.sampleFlag = false;

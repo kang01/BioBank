@@ -1,5 +1,6 @@
 package org.fwoxford.repository;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.StockOutReqFrozenTube;
 
@@ -21,11 +22,9 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     List<StockOutReqFrozenTube> findAllByStockOutApplyId(Long id);
 
 
-    default void deleteByStockOutRequirementId(Long id) {
+    void deleteByStockOutRequirementId(Long id);
 
-    };
-
-    @Query("SELECT count(s) FROM StockOutReqFrozenTube s WHERE s.stockOutRequirement.stockOutApply.id = ?1 AND s.status = '1301'")
+    @Query("SELECT count(s) FROM StockOutReqFrozenTube s WHERE s.stockOutRequirement.stockOutApply.id = ?1 AND s.status in( '"+ Constants.STOCK_OUT_SAMPLE_WAITING_OUT+"','"+ Constants.STOCK_OUT_SAMPLE_IN_USE+"')")
     Long countByApply(Long id);
 
     @Query("SELECT s FROM StockOutReqFrozenTube s WHERE s.stockOutRequirement.stockOutApply.id = ?1 AND s.frozenBox.id =?2")
@@ -71,6 +70,8 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     //By zhuge
     @Query("select DISTINCT t.frozenBox from StockOutReqFrozenTube t where t.stockOutTask.id = ?1 and t.status = ?2")
     List<FrozenBox> findByStockOutTaskIdAndStatus(Long taskId, String status);
+
+    List<StockOutReqFrozenTube> findByStockOutTaskId(Long taskId);
 
     Long countByStockOutTaskIdAndFrozenBoxIdAndStatus(Long taskId, Long id, String stockOutSampleWaitingOut);
 

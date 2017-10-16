@@ -198,7 +198,7 @@ public class StockOutRequirementResource {
     }
 
     /**
-     * 保存出库申请需求
+     * 修改保存出库申请需求
      *
      * @param stockOutApplyId
      * @param stockOutRequirement

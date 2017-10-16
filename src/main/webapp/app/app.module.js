@@ -31,6 +31,7 @@
             'toastr',
             'angularMoment',
             'pageslide-directive',
+            'ngAudio',
             'colorpicker.module'
         ])
         .run(run);

@@ -87,6 +87,7 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/echarts/dist/echarts.js',
             'src/main/webapp/bower_components/echarts/map/js/china.js',
             'src/main/webapp/bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js',
+            'src/main/webapp/bower_components/angular-audio/app/angular.audio.js',
             'src/main/webapp/bower_components/angular-mocks/angular-mocks.js',
             'src/main/webapp/bower_components/ngHandsontable/dist/ngHandsontable.js',
             'src/main/webapp/bower_components/angular-selectize2/dist/angular-selectize.js',

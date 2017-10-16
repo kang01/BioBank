@@ -167,7 +167,16 @@
                         var colIndex = tube.colNO - selectedCol - 1;
                         return{row:rowIndex,col:colIndex};
                     }else{
-                        return{row:0,col:0};
+                        // return{row:0,col:0};
+
+                        // added by zhuyu for 扫码不近格
+                        if (vm.singleMultipleFlag == "single"){
+                            return{row:0,col:0};
+                        } else if(selectedCol + 1 < hotMoves.countCols()){
+                            return{row:0,col:1};
+                        } else{
+                            return{row:1,col:-selectedCol};
+                        }
                     }
 
                     // if(vm.nextFlag){

@@ -49,7 +49,8 @@
     "handsontable": "^0.33.0",
     "echarts": "^3.7.0",
     "angular-bootstrap-colorpicker": "^3.0.31",
-    "konva": "^1.6.8"
+    "konva": "^1.6.8",
+    "angular-audio": "^1.7.4"
   },
   "devDependencies": {
     "angular-mocks": "1.5.8"

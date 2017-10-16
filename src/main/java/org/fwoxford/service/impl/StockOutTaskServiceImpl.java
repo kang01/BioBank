@@ -147,12 +147,14 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         StockOutTaskDTO stockOutTaskDTO = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
         stockOutTaskDTO.setStockOutPlanCode(stockOutTask.getStockOutPlan()!=null?stockOutTask.getStockOutPlan().getStockOutPlanCode():null);
         if(stockOutTask.getStockOutHeadId1() != null){
-            User user1 = userRepository.findOne(stockOutTask.getStockOutHeadId1());
-            stockOutTaskDTO.setStockOutHeader1(user1!=null?user1.getLastName()+user1.getFirstName():null);
+            User u = userRepository.findOne(stockOutTask.getStockOutHeadId1());
+            String name = (u.getLastName()!=null?u.getLastName():"")+(u.getFirstName()!=null?u.getFirstName():"");
+            stockOutTaskDTO.setStockOutHeader1(name);
         }
         if(stockOutTask.getStockOutHeadId2() != null){
-            User user2 = userRepository.findOne(stockOutTask.getStockOutHeadId2());
-            stockOutTaskDTO.setStockOutHeader2(user2!=null?user2.getLastName()+user2.getFirstName():null);
+            User u = userRepository.findOne(stockOutTask.getStockOutHeadId2());
+            String name = (u.getLastName()!=null?u.getLastName():"")+(u.getFirstName()!=null?u.getFirstName():"");
+            stockOutTaskDTO.setStockOutHeader2(name);
         }
         stockOutTaskDTO.setStockOutApplyId(stockOutTask.getStockOutPlan().getStockOutApply().getId());
         stockOutTaskDTO.setStockOutApplyCode(stockOutTask.getStockOutPlan().getStockOutApply().getApplyCode());

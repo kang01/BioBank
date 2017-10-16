@@ -475,15 +475,18 @@ public class StockInServiceImpl implements StockInService {
         List<User> userList = userRepository.findAll();
         for(User u :userList){
             if(stockIn.getReceiveId()!=null&&stockIn.getReceiveId().equals(u.getId())){
-                stockInForDataDetail.setReceiver(u.getLastName()+u.getFirstName());
+                String name = (u.getLastName()!=null?u.getLastName():"")+(u.getFirstName()!=null?u.getFirstName():"");
+                stockInForDataDetail.setReceiver(name);
             }
 
             if(stockIn.getStoreKeeper1()!=null&&stockIn.getStoreKeeperId1().equals(u.getId())){
-                stockInForDataDetail.setStoreKeeper1(u.getLastName()+u.getFirstName());
+                String name = (u.getLastName()!=null?u.getLastName():"")+(u.getFirstName()!=null?u.getFirstName():"");
+                stockInForDataDetail.setStoreKeeper1(name);
             }
 
             if(stockIn.getStoreKeeper2()!=null&&stockIn.getStoreKeeperId2().equals(u.getId())){
-                stockInForDataDetail.setStoreKeeper2(u.getLastName()+u.getFirstName());
+                String name = (u.getLastName()!=null?u.getLastName():"")+(u.getFirstName()!=null?u.getFirstName():"");
+                stockInForDataDetail.setStoreKeeper2(name);
             }
         }
         List<Object[]> alist = stockInRepository.countFrozenTubeGroupBySampleTypeAndClass(id);

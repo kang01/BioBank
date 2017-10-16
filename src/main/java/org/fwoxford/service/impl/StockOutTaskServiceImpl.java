@@ -23,6 +23,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
@@ -43,6 +45,9 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
     private final StockOutTaskRepository stockOutTaskRepository;
     private final StockOutPlanRepository stockOutPlanRepository;
     private final FrozenBoxRepository frozenBoxRepository;
+
+    @Autowired
+    EntityManager entityManager;
 
     @Autowired
     private StockOutPlanFrozenTubeRepository stockOutPlanFrozenTubeRepository;
@@ -255,19 +260,28 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         List<StockOutTaskFrozenTube> tubes = new ArrayList<StockOutTaskFrozenTube>();
         //查询出计划下的所有需求
         List<Long> stockOutRequirementIds =stockOutRequirementRepository.findRequirementByStockOutApplyId(stockOutPlan.getStockOutApply().getId());
-        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findAllByStockOutRequirementIdInAndFrozenBoxIdIn(stockOutRequirementIds,boxIds);
-        List<StockOutReqFrozenTube> stockOutReqFrozenTubesLast = new ArrayList<>();
-        for(StockOutReqFrozenTube s:stockOutReqFrozenTubes){
-           s.setStockOutTask(stockOutTask);
-            stockOutReqFrozenTubesLast.add(s);
-            if(stockOutReqFrozenTubesLast.size()>=1000){
-                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
-                stockOutReqFrozenTubesLast = new ArrayList<StockOutReqFrozenTube>();
-            }
-        }
-        if(stockOutReqFrozenTubesLast.size()>0){
-            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
-        }
+        StringBuffer sql = new StringBuffer();
+        sql.append("update stock_out_req_frozen_tube t set t.stock_out_task_id = ?1 where t.stock_out_requirement_id in ?2 and t.frozen_box_id in ?3");
+
+        Query query = entityManager.createNativeQuery(sql.toString());
+        query.setParameter("1", stockOutTask.getId());
+        query.setParameter("2", stockOutRequirementIds);
+        query.setParameter("3", boxIds);
+        query.executeUpdate();
+//
+//        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findAllByStockOutRequirementIdInAndFrozenBoxIdIn(stockOutRequirementIds,boxIds);
+//        List<StockOutReqFrozenTube> stockOutReqFrozenTubesLast = new ArrayList<>();
+//        for(StockOutReqFrozenTube s:stockOutReqFrozenTubes){
+//            s.setStockOutTask(stockOutTask);
+//            stockOutReqFrozenTubesLast.add(s);
+//            if(stockOutReqFrozenTubesLast.size()>=1000){
+//                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
+//                stockOutReqFrozenTubesLast = new ArrayList<StockOutReqFrozenTube>();
+//            }
+//        }
+//        if(stockOutReqFrozenTubesLast.size()>0){
+//            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
+//        }
         StockOutTaskDTO result = stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
         return result;
     }

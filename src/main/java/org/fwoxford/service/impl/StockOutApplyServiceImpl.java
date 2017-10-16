@@ -311,7 +311,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
        //获取申请的需求
         List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<StockOutRequirementForApplyTable>();
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(id);
-        Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByApply(id);
+        Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByApplyAndStatus(id,Constants.STOCK_OUT_SAMPLE_IN_USE);
         int countOfSampleAll=0;
         for(StockOutRequirement requirement : stockOutRequirementList){
             StockOutRequirementForApplyTable stockOutRequirementForApplyTable = new StockOutRequirementForApplyTable();
@@ -534,7 +534,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         for(StockOutApply s :stockOutApplies){
             //判断这次申请下的样本是否全部已经交接完
             //查询这个申请的样本量
-            Long count = stockOutReqFrozenTubeRepository.countByApply(s.getId());
+            Long count = stockOutReqFrozenTubeRepository.countByApplyAndStatus(s.getId(),Constants.STOCK_OUT_SAMPLE_COMPLETED);
             //查询这次申请已经交接的样本量
             Long countOfhasHandedSample = stockOutHandoverDetailsRepository.countByStockOutApply(s.getId());
 
@@ -627,7 +627,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         //获取申请的需求
         List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<StockOutRequirementForApplyTable>();
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyIdAndStatus(stockOutApply.getId(),Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS);
-        Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByApply(stockOutApply.getId());
+        Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByApplyAndStatus(stockOutApply.getId(),Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
         int countOfSampleAll=0;
         for(StockOutRequirement requirement : stockOutRequirementList){
             StockOutRequirementForApplyTable stockOutRequirementForApplyTable = new StockOutRequirementForApplyTable();

@@ -375,10 +375,10 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                 });
                 // 保存交接管
                 stockOutHandoverDetailsRepository.save(handoverTubes);
-                stockOutHandoverDetailsRepository.flush();
+//                stockOutHandoverDetailsRepository.flush();
                 // 保存库存管
                 frozenTubeRepository.save(frozenTubes);
-                frozenTubeRepository.flush();
+//                frozenTubeRepository.flush();
 
 
             }

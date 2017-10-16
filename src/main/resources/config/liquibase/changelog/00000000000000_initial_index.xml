@@ -6,69 +6,42 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet id="11111111111111" author="jhipster" dbms="h2,postgresql,oracle">
-        <createSequence sequenceName="seq_jhi_entity_audit_event" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_project" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_project_site" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_project_relate" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_equipment_group" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_equipment_modle" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_equipment" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_area" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_support_rack_type" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_support_rack" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_sample_type" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_frozen_box_type" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_frozen_tube_type" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_frozen_box" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_tranship" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_frozen_tube" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_tranship_box" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_in" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_in_box" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_sample_classification" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_project_sample" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_delegate" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_apply" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_requirement" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_required_sample" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_req_frozen_tube" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_plan" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_plan_tube" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_task" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_box_position" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_box" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_tube" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_handover" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_handover_details" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_files" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_apply_project" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_task_tube" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_task_user_history" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_out_box_tube" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_tranship_tube" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_in_tube" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_tranship_box_pos" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_in_box_pos" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_serial_no" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_position_move_record" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_position_move" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_tranship_stock_in" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_stock_in_tranship_box" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_position_change" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_position_change_record" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_position_destroy" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_position_destroy_record" startValue="1" incrementBy="1"></createSequence>
-        <createSequence sequenceName="seq_attachment" startValue="1" incrementBy="1"></createSequence>
+    <changeSet id="22222222222222-1" author="jhipster" dbms="h2,postgresql,oracle">
+        <sql>
+            <!--表 frozen_tube 索引-->
+            CREATE INDEX pk_sample_code ON frozen_tube (sample_code);
+            CREATE INDEX pk_sample_and_type_code ON frozen_tube (sample_code,sample_type_code);
+            CREATE INDEX pk_frozen_box_code_for_sample ON frozen_tube (frozen_box_code);
+            CREATE INDEX pk_frozen_box_for_sample ON frozen_tube (frozen_box_id);
+            CREATE INDEX pk_gp_frozen_box_for_sample ON frozen_tube (frozen_box_code,frozen_tube_state,status);
+            CREATE INDEX pk_check_for_frozen_tube ON frozen_tube (sample_type_id,sample_classification_id,frozen_tube_type_id,disease_type,gender,is_blood_lipid,is_hemolysis,age,frozen_tube_state,status);
+            CREATE INDEX pk_pos_for_frozen_tube ON frozen_tube (frozen_box_code,tube_rows,tube_columns);
+            CREATE INDEX pk_state_for_frozen_tube ON frozen_tube (frozen_tube_state);
+            <!--表 frozen_box 索引-->
+            CREATE INDEX pk_class_type_for_frozen_box ON frozen_box (frozen_box_code,project_id,sample_classification_id,frozen_box_type_id,status);
+            CREATE INDEX pk_sample_type_for_frozen_box ON frozen_box (frozen_box_code,project_id,sample_type_id,frozen_box_type_id,status);
+            CREATE INDEX pk_status_for_frozen_box ON frozen_box (status);
+            <!--表 tranship_tube 索引-->
+            CREATE INDEX pk_sample_for_tranship_tube ON tranship_tube (frozen_tube_id);
+            <!--表 stock_in_box 索引-->
+            CREATE INDEX pk_stock_in_code_for_box ON stock_in_box (stock_in_code,status);
+            <!--表 stock_in_tube 索引-->
+            CREATE INDEX pk_sample_for_stock_in_tube ON stock_in_tube (frozen_tube_id);
+            CREATE INDEX pk_box_for_stock_in_tube ON stock_in_tube (stock_in_box_id);
+            CREATE INDEX pk_box_code_for_stock_in_tube ON stock_in_tube (frozen_box_code,frozen_tube_state,status);
+            <!--表 stock_out_box_tube 索引-->
+            CREATE INDEX pk_box_for_stock_out_box_tube ON stock_out_box_tube (stock_out_frozen_box_id);
+            CREATE INDEX pk_sample_for_stock_out_tube ON stock_out_box_tube (frozen_tube_id);
+            <!--表 position_move_record 索引-->
+            CREATE INDEX pk_sample_for_move_record ON position_move_record (frozen_tube_id);
+            <!--表 stock_out_handover_details 索引-->
+            CREATE INDEX pk_sample_for_handover_record ON stock_out_handover_details (stock_out_box_tube_id);
 
+        </sql>
     </changeSet>
-    <changeSet id="11111111111111-1" author="jhipster" dbms="h2,postgresql,oracle">
-        <createSequence sequenceName="seq_coordinate" startValue="1" incrementBy="1"></createSequence>
-    </changeSet>
-    <changeSet id="11111111111111-2" author="jhipster" dbms="h2,postgresql,oracle">
-        <createSequence sequenceName="seq_province" startValue="1" incrementBy="1"></createSequence>
-    </changeSet>
-    <changeSet id="11111111111111-3" author="jhipster" dbms="h2,postgresql,oracle">
-        <createSequence sequenceName="seq_stock_out_handover_box" startValue="1" incrementBy="1"></createSequence>
+    <changeSet id="22222222222222-2" author="jhipster" dbms="h2,postgresql,oracle">
+        <sql>
+            CREATE INDEX pk_box_for_stock_out_req_tube ON stock_out_req_frozen_tube (frozen_box_id);
+        </sql>
     </changeSet>
 </databaseChangeLog>

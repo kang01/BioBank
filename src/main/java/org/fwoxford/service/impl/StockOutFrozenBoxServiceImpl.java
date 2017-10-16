@@ -30,6 +30,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -124,6 +126,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
     @Autowired
     private FrozenBoxCheckService frozenBoxCheckService;
+
+    @Autowired
+    EntityManager entityManager;
 
     public StockOutFrozenBoxServiceImpl(StockOutFrozenBoxRepository stockOutFrozenBoxRepository
             , StockOutFrozenBoxMapper stockOutFrozenBoxMapper) {
@@ -510,23 +515,46 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         stockOutBoxPositionRepository.save(stockOutBoxPositionList);
         frozenBoxRepository.save(frozenBoxList);
         List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutFrozenBoxIdIn(frozenBoxIds);
-       List<FrozenTube> frozenTubeList = new ArrayList<>();
+//       List<FrozenTube> frozenTubeList = new ArrayList<>();
+       List<Long> frozenTubeIds = new ArrayList<Long>();
         for(StockOutReqFrozenTube s: stockOutReqFrozenTubes){
             FrozenTube frozenTube = s.getFrozenTube();
-            frozenTube.setSampleUsedTimes(frozenTube.getSampleUsedTimes()!=null?frozenTube.getSampleUsedTimes():0+1);
-            frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
-            s.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
-            s.setStatus(Constants.STOCK_OUT_SAMPLE_COMPLETED);
-            frozenTubeList.add(frozenTube);
+//            frozenTube.setSampleUsedTimes(frozenTube.getSampleUsedTimes()!=null?frozenTube.getSampleUsedTimes():0+1);
+//            frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
+//            s.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
+//            s.setStatus(Constants.STOCK_OUT_SAMPLE_COMPLETED);
+//            frozenTubeList.add(frozenTube);
+            frozenTubeIds.add(frozenTube.getId());
         }
-        List<List<StockOutReqFrozenTube>> stockOutReqTubeList = Lists.partition(stockOutReqFrozenTubes, 1000);
-        for(List<StockOutReqFrozenTube> f:stockOutReqTubeList){
-            stockOutReqFrozenTubeRepository.save(f);
+        StringBuffer sql = new StringBuffer();
+        sql.append("update stock_out_req_frozen_tube t set t.status = ?1 ,t.frozen_tube_state = ?2 where  t.frozen_box_id in ?3");
+
+        Query query = entityManager.createNativeQuery(sql.toString());
+        query.setParameter("1", Constants.STOCK_OUT_SAMPLE_COMPLETED);
+        query.setParameter("2", Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
+        query.setParameter("3", frozenBoxIds);
+
+        query.executeUpdate();
+        List<List<Long>> frozenTubes = Lists.partition(frozenTubeIds, 1000);
+        for(List<Long> ids: frozenTubes){
+            StringBuffer sqlForTube = new StringBuffer();
+            sqlForTube.append("update frozen_tube t set t.frozen_tube_state = ?1 where t.id in ?2");
+
+            Query queryForTube = entityManager.createNativeQuery(sqlForTube.toString());
+            queryForTube.setParameter("1", Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
+            queryForTube.setParameter("2", ids);
+            queryForTube.executeUpdate();
+
         }
-        List<List<FrozenTube>> frozenTubes = Lists.partition(frozenTubeList, 1000);
-        for(List<FrozenTube> f:frozenTubes){
-            frozenTubeRepository.save(frozenTubeList);
-        }
+
+//        List<List<StockOutReqFrozenTube>> stockOutReqTubeList = Lists.partition(stockOutReqFrozenTubes, 1000);
+//        for(List<StockOutReqFrozenTube> f:stockOutReqTubeList){
+//            stockOutReqFrozenTubeRepository.save(f);
+//        }
+//        List<List<FrozenTube>> frozenTubes = Lists.partition(frozenTubeList, 1000);
+//        for(List<FrozenTube> f:frozenTubes){
+//            frozenTubeRepository.save(frozenTubeList);
+//        }
 
         List<String> statusList = new ArrayList<>();
         statusList.add(Constants.STOCK_OUT_SAMPLE_CANCEL);
@@ -548,7 +576,6 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         statusList_.add(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
 
         Long countOfUnCompleteTask = stockOutReqFrozenTubeRepository.countUnCompleteSampleByStockOutApplyAndStatusIn(stockOutTask.getStockOutPlan().getStockOutApply().getId(),statusList_);
-//        Long countOfUnCompleteTask = stockOutTaskRepository.countByStockOutPlanIdAndStatusIn(stockOutTask.getStockOutPlan().getId(),statusList_);
         if(countOfUnCompleteTask.intValue()==0){
             StockOutPlan stockOutPlan = stockOutTask.getStockOutPlan();
             stockOutPlan.setStatus(Constants.STOCK_OUT_PLAN_COMPLETED);

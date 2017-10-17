@@ -513,25 +513,28 @@ public class ReportExportingService {
             if (handoverDTO.getCountOfBox() != null){
                 cellBoxQty.setCellValue(handoverDTO.getCountOfBox());
             }
+            // 项目编码
+            XSSFCell cellProjectCode = getCell(summarySheet, "B11");
+            cellProjectCode.setCellValue(handoverDTO.getProjectCode());
 
             // 备注
-            XSSFCell cellMemo = getCell(summarySheet, "A12");
+            XSSFCell cellMemo = getCell(summarySheet, "A13");
             cellMemo.setCellValue(handoverDTO.getMemo());
 
             // 接收日期
-            XSSFCell cellReceiveDate = getCell(summarySheet, "H13");
+            XSSFCell cellReceiveDate = getCell(summarySheet, "H14");
             cellReceiveDate.setCellValue(handoverDTO.getReceiveDate());
 
             // 接收人
-            XSSFCell cellReceiver2 = getCell(summarySheet, "A14");
+            XSSFCell cellReceiver2 = getCell(summarySheet, "A15");
             cellReceiver2.setCellValue(handoverDTO.getReceiver());
 
             // 交付日期
-            XSSFCell cellDeliverDate = getCell(summarySheet, "J13");
+            XSSFCell cellDeliverDate = getCell(summarySheet, "J14");
             cellDeliverDate.setCellValue(handoverDTO.getDeliverDate());
 
             // 交付人
-            XSSFCell cellRequirePeople = getCell(summarySheet, "J14");
+            XSSFCell cellRequirePeople = getCell(summarySheet, "J15");
             cellRequirePeople.setCellValue(handoverDTO.getDeliver());
 
             XSSFSheet detailSheet = workbook.getSheetAt(1);
@@ -560,43 +563,49 @@ public class ReportExportingService {
                 cellOneRequireNO.setCellStyle(style);
                 cellOneRequireNO.setCellValue(no++);
 
-                // 临时盒编码
+                // 冻存盒编码
                 XSSFCell cellOneBoxCode = getCell(detailSheet, "B", startRowPos);
                 cellOneBoxCode.setCellStyle(style);
                 cellOneBoxCode.setCellValue(r.getBoxCode());
 
+                //一维编码
+                XSSFCell cellOneBoxCode1D = getCell(detailSheet, "C", startRowPos);
+                cellOneBoxCode1D.setCellStyle(style);
+                cellOneBoxCode1D.setCellValue(r.getFrozenBoxCode1D());
+
+
                 // 位置
-                XSSFCell cellOneLocation = getCell(detailSheet, "C", startRowPos);
+                XSSFCell cellOneLocation = getCell(detailSheet, "D", startRowPos);
                 cellOneLocation.setCellStyle(style);
                 cellOneLocation.setCellValue(r.getLocation());
 
                 // 样本编码
-                XSSFCell cellOneSampleCode = getCell(detailSheet, "D", startRowPos);
+                XSSFCell cellOneSampleCode = getCell(detailSheet, "E", startRowPos);
                 cellOneSampleCode.setCellStyle(style);
                 cellOneSampleCode.setCellValue(r.getSampleCode());
 
                 // 类型
-                XSSFCell cellOneSampleType = getCell(detailSheet, "E", startRowPos);
+                XSSFCell cellOneSampleType = getCell(detailSheet, "F", startRowPos);
                 cellOneSampleType.setCellStyle(style);
                 cellOneSampleType.setCellValue(r.getSampleType());
 
                 // 性别
-                XSSFCell cellOneSex = getCell(detailSheet, "F", startRowPos);
+                XSSFCell cellOneSex = getCell(detailSheet, "G", startRowPos);
                 cellOneSex.setCellStyle(style);
                 cellOneSex.setCellValue(r.getSex());
 
                 // 年龄
-                XSSFCell cellOneAge = getCell(detailSheet, "G", startRowPos);
+                XSSFCell cellOneAge = getCell(detailSheet, "H", startRowPos);
                 cellOneAge.setCellStyle(style);
                 cellOneAge.setCellValue(r.getAge());
 
                 // 疾病
-                XSSFCell cellOneDiseaseType = getCell(detailSheet, "H", startRowPos);
+                XSSFCell cellOneDiseaseType = getCell(detailSheet, "I", startRowPos);
                 cellOneDiseaseType.setCellStyle(style);
                 cellOneDiseaseType.setCellValue(r.getDiseaseType());
 
                 // 项目编码
-                XSSFCell cellOneProjectCode = getCell(detailSheet, "I", startRowPos);
+                XSSFCell cellOneProjectCode = getCell(detailSheet, "J", startRowPos);
                 cellOneProjectCode.setCellStyle(style);
                 cellOneProjectCode.setCellValue(r.getProjectCode());
 

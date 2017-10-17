@@ -21,6 +21,7 @@ public class StockOutHandoverReportDTO {
     String memo;
     String receiveDate;
     String deliverDate;
+    String projectCode;
 
     public Long getId() {
         return id;
@@ -140,6 +141,14 @@ public class StockOutHandoverReportDTO {
 
     public void setDeliverDate(String deliverDate) {
         this.deliverDate = deliverDate;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
     }
 
     public List<StockOutHandoverSampleReportDTO> getSamples() {

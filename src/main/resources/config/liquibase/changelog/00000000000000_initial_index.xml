@@ -40,8 +40,15 @@
         </sql>
     </changeSet>
     <changeSet id="22222222222222-2" author="jhipster" dbms="h2,postgresql,oracle">
+        <!-- 表 stock_out_req_frozen_tube 索引-->
         <sql>
             CREATE INDEX pk_box_for_stock_out_req_tube ON stock_out_req_frozen_tube (frozen_box_id);
+        </sql>
+    </changeSet>
+    <changeSet id="22222222222222-3" author="jhipster" dbms="h2,postgresql,oracle">
+        <!-- 表 stock_out_handover_box 索引-->
+        <sql>
+            CREATE INDEX pk_handover_for_box ON stock_out_handover_box (stock_out_handover_id);
         </sql>
     </changeSet>
 </databaseChangeLog>

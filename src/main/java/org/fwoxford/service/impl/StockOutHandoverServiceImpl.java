@@ -225,12 +225,16 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         Integer countOfBox = stockOutHandoverDetailsRepository.countFrozenBoxByStockOutHandoverId(id);
         List<StockOutHandoverSampleReportDTO> stockOutHandoverSampleReportDTOS = new ArrayList<StockOutHandoverSampleReportDTO>();
         List<StockOutHandoverDetails> stockOutHandoverDetails = stockOutHandoverDetailsRepository.findByStockOutHandoverId(id);
-
+        ArrayList<String> projectCodes = new ArrayList<>();
         for(StockOutHandoverDetails s : stockOutHandoverDetails){
             StockOutHandoverSampleReportDTO sample = new StockOutHandoverSampleReportDTO();
             sample = createStockOutHandOverSampleReportDTO(s);
+            if(sample.getProjectCode()!=null && !projectCodes.contains(sample.getProjectCode())){
+                projectCodes.add(sample.getProjectCode());
+            }
             stockOutHandoverSampleReportDTOS.add(sample);
         }
+        handoverDTO.setProjectCode(String.join(",", projectCodes));
         handoverDTO.setCountOfBox(countOfBox);
         handoverDTO.setSamples(stockOutHandoverSampleReportDTOS);
         handoverDTO.setCountOfSample(stockOutHandoverSampleReportDTOS.size());
@@ -247,7 +251,8 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         sample.setId(s.getId());
         sample.setProjectCode(frozenTube.getProjectCode());
         sample.setAge(frozenTube.getAge()!=null?frozenTube.getAge().toString():null);
-        sample.setBoxCode(frozenTube.getFrozenBoxCode());
+        sample.setBoxCode(s.getStockOutHandoverBox().getFrozenBoxCode());
+        sample.setFrozenBoxCode1D(s.getStockOutHandoverBox().getFrozenBoxCode1D());
         sample.setDiseaseType(frozenTube.getDiseaseType());
         sample.setLocation(frozenTube.getTubeRows()+frozenTube.getTubeColumns());
         String sampleCode = StringUtils.isEmpty(frozenTube.getSampleCode())?frozenTube.getSampleTempCode():frozenTube.getSampleCode();

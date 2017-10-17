@@ -311,7 +311,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
        //获取申请的需求
         List<StockOutRequirementForApplyTable> stockOutRequirementForApplyTables = new ArrayList<StockOutRequirementForApplyTable>();
         List<StockOutRequirement> stockOutRequirementList = stockOutRequirementRepository.findByStockOutApplyId(id);
-        Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByApplyAndStatus(id,Constants.STOCK_OUT_SAMPLE_IN_USE);
+        Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByApply(id);
         int countOfSampleAll=0;
         for(StockOutRequirement requirement : stockOutRequirementList){
             StockOutRequirementForApplyTable stockOutRequirementForApplyTable = new StockOutRequirementForApplyTable();
@@ -319,9 +319,9 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             stockOutRequirementForApplyTable.setStatus(requirement.getStatus());
             stockOutRequirementForApplyTable.setCountOfSample(requirement.getCountOfSample());
             stockOutRequirementForApplyTable.setRequirementName(requirement.getRequirementName());
-
-            Long countOfRepealSample = stockOutTaskFrozenTubeRepository.countByStockOutRequirementIdAndStatus(requirement.getId(),Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+            Long countOfRepealSample = stockOutReqFrozenTubeRepository.countByStockOutRequirementIdAndStatus(requirement.getId(),Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
             stockOutRequirementForApplyTable.setCountOfRepealSample(countOfRepealSample);
+
             if(requirement.getImportingFileId()!=null){
                 StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(requirement.getImportingFileId());
                 stockOutRequirementForApplyTable.setSamples(stockOutFiles!=null?stockOutFiles.getFileName():null);
@@ -338,12 +338,12 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             Long countOfSample = requirement.getCountOfSample()!=null?requirement.getCountOfSample():0L;
             countOfSampleAll +=countOfSample;
         }
+        Long countOfRepealSample = stockOutReqFrozenTubeRepository.countByApplyAndStatus(id,Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
+        res.setCountOfRepealSample(countOfRepealSample);
         res.setStockOutRequirement(stockOutRequirementForApplyTables);
         res.setCountOfStockOutSample(countOfStockOutSample);
         res.setCountOfSample(Long.valueOf(countOfSampleAll));
-        Long countOfRepealSample = stockOutTaskFrozenTubeRepository.countByStockOutApplyIdAndStatus(id,Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
-        res.setCountOfRepealSample(countOfRepealSample);
-        Long countOfHandoverSample = stockOutHandoverDetailsRepository.countByStockOutApply(id);
+       Long countOfHandoverSample = stockOutHandoverDetailsRepository.countByStockOutApply(id);
         res.setCountOfHandoverSample(countOfHandoverSample);
         return res;
     }
@@ -636,7 +636,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
             stockOutRequirementForApplyTable.setCountOfSample(requirement.getCountOfSample());
             stockOutRequirementForApplyTable.setRequirementName(requirement.getRequirementName());
 
-            Long countOfRepealSample = stockOutTaskFrozenTubeRepository.countByStockOutRequirementIdAndStatus(requirement.getId(),Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+            Long countOfRepealSample = stockOutReqFrozenTubeRepository.countByStockOutRequirementIdAndStatus(requirement.getId(),Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
             stockOutRequirementForApplyTable.setCountOfRepealSample(countOfRepealSample);
             if(requirement.getImportingFileId()!=null){
                 StockOutFiles stockOutFiles = stockOutFilesRepository.findOne(requirement.getImportingFileId());
@@ -656,7 +656,7 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
         res.setStockOutRequirement(stockOutRequirementForApplyTables);
         res.setCountOfStockOutSample(countOfStockOutSample);
         res.setCountOfSample(Long.valueOf(countOfSampleAll));
-        Long countOfRepealSample = stockOutTaskFrozenTubeRepository.countByStockOutApplyIdAndStatus(stockOutApply.getId(),Constants.STOCK_OUT_FROZEN_TUBE_CANCEL);
+        Long countOfRepealSample = stockOutReqFrozenTubeRepository.countByApplyAndStatus(stockOutApply.getId(),Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
         res.setCountOfRepealSample(countOfRepealSample);
         Long countOfHandoverSample = stockOutHandoverDetailsRepository.countByStockOutApply(stockOutApply.getId());
         res.setCountOfHandoverSample(countOfHandoverSample);

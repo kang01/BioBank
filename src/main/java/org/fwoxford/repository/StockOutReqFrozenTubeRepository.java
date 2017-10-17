@@ -44,6 +44,7 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
         "        group by a.id" ,nativeQuery = true)
     List<Object[]> countByTaskGroupByBox(Long taskId);
 
+    @Query("select t from StockOutReqFrozenTube t where t.stockOutTask.id =?1 and t.frozenBox.id = ?2 and t.status = '"+Constants.STOCK_OUT_SAMPLE_IN_USE+"'")
     List<StockOutReqFrozenTube> findByStockOutTaskIdAndFrozenBoxId(Long stockOutTaskId, Long frozenBoxId);
 
     List<StockOutReqFrozenTube> findByStockOutTaskIdAndFrozenTubeIdInAndStatusNot(Long taskId, List<Long> frozenTubeIds, String stauts);
@@ -77,4 +78,9 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
 
     @Query("select count(t.id) from StockOutReqFrozenTube t where t.stockOutRequirement.stockOutApply.id = ?1 and t.status in ?2 ")
     Long countUnCompleteSampleByStockOutApplyAndStatusIn(Long id, List<String> statusList_);
+
+    @Query("SELECT count(s) FROM StockOutReqFrozenTube s WHERE s.stockOutRequirement.stockOutApply.id = ?1")
+    Long countByApply(Long id);
+
+    Long countByStockOutRequirementIdAndStatus(Long id, String status);
 }

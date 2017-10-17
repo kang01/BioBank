@@ -533,14 +533,14 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             frozenTubeIds.add(frozenTube.getId());
         }
         StringBuffer sql = new StringBuffer();
-        sql.append("update stock_out_req_frozen_tube t set t.status = ?1 ,t.frozen_tube_state = ?2 where  t.frozen_box_id in ?3");
+        sql.append("update stock_out_req_frozen_tube t set t.status = ?1 ,t.frozen_tube_state = ?2 where  t.stock_out_frozen_box_id in ?3");
 
         Query query = entityManager.createNativeQuery(sql.toString());
         query.setParameter("1", Constants.STOCK_OUT_SAMPLE_COMPLETED);
         query.setParameter("2", Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
         query.setParameter("3", frozenBoxIds);
-
         query.executeUpdate();
+
         List<List<Long>> frozenTubes = Lists.partition(frozenTubeIds, 1000);
         for(List<Long> ids: frozenTubes){
             StringBuffer sqlForTube = new StringBuffer();

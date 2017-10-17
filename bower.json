@@ -50,7 +50,8 @@
     "echarts": "^3.7.0",
     "angular-bootstrap-colorpicker": "^3.0.31",
     "konva": "^1.6.8",
-    "angular-audio": "^1.7.4"
+    "angular-audio": "^1.7.4",
+    "angular-ui-mask": "^1.8.7"
   },
   "devDependencies": {
     "angular-mocks": "1.5.8"

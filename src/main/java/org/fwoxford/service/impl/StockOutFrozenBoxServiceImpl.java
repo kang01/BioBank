@@ -632,6 +632,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutTakeBoxReportDTO.setEquipmentCode(frozenBox.getEquipmentCode());
             stockOutTakeBoxReportDTO.setShelfCode(frozenBox.getSupportRackCode());
             stockOutTakeBoxReportDTO.setBoxCode(frozenBox.getFrozenBoxCode());
+            stockOutTakeBoxReportDTO.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
             stockOutTakeBoxReportDTO.setShelfLocation(frozenBox.getColumnsInShelf()+frozenBox.getRowsInShelf());
             stockOutTakeBoxReportDTOS.add(stockOutTakeBoxReportDTO);
         }

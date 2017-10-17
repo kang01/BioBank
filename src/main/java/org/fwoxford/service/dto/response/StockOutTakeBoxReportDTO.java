@@ -59,6 +59,13 @@ public class StockOutTakeBoxReportDTO {
     }
 
     public String shelfLocation;
+    public String frozenBoxCode1D;
 
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
 
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
+    }
 }

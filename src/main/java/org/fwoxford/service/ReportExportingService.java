@@ -646,41 +646,48 @@ public class ReportExportingService {
 
             for(StockOutTakeBoxReportDTO r : takeBoxDTOs){
                 // 序号
-                XSSFCell cellOneNO = getCell(detailSheet, no % 2 == 0 ? "I" : "A", startRowPos);
+//                XSSFCell cellOneNO = getCell(detailSheet, no % 2 == 0 ? "I" : "A", startRowPos);
+                XSSFCell cellOneNO = getCell(detailSheet, "A", startRowPos);
                 cellOneNO.setCellStyle(style);
                 cellOneNO.setCellValue(no);
 
                 // 设备
-                XSSFCell cellOneEquipment = getCell(detailSheet, no % 2 == 0 ? "J" : "B", startRowPos);
+                XSSFCell cellOneEquipment = getCell(detailSheet,  "B", startRowPos);
                 cellOneEquipment.setCellStyle(style);
                 cellOneEquipment.setCellValue(r.getEquipmentCode());
 
                 // 区域
-                XSSFCell cellOneArea = getCell(detailSheet, no % 2 == 0 ? "K" : "C", startRowPos);
+                XSSFCell cellOneArea = getCell(detailSheet, "C", startRowPos);
                 cellOneArea.setCellStyle(style);
                 cellOneArea.setCellValue(r.getAreaCode());
 
                 // 架子
-                XSSFCell cellOneShelf = getCell(detailSheet, no % 2 == 0 ? "L" : "D", startRowPos);
+                XSSFCell cellOneShelf = getCell(detailSheet, "D", startRowPos);
                 cellOneShelf.setCellStyle(style);
                 cellOneShelf.setCellValue(r.getShelfCode());
 
                 // 位置
-                XSSFCell cellOneLocation = getCell(detailSheet, no % 2 == 0 ? "M" : "E", startRowPos);
+                XSSFCell cellOneLocation = getCell(detailSheet,  "E", startRowPos);
                 cellOneLocation.setCellStyle(style);
                 cellOneLocation.setCellValue(r.getShelfLocation());
 
                 // 盒编码
-                XSSFCell cellOneBox = getCell(detailSheet, no % 2 == 0 ? "N" : "F", startRowPos);
+                XSSFCell cellOneBox = getCell(detailSheet,  "F", startRowPos);
                 cellOneBox.setCellStyle(style);
                 cellOneBox.setCellValue(r.getBoxCode());
 
+                // 一维编码
+                XSSFCell cellOneBoxCode1D = getCell(detailSheet,  "G", startRowPos);
+                cellOneBoxCode1D.setCellStyle(style);
+                cellOneBoxCode1D.setCellValue(r.getFrozenBoxCode1D());
+
                 // 盒编码
-                XSSFCell cellOneCheck = getCell(detailSheet, no % 2 == 0 ? "O" : "G", startRowPos);
+                XSSFCell cellOneCheck = getCell(detailSheet, "H", startRowPos);
                 cellOneCheck.setCellStyle(style);
                 cellOneCheck.setCellValue("□");
 
-                startRowPos += no % 2 == 0 ? 1 : 0;
+//                startRowPos += no % 2 == 0 ? 1 : 0;
+                startRowPos ++;
                 no++;
             }
 

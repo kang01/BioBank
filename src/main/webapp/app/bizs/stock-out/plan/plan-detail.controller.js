@@ -41,11 +41,20 @@
                     vm.demand[data.id] = true;
                     vm.sampleIds = vm.checked.join(",");
                     _queryPlanBoxes();
+                    PlanService.queryPlanBoxes(vm.sampleIds,obj).success(function (res){
+                        vm.boxData = res.data;
+                        vm.dtOptions.withOption('data',vm.boxData);
+                    });
                 });
                 vm.select_all = true;
             }).then(function () {
 
             });
+            var obj = {
+                draw:1,
+                length:-1
+            };
+
         }
 
         _initStockOutBoxesTable();
@@ -93,7 +102,10 @@
             };
             //盒子列表
             var boxId;
-            vm.dtOptions = BioBankDataTable.buildDTOption("ORDINARY", 300, 5)
+            // vm.boxData = [];
+            // vm.dtOptions.withOption('data',vm.boxData);
+            vm.dtOptions = BioBankDataTable.buildDTOption("SORTING", 300, 5)
+                .withOption('order', [[1,'asc']])
                 .withButtons([
                     {
                         text: '创建任务',
@@ -102,74 +114,11 @@
                         action: _fnCreateTask
                     }
                 ])
-                .withOption('order', [[1,'asc']])
-                .withOption('paging', false)
-                .withOption('info', false)
-                .withOption('serverSide',true)
-                .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
-                    var data = {};
-                    for(var i=0; aoData && i<aoData.length; ++i){
-                        var oData = aoData[i];
-                        data[oData.name] = oData.value;
-                    }
-                    var jqDt = this;
-                    if(vm.sampleIds){
-                        PlanService.queryPlanBoxes(vm.sampleIds,data).then(function (res){
-                            vm.selectAll = false;
-                            vm.selected = {};
-                            var json;
-                            json = res.data;
-                            var error = json.error || json.sError;
-                            if ( error ) {
-                                jqDt._fnLog( oSettings, 0, error );
-                            }
-                            oSettings.json = json;
-                            vm.boxData = res.data.data;
-                            //任务列表中有数据时，获取第一条的id，去获取冻存管列表
-                            if(res.data.data.length){
-                                boxId = res.data.data[0].id;
-                                _loadTubes(boxId);
-                            }
-                            fnCallback( json );
-                        }).catch(function(res){
-                            // console.log(res);
-                            //
-                            var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
-
-                            if ( $.inArray( true, ret ) === -1 ) {
-                                if ( error == "parsererror" ) {
-                                    jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
-                                }
-                                else if ( res.readyState === 4 ) {
-                                    jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
-                                }
-                            }
-                            jqDt._fnProcessingDisplay( oSettings, false );
-                        });
-                    }else{
-                        // var array = {
-                        //     draw : 1,
-                        //     recordsTotal : 0,
-                        //     recordsFiltered : 0,
-                        //     data: [ ],
-                        //     error : ""
-                        // };
-                        // fnCallback( array );
-
-                    }
-
-                })
                 .withOption('rowCallback', rowCallback)
                 .withOption('createdRow', function(row, data, dataIndex) {
-                    // Recompiling so we can bind Angular directive to the DT
                     $compile(angular.element(row).contents())($scope);
                 })
                 .withOption('headerCallback', function(header) {
-                    // if (!vm.headerCompiled) {
-                    //     // Use this headerCompiled field to only compile header once
-                    //     vm.headerCompiled = true;
-                    //
-                    // }
                     $compile(angular.element(header).contents())($scope);
                 });
 
@@ -178,11 +127,10 @@
             vm.dtColumns = [
                 // DTColumnBuilder.newColumn('id').notVisible(),
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "90"),
-                DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "90"),
-                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "60"),
+                DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('冻存盒编码').withOption("width", "90").renderWith(_fnRowRender),
+                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "80"),
                 DTColumnBuilder.newColumn('position').withTitle('冻存位置'),
-                DTColumnBuilder.newColumn('countOfSample').withTitle('出库样本数量').withOption("width", "100").notSortable()
+                DTColumnBuilder.newColumn('countOfSample').withTitle('出库样本数量').withOption("width", "120")
             ];
 
 
@@ -210,6 +158,16 @@
                 $(tr).closest('table').find('.rowLight').removeClass("rowLight");
                 $(tr).addClass('rowLight');
                 _loadTubes(oData.id);
+            }
+            function _fnRowRender(data, type, full, meta) {
+                var frozenBoxCode = '';
+                if(full.frozenBoxCode1D){
+                    frozenBoxCode = "1D:"+full.frozenBoxCode1D +"<br>" + "2D:"+full.frozenBoxCode;
+                }else{
+                    frozenBoxCode = "2D:"+full.frozenBoxCode;
+                }
+
+                return frozenBoxCode;
             }
             function _loadTubes(boxId) {
                 if(vm.sampleIds){

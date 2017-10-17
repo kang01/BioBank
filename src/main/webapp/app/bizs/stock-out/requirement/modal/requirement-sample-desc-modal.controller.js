@@ -48,6 +48,7 @@
 
         vm.dtColumns = [
             DTColumnBuilder.newColumn('sampleCode').withTitle('样本编码'),
+            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码'),
             DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型'),
             DTColumnBuilder.newColumn('sex').withTitle('性别'),
@@ -84,9 +85,9 @@
             if(data.isHemolysis){
                 diseaseType += "溶血　";
             }
-            $('td:eq(1)', row).html(sampleState);
-            $('td:eq(3)', row).html(sex);
-            $('td:eq(6)', row).html(diseaseType);
+            $('td:eq(2)', row).html(sampleState);
+            $('td:eq(4)', row).html(sex);
+            $('td:eq(7)', row).html(diseaseType);
             $compile(angular.element(row).contents())($scope);
         }
         function _fnServerData( sSource, aoData, fnCallback, oSettings ) {

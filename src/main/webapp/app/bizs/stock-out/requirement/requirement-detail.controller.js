@@ -57,7 +57,6 @@
         //初始化数据
         function _initData() {
             _requirementInfo();
-
             _fuQueryDelegates();
             _fnQueryUser();
 
@@ -65,7 +64,10 @@
         function _fnQueryUser() {
             Principal.identity().then(function(account) {
                 vm.account = account;
-                vm.requirement.recordId = vm.account.id;
+                if(!vm.requirement.recordId){
+                    vm.requirement.recordId = vm.account.id;
+                }
+
             });
         }
         _initData();

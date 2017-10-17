@@ -95,14 +95,15 @@
             _fnQueryTaskBoxes();
             _fnQueryStockOutList();
             _fnQueryUser();
+            startTimer();
         }
         function _fnQueryTaskBoxes() {
             //获取冻存盒列表
             TaskService.queryTaskBox(vm.taskId).success(function (data) {
                 vm.stockOutbox = data;
-                vm.boxOptions.withOption('data', data);
+                vm.boxOptions.withOption('data', vm.stockOutbox);
                 // vm.boxInstance.rerender();
-                startTimer();
+                // startTimer();
             });
         }
         function _fnQueryStockOutList() {
@@ -121,9 +122,8 @@
         }
         _fnInitTask();
         //开始任务计时器
-        var taskTimer;
         function startTimer() {
-            taskTimer = $interval(function() {
+            vm.taskTimer = $interval(function() {
                 TaskService.taskTimer(vm.taskId).then(function (res) {
                     vm.usedTime = (res.data.usedTime/60).toFixed(1);
                     if(vm.usedTime < 1){
@@ -148,7 +148,7 @@
 
         $scope.$on('$destroy',function(event,toState,toParams,fromState,fromParams){
             // window.clearInterval(taskTimer);
-            $interval.cancel(taskTimer);
+            $interval.cancel(vm.taskTimer);
         });
         vm.close = function () {
             $state.go('task-list');
@@ -216,14 +216,14 @@
 
 
         //冻存盒列表
-        vm.boxOptions = BioBankDataTable.buildDTOption("BASIC,SEARCHING", 420)
+        vm.boxOptions = BioBankDataTable.buildDTOption("SORTING", 420,5)
+            .withOption('order', [[0,'asc']])
             .withOption('rowCallback', rowCallback);
         vm.boxColumns = [
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "100").notSortable(),
-            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "100").notSortable(),
-            DTColumnBuilder.newColumn('sampleTypeName').withTitle('类型').withOption("width", "60").notSortable(),
-            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "auto").notSortable(),
-            DTColumnBuilder.newColumn('countOfSample').withTitle('数量').withOption("width", "50").notSortable()
+            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('冻存盒编码').withOption("width", "100").renderWith(_fnRowRender),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('类型').withOption("width", "60"),
+            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "auto"),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('数量').withOption("width", "50")
         ];
         function rowCallback(nRow, oData, iDisplayIndex, iDisplayIndexFull)  {
             $('td', nRow).unbind('click');
@@ -249,6 +249,12 @@
             // vm.boxInTubes = [];
             _fnLoadTubes();
         }
+        function _fnRowRender(data, type, full, meta) {
+            var frozenBoxCode = '';
+            frozenBoxCode = "1D:"+full.frozenBoxCode1D +"<br>" + "2D:"+full.frozenBoxCode;
+            return frozenBoxCode;
+        }
+
         //加载管子
         var frozenBox;
         function _fnLoadTubes() {
@@ -1044,7 +1050,7 @@
         var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.stockOutSampleColumns = [
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('临时盒编码').withOption("width", "100").notSortable(),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "100").notSortable(),
             DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "100").notSortable(),
             DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "80").notSortable(),
             DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "220").notSortable(),

@@ -32,6 +32,7 @@
             'angularMoment',
             'pageslide-directive',
             'ngAudio',
+            'ui.mask',
             'colorpicker.module'
         ])
         .run(run);

@@ -11,7 +11,7 @@
             <div class="col-md-6">
                 <label >入库日期<span class="required-field"></span> </label>
                 <div class="input-group">
-                    <input  type="text" class="form-control" name="startDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockInInfo.stockInDate" is-open="vm.datePickerOpenStatus.stockInDate"
+                    <input  type="text" class="form-control" name="startDate" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockInInfo.stockInDate" is-open="vm.datePickerOpenStatus.stockInDate"
                             required  />
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('stockInDate')"><i class="glyphicon glyphicon-calendar"></i></button>

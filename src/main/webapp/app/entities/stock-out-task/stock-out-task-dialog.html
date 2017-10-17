@@ -28,7 +28,7 @@
         <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.stockOutTask.stockOutDate" for="field_stockOutDate">Stock Out Date</label>
                 <div class="input-group">
-                    <input id="field_stockOutDate" type="text" class="form-control" name="stockOutDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockOutTask.stockOutDate" is-open="vm.datePickerOpenStatus.stockOutDate"
+                    <input id="field_stockOutDate" type="text" class="form-control" name="stockOutDate" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockOutTask.stockOutDate" is-open="vm.datePickerOpenStatus.stockOutDate"
                     required/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('stockOutDate')"><i class="glyphicon glyphicon-calendar"></i></button>

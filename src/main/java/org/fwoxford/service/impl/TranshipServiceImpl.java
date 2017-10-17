@@ -115,10 +115,12 @@ public class TranshipServiceImpl implements TranshipService{
             throw new BankServiceException("转运已不在进行中状态，不能修改记录！",transhipDTO.toString());
         }
         Project project = projectRepository.findOne(transhipDTO.getProjectId());
-        User user = userRepository.findByLogin(transhipDTO.getReceiver());
-        transhipDTO.setReceiverId(user!=null?user.getId():null);
-        transhipDTO.setReceiver(user!=null?user.getLogin():transhipDTO.getReceiver());
-
+        Long receiverId = transhipDTO.getReceiverId();
+        if(receiverId!=null){
+            User user = userRepository.findOne(receiverId);
+            String username = user!=null?(user.getLastName()+user.getFirstName()):null;
+            transhipDTO.setReceiver(user!=null?username:transhipDTO.getReceiver());
+        }
         List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(transhipId);
         Equipment equipment = new Equipment();Area area = new Area();
         if(transhipDTO.getTempEquipmentId()!=null){
@@ -205,10 +207,17 @@ public class TranshipServiceImpl implements TranshipService{
         if(transhipCode == null){
             throw new BankServiceException("转运编码不能为空！",transhipCode);
         }
-        String receiver = transhipToStockInDTO.getLogin();
+        if(transhipToStockInDTO.getReceiveId()==null){
+            throw new BankServiceException("接收人不能为空！");
+        }
         LocalDate receiveDate = transhipToStockInDTO.getReceiveDate();
         String password = transhipToStockInDTO.getPassword();
-        userService.isCorrectUser(receiver,password);
+        User user = userRepository.findOne(transhipToStockInDTO.getReceiveId());
+        if(user==null){
+            throw new BankServiceException("接收人不存在！");
+        }
+
+        userService.isCorrectUser(user.getLogin(),password);
 
         Tranship tranship = transhipRepository.findByTranshipCode(transhipCode);
         if(tranship == null){
@@ -231,9 +240,9 @@ public class TranshipServiceImpl implements TranshipService{
         }
         //修改转运表中数据状态为转运完成
         tranship.setTranshipState(Constants.TRANSHIPE_IN_COMPLETE);
-        User user = userRepository.findByLogin(receiver);
+
         tranship.setReceiverId(user!=null?user.getId():null);
-        tranship.setReceiver(receiver);
+        tranship.setReceiver(user.getLastName()+user.getFirstName());
         tranship.setReceiveDate(receiveDate);
         transhipRepository.save(tranship);
 

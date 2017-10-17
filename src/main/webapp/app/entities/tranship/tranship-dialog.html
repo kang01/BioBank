@@ -16,7 +16,7 @@
         <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.tranship.transhipDate" for="field_transhipDate">Tranship Date</label>
                 <div class="input-group">
-                    <input id="field_transhipDate" type="text" class="form-control" name="transhipDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.tranship.transhipDate" is-open="vm.datePickerOpenStatus.transhipDate"
+                    <input id="field_transhipDate" type="text" class="form-control" name="transhipDate" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.tranship.transhipDate" is-open="vm.datePickerOpenStatus.transhipDate"
                     required/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('transhipDate')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -160,7 +160,7 @@
         <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.tranship.receiveDate" for="field_receiveDate">Receive Date</label>
                 <div class="input-group">
-                    <input id="field_receiveDate" type="text" class="form-control" name="receiveDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.tranship.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"
+                    <input id="field_receiveDate" type="text" class="form-control" name="receiveDate" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.tranship.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"
                     required/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i class="glyphicon glyphicon-calendar"></i></button>

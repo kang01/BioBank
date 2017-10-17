@@ -61,8 +61,8 @@
         function _fnQueryUser() {
             Principal.identity().then(function(account) {
                 vm.account = account;
-                if(vm.account.login != "admin"){
-                    vm.transportRecord.receiver = vm.account.login;
+                if(vm.account.login != "admin" || vm.account.login != "user"){
+                    vm.transportRecord.receiverId = vm.account.id;
                 }
             });
         }
@@ -85,7 +85,7 @@
             }else{
                 vm.transportRecord.receiveDate = new Date();
             }
-            if(!vm.transportRecord.receiver){
+            if(!vm.transportRecord.receiverId){
                 _fnQueryUser();
             }
             if(!vm.transportRecord.sampleSatisfaction){
@@ -166,7 +166,7 @@
             };
             //接收人
             vm.receiverConfig = {
-                valueField:'login',
+                valueField:'id',
                 labelField:'userName',
                 maxItems: 1
 
@@ -205,7 +205,7 @@
                         items:function () {
                             return{
                                 box:vm.box || {},
-                                receiver:vm.transportRecord.receiver,
+                                receiverId:vm.transportRecord.receiverId,
                                 receiveDate: vm.transportRecord.receiveDate
                             };
                         }
@@ -215,7 +215,16 @@
                     vm.saveStockInFlag = true;
                     importBoxFlag = false;
                     vm.saveRecord(transportRecord);
-                    vm.saveBox();
+                    var  array = _.flattenDeep(vm.frozenTubeArray);
+                    var array1 = [];
+                    for(var i = 0; i < array.length; i++){
+                        if(array[i]){
+                            array1.push(array[i]);
+                        }
+                    }
+                    if(array1.length){
+                        vm.saveBox();
+                    }
 
                 });
 
@@ -1293,7 +1302,9 @@
                     obox.frozenBoxDTOList = [];
                     obox.frozenBoxDTOList.push(vm.createBoxDataFromTubesTable());
                 }
-                TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
+                if(obox.frozenBoxDTOList.length){
+                    TranshipBoxService.update(obox,onSaveBoxSuccess,onError);
+                }
                 function onSaveBoxSuccess(res) {
                     if(!vm.saveStockInFlag && !vm.saveRecordFlag){
                         toastr.success("保存盒子成功！");

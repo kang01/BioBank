@@ -48,7 +48,7 @@
         <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.stockIn.receiveDate" for="field_receiveDate">Receive Date</label>
                 <div class="input-group">
-                    <input id="field_receiveDate" type="text" class="form-control" name="receiveDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockIn.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"
+                    <input id="field_receiveDate" type="text" class="form-control" name="receiveDate" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockIn.receiveDate" is-open="vm.datePickerOpenStatus.receiveDate"
                     required/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('receiveDate')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -188,7 +188,7 @@
         <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.stockIn.storageInDate" for="field_storageInDate">Storage In Date</label>
                 <div class="input-group">
-                    <input id="field_storageInDate" type="text" class="form-control" name="storageInDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockIn.storageInDate" is-open="vm.datePickerOpenStatus.storageInDate"
+                    <input id="field_storageInDate" type="text" class="form-control" name="storageInDate" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockIn.storageInDate" is-open="vm.datePickerOpenStatus.storageInDate"
                     required/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('storageInDate')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -260,7 +260,7 @@
         <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.stockIn.signDate" for="field_signDate">Sign Date</label>
                 <div class="input-group">
-                    <input id="field_signDate" type="text" class="form-control" name="signDate" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockIn.signDate" is-open="vm.datePickerOpenStatus.signDate"
+                    <input id="field_signDate" type="text" class="form-control" name="signDate" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockIn.signDate" is-open="vm.datePickerOpenStatus.signDate"
                     required/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('signDate')"><i class="glyphicon glyphicon-calendar"></i></button>

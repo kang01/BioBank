@@ -30,7 +30,7 @@
             <div class="form-group col-md-2">
                 <label>出库日期</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" name="stockOutDate" uib-datepicker-popup="{{dateformat}}"
+                    <input type="text" class="form-control" name="stockOutDate" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}"
                            ng-model="vm.task.stockOutDate" is-open="vm.datePickerOpenStatus.stockOutDate"
                            ng-disabled="vm.applyFlag" required/>
                     <span class="input-group-btn">

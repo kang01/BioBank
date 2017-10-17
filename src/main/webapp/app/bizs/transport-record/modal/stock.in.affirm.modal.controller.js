@@ -16,7 +16,7 @@
         vm.transportRecord = {};
         vm.box = items.box;
         vm.transportRecord.receiveDate = items.receiveDate;
-        vm.transportRecord.login = items.receiver;
+        vm.transportRecord.receiverId = items.receiverId;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar; //时间
         function openCalendar (date) {
@@ -24,7 +24,7 @@
         }
         //接收人
         vm.receiverConfig = {
-            valueField:'login',
+            valueField:'id',
             labelField:'userName',
             maxItems: 1
 
@@ -42,6 +42,7 @@
             $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
+            // vm.transportRecord.login = _.find(vm.receiverOptions,{id:+items.receiverId}).login;
             $uibModalInstance.close(vm.transportRecord);
         };
     }

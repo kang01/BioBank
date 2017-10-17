@@ -17,7 +17,7 @@
                         </label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="receiveDate"
-                                   uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.receiveDate"
+                                   ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.transportRecord.receiveDate"
                                    is-open="vm.datePickerOpenStatus.receiveDate"
                                    required/>
                             <span class="input-group-btn">
@@ -34,8 +34,8 @@
                             <span class="required-field"></span>
                         </label>
                         <selectize options='vm.receiverOptions' config="vm.receiverConfig"
-                                   ng-model="vm.transportRecord.login"></selectize>
-                        <input type="hidden" class="form-control" ng-model="vm.transportRecord.login">
+                                   ng-model="vm.transportRecord.receiverId"></selectize>
+                        <input type="hidden" class="form-control" ng-model="vm.transportRecord.receiverId">
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -53,7 +53,7 @@
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="vm.ok()"
-            ng-disabled="!vm.transportRecord.password || !vm.transportRecord.receiveDate || !vm.transportRecord.login">
+            ng-disabled="!vm.transportRecord.password || !vm.transportRecord.receiveDate || !vm.transportRecord.receiverId">
         确定
     </button>
     <button class="btn btn-warning" type="button"  ng-click="vm.cancel()">取消</button>

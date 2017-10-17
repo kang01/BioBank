@@ -36,7 +36,7 @@
                 },
                 data:{
                     receiveDate:transportRecord.receiveDate,
-                    login:transportRecord.login,
+                    receiveId:transportRecord.receiverId,
                     password:transportRecord.password
                 }
             };

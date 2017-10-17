@@ -74,7 +74,7 @@
         <div class="form-group">
             <label class="control-label" data-translate="bioBankApp.stockOutHandover.handoverTime" for="field_handoverTime">Handover Time</label>
                 <div class="input-group">
-                    <input id="field_handoverTime" type="text" class="form-control" name="handoverTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockOutHandover.handoverTime" is-open="vm.datePickerOpenStatus.handoverTime"
+                    <input id="field_handoverTime" type="text" class="form-control" name="handoverTime" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.stockOutHandover.handoverTime" is-open="vm.datePickerOpenStatus.handoverTime"
                     />
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('handoverTime')"><i class="glyphicon glyphicon-calendar"></i></button>

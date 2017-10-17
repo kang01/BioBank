@@ -46,7 +46,7 @@
                     <span class="required-field"></span>
                 </label>
                 <div class="input-group">
-                    <input  type="text" class="form-control" name="startTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.startTime" is-open="vm.datePickerOpenStatus.startTime"
+                    <input  type="text" class="form-control" name="startTime" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.startTime" is-open="vm.datePickerOpenStatus.startTime"
                             ng-disabled="vm.applyFlag"  required  />
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('startTime')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -58,7 +58,7 @@
                     <span class="required-field"></span>
                 </label>
                 <div class="input-group">
-                    <input  type="text" class="form-control" name="endTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.endTime" is-open="vm.datePickerOpenStatus.endTime"
+                    <input  type="text" class="form-control" name="endTime" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.endTime" is-open="vm.datePickerOpenStatus.endTime"
                             ng-disabled="vm.applyFlag" required  />
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('endTime')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -80,7 +80,7 @@
                     <span class="required-field"></span>
                 </label>
                 <div class="input-group">
-                    <input  type="text" class="form-control" name="recordTime" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.recordTime" is-open="vm.datePickerOpenStatus.recordTime"
+                    <input  type="text" class="form-control" name="recordTime" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.recordTime" is-open="vm.datePickerOpenStatus.recordTime"
                             ng-disabled="vm.applyFlag" required  />
                     <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="vm.openCalendar('recordTime')"><i class="glyphicon glyphicon-calendar"></i></button>

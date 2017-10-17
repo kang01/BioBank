@@ -6,19 +6,16 @@
     <!--
         Added the view for entity StockOutHandoverSampleReportDTO.
     -->
-    <changeSet id="201709292121-1" author="jhipster">
-        <!--<dropView viewName="VIEW_STOCK_OUT_HANDOVER_TUBE"/>-->
+    <changeSet id="20171017212101-1" author="jhipster">
+        <dropView viewName="view_stock_out_handover_tube"></dropView>
         <createView viewName="view_stock_out_handover_tube">
-            SELECT t.id,t.frozen_box_code,ROWNUM as no,
-            (t.tube_rows||t.tube_columns) as location,
-            t.sample_code,t.sample_type_name,t.gender,t.age,t.disease_type,t.project_code,hb.stock_out_handover_id
+            SELECT t.id,hb.frozen_box_code,hb.frozen_box_code_1d,ROWNUM as no,
+            (bt.tube_rows||bt.tube_columns) as location,t.memo,
+            t.sample_code,t.sample_temp_code,t.sample_type_name,t.gender,t.age,t.disease_type,t.project_code,hb.stock_out_handover_id
             FROM  stock_out_handover_details hd
             LEFT OUTER JOIN stock_out_handover_box hb on hd.stock_out_handover_box_id = hb.id
-            LEFT OUTER JOIN stock_out_req_frozen_tube bt
-            ON hd.stock_out_req_frozen_tube_id = bt.id
-            LEFT OUTER JOIN frozen_tube t
-            ON bt.frozen_tube_id = t.id
+            LEFT OUTER JOIN stock_out_req_frozen_tube bt ON hd.stock_out_req_frozen_tube_id = bt.id
+            LEFT OUTER JOIN frozen_tube t ON bt.frozen_tube_id = t.id
         </createView>
-
     </changeSet>
 </databaseChangeLog>

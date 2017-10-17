@@ -466,10 +466,10 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
             public StockOutHandoverSampleReportDTO convert(StockOutHandoverSampleReportDTO e) {
                 String sampleCode = e.getSampleCode();
                 if(StringUtils.isEmpty(sampleCode) || sampleCode.equals(null)){
-                    FrozenTube frozenTube = frozenTubeRepository.findOne(e.getId());
-                    sampleCode = frozenTube.getSampleTempCode();
+                    sampleCode = e.getSampleTempCode();
                 }
-                return new StockOutHandoverSampleReportDTO(e.getId(),e.getNo(),e.getBoxCode(),e.getLocation(),sampleCode,e.getSampleType(),e.getSex(),e.getAge(),e.getDiseaseType(),e.getProjectCode(),e.getStockOutHandoverId());
+                return new StockOutHandoverSampleReportDTO(e.getId(),e.getNo(),e.getBoxCode(),e.getLocation(),sampleCode,e.getSampleType(),e.getSex()
+                    ,e.getAge(),e.getDiseaseType(),e.getProjectCode(),e.getStockOutHandoverId(),e.getFrozenBoxCode1D(),e.getSampleTempCode(),e.getMemo());
             }
         };
         return stockOutHandoverSampleRepositries.findAll(input,converter);

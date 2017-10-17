@@ -67,6 +67,19 @@ public class StockOutHandoverSampleReportDTO {
     @Column(name = "stock_out_handover_id")
     private Long stockOutHandoverId;
 
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "frozen_box_code_1d")
+    private String frozenBoxCode1D;
+
+    @Column(name = "sample_temp_code")
+    private String sampleTempCode;
+
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "memo")
+    private String memo;
+
     public Long getId() {
         return id;
     }
@@ -155,10 +168,34 @@ public class StockOutHandoverSampleReportDTO {
         this.stockOutHandoverId = stockOutHandoverId;
     }
 
+    public String getFrozenBoxCode1D() {
+        return frozenBoxCode1D;
+    }
+
+    public void setFrozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
+    }
+
+    public String getSampleTempCode() {
+        return sampleTempCode;
+    }
+
+    public void setSampleTempCode(String sampleTempCode) {
+        this.sampleTempCode = sampleTempCode;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
     public StockOutHandoverSampleReportDTO() {
     }
 
-    public StockOutHandoverSampleReportDTO(Long id, Long no, String boxCode, String location, String sampleCode, String sampleType, String sex, String age, String diseaseType, String projectCode, Long stockOutHandoverId) {
+    public StockOutHandoverSampleReportDTO(Long id, Long no, String boxCode, String location, String sampleCode, String sampleType, String sex, String age, String diseaseType, String projectCode, Long stockOutHandoverId, String frozenBoxCode1D, String sampleTempCode, String memo) {
         this.id = id;
         this.no = no;
         this.boxCode = boxCode;
@@ -170,5 +207,8 @@ public class StockOutHandoverSampleReportDTO {
         this.diseaseType = diseaseType;
         this.projectCode = projectCode;
         this.stockOutHandoverId = stockOutHandoverId;
+        this.frozenBoxCode1D = frozenBoxCode1D;
+        this.sampleTempCode = sampleTempCode;
+        this.memo = memo;
     }
 }

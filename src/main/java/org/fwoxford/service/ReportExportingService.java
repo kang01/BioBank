@@ -387,50 +387,55 @@ public class ReportExportingService {
                 cellOneRequireNO.setCellStyle(style);
                 cellOneRequireNO.setCellValue(no++);
 
+                // 一维编码
+                XSSFCell cellFrozenBoxCode1D = getCell(summarySheet, "B", startRowPos);
+                cellFrozenBoxCode1D.setCellStyle(style);
+                cellFrozenBoxCode1D.setCellValue(r.getFrozenBoxCode1D());
+
                 // 样本编码
-                XSSFCell cellOneSampleCode = getCell(summarySheet, "B", startRowPos);
+                XSSFCell cellOneSampleCode = getCell(summarySheet, "C", startRowPos);
                 cellOneSampleCode.setCellStyle(style);
                 cellOneSampleCode.setCellValue(r.getSampleCode());
 
                 // 样本类型
-                XSSFCell cellOneSampleType = getCell(summarySheet, "C", startRowPos);
+                XSSFCell cellOneSampleType = getCell(summarySheet, "D", startRowPos);
                 cellOneSampleType.setCellStyle(style);
                 cellOneSampleType.setCellValue(r.getSampleType());
 
                 // 性别
-                XSSFCell cellOneSex = getCell(summarySheet, "D", startRowPos);
+                XSSFCell cellOneSex = getCell(summarySheet, "E", startRowPos);
                 cellOneSex.setCellStyle(style);
                 cellOneSex.setCellValue(r.getSex());
 
                 // 年龄
-                XSSFCell cellOneAge = getCell(summarySheet, "E", startRowPos);
+                XSSFCell cellOneAge = getCell(summarySheet, "F", startRowPos);
                 cellOneAge.setCellStyle(style);
                 cellOneAge.setCellValue(r.getAge());
 
                 // 使用次数
-                XSSFCell cellOneTiems = getCell(summarySheet, "F", startRowPos);
+                XSSFCell cellOneTiems = getCell(summarySheet, "G", startRowPos);
                 cellOneTiems.setCellStyle(style);
                 if (r.getTimes() != null){
                     cellOneTiems.setCellValue(r.getTimes());
                 }
 
                 // 疾病类型
-                XSSFCell cellOneDiseaseType = getCell(summarySheet, "G", startRowPos);
+                XSSFCell cellOneDiseaseType = getCell(summarySheet, "H", startRowPos);
                 cellOneDiseaseType.setCellStyle(style);
                 cellOneDiseaseType.setCellValue(r.getDiseaseType());
 
                 // 项目编码
-                XSSFCell cellOneProject = getCell(summarySheet, "H", startRowPos);
+                XSSFCell cellOneProject = getCell(summarySheet, "I", startRowPos);
                 cellOneProject.setCellStyle(style);
                 cellOneProject.setCellValue(r.getProjectCode());
 
                 // 状态
-                XSSFCell cellOneStatus = getCell(summarySheet, "I", startRowPos);
+                XSSFCell cellOneStatus = getCell(summarySheet, "J", startRowPos);
                 cellOneStatus.setCellStyle(style);
                 cellOneStatus.setCellValue(r.getStatus());
 
                 // 批注
-                XSSFCell cellOneMemo = getCell(summarySheet, "J", startRowPos);
+                XSSFCell cellOneMemo = getCell(summarySheet, "K", startRowPos);
                 cellOneMemo.setCellStyle(style);
                 cellOneMemo.setCellValue(r.getMemo());
 

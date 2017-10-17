@@ -694,6 +694,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
             String status = statusObj!=null?statusObj.toString():null;
             frozenTubeDetail.setStatus(status);
             frozenTubeDetail.setAge(tube.getAge()!=null?tube.getAge().toString():null);
+            frozenTubeDetail.setFrozenBoxCode1D(tube.getFrozenBox().getFrozenBoxCode1D());
             frozenTubes.add(frozenTubeDetail);
         }
         report.setCheckResults(frozenTubes);

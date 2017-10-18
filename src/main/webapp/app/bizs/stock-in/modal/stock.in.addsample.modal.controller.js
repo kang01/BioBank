@@ -29,7 +29,7 @@
         vm.entity.projectCode = items.projectCode;
         vm.entity.projectSiteId = items.projectSiteId;
         vm.entity.sampleCode = items.sampleCode;
-        vm.entity.frozenBoxId = items.frozenBoxId;
+
         //冻存管状态
         vm.tubeStatusOptions = MasterData.frozenTubeStatus;
 
@@ -242,6 +242,7 @@
         //查询库存中同一项目下有的样本，盒子id是为了不验证本盒子中的样本
         vm.errorFlag = false;
         function _queryTube() {
+            vm.entity.frozenBoxId = items.frozenBoxId;
             StockInInputService.queryTube(vm.entity.sampleCode,vm.entity.projectCode,vm.entity.frozenBoxId,vm.entity.sampleTypeId,vm.entity.sampleClassificationId).success(function (data) {
                 vm.tubes = data;
                 if(vm.tubes.length == 1){
@@ -277,7 +278,7 @@
 
         vm.sampleInstance = {};
         vm.sampleColumns = [
-            DTColumnBuilder.newColumn('frozenBoxId').withOption("width", "50").notSortable().withOption('searchable',false).withTitle('序号'),
+            DTColumnBuilder.newColumn('frozenTubeId').withOption("width", "50").notSortable().withOption('searchable',false).withTitle('序号'),
             DTColumnBuilder.newColumn('sampleCode').withTitle('冻存管编码')
         ];
         vm.sampleOptions = BioBankDataTable.buildDTOption("BASIC", 300, 10)

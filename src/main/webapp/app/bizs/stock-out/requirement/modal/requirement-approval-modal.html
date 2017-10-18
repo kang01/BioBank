@@ -32,7 +32,7 @@
             <div class="col-md-3">
                 <label>审核日期<span class="required-field"></span></label>
                 <div class="input-group">
-                    <input  type="text" class="form-control" name="approveTime" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.approve.recordTime" is-open="vm.datePickerOpenStatus.approveTime"
+                    <input  type="text" class="form-control" name="approveTime"  uib-datepicker-popup="{{dateformat}}" ng-model="vm.approve.recordTime" is-open="vm.datePickerOpenStatus.approveTime"
                             required  />
                     <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="vm.openCalendar('approveTime')"><i class="glyphicon glyphicon-calendar"></i></button>

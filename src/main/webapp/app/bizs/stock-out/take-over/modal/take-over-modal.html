@@ -36,7 +36,7 @@
             <div class="form-group">
                 <label >交付日期</label>
                 <div class="input-group">
-                    <input  type="text" class="form-control" name="startDate" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}" ng-model="vm.takeOver.handoverTime" is-open="vm.datePickerOpenStatus.handoverTime"
+                    <input  type="text" class="form-control" name="startDate"  uib-datepicker-popup="{{dateformat}}" ng-model="vm.takeOver.handoverTime" is-open="vm.datePickerOpenStatus.handoverTime"
                             required/>
                     <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="vm.openCalendar('handoverTime')"><i class="glyphicon glyphicon-calendar"></i></button>

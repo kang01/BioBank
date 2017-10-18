@@ -122,8 +122,9 @@
         }
         _fnInitTask();
         //开始任务计时器
+        var taskTimer;
         function startTimer() {
-            vm.taskTimer = $interval(function() {
+            taskTimer = $interval(function() {
                 TaskService.taskTimer(vm.taskId).then(function (res) {
                     vm.usedTime = (res.data.usedTime/60).toFixed(1);
                     if(vm.usedTime < 1){
@@ -146,9 +147,9 @@
         }
 
 
-        $scope.$on('$destroy',function(event,toState,toParams,fromState,fromParams){
+        $scope.$on('$destroy',function(){
             // window.clearInterval(taskTimer);
-            $interval.cancel(vm.taskTimer);
+            $interval.cancel(taskTimer);
         });
         vm.close = function () {
             $state.go('task-list');
@@ -244,14 +245,18 @@
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
             boxCode = data.frozenBoxCode;
-            vm.sampleCode = boxCode+"-";
+            // vm.sampleCode = boxCode+"-";
             vm.sampleCodeCopy = angular.copy(vm.sampleCode);
             // vm.boxInTubes = [];
             _fnLoadTubes();
         }
         function _fnRowRender(data, type, full, meta) {
             var frozenBoxCode = '';
-            frozenBoxCode = "1D:"+full.frozenBoxCode1D +"<br>" + "2D:"+full.frozenBoxCode;
+            if(full.frozenBoxCode1D){
+                frozenBoxCode = "1D:"+full.frozenBoxCode1D +"<br>" + "2D:"+full.frozenBoxCode;
+            }else{
+                frozenBoxCode = "2D:"+full.frozenBoxCode;
+            }
             return frozenBoxCode;
         }
 
@@ -843,12 +848,18 @@
 
             modalInstance.result.then(function (data) {
                 if(status == 1){
+                    //获取待出库样本
+                    // var stockOutTubes = _.filter(vm.tubeList,{stockOutFlag:1});
+                    // console.log(JSON.stringify(stockOutTubes));
                     var tempBoxList = [];
                     vm.tempBoxObj.frozenTubeDTOS = vm.boxInTubes;
+                    // vm.tempBoxObj.frozenTubeDTOS = stockOutTubes;
                     tempBoxList.push(vm.tempBoxObj);
                     TaskService.saveTempBoxes(vm.taskId,tempBoxList).success(function (data) {
                         toastr.success("装盒成功!");
                         _fnInitial();
+                    }).error(function (data) {
+                        toastr.error(data.message);
                     });
                 }else{
                     var selfBoxList = [];
@@ -856,6 +867,8 @@
                     TaskService.saveTempBoxes(vm.taskId,selfBoxList).success(function (data) {
                         toastr.success("出库成功!");
                         _fnInitial();
+                    }).error(function (data) {
+                        toastr.error(data.message);
                     });
                 }
 

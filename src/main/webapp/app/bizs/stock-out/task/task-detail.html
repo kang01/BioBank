@@ -30,7 +30,7 @@
             <div class="form-group col-md-2">
                 <label>出库日期</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" name="stockOutDate" ui-mask="9999-99-99" uib-datepicker-popup="{{dateformat}}"
+                    <input type="text" class="form-control" name="stockOutDate"  uib-datepicker-popup="{{dateformat}}"
                            ng-model="vm.task.stockOutDate" is-open="vm.datePickerOpenStatus.stockOutDate"
                            ng-disabled="vm.applyFlag" required/>
                     <span class="input-group-btn">
@@ -113,8 +113,10 @@
                             </div>
                         </div>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.selectTempBox()"    ng-disabled="!vm.frozenTubeDTOS.length">选择临时盒</button>
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(2)" ng-disabled="!vm.boxInTubes.length" ng-if="vm.boxInFullFlag"  >原盒出库</button>
-                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(1)" ng-disabled="!vm.boxInTubes.length || !vm.tempBoxObj.frozenBoxCode">装盒出库</button>
+                        <!--<button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(2)" ng-disabled="!vm.boxInTubes.length" ng-if="vm.boxInFullFlag"  >原盒出库</button>-->
+                        <!--<button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(1)" ng-disabled="!vm.boxInTubes.length || !vm.tempBoxObj.frozenBoxCode">装盒出库</button>-->
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(2)"  ng-if="vm.boxInFullFlag"  >原盒出库</button>
+                        <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.tubeStockOutBox(1)" ng-disabled="!vm.boxInTubes.length || !vm.tempBoxObj.frozenBoxCode" ng-if="!vm.boxInFullFlag">装盒出库</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.abnormal()">异常</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.repealModal()">撤销申请</button>
                         <button class="mt-5 mb-5 btn btn-default btn-sm" ng-click="vm.commentModal(1)">批注</button>

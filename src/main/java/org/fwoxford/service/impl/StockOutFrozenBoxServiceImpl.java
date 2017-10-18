@@ -37,6 +37,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -243,7 +244,16 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
     public List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId) {
         List<StockOutFrozenBoxForTaskDataTableEntity> alist = new ArrayList<StockOutFrozenBoxForTaskDataTableEntity>();
         List<FrozenBox> boxes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndStatus(taskId,Constants.STOCK_OUT_SAMPLE_IN_USE);
-
+//        List<Long> frozenBoxIds = new ArrayList<>();
+//        boxes.forEach(b->{if(!frozenBoxIds.contains(b.getId())){
+//            frozenBoxIds.add(b.getId());
+//        }});
+//        List<List<Long>> idEach1000 = Lists.partition(frozenBoxIds,1000);
+//        List<Object[]> allBoxCount = new ArrayList<>();
+//        for(List<Long> ids : idEach1000){
+//            List<Object[]> countOfEachFrozenBox = stockOutReqFrozenTubeRepository.countByTaskAndBoxAndStatus(taskId,ids,Constants.STOCK_OUT_SAMPLE_IN_USE);
+//            allBoxCount.addAll(countOfEachFrozenBox);
+//        }
         for(FrozenBox frozenBox :boxes){
             StockOutFrozenBoxForTaskDataTableEntity box = new StockOutFrozenBoxForTaskDataTableEntity();
             Long count = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndFrozenBoxIdAndStatus(taskId,frozenBox.getId(),Constants.STOCK_OUT_SAMPLE_IN_USE);
@@ -661,12 +671,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 }
             }
         });
+
         DataTablesOutput<StockOutFrozenBoxForDataTableEntity> output = stockOutHandoverFrozenBoxRepositries.findAll(input);
         List<StockOutFrozenBoxForDataTableEntity> stockOutFrozenBoxForDataTableEntities = new ArrayList<StockOutFrozenBoxForDataTableEntity>();
         output.getData().forEach(entity -> {
             StockOutFrozenBoxForDataTableEntity dataTableEntity = new StockOutFrozenBoxForDataTableEntity();
-            StockOutBoxPosition stockOutBoxPosition = stockOutBoxPositionRepository.findByStockOutFrozenBoxIdAndStatus(entity.getId(),Constants.VALID);
-            String position = BankUtil.toPositionString(stockOutBoxPosition);
+            String position = BankUtil.getPositionString(entity.getEquipmentCode(),entity.getAreaCode(),entity.getSupportRackCode(),entity.getColumnsInShelf(),entity.getRowsInShelf(),null,null);
             dataTableEntity.setPosition(position);
             dataTableEntity.setId(entity.getId());
             dataTableEntity.setPlanCode(entity.getPlanCode());

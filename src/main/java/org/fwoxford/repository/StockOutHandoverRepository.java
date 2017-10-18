@@ -4,6 +4,7 @@ import org.fwoxford.domain.StockOutHandover;
 
 import org.springframework.data.jpa.repository.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -19,4 +20,5 @@ public interface StockOutHandoverRepository extends JpaRepository<StockOutHandov
     @Query("select  t.stockOutHandoverBox.stockOutHandover from StockOutHandoverDetails t " +
         "where t.stockOutHandoverBox.stockOutHandover.stockOutTask.id = ?1 and t.stockOutHandoverBox.stockOutFrozenBox.id = ?2")
     StockOutHandover findByStockOutTaskIdAndstockOutBoxId(Long taskId, Long id);
+
 }

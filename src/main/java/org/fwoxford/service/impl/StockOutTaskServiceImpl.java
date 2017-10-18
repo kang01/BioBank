@@ -180,20 +180,32 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
                 throw new BankServiceException("任务已经开始，不能删除");
             }
             //根据出库盒ID查询出库样本ID
-            List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskId(id);
-            List<StockOutReqFrozenTube> stockOutReqFrozenTubesLast = new ArrayList<>();
-            for(StockOutReqFrozenTube s:stockOutReqFrozenTubes){
-                s.setStockOutTask(null);
-                stockOutReqFrozenTubesLast.add(s);
-                if(stockOutReqFrozenTubesLast.size()>=1000){
-                    stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
-                    stockOutReqFrozenTubesLast = new ArrayList<StockOutReqFrozenTube>();
-                }
-            }
-            if(stockOutReqFrozenTubesLast.size()>0){
-                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
-            }
-            stockOutTaskRepository.delete(id);
+//            List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskId(id);
+//            List<StockOutReqFrozenTube> stockOutReqFrozenTubesLast = new ArrayList<>();
+//            for(StockOutReqFrozenTube s:stockOutReqFrozenTubes){
+//                s.setStockOutTask(null);
+//                stockOutReqFrozenTubesLast.add(s);
+//                if(stockOutReqFrozenTubesLast.size()>=1000){
+//                    stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
+//                    stockOutReqFrozenTubesLast = new ArrayList<StockOutReqFrozenTube>();
+//                }
+//            }
+//            if(stockOutReqFrozenTubesLast.size()>0){
+//                stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubesLast);
+//            }
+//            stockOutTaskRepository.delete(id);
+            //出库需求样本中的任务ID 置空
+            StringBuffer sql = new StringBuffer();
+            sql.append("update stock_out_req_frozen_tube t set t.stock_out_task_id = null where t.stock_out_task_id = ?1 ");
+            Query query = entityManager.createNativeQuery(sql.toString());
+            query.setParameter("1", id);
+            query.executeUpdate();
+            //删除任务
+            StringBuffer sqlDel = new StringBuffer();
+            sqlDel.append("delete from stock_out_task t where t.id = ?1 ");
+            Query del = entityManager.createNativeQuery(sqlDel.toString());
+            del.setParameter("1", id);
+            del.executeUpdate();
         }
     }
 

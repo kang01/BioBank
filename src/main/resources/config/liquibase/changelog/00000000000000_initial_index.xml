@@ -51,4 +51,17 @@
             CREATE INDEX pk_handover_for_box ON stock_out_handover_box (stock_out_handover_id);
         </sql>
     </changeSet>
+    <changeSet id="22222222222222-4" author="jhipster" dbms="h2,postgresql,oracle">
+        <!-- 表 stock_out_req_frozen_tube 索引-->
+        <sql>
+            CREATE INDEX pk_task_for_stock_out_tube ON stock_out_req_frozen_tube (stock_out_task_id,status);
+        </sql>
+    </changeSet>
+
+    <changeSet id="22222222222222-5" author="jhipster" dbms="h2,postgresql,oracle">
+        <!-- 表 stock_out_req_frozen_tube 索引-->
+        <sql>
+            CREATE INDEX pk_task_for_stock_out_tube ON stock_out_req_frozen_tube (stock_out_task_id,frozen_box_id,status);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

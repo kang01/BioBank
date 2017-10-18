@@ -55,7 +55,7 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
 
     Long countByStockOutTaskIdAndStatusNotIn(Long taskId, List<String> statusList);
 
-    @Query("select count(t) from StockOutReqFrozenTube t where t.stockOutTask.id=?1 and t.frozenTube.frozenTubeState = '2009' and t.frozenTube.status != '3001'")
+    @Query("select count(t.id) from StockOutReqFrozenTube t where t.stockOutTask.id=?1 and t.frozenTube.frozenTubeState = '2009' and t.frozenTube.status != '3001'")
     Long countAbnormalTubeByStockOutTaskId(Long taskId);
 
     // 根据出库盒ID读取出库样本
@@ -79,8 +79,9 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     @Query("select count(t.id) from StockOutReqFrozenTube t where t.stockOutRequirement.stockOutApply.id = ?1 and t.status in ?2 ")
     Long countUnCompleteSampleByStockOutApplyAndStatusIn(Long id, List<String> statusList_);
 
-    @Query("SELECT count(s) FROM StockOutReqFrozenTube s WHERE s.stockOutRequirement.stockOutApply.id = ?1")
+    @Query("SELECT count(s.id) FROM StockOutReqFrozenTube s WHERE s.stockOutRequirement.stockOutApply.id = ?1")
     Long countByApply(Long id);
 
     Long countByStockOutRequirementIdAndStatus(Long id, String status);
+
 }

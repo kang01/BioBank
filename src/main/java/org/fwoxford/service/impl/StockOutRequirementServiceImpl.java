@@ -168,12 +168,14 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 //        stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(id);
         StringBuffer sql = new StringBuffer();
         sql.append("delete from stock_out_req_frozen_tube where stock_out_requirement_id = ?1");
-
         Query query = entityManager.createNativeQuery(sql.toString());
         query.setParameter("1", id).executeUpdate();
 
-        stockOutRequirementRepository.delete(id);
-
+        StringBuffer sqlDelReq = new StringBuffer();
+        sqlDelReq.append("delete from stock_out_requirement where id = ?1");
+        Query del = entityManager.createNativeQuery(sqlDelReq.toString());
+        del.setParameter("1", id).executeUpdate();
+//        stockOutRequirementRepository.delete(id);
     }
 
     @Override

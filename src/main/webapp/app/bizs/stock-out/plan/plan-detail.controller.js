@@ -401,6 +401,9 @@
                     vm.strBoxIds = "";
                     vm.taskInstance.rerender();
                     vm.checkedPlanFlag = false;
+                    vm.selectedLen = 0;
+                    vm.selectedOptions.withOption('data', []);
+                    vm.selectAll = false;
                 });
             }else{
                 toastr.error("请勾选申请出库的冻存盒!");

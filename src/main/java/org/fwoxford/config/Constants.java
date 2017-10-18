@@ -166,13 +166,7 @@ public final class Constants {
     public static final String STOCK_OUT_HANDOVER_PENDING = "2101";
     public static final String STOCK_OUT_HANDOVER_COMPLETED = "2102";
     public static final String STOCK_OUT_HANDOVER_INVALID = "2190";
-    /**
-     * 冻存盒与冻存管的关系 2202：待出库;2203:取消出库，2204：已出库
-     */
-    public static final String FROZEN_BOX_TUBE_STOCKOUT_PENDING = "2202";
-    public static final String FROZEN_BOX_TUBE_STOCKOUT_CANCEL = "2203";
-    public static final String FROZEN_BOX_TUBE_STOCKOUT_COMPLETED= "2204";
-    public static final String FROZEN_BOX_TUBE_STOCKOUT_HANDOVER= "2205";
+
     /**
      * 撤销出库标识
      */

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutPlansForDataTableEntity.
+    -->
+    <changeSet id="20171018101803-1" author="jhipster">
+        <dropView viewName="view_stock_out_plan_list"></dropView>
+    </changeSet>
+    <changeSet id="20171018101803-2" author="jhipster">
+        <createView viewName="view_stock_out_plan_list">
+            SELECT p.id,p.apply_number,p.stock_out_plan_code,p.stock_out_plan_date as plan_date,a.purpose_of_sample,
+            (select count(t.id) from stock_out_req_frozen_tube t
+            left join stock_out_requirement r on t.stock_out_requirement_id = r.id
+            where r.stock_out_apply_id = a.id and t.status!='1302') as count_of_stock_out_plan_sample,
+            (select count(s.id) from stock_out_task s where s.stock_out_plan_id = p.id and s.status = '1603') ||'/'||
+            (select count(s.id) from stock_out_task s where s.stock_out_plan_id = p.id )as count_of_stock_out_task,p.status
+            FROM stock_out_plan p
+            LEFT JOIN stock_out_apply a ON p.stock_out_apply_id = a.id
+        </createView>
+
+    </changeSet>
+</databaseChangeLog>

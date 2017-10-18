@@ -199,6 +199,8 @@
         vm.sampleRequirementRevert = _fnSampleRequirementRevert;
         //判断是否都是核对完的列表
         vm.isApproval = _fnIsApproval;
+        //指定样本编码详情
+        vm.appointDescSample = _fnAppointDescSample;
 
         vm.dtOptions = BioBankDataTable.buildDTOption("BASIC",240)
             .withOption('createdRow', createdRow);
@@ -211,7 +213,7 @@
             DTColumnBuilder.newColumn('frozenTubeTypeName').withTitle('管类型'),
             DTColumnBuilder.newColumn('sex').withTitle('性别'),
             DTColumnBuilder.newColumn('diseaseTypeId').withTitle('疾病'),
-            DTColumnBuilder.newColumn('samples').withTitle('指定样本编码').withClass('text-ellipsis'),
+            DTColumnBuilder.newColumn('samples').withTitle('指定样本编码').withClass('text-ellipsis').renderWith(sampleOperateHtml),
             DTColumnBuilder.newColumn('status').withTitle('状态')
 
         ];
@@ -249,6 +251,18 @@
                 '<a ng-click="vm.sampleRequirementDel('+full.id+')">删除</a>&nbsp;'+
                 '<a ng-if="'+full.status+'!== 1201" ng-click="vm.sampleRequirementDescModel('+full.id+')">详情</a>'+
                 '</div>';
+        }
+        //指定样本编码
+        function sampleOperateHtml(data, type, full, meta) {
+            var html = '';
+            if(full.samples){
+                html =  '<a ng-click="vm.appointDescSample('+full.id+')">'+ full.samples +
+                    '</a>';
+            }
+            return html;
+        }
+        function _fnAppointDescSample(requirementId) {
+            window.open ('api/stock-out-required-samples/requirement/'+requirementId);
         }
         //编辑
         function _fnSampleRequirementEdit(sampleRequirementId) {

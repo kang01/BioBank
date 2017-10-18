@@ -19,7 +19,7 @@
         vm.tubeInstance = {};
         vm.taskInstance = {};
         vm.plan = {};
-
+        vm.checkedPlanFlag = false;
 
         //查看出库任务列表详情
         vm.taskDescModal = _fnTaskDescModal;
@@ -29,6 +29,7 @@
         vm.startTask = _fnStartTask;
         //创建任务
         vm.createTask = _fnCreateTask;
+        vm.close = _fnClose;
 
         var applyId;
         if($stateParams.planId){
@@ -37,17 +38,14 @@
                 vm.plan = data;
                 applyId = data.id;
                 angular.forEach(vm.plan.stockOutRequirement, function (data, index) {
-                    vm.checked.push(data.id);
+                    vm.checkedApply.push(data.id);
                     vm.demand[data.id] = true;
-                    vm.sampleIds = vm.checked.join(",");
+                    vm.sampleIds = vm.checkedApply.join(",");
                     _queryPlanBoxes();
-                    PlanService.queryPlanBoxes(vm.sampleIds,obj).success(function (res){
-                        vm.boxData = res.data;
-                        vm.dtOptions.withOption('data',vm.boxData);
-                    });
+                    // _fnLoadBox();
                 });
                 vm.select_all = true;
-            }).then(function () {
+            }).error(function () {
 
             });
             var obj = {
@@ -61,6 +59,7 @@
         function _initStockOutBoxesTable() {
             vm.selected = {};
             vm.selectAll = false;
+            var selectedSample;
             // 处理盒子选中状态
             vm.toggleAll = function (selectAll, selectedItems) {
                 selectedItems = vm.selected;
@@ -75,9 +74,25 @@
                 vm.strBoxIds = _.join(arrayId,",");
                 if(!selectAll){
                     vm.strBoxIds = "";
+                    _.forEach(vm.boxData, function(value) {
+                        var len  =  _.filter(selectedSample, {id:value.id}).length;
+                        if(len){
+                            _.remove(selectedSample,{id:value.id});
+                        }
+                    });
+                }else{
+                    for(var i = 0; i< vm.boxData.length; i++){
+                        var len = _.filter(selectedSample,{id:+vm.boxData[i].id}).length;
+                        if(!len){
+                            selectedSample.push(vm.boxData[i])
+                        }
+                    }
                 }
+                vm.selectedLen = selectedSample.length;
+                vm.selectedOptions.withOption('data', selectedSample);
             };
             var clickFlag = false;
+            selectedSample = [];
             vm.toggleOne = function (selectedItems) {
                 clickFlag = true;
                 // console.log(JSON.stringify(selectedItems))
@@ -85,8 +100,25 @@
                 for (var id in selectedItems) {
                     if(selectedItems[id]){
                         arrayId.push(id);
+                        var obj = _.find(vm.boxData,{id:+id});
+                        var len = _.filter(selectedSample,{id:+id}).length;
+                        if(!len){
+                            selectedSample.push(obj);
+                        }
+                    }else{
+                        var index = [];
+                        if(selectedSample.length){
+                            for(var i = 0; i < selectedSample.length; i++){
+                                if(+id == selectedSample[i].id){
+                                    index.push(i);
+                                }
+                            }
+                            _.pullAt(selectedSample, index);
+                        }
                     }
                 }
+                vm.selectedLen = selectedSample.length;
+                vm.selectedOptions.withOption('data', selectedSample);
                 vm.strBoxIds = _.join(arrayId,",");
                 for (var id in selectedItems) {
                     if (selectedItems.hasOwnProperty(id)) {
@@ -102,9 +134,10 @@
             };
             //盒子列表
             var boxId;
+            vm.selectedLen = 0;
             // vm.boxData = [];
             // vm.dtOptions.withOption('data',vm.boxData);
-            vm.dtOptions = BioBankDataTable.buildDTOption("SORTING", 300, 5)
+            vm.dtOptions = BioBankDataTable.buildDTOption("SORTING,SEARCHING", 300, 5)
                 .withOption('order', [[1,'asc']])
                 .withButtons([
                     {
@@ -112,6 +145,12 @@
                         className: 'btn btn-primary btn-sm ml-10',
                         key: '1',
                         action: _fnCreateTask
+                    },
+                    {
+                        text: '<i class="fa fa-shopping-cart"></i><div class="circle1" ng-if="vm.selectedLen">{{vm.selectedLen}}</div>',
+                        className: 'btn btn-primary btn-sm ml-10 position-relative',
+                        key: '2',
+                        action: _fnViewPlanDetail
                     }
                 ])
                 .withOption('rowCallback', rowCallback)
@@ -119,7 +158,9 @@
                     $compile(angular.element(row).contents())($scope);
                 })
                 .withOption('headerCallback', function(header) {
+                    var circle1 = $(".circle1").parent()[0];
                     $compile(angular.element(header).contents())($scope);
+                    $compile(angular.element(circle1).contents())($scope);
                 });
 
             var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
@@ -162,7 +203,7 @@
             function _fnRowRender(data, type, full, meta) {
                 var frozenBoxCode = '';
                 if(full.frozenBoxCode1D){
-                    frozenBoxCode = "1D:"+full.frozenBoxCode1D +"<br>" + "2D:"+full.frozenBoxCode;
+                    frozenBoxCode = "1D:"+full.frozenBoxCode1D +"&nbsp;<br>" + "2D:"+full.frozenBoxCode;
                 }else{
                     frozenBoxCode = "2D:"+full.frozenBoxCode;
                 }
@@ -202,6 +243,17 @@
                 // DTColumnBuilder.newColumn('sampleUsedTimes').withTitle('使用次数'),
                 DTColumnBuilder.newColumn('memo').withTitle('批注'),
                 DTColumnBuilder.newColumn('id').notVisible()
+            ];
+
+
+
+
+            vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", null, 10);
+            vm.selectedColumns = [
+                DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('样本编码').withOption("width", "130").renderWith(_fnRowRender),
+                DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "60")
+                // DTColumnBuilder.newColumn('status').withTitle('状态'),
+
             ];
         }
 
@@ -276,53 +328,66 @@
         }
         //样本需求
         vm.demand = [];
-        vm.checked = [];
+        vm.checkedApply = [];
         //全选
         vm.selectDemandAll = function () {
 
             if(vm.select_all) {
                 vm.select_one = true;
-                vm.checked = [];
+                vm.checkedApply = [];
                 angular.forEach(vm.plan.stockOutRequirement, function (data, index) {
-                    vm.checked.push(data.id);
+                    vm.checkedApply.push(data.id);
                     vm.demand[data.id] = true;
                 });
             }else {
                 vm.select_one = false;
-                vm.checked = [];
+                vm.checkedApply = [];
                 vm.demand = [];
+                vm.selectedLen = 0;
+                vm.selectedOptions.withOption('data', []);
+                vm.selectAll = false;
             }
-            vm.sampleIds = vm.checked.join(",");
+            vm.sampleIds = vm.checkedApply.join(",");
             _queryPlanBoxes();
         };
         vm.selectDemandOne = function () {
             angular.forEach(vm.demand , function (data, id) {
-                var index = vm.checked.indexOf(id);
+                var index = vm.checkedApply.indexOf(id);
                 if(data && index === -1) {
-                    vm.checked.push(id);
+                    vm.checkedApply.push(id);
                 } else if (!data && index !== -1){
-                    vm.checked.splice(index, 1);
+                    vm.checkedApply.splice(index, 1);
                 }
             });
-            if (vm.plan.stockOutRequirement.length === vm.checked.length) {
+            if (vm.plan.stockOutRequirement.length === vm.checkedApply.length) {
                 vm.select_all = true;
             } else {
                 vm.select_all = false;
             }
 
-            // console.log(JSON.stringify(vm.checked))
-            vm.sampleIds = vm.checked.join(",");
+            // console.log(JSON.stringify(vm.checkedApply))
+            vm.sampleIds = vm.checkedApply.join(",");
             _queryPlanBoxes();
         };
         //获取冻存盒列表
         function _queryPlanBoxes() {
             vm.strBoxIds = "";
             setTimeout(function () {
-                vm.dtInstance.rerender();
+                if(vm.sampleIds){
+                    PlanService.queryPlanBoxes(vm.sampleIds,obj).success(function (res){
+                        vm.boxData = res.data;
+                        vm.dtOptions.withOption('data',vm.boxData);
+                    });
+                }else{
+                    vm.dtOptions.withOption('data',[]);
+                    vm.dtInstance.rerender();
+
+                }
+
+                // vm.dtInstance.rerender();
                 vm.tubeOptions.withOption('data', []);
                 vm.tubeInstance.rerender();
             },100);
-
         }
 
         //创建任务
@@ -335,11 +400,21 @@
                     _queryPlanBoxes();
                     vm.strBoxIds = "";
                     vm.taskInstance.rerender();
+                    vm.checkedPlanFlag = false;
                 });
             }else{
                 toastr.error("请勾选申请出库的冻存盒!");
             }
 
+        }
+        //查看选中的计划详情
+        function _fnViewPlanDetail() {
+            vm.checkedPlanFlag = true;
+            $scope.$apply();
+        }
+        //关闭
+        function _fnClose() {
+            vm.checkedPlanFlag = false;
         }
         //查看
         function _fnTaskDescModal(taskId) {

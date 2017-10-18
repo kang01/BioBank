@@ -217,7 +217,7 @@
 
 
         //冻存盒列表
-        vm.boxOptions = BioBankDataTable.buildDTOption("SORTING", 420,5)
+        vm.boxOptions = BioBankDataTable.buildDTOption("SORTING,SEARCHING", 420,5)
             .withOption('order', [[0,'asc']])
             .withOption('rowCallback', rowCallback);
         vm.boxColumns = [
@@ -858,15 +858,29 @@
                     TaskService.saveTempBoxes(vm.taskId,tempBoxList).success(function (data) {
                         toastr.success("装盒成功!");
                         _fnInitial();
+                        // _fnQueryTaskBoxes();
+                        // _fnQueryStockOutList();
                     }).error(function (data) {
                         toastr.error(data.message);
                     });
                 }else{
                     var selfBoxList = [];
                     selfBoxList.push(frozenBox);
+                    var frozenBoxCode = frozenBox.frozenBoxCode;
+
                     TaskService.saveTempBoxes(vm.taskId,selfBoxList).success(function (data) {
                         toastr.success("出库成功!");
-                        _fnInitial();
+                        // _fnInitial();
+                        // _fnQueryTaskBoxes();
+                        _.remove(vm.stockOutbox,{"frozenBoxCode":frozenBoxCode});
+                        vm.boxOptions.withOption('data', vm.stockOutbox);
+                        vm.boxInstance.rerender();
+                        var tableCtrl = _getSampleDetailsTableCtrl();
+                        tableCtrl.clear();
+                        // tableCtrl.selectCell(0,0);
+                        tableCtrl.deselectCell();
+
+                        _fnQueryStockOutList();
                     }).error(function (data) {
                         toastr.error(data.message);
                     });

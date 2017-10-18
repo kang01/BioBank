@@ -129,7 +129,7 @@ public class StockOutTaskFrozenTubeServiceImpl implements StockOutTaskFrozenTube
             frozenTubeIds.add(tube.getId());
         }
         //需求样本撤销
-        List<StockOutReqFrozenTube>   stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndFrozenTubeIdInAndStatusNot(taskId,frozenTubeIds,Constants.STOCK_OUT_SAMPLE_CANCEL);
+        List<StockOutReqFrozenTube>   stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndFrozenTubeIdInAndStatusNot(taskId,frozenTubeIds,Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
         for(StockOutReqFrozenTube stockOutReqFrozenTube: stockOutReqFrozenTubes){
             for(FrozenTubeResponse tube :frozenTubeDTOS) {
                 if(tube.getId().equals(stockOutReqFrozenTube.getFrozenTube().getId())){

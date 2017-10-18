@@ -11,6 +11,6 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface StockOutBoxPositionRepository extends JpaRepository<StockOutBoxPosition,Long> {
-    @Query("delete from StockOutBoxPosition s where s.id in ?1")
-    void deleteByIds(List<Long> ids);
+
+    StockOutBoxPosition findByStockOutFrozenBoxIdAndStatus(Long id, String valid);
 }

@@ -532,14 +532,17 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 //            frozenTubeList.add(frozenTube);
             frozenTubeIds.add(frozenTube.getId());
         }
-        StringBuffer sql = new StringBuffer();
-        sql.append("update stock_out_req_frozen_tube t set t.status = ?1 ,t.frozen_tube_state = ?2 where  t.stock_out_frozen_box_id in ?3");
+        List<List<Long>> frozenBoxs = Lists.partition(frozenBoxIds, 1000);
+        for(List<Long> ids: frozenBoxs){
+            StringBuffer sql = new StringBuffer();
+            sql.append("update stock_out_req_frozen_tube t set t.status = ?1 ,t.frozen_tube_state = ?2 where  t.stock_out_frozen_box_id in ?3");
+            Query query = entityManager.createNativeQuery(sql.toString());
+            query.setParameter("1", Constants.STOCK_OUT_SAMPLE_COMPLETED);
+            query.setParameter("2", Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
+            query.setParameter("3", ids);
+            query.executeUpdate();
 
-        Query query = entityManager.createNativeQuery(sql.toString());
-        query.setParameter("1", Constants.STOCK_OUT_SAMPLE_COMPLETED);
-        query.setParameter("2", Constants.FROZEN_BOX_STOCK_OUT_COMPLETED);
-        query.setParameter("3", frozenBoxIds);
-        query.executeUpdate();
+        }
 
         List<List<Long>> frozenTubes = Lists.partition(frozenTubeIds, 1000);
         for(List<Long> ids: frozenTubes){
@@ -563,11 +566,12 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 //        }
 
         List<String> statusList = new ArrayList<>();
-        statusList.add(Constants.STOCK_OUT_SAMPLE_CANCEL);
+        statusList.add(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
         statusList.add(Constants.STOCK_OUT_SAMPLE_COMPLETED);
 
         //任务未出库样本量
         Long countOfTaskTube = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(taskId,statusList);
+        //如果任务内的
         if(countOfTaskTube.intValue()==0) {
             //异常出库样本量
             Long abNormalTube = stockOutReqFrozenTubeRepository.countAbnormalTubeByStockOutTaskId(taskId);
@@ -579,19 +583,15 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         stockOutTaskRepository.save(stockOutTask);
         List<String> statusList_ = new ArrayList<>();
         statusList_.add(Constants.STOCK_OUT_SAMPLE_IN_USE);
-        statusList_.add(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
+        statusList_.add(Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
 
         Long countOfUnCompleteTask = stockOutReqFrozenTubeRepository.countUnCompleteSampleByStockOutApplyAndStatusIn(stockOutTask.getStockOutPlan().getStockOutApply().getId(),statusList_);
+       //未完成出库申请的冻存管数量
         if(countOfUnCompleteTask.intValue()==0){
             StockOutPlan stockOutPlan = stockOutTask.getStockOutPlan();
             stockOutPlan.setStatus(Constants.STOCK_OUT_PLAN_COMPLETED);
             stockOutPlanRepository.save(stockOutPlan);
         }
-
-        //如果任务下的待出库样本都出库了则任务是已完成的状态
-        //如果任务下需要出库的样本有异常，则为异常出库
-        //如果计划出库的样本都出库了，则计划的状态为已完成，排除已撤销的
-
         return stockOutTaskMapper.stockOutTaskToStockOutTaskDTO(stockOutTask);
     }
 
@@ -665,7 +665,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
         List<StockOutFrozenBoxForDataTableEntity> stockOutFrozenBoxForDataTableEntities = new ArrayList<StockOutFrozenBoxForDataTableEntity>();
         output.getData().forEach(entity -> {
             StockOutFrozenBoxForDataTableEntity dataTableEntity = new StockOutFrozenBoxForDataTableEntity();
-            StockOutBoxPosition stockOutBoxPosition = stockOutBoxPositionRepository.findOne(entity.getId());
+            StockOutBoxPosition stockOutBoxPosition = stockOutBoxPositionRepository.findByStockOutFrozenBoxIdAndStatus(entity.getId(),Constants.VALID);
             String position = BankUtil.toPositionString(stockOutBoxPosition);
             dataTableEntity.setPosition(position);
             dataTableEntity.setId(entity.getId());

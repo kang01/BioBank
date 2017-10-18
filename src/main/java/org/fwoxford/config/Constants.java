@@ -102,7 +102,6 @@ public final class Constants {
     public static final String STOCK_OUT_SAMPLE_IN_USE_NOT = "1302";
     public static final String STOCK_OUT_SAMPLE_WAITING_OUT = "1303";
     public static final String STOCK_OUT_SAMPLE_COMPLETED = "1304";
-    public static final String STOCK_OUT_SAMPLE_CANCEL = "1305";
     /**
      *  样本数量，权重系数0（因为所有的需求都有这个基本条件）
      项目编码，权重系数0（因为所有的需求都有这个基本条件）

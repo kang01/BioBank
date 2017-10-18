@@ -22,12 +22,13 @@
         </createView>
     </changeSet>
 
-    <changeSet id="20170930092400-2" author="jhipster">
+    <changeSet id="20170930092400-3" author="jhipster">
+        <dropView viewName="view_stock_out_task"></dropView>
         <dropView viewName="view_stock_out_task_list"></dropView>
         <createView viewName="view_stock_out_task_list">
             SELECT t.id,t.stock_out_task_code,
             p.stock_out_plan_code, t.stock_out_date,
-            (SELECT COUNT(tb.id) FROM stock_out_req_frozen_tube tb WHERE tb.STOCK_OUT_TASK_ID = t.id ) as count_of_stock_out_sample ,
+            (SELECT COUNT(tb.id) FROM stock_out_req_frozen_tube tb WHERE tb.STOCK_OUT_TASK_ID = t.id and tb.status !='1302') as count_of_stock_out_sample ,
             (SELECT COUNT(hd.id) FROM stock_out_handover_details hd LEFT JOIN stock_out_handover_box hb on hd.stock_out_handover_box_id=hb.id LEFT JOIN stock_out_handover h ON hb.stock_out_handover_id = h.id WHERE h.stock_out_task_id = t.id) as count_of_hand_over_sample,
             (SELECT COUNT(h.id) FROM  stock_out_handover h  WHERE h.stock_out_task_id = t.id and h.status='2102') as  hand_over_times,
             ap.purpose_of_sample,t.status,d.delegate_name

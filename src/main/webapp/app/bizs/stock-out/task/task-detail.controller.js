@@ -60,7 +60,10 @@
         vm.viewSampleDesc = _fnViewSampleDesc;
         //删除选中的管子
         vm.delSelectedTube = _fnDelSelectedTube;
+        //下一盒
+        vm.nextBox = _fnNextBox;
 
+        _fnInitTask();
         function _fnInitTask() {
             //编辑
             var taskId;
@@ -97,17 +100,18 @@
             _fnQueryUser();
             startTimer();
         }
+        //获取任务冻存盒列表
         function _fnQueryTaskBoxes() {
-            //获取冻存盒列表
-            TaskService.queryTaskBox(vm.taskId).success(function (data) {
+            BioBankBlockUi.blockUiStart();
+            return TaskService.queryTaskBox(vm.taskId).success(function (data) {
+                BioBankBlockUi.blockUiStop();
                 vm.stockOutbox = data;
                 vm.boxOptions.withOption('data', vm.stockOutbox);
-                // vm.boxInstance.rerender();
-                // startTimer();
             });
         }
+        //获取待出库列表
         function _fnQueryStockOutList() {
-            //获取已出库列表
+
             TaskService.queryOutputList(vm.taskId).success(function (data) {
                 vm.stockOutBoxList = data;
                 //1702已出库
@@ -115,12 +119,19 @@
                 vm.stockOutSampleOptions.withOption('data', vm.stockOutBoxList);
             });
         }
+        //获取当前用户名
         function _fnQueryUser() {
             Principal.identity().then(function(account) {
                 vm.account = account;
             });
         }
-        _fnInitTask();
+        //下一盒
+        function _fnNextBox() {
+            var selectRow = vm.boxInstance.DataTable.rows(".rowLight");
+            var row = selectRow.nodes().to$();
+            row= row.next();
+            row.click();
+        }
         //开始任务计时器
         var taskTimer;
         function startTimer() {
@@ -230,25 +241,19 @@
             $('td', nRow).unbind('click');
             $(nRow).bind('click', function() {
                 var tr = this;
-                $scope.$apply(function () {
-                    rowClickHandler(tr,oData);
-                });
+                rowClickHandler(tr,oData);
             });
             if (vm.box && vm.box.frozenBoxCode == oData.frozenBoxCode){
                 $(nRow).addClass('rowLight');
-                // _fnLoadTubes();
             }
             return nRow;
         }
-        var boxCode;
         function rowClickHandler(tr,data) {
             $(tr).closest('table').find('.rowLight').removeClass("rowLight");
             $(tr).addClass('rowLight');
-            boxCode = data.frozenBoxCode;
-            // vm.sampleCode = boxCode+"-";
-            vm.sampleCodeCopy = angular.copy(vm.sampleCode);
-            // vm.boxInTubes = [];
-            _fnLoadTubes();
+            vm.box = angular.copy(data);
+            var boxCode = data.frozenBoxCode;
+            _fnLoadTubes(boxCode);
         }
         function _fnRowRender(data, type, full, meta) {
             var frozenBoxCode = '';
@@ -262,7 +267,7 @@
 
         //加载管子
         var frozenBox;
-        function _fnLoadTubes() {
+        function _fnLoadTubes(boxCode) {
             TaskService.queryTubes(boxCode,vm.taskId).success(function (data) {
                 frozenBox = data;
                 vm.frozenTubeDTOS = frozenBox.frozenTubeDTOS;
@@ -657,9 +662,10 @@
         }
         //删除已选中的样本
         function _fnDelSelectedTube(tubeId) {
+            var boxCode = vm.box.frozenBoxCode;
             orderIndex = _.find(vm.boxInTubes,{id:tubeId}).orderIndex;
             _.remove(vm.boxInTubes,{id:tubeId});
-            _fnLoadTubes();
+            _fnLoadTubes(boxCode);
             //预装位置
             _fnPrePos();
         }
@@ -696,10 +702,11 @@
                         repealList.push(vm.aRemarkArray[i]);
                     }
                 }
+                var boxCode = vm.box.frozenBoxCode;
                 TaskService.repeal(vm.taskId,repealList).success(function (data) {
                     toastr.success("申请撤销样本成功!");
                     _fnQueryTaskBoxes();
-                    _fnLoadTubes();
+                    _fnLoadTubes(boxCode);
                     vm.box.frozenBoxCode =boxCode;
                 });
                 vm.aRemarkArray = [];
@@ -795,37 +802,6 @@
                 tableCtrl.loadData(vm.tubes);
             });
         }
-        //装盒
-        function _fnBoxInModal() {
-            isStockOutFlag = true;
-            //保存任务信息
-            _fnSaveTask();
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-out/task/modal/box-in-modal.html',
-                controller: 'TaskBoxInModalController',
-                controllerAs: 'vm',
-                size: '90',
-                backdrop:'static',
-                resolve: {
-                    items: function () {
-                        return {
-                            allInFlag:vm.allInFlag,
-                            boxInTubes:vm.boxInTubes,
-                            taskId:vm.taskId,
-                            boxInFullFlag:vm.boxInFullFlag,
-                            frozenBox:frozenBox
-                        };
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (data) {
-                _fnInitTask();
-                var tableCtrl = _getSampleDetailsTableCtrl();
-                tableCtrl.loadData([[]]);
-            });
-        }
         //管子出库操作 1.装盒 2.原盒
         function _fnTubeStockOutBox(status) {
             isStockOutFlag = true;
@@ -855,14 +831,14 @@
                     vm.tempBoxObj.frozenTubeDTOS = vm.boxInTubes;
                     // vm.tempBoxObj.frozenTubeDTOS = stockOutTubes;
                     tempBoxList.push(vm.tempBoxObj);
-                    TaskService.saveTempBoxes(vm.taskId,tempBoxList).success(function (data) {
-                        toastr.success("装盒成功!");
-                        _fnInitial();
-                        // _fnQueryTaskBoxes();
-                        // _fnQueryStockOutList();
-                    }).error(function (data) {
-                        toastr.error(data.message);
-                    });
+                    // TaskService.saveTempBoxes(vm.taskId,tempBoxList).success(function (data) {
+                    //     toastr.success("装盒成功!");
+                    //     // _fnInitial();
+                    //     // _fnQueryTaskBoxes();
+                    //     _fnQueryStockOutList();
+                    // }).error(function (data) {
+                    //     toastr.error(data.message);
+                    // });
                 }else{
                     var selfBoxList = [];
                     selfBoxList.push(frozenBox);
@@ -870,16 +846,11 @@
 
                     TaskService.saveTempBoxes(vm.taskId,selfBoxList).success(function (data) {
                         toastr.success("出库成功!");
-                        // _fnInitial();
-                        // _fnQueryTaskBoxes();
                         _.remove(vm.stockOutbox,{"frozenBoxCode":frozenBoxCode});
                         vm.boxOptions.withOption('data', vm.stockOutbox);
                         vm.boxInstance.rerender();
                         var tableCtrl = _getSampleDetailsTableCtrl();
-                        tableCtrl.clear();
-                        // tableCtrl.selectCell(0,0);
-                        tableCtrl.deselectCell();
-
+                        tableCtrl.loadData([[]]);
                         _fnQueryStockOutList();
                     }).error(function (data) {
                         toastr.error(data.message);

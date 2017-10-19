@@ -47,6 +47,9 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
     @Query("select t from StockOutReqFrozenTube t where t.stockOutTask.id =?1 and t.frozenBox.id = ?2 and t.status = '"+Constants.STOCK_OUT_SAMPLE_IN_USE+"'")
     List<StockOutReqFrozenTube> findByStockOutTaskIdAndFrozenBoxId(Long stockOutTaskId, Long frozenBoxId);
 
+    @Query("select t from StockOutReqFrozenTube t where t.stockOutTask.id =?1 and t.frozenBox.id = ?2 ")
+    List<StockOutReqFrozenTube> findByStockOutTaskIdAndFrozenBoxIdAll(Long stockOutTaskId, Long frozenBoxId);
+
     List<StockOutReqFrozenTube> findByStockOutTaskIdAndFrozenTubeIdInAndStatusNot(Long taskId, List<Long> frozenTubeIds, String stauts);
 
     Long countByStockOutFrozenBoxId(Long id);

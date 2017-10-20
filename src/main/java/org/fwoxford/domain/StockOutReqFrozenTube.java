@@ -512,6 +512,12 @@ public class StockOutReqFrozenTube extends AbstractAuditingEntity implements Ser
         return frozenBoxCode1D;
     }
 
+    public StockOutReqFrozenTube frozenBoxCode1D(String frozenBoxCode1D) {
+        this.frozenBoxCode1D = frozenBoxCode1D;
+        return this;
+    }
+
+
     public void setFrozenBoxCode1D(String frozenBoxCode1D) {
         this.frozenBoxCode1D = frozenBoxCode1D;
     }

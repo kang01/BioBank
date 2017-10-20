@@ -1,5 +1,6 @@
 package org.fwoxford.service;
 
+import org.fwoxford.domain.StockOutFrozenBox;
 import org.fwoxford.service.dto.StockOutFrozenBoxDTO;
 import org.fwoxford.service.dto.StockOutTaskDTO;
 import org.fwoxford.service.dto.response.*;
@@ -60,7 +61,7 @@ public interface StockOutFrozenBoxService {
 
     List<StockOutFrozenBoxForTaskDataTableEntity> getAllStockOutFrozenBoxesByTask(Long taskId);
 
-    List<FrozenBoxAndFrozenTubeResponse> createFrozenBoxForStockOut(List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTO, Long taskId);
+    List<StockOutFrozenBoxDTO> createFrozenBoxForStockOut(List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTO, Long taskId);
 
     List<FrozenBoxAndFrozenTubeResponse> getAllTempStockOutFrozenBoxesByTask(Long taskId);
 

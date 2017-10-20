@@ -15,6 +15,7 @@
         var vm = this;
         //1：未出库样本批注、2：已出库样本批注
         vm.status = items.status;
+        vm.memo = items.memo;
 
         vm.ok = function () {
             $uibModalInstance.close(vm.memo);

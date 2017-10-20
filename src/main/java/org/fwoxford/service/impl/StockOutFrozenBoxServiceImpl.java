@@ -280,12 +280,13 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
      * @return
      */
     @Override
-    public List<FrozenBoxAndFrozenTubeResponse> createFrozenBoxForStockOut(List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTO, Long taskId) {
+    public List<StockOutFrozenBoxDTO> createFrozenBoxForStockOut(List<FrozenBoxAndFrozenTubeResponse> frozenBoxDTO, Long taskId) {
         StockOutTask stockOutTask = stockOutTaskRepository.findOne(taskId);
         if(stockOutTask == null){
             throw new BankServiceException("任务ID无效！");
         }
         List<FrozenBoxType> boxTypes = frozenBoxTypeRepository.findAllFrozenBoxTypes();
+        List<StockOutFrozenBox> stockOutFrozenBoxs = new ArrayList<>();
         for(FrozenBoxAndFrozenTubeResponse box:frozenBoxDTO){
             if(box.getFrozenBoxCode() == null){
                 throw new BankServiceException("冻存盒编码不能为空！");
@@ -356,8 +357,9 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
                 .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
                 .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
                 .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
-                .projectSiteName(frozenBox.getProjectSiteName()).memo(frozenBox.getMemo());
+                .projectSiteName(frozenBox.getProjectSiteName());
             stockOutFrozenBoxRepository.save(stockOutFrozenBox);
+            stockOutFrozenBoxs.add(stockOutFrozenBox);
             List<Long> frozenTubeIds = new ArrayList<>();
             for(FrozenTubeDTO f: box.getFrozenTubeDTOS()){
                 frozenTubeIds.add(f.getId());
@@ -390,7 +392,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
             frozenTubeRepository.save(frozenTubeList);
         }
-        return frozenBoxDTO;
+        return stockOutFrozenBoxMapper.stockOutFrozenBoxesToStockOutFrozenBoxDTOs(stockOutFrozenBoxs);
     }
 
     @Override

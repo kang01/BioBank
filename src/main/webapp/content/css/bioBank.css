@@ -711,6 +711,9 @@ table.dataTable tfoot th, table.dataTable tfoot td {
 .import-box-modal-body .import-box-input .selectize-input {
     height: 288px;
 }
+.batch-box-modal-body .import-box-input .selectize-input {
+    height: 304px;
+}
 
 .transport-record-new .pipe-body .pipe-operate {
     width: 8%;

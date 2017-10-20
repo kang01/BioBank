@@ -2,15 +2,15 @@
     <button type="button" class="close" ng-click="vm.cancel()" style="margin-top: 11px;margin-right: 10px;font-size: 23px;"><span >&times;</span></button>
     <h3 class="modal-title" id="modal-title">
         <span ng-if="vm.status == 1">批注</span>
-        <span ng-if="vm.status == 2">已出库样本批注</span>
+        <span ng-if="vm.status == 2">已出库样本备注</span>
     </h3>
 </div>
 <div class="modal-body" id="modal-body">
     <form>
         <div class="form-group">
             <label>批注</label>
-            <textarea ng-if="vm.status == 1" class="form-control resize-none" rows="3" ng-model="vm.memo" focus-me></textarea>
-            <textarea ng-if="vm.status == 2" class="form-control resize-none" rows="3" ng-model="vm.memo" focus-me></textarea>
+            <textarea ng-if="vm.status == 1" class="form-control resize-none" rows="10" ng-model="vm.memo" focus-me></textarea>
+            <textarea ng-if="vm.status == 2" class="form-control resize-none" rows="10" ng-model="vm.memo" focus-me></textarea>
         </div>
     </form>
 </div>

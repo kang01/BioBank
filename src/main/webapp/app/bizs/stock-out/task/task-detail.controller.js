@@ -44,10 +44,6 @@
         vm.abnormal = _fnAbnormal;
         //1未出库样本、2已出库样本批注
         vm.commentModal = _fnCommentModal;
-        //装盒
-        // vm.boxInModal = _fnBoxInModal;
-        //装盒
-        // vm.boxInOperate = _fnBoxInOperate;
         //冻存管装盒原盒出库 1.装盒 2.原盒
         vm.tubeStockOutBox = _fnTubeStockOutBox;
         //预装位置
@@ -102,9 +98,7 @@
         }
         //获取任务冻存盒列表
         function _fnQueryTaskBoxes() {
-            BioBankBlockUi.blockUiStart();
             return TaskService.queryTaskBox(vm.taskId).success(function (data) {
-                BioBankBlockUi.blockUiStop();
                 vm.stockOutbox = data;
                 vm.boxOptions.withOption('data', vm.stockOutbox);
             });
@@ -472,7 +466,7 @@
                     tube.memo = ""
                 }
                 if(tube.repealReason && tube.repealReason != " "){
-                    txt = tube.repealReason + tube.memo;
+                    txt = tube.repealReason + "\t\n" +tube.memo;
                 }
                 if(txt){
                     cellProperties.comment = {value:txt};
@@ -705,7 +699,10 @@
                 var boxCode = vm.box.frozenBoxCode;
                 TaskService.repeal(vm.taskId,repealList).success(function (data) {
                     toastr.success("申请撤销样本成功!");
-                    _fnQueryTaskBoxes();
+                    //更新左侧列表中冻存盒列表中的样本量
+                    _.find(vm.stockOutbox,{"frozenBoxCode":vm.box.frozenBoxCode}).countOfSample -= repealList.length;
+                    vm.boxOptions.withOption('data', vm.stockOutbox);
+
                     _fnLoadTubes(boxCode);
                     vm.box.frozenBoxCode =boxCode;
                 });
@@ -716,11 +713,15 @@
         }
 
         //批注 1：未出库样本、2：已出库样本
-        function _fnCommentModal(status,tempBoxId) {
+        function _fnCommentModal(status,boxId,memo) {
             if(status == 1){
                 if(!vm.aRemarkArray.length){
                     toastr.error("请选择样本!");
                     return;
+                }
+                var memo;
+                if(vm.aRemarkArray.length == 1){
+                    memo = vm.aRemarkArray[0].memo;
                 }
             }
             modalInstance = $uibModal.open({
@@ -732,7 +733,8 @@
                 resolve: {
                     items: function () {
                         return {
-                            status:status
+                            status:status,
+                            memo:memo
                         };
                     }
                 }
@@ -741,28 +743,41 @@
             modalInstance.result.then(function (memo) {
                 // 1：未出库样本批注、2：已出库样本批注
                 if(status == 1){
-                    for(var i = 0; i < vm.aRemarkArray.length; i++){
-                        if(vm.aRemarkArray[i].sampleCode || vm.aRemarkArray[i].sampleTempCode){
-                            if(vm.aRemarkArray[i].memo){
-                                vm.aRemarkArray[i].memo = vm.aRemarkArray[i].memo + memo;
-                            }else{
-                                vm.aRemarkArray[i].memo = memo;
+                    if(vm.aRemarkArray.length == 1){
+                        vm.aRemarkArray[0].memo = memo
+                    }else{
+                        for(var i = 0; i < vm.aRemarkArray.length; i++){
+                            if(vm.aRemarkArray[i].sampleCode || vm.aRemarkArray[i].sampleTempCode){
+                                if(vm.aRemarkArray[i].memo){
+                                    vm.aRemarkArray[i].memo = vm.aRemarkArray[i].memo + "\r\n"+memo;
+                                }else{
+                                    vm.aRemarkArray[i].memo = memo;
+                                }
                             }
                         }
+
                     }
                     TaskService.fnNote(vm.aRemarkArray).success(function (data) {
-
+                        vm.aRemarkArray = [];
+                        var tableCtrl = _getSampleDetailsTableCtrl();
+                        tableCtrl.loadData(vm.tubes);
+                    }).error(function (data) {
+                        toastr.error(data.message);
                     });
-                    vm.aRemarkArray = [];
-                    var tableCtrl = _getSampleDetailsTableCtrl();
-                    tableCtrl.loadData(vm.tubes);
+
                 }else{
                     var obj  = {};
-                    obj.id = tempBoxId;
+                    obj.id = boxId;
                     obj.memo = memo;
                     TaskService.outputNote(obj).success(function (data) {
-                        toastr.success("批注成功!");
-                        _fnInitTask();
+                        toastr.success("备注成功!");
+
+                        //成功后更新已出库列表中的样本量
+                        _.find(vm.stockOutBoxList,{"id":boxId}).memo = memo;
+                        vm.stockOutSampleOptions.withOption('data', vm.stockOutBoxList);
+
+                    }).error(function (data) {
+                        toastr.error(data.message);
                     });
                 }
 
@@ -796,10 +811,14 @@
                         vm.aRemarkArray[i].status = "3004";
                     }
                 }
-                TaskService.abnormal(vm.aRemarkArray).success(function (data) {});
-                vm.aRemarkArray = [];
-                var tableCtrl = _getSampleDetailsTableCtrl();
-                tableCtrl.loadData(vm.tubes);
+                TaskService.abnormal(vm.aRemarkArray).success(function (data) {
+                    vm.aRemarkArray = [];
+                    var tableCtrl = _getSampleDetailsTableCtrl();
+                    tableCtrl.loadData(vm.tubes);
+                }).error(function (data) {
+                    toastr.error(data.message);
+                });
+
             });
         }
         //管子出库操作 1.装盒 2.原盒
@@ -824,21 +843,44 @@
 
             modalInstance.result.then(function (data) {
                 if(status == 1){
-                    //获取待出库样本
-                    // var stockOutTubes = _.filter(vm.tubeList,{stockOutFlag:1});
-                    // console.log(JSON.stringify(stockOutTubes));
                     var tempBoxList = [];
                     vm.tempBoxObj.frozenTubeDTOS = vm.boxInTubes;
-                    // vm.tempBoxObj.frozenTubeDTOS = stockOutTubes;
+                    vm.tempBoxObj.countOfSample = vm.boxInTubes.length;
+                    vm.tempBoxObj.sampleTypeName = "";
+                    vm.tempBoxObj.position = "";
+                    vm.tempBoxObj.stockOutHandoverTime = "";
+                    vm.tempBoxObj.memo = "";
+                    vm.tempBoxObj.status = "1701";
+
                     tempBoxList.push(vm.tempBoxObj);
-                    // TaskService.saveTempBoxes(vm.taskId,tempBoxList).success(function (data) {
-                    //     toastr.success("装盒成功!");
-                    //     // _fnInitial();
-                    //     // _fnQueryTaskBoxes();
-                    //     _fnQueryStockOutList();
-                    // }).error(function (data) {
-                    //     toastr.error(data.message);
-                    // });
+                    TaskService.saveTempBoxes(vm.taskId,tempBoxList).success(function (data) {
+                        toastr.success("装盒成功!");
+                        //更新待出库冻存盒列表
+                        _fnReloadWaitingStockOutBox(data);
+                        //更新左侧任务冻存盒列表
+                        _fnReloadWaitingTaskBox();
+
+
+                        //更新右边管子信息
+                        var selectRow = vm.boxInstance.DataTable.rows(".rowLight");
+                        var row = selectRow.nodes().to$();
+                        row.click();
+
+
+                        vm.boxInTubes.length = 0;
+
+                        vm.tempBoxObj = {
+                            frozenTubeDTOS :[]
+                        };
+                        //样本总量
+                        vm.totalLen = undefined;
+
+
+
+
+                    }).error(function (data) {
+                        toastr.error(data.message);
+                    });
                 }else{
                     var selfBoxList = [];
                     selfBoxList.push(frozenBox);
@@ -846,12 +888,21 @@
 
                     TaskService.saveTempBoxes(vm.taskId,selfBoxList).success(function (data) {
                         toastr.success("出库成功!");
+                        //原盒出库完成后，移除任务冻存盒列表中的盒子数据
                         _.remove(vm.stockOutbox,{"frozenBoxCode":frozenBoxCode});
                         vm.boxOptions.withOption('data', vm.stockOutbox);
-                        vm.boxInstance.rerender();
+                        //清空右侧冻存管数据
                         var tableCtrl = _getSampleDetailsTableCtrl();
                         tableCtrl.loadData([[]]);
-                        _fnQueryStockOutList();
+
+                        //成功后更新已出库列表中的样本量
+                        data[0].position = "";
+                        data[0].stockOutHandoverTime = "";
+                        data[0].countOfSample = vm.box.countOfSample;
+                        vm.stockOutBoxList.push(data[0]);
+                        vm.stockOutSampleOptions.withOption('data', vm.stockOutBoxList);
+
+
                     }).error(function (data) {
                         toastr.error(data.message);
                     });
@@ -859,6 +910,37 @@
 
 
             });
+        }
+        //更新待出库冻存盒列表
+        function _fnReloadWaitingStockOutBox(data) {
+            //成功后更新已出库列表中的样本量
+            var frozenBoxCode = data[0].frozenBoxCode;
+            var frozenBoxId = data[0].id;
+            var len1 = _.filter(vm.stockOutBoxList,{"frozenBoxCode":frozenBoxCode}).length;
+            if(len1){
+                _.forEach(vm.stockOutBoxList,function (box) {
+                    if(box.frozenBoxCode == frozenBoxCode){
+                        box.countOfSample += vm.boxInTubes.length;
+                    }
+                });
+            }else{
+                vm.tempBoxObj.id = frozenBoxId;
+                vm.stockOutBoxList.push(vm.tempBoxObj);
+            }
+            vm.stockOutSampleOptions.withOption('data', vm.stockOutBoxList);
+        }
+        //更新左侧任务冻存盒列表
+        function _fnReloadWaitingTaskBox() {
+            //更新左侧列表中冻存盒列表中的样本量
+            var len2 = _.filter(vm.stockOutbox,{"frozenBoxCode":vm.box.frozenBoxCode}).length;
+            if(len2){
+                _.forEach(vm.stockOutbox,function (box) {
+                    if(box.frozenBoxCode == vm.box.frozenBoxCode){
+                        box.countOfSample -= vm.boxInTubes.length;
+                    }
+                });
+            }
+            vm.boxOptions.withOption('data', vm.stockOutbox);
         }
         //预装位置
         function _fnPrePos() {
@@ -927,13 +1009,13 @@
             vm.tempBoxObj = {
                 frozenTubeDTOS : []
             };
-            _fnInitTask();
+            // _fnInitTask();
             var tableCtrl = _getSampleDetailsTableCtrl();
             tableCtrl.loadData([[]]);
         }
 
         //已扫码的样本
-        vm.selectedOptions = BioBankDataTable.buildDTOption("BASIC", 371)
+        vm.selectedOptions = BioBankDataTable.buildDTOption("SORTING", 371)
             .withOption('rowCallback', selectedSampleRowCallback);
         vm.selectedColumns = [
             DTColumnBuilder.newColumn('id').withOption("width", "40").notSortable().withOption('searchable',false).withTitle('序号'),
@@ -959,6 +1041,7 @@
 
         //选择临时盒
         vm.tempBoxObj = {
+            sampleTypeName:"",
             frozenTubeDTOS :[]
         };
         function _fnSelectTempBox() {
@@ -1041,6 +1124,7 @@
         };
         //已出库列表
         vm.stockOutSampleOptions = BioBankDataTable.buildDTOption("BASIC", 300)
+            .withOption('order', [[1,'asc']])
             .withOption('createdRow', createdRow)
             .withOption('headerCallback', function(header) {
                 $compile(angular.element(header).contents())($scope);
@@ -1048,15 +1132,15 @@
         var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
         vm.stockOutSampleColumns = [
             DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).notSortable().renderWith(_fnRowSelectorRender),
-            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "100").notSortable(),
-            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "100").notSortable(),
-            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "80").notSortable(),
-            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "220").notSortable(),
-            DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('交接时间').withOption("width", "80").notSortable(),
-            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "50").notSortable(),
-            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto").notSortable(),
-            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50").notSortable(),
-            DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml).withOption("width", "80").notSortable(),
+            DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒编码').withOption("width", "100"),
+            DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "100"),
+            DTColumnBuilder.newColumn('sampleTypeName').withTitle('样本类型').withOption("width", "80"),
+            DTColumnBuilder.newColumn('position').withTitle('冻存盒位置').withOption("width", "220"),
+            DTColumnBuilder.newColumn('stockOutHandoverTime').withTitle('交接时间').withOption("width", "80"),
+            DTColumnBuilder.newColumn('countOfSample').withTitle('样本量').withOption("width", "60"),
+            DTColumnBuilder.newColumn('memo').withTitle('备注').withOption("width", "auto"),
+            DTColumnBuilder.newColumn('status').withTitle('状态').withOption("width", "50"),
+            DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml).withOption("width", "80"),
             DTColumnBuilder.newColumn('id').notVisible()
         ];
         function _fnRowSelectorRender(data, type, full, meta) {
@@ -1084,11 +1168,11 @@
                     '出库' +
                     '</button> &nbsp;'+
                     '<button type="button" class="btn btn-default btn-xs"  ng-click="vm.commentModal(2,'+ full.id +')">' +
-                    '批注' +
+                    '备注' +
                     '</button>';
             }else{
                 return '<button type="button" class="btn btn-default btn-xs"  ng-click="vm.commentModal(2,'+ full.id +')">' +
-                    '批注' +
+                    '备注' +
                     '</button>';
             }
 

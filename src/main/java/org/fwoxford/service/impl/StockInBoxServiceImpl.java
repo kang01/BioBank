@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import com.google.common.collect.Lists;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
@@ -26,10 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Service Implementation for managing StockInBox.
@@ -1365,5 +1363,53 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxDTO.setSampleClassificationCode(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationCode():null);
         stockInBoxDTO.setSampleClassificationName(frozenBox.getSampleClassification()!=null?frozenBox.getSampleClassification().getSampleClassificationName():null);
         return stockInBoxDTO;
+    }
+
+    /**
+     * 批量保存入库盒（出库再回来的）
+     * @param stockInBoxDTO
+     * @param stockInCode
+     * @return
+     */
+    @Override
+    public StockInBoxDTO createBoxByStockOutBox(StockInBoxDTO stockInBoxDTO, String stockInCode) {
+        List<String> frozenBoxCodeStr = stockInBoxDTO.getFrozenBoxCodeStr();
+        //验证冻存盒是否已经入库
+        checkFrozenCodeStr(frozenBoxCodeStr);
+        //从出库盒中查询已经出库的冻存盒，验证是否都存在
+        //查询冻存盒的出库管的位置信息
+        //保存入库盒
+        //保存入库冻存管
+        return null;
+    }
+
+    private void checkFrozenCodeStr(List<String> frozenBoxCodeStr) {
+        Boolean flag = (frozenBoxCodeStr.size() == new HashSet<String>(frozenBoxCodeStr).size());
+        if(flag){
+            throw new BankServiceException("请勿提交重复的冻存盒编码！");
+        }
+        //未出过库的冻存盒
+        List<String> frozenBoxOfInStock = new ArrayList<>();
+        //新冻存盒
+        List<String> frozenBoxOfnew = new ArrayList<>();
+        List<List<String>> boxCodeEach1000 = Lists.partition(frozenBoxCodeStr,1000);
+        List<FrozenBox> allFrozenBox = new ArrayList<FrozenBox>();
+        for(List<String> boxCodes : boxCodeEach1000){
+            List<FrozenBox> frozenBoxList = frozenBoxRepository.findByFrozenBoxCodeIn(boxCodes);
+            allFrozenBox.addAll(frozenBoxList);
+        }
+
+        //盒子若没有出库则不能导入
+        allFrozenBox.forEach(box->{
+            if(!box.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&&!box.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
+                frozenBoxOfInStock.add(box.getFrozenBoxCode());
+            }
+//            Boolean checkFlag = false;
+//            frozenBoxCodeStr.forEach(oldBox->{
+//                if(oldBox.equals(box.getFrozenBoxCode())){
+//                    checkFlag = true;
+//                }
+//            });
+        });
     }
 }

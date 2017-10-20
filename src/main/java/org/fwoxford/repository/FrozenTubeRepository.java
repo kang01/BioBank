@@ -41,15 +41,6 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " GROUP BY case when t.sample_code is not null THEN t.sample_code ELSE t.sample_temp_code end" ,nativeQuery = true)
     int countByFrozenBoxCodeStrAndGroupBySampleCode(List<Long> boxIds);
 
-    @Query(value = "select t.* from frozen_tube t left join frozen_box b on t.frozen_box_id = b.id" +
-        " left join sample_type st on t.sample_type_id = st.id " +
-        " where b.status = '2004' and (t.sample_code = ?1 or t.sample_temp_code =?1) " +
-        " and st.sample_type_code=?2 and t.status !='0000'" +
-        " and t.id not in (select f.frozen_tube_id from stock_out_req_frozen_tube f where f.stock_out_requirement_id =?3 and f.status='1301')" +
-        " and t.project_id in ?4 and ROWNUM <=1"
-        ,nativeQuery = true)
-    List<FrozenTube> findBySampleCodeAndSampleTypeCodeAndRequirementAndProject(String appointedSampleCode, String appointedSampleType, Long id, List<Long> projectIds);
-
 //    @Query("select t from FrozenTube t\n" +
 //        "  left join t.frozenBox \n"
 //        + " left join StockOutReqFrozenTube f on t.id = f.frozenTube.id and f.status='1301' \n"

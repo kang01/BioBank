@@ -54,7 +54,6 @@ public class StockInBoxDTO extends AbstractAuditingDTO implements Serializable {
     /**
      * 冻存盒编码
      */
-    @NotNull
     @Size(max = 100)
     private String frozenBoxCode;
     /**
@@ -649,5 +648,15 @@ public class StockInBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setFrozenBoxCode1D(String frozenBoxCode1D) {
         this.frozenBoxCode1D = frozenBoxCode1D;
+    }
+    //此字段用于批量保存入库盒（出库再回来的）
+    private List<String> frozenBoxCodeStr;
+
+    public List<String> getFrozenBoxCodeStr() {
+        return frozenBoxCodeStr;
+    }
+
+    public void setFrozenBoxCodeStr(List<String> frozenBoxCodeStr) {
+        this.frozenBoxCodeStr = frozenBoxCodeStr;
     }
 }

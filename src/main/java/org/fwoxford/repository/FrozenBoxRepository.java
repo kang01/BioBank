@@ -62,7 +62,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
     List<FrozenBox> findByFrozenBoxCodeInAndStatusIn(List<String> frozenBoxCodeStr, List<String> statusStr);
 
-    @Query(value = "select f.* from frozen_box f where f.frozen_box_code in ?1 and f.status!='0000' and f.status!='2090'" ,nativeQuery = true)
+    @Query(value = "select f.* from frozen_box f where f.frozen_box_code in ?1 and f.status!='"+Constants.FROZEN_BOX_INVALID+"' and f.status!='"+Constants.INVALID+"'" ,nativeQuery = true)
     List<FrozenBox> findByFrozenBoxCodeIn(List<String> frozenBoxCodeStr);
 
     List<FrozenBox> findByProjectCodeAndSampleTypeCodeAndStatusIn(String projectCode, String sampleTypeCode, List<String> statusList);

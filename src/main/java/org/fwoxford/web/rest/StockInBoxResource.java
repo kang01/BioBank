@@ -311,4 +311,23 @@ public class StockInBoxResource {
         StockInBoxDTO res = stockInBoxService.getStockInTubeByStockInBox(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
+
+    /**
+     * 批量保存入库盒（出库再回来的）
+     * @param stockInBoxDTO
+     * @param stockInCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-in-boxes/stockIn/{stockInCode}/boxCodes")
+    @Timed
+    public ResponseEntity<StockInBoxDTO> createBoxByStockOutBox(@Valid @RequestBody StockInBoxDTO stockInBoxDTO,@PathVariable String stockInCode) throws URISyntaxException {
+        log.debug("REST request to save StockInBox by StockOutBox : {}", stockInBoxDTO);
+        StockInBoxDTO result = stockInBoxService.createBoxByStockOutBox(stockInBoxDTO,stockInCode);
+        return ResponseEntity.created(new URI("/api/stock-in-boxes/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+
 }

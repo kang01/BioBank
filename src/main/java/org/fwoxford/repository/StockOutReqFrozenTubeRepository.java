@@ -71,7 +71,6 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
 
     void deleteInBatchByStockOutRequirementId(Long id);
 
-    //By zhuge
     @Query("select DISTINCT t.frozenBox from StockOutReqFrozenTube t where t.stockOutTask.id = ?1 and t.status = ?2")
     List<FrozenBox> findByStockOutTaskIdAndStatus(Long taskId, String status);
 
@@ -87,4 +86,5 @@ public interface StockOutReqFrozenTubeRepository extends JpaRepository<StockOutR
 
     Long countByStockOutRequirementIdAndStatus(Long id, String status);
 
+//    List<Object[]> countByTaskAndBoxAndStatus(Long taskId, List<Long> ids, String stockOutSampleInUse);
 }

@@ -834,15 +834,15 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             stockInTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
             stockInTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
             stockInTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
-            stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_3);//盒内新增样本
+            stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_NEW);//盒内新增样本
             FrozenTubeHistory frozenTubeHistory =  allFrozenTubeHistories.get(f.getFrozenTube().getId());
             if(frozenTubeHistory != null &&
                 (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)&&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER)
                     &&!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_TRANSHIP))){
-                stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_2);//原盒原库存
+                stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_ORIGINAL);//原盒原库存
             }else if(frozenTubeHistory != null &&(frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)
                 || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))){
-                stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_1);//出库再回来
+                stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_STOCKIN_AGAIN);//出库再回来
             }
             frozenTubeDTOS.add(stockInTubeDTO);
         }

@@ -1,7 +1,6 @@
 package org.fwoxford.service;
 
 import net.sf.json.JSONArray;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -11,8 +10,8 @@ import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
 import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
+import org.fwoxford.service.dto.response.FrozenTubeDataForm;
 import org.fwoxford.service.dto.response.FrozenTubeImportingForm;
-import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.web.rest.errors.BankServiceException;
 import org.fwoxford.web.rest.util.ExcelUtils;
 import org.slf4j.Logger;
@@ -27,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by gengluying on 2017/8/17.
@@ -466,4 +464,42 @@ public class FrozenBoxImportService {
         return frozenTubeResponses;
     }
 
+    public List<FrozenTubeDataForm> importFrozenBoxByBoxCode(String boxCode) {
+
+        // 配置导入API
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(Constants.HTTPURL+"?projectId=007&boxCode="+boxCode);
+        HttpMethodParams params = new HttpMethodParams();
+        getMethod.setParams(params);
+        // 接口的返回结果
+        List<FrozenTubeDataForm> frozenTubeImportingForms = new ArrayList<>();
+        try{
+            // 调用导入API
+            int statusCode = httpClient.executeMethod(getMethod);
+            if (statusCode != 200) {
+                log.error("Method failed: "
+                    + getMethod.getStatusLine());
+                // ????导入失败后还要继续？
+            } else {
+                byte[] responseBody = getMethod.getResponseBody();
+                String str = new String(responseBody);
+                JSONArray jsonArray = new JSONArray();
+                if(!StringUtils.isEmpty(str)){
+                    jsonArray = JSONArray.fromObject(str);
+                }
+                frozenTubeImportingForms = (List<FrozenTubeDataForm>) JSONArray.toCollection(jsonArray,FrozenTubeDataForm.class);
+            }
+        } catch (HttpException e) {
+            log.error("冻存盒导入失败", e);
+        } catch (IOException e) {
+            log.error("冻存盒导入失败", e);
+        } finally {
+            getMethod.releaseConnection();
+        }
+
+        if(frozenTubeImportingForms.size() == 0){
+            throw new BankServiceException("冻存盒导入失败！" + boxCode + "没有冻存管数据。");
+        }
+        return frozenTubeImportingForms;
+    }
 }

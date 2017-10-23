@@ -306,9 +306,22 @@ public final class Constants {
     }};
 
     //1：有出库记录再回来，2:原盒样本，3：盒内新增样本
-    public static final String FROZEN_FLAG_1 = "1";
-    public static final String FROZEN_FLAG_2 = "2";
-    public static final String FROZEN_FLAG_3 = "3";
+    public static final String FROZEN_FLAG_STOCKIN_AGAIN = "1";
+    public static final String FROZEN_FLAG_ORIGINAL = "2";
+    public static final String FROZEN_FLAG_NEW = "3";
+
+    /**
+     * 导入数据接口地址
+     */
+    public static final String HTTPURL = "http://10.24.10.16:8912/scm/tubes";
+//    http://10.24.10.16:8912/scm/tubes?projectId=007&boxCode=110130048
+//    高危一期projectId=001
+//    高危二期projectId=006
+//    高危三期projectId=007
+    public static final String PEACE_I_ID="001";
+    public static final String PEACE_II_ID="006";
+    public static final String PEACE_III_ID="007";
+
     private Constants() {
     }
 }

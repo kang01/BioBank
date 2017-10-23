@@ -329,5 +329,17 @@ public class StockInBoxResource {
             .body(result);
     }
 
+    /**
+     * 根据冻存盒编码从数据接口导入出库再入库的样本
+     * @param stockInBoxDTO
+     * @return
+     */
+    @PostMapping("/stock-in-boxes/frozenBoxCodeStr/import")
+    @Timed
+    public ResponseEntity<List<StockInBoxDTO>> getFrozenBoxAndTubeFromInterfaceByBoxCodeStr(@Valid @RequestBody StockInBoxDTO stockInBoxDTO) {
+        log.debug("REST request to get Box and Tube from import interface : {}", stockInBoxDTO.getFrozenBoxCodeStr());
+        List<StockInBoxDTO> res = stockInBoxService.getFrozenBoxAndTubeFromInterfaceByBoxCodeStr(stockInBoxDTO);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
 
 }

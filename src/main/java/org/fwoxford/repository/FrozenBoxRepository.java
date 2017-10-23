@@ -338,5 +338,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     @Query(value = "select t.frozen_box_code from position_destroy_record t where t.status != '"+Constants.FROZEN_BOX_INVALID+"' and t.status != '"+Constants.INVALID+"' and t.destroy_type='"+Constants.DESTROY_TYPE_FOR_BOX+"' " +
         " and (?1=0 or t.project_id=?1) and (?2=0 or t.sample_type_id=?2) and (?3=0 or t.sample_classification_id=?3)" ,nativeQuery = true)
     List<String> findAllDestroyFrozenBoxCode(Long projectId, Long sampleTypeId, Long sampleClassId);
+
+    FrozenBox findByFrozenBoxCode1D(String boxCode1D);
 }
 

@@ -1,6 +1,7 @@
 package org.fwoxford.service;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -464,11 +465,11 @@ public class FrozenBoxImportService {
         return frozenTubeResponses;
     }
 
-    public List<FrozenTubeDataForm> importFrozenBoxByBoxCode(String boxCode) {
-
+    public List<JSONObject> importFrozenBoxByBoxCode(String boxCode) {
+        List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
         // 配置导入API
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(Constants.HTTPURL+"?projectId=007&boxCode="+boxCode);
+        GetMethod getMethod = new GetMethod(Constants.HTTPURL+"?projectId=006&boxCode="+boxCode);
         HttpMethodParams params = new HttpMethodParams();
         getMethod.setParams(params);
         // 接口的返回结果
@@ -483,11 +484,11 @@ public class FrozenBoxImportService {
             } else {
                 byte[] responseBody = getMethod.getResponseBody();
                 String str = new String(responseBody);
-                JSONArray jsonArray = new JSONArray();
+
                 if(!StringUtils.isEmpty(str)){
-                    jsonArray = JSONArray.fromObject(str);
+                    jsonObjects = JSONArray.fromObject(str);
                 }
-                frozenTubeImportingForms = (List<FrozenTubeDataForm>) JSONArray.toCollection(jsonArray,FrozenTubeDataForm.class);
+//                frozenTubeImportingForms = (List<FrozenTubeDataForm>) JSONArray.toCollection(jsonArray,FrozenTubeDataForm.class);
             }
         } catch (HttpException e) {
             log.error("冻存盒导入失败", e);
@@ -497,9 +498,9 @@ public class FrozenBoxImportService {
             getMethod.releaseConnection();
         }
 
-        if(frozenTubeImportingForms.size() == 0){
+        if(jsonObjects.size() == 0){
             throw new BankServiceException("冻存盒导入失败！" + boxCode + "没有冻存管数据。");
         }
-        return frozenTubeImportingForms;
+        return jsonObjects;
     }
 }

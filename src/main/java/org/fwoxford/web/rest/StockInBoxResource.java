@@ -331,7 +331,7 @@ public class StockInBoxResource {
 
     /**
      * 根据冻存盒编码从数据接口导入出库再入库的样本
-     * @param stockInBoxDTO
+     * @param stockInBoxDTO 必填内容：frozenBoxCodeStr ；projectCode
      * @return
      */
     @PostMapping("/stock-in-boxes/frozenBoxCodeStr/import")

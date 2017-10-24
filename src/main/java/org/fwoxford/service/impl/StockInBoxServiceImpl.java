@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockInBox.
@@ -1427,15 +1428,97 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
     @Override
     public List<StockInBoxDTO> getFrozenBoxAndTubeFromInterfaceByBoxCodeStr(StockInBoxDTO stockInBoxDTO) {
+        String projectCode = stockInBoxDTO.getProjectCode();
+        if(StringUtils.isEmpty(projectCode)){
+            throw new BankServiceException("请指定要导入的项目编码！");
+        }
+        Project project = projectRepository.findByProjectCode(projectCode);
+        if(project == null){
+            throw new BankServiceException("项目不存在！");
+        }
         List<StockInBoxDTO> stockInBoxDTOS = new ArrayList<>();
         List<String> frozenBoxCodeStr = stockInBoxDTO.getFrozenBoxCodeStr();
-
+        //从接口导入的每一个盒子的数据（每个盒子都是2个类型）
+        Map<String,List<JSONObject>> listMap = new HashMap<>();
+        //处理冻存盒一维码
         if(frozenBoxCodeStr == null){
             throw new BankServiceException("请指定要导入的冻存盒编码！");
         }
+        List<SampleType> sampleTypeList = sampleTypeRepository.findAllSampleTypes();
+        List<ProjectSampleClass> projectSampleClasses = projectSampleClassRepository.findSampleTypeByProjectCode(projectCode);
+        FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findByFrozenBoxTypeCode("DCH");
         for(String boxCode : frozenBoxCodeStr){
+            String type = boxCode.substring(boxCode.length()-1,boxCode.length());
+            String boxCode1d = boxCode.substring(0,boxCode.length()-1);
+            SampleType sampleType = sampleTypeList.stream().filter(s->s.getSampleTypeCode().equals(type)).findFirst().orElse(null);
+            if(sampleType == null){
+                throw new BankServiceException("样本类型不存在！",type);
+            }
+            ProjectSampleClass projectSampleClass = projectSampleClasses.stream().filter(s->s.getSampleType().getSampleTypeCode().equals(type)).findFirst().orElse(null);
+            if(projectSampleClass == null){
+                throw new BankServiceException("样本类型"+type+"在"+projectCode+"项目下未配置样本分类！");
+            }
+            SampleClassification sampleClassification = projectSampleClass.getSampleClassification();
+            if(sampleClassification == null){
+                throw new BankServiceException("样本分类获取失败！");
+            }
+            StockInBoxDTO stockInBox = new StockInBoxDTO();
+            stockInBox.setFrozenBoxCode1D(boxCode);
+            stockInBox.setStatus(Constants.FROZEN_BOX_STOCKING);
+            stockInBox.setIsRealData(Constants.YES);
 
-            List<FrozenTubeDataForm> frozenTubeDataForms = frozenBoxImportService.importFrozenBoxByBoxCode(boxCode);
+            stockInBox.setFrozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns());
+            stockInBox.setFrozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows());
+            stockInBox.setFrozenBoxTypeId(frozenBoxType.getId());
+
+            stockInBox.setIsMixed(Constants.NO);
+            stockInBox.setIsSplit(Constants.NO);
+
+            stockInBox.setProjectId(project.getId());
+            stockInBox.setProjectCode(projectCode);
+            stockInBox.setProjectName(project.getProjectName());
+
+            stockInBox.setSampleClassification(sampleClassification);
+            stockInBox.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+            stockInBox.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+            stockInBox.setSampleClassificationId(sampleClassification.getId());
+            stockInBox.setFrontColorForClass(sampleClassification.getFrontColor());
+            stockInBox.setBackColorForClass(sampleClassification.getBackColor());
+
+            stockInBox.setSampleType(sampleType);
+            stockInBox.setSampleTypeId(sampleType.getId());
+            stockInBox.setSampleTypeName(sampleType.getSampleTypeName());
+            stockInBox.setSampleTypeCode(sampleType.getSampleTypeCode());
+            stockInBox.setBackColor(sampleType.getBackColor());
+            stockInBox.setFrontColor(sampleType.getFrontColor());
+            List<JSONObject> sampleDatas = new ArrayList<>();
+            if(listMap.get(boxCode1d)!=null){
+                Map<String, List<JSONObject>> listGroupByBoxType =
+                    listMap.get(boxCode1d).stream().collect(Collectors.groupingBy(w -> w.get("boxType").toString()));
+                sampleDatas = listGroupByBoxType.get(type);
+            }
+           if(sampleDatas.size()==0){
+               List<JSONObject> jsonArray = frozenBoxImportService.importFrozenBoxByBoxCode(boxCode1d);
+               listMap.put(boxCode1d,jsonArray);
+               Map<String, List<JSONObject>> listGroupByBoxType =
+                   jsonArray.stream().collect(Collectors.groupingBy(w -> w.get("boxType").toString()));
+               sampleDatas = listGroupByBoxType.get(type);
+           }
+            List<StockInTubeDTO> stockInTubes = new ArrayList<>();
+           for(JSONObject json :sampleDatas){
+
+               StockInTubeDTO stockInTubeDTO = new StockInTubeDTO();
+               String sampleCode = json.getString("tubeCode");
+               String boxColno = json.getString("boxColno");
+               String boxRowno = json.getString("boxRowno");
+
+               stockInTubeDTO.setSampleCode(sampleCode);
+               stockInTubeDTO.setTubeRows(boxRowno);
+               stockInTubeDTO.setTubeColumns(boxColno);
+
+               stockInTubes.add(stockInTubeDTO);
+           }
+            stockInBox.setFrozenTubeDTOS(stockInTubes);
         }
         return stockInBoxDTOS;
     }

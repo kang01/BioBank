@@ -4429,6 +4429,7 @@ public class ImportSampleDataTest {
     private void importBoxForJTInStock_1023(List<Map<String, Object>> opts1, String stockInType) {
         FrozenTubeType frozenTubeType = frozenTubeTypeRepository.findTopOne();
         String optDate1 = opts1.get(0).get("OLD_DATE").toString();
+
         String optPerson1 = "王铁柱";
         String optPerson2 = "张丽萍";
         Project project = projectRepository.findByProjectCode("0029");
@@ -4466,12 +4467,12 @@ public class ImportSampleDataTest {
         int countOfSample = 0;
         List<SampleType> sampleTypeList = sampleTypeRepository.findAllSampleTypes();
         List<ProjectSampleClass> projectSampleClasses = projectSampleClassRepository.findSampleTypeByProjectCode("0029");
-        StringBuffer a = new StringBuffer();
+
         for (Map<String,Object> opt : opts1) {
             String boxCode = opt.get("BOX_CODE_1").toString();
             log.info(boxCode);
             FrozenBox frozenBox = frozenBoxRepository.findByFrozenBoxCode1D(boxCode);
-            if(frozenBox==null ||( frozenBox!=null&&!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER))){
+            if(frozenBox==null){
                 throw new BankServiceException("冻存盒未出过库"+boxCode);
             }
             String type = boxCode.substring(boxCode.length()-1,boxCode.length());
@@ -4545,27 +4546,22 @@ public class ImportSampleDataTest {
                 .stockInBox(stockInBox);
             stockInBoxPositionRepository.saveAndFlush(stockInBoxPosition);
             //保存盒子以及盒内样本
-            for (int j = 0; j < jsonObjects.size(); j++) {
-                String sampleCode = jsonObjects.get(j).get("tubeCode").toString();
-                String boxColno = jsonObjects.get(j).getString("boxColno");
+            List<FrozenTube> frozenTubesLast = new ArrayList<>();
+            List<StockInTube> stockInTubes = new ArrayList<>();
+            for (int j = 0; j < sampleDatas.size(); j++) {
+                String sampleCode = sampleDatas.get(j).get("tubeCode").toString();
+                String boxColno = sampleDatas.get(j).getString("boxColno");
                 Integer boxRowno = Integer.valueOf(jsonObjects.get(j).getString("boxRowno"));
-                String tubeRows = "";
-                String row = String.valueOf((char) (boxRowno + 65));
-                if (boxRowno >= 8) {
-                    row = String.valueOf((char) (boxRowno + 66));
+                String row = "";
+                row = String.valueOf((char) (boxRowno + 64));
+                if (boxRowno >= 9) {
+                    row = String.valueOf((char) (boxRowno + 65));
                 }
                 String tubeColumns = boxColno;
-
-                FrozenTube tube = null;
-                for(FrozenTube t :frozenTubeList){
-                    //根据位置进行比较，看是否样本是否存在，如果不存在就新增
-                    if(t.getTubeColumns().equals(tubeColumns)&&t.getTubeRows().equals(row)){
-                        tube=t;
-                        tube.setSampleCode(sampleCode);
-                        break;
-                    }
-                }
-
+                String tubeRows = row;
+                FrozenTube tube = frozenTubeList.stream().filter(s->s.getSampleCode().equals(sampleCode)).findFirst().orElse(null);
+//                FrozenTube tube=frozenTubeList.stream().filter(s->s.getTubeColumns().equals(tubeColumns)&&s.getTubeRows().equals(tubeRows)).findFirst().orElse(null);
+//
                 if (tube == null) {
                     SampleType sampleType = sampleTypeList.stream().filter(s->s.getSampleTypeCode().equals(type)).findFirst().orElse(null);
                     if(sampleType == null){
@@ -4579,13 +4575,17 @@ public class ImportSampleDataTest {
                     if(sampleClassification == null){
                         throw new BankServiceException("样本分类获取失败！");
                     }
-                    tube = createFrozenTubeForNewStockIn(sampleType,sampleClassification,frozenTubeType,project,jsonObjects.get(j));
-                }
+                    tube = createFrozenTubeForNewStockIn(sampleType,sampleClassification,frozenTubeType,project,null,sampleDatas.get(j));
 
+                }
+                tube.setSampleCode(sampleCode);
                 tube.setFrozenBox(frozenBox);
                 tube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-                tube = tube.tubeColumns(tubeColumns).tubeRows(tubeRows).frozenTubeState(Constants.FROZEN_BOX_STOCKED);
-                frozenTubeRepository.saveAndFlush(tube);
+                tube.setTubeRows(tubeRows);
+                tube.setTubeColumns(tubeColumns);
+                tube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKED);
+                frozenTubesLast.add(tube);
+//                frozenTubeRepository.saveAndFlush(tube);
                 StockInTube stockInTube = new StockInTube()
                     .status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
                     .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox).errorType(tube.getErrorType())
@@ -4600,33 +4600,42 @@ public class ImportSampleDataTest {
                     .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
                     .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
                     .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
-                stockInTubeRepository.saveAndFlush(stockInTube);
+//                stockInTubeRepository.saveAndFlush(stockInTube);
+                stockInTubes.add(stockInTube);
                 executedOperations[0]++;
                 log.info("Finished:(%d/%d)"+executedOperations[0]+allOperations);
             }
+            frozenTubeRepository.save(frozenTubesLast);
+            Map<String, List<net.sf.json.JSONObject>> f1 =
+                sampleDatas.stream().collect(Collectors.groupingBy(w -> w.getString("boxRowno")+w.getString("boxColno")));
+            Map<String, List<FrozenTube>> f =
+                frozenTubesLast.stream().collect(Collectors.groupingBy(w -> w.getTubeRows()+w.getTubeColumns()));
+            stockInTubeRepository.save(stockInTubes);
         }
-        log.info(a+"原系统数据与实际系统中的数据不符合！");
+
         stockIn.setCountOfSample(countOfSample);
         stockInRepository.saveAndFlush(stockIn);
     }
 
-    private FrozenTube createFrozenTubeForNewStockIn(SampleType sampleType, SampleClassification sampleClassification, FrozenTubeType frozenTubeType,Project project, net.sf.json.JSONObject jsonObject) {
+    private FrozenTube createFrozenTubeForNewStockIn(SampleType sampleType, SampleClassification sampleClassification, FrozenTubeType frozenTubeType,Project project,FrozenTube oldTube, net.sf.json.JSONObject jsonObject) {
 
-        FrozenTube frozenTube = new FrozenTube() .projectCode("0029").projectSiteCode(null)
+        FrozenTube frozenTube = new FrozenTube().projectCode("0029").projectSiteCode(oldTube!=null&&oldTube.getProjectSite()!=null?oldTube.getProjectSite().getProjectSiteCode():null)
             .sampleCode(sampleType.getSampleTypeCode())
             .frozenTubeTypeCode(frozenTubeType.getFrozenTubeTypeCode())
             .frozenTubeTypeName(frozenTubeType.getFrozenTubeTypeName())
             .sampleTypeCode(sampleType.getSampleTypeCode())
             .sampleTypeName(sampleType.getSampleTypeName())
             .sampleUsedTimesMost(frozenTubeType.getSampleUsedTimesMost())
-            .sampleUsedTimes(0)
+            .sampleUsedTimes(oldTube!=null?oldTube.getSampleUsedTimes():0)
             .frozenTubeVolumns(frozenTubeType.getFrozenTubeVolumn())
             .frozenTubeVolumnsUnit(frozenTubeType.getFrozenTubeVolumnUnit())
             .tubeRows(null)
             .tubeColumns(null)
-            .status(Constants.FROZEN_TUBE_NORMAL).memo("2017/10/24入库").age(null).gender(null).patientId(null).nation(null)
+            .status(Constants.FROZEN_TUBE_NORMAL).memo("2017/10/24入库")
+            .age(oldTube!=null?oldTube.getAge():null).gender(oldTube!=null?oldTube.getGender():null).patientId(oldTube!=null?oldTube.getPatientId():null).nation(oldTube!=null?oldTube.getNation():null)
             .frozenBoxCode(null).frozenTubeType(frozenTubeType).sampleType(sampleType).sampleClassification(sampleClassification)
-            .project(null).projectSite(null).frozenBox(null).frozenTubeState("2004");
+            .project(project).projectSite(oldTube!=null?oldTube.getProjectSite():null).frozenBox(null).frozenTubeState("2004");
+        frozenTube.setId(oldTube!=null?oldTube.getId():null);
         return frozenTube;
     }
 

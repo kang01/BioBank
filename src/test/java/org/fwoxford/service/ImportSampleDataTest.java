@@ -4551,7 +4551,7 @@ public class ImportSampleDataTest {
             for (int j = 0; j < sampleDatas.size(); j++) {
                 String sampleCode = sampleDatas.get(j).get("tubeCode").toString();
                 String boxColno = sampleDatas.get(j).getString("boxColno");
-                Integer boxRowno = Integer.valueOf(jsonObjects.get(j).getString("boxRowno"));
+                Integer boxRowno = Integer.valueOf(sampleDatas.get(j).getString("boxRowno"));
                 String row = "";
                 row = String.valueOf((char) (boxRowno + 64));
                 if (boxRowno >= 9) {
@@ -4610,6 +4610,9 @@ public class ImportSampleDataTest {
                 sampleDatas.stream().collect(Collectors.groupingBy(w -> w.getString("boxRowno")+w.getString("boxColno")));
             Map<String, List<FrozenTube>> f =
                 frozenTubesLast.stream().collect(Collectors.groupingBy(w -> w.getTubeRows()+w.getTubeColumns()));
+            if(f1.size()!=f.size()){
+                throw new BankServiceException(boxCode+"数据异常");
+            }
             stockInTubeRepository.save(stockInTubes);
         }
 
@@ -4631,11 +4634,10 @@ public class ImportSampleDataTest {
             .frozenTubeVolumnsUnit(frozenTubeType.getFrozenTubeVolumnUnit())
             .tubeRows(null)
             .tubeColumns(null)
-            .status(Constants.FROZEN_TUBE_NORMAL).memo("2017/10/24入库")
+            .status(Constants.FROZEN_TUBE_NORMAL).memo("2017/10/24数据导入")
             .age(oldTube!=null?oldTube.getAge():null).gender(oldTube!=null?oldTube.getGender():null).patientId(oldTube!=null?oldTube.getPatientId():null).nation(oldTube!=null?oldTube.getNation():null)
             .frozenBoxCode(null).frozenTubeType(frozenTubeType).sampleType(sampleType).sampleClassification(sampleClassification)
             .project(project).projectSite(oldTube!=null?oldTube.getProjectSite():null).frozenBox(null).frozenTubeState("2004");
-        frozenTube.setId(oldTube!=null?oldTube.getId():null);
         return frozenTube;
     }
 

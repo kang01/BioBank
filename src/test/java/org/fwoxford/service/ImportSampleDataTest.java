@@ -2,6 +2,7 @@ package org.fwoxford.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.models.auth.In;
+import net.sf.json.JSON;
 import org.fwoxford.BioBankApp;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
@@ -1492,7 +1493,7 @@ public class ImportSampleDataTest {
 
     private Integer allOperations = 0;
     final Integer[] executedOperations = {0};
-
+    private List<net.sf.json.JSONObject> alist = new ArrayList<>();
     /**
      * 导入操作记录的具体实现
      *
@@ -4411,7 +4412,7 @@ public class ImportSampleDataTest {
 
             switch (optionType) {
                 case "出库":
-                    this.importBoxOutFromPeace2ForJT_1023(opts1);
+//                    this.importBoxOutFromPeace2ForJT_1023(opts1);
                     break;
                 case "移位入库":
                     this.importBoxForJTInStock_1023(opts1, Constants.STORANGE_IN_TYPE_MOVE);
@@ -4422,6 +4423,7 @@ public class ImportSampleDataTest {
                 default:
                     break;
             }
+            log.info(alist.toString());
         }
     }
     @Autowired
@@ -4548,6 +4550,15 @@ public class ImportSampleDataTest {
             //保存盒子以及盒内样本
             List<FrozenTube> frozenTubesLast = new ArrayList<>();
             List<StockInTube> stockInTubes = new ArrayList<>();
+            Map<String, List<net.sf.json.JSONObject>> f2 =
+                sampleDatas.stream().collect(Collectors.groupingBy(w -> w.getString("tubeCode")));
+            List<String> wrongSample = new ArrayList<>();
+            for(String key :f2.keySet()){
+                if(f2.get(key).size()>1){
+                    alist.addAll(f2.get(key));
+                    wrongSample.add(key);
+                }
+            }
             for (int j = 0; j < sampleDatas.size(); j++) {
                 String sampleCode = sampleDatas.get(j).get("tubeCode").toString();
                 String boxColno = sampleDatas.get(j).getString("boxColno");
@@ -4561,7 +4572,7 @@ public class ImportSampleDataTest {
                 String tubeRows = row;
                 FrozenTube tube = frozenTubeList.stream().filter(s->s.getSampleCode().equals(sampleCode)).findFirst().orElse(null);
 //                FrozenTube tube=frozenTubeList.stream().filter(s->s.getTubeColumns().equals(tubeColumns)&&s.getTubeRows().equals(tubeRows)).findFirst().orElse(null);
-//
+
                 if (tube == null) {
                     SampleType sampleType = sampleTypeList.stream().filter(s->s.getSampleTypeCode().equals(type)).findFirst().orElse(null);
                     if(sampleType == null){
@@ -4577,6 +4588,26 @@ public class ImportSampleDataTest {
                     }
                     tube = createFrozenTubeForNewStockIn(sampleType,sampleClassification,frozenTubeType,project,null,sampleDatas.get(j));
 
+                }
+                if(wrongSample.contains(sampleCode)){
+                    String otherType="";
+                    switch (type){
+                        case "R":otherType="E";break;
+                        case "E":otherType="R";break;
+                        case "W":otherType="A";break;
+                        case "A":otherType="W";break;
+                        default:break;
+                    }
+                    List<net.sf.json.JSONObject> otherTypeSampleList = listGroupByBoxType.get(otherType);
+                    if(otherTypeSampleList!=null){
+                        net.sf.json.JSONObject tubejson=otherTypeSampleList.stream().filter(s->s.getString("boxColno").equals(tubeColumns)&&s.getString("boxRowno").equals(tubeRows)).findFirst().orElse(null);
+                        if(tubejson!=null&&!tubejson.getString("tubeCode").equals(sampleCode)){
+                            ArrayList arrayList = new ArrayList();
+                            arrayList.add(tube.getMemo());
+                            arrayList.add("盒内重复样本");
+                            tube.setMemo(String.join(",",arrayList));
+                        }
+                    }
                 }
                 tube.setSampleCode(sampleCode);
                 tube.setFrozenBox(frozenBox);
@@ -4611,13 +4642,14 @@ public class ImportSampleDataTest {
             Map<String, List<FrozenTube>> f =
                 frozenTubesLast.stream().collect(Collectors.groupingBy(w -> w.getTubeRows()+w.getTubeColumns()));
             if(f1.size()!=f.size()){
-                throw new BankServiceException(boxCode+"数据异常");
+                log.info(boxCode+"数据异常");
             }
             stockInTubeRepository.save(stockInTubes);
         }
 
         stockIn.setCountOfSample(countOfSample);
         stockInRepository.saveAndFlush(stockIn);
+        log.info(alist.toString());
     }
 
     private FrozenTube createFrozenTubeForNewStockIn(SampleType sampleType, SampleClassification sampleClassification, FrozenTubeType frozenTubeType,Project project,FrozenTube oldTube, net.sf.json.JSONObject jsonObject) {
@@ -4822,7 +4854,7 @@ public class ImportSampleDataTest {
                 .status(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
             stockOutHandoverBoxRepository.saveAndFlush(stockOutHandoverBox);
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(frozenBox.getId());
-            Map<String, String> posMap = new HashMap<>();
+
             List<StockOutReqFrozenTube> stockOutReqFrozenTubes = new ArrayList<>();
 
             for (FrozenTube frozenTube : frozenTubeList) {

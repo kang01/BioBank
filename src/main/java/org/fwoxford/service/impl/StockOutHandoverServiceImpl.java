@@ -286,7 +286,6 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         if (!Constants.STOCK_OUT_HANDOVER_PENDING.equals(stockOutHandover.getStatus())){
             throw new BankServiceException("该交接单未处于进行中，不能完成交接。");
         }
-
         stockOutHandover.setHandoverPersonId(handoverPersonId);
         stockOutHandover.setHandoverTime(stockOutHandoverDTO.getHandoverTime());
         stockOutHandover.setStatus(Constants.STOCK_OUT_HANDOVER_COMPLETED);
@@ -313,6 +312,10 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                 stockOutFrozenBox.setFrozenBoxCode1D(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode1D());
                 // 修改出库盒状态
                 stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_HANDOVER);
+                if(stockOutFrozenBox.getStockOutTask().getId()!=stockOutHandover.getStockOutTask().getId()
+                    ||!stockOutFrozenBox.getStockOutTask().getId().equals(stockOutHandover.getStockOutTask().getId())){
+                    throw new BankServiceException("交接冻存盒不在任务之内！");
+                }
                 // 修改冻存盒状态
                 frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
 
@@ -359,11 +362,11 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                     .status(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
 
                 // 保存交接盒
-                stockOutHandoverBox = stockOutHandoverBoxRepository.saveAndFlush(stockOutHandoverBox);
+                stockOutHandoverBox = stockOutHandoverBoxRepository.save(stockOutHandoverBox);
                 // 保存出库盒
-                stockOutFrozenBoxRepository.saveAndFlush(stockOutFrozenBox);
+                stockOutFrozenBoxRepository.save(stockOutFrozenBox);
                 // 保存库存盒
-                frozenBoxRepository.saveAndFlush(frozenBox);
+                frozenBoxRepository.save(frozenBox);
 
                 List<StockOutHandoverDetails> handoverTubes = new ArrayList<>();
                 List<FrozenTube> frozenTubes = new ArrayList<>();
@@ -380,12 +383,9 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                 });
                 // 保存交接管
                 stockOutHandoverDetailsRepository.save(handoverTubes);
-//                stockOutHandoverDetailsRepository.flush();
+
                 // 保存库存管
                 frozenTubeRepository.save(frozenTubes);
-//                frozenTubeRepository.flush();
-
-
             }
 
 //

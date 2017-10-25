@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -4379,7 +4380,7 @@ public class ImportSampleDataTest {
             con = DBUtilForTemp.open();
 //            System.out.println("连接成功！");
             log.info("链接成功！");
-            String sqlForSelect = "select * from " + "jt_opt_1023" + " a order by  a.OLD_DATE";// 预编译语句
+            String sqlForSelect = "select * from " + "jt_opt_1024" + " a order by  a.OLD_DATE";// 预编译语句
             pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
             result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
             ResultSetMetaData rsMeta = result.getMetaData();
@@ -4412,7 +4413,7 @@ public class ImportSampleDataTest {
 
             switch (optionType) {
                 case "出库":
-//                    this.importBoxOutFromPeace2ForJT_1023(opts1);
+                    this.importBoxOutFromPeace2ForJT_1023(opts1);
                     break;
                 case "移位入库":
                     this.importBoxForJTInStock_1023(opts1, Constants.STORANGE_IN_TYPE_MOVE);
@@ -4423,8 +4424,8 @@ public class ImportSampleDataTest {
                 default:
                     break;
             }
-            log.info(alist.toString());
         }
+        log.info(alist.toString());
     }
     @Autowired
     FrozenBoxImportService frozenBoxImportService;
@@ -4556,9 +4557,9 @@ public class ImportSampleDataTest {
             for(String key :f2.keySet()){
                 if(f2.get(key).size()>1){
                     alist.addAll(f2.get(key));
-                    wrongSample.add(key);
                 }
             }
+            List<String> oldSampleCodes = new ArrayList<>();
             for (int j = 0; j < sampleDatas.size(); j++) {
                 String sampleCode = sampleDatas.get(j).get("tubeCode").toString();
                 String boxColno = sampleDatas.get(j).getString("boxColno");
@@ -4589,34 +4590,57 @@ public class ImportSampleDataTest {
                     tube = createFrozenTubeForNewStockIn(sampleType,sampleClassification,frozenTubeType,project,null,sampleDatas.get(j));
 
                 }
+//                if(wrongSample.contains(sampleCode)){
+//                    String otherType="";
+//                    switch (type){
+//                        case "R":otherType="E";break;
+//                        case "E":otherType="R";break;
+//                        case "W":otherType="A";break;
+//                        case "A":otherType="W";break;
+//                        default:break;
+//                    }
+//                    List<net.sf.json.JSONObject> otherTypeSampleList = listGroupByBoxType.get(otherType);
+//                    if(otherTypeSampleList!=null){
+//                        net.sf.json.JSONObject tubejson=otherTypeSampleList.stream().filter(s->s.getString("boxColno").equals(boxColno)&&s.getString("boxRowno").equals(boxRowno)).findFirst().orElse(null);
+//                        if(tubejson!=null&&!tubejson.getString("tubeCode").equals(sampleCode)){
+//
+//                        }
+//                    }
+//                }
+
                 if(wrongSample.contains(sampleCode)){
-                    String otherType="";
-                    switch (type){
-                        case "R":otherType="E";break;
-                        case "E":otherType="R";break;
-                        case "W":otherType="A";break;
-                        case "A":otherType="W";break;
-                        default:break;
+                    FrozenTube tube1 = new FrozenTube();
+                    BeanUtils.copyProperties(tube,tube1);
+                    tube1.setId(null);
+                    ArrayList arrayList = new ArrayList();
+                    if(!StringUtils.isEmpty(tube.getMemo())){
+                        arrayList.add(tube.getMemo());
                     }
-                    List<net.sf.json.JSONObject> otherTypeSampleList = listGroupByBoxType.get(otherType);
-                    if(otherTypeSampleList!=null){
-                        net.sf.json.JSONObject tubejson=otherTypeSampleList.stream().filter(s->s.getString("boxColno").equals(tubeColumns)&&s.getString("boxRowno").equals(tubeRows)).findFirst().orElse(null);
-                        if(tubejson!=null&&!tubejson.getString("tubeCode").equals(sampleCode)){
-                            ArrayList arrayList = new ArrayList();
-                            arrayList.add(tube.getMemo());
-                            arrayList.add("盒内重复样本");
-                            tube.setMemo(String.join(",",arrayList));
-                        }
-                    }
+                    arrayList.add("盒内重复样本");
+                    tube1.setMemo(String.join(",",arrayList));
+                    tube1.setSampleCode(sampleCode);
+                    tube1.setFrozenBox(frozenBox);
+                    tube1.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+                    tube1.setTubeRows(tubeRows);
+                    tube1.setTubeColumns(tubeColumns);
+                    tube1.setFrozenTubeState(Constants.FROZEN_BOX_STOCKED);
+                    frozenTubesLast.add(tube1);
+                }else{
+                    wrongSample.add(sampleCode);
+                    tube.setSampleCode(sampleCode);
+                    tube.setFrozenBox(frozenBox);
+                    tube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+                    tube.setTubeRows(tubeRows);
+                    tube.setTubeColumns(tubeColumns);
+                    tube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKED);
+                    frozenTubesLast.add(tube);
                 }
-                tube.setSampleCode(sampleCode);
-                tube.setFrozenBox(frozenBox);
-                tube.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
-                tube.setTubeRows(tubeRows);
-                tube.setTubeColumns(tubeColumns);
-                tube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKED);
-                frozenTubesLast.add(tube);
 //                frozenTubeRepository.saveAndFlush(tube);
+                executedOperations[0]++;
+                log.info("Finished:(%d/%d)"+executedOperations[0]+allOperations);
+            }
+            frozenTubeRepository.save(frozenTubesLast);
+            for(FrozenTube tube : frozenTubesLast){
                 StockInTube stockInTube = new StockInTube()
                     .status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
                     .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox).errorType(tube.getErrorType())
@@ -4633,10 +4657,7 @@ public class ImportSampleDataTest {
                     .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
 //                stockInTubeRepository.saveAndFlush(stockInTube);
                 stockInTubes.add(stockInTube);
-                executedOperations[0]++;
-                log.info("Finished:(%d/%d)"+executedOperations[0]+allOperations);
             }
-            frozenTubeRepository.save(frozenTubesLast);
             Map<String, List<net.sf.json.JSONObject>> f1 =
                 sampleDatas.stream().collect(Collectors.groupingBy(w -> w.getString("boxRowno")+w.getString("boxColno")));
             Map<String, List<FrozenTube>> f =
@@ -4649,7 +4670,6 @@ public class ImportSampleDataTest {
 
         stockIn.setCountOfSample(countOfSample);
         stockInRepository.saveAndFlush(stockIn);
-        log.info(alist.toString());
     }
 
     private FrozenTube createFrozenTubeForNewStockIn(SampleType sampleType, SampleClassification sampleClassification, FrozenTubeType frozenTubeType,Project project,FrozenTube oldTube, net.sf.json.JSONObject jsonObject) {
@@ -4854,9 +4874,9 @@ public class ImportSampleDataTest {
                 .status(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
             stockOutHandoverBoxRepository.saveAndFlush(stockOutHandoverBox);
             List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxId(frozenBox.getId());
-
+            List<FrozenTube> frozenTubeListLast = new ArrayList<>();
             List<StockOutReqFrozenTube> stockOutReqFrozenTubes = new ArrayList<>();
-
+            List<StockOutHandoverDetails> stockOutHandoverDetailss = new ArrayList<>();
             for (FrozenTube frozenTube : frozenTubeList) {
                 int times = frozenTube.getSampleUsedTimes() != null ? (frozenTube.getSampleUsedTimes() + 1) : 1;
                 frozenTube.setSampleUsedTimes(times);
@@ -4870,7 +4890,8 @@ public class ImportSampleDataTest {
                     memoList.add(memo);
                 }
                 frozenTube.setMemo(String.join(",", memoList));
-                frozenTubeRepository.saveAndFlush(frozenTube);
+                frozenTubeListLast.add(frozenTube);
+//                frozenTubeRepository.saveAndFlush(frozenTube);
 
                 StockOutReqFrozenTube stockOutReqFrozenTube = new StockOutReqFrozenTube().status(Constants.STOCK_OUT_SAMPLE_COMPLETED)
                     .stockOutRequirement(stockOutRequirement).memo(String.join(",", memoList))
@@ -4893,15 +4914,20 @@ public class ImportSampleDataTest {
                     .sampleTypeId(frozenTube.getSampleType() != null ? frozenTube.getSampleType().getId() : null)
                     .sampleTypeCode(frozenTube.getSampleTypeCode()).sampleTypeName(frozenTube.getSampleTypeName()).sampleUsedTimes(frozenTube.getSampleUsedTimes())
                     .sampleUsedTimesMost(frozenTube.getSampleUsedTimesMost());
-                stockOutReqFrozenTubeRepository.saveAndFlush(stockOutReqFrozenTube);
+                stockOutReqFrozenTubes.add(stockOutReqFrozenTube);
+//                stockOutReqFrozenTubeRepository.saveAndFlush(stockOutReqFrozenTube);
                 //保存交接详情
                 StockOutHandoverDetails stockOutHandoverDetails = new StockOutHandoverDetails();
                 stockOutHandoverDetails = stockOutHandoverDetails.status(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)
                     .stockOutReqFrozenTube(stockOutReqFrozenTube)
                     .stockOutHandoverBox(stockOutHandoverBox);
                 stockOutHandoverDetails.setMemo(String.join(",", memoList));
-                stockOutHandoverDetailsRepository.saveAndFlush(stockOutHandoverDetails);
+                stockOutHandoverDetailss.add(stockOutHandoverDetails);
+//                stockOutHandoverDetailsRepository.saveAndFlush(stockOutHandoverDetails);
             }
+            frozenTubeRepository.save(frozenTubeListLast);
+            stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
+            stockOutHandoverDetailsRepository.save(stockOutHandoverDetailss);
             executedOperations[0]++;
             log.info("Finished:(%d/%d)"+ executedOperations[0]+"/" +allOperations);
         }

@@ -200,7 +200,7 @@ public class StockOutTaskResource {
     }
 
     /**
-     * 根据计划ID查询任务
+     * 根据计划ID查询任务(未交接的任务)
      * @param id
      * @return
      * @throws URISyntaxException

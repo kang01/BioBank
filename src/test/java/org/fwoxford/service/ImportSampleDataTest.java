@@ -4491,7 +4491,14 @@ public class ImportSampleDataTest {
             String posInShelf = opt.get("POS_IN_SHELF").toString();
             String columnsInShelf = posInShelf.substring(0, 1);
             String rowsInShelf = posInShelf.substring(1);
-
+            String memo = opt.get("MEMO") != null ? opt.get("MEMO").toString() : null;
+            ArrayList<String> memoList1 = new ArrayList<>();
+            if(!StringUtils.isEmpty(frozenBox.getMemo())){
+                memoList1.add(frozenBox.getMemo());
+            }
+            if(memo!=null){
+                memoList1.add(memo);
+            }
             //设备
             Equipment entity = equipmentRepository.findOneByEquipmentCode(equipmentCode);
             if (entity == null) {
@@ -4514,7 +4521,7 @@ public class ImportSampleDataTest {
             }
             frozenBox = frozenBox.equipment(entity).area(area).equipmentCode(entity.getEquipmentCode())
                 .areaCode(areaCode).supportRackCode(supportCode)
-                .supportRack(supportRack)
+                .supportRack(supportRack).memo(String.join(",",memoList1))
                 .columnsInShelf(columnsInShelf).rowsInShelf(rowsInShelf).status(Constants.FROZEN_BOX_STOCKED);
             frozenBoxRepository.saveAndFlush(frozenBox);
 
@@ -4780,11 +4787,18 @@ public class ImportSampleDataTest {
             String equipmentCode = "F1-01";
             String areaCode = "S01";
             String memo = key.get("MEMO") != null ? key.get("MEMO").toString() : null;
+            ArrayList<String> memoList1 = new ArrayList<>();
+            if(!StringUtils.isEmpty(frozenBox.getMemo())){
+                memoList1.add(frozenBox.getMemo());
+            }
+            if(memo!=null){
+                memoList1.add(memo);
+            }
             Equipment equipment = equipmentRepository.findOneByEquipmentCode(equipmentCode);
             Area area = areaRepository.findOneByAreaCodeAndEquipmentId(areaCode, equipment.getId());
             frozenBox.status(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER).areaCode(areaCode).area(area).equipment(equipment)
                 .equipmentCode(equipmentCode)
-                .supportRackCode(null).supportRack(null).columnsInShelf(null).rowsInShelf(null).memo(memo);
+                .supportRackCode(null).supportRack(null).columnsInShelf(null).rowsInShelf(null).memo(String.join(",",memoList1));
             frozenBoxRepository.saveAndFlush(frozenBox);
             //保存出库盒
             StockOutFrozenBox stockOutFrozenBox = new StockOutFrozenBox();

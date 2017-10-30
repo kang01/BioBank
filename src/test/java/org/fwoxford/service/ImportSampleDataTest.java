@@ -4380,7 +4380,7 @@ public class ImportSampleDataTest {
             con = DBUtilForTemp.open();
 //            System.out.println("连接成功！");
             log.info("链接成功！");
-            String sqlForSelect = "select * from " + "jt_opt_1024" + " a order by  a.OLD_DATE";// 预编译语句
+            String sqlForSelect = "select * from " + "jt_opt_1026" + " a order by  a.OLD_DATE";// 预编译语句
             pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
             result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
             ResultSetMetaData rsMeta = result.getMetaData();
@@ -4544,7 +4544,7 @@ public class ImportSampleDataTest {
                 .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
                 .projectSiteName(frozenBox.getProjectSiteName());
 
-            stockInBoxRepository.saveAndFlush(stockInBox);
+            stockInBoxRepository.save(stockInBox);
             countOfSample += stockInBox.getCountOfSample();
             //保存入库盒子位置
             StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
@@ -4569,6 +4569,9 @@ public class ImportSampleDataTest {
             List<String> oldSampleCodes = new ArrayList<>();
             for (int j = 0; j < sampleDatas.size(); j++) {
                 String sampleCode = sampleDatas.get(j).get("tubeCode").toString();
+                if(sampleCode.contains("A")||sampleCode.contains("R")||sampleCode.contains("E")||sampleCode.contains("W")){
+                    continue;
+                }
                 String boxColno = sampleDatas.get(j).getString("boxColno");
                 Integer boxRowno = Integer.valueOf(sampleDatas.get(j).getString("boxRowno"));
                 String row = "";
@@ -4647,6 +4650,8 @@ public class ImportSampleDataTest {
                 log.info("Finished:(%d/%d)"+executedOperations[0]+allOperations);
             }
             frozenTubeRepository.save(frozenTubesLast);
+            stockInBox.setCountOfSample(frozenTubesLast.size());
+            stockInBoxRepository.save(stockInBox);
             for(FrozenTube tube : frozenTubesLast){
                 StockInTube stockInTube = new StockInTube()
                     .status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
@@ -4781,8 +4786,9 @@ public class ImportSampleDataTest {
         for (Map<String, Object> key: boxList) {
             String boxCode1D = key.get("BOX_CODE_1").toString();
             FrozenBox frozenBox = frozenBoxRepository.findByFrozenBoxCode1D(boxCode1D);
-            if (frozenBox == null&&!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED)) {
-                throw new BankServiceException("冻存盒不存在！"+boxCode1D);
+            if (frozenBox == null) {
+                log.info("冻存盒不存在！"+boxCode1D);
+                continue;
             }
             String equipmentCode = "F1-01";
             String areaCode = "S01";

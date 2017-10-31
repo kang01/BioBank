@@ -196,8 +196,13 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
         StockOutRequirement requirement = new StockOutRequirement();
         if(stockOutRequirement.getId()!=null){
             requirement  = stockOutRequirementRepository.findOne(stockOutRequirement.getId());
-            //删除核对过的样本
-            stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(requirement.getId());
+            //删除核对通过的样本
+//            stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(requirement.getId());
+            StringBuffer sql = new StringBuffer();
+            sql.append("delete from stock_out_req_frozen_tube where stock_out_requirement_id = ?1");
+
+            Query query = entityManager.createNativeQuery(sql.toString());
+            query.setParameter("1", requirement.getId()).executeUpdate();
         }
         requirement.setStatus(Constants.STOCK_OUT_REQUIREMENT_CKECKING);
         requirement.setStockOutApply(stockOutApply);
@@ -275,7 +280,13 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
         if(stockOutRequirement.getId()!=null){
             requirement.setId(stockOutRequirement.getId());
-            stockOutRequiredSampleRepository.deleteByStockOutRequirementId(stockOutRequirement.getId());
+            //删除核对过的样本
+//            stockOutReqFrozenTubeRepository.deleteByStockOutRequirementId(stockOutRequirement.getId());
+            StringBuffer sql = new StringBuffer();
+            sql.append("delete from stock_out_req_frozen_tube where stock_out_requirement_id = ?1");
+
+            Query query = entityManager.createNativeQuery(sql.toString());
+            query.setParameter("1", stockOutRequirement.getId()).executeUpdate();
         }
         Map<String,String> map = new HashMap<>();
         List<JSONObject> jsonArray = new ArrayList<>();
@@ -534,7 +545,7 @@ public class StockOutRequirementServiceImpl implements StockOutRequirementServic
 
         Query query = entityManager.createNativeQuery(sql.toString());
         query.setParameter("1", id).executeUpdate();
-//        entityManager.flush();
+
 
 //        int a = 1/0;
         stockOutRequirementForApply.setId(id);

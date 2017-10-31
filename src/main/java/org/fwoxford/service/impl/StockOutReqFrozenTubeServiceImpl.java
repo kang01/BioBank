@@ -117,7 +117,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             throw new BankServiceException("需求不能为空！");
         }
         List<Long> projectIds = stockOutApplyProjectRepository.findProjectByStockRequirementId(stockOutRequirement.getId());
-        String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
+        String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
         int i = 0;
         // All stock out samples
         List<Object[]> outTubeList = frozenTubeRepository.findAllStockOutFrozenTube();
@@ -169,8 +169,10 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             }
         }
         stockOutRequirement.setCountOfSampleReal(frozenTubeListLast.size());
-        if(frozenTubeListLast.size()<stockOutRequiredSamples.size()){
-            return Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
+        if(frozenTubeListLast.size()!=0&&(frozenTubeListLast.size()==stockOutRequiredSamples.size())){
+             status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
+        }else{
+            return status;
         }
         List<StockOutReqFrozenTube> stockOutReqFrozenTubeList = new ArrayList<>();
 

@@ -4212,7 +4212,7 @@ public class ImportSampleDataTest {
         for (Map<String, Object> key: boxList) {
             String boxCode1D = key.get("BOX_CODE_1").toString();
             FrozenBox frozenBox = frozenBoxRepository.findByFrozenBoxCode1D(boxCode1D);
-            if (frozenBox == null&&!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED)) {
+            if (frozenBox == null || !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCKED)) {
                 throw new BankServiceException("冻存盒不存在！"+boxCode1D);
             }
             String equipmentCode = "F1-01";
@@ -4380,7 +4380,7 @@ public class ImportSampleDataTest {
             con = DBUtilForTemp.open();
 //            System.out.println("连接成功！");
             log.info("链接成功！");
-            String sqlForSelect = "select * from " + "jt_opt_1026" + " a order by  a.OLD_DATE";// 预编译语句
+            String sqlForSelect = "select * from " + "jt_opt_1030" + " a order by  a.OLD_DATE";// 预编译语句
             pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
             result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
             ResultSetMetaData rsMeta = result.getMetaData();
@@ -4474,11 +4474,40 @@ public class ImportSampleDataTest {
         for (Map<String,Object> opt : opts1) {
             String boxCode = opt.get("BOX_CODE_1").toString();
             log.info(boxCode);
+            String type = boxCode.substring(boxCode.length()-1,boxCode.length());
             FrozenBox frozenBox = frozenBoxRepository.findByFrozenBoxCode1D(boxCode);
             if(frozenBox==null){
-                throw new BankServiceException("冻存盒未出过库"+boxCode);
+                SampleType sampleType = sampleTypeList.stream().filter(s->s.getSampleTypeCode().equals(type)).findFirst().orElse(null);
+                if(sampleType == null){
+                    throw new BankServiceException("样本类型不存在！",type);
+                }
+                ProjectSampleClass projectSampleClass = projectSampleClasses.stream().filter(s->s.getSampleType().getSampleTypeCode().equals(type)).findFirst().orElse(null);
+                if(projectSampleClass == null){
+                    throw new BankServiceException("样本类型"+type+"在0029项目下未配置样本分类！");
+                }
+                SampleClassification sampleClassification = projectSampleClass.getSampleClassification();
+                if(sampleClassification == null){
+                    throw new BankServiceException("样本分类获取失败！");
+                }
+                FrozenBoxType frozenBoxType = frozenBoxTypeRepository.findByFrozenBoxTypeCode("DCH");
+                frozenBox = new FrozenBox().frozenBoxCode1D(boxCode)
+                    .frozenBoxCode(" ")
+                    .frozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode())
+                    .frozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows())
+                    .frozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns())
+                    .projectCode(project.getProjectCode())
+                    .projectName(project.getProjectName())
+                    .sampleTypeCode(sampleType.getSampleTypeCode())
+                    .sampleTypeName(sampleType.getSampleTypeName())
+                    .isSplit(0)
+                    .status("2004")
+                    .emptyTubeNumber(0)
+                    .emptyHoleNumber(0)
+                    .dislocationNumber(0)
+                    .isRealData(1).frozenBoxType(frozenBoxType).sampleType(sampleType)
+                    .sampleClassification(sampleClassification).project(project);
             }
-            String type = boxCode.substring(boxCode.length()-1,boxCode.length());
+
             String boxCode1d = boxCode.substring(0,boxCode.length()-1);
             List<net.sf.json.JSONObject> jsonObjects = frozenBoxImportService.importFrozenBoxByBoxCode(boxCode1d);
             Map<String, List<net.sf.json.JSONObject>> listGroupByBoxType =

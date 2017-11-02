@@ -157,11 +157,11 @@ public class TranshipTube extends AbstractAuditingEntity implements Serializable
     @Column(name = "frozen_tube_state", length = 20)
     private String frozenTubeState;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @NotNull
     private TranshipBox transhipBox;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @NotNull
     private FrozenTube frozenTube;
 

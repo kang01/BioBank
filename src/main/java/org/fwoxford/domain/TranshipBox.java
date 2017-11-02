@@ -172,12 +172,12 @@ public class TranshipBox extends AbstractAuditingEntity implements Serializable 
     /**
      * 转运
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     private Tranship tranship;
     /**
      * 冻存盒
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     private FrozenBox frozenBox;
 
     /**

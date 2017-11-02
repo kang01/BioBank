@@ -322,6 +322,12 @@ public final class Constants {
     public static final String PEACE_II_ID="006";
     public static final String PEACE_III_ID="007";
 
+    public static final Map<String,String> UBE_STATUS_MAP = new HashMap(){{
+        put("1","3001");
+        put("NA","3002");
+        put("0","3003");
+    }};
+
     private Constants() {
     }
 }

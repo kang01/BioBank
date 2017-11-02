@@ -13,4 +13,7 @@ import java.util.List;
 public interface ProjectRelateRepository extends JpaRepository<ProjectRelate,Long> {
 
     ProjectRelate findByProjectIdAndProjectSiteId(Long projectId, Long projectSiteId);
+
+    @Query("select t from ProjectRelate t where t.project.projectCode=?1 and t.projectSite.projectSiteCode=?2")
+    ProjectRelate findByProjectCodeAndProjectSiteCode(String projectCode, String projectSiteCode);
 }

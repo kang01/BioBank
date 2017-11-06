@@ -34,6 +34,8 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     int countByFrozenBoxCodeAndStatus(String frozenBoxCode, String status);
 
+    int countByFrozenBoxCode(String frozenBoxCode);
+
     @Query(value = "select count(*) from frozen_tube t where t.frozen_box_id in ?1 and t.status=?2" ,nativeQuery = true)
     int countByFrozenBoxCodeStrAndStatus(List<Long> boxIds, String status);
 
@@ -236,4 +238,12 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         "and t.sample_type_code = ?2 and t.frozen_tube_state = '"+ Constants.FROZEN_BOX_STOCKED+"'",nativeQuery = true)
     Long countByFrozenBoxCode1DInAndSampleType(List<String> boxCodeListEach1000, String type);
 
+    List<FrozenTube> findByFrozenBoxCodeIn(List<String> frozenBoxCodeStr);
+
+    @Query(value = "select cast(s.tranship_code as varchar2(255)) as transhipCode,cast(t.frozen_box_code as varchar2(255)) as frozenBoxCode,count(1) from (select * from tranship_tube where project_code = '0037') t \n" +
+        "        left join frozen_tube f on t.frozen_tube_id = f.id \n" +
+        "         left join tranship_box tb on  t.tranship_box_id = tb.id \n" +
+        "         left join tranship s on  tb.tranship_id = s.id \n" +
+        "        group by s.tranship_code,t.frozen_box_code" , nativeQuery = true)
+    List<Object[]> countTubeGroupByTranshipCode();
 }

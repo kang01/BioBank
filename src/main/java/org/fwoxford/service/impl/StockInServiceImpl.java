@@ -625,7 +625,7 @@ public class StockInServiceImpl implements StockInService {
             tranship.setTranshipState(Constants.TRANSHIPE_IN_STOCKING);
             transhipRepository.save(tranship);
         }
-        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipCodes(transhipCodeList);
+        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipCodesAndStatus(transhipCodeList);
         List<String> frozenBoxCodes = new ArrayList<String>();
         List<FrozenBox> frozenBoxes = new ArrayList<>();
 //        List<StockInBox> stockInBoxes = new ArrayList<StockInBox>();

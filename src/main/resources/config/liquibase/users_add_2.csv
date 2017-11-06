@@ -1,0 +1,2 @@
+id;login;password_hash;first_name;last_name;email;image_url;activated;lang_key;created_by;last_modified_by;created_date
+27;licaiyun;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;彩云;李;licaiyun@localhost;;true;zh-cn;system;system;16-9月 -17 10.48.55.006000000 下午

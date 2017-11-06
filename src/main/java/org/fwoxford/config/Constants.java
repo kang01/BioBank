@@ -238,6 +238,7 @@ public final class Constants {
         put("萨尹晰",24L);
         put("刘元东",25L);
         put("汪蒙",26L);
+        put("李彩云",27L);
     }};
 
     public static final  Map<String,String> STOCK_IN_TYPE_MAP = new HashMap<String,String>(){{

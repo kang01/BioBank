@@ -1898,7 +1898,7 @@ public class ImportSampleDataTest {
                 .frozenTubeVolumnsUnit(frozenTube.getFrozenTubeVolumnsUnit())
                 .sampleVolumns(frozenTube.getSampleVolumns())
                 .errorType(frozenTube.getErrorType());
-            positionMoveRecordRepository.saveAndFlush(positionMoveRecord);
+            positionMoveRecordRepository.save(positionMoveRecord);
         }
         positionMoveRecordRepository.save(positionMoveRecordList);
     }
@@ -4270,7 +4270,7 @@ public class ImportSampleDataTest {
             con = DBUtilForTemp.open();
 //            System.out.println("连接成功！");
             log.info("链接成功！");
-            String sqlForSelect = "select * from " + "jt_opt_1102" + " a order by  a.OLD_DATE";// 预编译语句
+            String sqlForSelect = "select * from " + "jt_opt_1103" + " a order by  a.OLD_DATE";// 预编译语句
             pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
             result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
             ResultSetMetaData rsMeta = result.getMetaData();
@@ -5154,8 +5154,8 @@ public class ImportSampleDataTest {
     }
     @Test
     public void importOptStockInFor0037(){
-        List<Object[]> countOfAllTranshipTube = frozenTubeRepository.countTubeGroupByTranshipCode();
-        List<FrozenTube> existFrozenTubeList = new ArrayList<>();
+        List<Object[]> countOfAllTranshipTube = frozenTubeRepository.countTubeGroupByTranshipCode("99");
+
         List<String> wrongSample = new ArrayList<>();
         allOperations = 0;
         executedOperations[0] = 0;
@@ -5232,16 +5232,6 @@ public class ImportSampleDataTest {
             });
             //获取转运盒来自于哪次转运，创建转运和入库的关系
             List<TranshipBox> transhipBoxes = transhipBoxRepository.findByFrozenBoxCodesAndStatus(boxCode99Str);
-            for(TranshipBox transhipBox : transhipBoxes){
-                StockInBox stockInBox = new StockInBox();
-                stockInBox.frozenBox(transhipBox.getFrozenBox()).status(Constants.FROZEN_BOX_STOCKING);
-                List<FrozenTube> frozenTubeList = tubeListGroupByBoxCode.get(transhipBox.getFrozenBoxCode());
-                for(FrozenTube tube: frozenTubeList){
-
-                }
-            }
-
-
             List<TranshipStockIn> transhipStockIns = new ArrayList<>();
             List<StockInBox> stockInBoxes99 = new ArrayList<>();
             List<FrozenBox> frozenBoxList99 = new  ArrayList<>();
@@ -5383,9 +5373,6 @@ public class ImportSampleDataTest {
                             continue;
                         }
                     }
-                    if(frozenTubeList.contains(tube)){
-                        existFrozenTubeList.add(tube);
-                    }
                     tube = tube.sampleType(sampleType).sampleTypeCode(sampleType.getSampleTypeCode()).sampleTypeName(sampleType.getSampleTypeName())
                         .frozenTubeState(Constants.FROZEN_BOX_STOCKED).frozenBox(frozenBox).frozenBoxCode(boxCode).sampleClassification(sampleClassification)
                         .tubeColumns(tubeColumns).tubeRows(tubeRows).sampleStage(times).memo(memo);
@@ -5442,9 +5429,26 @@ public class ImportSampleDataTest {
                 List<StockInBox> oldStockInBox = stockInBoxRepository.findByFrozenBoxCode(frozenBox.getFrozenBoxCode());
                 if(oldStockInBox.size()>0){
                     stockInBox = oldStockInBox.get(0);
+                }else{
+                    stockInBox = new StockInBox()
+                        .equipmentCode(frozenBox.getEquipmentCode())
+                        .areaCode(frozenBox.getAreaCode())
+                        .supportRackCode(frozenBox.getSupportRackCode())
+                        .rowsInShelf(frozenBox.getSupportRackCode())
+                        .columnsInShelf(frozenBox.getColumnsInShelf())
+                        .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).frozenBox(frozenBox).stockIn(stockIn).stockInCode(stockInCode).area(frozenBox.getArea()).equipment(frozenBox.getEquipment()).supportRack(frozenBox.getSupportRack())
+                        .sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
+                        .sampleClassification(frozenBox.getSampleClassification())
+                        .sampleClassificationCode(frozenBox.getSampleClassification() != null ? frozenBox.getSampleClassification().getSampleClassificationCode() : null)
+                        .sampleClassificationName(frozenBox.getSampleClassification() != null ? frozenBox.getSampleClassification().getSampleClassificationName() : null)
+                        .dislocationNumber(frozenBox.getDislocationNumber()).emptyHoleNumber(frozenBox.getEmptyHoleNumber()).emptyTubeNumber(frozenBox.getEmptyTubeNumber())
+                        .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
+                        .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
+                        .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
+                        .projectSiteName(frozenBox.getProjectSiteName());
                 }
                 int  count = Integer.valueOf(mapGroupByBoxCode.get(frozenBox.getFrozenBoxCode()).get(0)[2].toString());
-                stockInBox.countOfSample(0).frozenBox(transhipBox.getFrozenBox());
+                stockInBox.countOfSample(count).frozenBox(transhipBox.getFrozenBox()).stockIn(stockIn).stockInCode(stockInCode);
                 if (count == 0) {
                     stockInBox.status(Constants.FROZEN_BOX_SPLITED);
                     frozenBox.status(Constants.FROZEN_BOX_SPLITED);
@@ -5461,8 +5465,6 @@ public class ImportSampleDataTest {
             transhipRepository.save(tranships);
             transhipStockInRepository.save(transhipStockIns);
         }
-
-        log.info(existFrozenTubeList.toString());
         log.info(wrongSample.toString());
     }
     private List<Map<String,Object>> getFirstStockIn0037() {
@@ -5743,9 +5745,9 @@ public class ImportSampleDataTest {
         String posInShelf = map.get("POS_IN_SHELF") != null ? map.get("POS_IN_SHELF").toString() : "NA";
         String columnsInShelf = posInShelf != null ? posInShelf.substring(0, 1) : null;
         String rowsInShelf = posInShelf != null ? posInShelf.substring(1) : null;
-        frozenBox = frozenBox.equipment(supportRack.getArea().getEquipment()).equipmentCode(supportRack.getArea().getEquipmentCode())
-            .area(supportRack.getArea())
-            .areaCode(supportRack.getArea().getAreaCode())
+        frozenBox = frozenBox.equipment(entity).equipmentCode(entity.getEquipmentCode())
+            .area(area)
+            .areaCode(area.getAreaCode())
             .supportRack(supportRack)
             .supportRackCode(supportRack.getSupportRackCode())
             .columnsInShelf(columnsInShelf)
@@ -5764,6 +5766,8 @@ public class ImportSampleDataTest {
 
     @Test
     public void importOptStockInRNAFor0037(){
+        List<Object[]> countOfAllTranshipTube = frozenTubeRepository.countTubeGroupByTranshipCode("RNA");
+
         List<String> wrongSample = new ArrayList<>();
         allOperations = 0;
         executedOperations[0] = 0;
@@ -5850,34 +5854,9 @@ public class ImportSampleDataTest {
             List<TranshipBox> transhipBoxes = transhipBoxRepository.findByFrozenBoxCodesAndStatus(boxCode99Str);
             List<TranshipStockIn> transhipStockIns = new ArrayList<>();
             List<StockInBox> stockInBoxes99 = new ArrayList<>();
+            List<FrozenBox> frozenBoxList99 = new ArrayList<>();
             List<String> transhipCodes = new ArrayList<>();
             List<Tranship> tranships = new ArrayList<>();
-            for(TranshipBox transhipBox : transhipBoxes){
-                Tranship tranship = transhipBox.getTranship();
-                FrozenBox frozenBox = transhipBox.getFrozenBox();
-                if(!transhipCodes.contains(tranship.getTranshipCode())){
-                    transhipCodes.add(tranship.getTranshipCode());
-                    TranshipStockIn transhipStockIn = new TranshipStockIn();
-                    transhipStockIn.stockInCode(stockIn.getStockInCode()).stockIn(stockIn).transhipCode(tranship.getTranshipCode()).tranship(tranship).status(Constants.VALID);
-                    transhipStockIns.add(transhipStockIn);
-                    tranship.status(Constants.TRANSHIPE_IN_STOCKED).receiverId(receiverId).receiver(receiver);
-                    tranships.add(tranship);
-                }
-
-                StockInBox stockInBox = new StockInBox();
-                List<StockInBox> oldStockInBox = stockInBoxRepository.findByFrozenBoxCode(frozenBox.getFrozenBoxCode());
-                if(oldStockInBox.size()>0){
-                    stockInBox= oldStockInBox.get(0);
-                }
-                stockInBox.setStockIn(stockIn);
-                stockInBox.countOfSample(0).frozenBox(transhipBox.getFrozenBox()).status(Constants.FROZEN_BOX_SPLITED);
-                frozenBox.status(Constants.FROZEN_BOX_SPLITED);
-                stockInBoxes99.add(stockInBox);
-            }
-
-            transhipRepository.save(tranships);
-            transhipStockInRepository.save(transhipStockIns);
-
 
             for(String boxCode :tubeForBoxMap.keySet()){
                 log.info("导入盒"+boxCode);
@@ -5963,7 +5942,14 @@ public class ImportSampleDataTest {
                 List<StockInTube> stockInTubes = new ArrayList<>();
                 List<FrozenTube> frozenTubeList = new ArrayList<>();
                 for(Map<String, Object> tubeMap :tubeList){
-
+                    String boxCodeRNA = tubeMap.get("REC_BOX_CODE").toString();
+                    countOfAllTranshipTube.forEach(s-> {
+                            if(s[1].toString().equals(boxCodeRNA)){
+                                int a= Integer.valueOf(s[2].toString())-1;
+                                s[2]= a;
+                            }
+                        }
+                    );
                     countOfSample++;
                     String sampleCode = tubeMap.get("SAMPLE_CODE").toString();
                     log.info("导入冻存管："+sampleCode);
@@ -6009,9 +5995,194 @@ public class ImportSampleDataTest {
                 executedOperations[0]++;
                 log.info("Finished:(%d/%d)"+ executedOperations[0]+"/" +allOperations);
             }
+
             stockIn.countOfSample(countOfSampleForStockIn);
             stockInRepository.save(stockIn);
+            Map<String,List<Object[]>> mapGroupByTranshipCode = countOfAllTranshipTube.stream().collect(Collectors.groupingBy(s->s[0].toString()));
+            Map<String,List<Object[]>> mapGroupByBoxCode = countOfAllTranshipTube.stream().collect(Collectors.groupingBy(s->s[1].toString()));
+            for(TranshipBox transhipBox : transhipBoxes){
+                Tranship tranship = transhipBox.getTranship();
+                FrozenBox frozenBox = transhipBox.getFrozenBox();
+                if(!transhipCodes.contains(tranship.getTranshipCode())){
+                    transhipCodes.add(tranship.getTranshipCode());
+                    TranshipStockIn transhipStockIn = new TranshipStockIn();
+                    transhipStockIn.stockInCode(stockIn.getStockInCode()).stockIn(stockIn).transhipCode(tranship.getTranshipCode()).tranship(tranship).status(Constants.VALID);
+                    transhipStockIns.add(transhipStockIn);
+                    tranship.transhipState(Constants.TRANSHIPE_IN_STOCKING).receiverId(receiverId).receiver(receiver);
+                    List<Object[]> alist = mapGroupByTranshipCode.get(tranship.getTranshipCode());
+                    int countUnStock = 0;
+                    for(Object[] o : alist){
+                        countUnStock+=Integer.valueOf(o[2].toString());
+                    }
+                    if(countUnStock==0){//转运全部都入库完成
+                        tranship.transhipState(Constants.TRANSHIPE_IN_STOCKED);
+                        tranships.add(tranship);
+                    }
+                }
+
+                StockInBox stockInBox = new StockInBox();
+                List<StockInBox> oldStockInBox = stockInBoxRepository.findByFrozenBoxCode(frozenBox.getFrozenBoxCode());
+                if(oldStockInBox.size()>0){
+                    stockInBox = oldStockInBox.get(0);
+                }else{
+                     stockInBox = new StockInBox()
+                        .equipmentCode(frozenBox.getEquipmentCode())
+                        .areaCode(frozenBox.getAreaCode())
+                        .supportRackCode(frozenBox.getSupportRackCode())
+                        .rowsInShelf(frozenBox.getSupportRackCode())
+                        .columnsInShelf(frozenBox.getColumnsInShelf())
+                        .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).frozenBox(frozenBox).stockIn(stockIn).stockInCode(stockInCode).area(frozenBox.getArea()).equipment(frozenBox.getEquipment()).supportRack(frozenBox.getSupportRack())
+                        .sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
+                        .sampleClassification(frozenBox.getSampleClassification())
+                        .sampleClassificationCode(frozenBox.getSampleClassification() != null ? frozenBox.getSampleClassification().getSampleClassificationCode() : null)
+                        .sampleClassificationName(frozenBox.getSampleClassification() != null ? frozenBox.getSampleClassification().getSampleClassificationName() : null)
+                        .dislocationNumber(frozenBox.getDislocationNumber()).emptyHoleNumber(frozenBox.getEmptyHoleNumber()).emptyTubeNumber(frozenBox.getEmptyTubeNumber())
+                        .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
+                        .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
+                        .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
+                        .projectSiteName(frozenBox.getProjectSiteName());
+                }
+                int  count = Integer.valueOf(mapGroupByBoxCode.get(frozenBox.getFrozenBoxCode()).get(0)[2].toString());
+                stockInBox.countOfSample(count).frozenBox(transhipBox.getFrozenBox()).stockIn(stockIn).stockInCode(stockInCode);
+                if (count == 0) {
+                    stockInBox.status(Constants.FROZEN_BOX_SPLITED);
+                    frozenBox.status(Constants.FROZEN_BOX_SPLITED);
+                }else{
+                    stockInBox.status(Constants.FROZEN_BOX_STOCKING);
+                    frozenBox.status(Constants.FROZEN_BOX_STOCKING);
+                }
+                stockInBox.setStockIn(stockIn);
+                stockInBoxes99.add(stockInBox);
+                frozenBoxList99.add(frozenBox);
+            }
+            frozenBoxRepository.save(frozenBoxList99);
+            stockInBoxRepository.save(stockInBoxes99);
+            transhipRepository.save(tranships);
+            transhipStockInRepository.save(transhipStockIns);
         }
         log.info(wrongSample.toString());
+    }
+   //将0037项目的未入库的所有样本放在一个入库单内
+    @Test
+    public void importOptUnStockInFor0037() {
+        Project project = projectRepository.findByProjectCode("0037");
+        String stockInDateStr = "2017/10/26";
+        Date date = new Date();
+        try {
+            date = strToDate3(stockInDateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByProjectCodeAndStatus("0037", Constants.FROZEN_BOX_STOCKING);
+
+
+        List<String> frozenBoxCodeStr = new ArrayList<>();
+        frozenBoxList.forEach(s -> frozenBoxCodeStr.add(s.getFrozenBoxCode()));
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findByFrozenBoxCodeIn(frozenBoxCodeStr);
+        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByFrozenBoxCodesAndStatus(frozenBoxCodeStr);
+
+        String stockInCode = bankUtil.getUniqueIDByDate("B", date);
+        String receiver = "NA";
+        Long optPerson_id_1 = null;
+        Long optPerson_id_2 = null;
+        Long receiverId = null;
+        if (!StringUtils.isEmpty(receiver)) {
+            receiverId = Constants.RECEIVER_MAP.get(receiver);
+        }
+        StockIn stockIn = new StockIn().projectCode("0037")
+            .projectSiteCode(null)
+            .receiveId(receiverId).receiveDate( date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+            .receiveName(receiver)
+            .stockInType("8001")
+            .stockInDate(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+            .countOfSample(frozenTubeList.size()).stockInCode(stockInCode).project(project).projectSite(null)
+            .status(Constants.STOCK_IN_PENDING);
+        stockInRepository.save(stockIn);
+
+        List<TranshipStockIn> transhipStockIns = new ArrayList<>();
+        List<String> transhipCodes = new ArrayList<>();
+        List<Tranship> tranships = new ArrayList<>();
+        for (TranshipBox transhipBox : transhipBoxes) {
+            Tranship tranship = transhipBox.getTranship();
+            if (!transhipCodes.contains(tranship.getTranshipCode())) {
+                transhipCodes.add(tranship.getTranshipCode());
+                TranshipStockIn transhipStockIn = new TranshipStockIn();
+                transhipStockIn.stockInCode(stockIn.getStockInCode()).stockIn(stockIn).transhipCode(tranship.getTranshipCode()).tranship(tranship).status(Constants.VALID);
+                transhipStockIns.add(transhipStockIn);
+                tranship.transhipState(Constants.TRANSHIPE_IN_STOCKING);
+                tranships.add(tranship);
+            }
+        }
+        transhipRepository.save(tranships);
+        transhipStockInRepository.save(transhipStockIns);
+        Map<String,List<FrozenTube>> tubeListGroupByBox = frozenTubeList.stream().collect(Collectors.groupingBy(s->s.getFrozenBoxCode()));
+
+        for(FrozenBox frozenBox : frozenBoxList){
+
+            List<FrozenTube> frozenTubes = tubeListGroupByBox.get(frozenBox.getFrozenBoxCode());
+            StockInBox stockInBox = new StockInBox();
+            List<StockInBox> oldStockInBox = stockInBoxRepository.findByFrozenBoxCode(frozenBox.getFrozenBoxCode());
+            if(oldStockInBox.size()>0){
+                stockInBox = oldStockInBox.get(0);
+            }else{
+                stockInBox = new StockInBox()
+                    .equipmentCode(frozenBox.getEquipmentCode())
+                    .areaCode(frozenBox.getAreaCode())
+                    .supportRackCode(frozenBox.getSupportRackCode())
+                    .rowsInShelf(frozenBox.getSupportRackCode())
+                    .columnsInShelf(frozenBox.getColumnsInShelf())
+                    .frozenBoxCode(frozenBox.getFrozenBoxCode()).frozenBoxCode1D(frozenBox.getFrozenBoxCode1D()).frozenBox(frozenBox).stockIn(stockIn).stockInCode(stockInCode).area(frozenBox.getArea()).equipment(frozenBox.getEquipment()).supportRack(frozenBox.getSupportRack())
+                    .sampleTypeCode(frozenBox.getSampleTypeCode()).sampleType(frozenBox.getSampleType()).sampleTypeName(frozenBox.getSampleTypeName())
+                    .sampleClassification(frozenBox.getSampleClassification())
+                    .sampleClassificationCode(frozenBox.getSampleClassification() != null ? frozenBox.getSampleClassification().getSampleClassificationCode() : null)
+                    .sampleClassificationName(frozenBox.getSampleClassification() != null ? frozenBox.getSampleClassification().getSampleClassificationName() : null)
+                    .dislocationNumber(frozenBox.getDislocationNumber()).emptyHoleNumber(frozenBox.getEmptyHoleNumber()).emptyTubeNumber(frozenBox.getEmptyTubeNumber())
+                    .frozenBoxType(frozenBox.getFrozenBoxType()).frozenBoxTypeCode(frozenBox.getFrozenBoxTypeCode()).frozenBoxTypeColumns(frozenBox.getFrozenBoxTypeColumns())
+                    .frozenBoxTypeRows(frozenBox.getFrozenBoxTypeRows()).isRealData(frozenBox.getIsRealData()).isSplit(frozenBox.getIsSplit()).project(frozenBox.getProject())
+                    .projectCode(frozenBox.getProjectCode()).projectName(frozenBox.getProjectName()).projectSite(frozenBox.getProjectSite()).projectSiteCode(frozenBox.getProjectSiteCode())
+                    .projectSiteName(frozenBox.getProjectSiteName());
+            }
+
+            stockInBox.countOfSample(frozenTubes.size()).frozenBox(frozenBox).stockIn(stockIn).stockInCode(stockInCode);
+            stockInBox.status(Constants.FROZEN_BOX_STOCKING);
+            frozenBox.status(Constants.FROZEN_BOX_STOCKING);
+            stockInBox.setStockIn(stockIn);
+            stockInBoxRepository.save(stockInBox);
+            frozenBoxRepository.save(frozenBox);
+            List<StockInTube> stockInTubes = new ArrayList<>();
+            List<FrozenTube> frozenTubeList1 = new ArrayList<>();
+            for(FrozenTube tube : frozenTubes){
+                tube.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
+                frozenTubeList1.add(tube);
+
+                StockInTube stockInTube = new StockInTube()
+                    .status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())
+                    .frozenBoxCode(tube.getFrozenBoxCode()).stockInBox(stockInBox).errorType(tube.getErrorType())
+                    .frozenTubeCode(tube.getFrozenTubeCode()).frozenTubeState(Constants.FROZEN_BOX_STOCKING)
+                    .frozenTubeType(tube.getFrozenTubeType()).frozenTubeTypeCode(tube.getFrozenTubeTypeCode())
+                    .frozenTubeTypeName(tube.getFrozenTubeTypeName()).frozenTubeVolumns(tube.getFrozenTubeVolumns())
+                    .frozenTubeVolumnsUnit(tube.getFrozenTubeVolumnsUnit()).sampleVolumns(tube.getSampleVolumns())
+                    .project(tube.getProject()).projectCode(tube.getProjectCode()).projectSite(tube.getProjectSite())
+                    .projectSiteCode(tube.getProjectSiteCode()).sampleClassification(tube.getSampleClassification())
+                    .sampleClassificationCode(tube.getSampleClassification() != null ? tube.getSampleClassification().getSampleClassificationCode() : null)
+                    .sampleClassificationName(tube.getSampleClassification() != null ? tube.getSampleClassification().getSampleClassificationName() : null)
+                    .sampleCode(tube.getSampleCode()).sampleTempCode(tube.getSampleTempCode()).sampleType(tube.getSampleType())
+                    .sampleTypeCode(tube.getSampleTypeCode()).sampleTypeName(tube.getSampleTypeName()).sampleUsedTimes(tube.getSampleUsedTimes())
+                    .sampleUsedTimesMost(tube.getSampleUsedTimesMost());
+                stockInTubes.add(stockInTube);
+            }
+            frozenTubeRepository.save(frozenTubeList1);
+            stockInTubeRepository.save(stockInTubes);
+        }
+    }
+
+    @Test
+    public void import0037(){
+        this.importOptFor0037();
+        this.importOptStockInFor0037();
+        this.importOptStockInRNAFor0037();
+        this.importOptUnStockInFor0037();
+        this.importOptFor0037Move();
     }
 }

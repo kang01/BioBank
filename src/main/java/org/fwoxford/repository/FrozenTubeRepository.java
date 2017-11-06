@@ -240,10 +240,12 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     List<FrozenTube> findByFrozenBoxCodeIn(List<String> frozenBoxCodeStr);
 
-    @Query(value = "select cast(s.tranship_code as varchar2(255)) as transhipCode,cast(t.frozen_box_code as varchar2(255)) as frozenBoxCode,count(1) from (select * from tranship_tube where project_code = '0037') t \n" +
-        "        left join frozen_tube f on t.frozen_tube_id = f.id \n" +
-        "         left join tranship_box tb on  t.tranship_box_id = tb.id \n" +
+    @Query(value = "  select cast(s.tranship_code as varchar2(255)) as transhipCode," +
+        "cast(t.frozen_box_code as varchar2(255)) as frozenBoxCode,count(1) " +
+        "from (select * from frozen_tube where project_code = '0037' and sample_type_code = ?1 and frozen_tube_state='2011') t \n" +
+        "        left join (select * from tranship_tube ) f on f.frozen_tube_id = t.id \n" +
+        "         left join tranship_box tb on  f.tranship_box_id = tb.id \n" +
         "         left join tranship s on  tb.tranship_id = s.id \n" +
-        "        group by s.tranship_code,t.frozen_box_code" , nativeQuery = true)
-    List<Object[]> countTubeGroupByTranshipCode();
+        "    where f.id is not null group by s.tranship_code,t.frozen_box_code" , nativeQuery = true)
+    List<Object[]> countTubeGroupByTranshipCode(String sampleTypeCode);
 }

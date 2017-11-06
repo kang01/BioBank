@@ -4224,49 +4224,5 @@ public class ImportSampleTest {
         }
     }
 
-    @Test
-    public void ttt(){
-        String boxCode = "530220119R";
-        if(boxCode.contains("A")||boxCode.contains("R")||boxCode.contains("E")||boxCode.contains("W")){
-            Connection con = null;// 创建一个数据库连接
-            PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
-            ResultSet result = null;// 创建一个结果集对象
-            try {
-                con = DBUtilForTemp.open();
-                System.out.println("连接成功！");
-                String tableName = "";
-                if(boxCode.contains("R")){
-                    tableName="HE_R_0908";
-                }
-                if(boxCode.contains("W")){
-                    tableName="HE_W_0908";
-                }
-                if(boxCode.contains("A")){
-                    tableName="HE_A_0908";
-                }
-                if(boxCode.contains("E")){
-                    tableName="HE_E_0908";
-                }
-                String sqlForSelect = "select box_code from " + tableName + " where box_code_2 = '" +boxCode+"' and rownum=1";// 预编译语句
-
-                pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
-                result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
-                ResultSetMetaData rsMeta = result.getMetaData();
-                while (result.next()) {
-                    boxCode = result.getString("BOX_CODE");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    DBUtilForTemp.close(con);
-                    System.out.println("数据库连接已关闭！");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-    }
 }
 

@@ -347,8 +347,10 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 frozenBoxNew = new FrozenBox();
             }
         }
-        StockInBox stockInBoxSplitIn = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,stockInBoxForDataSplit.getFrozenBoxCode())!=null?
-            stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,stockInBoxForDataSplit.getFrozenBoxCode()):new StockInBox();
+        StockInBox stockInBoxSplitIn = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,stockInBoxForDataSplit.getFrozenBoxCode());
+        if(stockInBoxSplitIn == null ){
+            stockInBoxSplitIn = new StockInBox();
+        }
         stockInBoxSplitIn.setStatus(Constants.FROZEN_BOX_STOCKING);
         if(frozenBoxNew.getId()== null){
             //盒ID为空，表示新增的冻存盒---保存冻存盒，保存入库盒

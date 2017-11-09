@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -101,10 +102,6 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         " and s.stock_in_code =?6" +
         " order by sampleNumber asc",nativeQuery = true)
     List<FrozenBox> findIncompleteFrozenBoxBySampleTypeId(String frozenBoxCode, Long projectId, Long sampleTypeId, Long frozenBoxTypeId, String status, String stockInCode);
-
-    @Query(value = "select box.id ,count(*) as num from frozen_box box  where box.frozen_box_code =?1" +
-        " and box.status not in ('2090','0000') group by box.id " , nativeQuery = true)
-    List<Object[]> countByFrozenBoxCode(String frozenBoxCode);
 
     @Query(value = "select f.*,(select count(tube.id) from frozen_tube tube where tube.frozen_box_code = f.frozen_box_code  and tube.status!='0000') as sampleNumber from frozen_box f left join stock_in_box s on f.id=s.frozen_box_id " +
         " where f.frozen_box_code != ?1 " +
@@ -342,5 +339,10 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
     FrozenBox findByFrozenBoxCode1D(String boxCode1D);
 
     List<FrozenBox> findByProjectCodeAndStatus(String projectCode, String frozenBoxStocking);
+
+    @Query(value = "SELECT t.ID,t.FROZEN_BOX_ROWS*t.FROZEN_BOX_COLUMNS AS COUNTOFSAMPLE FROM FROZEN_BOX t WHERE t.PROJECT_ID = ?1 AND t.SAMPLE_CLASSIFICATION_ID in ?2 AND t.STATUS = '"+Constants.FROZEN_BOX_STOCKED+"' AND t.FROZEN_BOX_TYPE_ID = ?3 and t.FROZEN_BOX_CODE != ?4 ORDER BY t.ID DESC  OFFSET ?5 ROWS FETCH NEXT ?6 ROWS ONLY",nativeQuery = true)
+    List<Object[]> findIncompleteFrozenBoxIdBydProjectIdAnSampleClassificationIdAndBoxTypeId(Long projectId, ArrayList<Long> sampeClassTypeIds, Long frozenBoxTypeId, String frozenBoxCode,Integer startPos,Integer length);
+
+    List<FrozenBox> findByIdIn(List<Long> frozenBoxIds);
 }
 

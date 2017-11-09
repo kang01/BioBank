@@ -345,9 +345,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
                     sampleType = p;
                 }
             }
-            if(sampleType == null){
-                throw new BankServiceException("样本类型无效！",box.toString());
-            }
+//            if(sampleType == null){
+//                throw new BankServiceException("样本类型无效！",box.toString());
+//            }
         }
 
         tube.setSampleTypeCode(tube.getSampleType().getSampleTypeCode());

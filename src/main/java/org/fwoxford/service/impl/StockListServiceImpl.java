@@ -4,6 +4,7 @@ import liquibase.util.CollectionUtil;
 import liquibase.util.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.fwoxford.config.Constants;
+import org.fwoxford.domain.FrozenBox;
 import org.fwoxford.domain.FrozenTube;
 import org.fwoxford.domain.FrozenTubeType;
 import org.fwoxford.repository.*;
@@ -63,6 +64,8 @@ public class StockListServiceImpl implements StockListService {
     private AreasListByProjectRepositories areasListByProjectRepositories;
     @Autowired
     private FrozenTubeRepository frozenTubeRepository;
+    @Autowired
+    private FrozenBoxRepository frozenBoxRepository;
     /**
      * 冻存位置清单
      * @param input
@@ -120,8 +123,10 @@ public class StockListServiceImpl implements StockListService {
             @Override
             public FrozenBoxListAllDataTableEntity convert(FrozenBoxListAllDataTableEntity e) {
                 String position = BankUtil.getPositionString(e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getColumnsInShelf(),e.getRowsInShelf(),null,null);
+                Long countOfUsed = frozenTubeRepository.countByFrozenBoxCodeAndFrozenTubeState(e.getFrozenBoxCode(),e.getStatus());
+                Long countOfRest = e.getCountOfUsed()-countOfUsed;
                 return new FrozenBoxListAllDataTableEntity(e.getId(),e.getFrozenBoxCode(),e.getFrozenBoxCode1D(),e.getEquipmentCode(),e.getAreaCode(),e.getShelvesCode(),e.getRowsInShelf(),e.getColumnsInShelf(),
-                    position,e.getSampleType(),e.getSampleClassification(),e.getFrozenBoxType(),e.getCountOfUsed(),e.getCountOfRest(),e.getStatus(),e.getProjectName(),e.getProjectCode(),
+                    position,e.getSampleType(),e.getSampleClassification(),e.getFrozenBoxType(),countOfUsed,countOfRest,e.getStatus(),e.getProjectName(),e.getProjectCode(),
                     e.getEquipmentId(),e.getAreaId(),e.getShelvesId(),e.getSampleTypeId(),e.getSampleClassificationId(),e.getFrozenBoxTypeId(),e.getMemo(),e.getProjectId());
             }
         };

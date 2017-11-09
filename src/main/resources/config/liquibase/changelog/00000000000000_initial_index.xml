@@ -34,8 +34,6 @@
             CREATE INDEX pk_sample_for_stock_out_tube ON stock_out_box_tube (frozen_tube_id);
             <!--表 position_move_record 索引-->
             CREATE INDEX pk_sample_for_move_record ON position_move_record (frozen_tube_id);
-            <!--表 stock_out_handover_details 索引-->
-            CREATE INDEX pk_sample_for_handover_record ON stock_out_handover_details (stock_out_box_tube_id);
 
         </sql>
     </changeSet>
@@ -61,7 +59,7 @@
     <changeSet id="22222222222222-5" author="jhipster" dbms="h2,postgresql,oracle">
         <!-- 表 stock_out_req_frozen_tube 索引-->
         <sql>
-            CREATE INDEX pk_task_for_stock_out_tube ON stock_out_req_frozen_tube (stock_out_task_id,frozen_box_id,status);
+            CREATE INDEX pk_task_box_for_stock_out_tube ON stock_out_req_frozen_tube (stock_out_task_id,frozen_box_id,status);
         </sql>
     </changeSet>
 </databaseChangeLog>

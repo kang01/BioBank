@@ -9,6 +9,7 @@ import org.fwoxford.service.FrozenBoxService;
 import org.fwoxford.service.FrozenTubeService;
 import org.fwoxford.service.StockListService;
 import org.fwoxford.service.dto.FrozenBoxDTO;
+import org.fwoxford.service.dto.FrozenTubeDTO;
 import org.fwoxford.service.dto.StockInTubeDTO;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.mapper.*;
@@ -879,11 +880,15 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             throw new BankServiceException("冻存盒编码已存在！");
         }
 
-        //查询冻存管列表信息
+        //查询冻存管列表信息---此时查询的是该冻存盒内所有的入库过的样本，所以当盒内入库历史很多的时候会查询出多余的样本。
+        //所以查询盒内当前样本，与入库管进行比较，获取当前的盒内的入库管信息
         List<StockInTube> stockInTubes = new ArrayList<StockInTube>();
-        if (!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED) && !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)) {
-            stockInTubes = stockInTubeRepository.findByFrozenBoxCodeAndSampleState(frozenBoxCode);
-        }
+//        if (!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED) && !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)) {
+//            stockInTubes = stockInTubeRepository.findByFrozenBoxCodeAndSampleState(frozenBoxCode);
+//        }
+
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findByFrozenBoxCodeAndFrozenTubeState(frozenBoxCode,Constants.FROZEN_BOX_STOCKED);
+
         List<Long> ids = new ArrayList<Long>();
         for (StockInTube s : stockInTubes) {
             ids.add(s.getFrozenTube().getId());
@@ -895,22 +900,15 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             throw new BankServiceException("冻存盒已满！");
         }
         List<StockInTubeDTO> frozenTubeDTOS = new ArrayList<StockInTubeDTO>();
-        Map<Long, FrozenTubeHistory> allFrozenTubeHistories = ids.size() > 0 ? stockListService.findFrozenTubeHistoryDetailByIds(ids) : null;
-        for (StockInTube f : stockInTubes) {
-            StockInTubeDTO stockInTubeDTO = stockInTubeMapper.stockInTubeToStockInTubeDTO(f);
-            stockInTubeDTO.setFrontColor(f.getSampleType() != null ? f.getSampleType().getFrontColor() : null);
-            stockInTubeDTO.setFrontColorForClass(f.getSampleClassification() != null ? f.getSampleClassification().getFrontColor() : null);
-            stockInTubeDTO.setBackColor(f.getSampleType() != null ? f.getSampleType().getBackColor() : null);
-            stockInTubeDTO.setBackColorForClass(f.getSampleClassification() != null ? f.getSampleClassification().getBackColor() : null);
-            stockInTubeDTO.setIsMixed(f.getSampleType() != null ? f.getSampleType().getIsMixed() : null);
+//        Map<Long, FrozenTubeHistory> allFrozenTubeHistories = ids.size() > 0 ? stockListService.findFrozenTubeHistoryDetailByIds(ids) : null;
+        for (FrozenTube f : frozenTubeList) {
+
+            StockInTubeDTO stockInTubeDTO = stockInTubeMapper.frozenTubeToStockInTubeDTO(f);
             stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_NEW);//盒内新增样本
-            FrozenTubeHistory frozenTubeHistory = allFrozenTubeHistories.get(f.getFrozenTube().getId());
-            if (frozenTubeHistory != null &&
-                (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT) && !frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER)
-                    && !frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_TRANSHIP))) {
+            if(stockInTubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCKED)){
                 stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_ORIGINAL);//原盒原库存
-            } else if (frozenTubeHistory != null && (frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)
-                || frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_HAND_OVER))) {
+            }else if (stockInTubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
+                ||stockInTubeDTO.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
                 stockInTubeDTO.setFlag(Constants.FROZEN_FLAG_STOCKIN_AGAIN);//出库再回来
             }
             frozenTubeDTOS.add(stockInTubeDTO);

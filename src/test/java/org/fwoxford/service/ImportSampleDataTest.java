@@ -5285,7 +5285,7 @@ public class ImportSampleDataTest {
     }
     @Test
     public void importOptStockInFor0037(){
-        List<Object[]> countOfAllTranshipTube = frozenTubeRepository.countTubeGroupByTranshipCode("99");
+        List<Object[]> countOfAllTranshipTube = frozenTubeRepository.countTubeByProjectCodeGroupByTranshipCode("0037","99");
 
         List<String> wrongSample = new ArrayList<>();
         allOperations = 0;
@@ -5897,7 +5897,7 @@ public class ImportSampleDataTest {
 
     @Test
     public void importOptStockInRNAFor0037(){
-        List<Object[]> countOfAllTranshipTube = frozenTubeRepository.countTubeGroupByTranshipCode("RNA");
+        List<Object[]> countOfAllTranshipTube = frozenTubeRepository.countTubeByProjectCodeGroupByTranshipCode("0037","RNA");
 
         List<String> wrongSample = new ArrayList<>();
         allOperations = 0;

@@ -13,100 +13,46 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
-    @Query("select t from FrozenTube t where t.frozenBox.id = ?1 and t.status!='0000' and t.frozenBox.status !='2090'")
+    @Query("select t from FrozenTube t where t.frozenBox.id = ?1 and t.status!='"+Constants.INVALID+"' and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"'")
     List<FrozenTube> findFrozenTubeListByBoxId(Long frozenBoxId);
 
-    @Query("select t from FrozenTube t where t.frozenBox.id in ?1 and t.status!='0000' and t.frozenBox.status !='2090'")
+    @Query("select t from FrozenTube t where t.frozenBox.id in ?1 and t.status!='"+Constants.INVALID+"' and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"'")
     List<FrozenTube> findFrozenTubeListByBoxIdIn(List<Long> frozenBoxId);
 
-    @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000' and t.frozenBox.status !='2090'")
+    @Query("select t from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='"+Constants.INVALID+"' and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"'")
     List<FrozenTube> findFrozenTubeListByBoxCode(String frozenBoxCode);
 
-    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000' and t.frozenBox.status !='2090'")
+    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='"+Constants.INVALID+"' and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"'")
     Long countFrozenTubeListByBoxCode(String frozenBoxCode);
 
     List<FrozenTube> findFrozenTubeListByFrozenBoxCodeAndStatus(String frozenBoxCode, String status);
 
     @Query(value = "select t.frozen_box_code as frozenBoxCode,count(t.frozen_box_code) as sampleNumber \n" +
-        "from frozen_tube t where t.frozen_box_code in ?1 and t.status!='0000' and t.frozenBox.status !='2090' group by t.frozen_box_code \n" +
+        "from frozen_tube t where t.frozen_box_code in ?1 and t.status!='"+Constants.INVALID+"' and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"' group by t.frozen_box_code \n" +
         " order by sampleNumber asc,t.frozen_box_code desc " ,nativeQuery = true)
     List<Object[]> countSampleNumberByfrozenBoxList(List<String> frozenBoxList);
 
     int countByFrozenBoxCodeAndStatus(String frozenBoxCode, String status);
 
-    @Query("SELECT COUNT(1) FROM FrozenTube t WHERE t.frozenBoxCode = ?1 AND t.status != '0000'")
-    int countByFrozenBoxCode(String frozenBoxCode);
 
-    @Query(value = "select count(*) from frozen_tube t where t.frozen_box_id in ?1 and t.status=?2" ,nativeQuery = true)
+    @Query(value = "select count(1) from frozen_tube t where t.frozen_box_id in ?1 and t.status=?2" ,nativeQuery = true)
     int countByFrozenBoxCodeStrAndStatus(List<Long> boxIds, String status);
 
     @Query(value = "select count(count(case when t.sample_code is not null THEN t.sample_code ELSE t.sample_temp_code end)) from frozen_tube t\n" +
-        " where t.frozen_box_id in ?1 and t.status!='0000'\n" +
+        " where t.frozen_box_id in ?1 and t.status!='"+Constants.INVALID+"'\n" +
         " GROUP BY case when t.sample_code is not null THEN t.sample_code ELSE t.sample_temp_code end" ,nativeQuery = true)
     int countByFrozenBoxCodeStrAndGroupBySampleCode(List<Long> boxIds);
 
-//    @Query("select t from FrozenTube t\n" +
-//        "  left join t.frozenBox \n"
-//        + " left join StockOutReqFrozenTube f on t.id = f.frozenTube.id and f.status='1301' \n"
-//        + " where t.status='3001' and t.frozenBox is not null and t.frozenBox.status = '2004' and t.status!='0000'\n"
-//        + " and f.frozenTube.id is null \n"
-//        + " and (?1 is null or t.sampleType.id = ?1)\n"
-//        + " and (?2 is null or t.sampleClassification.id = ?2)\n"
-//        + " and (?3 is null or t.frozenTubeType.id = ?3)\n"
-//        + " and (?4 is null or t.diseaseType  = ?4)\n"
-//        + " and (?5 is null or t.gender = ?5)\n"
-//        + " and (?6 is null or ?6 is false or t.isBloodLipid  = ?6)\n"
-//        + " and (?7 is null or ?7 is false or t.isHemolysis  = ?7)\n"
-//        + " and (?8 is null or t.age >= ?8 )\n"
-//        + " and (?9 is null or t.age <= ?9 )\n"
-//        + " order by t.frozenBox.frozenBoxCode asc\n"
-//    )
-    @Query(value = "select frozentube0_.* from frozen_tube frozentube0_  " +
-        " left outer join stock_out_req_frozen_tube stockoutre2_ on (frozentube0_.id=stockoutre2_.frozen_tube_id and stockoutre2_.status='1301') " +
-        " where frozentube0_.status='3001'" +
-        " and frozentube0_.frozen_tube_state='2004'  " +
-        " and (stockoutre2_.frozen_tube_id is null) " +
-        " and (?1 = 0 or frozentube0_.sample_type_id=?1) " +
-        " and (?2 = 0 or frozentube0_.sample_classification_id=?2)  " +
-        " and (?3 = 0 or frozentube0_.frozen_tube_type_id=?3) " +
-        " and (?4 is null or frozentube0_.disease_type=?4) " +
-        " and (?5 is null or frozentube0_.gender=?5) " +
-        " and (?6 = 0 or frozentube0_.is_blood_lipid=?6) " +
-        " and (?7 = 0 or frozentube0_.is_hemolysis=?7) " +
-        " and (?8 = 0 or frozentube0_.age>=?8) " +
-        " and (?9 = 0 or frozentube0_.age<=?9) " +
-        " order by frozentube0_.frozen_box_code,frozentube0_.tube_rows,LPAD(frozentube0_.tube_columns,2) asc",nativeQuery = true)
-    List<FrozenTube> findByRequirement(Integer sampleTypeId, Integer samplyClassificationId, Integer frozenTubeTypeId,
-                                       String diseaseType, String sex, Integer isBloodLipid, Integer isHemolysis, Integer ageMin, Integer ageMax);
-
     @Query(value = "SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt " +
-        " WHERE rt.STATUS in ('1301','1303')",nativeQuery = true)
+        " WHERE rt.STATUS in ('"+Constants.STOCK_OUT_SAMPLE_IN_USE+"','"+Constants.STOCK_OUT_SAMPLE_WAITING_OUT+"')",nativeQuery = true)
     List<Object[]> findAllStockOutFrozenTube();
 
-//    @Query(value = "select t.id,t.project_id,t.frozen_box_id,t.tube_rows,LPAD(t.tube_columns,2) as tube_columns,memo from frozen_tube t   " +
-//        " LEFT OUTER JOIN ( " +
-//        "  SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt  " +
-//        "  LEFT OUTER JOIN STOCK_OUT_PLAN_TUBE pt ON pt.STOCK_OUT_REQ_FROZEN_TUBE_ID = rt.id AND pt.STATUS='1503' " +
-//        "  WHERE pt.id IS NULL " +
-//        ") vpt ON t.id = vpt.FROZEN_TUBE_ID"+
-//        " where t.frozen_tube_state='2004' and t.status='3001' and vpt.FROZEN_TUBE_ID IS NULL"+
-//        " and t.project_id in ?10 "+
-//        " and (?1 = 0 or t.sample_type_id=?1) " +
-//        " and (?2 = 0 or t.sample_classification_id=?2)  " +
-//        " and (?3 = 0 or t.frozen_tube_type_id=?3) " +
-//        " and (?4 is null or t.disease_type=?4) " +
-//        " and (?5 is null or t.gender=?5) " +
-//        " and (?6 = 0 or t.is_blood_lipid=?6) " +
-//        " and (?7 = 0 or t.is_hemolysis=?7) " +
-//        " and (?8 = 0 or t.age>=?8) " +
-//        " and (?9 = 0 or t.age<=?9) " +
-//        " order by t.frozen_box_code,t.tube_rows,LPAD(t.tube_columns,2) asc offset ?11 rows fetch next ?12 rows only",nativeQuery = true)
 @Query(value = "select t.* from frozen_tube t " +
     "  LEFT OUTER JOIN ( " +
     "  SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt  " +
-    "  WHERE  rt.STATUS in ('1301','1303') " +
+    "  WHERE  rt.STATUS in ('"+Constants.STOCK_OUT_SAMPLE_IN_USE+"','"+Constants.STOCK_OUT_SAMPLE_WAITING_OUT+"') " +
     ") vpt ON t.id = vpt.FROZEN_TUBE_ID"+
-    " where t.frozen_tube_state='2004' and t.status='3001' and vpt.FROZEN_TUBE_ID IS NULL " +
+    " where t.frozen_tube_state='"+Constants.FROZEN_BOX_STOCKED+"' and t.status='"+Constants.FROZEN_TUBE_NORMAL+"' and vpt.FROZEN_TUBE_ID IS NULL " +
     " and t.project_id in ?10 "+
     " and (?1 = 0 or t.sample_type_id=?1) " +
     " and (?2 = 0 or t.sample_classification_id=?2)  " +
@@ -124,9 +70,9 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query(value = "select count(t.id) from frozen_tube t   " +
         "  LEFT OUTER JOIN ( " +
         "  SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt  " +
-        "  WHERE  rt.STATUS in ('1301','1303') " +
+        "  WHERE  rt.STATUS in ('"+Constants.STOCK_OUT_SAMPLE_IN_USE+"','"+Constants.STOCK_OUT_SAMPLE_WAITING_OUT+"') " +
         ") vpt ON t.id = vpt.FROZEN_TUBE_ID"+
-        " where t.frozen_tube_state='2004' and t.status='3001' and vpt.FROZEN_TUBE_ID IS NULL " +
+        " where t.frozen_tube_state='"+Constants.FROZEN_BOX_STOCKED+"' and t.status='"+Constants.FROZEN_TUBE_NORMAL+"' and vpt.FROZEN_TUBE_ID IS NULL " +
         " and t.project_id in ?10 "+
         " and (?1 = 0 or t.sample_type_id=?1) " +
         " and (?2 = 0 or t.sample_classification_id=?2)  " +
@@ -143,53 +89,39 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query("select t from FrozenTube t where (t.sampleCode in ?1 or t.sampleTempCode in ?1) and t.project.projectCode = ?2 and t.sampleType.id = ?3 and t.status != ?4")
     List<FrozenTube> findBySampleCodeInAndProjectCodeAndSampleTypeIdAndStatusNot(List<String> sampleCode, String projectCode, Long sampleTypeId,String status);
 
-    @Query("select t from FrozenTube t where t.sampleCode =?1  and t.projectCode = ?2 and t.sampleTypeCode =?3 and t.sampleClassification.sampleClassificationCode = ?4 and t.status!='0000'")
+    @Query("select t from FrozenTube t where t.sampleCode =?1  and t.projectCode = ?2 and t.sampleTypeCode =?3 and t.sampleClassification.sampleClassificationCode = ?4 and t.status!='"+Constants.INVALID+"'")
     FrozenTube findBySampleCodeAndProjectCodeAndSampleTypeCodeAndSampleClassificationCode(String sampleCode, String projectCode, String sampleTypeCode, String sampleClassTypeCode);
 
 
-    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.sampleType.id =?3 and t.sampleClassification.id = ?4 and t.status!='0000'")
+    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.sampleType.id =?3 and t.sampleClassification.id = ?4 and t.status!='"+Constants.INVALID+"'")
     List<FrozenTube> findBySampleCodeAndProjectCodeAndSampleTypeIdAndSampleClassitionId(String sampleCode, String projectCode, Long sampleTypeId, Long sampleClassificationId);
 
     FrozenTube findByFrozenBoxCodeAndTubeRowsAndTubeColumnsAndStatusNot(String frozenBoxCode, String tubeRows, String tubeColumns, String status);
 
     @Query("select t from FrozenTube t where t.frozenBox.equipmentCode =?1  and t.frozenBox.areaCode = ?2" +
-        " and t.frozenBox.supportRackCode =?3 and  t.frozenBox.status = '2004'and t.status!='0000'")
+        " and t.frozenBox.supportRackCode =?3 and  t.frozenBox.status = '"+Constants.FROZEN_BOX_STOCKED+"' and t.status!='"+Constants.INVALID+"'")
     List<FrozenTube> findByEquipmentCodeAndAreaCodeAndSupportRackCode(String equipmentCode, String areaCode, String supportRackCode);
 
-    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.frozenBox.id !=?3 and t.sampleType.id = ?4 and t.sampleClassification.id = ?5 and t.status!='0000'")
+    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.frozenBox.id !=?3 and t.sampleType.id = ?4 and t.sampleClassification.id = ?5 and t.status!='"+Constants.INVALID+"'")
     List<FrozenTube> findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(String sampleCode, String projectCode, Long frozenBoxId, Long sampleTypeId, Long sampleClassificationId);
 
-    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.frozenBox.id !=?3 and t.sampleType.id = ?4  and t.status!='0000'")
+    @Query("select t from FrozenTube t where (t.sampleCode =?1 or t.sampleTempCode =?1)  and t.projectCode = ?2 and t.frozenBox.id !=?3 and t.sampleType.id = ?4  and t.status!='"+Constants.INVALID+"'")
     List<FrozenTube> findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleType(String sampleCode, String projectCode, Long frozenBoxId, Long sampleTypeId);
 
     @Modifying
-    @Query("update FrozenTube t set t.frozenTubeState = ?1  where t.frozenBoxCode in ?2 and t.status not in ('0000')")
+    @Query("update FrozenTube t set t.frozenTubeState = ?1  where t.frozenBoxCode in ?2 and t.status not in ('"+Constants.INVALID+"')")
     void updateFrozenTubeStateByFrozenBoxCodes(String status, List<String> frozenBoxCodes);
 
-    @Query(value = "select count(t.id) from frozen_tube t left join tranship_box b on t.frozen_box_id = b.frozen_box_id left join tranship s on s.id = b.tranship_id left join frozen_box x on x.id = t.id and x.status not in ('2090','0000')" +
-        "where s.tranship_code in ?1 and t.status!='0000' " ,nativeQuery = true)
+    @Query(value = "select count(t.id) from frozen_tube t left join tranship_box b on t.frozen_box_id = b.frozen_box_id left join tranship s on s.id = b.tranship_id left join frozen_box x on x.id = t.id and x.status not in ('"+Constants.FROZEN_BOX_INVALID+"','"+Constants.INVALID+"')" +
+        "where s.tranship_code in ?1 and t.status!='"+Constants.INVALID+"' " ,nativeQuery = true)
     Long countByTranshipCodes(List<String> transhipCodeList);
 
-    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='0000' and t.frozenBox.status !='2090' and t.frozenTubeState=?2")
+    @Query("select count(t) from FrozenTube t where t.frozenBoxCode = ?1 and t.status!='"+Constants.INVALID+"' and t.frozenBox.status !='"+Constants.FROZEN_BOX_INVALID+"' and t.frozenTubeState=?2")
     Long countByFrozenBoxCodeAndFrozenTubeState(String frozenBoxCode,String frozenTubeState);
 
     FrozenTube findBySampleCodeAndSampleTypeCode(String sampleCode, String sampleTypeCode);
 
-    @Query(value = "select t.* from frozen_tube t " +
-        " where t.frozen_tube_state = '2004' and t.status ='3001' and (t.sample_code = ?1 or t.sample_temp_code =?1) " +
-        " and t.sample_type_code=?2 " +
-        " and t.project_id in ?3 and ROWNUM <=1"
-        ,nativeQuery = true)
-    List<FrozenTube> findBySampleCodeAndSampleTypeCodeAndProject(String appointedSampleCode, String appointedSampleType,  List<Long> projectIds);
-
-    @Query(value = "select * from frozen_tube t where t.frozen_tube_state = '2004' and t.status='3001'" +
-        " and (t.sample_code in ?1 or t.sample_temp_code in ?1) " +
-        " and t.project_id in ?3 and t.sample_type_code = ?2"
-        ,nativeQuery = true)
-    List<FrozenTube> findBySampleCodeInAndSampleTypeCodeAndProjectIn(List<String> sampleCodeList,
-                                                                 String appointedSampleType, List<Long> projectIds);
-
-    @Query(value = "select * from frozen_tube t where t.frozen_tube_state = '2004' and t.status='3001'" +
+    @Query(value = "select * from frozen_tube t where t.frozen_tube_state = '"+Constants.FROZEN_BOX_STOCKED+"' and t.status='"+Constants.FROZEN_TUBE_NORMAL+"'" +
         " and (t.sample_code in ?3" +
         " or t.sample_code in ?4" +
         " or t.sample_code in ?5" +
@@ -235,12 +167,12 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     @Query(value = "  select cast(s.tranship_code as varchar2(255)) as transhipCode," +
         "cast(t.frozen_box_code as varchar2(255)) as frozenBoxCode,count(1) " +
-        "from (select * from frozen_tube where project_code = '0037' and sample_type_code = ?1 and frozen_tube_state='2011') t \n" +
+        "from (select * from frozen_tube where project_code = ?1 and sample_type_code = ?1 and frozen_tube_state='"+Constants.FROZEN_BOX_TRANSHIP_COMPLETE+"') t \n" +
         "        left join (select * from tranship_tube ) f on f.frozen_tube_id = t.id \n" +
         "         left join tranship_box tb on  f.tranship_box_id = tb.id \n" +
         "         left join tranship s on  tb.tranship_id = s.id \n" +
         "    where f.id is not null group by s.tranship_code,t.frozen_box_code" , nativeQuery = true)
-    List<Object[]> countTubeGroupByTranshipCode(String sampleTypeCode);
+    List<Object[]> countTubeByProjectCodeGroupByTranshipCode(String projectCode , String sampleTypeCode);
 
     @Query(value = "SELECT T.FROZEN_BOX_ID,COUNT(T.ID) AS NOO FROM FROZEN_TUBE T WHERE T.FROZEN_BOX_ID IN ?1 AND STATUS !='"+Constants.INVALID+"' GROUP BY T.FROZEN_BOX_ID ",nativeQuery = true)
     List<Object[]> countGroupByFrozenBoxId(List<Long> boxIds);
@@ -249,4 +181,8 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     List<FrozenTube> findBySampleCodeInAndProjectCode(List<String> sampleCodeStr,String projectCode );
 
     List<FrozenTube> findByFrozenBoxCodeInAndStatusNot(List<String> boxCodeStr, String invalid);
+
+    @Modifying
+    @Query("update FrozenTube b set b.status='"+Constants.INVALID+"' where b.id not in ?1 and b.frozenTubeState in ('"+Constants.FROZEN_BOX_NEW+"','"+Constants.FROZEN_BOX_STOCKING+"')")
+    void updateStatusByNotInAndFrozenTubeState(List<Long> frozenTubeIdsOld);
 }

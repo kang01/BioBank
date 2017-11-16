@@ -276,6 +276,25 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         List<StockInBoxForSplit> stockInBoxForDataSplitList = new ArrayList<StockInBoxForSplit>();
         List<FrozenBoxType> frozenBoxTypeList = frozenBoxTypeRepository.findAll();
 
+        List<StockInTubeDTO> stockInTubeDTOS = new ArrayList<>();
+        stockInBoxForDataSplits.forEach(s->{
+            stockInTubeDTOS.addAll(s.getStockInFrozenTubeList());
+        });
+        //验证盒内样本是否重复，依据是相同位置，不同样本ID
+        Map<String,List<StockInTubeDTO>> tubeMapGroupByTubePosition = stockInTubeDTOS
+            .stream().collect(Collectors.groupingBy(a->a.getFrozenBoxCode()+"&"+a.getTubeRows()+a.getTubeColumns()));
+        for(String key :tubeMapGroupByTubePosition.keySet()){
+            List<StockInTubeDTO> sampleInBox = tubeMapGroupByTubePosition.get(key);
+            Long sampleId = null;
+            for(StockInTubeDTO s :sampleInBox){
+                if(sampleId!=null&&!s.getFrozenTubeId().equals(sampleId)){
+                    throw new BankServiceException(key.split("&")[0]+"盒内"+key.split("&")[1]+"位置已经有了样本！");
+                }else{
+                    sampleId=s.getFrozenTubeId();
+                }
+            }
+        }
+
         for( StockInBoxForSplit stockInBoxForDataSplit :stockInBoxForDataSplits){
             StockInBoxForSplit stockInBoxSplit = splitedStockInSave(stockInBoxForDataSplit,sampleTypes,equipments,areas,supportRacks,frozenBox,stockInCode,frozenBoxTypeList,sampleClassifications,stockIn);
             stockInBoxForDataSplitList.add(stockInBoxSplit);
@@ -458,6 +477,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         List<StockInTubeDTO> stockInTubeDTOS = stockInBoxForDataSplit.getStockInFrozenTubeList();
         List<StockInTubeDTO> stockInTubeDTOList = new ArrayList<>();
         int countOfSample = 0;
+
         for(StockInTubeDTO tube : stockInTubeDTOS){
             if(tube.getId()==null){
                 continue;
@@ -476,6 +496,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 &&tube.getTubeColumns().equals(frozenTube.getTubeColumns())){
                 continue;
             }
+
             countOfSample++;
             Long countOfSampleOriginal = frozenTubeRepository.countByFrozenBoxCodeAndFrozenTubeState(tube.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
             Long countOfSampleCurrent = stockInTubeRepository.countByFrozenBoxCodeAndStockInCode(tube.getFrozenBoxCode(),stockInCode);
@@ -730,6 +751,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             for(StockInBox s :stockInBoxes){
                 if(s.getStockInCode()!=stockInCode && !s.getStockInCode().equals(stockInCode)){
                     frozenBox = s.getFrozenBox();
+                    break;
                 }
             }
         }
@@ -785,18 +807,136 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             .projectSite(stockIn.getProjectSite()).projectSiteCode(stockIn.getProjectSiteCode())
             .projectSiteName(stockIn.getProjectSite()!=null?stockIn.getProjectSite().getProjectSiteName():null);
         stockInBoxRepository.save(stockInBox);
-        //查询盒内原来样本
-        List<StockInTube> stockInTubesOld = stockInTubeRepository.findByFrozenBoxCodeAndSampleState(frozenBox.getFrozenBoxCode());
-        stockInTubesOld.addAll(stockInTubeRepository.findByStockInBoxId(stockInBox.getId()));
-        List<Long> tubeIds = new ArrayList<Long>();//传入过来的入库管ID
-        List<Long> frozenTubeIds = new ArrayList<Long>();//根据入库管ID，查询出需要保存的冻存管ID
+
+
         List<StockInTubeDTO> stockInTubeDTOList =  stockInBoxDTO.getFrozenTubeDTOS();//传入过来的
+        List<String> sampleCodeStr = stockInTubeDTOList.stream().map(s->{
+            String sampleCode = s.getSampleCode()!=null?s.getSampleCode():s.getSampleTempCode();
+            return sampleCode;
+        }).collect(Collectors.toList());
+
+        //根据样本编码去查询原来的样本
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndProjectCode(sampleCodeStr,frozenBox.getProjectCode());
+        //查询到原来的样本，并验证冻存管编码是否重复
+        List<StockInTubeDTO> repeatSampleList = new ArrayList<>();
+        List<SampleType> sampleTypeList = sampleTypeRepository.findAllSampleTypes();
         for(StockInTubeDTO stockInTubeDTO : stockInTubeDTOList){
-            tubeIds.add(stockInTubeDTO.getId());//构造入库管ID，为了比较是否有变更
+            //确定样本类型
+            SampleType sampleType = null;
+            if(stockInTubeDTO.getSampleTypeId()!=null){
+                sampleType = sampleTypeList.stream().filter(s->s.getId().equals(stockInTubeDTO.getSampleTypeId())).findFirst().orElse(null);
+            }
+            if(sampleType == null ){
+                String sampleTypeCodeOfBox = frozenBox.getSampleTypeCode();
+                sampleType = sampleTypeList.stream().filter(s->s.getSampleTypeCode().equals(sampleTypeCodeOfBox)).findFirst().orElse(null);
+            }
+            if(sampleType == null){
+                throw new BankServiceException("样本类型获取失败！");
+            }
+            //转运过来99类型进行编辑时，必须指定样本分类
+            if(sampleType.getSampleTypeCode().equals("99")&&stockInTubeDTO.getSampleClassificationId()==null){
+                throw new BankServiceException("99样本类型必须指定样本分类！");
+            }
+            //入库单添加入库盒，必须指定样本类型
+            if(sampleType.getIsMixed().equals(Constants.YES)&&!sampleType.getSampleTypeCode().equals("99")&&stockInTubeDTO.getSampleTypeId()==null){
+                throw new BankServiceException("混合类型冻存盒样本必须指定样本类型！");
+            }
+            String sampleCode = stockInTubeDTO.getSampleCode()!=null?stockInTubeDTO.getSampleCode():stockInTubeDTO.getSampleTempCode();
+            //frozenTubes ：该样本编码在库存内出现的所有样本
+            List<FrozenTube> frozenTubes = frozenTubeList.stream().map(s->{
+                FrozenTube frozenTube = new FrozenTube();
+                if((s.getSampleTempCode()!=null&&s.getSampleTempCode().equals(sampleCode))
+                ||(s.getSampleCode()!=null&&s.getSampleCode().equals(sampleCode))){
+                    return s;
+                }
+                return frozenTube;
+            }).collect(Collectors.toList());
+            String sampleTypeCode = sampleType.getSampleTypeCode();
+            Integer mixFlag = sampleType.getIsMixed();
+            FrozenTube frozenTube = null;
+            //为了获取原样本信息
+            //有分类
+            if(frozenBox.getSampleClassification()!=null){
+                Long sampleClassificationId = frozenBox.getSampleClassification().getId();
+                 frozenTube = frozenTubes.stream().filter(s->
+                     ((s.getSampleTempCode()!=null&&s.getSampleTempCode().equals(sampleCode))
+                         ||(s.getSampleCode()!=null&&s.getSampleCode().equals(sampleCode)))&&s.getSampleTypeCode().equals(sampleTypeCode)&&s.getSampleClassification().getId().equals(sampleClassificationId)
+                ).findFirst().orElse(null);
+            }else{//无分类
+                //混合类型
+                if(mixFlag.equals(Constants.YES)&&sampleTypeCode.equals("99")){
+                    frozenTube = frozenTubes.stream().filter(s->{
+                            return  ((s.getSampleTempCode()!=null&&s.getSampleTempCode().equals(sampleCode))
+                                ||(s.getSampleCode()!=null&&s.getSampleCode().equals(sampleCode))) && s.getSampleTypeCode().equals(sampleTypeCode)
+                                &&s.getSampleClassification().getId().equals(stockInTubeDTO.getSampleClassificationId());
+                        }
+                    ).findFirst().orElse(null);
+                }else if (mixFlag.equals(Constants.YES)&&!sampleTypeCode.equals("99")){
+                    Long sampleClassificationId = stockInTubeDTO.getSampleClassificationId();
+                    if(sampleClassificationId == null ){
+                        frozenTube = frozenTubes.stream().filter(s->{
+                            return  ((s.getSampleTempCode()!=null&&s.getSampleTempCode().equals(sampleCode))
+                                ||(s.getSampleCode()!=null&&s.getSampleCode().equals(sampleCode))) && s.getSampleType().getId().equals(stockInTubeDTO.getSampleTypeId());
+                        }).findFirst().orElse(null);
+                    }else{
+                        frozenTube = frozenTubes.stream().filter(s->{
+                            return  ((s.getSampleTempCode()!=null&&s.getSampleTempCode().equals(sampleCode))
+                                ||(s.getSampleCode()!=null&&s.getSampleCode().equals(sampleCode))) && s.getSampleType().getId().equals(stockInTubeDTO.getSampleTypeId());
+                        }).findFirst().orElse(null);
+                    }
+                }else{//非混合类型
+                    frozenTube = frozenTubes.stream().filter(s->{
+                            return (s.getSampleTempCode()!=null&&s.getSampleTempCode().equals(sampleCode))
+                                ||(s.getSampleCode()!=null&&s.getSampleCode().equals(sampleCode)) && s.getSampleTypeCode().equals(sampleTypeCode);
+                        }
+                    ).findFirst().orElse(null);
+                }
+            }
+            //判断样本状态是否为已出库或已交接，若不是为重复样本编码,如果样本不存在则为新增的样本
+            if(stockInTubeDTO.getFrozenTubeId()==null&&frozenTube!=null&&
+                !(frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
+                ||frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)
+                )){
+                repeatSampleList.add(stockInTubeDTO);
+            }
+            //编辑时，如果样本ID为空，或者查询出符合条件的样本与传入的样本的ID不同，则为重复样本
+            if(stockInTubeDTO.getFrozenTubeId()!=null&&frozenTube!=null&&!stockInTubeDTO.getFrozenTubeId().equals(frozenTube.getId())){
+                repeatSampleList.add(stockInTubeDTO);
+            }
+            if(frozenTube!=null){
+                stockInTubeDTO.setFrozenTubeId(frozenTube.getId());
+                stockInTubeDTO.setSampleClassificationId(frozenTube.getSampleClassification()!=null?frozenTube.getSampleClassification().getId():null);
+                stockInTubeDTO.setSampleTypeId(frozenTube.getSampleType()!=null?frozenTube.getSampleType().getId():null);
+                stockInTubeDTO.setStatus(stockInTubeDTO.getStatus()!=null?stockInTubeDTO.getStatus():frozenTube.getStatus());
+                stockInTubeDTO.setProjectId(frozenTube.getProject()!=null?frozenTube.getProject().getId():null);
+                stockInTubeDTO.setProjectCode(frozenTube.getProjectCode());
+                ProjectSite projectSite = frozenTube.getProjectSite()!=null?frozenTube.getProjectSite():frozenBox.getProjectSite();
+                stockInTubeDTO.setProjectSiteId(projectSite!=null?projectSite.getId():null);
+                stockInTubeDTO.setProjectSiteCode(projectSite!=null?projectSite.getProjectSiteCode():null);
+            }
         }
+        //盒内重复样本
+        JSONArray jsonArray = new JSONArray();
+        for(StockInTubeDTO f:repeatSampleList){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id",f.getId());
+                jsonObject.put("sampleCode",f.getSampleCode());
+                jsonObject.put("tubeColumns",f.getTubeColumns());
+                jsonObject.put("tubeRows",f.getTubeRows());
+                jsonArray.add(jsonObject);
+        }
+        if(jsonArray.size()>0){
+            throw new BankServiceException("盒内有重复的冻存管，不能保存！",jsonArray.toString());
+        }
+
+        //查询本次入库盒内的样本
+        List<StockInTube> stockInTubesOld = stockInTubeRepository.findByStockInBoxId(stockInBox.getId());
+        //传入过来的入库管ID，验证是否有删除项
+        List<Long> tubeIds = stockInTubeDTOList.stream().map(s->s.getId()).collect(Collectors.toList());
+        List<Long> frozenTubeIds =stockInTubeDTOList.stream().map(s->s.getFrozenTubeId()).collect(Collectors.toList());;//根据入库管ID，查询出需要保存的冻存管ID
         List<StockInTube> stockInfrozenTubesForDelete = new ArrayList<StockInTube>();//比较出来的，有删除的入库冻存管List
         List<FrozenTube> OldFrozenTubeList = new ArrayList<FrozenTube>();
-        JSONArray jsonArray = new JSONArray();
+
         Map<Long,StockInTube> mapOfTube = new HashMap<Long,StockInTube>();
         List<Long> oldFrozenTubeIds = new ArrayList<Long>();
         for(StockInTube oldTube:stockInTubesOld){//原盒内的入库冻存管
@@ -807,7 +947,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 oldFrozenTubeIds.add(oldTube.getFrozenTube().getId());
             }else{
                 mapOfTube.put(oldTube.getId(),oldTube);
-                frozenTubeIds.add(oldTube.getFrozenTube().getId());
             }
         }
         stockInTubeRepository.save(stockInfrozenTubesForDelete);
@@ -825,28 +964,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         Map<Long,FrozenTubeHistory> map = frozenTubeIds.size()>0?stockListService.findFrozenTubeHistoryDetailByIds(frozenTubeIds):new HashMap<>();
         //验证冻存管编码是否重复
         for(StockInTubeDTO tubeDTO :stockInTubeDTOList){
-            //验证冻存管是否重复
-            List<FrozenTube> frozenTubeListForCheckRepeat = new ArrayList<FrozenTube>();
-            if(tubeDTO.getSampleClassificationId()==null){
-                List<String> sampleCodes = new ArrayList<>();
-                sampleCodes.add(tubeDTO.getSampleCode());
-                frozenTubeListForCheckRepeat = frozenTubeRepository.findBySampleCodeInAndProjectCodeAndSampleTypeIdAndStatusNot(sampleCodes,stockIn.getProjectCode(),tubeDTO.getSampleTypeId(),Constants.INVALID);
-            }else{
-                frozenTubeListForCheckRepeat = frozenTubeRepository.findFrozenTubeBySampleCodeAndProjectAndfrozenBoxAndSampleTypeAndSampleClassifacition(tubeDTO.getSampleCode(),stockIn.getProjectCode(),frozenBox.getId(),tubeDTO.getSampleTypeId(),tubeDTO.getSampleClassificationId());
-            }
-            for(FrozenTube f:frozenTubeListForCheckRepeat){
-                if(tubeDTO.getFrozenTubeId()==null ||
-                    (tubeDTO.getFrozenTubeId()!=null&&!f.getId().equals(tubeDTO.getFrozenTubeId()))){
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("id",f.getId());
-                    jsonObject.put("sampleCode",tubeDTO.getSampleCode());
-                    jsonObject.put("tubeColumns",tubeDTO.getTubeColumns());
-                    jsonObject.put("tubeRows",tubeDTO.getTubeRows());
-                    jsonArray.add(jsonObject);
-                }
-            }
             String tubeflag = Constants.FROZEN_FLAG_NEW;//盒内新增
-            if(tubeDTO.getId() != null){
+            if(tubeDTO.getFrozenTubeId() != null){
                 FrozenTubeHistory frozenTubeHistory = map.get(tubeDTO.getFrozenTubeId());
                 if(frozenTubeHistory != null &&
                     (!frozenTubeHistory.getType().equals(Constants.SAMPLE_HISTORY_STOCK_OUT)
@@ -864,9 +983,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             }
             tubeDTO.setFlag(tubeflag);
         }
-        if(jsonArray.size()>0){
-            throw new BankServiceException("盒内有重复的冻存管，不能保存！",jsonArray.toString());
-        }
+
         List<StockInTube> stockInTubes = new ArrayList<StockInTube>();
         //保存冻存管信息
         for(StockInTubeDTO tubeDTO:stockInTubeDTOList){
@@ -914,8 +1031,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenTubeDTOForSave.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
             frozenTubeDTOForSave.setFrozenTubeState(Constants.FROZEN_BOX_STOCKING);
             stockInTube = stockInTubeMapper.stockInTubeDTOToStockInTube(frozenTubeDTOForSave);
-
-            if(tubeflag.equals(Constants.FROZEN_FLAG_NEW)){//盒内新增样本可以编辑样本本身和入库冻存管
+            //盒内新增样本可以编辑样本本身和入库冻存管
+            //如果是出库再回来，此时只能修改入库管信息，不能修改样本信息，样本信息只有在入库完成时可以编辑
+            if(tubeflag.equals(Constants.FROZEN_FLAG_NEW)){
                 FrozenTube tube= createNewFrozenTube(frozenTubeDTOForSave,frozenBox);
                 stockInTube = new StockInTube();
                 stockInTube.status(tube.getStatus()).memo(tube.getMemo()).frozenTube(tube).tubeColumns(tube.getTubeColumns()).tubeRows(tube.getTubeRows())

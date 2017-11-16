@@ -718,11 +718,12 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         //有分类---取相同分类的
         if (sampleClassificationIdStr.size() > 0) {
             List<Long> frozenBoxIdLastList = new ArrayList<>();
+            Long countOfAllFrozenBox = frozenBoxRepository.count();
             for (Long id : sampleClassificationIdStr) {
                 if (map.get(id) != null && map.get(id).size() > 0) {
                     frozenBoxList.addAll(map.get(id));
                 } else {
-                    for (int i = 0; ; i += 200) {
+                    for (int i = 0;i< countOfAllFrozenBox.intValue(); i += 200) {
                         int length = 200;
                         List<Object[]> frozenBoxIdsAndCount = frozenBoxRepository
                             .findIncompleteFrozenBoxIdBydProjectIdAnSampleClassificationIdAndBoxTypeId(
@@ -738,6 +739,9 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
                             return Long.valueOf(s[0].toString());
                         }).collect(Collectors.toList());
 
+                        if(boxIds==null||boxIds.size()==0){
+                            continue;
+                        }
                         //取当前冻存盒的数据量
                         List<Object[]> countOfSampleGroupByBoxId = frozenTubeRepository.countGroupByFrozenBoxId(boxIds);
                         //取当前冻存盒号在本次入库的入库量
@@ -799,8 +803,12 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         frozenBoxList.forEach(s -> {
             boxCodeStr.add(s.getFrozenBoxCode());
         });
-        List<StockInTube> stockInTubeList = stockInTubeRepository.findByFrozenBoxCodeInAndStockInCode(boxCodeStr, stockInCode);
-        List<FrozenTube> frozenTubeList = frozenTubeRepository.findByFrozenBoxCodeIn(boxCodeStr);
+        List<StockInTube> stockInTubeList = new ArrayList<>();
+        List<FrozenTube> frozenTubeList = new ArrayList<>();
+        if(boxCodeStr!=null&&boxCodeStr.size()>0){
+            stockInTubeList = stockInTubeRepository.findByFrozenBoxCodeInAndStockInCode(boxCodeStr, stockInCode);
+            frozenTubeList = frozenTubeRepository.findByFrozenBoxCodeInAndStatusNot(boxCodeStr,Constants.INVALID);
+        }
         Map<String, List<StockInTube>> stockInTubeMapGroupByFrozenBoxCode = stockInTubeList.stream().collect(Collectors.groupingBy(s -> s.getFrozenBoxCode()));
         Map<String, List<FrozenTube>> frozenTubeMapGroupByFrozenBoxCode = frozenTubeList.stream().collect(Collectors.groupingBy(s -> s.getFrozenBoxCode()));
 

@@ -175,14 +175,6 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     FrozenTube findBySampleCodeAndSampleTypeCode(String sampleCode, String sampleTypeCode);
 
-    List<FrozenTube> findByFrozenTubeState(String status);
-
-    @Query(value = "select * from frozen_tube t where t.frozen_tube_state = '2004' and t.status='3001' and (t.sample_code in ?1 or t.sample_temp_code in ?1) " +
-        " and t.project_id in ?3 and t.sample_type_code in ?2 "
-        ,nativeQuery = true)
-    List<FrozenTube> findBySampleCodeInAndSampleTypeCodeInAndRequirementAndProject(List<String> sampleCodeList,
-                                                                                   List<String> sampleTypeCodeList, List<Long> projectIds);
-
     @Query(value = "select t.* from frozen_tube t " +
         " where t.frozen_tube_state = '2004' and t.status ='3001' and (t.sample_code = ?1 or t.sample_temp_code =?1) " +
         " and t.sample_type_code=?2 " +
@@ -230,7 +222,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query(value = "select t.sample_code,t.sample_type_code from frozen_tube t left join frozen_box b on t.frozen_box_id = b.id " +
         " where (b.frozen_box_code_1d in ?1 " +
         " or b.frozen_box_code in ?1)" +
-        "and t.sample_type_code = ?2 and t.frozen_tube_state = '"+ Constants.FROZEN_BOX_STOCKED+"'",nativeQuery = true)
+        "and t.sample_type_code = ?2 and t.frozen_tube_state = '"+ Constants.FROZEN_BOX_STOCKED+"' ",nativeQuery = true)
     List<Object[]> findByFrozenBoxCode1DInAndSampleType(List<String> boxCodeListEach1000, String type);
 
     @Query(value = "select count(1) from frozen_tube t left join frozen_box b on t.frozen_box_id = b.id " +
@@ -252,4 +244,9 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     @Query(value = "SELECT T.FROZEN_BOX_ID,COUNT(T.ID) AS NOO FROM FROZEN_TUBE T WHERE T.FROZEN_BOX_ID IN ?1 AND STATUS !='"+Constants.INVALID+"' GROUP BY T.FROZEN_BOX_ID ",nativeQuery = true)
     List<Object[]> countGroupByFrozenBoxId(List<Long> boxIds);
+
+    @Query("select t from FrozenTube t where (t.sampleCode in ?1 or t.sampleTempCode in ?1) and t.projectCode=?2 and t.status!='"+Constants.INVALID+"'")
+    List<FrozenTube> findBySampleCodeInAndProjectCode(List<String> sampleCodeStr,String projectCode );
+
+    List<FrozenTube> findByFrozenBoxCodeInAndStatusNot(List<String> boxCodeStr, String invalid);
 }

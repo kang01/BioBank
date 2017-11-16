@@ -313,7 +313,7 @@ public class StockInBoxResource {
     }
 
     /**
-     * 批量保存入库盒（出库再回来的）
+     * 批量保存入库盒（出库再回来的）（未写完----不能使用）
      * @param stockInBoxDTO
      * @param stockInCode
      * @return

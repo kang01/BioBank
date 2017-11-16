@@ -325,6 +325,17 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
         if(tube.getSampleType().getIsMixed().equals(Constants.YES) &&tube.getSampleClassification() == null){
             throw new BankServiceException("混合类型的样本分类不能为空！");
         }
+
+        tube.setSampleTypeCode(tube.getSampleType().getSampleTypeCode());
+        tube.setSampleTypeName(tube.getSampleType().getSampleTypeName());
+
+        tube.setFrozenBox(box);
+        tube.setFrozenBoxCode(box.getFrozenBoxCode());
+
+        tube.setProject(box.getProject());
+        tube.setProjectCode(box.getProjectCode());
+        tube.setProjectSite(box.getProjectSite());
+        tube.setProjectSiteCode(box.getProjectSiteCode());
         if (tube.getSampleClassification() == null){
             tube.setSampleClassification(box.getSampleClassification());
         } else {
@@ -332,6 +343,13 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             if (sampleClassificationsIndex >= 0) {
                 SampleClassification sampleClass = sampleClassifications.get(sampleClassificationsIndex);
                 tube.setSampleClassification(sampleClass);
+                //验证项目与样本类型与样本分类是否配置
+                ProjectSampleClass projectSampleClass = projectSampleClasses.stream().filter(
+                    s->s.getSampleType().equals(tube.getSampleType())&& s.getProjectCode().equals(tube.getProjectCode())
+                        &&s.getSampleClassificationCode().equals(sampleClass.getSampleClassificationCode())).findFirst().orElse(null);
+                if(projectSampleClass==null){
+                    throw new BankServiceException(tube.getProjectCode()+"项目未配置"+sampleClass.getSampleClassificationCode()+"分类！");
+                }
             } else {
                 throw new BankServiceException("样本分类不能为空！");
             }
@@ -350,16 +368,6 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 //            }
         }
 
-        tube.setSampleTypeCode(tube.getSampleType().getSampleTypeCode());
-        tube.setSampleTypeName(tube.getSampleType().getSampleTypeName());
-
-        tube.setFrozenBox(box);
-        tube.setFrozenBoxCode(box.getFrozenBoxCode());
-
-        tube.setProject(box.getProject());
-        tube.setProjectCode(box.getProjectCode());
-        tube.setProjectSite(box.getProjectSite());
-        tube.setProjectSiteCode(box.getProjectSiteCode());
         if (tube.getFrozenTubeType() != null){
             int tubeTypeIndex = tubeTypes.indexOf(tube.getFrozenTubeType());
             if (tubeTypeIndex >= 0){
@@ -373,6 +381,10 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
         } else {
             FrozenTubeType tubeType = tubeTypes.get(0);
+            if(box.getSampleTypeCode().equals("RNA")){
+                tubeType = tubeTypes.stream().filter(t->t.getFrozenTubeTypeCode().equals("RNA")).findFirst().orElse(tubeTypes.get(0));
+            }
+
             tube.setFrozenTubeType(tubeType);
             tube.setFrozenTubeTypeCode(tubeType.getFrozenTubeTypeCode());
             tube.setFrozenTubeTypeName(tubeType.getFrozenTubeTypeName());

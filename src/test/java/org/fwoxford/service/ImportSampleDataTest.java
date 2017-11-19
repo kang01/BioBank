@@ -1899,7 +1899,7 @@ public class ImportSampleDataTest {
                 .frozenTubeVolumnsUnit(frozenTube.getFrozenTubeVolumnsUnit())
                 .sampleVolumns(frozenTube.getSampleVolumns())
                 .errorType(frozenTube.getErrorType());
-            positionMoveRecordRepository.save(positionMoveRecord);
+            positionMoveRecordList.add(positionMoveRecord);
         }
         positionMoveRecordRepository.save(positionMoveRecordList);
     }
@@ -4271,7 +4271,7 @@ public class ImportSampleDataTest {
             con = DBUtilForTemp.open();
 //            System.out.println("连接成功！");
             log.info("链接成功！");
-            String sqlForSelect = "select * from " + "jt_opt_1115" + " a order by  a.OLD_DATE";// 预编译语句
+            String sqlForSelect = "select * from " + "jt_opt_1117" + " a order by  a.OLD_DATE";// 预编译语句
             pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
             result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
             ResultSetMetaData rsMeta = result.getMetaData();
@@ -4331,7 +4331,7 @@ public class ImportSampleDataTest {
             con = DBUtilForTemp.open();
 //            System.out.println("连接成功！");
             log.info("链接成功！");
-            String sqlForSelect = "select * from " + "jt_move_1114";// 预编译语句
+            String sqlForSelect = "select * from " + "jt_move_1116";// 预编译语句
             pre = con.prepareStatement(sqlForSelect);// 实例化预编译语句
             result = pre.executeQuery();// 执行查询，注意括号中不需要再加参数
             ResultSetMetaData rsMeta = result.getMetaData();

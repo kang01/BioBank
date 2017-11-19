@@ -1,8 +1,6 @@
 package org.fwoxford.service.impl;
 
 import com.google.common.collect.Lists;
-import io.swagger.annotations.ApiParam;
-import javafx.collections.transformation.SortedList;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
@@ -21,10 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.mapping.Column;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.mapping.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -85,6 +85,11 @@ public class StockOutTaskForDataTableEntity {
     @Column(name = "delegate_name")
     private String delegateName;
 
+    @NotNull
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name = "apply_code")
+    private String applyCode;
+
     public Long getId() {
         return id;
     }
@@ -163,5 +168,13 @@ public class StockOutTaskForDataTableEntity {
 
     public void setDelegateName(String delegateName) {
         this.delegateName = delegateName;
+    }
+
+    public String getApplyCode() {
+        return applyCode;
+    }
+
+    public void setApplyCode(String applyCode) {
+        this.applyCode = applyCode;
     }
 }

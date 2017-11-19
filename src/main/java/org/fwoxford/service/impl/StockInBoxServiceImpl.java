@@ -2,6 +2,7 @@ package org.fwoxford.service.impl;
 
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiParam;
+import javafx.collections.transformation.SortedList;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.fwoxford.config.Constants;
@@ -24,10 +25,15 @@ import org.springframework.data.jpa.datatables.mapping.Column;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.mapping.Order;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -99,7 +105,8 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     FrozenBoxCheckService frozenBoxCheckService;
     @Autowired
     private  FrozenBoxImportService frozenBoxImportService;
-
+    @Autowired
+    private TranshipStockInRepository transhipStockInRepository;
 
     public StockInBoxServiceImpl(StockInBoxRepository stockInBoxRepository, StockInBoxMapper stockInBoxMapper,
                                  StockInBoxRepositries stockInBoxRepositries,StockInRepository stockInRepository) {
@@ -180,30 +187,139 @@ public class StockInBoxServiceImpl implements StockInBoxService {
     @Override
     public DataTablesOutput<StockInBoxForDataTableEntity> getPageStockInBoxes(String stockInCode, DataTablesInput input) {
         input.addColumn("stockInCode",true, true, stockInCode+"+");
-        List<Column> columns = input.getColumns();
-        List<Order> orders = new ArrayList<Order>();
-
-        input.getOrder().forEach(order -> {
-            orders.add(order);
-            Column column = columns.get(order.getColumn());
-            Order o = new Order();
-            if(column.getData()!=""&&column.getData().equals("status")){
-                Order orderAdd = new Order(6,order.getDir());
-                orders.add(orderAdd);
+        List<TranshipStockIn> transhipStockInList = transhipStockInRepository.findByStockInCode(stockInCode);
+        List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(stockInCode);
+        List<String> transhipCodes =transhipStockInList.stream().map(s->s.getTranshipCode()).collect(Collectors.toList());
+        List<String> projectSiteCodes = stockInBoxes.stream().map(s->s.getProjectSiteCode()).collect(Collectors.toList());
+        Specification<StockInBoxForDataTableEntity> specification = new Specification<StockInBoxForDataTableEntity>() {
+            @Override
+            public Predicate toPredicate(Root<StockInBoxForDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                List<Predicate> predicate = new ArrayList<>();
+                List<javax.persistence.criteria.Order> orders = new ArrayList<>();
+                javax.persistence.criteria.Order orderById = cb.asc(root.get("id"));
+                orders.add(orderById);
+                query.orderBy(orders);
+                return query.getRestriction();
             }
-        });
-        input.setOrder(orders);
+        };
         Converter<StockInBoxForDataTableEntity,StockInBoxForDataTableEntity> convert = new Converter<StockInBoxForDataTableEntity, StockInBoxForDataTableEntity>() {
             @Override
             public StockInBoxForDataTableEntity convert(StockInBoxForDataTableEntity source) {
                 String position = BankUtil.getPositionString(source.getEquipmentCode(),source.getAreaCode(),source.getSupportRackCode(),source.getColumnsInShelf(),source.getRowsInShelf(),null,null);
+                String transhipCode = transhipCodes.contains(source.getTranshipCode())?source.getTranshipCode():null;
+                String projectSiteCode = projectSiteCodes.contains(source.getProjectSiteCode())?source.getProjectSiteCode():null;
                 return new StockInBoxForDataTableEntity(source.getId(),source.getCountOfSample(),source.getStatus(),
                     source.getFrozenBoxCode(),source.getFrozenBoxCode1D(),source.getSampleTypeName(),position,source.getIsSplit(),
                     source.getSampleClassificationName(),source.getStockInCode(),source.getEquipmentCode(),
-                    source.getAreaCode(),source.getSupportRackCode(),source.getRowsInShelf(),source.getColumnsInShelf(),source.getSampleTypeCode(),source.getSampleClassificationCode(),source.getTranshipCode());
+                    source.getAreaCode(),source.getSupportRackCode(),source.getRowsInShelf(),source.getColumnsInShelf(),
+                    source.getSampleTypeCode(),source.getSampleClassificationCode(),transhipCode,projectSiteCode,source.getOrderNO());
             }
         };
-        DataTablesOutput<StockInBoxForDataTableEntity> output = stockInBoxRepositries.findAll(input,convert);
+        DataTablesOutput<StockInBoxForDataTableEntity> output = stockInBoxRepositries.findAll(input,specification,null,convert);
+        List<StockInBoxForDataTableEntity> stockInBoxForDataTableEntities = output.getData();
+        //首先先根据RNA类型进行一次排序
+        List<StockInBoxForDataTableEntity> stockInBoxForDataTableOrderByRNA  = new ArrayList<StockInBoxForDataTableEntity>();
+        //查询出RNA类型的
+        List<StockInBoxForDataTableEntity> stockInBoxForDataTableFindByRNA = new ArrayList<>();
+        stockInBoxForDataTableEntities.forEach(s->
+        {
+            if(s.getSampleTypeCode().equals("RNA")) {
+                stockInBoxForDataTableFindByRNA.add(s);
+            }
+        });
+       //给RNA类型加上序号
+        Long countOfFilterDate = output.getRecordsFiltered();
+        int length = countOfFilterDate.toString().length();
+        final int[] i = {1};
+        stockInBoxForDataTableFindByRNA.forEach(s->{
+            if(s!=null &&s.getIsSplit().equals(Constants.YES)){
+                String n = String.format("%0"+length+"d", i[0]);
+                i[0]++;
+                s.setOrderNO(n);
+            }
+        });
+        //查询出不是RNA类型的
+        List<StockInBoxForDataTableEntity> stockInBoxForDataTableFindByExceptRNA = new ArrayList<>();
+        stockInBoxForDataTableEntities.forEach(s->
+        {
+            if(!s.getSampleTypeCode().equals("RNA")) {
+                stockInBoxForDataTableFindByExceptRNA.add(s);
+            }
+        });
+        stockInBoxForDataTableOrderByRNA.addAll(stockInBoxForDataTableFindByRNA);
+        stockInBoxForDataTableOrderByRNA.addAll(stockInBoxForDataTableFindByExceptRNA);
+        //定义返回最终的结果 stockInBoxForDataTableEntityList
+       List<StockInBoxForDataTableEntity> stockInBoxForDataTableEntityList = new ArrayList<>();
+        //显示顺序 :需要分装（状态为待入库，是否分装为是），样本类型为RNA
+         Map<String,List<StockInBoxForDataTableEntity>> mapGroupByStatusAndIsSplit = stockInBoxForDataTableOrderByRNA.stream().collect(
+             Collectors.groupingBy(s->s.getStatus()+"&"+s.getIsSplit()));
+        String keyForWaitSplit = Constants.FROZEN_BOX_STOCKING+"&"+Constants.YES;
+
+        if(mapGroupByStatusAndIsSplit!=null){
+            List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(keyForWaitSplit);
+            List<StockInBoxForDataTableEntity> stockInBoxForDataTableByRNA = new ArrayList<StockInBoxForDataTableEntity>();
+            stockInBoxForDataTableForWaitSplit.forEach(s->
+                {
+                    if(s.getSampleTypeCode().equals("RNA")) {
+                        stockInBoxForDataTableByRNA.add(s);
+                }
+            });
+            if(stockInBoxForDataTableByRNA!=null && stockInBoxForDataTableByRNA.size()>0){
+                stockInBoxForDataTableEntityList.addAll(stockInBoxForDataTableByRNA);
+            }
+
+            List<StockInBoxForDataTableEntity> stockInBoxForDataTableByExceptRNA = new ArrayList<>();
+            stockInBoxForDataTableForWaitSplit.forEach(s->
+            {
+                if(!s.getSampleTypeCode().equals("RNA")) {
+                    stockInBoxForDataTableByExceptRNA.add(s);
+                }
+            });
+            if(stockInBoxForDataTableByExceptRNA!=null && stockInBoxForDataTableByExceptRNA.size()>0){
+                stockInBoxForDataTableEntityList.addAll(stockInBoxForDataTableByExceptRNA);
+            }
+        }
+        for(String key :mapGroupByStatusAndIsSplit.keySet()){
+            //获取不是已分装的
+
+            if(!key.equals(keyForWaitSplit)){
+                if(!key.split("&")[0].equals(Constants.FROZEN_BOX_SPLITED)){
+                    List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(key);
+
+                    List<StockInBoxForDataTableEntity> stockInBoxForDataTableByExceptSplitCompleted = new ArrayList<>();
+                    stockInBoxForDataTableForWaitSplit.forEach(s->
+                    {
+                        if(!s.getStatus().equals(Constants.FROZEN_BOX_SPLITED)) {
+                            stockInBoxForDataTableByExceptSplitCompleted.add(s);
+                        }
+                    });
+                    if(stockInBoxForDataTableByExceptSplitCompleted!=null && stockInBoxForDataTableByExceptSplitCompleted.size()>0){
+                        stockInBoxForDataTableEntityList.addAll(stockInBoxForDataTableByExceptSplitCompleted);
+                    }
+                }
+            }
+        }
+        for(String key :mapGroupByStatusAndIsSplit.keySet()){
+            //获取已分装的
+            if(!key.equals(keyForWaitSplit)){
+                if(key.split("&")[0].equals(Constants.FROZEN_BOX_SPLITED)){
+                    List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(key);
+
+                    List<StockInBoxForDataTableEntity> stockInBoxForDataTableSplitCompleted = new ArrayList<StockInBoxForDataTableEntity>();
+
+                    stockInBoxForDataTableForWaitSplit.forEach(s->
+                    {
+                        if(s.getStatus().equals(Constants.FROZEN_BOX_SPLITED)) {
+                            stockInBoxForDataTableSplitCompleted.add(s);
+                        }
+                    });
+                    if(stockInBoxForDataTableSplitCompleted!=null && stockInBoxForDataTableSplitCompleted.size()>0){
+                        stockInBoxForDataTableEntityList.addAll(stockInBoxForDataTableSplitCompleted);
+                    }
+                }
+            }
+        }
+        output.setData(stockInBoxForDataTableEntityList);
         return output;
     }
 
@@ -895,10 +1011,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         if(jsonArray.size()>0){
             throw new BankServiceException("盒内有重复的冻存管，不能保存！",jsonArray.toString());
         }
-
-        //查询本次入库盒内的样本
-//        List<StockInTube> stockInTubesOld = stockInTubeRepository.findByStockInBoxId(stockInBox.getId());
-
         //传入过来的入库管ID，验证是否有删除项
         List<Long> stockIntubeIdsOld = stockInTubeDTOList.stream().map(s->s.getId()).collect(Collectors.toList());
         List<Long> frozenTubeIdsOld = stockInTubeDTOList.stream().map(s->s.getFrozenTubeId()).collect(Collectors.toList());

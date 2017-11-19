@@ -1,5 +1,6 @@
 package org.fwoxford.service.impl;
 
+import com.querydsl.core.types.Order;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.repository.*;
@@ -645,6 +646,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             throw new BankServiceException("转运记录不存在！",transhipCode);
         }
         input.addColumn("tranship.id",true,true,tranship.getId()+"+");
+
         DataTablesOutput<FrozenBoxCodeForTranshipDTO> output = new DataTablesOutput<FrozenBoxCodeForTranshipDTO>();
         Converter<TranshipBox, FrozenBoxCodeForTranshipDTO> convert = new Converter<TranshipBox, FrozenBoxCodeForTranshipDTO>() {
             @Override
@@ -656,12 +658,15 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             @Override
             public Predicate toPredicate(Root<TranshipBox> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicate = new ArrayList<>();
+                javax.persistence.criteria.Order order = cb.asc(root.get("id"));
+
                 Predicate p1 = cb.notEqual(root.get("status").as(String.class), Constants.INVALID);
                 predicate.add(p1);
                 Predicate p2 = cb.notEqual(root.get("status").as(String.class), Constants.FROZEN_BOX_INVALID);
                 predicate.add(p2);
                 Predicate[] pre = new Predicate[predicate.size()];
                 query.where(predicate.toArray(pre));
+                query.orderBy(order);
                 return query.getRestriction();
             }
         };

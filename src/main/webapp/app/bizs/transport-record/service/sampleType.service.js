@@ -13,13 +13,27 @@
     function SampleTypeService($http) {
         var service = {
           querySampleType:_querySampleType,
-          queryProjectSampleClasses:_queryProjectSampleClasses
+          queryProjectSampleClasses:_queryProjectSampleClasses,
+            getBoxTypeCode:_getBoxTypeCode,
         };
         function _querySampleType() {
             return $http.get('api/sample-types/all');
         }
         function _queryProjectSampleClasses(projectId,sampleTypeId) {
             return $http.get('api/project-sample-classes/projectId/'+projectId+'/sampleTypeId/'+sampleTypeId);
+        }
+        function _getBoxTypeCode(sampleTypeCode){
+            var boxTypeCode = null;
+            switch (sampleTypeCode){
+                case "RNA":
+                    boxTypeCode = "DJH";
+                    break;
+                default:
+                    boxTypeCode = "DCH";
+                    break;
+            }
+
+            return boxTypeCode;
         }
         return service;
     }

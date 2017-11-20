@@ -415,10 +415,14 @@
 
             }
         }
+        vm.boxTypeInstance = {};
         vm.boxTypeConfig = {
             valueField:'id',
             labelField:'frozenBoxTypeName',
             maxItems: 1,
+            onInitialize: function(selectize){
+                vm.boxTypeInstance = selectize;
+            },
             onChange:function(value){
                 vm.box.frozenBoxType = _.find(vm.frozenBoxTypeOptions,{'id':+value});
                 vm.box.frozenBoxTypeId = value;
@@ -449,6 +453,15 @@
                     vm.noSampleClassFlag = false;
                 }
 
+                // Added by Zhuyu 2017/10/09 For: 选中RNA时自动切换冻存盒为大橘盒，选中99时切换为10x10
+                var sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
+                var boxType = _.filter(vm.frozenBoxTypeOptions, {frozenBoxTypeCode: SampleTypeService.getBoxTypeCode(sampleTypeCode)})[0];
+                if (boxType) {
+                    setTimeout(function(){
+                        vm.boxTypeInstance.setValue(boxType.id);
+                    }, 100);
+                }
+                // end added
 
 
             }

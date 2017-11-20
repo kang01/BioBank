@@ -99,4 +99,19 @@ public interface StockInBoxService {
      * @return
      */
     StockInBoxDTO getStockInTubeByStockInBox(Long id);
+
+    /**
+     * 批量保存入库盒（出库再回来的）
+     * @param stockInBoxDTO
+     * @param stockInCode
+     * @return
+     */
+    StockInBoxDTO createBoxByStockOutBox(StockInBoxDTO stockInBoxDTO, String stockInCode);
+
+    /**
+     * 根据冻存盒编码从数据接口导入出库再入库的样本
+     * @param stockInBoxDTO
+     * @return
+     */
+    List<StockInBoxDTO> getFrozenBoxAndTubeFromInterfaceByBoxCodeStr(StockInBoxDTO stockInBoxDTO);
 }

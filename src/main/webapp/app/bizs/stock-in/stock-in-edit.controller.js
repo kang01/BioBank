@@ -436,7 +436,6 @@
                 // 数据从服务器加载
                 .withOption('serverSide',true)
                 // 设置默认排序
-                .withOption('order', [[7, 'asc' ], [1, 'asc' ]])
                 // 指定数据加载方法
                 .withFnServerData(_fnServerData)
                 // 每行的渲染
@@ -525,8 +524,8 @@
             //     transportCode = null;
             // }
             // $('td:eq(2)', row).html(transportCode);
-            $('td:eq(7)', row).html(isSplit ? '需要分装' : '');
-            $('td:eq(8)', row).html(status);
+            $('td:eq(10)', row).html(isSplit ? '需要分装' : '');
+            $('td:eq(11)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function _fnActionButtonsRender(data, type, full, meta) {
@@ -580,14 +579,53 @@
             vm.checked = true;
             $scope.$apply();
         }
+
+        function _createColumnFilters(){
+            var filters = {
+                aoColumns: [
+                    null,
+                    null,
+                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {type: 'text',bRegex: true,bSmart: true,iFilterLength:3},
+                    {
+                        type: 'select',
+                        // bRegex: true,
+                        bSmart: true,
+                        values: [
+                            {value:0,label:"否"},
+                            {value:1,label:"是"}
+                        ]
+                    },
+                    {
+                        type: 'select',
+                        // bRegex: true,
+                        bSmart: true,
+                        values: MasterData.frozenBoxStatus
+
+                    },
+                    null
+                ]
+            };
+
+            return filters;
+        }
+
         function _createColumns(){
             var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
 
             var columns = [
                 // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
-                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').withOption("width", "150"),
-                DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "150"),
+                DTColumnBuilder.newColumn('orderNO').withTitle('序号').withOption("width", "30"),
+                DTColumnBuilder.newColumn('transhipCode').withTitle('转运编码').withOption("width", "100"),
+                DTColumnBuilder.newColumn('projectSiteCode').withTitle('项目点').withOption("width", "100"),
+                DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').withOption("width", "100"),
+                DTColumnBuilder.newColumn('frozenBoxCode1D').withTitle('一维编码').withOption("width", "100"),
                 // DTColumnBuilder.newColumn('frozenBoxCode').withTitle('转运编码'),
                 DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
                 DTColumnBuilder.newColumn('sampleClassificationName').withOption("width", "120").withTitle('样本分类'),

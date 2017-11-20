@@ -436,7 +436,7 @@
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号').renderWith(_fnRowRender)
             ];
             vm.dtOptions = DTOptionsBuilder.newOptions()
-                .withOption('order', [[1,'asc']])
+                // .withOption('order', [[1,'asc']])
                 .withOption('info', false)
                 .withOption('paging', false)
                 .withScroller()

@@ -117,7 +117,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             throw new BankServiceException("需求不能为空！");
         }
         List<Long> projectIds = stockOutApplyProjectRepository.findProjectByStockRequirementId(stockOutRequirement.getId());
-        String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
+        String status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
         int i = 0;
         // All stock out samples
         List<Object[]> outTubeList = frozenTubeRepository.findAllStockOutFrozenTube();
@@ -168,9 +168,13 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
                 frozenTubeListLast.addAll(frozenTubeList);
             }
         }
+        Map<String,List<FrozenTube>> map = frozenTubeListLast.stream().collect(Collectors.groupingBy(s->s.getSampleCode()));
+        TreeMap<String,List<FrozenTube>> tr = new TreeMap<>(map);
         stockOutRequirement.setCountOfSampleReal(frozenTubeListLast.size());
-        if(frozenTubeListLast.size()<stockOutRequiredSamples.size()){
-            return Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS_OUT;
+        if(frozenTubeListLast.size()!=0&&(frozenTubeListLast.size()==stockOutRequiredSamples.size())){
+             status = Constants.STOCK_OUT_REQUIREMENT_CHECKED_PASS;
+        }else{
+            return status;
         }
         List<StockOutReqFrozenTube> stockOutReqFrozenTubeList = new ArrayList<>();
 
@@ -186,7 +190,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             stockOutReqFrozenTube.setTubeRows(frozenTube!=null?frozenTube.getTubeRows():null);
             /////////////
 
-            stockOutReqFrozenTube
+            stockOutReqFrozenTube.frozenBoxCode1D(frozenTube.getFrozenBox().getFrozenBoxCode1D())
                 .frozenBoxCode(frozenTube.getFrozenBoxCode()).errorType(frozenTube.getErrorType())
                 .frozenTubeCode(frozenTube.getFrozenTubeCode()).frozenTubeState(frozenTube.getFrozenTubeState())
                 .frozenTubeTypeId(frozenTube.getFrozenTubeType().getId()).frozenTubeTypeCode(frozenTube.getFrozenTubeTypeCode())
@@ -272,7 +276,7 @@ public class StockOutReqFrozenTubeServiceImpl implements StockOutReqFrozenTubeSe
             stockOutReqFrozenTube.setFrozenTube(frozenTube);
             stockOutReqFrozenTube.setTubeColumns(frozenTube.getTubeColumns());
             stockOutReqFrozenTube.setTubeRows(frozenTube.getTubeRows());
-            stockOutReqFrozenTube
+            stockOutReqFrozenTube.frozenBoxCode1D(frozenTube.getFrozenBox().getFrozenBoxCode1D())
                 .frozenBoxCode(frozenTube.getFrozenBoxCode()).errorType(frozenTube.getErrorType())
                 .frozenTubeCode(frozenTube.getFrozenTubeCode()).frozenTubeState(frozenTube.getFrozenTubeState())
                 .frozenTubeTypeId(frozenTube.getFrozenTubeType().getId()).frozenTubeTypeCode(frozenTube.getFrozenTubeTypeCode())

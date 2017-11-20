@@ -150,7 +150,6 @@ public class StockInBoxResource {
             }
         });
         input.addColumn("id",true,true,null);
-        input.addOrder("id",true);
         DataTablesOutput<StockInBoxForDataTableEntity> result = stockInBoxService.getPageStockInBoxes(stockInCode,input);
         return result;
     }
@@ -311,4 +310,35 @@ public class StockInBoxResource {
         StockInBoxDTO res = stockInBoxService.getStockInTubeByStockInBox(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
+
+    /**
+     * 批量保存入库盒（出库再回来的）（未写完----不能使用）
+     * @param stockInBoxDTO
+     * @param stockInCode
+     * @return
+     * @throws URISyntaxException
+     */
+    @PostMapping("/stock-in-boxes/stockIn/{stockInCode}/boxCodes")
+    @Timed
+    public ResponseEntity<StockInBoxDTO> createBoxByStockOutBox(@Valid @RequestBody StockInBoxDTO stockInBoxDTO,@PathVariable String stockInCode) throws URISyntaxException {
+        log.debug("REST request to save StockInBox by StockOutBox : {}", stockInBoxDTO);
+        StockInBoxDTO result = stockInBoxService.createBoxByStockOutBox(stockInBoxDTO,stockInCode);
+        return ResponseEntity.created(new URI("/api/stock-in-boxes/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * 根据冻存盒编码从数据接口导入出库再入库的样本
+     * @param stockInBoxDTO 必填内容：frozenBoxCodeStr ；projectCode
+     * @return
+     */
+    @PostMapping("/stock-in-boxes/frozenBoxCodeStr/import")
+    @Timed
+    public ResponseEntity<List<StockInBoxDTO>> getFrozenBoxAndTubeFromInterfaceByBoxCodeStr(@Valid @RequestBody StockInBoxDTO stockInBoxDTO) {
+        log.debug("REST request to get Box and Tube from import interface : {}", stockInBoxDTO.getFrozenBoxCodeStr());
+        List<StockInBoxDTO> res = stockInBoxService.getFrozenBoxAndTubeFromInterfaceByBoxCodeStr(stockInBoxDTO);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+
 }

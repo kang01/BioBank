@@ -168,6 +168,10 @@
     <include file="classpath:config/liquibase/changelog/20171017212101_updated_view_StockOutHandoverSamples.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20171018101800_updated_view_StockOutPlan.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20171018112400_updated_view_StockIn.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20171025000000_updated_view_StockOutHandoverFrozenBox.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20171108220200_updated_view_FrozenBoxList.xml" relativeToChangelogFile="false"/>
+
+    <include file="classpath:config/liquibase/changelog/00000000000000_initial_index.xml" relativeToChangelogFile="false"/>
 
     <!--<include file="classpath:config/liquibase/changelog/20180319153727_initial_schema.xml" relativeToChangelogFile="false"/>-->
 

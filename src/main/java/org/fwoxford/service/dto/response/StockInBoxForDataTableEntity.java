@@ -1,6 +1,7 @@
 package org.fwoxford.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.models.auth.In;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -90,6 +91,13 @@ public class StockInBoxForDataTableEntity {
     @Column(name="tranship_code")
     private String transhipCode;
 
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name="project_site_code")
+    private String projectSiteCode;
+
+    @JsonView(DataTablesOutput.View.class)
+    @Column(name="order_no")
+    private String orderNO;
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -137,7 +145,9 @@ public class StockInBoxForDataTableEntity {
     public StockInBoxForDataTableEntity() {
     }
 
-    public StockInBoxForDataTableEntity(Long id, Integer countOfSample, String status, String frozenBoxCode, String frozenBoxCode1D, String sampleTypeName, String position, Integer isSplit, String sampleClassificationName, String stockInCode, String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf, String sampleTypeCode, String sampleClassificationCode, String transhipCode) {
+    public StockInBoxForDataTableEntity(Long id, Integer countOfSample, String status, String frozenBoxCode, String frozenBoxCode1D, String sampleTypeName, String position, Integer isSplit, String sampleClassificationName, String stockInCode,
+                                        String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf, String sampleTypeCode, String sampleClassificationCode,
+                                        String transhipCode, String projectSiteCode,String orderNO) {
         this.id = id;
         this.countOfSample = countOfSample;
         this.status = status;
@@ -156,6 +166,8 @@ public class StockInBoxForDataTableEntity {
         this.sampleTypeCode = sampleTypeCode;
         this.sampleClassificationCode = sampleClassificationCode;
         this.transhipCode = transhipCode;
+        this.projectSiteCode = projectSiteCode;
+        this.orderNO = orderNO;
     }
 
     public String getTranshipCode() {
@@ -300,5 +312,21 @@ public class StockInBoxForDataTableEntity {
 
     public void setSampleClassificationCode(String sampleClassificationCode) {
         this.sampleClassificationCode = sampleClassificationCode;
+    }
+
+    public String getProjectSiteCode() {
+        return projectSiteCode;
+    }
+
+    public void setProjectSiteCode(String projectSiteCode) {
+        this.projectSiteCode = projectSiteCode;
+    }
+
+    public String getOrderNO() {
+        return orderNO;
+    }
+
+    public void setOrderNO(String orderNO) {
+        this.orderNO = orderNO;
     }
 }

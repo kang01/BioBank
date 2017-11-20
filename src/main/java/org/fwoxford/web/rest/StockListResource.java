@@ -10,6 +10,7 @@ import org.fwoxford.service.dto.response.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.datatables.mapping.Column;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.MediaType;
@@ -72,6 +73,16 @@ public class StockListResource {
                 u.setSearchable(false);
             }
         });
+        List<Column> columns = input.getColumns();
+        columns.forEach(o->{
+            if(o.getData().equals("countOfUsed")){
+                o.setOrderable(false);
+            }
+            if(o.getData().equals("countOfRest")){
+                o.setOrderable(false);
+            }
+        });
+
         input.addColumn("id",true,true,null);
         input.addOrder("id",true);
         return stockListService.getPageStockFrozenBoxList(input,search);

@@ -168,4 +168,12 @@
             <column name="activated" type="boolean"/>
         </loadData>
     </changeSet>
+    <changeSet id="00000000000003" author="jhipster">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/users_add_2.csv"
+                  separator=";"
+                  tableName="jhi_user">
+            <column name="activated" type="boolean"/>
+        </loadData>
+    </changeSet>
 </databaseChangeLog>

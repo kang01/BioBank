@@ -26,6 +26,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing StockIn.
@@ -457,18 +458,8 @@ public class StockInServiceImpl implements StockInService {
         StockInDTO stockInForDataDetail = stockInMapper.stockInToStockInDTO(stockIn);
         List<TranshipStockIn> transhipStockInList = transhipStockInRepository.findByStockInCode(stockIn.getStockInCode());
         List<StockInBox> stockInBoxes = stockInBoxRepository.findStockInBoxByStockInCode(stockIn.getStockInCode());
-        List<String> transhipCodes = new ArrayList<String>();
-        List<String> projectSiteCode = new ArrayList<String>();
-        for(TranshipStockIn transhipStockIn:transhipStockInList){
-            if(!transhipCodes.contains(transhipStockIn.getTranshipCode())){
-                transhipCodes.add(transhipStockIn.getTranshipCode());
-            }
-        }
-        for(StockInBox stockInBox:stockInBoxes){
-            if(!projectSiteCode.contains(stockInBox.getProjectSiteCode())){
-                projectSiteCode.add(stockInBox.getProjectSiteCode());
-            }
-        }
+        List<String> transhipCodes =transhipStockInList.stream().map(s->s.getTranshipCode()).collect(Collectors.toList());
+        List<String> projectSiteCode = stockInBoxes.stream().map(s->s.getProjectSiteCode()).collect(Collectors.toList());
         stockInForDataDetail.setProjectName(stockIn.getProject()!=null?stockIn.getProject().getProjectName():null);
         stockInForDataDetail.setTranshipCode(String.join(", ",transhipCodes));
         stockInForDataDetail.setProjectSiteCode(String.join(", ",projectSiteCode));
@@ -625,7 +616,7 @@ public class StockInServiceImpl implements StockInService {
             tranship.setTranshipState(Constants.TRANSHIPE_IN_STOCKING);
             transhipRepository.save(tranship);
         }
-        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipCodes(transhipCodeList);
+        List<TranshipBox> transhipBoxes = transhipBoxRepository.findByTranshipCodesAndStatus(transhipCodeList);
         List<String> frozenBoxCodes = new ArrayList<String>();
         List<FrozenBox> frozenBoxes = new ArrayList<>();
 //        List<StockInBox> stockInBoxes = new ArrayList<StockInBox>();

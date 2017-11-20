@@ -1092,10 +1092,14 @@
 
 
             //盒子类型 17:10*10 18:8*8
+            vm.boxTypeInstance = {};
             vm.boxTypeConfig = {
                 valueField:'id',
                 labelField:'frozenBoxTypeName',
                 maxItems: 1,
+                onInitialize: function(selectize){
+                    vm.boxTypeInstance = selectize;
+                },
                 onChange:function(value) {
                     var boxType = _.filter(vm.frozenBoxTypeOptions, {id: +value})[0];
                     if (!boxType) {
@@ -1157,11 +1161,13 @@
                 labelField:'sampleTypeName',
                 maxItems: 1,
                 onChange:function (value) {
-                    vm.box.sampleTypeId = value;
-                    vm.box.sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
-                    vm.box.sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeName;
                     var isMixed = _.find(vm.sampleTypeOptions,{'id':+value}).isMixed;
                     var sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
+
+                    vm.box.sampleTypeId = value;
+                    vm.box.sampleTypeCode = sampleTypeCode;
+                    vm.box.sampleTypeName = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeName;
+
                     vm.fnQueryProjectSampleClass(vm.transportRecord.projectId,value,isMixed);
                     if(isMixed == 1){
                         vm.box.isSplit = 1;
@@ -1173,9 +1179,20 @@
                         vm.isMixedFlag = false;
                         vm.sampleClassFlag = false;
                     }
-                    if(sampleTypeCode == 'RNA'){
+
+                    if (sampleTypeCode == "RNA"){
                         vm.box.isSplit = 1;
                     }
+
+                    // Added by Zhuyu 2017/10/09 For: 选中RNA时自动切换冻存盒为大橘盒，选中99时切换为10x10
+                    var sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
+                    var boxType = _.filter(vm.frozenBoxTypeOptions, {frozenBoxTypeCode: SampleTypeService.getBoxTypeCode(sampleTypeCode)})[0];
+                    if (boxType) {
+                        setTimeout(function(){
+                            vm.boxTypeInstance.setValue(boxType.id);
+                        }, 100);
+                    }
+                    // end added
                 }
             };
             vm.projectSampleTypeConfig = {

@@ -222,20 +222,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
     }
 
     /**
-     * 批量保存冻存盒
-     *
-     * @param frozenBoxDTOList
-     */
-    @Override
-    public List<FrozenBox> saveBatch(List<FrozenBoxDTO> frozenBoxDTOList) {
-        List<FrozenBox> frozenBoxes = frozenBoxMapper.frozenBoxDTOsToFrozenBoxes(frozenBoxDTOList);
-        List<FrozenBox> frozenBoxList = frozenBoxRepository.save(frozenBoxes);
-        return frozenBoxList;
-    }
-
-    /**
      * 根据冻存盒code串查询冻存盒以及冻存管的信息
-     *
      * @param frozenBoxCodeStr 冻存盒code串
      * @return
      */
@@ -258,7 +245,6 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
     /**
      * 判断某设备某区域某架子某行某列是否有盒子存在
-     *
      * @param equipmentId
      * @param areaId
      * @param supportRackId
@@ -300,82 +286,12 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }
         return res;
     }
-
-    @Override
-    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(String projectCode, String sampleTypeCode, String transhipCode) {
-        List<StockInBoxForChangingPosition> stockInBoxForChangingPositionList = new ArrayList<StockInBoxForChangingPosition>();
-        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndTranshipCodeAndStatus(projectCode, sampleTypeCode, transhipCode, Constants.FROZEN_BOX_STOCKING);
-        if (frozenBoxList.size() == 0) {
-            frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode, sampleTypeCode, Constants.FROZEN_BOX_STOCKED);
-        }
-        List<FrozenBox> unSplitedBoxList = new ArrayList<FrozenBox>();
-        for (FrozenBox box : frozenBoxList) {
-            if (box.getIsSplit().equals(Constants.NO)) {
-                unSplitedBoxList.add(box);
-            }
-        }
-        List<String> frozenBoxCodes = new ArrayList<>();
-        for (FrozenBox box : unSplitedBoxList) {
-            frozenBoxCodes.add(box.getFrozenBoxCode());
-        }
-        List<Object[]> map = new ArrayList<>();
-        if (unSplitedBoxList.size() > 0) {
-            map = frozenTubeRepository.countSampleNumberByfrozenBoxList(frozenBoxCodes);
-        }
-        for (FrozenBox box : unSplitedBoxList) {
-            for (int i = 0; i < map.size(); i++) {
-                Object[] obj = map.get(i);
-                String frozenBoxCodeKey = obj[0].toString();
-                String number = obj[1].toString();
-                if (box.getFrozenBoxCode().equals(frozenBoxCodeKey)) {
-                    String columns = box.getFrozenBoxTypeColumns() != null ? box.getFrozenBoxTypeColumns() : box.getFrozenBoxType().getFrozenBoxTypeColumns();
-                    String rows = box.getFrozenBoxTypeRows() != null ? box.getFrozenBoxTypeRows() : box.getFrozenBoxType().getFrozenBoxTypeRows();
-                    int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
-                    int countOfSample = Integer.parseInt(number);
-                    if (allCounts > countOfSample) {
-                        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
-                        StockInBoxForChangingPosition newBox = createStockInBoxForDataMoved(box, frozenTubeList, countOfSample);
-                        stockInBoxForChangingPositionList.add(newBox);
-                    }
-                }
-            }
-        }
-        return stockInBoxForChangingPositionList;
-    }
-
-    public StockInBoxForChangingPosition createStockInBoxForDataMoved(FrozenBox box, List<FrozenTube> frozenTubeList, int countOfSample) {
-        StockInBoxForChangingPosition res = new StockInBoxForChangingPosition();
-        res.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(box.getSampleType()));
-        res.setCountOfSample(countOfSample);
-        res.setFrozenBoxId(box.getId());
-        res.setFrozenBoxCode(box.getFrozenBoxCode());
-        res.setFrozenBoxTypeColumns(box.getFrozenBoxTypeColumns());
-        res.setFrozenBoxTypeRows(box.getFrozenBoxTypeRows());
-        res.setStockInFrozenTubeList(new ArrayList<>());
-        res.setFrozenBoxTypeId(box.getFrozenBoxType().getId());
-        res.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(box.getFrozenBoxType()));
-        res.setIsSplit(box.getIsSplit());
-        res.setEquipmentId(box.getEquipment() != null ? box.getEquipment().getId() : null);
-        res.setEquipment(equipmentMapper.equipmentToEquipmentDTO(box.getEquipment()));
-        res.setArea(areaMapper.areaToAreaDTO(box.getArea()));
-        res.setAreaId(box.getArea() != null ? box.getArea().getId() : null);
-        res.setShelf(supportRackMapper.supportRackToSupportRackDTO(box.getSupportRack()));
-        res.setSupportRackId(box.getSupportRack() != null ? box.getSupportRack().getId() : null);
-        res.setStatus(box.getStatus());
-        res.setSampleTypeCode(box.getSampleTypeCode());
-        res.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(box.getSampleType()));
-        for (FrozenTube tubes : frozenTubeList) {
-            StockInTubeForBox tube = new StockInTubeForBox();
-            tube.setId(tubes.getId());
-            tube.setFrozenBoxCode(box.getFrozenBoxCode());
-            tube.setTubeColumns(tubes.getTubeColumns());
-            tube.setTubeRows(tubes.getTubeRows());
-            res.getStockInFrozenTubeList().add(tube);
-        }
-
-        return res;
-    }
-
+    /**
+     * 输入设备编码，返回该设备下的所有盒子信息
+     * @param input
+     * @param equipmentCode
+     * @return
+     */
     @Override
     public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipment(DataTablesInput input, String equipmentCode) {
         input.addColumn("equipmentCode", true, true, equipmentCode + "+");
@@ -419,6 +335,13 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         return responseDataTablesOutput;
     }
 
+    /**
+     * 输入设备编码，区域编码，返回指定区域下的所有盒子信息
+     * @param input
+     * @param equipmentCode
+     * @param areaCode
+     * @return
+     */
     @Override
     public DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipmentAndArea(DataTablesInput input, String equipmentCode, String areaCode) {
         input.addColumn("equipmentCode", true, true, equipmentCode + "+");
@@ -463,6 +386,13 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         return responseDataTablesOutput;
     }
 
+    /**
+     * 输入设备编码，区域编码，架子编码，返回架子中的所有盒子信息
+     * @param equipmentCode
+     * @param areaCode
+     * @param shelfCode
+     * @return
+     */
     @Override
     public List<StockInBoxDetail> getFrozenBoxByEquipmentAndAreaAndShelves(String equipmentCode, String areaCode, String shelfCode) {
         List<FrozenBox> frozenBoxs = frozenBoxRepository.findByEquipmentCodeAndAreaCodeAndSupportRackCode(equipmentCode, areaCode, shelfCode);
@@ -498,6 +428,14 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         return res;
     }
 
+    /**
+     * 输入完整的位置信息，返回某个盒子的信息
+     * @param equipmentCode
+     * @param areaCode
+     * @param shelfCode
+     * @param position
+     * @return
+     */
     @Override
     public StockInBoxDetail getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(String equipmentCode, String areaCode, String shelfCode, String position) {
         String columnsInShelf = position.substring(0, 1);
@@ -530,17 +468,11 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         return stockInBoxDetail;
     }
 
-    @Override
-    public List<StockInBoxForDataTable> findFrozenBoxListByBoxCodeStr(List<String> frozenBoxCodeStr) {
-        List<StockInBoxForDataTable> stockInBoxs = new ArrayList<>();
-        if (StringUtils.isEmpty(frozenBoxCodeStr)) {
-            throw new BankServiceException("请传入有效的冻存盒编码！", frozenBoxCodeStr.toString());
-        }
-        List<FrozenBox> frozenBoxes = frozenBoxRepository.findByFrozenBoxCodeIn(frozenBoxCodeStr);
-        stockInBoxs = frozenBoxesToStockInBoxForDataTables(frozenBoxes);
-        return stockInBoxs;
-    }
-
+    /**
+     * 根据冻存盒编码字符串返回入库盒信息
+     * @param frozenBoxes
+     * @return
+     */
     public List<StockInBoxForDataTable> frozenBoxesToStockInBoxForDataTables(List<FrozenBox> frozenBoxes) {
         List<StockInBoxForDataTable> stockInBoxForDataTables = new ArrayList<>();
         for (FrozenBox box : frozenBoxes) {
@@ -551,6 +483,11 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
     }
 
 
+    /**
+     * 根据冻存盒对象构造入库盒对象
+     * @param box
+     * @return
+     */
     public StockInBoxForDataTable frozenBoxToStockInBoxForDataTable(FrozenBox box) {
         StockInBoxForDataTable stockInBoxForDataTable = new StockInBoxForDataTable();
         if (box == null) {
@@ -570,6 +507,12 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         return stockInBoxForDataTable;
     }
 
+    /**
+     * 构造入库盒
+     * @param frozenBox
+     * @param stockInCode
+     * @return
+     */
     public StockInBoxDetail createStockInBoxDetail(StockInBox frozenBox, String stockInCode) {
         StockInBoxDetail stockInBoxDetail = new StockInBoxDetail();
         stockInBoxDetail.setIsSplit(frozenBox.getIsSplit());
@@ -595,6 +538,11 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         return stockInBoxDetail;
     }
 
+    /**
+     * 判断盒子编码是否已经存在  ----true：已经存在，false:不存在
+     * @param frozenBoxCode
+     * @return
+     */
     @Override
     public Boolean isRepeatFrozenBoxCode(String frozenBoxCode) {
         Boolean flag = false;
@@ -607,54 +555,10 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
     /**
      * 获取未满冻存盒
-     *
-     * @param projectCode
-     * @param sampleTypeCode
+     * @param frozenBoxCode
      * @param stockInCode
      * @return
      */
-    @Override
-    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxesByStockIn(String projectCode, String sampleTypeCode, String stockInCode) {
-        List<StockInBoxForChangingPosition> stockInBoxForChangingPositionList = new ArrayList<StockInBoxForChangingPosition>();
-        List<FrozenBox> frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStockInCodeAndStatus(projectCode, sampleTypeCode, stockInCode, Constants.FROZEN_BOX_STOCKING);
-        if (frozenBoxList.size() == 0) {
-            frozenBoxList = frozenBoxRepository.findByProjectCodeAndSampleTypeCodeAndStatus(projectCode, sampleTypeCode, Constants.FROZEN_BOX_STOCKED);
-        }
-        List<FrozenBox> unSplitedBoxList = new ArrayList<FrozenBox>();
-        for (FrozenBox box : frozenBoxList) {
-            if (box.getIsSplit().equals(Constants.NO)) {
-                unSplitedBoxList.add(box);
-            }
-        }
-        List<String> frozenBoxCodes = new ArrayList<>();
-        for (FrozenBox box : unSplitedBoxList) {
-            frozenBoxCodes.add(box.getFrozenBoxCode());
-        }
-        List<Object[]> map = new ArrayList<>();
-        if (unSplitedBoxList.size() > 0) {
-            map = frozenTubeRepository.countSampleNumberByfrozenBoxList(frozenBoxCodes);
-        }
-        for (FrozenBox box : unSplitedBoxList) {
-            for (int i = 0; i < map.size(); i++) {
-                Object[] obj = map.get(i);
-                String frozenBoxCodeKey = obj[0].toString();
-                String number = obj[1].toString();
-                if (box.getFrozenBoxCode().equals(frozenBoxCodeKey)) {
-                    String columns = box.getFrozenBoxTypeColumns() != null ? box.getFrozenBoxTypeColumns() : box.getFrozenBoxType().getFrozenBoxTypeColumns();
-                    String rows = box.getFrozenBoxTypeRows() != null ? box.getFrozenBoxTypeRows() : box.getFrozenBoxType().getFrozenBoxTypeRows();
-                    int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
-                    int countOfSample = Integer.parseInt(number);
-                    if (allCounts > countOfSample) {
-                        List<FrozenTube> frozenTubeList = frozenTubeRepository.findFrozenTubeListByBoxCode(box.getFrozenBoxCode());
-                        StockInBoxForChangingPosition newBox = createStockInBoxForDataMoved(box, frozenTubeList, countOfSample);
-                        stockInBoxForChangingPositionList.add(newBox);
-                    }
-                }
-            }
-        }
-        return stockInBoxForChangingPositionList;
-    }
-
     @Override
     public List<StockInBoxForIncomplete> getIncompleteFrozenBoxeList(String frozenBoxCode, String stockInCode) {
         List<StockInBoxForIncomplete> stockInBoxForIncompleteList = new ArrayList<StockInBoxForIncomplete>();
@@ -865,6 +769,11 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         return stockInBoxForIncompleteList;
     }
 
+    /**
+     * 冻存盒直接入库，取原冻存盒的信息
+     * @param frozenBoxCode
+     * @return
+     */
     @Override
     public FrozenBoxDTO getBoxAndTubeByForzenBoxCode(String frozenBoxCode) {
 
@@ -880,8 +789,6 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
             throw new BankServiceException("冻存盒编码已存在！");
         }
 
-        //查询冻存管列表信息---此时查询的是该冻存盒内所有的入库过的样本，所以当盒内入库历史很多的时候会查询出多余的样本。
-        //所以查询盒内当前样本，与入库管进行比较，获取当前的盒内的入库管信息
         List<StockInTube> stockInTubes = new ArrayList<StockInTube>();
 //        if (!frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED) && !frozenBox.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)) {
 //            stockInTubes = stockInTubeRepository.findByFrozenBoxCodeAndSampleState(frozenBoxCode);
@@ -1045,5 +952,57 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }
 
         return newBoxCode;
+    }
+
+    /**
+     * 获取指定冻存盒编码的冻存盒信息（包含本次入库单内待入库冻存盒，全部已入库未满，已出库，已交接冻存盒）
+     * @param frozenBoxCode
+     * @param stockInCode
+     * @return
+     */
+    @Override
+    public StockInBoxForIncomplete getIncompleteSpecifyFrozenBox(String frozenBoxCode, String projectCode,String stockInCode) {
+        //定义返回的冻存盒
+        StockInBoxForIncomplete stockInBoxForIncomplete = new StockInBoxForIncomplete();
+        //定义返回的冻存盒内的样本
+        List<StockInTubeForBox> stockInFrozenTubeList = new ArrayList<>();
+        //获取冻存盒详情
+        FrozenBox frozenBox = frozenBoxRepository.findByFrozenBoxCodeAndProjectCode(frozenBoxCode,projectCode);
+        if(frozenBox == null){
+            throw new BankServiceException("冻存盒不存在！");
+        }
+        String status = frozenBox.getStatus();
+        if(!status.equals(Constants.FROZEN_BOX_STOCKING)&&!status.equals(Constants.FROZEN_BOX_STOCKED)
+            &&!status.equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&&!status.equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
+            throw new BankServiceException("冻存盒"+frozenBoxCode+"状态为"+Constants.FROZEN_BOX_STATUS_MAP.get(status)+"，不能用于分装！");
+        }
+        //判断冻存盒状态，如果是已入库，判断盒内样本是否已满，如果满了，提示错误
+        //如果是待入库，判断是否在该入库单内，如果是判断在本次入库单内，盒内样本是否已满
+
+        if(status.equals(Constants.FROZEN_BOX_STOCKING)){
+            StockInBox stockInBox = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBoxCode);
+            if(stockInBox == null){
+                throw new BankServiceException("冻存盒编码不能重复");
+            }
+        }
+
+        //查询盒内样本
+        List<FrozenTube> frozenTubeList = frozenTubeRepository.findByFrozenBoxCodeAndFrozenTubeState(frozenBox.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
+        List<StockInTube> stockInTubesByBoxAndStockInCode = stockInTubeRepository.findByFrozenBoxCodeAndStockInCode(frozenBoxCode,stockInCode);
+        stockInFrozenTubeList.addAll(frozenTubeMapper.frozenTubesToStockInTubesForBox(frozenTubeList));
+        stockInFrozenTubeList.addAll(stockInTubeMapper.stockInTubesToStockInTubesForBox(stockInTubesByBoxAndStockInCode));
+
+        String columns = frozenBox.getFrozenBoxTypeColumns()!=null?frozenBox.getFrozenBoxTypeColumns():new String("0");
+        String rows = frozenBox.getFrozenBoxTypeRows()!=null?frozenBox.getFrozenBoxTypeRows():new String("0");
+        int allCounts = Integer.parseInt(columns) * Integer.parseInt(rows);
+
+        if(stockInFrozenTubeList.size()==allCounts){
+            throw new BankServiceException("冻存盒已满！");
+        }
+        stockInBoxForIncomplete = frozenBoxMapper.frozenBoxDTOToStockInBoxForIncomplete(frozenBox,stockInFrozenTubeList);
+        stockInBoxForIncomplete.setFrozenBoxType(frozenBoxTypeMapper.frozenBoxTypeToFrozenBoxTypeDTO(frozenBox.getFrozenBoxType()));
+        stockInBoxForIncomplete.setSampleClassification(sampleClassificationMapper.sampleClassificationToSampleClassificationDTO(frozenBox.getSampleClassification()));
+        stockInBoxForIncomplete.setSampleType(sampleTypeMapper.sampleTypeToSampleTypeDTO(frozenBox.getSampleType()));
+        return stockInBoxForIncomplete;
     }
 }

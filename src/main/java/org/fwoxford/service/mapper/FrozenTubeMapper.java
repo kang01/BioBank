@@ -1,16 +1,13 @@
 package org.fwoxford.service.mapper;
 
-import jdk.nashorn.internal.objects.NativeUint8Array;
 import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
-import org.fwoxford.service.dto.FrozenBoxDTO;
 import org.fwoxford.service.dto.FrozenTubeForSaveBatchDTO;
-import org.fwoxford.service.dto.StockInTubeDTO;
 import org.fwoxford.service.dto.response.FrozenTubeResponse;
 import org.fwoxford.service.dto.FrozenTubeDTO;
 
+import org.fwoxford.service.dto.response.StockInTubeForBox;
 import org.mapstruct.*;
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -165,39 +162,28 @@ public interface FrozenTubeMapper {
         return sampleClassification;
     }
 
-    default FrozenTubeDTO stockInTubeToFrozenTubeDTO(StockInTube stockInTube){
-        if(stockInTube == null){
+    default List<StockInTubeForBox> frozenTubesToStockInTubesForBox(List<FrozenTube> frozenTubeList){
+        if ( frozenTubeList == null ) {
             return null;
         }
-        FrozenTubeDTO frozenTubeDTO = new FrozenTubeDTO();
-        frozenTubeDTO.setSampleClassificationId( stockInTube.getSampleClassification()!=null? stockInTube.getSampleClassification().getId():(stockInTube.getFrozenTube().getSampleClassification()!=null?stockInTube.getFrozenTube().getSampleClassification().getId():null));
-        frozenTubeDTO.setFrozenBoxId( stockInTube.getStockInBox().getFrozenBox()!=null? stockInTube.getStockInBox().getFrozenBox().getId():null );
-        frozenTubeDTO.setSampleTypeId( stockInTube.getSampleType()!=null? stockInTube.getSampleType().getId():(stockInTube.getFrozenTube().getSampleType()!=null?stockInTube.getFrozenTube().getSampleType().getId():null) );
-        frozenTubeDTO.setProjectSiteId( stockInTube.getProjectSite()!=null? stockInTube.getProjectSite().getId():(stockInTube.getFrozenTube().getProjectSite()!=null?stockInTube.getFrozenTube().getProjectSite().getId():null)  );
-        frozenTubeDTO.setProjectId( stockInTube.getProject()!=null? stockInTube.getProject().getId():(stockInTube.getFrozenTube().getProject()!=null?stockInTube.getFrozenTube().getProject().getId():null));
-        frozenTubeDTO.setFrozenTubeTypeId( stockInTube.getFrozenTubeType()!=null? stockInTube.getFrozenTubeType().getId():(stockInTube.getFrozenTube().getFrozenTubeType()!=null?stockInTube.getFrozenTube().getFrozenTubeType().getId():null)  );
-        frozenTubeDTO.setId( stockInTube.getFrozenTube().getId() );
-        frozenTubeDTO.setProjectCode( stockInTube.getProjectCode()!=null?stockInTube.getSampleTempCode():stockInTube.getFrozenTube().getSampleTempCode() );
-        frozenTubeDTO.setFrozenTubeCode( stockInTube.getFrozenTubeCode()!=null?stockInTube.getFrozenTubeCode():stockInTube.getFrozenTube().getFrozenTubeCode() );
-        frozenTubeDTO.setSampleTempCode( stockInTube.getSampleTempCode()!=null?stockInTube.getSampleTempCode():stockInTube.getFrozenTube().getSampleTempCode() );
-        frozenTubeDTO.setSampleCode( stockInTube.getSampleCode()!=null?stockInTube.getSampleCode():stockInTube.getFrozenTube().getSampleCode() );
-        frozenTubeDTO.setFrozenTubeTypeCode( stockInTube.getFrozenTubeTypeCode()!=null?stockInTube.getFrozenTubeTypeCode():stockInTube.getFrozenTube().getFrozenTubeTypeCode() );
-        frozenTubeDTO.setFrozenTubeTypeName( stockInTube.getFrozenTubeTypeName()!=null?stockInTube.getFrozenTubeTypeName():stockInTube.getFrozenTube().getFrozenTubeTypeName() );
-        frozenTubeDTO.setSampleTypeCode( stockInTube.getSampleTypeCode()!=null?stockInTube.getSampleTypeCode():stockInTube.getFrozenTube().getSampleTypeCode() );
-        frozenTubeDTO.setSampleTypeName( stockInTube.getSampleTypeName()!=null?stockInTube.getSampleTypeName():stockInTube.getFrozenTube().getSampleTypeName() );
-        frozenTubeDTO.setSampleUsedTimesMost( stockInTube.getSampleUsedTimesMost()!=null?stockInTube.getSampleUsedTimesMost():stockInTube.getFrozenTube().getSampleUsedTimesMost() );
-        frozenTubeDTO.setSampleUsedTimes( stockInTube.getSampleUsedTimes()!=null?stockInTube.getSampleUsedTimes():stockInTube.getFrozenTube().getSampleUsedTimes() );
-        frozenTubeDTO.setFrozenTubeVolumns( stockInTube.getFrozenTubeVolumns()!=null?stockInTube.getFrozenTubeVolumns():stockInTube.getFrozenTube().getFrozenTubeVolumns() );
-        frozenTubeDTO.setFrozenTubeVolumnsUnit( stockInTube.getFrozenTubeVolumnsUnit()!=null?stockInTube.getFrozenTubeVolumnsUnit():stockInTube.getFrozenTube().getFrozenTubeVolumnsUnit() );
-        frozenTubeDTO.setSampleVolumns( stockInTube.getSampleVolumns()!=null?stockInTube.getSampleVolumns():stockInTube.getFrozenTube().getSampleVolumns() );
-        frozenTubeDTO.setTubeRows( stockInTube.getTubeRows() );
-        frozenTubeDTO.setTubeColumns( stockInTube.getTubeColumns() );
-        frozenTubeDTO.setMemo( stockInTube.getMemo() );
-        frozenTubeDTO.setErrorType( stockInTube.getErrorType() );
-        frozenTubeDTO.setFrozenTubeState( stockInTube.getFrozenTubeState() );
-        frozenTubeDTO.setStatus( stockInTube.getStatus() );
-        frozenTubeDTO.setFrozenBoxCode( stockInTube.getFrozenBoxCode() );
-        return frozenTubeDTO;
+
+        List<StockInTubeForBox> list = new ArrayList<StockInTubeForBox>();
+        for ( FrozenTube frozenTube : frozenTubeList ) {
+            StockInTubeForBox stockInTubeForBox = frozenTubeToStockInTubeForBox( frozenTube);
+            list.add(stockInTubeForBox);
+        }
+        return list;
     }
 
+    default StockInTubeForBox frozenTubeToStockInTubeForBox(FrozenTube frozenTube){
+        if ( frozenTube == null ) {
+            return null;
+        }
+        StockInTubeForBox stockInTubeForBox = new StockInTubeForBox();
+        stockInTubeForBox.setId(frozenTube.getId());
+        stockInTubeForBox.setTubeRows(frozenTube.getTubeRows());
+        stockInTubeForBox.setTubeColumns(frozenTube.getTubeColumns());
+        stockInTubeForBox.setFrozenBoxCode(frozenTube.getFrozenBoxCode());
+        return stockInTubeForBox;
+    }
 }

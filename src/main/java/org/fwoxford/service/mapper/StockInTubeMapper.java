@@ -3,6 +3,7 @@ package org.fwoxford.service.mapper;
 import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.StockInTubeDTO;
 
+import org.fwoxford.service.dto.response.StockInTubeForBox;
 import org.mapstruct.*;
 
 import java.util.ArrayList;
@@ -217,5 +218,30 @@ public interface StockInTubeMapper {
         stockInTubeDTO.setBackColorForClass(stockInTube.getSampleClassification()!=null?stockInTube.getSampleClassification().getBackColor():null);
         stockInTubeDTO.setIsMixed(stockInTube.getSampleType()!=null?stockInTube.getSampleType().getIsMixed():null);
         return stockInTubeDTO;
+    }
+
+    default List<StockInTubeForBox> stockInTubesToStockInTubesForBox(List<StockInTube> stockInTubes){
+        if ( stockInTubes == null ) {
+            return null;
+        }
+
+        List<StockInTubeForBox> list = new ArrayList<StockInTubeForBox>();
+        for ( StockInTube stockInTube : stockInTubes ) {
+            StockInTubeForBox stockInTubeForBox = stockInTubeToStockInTubeForBox( stockInTube);
+            list.add(stockInTubeForBox);
+        }
+        return list;
+    }
+
+    default StockInTubeForBox stockInTubeToStockInTubeForBox(StockInTube stockInTube){
+        if ( stockInTube == null ) {
+            return null;
+        }
+        StockInTubeForBox stockInTubeForBox = new StockInTubeForBox();
+        stockInTubeForBox.setId(stockInTube.getFrozenTube()!=null?stockInTube.getFrozenTube().getId():null);
+        stockInTubeForBox.setTubeRows(stockInTube.getTubeRows());
+        stockInTubeForBox.setTubeColumns(stockInTube.getTubeColumns());
+        stockInTubeForBox.setFrozenBoxCode(stockInTube.getFrozenBoxCode());
+        return stockInTubeForBox;
     }
 }

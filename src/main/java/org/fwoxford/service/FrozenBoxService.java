@@ -76,13 +76,6 @@ public interface FrozenBoxService {
      * @return
      */
     FrozenBox findFrozenBoxDetailsByBoxCode(String frozenBoxCode);
-
-    /**
-     * 批量保存冻存盒
-     * @param frozenBoxDTOList
-     */
-    List<FrozenBox> saveBatch(List<FrozenBoxDTO> frozenBoxDTOList);
-
     /**
      * 根据冻存盒code串查询冻存盒以及冻存管的信息
      * @param frozenBoxCodeStr
@@ -108,28 +101,76 @@ public interface FrozenBoxService {
      */
     List<FrozenBoxAndFrozenTubeResponse> getFrozenBoxAndTubeByTranshipCode(String transhipCode);
 
-    List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(String projectCode, String sampleTypeCode,String transhipCode);
-
+    /**
+     * 输入设备编码，返回该设备下的所有盒子信息
+     * @param input
+     * @param equipmentCode
+     * @return
+     */
     DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipment(DataTablesInput input, String equipmentCode);
-
+    /**
+     * 输入设备编码，区域编码，返回指定区域下的所有盒子信息
+     * @param input
+     * @param equipmentCode
+     * @param areaCode
+     * @return
+     */
     DataTablesOutput<StockInBoxDetail> getPageFrozenBoxByEquipmentAndArea(DataTablesInput input, String equipmentCode, String areaCode);
 
+    /**
+     * 输入设备编码，区域编码，架子编码，返回架子中的所有盒子信息
+     * @param equipmentCode
+     * @param areaCode
+     * @param shelfCode
+     * @return
+     */
     List<StockInBoxDetail> getFrozenBoxByEquipmentAndAreaAndShelves(String equipmentCode, String areaCode, String shelfCode);
 
+    /**
+     * 输入完整的位置信息，返回某个盒子的信息
+     * @param equipmentCode
+     * @param areaCode
+     * @param shelfCode
+     * @param position
+     * @return
+     */
     StockInBoxDetail getFrozenBoxByEquipmentAndAreaAndShelvesAndPosition(String equipmentCode, String areaCode, String shelfCode, String position);
 
-    List<StockInBoxForDataTable> findFrozenBoxListByBoxCodeStr(List<String> frozenBoxCodeStr);
-
+    /**
+     * 判断盒子编码是否已经存在  ----true：已经存在，false:不存在
+     * @param frozenBoxCode
+     * @return
+     */
     Boolean isRepeatFrozenBoxCode(String frozenBoxCode);
 
-    List<StockInBoxForChangingPosition> getIncompleteFrozenBoxesByStockIn(String projectCode, String sampleTypeCode, String stockInCode);
-
+    /**
+     *  获取未满冻存盒
+     * @param frozenBoxCode
+     * @param stockInCode
+     * @return
+     */
     List<StockInBoxForIncomplete> getIncompleteFrozenBoxeList(String frozenBoxCode, String stockInCode);
 
+    /**
+     * 冻存盒直接入库，取原冻存盒的信息
+     * @param frozenBoxCode
+     * @return
+     */
     FrozenBoxDTO getBoxAndTubeByForzenBoxCode(String frozenBoxCode);
 
+    /**
+     * 构造入库盒
+     * @param frozenBox
+     * @param stockInCode
+     * @return
+     */
     StockInBoxDetail createStockInBoxDetail(StockInBox frozenBox, String stockInCode);
 
+    /**
+     * 根据冻存盒编码字符串返回入库盒信息
+     * @param frozenBoxes
+     * @return
+     */
     List<StockInBoxForDataTable> frozenBoxesToStockInBoxForDataTables(List<FrozenBox> frozenBoxes);
 
     /**
@@ -140,4 +181,12 @@ public interface FrozenBoxService {
     String findFrozenBoxHistory(Long id);
 
     String makeNewFrozenBoxCode(Long projectId, Long sampleId, Long sampleClassId);
+
+    /**
+     * 获取指定冻存盒编码的冻存盒信息（包含本次入库单内待入库冻存盒，全部已入库未满，已出库，已交接冻存盒）
+     * @param frozenBoxCode
+     * @param stockInCode
+     * @return
+     */
+    StockInBoxForIncomplete getIncompleteSpecifyFrozenBox(String frozenBoxCode, String projectCode,String stockInCode);
 }

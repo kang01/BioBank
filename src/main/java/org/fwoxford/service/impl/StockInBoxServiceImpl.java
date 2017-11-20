@@ -252,7 +252,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         String keyForWaitSplit = Constants.FROZEN_BOX_STOCKING+"&"+Constants.YES;
 
         if(mapGroupByStatusAndIsSplit!=null){
-            List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(keyForWaitSplit);
+            List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(keyForWaitSplit)!=null?mapGroupByStatusAndIsSplit.get(keyForWaitSplit):new ArrayList<>();
             List<StockInBoxForDataTableEntity> stockInBoxForDataTableByRNA = new ArrayList<StockInBoxForDataTableEntity>();
             stockInBoxForDataTableForWaitSplit.forEach(s->
                 {
@@ -277,10 +277,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         }
         for(String key :mapGroupByStatusAndIsSplit.keySet()){
             //获取不是已分装的
-
             if(!key.equals(keyForWaitSplit)){
                 if(!key.split("&")[0].equals(Constants.FROZEN_BOX_SPLITED)){
-                    List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(key);
+                    List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(key)!=null? mapGroupByStatusAndIsSplit.get(key):new ArrayList<>();
 
                     List<StockInBoxForDataTableEntity> stockInBoxForDataTableByExceptSplitCompleted = new ArrayList<>();
                     stockInBoxForDataTableForWaitSplit.forEach(s->
@@ -299,7 +298,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             //获取已分装的
             if(!key.equals(keyForWaitSplit)){
                 if(key.split("&")[0].equals(Constants.FROZEN_BOX_SPLITED)){
-                    List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(key);
+                    List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(key)!=null?mapGroupByStatusAndIsSplit.get(key):new ArrayList<>();
 
                     List<StockInBoxForDataTableEntity> stockInBoxForDataTableSplitCompleted = new ArrayList<StockInBoxForDataTableEntity>();
 

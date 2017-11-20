@@ -161,9 +161,14 @@
                     },
                     {
                         text: '<i class="fa fa-plus"></i> 添加冻存盒',
-                        className: 'btn btn-default btn-primary',
-                        key: '1',
+                        className: 'btn btn-default btn-primary mr-5',
+                        key: '2',
                         action: _fnActionAddBoxButton
+                    },{
+                        text: '<i class="fa fa-plus"></i> 批量添加冻存盒',
+                        className: 'btn btn-default btn-primary',
+                        key: '3',
+                        action: _fnAddBatchBox
                     }
                 ])
                 // 数据从服务器加载
@@ -485,6 +490,31 @@
 
             }
         }
+        //批量添加冻存盒
+        function _fnAddBatchBox() {
+            modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/bizs/stock-in/modal/add-batch-box-modal.html',
+                controller: 'AddBatchBoxModalController',
+                controllerAs:'vm',
+                size:'lg w-1200',
+                backdrop:'static',
+                resolve: {
+                    items: function () {
+                        return {
+
+                        };
+                    }
+                }
+
+            });
+            modalInstance.result.then(function (data) {
+
+            },function () {
+
+            })
+        }
+
         // 冻存盒号是否可以编辑，编辑盒子时，无法编辑，新增盒子，可以编辑
         vm.editFlag = false;
         function _editBox(stockInBoxId) {

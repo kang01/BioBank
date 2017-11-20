@@ -141,51 +141,137 @@
         </div>
     </pageslide>
     <!--分装-->
-    <div ng-if="vm.splittingBox">
-        <div class="row split-box">
-            <div class="col-md-9">
-                <div class="row">
-                    <div class="col-md-5">
-                        <h4>待分装样本盒{{vm.box.frozenBoxCode}}</h4>
-                    </div>
-                    <div class="col-md-7 text-right mb-10">
-                        <!--<button type="button" class="btn btn-default" ng-click="vm.selectSampleAll()">全选</button>-->
-                        <button type="button" class="btn btn-default" ng-click="vm.closeBox()">关闭</button>
-                        <button type="button" class="btn btn-default" ng-click="vm.splitBox()">分装</button>
-                        <button type="button" class="btn btn-default" ng-click="vm.recover()">复原</button>
-                        <button type="button" class="btn btn-primary" ng-click="vm.saveBox()">保存分装结果</button>
+    <!--<div ng-if="vm.splittingBox">-->
+        <!--<div class="row split-box">-->
+            <!--<div class="col-md-9">-->
+                <!--<div class="row">-->
+                    <!--<div class="col-md-5">-->
+                        <!--<h4>待分装样本盒{{vm.box.frozenBoxCode}}</h4>-->
+                    <!--</div>-->
+                    <!--<div class="col-md-7 text-right mb-10">-->
+                        <!--&lt;!&ndash;<button type="button" class="btn btn-default" ng-click="vm.selectSampleAll()">全选</button>&ndash;&gt;-->
+                        <!--<button type="button" class="btn btn-default" ng-click="vm.closeBox()">关闭</button>-->
+                        <!--<button type="button" class="btn btn-default" ng-click="vm.splitBox()">分装</button>-->
+                        <!--<button type="button" class="btn btn-default" ng-click="vm.recover()">复原</button>-->
+                        <!--<button type="button" class="btn btn-primary" ng-click="vm.saveBox()">保存分装结果</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"></hot-table>-->
+            <!--</div>-->
+            <!--<div class="col-md-3 pl-0 pr-0">-->
+                <!--<h4>-->
+                    <!--分装后样本盒-->
+                <!--</h4>-->
+                <!--<div>-->
+                    <!--<ul>-->
+                        <!--<li ng-repeat="item in vm.incompleteBoxesList">-->
+                            <!--<div ng-repeat="item1 in item.boxList track by $index">-->
+                                <!--<div class="box-feature current" ng-style="{backgroundColor:item1.backColor}"-->
+                                     <!--ng-click="vm.sampleBoxSelect(item1,$event)">-->
+                                    <!--{{item1.countOfSample}}/{{item1.frozenBoxType.frozenBoxTypeColumns*item1.frozenBoxType.frozenBoxTypeRows}}-->
+                                    <!--<span ng-if="item1.addTubeCount">+{{item1.addTubeCount}}</span>-->
+                                <!--</div>-->
+                                <!--<div class="box-name text-ellipsis" ng-if="$index == 0"-->
+                                     <!--title="{{item1.sampleTypeName}}">{{item1.sampleTypeName}}&nbsp;</div>-->
+                                <!--<div ng-class="{'second-box': $index == 1}">{{item1.copyBoxCode}}</div>-->
+                            <!--</div>-->
+                            <!--<div class="box-feature box-feature-copy" style="background-color: #fff;"-->
+                                 <!--ng-if="item.boxList.length == 2"></div>-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--<div class="box-feature" style="line-height: 96px;padding-top:0;border:2px dotted #aaa;"-->
+                                 <!--ng-click="vm.addBoxModal()">-->
+                                <!--<i class="fa fa-plus" style="font-size:30px;"></i>-->
+                            <!--</div>-->
+                        <!--</li>-->
+                        <!--<li class="clear-both"></li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="row split-box" ng-if="vm.splittingBox">
+        <div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>待分装样本盒{{vm.box.frozenBoxCode}}</h4>
+                        </div>
+                        <div class="col-md-6  text-right mt-5">
+                            <!--<button type="button" class="btn btn-default" ng-click="vm.selectSampleAll()">全选</button>-->
+                            <button type="button" class="btn btn-default" ng-click="vm.closeBox()">关闭</button>
+                            <button type="button" class="btn btn-default" ng-click="vm.splitBox()">分装</button>
+                            <button type="button" class="btn btn-default" ng-click="vm.recover()">复原</button>
+                            <button type="button" class="btn btn-primary" ng-click="vm.saveBox()">保存分装结果</button>
+                        </div>
                     </div>
                 </div>
-                <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"></hot-table>
+                <div class="panel-body p-0">
+                    <div class="row">
+                        <div class="col-md-12 pipe-table mt-5">
+                            <span class="">图例说明：</span><span><img src="content/images/legend-for-tube-status.svg"
+                                                                  height="30px"/></span>
+                        </div>
+                        <div class="col-md-12 pr-0">
+                            <hot-table hot-id="my-handsontable" settings="vm.settings" class="tube"></hot-table>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-3 pl-0 pr-0">
-                <h4>
-                    分装后样本盒
-                </h4>
-                <div>
-                    <ul>
-                        <li ng-repeat="item in vm.incompleteBoxesList">
-                            <div ng-repeat="item1 in item.boxList track by $index">
-                                <div class="box-feature current" ng-style="{backgroundColor:item1.backColor}"
-                                     ng-click="vm.sampleBoxSelect(item1,$event)">
-                                    {{item1.countOfSample}}/{{item1.frozenBoxType.frozenBoxTypeColumns*item1.frozenBoxType.frozenBoxTypeRows}}
-                                    <span ng-if="item1.addTubeCount">+{{item1.addTubeCount}}</span>
-                                </div>
-                                <div class="box-name text-ellipsis" ng-if="$index == 0"
-                                     title="{{item1.sampleTypeName}}">{{item1.sampleTypeName}}&nbsp;</div>
-                                <div ng-class="{'second-box': $index == 1}">{{item1.copyBoxCode}}</div>
-                            </div>
-                            <div class="box-feature box-feature-copy" style="background-color: #fff;"
-                                 ng-if="item.boxList.length == 2"></div>
-                        </li>
-                        <li>
-                            <div class="box-feature" style="line-height: 96px;padding-top:0;border:2px dotted #aaa;"
-                                 ng-click="vm.addBoxModal()">
-                                <i class="fa fa-plus" style="font-size:30px;"></i>
-                            </div>
-                        </li>
-                        <li class="clear-both"></li>
-                    </ul>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>分装后样本盒</h4>
+                        </div>
+                        <div class="col-md-6  text-right mt-5">
+                            <button type="button" class="btn btn-default btn-xs" ng-click=" vm.closeBox()" >
+                                关　　闭
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body p-0">
+                    <div class="row">
+                        <div class="col-md-12 mt-5">
+                            <ul class="pl-10">
+                                <li ng-repeat="item in vm.incompleteBoxesList">
+                                    <div ng-repeat="item1 in item.boxList track by $index">
+                                        <div class="box-feature current" ng-style="{backgroundColor:item1.backColor}"
+                                             ng-click="vm.sampleBoxSelect(item1,$event)" ng-dblclick="vm.selectAndOpenTargetBox(item1,$event)">
+                                            {{item1.countOfSample}}/{{item1.frozenBoxType.frozenBoxTypeColumns*item1.frozenBoxType.frozenBoxTypeRows}}
+                                            <span ng-if="item1.addTubeCount">+{{item1.addTubeCount}}</span>
+                                        </div>
+                                        <div class="box-name text-ellipsis" ng-if="$index == 0"
+                                             title="{{item1.sampleTypeName}}">{{item1.sampleTypeName}}&nbsp;</div>
+                                        <div ng-class="{'second-box': $index == 1}">{{item1.copyBoxCode}}</div>
+                                    </div>
+                                    <div class="box-feature box-feature-copy" style="background-color: #fff;"
+                                         ng-if="item.boxList.length == 2"></div>
+                                </li>
+                                <li>
+                                    <div class="box-feature" style="line-height: 96px;padding-top:0;border:2px dotted #aaa;"
+                                         ng-click="vm.addBoxModal()">
+                                        <i class="fa fa-plus" style="font-size:30px;"></i>
+                                    </div>
+                                </li>
+                                <li class="clear-both"></li>
+                            </ul>
+                        </div>
+
+                        <div class="col-md-12">
+                            <table class="p-10">
+                                <tr ng-repeat="tubes in vm.obox.stockInFrozenTubeList | orderBy: 'tubeRows' | groupBy: 'tubeRows'">
+                                    <td style="padding:2px" ng-repeat="tube in tubes | orderBy: 'tubeColumns'">
+                                        <div style="font-size:8pt;border:2px solid;border-radius:5px;-moz-border-radius:5px;padding:3px;background-color: {{vm.obox.backColor}}">{{tube.tubeRows + tube.tubeColumns}}</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

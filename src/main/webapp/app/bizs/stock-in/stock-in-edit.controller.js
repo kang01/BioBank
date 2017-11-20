@@ -381,6 +381,9 @@
 
         _initStockInBoxesTable();
 
+        function _getSplitingTubeTableCtrl(){
+            return hotRegisterer.getInstance('my-handsontable');
+        }
         function _initStockInBoxesTable(){
             vm.selectedStockInBoxes = {};
             vm.selected = {};
@@ -816,23 +819,21 @@
 
                 //获取样本分类
                 _fnQueryProjectSampleClass(vm.entity.projectId,vm.box.sampleType.id,vm.box.sampleType.isMixed);
-                var settings = {
-                    minCols: +vm.box.frozenBoxType.frozenBoxTypeColumns,
-                    minRows: +vm.box.frozenBoxType.frozenBoxTypeRows
-                };
+                var minCols = +vm.box.frozenBoxType.frozenBoxTypeColumns;
+                var minRows = +vm.box.frozenBoxType.frozenBoxTypeRows;
                 var tubesInTable = [];
                 var colHeaders = [];
                 var rowHeaders = [];
-                for(var i = 0; i < settings.minRows; i++){
+                for(var i = 0; i < minRows; i++){
                     var pos = {tubeRows: String.fromCharCode('A'.charCodeAt(0) + i), tubeColumns: 1 + ""};
                     if(i > 7){
                         pos.tubeRows = String.fromCharCode('A'.charCodeAt(0) + i+1);
                     }
                     rowHeaders.push(pos.tubeRows);
                     var tubes = [];
-                    for(var j = 0; j < settings.minCols;j++){
+                    for(var j = 0; j < minCols;j++){
                         pos.tubeColumns = j + 1 + "";
-                        if (colHeaders.length < settings.minCols){
+                        if (colHeaders.length < minCols){
                             colHeaders.push(pos.tubeColumns);
                         }
                         var tubeInBox = _.filter(vm.box.frozenTubeDTOS, pos)[0];
@@ -842,12 +843,26 @@
                     tubesInTable.push(tubes);
                 }
                 vm.frozenTubeArray = tubesInTable;
-                settings.rowHeaders = rowHeaders;
-                settings.colHeaders = colHeaders;
+
+
                 setTimeout(function () {
-                    hotRegisterer.getInstance('my-handsontable').updateSettings(settings);
-                    hotRegisterer.getInstance('my-handsontable').loadData(tubesInTable);
-                    hotRegisterer.getInstance('my-handsontable').render();
+                    var tableCtrl = _getSplitingTubeTableCtrl();
+                    var tableSettings = tableCtrl.getSettings();
+                    var tableWrapper = tableCtrl.container;
+                    tableWrapper = $(tableWrapper).closest(".panel-body");
+                    var maxWidth = tableWrapper.innerWidth();
+                    var rowHeaderWidth = +tableSettings.rowHeaderWidth;
+                    var colWidths = (maxWidth-rowHeaderWidth)/colHeaders.length;
+                    tableSettings.minCols = minCols;
+                    tableSettings.minRows = minRows;
+                    tableSettings.rowHeaders = rowHeaders;
+                    tableSettings.colHeaders = colHeaders;
+                    tableSettings.columnHeaderHeight = rowHeaderWidth;
+                    // tableSettings.colWidths = colWidths;
+                    tableSettings.width = maxWidth;
+                    tableCtrl.updateSettings(tableSettings);
+                    tableCtrl.loadData(tubesInTable);
+                    tableCtrl.render();
                 },500);
                 //取未满盒子
                 _fnIncompleteBox();
@@ -919,6 +934,7 @@
             }
 
         }
+        vm.splitingTbueTableCtrl = {};
         vm.settings ={
             colHeaders : ['1','2','3','4','5','6','7','8','9','10'],
             rowHeaders : ['A','B','C','D','E','F','G','H','J','K'],
@@ -928,8 +944,12 @@
             fillHandle:false,
             stretchH: 'all',
             wordWrap:true,
-            colWidths: 90,
-            columnHeaderHeight:35,
+            rowHeaderWidth: 25,
+            colWidths: 60,
+            // colWidths: function(index) {
+            //     return index * 10;
+            // },
+            columnHeaderHeight:25,
             editor: false,
             outsideClickDeselects:true,
             multiSelect: true,
@@ -966,8 +986,21 @@
                        self.selectCell(0,0,row2,col2,true,true);
                    },200);
                }
+            },
+            afterInit: function(){
+                vm.splitingTbueTableCtrl = this;
+                $(window).resize(function (event){
+                    var tableCtrl = _getSplitingTubeTableCtrl();
+                    var tableSettings = tableCtrl.getSettings();
+                    var tableWrapper = tableCtrl.container;
+                    tableWrapper = $(tableWrapper).closest(".panel-body");
+                    var maxWidth = tableWrapper.innerWidth();
+                    var rowHeaderWidth = +tableSettings.rowHeaderWidth;
+                    tableSettings.columnHeaderHeight = rowHeaderWidth;
+                    tableSettings.width = maxWidth;
+                    tableCtrl.updateSettings(tableSettings);
+                });
             }
-
         };
         //选择单元格数据
         function _fnSelectTubesData(td,pos) {
@@ -1225,8 +1258,13 @@
                 // existedTubeList = _.concat(existedTubeList, item.stockInFrozenTubeList);
             }
             vm.obox = angular.copy(item);
+            vm.obox.stockInFrozenTubeList = _.each(vm.obox.stockInFrozenTubeList, function(t){ t.tubeColumns = +t.tubeColumns});
             $($event.target).closest('ul').find('.box-selected').removeClass("box-selected");
             $($event.target).addClass("box-selected");
+        };
+        vm.selectAndOpenTargetBox = function (item, $event){
+            console.log(item);
+            vm.sampleBoxSelect(item, $event);
         };
         //分装操作
         vm.splitBox = function () {

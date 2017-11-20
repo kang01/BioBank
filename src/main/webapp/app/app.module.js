@@ -33,7 +33,8 @@
             'pageslide-directive',
             'ngAudio',
             'ui.mask',
-            'colorpicker.module'
+            'colorpicker.module',
+            'angular.filter'
         ])
         .run(run);
 

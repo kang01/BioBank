@@ -465,8 +465,13 @@
                     return;
                 }
             }
+
+            // zhuyu 20171117 for 导入冻存盒的原始数据
+            var boxData = _.cloneDeep(vm.obox);
+            boxData.frozenBoxDTOList.reverse();
+            // end
             blockUI.start("正在保存冻存盒中……");
-            TranshipBoxService.save(vm.obox,onSaveBoxSuccess,onError);
+            TranshipBoxService.save(boxData,onSaveBoxSuccess,onError);
         };
 
         function onAreaTempSuccess(data) {

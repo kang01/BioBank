@@ -4,6 +4,8 @@ import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.StockInTubeDTO;
 
 import org.mapstruct.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -90,5 +92,130 @@ public interface StockInTubeMapper {
         SampleClassification sampleClassification = new SampleClassification();
         sampleClassification.setId(id);
         return sampleClassification;
+    }
+
+    default StockInTubeDTO frozenTubeToStockInTubeDTO(FrozenTube f){
+        if ( f == null ) {
+            return null;
+        }
+
+        StockInTubeDTO stockInTubeDTO = new StockInTubeDTO();
+
+        stockInTubeDTO.setFrozenTubeId( f.getId());
+        stockInTubeDTO.setStockInBoxId( null );
+        stockInTubeDTO.setSampleClassificationId( f.getSampleClassification()!=null?f.getSampleClassification().getId():null );
+        stockInTubeDTO.setSampleTypeId(  f.getSampleType()!=null?f.getSampleType().getId():null  );
+        stockInTubeDTO.setProjectSiteId(  f.getProjectSite()!=null?f.getProjectSite().getId():null  );
+        stockInTubeDTO.setProjectId(  f.getProject()!=null?f.getProject().getId():null );
+        stockInTubeDTO.setFrozenTubeTypeId( f.getFrozenTubeType()!=null?f.getFrozenTubeType().getId():null );
+
+        stockInTubeDTO.setTubeRows( f.getTubeRows() );
+        stockInTubeDTO.setTubeColumns( f.getTubeColumns() );
+        stockInTubeDTO.setStatus( f.getStatus() );
+        stockInTubeDTO.setMemo( f.getMemo() );
+        stockInTubeDTO.setFrozenBoxCode( f.getFrozenBoxCode() );
+        stockInTubeDTO.setProjectCode( f.getProjectCode() );
+        stockInTubeDTO.setFrozenTubeCode( f.getFrozenTubeCode() );
+        stockInTubeDTO.setSampleTempCode( f.getSampleTempCode() );
+        stockInTubeDTO.setSampleCode( f.getSampleCode() );
+        stockInTubeDTO.setFrozenTubeTypeCode( f.getFrozenTubeTypeCode() );
+        stockInTubeDTO.setFrozenTubeTypeName( f.getFrozenTubeTypeName() );
+        stockInTubeDTO.setSampleTypeCode( f.getSampleTypeCode() );
+        stockInTubeDTO.setSampleTypeName( f.getSampleTypeName() );
+        stockInTubeDTO.setSampleUsedTimesMost( f.getSampleUsedTimesMost() );
+        stockInTubeDTO.setSampleUsedTimes( f.getSampleUsedTimes() );
+        stockInTubeDTO.setFrozenTubeVolumns( f.getFrozenTubeVolumns() );
+        stockInTubeDTO.setFrozenTubeVolumnsUnit( f.getFrozenTubeVolumnsUnit() );
+        stockInTubeDTO.setSampleVolumns( f.getSampleVolumns() );
+        stockInTubeDTO.setErrorType( f.getErrorType() );
+        stockInTubeDTO.setFrozenTubeState( f.getFrozenTubeState() );
+        stockInTubeDTO.setSampleClassificationCode( f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationCode():null );
+        stockInTubeDTO.setSampleClassificationName(  f.getSampleClassification()!=null?f.getSampleClassification().getSampleClassificationName():null );
+        stockInTubeDTO.setProjectSiteCode( f.getProjectSiteCode() );
+        stockInTubeDTO.setFrozenTubeType( f.getFrozenTubeType() );
+        stockInTubeDTO.setSampleType( f.getSampleType() );
+        stockInTubeDTO.setSampleClassification( f.getSampleClassification() );
+        stockInTubeDTO.setFrontColor(f.getSampleType()!=null?f.getSampleType().getFrontColor():null);
+        stockInTubeDTO.setFrontColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getFrontColor():null);
+        stockInTubeDTO.setBackColor(f.getSampleType()!=null?f.getSampleType().getBackColor():null);
+        stockInTubeDTO.setBackColorForClass(f.getSampleClassification()!=null?f.getSampleClassification().getBackColor():null);
+        stockInTubeDTO.setIsMixed(f.getSampleType()!=null?f.getSampleType().getIsMixed():null);
+        return stockInTubeDTO;
+    }
+
+
+    default List<StockInTubeDTO> stockInTubesToStockInTubeDTOsForSampleType(List<StockInTube> stockInTubes){
+
+        if ( stockInTubes == null ) {
+            return null;
+        }
+
+        List<StockInTubeDTO> list = new ArrayList<StockInTubeDTO>();
+        for ( StockInTube stockInTube : stockInTubes ) {
+            StockInTubeDTO stockInTubeDTO = stockInTubeToStockInTubeDTOForSampleType( stockInTube,1 );
+            list.add(stockInTubeDTO);
+        }
+
+        return list;
+    }
+
+    /**
+     *
+     * @param stockInTube
+     * @param i 同一个Mapper里不能出现相同的入口参数& 返回参数，所以增加一个 I  与 stockInTubeToStockInTubeDTO 进行区分
+     * @return
+     */
+
+    default StockInTubeDTO stockInTubeToStockInTubeDTOForSampleType(StockInTube stockInTube,int i){
+        if ( stockInTube == null ) {
+            return null;
+        }
+
+        StockInTubeDTO stockInTubeDTO = new StockInTubeDTO();
+
+        stockInTubeDTO.setFrozenTubeId( stockInTube.getFrozenTube()!= null ?stockInTube.getFrozenTube().getId():null );
+        stockInTubeDTO.setStockInBoxId( stockInTube.getStockInBox()!=null?stockInTube.getStockInBox().getId():null );
+        stockInTubeDTO.setSampleClassificationId(stockInTube.getSampleClassification()!=null?stockInTube.getSampleClassification().getId():null);
+        stockInTubeDTO.setSampleTypeId( stockInTube.getSampleType()!=null?stockInTube.getSampleType().getId():null );
+        stockInTubeDTO.setProjectSiteId( stockInTube.getProjectSite()!=null?stockInTube.getProjectSite().getId():null );
+        stockInTubeDTO.setProjectId( stockInTube.getProject()!=null?stockInTube.getProject().getId():null );
+        stockInTubeDTO.setFrozenTubeTypeId( stockInTube.getFrozenTubeType()!=null?stockInTube.getFrozenTubeType().getId():null );
+        stockInTubeDTO.setCreatedBy( stockInTube.getCreatedBy() );
+        stockInTubeDTO.setCreatedDate( stockInTube.getCreatedDate() );
+        stockInTubeDTO.setLastModifiedBy( stockInTube.getLastModifiedBy() );
+        stockInTubeDTO.setLastModifiedDate( stockInTube.getLastModifiedDate() );
+        stockInTubeDTO.setId( stockInTube.getId() );
+        stockInTubeDTO.setTubeRows( stockInTube.getTubeRows() );
+        stockInTubeDTO.setTubeColumns( stockInTube.getTubeColumns() );
+        stockInTubeDTO.setStatus( stockInTube.getStatus() );
+        stockInTubeDTO.setMemo( stockInTube.getMemo() );
+        stockInTubeDTO.setFrozenBoxCode( stockInTube.getFrozenBoxCode() );
+        stockInTubeDTO.setProjectCode( stockInTube.getProjectCode() );
+        stockInTubeDTO.setFrozenTubeCode( stockInTube.getFrozenTubeCode() );
+        stockInTubeDTO.setSampleTempCode( stockInTube.getSampleTempCode() );
+        stockInTubeDTO.setSampleCode( stockInTube.getSampleCode() );
+        stockInTubeDTO.setFrozenTubeTypeCode( stockInTube.getFrozenTubeTypeCode() );
+        stockInTubeDTO.setFrozenTubeTypeName( stockInTube.getFrozenTubeTypeName() );
+        stockInTubeDTO.setSampleTypeCode( stockInTube.getSampleTypeCode() );
+        stockInTubeDTO.setSampleTypeName( stockInTube.getSampleTypeName() );
+        stockInTubeDTO.setSampleUsedTimesMost( stockInTube.getSampleUsedTimesMost() );
+        stockInTubeDTO.setSampleUsedTimes( stockInTube.getSampleUsedTimes() );
+        stockInTubeDTO.setFrozenTubeVolumns( stockInTube.getFrozenTubeVolumns() );
+        stockInTubeDTO.setFrozenTubeVolumnsUnit( stockInTube.getFrozenTubeVolumnsUnit() );
+        stockInTubeDTO.setSampleVolumns( stockInTube.getSampleVolumns() );
+        stockInTubeDTO.setErrorType( stockInTube.getErrorType() );
+        stockInTubeDTO.setFrozenTubeState( stockInTube.getFrozenTubeState() );
+        stockInTubeDTO.setSampleClassificationCode( stockInTube.getSampleClassificationCode() );
+        stockInTubeDTO.setSampleClassificationName( stockInTube.getSampleClassificationName() );
+        stockInTubeDTO.setProjectSiteCode( stockInTube.getProjectSiteCode() );
+        stockInTubeDTO.setFrozenTubeType( stockInTube.getFrozenTubeType() );
+        stockInTubeDTO.setSampleType( stockInTube.getSampleType() );
+        stockInTubeDTO.setSampleClassification( stockInTube.getSampleClassification() );
+        stockInTubeDTO.setFrontColor(stockInTube.getSampleType()!=null?stockInTube.getSampleType().getFrontColor():null);
+        stockInTubeDTO.setFrontColorForClass(stockInTube.getSampleClassification()!=null?stockInTube.getSampleClassification().getFrontColor():null);
+        stockInTubeDTO.setBackColor(stockInTube.getSampleType()!=null?stockInTube.getSampleType().getBackColor():null);
+        stockInTubeDTO.setBackColorForClass(stockInTube.getSampleClassification()!=null?stockInTube.getSampleClassification().getBackColor():null);
+        stockInTubeDTO.setIsMixed(stockInTube.getSampleType()!=null?stockInTube.getSampleType().getIsMixed():null);
+        return stockInTubeDTO;
     }
 }

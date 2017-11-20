@@ -150,7 +150,6 @@ public class StockInBoxResource {
             }
         });
         input.addColumn("id",true,true,null);
-        input.addOrder("id",true);
         DataTablesOutput<StockInBoxForDataTableEntity> result = stockInBoxService.getPageStockInBoxes(stockInCode,input);
         return result;
     }
@@ -313,7 +312,7 @@ public class StockInBoxResource {
     }
 
     /**
-     * 批量保存入库盒（出库再回来的）
+     * 批量保存入库盒（出库再回来的）（未写完----不能使用）
      * @param stockInBoxDTO
      * @param stockInCode
      * @return

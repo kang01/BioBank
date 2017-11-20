@@ -18,7 +18,7 @@ public class DBUtilForTemp {
 
     static {
         driver="oracle.jdbc.driver.OracleDriver";//需要的数据库驱动
-        url="jdbc:oracle:" + "thin:@10.24.200.38:1521/oracle12c";//数据库名路径
+        url="jdbc:oracle:" + "thin:@10.24.10.56:1521/orcl";//数据库名路径
         username="c##biobank_temp_0825";
         password="root123";
     }

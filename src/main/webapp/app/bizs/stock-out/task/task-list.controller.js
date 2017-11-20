@@ -68,6 +68,10 @@
                     type: 'text',
                     width:50,
                     iFilterLength:3
+                },{
+                    type: 'text',
+                    width:50,
+                    iFilterLength:3
                 }, {
                     type: 'text',
                     bRegex: true,
@@ -104,7 +108,8 @@
 
         vm.dtColumns = [
             DTColumnBuilder.newColumn('stockOutTaskCode').withTitle('任务编码'),
-            DTColumnBuilder.newColumn('stockOutPlanCode').withTitle('计划编号'),
+            DTColumnBuilder.newColumn('applyCode').withTitle('申请编码'),
+            DTColumnBuilder.newColumn('stockOutPlanCode').withTitle('计划编码'),
             DTColumnBuilder.newColumn('delegateName').withTitle('委托方').withOption('width',"300"),
             DTColumnBuilder.newColumn('stockOutDate').withTitle('出库时间'),
             DTColumnBuilder.newColumn('purposeOfSample').withTitle('出库目的'),

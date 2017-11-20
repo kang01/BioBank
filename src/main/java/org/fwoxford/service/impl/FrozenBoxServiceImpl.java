@@ -961,13 +961,13 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
      * @return
      */
     @Override
-    public StockInBoxForIncomplete getIncompleteSpecifyFrozenBox(String frozenBoxCode, String projectCode,String stockInCode) {
+    public StockInBoxForIncomplete getIncompleteSpecifyFrozenBox(String frozenBoxCode, Long projectId,String stockInCode) {
         //定义返回的冻存盒
         StockInBoxForIncomplete stockInBoxForIncomplete = new StockInBoxForIncomplete();
         //定义返回的冻存盒内的样本
         List<StockInTubeForBox> stockInFrozenTubeList = new ArrayList<>();
         //获取冻存盒详情
-        FrozenBox frozenBox = frozenBoxRepository.findByFrozenBoxCodeAndProjectCode(frozenBoxCode,projectCode);
+        FrozenBox frozenBox = frozenBoxRepository.findByFrozenBoxCodeAndProjectId(frozenBoxCode,projectId);
         if(frozenBox == null){
             throw new BankServiceException("冻存盒不存在！");
         }

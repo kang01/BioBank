@@ -320,5 +320,8 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
     @Query("select box from FrozenBox box where box.frozenBoxCode = ?1 and box.projectCode = ?2 and box.status!='"+Constants.INVALID+"' and box.status!='"+Constants.FROZEN_BOX_INVALID+"' " )
     FrozenBox findByFrozenBoxCodeAndProjectCode(String frozenBoxCode, String projectCode);
+
+    @Query("select box from FrozenBox box where box.frozenBoxCode = ?1 and box.project.id = ?2 and box.status!='"+Constants.INVALID+"' and box.status!='"+Constants.FROZEN_BOX_INVALID+"' " )
+    FrozenBox findByFrozenBoxCodeAndProjectId(String frozenBoxCode, Long projectId);
 }
 

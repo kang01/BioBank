@@ -329,9 +329,9 @@ public class FrozenBoxResource {
      * @return
      */
 
-    @RequestMapping(value = "/frozen-boxes/specify-unfull-frozenBox/{frozenBoxCode}/projectCode/{projectCode}/stockIn/{stockInCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
-    public StockInBoxForIncomplete getIncompleteSpecifyFrozenBox( @PathVariable String frozenBoxCode, @PathVariable String projectCode, @PathVariable String stockInCode) {
-        StockInBoxForIncomplete box =  frozenBoxService.getIncompleteSpecifyFrozenBox(frozenBoxCode,projectCode,stockInCode);
+    @RequestMapping(value = "/frozen-boxes/specify-unfull-frozenBox/{frozenBoxCode}/project/{projectId}/stockIn/{stockInCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public StockInBoxForIncomplete getIncompleteSpecifyFrozenBox( @PathVariable String frozenBoxCode, @PathVariable Long projectId, @PathVariable String stockInCode) {
+        StockInBoxForIncomplete box =  frozenBoxService.getIncompleteSpecifyFrozenBox(frozenBoxCode,projectId,stockInCode);
         return box;
     }
 }

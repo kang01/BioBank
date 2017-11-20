@@ -188,5 +188,5 @@ public interface FrozenBoxService {
      * @param stockInCode
      * @return
      */
-    StockInBoxForIncomplete getIncompleteSpecifyFrozenBox(String frozenBoxCode, String projectCode,String stockInCode);
+    StockInBoxForIncomplete getIncompleteSpecifyFrozenBox(String frozenBoxCode, Long projectId,String stockInCode);
 }

@@ -417,8 +417,6 @@
                 vm.selectAll = true;
             };
 
-
-
             vm.dtOptions = BioBankDataTable.buildDTOption("BASIC", 252, 10)
                 // 设置Tool button
                 .withButtons([
@@ -581,6 +579,7 @@
             vm.checked = true;
             $scope.$apply();
         }
+
         function _createColumnFilters(){
             var filters = {
                 aoColumns: [
@@ -615,6 +614,7 @@
 
             return filters;
         }
+
         function _createColumns(){
             var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
 
@@ -800,8 +800,6 @@
         vm.incompleteBoxesList = []; //分装后的样本类型盒子，未装满样本的盒子
         var tempTubeArray = [];//选中未满样本盒子的临时数据，需要操作管子
         var selectList = [];//选择单元格的管子数据
-        var size = 10;
-        var htm;
         //根据盒子编码取管子
         function _fnTubeByBoxCode(stockInBoxId) {
             BioBankBlockUi.blockUiStart();
@@ -899,7 +897,6 @@
 
             // td.innerHTML = htm;
         };
-        var operateColor;
         var selectedTubesArray = [];
         function changeSampleStatus(sampleStatus,row,col,td,cellProperties) {
             //正常
@@ -1190,15 +1187,6 @@
         function _fnReplaceBoxCode(code) {
             code = "***"+code.substring(code.length-10);
             return code;
-        }
-        //初始管子数
-        function initFrozenTube(row,col) {
-            for(var i = 0; i < +row; i++){
-                vm.frozenTubeArray[i] = [];
-                for(var j = 0;j < +col; j++){
-                    vm.frozenTubeArray[i][j] = "";
-                }
-            }
         }
         function getTubeRowIndex(row) {
             if(row.charCodeAt(0) -65 > 7){

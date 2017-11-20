@@ -648,6 +648,7 @@ table.dataTable tfoot th, table.dataTable tfoot td {
     margin-right: 12px;
     margin-top: 6px;
     margin-bottom: 10px;
+    font-size: 8pt;
 }
 
 .split-box .box-feature {
@@ -672,7 +673,7 @@ table.dataTable tfoot th, table.dataTable tfoot td {
 }
 
 .split-box .box-name {
-    width: 94px;
+    width: 80px;
 }
 
 .second-box {
@@ -1755,3 +1756,28 @@ ul.rating {
         margin-left: 18px;
     }
 }
+
+.cell_value_editing.ht_master {
+    -webkit-animation-name: shineRed;
+    -webkit-animation-duration: 3s;
+    -webkit-animation-iteration-count: infinite;
+}
+.cell_status_editing.ht_master {
+    -webkit-animation-name: shineBlue;
+    -webkit-animation-duration: 3s;
+    -webkit-animation-iteration-count: infinite;
+}
+
+/* ============动画效果============= */
+@-webkit-keyframes  shineRed {
+    from { -webkit-box-shadow: 0 0 5px #bbb; }
+    50% { -webkit-box-shadow: 0 0 10px red; }
+    to { -webkit-box-shadow: 0 0 5px #bbb; }
+}
+@-webkit-keyframes shineBlue {
+    from { -webkit-box-shadow: 0 0 9px #333; }
+    50% { -webkit-box-shadow: 0 0 18px blue; }
+    to { -webkit-box-shadow: 0 0 9px #333; }
+}
+
+/* ================================== */

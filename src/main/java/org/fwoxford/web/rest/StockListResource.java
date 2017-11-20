@@ -66,6 +66,7 @@ public class StockListResource {
     @RequestMapping(value = "/res/stock-list/frozen-box", method = RequestMethod.POST, produces={MediaType.APPLICATION_JSON_VALUE})
     public DataTablesOutput<FrozenBoxListAllDataTableEntity> getPageStockFrozenBoxList(@RequestBody DataTablesInput input,
                                                                                        @RequestParam(value = "searchForm",required = false) String searchForm ) {
+
         JSONObject jsonObject = JSONObject.fromObject(searchForm);
         FrozenBoxListSearchForm search = (FrozenBoxListSearchForm) JSONObject.toBean(jsonObject, FrozenBoxListSearchForm.class);
         input.getColumns().forEach(u->{

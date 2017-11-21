@@ -27,11 +27,11 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
 #        url: jdbc:oracle:thin:@10.24.10.247:1521:xe
-#        username: biobank_p_20171007
+#        username: biobank_p_20171020
 #        password: eyuXotN6
-        url: jdbc:oracle:thin:@10.24.10.56:1521:xe
-        username: C##biobank_p_20171020
-        password: eyuXotN6
+        url: jdbc:oracle:thin:@10.24.10.56:1521/orcl
+        username: C##biobank_t_20171120
+        password: root123
     jpa:
 #        database-platform: org.hibernate.dialect.Oracle12cDialect
         database-platform: org.fwoxford.config.database.BBISOracle12cDialect

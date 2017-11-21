@@ -192,7 +192,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             public Predicate toPredicate(Root<StockInBoxForDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicate = new ArrayList<>();
                 List<javax.persistence.criteria.Order> orders = new ArrayList<>();
-                javax.persistence.criteria.Order orderById = cb.asc(root.get("id"));
+                javax.persistence.criteria.Order orderById = cb.asc(root.get("frozenBoxId"));
                 orders.add(orderById);
                 query.orderBy(orders);
                 return query.getRestriction();
@@ -208,46 +208,26 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                     source.getFrozenBoxCode(),source.getFrozenBoxCode1D(),source.getSampleTypeName(),position,source.getIsSplit(),
                     source.getSampleClassificationName(),source.getStockInCode(),source.getEquipmentCode(),
                     source.getAreaCode(),source.getSupportRackCode(),source.getRowsInShelf(),source.getColumnsInShelf(),
-                    source.getSampleTypeCode(),source.getSampleClassificationCode(),transhipCode,projectSiteCode,source.getOrderNO());
+                    source.getSampleTypeCode(),source.getSampleClassificationCode(),transhipCode,projectSiteCode,source.getOrderNO(),source.getFrozenBoxId());
             }
         };
         DataTablesOutput<StockInBoxForDataTableEntity> output = stockInBoxRepositries.findAll(input,specification,null,convert);
         List<StockInBoxForDataTableEntity> stockInBoxForDataTableEntities = output.getData();
-        //首先先根据RNA类型进行一次排序
-        List<StockInBoxForDataTableEntity> stockInBoxForDataTableOrderByRNA  = new ArrayList<StockInBoxForDataTableEntity>();
-        //查询出RNA类型的
-        List<StockInBoxForDataTableEntity> stockInBoxForDataTableFindByRNA = new ArrayList<>();
-        stockInBoxForDataTableEntities.forEach(s->
-        {
-            if(s.getSampleTypeCode().equals("RNA")) {
-                stockInBoxForDataTableFindByRNA.add(s);
-            }
-        });
-       //给RNA类型加上序号
+       //给扫码顺序加上序号
         Long countOfFilterDate = output.getRecordsFiltered();
         int length = countOfFilterDate.toString().length();
         final int[] i = {1};
-        stockInBoxForDataTableFindByRNA.forEach(s->{
-            if(s!=null &&s.getIsSplit().equals(Constants.YES)){
+        stockInBoxForDataTableEntities.forEach(s->{
+            if(s!=null &&s.getTranshipCode()!=null){
                 String n = String.format("%0"+length+"d", i[0]);
                 i[0]++;
                 s.setOrderNO(n);
             }
         });
-        //查询出不是RNA类型的
-        List<StockInBoxForDataTableEntity> stockInBoxForDataTableFindByExceptRNA = new ArrayList<>();
-        stockInBoxForDataTableEntities.forEach(s->
-        {
-            if(!s.getSampleTypeCode().equals("RNA")) {
-                stockInBoxForDataTableFindByExceptRNA.add(s);
-            }
-        });
-        stockInBoxForDataTableOrderByRNA.addAll(stockInBoxForDataTableFindByRNA);
-        stockInBoxForDataTableOrderByRNA.addAll(stockInBoxForDataTableFindByExceptRNA);
         //定义返回最终的结果 stockInBoxForDataTableEntityList
        List<StockInBoxForDataTableEntity> stockInBoxForDataTableEntityList = new ArrayList<>();
         //显示顺序 :需要分装（状态为待入库，是否分装为是），样本类型为RNA
-         Map<String,List<StockInBoxForDataTableEntity>> mapGroupByStatusAndIsSplit = stockInBoxForDataTableOrderByRNA.stream().collect(
+         Map<String,List<StockInBoxForDataTableEntity>> mapGroupByStatusAndIsSplit = stockInBoxForDataTableEntities.stream().collect(
              Collectors.groupingBy(s->s.getStatus()+"&"+s.getIsSplit()));
         String keyForWaitSplit = Constants.FROZEN_BOX_STOCKING+"&"+Constants.YES;
 

@@ -25,8 +25,8 @@ spring:
 #            url: jdbc:oracle:thin:@10.24.10.247:1521:xe
 #            username: biobank_p_20170719
 #            password: eyuXotN6
-            url: jdbc:oracle:thin:@10.24.10.56:1521:xe
-            username: biobank1
+            url: jdbc:oracle:thin:@10.24.10.56:1521/orcl
+            username: C##biobank_t_20171120
             password: root123
     jpa:
         database-platform: org.hibernate.dialect.Oracle12cDialect

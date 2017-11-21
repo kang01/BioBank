@@ -98,6 +98,10 @@ public class StockInBoxForDataTableEntity {
     @JsonView(DataTablesOutput.View.class)
     @Column(name="order_no")
     private String orderNO;
+
+    @Column(name="frozen_box_id")
+    private Long frozenBoxId;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -147,7 +151,7 @@ public class StockInBoxForDataTableEntity {
 
     public StockInBoxForDataTableEntity(Long id, Integer countOfSample, String status, String frozenBoxCode, String frozenBoxCode1D, String sampleTypeName, String position, Integer isSplit, String sampleClassificationName, String stockInCode,
                                         String equipmentCode, String areaCode, String supportRackCode, String rowsInShelf, String columnsInShelf, String sampleTypeCode, String sampleClassificationCode,
-                                        String transhipCode, String projectSiteCode,String orderNO) {
+                                        String transhipCode, String projectSiteCode,String orderNO,Long frozenBoxId) {
         this.id = id;
         this.countOfSample = countOfSample;
         this.status = status;
@@ -168,6 +172,7 @@ public class StockInBoxForDataTableEntity {
         this.transhipCode = transhipCode;
         this.projectSiteCode = projectSiteCode;
         this.orderNO = orderNO;
+        this.frozenBoxId = frozenBoxId;
     }
 
     public String getTranshipCode() {
@@ -328,5 +333,13 @@ public class StockInBoxForDataTableEntity {
 
     public void setOrderNO(String orderNO) {
         this.orderNO = orderNO;
+    }
+
+    public Long getFrozenBoxId() {
+        return frozenBoxId;
+    }
+
+    public void setFrozenBoxId(Long frozenBoxId) {
+        this.frozenBoxId = frozenBoxId;
     }
 }

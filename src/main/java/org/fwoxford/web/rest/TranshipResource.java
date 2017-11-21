@@ -5,21 +5,17 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
 import net.sf.json.JSONObject;
-import org.fwoxford.domain.Tranship;
 import org.fwoxford.service.TranshipService;
-import org.fwoxford.service.UserService;
 import org.fwoxford.service.dto.AttachmentDTO;
 import org.fwoxford.service.dto.response.StockInForDataDetail;
 import org.fwoxford.service.dto.TranshipDTO;
 import org.fwoxford.service.dto.TranshipToStockInDTO;
 import org.fwoxford.service.dto.response.TranshipByIdResponse;
 import org.fwoxford.service.dto.response.TranshipResponse;
-import org.fwoxford.service.mapper.TranshipMapper;
 import org.fwoxford.web.rest.util.HeaderUtil;
 import org.fwoxford.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -33,8 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
-import javax.xml.ws.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -52,11 +46,6 @@ public class TranshipResource {
     private static final String ENTITY_NAME = "tranship";
 
     private final TranshipService transhipService;
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private TranshipMapper transhipMapper;
 
     public TranshipResource(TranshipService transhipService) {
         this.transhipService = transhipService;

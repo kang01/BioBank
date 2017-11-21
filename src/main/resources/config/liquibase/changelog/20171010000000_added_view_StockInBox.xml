@@ -25,24 +25,4 @@
 
     </changeSet>
 
-
-    <changeSet id="20171117000000-10" author="jhipster">
-
-        <dropView viewName="view_stock_in_box_list"/>
-        <createView viewName="view_stock_in_box_list">
-            SELECT '' as order_no,a.ID,a.FROZEN_BOX_CODE,f.FROZEN_BOX_CODE_1D,a.EQUIPMENT_CODE,a.AREA_CODE,a.SUPPORT_RACK_CODE,a.COLUMNS_IN_SHELF,a.ROWS_IN_SHELF,
-            (a.EQUIPMENT_CODE||'.'||a.AREA_CODE||'.'||a.SUPPORT_RACK_CODE ||'.'||a.COLUMNS_IN_SHELF || lpad(a.ROWS_IN_SHELF,2,0)) as position,
-            s.SAMPLE_TYPE_CODE,sc.SAMPLE_CLASSIFICATION_CODE,
-            s.SAMPLE_TYPE_NAME,sc.SAMPLE_CLASSIFICATION_NAME ,f.IS_SPLIT ,
-            a.STATUS,a.COUNT_OF_SAMPLE,a.STOCK_IN_CODE,t.TRANSHIP_CODE,f.project_site_code
-            FROM STOCK_IN_BOX a
-            LEFT JOIN FROZEN_BOX f on a.FROZEN_BOX_ID=f.ID
-            LEFT JOIN SAMPLE_TYPE s on f.SAMPLE_TYPE_ID=s.ID
-            LEFT JOIN SAMPLE_CLASSIFICATION sc on f.SAMPLE_CLASSIFICATION_ID=sc.ID
-            LEFT JOIN TRANSHIP_BOX tb on tb.FROZEN_BOX_ID = f.ID
-            LEFT JOIN TRANSHIP t on t.ID = tb.TRANSHIP_ID
-        </createView>
-
-    </changeSet>
-
 </databaseChangeLog>

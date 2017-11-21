@@ -969,7 +969,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         //获取冻存盒详情
         FrozenBox frozenBox = frozenBoxRepository.findByFrozenBoxCodeAndProjectId(frozenBoxCode,projectId);
         if(frozenBox == null){
-            throw new BankServiceException("冻存盒不存在！");
+            return stockInBoxForIncomplete;
         }
         String status = frozenBox.getStatus();
         if(!status.equals(Constants.FROZEN_BOX_STOCKING)&&!status.equals(Constants.FROZEN_BOX_STOCKED)

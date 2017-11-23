@@ -17,7 +17,7 @@ public interface StockInTubeRepository extends JpaRepository<StockInTube,Long> {
 
     @Query("select t from StockInTube t where t.stockInBox.id = ?1 and t.status!='"+Constants.INVALID+"'")
     List<StockInTube> findByStockInBoxId(Long id);
-
+    //此方法仅可以给导入数据时使用，根据冻存盒获取入库管信息，获取到的是多次记录
     List<StockInTube> findByFrozenBoxCode(String frozenBoxCode);
 
     @Query("select t from StockInTube t where t.frozenBoxCode = ?1 and t.frozenTube.frozenTubeState = '"+ Constants.FROZEN_BOX_STOCKED+"' and t.status!='"+Constants.INVALID+"'")

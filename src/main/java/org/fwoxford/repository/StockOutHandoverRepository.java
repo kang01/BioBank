@@ -21,4 +21,5 @@ public interface StockOutHandoverRepository extends JpaRepository<StockOutHandov
         "where t.stockOutHandoverBox.stockOutHandover.stockOutTask.id = ?1 and t.stockOutHandoverBox.stockOutFrozenBox.id = ?2")
     StockOutHandover findByStockOutTaskIdAndstockOutBoxId(Long taskId, Long id);
 
+    StockOutHandover findByHandoverCode(String handoverCode);
 }

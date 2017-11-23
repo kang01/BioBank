@@ -38,10 +38,10 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query(value = "select count(1) from frozen_tube t where t.frozen_box_id in ?1 and t.status=?2" ,nativeQuery = true)
     int countByFrozenBoxCodeStrAndStatus(List<Long> boxIds, String status);
 
-    @Query(value = "select count(count(case when t.sample_code is not null THEN t.sample_code ELSE t.sample_temp_code end)) from frozen_tube t\n" +
-        " where t.frozen_box_id in ?1 and t.status!='"+Constants.INVALID+"'\n" +
-        " GROUP BY case when t.sample_code is not null THEN t.sample_code ELSE t.sample_temp_code end" ,nativeQuery = true)
-    int countByFrozenBoxCodeStrAndGroupBySampleCode(List<Long> boxIds);
+    @Query(value = "select t.sample_code,count(t.sample_code) as noo from frozen_tube t " +
+        " where t.frozen_box_id in ?1 and t.status!='"+Constants.INVALID+"' " +
+        " GROUP BY t.sample_code " ,nativeQuery = true)
+    List<Object[]>  countByFrozenBoxCodeStrAndGroupBySampleCode(List<Long> boxIds);
 
     @Query(value = "SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt " +
         " WHERE rt.STATUS in ('"+Constants.STOCK_OUT_SAMPLE_IN_USE+"','"+Constants.STOCK_OUT_SAMPLE_WAITING_OUT+"')",nativeQuery = true)
@@ -168,9 +168,9 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query(value = "  select cast(s.tranship_code as varchar2(255)) as transhipCode," +
         "cast(t.frozen_box_code as varchar2(255)) as frozenBoxCode,count(1) " +
         "from (select * from frozen_tube where project_code = ?1 and sample_type_code = ?1 and frozen_tube_state='"+Constants.FROZEN_BOX_TRANSHIP_COMPLETE+"') t \n" +
-        "        left join (select * from tranship_tube ) f on f.frozen_tube_id = t.id \n" +
-        "         left join tranship_box tb on  f.tranship_box_id = tb.id \n" +
-        "         left join tranship s on  tb.tranship_id = s.id \n" +
+        "        left join (select * from tranship_tube ) f on f.frozen_tube_id = t.id  " +
+        "         left join tranship_box tb on  f.tranship_box_id = tb.id  " +
+        "         left join tranship s on  tb.tranship_id = s.id  " +
         "    where f.id is not null group by s.tranship_code,t.frozen_box_code" , nativeQuery = true)
     List<Object[]> countTubeByProjectCodeGroupByTranshipCode(String projectCode , String sampleTypeCode);
 
@@ -185,4 +185,9 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Modifying
     @Query("update FrozenTube b set b.status='"+Constants.INVALID+"' where b.id not in ?1 and b.frozenTubeState in ('"+Constants.FROZEN_BOX_NEW+"','"+Constants.FROZEN_BOX_STOCKING+"')")
     void updateStatusByNotInAndFrozenTubeState(List<Long> frozenTubeIdsOld);
+
+    @Query(value = "select t.sample_temp_code,count(t.sample_temp_code) as noo from frozen_tube t " +
+        " where t.frozen_box_id in ?1 and t.status!='"+Constants.INVALID+"' and t.sample_code is null " +
+        " GROUP BY t.sample_temp_code" ,nativeQuery = true)
+    List<Object[]> countByFrozenBoxCodeStrAndGroupBySampleTempCode(List<Long> boxIds);
 }

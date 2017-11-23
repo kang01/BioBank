@@ -108,6 +108,11 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     @Column(name = "sample_type_name", length = 255, nullable = false)
     private String sampleTypeName;
     /**
+     * 样本数量
+     */
+    @Column(name = "count_of_sample", nullable = false)
+    private Integer countOfSample;
+    /**
      * 是否分装：1：是，0：否
      */
     @Column(name = "is_split", nullable = false)
@@ -359,18 +364,17 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
         this.sampleTypeName = sampleTypeName;
     }
 
-//    public Integer getSampleNumber() {
-//        return sampleNumber;
-//    }
-//
-//    public FrozenBox sampleNumber(Integer sampleNumber) {
-//        this.sampleNumber = sampleNumber;
-//        return this;
-//    }
-//
-//    public void setSampleNumber(Integer sampleNumber) {
-//        this.sampleNumber = sampleNumber;
-//    }
+    public Integer getCountOfSample() {
+        return countOfSample;
+    }
+
+    public FrozenBox countOfSample(Integer countOfSample){
+        this.countOfSample = countOfSample;
+        return this;
+    }
+    public void setCountOfSample(Integer countOfSample) {
+        this.countOfSample = countOfSample;
+    }
 
     public Integer getIsSplit() {
         return isSplit;
@@ -625,7 +629,7 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
             ", supportRackCode='" + supportRackCode + "'" +
             ", sampleTypeCode='" + sampleTypeCode + "'" +
             ", sampleTypeName='" + sampleTypeName + "'" +
-//            ", sampleNumber='" + sampleNumber + "'" +
+            ", countOfSample='" + countOfSample + "'" +
             ", isSplit='" + isSplit + "'" +
             ", rowsInShelf='" + rowsInShelf + "'" +
             ", columnsInShelf='" + columnsInShelf + "'" +

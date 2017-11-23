@@ -230,9 +230,12 @@
                     box.frozenTubeDTOS.push(tubeList[j][k]);
                 }
             }
-            //是混合类型
-            if(box.isMixed == 1 || box.sampleTypeCode == 'RNA'){
+            //RNA 和混合类型 初始被分装
+            if(box.sampleTypeCode == 'RNA' || box.isMixed == 1){
                 box.isSplit = 1;
+            }
+            //是混合类型
+            if(box.isMixed == 1){
                 delete box.sampleClassificationId;
             }else{
                 box.isSplit = 0;
@@ -431,9 +434,12 @@
 
                     }
                 }
-                //是混合类型
-                if(box.isMixed == 1 || box.sampleTypeCode == 'RNA'){
+                //RNA 和混合类型 初始被分装
+                if(box.sampleTypeCode == 'RNA' || box.isMixed == 1){
                     box.isSplit = 1;
+                }
+                //是混合类型
+                if(box.isMixed == 1){
                     delete box.sampleClassificationId;
                 }else{
                     box.isSplit = 0;

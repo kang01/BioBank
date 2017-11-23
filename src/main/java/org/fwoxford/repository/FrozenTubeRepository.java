@@ -36,11 +36,11 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     @Query(value = "select count(1) from frozen_tube t where t.frozen_box_id in ?1 and t.status=?2" ,nativeQuery = true)
     int countByFrozenBoxCodeStrAndStatus(List<Long> boxIds, String status);
-
-    @Query(value = "select count(count(case when t.sample_code is not null THEN t.sample_code ELSE t.sample_temp_code end)) from frozen_tube t\n" +
-        " where t.frozen_box_id in ?1 and t.status not in ('"+Constants.INVALID+"','"+Constants.FROZEN_TUBE_DESTROY+"') " +
-        " GROUP BY case when t.sample_code is not null THEN t.sample_code ELSE t.sample_temp_code end" ,nativeQuery = true)
-    int countByFrozenBoxCodeStrAndGroupBySampleCode(List<Long> boxIds);
+    
+    @Query(value = "select t.sample_code,count(t.sample_code) as noo from frozen_tube t " +
+        " where t.frozen_box_id in ?1 and t.status!='"+Constants.INVALID+"' " +
+        " GROUP BY t.sample_code " ,nativeQuery = true)
+    List< Object[] > countByFrozenBoxCodeStrAndGroupBySampleCode(List<Long> boxIds);
 
     @Query(value = "SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt " +
         " WHERE rt.STATUS in ('"+Constants.STOCK_OUT_SAMPLE_IN_USE+"','"+Constants.STOCK_OUT_SAMPLE_WAITING_OUT+"')",nativeQuery = true)

@@ -650,8 +650,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         int countOfOldBox = stockInBoxSplitIn!=null&&stockInBoxSplitIn.getCountOfSample()!=null?stockInBoxSplitIn.getCountOfSample():0;
         stockInBoxSplitIn.setCountOfSample(countOfOldBox+countOfSample);
         stockInBoxRepository.save(stockInBoxSplitIn);
-        stockInBoxForDataSplit.setFrozenBoxId(stockInBoxSplitIn.getId());
+        stockInBoxForDataSplit.setFrozenBoxId(stockInBoxSplitIn.getFrozenBox().getId());
         stockInBoxForDataSplit.setStockInFrozenTubeList(stockInTubeDTOList);
+        stockInBoxForDataSplit.setId(stockInBoxSplitIn.getId());
         return stockInBoxForDataSplit;
     }
 

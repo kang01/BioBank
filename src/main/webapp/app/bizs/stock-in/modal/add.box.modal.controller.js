@@ -15,8 +15,11 @@
         vm.createBoxflag = false;
         var boxes = items.incompleteBoxes;
         var stockInFrozenTubeList = angular.copy(items.box.stockInFrozenTubeList);
-        vm.box = {};
+        vm.box = {
+            frozenBoxCode1D:null
+        };
         var projectId = items.projectId;
+        var stockInCode = items.stockInCode;
         //是否混合类型 1：是
         vm.isMixed = items.isMixed;
         //样本类型
@@ -58,7 +61,7 @@
                 }else{
                     if(vm.isMixed == "1"){
                         //99类型下有分类时，选择完了分类的变化
-                        vm.problemOptions = vm.sampleTypeOptions;
+                        vm.problemOptions = angular.copy(vm.sampleTypeOptions);
                         if(boxes.length){
                             // var problemSampleTypeId = _.find(vm.problemOptions,{sampleTypeCode:"97"}).id;
                             for (var i = 0; i < boxes.length; i++) {
@@ -98,7 +101,7 @@
                             vm.box.sampleTypeCode = vm.problemOptions[0].sampleTypeCode;
                         }
                     }else{
-                        //不是混合类型
+                        //不是混合类型,只用取97类型跟盒子类型的样本类型
                         vm.noSampleClassFlag = true;
                         vm.problemOptions = _.remove(vm.sampleTypeOptions,function (o) {
                             if(o.sampleTypeCode == "97" || o.sampleTypeCode == vm.box.sampleTypeCode){
@@ -174,9 +177,12 @@
                     }else{
                         vm.noSampleClassFlag = true;
                         if(vm.sampleTypeClassOptions.length){
-                            vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
-                            vm.box.sampleClassificationCode = vm.sampleTypeClassOptions[0].sampleClassificationCode;
-                            vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                            if(!vm.box.sampleClassificationCode){
+                                vm.box.sampleClassificationId = vm.sampleTypeClassOptions[0].sampleClassificationId;
+                                vm.box.sampleClassificationCode = vm.sampleTypeClassOptions[0].sampleClassificationCode;
+                                vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
+                            }
+
                         }
                     }
                 }
@@ -207,9 +213,9 @@
         //是否手动创建盒子
         function _createBox() {
             if(vm.createBoxflag){
-                vm.box.frozenBoxCode="";
-                vm.box.memo = "";
-                vm.box.stockInFrozenTubeList = [];
+                // vm.box.frozenBoxCode="";
+                // vm.box.memo = "";
+                // vm.box.stockInFrozenTubeList = [];
                 if(stockInFrozenTubeList.length){
                     var rows = +items.box.sampleType.frozenBoxTypeRows;
                     var cols = +items.box.sampleType.frozenBoxTypeColumns;
@@ -295,7 +301,6 @@
                             vm.box.sampleClassification = _.find(vm.sampleTypeClassOptions,{sampleClassificationId:sampleTypeClassId});
                         }
                     }
-
                 }
                 //是混合、无分类
                 if(vm.isMixed == "1" && !sampleTypeClassId){
@@ -371,6 +376,7 @@
                             vm.box.sampleClassification = vm.sampleTypeClassOptions[0];
                             sampleTypeClassId = vm.box.sampleClassificationId;
                             sampleTypeClassCode = vm.box.sampleClassificationCode;
+
                         }
                     }
                     //不是混合、无样本分类
@@ -452,20 +458,30 @@
                 }else{
                     vm.noSampleClassFlag = false;
                 }
+                _changeBoxType(value);
 
-                // Added by Zhuyu 2017/10/09 For: 选中RNA时自动切换冻存盒为大橘盒，选中99时切换为10x10
-                var sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
-                var boxType = _.filter(vm.frozenBoxTypeOptions, {frozenBoxTypeCode: SampleTypeService.getBoxTypeCode(sampleTypeCode)})[0];
-                if (boxType) {
-                    setTimeout(function(){
-                        vm.boxTypeInstance.setValue(boxType.id);
-                    }, 100);
-                }
-                // end added
 
 
             }
         };
+
+        function _changeBoxType(value) {
+            var sampleTypeCode;
+            if(vm.isMixed == "1"){
+                // Added by Zhuyu 2017/10/09 For: 选中RNA时自动切换冻存盒为大橘盒，选中97时切换为10x10
+                sampleTypeCode = _.find(vm.sampleTypeOptions,{'id':+value}).sampleTypeCode;
+            }else{
+                sampleTypeCode = _.find(vm.problemOptions,{'id':+value}).sampleTypeCode;
+            }
+
+            var boxType = _.filter(vm.frozenBoxTypeOptions, {frozenBoxTypeCode: SampleTypeService.getBoxTypeCode(sampleTypeCode)})[0];
+            if (boxType) {
+                setTimeout(function(){
+                    vm.boxTypeInstance.setValue(boxType.id);
+                }, 100);
+            }
+            // end added
+        }
         //样本分类
         vm.sampleTypeClassConfig = {
             valueField:'sampleClassificationId',
@@ -481,32 +497,65 @@
         vm.isBoxCodeRepeat = function () {
             vm.isRepeat = false;
         };
+        //搜索库存内的冻存盒
+        vm.queryFrozenBox = function () {
+            if(vm.box.frozenBoxCode){
+                StockInInputService.queryUnfullStockInBox(vm.box.frozenBoxCode,projectId,stockInCode).success(function (data) {
+                    if(data.frozenBoxCode){
+                        vm.box = data;
+                        vm.isMixed = vm.box.isMixed;
+                        sampleTypeId = vm.box.sampleTypeId;
+                        sampleTypeClassId = vm.box.sampleTypeClassId;
+                        stockInFrozenTubeList = angular.copy(vm.box.stockInFrozenTubeList);
+                        _fnQueryProjectSampleClasses(projectId,vm.box.sampleTypeId);
+                        _changeBoxType(vm.box.sampleTypeId);
+                    }
+                }).error(function (res) {
+                    toastr.error(res.message);
+                    // vm.box.frozenBoxCode = "";
+                });
+            }
+
+        };
+
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
         vm.ok = function () {
-            vm.isRepeat = false;
-            BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
-                vm.isRepeat = data;
-                if (vm.isRepeat){
-                    return;
-                }
-                data = _.filter(boxes, function(b){
-                    var box = _.filter(b.boxList, {frozenBoxCode: vm.box.frozenBoxCode});
-                    return box && box.length;
-                });
-                vm.isRepeat = data && data.length;
-                if (vm.isRepeat){
-                    return;
-                }
+            // vm.isRepeat = false;
+            // BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
+            //     vm.isRepeat = data;
+            //     if (vm.isRepeat){
+            //         return;
+            //     }
+            //     data = _.filter(boxes, function(b){
+            //         var box = _.filter(b.boxList, {frozenBoxCode: vm.box.frozenBoxCode});
+            //         return box && box.length;
+            //     });
+            //     vm.isRepeat = data && data.length;
+            //     if (vm.isRepeat){
+            //         return;
+            //     }
+            //
+            //     if(vm.boxRowCol){
+            //         vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
+            //         vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
+            //     }
+            //     vm.box.countOfSample = vm.box.stockInFrozenTubeList.length;
+            //     $uibModalInstance.close(vm.box);
+            // });
 
-                if(vm.boxRowCol){
-                    vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
-                    vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
-                }
-                vm.box.countOfSample = vm.box.stockInFrozenTubeList.length;
-                $uibModalInstance.close(vm.box);
-            });
+
+            if(vm.boxRowCol){
+                vm.box.columnsInShelf = vm.boxRowCol.charAt(0);
+                vm.box.rowsInShelf = vm.boxRowCol.charAt(vm.boxRowCol.length - 1);
+            }
+            if(!vm.box.stockInFrozenTubeList){
+                vm.box.stockInFrozenTubeList = [];
+            }
+            vm.box.countOfSample = vm.box.stockInFrozenTubeList.length;
+            $uibModalInstance.close(vm.box);
+
         };
 
         vm.yes = function () {

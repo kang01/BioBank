@@ -34,7 +34,6 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
 
     int countByFrozenBoxCodeAndStatus(String frozenBoxCode, String status);
 
-
     @Query(value = "select count(1) from frozen_tube t where t.frozen_box_id in ?1 and t.status=?2" ,nativeQuery = true)
     int countByFrozenBoxCodeStrAndStatus(List<Long> boxIds, String status);
 

@@ -907,9 +907,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             String sampleCode = s.getSampleCode()!=null?s.getSampleCode():s.getSampleTempCode();
             return sampleCode;
         }).collect(Collectors.toList());
-
         //根据样本编码去查询原来的样本
-        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndProjectCode(sampleCodeStr,frozenBox.getProjectCode());
+        List<FrozenTube> frozenTubeList = new ArrayList<>();
+        if(sampleCodeStr != null && sampleCodeStr.size()>0){
+            frozenTubeList =frozenTubeRepository.findBySampleCodeInAndProjectCode(sampleCodeStr,frozenBox.getProjectCode());
+        }
         //查询到原来的样本，并验证冻存管编码是否重复
         List<StockInTubeDTO> repeatSampleList = new ArrayList<>();
         List<SampleType> sampleTypeList = sampleTypeRepository.findAllSampleTypes();

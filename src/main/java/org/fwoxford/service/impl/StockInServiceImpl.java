@@ -357,10 +357,7 @@ public class StockInServiceImpl implements StockInService {
             for(StockInBox stockInBox :stockInBoxListForOnShelf){
                 //修改入库盒子
                 stockInBox.stockIn(stockInNew).stockInCode(stockInNew.getStockInCode()).status(Constants.FROZEN_BOX_STOCKED);
-                FrozenBox frozenBox = stockInBox.getFrozenBox();
-                frozenBox.status(Constants.FROZEN_BOX_STOCKED).project(stockInBox.getProject()).projectName(stockInBox.getProjectName()).projectCode(stockInBox.getProjectCode())
-                .projectSite(stockInBox.getProjectSite()).projectSiteCode(stockInBox.getProjectSiteCode()).projectSiteName(stockInBox.getProjectSiteName());
-                frozenBoxRepository.save(frozenBox);
+
                 //保存入库盒子位置
                 StockInBoxPosition stockInBoxPosition = new StockInBoxPosition();
                 stockInBoxPosition.status(Constants.STOCK_IN_BOX_POSITION_COMPLETE).memo(stockInBox.getMemo())
@@ -400,6 +397,10 @@ public class StockInServiceImpl implements StockInService {
                         .frozenTubeState(Constants.FROZEN_BOX_STOCKED);
                     frozenTubeList.add(frozenTube);
                 }
+                FrozenBox frozenBox = stockInBox.getFrozenBox();
+                frozenBox.status(Constants.FROZEN_BOX_STOCKED).project(stockInBox.getProject()).projectName(stockInBox.getProjectName()).projectCode(stockInBox.getProjectCode())
+                    .projectSite(stockInBox.getProjectSite()).projectSiteCode(stockInBox.getProjectSiteCode()).projectSiteName(stockInBox.getProjectSiteName()).countOfSample(frozenTubeList.size());
+                frozenBoxRepository.save(frozenBox);
                 stockInTubeRepository.save(stockInTubes);
                 frozenTubeRepository.save(frozenTubeList);
                 countOfSample+=stockInBox.getCountOfSample();

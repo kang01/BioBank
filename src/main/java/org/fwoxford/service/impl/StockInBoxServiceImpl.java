@@ -942,11 +942,17 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             FrozenTube frozenTube = null;
 
             //原来的样本信息可能有分类，可能无分类，所以要根据样本的分类进行判断获取样本 即有分类根据分类取，无分类根据样本类型取
-            Long sampleClassificationId = stockInTubeDTO.getSampleClassificationId()!=null?stockInTubeDTO.getSampleClassificationId():frozenBox.getSampleClassification().getId();
+            Long sampleClassificationId = stockInTubeDTO.getSampleClassificationId();
+            if(sampleClassificationId==null && frozenBox.getSampleClassification()!=null){
+                sampleClassificationId=frozenBox.getSampleClassification().getId();
+            }
+
             if(sampleClassificationId!=null){
+                Long finalSampleClassificationId = sampleClassificationId;
                 frozenTube = frozenTubeList.stream().filter(s->
                     ((s.getSampleTempCode()!=null&&s.getSampleTempCode().equals(sampleCode))
-                        ||(s.getSampleCode()!=null&&s.getSampleCode().equals(sampleCode)))&&s.getSampleTypeCode().equals(sampleTypeCode)&&(s.getSampleClassification()!=null&&s.getSampleClassification().getId().equals(sampleClassificationId))
+                        ||(s.getSampleCode()!=null&&s.getSampleCode().equals(sampleCode)))&&s.getSampleTypeCode().equals(sampleTypeCode)
+                        &&(s.getSampleClassification()!=null&&s.getSampleClassification().getId().equals(finalSampleClassificationId))
                 ).findFirst().orElse(null);
             }else{
                 frozenTube = frozenTubeList.stream().filter(s->

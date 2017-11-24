@@ -415,7 +415,7 @@ public class StockInServiceImpl implements StockInService {
                 Object[] obje = countSampleGroupByFrozenBoxId.stream().filter(s->Long.valueOf(s[0].toString()).equals(frozenBox.getId())).findFirst().orElse(null);
                 Integer count = obje!=null?Integer.valueOf(obje[1].toString()):0;
                 frozenBox.status(Constants.FROZEN_BOX_STOCKED).project(box.getProject()).projectName(box.getProjectName()).projectCode(box.getProjectCode())
-                    .projectSite(box.getProjectSite()).projectSiteCode(box.getProjectSiteCode()).projectSiteName(box.getProjectSiteName()).countOfSample(count);
+                    .projectSite(box.getProjectSite()).projectSiteCode(box.getProjectSiteCode()).projectSiteName(box.getProjectSiteName()).countOfSample(count).lockFlag(Constants.FROZEN_BOX_UNLOCKED);
                 frozenBoxList.add(frozenBox);
             }
             frozenBoxRepository.save(frozenBoxList);

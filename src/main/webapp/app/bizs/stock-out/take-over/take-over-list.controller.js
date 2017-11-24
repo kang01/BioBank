@@ -89,8 +89,7 @@
             DTColumnBuilder.newColumn('status').withTitle('状态'),
             DTColumnBuilder.newColumn("").withTitle('操作').withOption('searchable',false).notSortable().renderWith(actionsHtml)
         ];
-
-        function fnServerData ( sSource, aoData, fnCallback, oSettings ) {
+        function _fnStockOutSeach(sSource, aoData, fnCallback, oSettings) {
             var data = {};
             for(var i=0; aoData && i<aoData.length; ++i){
                 var oData = aoData[i];
@@ -121,6 +120,19 @@
 
                 jqDt._fnProcessingDisplay( oSettings, false );
             });
+        }
+        var t;
+        function fnServerData ( sSource, aoData, fnCallback, oSettings ) {
+            if(!oSettings.oPreviousSearch.sSearch){
+                _fnStockOutSeach(sSource, aoData, fnCallback, oSettings);
+            }else{
+                if(t){
+                    clearTimeout(t);
+                }
+                t=setTimeout(function () {
+                    _fnStockOutSeach(sSource, aoData, fnCallback, oSettings);
+                },2000);
+            }
         }
         function createdRow(row, data, dataIndex) {
             var status = '';

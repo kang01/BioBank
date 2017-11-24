@@ -176,11 +176,9 @@ public class FrozenTubeServiceImpl implements FrozenTubeService{
         }
         List<FrozenTubeDTO> frozenTubeResponses = new ArrayList<FrozenTubeDTO>();
         //根据冻存盒编码查询冻存管
-//        List<FrozenTube> frozenTubes = frozenTubeRepository.findFrozenTubeListByBoxCode(frozenBoxCode);
         List<FrozenTube> frozenTubes = frozenTubeRepository.findByFrozenBoxCodeAndFrozenTubeState(frozenBoxCode,Constants.FROZEN_BOX_STOCKED);
             //根据冻存盒查询要出库的样本
         List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndFrozenBoxIdAll(id,frozenBox.getId());
-//        List<StockOutTaskFrozenTube> stockOutFrozenTubes = stockOutTaskFrozenTubeRepository.findByFrozenBoxAndTask(frozenBoxCode,id);
         for(FrozenTube f:frozenTubes){
             FrozenTubeDTO frozenTubeResponse = frozenTubeMapper.frozenTubeToFrozenTubeDTO(f);
             for(StockOutReqFrozenTube s :stockOutReqFrozenTubes){

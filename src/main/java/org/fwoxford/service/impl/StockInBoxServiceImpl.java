@@ -465,6 +465,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         stockInBoxSplitIn.setStatus(Constants.FROZEN_BOX_STOCKING);
         if(frozenBoxNew.getId()== null){
             //盒ID为空，表示新增的冻存盒---保存冻存盒，保存入库盒
+            frozenBoxNew.setStatus(Constants.FROZEN_BOX_STOCKING);
             frozenBoxNew.setFrozenBoxCode(stockInBoxForDataSplit.getFrozenBoxCode());
             frozenBoxNew.setFrozenBoxCode1D(stockInBoxForDataSplit.getFrozenBoxCode1D());
             frozenBoxNew.setProject(frozenBox.getProject());
@@ -537,7 +538,6 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             map.put(frozenBoxNew.getFrozenBoxCode(),frozenBoxNew.getId());
             frozenBoxCheckService.checkFrozenBoxCodeRepead(map);
         }
-        frozenBoxNew.setStatus(Constants.FROZEN_BOX_STOCKING);
         frozenBoxNew.setLockFlag(Constants.FROZEN_BOX_LOCKED_FOR_SPLIT);
         frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
         if(stockInBoxSplitIn.getId() == null){
@@ -619,9 +619,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                     }
                 }
             }
-            if(frozenBoxNew.getSampleClassification()!=null
+            if((frozenBoxNew.getSampleClassification()!=null&&stockInTube.getSampleClassification()==null)
+                ||(frozenBoxNew.getSampleClassification()==null&&stockInTube.getSampleClassification()!=null)
+                ||(frozenBoxNew.getSampleClassification()!=null
                 &&stockInTube.getSampleClassification()!=null
-                &&stockInTube.getSampleClassification().getId()!=frozenBoxNew.getSampleClassification().getId()){
+                &&stockInTube.getSampleClassification().getId()!=frozenBoxNew.getSampleClassification().getId())){
                 throw new BankServiceException("样本分类不一致，不能进行分装！");
             }
             stockInTubeRepository.save(stockInTube);

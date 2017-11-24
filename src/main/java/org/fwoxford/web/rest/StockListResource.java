@@ -73,16 +73,6 @@ public class StockListResource {
                 u.setSearchable(false);
             }
         });
-        List<Column> columns = input.getColumns();
-        columns.forEach(o->{
-            if(o.getData().equals("countOfUsed")){
-                o.setOrderable(false);
-            }
-            if(o.getData().equals("countOfRest")){
-                o.setOrderable(false);
-            }
-        });
-
         input.addColumn("id",true,true,null);
         input.addOrder("id",true);
         return stockListService.getPageStockFrozenBoxList(input,search);

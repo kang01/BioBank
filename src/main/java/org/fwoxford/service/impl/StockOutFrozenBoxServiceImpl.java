@@ -296,15 +296,6 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             Long id = box.getId()==null?-1:box.getId();
             map.put(box.getFrozenBoxCode(),id);
             frozenBoxCheckService.checkFrozenBoxCodeRepead(map);
-//            List<Object[]> obj = frozenBoxRepository.countByFrozenBoxCode(box.getFrozenBoxCode());
-//            for(Object[] o:obj){
-//                String frozenBoxId = o[0].toString();
-//                if(box.getId()==null){
-//                    throw new BankServiceException("冻存盒编码已存在！",box.getFrozenBoxCode());
-//                }else if(box.getId()!=null&&!box.getId().toString().equals(frozenBoxId)){
-//                    throw new BankServiceException("冻存盒编码已存在！",box.getFrozenBoxCode());
-//                }
-//            }
             FrozenBox frozenBox = new FrozenBox();
             if(box.getId()!=null){
                 frozenBox = frozenBoxRepository.findOne(box.getId())!=null?frozenBoxRepository.findOne(box.getId()):new FrozenBox();
@@ -337,7 +328,7 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
             frozenBox.setFrozenBoxCode(box.getFrozenBoxCode());
             frozenBox.setFrozenBoxCode1D(box.getFrozenBoxCode1D());
-//            frozenBox.setSampleNumber(box.getFrozenTubeDTOS().size());
+            frozenBox.setCountOfSample(box.getFrozenTubeDTOS().size());
             frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
             frozenBoxRepository.save(frozenBox);
             box.setId(frozenBox.getId());

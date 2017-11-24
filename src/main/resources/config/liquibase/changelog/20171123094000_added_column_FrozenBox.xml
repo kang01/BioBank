@@ -11,4 +11,9 @@
             <column name="count_of_sample" type="integer" remarks="样本数量"></column>
         </addColumn>
     </changeSet>
+    <changeSet id="20171123094000-2" author="jhipster">
+        <addColumn tableName="frozen_box">
+            <column name="lock_flag" type="integer" remarks="锁定标识"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

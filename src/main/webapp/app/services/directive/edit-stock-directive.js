@@ -1052,6 +1052,9 @@
             //样本类型
             SampleTypeService.querySampleType().success(function (data) {
                 vm.sampleTypeOptions = _.orderBy(data,['sampleTypeCode','asc']);
+                if(!vm.editFlag){
+                    _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
+                }
                 // _.remove(vm.sampleTypeOptions,{sampleTypeCode:"99"});
                 if(!vm.obox.sampleTypeId){
                     vm.obox.sampleTypeId = vm.sampleTypeOptions[0].id;

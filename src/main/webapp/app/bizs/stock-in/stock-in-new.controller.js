@@ -360,7 +360,6 @@
             var titleHtml = '<input type="checkbox" ng-model="vm.selectAll" ng-click="vm.toggleAll()">';
 
             var columns = [
-                // DTColumnBuilder.newColumn('id').withTitle('id').notVisible(),
                 DTColumnBuilder.newColumn("").withOption("width", "30").withTitle(titleHtml).withOption('searchable',false).notSortable().renderWith(_fnRowSelectorRender),
                 DTColumnBuilder.newColumn('frozenBoxCode').withTitle('冻存盒号'),
                 DTColumnBuilder.newColumn('sampleTypeName').withOption("width", "80").withTitle('样本类型'),
@@ -368,10 +367,7 @@
                 DTColumnBuilder.newColumn('position').withOption("width", "auto").withTitle('冻存位置'),
                 DTColumnBuilder.newColumn('countOfSample').withOption("width", "90").withTitle('样本量'),
                 DTColumnBuilder.newColumn('status').withOption("width", "80").withTitle('状态'),
-                DTColumnBuilder.newColumn("").withOption("width", "120").withTitle('操作').withOption('searchable',false).notSortable().renderWith(_fnActionButtonsRender),
-                // DTColumnBuilder.newColumn('sampleType').notVisible(),
-                // DTColumnBuilder.newColumn('frozenBoxRows').notVisible(),
-                // DTColumnBuilder.newColumn('frozenBoxColumns').notVisible()
+                DTColumnBuilder.newColumn("").withOption("width", "120").withTitle('操作').withOption('searchable',false).notSortable().renderWith(_fnActionButtonsRender)
             ];
 
             return columns;
@@ -546,11 +542,6 @@
     }
     function StockInCancellationModalController($uibModalInstance) {
         var vm = this;
-
-
-
-
-
         vm.ok = function () {
             $uibModalInstance.close();
         };

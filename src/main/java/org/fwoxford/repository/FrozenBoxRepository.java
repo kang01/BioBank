@@ -298,6 +298,7 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
 
     List<FrozenBox> findByIdIn(List<Long> frozenBoxIds);
 
+    //此方法仅供导入数据时使用
     @Query(nativeQuery = true,value = "select cast(frozen_box_code as varchar2(255)) as frozen_box_code from (\n" +
         "select frozen_box_code,count(1) as noo from (\n" +
         "select '入库' as id,b.frozen_box_code, b.frozen_box_code_1d,created_date from stock_in_box b where project_code = '0029'\n" +
@@ -317,5 +318,8 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         "\n" +
         "where frozen_box_code in ?1 order by frozen_box_code ,CREATED_DATE",nativeQuery = true)
     List<Object[]> findFrozenBoxStockInAndOutRecordByBoxCodeIn(List<String> frozenBoxCodeStr100);
+
+    @Query("select box from FrozenBox box where box.frozenBoxCode = ?1 and box.project.id = ?2 and box.status!='"+Constants.INVALID+"' and box.status!='"+Constants.FROZEN_BOX_INVALID+"' " )
+    FrozenBox findByFrozenBoxCodeAndProjectId(String frozenBoxCode, Long projectId);
 }
 

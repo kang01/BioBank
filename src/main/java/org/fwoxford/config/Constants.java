@@ -332,6 +332,22 @@ public final class Constants {
      * 冻存盒锁定标识：1：分装锁，0：无锁
      */
     public static final Integer FROZEN_BOX_LOCKED_FOR_SPLIT = 1;
+    //冻存盒状态
+    public static final Map<String,String> FROZEN_BOX_STATUS_MAP = new HashMap(){{
+        put(FROZEN_BOX_NEW,"新建");
+        put(FROZEN_BOX_TRANSHIP_COMPLETE,"转运完成");
+        put(FROZEN_BOX_STOCKING,"待入库");
+        put(FROZEN_BOX_SPLITED,"已分装");
+        put(FROZEN_BOX_STOCKED,"已入库");
+        put(FROZEN_BOX_INVALID,"已作废");
+        put(FROZEN_BOX_PUT_SHELVES,"已上架");
+        put(FROZEN_BOX_SPLITING,"待分装");
+        put(FROZEN_BOX_STOCK_OUT_PENDING,"待出库");
+        put(FROZEN_BOX_STOCK_OUT_COMPLETED,"已出库");
+        put(FROZEN_BOX_STOCK_OUT_HANDOVER,"已交接");
+        put(FROZEN_BOX_DESTROY,"已销毁");
+    }};
+
 
     public static final Map<String,String> FROZEN_BOX_STATUS_MAP = new HashMap(){{
         put(FROZEN_BOX_NEW,"新建");

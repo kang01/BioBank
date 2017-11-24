@@ -12,7 +12,7 @@
     function playAudio(ngAudio, $timeout) {
 
         function audioPlay(audioType, audioUrl){
-            var audio = audioes[audioType] || ngAudio.load(audioUrl);
+            var audio = audioes[audioType];
             if (!audio && audioUrl && audioUrl.length > 0){
                 audio = ngAudio.load(audioUrl)
             }

@@ -569,6 +569,7 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
         this.sampleType = sampleType;
         return this;
     }
+    //冻存盒一维编码
     private String frozenBoxCode1D;
 
     public String getFrozenBoxCode1D() {
@@ -577,5 +578,25 @@ public class FrozenBoxDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setFrozenBoxCode1D(String frozenBoxCode1D) {
         this.frozenBoxCode1D = frozenBoxCode1D;
+    }
+    //盒内样本量
+    private Integer countOfSample;
+
+    public Integer getCountOfSample() {
+        return countOfSample;
+    }
+
+    public void setCountOfSample(Integer countOfSample) {
+        this.countOfSample = countOfSample;
+    }
+    //锁定标识
+    private Integer lockFlag;
+
+    public Integer getLockFlag() {
+        return lockFlag;
+    }
+
+    public void setLockFlag(Integer lockFlag) {
+        this.lockFlag = lockFlag;
     }
 }

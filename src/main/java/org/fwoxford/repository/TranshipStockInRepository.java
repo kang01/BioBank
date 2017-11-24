@@ -13,4 +13,6 @@ import java.util.List;
 public interface TranshipStockInRepository extends JpaRepository<TranshipStockIn,Long> {
 
     List<TranshipStockIn> findByStockInCode(String stockInCode);
+
+    TranshipStockIn findByTranshipCode(String transhipCode);
 }

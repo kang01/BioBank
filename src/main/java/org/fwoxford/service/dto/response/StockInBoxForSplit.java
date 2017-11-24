@@ -8,6 +8,7 @@ import java.util.List;
  * Created by gengluying on 2017/5/5.
  */
 public class StockInBoxForSplit {
+    private Long id;
     private Long equipmentId;
     private Long areaId;
     private Long supportRackId;
@@ -22,6 +23,14 @@ public class StockInBoxForSplit {
     private String memo;
 
     private List<StockInTubeDTO> stockInFrozenTubeList;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getEquipmentId() {
         return equipmentId;

@@ -1,19 +1,10 @@
 package org.fwoxford.service.mapper;
-
-import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
-import org.fwoxford.service.dto.FrozenTubeDTO;
-import org.fwoxford.service.dto.TranshipBoxDTO;
-import org.fwoxford.service.dto.response.FrozenBoxAndFrozenTubeResponse;
-import org.fwoxford.service.dto.response.FrozenTubeResponse;
+import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 
-import org.fwoxford.service.dto.response.StockInBoxForDataTable;
-import org.fwoxford.web.rest.util.BankUtil;
 import org.mapstruct.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -192,5 +183,42 @@ public interface FrozenBoxMapper {
         SampleClassification sampleClassification = new SampleClassification();
         sampleClassification.setId(id);
         return sampleClassification;
+    }
+    //冻存盒转未满冻存盒
+    default StockInBoxForIncomplete frozenBoxDTOToStockInBoxForIncomplete(FrozenBox frozenBox, List<StockInTubeForBox> stockInFrozenTubeList){
+        if(frozenBox == null){
+            return null;
+        }
+        StockInBoxForIncomplete stockInBoxForIncomplete = new StockInBoxForIncomplete();
+        stockInBoxForIncomplete.setFrozenBoxCode(frozenBox.getFrozenBoxCode());
+        stockInBoxForIncomplete.setStockInFrozenTubeList(stockInFrozenTubeList);
+        stockInBoxForIncomplete.setCountOfSample(stockInFrozenTubeList.size());
+        stockInBoxForIncomplete.setFrozenBoxCode1D(frozenBox.getFrozenBoxCode1D());
+        SampleType sampleType = frozenBox.getSampleType();
+        if(sampleType!=null){
+            stockInBoxForIncomplete.setSampleTypeId(sampleType.getId());
+            stockInBoxForIncomplete.setSampleTypeCode(sampleType.getSampleTypeCode());
+            stockInBoxForIncomplete.setSampleTypeName(sampleType.getSampleTypeName());
+            stockInBoxForIncomplete.setIsMixed(sampleType.getIsMixed());
+            stockInBoxForIncomplete.setFrontColor(sampleType.getFrontColor());
+            stockInBoxForIncomplete.setBackColor(sampleType.getBackColor());
+        }
+        FrozenBoxType frozenBoxType = frozenBox.getFrozenBoxType();
+        if(frozenBoxType!=null){
+            stockInBoxForIncomplete.setFrozenBoxTypeId(frozenBoxType.getId());
+            stockInBoxForIncomplete.setFrozenBoxTypeCode(frozenBoxType.getFrozenBoxTypeCode());
+            stockInBoxForIncomplete.setFrozenBoxTypeName(frozenBoxType.getFrozenBoxTypeName());
+            stockInBoxForIncomplete.setFrozenBoxTypeColumns(frozenBoxType.getFrozenBoxTypeColumns());
+            stockInBoxForIncomplete.setFrozenBoxTypeRows(frozenBoxType.getFrozenBoxTypeRows());
+        }
+        SampleClassification sampleClassification = frozenBox.getSampleClassification();
+        if(sampleClassification != null){
+            stockInBoxForIncomplete.setSampleClassificationId(sampleClassification.getId());
+            stockInBoxForIncomplete.setSampleClassificationName(sampleClassification.getSampleClassificationName());
+            stockInBoxForIncomplete.setSampleClassificationCode(sampleClassification.getSampleClassificationCode());
+            stockInBoxForIncomplete.setFrontColorForClass(sampleClassification.getFrontColor());
+            stockInBoxForIncomplete.setBackColorForClass(sampleClassification.getBackColor());
+        }
+        return stockInBoxForIncomplete;
     }
 }

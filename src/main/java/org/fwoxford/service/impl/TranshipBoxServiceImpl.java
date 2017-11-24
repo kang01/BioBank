@@ -230,6 +230,7 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
             frozenBoxCheckService.checkFrozenBoxPosition(box);
             box.setStatus(Constants.FROZEN_BOX_NEW);
+            box.setCountOfSample(countOfSampleAll);
             box = frozenBoxRepository.save(box);
             TranshipBox transhipBox = transhipBoxRepository.findByTranshipIdAndFrozenBoxId(transhipId, box.getId());
             if (transhipBox == null){
@@ -299,11 +300,11 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             }
             frozenTubeCheckService.checkSampleCodeRepeat(sampleCodeStr,frozenTubeMap,box);
             frozenTubeRepository.save(frozenTubeList);
+
             //转运冻存管
             List<TranshipTube> transhipTubeDTOS = transhipTubeService.saveTranshipTube(transhipBox,frozenTubeList);
             result.getFrozenBoxDTOList().add(frozenBoxMapper.frozenBoxToFrozenBoxDTO(box));
             transhipTubeRepository.save(transhipTubeDTOS);
-//            transhipTubeList.addAll(transhipTubeDTOS);
         }
         this.updateTranshipSampleNumber(tranship);
 
@@ -507,7 +508,9 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
 
     public void updateTranshipSampleNumber(Tranship tranship) {
         List<FrozenBox> frozenBoxList = frozenBoxRepository.findAllFrozenBoxByTranshipId(tranship.getId());
-        int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfTube = 0;int countOfSample =0;
+        int countOfEmptyHole = 0;int countOfEmptyTube = 0;
+        int countOfTube = 0;//有效样本数
+        final  Integer[] countOfPeople = {0};//样本人份
         List<Long> boxIds = new ArrayList<Long>();
         for(FrozenBox box : frozenBoxList){
             frozenBoxRepository.save(box);
@@ -517,9 +520,22 @@ public class TranshipBoxServiceImpl implements TranshipBoxService{
             countOfEmptyHole = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_HOLE_EMPTY);
             countOfEmptyTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_EMPTY);
             countOfTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_NORMAL);
-            countOfSample = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleCode(boxIds);
+            //查询临时样本人份
+            List<Object[]> countOfTempSampleCodeGroupBySampleTempCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleTempCode(boxIds);
+            //查询扫码后的样本人份
+            List<Object[]> countOfSampleCodeGroupBySampleCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleCode(boxIds);
+            countOfTempSampleCodeGroupBySampleTempCode.forEach(s->{
+                if(s[0]!=null){
+                    countOfPeople[0]++;
+                }
+            });
+            countOfSampleCodeGroupBySampleCode.forEach(s->{
+                if(s[0]!=null){
+                    countOfPeople[0]++;
+                }
+            });
         }
-        tranship.setSampleNumber(countOfSample);
+        tranship.setSampleNumber(countOfPeople[0]);
         tranship.setFrozenBoxNumber(frozenBoxList.size());
         tranship.setEmptyHoleNumber(countOfEmptyHole);
         tranship.setEmptyTubeNumber(countOfEmptyTube);

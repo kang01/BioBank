@@ -16,6 +16,8 @@
             queryTubeBySampleClassificationId:_queryTubeBySampleClassificationId,
             //获取冻存盒
             queryStockInBox:_queryStockInBox,
+            //获取未满的库里的盒子
+            queryUnfullStockInBox:_queryUnfullStockInBox,
             //编辑冻存盒
             queryEditStockInBox:_queryEditStockInBox,
             //新增保存入库
@@ -62,14 +64,17 @@
         function _queryStockInBox(frozenBoxCode) {
             return $http.get('api/frozen-boxes/boxCode/'+frozenBoxCode+'/forStockIn/');
         }
+        function _queryUnfullStockInBox(frozenBoxCode,projectId,stockInCode) {
+            return $http.get('api/frozen-boxes/specify-unfull-frozenBox/'+frozenBoxCode+'/project/'+projectId+'/stockIn/'+stockInCode);
+        }
         function _queryEditStockInBox(stockInBoxId) {
-            return $http.get('/api/stock-in-boxes/stockInBoxId/'+stockInBoxId);
+            return $http.get('api/stock-in-boxes/stockInBoxId/'+stockInBoxId);
         }
         function _fnSaveStockInBox(stockInCode,param) {
             if(param.id){
                 return $http.put('api/stock-in-boxes/stockInCode/'+stockInCode,param);
             }else{
-                return $http.post('/api/stock-in-boxes/stockInCode/'+stockInCode,param);
+                return $http.post('api/stock-in-boxes/stockInCode/'+stockInCode,param);
             }
         }
         function _fnSaveEditStockInBox(stockInBoxCode,param) {

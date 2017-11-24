@@ -192,7 +192,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             public Predicate toPredicate(Root<StockInBoxForDataTableEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicate = new ArrayList<>();
                 List<javax.persistence.criteria.Order> orders = new ArrayList<>();
-                javax.persistence.criteria.Order orderById = cb.asc(root.get("id"));
+                javax.persistence.criteria.Order orderById = cb.asc(root.get("frozenBoxId"));
                 orders.add(orderById);
                 query.orderBy(orders);
                 return query.getRestriction();
@@ -208,56 +208,36 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                     source.getFrozenBoxCode(),source.getFrozenBoxCode1D(),source.getSampleTypeName(),position,source.getIsSplit(),
                     source.getSampleClassificationName(),source.getStockInCode(),source.getEquipmentCode(),
                     source.getAreaCode(),source.getSupportRackCode(),source.getRowsInShelf(),source.getColumnsInShelf(),
-                    source.getSampleTypeCode(),source.getSampleClassificationCode(),transhipCode,projectSiteCode,source.getOrderNO());
+                    source.getSampleTypeCode(),source.getSampleClassificationCode(),transhipCode,projectSiteCode,source.getOrderNO(),source.getFrozenBoxId());
             }
         };
         DataTablesOutput<StockInBoxForDataTableEntity> output = stockInBoxRepositries.findAll(input,specification,null,convert);
         List<StockInBoxForDataTableEntity> stockInBoxForDataTableEntities = output.getData();
-        //首先先根据RNA类型进行一次排序
-        List<StockInBoxForDataTableEntity> stockInBoxForDataTableOrderByRNA  = new ArrayList<StockInBoxForDataTableEntity>();
-        //查询出RNA类型的
-        List<StockInBoxForDataTableEntity> stockInBoxForDataTableFindByRNA = new ArrayList<>();
-        stockInBoxForDataTableEntities.forEach(s->
-        {
-            if(s.getSampleTypeCode().equals("RNA")) {
-                stockInBoxForDataTableFindByRNA.add(s);
-            }
-        });
-       //给RNA类型加上序号
+        //给扫码顺序加上序号
         Long countOfFilterDate = output.getRecordsFiltered();
         int length = countOfFilterDate.toString().length();
         final int[] i = {1};
-        stockInBoxForDataTableFindByRNA.forEach(s->{
-            if(s!=null &&s.getIsSplit().equals(Constants.YES)){
+        stockInBoxForDataTableEntities.forEach(s->{
+            if(s!=null &&s.getTranshipCode()!=null){
                 String n = String.format("%0"+length+"d", i[0]);
                 i[0]++;
                 s.setOrderNO(n);
             }
         });
-        //查询出不是RNA类型的
-        List<StockInBoxForDataTableEntity> stockInBoxForDataTableFindByExceptRNA = new ArrayList<>();
-        stockInBoxForDataTableEntities.forEach(s->
-        {
-            if(!s.getSampleTypeCode().equals("RNA")) {
-                stockInBoxForDataTableFindByExceptRNA.add(s);
-            }
-        });
-        stockInBoxForDataTableOrderByRNA.addAll(stockInBoxForDataTableFindByRNA);
-        stockInBoxForDataTableOrderByRNA.addAll(stockInBoxForDataTableFindByExceptRNA);
         //定义返回最终的结果 stockInBoxForDataTableEntityList
-       List<StockInBoxForDataTableEntity> stockInBoxForDataTableEntityList = new ArrayList<>();
+        List<StockInBoxForDataTableEntity> stockInBoxForDataTableEntityList = new ArrayList<>();
         //显示顺序 :需要分装（状态为待入库，是否分装为是），样本类型为RNA
-         Map<String,List<StockInBoxForDataTableEntity>> mapGroupByStatusAndIsSplit = stockInBoxForDataTableOrderByRNA.stream().collect(
-             Collectors.groupingBy(s->s.getStatus()+"&"+s.getIsSplit()));
+        Map<String,List<StockInBoxForDataTableEntity>> mapGroupByStatusAndIsSplit = stockInBoxForDataTableEntities.stream().collect(
+            Collectors.groupingBy(s->s.getStatus()+"&"+s.getIsSplit()));
         String keyForWaitSplit = Constants.FROZEN_BOX_STOCKING+"&"+Constants.YES;
 
         if(mapGroupByStatusAndIsSplit!=null){
-            List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(keyForWaitSplit);
+            List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(keyForWaitSplit)!=null?mapGroupByStatusAndIsSplit.get(keyForWaitSplit):new ArrayList<>();
             List<StockInBoxForDataTableEntity> stockInBoxForDataTableByRNA = new ArrayList<StockInBoxForDataTableEntity>();
             stockInBoxForDataTableForWaitSplit.forEach(s->
-                {
-                    if(s.getSampleTypeCode().equals("RNA")) {
-                        stockInBoxForDataTableByRNA.add(s);
+            {
+                if(s.getSampleTypeCode().equals("RNA")) {
+                    stockInBoxForDataTableByRNA.add(s);
                 }
             });
             if(stockInBoxForDataTableByRNA!=null && stockInBoxForDataTableByRNA.size()>0){
@@ -280,7 +260,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
 
             if(!key.equals(keyForWaitSplit)){
                 if(!key.split("&")[0].equals(Constants.FROZEN_BOX_SPLITED)){
-                    List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(key);
+                    List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(key)!=null?mapGroupByStatusAndIsSplit.get(key):new ArrayList<>();
 
                     List<StockInBoxForDataTableEntity> stockInBoxForDataTableByExceptSplitCompleted = new ArrayList<>();
                     stockInBoxForDataTableForWaitSplit.forEach(s->
@@ -299,7 +279,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             //获取已分装的
             if(!key.equals(keyForWaitSplit)){
                 if(key.split("&")[0].equals(Constants.FROZEN_BOX_SPLITED)){
-                    List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(key);
+                    List<StockInBoxForDataTableEntity> stockInBoxForDataTableForWaitSplit =  mapGroupByStatusAndIsSplit.get(key)!=null?mapGroupByStatusAndIsSplit.get(key):new ArrayList<>();
 
                     List<StockInBoxForDataTableEntity> stockInBoxForDataTableSplitCompleted = new ArrayList<StockInBoxForDataTableEntity>();
 
@@ -558,6 +538,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBoxCheckService.checkFrozenBoxCodeRepead(map);
         }
         frozenBoxNew.setStatus(Constants.FROZEN_BOX_STOCKING);
+        frozenBoxNew.setLockFlag(Constants.FROZEN_BOX_LOCKED_FOR_SPLIT);
         frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
         if(stockInBoxSplitIn.getId() == null){
             stockInBoxSplitIn.setStockIn(stockIn);
@@ -650,8 +631,9 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         int countOfOldBox = stockInBoxSplitIn!=null&&stockInBoxSplitIn.getCountOfSample()!=null?stockInBoxSplitIn.getCountOfSample():0;
         stockInBoxSplitIn.setCountOfSample(countOfOldBox+countOfSample);
         stockInBoxRepository.save(stockInBoxSplitIn);
-        stockInBoxForDataSplit.setFrozenBoxId(stockInBoxSplitIn.getId());
+        stockInBoxForDataSplit.setFrozenBoxId(stockInBoxSplitIn.getFrozenBox().getId());
         stockInBoxForDataSplit.setStockInFrozenTubeList(stockInTubeDTOList);
+        stockInBoxForDataSplit.setId(stockInBoxSplitIn.getId());
         return stockInBoxForDataSplit;
     }
 
@@ -926,9 +908,11 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             String sampleCode = s.getSampleCode()!=null?s.getSampleCode():s.getSampleTempCode();
             return sampleCode;
         }).collect(Collectors.toList());
-
         //根据样本编码去查询原来的样本
-        List<FrozenTube> frozenTubeList = frozenTubeRepository.findBySampleCodeInAndProjectCode(sampleCodeStr,frozenBox.getProjectCode());
+        List<FrozenTube> frozenTubeList = new ArrayList<>();
+        if(sampleCodeStr != null && sampleCodeStr.size()>0){
+            frozenTubeList =frozenTubeRepository.findBySampleCodeInAndProjectCode(sampleCodeStr,frozenBox.getProjectCode());
+        }
         //查询到原来的样本，并验证冻存管编码是否重复
         List<StockInTubeDTO> repeatSampleList = new ArrayList<>();
         List<SampleType> sampleTypeList = sampleTypeRepository.findAllSampleTypes();
@@ -971,7 +955,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             //判断样本状态是否为已出库或已交接，若不是为重复样本编码,如果样本不存在则为新增的样本
             if(stockInTubeDTO.getFrozenTubeId()==null&&frozenTube!=null&&
                 !(frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)
-                ||frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)
+                    ||frozenTube.getFrozenTubeState().equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)
                 )){
                 repeatSampleList.add(stockInTubeDTO);
             }
@@ -997,12 +981,12 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         //盒内重复样本
         JSONArray jsonArray = new JSONArray();
         for(StockInTubeDTO f:repeatSampleList){
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id",f.getId());
-                jsonObject.put("sampleCode",f.getSampleCode());
-                jsonObject.put("tubeColumns",f.getTubeColumns());
-                jsonObject.put("tubeRows",f.getTubeRows());
-                jsonArray.add(jsonObject);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id",f.getId());
+            jsonObject.put("sampleCode",f.getSampleCode());
+            jsonObject.put("tubeColumns",f.getTubeColumns());
+            jsonObject.put("tubeRows",f.getTubeRows());
+            jsonArray.add(jsonObject);
         }
         if(jsonArray.size()>0){
             throw new BankServiceException("盒内有重复的冻存管，不能保存！",jsonArray.toString());
@@ -1297,7 +1281,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                 && !frozenBoxOld.getStatus().equals(Constants.FROZEN_BOX_INVALID)
                 && !frozenBoxOld.getStatus().equals(Constants.FROZEN_BOX_SPLITED)
                 && !frozenBoxOld.getStatus().equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)){
-               flag = true;
+                flag = true;
             }
         }
 
@@ -1490,7 +1474,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
         FrozenBox frozenBox = stockInBox.getFrozenBox();
         List<StockInTube> stockInTubes = stockInTubeRepository.findByStockInBoxId(id);
         List<StockInTubeDTO> frozenTubeDTOS = new ArrayList<StockInTubeDTO>();
-      for(StockInTube f: stockInTubes){
+        for(StockInTube f: stockInTubes){
             StockInTubeDTO stockInTubeDTO = stockInTubeMapper.stockInTubeToStockInTubeDTO(f);
             stockInTubeDTO.setFrozenTubeType(f.getFrozenTubeType());
             stockInTubeDTO.setSampleType(f.getSampleType());
@@ -1643,27 +1627,27 @@ public class StockInBoxServiceImpl implements StockInBoxService {
                     listMap.get(boxCode1d).stream().collect(Collectors.groupingBy(w -> w.get("boxType").toString()));
                 sampleDatas = listGroupByBoxType.get(type);
             }
-           if(sampleDatas.size()==0){
-               List<JSONObject> jsonArray = frozenBoxImportService.importFrozenBoxByBoxCode(boxCode1d);
-               listMap.put(boxCode1d,jsonArray);
-               Map<String, List<JSONObject>> listGroupByBoxType =
-                   jsonArray.stream().collect(Collectors.groupingBy(w -> w.get("boxType").toString()));
-               sampleDatas = listGroupByBoxType.get(type);
-           }
+            if(sampleDatas.size()==0){
+                List<JSONObject> jsonArray = frozenBoxImportService.importFrozenBoxByBoxCode(boxCode1d);
+                listMap.put(boxCode1d,jsonArray);
+                Map<String, List<JSONObject>> listGroupByBoxType =
+                    jsonArray.stream().collect(Collectors.groupingBy(w -> w.get("boxType").toString()));
+                sampleDatas = listGroupByBoxType.get(type);
+            }
             List<StockInTubeDTO> stockInTubes = new ArrayList<>();
-           for(JSONObject json :sampleDatas){
+            for(JSONObject json :sampleDatas){
 
-               StockInTubeDTO stockInTubeDTO = new StockInTubeDTO();
-               String sampleCode = json.getString("tubeCode");
-               String boxColno = json.getString("boxColno");
-               String boxRowno = json.getString("boxRowno");
+                StockInTubeDTO stockInTubeDTO = new StockInTubeDTO();
+                String sampleCode = json.getString("tubeCode");
+                String boxColno = json.getString("boxColno");
+                String boxRowno = json.getString("boxRowno");
 
-               stockInTubeDTO.setSampleCode(sampleCode);
-               stockInTubeDTO.setTubeRows(boxRowno);
-               stockInTubeDTO.setTubeColumns(boxColno);
+                stockInTubeDTO.setSampleCode(sampleCode);
+                stockInTubeDTO.setTubeRows(boxRowno);
+                stockInTubeDTO.setTubeColumns(boxColno);
 
-               stockInTubes.add(stockInTubeDTO);
-           }
+                stockInTubes.add(stockInTubeDTO);
+            }
             stockInBox.setFrozenTubeDTOS(stockInTubes);
         }
         return stockInBoxDTOS;

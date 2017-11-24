@@ -129,7 +129,8 @@ public class TranshipServiceImpl implements TranshipService{
         if(transhipDTO.getTempAreaId()!=null){
             area = areaRepository.findOne(transhipDTO.getTempAreaId());
         }
-        int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfTube = 0;int countOfSample =0;
+        int countOfEmptyHole = 0;int countOfEmptyTube = 0;int countOfTube = 0;
+        final  Integer[] countOfPeople = {0};//样本人份
         List<Long> boxIds = new ArrayList<Long>();
         for(FrozenBox box : frozenBoxList){
             if(transhipDTO.getTempEquipmentId()!=null){
@@ -146,9 +147,22 @@ public class TranshipServiceImpl implements TranshipService{
             countOfEmptyHole = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_HOLE_EMPTY);
             countOfEmptyTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_EMPTY);
             countOfTube = frozenTubeRepository.countByFrozenBoxCodeStrAndStatus(boxIds,Constants.FROZEN_TUBE_NORMAL);
-            countOfSample = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleCode(boxIds);
+            //查询临时样本人份
+            List<Object[]> countOfTempSampleCodeGroupBySampleTempCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleTempCode(boxIds);
+            //查询扫码后的样本人份
+            List<Object[]> countOfSampleCodeGroupBySampleCode = frozenTubeRepository.countByFrozenBoxCodeStrAndGroupBySampleCode(boxIds);
+            countOfTempSampleCodeGroupBySampleTempCode.forEach(s->{
+                if(s[0]!=null){
+                    countOfPeople[0]++;
+                }
+            });
+            countOfSampleCodeGroupBySampleCode.forEach(s->{
+                if(s[0]!=null){
+                    countOfPeople[0]++;
+                }
+            });
         }
-        transhipDTO.setSampleNumber(transhipDTO.getSampleNumber()!=null&& transhipDTO.getSampleNumber()!=0?transhipDTO.getSampleNumber():countOfSample);
+        transhipDTO.setSampleNumber(transhipDTO.getSampleNumber()!=null&& transhipDTO.getSampleNumber()!=0?transhipDTO.getSampleNumber():countOfPeople[0]);
         transhipDTO.setFrozenBoxNumber(transhipDTO.getFrozenBoxNumber()!=null && transhipDTO.getFrozenBoxNumber()!=0?transhipDTO.getFrozenBoxNumber():frozenBoxList.size());
         transhipDTO.setEmptyHoleNumber(transhipDTO.getEmptyHoleNumber()!=null && transhipDTO.getEmptyHoleNumber()!=0?transhipDTO.getEmptyHoleNumber():countOfEmptyHole);
         transhipDTO.setEmptyTubeNumber(transhipDTO.getEmptyTubeNumber()!=null && transhipDTO.getEmptyTubeNumber()!=0?transhipDTO.getEmptyTubeNumber():countOfEmptyTube);

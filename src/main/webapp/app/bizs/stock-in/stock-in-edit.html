@@ -198,12 +198,13 @@
                         <div class="col-md-6">
                             <h4>待分装样本盒{{vm.box.frozenBoxCode}}</h4>
                         </div>
-                        <div class="col-md-6  text-right mt-5">
+                        <div class="col-md-6  text-right mt-10">
                             <!--<button type="button" class="btn btn-default" ng-click="vm.selectSampleAll()">全选</button>-->
-                            <button type="button" class="btn btn-default" ng-click="vm.closeBox()">关闭</button>
-                            <button type="button" class="btn btn-default" ng-click="vm.splitBox()">分装</button>
-                            <button type="button" class="btn btn-default" ng-click="vm.recover()">复原</button>
-                            <button type="button" class="btn btn-primary" ng-click="vm.saveBox()">保存分装结果</button>
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.splitBox()">分　　装</button>
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.recover()">复　　原</button>
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.editBoxOperate()">编　　辑</button>
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.closeBox()">关　　闭</button>
+                            <button type="button" class="btn btn-primary btn-xs" ng-click="vm.saveBox()">保存分装结果</button>
                         </div>
                     </div>
                 </div>
@@ -220,23 +221,23 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 pl-0">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-md-6">
                             <h4>分装后样本盒</h4>
                         </div>
-                        <div class="col-md-6  text-right mt-5">
-                            <button type="button" class="btn btn-default btn-xs" ng-click=" vm.closeBox()" >
-                                关　　闭
+                        <div class="col-md-6  text-right mt-10">
+                            <button type="button" class="btn btn-default btn-xs" ng-click="vm.closeBoxDesc()" ng-if="vm.stockInFrozenTubeList1.length">
+                                关闭
                             </button>
                         </div>
                     </div>
                 </div>
                 <div class="panel-body p-0">
                     <div class="row">
-                        <div class="col-md-12 mt-5">
+                        <div class="col-md-12 mt-5" ng-if="!vm.boxDetailFlag">
                             <ul class="pl-10">
                                 <li ng-repeat="item in vm.incompleteBoxesList">
                                     <div ng-repeat="item1 in item.boxList track by $index">
@@ -246,7 +247,7 @@
                                             <span ng-if="item1.addTubeCount">+{{item1.addTubeCount}}</span>
                                         </div>
                                         <div class="box-name text-ellipsis" ng-if="$index == 0"
-                                             title="{{item1.sampleTypeName}}">{{item1.sampleTypeName}}&nbsp;</div>
+                                             title="{{item1.sampleTypeName1}}">{{item1.sampleTypeName1}}&nbsp;</div>
                                         <div ng-class="{'second-box': $index == 1}">{{item1.copyBoxCode}}</div>
                                     </div>
                                     <div class="box-feature box-feature-copy" style="background-color: #fff;"
@@ -262,11 +263,19 @@
                             </ul>
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-12 ml-10 mt-5 mb-5" ng-if="vm.boxDetailFlag">
                             <table class="p-10">
-                                <tr ng-repeat="tubes in vm.obox.stockInFrozenTubeList | orderBy: 'tubeRows' | groupBy: 'tubeRows'">
+                                <tr ng-repeat="tubes in vm.stockInFrozenTubeList1 | orderBy: 'tubeRows' | groupBy: 'tubeRows'">
                                     <td style="padding:2px" ng-repeat="tube in tubes | orderBy: 'tubeColumns'">
-                                        <div style="font-size:8pt;border:2px solid;border-radius:5px;-moz-border-radius:5px;padding:3px;background-color: {{vm.obox.backColor}}">{{tube.tubeRows + tube.tubeColumns}}</div>
+                                        <div ng-if="!tube.frozenTubeId && !tube.id" style="width:31px;height:31px;line-height:23px;text-align:center;font-size:8pt;border:2px solid;border-radius:5px;-moz-border-radius:5px;padding:3px;background-color: #fff">
+
+                                        </div>
+                                        <div ng-if="tube.frozenTubeId" style="width:31px;height:31px;line-height:23px;text-align:center;font-size:8pt;border:2px solid;border-radius:5px;-moz-border-radius:5px;padding:3px;background-color: #777">
+                                            {{tube.tubeRows + tube.tubeColumns}}
+                                        </div>
+                                        <div ng-if="tube.id" style="width:31px;height:31px;line-height:23px;text-align:center;font-size:8pt;border:2px solid;border-radius:5px;-moz-border-radius:5px;padding:3px;background-color: {{vm.obox.backColor}}">
+                                            {{tube.tubeRows + tube.tubeColumns}}
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
@@ -282,6 +291,7 @@
             stock-in-info="vm.entity"
             stock-in-box="vm.box"
             reload-data="vm.tableRender()"
+            edit-to-spilt-tube="vm.editToSpiltTube()"
             edit-flag="vm.editFlag"
             show-flag="vm.showFlag"
         ></edit-stock-directive>

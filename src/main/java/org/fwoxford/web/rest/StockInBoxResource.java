@@ -341,4 +341,5 @@ public class StockInBoxResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
 
+
 }

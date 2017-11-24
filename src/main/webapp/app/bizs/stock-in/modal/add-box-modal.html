@@ -19,7 +19,8 @@
                             </label>
                             <div class="col-sm-8">
                                 <div class="input-group">
-                                    <input type="text" class="form-control"  ng-model="vm.box.frozenBoxCode" placeholder="" required ng-blur="vm.isBoxCodeRepeat()">
+                                    <!--ng-blur="vm.isBoxCodeRepeat()"-->
+                                    <input type="text" class="form-control"  ng-model="vm.box.frozenBoxCode" placeholder="" required ng-blur="vm.queryFrozenBox()">
                                     <div class="input-group-addon" ng-click="vm.makeNewBoxCode()">生成</div>
                                 </div>
                                 <span ng-show="vm.isRepeat" style="color:red;">样本盒编码已经存在！</span>

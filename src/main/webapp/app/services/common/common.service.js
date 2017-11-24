@@ -160,6 +160,7 @@
                 {value:"2009",label:"已出库"},
                 {value:"2010",label:"已交接"},
                 {value:"2011",label:"转运完成"},
+                {value:"2012",label:"已销毁"},
                 {value:"2090",label:"已作废"},
                 {value:"2101",label:"交接进行中"},
                 {value:"2102",label:"交接完成"},
@@ -171,7 +172,8 @@
                 {id:"3001",name:"正常"},
                 {id:"3002",name:"空管"},
                 {id:"3003",name:"空孔"},
-                {id:"3004",name:"异常"}
+                {id:"3004",name:"异常"},
+                {id:"3005",name:"销毁"}
             ];
             var allStatus = null;
             function _getStatus(statusCode){
@@ -214,16 +216,16 @@
         .factory('SampleService', function () {
             var factory = {};
             //改变管子样本类型 1:分类 2:类型
-            factory.changeSampleType = function (sampleId,td,sampleTypeOptions,status) {
+            factory.changeSampleType = function (sampleTypeId,td,sampleTypeOptions,status) {
                 if(status == 1){
                     for(var i = 0; i < sampleTypeOptions.length; i++){
-                        if(sampleId == sampleTypeOptions[i].sampleClassificationId){
+                        if(sampleTypeId == sampleTypeOptions[i].sampleClassificationId){
                             td.style.backgroundColor = sampleTypeOptions[i].backColor;
                         }
                     }
                 }else{
                     for(var i = 0; i < sampleTypeOptions.length; i++){
-                        if(sampleId == sampleTypeOptions[i].id){
+                        if(sampleTypeId == sampleTypeOptions[i].id){
                             td.style.backgroundColor = sampleTypeOptions[i].backColor;
                         }
                     }

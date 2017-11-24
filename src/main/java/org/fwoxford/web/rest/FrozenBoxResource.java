@@ -189,18 +189,6 @@ public class FrozenBoxResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
     /**
-     * 输入项目编码和样本类型编码，返回该入库单的某个盒子的信息
-     * @param projectCode
-     * @param sampleTypeCode
-     * @return
-     */
-    @RequestMapping(value = "/frozen-boxes/incomplete-boxes/project/{projectCode}/type/{sampleTypeCode}/tranship/{transhipCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
-    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxes(@PathVariable String projectCode, @PathVariable String sampleTypeCode,@PathVariable String transhipCode) {
-        List<StockInBoxForChangingPosition> boxes =  frozenBoxService.getIncompleteFrozenBoxes(projectCode,sampleTypeCode,transhipCode);
-        return boxes;
-    }
-
-    /**
      * 输入设备编码，返回该设备下的所有盒子信息
      * @param input
      * @return
@@ -275,17 +263,6 @@ public class FrozenBoxResource {
         Boolean boxes =  frozenBoxService.isRepeatFrozenBoxCode(frozenBoxCode);
         return boxes;
     }
-    /**
-     * 输入项目编码和样本类型编码，返回该入库单的某个盒子的信息
-     * @param projectCode
-     * @param sampleTypeCode
-     * @return
-     */
-    @RequestMapping(value = "/frozen-boxes/incomplete-boxes/project/{projectCode}/type/{sampleTypeCode}/stockIn/{stockInCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
-    public List<StockInBoxForChangingPosition> getIncompleteFrozenBoxesByStockIn(@PathVariable String projectCode, @PathVariable String sampleTypeCode,@PathVariable String stockInCode) {
-        List<StockInBoxForChangingPosition> boxes =  frozenBoxService.getIncompleteFrozenBoxesByStockIn(projectCode,sampleTypeCode,stockInCode);
-        return boxes;
-    }
 
     /**
      * 输入被分装的冻存盒编码和项目编码，返回该入库单的未装满的盒子的信息
@@ -342,5 +319,18 @@ public class FrozenBoxResource {
         res.put("code", newCode);
         return ResponseEntity.ok(res);
 //        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
+    }
+    /**
+     * 获取指定冻存盒编码的冻存盒信息（包含本次入库单内待入库冻存盒，全部已入库未满，已出库，已交接冻存盒）
+     * 如果冻存盒已满，提示冻存盒已满；
+     * @param frozenBoxCode
+     * @param stockInCode
+     * @return
+     */
+
+    @RequestMapping(value = "/frozen-boxes/specify-unfull-frozenBox/{frozenBoxCode}/project/{projectId}/stockIn/{stockInCode}", method = RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    public StockInBoxForIncomplete getIncompleteSpecifyFrozenBox( @PathVariable String frozenBoxCode, @PathVariable Long projectId, @PathVariable String stockInCode) {
+        StockInBoxForIncomplete box =  frozenBoxService.getIncompleteSpecifyFrozenBox(frozenBoxCode,projectId,stockInCode);
+        return box;
     }
 }

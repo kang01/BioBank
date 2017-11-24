@@ -328,7 +328,6 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
 
             frozenBox.setFrozenBoxCode(box.getFrozenBoxCode());
             frozenBox.setFrozenBoxCode1D(box.getFrozenBoxCode1D());
-            frozenBox.setCountOfSample(box.getFrozenTubeDTOS().size());
             frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
             frozenBoxRepository.save(frozenBox);
             box.setId(frozenBox.getId());
@@ -358,9 +357,23 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             //查询要出库的样本
             List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findByStockOutTaskIdAndFrozenTubeIdInAndStatusNot(taskId,frozenTubeIds,Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
             List<FrozenTube> frozenTubeList = new ArrayList<>();
+            List<FrozenBox> frozenBoxOldList = new ArrayList<>();
+
             for(FrozenTubeDTO f: box.getFrozenTubeDTOS()){
                 for(StockOutReqFrozenTube s:stockOutReqFrozenTubes){
                     if(f.getId().equals(s.getFrozenTube().getId())){
+                        FrozenBox frozenBoxOld = s.getFrozenBox();
+                        FrozenBox frozenBoxInOldList = frozenBoxOldList.stream().filter(b->b.getId()==frozenBoxOld.getId()).findFirst().orElse(null);
+                        if(frozenBoxInOldList==null){
+                            frozenBoxOld.countOfSample(frozenBoxOld.getCountOfSample()-1);
+                            frozenBoxOldList.add(frozenBoxOld);
+                        }else{
+                            frozenBoxInOldList.countOfSample(frozenBoxInOldList.getCountOfSample()-1);
+                            int position = frozenBoxOldList.indexOf(frozenBoxInOldList);
+                            frozenBoxOldList.remove(position);
+                            frozenBoxOldList.add(frozenBoxInOldList);
+                        }
+
                         s.setStockOutFrozenBox(stockOutFrozenBox);
                         s.setStatus(Constants.STOCK_OUT_SAMPLE_WAITING_OUT);
                         s.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_PENDING);
@@ -382,6 +395,10 @@ public class StockOutFrozenBoxServiceImpl implements StockOutFrozenBoxService{
             }
             stockOutReqFrozenTubeRepository.save(stockOutReqFrozenTubes);
             frozenTubeRepository.save(frozenTubeList);
+            frozenBoxRepository.save(frozenBoxOldList);
+            Long countOfSample = frozenTubeRepository.countByFrozenBoxIdAndStatusNot(frozenBox.getId(),Constants.INVALID);
+            frozenBox.countOfSample(countOfSample.intValue());
+            frozenBoxRepository.save(frozenBox);
         }
         return stockOutFrozenBoxMapper.stockOutFrozenBoxesToStockOutFrozenBoxDTOs(stockOutFrozenBoxs);
     }

@@ -18,41 +18,53 @@
         function _fnAdd() {
             $state.go('plan-new');
         }
+        function _fnStockOutSeach(sSource, aoData, fnCallback, oSettings) {
+            var data = {};
+            for(var i=0; aoData && i<aoData.length; ++i){
+                var oData = aoData[i];
+                data[oData.name] = oData.value;
+            }
+            var jqDt = this;
+            PlanService.queryPlanList(data, oSettings).then(function (res){
+                var json = res.data;
+                var error = json.error || json.sError;
+                if ( error ) {
+                    jqDt._fnLog( oSettings, 0, error );
+                }
+                oSettings.json = json;
+                fnCallback( json );
+            }).catch(function(res){
+                console.log(res);
 
+                var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
+
+                if ( $.inArray( true, ret ) === -1 ) {
+                    if ( error == "parsererror" ) {
+                        jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+                    }
+                    else if ( res.readyState === 4 ) {
+                        jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
+                    }
+                }
+
+                jqDt._fnProcessingDisplay( oSettings, false );
+            });
+        }
+        var t;
         vm.dtOptions = BioBankDataTable.buildDTOption("NORMALLY", null, 10)
             .withOption('order', [[0, 'desc' ]])
             .withOption('serverSide',true)
             .withFnServerData(function ( sSource, aoData, fnCallback, oSettings ) {
-                var data = {};
-                for(var i=0; aoData && i<aoData.length; ++i){
-                    var oData = aoData[i];
-                    data[oData.name] = oData.value;
+                if(!oSettings.oPreviousSearch.sSearch){
+                    _fnStockOutSeach(sSource, aoData, fnCallback, oSettings);
+                }else{
+                    if(t){
+                        clearTimeout(t);
+                    }
+                    t=setTimeout(function () {
+                        _fnStockOutSeach(sSource, aoData, fnCallback, oSettings);
+                    },2000);
                 }
-                var jqDt = this;
-                PlanService.queryPlanList(data, oSettings).then(function (res){
-                    var json = res.data;
-                    var error = json.error || json.sError;
-                    if ( error ) {
-                        jqDt._fnLog( oSettings, 0, error );
-                    }
-                    oSettings.json = json;
-                    fnCallback( json );
-                }).catch(function(res){
-                    console.log(res);
-
-                    var ret = jqDt._fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
-
-                    if ( $.inArray( true, ret ) === -1 ) {
-                        if ( error == "parsererror" ) {
-                            jqDt._fnLog( oSettings, 0, 'Invalid JSON response', 1 );
-                        }
-                        else if ( res.readyState === 4 ) {
-                            jqDt._fnLog( oSettings, 0, 'Ajax error', 7 );
-                        }
-                    }
-
-                    jqDt._fnProcessingDisplay( oSettings, false );
-                });
             })
             .withOption('createdRow', createdRow)
             .withColumnFilter({

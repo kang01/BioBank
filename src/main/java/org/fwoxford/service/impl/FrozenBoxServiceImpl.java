@@ -703,7 +703,7 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 //        if (wrongFrozenBoxList == null || wrongFrozenBoxList.size() == 0) {
 //            wrongFrozenBoxList = frozenBoxRepository.findIncompleteFrozenBoxBySampleTypeIdInAllStock(frozenBoxCode, frozenBox.getProject().getId(), wrongSample.getId(), frozenBoxType.getId(), Constants.FROZEN_BOX_STOCKED, stockInCode);
 //        }
-//        frozenBoxList.addAll(wrongFrozenBoxList);
+        frozenBoxList.addAll(wrongFrozenBoxList);
 
         List<String> boxCodeStr = new ArrayList<>();
         frozenBoxList.forEach(s -> {
@@ -967,10 +967,14 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         //定义返回的冻存盒内的样本
         List<StockInTubeForBox> stockInFrozenTubeList = new ArrayList<>();
         //获取冻存盒详情
-        FrozenBox frozenBox = frozenBoxRepository.findByFrozenBoxCodeAndProjectId(frozenBoxCode,projectId);
+        FrozenBox frozenBox = frozenBoxRepository.findFrozenBoxDetailsByBoxCode(frozenBoxCode);
         if(frozenBox == null){
             return stockInBoxForIncomplete;
         }
+        if(frozenBox.getProject()!=null&&frozenBox.getProject().getId()!=projectId){
+            throw new BankServiceException("冻存盒"+frozenBoxCode+"属于"+frozenBox.getProjectCode()+"项目，与当前入库单的项目不一致，不能用于分装！");
+        }
+
         String status = frozenBox.getStatus();
         if(!status.equals(Constants.FROZEN_BOX_STOCKING)&&!status.equals(Constants.FROZEN_BOX_STOCKED)
             &&!status.equals(Constants.FROZEN_BOX_STOCK_OUT_COMPLETED)&&!status.equals(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER)){
@@ -978,14 +982,12 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
         }
         //判断冻存盒状态，如果是已入库，判断盒内样本是否已满，如果满了，提示错误
         //如果是待入库，判断是否在该入库单内，如果是判断在本次入库单内，盒内样本是否已满
-
-        if(status.equals(Constants.FROZEN_BOX_STOCKING)){
+        if(status.equals(Constants.FROZEN_BOX_STOCKING)||(frozenBox.getLockFlag()!=null&&frozenBox.getLockFlag().equals(Constants.FROZEN_BOX_LOCKED_FOR_SPLIT))){
             StockInBox stockInBox = stockInBoxRepository.findStockInBoxByStockInCodeAndFrozenBoxCode(stockInCode,frozenBoxCode);
             if(stockInBox == null){
-                throw new BankServiceException("冻存盒编码不能重复");
+                throw new BankServiceException("冻存盒"+frozenBoxCode+"被其他入库单锁定，不能用于分装！");
             }
         }
-
         //查询盒内样本
         List<FrozenTube> frozenTubeList = frozenTubeRepository.findByFrozenBoxCodeAndFrozenTubeState(frozenBox.getFrozenBoxCode(),Constants.FROZEN_BOX_STOCKED);
         List<StockInTube> stockInTubesByBoxAndStockInCode = stockInTubeRepository.findByFrozenBoxCodeAndStockInCode(frozenBoxCode,stockInCode);

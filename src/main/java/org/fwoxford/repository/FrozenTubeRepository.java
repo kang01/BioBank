@@ -190,4 +190,6 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
         " where t.frozen_box_id in ?1 and t.status!='"+Constants.INVALID+"' and t.sample_code is null " +
         " GROUP BY t.sample_temp_code" ,nativeQuery = true)
     List<Object[]> countByFrozenBoxCodeStrAndGroupBySampleTempCode(List<Long> boxIds);
+
+    Long countByFrozenBoxIdAndStatusNot(Long id, String status);
 }

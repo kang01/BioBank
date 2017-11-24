@@ -319,10 +319,5 @@ public interface FrozenBoxRepository extends JpaRepository<FrozenBox,Long> {
         "where frozen_box_code in ?1 order by frozen_box_code ,CREATED_DATE",nativeQuery = true)
     List<Object[]> findFrozenBoxStockInAndOutRecordByBoxCodeIn(List<String> frozenBoxCodeStr100);
 
-    @Query("select box from FrozenBox box where box.frozenBoxCode = ?1 and box.projectCode = ?2 and box.status!='"+Constants.INVALID+"' and box.status!='"+Constants.FROZEN_BOX_INVALID+"' " )
-    FrozenBox findByFrozenBoxCodeAndProjectCode(String frozenBoxCode, String projectCode);
-
-    @Query("select box from FrozenBox box where box.frozenBoxCode = ?1 and box.project.id = ?2 and box.status!='"+Constants.INVALID+"' and box.status!='"+Constants.FROZEN_BOX_INVALID+"' " )
-    FrozenBox findByFrozenBoxCodeAndProjectId(String frozenBoxCode, Long projectId);
 }
 

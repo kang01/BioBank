@@ -118,10 +118,19 @@ public class FrozenBoxListAllDataTableEntity  implements Serializable {
     @Column(name ="project_id")
     @JsonView(DataTablesOutput.View.class)
     private Long projectId;
+
+    @Column(name ="lock_flag")
+    @JsonView(DataTablesOutput.View.class)
+    private Integer lockFlag;
+
     public FrozenBoxListAllDataTableEntity() {
     }
 
-    public FrozenBoxListAllDataTableEntity(Long id, String frozenBoxCode, String frozenBoxCode1D, String equipmentCode, String areaCode, String shelvesCode, String rowsInShelf, String columnsInShelf, String position, String sampleType, String sampleClassification, String frozenBoxType, Long countOfUsed, Long countOfRest, String status, String projectName, String projectCode, Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId, Long frozenBoxTypeId, String memo, Long projectId) {
+    public FrozenBoxListAllDataTableEntity(Long id, String frozenBoxCode, String frozenBoxCode1D, String equipmentCode, String areaCode, String shelvesCode,
+                                           String rowsInShelf, String columnsInShelf, String position, String sampleType, String sampleClassification,
+                                           String frozenBoxType, Long countOfUsed, Long countOfRest, String status, String projectName, String projectCode,
+                                           Long equipmentId, Long areaId, Long shelvesId, Long sampleTypeId, Long sampleClassificationId,
+                                           Long frozenBoxTypeId, String memo, Long projectId,Integer lockFlag) {
         this.id = id;
         this.frozenBoxCode = frozenBoxCode;
         this.frozenBoxCode1D = frozenBoxCode1D;
@@ -147,6 +156,7 @@ public class FrozenBoxListAllDataTableEntity  implements Serializable {
         this.frozenBoxTypeId = frozenBoxTypeId;
         this.memo = memo;
         this.projectId = projectId;
+        this.lockFlag = lockFlag;
     }
 
     public Long getId() {
@@ -347,5 +357,13 @@ public class FrozenBoxListAllDataTableEntity  implements Serializable {
 
     public void setFrozenBoxCode1D(String frozenBoxCode1D) {
         this.frozenBoxCode1D = frozenBoxCode1D;
+    }
+
+    public Integer getLockFlag() {
+        return lockFlag;
+    }
+
+    public void setLockFlag(Integer lockFlag) {
+        this.lockFlag = lockFlag;
     }
 }

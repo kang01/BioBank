@@ -47,8 +47,7 @@
 
             vm.dtColumns = _createColumns();
         }
-
-        function _fnServerData( sSource, aoData, fnCallback, oSettings ) {
+        function _fnStockInSeach(sSource, aoData, fnCallback, oSettings){
             var data = {};
             for(var i=0; aoData && i<aoData.length; ++i){
                 var oData = aoData[i];
@@ -79,6 +78,19 @@
 
                 jqDt._fnProcessingDisplay( oSettings, false );
             });
+        }
+        var t;
+        function _fnServerData( sSource, aoData, fnCallback, oSettings ) {
+            if(!oSettings.oPreviousSearch.sSearch){
+                _fnStockInSeach(sSource, aoData, fnCallback, oSettings);
+            }else{
+                if(t){
+                    clearTimeout(t);
+                }
+                t=setTimeout(function () {
+                    _fnStockInSeach(sSource, aoData, fnCallback, oSettings);
+                },2000);
+            }
         }
         function _fnCreatedRow(row, data, dataIndex) {
             var transportCodes = _.replace(data.transhipCode, /,/g, ', ');

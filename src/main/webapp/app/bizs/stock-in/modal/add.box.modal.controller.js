@@ -217,14 +217,16 @@
                 // vm.box.memo = "";
                 // vm.box.stockInFrozenTubeList = [];
                 if(stockInFrozenTubeList.length){
-                    var rows = +items.box.sampleType.frozenBoxTypeRows;
-                    var cols = +items.box.sampleType.frozenBoxTypeColumns;
+                    var rows =  +items.frozenBoxType.frozenBoxTypeRows;
+                    var lenRow = angular.copy(rows);
+                    var cols =  +items.frozenBoxType.frozenBoxTypeColumns;
                     var m = 0,n = 0;
                     for(var i = 0; i < stockInFrozenTubeList.length; i++){
                         if(i >= rows){
-                            m++;n = 0;
+                            m++;n = 1;
+                            rows = (m+1) * lenRow;
                             stockInFrozenTubeList[i].tubeRows = String.fromCharCode(m+65);
-                            stockInFrozenTubeList[i].tubeColumns = n + 1;
+                            stockInFrozenTubeList[i].tubeColumns = n;
 
                         }else{
                             n++;
@@ -518,9 +520,7 @@
 
         };
 
-        vm.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
+
         vm.ok = function () {
             // vm.isRepeat = false;
             // BoxCodeIsRepeatService.getByCode(vm.box.frozenBoxCode).then(function (data) {
@@ -557,11 +557,14 @@
             $uibModalInstance.close(vm.box);
 
         };
-
         vm.yes = function () {
             vm.createBoxflag = true;
             _createBox();
         };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+
         vm.no = function () {
             $uibModalInstance.dismiss('cancel');
         };

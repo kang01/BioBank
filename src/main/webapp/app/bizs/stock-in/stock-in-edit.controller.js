@@ -1330,7 +1330,7 @@
             //关闭盒子详情
             vm.boxDetailFlag = false;
         };
-
+        //绘制新管子集合，并且把盒子中已有管子放入这个管子集合
         function _fnDrawSplitTube(rowCount,colCount) {
 
             vm.obox.stockInFrozenTubeList = [];
@@ -1344,8 +1344,9 @@
                     tempTubeArray[i][j] = {
                         tubeColumns: j+1,
                         tubeRows: rowNO,
-                        frozenBoxCode:'',
-                        frozenTubeId:'',
+                        frozenBoxCode:"",
+                        frozenTubeId:"",
+                        id:"",
                         selectTubeCode:vm.obox.frozenBoxCode
                     };
                     vm.obox.stockInFrozenTubeList.push(tempTubeArray[i][j]);
@@ -1376,15 +1377,18 @@
             }
             var rowCount = +vm.box.frozenBoxType.frozenBoxTypeRows;
             var colCount = +vm.box.frozenBoxType.frozenBoxTypeColumns;
+            //绘制新管子集合，并且把盒子中已有管子放入这个管子集合
             _fnDrawSplitTube(rowCount,colCount);
+            //判断选中的分装管子或者盒子
             if(!selectTubeList.length || !vm.frozenBoxCode ){
-                modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'app/bizs/stock-in/modal/stock-in-splittingBox-message-modal.html',
-                    controller: 'SplittingBoxMessageController',
-                    controllerAs:'vm',
-                    backdrop:'static'
-                });
+                // modalInstance = $uibModal.open({
+                //     animation: true,
+                //     templateUrl: 'app/bizs/stock-in/modal/stock-in-splittingBox-message-modal.html',
+                //     controller: 'SplittingBoxMessageController',
+                //     controllerAs:'vm',
+                //     backdrop:'static'
+                // });
+                toastr.error("请选择被分装的冻存管或者请选择要分装到的冻存盒!");
                 return;
             }
             //总管子数
@@ -1604,13 +1608,13 @@
                 }
 
                 //更新新增盒子的入库盒子ID
-                for(var m = 0; m < vm.stockInBox.length; m++){
-                    for(var n = 0; n < data.length; n++){
-                        if(vm.stockInBox[m].frozenBoxCode == data[n].frozenBoxCode){
-                            vm.stockInBox[m].id = data[n].id;
-                        }
-                    }
-                }
+                // for(var m = 0; m < vm.stockInBox.length; m++){
+                //     for(var n = 0; n < data.length; n++){
+                //         if(vm.stockInBox[m].frozenBoxCode == data[n].frozenBoxCode){
+                //             vm.stockInBox[m].id = data[n].id;
+                //         }
+                //     }
+                // }
 
                 vm.dtOptions.withOption('data',vm.stockInBox)
                     .withOption('serverSide',false);
@@ -1618,10 +1622,17 @@
             BioBankBlockUi.blockUiStart();
             SplitedBoxService.saveSplit(vm.stockInCode,vm.box.frozenBoxCode,saveBoxList).success(function (data) {
                 toastr.success("分装成功!");
+
                 //保存完更新入库盒子列表
                 _updateBoxList(data);
                 //获取未满冻存盒
                 _fnIncompleteBox();
+
+                var len = _.filter(vm.obox.stockInFrozenTubeList,{frozenBoxCode:""}).length;
+                if(!len){
+                    vm.splittingBox = false;
+                }
+
                 vm.boxList = [];
                 vm.frozenBoxCode = "";
                 $(".box-selected").removeClass("box-selected");
@@ -1758,7 +1769,7 @@
                         if(data.sampleClassification){
                             data.backColor = data.sampleClassification.backColor;
                             data.sampleTypeName1 = data.sampleClassification.sampleClassificationName;
-                            data.sampleClassificationId = data.sampleClassification.id;
+                            data.sampleClassificationId = data.sampleClassification.id || data.sampleClassification.sampleClassificationId;
                             for(var i = 0; i < vm.incompleteBoxesList.length; i++){
                                 if(vm.incompleteBoxesList[i].sampleTypeId == data.sampleClassificationId){
                                     if(vm.incompleteBoxesList[i].boxList.length < 2 ){

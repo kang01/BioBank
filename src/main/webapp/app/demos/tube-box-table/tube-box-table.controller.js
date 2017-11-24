@@ -33,7 +33,7 @@
             vm.tubes[3].status = "3004";
             vm.tubes[4].memo = "abcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz";
             vm.tubes[5].flag = 2;
-            vm.tubes[6].flag = 2;
+            vm.tubes[8].flag = 2;
 
             vm.htInstance.api.loadData(data, data.frozenTubeDTOS);
 
@@ -41,6 +41,12 @@
             //     $scope.$apply();
             // }
         });
+
+        StockInInputService.queryEditStockInBox(53928).success(function (data) {
+            vm.splitToBox = data;
+        });
+
+
 
         vm.select = function(){
             vm.htInstance.api.selectRangeCell([[0,1],[0,3],[0,5]]);
@@ -68,6 +74,18 @@
 
         vm.exchange = function(){
             vm.htInstance.api.exchangeSelectedTubePosition();
+        }
+        vm.split = function(){
+            vm.htInstance.api.splitSelectedTubesToBox(vm.splitToBox, "B", "3");
+        }
+        vm.getSplitInfo = function(){
+            var data = vm.htInstance.api.getSplitInformation();
+            console.log(data);
+        }
+        vm.setMemo = function(){
+            var memo = vm.htInstance.api.getMemoOfTubeCell(0,4);
+            memo += "\n new memo";
+            vm.htInstance.api.setMemoOfSelectedTubes(memo);
         }
     }
 })();

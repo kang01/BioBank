@@ -121,7 +121,7 @@
         ];
         function createdRow(row, data, dataIndex) {
             var status = MasterData.getStatus(data.status);
-            $('td:eq(8)', row).html(status);
+            $('td:eq(9)', row).html(status);
             $compile(angular.element(row).contents())($scope);
         }
         function actionsHtml(data, type, full, meta) {

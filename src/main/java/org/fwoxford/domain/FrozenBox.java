@@ -639,6 +639,7 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
             ", emptyHoleNumber='" + emptyHoleNumber + "'" +
             ", dislocationNumber='" + dislocationNumber + "'" +
             ", isRealData='" + isRealData + "'" +
+            ", lockFlag='" + lockFlag + "'" +
             '}';
     }
 
@@ -655,5 +656,19 @@ public class FrozenBox extends AbstractAuditingEntity implements Serializable {
     }
     public void setFrozenBoxCode1D(String frozenBoxCode1D) {
         this.frozenBoxCode1D = frozenBoxCode1D;
+    }
+    //锁定标识
+    @Column(name = "lock_flag")
+    private Integer lockFlag;
+
+    public Integer getLockFlag() {
+        return lockFlag;
+    }
+    public FrozenBox lockFlag(Integer lockFlag) {
+        this.lockFlag = lockFlag;
+        return this;
+    }
+    public void setLockFlag(Integer lockFlag) {
+        this.lockFlag = lockFlag;
     }
 }

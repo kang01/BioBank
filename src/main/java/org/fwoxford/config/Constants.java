@@ -328,6 +328,10 @@ public final class Constants {
         put("NA","3002");
         put("0","3003");
     }};
+    /**
+     * 冻存盒锁定标识：1：分装锁，0：无锁
+     */
+    public static final Integer FROZEN_BOX_LOCKED_FOR_SPLIT = 1;
 
     public static final Map<String,String> FROZEN_BOX_STATUS_MAP = new HashMap(){{
         put(FROZEN_BOX_NEW,"新建");

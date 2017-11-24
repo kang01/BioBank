@@ -40,7 +40,7 @@ public interface FrozenTubeRepository extends JpaRepository<FrozenTube,Long> {
     @Query(value = "select t.sample_code,count(t.sample_code) as noo from frozen_tube t " +
         " where t.frozen_box_id in ?1 and t.status!='"+Constants.INVALID+"' " +
         " GROUP BY t.sample_code " ,nativeQuery = true)
-    List< Object[] > countByFrozenBoxCodeStrAndGroupBySampleCode(List<Long> boxIds);
+    List<Object[]> countByFrozenBoxCodeStrAndGroupBySampleCode(List<Long> boxIds);
 
     @Query(value = "SELECT rt.FROZEN_TUBE_ID FROM STOCK_OUT_REQ_FROZEN_TUBE rt " +
         " WHERE rt.STATUS in ('"+Constants.STOCK_OUT_SAMPLE_IN_USE+"','"+Constants.STOCK_OUT_SAMPLE_WAITING_OUT+"')",nativeQuery = true)

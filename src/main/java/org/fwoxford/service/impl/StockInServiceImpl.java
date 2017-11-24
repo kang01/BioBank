@@ -397,27 +397,55 @@ public class StockInServiceImpl implements StockInService {
                         .frozenTubeState(Constants.FROZEN_BOX_STOCKED);
                     frozenTubeList.add(frozenTube);
                 }
-                FrozenBox frozenBox = stockInBox.getFrozenBox();
-                frozenBox.status(Constants.FROZEN_BOX_STOCKED).project(stockInBox.getProject()).projectName(stockInBox.getProjectName()).projectCode(stockInBox.getProjectCode())
-                    .projectSite(stockInBox.getProjectSite()).projectSiteCode(stockInBox.getProjectSiteCode()).projectSiteName(stockInBox.getProjectSiteName()).countOfSample(frozenTubeList.size());
-                frozenBoxRepository.save(frozenBox);
                 stockInTubeRepository.save(stockInTubes);
                 frozenTubeRepository.save(frozenTubeList);
                 countOfSample+=stockInBox.getCountOfSample();
             }
+
+            List<Long> boxIds = stockInBoxListForOnShelf.stream().map(s -> {
+                return s.getFrozenBox().getId();
+            }).collect(Collectors.toList());
+            List<Object[]> countSampleGroupByFrozenBoxId = new ArrayList<>();
+            if(boxIds!=null&&boxIds.size()>0){
+                countSampleGroupByFrozenBoxId = frozenTubeRepository.countGroupByFrozenBoxId(boxIds);
+            }
+            List<FrozenBox> frozenBoxList = new ArrayList<>();
+            for(StockInBox box: stockInBoxListForOnShelf){
+                FrozenBox frozenBox = box.getFrozenBox();
+                Object[] obje = countSampleGroupByFrozenBoxId.stream().filter(s->Long.valueOf(s[0].toString()).equals(frozenBox.getId())).findFirst().orElse(null);
+                Integer count = obje!=null?Integer.valueOf(obje[1].toString()):0;
+                frozenBox.status(Constants.FROZEN_BOX_STOCKED).project(box.getProject()).projectName(box.getProjectName()).projectCode(box.getProjectCode())
+                    .projectSite(box.getProjectSite()).projectSiteCode(box.getProjectSiteCode()).projectSiteName(box.getProjectSiteName()).countOfSample(count);
+                frozenBoxList.add(frozenBox);
+            }
+            frozenBoxRepository.save(frozenBoxList);
             stockInNew.setCountOfSample(countOfSample);
             stockInRepository.save(stockInNew);
             stockInBoxRepository.save(stockInBoxListForOnShelf);
         }
-
+        //未上架的冻存盒
         if(stockInBoxListForUnOnShelf!=null && stockInBoxListForUnOnShelf.size()>0){
             //修改盒子
             int countOfSampleIn = 0;
+            List<Long> boxIds = stockInBoxListForUnOnShelf.stream().map(s -> {
+                return s.getFrozenBox().getId();
+            }).collect(Collectors.toList());
+            List<Object[]> countSampleGroupByFrozenBoxId = new ArrayList<>();
+            if(boxIds!=null&&boxIds.size()>0){
+                countSampleGroupByFrozenBoxId = frozenTubeRepository.countGroupByFrozenBoxId(boxIds);
+            }
+            List<FrozenBox> frozenBoxList = new ArrayList<>();
             for(StockInBox box: stockInBoxListForUnOnShelf){
                 countOfSampleIn+=box.getCountOfSample();
+                FrozenBox frozenBox = box.getFrozenBox();
+                Object[] obje = countSampleGroupByFrozenBoxId.stream().filter(s->Long.valueOf(s[0].toString()).equals(frozenBox.getId())).findFirst().orElse(null);
+                Integer count = obje!=null?Integer.valueOf(obje[1].toString()):0;
+                frozenBox.setCountOfSample(count);
+                frozenBoxList.add(frozenBox);
             }
             stockIn.setCountOfSample(countOfSampleIn);
             stockInRepository.save(stockIn);
+            frozenBoxRepository.save(frozenBoxList);
         }
 
         List<String> transhipCodes = new ArrayList<String>();

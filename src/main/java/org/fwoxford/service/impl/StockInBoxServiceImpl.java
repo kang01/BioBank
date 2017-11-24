@@ -538,6 +538,7 @@ public class StockInBoxServiceImpl implements StockInBoxService {
             frozenBoxCheckService.checkFrozenBoxCodeRepead(map);
         }
         frozenBoxNew.setStatus(Constants.FROZEN_BOX_STOCKING);
+        frozenBoxNew.setLockFlag(Constants.FROZEN_BOX_LOCKED_FOR_SPLIT);
         frozenBoxNew = frozenBoxRepository.save(frozenBoxNew);
         if(stockInBoxSplitIn.getId() == null){
             stockInBoxSplitIn.setStockIn(stockIn);

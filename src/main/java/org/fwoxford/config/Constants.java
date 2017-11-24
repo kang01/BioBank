@@ -58,7 +58,7 @@ public final class Constants {
     public static final String FROZEN_BOX_STOCK_OUT_HANDOVER = "2010";
     public static final String FROZEN_BOX_DESTROY = "2012";
     /**
-     * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常
+     * 冻存管状态：3001：正常，3002：空管，3003：空孔；3004：异常; 3005:销毁
      */
     public static final  String FROZEN_TUBE_NORMAL = "3001" ;
     public static final  String FROZEN_TUBE_EMPTY = "3002" ;
@@ -352,4 +352,5 @@ public final class Constants {
 
     private Constants() {
     }
+
 }

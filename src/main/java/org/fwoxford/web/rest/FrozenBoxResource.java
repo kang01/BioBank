@@ -240,7 +240,7 @@ public class FrozenBoxResource {
     }
 
     /**
-     * c
+     * 输入完整的位置信息，返回某个盒子的信息
      * @param equipmentCode
      * @param areaCode
      * @param shelfCode
@@ -320,7 +320,6 @@ public class FrozenBoxResource {
         return ResponseEntity.ok(res);
 //        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(res));
     }
-
     /**
      * 获取指定冻存盒编码的冻存盒信息（包含本次入库单内待入库冻存盒，全部已入库未满，已出库，已交接冻存盒）
      * 如果冻存盒已满，提示冻存盒已满；

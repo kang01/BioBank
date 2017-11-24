@@ -219,7 +219,7 @@ public interface StockInTubeMapper {
         stockInTubeDTO.setIsMixed(stockInTube.getSampleType()!=null?stockInTube.getSampleType().getIsMixed():null);
         return stockInTubeDTO;
     }
-
+    //根据入库管构造盒内入库冻存管
     default List<StockInTubeForBox> stockInTubesToStockInTubesForBox(List<StockInTube> stockInTubes){
         if ( stockInTubes == null ) {
             return null;

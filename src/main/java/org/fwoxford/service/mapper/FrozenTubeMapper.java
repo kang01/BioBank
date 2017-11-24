@@ -162,6 +162,7 @@ public interface FrozenTubeMapper {
         return sampleClassification;
     }
 
+    //根据冻存管构造盒内入库冻存管
     default List<StockInTubeForBox> frozenTubesToStockInTubesForBox(List<FrozenTube> frozenTubeList){
         if ( frozenTubeList == null ) {
             return null;

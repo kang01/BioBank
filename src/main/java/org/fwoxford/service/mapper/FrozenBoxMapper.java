@@ -1,18 +1,10 @@
 package org.fwoxford.service.mapper;
-
-import org.fwoxford.config.Constants;
 import org.fwoxford.domain.*;
 import org.fwoxford.service.dto.FrozenBoxForSaveBatchDTO;
-import org.fwoxford.service.dto.FrozenTubeDTO;
-import org.fwoxford.service.dto.TranshipBoxDTO;
 import org.fwoxford.service.dto.response.*;
 import org.fwoxford.service.dto.FrozenBoxDTO;
 
-import org.fwoxford.web.rest.util.BankUtil;
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -192,7 +184,7 @@ public interface FrozenBoxMapper {
         sampleClassification.setId(id);
         return sampleClassification;
     }
-
+    //冻存盒转未满冻存盒
     default StockInBoxForIncomplete frozenBoxDTOToStockInBoxForIncomplete(FrozenBox frozenBox, List<StockInTubeForBox> stockInFrozenTubeList){
         if(frozenBox == null){
             return null;

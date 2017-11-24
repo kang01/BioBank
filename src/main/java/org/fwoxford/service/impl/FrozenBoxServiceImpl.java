@@ -954,7 +954,6 @@ public class FrozenBoxServiceImpl implements FrozenBoxService {
 
         return newBoxCode;
     }
-
     /**
      * 获取指定冻存盒编码的冻存盒信息（包含本次入库单内待入库冻存盒，全部已入库未满，已出库，已交接冻存盒）
      * @param frozenBoxCode

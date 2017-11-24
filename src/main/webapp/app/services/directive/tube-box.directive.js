@@ -40,6 +40,7 @@
                 gridData: [],
                 selectedTubes: [],
                 selectedTubeElements: [],
+                splitInformation: [],
                 refresh: _refresh,
                 loadData: _loadData,
                 rollbackToOriginalGridData: _rollbackToOriginalGridData,
@@ -51,10 +52,18 @@
                 getSelectedElements: _getSelectedElements,
                 getRangeCellData: _getRangeCellData,
                 getRangeCellElements: _getRangeCellElements,
+                getSplitInformation: _getSplitInformation,
                 selectRangeCell: _selectRangeCell,
                 selectAll: _selectAll,
+                deselectAll: _deselectAll,
                 exchangePos: _exchangePos,
+                exchangeCoord: _exchangeCoord,
                 exchangeSelectedTubePosition: _exchangeSelectedTubePosition,
+                splitToBox: _splitToBox,
+                splitSelectedTubesToBox: _splitSelectedTubesToBox,
+                setMemoOfTubeCell: _setMemoOfTubeCell,
+                getMemoOfTubeCell: _getMemoOfTubeCell,
+                setMemoOfSelectedTubes: _setMemoOfSelectedTubes,
             };
             $scope.htInstance = $scope.htInstance || {};
             $scope.htInstance.api = vm.api;
@@ -74,7 +83,7 @@
                 colWidths: 60,
                 columnHeaderHeight:25,
                 editor: 'tubeCellInput',
-                outsideClickDeselects:true,
+                outsideClickDeselects:false,
                 multiSelect: true,
                 comments: true,
                 afterInit: _onInit,
@@ -85,8 +94,10 @@
                 beforeValidate: _onTubeDataValidating,
                 renderer: _tubeCellRenderer,
                 onAfterSelectionEnd: _onTubeCellSelected,
+                afterDeselect: _onTubeCellDeselected,
                 beforeOnCellMouseDown: _onTubeCellClicking,
                 afterOnCellMouseDown: _onTubeCellClicked,
+                afterOnCellMouseOver: _onTubeCellMouseOver,
                 enterMoves: _onEnterMoves,
                 cells: _changeCellProperties,
             };
@@ -284,6 +295,107 @@
                 return coord;
             }
 
+            // 判断单元格是否为空
+            function _isEmptyTubeCell(row, col){
+                var cellData = null;
+                if (_.isObject(row)){
+                    cellData = row;
+                } else {
+                    cellData = _getTableCtrl().getDataAtCell(row, col);
+                }
+
+                return !cellData || cellData == "" || !Object.keys(cellData).length
+                || !cellData.status || (!cellData.sampleCode && !cellData.sampleTempCode);
+            }
+
+            // 找到一个盒子中的空余位置
+            function _findFreePosByCode(box, rowCode, colCode){
+                var indexOfRow = 0;
+                var indexOfCol = 0;
+                if (rowCode || colCode){
+                    var temp = _convertTubePositionToCoordinate(rowCode, colCode);
+                    indexOfRow = temp.row || 0;
+                    indexOfCol = temp.col || 0;
+                }
+
+                return _findFreePos(box, indexOfRow, indexOfCol);
+            }
+            function _findFreePos(box, row, col){
+                var indexOfRow = row || 0;
+                var indexOfCol = col || 0;
+                var countOfRows = +box.frozenBoxTypeRows;
+                var countOfCols = +box.frozenBoxTypeColumns;
+                var tubesInDesBox = box.frozenTubeDTOS;
+                // tubesInDesBox = _.sortBy(tubesInDesBox, ["tubeRows", function(o){return +o.tubeColumns}]);
+                var splitInfo = _getSplitInformation();
+                // 根据盒子的信息过滤分装记录
+                if (box.id){
+                    splitInfo = _.filter(splitInfo, {toBoxId: box.id});
+                } else {
+                    splitInfo = _.filter(splitInfo, {toBoxCode: box.frozenBoxCode});
+                }
+
+                var hasTubeInPos = true;
+                var posCode = null;
+                for (indexOfRow; indexOfRow < countOfRows; ++indexOfRow){
+                    for (indexOfCol; indexOfCol < countOfCols; ++indexOfCol){
+                        posCode = _convertCoordinateToTubePosition(indexOfRow, indexOfCol);
+                        // 查找原盒管子是否有占位
+                        var tube = _.find(tubesInDesBox, function(t) {
+                            return (t.tubeRows == posCode.row) && (+t.tubeColumns == +posCode.col);
+                        });
+                        if (tube && tube.length){
+                            hasTubeInPos = true;
+                        } else {
+                            // 查找已分装的管子是否有占位
+                            tube = _.find(splitInfo, {toRow: indexOfRow, toCol: indexOfCol});
+                            hasTubeInPos = !!(tube && tube.length);
+                        }
+                        if (!hasTubeInPos){
+                            break;
+                        }
+                    }
+                    if (!hasTubeInPos){
+                        break;
+                    } else if (indexOfCol == countOfCols){
+                        indexOfCol = 0;
+                    }
+                }
+                if (hasTubeInPos){
+                    return false;
+                }
+
+                return {row: indexOfRow, col: indexOfCol, rowCode:posCode.row, colCode: posCode.col};
+            }
+
+            // 清除单元格的选中状态
+            function _clearSelectedStatus(){
+                var tableCtrl = _getTableCtrl();
+                var selectedTubes = vm.api.selectedTubes;
+                var selectedTubeElements = vm.api.selectedTubeElements;
+                selectedTubes.length = 0;
+                selectedTubeElements.length = 0;
+                $(tableCtrl.rootElement).find(".temp.selected-sample-color").remove();
+            }
+
+            // 调整备注显示的位置
+            function _adjustCommentPosition(row, col, td){
+                var tableCtrl = _getTableCtrl();
+                var latestCol = tableCtrl.countCols() - 1;
+                var tube = tableCtrl.getDataAtCell(row, col);
+                var $td = $(td);
+
+                if (tube && tube.memo && col == latestCol){
+                    setTimeout(function(){
+                        var commentsPlugin = tableCtrl.getPlugin("comments");
+                        var $editor = $(commentsPlugin.editor.editor);
+                        var editorStyle = commentsPlugin.editor.editorStyle;
+                        var widthOfEditor = $editor.width();
+                        var left = $td.offset().left - widthOfEditor;
+                        editorStyle.left = left + "px";
+                    }, 500);
+                }
+            }
 
             //================表格配置==================//
             // 当初始化完成时触发
@@ -345,8 +457,7 @@
                 if (!newValue || !newValue.sampleCode || !newValue.sampleCode.length){
                     newValue = {};
                     changes[0][3] = newValue;
-                } else if (!oldValue || oldValue == "" || !Object.keys(oldValue).length
-                    || !oldValue.status || (!oldValue.sampleCode && !oldValue.sampleTypeCode)){
+                } else if (_isEmptyTubeCell(oldValue)){
                     // 新建样本
                     var tube = {};
                     if (newValue.sampleCode && newValue.sampleCode.length){
@@ -380,6 +491,7 @@
                 if (!newValue || !newValue.sampleCode || !newValue.sampleCode.length){
                     newValue = {};
                     tableCtrl.setDataAtCell(row, col, {}, "auto");
+                    return;
                 }
                 // 当修改的是99类型的样本，当前行的样本编码需要一致
                 if ($scope.dataBox.sampleTypeCode == "99"){
@@ -392,7 +504,7 @@
                         if (!newValue || !newValue.sampleCode || !newValue.sampleCode.length){
                             tableCtrl.setDataAtCell(row, i, {}, "auto");
                         } else {
-                            if (!t || t == "" || !Object.keys(t).length){
+                            if (_isEmptyTubeCell(t)){
                                 t = _buildNewTubeData($scope.dataBox, newValue.sampleCode,
                                     vm.api.rowHeaders[row], vm.api.columnHeaders[i]);
                             } else {
@@ -483,9 +595,7 @@
 
                 if (tableSettings.isCellStatusEditable){
                     // 在修改状态时不能多选
-                    selectedTubes.length = 0;
-                    selectedTubeElements.length = 0;
-                    $(tableCtrl.rootElement).find(".temp.selected-sample-color").remove();
+                    _clearSelectedStatus();
                     return;
                 }
 
@@ -493,9 +603,7 @@
                     _multiSelect = false;
                 } else {
                     // 不是跳格多选时，清空之前选中的内容
-                    $(tableCtrl.rootElement).find(".temp.selected-sample-color").remove();
-                    selectedTubes.length = 0;
-                    selectedTubeElements.length = 0;
+                    _clearSelectedStatus();
                 }
 
                 var startRow = Math.min(row, row2);
@@ -515,10 +623,12 @@
 
                         var code = (tube.sampleCode||"") + (tube.sampleTempCode||"");
                         if (!_.trim(code).length){
+                            // selectedTubeElements.push(cell);
                             continue;
+                        } else {
+                            selectedTubes.push(tube);
+                            selectedTubeElements.push(cell);
                         }
-                        selectedTubes.push(tube);
-                        selectedTubeElements.push(cell);
 
                         // 给选中的样本增加选中标记
                         if (!$(cell).find(".temp.selected-sample-color").length){
@@ -528,11 +638,18 @@
                 }
             }
 
+            // 当撤销单元格选中后，触发这个响应
+            function _onTubeCellDeselected(){
+                _clearSelectedStatus();
+                return;
+            }
+
             // 当点击一个单元格后，触发这个响应
             function _onTubeCellClicked(event, coords, td){
                 var tableSettings = _getSettings();
                 var tableCtrl = _getTableCtrl();
                 var tube = tableCtrl.getDataAtCell(coords.row, coords.col);
+                _adjustCommentPosition(coords.row, coords.col, td);
 
                 if (tableSettings.isCellStatusEditable && tube.status){
                     switch (tube.status+""){
@@ -553,7 +670,11 @@
                     }
                     tableCtrl.setDataAtCell(coords.row, coords.col, tube, "auto");
                 }
+            }
 
+            // 当点击一个单元格后，触发这个响应
+            function _onTubeCellMouseOver(event, coords, td){
+                _adjustCommentPosition(coords.row, coords.col, td);
             }
 
             // 当点击一个单元格时，触发这个响应
@@ -672,11 +793,12 @@
                     var gridData = new Array(boxRows);
                     gridData = _.map(gridData, function (e,i) {
                         return _.map(new Array(boxCols), function(m,j){
-                            var coord = _convertCoordinateToTubePosition(i,j);
-                            return {
-                                tubeRows: coord.row,
-                                tubeColumns: coord.col
-                            };
+                            return {};
+                            // var coord = _convertCoordinateToTubePosition(i,j);
+                            // return {
+                            //     tubeRows: coord.row,
+                            //     tubeColumns: coord.col
+                            // };
                         });
                     });
                     // 填充加载的数据
@@ -714,12 +836,49 @@
 
             // 获取选中的管子数据
             function _getSelectedData(){
-                return vm.api.selectedTubes;
+                var selectedData = [];
+                if (vm.api.selectedTubes && vm.api.selectedTubes.length){
+                    _.each(vm.api.selectedTubes, function(t){
+                        var pos = _convertTubePositionToCoordinate(t.tubeRows, t.tubeColumns);
+                        pos.data = _.cloneDeep(t);
+                        selectedData.push(pos);
+                    });
+                }
+                return selectedData;
             }
 
             // 获取选中的管子DOM元素
             function _getSelectedElements(){
-                return vm.api.selectedTubeElements;
+                var selectedElements = [];
+                var tableCtrl = _getTableCtrl();
+                var selectCellRange = tableCtrl.getSelectedRange();
+
+                if (vm.api.selectedTubeElements && vm.api.selectedTubeElements.length){
+                    _.each(vm.api.selectedTubeElements, function(e){
+                        var pos = tableCtrl.getCoords(e);
+                        pos.element = e;
+                        selectedElements.push(pos);
+                    });
+                }
+
+                if (selectCellRange){
+                    var startRow = Math.min(selectCellRange.from.row, selectCellRange.to.row);
+                    var endRow = Math.max(selectCellRange.from.row, selectCellRange.to.row);
+                    var startCol = Math.min(selectCellRange.from.col, selectCellRange.to.col);
+                    var endCol = Math.max(selectCellRange.from.col, selectCellRange.to.col);
+
+                    for(var i = startRow; i <= endRow; ++i){
+                        for(var j = startCol; j <= endCol; ++j){
+                            var pos = {row:i, col:j};
+                            if (_.some(selectedElements, pos)){
+                                continue;
+                            }
+                            pos.element = tableCtrl.getCell(i,j);
+                            selectedElements.push(pos);
+                        }
+                    }
+                }
+                return selectedElements;
             }
 
             // 获取一个范围中的管子数据
@@ -766,6 +925,11 @@
                 return cells;
             }
 
+            // 获取样本的分装信息
+            function _getSplitInformation(){
+                return vm.api.splitInformation;
+            }
+
             // 获取表格中的所有数据
             function _getGridData(){
                 var tableCtrl = _getTableCtrl();
@@ -776,6 +940,40 @@
             function _getSettings(){
                 var tableCtrl = _getTableCtrl();
                 return vm.settings || tableCtrl.getSettings();
+            }
+
+            // 修改样本的备注信息
+            function _setMemoOfSelectedTubes(memo){
+                var tubes = _getSelectedData();
+                _.each(tubes, function(t){
+                    if (t.data && t.data.flag == 2){
+                        return;
+                    }
+                    _setMemoOfTubeCell(t.row, t.col, memo);
+                });
+                _deselectAll();
+            }
+            function _setMemoOfTubeCell(row, col, memo){
+                var tableCtrl = _getTableCtrl();
+                var commentsPlugin = tableCtrl.getPlugin('comments');
+                var data = tableCtrl.getDataAtCell(row, col);
+
+                if (data.flag == 2){
+                    toastr.error("原盒样本不能添加备注。");
+                    return;
+                }
+
+                data.memo = memo;
+                tableCtrl.setDataAtCell(row, col, data, "auto");
+                commentsPlugin.setCommentAtCell(row, col, memo);
+            }
+
+            // 获取样本的备注信息
+            function _getMemoOfTubeCell(row, col){
+                var tableCtrl = _getTableCtrl();
+                var data = tableCtrl.getDataAtCell(row, col);
+
+                return data.memo;
             }
 
             // 修改配置信息
@@ -825,48 +1023,256 @@
                 _selectRangeCell(0,0,rows-1,cols-1);
             }
 
+            // 撤销选中
+            function _deselectAll() {
+                _getTableCtrl().deselectCell();
+            }
+
+            // 根据孔位进行位置交换
             function _exchangePos(srcRow, srcCol, desRow, desCol){
                 var srcPos = _convertTubePositionToCoordinate(srcRow, srcCol);
                 var desPos = _convertTubePositionToCoordinate(desRow, desCol);
-                var tableCtrl = _getTableCtrl();
-                var settings = _getSettings();
-                var columns = settings.colHeaders;
-                var rows = settings.rowHeaders;
-                var tubeA = tableCtrl.getDataAtCell(srcPos.row, srcPos.col);
-                var tubeB = tableCtrl.getDataAtCell(desPos.row, desPos.col);
-                var temp = {};
 
-                if (tubeA.flag == 2){
-                    toastr.error("原盒中的管子不能移位。");
-                    return;
-                }
-
-                tubeA.tubeColumns = desCol;
-                tubeA.tubeRows = desRow;
-                tubeB.tubeColumns = srcCol;
-                tubeB.tubeRows = srcRow;
-
-                tableCtrl.setDataAtCell([
-                    [srcPos.row, srcPos.col, {}],
-                    [desPos.row, desPos.col, {}],
-                    [srcPos.row, srcPos.col, tubeB],
-                    [desPos.row, desPos.col, tubeA]]);
-                // tableCtrl.setDataAtCell([[srcRow, srcCol, tubeB], [desRow, desCol, tubeA]]);
+                return _exchangeCoord(srcPos, desPos);
             }
 
+            // 根据横纵坐标交换位置
+            function _exchangeCoord(srcPos, desPos){
+                var tableCtrl = _getTableCtrl();
+                var tubeA = tableCtrl.getDataAtCell(srcPos.row, srcPos.col);
+                var tubeB = tableCtrl.getDataAtCell(desPos.row, desPos.col);
+
+                if (tubeA.flag == 2 || tubeB.flag == 2){
+                    toastr.error("原盒中的管子不能移位。");
+                    return false;
+                }
+
+                tableCtrl.setDataAtCell(srcPos.row, srcPos.col, {}, "auto");
+                tableCtrl.setDataAtCell(desPos.row, desPos.col, {}, "auto");
+                if (!_isEmptyTubeCell(tubeA)){
+                    var tempPos = _convertCoordinateToTubePosition(desPos.row, desPos.col);
+                    tubeA.tubeRows = tempPos.row;
+                    tubeA.tubeColumns = tempPos.col;
+                    tableCtrl.setDataAtCell(desPos.row, desPos.col, tubeA, "auto");
+                }
+                if (!_isEmptyTubeCell(tubeB)){
+                    var tempPos = _convertCoordinateToTubePosition(srcPos.row, srcPos.col);
+                    tubeB.tubeRows = tempPos.row;
+                    tubeB.tubeColumns = tempPos.col;
+                    tableCtrl.setDataAtCell(srcPos.row, srcPos.col, tubeB, "auto");
+                }
+
+                return true;
+            }
+
+            // 将选中的两个单元格交换
             function _exchangeSelectedTubePosition(){
-                var tubes = _getSelectedData();
+                var tubes = _getSelectedElements();
                 if (tubes.length > 2){
                     toastr.error("选中的管子多于2个。");
-                    return;
+                    return false;
                 }
 
-                if (-1 != _.indexOf(tubes, {flag: 2})){
-                    toastr.error("原盒中的管子不能移位。");
-                    return;
+                var srcCoord = tubes[0];
+                var desCoord = tubes[1];
+                if (_exchangeCoord(srcCoord, desCoord)){
+                    _deselectAll();
                 }
 
-                _exchangePos(tubes[0].tubeRows, tubes[0].tubeColumns, tubes[1].tubeRows, tubes[1].tubeColumns)
+                return true;
+            }
+
+            // 分装到指定盒子
+            function _splitToBox(srcTubes, desBox, desRowCode, desColCode, desProjectSampleTypeOptions){
+                var errorMsg = [];
+                var splitInfos = [];
+                var remainTubrs = [];
+
+                var box = $scope.dataBox;
+                var srcIsMixed = box.isMixed;
+                var srcFrozenBoxTypeId = box.frozenBoxTypeId;
+
+                var desProjectId = desBox.projectId;
+                var desSampleTypeId = desBox.sampleTypeId;
+                var desSampleTypeCode = desBox.sampleTypeCode;
+                var desSampleClassificationId = desBox.sampleClassificationId;
+                var desIsMixed = desBox.isMixed;
+                var desFrozenBoxTypeId = desBox.frozenBoxTypeId;
+                var toRow = 0;
+                var toCol = 0;
+
+                // 从给定的起始位置找到最近的空余孔位
+                var freePos = _findFreePosByCode(desBox, desRowCode, desColCode);
+                if (!freePos){
+                    toastr.error("目标盒子没有可用的空间。");
+                    return false;
+                }
+                toRow = freePos.row;
+                toCol = freePos.col;
+                desRowCode = freePos.rowCode;
+                desColCode = freePos.colCode;
+
+                // 某些类型的盒子不能接收分装样本。
+                if (desSampleTypeCode == "99"){
+                    toastr.error("不能分装到99类型的盒子中。");
+                    return false;
+                }
+
+                // 有样本分类定义的混合类型冻存盒不能接收分装样本。
+                if (desIsMixed && desSampleTypeCode != "97" && desSampleTypeCode != "98"){
+                    toastr.error("不能分装到有样本分类的混合类型盒子中。");
+                    return false;
+                }
+
+                // 被分装盒应该与目标盒的类型一致，因为管子尺寸不一样，不能随意分装。
+                if (srcFrozenBoxTypeId != desFrozenBoxTypeId){
+                    toastr.error("目标盒子的类型与被分装盒子的类型不一致。");
+                    return false;
+                }
+
+
+                _.each(srcTubes, function(t){
+
+                    var srcTube = t.data;
+                    var srcProjectId = srcTube.projectId;
+                    var srcSampleTypeId = srcTube.sampleTypeId;
+                    var srcSampleTypeCode = srcTube.sampleTypeCode;
+                    var srcSampleClassificationId = srcTube.sampleClassificationId;
+                    var srcTubePosCode = srcTube.tubeRows + srcTube.tubeColumns;
+
+                    // 99,98,97的目标盒不用对孔位进行检查
+                    switch (desSampleTypeCode){
+                        case "99":
+                        case "97":
+                        case "98":
+                            break;
+                        default:
+                            // 验证项目类型是否一致
+                            if (srcProjectId != desProjectId){
+                                errorMsg.push(srcTubePosCode + "样本的项目和目标盒子的项目不一致。");
+                            }
+
+                            // 98,97的被分装的样本盒不用对孔位进行检查
+                            switch (srcSampleTypeCode){
+                                case "97":
+                                case "98":
+                                    break;
+                                default:
+                                    if (!srcIsMixed && srcSampleTypeId && srcSampleTypeId != desSampleTypeId){
+                                        // 被分装盒不是混合类型时，样本的类型应该一致
+                                        errorMsg.push(srcTubePosCode + "样本的类型和目标盒子的类型不一致。");
+                                    }
+                                    if (srcSampleClassificationId != desSampleClassificationId){
+                                        // 样本的分类应该一致
+                                        errorMsg.push(srcTubePosCode + "样本的分类和目标盒子的分类不一致。");
+                                    }
+                            }
+
+                            break;
+                    }
+
+                    // 样本有问题不能继续分装
+                    if (errorMsg.length){
+                        return;
+                    }
+
+                    var desPos = _findFreePos(desBox, toRow, toCol);
+                    var hasTubeInPos = !desPos;
+                    if (hasTubeInPos){
+                        // 没有空间后就记录剩余样本并退出
+                        remainTubrs.push(t);
+                        return;
+                    }
+
+                    // 更新起始位置
+                    toRow = desPos.row;
+                    toCol = desPos.col;
+
+                    // 构建分装样本
+                    var desTube = _.cloneDeep(srcTube);
+                    desTube.frozenBoxCode = desBox.frozenBoxCode;
+                    desTube.tubeRows = desPos.rowCode;
+                    desTube.tubeColumns = desPos.colCode;
+
+                    // 创建分装信息
+                    var temp = _convertTubePositionToCoordinate(srcTube.tubeRows, srcTube.tubeColumns);
+                    var splitInfo = {
+                        fromBoxId: box.id,
+                        fromBoxCode: box.frozenBoxCode,
+                        fromRow: temp.row,
+                        fromCol: temp.col,
+                        fromRowCode: srcTube.tubeRows,
+                        fromColCode: srcTube.tubeColumns,
+                        srcData: srcTube,
+
+                        toBoxId: desBox.id,
+                        toBoxCode: desBox.frozenBoxCode,
+                        toRow,toCol,
+                        toRowCode: desPos.rowCode,
+                        toColCode: desPos.colCode,
+                        desData: desTube
+                    };
+
+                    splitInfos.push(splitInfo);
+                });
+
+                // 显示分装的错误信息
+                if (errorMsg && errorMsg.length){
+                    var msg = _.reduce(errorMsg, function(result, value, key){
+                        return result + "<br/><br/>" + value});
+                    toastr.error(msg,"", {allowHtml:true});
+                    return false;
+                    // _.each(errorMsg, function(e){toastr.error(e)});
+                }
+
+                // 目标盒已经装满，但还剩余有未装完的管子
+                if (srcTubes.length != splitInfos.length){
+                    toastr.warning("目标盒已满，还有" + (srcTubes.length - splitInfos.length) + "个未分装的样本。");
+                }
+
+                // 记录分装信息
+                if (!vm.api.splitInformation || vm.api.splitInformation.length){
+                    vm.api.splitInformation = [];
+                }
+                vm.api.splitInformation = _.concat(vm.api.splitInformation, splitInfos);
+
+                var result = {
+                    desBoxId: desBox.id,
+                    desBoxCode: desBox.frozenBoxCode,
+                    desRowCode: desRowCode,
+                    desColCode: desColCode,
+
+                    countOfSrcTubes: srcTubes.length,
+                    countOfSplitTubes: splitInfos.length,
+                    countOfRemainTubes: srcTubes.length - splitInfos.length,
+
+                    splitInformation: splitInfos,
+                    remainTubes: remainTubrs
+                };
+
+                // 更新表格单元格的选中状态。
+                var tableCtrl = _getTableCtrl();
+                _.each(splitInfos, function(st){
+                    tableCtrl.setDataAtCell(st.fromRow, st.fromCol, {}, "auto");
+                });
+                if (remainTubrs && remainTubrs.length){
+                    var coords = _.map(remainTubrs, function(rt){
+                        var c = _convertTubePositionToCoordinate(rt.tubeRows, rt.tubeColumns);
+                        return [c.row, c.col];
+                    });
+                    _deselectAll();
+                    _selectRangeCell(coords);
+                } else {
+                    _deselectAll();
+                }
+
+                return result;
+            }
+
+            // 分装选中的样本
+            function _splitSelectedTubesToBox(desBox, desRowCode, desColCode){
+                var srcTubes = _getSelectedData();
+                return _splitToBox(srcTubes, desBox, desRowCode, desColCode);
             }
 
         }

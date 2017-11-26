@@ -866,8 +866,9 @@
                 // tableSettings.colWidths = colWidths;
                 tableSettings.width = maxWidth;
                 tableCtrl.updateSettings(tableSettings);
-                tableCtrl.loadData(tubesInTable);
+                tableCtrl.loadData(vm.frozenTubeArray);
                 tableCtrl.render();
+                vm.boxStr = JSON.stringify(vm.frozenTubeArray);
             },500);
         }
 
@@ -1109,6 +1110,7 @@
                 sampleCode: "",
                 sampleTempCode: "",
                 sampleTypeId: box.sampleType.id,
+                sampleType:box.sampleType,
                 sampleTypeCode: box.sampleType.sampleTypeCode,
                 frozenBoxId: box.id,
                 frozenBoxCode: box.frozenBoxCode,
@@ -1119,6 +1121,7 @@
                 tubeColumns: pos.tubeColumns
             };
             if(box.sampleClassification){
+                tube.sampleClassification = box.sampleClassification;
                 tube.sampleClassificationId = box.sampleClassification.id;
                 tube.sampleClassificationCode = box.sampleClassification.sampleClassificationCode;
             }
@@ -1131,6 +1134,7 @@
                 tube.memo = tubeInBox.memo;
                 tube.flag = tubeInBox.flag;
                 if(tubeInBox.sampleClassification){
+                    tube.sampleClassification = box.sampleClassification;
                     tube.sampleClassificationId = tubeInBox.sampleClassification.id;
                     tube.sampleClassificationCode = tubeInBox.sampleClassification.sampleClassificationCode;
                 }
@@ -1586,6 +1590,7 @@
 
                 //更改被分装的盒子的样本数
                 var tubes = _.flattenDeep(angular.copy(vm.frozenTubeArray));
+                vm.bySplitTubes = tubes;
                 //现有样本
                 var notEmptyTubes = [];
                 var notEmptyTubeLength;
@@ -1608,13 +1613,13 @@
                 }
 
                 //更新新增盒子的入库盒子ID
-                // for(var m = 0; m < vm.stockInBox.length; m++){
-                //     for(var n = 0; n < data.length; n++){
-                //         if(vm.stockInBox[m].frozenBoxCode == data[n].frozenBoxCode){
-                //             vm.stockInBox[m].id = data[n].id;
-                //         }
-                //     }
-                // }
+                for(var m = 0; m < vm.stockInBox.length; m++){
+                    for(var n = 0; n < data.length; n++){
+                        if(vm.stockInBox[m].frozenBoxCode == data[n].frozenBoxCode){
+                            vm.stockInBox[m].id = data[n].id;
+                        }
+                    }
+                }
 
                 vm.dtOptions.withOption('data',vm.stockInBox)
                     .withOption('serverSide',false);
@@ -1632,7 +1637,7 @@
                 if(!len){
                     vm.splittingBox = false;
                 }
-
+                vm.box.frozenTubeDTOS  =  vm.bySplitTubes;
                 vm.boxList = [];
                 vm.frozenBoxCode = "";
                 $(".box-selected").removeClass("box-selected");
@@ -1657,34 +1662,39 @@
         };
         //关闭
         vm.closeBox = function () {
-
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/bizs/stock-in/modal/stock-in-close-splittingBox-modal.html',
-                controller: 'CloseSplittingBoxController',
-                controllerAs:'vm',
-                backdrop:'static',
-                size:'sm',
-                resolve: {
-                    items: function () {
-                        return {
-                            status :2
-                        };
-                    }
-                }
-            });
-            modalInstance.result.then(function (flag) {
-                if(flag) {
-                    SplitedBoxService.saveSplit(vm.stockInCode, vm.box.frozenBoxCode, vm.boxList).then(function (data) {
-
-                        toastr.success("保存成功!");
-                    });
-                }
-                vm.tableRender();
+            var boxStr = JSON.stringify(vm.frozenTubeArray);
+            if(boxStr == vm.boxStr){
                 vm.splittingBox = false;
-            },function () {
-                vm.tableRender();
-            });
+            }else{
+                modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/bizs/stock-in/modal/stock-in-close-splittingBox-modal.html',
+                    controller: 'CloseSplittingBoxController',
+                    controllerAs:'vm',
+                    backdrop:'static',
+                    size:'sm',
+                    resolve: {
+                        items: function () {
+                            return {
+                                status :2
+                            };
+                        }
+                    }
+                });
+                modalInstance.result.then(function (flag) {
+                    if(flag) {
+                        SplitedBoxService.saveSplit(vm.stockInCode, vm.box.frozenBoxCode, vm.boxList).then(function (data) {
+
+                            toastr.success("保存成功!");
+                        });
+                    }
+                    vm.tableRender();
+                    vm.splittingBox = false;
+                },function () {
+                    vm.tableRender();
+                });
+            }
+
         };
         //全选
         vm.selectSampleAll = function () {
@@ -1830,9 +1840,43 @@
 
         //分装时，编辑box
         vm.editBoxOperate = function () {
-            vm.editFlag = true;
-            vm.showFlag = true;
-            vm.splittingBox = false;
+            var boxStr = JSON.stringify(vm.frozenTubeArray);
+            if(boxStr == vm.boxStr){
+                vm.editFlag = true;
+                vm.showFlag = true;
+                vm.splittingBox = false;
+            }else{
+                modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/bizs/stock-in/modal/stock-in-close-splittingBox-modal.html',
+                    controller: 'CloseSplittingBoxController',
+                    controllerAs:'vm',
+                    backdrop:'static',
+                    size:'sm',
+                    resolve: {
+                        items: function () {
+                            return {
+                                status :3
+                            };
+                        }
+                    }
+                });
+                modalInstance.result.then(function (flag) {
+                    if(flag) {
+                        // SplitedBoxService.saveSplit(vm.stockInCode, vm.box.frozenBoxCode, vm.boxList).then(function (data) {
+                        //
+                        //     toastr.success("保存成功!");
+                        // });
+                        vm.saveBox();
+                    }
+                    vm.editFlag = true;
+                    vm.showFlag = true;
+                    vm.splittingBox = false;
+                },function () {
+
+                });
+            }
+
         };
 
 

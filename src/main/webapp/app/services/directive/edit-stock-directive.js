@@ -37,6 +37,7 @@
         var vm = this;
         var modalInstance;
         vm.obox = $scope.stockInBox;
+        // var strBox = JSON.stringify(vm.obox);
         vm.entity = $scope.stockInInfo;
         var stockInBox1 = angular.copy($scope.stockInBox);
         var stockInBox2 = angular.copy($scope.stockInBox);
@@ -752,6 +753,7 @@
         }
         // 重新加载管子表控件
         vm.reloadTubesForTable = _reloadTubesForTable;
+        var strBox;
         function _reloadTubesForTable(box){
 
             var tableCtrl = _getTableCtrl();
@@ -813,6 +815,8 @@
             tableCtrl.updateSettings(settings);
             tableCtrl.loadData(tubesInTable);
             _initSampleType();
+            vm.obox.frozenTubeDTOS =  _.flattenDeep(angular.copy(vm.frozenTubeArray));
+            strBox = JSON.stringify(vm.obox);
         }
 
         //批量编辑录入样本
@@ -1279,38 +1283,39 @@
 
         }
         //关闭
-        vm.closeBox = function () {
-            if(stockInBox1.frozenTubeDTOS){
-                for(var i = 0; i < stockInBox1.frozenTubeDTOS.length;i++){
-                    delete stockInBox1.frozenTubeDTOS[i].createdBy;
-                    delete stockInBox1.frozenTubeDTOS[i].createdDate;
-                    delete stockInBox1.frozenTubeDTOS[i].lastModifiedBy;
-                    delete stockInBox1.frozenTubeDTOS[i].lastModifiedDate;
-                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeCode;
-                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeName;
-                    delete stockInBox1.frozenTubeDTOS[i].sampleUsedTimesMost;
-                    delete stockInBox1.frozenTubeDTOS[i].sampleUsedTimes;
-                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeVolumns;
-                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeVolumnsUnit;
-                    delete stockInBox1.frozenTubeDTOS[i].errorType;
-                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeState;
-                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeId;
-                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeType;
-                    delete stockInBox1.frozenTubeDTOS[i].sampleType;
-                    delete stockInBox1.frozenTubeDTOS[i].projectCode;
-                    delete stockInBox1.frozenTubeDTOS[i].frozenTubeCode;
-                    delete stockInBox1.frozenTubeDTOS[i].projectSiteCode;
-                    delete stockInBox1.frozenTubeDTOS[i].stockInBoxId;
-                    delete stockInBox1.frozenTubeDTOS[i].isMixed;
-                    delete stockInBox1.frozenTubeDTOS[i].frontColorForClass;
-                    delete stockInBox1.frozenTubeDTOS[i].frontColor;
-                    delete stockInBox1.frozenTubeDTOS[i].sampleClassification;
-                }
-            }
-
-            var strBox = JSON.stringify(stockInBox1);
-            _fnChangeData();
+        vm.closeBox = function (status) {
+            // if(stockInBox1.frozenTubeDTOS){
+            //     for(var i = 0; i < stockInBox1.frozenTubeDTOS.length;i++){
+            //         delete stockInBox1.frozenTubeDTOS[i].createdBy;
+            //         delete stockInBox1.frozenTubeDTOS[i].createdDate;
+            //         delete stockInBox1.frozenTubeDTOS[i].lastModifiedBy;
+            //         delete stockInBox1.frozenTubeDTOS[i].lastModifiedDate;
+            //         delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeCode;
+            //         delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeName;
+            //         delete stockInBox1.frozenTubeDTOS[i].sampleUsedTimesMost;
+            //         delete stockInBox1.frozenTubeDTOS[i].sampleUsedTimes;
+            //         delete stockInBox1.frozenTubeDTOS[i].frozenTubeVolumns;
+            //         delete stockInBox1.frozenTubeDTOS[i].frozenTubeVolumnsUnit;
+            //         delete stockInBox1.frozenTubeDTOS[i].errorType;
+            //         delete stockInBox1.frozenTubeDTOS[i].frozenTubeState;
+            //         delete stockInBox1.frozenTubeDTOS[i].frozenTubeTypeId;
+            //         delete stockInBox1.frozenTubeDTOS[i].frozenTubeType;
+            //         delete stockInBox1.frozenTubeDTOS[i].sampleType;
+            //         delete stockInBox1.frozenTubeDTOS[i].projectCode;
+            //         delete stockInBox1.frozenTubeDTOS[i].frozenTubeCode;
+            //         delete stockInBox1.frozenTubeDTOS[i].projectSiteCode;
+            //         delete stockInBox1.frozenTubeDTOS[i].stockInBoxId;
+            //         delete stockInBox1.frozenTubeDTOS[i].isMixed;
+            //         delete stockInBox1.frozenTubeDTOS[i].frontColorForClass;
+            //         delete stockInBox1.frozenTubeDTOS[i].frontColor;
+            //         delete stockInBox1.frozenTubeDTOS[i].sampleClassification;
+            //     }
+            // }
+            //
+            // var strBox = JSON.stringify(stockInBox1);
+            // _fnChangeData();
             // angular.extend(stockInBox2,vm.obox);
+            vm.obox.frozenTubeDTOS =  _.flattenDeep(angular.copy(vm.frozenTubeArray));
             var boxStr = JSON.stringify(vm.obox);
             if(strBox == boxStr){
                 $scope.showFlag = false;
@@ -1327,7 +1332,7 @@
                         resolve: {
                             items: function () {
                                 return {
-                                    status :1
+                                    status :status
                                 };
                             }
                         }
@@ -1353,6 +1358,7 @@
         vm.subPackage = function () {
             $scope.editFlag = false;
             $scope.showFlag = false;
+            vm.closeBox(4);
             $scope.editToSpiltTube();
         };
 

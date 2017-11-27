@@ -256,4 +256,13 @@ public class StockOutHandoverDTO extends AbstractAuditingDTO implements Serializ
             ", stockOutPlanCode=" + stockOutPlanCode +
             '}';
     }
+    private Integer countOfHandoverSample;
+
+    public Integer getCountOfHandoverSample() {
+        return countOfHandoverSample;
+    }
+
+    public void setCountOfHandoverSample(Integer countOfHandoverSample) {
+        this.countOfHandoverSample = countOfHandoverSample;
+    }
 }

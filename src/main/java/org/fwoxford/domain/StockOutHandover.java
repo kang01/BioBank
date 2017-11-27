@@ -267,6 +267,23 @@ public class StockOutHandover extends AbstractAuditingEntity implements Serializ
             ", invalidReason='" + invalidReason + "'" +
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
+            ", countOfHandoverSample='" + countOfHandoverSample + "'" +
             '}';
+    }
+    /**
+     * 交接样本量
+     */
+    @Column(name = "count_of_handover_sample")
+    private Integer countOfHandoverSample;
+
+    public Integer getCountOfHandoverSample() {
+        return countOfHandoverSample;
+    }
+    public StockOutHandover countOfHandoverSample(Integer countOfHandoverSample) {
+        this.countOfHandoverSample = countOfHandoverSample;
+        return this;
+    }
+    public void setCountOfHandoverSample(Integer countOfHandoverSample) {
+        this.countOfHandoverSample = countOfHandoverSample;
     }
 }

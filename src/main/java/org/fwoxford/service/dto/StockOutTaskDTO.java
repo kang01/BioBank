@@ -189,6 +189,33 @@ public class StockOutTaskDTO extends AbstractAuditingDTO implements Serializable
             ", stockOutHeader2='" + stockOutHeader2 + "'" +
             ", stockOutHeader1='" + stockOutHeader1 + "'" +
             ", stockOutApplyCode='" + stockOutApplyCode + "'" +
+            ", countOfStockOutSample='" + countOfStockOutSample + "'" +
+            ", countOfHandOverSample='" + countOfHandOverSample + "'" +
             '}';
+    }
+
+    /**
+     * 出库样本量
+     */
+    private Integer countOfStockOutSample;
+    /**
+     * 已交接样本量
+     */
+    private Integer countOfHandOverSample;
+
+    public Integer getCountOfStockOutSample() {
+        return countOfStockOutSample;
+    }
+
+    public void setCountOfStockOutSample(Integer countOfStockOutSample) {
+        this.countOfStockOutSample = countOfStockOutSample;
+    }
+
+    public Integer getCountOfHandOverSample() {
+        return countOfHandOverSample;
+    }
+
+    public void setCountOfHandOverSample(Integer countOfHandOverSample) {
+        this.countOfHandOverSample = countOfHandOverSample;
     }
 }

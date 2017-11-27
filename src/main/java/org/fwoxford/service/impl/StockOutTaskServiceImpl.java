@@ -262,11 +262,12 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         if(stockOutPlan == null){
             throw new BankServiceException("查询计划失败！");
         }
+
         StockOutTask stockOutTask = new StockOutTask();
         stockOutTask.status(Constants.STOCK_OUT_TASK_NEW)
             .stockOutTaskCode(bankUtil.getUniqueID("F"))
             .stockOutPlan(stockOutPlan).usedTime(0)
-            .stockOutDate(LocalDate.now());
+            .stockOutDate(LocalDate.now()).countOfStockOutSample(0);
 
         stockOutTask = stockOutTaskRepository.save(stockOutTask);
         List<StockOutTaskFrozenTube> tubes = new ArrayList<StockOutTaskFrozenTube>();
@@ -280,7 +281,12 @@ public class StockOutTaskServiceImpl implements StockOutTaskService{
         query.setParameter("2", stockOutRequirementIds);
         query.setParameter("3", boxIds);
         query.executeUpdate();
-//
+        List<String> statusList = new ArrayList<>();
+        statusList.add(Constants.STOCK_OUT_SAMPLE_IN_USE_NOT);
+        Long countOfStockOutSample = stockOutReqFrozenTubeRepository.countByStockOutTaskIdAndStatusNotIn(stockOutTask.getId(),statusList);
+        stockOutTask.countOfStockOutSample(countOfStockOutSample.intValue());
+        stockOutTask = stockOutTaskRepository.save(stockOutTask);
+
 //        List<StockOutReqFrozenTube> stockOutReqFrozenTubes = stockOutReqFrozenTubeRepository.findAllByStockOutRequirementIdInAndFrozenBoxIdIn(stockOutRequirementIds,boxIds);
 //        List<StockOutReqFrozenTube> stockOutReqFrozenTubesLast = new ArrayList<>();
 //        for(StockOutReqFrozenTube s:stockOutReqFrozenTubes){

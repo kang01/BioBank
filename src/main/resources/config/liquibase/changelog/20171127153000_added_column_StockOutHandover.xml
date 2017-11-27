@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutHnadover.
+    -->
+    <changeSet id="20171127153000-1" author="jhipster">
+        <addColumn tableName="stock_out_handover">
+            <column name="count_of_handover_sample" type="integer" remarks="交接样本量"></column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

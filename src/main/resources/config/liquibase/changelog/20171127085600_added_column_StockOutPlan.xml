@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutFrozenBoxForTaskDetailDataTableEntity.
+    -->
+    <changeSet id="20171127085600-1" author="jhipster">
+        <addColumn tableName="stock_out_plan">
+            <column name="count_of_stock_out_plan_sample" type="integer" remarks="计划出库样本量"></column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

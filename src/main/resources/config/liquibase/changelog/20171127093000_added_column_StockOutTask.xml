@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the view for entity StockOutTask.
+    -->
+    <changeSet id="20171127093000-1" author="jhipster">
+        <addColumn tableName="stock_out_task">
+            <column name="count_of_stock_out_sample" type="integer" remarks="出库样本量"></column>
+            <column name="count_of_hand_over_sample" type="integer" remarks="交接样本量"></column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

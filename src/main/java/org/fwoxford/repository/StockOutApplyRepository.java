@@ -1,5 +1,6 @@
 package org.fwoxford.repository;
 
+import org.fwoxford.config.Constants;
 import org.fwoxford.domain.StockOutApply;
 
 import org.springframework.data.jpa.repository.*;
@@ -15,4 +16,7 @@ public interface StockOutApplyRepository extends JpaRepository<StockOutApply,Lon
     Long countByParentApplyId(Long id);
 
     StockOutApply findByApplyCode(String applyCode);
+
+    @Query("SELECT T FROM StockOutApply T WHERE T.status='"+ Constants.STOCK_OUT_APPROVED+"' AND T.countOfHandOverSample<T.countOfStockSample")
+    List<StockOutApply> findUnHandoverApply();
 }

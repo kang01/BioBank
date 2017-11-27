@@ -105,6 +105,8 @@ public class StockOutPlanDTO extends AbstractAuditingDTO implements Serializable
             ", status='" + status + "'" +
             ", memo='" + memo + "'" +
             ", applyNumber='" + applyNumber + "'" +
+            ", stockOutPlanDate='" + stockOutPlanDate + "'" +
+            ", countOfStockOutPlanSample='" + countOfStockOutPlanSample + "'" +
             '}';
     }
     private LocalDate stockOutPlanDate;
@@ -115,5 +117,15 @@ public class StockOutPlanDTO extends AbstractAuditingDTO implements Serializable
 
     public void setStockOutPlanDate(LocalDate stockOutPlanDate) {
         this.stockOutPlanDate = stockOutPlanDate;
+    }
+
+    private Integer countOfStockOutPlanSample;
+
+    public Integer getCountOfStockOutPlanSample() {
+        return countOfStockOutPlanSample;
+    }
+
+    public void setCountOfStockOutPlanSample(Integer countOfStockOutPlanSample) {
+        this.countOfStockOutPlanSample = countOfStockOutPlanSample;
     }
 }

@@ -526,16 +526,14 @@ public class StockOutApplyServiceImpl implements StockOutApplyService{
 
     @Override
     public List<StockOutApplyDTO> getAllStockOutApplies() {
-        List<StockOutApply> stockOutApplies = stockOutApplyRepository.findAll();
+        List<StockOutApply> stockOutApplies = stockOutApplyRepository.findUnHandoverApply();
         List<StockOutApply> stockOutAppliesNotHandover = new ArrayList<StockOutApply>();
         for(StockOutApply s :stockOutApplies){
             //判断这次申请下的样本是否全部已经交接完
             //查询这个申请的样本量
             Long count = stockOutReqFrozenTubeRepository.countByApplyAndStatus(s.getId(),Constants.STOCK_OUT_SAMPLE_COMPLETED);
             //查询这次申请已经交接的样本量
-            Long countOfhasHandedSample = stockOutHandoverDetailsRepository.countByStockOutApply(s.getId());
-
-            if(count.intValue()>countOfhasHandedSample.intValue()){
+            if(count.intValue()>s.getCountOfHandOverSample().intValue()){
                 stockOutAppliesNotHandover.add(s);
             }
         }

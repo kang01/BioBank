@@ -289,8 +289,10 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
         stockOutHandover.setHandoverPersonId(handoverPersonId);
         stockOutHandover.setHandoverTime(stockOutHandoverDTO.getHandoverTime());
         stockOutHandover.setStatus(Constants.STOCK_OUT_HANDOVER_COMPLETED);
-        stockOutHandoverRepository.save(stockOutHandover);
 
+
+        List<StockOutTask> stockOutTasks = new ArrayList<>();
+        int countOfHandoverSample = 0;
         // 将盒ID按照长度10进行分组
         List<List<Long>> arrIds = Lists.partition(ids, 10);
         for(List<Long> boxIds : arrIds){
@@ -326,12 +328,8 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                     .supportRackCode(stockOutFrozenBox.getSupportRackCode())
                     .rowsInShelf(stockOutFrozenBox.getRowsInShelf())
                     .columnsInShelf(stockOutFrozenBox.getColumnsInShelf())
-//                    .countOfSample(sampleList.size())
                     .frozenBoxCode(stockOutFrozenBox.getFrozenBoxCode())
                     .frozenBoxCode1D(stockOutFrozenBox.getFrozenBoxCode1D())
-//                    .frozenBox(frozenBox)
-//                    .stockIn(stockIn)
-//                    .stockInCode(stockInCodeNew)
                     .area(stockOutFrozenBox.getArea())
                     .equipment(stockOutFrozenBox.getEquipment())
                     .supportRack(stockOutFrozenBox.getSupportRack())
@@ -383,36 +381,24 @@ public class StockOutHandoverServiceImpl implements StockOutHandoverService{
                 });
                 // 保存交接管
                 stockOutHandoverDetailsRepository.save(handoverTubes);
-
+                countOfHandoverSample+=handoverTubes.size();
                 // 保存库存管
                 frozenTubeRepository.save(frozenTubes);
             }
 
-//
-//            //查询要出库的样本
-//            List<StockOutBoxTube> stockOutBoxTubes = stockOutBoxTubeRepository.findByStockOutFrozenBoxId(id);
-//            //出库冻存盒的状态置为已交接
-//            StockOutFrozenBox stockOutFrozenBox = stockOutFrozenBoxRepository.findOne(id);
-//            if(stockOutFrozenBox != null){
-//                stockOutFrozenBox.setFrozenBoxCode(stockOutFrozenBox.getFrozenBox().getFrozenBoxCode());
-//                stockOutFrozenBox.setStatus(Constants.STOCK_OUT_FROZEN_BOX_HANDOVER);
-//                stockOutFrozenBoxRepository.save(stockOutFrozenBox);
-//                FrozenBox frozenBox = stockOutFrozenBox.getFrozenBox();
-//                frozenBox.setStatus(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
-//                frozenBoxRepository.save(frozenBox);
-//            }
-//            for(StockOutBoxTube b :stockOutBoxTubes){
-//                //保存交接详情
-//                StockOutHandoverDetails stockOutHandoverDetails = new StockOutHandoverDetails();
-//                stockOutHandoverDetails.status(Constants.STOCK_OUT_HANDOVER_COMPLETED)
-//                    .stockOutBoxTube(b)
-//                    .stockOutHandover(stockOutHandover);
-//                stockOutHandoverDetailsRepository.save(stockOutHandoverDetails);
-//                FrozenTube frozenTube = stockOutHandoverDetails.getStockOutBoxTube().getFrozenTube();
-//                frozenTube.setFrozenTubeState(Constants.FROZEN_BOX_STOCK_OUT_HANDOVER);
-//                frozenTubeRepository.save(frozenTube);
-//            }
+            Map<StockOutTask, List<StockOutReqFrozenTube>> tubeGroupByTask = tubes.stream().collect(Collectors.groupingBy(s->s.getStockOutTask()));
+            for(StockOutTask stockOutTask : tubeGroupByTask.keySet()){
+                Integer oldCountOfHandOverSample = stockOutTask.getCountOfHandOverSample()!=null?stockOutTask.getCountOfHandOverSample() :0;
+                stockOutTask.countOfHandOverSample(oldCountOfHandOverSample+tubeGroupByTask.get(stockOutTask).size());
+                stockOutTasks.add(stockOutTask);
+            }
         }
+        StockOutApply stockOutApply =stockOutHandover.getStockOutApply();
+        Integer oldCountOfHandOverSample = stockOutApply.getCountOfHandOverSample()!=null?stockOutApply.getCountOfHandOverSample() :0;
+        stockOutApply.countOfHandOverSample(oldCountOfHandOverSample+countOfHandoverSample);
+        stockOutTaskRepository.save(stockOutTasks);
+        stockOutHandover.countOfHandoverSample(countOfHandoverSample);
+        stockOutHandoverRepository.save(stockOutHandover);
         return stockOutHandoverDTO;
     }
 

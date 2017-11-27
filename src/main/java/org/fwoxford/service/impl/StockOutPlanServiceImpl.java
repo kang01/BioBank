@@ -135,12 +135,15 @@ public class StockOutPlanServiceImpl implements StockOutPlanService{
             return stockOutPlanDTO;
         }
 
+        Long countOfStockOutPlanSample = stockOutReqFrozenTubeRepository.countByApply(applyId);
         StockOutPlan stockOutPlan = new StockOutPlan();
         stockOutPlan.status(Constants.STOCK_OUT_PLAN_PENDING)
             .stockOutPlanCode(bankUtil.getUniqueID("E"))
             .applyNumber(apply.getApplyCode())
-            .stockOutApply(apply).stockOutPlanDate(LocalDate.now());
+            .stockOutApply(apply).stockOutPlanDate(LocalDate.now()).countOfStockOutPlanSample(countOfStockOutPlanSample.intValue());
         stockOutPlan = stockOutPlanRepository.save(stockOutPlan);
+        apply.countOfStockSample(countOfStockOutPlanSample.intValue());
+        stockOutApplyRepository.save(apply);
         StockOutPlanDTO result = stockOutPlanMapper.stockOutPlanToStockOutPlanDTO(stockOutPlan);
         return result;
     }

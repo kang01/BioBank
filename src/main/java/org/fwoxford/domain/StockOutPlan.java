@@ -170,4 +170,23 @@ public class StockOutPlan extends AbstractAuditingEntity implements Serializable
         this.stockOutPlanDate = stockOutPlanDate;
         return this;
     }
+
+    /**
+     * 计划出库样本量
+     */
+    @Column(name = "count_of_stock_out_plan_sample")
+    private Integer countOfStockOutPlanSample;
+
+    public Integer getCountOfStockOutPlanSample() {
+        return countOfStockOutPlanSample;
+    }
+
+    public StockOutPlan countOfStockOutPlanSample(Integer countOfStockOutPlanSample) {
+        this.countOfStockOutPlanSample = countOfStockOutPlanSample;
+        return this;
+    }
+
+    public void setCountOfStockOutPlanSample(Integer countOfStockOutPlanSample) {
+        this.countOfStockOutPlanSample = countOfStockOutPlanSample;
+    }
 }

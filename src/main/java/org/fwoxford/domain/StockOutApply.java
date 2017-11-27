@@ -319,4 +319,58 @@ public class StockOutApply extends AbstractAuditingEntity implements Serializabl
             ", applyCode='" + applyCode + "'" +
             '}';
     }
+
+    /**
+     * 此次申请实际要出库的样本
+     */
+    @Column(name = "count_of_stock_sample")
+    private Integer countOfStockSample;
+
+    /**
+     * 此次申请已经交接的样本量
+     */
+    @Column(name = "count_of_hand_over_sample")
+    private Integer countOfHandOverSample;
+
+    /**
+     * 出库检测类型
+     */
+    @Column(name = "check_type_id")
+    private Long checkTypeId;
+
+    public Integer getCountOfStockSample() {
+        return countOfStockSample;
+    }
+
+    public StockOutApply countOfStockSample(Integer countOfStockSample) {
+        this.countOfStockSample = countOfStockSample;
+        return this;
+    }
+
+    public void setCountOfStockSample(Integer countOfStockSample) {
+        this.countOfStockSample = countOfStockSample;
+    }
+
+    public Integer getCountOfHandOverSample() {
+        return countOfHandOverSample;
+    }
+
+    public StockOutApply countOfHandOverSample(Integer countOfHandOverSample) {
+        this.countOfHandOverSample = countOfHandOverSample;
+        return this;
+    }
+    public void setCountOfHandOverSample(Integer countOfHandOverSample) {
+        this.countOfHandOverSample = countOfHandOverSample;
+    }
+
+    public Long getCheckTypeId() {
+        return checkTypeId;
+    }
+    public StockOutApply checkTypeId(Long checkTypeId) {
+        this.checkTypeId = checkTypeId;
+        return this;
+    }
+    public void setCheckTypeId(Long checkTypeId) {
+        this.checkTypeId = checkTypeId;
+    }
 }
